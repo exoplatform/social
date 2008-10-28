@@ -1,0 +1,51 @@
+<%
+	import org.exoplatform.portal.application.PortalRequestContext;
+	import org.exoplatform.portal.webui.util.Util;
+	
+	def prContext = _ctx.getRequestContext().getParentAppRequestContext();
+	
+	String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));" ;
+	String changeLanguageAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ChangeLanguage', true));" ;
+	String portletId = uicomponent.getId() ;	
+%>
+<div id="$portletId" class="UIBannerPortlet UIApplication">
+	<div class="ApplicationMinWidth">
+	  <div class="InlineContainer">
+	    <div class="LeftBanner">
+	      <div class="RightBanner">
+	        <div class="MiddleBanner">
+	        	<div class="BannerTitle"><span></span>
+				</div>
+				<div class="LeftLoginContainer">
+					<div class="RightLoginContainer">
+						<%if(prContext.getRemoteUser() != null) {%>
+							<div class="MiddleLoginContainer">
+								<div class="Name">
+									<%=_ctx.appRes("UILogged.note.loggedUser")%>
+									<span style="padding: 0px 10px 0px 2px; color: red; font-weight:bold;">
+										<%=prContext.getRemoteUser();%> 
+									</span>
+								</div>
+								<a class="Logout" onclick="eXo.portal.logout();"><%=_ctx.appRes("UILogged.action.signout")%></a>
+								<a class="Language" onclick="$changeLanguageAction"><%=_ctx.appRes("UIExoStart.item.LanguageSettings")%></a>
+								<div style="clear: both;"><span></span></div>	
+							</div>							
+						<%} else {%>
+							<div class="MiddleLoginContainer">
+								<a class="Login" onclick="$signInAction"><%=_ctx.appRes("UILoginForm.label.Signin")%></a>								
+								<a class="Language" onclick="$changeLanguageAction">
+									<%=_ctx.appRes("UIChangeLanguage.title.LanguageSetting")%>
+								</a>		
+								<div style="clear:both"><span></span></div>
+							</div>
+						<%}%>   
+					</div>
+					<div style="clear:both"><span></span></div>
+				</div>
+	        </div>
+	      </div>   
+	    </div>
+	  </div>
+	</div>
+</div>
+

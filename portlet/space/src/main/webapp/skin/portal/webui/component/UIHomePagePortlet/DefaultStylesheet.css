@@ -1,0 +1,104 @@
+.UIWindow .UISocialHomepage {	
+	margin: 0px;
+}
+
+.UISocialHomepage {
+  padding: 8px;
+  background: white;
+  margin: 4px;
+  border: 1px solid #b7b7b7;
+}
+
+.UISocialHomepage .HomeBackground  {
+	background: url(background/SocialHomeBG.gif) repeat-x center -633px;
+	height: 244px;
+}
+
+.UISocialHomepage .HomeBackground .LeftHomeBackground {
+	background: url(background/LeftHomeBackground.jpg) no-repeat left center;
+	height:244px;
+}
+
+.UISocialHomepage .HomeBackground .RightHomeBackground {
+	background: url(background/SocialHomeBG.gif) no-repeat right -191px;
+	height:244px;
+}
+
+.UISocialHomepage .CheckIcon {
+	background: url('background/SocialHomeBG.gif') no-repeat left -1069px; ;
+	line-height: 18px;
+	padding-left: 20px;
+	overflow: hidden;
+	width: 80%;
+	white-space: nowrap;
+}
+
+.UISocialHomepage .Decorator .DecoratorML {
+	background: url('background/SocialHomeBG.gif') no-repeat left -440px;
+	padding-left: 2px;
+}
+
+.UISocialHomepage .Decorator .DecoratorMR {
+	background: url('background/SocialHomeBG.gif') no-repeat right -440px;
+	padding-right: 2px;
+}
+
+.UISocialHomepage .Decorator .DecoratorMC {
+	background: url('background/SocialHomeBG.gif') repeat-x center -880px ;
+	height: 192px;
+}
+
+.UISocialHomepage .Decorator .PeopleIcon {
+	background:transparent url(background/SocialHomeBG.gif) no-repeat left 48px;
+	margin-left: 8px;
+	padding-left:100px;
+}
+
+.UISocialHomepage .Decorator .SpaceIcon {
+	background:transparent url(background/SocialHomeBG.gif) no-repeat left -1158px;
+	margin-left: 8px;
+	padding-left:100px;
+}
+
+.UISocialHomepage .Decorator .Label {
+	font-weight:bold;
+	line-height:16px;
+	overflow:hidden;
+	padding:4px 0px;
+	white-space:nowrap;
+	width:90%;
+}
+
+.UISocialHomepage .Decorator .Title {
+	line-height: 30px;
+	font-size: 24px;
+	color:#1363c8;
+	padding: 10px 0px 0px 0px;
+	font-weight: bold;
+}
+
+.UISocialHomepage .DownloadButton {
+	background: url(background/SocialHomeBG.gif) no-repeat -3px -440px;
+	width:211px; height: 80px;
+	cursor: pointer;
+	margin:8px 0px 6px;
+	text-align: center;
+}
+
+.UISocialHomepage .FeedBackButton {
+	background: url(background/SocialHomeBG.gif) no-repeat -171px -521px;
+	float: left;
+	width:107px; height: 108px; 
+	cursor: pointer;
+	text-align: center;
+	font-weight: bold;
+}
+
+.UISocialHomepage .ContactButton {
+	background: url(background/SocialHomeBG.gif) no-repeat -3px -521px;
+	float: left;
+	width:105px; height: 108px; 
+	cursor: pointer;
+	text-align: center;
+	font-weight: bold;
+}

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+ <ModulePrefs title="Status updates">
+   <Require feature="opensocial-0.7"></Require>
+   <Require feature="dynamic-height"></Require>
+ </ModulePrefs>
+ <Content type="html">
+   <![CDATA[
+<style type="text/css">
+  .streamtitle,
+  .socialHeading {
+    font-family:arial,helvetica,sans-serif;
+    font-size:13pt;
+    font-weight:bold;
+  }
+
+  .streamtitle {
+    background-color: #E0ECFF;
+    border-top: 1px solid blue;
+    padding: .25em;
+  }
+
+  .socialDescription a {
+    color:#999999;
+  }
+
+  .streamdescription,
+  .streamdescription a,
+  .streamdescription a:visited {
+    color:#408BFE;
+    font-size:12pt;
+    font-weight:bold;
+    text-decoration:underline;
+    font-family:arial,helvetica,sans-serif;
+  }
+
+  .streamhtmlsmall {
+    font-size:8pt;
+  }
+
+  .streamurl a {
+    color:#008000;
+    font-size:10pt;
+    font-family:arial,helvetica,sans-serif;
+    text-decoration:underline;
+  }
+
+  .streamrow {
+    clear: both;
+  }
+
+  .streamrowline {
+    border-bottom:1px solid #DDE9F5;
+    clear:both;
+    height:0px;
+    margin:5px;
+  }
+
+  .streamcontents {
+    padding: .5em;
+  }
+
+  .streamhtmlcontents {
+    color:#333333;
+    font-size:10pt;
+    line-height:130%;
+    padding:2px 0pt 3px 10px;
+    font-family:arial,helvetica,sans-serif;
+  }
+
+  .mediaitems {
+    padding-left: 5em;
+  }
+
+  .addActivityDiv {
+    clear:both;
+    padding-bottom:15px;
+  }
+
+  #addActivityText {
+    color:#999999;
+    font-size:10pt;
+    font-weight:normal;
+    font-family:arial,helvetica,sans-serif;
+  }
+
+  .leftcolumn {
+    float: left;
+    width: 47%;
+  }
+
+  .rightcolumn {
+    float: right;
+    width: 47%;
+  }
+
+  #addActivity {
+    padding: .5em;
+  }
+</style>
+
+<script type="text/javascript">
+
+gadgets.util.registerOnLoadHandler(refreshActivities);
+
+function refreshActivities() {
+  var req = opensocial.newDataRequest();
+  if (!viewer) {
+    req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
+    req.add(req.newFetchPersonRequest('OWNER'), 'owner');
+
+    var opts = {};
+    opts[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
+    opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40;
+    opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
+                   [opensocial.Person.Field.NAME,
+                   opensocial.Person.Field.THUMBNAIL_URL];
+    req.add(req.newFetchPeopleRequest('OWNER_FRIENDS', opts), 'ownerContacts');
+  }
+
+
+  req.add(req.newFetchActivitiesRequest('OWNER'), 'ownerActivities');
+  req.add(req.newFetchActivitiesRequest('OWNER_FRIENDS'), 'activities');
+  req.send(handleActivities);
+}
+
+function postNewActivity() {
+  var activityElement = document.getElementById('newActivity');
+
+  var activity = opensocial.newActivity({ 'title' : activityElement.value,
+    'body' : activityElement.value});
+
+  activityElement.value = '';
+  opensocial.requestCreateActivity(activity, "HIGH", refreshActivities);
+}
+
+var viewer;
+var owner;
+var ownerContacts;
+var activities;
+function handleActivities(dataResponse) {
+  if (!viewer) {
+    viewer = dataResponse.get('viewer').getData();
+    owner = dataResponse.get('owner').getData();
+    ownerContacts = dataResponse.get('ownerContacts').getData();
+  }
+  activities = dataResponse.get('ownerActivities').getData()['activities'].asArray();
+  activities = activities.concat(dataResponse.get('activities').getData()['activities'].asArray());
+  document.getElementById('stream').style.display = 'block';
+
+  var html = '';
+  if (!activities || activities.length == 0) {
+    document.getElementById('stream').innerHTML = owner.getDisplayName() + ' do not have any updates yet';
+    return;
+  }
+
+  activities = activities.sort(sortUpdates);
+
+  for (var i = 0; i < activities.length; i++) {
+    html += '<div class="streamrow">';
+    html += '<div class="streamdescription">' + getName(activities[i].getField('userId')) + '</div>';
+
+    html += '<div class="streamcontents">';
+    html += '<img src="http://www.google.com/s2/sharing/resources/static/images/quot.png?hl=en_US"/>';
+
+    var body = activities[i].getField('body') || '';
+    var url = activities[i].getField('url');
+    html += '<span class="streamhtmlcontents">' + body + '</span>';
+	// html += '<div class="streamhtmlsmall">posted on ' + ("" + (new Date(activities[i].getField('postedTime')))).substring(0, 24) + '</div>';
+    html += '<div class="streamhtmlsmall">';
+	if (url) 
+		html += '<a href="' + url + '">link</a> | ';
+	html += 'posted ' + timeToPrettyString(activities[i].getField('postedTime')) + '</div>';
+
+    html += '</div>';
+
+    html += '<div class="mediaitems">';
+    var mediaItems = activities[i].getField('mediaItems');
+    if (mediaItems) {
+      for (var j = 0; j < mediaItems.length; j++) {
+        if (mediaItems[j].getField('type') == 'image') {
+          html += '<img height="150px" style="padding-right:.5em;" src="' + mediaItems[j].getField('url') + '"/>';
+        }
+      }
+    }
+    html += '</div>';
+
+    html += '</div>';
+    html += '<div class="streamrowline"></div>';
+  }
+  document.getElementById('stream').innerHTML = html;
+  document.getElementById('streamtitle').innerHTML = 'Activities from ' + owner.getDisplayName() + "'s contacts";
+  gadgets.window.adjustHeight();
+}
+
+function getName(id) {
+  if (id == null)
+    return "";
+  if (id == owner.getId())
+    return owner.getDisplayName();
+  var person = ownerContacts.getById(id);
+  if (person == null)
+    return "";
+  return person.getDisplayName();
+}
+
+function sortUpdates(a, b) {
+  return b.getField('postedTime') - a.getField('postedTime');
+}
+
+function timeToPrettyString(B) {
+    if (isNaN(B)) {
+        return "an indeterminate amount of time ago"
+    }
+    time = (new Date().getTime() - B) / 1000;
+    if (time < 60) {
+        return "less than a minute ago"
+    } else {
+        if (time < 120) {
+            return "about a minute ago"
+        } else {
+            if (time < 3600) {
+                var A = Math.round(time / 60);
+                return "about " + A + " minutes ago"
+            } else {
+                if (time < 7200) {
+                    return "about an hour ago"
+                } else {
+                    if (time < 86400) {
+                        var A = Math.round(time / 3600);
+                        return "about " + A + " hours ago"
+                    } else {
+                        if (time < 172800) {
+                            return "about a day ago"
+                        } else {
+                            if (time < 2592000) {
+                                var A = Math.round(time / 86400);
+                                return "about " + A + " days ago"
+                            } else {
+                                if (time < 5184000) {
+                                    return "about a month ago"
+                                } else {
+                                    var A = Math.round(time / 2592000);
+                                    return "about " + A + " months ago"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+function hideShowDiv(divToShow, divToHide) {
+  document.getElementById(divToShow).style.display = 'block';
+  document.getElementById(divToHide).style.display = 'none';
+}
+</script>
+
+<div id="streamtitle" class="streamtitle"></div>
+<div class="addActivityDiv">
+  <div>What are you doing?</div>
+  <span id="addActivity">
+    <input id="newActivity" type="text"/>
+    <input type="button" onclick="postNewActivity(); return false;" value="add"/>
+    <input type="button" onclick="hideShowDiv('addActivityText','addActivity'); return false;" value="cancel"/>
+  </span>
+</div>
+<div id="stream" style="display:none"></div>
+
+]]>
+</Content>
+</Module>

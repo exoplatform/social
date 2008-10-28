@@ -1,0 +1,47 @@
+<div id="UIBreadcrumb" class="UIBreadcrumb">
+	<ul id="UIBreadcrumbNav">
+	<%
+	  def path = uicomponent.path
+	  def i = 0
+	  path.each { %>
+	     <li>
+	       <%if (0 < i++) {  %>
+	       <span class="Path">>></span>
+	       <%} %>
+	       <a href="${it.url}">${it.name}</a>
+	       <%
+	         if(it.potentialChild.size()) {
+	       %>
+	         <ul id="potentialChild_${it.name}" class="PotentialChild">
+	           <% it.potentialChild.each { %>
+	             <li><a href="${it.url}">${it.name}</a></li>
+	           <%} %>
+	         </ul>
+	       <%}%>
+	
+	     </li>
+	<% } %>
+	</ul>
+	<span style="clear: left;">&nbsp;</span>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+startList = function() {
+	if (document.all&&document.getElementById) {
+		navRoot = document.getElementById("UIBreadcrumbNav");
+		for (i=0; i<navRoot.childNodes.length; i++) {
+			node = navRoot.childNodes[i];
+			if (node.nodeName=="LI") {
+				node.onmouseover=function() {
+					this.className+=" over";
+				}
+				node.onmouseout=function() {
+					this.className=this.className.replace(" over", "");
+				}
+			}
+		}
+	}
+}
+startList();
+
+//--><!]]></script>
+</div>
+

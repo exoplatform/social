@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+  <component>
+    <key>org.exoplatform.services.log.LogConfigurationInitializer</key>
+    <type>org.exoplatform.services.log.LogConfigurationInitializer</type>
+    <init-params>
+      <value-param>
+        <name>logger</name>
+        <value>org.exoplatform.services.log.impl.BufferedLog4JLogger</value>
+      </value-param>
+      <value-param>
+        <name>configurator</name>
+        <value>org.exoplatform.services.log.impl.Log4JConfigurator</value>
+      </value-param>
+      <properties-param>
+        <name>properties</name>
+        <description>Log4J properties</description>
+        <property name="log4j.rootLogger" value="INFO, stdout, file"/>
+
+        <property name="log4j.appender.stdout" value="org.apache.log4j.ConsoleAppender"/>
+        <property name="log4j.appender.stdout.threshold" value="INFO"/>
+
+        <property name="log4j.appender.stdout.layout" value="org.apache.log4j.PatternLayout"/>
+        <property name="log4j.appender.stdout.layout.ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} *%-5p* [%t] %c{1}: %m (%F, line %L) %n"/>
+
+        <property name="log4j.appender.file" value="org.apache.log4j.FileAppender"/>
+        <property name="log4j.appender.file.File" value="target/jcr.log"/>
+
+        <property name="log4j.appender.file.layout" value="org.apache.log4j.PatternLayout"/>
+        <property name="log4j.appender.file.layout.ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} *%-5p* [%t] %c{1}: %m (%F, line %L) %n"/>
+
+        <!-- property name="log4j.category.ext.BackupScheduler" value="DEBUG"/>
+        <property name="log4j.category.ext.BackupManagerImpl" value="DEBUG"/ -->
+
+      </properties-param>
+    </init-params>
+  </component>
+
+  <!--  backup -->
+  
+
+  <!-- REST -->
+  <component>
+    <type>org.exoplatform.services.jcr.ext.registry.RESTRegistryService</type>
+  </component>
+
+	<component>
+		<type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
+	</component>
+
+  <component>
+    <type>org.exoplatform.services.rest.ResourceDispatcher</type>
+  </component>
+
+  <component>
+  	<type>org.exoplatform.services.rest.ResourceBinder</type>
+    <init-params>
+    	<value-param>
+    		<name>strategy</name>
+    		<value>org.exoplatform.services.rest.container.HTTPAnnotatedContainerResolvingStrategy</value>
+    	</value-param>
+    </init-params>
+ 	</component>
+
+  <component>
+      <type>org.exoplatform.services.jcr.ext.registry.RegistryService</type>
+      <init-params>
+        <properties-param>
+        <name>locations</name>
+        <property name="db1" value="ws2"/>
+        </properties-param>
+      </init-params>
+    </component>
+
+    <component>
+      <type>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</type>
+
+      <component-plugins>
+        <component-plugin>
+          <name>addActions</name>
+          <set-method>addPlugin</set-method>
+          <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
+          <description>add actions plugin</description>
+          <init-params>
+            <object-param>
+              <name>actions</name>
+              <object type="org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin$ActionsConfig">
+                <field  name="actions">
+                  <collection type="java.util.ArrayList">
+  <!-- an example
+                    <value>
+                      <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                        <field  name="eventTypes"><string>addNode</string></field>
+                        <field  name="path"><string>/test</string></field>
+                        <field  name="isDeep"><boolean>true</boolean></field>
+                        <field  name="nodeTypes"><string>nt:unstructured</string></field>
+                        <field  name="workspace"><string>production</string></field>
+                        <field  name="actionClassName"><string>org.exoplatform.services.jcr.ext.DummyAction</string></field>
+                      </object>
+                    </value>
+  -->
+                    <value>
+                      <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                        <field  name="eventTypes"><string>addProperty,changeProperty</string></field>
+                        <field  name="path"><string>/MetaDataActionTest/testAddContent</string></field>
+                        <field  name="isDeep"><boolean>true</boolean></field>
+                        <field  name="nodeTypes"><string>nt:resource</string></field>
+                        <field  name="actionClassName"><string>org.exoplatform.services.jcr.ext.metadata.AddMetadataAction</string></field>
+                      </object>
+                    </value>
+                    <value>
+                      <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                        <field  name="eventTypes"><string>addNode</string></field>
+                        <field  name="path"><string>/MetaDataActionTest/testSetMetaData</string></field>
+                        <field  name="isDeep"><boolean>false</boolean></field>
+                        <field  name="actionClassName"><string>org.exoplatform.services.jcr.ext.metadata.SetDCMetadataAction</string></field>
+                      </object>
+                    </value>
+
+                    <value>
+                      <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                        <field  name="eventTypes"><string>addNode</string></field>
+                        <field  name="path"><string>/test</string></field>
+                        <field  name="isDeep"><boolean>true</boolean></field>
+                        <field  name="actionClassName"><string>org.exoplatform.services.jcr.ext.owner.AddOwneableAction</string></field>
+                      </object>
+                    </value>
+                    <value>
+                      <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                        <field  name="eventTypes"><string>addNode</string></field>
+                        <field  name="path"><string>/AuditServiceTest/autoAdd</string></field>
+                        <field  name="isDeep"><boolean>true</boolean></field>
+                        <field  name="actionClassName"><string>org.exoplatform.services.jcr.ext.audit.AddAuditableAction</string></field>
+                      </object>
+                    </value>
+                    <value>
+                      <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                        <field  name="eventTypes"><string>addProperty,changeProperty,removeProperty</string></field>
+                        <field  name="path"><string>/AuditServiceTest</string></field>
+                        <field  name="nodeTypes"><string>exo:auditable</string></field>
+                        <field  name="isDeep"><boolean>true</boolean></field>
+                        <field  name="actionClassName"><string>org.exoplatform.services.jcr.ext.audit.AuditAction</string></field>
+                      </object>
+                    </value>
+                    <value>
+                      <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                        <field  name="eventTypes"><string>addMixin</string></field>
+                        <field  name="path"><string>/AuditServiceTest</string></field>
+                        <field  name="nodeTypes"><string>exo:auditable</string></field>
+                        <field  name="isDeep"><boolean>false</boolean></field>
+                        <field  name="actionClassName"><string>org.exoplatform.services.jcr.ext.audit.AuditAction</string></field>
+                      </object>
+                    </value>
+                    <value>
+                      <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                        <field  name="eventTypes"><string>removeNode</string></field>
+                        <field  name="nodeTypes"><string>exo:auditable</string></field>
+                        <field  name="isDeep"><boolean>false</boolean></field>
+                        <field  name="actionClassName"><string>org.exoplatform.services.jcr.ext.audit.RemoveAuditableAction</string></field>
+                      </object>
+                    </value>
+                  </collection>
+                </field>
+              </object>
+            </object-param>
+          </init-params>
+        </component-plugin>
+
+      </component-plugins>
+
+    </component>
+
+    <component>
+      <key>org.exoplatform.services.jcr.ext.audit.AuditService</key>
+      <type>org.exoplatform.services.jcr.ext.audit.AuditServiceImpl</type>
+    </component>
+
+    <component>
+      <key>org.exoplatform.services.jcr.RepositoryService</key>
+      <type>org.exoplatform.services.jcr.impl.RepositoryServiceImpl</type>
+      <component-plugins>
+        <component-plugin>
+ 		  <name>add.namespaces</name>
+ 		  <set-method>addPlugin</set-method>
+ 		  <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+ 		  <init-params>
+ 		    <properties-param>
+ 		      <name>namespaces</name>
+ 		      <property name="dc" value="http://purl.org/dc/elements/1.1/"/>
+ 		      </properties-param>
+ 		  </init-params>
+ 		</component-plugin>
+        <component-plugin>
+          <name>add.nodeType</name>
+          <set-method>addPlugin</set-method>
+          <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+          <init-params>
+          <values-param>
+            <name>autoCreatedInNewRepository</name>
+            <description>Node types configuration file</description>
+            <value>jar:/conf/ext-nodetypes-config.xml</value>
+          </values-param>
+        </init-params>
+        </component-plugin>
+      </component-plugins>
+    </component>
+
+    <component>
+      <key>org.exoplatform.services.jcr.config.RepositoryServiceConfiguration</key>
+      <type>org.exoplatform.services.jcr.impl.config.RepositoryServiceConfigurationImpl</type>
+      <init-params>
+        <value-param>
+          <name>conf-path</name>
+          <description>JCR configuration file</description>
+          <value>jar:/conf/portal/test-jcr-config.xml</value>
+        </value-param>
+      </init-params>
+  </component>
+
+  <component>
+    <type>org.exoplatform.services.organization.impl.mock.DummyOrganizationService</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</key>
+    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NodeHierarchyCreatorImpl</type>
+  </component>  
+
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.naming.InitialContextInitializer</target-component>
+    <component-plugin>
+          <name>bind.datasource</name>
+          <set-method>addPlugin</set-method>
+          <type>org.exoplatform.services.naming.BindReferencePlugin</type>
+          <init-params>
+            <value-param>
+              <name>bind-name</name>
+              <value>jdbcjcr</value>
+            </value-param>
+            <value-param>
+              <name>class-name</name>
+              <value>javax.sql.DataSource</value>
+            </value-param>
+            <value-param>
+              <name>factory</name>
+              <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+            </value-param>
+            <properties-param>
+              <name>ref-addresses</name>
+              <description>ref-addresses</description>
+              <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+              <property name="url" value="jdbc:hsqldb:file:target/temp/data/portal"/>
+              <property name="username" value="sa"/>
+              <property name="password" value=""/>
+            </properties-param>
+          </init-params>
+        </component-plugin>
+   </external-component-plugins>
+
+	<external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</target-component>
+    <component-plugin>
+	    <name>addPaths</name>
+	    <set-method>addPlugin</set-method>
+	    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.AddPathPlugin</type>
+	    <init-params>
+	      <object-param>
+	        <name>cms.configuration</name>
+	        <description>configuration for the cms path</description>
+	        <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig">
+	        	<field  name="repository"><string>repository</string></field>
+	        	<field name="workspaces">
+	          	<collection type="java.util.ArrayList">
+	          		<value><string>social</string></value>
+	          	</collection>
+	          </field>
+	          <field  name="jcrPaths">
+	          	<collection type="java.util.ArrayList">
+	          		<value>
+		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
+		             		<field  name="alias"><string>eXoApplications</string></field>
+		                <field  name="path"><string>/exo:applications</string></field>
+		                <field name="permissions">
+				              <collection type="java.util.ArrayList">
+				                <value>
+				                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">
+				                      <field name="identity"><string>*:/platform/administrators</string></field>
+				                      <field name="read"><string>true</string></field>
+				                      <field name="addNode"><string>true</string></field>
+				                      <field name="setProperty"><string>true</string></field>
+				                      <field name="remove"><string>true</string></field>
+				                    </object>
+				                </value>
+			                </collection>
+			              </field>
+	              	</object>
+              	</value>
+             		<value>
+		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
+		             		<field  name="alias"><string>eXoServices</string></field>
+		                <field  name="path"><string>/exo:services</string></field>
+		                <field name="permissions">
+				              <collection type="java.util.ArrayList">
+				                <value>
+				                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">
+				                      <field name="identity"><string>*:/platform/administrators</string></field>
+				                      <field name="read"><string>true</string></field>
+				                      <field name="addNode"><string>true</string></field>
+				                      <field name="setProperty"><string>true</string></field>
+				                      <field name="remove"><string>true</string></field>
+				                    </object>
+				                </value>
+			                </collection>
+			              </field>
+	              	</object>
+              	</value>
+              	<value>
+	              	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
+	              		<field  name="alias"><string>usersPath</string></field>
+	                  <field  name="path"><string>/Users</string></field>
+	                  <field name="permissions">
+			                <collection type="java.util.ArrayList">
+			                  <value>
+			                    <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">
+			                      <field name="identity"><string>*:/platform/administrators</string></field>
+			                      <field name="read"><string>true</string></field>
+			                      <field name="addNode"><string>true</string></field>
+			                      <field name="setProperty"><string>true</string></field>
+			                      <field name="remove"><string>true</string></field>
+			                    </object>
+			                  </value>
+			                  <value>
+			                    <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">
+			                      <field name="identity"><string>any</string></field>
+			                      <field name="read"><string>true</string></field>
+			                      <field name="addNode"><string>false</string></field>
+			                      <field name="setProperty"><string>true</string></field>
+			                      <field name="remove"><string>false</string></field>
+			                    </object>
+			                  </value>
+			                </collection>
+			              </field>
+	              	</object>
+              	</value>
+              	<value>
+	              	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
+	              		<field  name="alias"><string>groupsPath</string></field>
+	                  <field  name="path"><string>/Groups</string></field>
+	                  <field name="permissions">
+			                <collection type="java.util.ArrayList">
+			                  <value>
+			                    <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">
+			                      <field name="identity"><string>*:/platform/administrators</string></field>
+			                      <field name="read"><string>true</string></field>
+			                      <field name="addNode"><string>true</string></field>
+			                      <field name="setProperty"><string>true</string></field>
+			                      <field name="remove"><string>true</string></field>
+			                    </object>
+			                  </value>
+			                  <value>
+			                    <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">
+			                      <field name="identity"><string>any</string></field>
+			                      <field name="read"><string>true</string></field>
+			                      <field name="addNode"><string>false</string></field>
+			                      <field name="setProperty"><string>true</string></field>
+			                      <field name="remove"><string>false</string></field>
+			                    </object>
+			                  </value>
+			                </collection>
+			              </field>
+	              	</object>
+              	</value>
+	          	</collection>
+	          </field>
+	        </object>
+	      </object-param>
+	    </init-params>
+	  </component-plugin>
+	</external-component-plugins>
+  
+  <remove-configuration>org.exoplatform.services.scheduler.JobSchedulerService</remove-configuration>
+  <remove-configuration>org.exoplatform.services.transaction.ExoTransactionService</remove-configuration>
+  
+</configuration>

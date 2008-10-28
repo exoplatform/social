@@ -1,0 +1,57 @@
+<div class="UISocialHomepage" id="$uicomponent.id">
+	<div class="HomeBackground">
+		<div class="LeftHomeBackground">
+			<div class="RightHomeBackground"><span><span/></div>
+		</div>
+	</div>
+	<table style="table-layout: fixed; width: 100%;">
+	  <tbody>
+		  <tr>
+		    <td>
+					<div style="margin: 8px 4px 0px 0px;" class="Decorator">
+						<div class="DecoratorML">
+			    			<div class="DecoratorMR">
+			    				<div class="DecoratorMC">
+			    					<div class="PeopleIcon">
+				    					<div class="Title">People</div>
+				    					<div class="Label">Adding social networking to your work</div>
+				    					<div class="Label">&nbsp;</div>
+										<div class="CheckIcon">Create and develop Social Networks in organizations</div>
+										<div class="CheckIcon">Display relevant information to each user</div>
+										<div class="CheckIcon">Create a skills index</div>
+										<div class="CheckIcon">Help to find the relevant person to solve a problem</div>			
+										<div class="CheckIcon">User-friendly interface</div>
+								</div>
+							</div>
+						</div>	
+						
+					</div>				    
+				</td>
+		    <td>
+					<div style="margin: 8px 4px 0px 0px;" class="Decorator">
+						<div class="DecoratorML">
+			    			<div class="DecoratorMR">
+			    				<div class="DecoratorMC">
+			    					<div class="SpaceIcon">
+				    					<div class="Title">Space</div>
+				    					<div class="Label">Adding communities to your work</div>
+				    					<div class="Label">&nbsp;</div>
+										<div class="CheckIcon">Regroup people around projects or interest</div>
+										<div class="CheckIcon">Information aggregation</div>
+										<div class="CheckIcon">Improve the knowledge sharing</div>
+										<div class="CheckIcon">Easy to use community management</div>
+										<div class="CheckIcon">User-friendly interface</div>			
+								</div>
+							</div>
+						</div>	
+					</div>			    
+		    </td>
+		    <td style="width: 212px;">
+					<div  class="DownloadButton"><div style="padding-top: 54px;">Download Available soon</div></div>
+					<div  class="FeedBackButton"><div style="padding-top: 80px;"><a href="mailto:jeremi@exoplatform.com">FEEDBACK</a></div></div>	
+					<div  class="ContactButton"><div style="padding-top: 80px;"><a href="http://www.exoplatform.com/portal/public/en/aboutUS/contactus">CONTACT</a></div></div>				    
+		    </td>
+		  </tr>
+		</tbody>
+	</table>
+</div>

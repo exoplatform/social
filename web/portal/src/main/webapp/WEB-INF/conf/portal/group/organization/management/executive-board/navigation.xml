@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<node-navigation>
+	<owner-type>group</owner-type>
+  <owner-id>organization/management/executive-board</owner-id>
+  <priority>5</priority>
+  
+  <page-nodes>
+            
+  </page-nodes>    
+</node-navigation>

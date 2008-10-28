@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+
+  <component>
+    <key>org.exoplatform.social.opensocial.spi.ExoActivityService</key>
+    <type>org.exoplatform.social.opensocial.spi.ExoActivityService</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.opensocial.spi.ExoPeopleService</key>
+    <type>org.exoplatform.social.opensocial.spi.ExoPeopleService</type>
+  </component>
+
+
+</configuration>

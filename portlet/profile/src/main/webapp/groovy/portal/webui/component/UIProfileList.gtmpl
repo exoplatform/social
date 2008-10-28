@@ -1,0 +1,80 @@
+<%
+  import org.exoplatform.social.portlet.profilelist.UIDisplayProfileList
+  import org.exoplatform.social.portlet.profilelist.UIProfileList
+
+%>
+<div id="UIProfileList" class="UIProfileList">
+<% if(uicomponent.displayType.equals(UIProfileList.Type.ALL)) { %>
+	<div class="SocialHeader">
+     <h2 class="Title" style="float: left;" ><%=_ctx.appRes(uicomponent.getName() + ".label.Everyone")%></h2>
+     <a style="float: left; margin: 16px 0px 0px 6px;" href="<%=uicomponent.event("ChangeView", "CONTACTS")%>">
+	 
+		<div class="ActionBar" onclick="">
+			<div class="LeftButton">
+				<div class="RightButton">
+					<div class="CenterButton">
+							<%=_ctx.appRes(uicomponent.getName() + ".label.showOnlyContacts")%>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</a>
+	<div style="clear: left;"><span></span></div>
+</div>
+<%
+     uicomponent.load(UIProfileList.Type.ALL)
+     uicomponent.renderChild(UIDisplayProfileList.class)
+   } else {
+     def pending = uicomponent.load(UIProfileList.Type.PENDING)
+     if(pending && pending.size() > 0) {
+%>
+       <h2 class="Title"><%=_ctx.appRes(uicomponent.getName() + ".label.Pending")%></h2>
+<%
+        uicomponent.renderChild(UIDisplayProfileList.class)
+     }
+%>	<div class="SocialHeader">
+     <h2 style="float: left;" class="Title"><%=_ctx.appRes(uicomponent.getName() + ".label.Contacts")%></h2>
+     <a style="float: left;margin: 16px 0px 0px 6px;" href="<%=uicomponent.event("ChangeView", "ALL")%>">
+		<div class="ActionBar" onclick="">
+			<div class="LeftButton">
+				<div class="RightButton">
+					<div class="CenterButton">
+							<%=_ctx.appRes(uicomponent.getName() + ".label.showAll")%>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</a>
+	<div style="clear: left;"><span></span></div>
+</div>
+<%
+     def list = uicomponent.load(UIProfileList.Type.CONTACTS)
+     if(list == null || list.size() == 0) { %>
+       <div class="noContact">
+			<div class="LeftNocontact">
+				<div class="RightNocontact">
+					<div class="CenterNocontact">
+						<div class="IconSafety">
+							<div class="noContactMsg"><%=_ctx.appRes(uicomponent.getName() + ".label.haveNoContactYet")%></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="<%=uicomponent.event("ChangeView", "ALL")%>">
+			<div class="LeftButton">
+				<div class="RightButton">
+					<div class="CenterButton">
+							<%=_ctx.appRes(uicomponent.getName()+ ".label.showAll")%>
+					</div>
+				</div>
+			</div>
+			</a>
+			
+       </div>
+  <% } else
+       uicomponent.renderChild(UIDisplayProfileList.class)
+ }
+%>
+</div>

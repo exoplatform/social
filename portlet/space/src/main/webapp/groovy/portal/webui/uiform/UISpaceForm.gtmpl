@@ -1,0 +1,13 @@
+<div class="UISpaceForm">
+	<% uiform.begin() %>
+	<div class="SpaceBanner"><span></span></div>
+	<div class="SpaceContent">
+		<div class="LeftContent">
+			<div class="MameSpace">Name of the space</div>
+			<div class="FieldComponent"><% uiform.renderChild(0); %></div>
+		</div>
+		<a class="RightContent" href="<%= uicomponent.event("CreateSpace") %>"><span></span></a>
+		<div style="clear: left;"><span></span></div>
+	</div>
+	 <%uiform.end()%>
+</div>

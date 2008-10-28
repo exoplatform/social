@@ -1,0 +1,46 @@
+<% 
+	import org.exoplatform.web.application.JavascriptManager;
+	import org.exoplatform.portal.webui.util.Util ;
+	
+	def allSpaces = uicomponent.getAllSpaces();
+	def rcontext = _ctx.getRequestContext() ;
+  JavascriptManager jsmanager = rcontext.getJavascriptManager();
+  jsmanager.importJavascript("social.webui.UIManageSpace") ;
+%>
+<div class="ManageUserSpaceWorkingArea" id="$uicomponent.id">
+	<div class="LabelSpace"><a href="<%= uicomponent.event("ChangeListSpaces") %>">Your Spaces<span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[All]</span></a></div>
+	<div class="LabelBrown">Browse by: <span style="font-weight: bold; color: #6598d1;">Name, Tags, Size, Activity</span></div>
+	<div class="ContainerSpace">
+		<% for(objSpace in allSpaces) { %>
+			<div class="ContentSpace">
+				<div class="CommunityIcon"><span></span></div>
+				<div class="CommunityContainer">
+					<div class="CommunityMane Line">
+					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + objSpace.getName() ; %>
+						<div class="CommunityName" style="float: left; cursor:pointer;"><a href="$pageURI" class="CommunityNameMiddle"><%= objSpace.getName() %></a></div>
+						<% String leaveAction = uicomponent.event("LeaveSpace",objSpace.getId()) %>
+						<div class ="SpaceAction" onclick="$leaveAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Leave</div>
+						    </div>
+						  </div>
+						</div>
+						<% String editAction = uicomponent.event("EditSpace",objSpace.getId()) %>
+						<div class ="SpaceAction" onclick="$editAction">
+              <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton"> Edit</div>
+						    </div>
+						  </div>
+            </div>
+						<div style="clear: both;"><span></span></div>
+					</div>
+					<div class="Text Line"><%= objSpace.getDescription() %></div>
+					<div class="TagsName">Tags: <%= objSpace.getTag() %></div>
+				</div>
+				<div style="clear: left;"><span></span></div>
+			</div>
+		<% } %>
+	</div>
+</div>

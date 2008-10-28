@@ -1,0 +1,15 @@
+<div class="UIAction">
+  <table align="center" class="ActionContainer" onclick="eXo.social.profile.UIProfileSection.insertProperty('${uicomponent.getCurrentProperty()}')">
+    <tbody><tr>
+      <td align="center">
+        <div class="ButtonLeft">
+          <div class="ButtonRight">
+            <div class="ButtonMiddle">
+              <div class="AddIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Add")%></div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody></table>
+</div>

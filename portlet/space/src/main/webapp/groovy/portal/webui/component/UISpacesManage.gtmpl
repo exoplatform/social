@@ -1,0 +1,21 @@
+<%
+  import social.portal.webui.component.ManageSpaceControlArea;
+  import social.portal.webui.component.ManageUserSpaceWorkingArea;
+  import social.portal.webui.component.ManageAllSpaceWorkingArea;
+%>
+<div >
+	<div class="UISpacesManage" id="$uicomponent.id"> 
+	  <div class="LeftSpacesPortlet" >
+		  <% uicomponent.renderChild(ManageSpaceControlArea.class);%>
+		</div>
+		<div class="RightSpacesPortlet" >
+			<% if(uicomponent.getChild(ManageUserSpaceWorkingArea.class).isRendered()) {
+		  		uicomponent.renderChild(ManageUserSpaceWorkingArea.class);
+		  	} else {
+		  		uicomponent.renderChild(ManageAllSpaceWorkingArea.class);
+		  	}
+		  %>
+		</div>
+		<div style="clear: left"><span></span></div>
+	</div>
+</div>

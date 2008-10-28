@@ -1,0 +1,48 @@
+<repository-service default-repository="repository">
+  <repositories>
+    <repository name="repository" system-workspace="social" default-workspace="social">
+      <security-domain>exo-domain</security-domain>
+      <session-max-age>3600000</session-max-age><!-- 60min -->
+      <authentication-policy>org.exoplatform.services.jcr.impl.core.access.JAASAuthenticator</authentication-policy>
+      <workspaces>
+        <workspace name="social" auto-init-root-nodetype="nt:unstructured">
+          <!-- for system storage -->
+          <container class="org.exoplatform.services.jcr.impl.storage.jdbc.JDBCWorkspaceDataContainer">
+            <properties>
+              <property name="sourceName" value="jdbcjcr"/>
+              <property name="dialect" value="generic"/>
+              <!-- example of direct jdbc connection usage (without JNDI), see docs for details -->
+              <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+              <property name="url" value="jdbc:hsqldb:file:target/temp/data/portal"/>
+              <!-- property name="username" value="sa"/>
+              <property name="password" value=""/-->
+              <property name="multi-db" value="true"/>
+              <property name="update-storage" value="true"/>
+              <property name="max-buffer-size" value="204800"/>
+              <property name="swap-directory" value="target/temp/swap/ws"/>
+            </properties>
+          </container>
+          <cache enabled="true">
+            <properties>
+              <property name="maxSize" value="30000"/>
+              <property name="liveTime" value="300"/><!-- 30 sec -->
+            </properties>
+          </cache>
+          <query-handler class="org.exoplatform.services.jcr.impl.core.query.lucene.SearchIndex">
+            <properties>
+              <property name="indexDir" value="target/temp/index"/>
+            </properties>
+          </query-handler>
+          <lock-manager>
+           <time-out>900000</time-out><!-- 15min -->
+            <persister class="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister">
+              <properties>
+                <property name="path" value="target/temp/lock"/>
+              </properties>
+            </persister>
+          </lock-manager>
+        </workspace>
+      </workspaces>
+    </repository>
+  </repositories>
+</repository-service>

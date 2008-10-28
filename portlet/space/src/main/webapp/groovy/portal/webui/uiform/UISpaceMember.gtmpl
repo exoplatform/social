@@ -1,0 +1,121 @@
+<div class="UISpaceMember">
+	<% uiform.begin() %>
+	<% String invitedUser = uicomponent.getInvitedUser(); 
+		 if(invitedUser == null) invitedUser = "";
+		 String searchUserAction = uicomponent.event("SearchUser") + "; return false;";
+	%>
+	<div class="TitleBar">Add invite</div>
+	<div class="TitleContainer" >
+		<div style="width: 330px; height: 40px; margin: auto;"
+		  <div class="AddInvite"><input type="text" value="<%= invitedUser %>" id="" name="" readonly/> *</div>
+		  <div class="SearchInviteButton">
+		  	<a onclick="$searchUserAction" href="#">
+			    <div class="LeftButton">
+			      <div class="RightButton">
+			        <div class="CenterButton">
+			        	search user
+			        </div>
+			      </div>
+			    </div>
+			  </a>
+		  </div>
+		  <div style="clear: left;"><span></span></div>
+	  	</div>
+	  <div class="ActionContainer">
+		  
+		    <div class="LeftButton">
+		      <div class="RightButton">
+		        <div class="CenterButton">
+		          <% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
+	          <div class="IconButton" onclick="$inviteAction"> Invite</div>
+		        </div>
+		      </div>
+		    </div>
+		  
+		</div>
+	  
+	  
+
+  </div>
+  <div class="TitleBar">Pendding</div>
+  <% List<String> penddingUsers = uicomponent.getPenddingUsers();
+		 for(obj0 in penddingUsers) {	  
+  %>
+  <div class="TitleContainer">
+  	<div class="TitleContent">
+	    <div class="Title"><%= obj0 %></div>
+	    <div class="AddInviteButton">
+		    <div class="LeftButton">
+		      <div class="RightButton">
+		        <% String declineAction = uicomponent.event("DeclineUser",obj0) + "; return false;" %>
+		        <div class="CenterButton" onclick="$declineAction">Decline</div>
+		      </div>
+		    </div>
+		  </div>
+	  <div class="AddInviteButton">
+	    <div class="LeftButton">
+	      <div class="RightButton">
+	      	<% String validateAction = uicomponent.event("ValidateUser",obj0) + "; return false;"%>
+	        <div class="CenterButton" onclick="$validateAction">Validate</div>
+	      </div>
+	    </div>
+	  </div>
+	  <div style="clear: both;"><span></span></div>
+  </div>
+ </div> 
+  <% } %>
+  <div class="TitleBar">Invited</div>
+  <% List<String> invitedUsers = uicomponent.getInvitedUsers();
+		 for(obj in invitedUsers) {	  
+  %>
+  <div class="TitleContainer">
+  	<div class="TitleContent">
+	    <div class="Title"><%= obj %></div>
+	    <div class="AddInviteButton">
+		    <div class="LeftButton">
+		      <div class="RightButton">
+		      <% String revokeAction = uicomponent.event("RevokeInvitedUser",obj) + "; return false;"; %>
+		        <div class="CenterButton" onclick="$revokeAction">Revoke the invistation</div>
+		      </div>
+		    </div>
+		  </div>
+		  <div style="clear: both;"><span></span></div>
+	  </div>
+  </div>
+  <% } %>
+  <div class="TitleContainer" style="margin-top: 6px;">
+	  <table cellspacing="0" borderspacing="0" class="UIGrid" >
+		  <thead>
+		    <tr>
+			    <th class="TitleBar">Members</th>
+			    <th class="TitleBar">Office</th>
+			    <th class="TitleBar">Leader</th>
+			    <th class="TitleBar" style="width: 80px;">Actions</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  <% List<String> existingUsers = uicomponent.getExistingUsers();
+		  	 for(user in existingUsers) {
+		  %>
+				<tr class="EvenRow">
+				  <td class="text"><span class="label" id="label"><%= user %></span></td>
+	  			<td class="text"><span class="label" id="label">Make office</span></td>  
+	  			<td class="text"><span class="label" id="label">Make leader</span></td>  
+			  	<td align="center" >
+				  	<div class="AddInviteButton">
+				  	  <div class="LeftButton">
+					      <div class="RightButton">
+					      	<% String removeAction = uicomponent.event("RemoveUser",user) + "; return false;"; %>
+					        <div class="CenterButton" onclick="$removeAction">Remove</div>
+					      </div>
+					    </div>
+				    </div>
+				    <div style="clear: right;"><span></span></div>
+			  	</td>
+				</tr>
+			<% } %>	
+		  </tbody>
+		</table>
+  </div>
+  <% uiform.end() %>
+</div>

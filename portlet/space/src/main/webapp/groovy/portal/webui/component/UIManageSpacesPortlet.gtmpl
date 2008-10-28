@@ -1,0 +1,10 @@
+<%
+  import org.exoplatform.webui.core.UIPopupContainer;
+%>
+<div >
+	<div class="UIManageSpacesPortlet" id="$uicomponent.id"> 
+		<%uicomponent.renderChild(UIPopupContainer.class);%>
+		<% uicomponent.renderChildren() %>	
+	 	<%uicomponent.renderPopupMessages(); %>
+	</div>
+</div>

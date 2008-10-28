@@ -1,0 +1,27 @@
+<%
+  import org.exoplatform.social.portlet.profile.UIProfile
+  import org.exoplatform.social.portlet.profilelist.UIProfileList
+  import org.exoplatform.social.portlet.dashboard.UISocialDashboard
+  import org.exoplatform.social.portlet.activities.UIActivities
+  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.social.portlet.URLUtils
+
+  def currentUser = URLUtils.getCurrentUser()
+  def app = URLUtils.getCurrentApplication()
+%>
+<div class="UIProfileListPortlet" id="$uicomponent.id">
+  <%
+    if(currentUser == null)
+      uicomponent.renderChild(UIProfileList.class);
+    else if(app == null)
+      uicomponent.renderChild(UIProfile.class);
+    else if (app.equals("dashboard"))
+      uicomponent.renderChild(UISocialDashboard.class);
+    else if (app.equals("activities"))
+      uicomponent.renderChild(UIActivities.class);
+    else { %>
+    Unexpected URL
+    <% }
+
+  %>
+</div>

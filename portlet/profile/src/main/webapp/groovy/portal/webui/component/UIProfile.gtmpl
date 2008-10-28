@@ -1,0 +1,40 @@
+<%
+  import org.exoplatform.portal.webui.util.Util ;
+
+  
+  def rcontext = _ctx.getRequestContext() ;
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileSection','/profile/javascript/') ;
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.LiveValidation','/profile/javascript/') ;
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.FancyLabel','/profile/javascript/') ;
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.Event','/profile/javascript/') ;
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.Type','/profile/javascript/') ;
+//  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.DOMAssistant','/profile/javascript/') ;
+//  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.pure','/profile/javascript/') ;
+
+  def identity = uicomponent.getProfile().identity;
+
+  def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard"
+  def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities"
+
+%>
+  <div class="UIProfile" id="$uicomponent.id">
+    <div class="LeftColumn">
+	  <div class="AvatarSpace">
+		<img class="Image" src="/profile/skin/portal/webui/component/UIMainProfilePortlet/background/ImgAvatar.gif" />
+	  </div>
+	  <ul class="UserLinkList">
+        <li><a href="${dashboardURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.Dashboard")%></a></li>
+        <li><a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.LastActivity")%></a></li>
+	  </ul>
+	</div>
+  <div class="ContainerSpace" >
+		<div class="LeftContainer" >
+			<div class="RightContainer" >
+				<div class="CenterContainer" >
+          <% uicomponent.renderChildren(); %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="clear: left;"><span></span></div>
+</div>

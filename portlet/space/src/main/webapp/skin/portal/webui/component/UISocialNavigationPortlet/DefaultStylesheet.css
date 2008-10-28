@@ -1,0 +1,154 @@
+/**
+ * Created by The eXo Platform SARL
+ * Modifier : Nguyen Ngoc Thuy
+ * April 23, 2007
+ * version: $Id$
+ */
+
+.UINavigationPortlet {
+  !position: relative;
+}
+
+.UINavigationPortlet .UINavigationBar {
+  height: 33px;
+}
+
+.UINavigationPortlet .UINavigationBar .UIHorizontalTabs {
+  height: 33px;
+}
+
+.UINavigationPortlet .UINavigationBar .UIHorizontalTabs .TabsContainer {
+  float: none;
+}
+
+.UINavigationPortlet .UINavigationBar .LeftNavigationBar {
+  line-height: 33px;
+  background: url('DefaultSkin/background/Navigation.gif') repeat-x top center;
+  padding-left: 3px;
+}
+
+.UINavigationPortlet .MenuItemContainer {
+	white-space: nowrap;
+	border: solid #b7b7b7 1px;
+	background: #f3f3f3;
+	text-align: left; 
+}
+
+.UINavigationPortlet .MenuItemContainer .MenuItemDecorator {
+  border: 1px solid #fcfcfc;
+  background: #f3f3f3;
+  padding-bottom: 6px;
+}
+
+.UINavigationPortlet .MenuItemContainer .MenuItem a {
+  border-bottom: 1px solid #fff;
+	cursor: pointer;
+	line-height: 24px;
+	height: 24px; width: auto;
+	display: block;
+	white-space: nowrap;
+	color: #333333; 
+	font-weight: normal;
+}
+
+.UINavigationPortlet .MenuItemContainer .MenuItem a:hover {
+	background-color: #dfe0e0;
+	border-bottom: 1px solid #dbdcdd;
+	color: #3e8df0;
+}
+
+.UINavigationPortlet .MenuItemContainer .SelectedItem {
+	background-color: #dfe0e0;
+	border-bottom: 1px solid #dbdcdd;
+	line-height: 24px;
+	width: auto; 
+	color: #3e8df0;
+}
+
+.UINavigationPortlet .MenuItemContainer .ItemIcon {
+  height: 24px; width: auto;
+  padding-left: 20px;
+  margin-left: 5px;
+}
+
+.UINavigationPortlet .MenuItemContainer .MenuItemLabel {
+  line-height: 24px; 
+  padding: 0px 5px 0px 3px; 
+  font-weight: normal;
+}
+
+.UINavigationPortlet .MenuItemContainer .MenuItem .RightItemIcon {
+  height: 24px; width: auto;
+  padding-right: 20px;
+  background-image: url('DefaultSkin/background/UINavigationPortlet.gif');
+  background-repeat: no-repeat;
+  background-position: right -107px;
+}
+
+.UINavigationPortlet .MenuItemContainer .PageNodeIcon {
+  height: 24px ;
+  background: url('/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/DefaultPageIcon.gif') no-repeat left;
+  padding: 0px 0px 0px 19px ;
+}
+
+/*============ Scroll Buttons =====================*/
+
+.UINavigationPortlet .ScrollButtons {
+	float: right;
+	padding-top: 10px;
+	display: none;
+}
+
+.UINavigationPortlet .ScrollLeftButton {
+  cursor: pointer;
+  background: url('DefaultSkin/background/Button.gif') no-repeat left -15px;
+  padding-left: 15px;
+  _padding-left: 12px;
+  margin: 0px 5px;
+  float: left;
+}
+
+.UINavigationPortlet .ScrollRightButton {
+  cursor: pointer;
+  background: url('DefaultSkin/background/Button.gif') no-repeat right -15px;
+  width: 15px;
+  height: 15px;
+  margin-left: 3px;
+  float: left;
+}
+
+.UINavigationPortlet .DisableScrollLeftButton {
+  cursor: pointer;
+  background: url('DefaultSkin/background/Button.gif') no-repeat left bottom;
+  padding-left: 15px;
+  _padding-left: 12px;
+  margin: 0px 5px;
+  float: left;
+}
+
+.UINavigationPortlet .DisableScrollRightButton { 
+  cursor: pointer;
+  background: url('DefaultSkin/background/Button.gif') no-repeat right bottom;
+  width: 15px;
+  height: 15px;
+  margin-left: 3px;
+  float: left;
+}
+
+.UINavigationPortlet .HighlightScrollLeftButton {
+  cursor: pointer;
+  background: url('DefaultSkin/background/Button.gif') no-repeat left top;
+  padding-left: 15px;
+  _padding-left: 12px;
+  margin: 0px 5px;
+  float: left;
+}
+
+.UINavigationPortlet .HighlightScrollRightButton {
+  cursor: pointer;
+  background: url('DefaultSkin/background/Button.gif') no-repeat right top;
+  width: 15px;
+  height: 15px;
+  margin-left: 3px;
+  float: left;
+}

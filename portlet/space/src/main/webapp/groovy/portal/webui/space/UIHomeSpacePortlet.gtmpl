@@ -1,0 +1,60 @@
+<%
+	import social.portal.webui.component.space.UIHomeSpaceControlArea;
+	import org.exoplatform.dashboard.webui.component.UIDashboard;
+	import org.exoplatform.portal.config.model.PageNode;
+	import org.exoplatform.portal.webui.util.Util;
+	def apps = uicomponent.getApps();
+	def spaceName = uicomponent.getSpaceName();
+%>
+<div class="UIHomeSpacePortlet" id="$uicomponent.id">
+
+	<div class="LeftHomeSpace" >
+	  <div class="HomeSpaceLogoBG">
+		<div class="LogoBGL">
+			<div class="LogoBGR">
+				<div class="LogoBGC">
+					<div class="HomeSpaceLogo">HOME</div>
+				</div>
+			</div>
+		</div>
+	  </div>
+	  <div class="GadgetList">
+		<div class="DecoratorGadget">
+			<div class="DecoratorTL">
+				<div class="DecoratorTR">
+					<div class="DecoratorTC"><span></span></div>
+				</div>
+			</div>
+			<div class="DecoratorML">
+				<div class="DecoratorMR">
+					<div class="DecoratorMC">
+					<% for(PageNode node in apps) { %>
+					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceName + "/"+node.getName() ; %>
+						<div class="ListContent">
+							<div class="ListContentL">
+								<div class="ListContentR">
+									<div class="ListContentC">
+										<div class="ApplicationIcon ListContentFont">
+										 <a href="$pageURI"><%= node.getResolvedLabel() %></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					<% } %>
+					</div>
+				</div>
+			</div>
+			<div class="DecoratorBL">
+				<div class="DecoratorBR">
+					<div class="DecoratorBC"><span></span></div>
+				</div>
+			</div>
+		</div>
+	  </div>
+	</div>
+	<div class="RightHomeSpace" >
+		<% uicomponent.renderChild(UIDashboard.class) %>
+	</div>
+	<div style="clear: left"><span></span></div>
+</div>

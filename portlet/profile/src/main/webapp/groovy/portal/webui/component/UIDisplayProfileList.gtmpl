@@ -1,0 +1,84 @@
+<%
+  import org.exoplatform.portal.webui.util.Util ;
+  import org.exoplatform.social.portlet.profilelist.UIProfileList
+
+  def list = uicomponent.getList();
+  def isRelationship =  uicomponent.isRelationshipList();
+  def currIdentity = uicomponent.getCurrentIdentity();
+  def isPendingList = uicomponent.currentType.equals(UIProfileList.Type.PENDING)
+  def isAll = uicomponent.currentType.equals(UIProfileList.Type.ALL)
+%>
+
+<div class="UIProfileList" id="$uicomponent.id">
+  <div class="ContainerSpace">
+
+  <% list.each {
+    def identity = null;
+    if (isRelationship) {
+      if (currIdentity.id == it.identity1.id) {
+        identity = it.identity2;
+      } else {
+        identity = it.identity1;
+      }
+    } else {
+      identity = it;
+    }
+
+    def profileURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId()
+    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard"
+    def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities"
+    def fullName = identity.profile.fullName
+    def contactStatus = uicomponent.getContactStatus(identity)
+    def position = identity.profile.getPropertyValue("position")
+    if (!position) {
+      position = ""
+    }
+
+  %>
+    <div class="ContentSpace">
+    <div class="CommunityIcon"><span></span></div>
+    <div class="CommunityContainer">
+        <div class="CommunityMane Line">
+            <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${profileURL}" class="CommunityNameMiddle">${fullName}</a></div>
+  <% if (contactStatus == UIProfileList.Status.REQUIRE_VALIDATION) { %>
+            <div class="ActionBar" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>">
+			<div class="LeftButton">
+				<div class="RightButton">
+					<div class="CenterButton">
+						<div class="SaveIcon">
+							<%=_ctx.appRes(uicomponent.getName() + ".label.Accept")%>
+						</div>
+					</div>
+				</div>
+			</div>
+		    </div>
+  <% } else if (contactStatus == UIProfileList.Status.ALIEN) { %>
+            <div class="ActionBar" onclick="<%=uicomponent.event("AddContact",identity.getId())%>">
+			<div class="LeftButton">
+				<div class="RightButton">
+					<div class="CenterButton">
+						<div class="SaveIcon">
+							<%=_ctx.appRes(uicomponent.getName() + ".label.AddAsContact")%>
+						</div>
+					</div>
+				</div>
+			</div>
+		    </div>
+  <%  } else if (contactStatus == UIProfileList.Status.PENDING) { %>
+            <span class="waitingConfirmation">[Waiting for confirmation]</span>
+  <%  } %>
+            <div style="clear: both;"><span></span></div>
+        </div>
+        <div class="Text Line">${position}</div>
+        <div class="TagsName">
+          <a href="${profileURL}" class="CommunityNameMiddle">Profile</a> |
+          <a href="${dashboardURL}" class="CommunityNameMiddle">Dashboard</a> |
+          <a href="${actititesURL}" class="CommunityNameMiddle">Activities</a>
+        </div>
+    </div>
+    </div>
+
+  <% } %>
+  </div>
+  <span style="clear: left;">&nbsp;</span>
+</div>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+
+  <component>
+    <key>org.exoplatform.social.core.identity.IdentityManager</key>
+    <type>org.exoplatform.social.core.identity.IdentityManager</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.activitystream.ActivityManager</key>
+    <type>org.exoplatform.social.core.activitystream.ActivityManager</type>
+  </component>
+
+
+
+  <component>
+    <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
+    <type>org.exoplatform.social.core.identity.model.PropertiesDefinition</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.relationship.RelationshipManager</key>
+    <type>org.exoplatform.social.core.relationship.RelationshipManager</type>
+  </component>
+
+  <component>
+      <key>org.exoplatform.social.core.identity.IdentityProvider</key>
+      <type>org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider</type>
+  </component>
+
+   <component>
+      <key>org.exoplatform.social.core.identity.JCRStorage</key>
+      <type>org.exoplatform.social.core.identity.JCRStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.identity.ProfileConfig</key>
+    <type>org.exoplatform.social.core.identity.ProfileConfig</type>
+    <init-params>
+      <values-param>
+        <name>nodetype.emails</name>
+        <value>exo:profileKeyValue</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.phones</name>
+        <value>exo:profileKeyValue</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.ims</name>
+        <value>exo:profileKeyValue</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.urls</name>
+        <value>exo:profileKeyValue</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.address</name>
+        <value>exo:profileAddress</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.experiences</name>
+        <value>exo:profileExperience</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.education</name>
+        <value>exo:profileEducation</value>
+      </values-param>
+      <values-param>
+        <name>forceMultiValue</name>
+        <value>xxxxxxxxxxxx</value>
+      </values-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.identity.ProfileMapper</key>
+    <type>org.exoplatform.social.core.identity.ProfileMapper</type>
+  </component>
+  
+  
+  <external-component-plugins>
+	  <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>      
+	  <component-plugin> 
+	    <name>add.social.nodeType</name>
+	    <set-method>addPlugin</set-method>
+	    <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+	    <init-params>
+	      <values-param>
+	        <name>autoCreatedInNewRepository</name>
+	        <description>Node types configuration file</description>
+	        <value>jar:/conf/portal/social-nodetypes.xml</value>
+	      </values-param>
+	    </init-params>
+	  </component-plugin>
+	</external-component-plugins>
+
+<!--  <remove-configuration>org.exoplatform.services.scheduler.JobSchedulerService</remove-configuration> -->
+</configuration>

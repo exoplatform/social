@@ -1,0 +1,48 @@
+<%
+  def isEdit = uicomponent.isEditMode();
+  def isEditable = uicomponent.isEditable();  
+%>
+<div class="TitleBar">
+  <h4><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></h4>
+  <% if (isEditable) {
+  %>
+
+    <% if (!isEdit) { %>
+    <div class="ActionBar" onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>">
+			<div class="LeftButton">
+				<div class="RightButton">
+					<div class="CenterButton">
+						<div class="EditIcon">
+							<%=_ctx.appRes(uicomponent.getName() + ".label.edit")%>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    <% } else { %>
+    <div class="ActionBar" onclick="<%=uicomponent.event("Cancel")%>">
+			<div class="LeftButton">
+				<div class="RightButton">
+					<div class="CenterButton">
+						<div class="DeleteIcon">
+							<%=_ctx.appRes(uicomponent.getName() + ".label.cancel")%>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="ActionBar" onclick="<%=uicomponent.eventSubmit("Save")%>">
+			<div class="LeftButton">
+				<div class="RightButton">
+					<div class="CenterButton">
+						<div class="SaveIcon">
+							<%=_ctx.appRes(uicomponent.getName() + ".label.save")%>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    <% } %>
+
+  <% } %>
+</div>

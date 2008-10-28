@@ -1,0 +1,27 @@
+.UIWarningPortlet {
+	
+}
+
+.UIWarningPortlet .UIWarningPortletLeft {
+	background: url(DefaultSkin/background/WarningPortletLeft.gif) no-repeat left top;
+	padding-left: 4px;
+}
+
+.UIWarningPortlet .UIWarningPortletRight {
+	background: url(DefaultSkin/background/WarningPortletRight.gif) no-repeat right top;
+	padding-right: 4px;
+}
+
+.UIWarningPortlet .UIWarningPortletCenter{
+	background: url(DefaultSkin/background/WarningPortletCenter.gif) repeat-x ;
+	height: 57px;
+	padding: 1px 0px 0px 20px;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.UIWarningPortlet .UIWarningPortletIcon {
+	background: url(DefaultSkin/background/WarningPortletIcon.gif) no-repeat left;
+	padding-left: 50px;
+	line-height: 47px;
+}

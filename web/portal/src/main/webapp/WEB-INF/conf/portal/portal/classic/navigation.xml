@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node-navigation>
+  <owner-type>portal</owner-type>
+  <owner-id>classic</owner-id>
+  <priority>1</priority>
+
+  <page-nodes>
+	  <node>
+	    <uri>home</uri>
+	    <name>home</name>
+	    <label>#{portal.classic.home}</label>
+	    <page-reference>portal::classic::homepage</page-reference>	    
+	  </node>
+     <node>
+	    <uri>mydashboard</uri>
+	    <name>mydashboard</name>
+	    <label>#{portal.classic.mydashboard}</label>
+        <page-reference>portal::classic::MyDashboard</page-reference>
+	 </node>
+	 <node>
+	    <uri>people</uri>
+	    <name>people</name>
+	    <label>#{portal.classic.people}</label>
+       <page-reference>portal::classic::Profile</page-reference>
+	  </node>
+      <node>
+	    <uri>canvas</uri>
+	    <name>canvas</name>
+	    <label>#{portal.classic.canvas}</label>
+        <page-reference>portal::classic::Canvas</page-reference>
+	  </node>
+	  <node>
+	    <uri>spaces</uri>
+	    <name>spaces</name>
+	    <label>#{portal.classic.spaces}</label>
+	    <page-reference>portal::classic::manageSpaces</page-reference>
+	  </node>
+  </page-nodes>
+</node-navigation>

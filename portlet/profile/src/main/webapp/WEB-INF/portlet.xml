@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<portlet-app version="1.0" xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
+ <portlet>
+    <description xml:lang="EN">Profile Portlet</description>
+    <portlet-name>profile</portlet-name>
+    <display-name xml:lang="EN">Profile Display</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/profile/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.ProfilePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Profile Portlet</title>
+      <short-title>Profile Portlet</short-title>
+      <keywords>profile</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIProfilePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Profile List Portlet</description>
+    <portlet-name>profileList</portlet-name>
+    <display-name xml:lang="EN">Profile listing</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/profileList/webui/configuration.xml</value>
+    </init-param>
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.ProfileListPortlet</resource-bundle>
+
+    <portlet-info>
+      <title>Profile List Portlet</title>
+      <short-title>Profile List Portlet</short-title>
+      <keywords>profile,social</keywords>
+    </portlet-info>
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIProfileListPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+
+
+
+  <portlet>
+    <description xml:lang="EN">Main Profile Portlet</description>
+    <portlet-name>mainProfile</portlet-name>
+    <display-name xml:lang="EN">Main Profile</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/mainProfile/webui/configuration.xml</value>
+    </init-param>
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.MainProfilePortlet</resource-bundle>
+
+    <portlet-info>
+      <title>Main Profile Portlet</title>
+      <short-title>Main Profile Portlet</short-title>
+      <keywords>profile,social</keywords>
+    </portlet-info>
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIMainProfilePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">breadcrumb Portlet</description>
+    <portlet-name>breadcrumb</portlet-name>
+    <display-name xml:lang="EN">breadcrumb</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/breadcrumb/webui/configuration.xml</value>
+    </init-param>
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.BreadcrumbPortlet</resource-bundle>
+
+    <portlet-info>
+      <title>breadcrumb Portlet</title>
+      <short-title>breadcrumb Portlet</short-title>
+      <keywords>breadcrumb,social</keywords>
+    </portlet-info>
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIBreadcrumbPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+</portlet-app>

@@ -1,0 +1,3 @@
+<div class="UIProfilePortlet" id="$uicomponent.id">
+  <% uicomponent.renderChildren(); %>
+</div>

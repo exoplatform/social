@@ -1,0 +1,20 @@
+<%
+  def profile = uicomponent.getProfile();
+  def isEdit = uicomponent.isEditMode();
+  def isEditable = uicomponent.isEditable();
+
+  def position = profile.getPropertyValue("position");
+  if (isEditable)
+    position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): position);
+  else
+    position = (position == null ? "": position);
+%>
+
+<h2><%=profile.getFullName() %></h2>
+<h3>
+    <% if(!isEdit) {   %>
+      <%=position %> <span><% if(isEditable) { %>(<a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a>) <% } %></span>
+    <% } else {%>
+      <input type="text" value="<%=position %>" name="profile.position"/> <a href="<%=uicomponent.eventSubmit("Save") %>">send</a>
+    <% }%>
+</h3>

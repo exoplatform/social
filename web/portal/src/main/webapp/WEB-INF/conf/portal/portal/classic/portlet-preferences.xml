@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<portlet-preferences-set>
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/web/BannerPortlet/banner</window-id>
+    <preference>
+      <name>template</name>
+      <value>par:/groovy/groovy/webui/component/UIBannerPortlet.gtmpl</value>
+      <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/socialPortletWeb/SocialNavigationPortlet/toolbar</window-id>
+    <preference>
+      <name>useAJAX</name>
+      <value>true</value>
+      <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/web/FooterPortlet/footer</window-id>
+    <preference>
+      <name>template</name>
+      <value>par:/groovy/groovy/webui/component/UIFooterPortlet.gtmpl</value>
+      <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+  
+  
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/web/GroovyPortlet/groovyportlet</window-id>
+    <preference>
+      <name>template</name>
+      <value>par:/groovy/groovy/webui/component/UIGroovyPortlet.gtmpl</value>
+      <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+  
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/web/HomePagePortlet/homepageportlet</window-id>
+    <preference>
+      <name>template</name>
+      <value>system:/templates/groovy/webui/component/UIHomePagePortlet.gtmpl</value>
+      <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/profile/profile/profileRandom</window-id>
+    <preference />
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/profile/profileList/profileListRandom</window-id>
+    <preference />
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/profile/mainProfile/mainProfileRandom</window-id>
+	<preference>
+        <name>template</name>
+        <value>my-dashboard</value>
+        <read-only>false</read-only>
+    </preference>
+    <preference>
+        <name>aggregatorId</name>
+        <value>socialRssAggregator</value>
+        <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/profile/breadcrumb/breadcrumbRandom</window-id>
+    <preference />
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletRandom</window-id>
+    <preference>
+        <name>url</name>
+        <value>http://localhost:8080/rest/jcr/repository/gadgets/codeRunner.xml</value>
+        <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/dashboard/DashboardPortlet/dashboardRandom</window-id>
+    <preference>
+        <name>totalColumns</name>
+        <value>3</value>
+        <read-only>false</read-only>
+    </preference>
+    <preference>
+        <name>isPrivate</name>
+        <value>1</value>
+        <read-only>false</read-only>
+    </preference>
+    <preference>
+        <name>owner</name>
+        <value>__CURRENT_USER__</value>
+        <read-only>false</read-only>
+    </preference>
+	<preference>
+        <name>template</name>
+        <value>my-dashboard</value>
+        <read-only>false</read-only>
+    </preference>
+    <preference>
+        <name>aggregatorId</name>
+        <value>socialRssAggregator</value>
+        <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+
+</portlet-preferences-set>

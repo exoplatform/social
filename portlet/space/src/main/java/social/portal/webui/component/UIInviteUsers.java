@@ -1,0 +1,141 @@
+/*
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+package social.portal.webui.component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.Query;
+import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
+import org.exoplatform.webui.core.UIGrid;
+import org.exoplatform.webui.core.UIPageIterator;
+import org.exoplatform.webui.core.UIPopupComponent;
+import org.exoplatform.webui.core.UIPopupContainer;
+import org.exoplatform.webui.core.UISearch;
+import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
+import org.exoplatform.webui.core.model.SelectItemOption;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIFormInputSet;
+import org.exoplatform.webui.form.UIFormSelectBox;
+import org.exoplatform.webui.form.UIFormStringInput;
+
+/**
+ * Created by The eXo Platform SARL
+ * Author : dang.tung
+ *          tungcnw@gmail.com
+ * Sep 24, 2008          
+ */
+@ComponentConfig(
+    lifecycle = UIContainerLifecycle.class,
+    events = {
+      @EventConfig(listeners = UIInviteUsers.SelectUserActionListener.class)
+    }
+)
+public class UIInviteUsers extends UISearch implements UIPopupComponent{
+  
+  public static String USER_NAME = "userName";
+  public static String LAST_NAME = "lastName";
+  public static String FIRST_NAME = "firstName";
+  public static String EMAIL = "email";
+  
+  private static String[] USER_BEAN_FIELD = {USER_NAME, LAST_NAME, FIRST_NAME, EMAIL} ;
+  private static String[] USER_ACTION = {"SelectUser"} ;  
+
+  private static List<SelectItemOption<String>> OPTIONS_ = new ArrayList<SelectItemOption<String>>(4);
+  static{
+    OPTIONS_.add(new SelectItemOption<String>(USER_NAME, USER_NAME));
+    OPTIONS_.add(new SelectItemOption<String>(LAST_NAME, LAST_NAME));
+    OPTIONS_.add(new SelectItemOption<String>(FIRST_NAME, FIRST_NAME));
+    OPTIONS_.add(new SelectItemOption<String>(EMAIL, EMAIL));
+  }
+  
+  private String userSelected_;
+  private UIGrid grid_;
+  
+  public UIInviteUsers() throws Exception {
+    super(OPTIONS_) ;
+    grid_ = addChild(UIGrid.class, null, "UIInviteUsersGird") ;
+    grid_.configure(USER_NAME, USER_BEAN_FIELD, USER_ACTION) ;
+    grid_.getUIPageIterator().setId("UIInviteUsersIterator") ;
+    grid_.getUIPageIterator().setParent(this);
+    search(new Query()) ;
+  }
+  
+  public void setUserSelected(String userName) { userSelected_ = userName;}
+  public String getUserSelected() {return userSelected_; }
+  
+  public void search(Query query) throws Exception {
+    OrganizationService service = getApplicationComponent(OrganizationService.class) ;
+    PageList pageList = service.getUserHandler().findUsers(query) ;
+    pageList.setPageSize(10) ;
+    grid_.getUIPageIterator().setPageList(pageList) ;
+    UIPageIterator pageIterator = grid_.getUIPageIterator();
+    if(pageIterator.getAvailable() == 0 ) {
+      UIApplication uiApp = Util.getPortalRequestContext().getUIApplication() ;
+      uiApp.addMessage(new ApplicationMessage("UISearchForm.msg.empty", null)) ;
+      Util.getPortalRequestContext().addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages() );
+    }
+  }
+  
+  public void quickSearch(UIFormInputSet quickSearchInput) throws Exception {
+    Query query = new Query();
+    UIFormStringInput input = (UIFormStringInput) quickSearchInput.getChild(0);
+    UIFormSelectBox select = (UIFormSelectBox) quickSearchInput.getChild(1);
+    String name = input.getValue();
+    if(name == null || name.equals("")) {
+      search(new Query()) ;
+      return ;
+    }
+    if(name.indexOf("*")<0){
+      if(name.charAt(0)!='*') name = "*"+name ;
+      if(name.charAt(name.length()-1)!='*') name += "*" ;
+    }
+    name = name.replace('?', '_') ;
+    String selectBoxValue = select.getValue();
+    if(selectBoxValue.equals(USER_NAME)) query.setUserName(name) ;
+    if(selectBoxValue.equals(LAST_NAME)) query.setLastName(name) ; 
+    if(selectBoxValue.equals(FIRST_NAME)) query.setFirstName(name) ;
+    if(selectBoxValue.equals(EMAIL)) query.setEmail(name) ;
+    search(query);
+  }
+
+  @SuppressWarnings("unused")
+  public void advancedSearch(UIFormInputSet advancedSearchInput) throws Exception {}
+  
+  static  public class SelectUserActionListener extends EventListener<UIInviteUsers> {
+    public void execute(Event<UIInviteUsers> event) throws Exception {
+      UIInviteUsers uiListUser = event.getSource() ;
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID) ;
+      UIManageSpacesPortlet uiPortlet = uiListUser.getAncestorOfType(UIManageSpacesPortlet.class);
+      UISpaceMember uiSpaceMember = uiPortlet.findFirstComponentOfType(UISpaceMember.class);
+      uiSpaceMember.setInvitedUser(userName);
+      UIPopupContainer uiPopup = uiPortlet.getChild(UIPopupContainer.class);
+      uiPopup.cancelPopupAction();
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+
+  public void activate() throws Exception {}
+  public void deActivate() throws Exception {}
+}

@@ -1,0 +1,45 @@
+<%
+	import org.exoplatform.webui.core.UIPageIterator;
+	import org.exoplatform.application.registry.Application;
+	
+	UIPageIterator iterator = uicomponent.getUIPageIterator();
+	List<Application> applications = uicomponent.getApplications();
+%>
+<div class="UISpaceApplication">
+	<% uiform.begin() %>
+  <div class="ContainerSpace">
+		<% for(app in applications)  {%>
+		<div class="ContentSpace">
+			<div class="ApplicationIcon"><span/></div>
+			<div class="CommunityContainer">
+				<div class="CommunityMane Line">
+					<div style="float: left;" class="CommunityName"><%= app.getDisplayName() %></div>
+					<div class="SpaceAction">
+          <div class="LeftButton">
+					    <div class="RightButton">
+								<% String removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;" %>
+					      <div class="CenterButton" onclick="$removeApplication"> Remove</div>
+					    </div>
+					  </div>
+        </div>
+					<div style="clear: both;"><span/></div>
+				</div>
+				<div class="Text"><%= app.getDescription() %></div>
+			</div>
+			<div style="clear: left;"><span/></div>
+		</div>
+		<% } %>
+	</div>
+	<div><%_ctx.renderUIComponent(iterator) ;%></div>
+	<div class="AddAplicationButton">
+	<% String addApplication = uicomponent.event("AddApplication") + ";return false;" %>
+    <div class="LeftButton" onclick="<%= addApplication %>">
+      <div class="RightButton">
+        <div class="CenterButton">
+          <div class="IconButton"> Add</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% uiform.end() %>
+</div>

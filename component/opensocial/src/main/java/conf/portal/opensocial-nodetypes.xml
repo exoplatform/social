@@ -1,0 +1,56 @@
+<nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+           xmlns:jcr="http://www.jcp.org/jcr/1.0">
+
+
+  <nodeType name="exo:activity" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>nt:unstructured</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="position" requiredType="String" autoCreated="false" mandatory="true"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="department" requiredType="String" autoCreated="false" mandatory="false"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="company" requiredType="String" autoCreated="false" mandatory="true"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="startDateMonth" requiredType="Long" autoCreated="false" mandatory="true"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="startDateYear" requiredType="Long" autoCreated="false" mandatory="true"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="endDateMonth" requiredType="Long" autoCreated="false" mandatory="false"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="endDateYear" requiredType="Long" autoCreated="false" mandatory="false"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="isCurrent" requiredType="Boolean" autoCreated="false" mandatory="false"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="description" requiredType="String" autoCreated="false" mandatory="false"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+    </propertyDefinitions>
+  </nodeType>
+
+</nodeTypes>
+
+
+
+
+
+
+

@@ -1,0 +1,31 @@
+<project>
+  <parent>
+    <groupId>org.exoplatform.social</groupId>
+    <artifactId>config</artifactId>
+    <version>trunk</version>
+  </parent> 
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>exo.social.server.tomcat.patch</artifactId>
+  <version>${org.exoplatform.social.version}</version>
+  <packaging>jar</packaging>
+  <name>eXo Tomcat Server</name>
+  <url>http://www.exoplatform.org</url>
+  <description>eXo Tomcat Server</description>
+
+  <build>
+    <resources>
+			<resource>
+				<directory>${exo.projects.directory.src}/portal/trunk/server/tomcat/patch/src/main/tomcat</directory>
+				<excludes>
+				  <exclude>**/eXoSkinMac.xml</exclude>
+				  <exclude>**/eXoSkinVista.xml</exclude>
+				</excludes>
+			</resource>
+      <resource>
+        <directory>src/main/tomcat</directory>
+        <includes><include>**/*</include></includes>
+      </resource>
+    </resources>
+  </build>
+</project>
