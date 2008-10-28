@@ -5,12 +5,18 @@
   <priority>1</priority>
 
   <page-nodes>
-	  <node>
-	    <uri>home</uri>
-	    <name>home</name>
-	    <label>#{portal.classic.home}</label>
-	    <page-reference>portal::classic::homepage</page-reference>	    
-	  </node>
+	 <node>
+	  <uri>home</uri>
+	  <name>home</name>
+	  <label>#{portal.classic.home}</label>
+	  <page-reference>portal::classic::homepage</page-reference>	    
+	 </node>
+     <node>
+      <uri>register</uri>
+      <name>register</name>
+      <label>#{portal.classic.register}</label>
+      <page-reference>portal::classic::register</page-reference>
+     </node>
      <node>
 	    <uri>mydashboard</uri>
 	    <name>mydashboard</name>

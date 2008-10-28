@@ -19,6 +19,21 @@
   </page>
 
   <page>
+  	<page-id>portal::classic::register</page-id>
+    <owner-type>group</owner-type>
+    <owner-id>platform/guests</owner-id>
+    <name>register</name>
+    <title>Register</title>
+	  <access-permissions>*:/platform/guests</access-permissions>
+	  <edit-permission>*:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>group#platform/guests:/exoadmin/AccountPortlet/Account</instance-id>
+      <title>New Account</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+
+  <page>
   	<page-id>portal::classic::MyDashboard</page-id>
   	<owner-type>portal</owner-type>
     <owner-id>classic</owner-id>

@@ -13,6 +13,10 @@
   <url>http://www.exoplatform.org</url>
   <description>social project, portlet web category</description>
 
+  <build>
+    <finalName>space</finalName>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>

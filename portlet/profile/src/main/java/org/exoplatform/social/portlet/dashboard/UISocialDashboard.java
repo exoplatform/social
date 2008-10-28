@@ -42,8 +42,15 @@ public class UISocialDashboard extends UIContainer implements DashboardParent{
 
 
     public UISocialDashboard() throws Exception {
-      addChild(UIDashboard.class, null, null);
+      UIDashboard dashboard = addChild(UIDashboard.class, null, null);
 
+      PortletRequestContext context = (PortletRequestContext) WebuiRequestContext
+        .getCurrentInstance();
+      PortletPreferences pref = context.getRequest().getPreferences();
+      String aggregatorId = pref.getValue("aggregatorId", "socialRssAggregator") ;
+      String containerTemplate = pref.getValue("template", "three-columns") ;
+      dashboard.setContainerTemplate(containerTemplate) ;
+      dashboard.getChild(UIDashboardSelectContainer.class).setAggregatorId(aggregatorId) ;
     }
 
     public boolean canEdit() {

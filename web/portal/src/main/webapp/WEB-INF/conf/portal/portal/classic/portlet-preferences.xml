@@ -79,11 +79,11 @@
         <value>my-dashboard</value>
         <read-only>false</read-only>
     </preference>
-    <preference>
-        <name>aggregatorId</name>
-        <value>socialRssAggregator</value>
-        <read-only>false</read-only>
-    </preference>
+	    <preference>
+	        <name>aggregatorId</name>
+	        <value>socialRssAggregator</value>
+	        <read-only>false</read-only>
+	    </preference>
   </portlet-preferences>
 
   <portlet-preferences>

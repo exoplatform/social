@@ -58,6 +58,8 @@ public class UISocialNavigation extends UIComponent {
     if(Util.getPortalRequestContext().getRemoteUser() == null) {
       List<PageNode> child = new ArrayList<PageNode>();
       child.add(portalNavigation.getNode("home"));
+      // very bad hack it's not customizable :(
+      child.add(portalNavigation.getNode("register"));
       portalNavigation.setNodes((ArrayList<PageNode>) child);
     }
     result.add(portalNavigation);
