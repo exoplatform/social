@@ -1,0 +1,8 @@
+<div class="UISpaceInvitation" style="width: 541px; border: 1px solid gray; margin: auto; height: 210px">
+	<div class="Banner"><span></span></div>
+	<% uiform.begin() %>
+	<div style="float: left"><a href="<%= uicomponent.event("Accept") %>"><span>Accept</span></a></div>
+	<div style="float: right"><a href="<%= uicomponent.event("Decline") %>"><span>Decline</span></a></div>
+	<div style="clear: both"><span></span></div>
+	<%uiform.end()%>
+</div>

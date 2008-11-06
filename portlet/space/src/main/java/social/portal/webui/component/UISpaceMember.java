@@ -18,8 +18,12 @@ package social.portal.webui.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.mail.MailService;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
@@ -40,6 +44,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
+
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -145,6 +150,19 @@ public class UISpaceMember extends UIForm {
       SpaceService spaceSrc = uiSpaceMember.getApplicationComponent(SpaceService.class);
       spaceSrc.saveSpace(uiSpaceMember.space, false);
       uiSpaceMember.setInvitedUser(null);
+      
+      // we'll sent a email to invite user
+      MailService mailSrc = uiSpaceMember.getApplicationComponent(MailService.class);
+      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
+      ResourceBundle res = requestContext.getApplicationResourceBundle() ;
+      String email = orgSrc.getUserHandler().findUserByName(invitedUser).getEmail();
+      PortalRequestContext portalRequest = Util.getPortalRequestContext();
+      String url = portalRequest.getRequest().getRequestURL().toString();
+      String headerMail = res.getString(uiSpaceMember.getId()+ ".mail.header") + "\n\n";
+      String footerMail = "\n\n\n" + res.getString(uiSpaceMember.getId()+ ".mail.footer");
+      String activeLink = url + "?portal:componentId=managespaces&portal:type=action&portal:isSecure=false&uicomponent=UISpacesManage&op=JoinSpace&user="+invitedUser+"&space="+uiSpaceMember.space.getId();
+      activeLink = headerMail + activeLink + footerMail;
+      mailSrc.sendMessage("exoservice@gmail.com",email, "Invite to join space " + uiSpaceMember.space.getName(), activeLink);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }

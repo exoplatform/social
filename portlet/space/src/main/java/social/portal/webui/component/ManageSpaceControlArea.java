@@ -33,7 +33,7 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
     template = "app:/groovy/portal/webui/component/ManageSpaceControlArea.gtmpl",
     events = {
-        @EventConfig(listeners = ManageSpaceControlArea.CreateSpaceActionListener.class )
+        @EventConfig(listeners = ManageSpaceControlArea.CreateSpaceActionListener.class)
     }
 )
 public class ManageSpaceControlArea extends UIContainer {

@@ -466,3 +466,10 @@
 	padding-left: 24px;
 	line-height: 24px;
 }
+
+/***********************UI Space Invitation********************************/
+.UIManageSpacesPortlet .UISpaceInvitation .Banner{
+	background: url('background/SpaceBanner.gif') no-repeat left;
+	width:541px; height: 194px;
+}
+
