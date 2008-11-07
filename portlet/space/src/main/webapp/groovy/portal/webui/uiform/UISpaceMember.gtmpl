@@ -6,8 +6,8 @@
 	%>
 	<div class="TitleBar">Add invite</div>
 	<div class="TitleContainer" >
-		<div style="width: 330px; height: 40px; margin: auto;"
-		  <div class="AddInvite"><input type="text" value="<%= invitedUser %>" id="" name="" readonly/> *</div>
+		<div style="width: 330px; height: 40px; margin: auto;">
+		  <div class="AddInvite"><% uiform.renderField("user") %></div>
 		  <div class="SearchInviteButton">
 		  	<a onclick="$searchUserAction" href="#">
 			    <div class="LeftButton">

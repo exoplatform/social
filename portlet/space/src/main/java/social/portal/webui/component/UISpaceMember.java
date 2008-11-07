@@ -43,7 +43,10 @@ import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.webui.form.validator.MandatoryValidator;
 
 /**
  * Created by The eXo Platform SARL
@@ -57,27 +60,28 @@ import org.exoplatform.webui.form.UIForm;
     template =  "app:/groovy/portal/webui/uiform/UISpaceMember.gtmpl",
     events = {
         @EventConfig(listeners = UISpaceMember.InviteActionListener.class),
-        @EventConfig(listeners = UISpaceMember.SearchUserActionListener.class),
-        @EventConfig(listeners = UISpaceMember.RevokeInvitedUserActionListener.class),
-        @EventConfig(listeners = UISpaceMember.DeclineUserActionListener.class),
-        @EventConfig(listeners = UISpaceMember.ValidateUserActionListener.class),
-        @EventConfig(listeners = UISpaceMember.RemoveUserActionListener.class)
+        @EventConfig(listeners = UISpaceMember.SearchUserActionListener.class, phase=Phase.DECODE),
+        @EventConfig(listeners = UISpaceMember.RevokeInvitedUserActionListener.class, phase=Phase.DECODE),
+        @EventConfig(listeners = UISpaceMember.DeclineUserActionListener.class, phase=Phase.DECODE),
+        @EventConfig(listeners = UISpaceMember.ValidateUserActionListener.class, phase=Phase.DECODE),
+        @EventConfig(listeners = UISpaceMember.RemoveUserActionListener.class, phase=Phase.DECODE)
       }
 )
 public class UISpaceMember extends UIForm {
 
-  private String invitedUser;
   private Space space;
+  private final static String user = "user";
   
   public UISpaceMember() throws Exception {
+    addUIFormInput(new UIFormStringInput(user,null,null).addValidator(MandatoryValidator.class));
   }
 
   public String getInvitedUser() {
-    return invitedUser;
+    return getUIStringInput(user).getValue();
   }
   
   public void setInvitedUser(String invitedUser) {
-    this.invitedUser = invitedUser;
+    getUIStringInput(user).setValue(invitedUser);
   }
   
   public void setValue(Space space) {
@@ -127,11 +131,13 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
+      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
       String invitedUser = uiSpaceMember.getInvitedUser();
+      User user = orgSrc.getUserHandler().findUserByName(invitedUser);
       UIApplication uiApp = requestContext.getUIApplication();
       List<String> invitedUsers = uiSpaceMember.getInvitedUsers();
       List<String> existingUsers = uiSpaceMember.getExistingUsers();
-      if(invitedUser==null) {
+      if(user==null) {
         uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.select-user", null));
         requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
         return;
@@ -153,7 +159,6 @@ public class UISpaceMember extends UIForm {
       
       // we'll sent a email to invite user
       MailService mailSrc = uiSpaceMember.getApplicationComponent(MailService.class);
-      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
       ResourceBundle res = requestContext.getApplicationResourceBundle() ;
       String email = orgSrc.getUserHandler().findUserByName(invitedUser).getEmail();
       PortalRequestContext portalRequest = Util.getPortalRequestContext();
