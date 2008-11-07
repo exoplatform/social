@@ -18,7 +18,7 @@
 					<div class="CommunityMane Line">
 					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + objSpace.getName() ; %>
 						<div class="CommunityName" style="float: left; cursor:pointer;"><a href="$pageURI" class="CommunityNameMiddle"><%= objSpace.getName() %></a></div>
-						<% String leaveAction = uicomponent.event("LeaveSpace",objSpace.getId()) %>
+						<% String leaveAction = uicomponent.event("LeaveSpace",objSpace.getId());%>
 						<div class ="SpaceAction" onclick="$leaveAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
@@ -26,7 +26,7 @@
 						    </div>
 						  </div>
 						</div>
-						<% String editAction = uicomponent.event("EditSpace",objSpace.getId()) %>
+						<% String editAction = uicomponent.event("EditSpace",objSpace.getId());%>
 						<div class ="SpaceAction" onclick="$editAction">
               <div class="LeftButton">
 						    <div class="RightButton">

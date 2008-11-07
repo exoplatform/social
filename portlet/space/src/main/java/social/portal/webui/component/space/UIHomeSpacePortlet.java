@@ -53,7 +53,7 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
   }
 
   public boolean canEdit() {
-    return true;
+    return false;
   }
   
   public List<PageNode> getApps() throws Exception {

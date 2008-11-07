@@ -26,9 +26,11 @@ import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -49,9 +51,6 @@ import org.exoplatform.webui.event.EventListener;
 )
 public class ManageUserSpaceWorkingArea extends UIContainer {
 
-  public ManageUserSpaceWorkingArea() throws Exception {
-  }
-
   public List<Space> getAllSpaces() throws Exception {
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
@@ -68,17 +67,33 @@ public class ManageUserSpaceWorkingArea extends UIContainer {
     return allSpaces;
   }
   
+  // will be remove in future - dang tung
+  public boolean isEdit(String groupId) throws Exception {
+    String user = Util.getPortalRequestContext().getRemoteUser();
+    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
+    MembershipHandler memberShipHandler = orgSrc.getMembershipHandler();
+    if(memberShipHandler.findMembershipByUserGroupAndType(user, groupId, "manager") != null) return true;
+    return false;
+  }
+  
   static public class EditSpaceActionListener extends EventListener<ManageUserSpaceWorkingArea> {
     public void execute(Event<ManageUserSpaceWorkingArea> event) throws Exception {
       ManageUserSpaceWorkingArea workingUserArea = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
       UIManageSpacesPortlet uiPortlet = workingUserArea.getAncestorOfType(UIManageSpacesPortlet.class);
       UISpaceSetting uiSpaceSetting = uiPortlet.getChild(UISpaceSetting.class);
       uiPortlet.getChild(UISpacesManage.class).setRendered(false);
       uiSpaceSetting.setRendered(true);
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
       SpaceService spaceSrc = workingUserArea.getApplicationComponent(SpaceService.class);
-      uiSpaceSetting.setValues(spaceSrc.getSpace(spaceId));
+      Space space = spaceSrc.getSpace(spaceId);
+      if(!workingUserArea.isEdit(space.getGroupId())) {
+        uiApp.addMessage(new ApplicationMessage("ManageUserSpaceWorkingArea.msg.user.not-have-permission", null, ApplicationMessage.WARNING));
+        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+        return;
+      }
+      uiSpaceSetting.setValues(space);
       requestContext.addUIComponentToUpdateByAjax(uiPortlet);
     }
   }

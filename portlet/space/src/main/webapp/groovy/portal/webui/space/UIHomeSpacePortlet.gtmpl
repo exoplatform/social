@@ -13,7 +13,8 @@
 		<div class="LogoBGL">
 			<div class="LogoBGR">
 				<div class="LogoBGC">
-					<div class="HomeSpaceLogo">HOME</div>
+					<% String home = Util.getPortalRequestContext().getPortalURI() + spaceName %>
+					<div class="HomeSpaceLogo"><a href="$home" style="color: white">HOME</a></div>
 				</div>
 			</div>
 		</div>

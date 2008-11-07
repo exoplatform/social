@@ -139,8 +139,6 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       spaceNav.addNode(node) ;
       dataService.update(spaceNav) ;
       setNavigation(uiPortal.getNavigations(), spaceNav) ;
-//      UIControlWorkspace uiControl = uiApp.getChildById(UIPortalApplication.UI_CONTROL_WS_ID);
-//      requestContext.addUIComponentToUpdateByAjax(uiControl);
       requestContext.addUIComponentToUpdateByAjax(uiPorlet);
     }
   }
