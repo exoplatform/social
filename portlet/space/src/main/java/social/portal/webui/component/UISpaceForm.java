@@ -16,12 +16,9 @@
  */
 package social.portal.webui.component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.faces.component.UINamingContainer;
 
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
@@ -29,8 +26,6 @@ import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.MembershipType;
@@ -110,8 +105,8 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       space.setGroupId(groupId);
       space.setType(Space.CLASSIC);
       //for testing
-      space.setDescription("New version comes with a revolutionary user interface. Classic and WebOS Desktop Layouts. Drag and Drop Layouts. Create Pages Wizard. And many more...");
-      space.setTag("community, demo, plop");
+      space.setDescription("edit this description to explain what your space is about");
+      space.setTag("");
       //--end---
       spaceSrc.saveSpace(space, true);
       uiForm.getAncestorOfType(UIPopupContainer.class).deActivate();
