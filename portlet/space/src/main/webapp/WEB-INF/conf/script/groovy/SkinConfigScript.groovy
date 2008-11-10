@@ -35,3 +35,9 @@ SkinService.addSkin(
     "/space/skin/portal/webui/component/UIHomeSpacePortlet/DefaultStylesheet.css",
     ServletContext
 ) ;
+SkinService.addSkin(
+    "space/UserListPortlet",
+    "Default",
+    "/space/skin/portal/webui/component/UIUserListPortlet/DefaultStylesheet.css",
+    ServletContext
+) ;

@@ -27,6 +27,7 @@
 						  </div>
 						</div>
 						<% String editAction = uicomponent.event("EditSpace",objSpace.getId());%>
+						<% if(uicomponent.isEdit(objSpace.getGroupId())) { %>
 						<div class ="SpaceAction" onclick="$editAction">
               <div class="LeftButton">
 						    <div class="RightButton">
@@ -34,6 +35,7 @@
 						    </div>
 						  </div>
             </div>
+            <% } %>
 						<div style="clear: both;"><span></span></div>
 					</div>
 					<div class="Text Line"><%= objSpace.getDescription() %></div>

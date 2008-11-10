@@ -67,7 +67,6 @@ public class ManageUserSpaceWorkingArea extends UIContainer {
     return allSpaces;
   }
   
-  // will be remove in future - dang tung
   public boolean isEdit(String groupId) throws Exception {
     String user = Util.getPortalRequestContext().getRemoteUser();
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);

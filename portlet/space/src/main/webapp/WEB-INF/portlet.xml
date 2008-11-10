@@ -202,5 +202,39 @@
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">User List Portlet</description>
+    <portlet-name>UserListPortlet</portlet-name>
+    <display-name xml:lang="EN">User List</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/UserListPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.UserListPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>User List Portlet</title>
+      <short-title>User List Portlet</short-title>
+      <keywords>userlist</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/space/UIUserListPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
   </portlet> 
 </portlet-app>
