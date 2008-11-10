@@ -187,7 +187,6 @@
 
 .UIManageSpacesPortlet .UISpaceMember .AddInvite {
 	float: left;
-	margin: 14px 0px 0px 0px;
 }
 
 .UIManageSpacesPortlet .UISpaceMember .AddInvite input {
@@ -203,7 +202,7 @@
 .UIManageSpacesPortlet .UISpaceMember .TitleContainer .ActionContainer .LeftButton {
 	background: url('background/LeftButton6x27.gif') no-repeat left;
 	padding-left: 6px;
-	margin: 0px;
+	margin-top: 4px;
 }
 
 .UIManageSpacesPortlet .UISpaceMember .TitleContainer .ActionContainer .RightButton {
@@ -258,13 +257,12 @@
 
 .UIManageSpacesPortlet .UISpaceMember .TitleContainer .SearchInviteButton {
 	float: left;
-	margin-top: 5px;
 }
 
 .UIManageSpacesPortlet .UISpaceMember .TitleContainer .LeftButton {
 	background: url('background/LeftButton3x18.gif') no-repeat left;
 	padding-left: 3px;
-	margin: 10px 10px 0px 0px;
+	margin: 2px 0px 0px 0px;
 }
 
 .UIManageSpacesPortlet .UISpaceMember .TitleContainer .RightButton {
@@ -280,6 +278,30 @@
 	cursor: pointer;
 }
 
+
+.UIManageSpacesPortlet .UISpaceMember .TitleContainer .InviteSocialLeft {
+	background: url('background/InviteSocialLeft.gif') no-repeat left;
+	padding-left: 5px;
+}
+
+.UIManageSpacesPortlet .UISpaceMember .TitleContainer .InviteSocialRight {
+	background: url('background/InviteSocialRight.gif') no-repeat right;
+	padding-right: 5px;
+}
+
+.UIManageSpacesPortlet .UISpaceMember .TitleContainer .InviteSocialCenter {
+	background: url('background/InviteSocialCenter.gif') repeat-x ;
+	height: 49px;
+}
+
+.UIManageSpacesPortlet .UISpaceMember .TitleContainer .SearchInviteForm {
+	width: 330px;
+	padding:4px 16px;
+	margin: 8px 8px 0px 0px;
+	border: 1px solid #b7b7b7;
+	float: left;
+	background: white;
+}
 /***********************UI Space Application********************************/
 
 
