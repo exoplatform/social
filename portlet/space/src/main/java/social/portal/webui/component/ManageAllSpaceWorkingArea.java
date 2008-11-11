@@ -18,6 +18,9 @@ package social.portal.webui.component;
 
 import java.util.List;
 
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.organization.GroupHandler;
+import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.space.Space;
@@ -55,6 +58,16 @@ public class ManageAllSpaceWorkingArea extends UIContainer {
     return allSpaces;
   }
   
+  public int isInPendingList(String pendingList, String groupId) throws Exception {
+    // 0: request to join, 1: in pendingList; 2: in space
+    String user = Util.getPortalRequestContext().getRemoteUser();
+    OrganizationService orgService = getApplicationComponent(OrganizationService.class);
+    MembershipHandler memberShipHandler = orgService.getMembershipHandler();
+    if(memberShipHandler.findMembershipsByUserAndGroup(user, groupId).size() > 0) return 2;
+    if(pendingList != null && pendingList.contains(user)) return 1;
+    return 0;
+  }
+  
   static public class ChangeListSpacesActionListener extends EventListener<ManageAllSpaceWorkingArea> {
     public void execute(Event<ManageAllSpaceWorkingArea> event) throws Exception {
       ManageAllSpaceWorkingArea workingAllSpaceArea = event.getSource();
@@ -70,42 +83,21 @@ public class ManageAllSpaceWorkingArea extends UIContainer {
   static public class RequestJoinActionListener extends EventListener<ManageAllSpaceWorkingArea> {
     public void execute(Event<ManageAllSpaceWorkingArea> event) throws Exception {
       ManageAllSpaceWorkingArea workingAllSpaceArea = event.getSource();
-      OrganizationService orgSrc = workingAllSpaceArea.getApplicationComponent(OrganizationService.class);
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = requestContext.getRemoteUser();
       UIApplication uiApp = requestContext.getUIApplication();
       SpaceService spaceSrc = workingAllSpaceArea.getApplicationComponent(SpaceService.class);
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
       Space space = spaceSrc.getSpace(spaceId);
-      String groupId = space.getGroupId();
-      
-      List userList = orgSrc.getUserHandler().findUsersByGroup(groupId).currentPage();
-      for(Object obj : userList) {
-        User user = (User)obj;
-        if(user.getUserName().equals(userName)) {
-          uiApp.addMessage(new ApplicationMessage("ManageAllSpaceWorkingArea.msg.exist-user", null));
-          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
-          return;
-        }
-      }
       
       String pendingUser = space.getPendingUser();
-      if(pendingUser != null) {
-        String[] pendingList = pendingUser.split(",");
-        for(int i=0; i<pendingList.length; i++) {
-          if(pendingList[i].equals(userName)) {
-            uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.pedding-exist-user", null));
-            requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
-            return;
-          }
-        }
-      }
       if (pendingUser==null) pendingUser = userName;
       else pendingUser += "," + userName;
       space.setPendingUser(pendingUser);
       spaceSrc.saveSpace(space, false);
       uiApp.addMessage(new ApplicationMessage("ManageAllSpaceWorkingArea.msg.success-join-user", null,ApplicationMessage.INFO));
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      requestContext.addUIComponentToUpdateByAjax(workingAllSpaceArea);
     }
   }
 

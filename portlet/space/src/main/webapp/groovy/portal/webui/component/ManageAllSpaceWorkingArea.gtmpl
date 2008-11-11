@@ -17,7 +17,11 @@
 					<div class="CommunityMane Line">
 					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + objSpace.getCleanedName() ; %>
 						<div class="CommunityName" style="float: left; cursor:pointer;"><a href="$pageURI" class="CommunityNameMiddle"><%= objSpace.getName() %></a></div>
-						<% String requestJoin = uicomponent.event("RequestJoin", objSpace.getId()) + "; return false;"; %>
+						<% 
+							 String requestJoin = uicomponent.event("RequestJoin", objSpace.getId()) + "; return false;";
+							 int option = uicomponent.isInPendingList(objSpace.getPendingUser(), objSpace.getGroupId())
+							 if(option == 0) {
+						%>
 						<div class ="SpaceAction" onclick="$requestJoin">
 						  <div class="LeftButton">
 						    <div class="RightButton">
@@ -25,6 +29,15 @@
 						    </div>
 						  </div>
 						</div>
+						<% } else if(option == 1){ %>
+						<div class ="SpaceAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Membership pending</div>
+						    </div>
+						  </div>
+						</div>
+						<% } %>
 						<div style="clear: both;"><span></span></div>
 					</div>
 					<div class="Text Line"><%= objSpace.getDescription() %></div>

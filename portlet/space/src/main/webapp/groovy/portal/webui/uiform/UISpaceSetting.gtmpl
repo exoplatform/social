@@ -1,6 +1,7 @@
 <% import org.exoplatform.webui.core.UITabPane; %>
 <div class="UISpaceSetting" id="$uicomponent.id">
 <% String backAction = uicomponent.event("Back") + "; return false;" %>
+	<div class="SpaceName"><%= uicomponent.getSpaceName() %></div>
 	<div class="BackButton" onclick="$backAction">
 		<div class="BackButtonL">
 			<div class="BackButtonR">

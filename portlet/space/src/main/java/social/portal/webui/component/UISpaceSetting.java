@@ -40,6 +40,7 @@ public class UISpaceSetting extends UIContainer {
   final private static String SPACE_INFO = "info";
   final private static String SPACE_APP = "app";
   final private static String SPACE_MEMBER = "members";
+  private String spaceName;
   
   public UISpaceSetting() throws Exception {
     UITabPane uiTabPane = addChild(UITabPane.class, null, null);
@@ -57,8 +58,12 @@ public class UISpaceSetting extends UIContainer {
     uiSpaceMember.setValue(space);
     UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).getChild(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
+    this.spaceName = space.getName();
   } 
   
+  public String getSpaceName() {
+    return spaceName;
+  }
   
   static public class BackActionListener extends EventListener<UISpaceSetting> {
     public void execute(Event<UISpaceSetting> event) throws Exception {
