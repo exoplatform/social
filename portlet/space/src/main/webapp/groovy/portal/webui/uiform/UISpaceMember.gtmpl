@@ -44,10 +44,11 @@
 	  
 
   </div>
+  <% List<String> penddingUsers = uicomponent.getPenddingUsers();%>
+  <% if(penddingUsers.size() > 0) { %>
   <div class="TitleBar">Pending</div>
-  <% List<String> penddingUsers = uicomponent.getPenddingUsers();
-		 for(obj0 in penddingUsers) {	  
-  %>
+  <% } %>
+	<% for(obj0 in penddingUsers) { %>	 	  
   <div class="TitleContainer">
   	<div class="TitleContent">
 	    <div class="Title"><%= obj0 %></div>
@@ -71,10 +72,11 @@
   </div>
  </div> 
   <% } %>
+  <% List<String> invitedUsers = uicomponent.getInvitedUsers();%>
+  <% if(invitedUsers.size() > 0) { %>
   <div class="TitleBar">Invited</div>
-  <% List<String> invitedUsers = uicomponent.getInvitedUsers();
-		 for(obj in invitedUsers) {	  
-  %>
+  <% } %>
+	<%	 for(obj in invitedUsers) { %>
   <div class="TitleContainer">
   	<div class="TitleContent">
 	    <div class="Title"><%= obj %></div>
@@ -82,7 +84,7 @@
 		    <div class="LeftButton">
 		      <div class="RightButton">
 		      <% String revokeAction = uicomponent.event("RevokeInvitedUser",obj) + "; return false;"; %>
-		        <div class="CenterButton" onclick="$revokeAction">Revoke the invistation</div>
+		        <div class="CenterButton" onclick="$revokeAction">Revoke the invitation</div>
 		      </div>
 		    </div>
 		  </div>
