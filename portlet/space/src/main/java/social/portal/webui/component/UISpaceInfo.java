@@ -51,8 +51,7 @@ public class UISpaceInfo extends UIForm {
     UIFormInputSet uiSpaceInfo = new UIFormInputSet(SPACE_INFO);
     uiSpaceInfo.
       addUIFormInput((UIFormStringInput)new UIFormStringInput("id","id",null).setRendered(false)).
-      addUIFormInput(new UIFormStringInput("name","name",null).addValidator(MandatoryValidator.class)
-          .setEditable(false)).
+      addUIFormInput(new UIFormStringInput("name","name",null).addValidator(MandatoryValidator.class)).
       addUIFormInput(new UIFormTextAreaInput("description","description",null)
           .addValidator(StringLengthValidator.class, 0, 255)).
       addUIFormInput(new UIFormStringInput("tag","tag",null));

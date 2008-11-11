@@ -4,7 +4,7 @@
 	import org.exoplatform.portal.config.model.PageNode;
 	import org.exoplatform.portal.webui.util.Util;
 	def apps = uicomponent.getApps();
-	def spaceName = uicomponent.getSpaceName();
+	def spaceNameCleaned = uicomponent.getSpaceNameCleaned();
 %>
 <div class="UIHomeSpacePortlet" id="$uicomponent.id">
 
@@ -13,7 +13,7 @@
 		<div class="LogoBGL">
 			<div class="LogoBGR">
 				<div class="LogoBGC">
-					<% String home = Util.getPortalRequestContext().getPortalURI() + spaceName %>
+					<% String home = Util.getPortalRequestContext().getPortalURI() + spaceNameCleaned %>
 					<div class="HomeSpaceLogo"><a href="$home" style="color: white">HOME</a></div>
 				</div>
 			</div>
@@ -30,7 +30,7 @@
 				<div class="DecoratorMR">
 					<div class="DecoratorMC">
 					<% for(PageNode node in apps) { %>
-					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceName + "/"+node.getName() ; %>
+					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceNameCleaned + "/"+node.getName() ; %>
 						<div class="ListContent">
 							<div class="ListContentL">
 								<div class="ListContentR">

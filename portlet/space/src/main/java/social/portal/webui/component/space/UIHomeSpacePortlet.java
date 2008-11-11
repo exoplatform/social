@@ -29,6 +29,7 @@ import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -70,12 +71,12 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
     return list;
   }
   
-  public String getSpaceName() {
-    UIPortal uiPortal = Util.getUIPortal();
+  public String getSpaceNameCleaned() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     HttpServletRequest request = pcontext.getRequest();
     String url = request.getRequestURL().toString();
-    return url.substring(url.lastIndexOf("/")+1);
+    String spaceName = url.substring(url.lastIndexOf("/")+1);
+    return spaceName;
   }
 
   public String getDashboardOwner() {

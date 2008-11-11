@@ -33,6 +33,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -62,11 +63,10 @@ import org.exoplatform.webui.form.validator.NameValidator;
       }
 )
 public class UISpaceForm extends UIForm implements UIPopupComponent{
-
   final static public String SPACE_PARENT = "/spaces";
   final static private String SPACE_NAME = "spaceName";
   public UISpaceForm() throws Exception {
-    addUIFormInput(new UIFormStringInput(SPACE_NAME,SPACE_NAME,null).addValidator(NameValidator.class).addValidator(MandatoryValidator.class));
+    addUIFormInput(new UIFormStringInput(SPACE_NAME,SPACE_NAME,null).addValidator(MandatoryValidator.class));
   }
   
   static public class CreateSpaceActionListener extends EventListener<UISpaceForm> {
@@ -82,13 +82,14 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       //Create new group
       Group newGroup = groupHandler.createGroupInstance();
       String spaceName = ((UIFormStringInput)uiForm.getChildById(SPACE_NAME)).getValue();
-      String groupId = groupParrent.getId() + "/" + spaceName;
+      String spaceNameCleaned = SpaceUtils.cleanString(spaceName);
+      String groupId = groupParrent.getId() + "/" + spaceNameCleaned;
       if(groupHandler.findGroupById(groupId) != null) {
         uiApp.addMessage(new ApplicationMessage("UISpaceForm.msg.space-exist", null));
         requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
         return;
       }
-      newGroup.setGroupName(spaceName);
+      newGroup.setGroupName(spaceNameCleaned);
       newGroup.setLabel(spaceName);
       groupHandler.addChild(groupParrent,newGroup,true);
       
@@ -116,11 +117,7 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       String tempPageId= "group::platform/user::dashboard";
       
       //create the name and uri of the new pages
-      String newPageName = spaceName;
-      
-      // Build map of preferences to configure to the portlets of the page      
-      Map<String, String[]> preferences = new HashMap<String, String[]>();
-      preferences.put("spaces", new String []{spaceName});
+      String newPageName = spaceNameCleaned;
       
       // create new space navigation
       UserPortalConfigService dataService = uiForm.getApplicationComponent(UserPortalConfigService.class);
@@ -134,8 +131,8 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       List<PageNavigation> pnavigations = uiPortal.getNavigations();
       setNavigation(pnavigations, spaceNav);
       pnavigations.add(spaceNav) ;
-      PageNode node = dataService.createNodeFromPageTemplate(newPageName, newPageName, tempPageId, PortalConfig.GROUP_TYPE, spaceName,null) ;
-      node.setUri(spaceName) ;
+      PageNode node = dataService.createNodeFromPageTemplate(newPageName, newPageName, tempPageId, PortalConfig.GROUP_TYPE, spaceNameCleaned,null) ;
+      node.setUri(spaceNameCleaned) ;
       spaceNav.addNode(node) ;
       dataService.update(spaceNav) ;
       setNavigation(uiPortal.getNavigations(), spaceNav) ;

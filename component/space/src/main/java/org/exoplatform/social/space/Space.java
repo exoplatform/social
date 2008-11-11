@@ -125,4 +125,8 @@ public class Space {
   public String getType() {
     return type;
   }
+  
+  public String getCleanedName() {
+    return groupId.substring(groupId.lastIndexOf("/")+1);
+  }
 }

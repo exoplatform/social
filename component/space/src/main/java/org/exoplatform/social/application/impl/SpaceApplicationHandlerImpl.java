@@ -137,7 +137,7 @@ public  class SpaceApplicationHandlerImpl implements SpaceApplicationHandler {
     pageNode.setPageReference(page.getPageId());
     // get space navigation
     PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
-    PageNode homeNode = nav.getNode(space.getName());
+    PageNode homeNode = nav.getNode(space.getCleanedName());
     List<PageNode> childNodes = homeNode.getChildren();
     if(childNodes == null) childNodes = new ArrayList<PageNode>();
     childNodes.add(pageNode);
@@ -170,7 +170,7 @@ public  class SpaceApplicationHandlerImpl implements SpaceApplicationHandler {
     // remove pagenode
     String spaceNav = space.getGroupId().substring(1);
     PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
-    PageNode homeNode = nav.getNode(space.getName());
+    PageNode homeNode = nav.getNode(space.getCleanedName());
     List<PageNode> childNodes = homeNode.getChildren();
     childNodes.remove(homeNode.getChild(appId));
     homeNode.setChildren((ArrayList<PageNode>) childNodes);

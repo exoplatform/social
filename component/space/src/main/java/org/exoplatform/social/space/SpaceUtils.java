@@ -104,4 +104,24 @@ public class SpaceUtils {
     if(list == null || list.isEmpty()) return defaultValue;
     return list.get(0).getDescription();
   }
+  
+  public static String cleanString(String str) {
+    StringBuffer cleanedStr = new StringBuffer(str.trim());
+    // delete special character
+    for(int i = cleanedStr.length()-1; i >= 0; i--) {
+      char c = cleanedStr.charAt(i);
+      if(!(Character.isLetterOrDigit(c) || c == '_' || c == ' ')) {
+        cleanedStr.deleteCharAt(i);
+      }
+    }
+    // replace ' ' character by '_'
+    for(int i = cleanedStr.length()-1; i > 0; i--) {
+      if(cleanedStr.charAt(i) == ' ') cleanedStr.setCharAt(i, '_');
+    }
+    // retain '_' character but if there are many instances replace with one
+    for(int i = cleanedStr.length()-1; i > 0; i--) {
+      if(cleanedStr.charAt(i) == '_' && cleanedStr.charAt(i-1) == '_') cleanedStr.deleteCharAt(i);
+    }
+    return cleanedStr.toString().toLowerCase();
+  }
 }
