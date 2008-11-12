@@ -495,3 +495,33 @@
 	width:541px; height: 194px;
 }
 
+.UIManageSpacesPortlet .SpaceName {
+	width: 400px;
+	margin: auto;
+}
+
+.UIManageSpacesPortlet .SpaceName .SpaceNameL {
+	background: url('background/SpaceNameL.gif') no-repeat left;
+	padding-left: 22px;
+}
+
+.UIManageSpacesPortlet .SpaceName .SpaceNameR {
+	background: url('background/SpaceNameR.gif') no-repeat right;
+	padding-right: 22px;
+}
+
+.UIManageSpacesPortlet .SpaceName .SpaceNameC {
+	background: url('background/SpaceNameC.gif') repeat-x ;
+	line-height: 23px;
+}
+
+.UIManageSpacesPortlet .SpaceName .Name {
+	width: 80%;
+	overflow: hidden;
+	white-space: nowrap;
+	color: white;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+	margin: auto;
+}
