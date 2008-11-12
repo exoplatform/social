@@ -5,6 +5,7 @@
 <Require feature="setprefs"/>
 <Require feature="minimessage"/>
 <Require feature="opensocial-0.7"></Require>
+<Require feature="settitle"></Require>
 </ModulePrefs>
     <UserPref name="mtitle" display_name="Title name" default_value="Social RSS Reader"/>
 	<UserPref name="rssurl" display_name="FEED URL" default_value="http://blog.exoplatform.org/feed/" required="true" />
