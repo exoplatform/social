@@ -105,11 +105,18 @@
 		  <tbody>
 		  <% List<String> existingUsers = uicomponent.getExistingUsers();
 		  	 for(user in existingUsers) {
+		  	 boolean isLeader = uicomponent.isLeader(user);
+		  	 String removeLeader = uicomponent.event("RemoveLeader", user) + "; return false";
+		  	 String makeLeader = uicomponent.event("MakeLeader", user) + "; return false";
 		  %>
 				<tr class="EvenRow">
 				  <td class="text"><span class="label" id="label"><%= user %></span></td>
-	  			<td class="text"><span class="label" id="label">Make office</span></td>  
-	  			<td class="text"><span class="label" id="label">Make leader</span></td>  
+	  			<td class="text"><span class="label" id="label">Make office</span></td>
+	  			<% if(isLeader) {%>  
+	  			<td class="text"><span class="label" id="label" style="cursor: pointer;" onclick="$removeLeader">Remove leader</span></td>  
+			  	<% } else { %>
+			  	<td class="text"><span class="label" id="label" style="cursor: pointer;" onclick="$makeLeader">Make leader</span></td>
+			  	<% } %>
 			  	<td align="center" >
 				  	<div class="AddInviteButton">
 				  	  <div class="LeftButton">

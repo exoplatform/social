@@ -25,6 +25,7 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.mail.MailService;
 import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.MembershipType;
@@ -64,7 +65,9 @@ import org.exoplatform.webui.form.validator.MandatoryValidator;
         @EventConfig(listeners = UISpaceMember.RevokeInvitedUserActionListener.class, phase=Phase.DECODE),
         @EventConfig(listeners = UISpaceMember.DeclineUserActionListener.class, phase=Phase.DECODE),
         @EventConfig(listeners = UISpaceMember.ValidateUserActionListener.class, phase=Phase.DECODE),
-        @EventConfig(listeners = UISpaceMember.RemoveUserActionListener.class, phase=Phase.DECODE)
+        @EventConfig(listeners = UISpaceMember.RemoveUserActionListener.class, phase=Phase.DECODE),
+        @EventConfig(listeners = UISpaceMember.RemoveLeaderActionListener.class, phase=Phase.DECODE),
+        @EventConfig(listeners = UISpaceMember.MakeLeaderActionListener.class, phase=Phase.DECODE)
       }
 )
 public class UISpaceMember extends UIForm {
@@ -125,6 +128,13 @@ public class UISpaceMember extends UIForm {
     PageList usersPageList = orgSrc.getUserHandler().findUsersByGroup(groupId);
     users = usersPageList.currentPage();
     return users;
+  }
+  
+  public boolean isLeader(String userName) throws Exception {
+    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
+    MembershipHandler memberShipHandler = orgSrc.getMembershipHandler();
+    if(memberShipHandler.findMembershipByUserGroupAndType(userName, space.getGroupId(), "manager") != null) return true;
+    return false;
   }
   
   static public class InviteActionListener extends EventListener<UISpaceMember> {
@@ -229,12 +239,12 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
       OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
       UserHandler userHandler = orgSrc.getUserHandler();
       User user = userHandler.findUserByName(userName);
       MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
       Membership memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), uiSpaceMember.space.getGroupId(), "member");
+      if(memberShip == null) memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), uiSpaceMember.space.getGroupId(), "manager");
       membershipHandler.removeMembership(memberShip.getId(), true);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
@@ -272,6 +282,42 @@ public class UISpaceMember extends UIForm {
       MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
       Group spaceGroup = orgSrc.getGroupHandler().findGroupById(uiSpaceMember.space.getGroupId());
       membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
+      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
+  static public class RemoveLeaderActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
+      UserHandler userHandler = orgSrc.getUserHandler();
+      User user = userHandler.findUserByName(userName);
+      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
+      Membership memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), uiSpaceMember.space.getGroupId(), "manager");
+      membershipHandler.removeMembership(memberShip.getId(), true);
+      MembershipType mbShipTypeMember = orgSrc.getMembershipTypeHandler().findMembershipType("member");
+      GroupHandler groupHandler = orgSrc.getGroupHandler();
+      membershipHandler.linkMembership(user, groupHandler.findGroupById(uiSpaceMember.space.getGroupId()), mbShipTypeMember, true);
+      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
+  static public class MakeLeaderActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
+      UserHandler userHandler = orgSrc.getUserHandler();
+      User user = userHandler.findUserByName(userName);
+      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
+      Membership memberShipMember = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), uiSpaceMember.space.getGroupId(), "member");
+      membershipHandler.removeMembership(memberShipMember.getId(), true);
+      MembershipType mbShipTypeMamager = orgSrc.getMembershipTypeHandler().findMembershipType("manager");
+      GroupHandler groupHandler = orgSrc.getGroupHandler();
+      membershipHandler.linkMembership(user, groupHandler.findGroupById(uiSpaceMember.space.getGroupId()), mbShipTypeMamager, true);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
