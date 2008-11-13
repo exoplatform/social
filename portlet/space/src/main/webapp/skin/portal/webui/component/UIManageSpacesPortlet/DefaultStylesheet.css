@@ -431,17 +431,17 @@
 }
 
 .UIManageSpacesPortlet .AplicationButton .AplicationButtonL {
-	background: url('background/AplicationButtonL.gif') no-repeat left;
+	background: url('background/LeftButton1x18.gif') no-repeat left;
 	padding-left: 3px;
 }
 
 .UIManageSpacesPortlet .AplicationButton .AplicationButtonR {
-	background: url('background/AplicationButtonR.gif') no-repeat right;
+	background: url('background/RightButton1x18.gif') no-repeat right;
 	padding-right: 3px;
 }
 
 .UIManageSpacesPortlet .AplicationButton .AplicationButtonC {
-	background: url('background/AplicationButtonC.gif') repeat-x ;
+	background: url('background/CenterButton1x18.gif') repeat-x ;
 	line-height: 18px;
 	padding: 0px 10px;
 }
