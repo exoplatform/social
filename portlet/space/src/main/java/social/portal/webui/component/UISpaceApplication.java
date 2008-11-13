@@ -66,7 +66,7 @@ public class UISpaceApplication extends UIForm {
     return iterator_.getCurrentPageData();
   }
   
-  public void setValue(Space space) {
+  public void setValue(Space space) throws Exception {
     space_ = space;
     List<Application> lists = new ArrayList<Application>();
     List<Application> allApps = SpaceUtils.getAllApplications();

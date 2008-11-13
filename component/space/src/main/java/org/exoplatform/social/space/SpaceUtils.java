@@ -24,9 +24,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.exoplatform.application.registry.Application;
+import org.exoplatform.application.registry.ApplicationCategory;
+import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -38,6 +41,8 @@ import org.exoplatform.services.portletcontainer.PortletContainerService;
 import org.exoplatform.services.portletcontainer.pci.PortletData;
 import org.exoplatform.services.portletcontainer.pci.model.Description;
 import org.exoplatform.services.portletcontainer.pci.model.DisplayName;
+
+import antlr.Utils;
 
 
 /**
@@ -69,28 +74,21 @@ public class SpaceUtils {
     return newGroup;
   }
   
-  public static List<Application> getAllApplications() {
-    List<Application> list = new ArrayList<Application>(10) ;
-    ExoContainer manager  = ExoContainerContext.getCurrentContainer();
-    PortletContainerService pcService =
-      (PortletContainerService) manager.getComponentInstanceOfType(PortletContainerService.class) ;
-    Map<String, PortletData> allPortletMetaData = pcService.getAllPortletMetaData();
-    Iterator<Entry<String, PortletData>> iterator = allPortletMetaData.entrySet().iterator();
-
-    while(iterator.hasNext()) {
-      Entry<String, PortletData> entry = iterator.next() ;
-      String fullName = entry.getKey();
-      String categoryName = fullName.split("/")[0];
-      String portletName = fullName.split("/")[1];
-      PortletData portlet = entry.getValue();
-      Application app = new Application();
-      app.setApplicationName(portletName);
-      app.setApplicationGroup(categoryName);
-      app.setApplicationType(org.exoplatform.web.application.Application.EXO_PORTLET_TYPE);
-      app.setDisplayName(getDisplayNameValue(portlet.getDisplayName(), portletName)) ;
-      app.setDescription(getDescriptionValue(portlet.getDescription(), portletName));
-      app.setAccessPermissions(new ArrayList<String>());
-      list.add(app) ;
+  public static List<Application> getAllApplications() throws Exception {
+    List<Application> list = new ArrayList<Application>() ;
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    ApplicationRegistryService appRegistrySrc = (ApplicationRegistryService)portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+    String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
+    List<ApplicationCategory> listCategory = appRegistrySrc.getApplicationCategories(Util.getPortalRequestContext().getRemoteUser(), applicationTypes);
+    Iterator<ApplicationCategory> cateItr = listCategory.iterator() ;
+    while (cateItr.hasNext()) {
+      ApplicationCategory cate = cateItr.next();
+      List<Application> applications = cate.getApplications();
+      Iterator<Application> appIterator = applications.iterator() ;
+      while (appIterator.hasNext()) {
+        Application application = (Application) appIterator.next();
+        list.add(application);
+      }
     }
     return list;
   }

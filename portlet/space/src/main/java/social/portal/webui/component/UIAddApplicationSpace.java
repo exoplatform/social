@@ -62,14 +62,10 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
   public UIAddApplicationSpace() throws Exception {
     iterator_ = createUIComponent(UIPageIterator.class, null, null);
     addChild(iterator_);
-    setUp();
   }
   
-  public void setSpaceId(String spaceId) {
+  public void setSpaceId(String spaceId) throws Exception {
     this.spaceId = spaceId;
-  }
-  
-  private void setUp() {
     List<Application> list = new ArrayList<Application>() ;
     list = SpaceUtils.getAllApplications();
     PageList pageList = new ObjectPageList(list,3);
