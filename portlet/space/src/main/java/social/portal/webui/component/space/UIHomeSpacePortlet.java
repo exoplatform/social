@@ -29,7 +29,8 @@ import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.services.organization.MembershipHandler;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -54,15 +55,23 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
   }
 
   public boolean canEdit() {
+    PortletRequestContext context = (PortletRequestContext) WebuiRequestContext
+    .getCurrentInstance();
+    String remoteUser = context.getRemoteUser();
+    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
+    MembershipHandler memberShipHandler = orgSrc.getMembershipHandler();
+    String spaceName = getSpaceNameCleaned();
+    try {
+      if(memberShipHandler.findMembershipByUserGroupAndType(remoteUser, "/spaces/" + spaceName, "manager") != null) return true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     return false;
   }
   
   public List<PageNode> getApps() throws Exception {
     UIPortal uiPortal = Util.getUIPortal();
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    HttpServletRequest request = pcontext.getRequest();
-    String url = request.getRequestURL().toString();
-    String spaceName = url.substring(url.lastIndexOf("/")+1);
+    String spaceName = getSpaceNameCleaned();
     int spaceNav = (PortalConfig.GROUP_TYPE + "::spaces/" + spaceName).hashCode();
     PageNavigation pageNav = uiPortal.getPageNavigation(spaceNav);
     PageNode homeNode = pageNav.getNode(spaceName);
