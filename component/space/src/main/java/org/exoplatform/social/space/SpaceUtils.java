@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
@@ -66,8 +67,8 @@ public class SpaceUtils {
     return newGroup;
   }
   
-  public static List<Application> getAllApplications() throws Exception {
-    List<Application> list = new ArrayList<Application>() ;
+  public static List<Application> getAllApplications(String spaceId) throws Exception {
+    List<Application> list = new CopyOnWriteArrayList<Application>() ;
     PortalContainer portalContainer = PortalContainer.getInstance();
     ApplicationRegistryService appRegistrySrc = (ApplicationRegistryService)portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
     String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};

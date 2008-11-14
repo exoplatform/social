@@ -101,7 +101,7 @@ public  class SpaceApplicationHandlerImpl implements SpaceApplicationHandler {
   }
   
   private void activeApplicationClassic(Space space, String appId) throws Exception {
-    List<Application> apps = SpaceUtils.getAllApplications();
+    List<Application> apps = SpaceUtils.getAllApplications(space.getId());
     String spaceNav = space.getGroupId().substring(1);
     
     // create new page to group space
