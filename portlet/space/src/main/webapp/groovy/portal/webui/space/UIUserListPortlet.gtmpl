@@ -1,1 +1,108 @@
-<div class="UIUserListPortlet" id="$uicomponent.id">UIUserListPortlet</div>
+<div class="UIUserListPortlet" >
+	<div class="LabelUserlist">
+	  <div class="Label">Everyone</div>
+	  <div class="UserlistButton">
+		  <div class="LeftButton">
+	      <div class="RightButton">
+	        <div class="CenterButton">
+	        	Show ony your contact
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	  <div style="clear: left;"><span></span></div>
+	</div>
+	<div class="UserlistContainer">
+		<div class="UserlistContent">
+			<div class="AvartarIcon">
+				<div class="UserContainer">
+				  <div class="UserBarTitleName">Hieu Luong</div>
+				  <div class="UIForm">
+						<table class="UIFormGrid">
+						  <tbody>
+						    <tr>
+						      <td class="FieldLabel">First Name:</td>
+						      <td class="FieldComponent">Luong Trung</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Last Name:</td>
+						      <td class="FieldComponent">Hieu</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Email address:</td>
+						      <td class="FieldComponent">luonghieu@yahoo.com</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Membership:</td>
+						      <td class="FieldComponent">Member</td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="UserlistContainer">
+		<div class="UserlistContent">
+			<div class="AvartarIcon">
+				<div class="UserContainer">
+				  <div class="UserBarTitleName">Hieu Luong</div>
+				  <div class="UIForm">
+						<table class="UIFormGrid">
+						  <tbody>
+						    <tr>
+						      <td class="FieldLabel">First Name:</td>
+						      <td class="FieldComponent">Luong Trung</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Last Name:</td>
+						      <td class="FieldComponent">Hieu</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Email address:</td>
+						      <td class="FieldComponent">luonghieu@yahoo.com</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Membership:</td>
+						      <td class="FieldComponent">Member</td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="UserlistContainer">
+		<div class="UserlistContent">
+			<div class="AvartarIcon">
+				<div class="UserContainer">
+				  <div class="UserBarTitleName">Hieu Luong</div>
+				  <div class="UIForm">
+						<table class="UIFormGrid">
+						  <tbody>
+						    <tr>
+						      <td class="FieldLabel">First Name:</td>
+						      <td class="FieldComponent">Luong Trung</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Last Name:</td>
+						      <td class="FieldComponent">Hieu</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Email address:</td>
+						      <td class="FieldComponent">luonghieu@yahoo.com</td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel">Membership:</td>
+						      <td class="FieldComponent">Member</td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

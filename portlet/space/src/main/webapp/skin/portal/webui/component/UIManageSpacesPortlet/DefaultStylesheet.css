@@ -431,12 +431,12 @@
 }
 
 .UIManageSpacesPortlet .AplicationButton .AplicationButtonL {
-	background: url('background/LeftButton1x18.gif') no-repeat left;
+	background: url('background/LeftButton3x18.gif') no-repeat left;
 	padding-left: 3px;
 }
 
 .UIManageSpacesPortlet .AplicationButton .AplicationButtonR {
-	background: url('background/RightButton1x18.gif') no-repeat right;
+	background: url('background/RightButton3x18.gif') no-repeat right;
 	padding-right: 3px;
 }
 
