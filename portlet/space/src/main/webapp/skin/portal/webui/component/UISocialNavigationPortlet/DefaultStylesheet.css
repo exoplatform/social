@@ -152,3 +152,7 @@
   margin-left: 3px;
   float: left;
 }
+
+.UINavigationPortlet .UINavigationBar .UIHorizontalTabs .TabsContainer .DefaultPageIcon{
+  padding-left: 20px;
+}

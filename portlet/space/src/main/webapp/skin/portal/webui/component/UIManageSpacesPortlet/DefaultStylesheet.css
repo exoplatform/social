@@ -525,3 +525,79 @@
 	text-align: center;
 	margin: auto;
 }
+
+.UIManageSpacesPortlet .UISpaceInvitation {
+	background: #ECEDEF;
+	padding: 12px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .InvitationContainer{
+	width: 730px; 
+	border: 1px solid #d8d8d8;
+	margin: auto; 
+	background: white;
+	padding: 4px;
+	margin-top: 8px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .InvitationTitle{
+	color: #3E6D7F;
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 30px;
+	border-bottom: 1px dotted #d8d8d8;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .InvitationContainer .InvitationLeft{
+	float: left;
+	width: 206px;
+	padding: 8px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .InvitationContainer .InvitationRight{
+	margin-left: 225px;
+	background: #E8ECED url('background/InvitationRight.gif') repeat-y left;
+	padding: 8px 8px 8px 28px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .InvitationContainer .InvitationAvartar{
+	background:url('background/InvitationAvartar.gif') no-repeat left;
+	width: 101px; height: 128px;
+	margin: auto;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .InvitationContainer .FieldLabel{
+	font-weight: bold;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .InvitationContainer .Label{
+	font-size: 18px;
+	color: #0178B2;
+	line-height: 30px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .InvitationContainer .Text{
+	margin-top: 20px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .UIAction {
+	padding: 20px 0px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .UIAction .ActionButton .ButtonLeft {
+	background:url('background/ButtonLeft.gif') no-repeat left;
+	padding-left: 5px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .UIAction .ActionButton .ButtonRight {
+	background:url('background/ButtonRight.gif') no-repeat right;
+	padding-right: 5px;
+}
+
+.UIManageSpacesPortlet .UISpaceInvitation .UIAction .ActionButton .ButtonMiddle {
+	background:url('background/ButtonCenter.gif') repeat-x ;
+	line-height: 38px;
+	padding: 0px 16px;
+	font-weight: bold;
+	font-size: 12px;
+}

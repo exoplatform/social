@@ -1,8 +1,77 @@
-<div class="UISpaceInvitation" style="width: 541px; border: 1px solid gray; margin: auto; height: 210px">
-	<div class="Banner"><span></span></div>
+<div class="UISpaceInvitation" >
 	<% uiform.begin() %>
-	<div style="float: left"><a href="<%= uicomponent.event("Accept") %>"><span>Accept</span></a></div>
+	<div class="InvitationTitle" >
+	  Invitations
+	</div>
+	<div class="InvitationContainer" >
+	  <div style="background: #F4F5F7;">
+		  <div class="InvitationLeft" >
+		    <div class="UIForm">
+			    <table class="UIFormGrid">
+			      <tr>
+			        <td colspan="2">
+			          <div class="InvitationAvartar"><span></span></div>
+			         </td>
+			      </tr>
+		        <tr>
+		          <td class="FieldLabel">From:</td>
+		          <td class="FieldComponent" style="font-weight: bold; color: #0178B2;">Tran Thu Hien</td>
+		        </tr>
+		        <tr>
+		          <td class="FieldLabel">Date:</td>
+		          <td class="FieldComponent">jun 4,2008</td>
+		        </tr>
+		        <tr>
+		          <td class="FieldLabel">To:</td>
+		          <td class="FieldComponent">Dang Tung</td>
+		        </tr>
+			    </table>
+		    </div>
+		  </div>
+		  <div class="InvitationRight" >
+		    <div class="Label" >
+			    Join my network on eXo social
+			  </div>
+			  <div class="Text" >
+			    I've creat my own pleat on eXo social and I like connect to me so we can stay in touch. your can view my block, my photo, my list and all port. I've creat my own pleat on eXo social and I like connect to me so we can stay in touch. your can view my block, my photo, my list and all port. I've creat my own pleat on eXo social and I like connect to me so we can stay in touch. your can view my block, my photo, my list and all port. I've creat my own pleat on eXo social and I like connect to me so we can stay in touch. your can view my block, my photo, my list and all port.
+			  </div>
+			  <div class="UIAction"> 
+	        <table class="ActionContainer">
+	        	<tbody>
+		        	<tr>
+		        		<td>
+				          
+		          		<div class="ActionButton" onclick="#">
+		                <div class="ButtonLeft">
+		                  <div class="ButtonRight">
+		                    <div class="ButtonMiddle">
+		                      <a style="color: #4F718A;" href="<%= uicomponent.event("Accept") %>"><span>Accept</span></a>
+		                    </div>
+		                  </div>
+		                </div>
+		           		</div>
+		           		<div class="ActionButton" onclick="#">
+		                <div class="ButtonLeft">
+		                  <div class="ButtonRight">
+		                    <div class="ButtonMiddle">
+		                      <a style="color: #4F718A;" href="<%= uicomponent.event("Decline") %>"><span>Decline</span></a>
+		                    </div>
+		                  </div>
+		                </div>
+		           		</div>
+		          		        
+		          	</td>
+		          </tr>  
+		        </tbody>
+	        </table>
+	      </div>
+		  </div>
+		  <div style="clear: left"><span></span></div>
+		</div>
+	</div>
+	
+	<!--<div style="float: left"><a href="<%= uicomponent.event("Accept") %>"><span>Accept</span></a></div>
 	<div style="float: right"><a href="<%= uicomponent.event("Decline") %>"><span>Decline</span></a></div>
-	<div style="clear: both"><span></span></div>
+	<div style="clear: both"><span></span></div>-->
 	<%uiform.end()%>
 </div>
