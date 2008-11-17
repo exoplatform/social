@@ -43,8 +43,7 @@ public class UISpacesManage extends UIContainer {
 
   public UISpacesManage() throws Exception {
     addChild(ManageSpaceControlArea.class,null,null);
-    addChild(ManageUserSpaceWorkingArea.class, null, null);
-    addChild(ManageAllSpaceWorkingArea.class, null, null).setRendered(false);
+    addChild(UIManageSpaceWorkingArea.class, null, null);
     addChild(UISpaceInvitation.class,null,null).setRendered(false);
   }
   

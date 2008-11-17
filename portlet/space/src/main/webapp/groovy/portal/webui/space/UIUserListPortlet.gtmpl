@@ -1,4 +1,5 @@
-<div class="UIUserListPortlet" >
+<% import org.exoplatform.services.organization.User %>
+<div class="UIUserListPortlet" id="$uicomponent.id">
 	<div class="LabelUserlist">
 	  <div class="Label">Everyone</div>
 	  <div class="UserlistButton">
@@ -12,29 +13,32 @@
 	  </div>
 	  <div style="clear: left;"><span></span></div>
 	</div>
+	<% List<User> listUsers = uicomponent.getUsersInSpace(); 
+		 for(user in listUsers) {
+	%>
 	<div class="UserlistContainer">
 		<div class="UserlistContent">
 			<div class="AvartarIcon">
 				<div class="UserContainer">
-				  <div class="UserBarTitleName">Hieu Luong</div>
+				  <div class="UserBarTitleName"><%= user.getUserName() %></div>
 				  <div class="UIForm">
 						<table class="UIFormGrid">
 						  <tbody>
 						    <tr>
 						      <td class="FieldLabel">First Name:</td>
-						      <td class="FieldComponent">Luong Trung</td>
+						      <td class="FieldComponent"><%= user.getFirstName() %></td>
 						    </tr>
 						    <tr>
 						      <td class="FieldLabel">Last Name:</td>
-						      <td class="FieldComponent">Hieu</td>
+						      <td class="FieldComponent"><%= user.getLastName() %></td>
 						    </tr>
 						    <tr>
 						      <td class="FieldLabel">Email address:</td>
-						      <td class="FieldComponent">luonghieu@yahoo.com</td>
+						      <td class="FieldComponent"><%= user.getEmail() %></td>
 						    </tr>
 						    <tr>
 						      <td class="FieldLabel">Membership:</td>
-						      <td class="FieldComponent">Member</td>
+						      <td class="FieldComponent"><%= uicomponent.getMemberships(user.getUserName()) %></td>
 						    </tr>
 						  </tbody>
 						</table>
@@ -43,66 +47,5 @@
 			</div>
 		</div>
 	</div>
-	<div class="UserlistContainer">
-		<div class="UserlistContent">
-			<div class="AvartarIcon">
-				<div class="UserContainer">
-				  <div class="UserBarTitleName">Hieu Luong</div>
-				  <div class="UIForm">
-						<table class="UIFormGrid">
-						  <tbody>
-						    <tr>
-						      <td class="FieldLabel">First Name:</td>
-						      <td class="FieldComponent">Luong Trung</td>
-						    </tr>
-						    <tr>
-						      <td class="FieldLabel">Last Name:</td>
-						      <td class="FieldComponent">Hieu</td>
-						    </tr>
-						    <tr>
-						      <td class="FieldLabel">Email address:</td>
-						      <td class="FieldComponent">luonghieu@yahoo.com</td>
-						    </tr>
-						    <tr>
-						      <td class="FieldLabel">Membership:</td>
-						      <td class="FieldComponent">Member</td>
-						    </tr>
-						  </tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="UserlistContainer">
-		<div class="UserlistContent">
-			<div class="AvartarIcon">
-				<div class="UserContainer">
-				  <div class="UserBarTitleName">Hieu Luong</div>
-				  <div class="UIForm">
-						<table class="UIFormGrid">
-						  <tbody>
-						    <tr>
-						      <td class="FieldLabel">First Name:</td>
-						      <td class="FieldComponent">Luong Trung</td>
-						    </tr>
-						    <tr>
-						      <td class="FieldLabel">Last Name:</td>
-						      <td class="FieldComponent">Hieu</td>
-						    </tr>
-						    <tr>
-						      <td class="FieldLabel">Email address:</td>
-						      <td class="FieldComponent">luonghieu@yahoo.com</td>
-						    </tr>
-						    <tr>
-						      <td class="FieldLabel">Membership:</td>
-						      <td class="FieldComponent">Member</td>
-						    </tr>
-						  </tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<% } %>
 </div>

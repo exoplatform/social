@@ -1,0 +1,92 @@
+<% 
+	import org.exoplatform.web.application.JavascriptManager;
+	import org.exoplatform.portal.webui.util.Util ;
+	def allSpaces = uicomponent.getAllSpaces();
+	def rcontext = _ctx.getRequestContext() ;
+  JavascriptManager jsmanager = rcontext.getJavascriptManager();
+  jsmanager.importJavascript("social.webui.UIManageSpace") ;
+  
+%>
+<div class="UIManageSpaceWorkingArea" id="$uicomponent.id">
+	<% if(uicomponent.isAllSpace()) { %>
+		<div class="LabelSpace"><a a href="<%= uicomponent.event("ChangeListSpaces") %>">All Spaces<span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[only your]</span></a></div>
+	<% } else { %>
+		<div class="LabelSpace"><a href="<%= uicomponent.event("ChangeListSpaces") %>">Your Spaces<span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[All]</span></a></div>
+	<% } %>
+	<div class="LabelBrown">Browse by: <span style="font-weight: bold; color: #6598d1;">Name, Tags, Size, Activity</span></div>
+	<div class="ContainerSpace">
+		<% for(objSpace in allSpaces) { %>
+			<div class="ContentSpace">
+				<div class="CommunityIcon"><span></span></div>
+				<div class="CommunityContainer">
+					<div class="CommunityMane Line">
+					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + objSpace.getCleanedName() ; %>
+						<div class="CommunityName" style="float: left; cursor:pointer;"><a href="$pageURI" class="CommunityNameMiddle"><%= objSpace.getName() %></a></div>
+						<% 
+							 String requestJoin = uicomponent.event("RequestJoin", objSpace.getId()) + "; return false;";
+							 int option = uicomponent.displayAction(objSpace.getId())
+							 if(option == 0) {
+						%>
+						<div class ="SpaceAction" onclick="$requestJoin">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Request to join</div>
+						    </div>
+						  </div>
+						</div>
+						<% } else if(option == 1){ %>
+						<div class ="SpaceAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Membership pending</div>
+						    </div>
+						  </div>
+						</div>
+						<% } else { %>
+						<% String leaveAction = uicomponent.event("LeaveSpace",objSpace.getId());%>
+						<div class ="SpaceAction" onclick="$leaveAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Leave</div>
+						    </div>
+						  </div>
+						</div>	
+							<% if(option == 2) { %>
+							<% String editAction = uicomponent.event("EditSpace",objSpace.getId());%>
+						<div class ="SpaceAction" onclick="$editAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Edit</div>
+						    </div>
+						  </div>
+						</div>
+							<% } %>
+						<% } %>
+						<% if(uicomponent.isInInvitedList(objSpace.getInvitedUser())) { %>
+						<% String acceptAction = uicomponent.event("AcceptUser", objSpace.getId()) + "; return false;"; %>
+						<div class ="SpaceAction" onclick="$acceptAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Accept</div>
+						    </div>
+						  </div>
+						</div>
+						<% String denyAction = uicomponent.event("DenyUser", objSpace.getId()) + "; return false;"; %>
+						<div class ="SpaceAction" onclick="$denyAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Deny</div>
+						    </div>
+						  </div>
+						</div>
+						<% } %>
+						<div style="clear: both;"><span></span></div>
+					</div>
+					<div class="Text Line"><%= objSpace.getDescription() %></div>
+					<div class="TagsName">Tags: <%= objSpace.getTag() %></div>
+				</div>
+				<div style="clear: left;"><span></span></div>
+			</div>
+		<% } %>
+	</div>
+</div>
