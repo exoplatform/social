@@ -3,43 +3,6 @@
 	background: #ECEDEE;
 }
 
-.UIUserListPortlet .LabelUserlist {
-	border-bottom: 1px dotted #b7b7b7;
-	height: 36px;
-	margin-bottom: 2px;
-}
-
-.UIUserListPortlet .LabelUserlist .Label {
-	color: #005298;
-	font-size: 18px;
-	font-weight: bold;
-	line-height: 30px;
-	float: left;
-}
-
-.UIUserListPortlet .LabelUserlist .UserlistButton {
-	margin: 8px 0px 0px 8px;
-	float: left;
-	cursor: pointer;
-}
-
-.UIUserListPortlet .LabelUserlist .UserlistButton .LeftButton {
-	background:transparent url(background/LeftButton3x18.gif) no-repeat scroll left center;
-	padding-left:3px;
-}
-
-.UIUserListPortlet .LabelUserlist .UserlistButton .RightButton {
-	background:transparent url(background/RightButton3x18.gif) no-repeat scroll right center;
-	padding-right:3px;
-}
-
-.UIUserListPortlet .LabelUserlist .UserlistButton .CenterButton {
-	background:transparent url(background/CenterButton1x18.gif) repeat-x ;
-	line-height: 18px;
-	padding: 0px 8px;
-}
-
-
 .UIUserListPortlet .UserlistContainer {
 	border: 1px solid #b7b7b7;
 	padding: 4px;

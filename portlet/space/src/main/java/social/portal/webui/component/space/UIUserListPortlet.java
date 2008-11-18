@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
@@ -29,7 +30,9 @@ import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 /**
@@ -45,9 +48,32 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UIUserListPortlet extends UIPortletApplication {
   
+  private UIPageIterator iterator_;
+  
   public UIUserListPortlet() throws Exception {
+    iterator_ = createUIComponent(UIPageIterator.class, null, null);
+    addChild(iterator_);
+    init();
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void init() throws Exception {
+    int n = iterator_.getCurrentPage();
+    String spaceName = getSpaceName();
+    List<User> users = new ArrayList<User>();
+    String groupId = "/spaces/" + spaceName;
+    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
+    PageList usersPageList = orgSrc.getUserHandler().findUsersByGroup(groupId);
+    users = usersPageList.currentPage();
+    PageList pageList = new ObjectPageList(users,3);
+    iterator_.setPageList(pageList);
+    if (n <= pageList.getAvailablePage()) iterator_.setCurrentPage(n);
   }
 
+  public UIPageIterator getUIPageIterator() throws Exception { 
+    return iterator_;
+    }
+  
   private String getSpaceName() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     HttpServletRequest request = pcontext.getRequest();
@@ -59,13 +85,8 @@ public class UIUserListPortlet extends UIPortletApplication {
   
   @SuppressWarnings("unchecked")
   public List<User> getUsersInSpace() throws Exception{
-    String spaceName = getSpaceName();
-    List<User> users = new ArrayList<User>();
-    String groupId = "/spaces/" + spaceName;
-    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
-    PageList usersPageList = orgSrc.getUserHandler().findUsersByGroup(groupId);
-    users = usersPageList.currentPage();
-    return users;
+    init();
+    return iterator_.getCurrentPageData();
   }
   
   @SuppressWarnings("unchecked")

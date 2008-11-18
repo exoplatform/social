@@ -1,18 +1,10 @@
-<% import org.exoplatform.services.organization.User %>
+<% 	
+	import org.exoplatform.services.organization.User; 
+	import org.exoplatform.webui.core.UIPageIterator;
+	 	
+	UIPageIterator iterator = uicomponent.getUIPageIterator();
+%>
 <div class="UIUserListPortlet" id="$uicomponent.id">
-	<div class="LabelUserlist">
-	  <div class="Label">Everyone</div>
-	  <div class="UserlistButton">
-		  <div class="LeftButton">
-	      <div class="RightButton">
-	        <div class="CenterButton">
-	        	Show ony your contact
-	        </div>
-	      </div>
-	    </div>
-	  </div>
-	  <div style="clear: left;"><span></span></div>
-	</div>
 	<% List<User> listUsers = uicomponent.getUsersInSpace(); 
 		 for(user in listUsers) {
 	%>
@@ -48,4 +40,5 @@
 		</div>
 	</div>
 	<% } %>
+	<div><%_ctx.renderUIComponent(iterator) ;%></div>
 </div>

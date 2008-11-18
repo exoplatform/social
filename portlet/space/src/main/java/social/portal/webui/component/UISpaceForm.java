@@ -31,6 +31,7 @@ import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -109,6 +110,7 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       space.setDescription("edit this description to explain what your space is about");
       space.setTag("");
       //--end---
+      SpaceApplicationHandler spaceAppHandler = uiForm.getApplicationComponent(SpaceApplicationHandler.class);
       spaceSrc.saveSpace(space, true);
       uiForm.getAncestorOfType(UIPopupContainer.class).deActivate();
       
@@ -136,6 +138,9 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       spaceNav.addNode(node) ;
       dataService.update(spaceNav) ;
       setNavigation(uiPortal.getNavigations(), spaceNav) ;
+      // add user list to default application
+      spaceAppHandler.installApplication(space.getId(), "UserListPortlet");
+      spaceAppHandler.activeApplication(space.getId(), "UserListPortlet");
       requestContext.addUIComponentToUpdateByAjax(uiPorlet);
     }
   }
