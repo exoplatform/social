@@ -62,7 +62,7 @@
 						</div>
 							<% } %>
 						<% } %>
-						<% if(uicomponent.isInInvitedList(objSpace.getInvitedUser())) { %>
+						<% if(uicomponent.isInInvitedList(objSpace.getInvitedUser()) && option < 2) { %>
 						<% String acceptAction = uicomponent.event("AcceptUser", objSpace.getId()) + "; return false;"; %>
 						<div class ="SpaceAction" onclick="$acceptAction">
 						  <div class="LeftButton">

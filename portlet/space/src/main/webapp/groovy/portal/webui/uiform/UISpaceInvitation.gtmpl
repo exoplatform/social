@@ -15,15 +15,11 @@
 			      </tr>
 		        <tr>
 		          <td class="FieldLabel">From:</td>
-		          <td class="FieldComponent" style="font-weight: bold; color: #0178B2;">Tran Thu Hien</td>
-		        </tr>
-		        <tr>
-		          <td class="FieldLabel">Date:</td>
-		          <td class="FieldComponent">jun 4,2008</td>
+		          <td class="FieldComponent" style="font-weight: bold; color: #0178B2;"><%= uicomponent.getLeader() %></td>
 		        </tr>
 		        <tr>
 		          <td class="FieldLabel">To:</td>
-		          <td class="FieldComponent">Dang Tung</td>
+		          <td class="FieldComponent"><%= _ctx.getRequestContext().getRemoteUser() %></td>
 		        </tr>
 			    </table>
 		    </div>

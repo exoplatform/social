@@ -56,16 +56,16 @@ public class UISpacesManage extends UIContainer {
       UISpaceInvitation uiSpaceInvitation = uiSpaceManage.getChild(UISpaceInvitation.class);
       uiPortlet.getChild(UISpaceSetting.class).setRendered(false);
       uiSpaceManage.setRendered(true);
-      String user = requestContext.getRequestParameter("user");
+      String leader = requestContext.getRequestParameter("leader");
       String spaceId = requestContext.getRequestParameter("space");
       SpaceService spaceSrc = uiSpaceManage.getApplicationComponent(SpaceService.class);
       Space space = spaceSrc.getSpace(spaceId);
       String invitedUser = space.getInvitedUser();
-      if(invitedUser == null ||(invitedUser!=null && !invitedUser.contains(user))) {
+      if(invitedUser == null ||(invitedUser!=null && !invitedUser.contains(requestContext.getRemoteUser()))) {
         uiApp.addMessage(new ApplicationMessage("UISpaceManage.msg.user-revoke", null));
         requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       } else {
-        uiSpaceInvitation.setValue(invitedUser, space);
+        uiSpaceInvitation.setValue(leader, space);
         uiSpaceInvitation.setRendered(true);
       }
       requestContext.addUIComponentToUpdateByAjax(uiPortlet);

@@ -21,9 +21,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
+import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -155,11 +159,60 @@ public class UIManageSpaceWorkingArea extends UIContainer {
   
   static public class AcceptUserActionListener extends EventListener<UIManageSpaceWorkingArea> {
     public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
+      UIManageSpaceWorkingArea uiForm = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String userName = requestContext.getRemoteUser();
+      SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
+      String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
+      Space space = spaceSrc.getSpace(spaceId);
+      UIApplication uiApp = requestContext.getUIApplication();
+      
+      // remove user from invited user list
+      String invitedUser = space.getInvitedUser();
+      invitedUser = invitedUser.replace(userName, "");
+      if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
+      if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
+      if(invitedUser.equals("")) invitedUser=null;
+      space.setInvitedUser(invitedUser);
+      spaceSrc.saveSpace(space, false);
+      
+      // add member
+      OrganizationService orgSrc = uiForm.getApplicationComponent(OrganizationService.class);
+      UserHandler userHandler = orgSrc.getUserHandler();
+      User user = userHandler.findUserByName(userName);
+      MembershipType mbShipType = orgSrc.getMembershipTypeHandler().findMembershipType("member");
+      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
+      Group spaceGroup = orgSrc.getGroupHandler().findGroupById(space.getGroupId());
+      membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
+      
+      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.accept", null));
+      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }
   
   static public class DenyUserActionListener extends EventListener<UIManageSpaceWorkingArea> {
     public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
+      String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
+      UIManageSpaceWorkingArea uiForm = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String userName = requestContext.getRemoteUser();
+      SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
+      Space space = spaceSrc.getSpace(spaceId);
+      UIApplication uiApp = requestContext.getUIApplication();
+      
+      // remove user from invited user list
+      String invitedUser = space.getInvitedUser();
+      invitedUser = invitedUser.replace(userName, "");
+      if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
+      if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
+      if(invitedUser.equals("")) invitedUser=null;
+      space.setInvitedUser(invitedUser);
+      spaceSrc.saveSpace(space, false);
+      
+      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
+      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }
   

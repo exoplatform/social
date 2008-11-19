@@ -50,19 +50,21 @@ import org.exoplatform.webui.form.UIForm;
 )
 public class UISpaceInvitation extends UIForm{
   
-  private static String userName;
-  private static Space space;
+  private String leaderName;
+  private Space space;
   
   static public class AcceptActionListener extends EventListener<UISpaceInvitation> {
     public void execute(Event<UISpaceInvitation> event) throws Exception {
       UISpaceInvitation uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
+      Space space = uiForm.space;
       String invitedUser = space.getInvitedUser();
       UIApplication uiApp = requestContext.getUIApplication();
+      String remoteUser = requestContext.getRemoteUser();
       
       // remove user from invited user list
-      invitedUser = invitedUser.replace(invitedUser, "");
+      invitedUser = invitedUser.replace(remoteUser, "");
       if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
       if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
       if(invitedUser.equals("")) invitedUser=null;
@@ -72,7 +74,7 @@ public class UISpaceInvitation extends UIForm{
       // add member
       OrganizationService orgSrc = uiForm.getApplicationComponent(OrganizationService.class);
       UserHandler userHandler = orgSrc.getUserHandler();
-      User user = userHandler.findUserByName(userName);
+      User user = userHandler.findUserByName(remoteUser);
       MembershipType mbShipType = orgSrc.getMembershipTypeHandler().findMembershipType("member");
       MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
       Group spaceGroup = orgSrc.getGroupHandler().findGroupById(space.getGroupId());
@@ -95,11 +97,13 @@ public class UISpaceInvitation extends UIForm{
       UISpaceInvitation uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
+      Space space = uiForm.space;
       String invitedUser = space.getInvitedUser();
       UIApplication uiApp = requestContext.getUIApplication();
+      String remoteUser = requestContext.getRemoteUser();
       
       // remove user from invited user list
-      invitedUser = invitedUser.replace(invitedUser, "");
+      invitedUser = invitedUser.replace(remoteUser, "");
       if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
       if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
       if(invitedUser.equals("")) invitedUser=null;
@@ -110,14 +114,18 @@ public class UISpaceInvitation extends UIForm{
       uiPortlet.getChild(UISpaceSetting.class).setRendered(false);
       uiPortlet.getChild(UISpacesManage.class).setRendered(true);
       uiForm.setRendered(false);
-    uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
+      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       requestContext.addUIComponentToUpdateByAjax(uiPortlet);
     }
   }
   
   public void setValue(String userName, Space space) {
-    this.userName = userName;
+    this.leaderName = userName;
     this.space = space;
+  }
+  
+  public String getLeader() {
+    return leaderName;
   }
 }
