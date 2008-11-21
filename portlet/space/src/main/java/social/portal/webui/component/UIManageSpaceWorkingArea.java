@@ -20,7 +20,19 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.UIWelcomeComponent;
+import org.exoplatform.portal.webui.portal.PageNodeEvent;
+import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.portal.webui.workspace.UIControlWorkspace.UIControlWSWorkingArea;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
@@ -165,7 +177,6 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
       Space space = spaceSrc.getSpace(spaceId);
-      UIApplication uiApp = requestContext.getUIApplication();
       
       // remove user from invited user list
       String invitedUser = space.getInvitedUser();
@@ -185,9 +196,31 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       Group spaceGroup = orgSrc.getGroupHandler().findGroupById(space.getGroupId());
       membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
       
-      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.accept", null));
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+////      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.accept", null));
+////      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       requestContext.addUIComponentToUpdateByAjax(uiForm);
+      
+      // auto reload portal navigation
+      UIPortal uiPortal = Util.getUIPortal();
+      UserPortalConfigService dataService = uiForm.getApplicationComponent(UserPortalConfigService.class);
+      UserPortalConfig portalConfig  = dataService.getUserPortalConfig(uiPortal.getName(), userName);
+      uiPortal.setNavigation(portalConfig.getNavigations());
+      
+      UIPortalApplication uiPortalApp = uiPortal.getAncestorOfType(UIPortalApplication.class);
+      PortalRequestContext prContext = Util.getPortalRequestContext();
+      
+      UIControlWorkspace uiControl = uiPortalApp.getChildById(UIPortalApplication.UI_CONTROL_WS_ID);
+      prContext.addUIComponentToUpdateByAjax(uiControl);    
+      
+      UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+      prContext.addUIComponentToUpdateByAjax(uiWorkingWS) ;
+      prContext.setFullRender(true);
+      
+      // go to space node manage
+      PageNavigation portalNavigation = dataService.getPageNavigation(PortalConfig.PORTAL_TYPE, uiPortal.getName());
+      PageNodeEvent<UIPortal> pnevent = 
+        new PageNodeEvent<UIPortal>(uiPortal, PageNodeEvent.CHANGE_PAGE_NODE, Integer.toString(portalNavigation.getId()) + "::spaces") ;
+      uiPortal.broadcast(pnevent, Event.Phase.PROCESS) ;
     }
   }
   
