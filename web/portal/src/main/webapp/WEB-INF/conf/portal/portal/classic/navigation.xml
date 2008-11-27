@@ -21,19 +21,19 @@
 	    <uri>mydashboard</uri>
 	    <name>mydashboard</name>
 	    <label>#{portal.classic.mydashboard}</label>
-        <page-reference>portal::classic::MyDashboard</page-reference>
+      <page-reference>portal::classic::MyDashboard</page-reference>
 	 </node>
 	 <node>
 	    <uri>people</uri>
 	    <name>people</name>
 	    <label>#{portal.classic.people}</label>
-       <page-reference>portal::classic::Profile</page-reference>
+      <page-reference>portal::classic::Profile</page-reference>
 	  </node>
       <node>
 	    <uri>canvas</uri>
 	    <name>canvas</name>
 	    <label>#{portal.classic.canvas}</label>
-        <page-reference>portal::classic::Canvas</page-reference>
+      <page-reference>portal::classic::Canvas</page-reference>
 	  </node>
 	  <node>
 	    <uri>spaces</uri>
