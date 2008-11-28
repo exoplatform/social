@@ -78,11 +78,11 @@
             </property>
             <property>
               <name>org.apache.commons.logging.simplelog.defaultlog</name>
-              <value>info</value>
+              <value>warn</value>
             </property>
             <property>
               <name>org.apache.commons.logging.simplelog.log.[eXo]</name>
-              <value>debug</value>
+              <value>warn</value>
             </property>
             <property>
               <name>org.apache.commons.logging.simplelog.log.net.hibernate</name>
@@ -137,7 +137,7 @@
         <org.exoplatform.pc.version>2.0.4</org.exoplatform.pc.version>
         <org.exoplatform.portal.version>2.5-SNAPSHOT</org.exoplatform.portal.version>
         <org.exoplatform.social.version>trunk</org.exoplatform.social.version>
-	<org.shindig.version>r706872</org.shindig.version>
+		<org.shindig.version>0.8.1-1-r719456</org.shindig.version>
         <test.classes>Test</test.classes>
         <test.skip>true</test.skip>
       </properties>
