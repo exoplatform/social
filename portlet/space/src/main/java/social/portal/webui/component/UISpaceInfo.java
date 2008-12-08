@@ -45,17 +45,13 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 )
 public class UISpaceInfo extends UIForm {
 
-  final private static String SPACE_INFO = "info";
   
   public UISpaceInfo() throws Exception {
-    UIFormInputSet uiSpaceInfo = new UIFormInputSet(SPACE_INFO);
-    uiSpaceInfo.
-      addUIFormInput((UIFormStringInput)new UIFormStringInput("id","id",null).setRendered(false)).
-      addUIFormInput(new UIFormStringInput("name","name",null).addValidator(MandatoryValidator.class)).
-      addUIFormInput(new UIFormTextAreaInput("description","description",null)
-          .addValidator(StringLengthValidator.class, 0, 255)).
-      addUIFormInput(new UIFormStringInput("tag","tag",null));
-    addUIFormInput(uiSpaceInfo);
+    addUIFormInput((UIFormStringInput)new UIFormStringInput("id","id",null).setRendered(false)).
+    addUIFormInput(new UIFormStringInput("name","name",null).addValidator(MandatoryValidator.class)).
+    addUIFormInput(new UIFormTextAreaInput("description","description",null)
+        .addValidator(StringLengthValidator.class, 0, 255)).
+    addUIFormInput(new UIFormStringInput("tag","tag",null));
   }
   
   public void setValue(Space space) throws Exception {
@@ -66,11 +62,12 @@ public class UISpaceInfo extends UIForm {
     public void execute(Event<UISpaceInfo> event) throws Exception {
       UISpaceInfo uiSpaceInfo = event.getSource();
       SpaceService spaceSrc = uiSpaceInfo.getApplicationComponent(SpaceService.class);
-      UIFormInputSet uiFormInput = uiSpaceInfo.getChild(UIFormInputSet.class);
-      String id = uiFormInput.getUIStringInput("id").getValue();
+      String id = uiSpaceInfo.getUIStringInput("id").getValue();
       Space space = spaceSrc.getSpace(id);
       uiSpaceInfo.invokeSetBindingBean(space);
       spaceSrc.saveSpace(space, false);
+      UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceSetting);
     }
   }
 }

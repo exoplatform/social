@@ -82,8 +82,12 @@
 						<% } %>
 						<div style="clear: both;"><span></span></div>
 					</div>
-					<div class="Text Line"><%= objSpace.getDescription() %></div>
-					<div class="TagsName">Tags: <%= objSpace.getTag() %></div>
+					<% 
+						String description = objSpace.getDescription() != null ? objSpace.getDescription() : ""; 
+						String tag = objSpace.getTag() != null ? objSpace.getTag() : "";
+					%>
+					<div class="Text Line">Description: <%= description %></div>
+					<div class="TagsName">Tags: <%= tag %></div>
 				</div>
 				<div style="clear: left;"><span></span></div>
 			</div>

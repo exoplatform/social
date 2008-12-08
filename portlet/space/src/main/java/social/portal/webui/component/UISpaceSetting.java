@@ -17,6 +17,8 @@
 package social.portal.webui.component;
 
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -40,7 +42,7 @@ public class UISpaceSetting extends UIContainer {
   final private static String SPACE_INFO = "info";
   final private static String SPACE_APP = "app";
   final private static String SPACE_MEMBER = "members";
-  private String spaceName;
+  private Space space;
   
   public UISpaceSetting() throws Exception {
     UITabPane uiTabPane = addChild(UITabPane.class, null, null);
@@ -58,11 +60,17 @@ public class UISpaceSetting extends UIContainer {
     uiSpaceMember.setValue(space);
     UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).getChild(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
-    this.spaceName = space.getName();
+    this.space = space;
   } 
   
   public String getSpaceName() {
-    return spaceName;
+    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
+    try {
+      return spaceSrc.getSpace(space.getId()).getName();
+    } catch (SpaceException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
   
   static public class BackActionListener extends EventListener<UISpaceSetting> {
