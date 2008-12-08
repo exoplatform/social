@@ -36,8 +36,8 @@ public class Space {
   private String invitedUser;
   private String type;
   
-  public final static String WEBOS = "webos";
-  public final static String CLASSIC = "classic";
+//  public final static String WEBOS = "webos";
+//  public final static String CLASSIC = "classic";
   public final static String ACTIVE_STATUS = "actived";
   public final static String DEACTIVE_STATUS = "deactived";
   public final static String INSTALL_STATUS = "install";
@@ -105,7 +105,8 @@ public class Space {
   public void setPendingUser(String pendingUser) {
     this.pendingUser = pendingUser;
   }
-  
+
+  //TODO: why only one pending user?
   public String getPendingUser() {
     return pendingUser;
   }

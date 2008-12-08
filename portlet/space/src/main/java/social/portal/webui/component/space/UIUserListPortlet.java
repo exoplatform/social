@@ -60,7 +60,7 @@ public class UIUserListPortlet extends UIPortletApplication {
   public void init() throws Exception {
     int n = iterator_.getCurrentPage();
     String spaceName = getSpaceName();
-    List<User> users = new ArrayList<User>();
+    List<User> users;
     String groupId = "/spaces/" + spaceName;
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
     PageList usersPageList = orgSrc.getUserHandler().findUsersByGroup(groupId);

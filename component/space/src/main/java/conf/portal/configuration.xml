@@ -7,8 +7,8 @@
   </component>
   
   <component>
-    <key>org.exoplatform.social.application.SpaceApplicationHandler</key>
-    <type>org.exoplatform.social.application.impl.SpaceApplicationHandlerImpl</type>
+    <key>org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler</key>
+    <type>org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler</type>
   </component>     
   
   <external-component-plugins>

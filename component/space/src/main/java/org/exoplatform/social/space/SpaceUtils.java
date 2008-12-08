@@ -26,6 +26,7 @@ import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -35,15 +36,10 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.portletcontainer.pci.model.Description;
 import org.exoplatform.services.portletcontainer.pci.model.DisplayName;
+import com.ibm.icu.text.Transliterator;
 
 
-/**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Sep 23, 2008          
- */
-public class SpaceUtils {
+public class  SpaceUtils {
   @SuppressWarnings("unchecked")
   public static Group createGroupFromExistGroup(Group parrentGroup, Group exitsGroup, String name) throws Exception {
     PortalContainer portalContainer = PortalContainer.getInstance();
@@ -78,8 +74,7 @@ public class SpaceUtils {
       List<Application> applications = cate.getApplications();
       Iterator<Application> appIterator = applications.iterator() ;
       while (appIterator.hasNext()) {
-        Application application = (Application) appIterator.next();
-        list.add(application);
+        list.add(appIterator.next());
       }
     }
     return list;
@@ -96,22 +91,45 @@ public class SpaceUtils {
   }
   
   public static String cleanString(String str) {
+                                                                
+    Transliterator accentsconverter = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
+
+    str = accentsconverter.transliterate(str); 
+
+    //the character ? seems to not be changed to d by the transliterate function 
+
     StringBuffer cleanedStr = new StringBuffer(str.trim());
     // delete special character
-    for(int i = cleanedStr.length()-1; i >= 0; i--) {
+    for(int i = 0; i < cleanedStr.length(); i++) {
       char c = cleanedStr.charAt(i);
-      if(!(Character.isLetterOrDigit(c) || c == '_' || c == ' ')) {
-        cleanedStr.deleteCharAt(i);
+      if(c == ' ') {
+        if (i > 0 && cleanedStr.charAt(i - 1) == '_') {
+          cleanedStr.deleteCharAt(i--);
+        }
+        else {
+          c = '_';
+          cleanedStr.setCharAt(i, c);
+        }
+        continue;
       }
-    }
-    // replace ' ' character by '_'
-    for(int i = cleanedStr.length()-1; i > 0; i--) {
-      if(cleanedStr.charAt(i) == ' ') cleanedStr.setCharAt(i, '_');
-    }
-    // retain '_' character but if there are many instances replace with one
-    for(int i = cleanedStr.length()-1; i > 0; i--) {
-      if(cleanedStr.charAt(i) == '_' && cleanedStr.charAt(i-1) == '_') cleanedStr.deleteCharAt(i);
+
+      if(!(Character.isLetterOrDigit(c) || c == '_')) {
+        cleanedStr.deleteCharAt(i--);
+        continue;
+      }
+
+      if(i > 0 && c == '_' && cleanedStr.charAt(i-1) == '_')
+        cleanedStr.deleteCharAt(i--);
     }
     return cleanedStr.toString().toLowerCase();
+  }
+
+  public static void setNavigation(List<PageNavigation> navs, PageNavigation nav) {
+    for(int i = 0; i < navs.size(); i++) {
+      if(navs.get(i).getId() == nav.getId()) {
+        navs.set(i, nav);
+        return;
+      }
+    }
   }
 }

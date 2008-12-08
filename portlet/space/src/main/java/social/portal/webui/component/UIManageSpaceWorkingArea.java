@@ -99,8 +99,8 @@ public class UIManageSpaceWorkingArea extends UIContainer {
     // 0: request to join, 1: in pendingList, 2: manager, 3: member
     String user = Util.getPortalRequestContext().getRemoteUser();
     OrganizationService orgService = getApplicationComponent(OrganizationService.class);
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space = spaceSrc.getSpace(spaceId);
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    Space space = spaceService.getSpace(spaceId);
     String pendingList = space.getPendingUser();
     MembershipHandler memberShipHandler = orgService.getMembershipHandler();
     Collection<Membership> memberShips= memberShipHandler.findMembershipsByUserAndGroup(user, space.getGroupId());
@@ -140,8 +140,8 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       uiPortlet.getChild(UISpacesManage.class).setRendered(false);
       uiSpaceSetting.setRendered(true);
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-      SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
-      Space space = spaceSrc.getSpace(spaceId);
+      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
+      Space space = spaceService.getSpace(spaceId);
       uiSpaceSetting.setValues(space);
       requestContext.addUIComponentToUpdateByAjax(uiPortlet);
     }
@@ -152,19 +152,13 @@ public class UIManageSpaceWorkingArea extends UIContainer {
     public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
       UIManageSpaceWorkingArea uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      OrganizationService orgService = uiForm.getApplicationComponent(OrganizationService.class);
-      SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
+
+      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Space space = spaceSrc.getSpace(spaceId);
-      String groupID = space.getGroupId();
-      MembershipHandler memberShipHandler = orgService.getMembershipHandler();
-      Collection<Membership> memberShips = memberShipHandler.findMembershipsByUserAndGroup(requestContext.getRemoteUser(), groupID);
-      Iterator<Membership> itr = memberShips.iterator();
-      while(itr.hasNext()) {
-        Membership mbShip = itr.next();
-        Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(requestContext.getRemoteUser(), groupID, mbShip.getMembershipType());
-        memberShipHandler.removeMembership(memberShip.getId(), true);
-      }
+      String userID = requestContext.getRemoteUser();
+
+      spaceService.leave(spaceId, userID);
+      
       requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }
@@ -173,54 +167,38 @@ public class UIManageSpaceWorkingArea extends UIContainer {
     public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
       UIManageSpaceWorkingArea uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
+
+      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
+
       String userName = requestContext.getRemoteUser();
-      SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Space space = spaceSrc.getSpace(spaceId);
-      
-      // remove user from invited user list
-      String invitedUser = space.getInvitedUser();
-      invitedUser = invitedUser.replace(userName, "");
-      if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
-      if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
-      if(invitedUser.equals("")) invitedUser=null;
-      space.setInvitedUser(invitedUser);
-      spaceSrc.saveSpace(space, false);
-      
-      // add member
-      OrganizationService orgSrc = uiForm.getApplicationComponent(OrganizationService.class);
-      UserHandler userHandler = orgSrc.getUserHandler();
-      User user = userHandler.findUserByName(userName);
-      MembershipType mbShipType = orgSrc.getMembershipTypeHandler().findMembershipType("member");
-      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
-      Group spaceGroup = orgSrc.getGroupHandler().findGroupById(space.getGroupId());
-      membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
-      
-////      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.accept", null));
-////      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+
+      spaceService.acceptInvitation(spaceId, userName);
+
       requestContext.addUIComponentToUpdateByAjax(uiForm);
-      
+
       // auto reload portal navigation
       UIPortal uiPortal = Util.getUIPortal();
       UserPortalConfigService dataService = uiForm.getApplicationComponent(UserPortalConfigService.class);
       UserPortalConfig portalConfig  = dataService.getUserPortalConfig(uiPortal.getName(), userName);
       uiPortal.setNavigation(portalConfig.getNavigations());
-      
+
       UIPortalApplication uiPortalApp = uiPortal.getAncestorOfType(UIPortalApplication.class);
       PortalRequestContext prContext = Util.getPortalRequestContext();
-      
+
       UIControlWorkspace uiControl = uiPortalApp.getChildById(UIPortalApplication.UI_CONTROL_WS_ID);
-      prContext.addUIComponentToUpdateByAjax(uiControl);    
-      
+      prContext.addUIComponentToUpdateByAjax(uiControl);
+
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
       prContext.addUIComponentToUpdateByAjax(uiWorkingWS) ;
       prContext.setFullRender(true);
-      
+
       // go to space node manage
       PageNavigation portalNavigation = dataService.getPageNavigation(PortalConfig.PORTAL_TYPE, uiPortal.getName());
-      PageNodeEvent<UIPortal> pnevent = 
+      PageNodeEvent<UIPortal> pnevent =
         new PageNodeEvent<UIPortal>(uiPortal, PageNodeEvent.CHANGE_PAGE_NODE, Integer.toString(portalNavigation.getId()) + "::spaces") ;
       uiPortal.broadcast(pnevent, Event.Phase.PROCESS) ;
+
     }
   }
   
@@ -230,18 +208,11 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       UIManageSpaceWorkingArea uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = requestContext.getRemoteUser();
-      SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
-      Space space = spaceSrc.getSpace(spaceId);
+      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
+      Space space = spaceService.getSpace(spaceId);
       UIApplication uiApp = requestContext.getUIApplication();
-      
-      // remove user from invited user list
-      String invitedUser = space.getInvitedUser();
-      invitedUser = invitedUser.replace(userName, "");
-      if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
-      if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
-      if(invitedUser.equals("")) invitedUser=null;
-      space.setInvitedUser(invitedUser);
-      spaceSrc.saveSpace(space, false);
+
+      spaceService.denyInvitation(space,  userName);
       
       uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());

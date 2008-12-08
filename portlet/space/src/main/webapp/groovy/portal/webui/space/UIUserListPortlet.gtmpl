@@ -17,20 +17,20 @@
 						<table class="UIFormGrid">
 						  <tbody>
 						    <tr>
-						      <td class="FieldLabel">First Name:</td>
+						      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.FirstName")%>:</td>
 						      <td class="FieldComponent"><%= user.getFirstName() %></td>
 						    </tr>
 						    <tr>
-						      <td class="FieldLabel">Last Name:</td>
+						      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.LastName")%>:</td>
 						      <td class="FieldComponent"><%= user.getLastName() %></td>
 						    </tr>
 						    <tr>
-						      <td class="FieldLabel">Email address:</td>
+						      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.EmailAddress")%>:</td>
 						      <td class="FieldComponent"><%= user.getEmail() %></td>
 						    </tr>
 						    <tr>
-						      <td class="FieldLabel">Membership:</td>
-						      <td class="FieldComponent"><%= uicomponent.getMemberships(user.getUserName()) %></td>
+						      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.Membership")%>:</td>
+						      <td class="FieldComponent"><%=_ctx.appRes(uicomponent.getName() + ".label." + uicomponent.getMemberships(user.getUserName()))%></td>
 						    </tr>
 						  </tbody>
 						</table>

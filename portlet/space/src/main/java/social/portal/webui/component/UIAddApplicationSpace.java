@@ -66,7 +66,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
   
   public void setSpaceId(String spaceId) throws Exception {
     this.spaceId = spaceId;
-    List<Application> list = new ArrayList<Application>() ;
+    List<Application> list;
     list = SpaceUtils.getAllApplications(spaceId);
     // remove installed app
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
@@ -86,7 +86,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
   
   @SuppressWarnings("unchecked")
   public List<Application> getApplications() throws Exception {
-    List<Application> lists = new ArrayList<Application>();
+    List<Application> lists;
     lists = iterator_.getCurrentPageData();
     return lists;
   }
@@ -107,7 +107,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
       UIAddApplicationSpace uiform = event.getSource();
       WebuiRequestContext request = event.getRequestContext();
       UIApplication uiApp = request.getUIApplication();
-      SpaceApplicationHandler spaceAppHandler = uiform.getApplicationComponent(SpaceApplicationHandler.class);
+      SpaceService spaceService = uiform.getApplicationComponent(SpaceService.class);
       SpaceService spaceSrc = uiform.getApplicationComponent(SpaceService.class);
       String appId = event.getRequestContext().getRequestParameter(OBJECTID);
       Space space = spaceSrc.getSpace(uiform.spaceId);
@@ -116,8 +116,8 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
         request.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
         return;
       }
-      spaceAppHandler.installApplication(uiform.spaceId, appId);
-      spaceAppHandler.activeApplication(uiform.spaceId, appId);
+      spaceService.installApplication(uiform.spaceId, appId);
+      spaceService.activateApplication(uiform.spaceId, appId);
       UIManageSpacesPortlet uiPortlet = (UIManageSpacesPortlet)uiform.getAncestorOfType(UIManageSpacesPortlet.class);
       UISpaceApplication uiSpaceApp = uiPortlet.getChild(UISpaceSetting.class).getChild(UITabPane.class).getChild(UISpaceApplication.class);
       uiSpaceApp.setValue(spaceSrc.getSpace(uiform.spaceId));

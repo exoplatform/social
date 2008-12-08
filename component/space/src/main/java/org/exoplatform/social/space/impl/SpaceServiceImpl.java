@@ -16,17 +16,31 @@
  */
 package org.exoplatform.social.space.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.social.application.SpaceApplicationHandler;
+import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.webui.portal.UIPortal;
+import org.exoplatform.portal.webui.portal.PageNodeEvent;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.webui.event.Event;
 
 /**
  * Created by The eXo Platform SARL
@@ -34,113 +48,280 @@ import org.exoplatform.social.space.SpaceService;
  *          tungcnw@gmail.com
  * August 29, 2008          
  */
-public class SpaceServiceImpl implements SpaceService {
+public class SpaceServiceImpl implements SpaceService{
+  final static public String SPACE_PARENT = "/spaces";
 
-  final static private String SOCIAL_SPACE = "Social_Space".intern();
-  final static private String SPACE = "Space".intern();
-  final static private String NT_UNSTRUCTURED = "nt:unstructured".intern();
-  final static private String SPACE_NODETYPE = "exo:space".intern();
-  final static private String SPACE_ID = "exo:id".intern();
-  final static private String SPACE_NAME = "exo:name".intern();
-  final static private String SPACE_GROUPID = "exo:groupId".intern();
-  final static private String SPACE_APP = "exo:app".intern();
-  final static private String SPACE_PARENT = "exo:parent".intern();
-  final static private String SPACE_DESCRIPTION = "exo:description".intern();
-  final static private String SPACE_TAG = "exo:tag".intern();
-  final static private String SPACE_PENDING_USER = "exo:pendingUser".intern();
-  final static private String SPACE_INVITED_USER = "exo:invitedUser".intern();
-  final static private String SPACE_TYPE = "exo:type".intern();
-  
-  private NodeHierarchyCreator nodeHierarchyCreator_ ;  
-  
+
+  private JCRStorage storage;
+  private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
+
   public SpaceServiceImpl(NodeHierarchyCreator nodeHierarchyCreator) throws Exception {
-    nodeHierarchyCreator_ = nodeHierarchyCreator;
+    storage = new JCRStorage(nodeHierarchyCreator);
+
   }
 
-  private Node getSocialSpaceHome() throws Exception {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
-    Node appsNode = nodeHierarchyCreator_.getPublicApplicationNode(sProvider);
+  public Space createSpace(String spaceName, String creator) throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+
+    GroupHandler groupHandler = orgService.getGroupHandler();
+    Group groupParent;
+    Group newGroup;
+    String spaceNameCleaned;
+    try {
+
+      groupParent = groupHandler.findGroupById(SPACE_PARENT);
+      //Create new group
+      newGroup = groupHandler.createGroupInstance();
+
+      spaceNameCleaned = SpaceUtils.cleanString(spaceName);
+      String groupId = groupParent.getId() + "/" + spaceNameCleaned;
+      if(groupHandler.findGroupById(groupId) != null) {
+        throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
+      }
+      newGroup.setGroupName(spaceNameCleaned);
+      newGroup.setLabel(spaceName);
+      groupHandler.addChild(groupParent, newGroup, true);
+    } catch (Exception e) {
+      if(e instanceof SpaceException) {
+        throw (SpaceException)e;
+      }
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_GROUP, e);
+    }
 
     try {
-        return appsNode.getNode(SOCIAL_SPACE);
-    } catch (PathNotFoundException ex) {
-        Node appNode = appsNode.addNode(SOCIAL_SPACE, NT_UNSTRUCTURED);
-        appsNode.save();
-        return appNode;
+      // add user as creator (manager)
+      User user = orgService.getUserHandler().findUserByName(creator);
+      MembershipType mbShipType = orgService.getMembershipTypeHandler().findMembershipType("manager");
+      orgService.getMembershipHandler().linkMembership(user, newGroup, mbShipType, true);
+    } catch (Exception e) {
+      //TODO:should rollback what has to be rollback here
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_CREATOR, e);
     }
-  }
-  
-  private Node getSpaceHome() throws Exception {
-    Node appsNode = getSocialSpaceHome();
-    
-    try {
-        return appsNode.getNode(SPACE);
-    } catch (PathNotFoundException ex) {
-        Node appNode = appsNode.addNode(SPACE, NT_UNSTRUCTURED);
-        appsNode.save();
-        return appNode;
-    }
-  }
-  
-  public List<Space> getAllSpaces() throws Exception {
-    Node spaceHomeNode = getSpaceHome();
-    List<Space> communities = new ArrayList<Space>();
-    NodeIterator iter = spaceHomeNode.getNodes();
-    Space space;
-    while (iter.hasNext()) {
-      Node spaceNode = iter.nextNode();
-      space = getSpace(spaceNode);
-      communities.add(space);
-    }
-    return communities;
-  }
 
-  public Space getSpace(String id) throws Exception {
-    Node spaceHomeNode = getSpaceHome();
-    try {
-      return getSpace(spaceHomeNode.getNode(id));
-    } catch (PathNotFoundException ex) {
-      return null;
-    }
-  }
-
-  public void saveSpace(Space space, boolean isNew) throws Exception {
-    Node spaceHomeNode = getSpaceHome();
-    saveSpace(spaceHomeNode, space, isNew);
-    spaceHomeNode.getSession().save();
-  }
-  
-  private void saveSpace(Node spaceHomeNode, Space space, boolean isNew) throws Exception {
-    Node spaceNode;
-    if(isNew) {
-      spaceNode = spaceHomeNode.addNode(space.getId(),SPACE_NODETYPE);
-      spaceNode.setProperty(SPACE_ID, space.getId());
-    } else {
-      spaceNode = spaceHomeNode.getNode(space.getId());
-    }
-    spaceNode.setProperty(SPACE_NAME, space.getName());
-    spaceNode.setProperty(SPACE_GROUPID, space.getGroupId());
-    spaceNode.setProperty(SPACE_APP, space.getApp());
-    spaceNode.setProperty(SPACE_PARENT, space.getParent());
-    spaceNode.setProperty(SPACE_DESCRIPTION, space.getDescription());
-    spaceNode.setProperty(SPACE_TAG, space.getTag());
-    spaceNode.setProperty(SPACE_PENDING_USER, space.getPendingUser());
-    spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUser());
-    spaceNode.setProperty(SPACE_TYPE, space.getType());
-  }
-  
-  private Space getSpace(Node spaceNode) throws Exception{
+    // Store space to database
     Space space = new Space();
-    if(spaceNode.hasProperty(SPACE_ID)) space.setId(spaceNode.getProperty(SPACE_ID).getString());
-    if(spaceNode.hasProperty(SPACE_NAME)) space.setName(spaceNode.getProperty(SPACE_NAME).getString());
-    if(spaceNode.hasProperty(SPACE_GROUPID)) space.setGroupId(spaceNode.getProperty(SPACE_GROUPID).getString());
-    if(spaceNode.hasProperty(SPACE_APP)) space.setApp(spaceNode.getProperty(SPACE_APP).getString());
-    if(spaceNode.hasProperty(SPACE_PARENT)) space.setParent(spaceNode.getProperty(SPACE_PARENT).getString());
-    if(spaceNode.hasProperty(SPACE_DESCRIPTION)) space.setDescription(spaceNode.getProperty(SPACE_DESCRIPTION).getString());
-    if(spaceNode.hasProperty(SPACE_TAG)) space.setTag(spaceNode.getProperty(SPACE_TAG).getString());
-    if(spaceNode.hasProperty(SPACE_PENDING_USER)) space.setPendingUser(spaceNode.getProperty(SPACE_PENDING_USER).getString());
-    if(spaceNode.hasProperty(SPACE_INVITED_USER)) space.setInvitedUser(spaceNode.getProperty(SPACE_INVITED_USER).getString());
-    if(spaceNode.hasProperty(SPACE_TYPE)) space.setType(spaceNode.getProperty(SPACE_TYPE).getString());
+    space.setName(spaceName);
+    space.setGroupId(newGroup.getId());
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setDescription("edit this description to explain what your space is about");
+    space.setTag("");
+    saveSpace(space, true);
+    
+
+    try {
+      // create the new page and node to new group
+      // the template page id
+      String tempPageId= "group::platform/user::dashboard";
+
+      //create the name and uri of the new pages
+      String newPageName = spaceNameCleaned;
+
+      // create new space navigation
+      UserPortalConfigService dataService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+
+      PageNavigation spaceNav = new PageNavigation();
+      spaceNav.setOwnerType(PortalConfig.GROUP_TYPE);
+      spaceNav.setOwnerId(newGroup.getId().substring(1));
+      spaceNav.setModifiable(true);
+      dataService.create(spaceNav);
+      UIPortal uiPortal = Util.getUIPortal();
+      List<PageNavigation> pnavigations = uiPortal.getNavigations();
+      SpaceUtils.setNavigation(pnavigations, spaceNav);
+      pnavigations.add(spaceNav) ;
+      PageNode node = dataService.createNodeFromPageTemplate(newPageName, newPageName, tempPageId, PortalConfig.GROUP_TYPE, spaceNameCleaned,null) ;
+      node.setUri(spaceNameCleaned) ;
+      spaceNav.addNode(node) ;
+      dataService.update(spaceNav) ;
+      SpaceUtils.setNavigation(uiPortal.getNavigations(), spaceNav) ;
+    } catch (Exception e) {
+      //TODO:should rollback what has to be rollback here
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
+    }
+    // add user list to default application
+    installApplication(space, "UserListPortlet");
+    activateApplication(space, "UserListPortlet");
     return space;
+  }
+
+  public void installApplication(Space space, String appId) throws SpaceException {
+    SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
+    appHandler.installApplication(space, appId);
+    setApp(space, appId, Space.INSTALL_STATUS);
+  }
+
+  public void installApplication(String spaceId, String appId) throws SpaceException {
+    installApplication(getSpace(spaceId), appId);  
+  }
+
+  public void deactiveApplication(Space space, String appId) throws SpaceException {
+    SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
+    appHandler.deactiveApplication(space, appId);
+    setApp(space, appId, Space.DEACTIVE_STATUS);
+  }
+
+  public void activateApplication(Space space, String appId) throws SpaceException {
+    SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
+    appHandler.activateApplication(space, appId);
+    setApp(space, appId, Space.ACTIVE_STATUS);
+  }
+
+  public void activateApplication(String spaceId, String appId) throws SpaceException {
+    activateApplication(getSpace(spaceId), appId);
+  }
+
+  public void removeApplication(Space space, String appId) throws SpaceException {
+    SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
+    appHandler.removeApplication(space, appId);
+    removeApp(space, appId);
+  }
+
+  public List<Space> getAllSpaces() throws SpaceException {
+    try {
+      return storage.getAllSpaces();
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+
+  public Space getSpace(String id) throws SpaceException {
+    try {
+      return storage.getSpace(id);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+
+  public void saveSpace(Space space, boolean isNew) throws SpaceException {
+    try {
+      storage.saveSpace(space, isNew);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+
+
+  public void leave(String spaceId, String userId) throws SpaceException {
+    leave(getSpace(spaceId), userId);
+  }
+
+  public void leave(Space space, String userId) throws SpaceException {
+    try {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+
+      String groupID = space.getGroupId();
+      MembershipHandler memberShipHandler = orgService.getMembershipHandler();
+      Collection<Membership> memberships = memberShipHandler.findMembershipsByUserAndGroup(userId, groupID);
+      if (memberships.size() == 0) {
+        throw new SpaceException(SpaceException.Code.USER_NOT_MEMBER);
+      }
+
+      Iterator<Membership> itr = memberships.iterator();
+      while(itr.hasNext()) {
+        Membership mbShip = itr.next();
+        //Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(userId, groupID, mbShip.getMembershipType());
+        memberShipHandler.removeMembership(mbShip.getId(), true);
+      }
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_USER, e);
+    }
+  }
+
+  public void acceptInvitation(String spaceId, String userId) throws SpaceException {
+    acceptInvitation(getSpace(spaceId), userId);
+  }
+
+  public void acceptInvitation(Space space, String userId) throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+
+    // remove user from invited user list
+    String invitedUser = space.getInvitedUser();
+
+    if (!invitedUser.contains(userId)) {
+      throw new SpaceException(SpaceException.Code.USER_NOT_INVITED);
+    }
+
+    invitedUser = invitedUser.replace(userId, "");
+    if(invitedUser.contains(",,"))
+      invitedUser = invitedUser.replace(",,", ",");
+    if(invitedUser.indexOf(",") == 0)
+      invitedUser = invitedUser.substring(1);
+    if(invitedUser.equals(""))
+      invitedUser=null;
+    space.setInvitedUser(invitedUser);
+    saveSpace(space, false);
+
+    // add member
+    try {
+      UserHandler userHandler = orgService.getUserHandler();
+      User user = userHandler.findUserByName(userId);
+      MembershipType mbShipType = orgService.getMembershipTypeHandler().findMembershipType("member");
+      MembershipHandler membershipHandler = orgService.getMembershipHandler();
+      Group spaceGroup = orgService.getGroupHandler().findGroupById(space.getGroupId());
+      membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_USER, e);
+    }
+    
+  }
+
+  public void denyInvitation(Space space, String userId) throws SpaceException {
+          // remove user from invited user list
+      String invitedUser = space.getInvitedUser();
+      invitedUser = invitedUser.replace(userId, "");
+      if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
+      if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
+      if(invitedUser.equals("")) invitedUser=null;
+      space.setInvitedUser(invitedUser);
+      saveSpace(space, false);
+  }
+
+  public List getMembers(Space space) {
+    return null;
+  }
+
+  private Map<String, SpaceApplicationHandler> getSpaceApplicationHandlers() {
+    if(this.spaceApplicationHandlers == null) {
+      this.spaceApplicationHandlers = new HashMap();
+
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      SpaceApplicationHandler appHandler = (DefaultSpaceApplicationHandler) container.getComponentInstanceOfType(DefaultSpaceApplicationHandler.class);
+      this.spaceApplicationHandlers.put(appHandler.getName(), appHandler);
+    }
+    return this.spaceApplicationHandlers;
+  }
+
+  private SpaceApplicationHandler getSpaceApplicationHandler(Space space) throws SpaceException {
+    SpaceApplicationHandler appHandler = getSpaceApplicationHandlers().get(space.getType());
+    if (appHandler == null)
+      throw new SpaceException(SpaceException.Code.UNKNOWN_SPACE_TYPE);
+    return appHandler;
+  }
+
+  private void setApp(Space space, String appId, String status) throws SpaceException {
+    String apps = space.getApp();
+    if(apps == null) apps = appId + ":" + status;
+    else {
+      if(status.equals(Space.INSTALL_STATUS)) apps = apps + "," + appId + ":" + status;
+      else {
+        String oldStatus = apps.substring(apps.indexOf(appId));
+        if(oldStatus.indexOf(",") != -1) oldStatus = oldStatus.substring(0, oldStatus.indexOf(",")-1);
+        apps = apps.replaceFirst(oldStatus, appId + ":" + status);
+      }
+    }
+    space.setApp(apps);
+    saveSpace(space, false);
+  }
+
+  private void removeApp(Space space, String appId) throws SpaceException {
+    String apps = space.getApp();
+    String oldStatus = apps.substring(apps.indexOf(appId));
+    if(oldStatus.indexOf(",") != -1) oldStatus = oldStatus.substring(0,oldStatus.indexOf(","));
+    apps = apps.replaceFirst(oldStatus, "");
+    if(apps.equals("")) apps = null;
+    space.setApp(apps);
+    saveSpace(space, false);
   }
 }

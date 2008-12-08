@@ -106,10 +106,10 @@ public class UISpaceApplication extends UIForm {
       UISpaceApplication uiSpaceApp = event.getSource();
       WebuiRequestContext context = event.getRequestContext();
       String appId = context.getRequestParameter(OBJECTID);
-      SpaceApplicationHandler applicationHandler = uiSpaceApp.getApplicationComponent(SpaceApplicationHandler.class);
-      applicationHandler.removeApplication(uiSpaceApp.space_.getId(), appId);
-      SpaceService spaceSrc = uiSpaceApp.getApplicationComponent(SpaceService.class);
-      uiSpaceApp.setValue(spaceSrc.getSpace(uiSpaceApp.space_.getId()));
+      SpaceService spaceService = uiSpaceApp.getApplicationComponent(SpaceService.class);
+      spaceService.removeApplication(uiSpaceApp.space_, appId);
+      //TODO: Why do we need to reload the Space object
+      uiSpaceApp.setValue(spaceService.getSpace(uiSpaceApp.space_.getId()));
       context.addUIComponentToUpdateByAjax(uiSpaceApp);
     }
   }

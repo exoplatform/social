@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.application;
 
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
+
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -24,8 +27,9 @@ package org.exoplatform.social.application;
  */
 
 public interface SpaceApplicationHandler {
-  public void installApplication(String spaceId, String appId) throws Exception;
-  public void activeApplication(String spaceId, String appId) throws Exception;
-  public void deactiveApplication(String spaceId, String appId) throws Exception;
-  public void removeApplication(String spaceId, String appId) throws Exception;
+  public void installApplication(Space space, String appId) throws SpaceException;
+  public void activateApplication(Space space, String appId) throws SpaceException;
+  public void deactiveApplication(Space space, String appId) throws SpaceException;
+  public void removeApplication(Space space, String appId) throws SpaceException;
+  public String getName();
 }

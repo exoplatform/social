@@ -31,7 +31,7 @@ public interface SpaceService {
    * @return get All space of Portal
    * @throws Exception
    */
-  public List<Space> getAllSpaces() throws Exception;
+  List<Space> getAllSpaces() throws SpaceException;
   
   /**
    * Gets a space by its id
@@ -39,7 +39,7 @@ public interface SpaceService {
    * @return space with id specified
    * @throws Exception
    */
-  public Space getSpace(String id) throws Exception;
+  Space getSpace(String id) throws SpaceException;
  
   /**
    * Creates new space or saves when edit it
@@ -47,5 +47,28 @@ public interface SpaceService {
    * @param isNew is true if create new space, false if edit existed space
    * @throws Exception
    */
-  public void saveSpace(Space space, boolean isNew) throws Exception;
+  void saveSpace(Space space, boolean isNew) throws SpaceException;
+
+
+  Space createSpace(String spaceName, String creator) throws SpaceException;
+
+  void leave(Space space, String userId) throws SpaceException;
+  void leave(String spaceId, String userId) throws SpaceException;
+
+  void acceptInvitation(Space space, String userId) throws SpaceException;
+  void acceptInvitation(String spaceId, String userId) throws SpaceException;
+
+  void denyInvitation(Space space, String userId) throws SpaceException;
+
+  void installApplication(Space space, String appId) throws SpaceException;
+
+  void deactiveApplication(Space space, String appId) throws SpaceException;
+
+  void activateApplication(Space space, String appId) throws SpaceException;
+
+  void removeApplication(Space space, String appId) throws SpaceException;
+
+  void installApplication(String spaceId, String appId) throws SpaceException;
+
+  void activateApplication(String spaceId, String appId) throws SpaceException;
 }
