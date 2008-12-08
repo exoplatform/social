@@ -212,7 +212,7 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       Space space = spaceService.getSpace(spaceId);
       UIApplication uiApp = requestContext.getUIApplication();
 
-      spaceService.denyInvitation(space,  userName);
+      spaceService.denyInvitation(space,  userName); ExoPersonImpl
       
       uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
