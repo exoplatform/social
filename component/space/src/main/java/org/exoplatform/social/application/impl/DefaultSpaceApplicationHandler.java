@@ -57,6 +57,39 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     deactiveApplicationClassic(space,appId);
   }
 
+  public void initSpace(Space space) throws SpaceException {
+    try {
+      // create the new page and node to new group
+      // the template page id
+      String tempPageId= "group::platform/user::dashboard";
+
+      //create the name and uri of the new pages
+      String newPageName = space.getShortName();
+
+      // create new space navigation
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      UserPortalConfigService dataService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+
+      PageNavigation spaceNav = new PageNavigation();
+      spaceNav.setOwnerType(PortalConfig.GROUP_TYPE);
+      spaceNav.setOwnerId(space.getGroupId().substring(1));
+      spaceNav.setModifiable(true);
+      dataService.create(spaceNav);
+      UIPortal uiPortal = Util.getUIPortal();
+      List<PageNavigation> pnavigations = uiPortal.getNavigations();
+      SpaceUtils.setNavigation(pnavigations, spaceNav);
+      pnavigations.add(spaceNav) ;
+      PageNode node = dataService.createNodeFromPageTemplate(newPageName, newPageName, tempPageId, PortalConfig.GROUP_TYPE, space.getShortName(), null) ;
+      node.setUri(space.getShortName()) ;
+      spaceNav.addNode(node) ;
+      dataService.update(spaceNav) ;
+      SpaceUtils.setNavigation(uiPortal.getNavigations(), spaceNav) ;
+    } catch (Exception e) {
+      //TODO:should rollback what has to be rollback here
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
+    }
+  }
+
   public void installApplication(Space space, String appId) throws SpaceException {
 
   }
@@ -118,7 +151,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       pageNode.setPageReference(page.getPageId());
       // get space navigation
       nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
-      PageNode homeNode = nav.getNode(space.getCleanedName());
+      PageNode homeNode = nav.getNode(space.getShortName());
       List<PageNode> childNodes = homeNode.getChildren();
       if(childNodes == null) childNodes = new ArrayList<PageNode>();
       childNodes.add(pageNode);
@@ -160,7 +193,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       // remove pagenode
       String spaceNav = space.getGroupId().substring(1);
       PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
-      PageNode homeNode = nav.getNode(space.getCleanedName());
+      PageNode homeNode = nav.getNode(space.getShortName());
       List<PageNode> childNodes = homeNode.getChildren();
       childNodes.remove(homeNode.getChild(appId));
       homeNode.setChildren((ArrayList<PageNode>) childNodes);

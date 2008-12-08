@@ -127,7 +127,7 @@ public class Space {
     return type;
   }
   
-  public String getCleanedName() {
+  public String getShortName() {
     return groupId.substring(groupId.lastIndexOf("/")+1);
   }
 }

@@ -35,10 +35,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.webui.core.UIApplication;
-import org.exoplatform.web.application.ApplicationMessage;
 
 /**
  * Created by The eXo Platform SARL
@@ -53,6 +50,7 @@ public class SpaceServiceImpl implements SpaceService{
 
 
   private JCRStorage storage;
+  private OrganizationService orgService = null;
   private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
 
   public SpaceServiceImpl(NodeHierarchyCreator nodeHierarchyCreator) throws Exception {
@@ -60,9 +58,16 @@ public class SpaceServiceImpl implements SpaceService{
 
   }
 
+  private OrganizationService getOrgService() {
+    if (orgService == null) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    }
+    return orgService;
+  }
+
   public Space createSpace(String spaceName, String creator) throws SpaceException {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    OrganizationService orgService = getOrgService();
 
     GroupHandler groupHandler = orgService.getGroupHandler();
     Group groupParent;
@@ -108,36 +113,9 @@ public class SpaceServiceImpl implements SpaceService{
     space.setTag("");
     saveSpace(space, true);
     
+    SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
+    appHandler.initSpace(space);
 
-    try {
-      // create the new page and node to new group
-      // the template page id
-      String tempPageId= "group::platform/user::dashboard";
-
-      //create the name and uri of the new pages
-      String newPageName = spaceNameCleaned;
-
-      // create new space navigation
-      UserPortalConfigService dataService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
-
-      PageNavigation spaceNav = new PageNavigation();
-      spaceNav.setOwnerType(PortalConfig.GROUP_TYPE);
-      spaceNav.setOwnerId(newGroup.getId().substring(1));
-      spaceNav.setModifiable(true);
-      dataService.create(spaceNav);
-      UIPortal uiPortal = Util.getUIPortal();
-      List<PageNavigation> pnavigations = uiPortal.getNavigations();
-      SpaceUtils.setNavigation(pnavigations, spaceNav);
-      pnavigations.add(spaceNav) ;
-      PageNode node = dataService.createNodeFromPageTemplate(newPageName, newPageName, tempPageId, PortalConfig.GROUP_TYPE, spaceNameCleaned,null) ;
-      node.setUri(spaceNameCleaned) ;
-      spaceNav.addNode(node) ;
-      dataService.update(spaceNav) ;
-      SpaceUtils.setNavigation(uiPortal.getNavigations(), spaceNav) ;
-    } catch (Exception e) {
-      //TODO:should rollback what has to be rollback here
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
-    }
     // add user list to default application
     installApplication(space, "UserListPortlet");
     activateApplication(space, "UserListPortlet");
@@ -207,8 +185,7 @@ public class SpaceServiceImpl implements SpaceService{
 
   public void leave(Space space, String userId) throws SpaceException {
     try {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      OrganizationService orgService = getOrgService();
 
       String groupID = space.getGroupId();
       MembershipHandler memberShipHandler = orgService.getMembershipHandler();
@@ -220,7 +197,6 @@ public class SpaceServiceImpl implements SpaceService{
       Iterator<Membership> itr = memberships.iterator();
       while(itr.hasNext()) {
         Membership mbShip = itr.next();
-        //Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(userId, groupID, mbShip.getMembershipType());
         memberShipHandler.removeMembership(mbShip.getId(), true);
       }
     } catch (Exception e) {
@@ -230,12 +206,11 @@ public class SpaceServiceImpl implements SpaceService{
 
 
   public void invite(Space space, String userId) throws SpaceException {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    OrganizationService orgService = getOrgService();
 
     try {
       User user = orgService.getUserHandler().findUserByName(userId);
-      if(user==null) {
+      if(user == null) {
         throw new SpaceException(SpaceException.Code.USER_NOT_EXIST);
       }
     } catch (Exception e) {
@@ -283,10 +258,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void acceptInvitation(Space space, String userId) throws SpaceException {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
 
-    // remove user from invited user list
     String invitedUser = space.getInvitedUser();
 
     if (!invitedUser.contains(userId)) {
@@ -303,7 +275,12 @@ public class SpaceServiceImpl implements SpaceService{
     space.setInvitedUser(invitedUser);
     saveSpace(space, false);
 
-    // add member
+    addMember(space, userId);
+  }
+
+  public void addMember(Space space, String userId) throws SpaceException {
+    OrganizationService orgService = getOrgService();
+
     try {
       UserHandler userHandler = orgService.getUserHandler();
       User user = userHandler.findUserByName(userId);
@@ -313,12 +290,11 @@ public class SpaceServiceImpl implements SpaceService{
       membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_USER, e);
-    }    
+    }
   }
 
   public void removeMember(Space space, String userId) throws SpaceException {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    OrganizationService orgService = getOrgService();
     UserHandler userHandler = orgService.getUserHandler();
 
     try {
@@ -370,8 +346,7 @@ public class SpaceServiceImpl implements SpaceService{
 
   public List<String> getMembers(Space space) throws SpaceException {
     try {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      OrganizationService orgService = getOrgService();
       PageList usersPageList = orgService.getUserHandler().findUsersByGroup(space.getGroupId());
 
       List<User> users = usersPageList.currentPage();
@@ -388,8 +363,7 @@ public class SpaceServiceImpl implements SpaceService{
 
   public boolean isLeader(Space space, String userId) throws SpaceException {
     try {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      OrganizationService orgService = getOrgService();
       MembershipHandler memberShipHandler = orgService.getMembershipHandler();
 
       return(memberShipHandler.findMembershipByUserGroupAndType(userId, space.getGroupId(), MANAGER) != null);
@@ -401,8 +375,7 @@ public class SpaceServiceImpl implements SpaceService{
 
   public void setLeader(Space space, String userId, boolean status) throws SpaceException {
     try {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      OrganizationService orgService = getOrgService();
 
       UserHandler userHandler = orgService.getUserHandler();
       User user = userHandler.findUserByName(userId);
@@ -425,10 +398,16 @@ public class SpaceServiceImpl implements SpaceService{
     }
   }
 
+  /**
+   *
+   * @param space
+   * @param userId
+   * @return true if the user is member or leader of the space.
+   * @throws SpaceException
+   */
   public boolean isMember(Space space, String userId) throws SpaceException {
     try {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      OrganizationService orgService = getOrgService();
       MembershipHandler memberShipHandler = orgService.getMembershipHandler();
 
       return(memberShipHandler.findMembershipsByUserAndGroup(userId, space.getGroupId()).size() > 0);

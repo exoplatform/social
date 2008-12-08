@@ -27,6 +27,7 @@ import org.exoplatform.social.space.SpaceException;
  */
 
 public interface SpaceApplicationHandler {
+  public void initSpace(Space space) throws SpaceException;
   public void installApplication(Space space, String appId) throws SpaceException;
   public void activateApplication(Space space, String appId) throws SpaceException;
   public void deactiveApplication(Space space, String appId) throws SpaceException;

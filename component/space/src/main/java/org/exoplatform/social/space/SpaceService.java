@@ -55,6 +55,8 @@ public interface SpaceService {
   void leave(Space space, String userId) throws SpaceException;
   void leave(String spaceId, String userId) throws SpaceException;
 
+  void addMember(Space space, String userId) throws SpaceException;
+
   void invite(Space space, String userId) throws SpaceException;
 
   void removeMember(Space space, String userId) throws SpaceException;
