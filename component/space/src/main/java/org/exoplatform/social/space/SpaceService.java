@@ -55,11 +55,25 @@ public interface SpaceService {
   void leave(Space space, String userId) throws SpaceException;
   void leave(String spaceId, String userId) throws SpaceException;
 
+  void invite(Space space, String userId) throws SpaceException;
+
+  void removeMember(Space space, String userId) throws SpaceException;
+
+  void revokeInvitation(String spaceId, String userId) throws SpaceException;
+  void revokeInvitation(Space space, String userId) throws SpaceException;
+
   void acceptInvitation(Space space, String userId) throws SpaceException;
   void acceptInvitation(String spaceId, String userId) throws SpaceException;
 
+  void denyInvitation(String spaceId, String userId) throws SpaceException;
   void denyInvitation(Space space, String userId) throws SpaceException;
 
+  void requestJoin(String spaceId, String userId) throws SpaceException;
+  void requestJoin(Space space, String userId) throws SpaceException;
+
+  void setLeader(Space space, String userId, boolean status) throws SpaceException;
+
+  void installApplication(String spaceId, String appId) throws SpaceException;
   void installApplication(Space space, String appId) throws SpaceException;
 
   void deactiveApplication(Space space, String appId) throws SpaceException;
@@ -68,7 +82,9 @@ public interface SpaceService {
 
   void removeApplication(Space space, String appId) throws SpaceException;
 
-  void installApplication(String spaceId, String appId) throws SpaceException;
 
   void activateApplication(String spaceId, String appId) throws SpaceException;
+
+  List<String> getMembers(Space space) throws SpaceException;
+  boolean isLeader(Space space, String userId) throws SpaceException;
 }

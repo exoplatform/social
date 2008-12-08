@@ -34,6 +34,7 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -48,6 +49,8 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 
 /**
  * Created by The eXo Platform SARL
@@ -114,70 +117,50 @@ public class UISpaceMember extends UIForm {
   }
   
   
-  public List<String> getExistingUsers() throws Exception {
-    List<String> existingUsersList = new ArrayList<String>();
-    List<User> users = getUsersInSpace(space.getGroupId());
-    for(User obj : users) existingUsersList.add(obj.getUserName());
-    return existingUsersList;
+  public List<String> getExistingUsers() throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
+
+    return spaceService.getMembers(space);
   }
-  
-  @SuppressWarnings("unchecked")
-  private List<User> getUsersInSpace(String groupId) throws Exception{
-    List<User> users = new ArrayList<User>();
-    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
-    PageList usersPageList = orgSrc.getUserHandler().findUsersByGroup(groupId);
-    users = usersPageList.currentPage();
-    return users;
-  }
+
   
   public boolean isLeader(String userName) throws Exception {
-    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
-    MembershipHandler memberShipHandler = orgSrc.getMembershipHandler();
-    if(memberShipHandler.findMembershipByUserGroupAndType(userName, space.getGroupId(), "manager") != null) return true;
-    return false;
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
+
+    return spaceService.isLeader(space, userName);
   }
   
   static public class InviteActionListener extends EventListener<UISpaceMember> {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
-      String invitedUser = uiSpaceMember.getInvitedUser();
-      User user = orgSrc.getUserHandler().findUserByName(invitedUser);
       UIApplication uiApp = requestContext.getUIApplication();
-      List<String> invitedUsers = uiSpaceMember.getInvitedUsers();
-      List<String> existingUsers = uiSpaceMember.getExistingUsers();
-      if(user==null) {
-        uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.select-user", null));
-        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+
+      String invitedUser = uiSpaceMember.getInvitedUser();
+      
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
+
+      try {
+        spaceService.invite(uiSpaceMember.space, invitedUser);
+      } catch (SpaceException e) {
+        if(e.getCode() == SpaceException.Code.USER_NOT_EXIST) {
+          uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.select-user", null));
+          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+        } else if (e.getCode() == SpaceException.Code.USER_ALREADY_INVITED) {
+          uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-invited-exist", null));
+          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+        } else if(e.getCode() == SpaceException.Code.USER_ALREADY_MEMBER) {
+          uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-exist", null));
+          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+        }
+
         return;
       }
-      if(invitedUsers.contains(invitedUser)) {
-        uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-invited-exist", null));
-        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
-        return;
-      } else if (existingUsers.contains(invitedUser)) {
-        uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-exist", null));
-        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
-        return;
-      }
-      if(invitedUsers.size() > 0) uiSpaceMember.space.setInvitedUser(uiSpaceMember.space.getInvitedUser() + "," + invitedUser);
-      else uiSpaceMember.space.setInvitedUser(invitedUser);
-      SpaceService spaceSrc = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      spaceSrc.saveSpace(uiSpaceMember.space, false);
       uiSpaceMember.setInvitedUser(null);
       
-      // we'll sent a email to invite user
-      MailService mailSrc = uiSpaceMember.getApplicationComponent(MailService.class);
-      ResourceBundle res = requestContext.getApplicationResourceBundle() ;
-      String email = orgSrc.getUserHandler().findUserByName(invitedUser).getEmail();
-      PortalRequestContext portalRequest = Util.getPortalRequestContext();
-      String url = portalRequest.getRequest().getRequestURL().toString();
-      String headerMail = res.getString(uiSpaceMember.getId()+ ".mail.header") + "\n\n";
-      String footerMail = "\n\n\n" + res.getString(uiSpaceMember.getId()+ ".mail.footer");
-      String activeLink = url + "?portal:componentId=managespaces&portal:type=action&portal:isSecure=false&uicomponent=UISpacesManage&op=JoinSpace&leader="+requestContext.getRemoteUser()+"&space="+uiSpaceMember.space.getId();
-      activeLink = headerMail + activeLink + footerMail;
-      mailSrc.sendMessage("exoservice@gmail.com",email, "Invite to join space " + uiSpaceMember.space.getName(), activeLink);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -199,17 +182,12 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      List<String> invitedUsers = uiSpaceMember.getInvitedUsers();
-      invitedUsers.remove(userName);
-      String temp="";
-      for(String obj : invitedUsers) {
-        temp += obj + ",";
-      }
-      if(!temp.equals("")) temp = temp.substring(0, temp.length()-1);
-      else temp = null;
-      uiSpaceMember.space.setInvitedUser(temp);
-      SpaceService spaceSrc = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      spaceSrc.saveSpace(uiSpaceMember.space, false);
+
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
+
+      spaceService.revokeInvitation(uiSpaceMember.space, userName);
+
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -219,17 +197,10 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      List<String> pendingUsers = uiSpaceMember.getPenddingUsers();
-      pendingUsers.remove(userName);
-      String temp="";
-      for(String obj : pendingUsers) {
-        temp += obj + ",";
-      }
-      if(!temp.equals("")) temp = temp.substring(0, temp.length()-1);
-      else temp = null;
-      uiSpaceMember.space.setPendingUser(temp);
-      SpaceService spaceSrc = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      spaceSrc.saveSpace(uiSpaceMember.space, false);
+      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
+
+      spaceService.denyInvitation(uiSpaceMember.space, userName);
+      
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -239,13 +210,10 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
-      UserHandler userHandler = orgSrc.getUserHandler();
-      User user = userHandler.findUserByName(userName);
-      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
-      Membership memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), uiSpaceMember.space.getGroupId(), "member");
-      if(memberShip == null) memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), uiSpaceMember.space.getGroupId(), "manager");
-      membershipHandler.removeMembership(memberShip.getId(), true);
+      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
+
+      spaceService.removeMember(uiSpaceMember.space, userName);
+
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -254,34 +222,11 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
-      List<String> existingUsers = uiSpaceMember.getExistingUsers();
-      List<String> pendingUsers = uiSpaceMember.getPenddingUsers();
-      if (existingUsers.contains(userName)) {
-        uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-exist", null));
-        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
-        return;
-      }
-      existingUsers.add(userName);
-      pendingUsers.remove(userName);
-      String temp="";
-      for(String obj : pendingUsers) {
-        temp += obj + ",";
-      }
-      if(!temp.equals("")) temp = temp.substring(0, temp.length()-1);
-      else temp = null;
-      uiSpaceMember.space.setPendingUser(temp);
-      SpaceService spaceSrc = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      spaceSrc.saveSpace(uiSpaceMember.space, false);
-      // add member
-      UserHandler userHandler = orgSrc.getUserHandler();
-      User user = userHandler.findUserByName(userName);
-      MembershipType mbShipType = orgSrc.getMembershipTypeHandler().findMembershipType("member");
-      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
-      Group spaceGroup = orgSrc.getGroupHandler().findGroupById(uiSpaceMember.space.getGroupId());
-      membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
+
+      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
+      spaceService.acceptInvitation(uiSpaceMember.space, userName);
+
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -291,15 +236,10 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
-      UserHandler userHandler = orgSrc.getUserHandler();
-      User user = userHandler.findUserByName(userName);
-      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
-      Membership memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), uiSpaceMember.space.getGroupId(), "manager");
-      membershipHandler.removeMembership(memberShip.getId(), true);
-      MembershipType mbShipTypeMember = orgSrc.getMembershipTypeHandler().findMembershipType("member");
-      GroupHandler groupHandler = orgSrc.getGroupHandler();
-      membershipHandler.linkMembership(user, groupHandler.findGroupById(uiSpaceMember.space.getGroupId()), mbShipTypeMember, true);
+
+      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
+      spaceService.setLeader(uiSpaceMember.space, userName, false);
+
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -309,15 +249,10 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      OrganizationService orgSrc = uiSpaceMember.getApplicationComponent(OrganizationService.class);
-      UserHandler userHandler = orgSrc.getUserHandler();
-      User user = userHandler.findUserByName(userName);
-      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
-      Membership memberShipMember = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), uiSpaceMember.space.getGroupId(), "member");
-      membershipHandler.removeMembership(memberShipMember.getId(), true);
-      MembershipType mbShipTypeMamager = orgSrc.getMembershipTypeHandler().findMembershipType("manager");
-      GroupHandler groupHandler = orgSrc.getGroupHandler();
-      membershipHandler.linkMembership(user, groupHandler.findGroupById(uiSpaceMember.space.getGroupId()), mbShipTypeMamager, true);
+
+      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
+      spaceService.setLeader(uiSpaceMember.space, userName, true);
+
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }

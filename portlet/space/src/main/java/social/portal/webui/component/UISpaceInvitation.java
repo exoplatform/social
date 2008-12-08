@@ -57,29 +57,13 @@ public class UISpaceInvitation extends UIForm{
     public void execute(Event<UISpaceInvitation> event) throws Exception {
       UISpaceInvitation uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
+      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
       Space space = uiForm.space;
-      String invitedUser = space.getInvitedUser();
+      String userName = requestContext.getRemoteUser();
+
+      spaceService.acceptInvitation(space, userName);
+
       UIApplication uiApp = requestContext.getUIApplication();
-      String remoteUser = requestContext.getRemoteUser();
-      
-      // remove user from invited user list
-      invitedUser = invitedUser.replace(remoteUser, "");
-      if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
-      if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
-      if(invitedUser.equals("")) invitedUser=null;
-      space.setInvitedUser(invitedUser);
-      spaceSrc.saveSpace(space, false);
-      
-      // add member
-      OrganizationService orgSrc = uiForm.getApplicationComponent(OrganizationService.class);
-      UserHandler userHandler = orgSrc.getUserHandler();
-      User user = userHandler.findUserByName(remoteUser);
-      MembershipType mbShipType = orgSrc.getMembershipTypeHandler().findMembershipType("member");
-      MembershipHandler membershipHandler = orgSrc.getMembershipHandler();
-      Group spaceGroup = orgSrc.getGroupHandler().findGroupById(space.getGroupId());
-      membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
-      
       // back
       UIManageSpacesPortlet uiPortlet = uiForm.getAncestorOfType(UIManageSpacesPortlet.class);
       uiPortlet.getChild(UISpaceSetting.class).setRendered(false);
@@ -96,19 +80,14 @@ public class UISpaceInvitation extends UIForm{
     public void execute(Event<UISpaceInvitation> event) throws Exception {
       UISpaceInvitation uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      SpaceService spaceSrc = uiForm.getApplicationComponent(SpaceService.class);
+      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
       Space space = uiForm.space;
-      String invitedUser = space.getInvitedUser();
       UIApplication uiApp = requestContext.getUIApplication();
-      String remoteUser = requestContext.getRemoteUser();
+      String username = requestContext.getRemoteUser();
+
+      spaceService.denyInvitation(space, username);
       
-      // remove user from invited user list
-      invitedUser = invitedUser.replace(remoteUser, "");
-      if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
-      if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
-      if(invitedUser.equals("")) invitedUser=null;
-      space.setInvitedUser(invitedUser);
-      spaceSrc.saveSpace(space, false);
+
       // back
       UIManageSpacesPortlet uiPortlet = uiForm.getAncestorOfType(UIManageSpacesPortlet.class);
       uiPortlet.getChild(UISpaceSetting.class).setRendered(false);

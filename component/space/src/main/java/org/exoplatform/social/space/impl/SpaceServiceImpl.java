@@ -20,6 +20,7 @@ import java.util.*;
 
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.organization.*;
+import org.exoplatform.services.mail.MailService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceException;
@@ -29,18 +30,15 @@ import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
-import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.webui.portal.UIPortal;
-import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.webui.event.Event;
+import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.webui.core.UIApplication;
+import org.exoplatform.web.application.ApplicationMessage;
 
 /**
  * Created by The eXo Platform SARL
@@ -50,6 +48,8 @@ import org.exoplatform.webui.event.Event;
  */
 public class SpaceServiceImpl implements SpaceService{
   final static public String SPACE_PARENT = "/spaces";
+  final static public String MEMBER = "member";
+  final static public String MANAGER = "manager";
 
 
   private JCRStorage storage;
@@ -92,7 +92,7 @@ public class SpaceServiceImpl implements SpaceService{
     try {
       // add user as creator (manager)
       User user = orgService.getUserHandler().findUserByName(creator);
-      MembershipType mbShipType = orgService.getMembershipTypeHandler().findMembershipType("manager");
+      MembershipType mbShipType = orgService.getMembershipTypeHandler().findMembershipType(MANAGER);
       orgService.getMembershipHandler().linkMembership(user, newGroup, mbShipType, true);
     } catch (Exception e) {
       //TODO:should rollback what has to be rollback here
@@ -228,6 +228,56 @@ public class SpaceServiceImpl implements SpaceService{
     }
   }
 
+
+  public void invite(Space space, String userId) throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+
+    try {
+      User user = orgService.getUserHandler().findUserByName(userId);
+      if(user==null) {
+        throw new SpaceException(SpaceException.Code.USER_NOT_EXIST);
+      }
+    } catch (Exception e) {
+      if(e instanceof SpaceException)
+        throw (SpaceException)e;
+      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_USER, e);
+    }
+
+    if(isInvited(space, userId)) {
+      throw new SpaceException(SpaceException.Code.USER_ALREADY_INVITED);
+    } else if (isMember(space, userId)) {
+      throw new SpaceException(SpaceException.Code.USER_ALREADY_MEMBER);
+    }
+
+    if(space.getInvitedUser() != null && space.getInvitedUser().length() > 0)
+      space.setInvitedUser(space.getInvitedUser() + "," + userId);
+    else
+      space.setInvitedUser(userId);
+    saveSpace(space, false);
+    
+
+    // we'll sent a email to invite user
+    // TODO: This should be done in a Service in a separated thread
+    //TODO: need to be redone
+    try {
+    /*MailService mailService = (MailService) container.getComponentInstanceOfType(MailService.class);
+
+    ResourceBundle res = requestContext.getApplicationResourceBundle();
+    String email = orgService.getUserHandler().findUserByName(userId).getEmail();
+    PortalRequestContext portalRequest = Util.getPortalRequestContext();
+    String url = portalRequest.getRequest().getRequestURL().toString();
+    String headerMail = res.getString(uiSpaceMember.getId()+ ".mail.header") + "\n\n";
+    String footerMail = "\n\n\n" + res.getString(uiSpaceMember.getId()+ ".mail.footer");
+    String activeLink = url + "?portal:componentId=managespaces&portal:type=action&portal:isSecure=false&uicomponent=UISpacesManage&op=JoinSpace&leader="+requestContext.getRemoteUser()+"&space="+uiSpaceMember.space.getId();
+    activeLink = headerMail + activeLink + footerMail;
+    mailService.sendMessage("exoservice@gmail.com",email, "Invite to join space " + uiSpaceMember.space.getName(), activeLink);
+    */
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_SENDING_CONFIRMATION_EMAIL, e);
+    }
+  }
+
   public void acceptInvitation(String spaceId, String userId) throws SpaceException {
     acceptInvitation(getSpace(spaceId), userId);
   }
@@ -257,29 +307,141 @@ public class SpaceServiceImpl implements SpaceService{
     try {
       UserHandler userHandler = orgService.getUserHandler();
       User user = userHandler.findUserByName(userId);
-      MembershipType mbShipType = orgService.getMembershipTypeHandler().findMembershipType("member");
+      MembershipType mbShipType = orgService.getMembershipTypeHandler().findMembershipType(MEMBER);
       MembershipHandler membershipHandler = orgService.getMembershipHandler();
       Group spaceGroup = orgService.getGroupHandler().findGroupById(space.getGroupId());
       membershipHandler.linkMembership(user, spaceGroup, mbShipType, true);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_USER, e);
+    }    
+  }
+
+  public void removeMember(Space space, String userId) throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    UserHandler userHandler = orgService.getUserHandler();
+
+    try {
+      User user = userHandler.findUserByName(userId);
+      MembershipHandler membershipHandler = orgService.getMembershipHandler();
+      Membership memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), space.getGroupId(), MEMBER);
+      if(memberShip == null)
+        memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), space.getGroupId(), MANAGER);
+      membershipHandler.removeMembership(memberShip.getId(), true);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_USER, e);
     }
-    
+  }
+
+  public void denyInvitation(String spaceId, String userId) throws SpaceException {
+    denyInvitation(getSpace(spaceId), userId);
   }
 
   public void denyInvitation(Space space, String userId) throws SpaceException {
-          // remove user from invited user list
-      String invitedUser = space.getInvitedUser();
-      invitedUser = invitedUser.replace(userId, "");
-      if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
-      if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
-      if(invitedUser.equals("")) invitedUser=null;
-      space.setInvitedUser(invitedUser);
-      saveSpace(space, false);
+    String invitedUser = space.getInvitedUser();
+    invitedUser = invitedUser.replace(userId, "");
+    if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
+    if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
+    if(invitedUser.equals("")) invitedUser=null;
+    space.setInvitedUser(invitedUser);
+    saveSpace(space, false);
   }
 
-  public List getMembers(Space space) {
-    return null;
+  public void revokeInvitation(String spaceId, String userId) throws SpaceException {
+    revokeInvitation(getSpace(spaceId), userId);
+  }
+
+  public void revokeInvitation(Space space, String userId) throws SpaceException {
+    denyInvitation(space, userId);
+  }
+
+  public void requestJoin(String spaceId, String userId) throws SpaceException {
+    requestJoin(getSpace(spaceId), userId);
+  }
+
+  public void requestJoin(Space space, String userId) throws SpaceException {
+
+    String pendingUser = space.getPendingUser();
+    if (pendingUser==null) pendingUser = userId;
+    else pendingUser += "," + userId;
+    space.setPendingUser(pendingUser);
+    saveSpace(space, false);
+  }
+
+  public List<String> getMembers(Space space) throws SpaceException {
+    try {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      PageList usersPageList = orgService.getUserHandler().findUsersByGroup(space.getGroupId());
+
+      List<User> users = usersPageList.currentPage();
+
+      List<String> usernames = new ArrayList<String>();
+
+      for(User obj : users)
+        usernames.add(obj.getUserName());
+      return usernames;
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
+    }
+  }
+
+  public boolean isLeader(Space space, String userId) throws SpaceException {
+    try {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      MembershipHandler memberShipHandler = orgService.getMembershipHandler();
+
+      return(memberShipHandler.findMembershipByUserGroupAndType(userId, space.getGroupId(), MANAGER) != null);
+
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e); 
+    }
+  }
+
+  public void setLeader(Space space, String userId, boolean status) throws SpaceException {
+    try {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+
+      UserHandler userHandler = orgService.getUserHandler();
+      User user = userHandler.findUserByName(userId);
+      MembershipHandler membershipHandler = orgService.getMembershipHandler();
+      if(status) {
+        Membership memberShipMember = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), space.getGroupId(), MEMBER);
+        membershipHandler.removeMembership(memberShipMember.getId(), true);
+        MembershipType mbshipTypeManager = orgService.getMembershipTypeHandler().findMembershipType(MANAGER);
+        GroupHandler groupHandler = orgService.getGroupHandler();
+        membershipHandler.linkMembership(user, groupHandler.findGroupById(space.getGroupId()), mbshipTypeManager, true);
+      } else {
+        Membership memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), space.getGroupId(), MANAGER);
+        membershipHandler.removeMembership(memberShip.getId(), true);
+        MembershipType mbShipTypeMember = orgService.getMembershipTypeHandler().findMembershipType(MEMBER);
+        GroupHandler groupHandler = orgService.getGroupHandler();
+        membershipHandler.linkMembership(user, groupHandler.findGroupById(space.getGroupId()), mbShipTypeMember, true);
+      }
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_SETTING_LEADER_STATUS, e); 
+    }
+  }
+
+  public boolean isMember(Space space, String userId) throws SpaceException {
+    try {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      MembershipHandler memberShipHandler = orgService.getMembershipHandler();
+
+      return(memberShipHandler.findMembershipsByUserAndGroup(userId, space.getGroupId()).size() > 0);
+
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
+    }
+  }
+
+  public boolean isInvited(Space space, String userId) {
+    if(space.getInvitedUser() == null)
+      return false;
+    return (space.getInvitedUser().contains(userId));
   }
 
   private Map<String, SpaceApplicationHandler> getSpaceApplicationHandlers() {

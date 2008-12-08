@@ -209,11 +209,10 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = requestContext.getRemoteUser();
       SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
-      Space space = spaceService.getSpace(spaceId);
-      UIApplication uiApp = requestContext.getUIApplication();
 
-      spaceService.denyInvitation(space,  userName);
-      
+      spaceService.denyInvitation(spaceId,  userName);
+
+      UIApplication uiApp = requestContext.getUIApplication();
       uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       requestContext.addUIComponentToUpdateByAjax(uiForm);
@@ -223,18 +222,14 @@ public class UIManageSpaceWorkingArea extends UIContainer {
   static public class RequestJoinActionListener extends EventListener<UIManageSpaceWorkingArea> {
     public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
       UIManageSpaceWorkingArea workingAllSpaceArea = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      String userName = requestContext.getRemoteUser();
-      UIApplication uiApp = requestContext.getUIApplication();
-      SpaceService spaceSrc = workingAllSpaceArea.getApplicationComponent(SpaceService.class);
+      WebuiRequestContext requestContext = event.getRequestContext();      
+      SpaceService spaceService = workingAllSpaceArea.getApplicationComponent(SpaceService.class);
+
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Space space = spaceSrc.getSpace(spaceId);
-      
-      String pendingUser = space.getPendingUser();
-      if (pendingUser==null) pendingUser = userName;
-      else pendingUser += "," + userName;
-      space.setPendingUser(pendingUser);
-      spaceSrc.saveSpace(space, false);
+      String userName = requestContext.getRemoteUser();      
+      spaceService.requestJoin(spaceId, userName);
+
+      UIApplication uiApp = requestContext.getUIApplication();
       uiApp.addMessage(new ApplicationMessage("UIManageSpaceWorkingArea.msg.success-join-user", null,ApplicationMessage.INFO));
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       requestContext.addUIComponentToUpdateByAjax(workingAllSpaceArea);
