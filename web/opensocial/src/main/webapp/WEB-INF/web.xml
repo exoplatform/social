@@ -48,7 +48,7 @@
     <listener-class>org.exoplatform.application.gadget.GadgetRegister</listener-class>
   </listener>
 
-    
+
   <!-- Serve REST api -->
   <servlet>
     <servlet-name>restapiServlet</servlet-name>

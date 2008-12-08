@@ -89,7 +89,6 @@ public class ExoContainerOAuthLookupService  implements OAuthLookupService {
         }
       }
     }
-
     return false;
   }
 
