@@ -24,8 +24,32 @@
 						<div class="CommunityName" style="float: left; cursor:pointer;"><a href="$pageURI" class="CommunityNameMiddle"><%= objSpace.getName() %></a></div>
 						<% 
 							 String requestJoin = uicomponent.event("RequestJoin", objSpace.getId()) + "; return false;";
-							 int option = uicomponent.displayAction(objSpace.getId())
-							 if(option == 0) {
+							 String leaveAction = uicomponent.event("LeaveSpace",objSpace.getId()) + "; return false;";
+							 String editAction = uicomponent.event("EditSpace",objSpace.getId()) + "; return false;";
+							 String acceptAction = uicomponent.event("AcceptUser", objSpace.getId()) + "; return false;";
+							 String denyAction = uicomponent.event("DenyUser", objSpace.getId()) + "; return false;";
+							 
+							 int option = uicomponent.displayAction(objSpace.getId());
+							 boolean isInvited = uicomponent.isInInvitedList(objSpace);
+							 
+							 if(isInvited) {
+						%>
+						<div class ="SpaceAction" onclick="$denyAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Deny</div>
+						    </div>
+						  </div>
+						</div>
+						<div class ="SpaceAction" onclick="$acceptAction">
+						  <div class="LeftButton">
+						    <div class="RightButton">
+						      <div class="CenterButton">Accept</div>
+						    </div>
+						  </div>
+						</div>
+						<% } else {
+								 if(option == 0) {
 						%>
 						<div class ="SpaceAction" onclick="$requestJoin">
 						  <div class="LeftButton">
@@ -34,7 +58,7 @@
 						    </div>
 						  </div>
 						</div>
-						<% } else if(option == 1){ %>
+						<% } else if(option == 1) {%>
 						<div class ="SpaceAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
@@ -43,16 +67,14 @@
 						  </div>
 						</div>
 						<% } else { %>
-						<% String leaveAction = uicomponent.event("LeaveSpace",objSpace.getId());%>
 						<div class ="SpaceAction" onclick="$leaveAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
 						      <div class="CenterButton">Leave</div>
 						    </div>
 						  </div>
-						</div>	
-							<% if(option == 2) { %>
-							<% String editAction = uicomponent.event("EditSpace",objSpace.getId());%>
+						</div>
+						<% if(option == 2) { %>
 						<div class ="SpaceAction" onclick="$editAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
@@ -60,26 +82,9 @@
 						    </div>
 						  </div>
 						</div>
-							<% } %>
-						<% } %>
-						<% if(uicomponent.isInInvitedList(objSpace.getInvitedUser()) && option < 2) { %>
-						<% String acceptAction = uicomponent.event("AcceptUser", objSpace.getId()) + "; return false;"; %>
-						<div class ="SpaceAction" onclick="$acceptAction">
-						  <div class="LeftButton">
-						    <div class="RightButton">
-						      <div class="CenterButton">Accept</div>
-						    </div>
-						  </div>
-						</div>
-						<% String denyAction = uicomponent.event("DenyUser", objSpace.getId()) + "; return false;"; %>
-						<div class ="SpaceAction" onclick="$denyAction">
-						  <div class="LeftButton">
-						    <div class="RightButton">
-						      <div class="CenterButton">Deny</div>
-						    </div>
-						  </div>
-						</div>
-						<% } %>
+						<%   } %>	
+						<%  } %>
+						<% } %> 
 						<div style="clear: both;"><span></span></div>
 					</div>
 					<% 

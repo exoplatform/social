@@ -16,7 +16,6 @@
  */
 package social.portal.webui.component;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,22 +24,16 @@ import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.portal.webui.UIWelcomeComponent;
 import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
-import org.exoplatform.portal.webui.workspace.UIControlWorkspace.UIControlWSWorkingArea;
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -94,36 +87,25 @@ public class UIManageSpaceWorkingArea extends UIContainer {
     return isAllSpace;
   }
   
-  @SuppressWarnings("unchecked")
-  public int displayAction(String spaceId) throws Exception {
+  public int displayAction(String spaceId) throws SpaceException {
     // 0: request to join, 1: in pendingList, 2: manager, 3: member
-    String user = Util.getPortalRequestContext().getRemoteUser();
-    OrganizationService orgService = getApplicationComponent(OrganizationService.class);
-    SpaceService spaceService = getApplicationComponent(SpaceService.class);
-    Space space = spaceService.getSpace(spaceId);
-    String[] pendingList = space.getPendingUsers();
-    MembershipHandler memberShipHandler = orgService.getMembershipHandler();
-    Collection<Membership> memberShips= memberShipHandler.findMembershipsByUserAndGroup(user, space.getGroupId());
-    Iterator<Membership> itr = memberShips.iterator();
-    if(memberShips.size() > 0){
-      while (itr.hasNext()) {
-        Membership memberShip = itr.next();
-        if(memberShip.getMembershipType().equals("manager")) return 2;
-      }
+    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
+    Space space = spaceSrc.getSpace(spaceId);
+    
+    String userId = Util.getPortalRequestContext().getRemoteUser();
+    if(spaceSrc.isMember(space, userId)) {
+      if(spaceSrc.isLeader(space, userId)) return 2;
       return 3;
-    }
-    if(pendingList != null && pendingList.length > 0) {
-      for(int i=0; i< pendingList.length; i++) {
-        if(pendingList[i].equals(user)) return 1;
-      }
-    }
+    } else if (spaceSrc.isPending(space, userId)) return 1;
     return 0;
   }
   
-  public boolean isInInvitedList(String invitedList) {
-    String user = Util.getPortalRequestContext().getRemoteUser();
-    if(invitedList != null && invitedList.contains(user)) return true;
-    else return false;
+  public boolean isInInvitedList(Space space) {
+    String userId = Util.getPortalRequestContext().getRemoteUser();
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    
+    if(spaceService.isInvited(space, userId)) return true;
+    return false;
   }
   
   static public class ChangeListSpacesActionListener extends EventListener<UIManageSpaceWorkingArea> {
@@ -152,7 +134,6 @@ public class UIManageSpaceWorkingArea extends UIContainer {
   }
   
   static public class LeaveSpaceActionListener extends EventListener<UIManageSpaceWorkingArea> {
-    @SuppressWarnings("unchecked")
     public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
       UIManageSpaceWorkingArea uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
@@ -171,15 +152,22 @@ public class UIManageSpaceWorkingArea extends UIContainer {
     public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
       UIManageSpaceWorkingArea uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-
+      UIApplication uiApp = requestContext.getUIApplication();
+      
       SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
 
       String userName = requestContext.getRemoteUser();
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-
-      spaceService.acceptInvitation(spaceId, userName);
-
-      requestContext.addUIComponentToUpdateByAjax(uiForm);
+      
+      try {
+        spaceService.acceptInvitation(spaceId, userName);
+      } catch (SpaceException e) {
+        if(e.getCode() == SpaceException.Code.USER_NOT_INVITED) {
+          uiApp.addMessage(new ApplicationMessage("UISpaceManage.msg.user-revoke", null));
+          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+          return;
+        }
+      }
 
       // auto reload portal navigation
       UIPortal uiPortal = Util.getUIPortal();
@@ -191,7 +179,7 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       PortalRequestContext prContext = Util.getPortalRequestContext();
 
       UIControlWorkspace uiControl = uiPortalApp.getChildById(UIPortalApplication.UI_CONTROL_WS_ID);
-      prContext.addUIComponentToUpdateByAjax(uiControl);
+      if(uiControl != null) prContext.addUIComponentToUpdateByAjax(uiControl);
 
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
       prContext.addUIComponentToUpdateByAjax(uiWorkingWS) ;

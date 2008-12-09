@@ -33,7 +33,7 @@ public class Space {
   private String description;
   private String tag;
   private String[] pendingUsers;
-  private String invitedUser;
+  private String[] invitedUsers;
   private String type;
   
 //  public final static String WEBOS = "webos";
@@ -110,12 +110,12 @@ public class Space {
     return pendingUsers;
   }
 
-  public void setInvitedUser(String invitedUser) {
-    this.invitedUser = invitedUser;
+  public void setInvitedUsers(String[] invitedUsers) {
+    this.invitedUsers = invitedUsers;
   }
   
-  public String getInvitedUser() {
-    return invitedUser;
+  public String[] getInvitedUsers() {
+    return invitedUsers;
   }
   
   public void setType(String type) {

@@ -95,4 +95,7 @@ public interface SpaceService {
 
   List<String> getMembers(Space space) throws SpaceException;
   boolean isLeader(Space space, String userId) throws SpaceException;
+  boolean isMember(Space space, String userId) throws SpaceException;
+  boolean isInvited(Space space, String userId);
+  boolean isPending(Space space, String userId);
 }

@@ -120,7 +120,6 @@ public class UIInviteUsers extends UISearch implements UIPopupComponent{
     search(query);
   }
 
-  @SuppressWarnings("unused")
   public void advancedSearch(UIFormInputSet advancedSearchInput) throws Exception {}
   
   static  public class SelectUserActionListener extends EventListener<UIInviteUsers> {

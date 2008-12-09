@@ -106,11 +106,9 @@ public class UISpaceMember extends UIForm {
   
   public List<String> getInvitedUsers() {
     List<String> invitedUsersList = new ArrayList<String>();
-    String invitedUsers = space.getInvitedUser();
+    String[] invitedUsers = space.getInvitedUsers();
     if(invitedUsers != null) {
-      String[] tmpStrArr = invitedUsers.split(",");
-      for(int i=0; i<tmpStrArr.length; i++) 
-        invitedUsersList.add(tmpStrArr[i]);
+      invitedUsersList.addAll(Arrays.asList(invitedUsers));
     }
     return invitedUsersList;
   }

@@ -16,7 +16,6 @@
  */
 package social.portal.webui.component.space;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +29,6 @@ import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPortletApplication;
@@ -64,7 +62,7 @@ public class UIUserListPortlet extends UIPortletApplication {
     String groupId = "/spaces/" + spaceName;
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
     PageList usersPageList = orgSrc.getUserHandler().findUsersByGroup(groupId);
-    users = usersPageList.currentPage();
+    users = usersPageList.getAll();
     PageList pageList = new ObjectPageList(users,3);
     iterator_.setPageList(pageList);
     if (n <= pageList.getAvailablePage()) iterator_.setCurrentPage(n);

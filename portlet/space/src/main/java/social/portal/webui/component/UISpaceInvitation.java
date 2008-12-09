@@ -16,12 +16,6 @@
  */
 package social.portal.webui.component;
 
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.MembershipType;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;

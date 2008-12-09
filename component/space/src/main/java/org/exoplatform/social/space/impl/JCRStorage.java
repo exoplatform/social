@@ -25,8 +25,8 @@ public class JCRStorage {
   final static private String SPACE_PARENT = "exo:parent".intern();
   final static private String SPACE_DESCRIPTION = "exo:description".intern();
   final static private String SPACE_TAG = "exo:tag".intern();
-  final static private String SPACE_PENDING_USER = "exo:pendingUser".intern();
-  final static private String SPACE_INVITED_USER = "exo:invitedUser".intern();
+  final static private String SPACE_PENDING_USER = "exo:pendingUsers".intern();
+  final static private String SPACE_INVITED_USER = "exo:invitedUsers".intern();
   final static private String SPACE_TYPE = "exo:type".intern();
 
   private NodeHierarchyCreator nodeHierarchyCreator_ ;
@@ -105,7 +105,7 @@ public class JCRStorage {
     spaceNode.setProperty(SPACE_DESCRIPTION, space.getDescription());
     spaceNode.setProperty(SPACE_TAG, space.getTag());
     spaceNode.setProperty(SPACE_PENDING_USER, space.getPendingUsers());
-    spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUser());
+    spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUsers());
     spaceNode.setProperty(SPACE_TYPE, space.getType());
   }
 
@@ -119,7 +119,7 @@ public class JCRStorage {
     if(spaceNode.hasProperty(SPACE_DESCRIPTION)) space.setDescription(spaceNode.getProperty(SPACE_DESCRIPTION).getString());
     if(spaceNode.hasProperty(SPACE_TAG)) space.setTag(spaceNode.getProperty(SPACE_TAG).getString());
     if(spaceNode.hasProperty(SPACE_PENDING_USER)) space.setPendingUsers(ValuesToStrings(spaceNode.getProperty(SPACE_PENDING_USER).getValues()));
-    if(spaceNode.hasProperty(SPACE_INVITED_USER)) space.setInvitedUser(spaceNode.getProperty(SPACE_INVITED_USER).getString());
+    if(spaceNode.hasProperty(SPACE_INVITED_USER)) space.setInvitedUsers(ValuesToStrings(spaceNode.getProperty(SPACE_INVITED_USER).getValues()));
     if(spaceNode.hasProperty(SPACE_TYPE)) space.setType(spaceNode.getProperty(SPACE_TYPE).getString());
     return space;
   }

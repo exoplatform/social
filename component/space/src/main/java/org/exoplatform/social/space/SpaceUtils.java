@@ -80,16 +80,6 @@ public class  SpaceUtils {
     return list;
   }
   
-  private static String getDisplayNameValue(List<DisplayName> list, String defaultValue) {
-    if(list == null || list.isEmpty()) return defaultValue;
-    return list.get(0).getDisplayName();
-  }
-  
-  private static String getDescriptionValue(List<Description> list, String defaultValue) {
-    if(list == null || list.isEmpty()) return defaultValue;
-    return list.get(0).getDescription();
-  }
-  
   public static String cleanString(String str) {
                                                                 
     Transliterator accentsconverter = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");

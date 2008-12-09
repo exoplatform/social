@@ -22,7 +22,6 @@ import java.util.List;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;

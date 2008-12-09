@@ -189,6 +189,7 @@ public class SpaceServiceImpl implements SpaceService{
     leave(getSpace(spaceId), userId);
   }
 
+  @SuppressWarnings("unchecked")
   public void leave(Space space, String userId) throws SpaceException {
     try {
       OrganizationService orgService = getOrgService();
@@ -230,11 +231,15 @@ public class SpaceServiceImpl implements SpaceService{
     } else if (isMember(space, userId)) {
       throw new SpaceException(SpaceException.Code.USER_ALREADY_MEMBER);
     }
-
-    if(space.getInvitedUser() != null && space.getInvitedUser().length() > 0)
-      space.setInvitedUser(space.getInvitedUser() + "," + userId);
-    else
-      space.setInvitedUser(userId);
+    if(isPending(space, userId)) {
+      String[] pendingUsers = space.getPendingUsers();
+      space.setPendingUsers(removeItemFromArray(pendingUsers, userId));
+      addMember(space, userId);
+    } else {
+      String[] invitedUsers = space.getInvitedUsers();
+      space.setInvitedUsers(addItemToArray(invitedUsers, userId));
+    }
+    
     saveSpace(space, false);
     
 
@@ -264,23 +269,19 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void acceptInvitation(Space space, String userId) throws SpaceException {
-
-    String invitedUser = space.getInvitedUser();
-
-    if (!invitedUser.contains(userId)) {
-      throw new SpaceException(SpaceException.Code.USER_NOT_INVITED);
+    String[] invitedUser = space.getInvitedUsers();
+    boolean check = false;
+    if(invitedUser != null) {
+      for(String user : invitedUser) {
+        if(user.equals(userId)) {
+          check = true;
+          break;
+        }
+      }
     }
-
-    invitedUser = invitedUser.replace(userId, "");
-    if(invitedUser.contains(",,"))
-      invitedUser = invitedUser.replace(",,", ",");
-    if(invitedUser.indexOf(",") == 0)
-      invitedUser = invitedUser.substring(1);
-    if(invitedUser.equals(""))
-      invitedUser=null;
-    space.setInvitedUser(invitedUser);
+    if(!check) throw new SpaceException(SpaceException.Code.USER_NOT_INVITED);
+    space.setInvitedUsers(removeItemFromArray(invitedUser, userId));
     saveSpace(space, false);
-
     addMember(space, userId);
   }
 
@@ -320,12 +321,8 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void denyInvitation(Space space, String userId) throws SpaceException {
-    String invitedUser = space.getInvitedUser();
-    invitedUser = invitedUser.replace(userId, "");
-    if(invitedUser.contains(",,")) invitedUser = invitedUser.replace(",,", ",");
-    if(invitedUser.indexOf(",") == 0) invitedUser = invitedUser.substring(1);
-    if(invitedUser.equals("")) invitedUser=null;
-    space.setInvitedUser(invitedUser);
+    String[] invitedUsers = space.getInvitedUsers();
+    space.setInvitedUsers(removeItemFromArray(invitedUsers, userId));
     saveSpace(space, false);
   }
 
@@ -368,12 +365,13 @@ public class SpaceServiceImpl implements SpaceService{
     addMember(space, userId);
   }
 
+  @SuppressWarnings("unchecked")
   public List<String> getMembers(Space space) throws SpaceException {
     try {
       OrganizationService orgService = getOrgService();
       PageList usersPageList = orgService.getUserHandler().findUsersByGroup(space.getGroupId());
 
-      List<User> users = usersPageList.currentPage();
+      List<User> users = usersPageList.getAll();
 
       List<String> usernames = new ArrayList<String>();
 
@@ -442,9 +440,23 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public boolean isInvited(Space space, String userId) {
-    if(space.getInvitedUser() == null)
+    String[] invitedUsers = space.getInvitedUsers();
+    if(invitedUsers == null)
       return false;
-    return (space.getInvitedUser().contains(userId));
+    for(String user : invitedUsers) {
+      if(user.equals(userId)) return true;
+    }
+    return false;
+  }
+  
+  public boolean isPending(Space space, String userId) {
+    String[] pendingUsers = space.getPendingUsers();
+    if(pendingUsers == null)
+      return false;
+    for(String user : pendingUsers) {
+      if(user.equals(userId)) return true;
+    }
+    return false;
   }
 
   private Map<String, SpaceApplicationHandler> getSpaceApplicationHandlers() {
@@ -506,4 +518,5 @@ public class SpaceServiceImpl implements SpaceService{
       return list.toArray(new String[list.size()]);
     } else return new String[] {str};
   }
+  
 }
