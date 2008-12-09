@@ -7,6 +7,8 @@ import org.exoplatform.social.space.Space;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.NodeIterator;
+import javax.jcr.Value;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -102,7 +104,7 @@ public class JCRStorage {
     spaceNode.setProperty(SPACE_PARENT, space.getParent());
     spaceNode.setProperty(SPACE_DESCRIPTION, space.getDescription());
     spaceNode.setProperty(SPACE_TAG, space.getTag());
-    spaceNode.setProperty(SPACE_PENDING_USER, space.getPendingUser());
+    spaceNode.setProperty(SPACE_PENDING_USER, space.getPendingUsers());
     spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUser());
     spaceNode.setProperty(SPACE_TYPE, space.getType());
   }
@@ -116,9 +118,18 @@ public class JCRStorage {
     if(spaceNode.hasProperty(SPACE_PARENT)) space.setParent(spaceNode.getProperty(SPACE_PARENT).getString());
     if(spaceNode.hasProperty(SPACE_DESCRIPTION)) space.setDescription(spaceNode.getProperty(SPACE_DESCRIPTION).getString());
     if(spaceNode.hasProperty(SPACE_TAG)) space.setTag(spaceNode.getProperty(SPACE_TAG).getString());
-    if(spaceNode.hasProperty(SPACE_PENDING_USER)) space.setPendingUser(spaceNode.getProperty(SPACE_PENDING_USER).getString());
+    if(spaceNode.hasProperty(SPACE_PENDING_USER)) space.setPendingUsers(ValuesToStrings(spaceNode.getProperty(SPACE_PENDING_USER).getValues()));
     if(spaceNode.hasProperty(SPACE_INVITED_USER)) space.setInvitedUser(spaceNode.getProperty(SPACE_INVITED_USER).getString());
     if(spaceNode.hasProperty(SPACE_TYPE)) space.setType(spaceNode.getProperty(SPACE_TYPE).getString());
     return space;
+  }
+  
+  private String [] ValuesToStrings(Value[] Val) throws Exception {
+    if(Val.length == 1) return new String[]{Val[0].getString()};
+    String[] Str = new String[Val.length];
+    for(int i = 0; i < Val.length; ++i) {
+      Str[i] = Val[i].getString();
+    }
+    return Str;
   }
 }

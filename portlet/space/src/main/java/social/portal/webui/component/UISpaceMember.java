@@ -17,6 +17,7 @@
 package social.portal.webui.component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -96,11 +97,9 @@ public class UISpaceMember extends UIForm {
   
   public List<String> getPenddingUsers() {
     List<String> pendingUsersList = new ArrayList<String>();
-    String pendingUsers = space.getPendingUser();
+    String[] pendingUsers = space.getPendingUsers();
     if(pendingUsers != null) {
-      String[] tmpStrArr = pendingUsers.split(",");
-      for(int i=0; i<tmpStrArr.length; i++) 
-        pendingUsersList.add(tmpStrArr[i]);
+      pendingUsersList.addAll(Arrays.asList(pendingUsers));
     }
     return pendingUsersList;
   }
@@ -140,23 +139,20 @@ public class UISpaceMember extends UIForm {
 
       String invitedUser = uiSpaceMember.getInvitedUser();
       
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
+      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
 
       try {
         spaceService.invite(uiSpaceMember.space, invitedUser);
       } catch (SpaceException e) {
         if(e.getCode() == SpaceException.Code.USER_NOT_EXIST) {
           uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.select-user", null));
-          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
         } else if (e.getCode() == SpaceException.Code.USER_ALREADY_INVITED) {
           uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-invited-exist", null));
-          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
         } else if(e.getCode() == SpaceException.Code.USER_ALREADY_MEMBER) {
           uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-exist", null));
-          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
         }
 
+        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
         return;
       }
       uiSpaceMember.setInvitedUser(null);
@@ -197,9 +193,9 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+      
       SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
-
-      spaceService.denyInvitation(uiSpaceMember.space, userName);
+      spaceService.declineRequest(uiSpaceMember.space, userName);
       
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
@@ -225,7 +221,7 @@ public class UISpaceMember extends UIForm {
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
       SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      spaceService.acceptInvitation(uiSpaceMember.space, userName);
+      spaceService.validateRequest(uiSpaceMember.space, userName);
 
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }

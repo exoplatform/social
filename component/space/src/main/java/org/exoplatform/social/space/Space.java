@@ -32,7 +32,7 @@ public class Space {
   private String parent;
   private String description;
   private String tag;
-  private String pendingUser;
+  private String[] pendingUsers;
   private String invitedUser;
   private String type;
   
@@ -102,13 +102,12 @@ public class Space {
     return tag;
   }
 
-  public void setPendingUser(String pendingUser) {
-    this.pendingUser = pendingUser;
+  public void setPendingUsers(String[] pendingUsers) {
+    this.pendingUsers = pendingUsers;
   }
 
-  //TODO: why only one pending user?
-  public String getPendingUser() {
-    return pendingUser;
+  public String[] getPendingUsers() {
+    return pendingUsers;
   }
 
   public void setInvitedUser(String invitedUser) {

@@ -101,7 +101,7 @@ public class UIManageSpaceWorkingArea extends UIContainer {
     OrganizationService orgService = getApplicationComponent(OrganizationService.class);
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     Space space = spaceService.getSpace(spaceId);
-    String pendingList = space.getPendingUser();
+    String[] pendingList = space.getPendingUsers();
     MembershipHandler memberShipHandler = orgService.getMembershipHandler();
     Collection<Membership> memberShips= memberShipHandler.findMembershipsByUserAndGroup(user, space.getGroupId());
     Iterator<Membership> itr = memberShips.iterator();
@@ -112,7 +112,11 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       }
       return 3;
     }
-    if(pendingList != null && pendingList.contains(user)) return 1;
+    if(pendingList != null && pendingList.length > 0) {
+      for(int i=0; i< pendingList.length; i++) {
+        if(pendingList[i].equals(user)) return 1;
+      }
+    }
     return 0;
   }
   

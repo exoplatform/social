@@ -69,6 +69,12 @@ public interface SpaceService {
 
   void denyInvitation(String spaceId, String userId) throws SpaceException;
   void denyInvitation(Space space, String userId) throws SpaceException;
+  
+  void validateRequest(Space space, String userId) throws SpaceException;
+  void validateRequest(String spaceId, String userId) throws SpaceException;
+  
+  void declineRequest(Space space, String userId) throws SpaceException;
+  void declineRequest(String spaceId, String userId) throws SpaceException;
 
   void requestJoin(String spaceId, String userId) throws SpaceException;
   void requestJoin(Space space, String userId) throws SpaceException;

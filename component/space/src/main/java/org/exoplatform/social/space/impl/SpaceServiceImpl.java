@@ -16,26 +16,32 @@
  */
 package org.exoplatform.social.space.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-import org.exoplatform.services.organization.*;
-import org.exoplatform.services.mail.MailService;
-import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceService;
-import org.exoplatform.social.space.SpaceException;
-import org.exoplatform.social.space.SpaceUtils;
-import org.exoplatform.social.application.SpaceApplicationHandler;
-import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.portal.config.UserPortalConfigService;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.webui.portal.UIPortal;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.GroupHandler;
+import org.exoplatform.services.organization.Membership;
+import org.exoplatform.services.organization.MembershipHandler;
+import org.exoplatform.services.organization.MembershipType;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.social.application.SpaceApplicationHandler;
+import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 
 /**
  * Created by The eXo Platform SARL
@@ -336,12 +342,30 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void requestJoin(Space space, String userId) throws SpaceException {
-
-    String pendingUser = space.getPendingUser();
-    if (pendingUser==null) pendingUser = userId;
-    else pendingUser += "," + userId;
-    space.setPendingUser(pendingUser);
+    String[] pendingUsers = space.getPendingUsers();
+    space.setPendingUsers(addItemToArray(pendingUsers, userId));
     saveSpace(space, false);
+  }
+  
+  public void declineRequest(String spaceId, String userId) throws SpaceException {
+    declineRequest(getSpace(spaceId), userId);
+  }
+  
+  public void declineRequest(Space space, String userId) throws SpaceException {
+    String[] pendingUsers = space.getPendingUsers();
+    space.setPendingUsers(removeItemFromArray(pendingUsers, userId));
+    saveSpace(space, false);
+  }
+
+  public void validateRequest(String spaceId, String userId) throws SpaceException {
+    validateRequest(getSpace(spaceId), userId);
+  }
+  
+  public void validateRequest(Space space, String userId) throws SpaceException {
+    String[] pendingUsers = space.getPendingUsers();
+    space.setPendingUsers(removeItemFromArray(pendingUsers, userId));
+    saveSpace(space, false);
+    addMember(space, userId);
   }
 
   public List<String> getMembers(Space space) throws SpaceException {
@@ -464,5 +488,22 @@ public class SpaceServiceImpl implements SpaceService{
     if(apps.equals("")) apps = null;
     space.setApp(apps);
     saveSpace(space, false);
+  }
+  
+  private String[] removeItemFromArray(String[] arrays, String str) {
+    List<String> list = new ArrayList<String>();
+    list.addAll(Arrays.asList(arrays));
+    list.remove(str);
+    if(list.size() > 0) return list.toArray(new String[list.size()]);
+    else return null;
+  }
+  
+  private String[] addItemToArray(String[] arrays, String str) {
+    List<String> list = new ArrayList<String>();
+    if(arrays != null && arrays.length > 0) {
+      list.addAll(Arrays.asList(arrays));
+      list.add(str);
+      return list.toArray(new String[list.size()]);
+    } else return new String[] {str};
   }
 }
