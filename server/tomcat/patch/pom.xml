@@ -16,7 +16,7 @@
   <build>
     <resources>
 			<resource>
-				<directory>${exo.projects.directory.src}/portal/trunk/server/tomcat/patch/src/main/tomcat</directory>
+				<directory>${exo.projects.directory.src}/portal/tags/2.5/server/tomcat/patch/src/main/tomcat</directory>
 				<excludes>
 				  <exclude>**/eXoSkinMac.xml</exclude>
 				  <exclude>**/eXoSkinVista.xml</exclude>
