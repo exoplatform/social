@@ -9,13 +9,13 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>config</artifactId>
   <name>eXo Social Config</name>
-  <version>trunk</version>
+  <version>1.0-alpha1</version>
   <packaging>pom</packaging>
   
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk/</connection>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk/</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/projects/social/trunk/</url>
+    <connection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0-alpha1/</connection>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0-alpha1/</developerConnection>
+    <url>http://fisheye.exoplatform.org/browse/projects/social/tags/1.0-alpha1/</url>
   </scm>
   
   <issueManagement>
@@ -104,7 +104,7 @@
             </property>
             <property>
               <name>mock.portal.dir</name>
-              <value>${exo.projects.directory.src}/portal/trunk/web/portal/src/main/webapp</value>
+              <value>${exo.projects.directory.src}/portal/tags/2.5/web/portal/src/main/webapp</value>
             </property>
             <property>
               <name>org.apache.commons.logging.Log</name>
@@ -236,7 +236,7 @@
       <org.exoplatform.jcr.version>1.10.1</org.exoplatform.jcr.version>
       <org.exoplatform.pc.version>2.0.4</org.exoplatform.pc.version>
       <org.exoplatform.portal.version>2.5</org.exoplatform.portal.version>
-	<org.exoplatform.social.version>trunk</org.exoplatform.social.version>
+	<org.exoplatform.social.version>1.0-alpha1</org.exoplatform.social.version>
 	<org.shindig.version>0.8.1-1-r719456</org.shindig.version>
       <test.classes>Test</test.classes>
       <test.skip>true</test.skip>
