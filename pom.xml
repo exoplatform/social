@@ -1,10 +1,27 @@
 <project>
+  <parent>
+      <groupId>org.exoplatform</groupId>
+      <artifactId>parent</artifactId>
+      <version>1.0.0</version>
+  </parent>
+    
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>config</artifactId>
   <name>eXo Social Config</name>
   <version>trunk</version>
   <packaging>pom</packaging>
+  
+  <scm>
+    <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk/</connection>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk/</developerConnection>
+    <url>http://fisheye.exoplatform.org/browse/projects/social/trunk/</url>
+  </scm>
+  
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.exoplatform.org/browse/SOC</url>
+  </issueManagement>
 
   <modules>
 	<module>component/people</module>
@@ -49,9 +66,26 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>2.0.2</version>
         <configuration>
-        <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes>
+          <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes>
+          <archive>
+             <manifestEntries>
+               <SCM-Revision>${buildNumber}</SCM-Revision>
+             </manifestEntries>
+           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <SCM-Revision>${buildNumber}</SCM-Revision>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -118,28 +152,93 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doCheck>false</doCheck>
+          <doUpdate>false</doUpdate>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  
+  <pluginRepositories>
+      <pluginRepository>
+          <id>mc-release</id>
+          <name>Local Maven repository of releases</name>
+          <url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
+          <snapshots>
+              <enabled>false</enabled>
+          </snapshots>
+          <releases>
+              <enabled>true</enabled>
+          </releases>
+      </pluginRepository>
+  </pluginRepositories>
+  
 
   <profiles>
     <profile>
-      <id>default</id>
-      <activation>
-        <property><name>default</name></property>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <org.exoplatform.kernel.version>2.0.5</org.exoplatform.kernel.version>
-        <org.exoplatform.core.version>2.1.3</org.exoplatform.core.version>
-    	<org.exoplatform.ws.version>1.3.1</org.exoplatform.ws.version>
-        <org.exoplatform.jcr.version>1.10.1</org.exoplatform.jcr.version>
-        <org.exoplatform.pc.version>2.0.4</org.exoplatform.pc.version>
-        <org.exoplatform.portal.version>2.5</org.exoplatform.portal.version>
-	<org.exoplatform.social.version>trunk</org.exoplatform.social.version>
-	<org.shindig.version>0.8.1-1-r719456</org.shindig.version>
-        <test.classes>Test</test.classes>
-        <test.skip>true</test.skip>
-      </properties>
+        <id>release</id>
+        <build>
+          <plugins>
+            <!-- Not enough javadoc to need this now -->
+            <!--plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                    <goal>jar</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin-->
+            <plugin>
+                <groupId>com.google.code.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>tools/header.txt</header>
+                    <failIfMissing>true</failIfMissing>
+                    <mapping>
+                        <gtmpl>XML_STYLE</gtmpl>
+                    </mapping>
+                    <excludes>
+                        <exclude>**/web.xml</exclude>
+                    </excludes>              
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+          </plugins>
+        </build>
     </profile>
   </profiles>
+    <properties>
+      <org.exoplatform.kernel.version>2.0.5</org.exoplatform.kernel.version>
+      <org.exoplatform.core.version>2.1.3</org.exoplatform.core.version>
+  	<org.exoplatform.ws.version>1.3.1</org.exoplatform.ws.version>
+      <org.exoplatform.jcr.version>1.10.1</org.exoplatform.jcr.version>
+      <org.exoplatform.pc.version>2.0.4</org.exoplatform.pc.version>
+      <org.exoplatform.portal.version>2.5</org.exoplatform.portal.version>
+	<org.exoplatform.social.version>trunk</org.exoplatform.social.version>
+	<org.shindig.version>0.8.1-1-r719456</org.shindig.version>
+      <test.classes>Test</test.classes>
+      <test.skip>true</test.skip>
+    </properties>
 </project>
