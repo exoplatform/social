@@ -254,5 +254,39 @@
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Space Menu Portlet</description>
+    <portlet-name>SpaceMenuPortlet</portlet-name>
+    <display-name xml:lang="EN">Space Menu</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/SpaceMenuPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.SpaceMenuPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Space Menu</title>
+      <short-title>Space Menu</short-title>
+      <keywords>spaceMenu</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/space/UISpaceMenuPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
   </portlet> 
 </portlet-app>

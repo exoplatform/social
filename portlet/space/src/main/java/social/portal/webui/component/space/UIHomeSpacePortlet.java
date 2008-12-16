@@ -31,6 +31,7 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -50,7 +51,6 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIHomeSpacePortlet extends UIPortletApplication implements DashboardParent {
 
   public UIHomeSpacePortlet() throws Exception {
-    addChild(UIHomeSpaceControlArea.class, null, null);
     addChild(UIDashboard.class, null, null);
   }
 
@@ -58,34 +58,16 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
     PortletRequestContext context = (PortletRequestContext) WebuiRequestContext
     .getCurrentInstance();
     String remoteUser = context.getRemoteUser();
+    //TODO: dang.tung - should use SpaceService to check isLeader
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
     MembershipHandler memberShipHandler = orgSrc.getMembershipHandler();
-    String spaceName = getSpaceNameCleaned();
+    String spaceName = SpaceUtils.getShortSpaceName();
     try {
       if(memberShipHandler.findMembershipByUserGroupAndType(remoteUser, "/spaces/" + spaceName, "manager") != null) return true;
     } catch (Exception e) {
       e.printStackTrace();
     }
     return false;
-  }
-  
-  public List<PageNode> getApps() throws Exception {
-    UIPortal uiPortal = Util.getUIPortal();
-    String spaceName = getSpaceNameCleaned();
-    int spaceNav = (PortalConfig.GROUP_TYPE + "::spaces/" + spaceName).hashCode();
-    PageNavigation pageNav = uiPortal.getPageNavigation(spaceNav);
-    PageNode homeNode = pageNav.getNode(spaceName);
-    List<PageNode> list = homeNode.getChildren();
-    if(list == null) list = new ArrayList<PageNode>();
-    return list;
-  }
-  
-  public String getSpaceNameCleaned() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    HttpServletRequest request = pcontext.getRequest();
-    String url = request.getRequestURL().toString();
-    String spaceName = url.substring(url.lastIndexOf("/")+1);
-    return spaceName;
   }
 
   public String getDashboardOwner() {

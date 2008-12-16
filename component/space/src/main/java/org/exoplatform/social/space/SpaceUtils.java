@@ -25,8 +25,9 @@ import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -34,8 +35,7 @@ import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.exoplatform.services.portletcontainer.pci.model.Description;
-import org.exoplatform.services.portletcontainer.pci.model.DisplayName;
+
 import com.ibm.icu.text.Transliterator;
 
 
@@ -121,5 +121,14 @@ public class  SpaceUtils {
         return;
       }
     }
+  }
+  
+  public static String getShortSpaceName() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestUrl = pcontext.getRequestURI();
+    String portalUrl = pcontext.getPortalURI();
+    String spaceName = requestUrl.replace(portalUrl,"");
+    if(spaceName.contains("/")) spaceName = spaceName.split("/")[0];
+    return spaceName;
   }
 }

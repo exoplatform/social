@@ -16,9 +16,9 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<%
-	import org.exoplatform.dashboard.webui.component.UIDashboard;
-%>
-<div class="UIHomeSpacePortlet" id="$uicomponent.id">
-		<% uicomponent.renderChild(UIDashboard.class) %>
-</div>
+<webui-configuration>  
+  <application>     
+    <ui-component-root>social.portal.webui.component.space.UISpaceMenuPortlet</ui-component-root>
+    <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
+  </application>
+</webui-configuration>
