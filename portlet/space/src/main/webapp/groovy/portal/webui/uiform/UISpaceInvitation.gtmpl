@@ -44,10 +44,10 @@
 		  </div>
 		  <div class="InvitationRight" >
 		    <div class="Label" >
-			    Join my network on eXo social
+		    	<%= _ctx.appRes(uicomponent.getId() + ".label.join") %>			    
 			  </div>
 			  <div class="Text" >
-			    I've creat my own pleat on eXo social and I like connect to me so we can stay in touch. your can view my block, my photo, my list and all port. I've creat my own pleat on eXo social and I like connect to me so we can stay in touch. your can view my block, my photo, my list and all port. I've creat my own pleat on eXo social and I like connect to me so we can stay in touch. your can view my block, my photo, my list and all port. I've creat my own pleat on eXo social and I like connect to me so we can stay in touch. your can view my block, my photo, my list and all port.
+			  	<%= _ctx.appRes(uicomponent.getId() + ".text.desciption") %>			    
 			  </div>
 			  <div class="UIAction"> 
 	        <table class="ActionContainer">
@@ -59,7 +59,7 @@
 		                <div class="ButtonLeft">
 		                  <div class="ButtonRight">
 		                    <div class="ButtonMiddle">
-		                      <a style="color: #4F718A;" href="<%= uicomponent.event("Accept") %>"><span>Accept</span></a>
+		                      <a style="color: #4F718A;" href="<%= uicomponent.event("Accept") %>"><span><%= _ctx.appRes(uicomponent.getId() + ".button.accept") %></span></a>
 		                    </div>
 		                  </div>
 		                </div>
@@ -68,7 +68,7 @@
 		                <div class="ButtonLeft">
 		                  <div class="ButtonRight">
 		                    <div class="ButtonMiddle">
-		                      <a style="color: #4F718A;" href="<%= uicomponent.event("Decline") %>"><span>Decline</span></a>
+		                      <a style="color: #4F718A;" href="<%= uicomponent.event("Decline") %>"><span><%= _ctx.appRes(uicomponent.getId() + ".button.decline") %></span></a>
 		                    </div>
 		                  </div>
 		                </div>

@@ -54,14 +54,14 @@
 						<div class ="SpaceAction" onclick="$denyAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.deny") %></div>
+						      <div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.deny") %></div>
 						    </div>
 						  </div>
 						</div>
 						<div class ="SpaceAction" onclick="$acceptAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.accept") %></div>
+						      <div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.accept") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -71,7 +71,7 @@
 						<div class ="SpaceAction" onclick="$requestJoin">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.request") %></div>
+						      <div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.request") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -79,7 +79,7 @@
 						<div class ="SpaceAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.pending") %></div>
+						      <div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.pending") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -87,7 +87,7 @@
 						<div class ="SpaceAction" onclick="$leaveAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.leave") %></div>
+						      <div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.leave") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -95,7 +95,7 @@
 						<div class ="SpaceAction" onclick="$editAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.edit") %></div>
+						      <div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.edit") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -108,8 +108,8 @@
 						String description = objSpace.getDescription() != null ? objSpace.getDescription() : ""; 
 						String tag = objSpace.getTag() != null ? objSpace.getTag() : "";
 					%>
-					<div class="Text Line">Description: <%= description %></div>
-					<div class="TagsName">Tags: <%= tag %></div>
+					<div class="Text Line"><%= _ctx.appRes(uicomponent.getId() + ".label.description") %>: <%= description %></div>
+					<div class="TagsName"><%= _ctx.appRes(uicomponent.getId() + ".label.tags") %>: <%= tag %></div>
 				</div>
 				<div style="clear: left;"><span></span></div>
 			</div>

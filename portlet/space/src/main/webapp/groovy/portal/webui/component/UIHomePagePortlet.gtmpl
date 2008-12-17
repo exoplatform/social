@@ -31,14 +31,14 @@
 			    			<div class="DecoratorMR">
 			    				<div class="DecoratorMC">
 			    					<div class="PeopleIcon">
-				    					<div class="Title"><%=_ctx.appRes("UIHomePagePortlet.title.people")%></div>
-				    					<div class="Label"><%=_ctx.appRes("UIHomePagePortlet.label.addSocial")%></div>
+				    					<div class="Title"><%= _ctx.appRes("UIHomePagePortlet.title.people")%></div>
+				    					<div class="Label"><%= _ctx.appRes("UIHomePagePortlet.label.addSocial")%></div>
 				    					<div class="Label">&nbsp;</div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.createSocial")%></div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.displayInfo")%></div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.createSkill")%></div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.help")%></div>			
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.userInterface")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.createSocial")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.displayInfo")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.createSkill")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.help")%></div>			
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.userInterface")%></div>
 								</div>
 							</div>
 						</div>	
@@ -51,14 +51,14 @@
 			    			<div class="DecoratorMR">
 			    				<div class="DecoratorMC">
 			    					<div class="SpaceIcon">
-				    					<div class="Title"><%=_ctx.appRes("UIHomePagePortlet.title.space")%></div>
-				    					<div class="Label"><%=_ctx.appRes("UIHomePagePortlet.label.addCommunities")%></div>
+				    					<div class="Title"><%= _ctx.appRes("UIHomePagePortlet.title.space")%></div>
+				    					<div class="Label"><%= _ctx.appRes("UIHomePagePortlet.label.addCommunities")%></div>
 				    					<div class="Label">&nbsp;</div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.regroup")%></div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.information")%></div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.improve")%></div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.easy")%></div>
-										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.userFriendly")%></div>			
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.regroup")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.information")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.improve")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.easy")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.userFriendly")%></div>			
 								</div>
 							</div>
 						</div>	

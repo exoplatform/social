@@ -34,7 +34,7 @@
 							    <div class="LeftButton">
 							      <div class="RightButton">
 							        <div class="CenterButton">
-							        	search user
+							        	 <%= _ctx.appRes(uicomponent.getId() + ".label.search")%>							        	
 							        </div>
 							      </div>
 							    </div>
@@ -48,7 +48,7 @@
 						      <div class="RightButton">
 						        <div class="CenterButton">
 						          <% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
-					          <div class="IconButton" onclick="$inviteAction"> Invite</div>
+					          <div class="IconButton" onclick="$inviteAction"><%= _ctx.appRes(uicomponent.getId() + ".button.invite")%></div>
 						        </div>
 						      </div>
 						    </div>
@@ -74,7 +74,7 @@
 		    <div class="LeftButton">
 		      <div class="RightButton">
 		        <% String declineAction = uicomponent.event("DeclineUser",obj0) + "; return false;" %>
-		        <div class="CenterButton" onclick="$declineAction">Decline</div>
+		        <div class="CenterButton" onclick="$declineAction"><%= _ctx.appRes(uicomponent.getId() + ".button.decline")%></div>
 		      </div>
 		    </div>
 		  </div>
@@ -82,7 +82,7 @@
 	    <div class="LeftButton">
 	      <div class="RightButton">
 	      	<% String validateAction = uicomponent.event("ValidateUser",obj0) + "; return false;"%>
-	        <div class="CenterButton" onclick="$validateAction">Validate</div>
+	        <div class="CenterButton" onclick="$validateAction"><%= _ctx.appRes(uicomponent.getId() + ".button.validate")%></div>
 	      </div>
 	    </div>
 	  </div>
@@ -92,7 +92,7 @@
   <% } %>
   <% List<String> invitedUsers = uicomponent.getInvitedUsers();%>
   <% if(invitedUsers.size() > 0) { %>
-  <div class="TitleBar">Invited</div>
+  <div class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></div>
   <% } %>
 	<%	 for(obj in invitedUsers) { %>
   <div class="TitleContainer">
@@ -102,7 +102,7 @@
 		    <div class="LeftButton">
 		      <div class="RightButton">
 		      <% String revokeAction = uicomponent.event("RevokeInvitedUser",obj) + "; return false;"; %>
-		        <div class="CenterButton" onclick="$revokeAction">Revoke the invitation</div>
+		        <div class="CenterButton" onclick="$revokeAction"><%= _ctx.appRes(uicomponent.getId() + ".button.revoke")%></div>
 		      </div>
 		    </div>
 		  </div>
@@ -114,10 +114,10 @@
 	  <table cellspacing="0" borderspacing="0" class="UIGrid" >
 		  <thead>
 		    <tr>
-			    <th class="TitleBar">Members</th>
-			    <th class="TitleBar">Office</th>
-			    <th class="TitleBar">Leader</th>
-			    <th class="TitleBar" style="width: 80px;">Actions</th>
+			    <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
+			    <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.office")%></th>
+			    <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.leader")%></th>
+			    <th class="TitleBar" style="width: 80px;"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
 		    </tr>
 		  </thead>
 		  <tbody>
@@ -129,18 +129,18 @@
 		  %>
 				<tr class="EvenRow">
 				  <td class="text"><span class="label" id="label"><%= user %></span></td>
-	  			<td class="text"><span class="label" id="label">Make office</span></td>
+	  			<td class="text"><span class="label" id="label"><%= _ctx.appRes(uicomponent.getId() + ".label.makeOffice")%></span></td>
 	  			<% if(isLeader) {%>  
-	  			<td class="text"><span class="label" id="label" style="cursor: pointer;" onclick="$removeLeader">Remove leader</span></td>  
+	  			<td class="text"><span class="label" id="label" style="cursor: pointer;" onclick="$removeLeader"><%= _ctx.appRes(uicomponent.getId() + ".label.removeLeader")%></span></td>  
 			  	<% } else { %>
-			  	<td class="text"><span class="label" id="label" style="cursor: pointer;" onclick="$makeLeader">Make leader</span></td>
+			  	<td class="text"><span class="label" id="label" style="cursor: pointer;" onclick="$makeLeader"><%= _ctx.appRes(uicomponent.getId() + ".label.makeLeader")%></span></td>
 			  	<% } %>
 			  	<td align="center" >
 				  	<div class="AddInviteButton">
 				  	  <div class="LeftButton">
 					      <div class="RightButton">
 					      	<% String removeAction = uicomponent.event("RemoveUser",user) + "; return false;"; %>
-					        <div class="CenterButton" onclick="$removeAction">Remove</div>
+					        <div class="CenterButton" onclick="$removeAction"><%= _ctx.appRes(uicomponent.getId() + ".button.remove")%></div>
 					      </div>
 					    </div>
 				    </div>

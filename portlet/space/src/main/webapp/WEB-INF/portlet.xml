@@ -71,7 +71,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.GroovyPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.web.WarningPortlet</resource-bundle>
     
     <portlet-info>
       <title>Warning Portlet</title>

@@ -21,8 +21,7 @@
 		<div class="UIWarningPortletRight">
 			<div class="UIWarningPortletCenter">
 				<div class="UIWarningPortletIcon">
-						This demo is not bug-free. It represent the current status of development of eXo Social. All the data is <b>erased</b> every night (GMT time) and the application restarted.<br />
-						If you want to be part of the <b>Early Access Program</b> for this application, contact <a href="mailto:jeremi@exoplatform.com">Jeremi</a>.
+					<%= _ctx.appRes(uicomponent.getId() + ".title.description")%>						
 				</div>
 			</div>
 		</div>
