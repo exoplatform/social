@@ -105,7 +105,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.GroovyPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.web.HomePagePortlet</resource-bundle>
     
     <portlet-info>
       <title>HomePage Portlet</title>

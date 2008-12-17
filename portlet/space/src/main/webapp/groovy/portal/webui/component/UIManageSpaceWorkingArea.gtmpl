@@ -23,7 +23,6 @@
 	def rcontext = _ctx.getRequestContext() ;
   JavascriptManager jsmanager = rcontext.getJavascriptManager();
   jsmanager.importJavascript("social.webui.UIManageSpace") ;
-  
 %>
 <div class="UIManageSpaceWorkingArea" id="$uicomponent.id">
 	<% if(uicomponent.isAllSpace()) { %>
@@ -55,14 +54,14 @@
 						<div class ="SpaceAction" onclick="$denyAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton">Deny</div>
+						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.deny") %></div>
 						    </div>
 						  </div>
 						</div>
 						<div class ="SpaceAction" onclick="$acceptAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton">Accept</div>
+						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.accept") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -72,7 +71,7 @@
 						<div class ="SpaceAction" onclick="$requestJoin">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton">Request to join</div>
+						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.request") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -80,7 +79,7 @@
 						<div class ="SpaceAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton">Membership pending</div>
+						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.pending") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -88,7 +87,7 @@
 						<div class ="SpaceAction" onclick="$leaveAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton">Leave</div>
+						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.leave") %></div>
 						    </div>
 						  </div>
 						</div>
@@ -96,7 +95,7 @@
 						<div class ="SpaceAction" onclick="$editAction">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton">Edit</div>
+						      <div class="CenterButton"><%= _ctx.appRes("UIManageSpaceWorkingArea.label.edit") %></div>
 						    </div>
 						  </div>
 						</div>

@@ -31,14 +31,14 @@
 			    			<div class="DecoratorMR">
 			    				<div class="DecoratorMC">
 			    					<div class="PeopleIcon">
-				    					<div class="Title">People</div>
-				    					<div class="Label">Adding social networking to your work</div>
+				    					<div class="Title"><%=_ctx.appRes("UIHomePagePortlet.title.people")%></div>
+				    					<div class="Label"><%=_ctx.appRes("UIHomePagePortlet.label.addSocial")%></div>
 				    					<div class="Label">&nbsp;</div>
-										<div class="CheckIcon">Create and develop Social Networks in organizations</div>
-										<div class="CheckIcon">Display relevant information to each user</div>
-										<div class="CheckIcon">Create a skills index</div>
-										<div class="CheckIcon">Help to find the relevant person to solve a problem</div>			
-										<div class="CheckIcon">User-friendly interface</div>
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.createSocial")%></div>
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.displayInfo")%></div>
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.createSkill")%></div>
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.help")%></div>			
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.userInterface")%></div>
 								</div>
 							</div>
 						</div>	
@@ -51,23 +51,23 @@
 			    			<div class="DecoratorMR">
 			    				<div class="DecoratorMC">
 			    					<div class="SpaceIcon">
-				    					<div class="Title">Space</div>
-				    					<div class="Label">Adding communities to your work</div>
+				    					<div class="Title"><%=_ctx.appRes("UIHomePagePortlet.title.space")%></div>
+				    					<div class="Label"><%=_ctx.appRes("UIHomePagePortlet.label.addCommunities")%></div>
 				    					<div class="Label">&nbsp;</div>
-										<div class="CheckIcon">Regroup people around projects or interest</div>
-										<div class="CheckIcon">Information aggregation</div>
-										<div class="CheckIcon">Improve the knowledge sharing</div>
-										<div class="CheckIcon">Easy to use community management</div>
-										<div class="CheckIcon">User-friendly interface</div>			
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.regroup")%></div>
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.information")%></div>
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.improve")%></div>
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.easy")%></div>
+										<div class="CheckIcon"><%=_ctx.appRes("UIHomePagePortlet.icon.userFriendly")%></div>			
 								</div>
 							</div>
 						</div>	
 					</div>			    
 		    </td>
 		    <td style="width: 212px;">
-					<div  class="DownloadButton"><div style="padding-top: 54px;">Download Available soon</div></div>
-					<div  class="FeedBackButton"><div style="padding-top: 80px;"><a href="mailto:jeremi@exoplatform.com">FEEDBACK</a></div></div>	
-					<div  class="ContactButton"><div style="padding-top: 80px;"><a href="http://www.exoplatform.com/portal/public/en/aboutUS/contactus">CONTACT</a></div></div>				    
+					<div  class="DownloadButton"><div style="padding-top: 54px;"><%=_ctx.appRes("UIHomePagePortlet.label.download")%></div></div>
+					<div  class="FeedBackButton"><div style="padding-top: 80px;"><a href="mailto:jeremi@exoplatform.com"><%=_ctx.appRes("UIHomePagePortlet.label.feedback")%></a></div></div>	
+					<div  class="ContactButton"><div style="padding-top: 80px;"><a href="http://www.exoplatform.com/portal/public/en/aboutUS/contactus"><%=_ctx.appRes("UIHomePagePortlet.label.contact")%></a></div></div>				    
 		    </td>
 		  </tr>
 		</tbody>
