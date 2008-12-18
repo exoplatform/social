@@ -283,6 +283,8 @@ public class SpaceServiceImpl implements SpaceService{
     space.setInvitedUsers(removeItemFromArray(invitedUser, userId));
     saveSpace(space, false);
     addMember(space, userId);
+    //System.out.println("\n\n\n come here");
+    //SpaceUtils.reloadPortal();
   }
 
   public void addMember(Space space, String userId) throws SpaceException {

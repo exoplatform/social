@@ -24,6 +24,7 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
@@ -32,10 +33,11 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceUtils;
 
 /**
  * Created by The eXo Platform SARL
@@ -46,6 +48,8 @@ import org.exoplatform.social.space.SpaceException;
 
 public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   public static final String NAME = "classic";
+  public static final String APPLICATION = "Application";
+  public static final String HOME_APPLICATION = "HomeSpacePortlet";
   private ExoContainer container = ExoContainerContext.getCurrentContainer() ;
   private UserPortalConfigService configService = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
   
@@ -59,31 +63,30 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
 
   public void initSpace(Space space) throws SpaceException {
     try {
-      // create the new page and node to new group
-      // the template page id
-      String tempPageId= "group::platform/user::dashboard";
-
-      //create the name and uri of the new pages
-      String newPageName = space.getShortName();
-
+      ExoContainer eXoContainer = ExoContainerContext.getCurrentContainer();
+      UserPortalConfigService dataService = (UserPortalConfigService) eXoContainer.getComponentInstanceOfType(UserPortalConfigService.class);
+      
+      String groupId = space.getGroupId().substring(1);
+      
       // create new space navigation
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      UserPortalConfigService dataService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
-
       PageNavigation spaceNav = new PageNavigation();
       spaceNav.setOwnerType(PortalConfig.GROUP_TYPE);
-      spaceNav.setOwnerId(space.getGroupId().substring(1));
+      spaceNav.setOwnerId(groupId);
       spaceNav.setModifiable(true);
       dataService.create(spaceNav);
       UIPortal uiPortal = Util.getUIPortal();
       List<PageNavigation> pnavigations = uiPortal.getNavigations();
-      SpaceUtils.setNavigation(pnavigations, spaceNav);
+      SpaceUtils.setNavigation(spaceNav);
       pnavigations.add(spaceNav) ;
-      PageNode node = dataService.createNodeFromPageTemplate(newPageName, newPageName, tempPageId, PortalConfig.GROUP_TYPE, space.getShortName(), null) ;
-      node.setUri(space.getShortName()) ;
-      spaceNav.addNode(node) ;
+      
+      // default application
+      PageNode pageNode = createPageNodeFromApplication(space, HOME_APPLICATION);
+      
+      spaceNav.addNode(pageNode) ;
+      
       dataService.update(spaceNav) ;
-      SpaceUtils.setNavigation(uiPortal.getNavigations(), spaceNav) ;
+      SpaceUtils.setNavigation(spaceNav) ;
+
     } catch (Exception e) {
       //TODO:should rollback what has to be rollback here
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
@@ -103,53 +106,11 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
   
   private void activeApplicationClassic(Space space, String appId) throws SpaceException {
-    List<Application> apps;
-    try {
-      apps = SpaceUtils.getAllApplications(space.getId());
-    } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
-    }
     String spaceNav = space.getGroupId().substring(1);
+    PageNode pageNode = createPageNodeFromApplication(space, appId);
     
-    // create new page to group space
-    Page page = new Page();
-    page.setOwnerType(PortalConfig.GROUP_TYPE);
-    page.setOwnerId(spaceNav);
-    page.setName(appId);
-    page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
-    page.setEditPermission("manager:" + space.getGroupId());
-    page.setModifiable(true);
-
-    // mapping application registry -> application model for adding to page model, set child
-    Application app = getApplication(apps, appId);
-    org.exoplatform.portal.config.model.Application child = new org.exoplatform.portal.config.model.Application();
-    StringBuilder windowId = new StringBuilder();
-    windowId.append(PortalConfig.PORTAL_TYPE);
-    windowId.append("#classic:/");
-    windowId.append(app.getApplicationGroup() + "/" + app.getApplicationName()).append("/");
-    windowId.append(app.hashCode());
-    child.setInstanceId(windowId.toString());
-    child.setTitle(app.getDisplayName());
-    ArrayList<Object> applications = new ArrayList<Object>();
-    applications.add(child);
-    page.setChildren(applications);
-    // end set child
-
-    try {
-      configService.create(page);
-    } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_APPLICATION, e);
-    }
-
     PageNavigation nav;
     try {
-      // create new pageNode
-      PageNode pageNode = new PageNode();
-      pageNode.setUri(app.getApplicationName());
-      pageNode.setName(app.getApplicationName());
-      pageNode.setLabel(app.getDisplayName());
-      pageNode.setPageReference(page.getPageId());
-      // get space navigation
       nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
       PageNode homeNode = nav.getNode(space.getShortName());
       List<PageNode> childNodes = homeNode.getChildren();
@@ -157,29 +118,16 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       childNodes.add(pageNode);
       homeNode.setChildren((ArrayList<PageNode>) childNodes);
       configService.update(nav);
-
-
     } catch (Exception e) {
-      //if we can't update the navigation, we remove the page
       try {
-        configService.remove(page);
+        //TODO if we can't update the navigation, we remove the page
       } catch (Exception e1) {}
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_APPLICATION, e);
     }
 
     // refresh portal
-    updateNavigationPortlet(nav);
-  }
-
-  private void updateNavigationPortlet(PageNavigation nav){
-    // set uiportal navigation
-    UIPortal uiPortal = Util.getUIPortal();
-    SpaceUtils.setNavigation(uiPortal.getNavigations(), nav) ;
-
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    UIPortalApplication uiPortalApp = uiPortal.getAncestorOfType(UIPortalApplication.class);
-    UIControlWorkspace uiControl = uiPortalApp.getChildById(UIPortalApplication.UI_CONTROL_WS_ID);
-    if(uiControl != null) pcontext.addUIComponentToUpdateByAjax(uiControl);
+    SpaceUtils.setNavigation(nav);
+    //SpaceUtils.reloadPortal();
   }
 
   
@@ -187,28 +135,25 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     
   }
 
-  
   private void removeApplicationClassic(Space space, String appId) throws SpaceException {
     try {
       // remove pagenode
       String spaceNav = space.getGroupId().substring(1);
+      
       PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
       PageNode homeNode = nav.getNode(space.getShortName());
       List<PageNode> childNodes = homeNode.getChildren();
       childNodes.remove(homeNode.getChild(appId));
       homeNode.setChildren((ArrayList<PageNode>) childNodes);
+      
       configService.update(nav);
+      
       // remove page
       Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + appId);
       configService.remove(page);
-      // set uiportal navigation
-      UIPortal uiPortal = Util.getUIPortal();
-      SpaceUtils.setNavigation(uiPortal.getNavigations(), nav) ;
-      // refresh portal
-      PortalRequestContext pcontext = Util.getPortalRequestContext();
-      UIPortalApplication uiPortalApp = uiPortal.getAncestorOfType(UIPortalApplication.class);
-      UIControlWorkspace uiControl = uiPortalApp.getChildById(UIPortalApplication.UI_CONTROL_WS_ID);
-      if(uiControl != null) pcontext.addUIComponentToUpdateByAjax(uiControl);
+      
+      SpaceUtils.setNavigation(nav) ;
+      //SpaceUtils.reloadPortal();
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
     }
@@ -221,4 +166,104 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     }
     return null;
   }
+  
+  private PageNode createPageNodeFromApplication(Space space, String appId) throws SpaceException {
+    // create application
+    List<Application> apps;
+    try {
+      apps = SpaceUtils.getAllApplications(space.getId());
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
+    }
+    
+    Application app = getApplication(apps, appId);
+    org.exoplatform.portal.config.model.Application child = new org.exoplatform.portal.config.model.Application();
+    StringBuilder windowId = new StringBuilder();
+    windowId.append(PortalConfig.PORTAL_TYPE);
+    windowId.append("#classic:/");
+    windowId.append(app.getApplicationGroup() + "/" + app.getApplicationName()).append("/");
+    windowId.append(app.hashCode());
+    child.setInstanceId(windowId.toString());
+    child.setTitle(app.getDisplayName());
+    child.setShowInfoBar(false);
+    
+    // create new Page
+    Page page = new Page();
+    try {
+      page = configService.createPageTemplate("space", PortalConfig.GROUP_TYPE, space.getShortName());
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
+    }
+    
+    String pageName;
+    if(appId.equals(HOME_APPLICATION)) 
+      pageName = space.getShortName();
+    else pageName = app.getApplicationName();
+
+    page.setName(pageName);
+    page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+    page.setEditPermission("manager:" + space.getGroupId());
+    page.setModifiable(true);
+    
+    
+    //add application to container
+    ArrayList<Object> pageChilds = page.getChildren();
+    Container container = findContainerById(pageChilds, APPLICATION);
+    ArrayList<Object> childs = container.getChildren();
+    childs.add(child);
+    container.setChildren(childs);
+    pageChilds = setContainerById(pageChilds, container);
+    page.setChildren(pageChilds);
+    
+    try {
+      configService.create(page);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
+    }
+
+    // create new PageNode
+    String label = app.getDisplayName();
+    if(appId.equals(HOME_APPLICATION)) label = pageName;
+    PageNode pageNode = new PageNode();
+    pageNode.setUri(pageName);
+    pageNode.setName(pageName);
+    pageNode.setLabel(label);
+    pageNode.setPageReference(page.getPageId());
+    return pageNode;
+  }
+  
+  private Container findContainerById(ArrayList<Object> childs, String id) {
+    Container found = null;
+    for(Object obj : childs) {
+      if (org.exoplatform.portal.config.model.Application.class.isInstance(obj)) continue;
+      Container child = (Container)obj;
+      if(child.getId() == null) {
+        found = findContainerById(child.getChildren(), id);
+        if (found != null) return found;
+      } else {
+        if(child.getId().equals(id)) return child;
+        else found = findContainerById(child.getChildren(), id);
+        if(found != null) return found;
+      }
+    }
+    return found;
+  }
+  
+  private ArrayList<Object> setContainerById(ArrayList<Object> childs, Container container) {
+    ArrayList<Object> result = childs;
+    int index = result.indexOf(container);
+    if(index != -1) result.set(index, container);
+    else {
+      for(int i=0; i<result.size(); i++) {
+        Object obj = result.get(i);
+        if (org.exoplatform.portal.config.model.Application.class.isInstance(obj)) continue;
+        Container objContainer = (Container)obj;
+        ArrayList<Object> tmp = setContainerById(objContainer.getChildren(), container);
+        objContainer.setChildren(tmp);
+        result.set(i, objContainer);
+      }
+    }
+    return result;
+  }
+  
 }
