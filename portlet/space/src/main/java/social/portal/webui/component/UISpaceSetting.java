@@ -39,17 +39,14 @@ import org.exoplatform.webui.event.EventListener;
 )
 public class UISpaceSetting extends UIContainer {
 
-  final private static String SPACE_INFO = "info";
-  final private static String SPACE_APP = "app";
-  final private static String SPACE_MEMBER = "members";
   private Space space;
   
   public UISpaceSetting() throws Exception {
     UITabPane uiTabPane = addChild(UITabPane.class, null, null);
-    uiTabPane.addChild(UISpaceInfo.class, null, SPACE_INFO);
-    uiTabPane.addChild(UISpaceMember.class, null, SPACE_MEMBER);
-    uiTabPane.addChild(UISpaceApplication.class, null, SPACE_APP);
-    uiTabPane.setSelectedTab(SPACE_INFO);
+    uiTabPane.addChild(UISpaceInfo.class, null, null);
+    uiTabPane.addChild(UISpaceMember.class, null, null);
+    uiTabPane.addChild(UISpaceApplication.class, null, null);
+    uiTabPane.setSelectedTab(1);
   }
   
   
