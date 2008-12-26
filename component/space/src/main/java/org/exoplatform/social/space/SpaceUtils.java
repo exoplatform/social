@@ -29,9 +29,6 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -117,17 +114,6 @@ public class  SpaceUtils {
     }
     return cleanedStr.toString().toLowerCase();
   }
-
-  public static void setNavigation(PageNavigation nav) {
-    UIPortal uiPortal = Util.getUIPortal();
-    List<PageNavigation> navs = uiPortal.getNavigations();
-    for(int i = 0; i < navs.size(); i++) {
-      if(navs.get(i).getId() == nav.getId()) {
-        navs.set(i, nav);
-        return;
-      }
-    }
-  }
   
   public static String getShortSpaceName() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
@@ -138,13 +124,14 @@ public class  SpaceUtils {
     return spaceName;
   }
   
-  public static void reloadPortal(){
-//    UIPortal uiPortal = Util.getUIPortal();
-//    PortalRequestContext pcontext = Util.getPortalRequestContext();
-//    UIPortalApplication uiPortalApp = uiPortal.getAncestorOfType(UIPortalApplication.class);
-//    UIControlWorkspace uiControl = uiPortalApp.getChildById(UIPortalApplication.UI_CONTROL_WS_ID);
-//    UIWorkingWorkspace uiWorking = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
-//    if(uiControl != null) pcontext.addUIComponentToUpdateByAjax(uiControl);
-    //pcontext.addUIComponentToUpdateByAjax(uiWorking);
+  public static void setNavigation(PageNavigation nav) {
+    UIPortal uiPortal = Util.getUIPortal();
+    List<PageNavigation> navs = uiPortal.getNavigations();
+    for(int i = 0; i < navs.size(); i++) {
+      if(navs.get(i).getId() == nav.getId()) {
+        navs.set(i, nav);
+        return;
+      }
+    }
   }
 }

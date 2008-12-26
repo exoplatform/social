@@ -69,19 +69,16 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       spaceNav.setOwnerType(PortalConfig.GROUP_TYPE);
       spaceNav.setOwnerId(groupId);
       spaceNav.setModifiable(true);
-      dataService.create(spaceNav);
-      UIPortal uiPortal = Util.getUIPortal();
-      List<PageNavigation> pnavigations = uiPortal.getNavigations();
-      SpaceUtils.setNavigation(spaceNav);
-      pnavigations.add(spaceNav) ;
-      
       // default application
       PageNode pageNode = createPageNodeFromApplication(space, HOME_APPLICATION);
       
       spaceNav.addNode(pageNode) ;
       
-      dataService.update(spaceNav) ;
-      SpaceUtils.setNavigation(spaceNav) ;
+      UIPortal uiPortal = Util.getUIPortal();
+      List<PageNavigation> pnavigations = uiPortal.getNavigations();
+      pnavigations.add(spaceNav);
+      //uiPortal.setNavigation(pnavigations);
+      dataService.create(spaceNav);
 
     } catch (Exception e) {
       //TODO:should rollback what has to be rollback here
@@ -114,16 +111,13 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       childNodes.add(pageNode);
       homeNode.setChildren((ArrayList<PageNode>) childNodes);
       configService.update(nav);
+      SpaceUtils.setNavigation(nav);
     } catch (Exception e) {
       try {
         //TODO if we can't update the navigation, we remove the page
       } catch (Exception e1) {}
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_APPLICATION, e);
     }
-
-    // refresh portal
-    SpaceUtils.setNavigation(nav);
-    //SpaceUtils.reloadPortal();
   }
 
   
@@ -148,8 +142,6 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + appId);
       configService.remove(page);
       
-      SpaceUtils.setNavigation(nav) ;
-      //SpaceUtils.reloadPortal();
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
     }
@@ -186,7 +178,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     // create new Page
     Page page = new Page();
     try {
-      page = configService.createPageTemplate("space", PortalConfig.GROUP_TYPE, space.getShortName());
+      page = configService.createPageTemplate("space", PortalConfig.GROUP_TYPE, space.getGroupId().substring(1));
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
     }
