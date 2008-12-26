@@ -16,9 +16,10 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+<% import org.exoplatform.webui.core.UIPopupWindow; %>
 <div class="UISpaceMember">
 	<% uiform.begin() %>
-	<% String invitedUser = uicomponent.getInvitedUser(); 
+	<% String invitedUser = uicomponent.getUsersName(); 
 		 if(invitedUser == null) invitedUser = "";
 		 String searchUserAction = uicomponent.event("SearchUser") + "; return false;";
 	%>
@@ -26,34 +27,35 @@
 	  <div class="InviteSocialLeft">
 	    <div class="InviteSocialRight">
 	      <div class="InviteSocialCenter">
-	        <div style="width: 480px; margin: auto;">
+	        <div style="width: 430px; margin: auto;">
 						<div class="SearchInviteForm">
 						  <div class="AddInvite"><% uiform.renderField("user") %></div>
-						  <div class="SearchInviteButton">
+						  	<div class="SearchInviteButton" style="float: left;">
+						  
+							    <div class="LeftButton">
+							      <div class="RightButton">
+							        <div class="CenterButton">
+							          <% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
+						          <div class="IconButton" onclick="$inviteAction"><%= _ctx.appRes(uicomponent.getId() + ".button.invite")%></div>
+							        </div>
+							      </div>
+							    </div>
+						  
+								</div>
+						  <div style="clear: left;"><span></span></div>
+				  	</div>
+				  	<div class="UIActionContainer">
 						  	<a onclick="$searchUserAction" href="#">
 							    <div class="LeftButton">
 							      <div class="RightButton">
 							        <div class="CenterButton">
-							        	 <%= _ctx.appRes(uicomponent.getId() + ".label.search")%>							        	
+							        	 <%= _ctx.appRes(uicomponent.getId() + ".label.search")%>								        	 				        	
 							        </div>
 							      </div>
 							    </div>
 							  </a>
-						  </div>
-						  <div style="clear: left;"><span></span></div>
-				  	</div>
-					  <div class="ActionContainer" style="float: left;">
-						  
-						    <div class="LeftButton">
-						      <div class="RightButton">
-						        <div class="CenterButton">
-						          <% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
-					          <div class="IconButton" onclick="$inviteAction"><%= _ctx.appRes(uicomponent.getId() + ".button.invite")%></div>
-						        </div>
-						      </div>
-						    </div>
-						  
 						</div>
+					  
 					  <div style="clear: left;"><span></span></div>
 					</div>
 				</div>
@@ -152,4 +154,5 @@
 		</table>
   </div>
   <% uiform.end() %>
+  <% uiform.renderChild(UIPopupWindow.class) %>
 </div>

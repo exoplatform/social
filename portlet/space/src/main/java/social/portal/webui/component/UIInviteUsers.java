@@ -128,7 +128,7 @@ public class UIInviteUsers extends UISearch implements UIPopupComponent{
       String userName = event.getRequestContext().getRequestParameter(OBJECTID) ;
       UIManageSpacesPortlet uiPortlet = uiListUser.getAncestorOfType(UIManageSpacesPortlet.class);
       UISpaceMember uiSpaceMember = uiPortlet.findFirstComponentOfType(UISpaceMember.class);
-      uiSpaceMember.setInvitedUser(userName);
+      uiSpaceMember.setUsersName(userName);
       UIPopupContainer uiPopup = uiPortlet.getChild(UIPopupContainer.class);
       uiPopup.cancelPopupAction();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);

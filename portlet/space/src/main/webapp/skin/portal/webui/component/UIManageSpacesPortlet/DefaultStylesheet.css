@@ -211,30 +211,30 @@
 	width: 200px;
 }
 
-.UIManageSpacesPortlet .UISpaceMember .ActionContainer {
+.UIManageSpacesPortlet .UISpaceMember .UIActionContainer {
 	padding: 8px 0px;
-	margin: auto;
-	width: 95px;
+	margin-left: 320px;
+	
 }
 
-.UIManageSpacesPortlet .UISpaceMember .TitleContainer .ActionContainer .LeftButton {
+.UIManageSpacesPortlet .UISpaceMember .TitleContainer .UIActionContainer .LeftButton {
 	background: url('background/LeftButton6x27.gif') no-repeat left;
 	padding-left: 6px;
 	margin-top: 4px;
 }
 
-.UIManageSpacesPortlet .UISpaceMember .TitleContainer .ActionContainer .RightButton {
+.UIManageSpacesPortlet .UISpaceMember .TitleContainer .UIActionContainer .RightButton {
 	background: url('background/RightButton6x27.gif') no-repeat right;
 	padding-right: 6px;
 }
 
-.UIManageSpacesPortlet .UISpaceMember .TitleContainer .ActionContainer .CenterButton {
+.UIManageSpacesPortlet .UISpaceMember .TitleContainer .UIActionContainer .CenterButton {
 	background: url('background/CenterButton1x27.gif') repeat-x ;
 	line-height: 27px;
 	padding: 0px 10px;
 }
 
-.UIManageSpacesPortlet .UISpaceMember .TitleContainer .ActionContainer .IconButton {
+.UIManageSpacesPortlet .UISpaceMember .TitleContainer .UIActionContainer .IconButton {
 	background: url('background/AddInvite.gif') no-repeat right ;
 	line-height: 27px;
 	font-weight: bold;
@@ -313,7 +313,7 @@
 }
 
 .UIManageSpacesPortlet .UISpaceMember .TitleContainer .SearchInviteForm {
-	width: 330px;
+	width: 280px;
 	padding:4px 16px;
 	margin: 8px 8px 0px 0px;
 	border: 1px solid #b7b7b7;
