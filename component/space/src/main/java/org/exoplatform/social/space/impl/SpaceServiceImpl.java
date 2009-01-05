@@ -78,19 +78,19 @@ public class SpaceServiceImpl implements SpaceService{
     GroupHandler groupHandler = orgService.getGroupHandler();
     Group groupParent;
     Group newGroup;
-    String spaceNameCleaned;
+    String shortName;
     try {
 
       groupParent = groupHandler.findGroupById(SPACE_PARENT);
       //Create new group
       newGroup = groupHandler.createGroupInstance();
 
-      spaceNameCleaned = SpaceUtils.cleanString(spaceName);
-      String groupId = groupParent.getId() + "/" + spaceNameCleaned;
+      shortName = SpaceUtils.cleanString(spaceName);
+      String groupId = groupParent.getId() + "/" + shortName;
       if(groupHandler.findGroupById(groupId) != null) {
         throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
       }
-      newGroup.setGroupName(spaceNameCleaned);
+      newGroup.setGroupName(shortName);
       newGroup.setLabel(spaceName);
       groupHandler.addChild(groupParent, newGroup, true);
     } catch (Exception e) {
@@ -116,7 +116,9 @@ public class SpaceServiceImpl implements SpaceService{
     space.setGroupId(newGroup.getId());
     space.setType(DefaultSpaceApplicationHandler.NAME);
     space.setDescription("edit this description to explain what your space is about");
-    space.setTag("");
+    //TODO: dang.tung: in future when we improve parent of space we have to modify
+    //                 url of space = parent's short name + space's short name 
+    space.setUrl(shortName);
     saveSpace(space, true);
     
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);

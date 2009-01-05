@@ -37,7 +37,7 @@
 				<div class="CommunityIcon"><span></span></div>
 				<div class="CommunityContainer">
 					<div class="CommunityMane Line">
-					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + objSpace.getShortName() ; %>
+					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + objSpace.getUrl() ; %>
 						<div class="CommunityName" style="float: left; cursor:pointer;"><a href="$pageURI" class="CommunityNameMiddle"><%= objSpace.getName() %></a></div>
 						<% 
 							 String requestJoin = uicomponent.event("RequestJoin", objSpace.getId()) + "; return false;";

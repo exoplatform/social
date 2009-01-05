@@ -34,7 +34,6 @@ public class JCRStorage {
   final static private String SPACE = "Space".intern();
   final static private String NT_UNSTRUCTURED = "nt:unstructured".intern();
   final static private String SPACE_NODETYPE = "exo:space".intern();
-  final static private String SPACE_ID = "exo:id".intern();
   final static private String SPACE_NAME = "exo:name".intern();
   final static private String SPACE_GROUPID = "exo:groupId".intern();
   final static private String SPACE_APP = "exo:app".intern();
@@ -44,6 +43,7 @@ public class JCRStorage {
   final static private String SPACE_PENDING_USER = "exo:pendingUsers".intern();
   final static private String SPACE_INVITED_USER = "exo:invitedUsers".intern();
   final static private String SPACE_TYPE = "exo:type".intern();
+  final static private String SPACE_URL = "exo:url".intern();
 
   private NodeHierarchyCreator nodeHierarchyCreator_ ;
 
@@ -94,7 +94,7 @@ public class JCRStorage {
   public Space getSpace(String id) throws Exception {
     Node spaceHomeNode = getSpaceHome();
     try {
-      return getSpace(spaceHomeNode.getNode(id));
+      return getSpace(spaceHomeNode.getSession().getNodeByUUID(id));
     } catch (PathNotFoundException ex) {
       return null;
     }
@@ -109,11 +109,12 @@ public class JCRStorage {
   private void saveSpace(Node spaceHomeNode, Space space, boolean isNew) throws Exception {
     Node spaceNode;
     if(isNew) {
-      spaceNode = spaceHomeNode.addNode(space.getId(),SPACE_NODETYPE);
-      spaceNode.setProperty(SPACE_ID, space.getId());
+      spaceNode = spaceHomeNode.addNode(SPACE_NODETYPE,SPACE_NODETYPE);
+      spaceNode.addMixin("mix:referenceable");
     } else {
-      spaceNode = spaceHomeNode.getNode(space.getId());
+      spaceNode = spaceHomeNode.getSession().getNodeByUUID(space.getId());
     }
+    if(space.getId() == null) space.setId(spaceNode.getUUID());
     spaceNode.setProperty(SPACE_NAME, space.getName());
     spaceNode.setProperty(SPACE_GROUPID, space.getGroupId());
     spaceNode.setProperty(SPACE_APP, space.getApp());
@@ -123,11 +124,12 @@ public class JCRStorage {
     spaceNode.setProperty(SPACE_PENDING_USER, space.getPendingUsers());
     spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUsers());
     spaceNode.setProperty(SPACE_TYPE, space.getType());
+    spaceNode.setProperty(SPACE_URL, space.getUrl());
   }
 
   private Space getSpace(Node spaceNode) throws Exception{
     Space space = new Space();
-    if(spaceNode.hasProperty(SPACE_ID)) space.setId(spaceNode.getProperty(SPACE_ID).getString());
+    space.setId(spaceNode.getUUID());
     if(spaceNode.hasProperty(SPACE_NAME)) space.setName(spaceNode.getProperty(SPACE_NAME).getString());
     if(spaceNode.hasProperty(SPACE_GROUPID)) space.setGroupId(spaceNode.getProperty(SPACE_GROUPID).getString());
     if(spaceNode.hasProperty(SPACE_APP)) space.setApp(spaceNode.getProperty(SPACE_APP).getString());
@@ -137,6 +139,7 @@ public class JCRStorage {
     if(spaceNode.hasProperty(SPACE_PENDING_USER)) space.setPendingUsers(ValuesToStrings(spaceNode.getProperty(SPACE_PENDING_USER).getValues()));
     if(spaceNode.hasProperty(SPACE_INVITED_USER)) space.setInvitedUsers(ValuesToStrings(spaceNode.getProperty(SPACE_INVITED_USER).getValues()));
     if(spaceNode.hasProperty(SPACE_TYPE)) space.setType(spaceNode.getProperty(SPACE_TYPE).getString());
+    if(spaceNode.hasProperty(SPACE_URL)) space.setUrl(spaceNode.getProperty(SPACE_URL).getString());
     return space;
   }
   

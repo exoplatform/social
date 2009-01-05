@@ -70,6 +70,7 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
         uiForm.getAncestorOfType(UIPopupContainer.class).deActivate();
         requestContext.addUIComponentToUpdateByAjax(uiPorlet);        
       } catch (SpaceException e) {
+        e.printStackTrace();
         if(e.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
           uiApp.addMessage(new ApplicationMessage("UISpaceForm.msg.space-exist", null));
           requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());

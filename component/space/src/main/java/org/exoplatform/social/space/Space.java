@@ -16,13 +16,12 @@
  */
 package org.exoplatform.social.space;
 
-import org.exoplatform.services.jcr.util.IdGenerator;
 
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
  *          tungcnw@gmail.com
- * August 29, 2008          
+ * August 29, 2008
  */
 public class Space {
   private String id;
@@ -35,16 +34,15 @@ public class Space {
   private String[] pendingUsers;
   private String[] invitedUsers;
   private String type;
-  
+  private String url;
+
 //  public final static String WEBOS = "webos";
 //  public final static String CLASSIC = "classic";
   public final static String ACTIVE_STATUS = "actived";
   public final static String DEACTIVE_STATUS = "deactived";
   public final static String INSTALL_STATUS = "install";
   
-  public Space() {
-    id = "Space" + IdGenerator.generate();
-  }
+  public Space() {}
   
   public void setId(String id) {
     this.id = id;
@@ -128,5 +126,13 @@ public class Space {
   
   public String getShortName() {
     return groupId.substring(groupId.lastIndexOf("/")+1);
+  }
+  
+  public String getUrl() {
+    return url;
+  }
+  
+  public void setUrl(String url) {
+    this.url = url;
   }
 }
