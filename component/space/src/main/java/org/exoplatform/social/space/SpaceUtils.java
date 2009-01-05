@@ -115,13 +115,13 @@ public class  SpaceUtils {
     return cleanedStr.toString().toLowerCase();
   }
   
-  public static String getShortSpaceName() {
+  public static String getSpaceUrl() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     String requestUrl = pcontext.getRequestURI();
     String portalUrl = pcontext.getPortalURI();
-    String spaceName = requestUrl.replace(portalUrl,"");
-    if(spaceName.contains("/")) spaceName = spaceName.split("/")[0];
-    return spaceName;
+    String spaceUrl = requestUrl.replace(portalUrl,"");
+    if(spaceUrl.contains("/")) spaceUrl = spaceUrl.split("/")[0];
+    return spaceUrl;
   }
   
   public static void setNavigation(PageNavigation nav) {

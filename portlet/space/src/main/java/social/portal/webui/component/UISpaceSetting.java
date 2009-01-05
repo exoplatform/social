@@ -63,7 +63,7 @@ public class UISpaceSetting extends UIContainer {
   public String getSpaceName() {
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     try {
-      return spaceSrc.getSpace(space.getId()).getName();
+      return spaceSrc.getSpaceById(space.getId()).getName();
     } catch (SpaceException e) {
       e.printStackTrace();
       return null;

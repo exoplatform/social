@@ -90,7 +90,7 @@ public class UIManageSpaceWorkingArea extends UIContainer {
   public int displayAction(String spaceId) throws SpaceException {
     // 0: request to join, 1: in pendingList, 2: manager, 3: member
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space = spaceSrc.getSpace(spaceId);
+    Space space = spaceSrc.getSpaceById(spaceId);
     
     String userId = Util.getPortalRequestContext().getRemoteUser();
     if(spaceSrc.isMember(space, userId)) {
@@ -127,7 +127,7 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       uiSpaceSetting.setRendered(true);
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
       SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
-      Space space = spaceService.getSpace(spaceId);
+      Space space = spaceService.getSpaceById(spaceId);
       uiSpaceSetting.setValues(space);
       requestContext.addUIComponentToUpdateByAjax(uiPortlet);
     }

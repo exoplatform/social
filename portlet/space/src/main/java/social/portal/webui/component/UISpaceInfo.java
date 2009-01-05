@@ -62,7 +62,7 @@ public class UISpaceInfo extends UIForm {
       UISpaceInfo uiSpaceInfo = event.getSource();
       SpaceService spaceSrc = uiSpaceInfo.getApplicationComponent(SpaceService.class);
       String id = uiSpaceInfo.getUIStringInput("id").getValue();
-      Space space = spaceSrc.getSpace(id);
+      Space space = spaceSrc.getSpaceById(id);
       uiSpaceInfo.invokeSetBindingBean(space);
       spaceSrc.saveSpace(space, false);
       UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);

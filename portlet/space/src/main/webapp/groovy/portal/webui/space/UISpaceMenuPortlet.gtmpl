@@ -3,7 +3,7 @@
 	import org.exoplatform.portal.webui.util.Util;
 	import org.exoplatform.social.space.SpaceUtils;
 	def apps = uicomponent.getApps();
-	def spaceShortName = SpaceUtils.getShortSpaceName();
+	def spaceShortName = SpaceUtils.getSpaceUrl();
 %>
 
 <div id="$uicomponent.id" class="UISpaceMenuPortlet">

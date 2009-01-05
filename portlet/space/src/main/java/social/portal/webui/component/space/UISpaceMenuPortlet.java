@@ -24,6 +24,8 @@ import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
@@ -47,7 +49,10 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   
   public List<PageNode> getApps() throws Exception {
     UIPortal uiPortal = Util.getUIPortal();
-    String spaceName = SpaceUtils.getShortSpaceName();
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
+    Space space = spaceSrc.getSpaceByUrl(spaceUrl);
+    String spaceName = space.getShortName();
     int spaceNav = (PortalConfig.GROUP_TYPE + "::spaces/" + spaceName).hashCode();
     PageNavigation pageNav = uiPortal.getPageNavigation(spaceNav);
     PageNode homeNode = pageNav.getNode(spaceName);

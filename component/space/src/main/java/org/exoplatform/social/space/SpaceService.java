@@ -39,7 +39,15 @@ public interface SpaceService {
    * @return space with id specified
    * @throws Exception
    */
-  Space getSpace(String id) throws SpaceException;
+  Space getSpaceById(String id) throws SpaceException;
+  
+  /**
+   * Gets a space by its url
+   * @param url Url of space
+   * @return space with url specified
+   * @throws Exception
+   */
+  Space getSpaceByUrl(String url) throws SpaceException;
  
   /**
    * Creates new space or saves when edit it

@@ -137,7 +137,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void installApplication(String spaceId, String appId) throws SpaceException {
-    installApplication(getSpace(spaceId), appId);  
+    installApplication(getSpaceById(spaceId), appId);  
   }
 
   public void deactiveApplication(Space space, String appId) throws SpaceException {
@@ -153,7 +153,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void activateApplication(String spaceId, String appId) throws SpaceException {
-    activateApplication(getSpace(spaceId), appId);
+    activateApplication(getSpaceById(spaceId), appId);
   }
 
   public void removeApplication(Space space, String appId) throws SpaceException {
@@ -170,9 +170,17 @@ public class SpaceServiceImpl implements SpaceService{
     }
   }
 
-  public Space getSpace(String id) throws SpaceException {
+  public Space getSpaceById(String id) throws SpaceException {
     try {
-      return storage.getSpace(id);
+      return storage.getSpaceById(id);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+  
+  public Space getSpaceByUrl(String url) throws SpaceException {
+    try {
+      return storage.getSpaceByUrl(url);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
@@ -188,7 +196,7 @@ public class SpaceServiceImpl implements SpaceService{
 
 
   public void leave(String spaceId, String userId) throws SpaceException {
-    leave(getSpace(spaceId), userId);
+    leave(getSpaceById(spaceId), userId);
   }
 
   @SuppressWarnings("unchecked")
@@ -267,7 +275,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void acceptInvitation(String spaceId, String userId) throws SpaceException {
-    acceptInvitation(getSpace(spaceId), userId);
+    acceptInvitation(getSpaceById(spaceId), userId);
   }
 
   public void acceptInvitation(Space space, String userId) throws SpaceException {
@@ -321,7 +329,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void denyInvitation(String spaceId, String userId) throws SpaceException {
-    denyInvitation(getSpace(spaceId), userId);
+    denyInvitation(getSpaceById(spaceId), userId);
   }
 
   public void denyInvitation(Space space, String userId) throws SpaceException {
@@ -331,7 +339,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void revokeInvitation(String spaceId, String userId) throws SpaceException {
-    revokeInvitation(getSpace(spaceId), userId);
+    revokeInvitation(getSpaceById(spaceId), userId);
   }
 
   public void revokeInvitation(Space space, String userId) throws SpaceException {
@@ -339,7 +347,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void requestJoin(String spaceId, String userId) throws SpaceException {
-    requestJoin(getSpace(spaceId), userId);
+    requestJoin(getSpaceById(spaceId), userId);
   }
 
   public void requestJoin(Space space, String userId) throws SpaceException {
@@ -349,7 +357,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
   
   public void declineRequest(String spaceId, String userId) throws SpaceException {
-    declineRequest(getSpace(spaceId), userId);
+    declineRequest(getSpaceById(spaceId), userId);
   }
   
   public void declineRequest(Space space, String userId) throws SpaceException {
@@ -359,7 +367,7 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void validateRequest(String spaceId, String userId) throws SpaceException {
-    validateRequest(getSpace(spaceId), userId);
+    validateRequest(getSpaceById(spaceId), userId);
   }
   
   public void validateRequest(Space space, String userId) throws SpaceException {

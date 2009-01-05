@@ -62,7 +62,7 @@ public class UISpacesManage extends UIContainer {
       String spaceId = requestContext.getRequestParameter("space");
       
       SpaceService spaceSrc = uiSpaceManage.getApplicationComponent(SpaceService.class);
-      Space space = spaceSrc.getSpace(spaceId);
+      Space space = spaceSrc.getSpaceById(spaceId);
       String userName = requestContext.getRemoteUser();
       
       if(!spaceSrc.isInvited(space, userName)) {

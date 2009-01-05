@@ -68,7 +68,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
     list = SpaceUtils.getAllApplications(spaceId);
     // remove installed app
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space = spaceSrc.getSpace(spaceId);
+    Space space = spaceSrc.getSpaceById(spaceId);
     String appList = space.getApp();
     if(appList != null) {
       for(Application app : list) {
@@ -108,7 +108,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
       SpaceService spaceService = uiform.getApplicationComponent(SpaceService.class);
       SpaceService spaceSrc = uiform.getApplicationComponent(SpaceService.class);
       String appId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Space space = spaceSrc.getSpace(uiform.spaceId);
+      Space space = spaceSrc.getSpaceById(uiform.spaceId);
       if(space.getApp() != null && space.getApp().indexOf(appId) != -1) {
         uiApp.addMessage(new ApplicationMessage("UIAddApplicationSpace.msg.app-exist", null));
         request.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
@@ -118,7 +118,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
       spaceService.activateApplication(uiform.spaceId, appId);
       UIManageSpacesPortlet uiPortlet = (UIManageSpacesPortlet)uiform.getAncestorOfType(UIManageSpacesPortlet.class);
       UISpaceApplication uiSpaceApp = uiPortlet.getChild(UISpaceSetting.class).getChild(UITabPane.class).getChild(UISpaceApplication.class);
-      uiSpaceApp.setValue(spaceSrc.getSpace(uiform.spaceId));
+      uiSpaceApp.setValue(spaceSrc.getSpaceById(uiform.spaceId));
       request.addUIComponentToUpdateByAjax(uiSpaceApp);
       UIPopupContainer uiPopup = uiPortlet.getChild(UIPopupContainer.class);
       uiPopup.cancelPopupAction();

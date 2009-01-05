@@ -108,7 +108,7 @@ public class UISpaceApplication extends UIForm {
       SpaceService spaceService = uiSpaceApp.getApplicationComponent(SpaceService.class);
       spaceService.removeApplication(uiSpaceApp.space_, appId);
       //TODO: Why do we need to reload the Space object
-      uiSpaceApp.setValue(spaceService.getSpace(uiSpaceApp.space_.getId()));
+      uiSpaceApp.setValue(spaceService.getSpaceById(uiSpaceApp.space_.getId()));
       context.addUIComponentToUpdateByAjax(uiSpaceApp);
     }
   }

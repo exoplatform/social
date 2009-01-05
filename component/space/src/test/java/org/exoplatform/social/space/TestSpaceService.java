@@ -78,13 +78,13 @@ public class TestSpaceService extends BasicTestCase {
     
     assertEquals(2, spaceService.getAllSpaces().size());
     
-    Space space3 = spaceService.getSpace(space1.getId());
+    Space space3 = spaceService.getSpaceById(space1.getId());
     assertNotNull(space3);
     assertEquals("Space1", space3.getId());
     assertNotSame("Calendar", space3.getApp());
     assertEquals("Group1",space3.getGroupId());
     
-    Space space4 = spaceService.getSpace(space2.getId());
+    Space space4 = spaceService.getSpaceById(space2.getId());
     assertNotNull(space4);
     assertEquals(space1.getId(),space4.getParent());
     
@@ -96,7 +96,7 @@ public class TestSpaceService extends BasicTestCase {
     space.setGroupId("Group1");
     spaceService.saveSpace(space, true);
     
-    Space s = spaceService.getSpace(space.getId());
+    Space s = spaceService.getSpaceById(space.getId());
     assertNotNull(s);
     assertEquals(3,spaceService.getAllSpaces().size());
     assertEquals("Calendar", s.getApp());

@@ -91,13 +91,29 @@ public class JCRStorage {
     return spaces;
   }
 
-  public Space getSpace(String id) throws Exception {
+  public Space getSpaceById(String id) throws Exception {
     Node spaceHomeNode = getSpaceHome();
     try {
       return getSpace(spaceHomeNode.getSession().getNodeByUUID(id));
     } catch (PathNotFoundException ex) {
       return null;
     }
+  }
+  
+  public Space getSpaceByUrl(String url) throws Exception {
+    try {
+      Node spaceHomeNode = getSpaceHome();
+      NodeIterator iter = spaceHomeNode.getNodes();
+      Space space;
+      while (iter.hasNext()) {
+        Node spaceNode = iter.nextNode();
+        space = getSpace(spaceNode);
+        if(space.getUrl().equals(url)) return space;
+      }
+    }catch (PathNotFoundException ex) {
+      return null;
+    }
+    return null;
   }
 
   public void saveSpace(Space space, boolean isNew) throws Exception {

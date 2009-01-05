@@ -31,6 +31,8 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -61,9 +63,11 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
     //TODO: dang.tung - should use SpaceService to check isLeader
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
     MembershipHandler memberShipHandler = orgSrc.getMembershipHandler();
-    String spaceName = SpaceUtils.getShortSpaceName();
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     try {
-      if(memberShipHandler.findMembershipByUserGroupAndType(remoteUser, "/spaces/" + spaceName, "manager") != null) return true;
+      Space space = spaceSrc.getSpaceByUrl(spaceUrl);
+      if(memberShipHandler.findMembershipByUserGroupAndType(remoteUser, "/spaces/" + space.getShortName(), "manager") != null) return true;
     } catch (Exception e) {
       e.printStackTrace();
     }
