@@ -57,3 +57,10 @@ SkinService.addSkin(
     "/space/skin/portal/webui/component/UISpaceMenuPortlet/DefaultStylesheet.css",
     ServletContext
 ) ;
+SkinService.addSkin(
+    "space/SpaceSettingPortlet",
+    "Default",
+    "/space/skin/portal/webui/component/UISpaceSettingPortlet/DefaultStylesheet.css",
+    ServletContext
+) ;
+

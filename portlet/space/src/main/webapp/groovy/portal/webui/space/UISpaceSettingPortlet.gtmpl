@@ -1,0 +1,6 @@
+<%
+	import social.portal.webui.component.UISpaceSetting;
+%>
+<div class="UISpaceSettingPortlet" id="$uicomponent.id">
+	<% uicomponent.renderChild(UISpaceSetting) %>
+</div>

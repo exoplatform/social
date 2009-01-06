@@ -33,6 +33,7 @@
 	<module>portlet/space</module>
   <module>portlet/profile</module>
   <module>component/space</module>
+	<module>webui/social</module>
   </modules>
 
   <build>
