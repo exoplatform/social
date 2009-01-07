@@ -2,5 +2,7 @@
 	import social.portal.webui.component.UISpaceSetting;
 %>
 <div class="UISpaceSettingPortlet" id="$uicomponent.id">
-	<% uicomponent.renderChild(UISpaceSetting) %>
+	<% uicomponent.initData();
+		 uicomponent.renderChild(UISpaceSetting.class);
+		 uicomponent.renderPopupMessages(); %>
 </div>

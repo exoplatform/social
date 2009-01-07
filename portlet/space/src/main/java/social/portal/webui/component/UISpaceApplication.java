@@ -56,6 +56,7 @@ public class UISpaceApplication extends UIForm {
   private UIPageIterator iterator_;
   
   public UISpaceApplication() throws Exception {
+    addChild(UIPopupContainer.class, null, "UIPopupAddApp");
     iterator_ = createUIComponent(UIPageIterator.class, null, null);
     addChild(iterator_);
   }
@@ -91,8 +92,7 @@ public class UISpaceApplication extends UIForm {
   static public class AddApplicationActionListener extends EventListener<UISpaceApplication> {
     public void execute(Event<UISpaceApplication> event) throws Exception {
       UISpaceApplication uiSpaceApp = event.getSource();
-      UIManageSpacesPortlet uiPortlet = (UIManageSpacesPortlet)uiSpaceApp.getAncestorOfType(UIManageSpacesPortlet.class);
-      UIPopupContainer uiPopup = uiPortlet.getChild(UIPopupContainer.class);
+      UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
       UIAddApplicationSpace uiaddApplication = (UIAddApplicationSpace)uiPopup.activate(UIAddApplicationSpace.class, 600);
       uiaddApplication.setSpaceId(uiSpaceApp.space_.getId());
       uiPopup.getChild(UIPopupWindow.class).setId("AddApplication");

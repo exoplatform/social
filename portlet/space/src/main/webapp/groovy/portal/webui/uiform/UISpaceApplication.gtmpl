@@ -19,6 +19,7 @@
 <%
 	import org.exoplatform.webui.core.UIPageIterator;
 	import org.exoplatform.application.registry.Application;
+	import org.exoplatform.webui.core.UIPopupContainer;
 	
 	UIPageIterator iterator = uicomponent.getUIPageIterator();
 	List<Application> applications = uicomponent.getApplications();
@@ -60,4 +61,5 @@
     </div>
   </div>
   <% uiform.end() %>
+  <% uicomponent.renderChild(UIPopupContainer.class) %>
 </div>

@@ -40,6 +40,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UISpaceSetting extends UIContainer {
 
   private Space space;
+  private boolean isBack = true;
   
   public UISpaceSetting() throws Exception {
     UITabPane uiTabPane = addChild(UITabPane.class, null, null);
@@ -58,7 +59,15 @@ public class UISpaceSetting extends UIContainer {
     UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).getChild(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
     this.space = space;
-  } 
+  }
+  
+  public void setDisplayBack(boolean isBack) {
+    this.isBack = isBack;
+  }
+  
+  public boolean isBack() {
+    return isBack;
+  }
   
   public String getSpaceName() {
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);

@@ -28,6 +28,7 @@
 			</div>
 		</div>
 	</div>
+	<% if(uicomponent.isBack()) { %>
 	<div class="BackButton" onclick="$backAction">
 		<div class="BackButtonL">
 			<div class="BackButtonR">
@@ -37,6 +38,7 @@
 			</div>
 		</div>
 	</div>
+	<% } %>
 	<div style="clear: right;"><span></span></div>
 	<div><% uicomponent.renderChild(UITabPane.class);%></div>
 </div>

@@ -32,7 +32,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupComponent;
 import org.exoplatform.webui.core.UIPopupContainer;
-import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -94,8 +93,8 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
   static public class CloseActionListener extends EventListener<UIAddApplicationSpace> {
     public void execute(Event<UIAddApplicationSpace> event) throws Exception {
       UIAddApplicationSpace uiSpaceApp = event.getSource();
-      UIManageSpacesPortlet uiPortlet = (UIManageSpacesPortlet)uiSpaceApp.getAncestorOfType(UIManageSpacesPortlet.class);
-      UIPopupContainer uiPopup = uiPortlet.getChild(UIPopupContainer.class);
+      UISpaceApplication uiForm = (UISpaceApplication)uiSpaceApp.getAncestorOfType(UISpaceApplication.class);
+      UIPopupContainer uiPopup = uiForm.getChild(UIPopupContainer.class);
       uiPopup.cancelPopupAction();
     }
   }
@@ -116,11 +115,11 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
       }
       spaceService.installApplication(uiform.spaceId, appId);
       spaceService.activateApplication(uiform.spaceId, appId);
-      UIManageSpacesPortlet uiPortlet = (UIManageSpacesPortlet)uiform.getAncestorOfType(UIManageSpacesPortlet.class);
-      UISpaceApplication uiSpaceApp = uiPortlet.getChild(UISpaceSetting.class).getChild(UITabPane.class).getChild(UISpaceApplication.class);
-      uiSpaceApp.setValue(spaceSrc.getSpaceById(uiform.spaceId));
-      request.addUIComponentToUpdateByAjax(uiSpaceApp);
-      UIPopupContainer uiPopup = uiPortlet.getChild(UIPopupContainer.class);
+      UIAddApplicationSpace uiSpaceApp = event.getSource();
+      UISpaceApplication uiForm = (UISpaceApplication)uiSpaceApp.getAncestorOfType(UISpaceApplication.class);
+      uiForm.setValue(spaceSrc.getSpaceById(uiform.spaceId));
+      request.addUIComponentToUpdateByAjax(uiForm);
+      UIPopupContainer uiPopup = uiForm.getChild(UIPopupContainer.class);
       uiPopup.cancelPopupAction();
     }
   }

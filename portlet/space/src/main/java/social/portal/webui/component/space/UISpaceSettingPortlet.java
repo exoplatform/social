@@ -19,7 +19,9 @@ package social.portal.webui.component.space;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIPopupMessages;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -38,12 +40,26 @@ import social.portal.webui.component.UISpaceSetting;
 )
 
 public class UISpaceSettingPortlet extends UIPortletApplication {
-  public UISpaceSettingPortlet() throws  Exception {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space  = spaceSrc.getSpaceByUrl(spaceUrl);
-    UISpaceSetting uiSpaceSetting = createUIComponent(UISpaceSetting.class, null, null);
-    uiSpaceSetting.setValues(space);
+  
+  final private UISpaceSetting uiSpaceSetting;
+  final private SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
+  
+  public UISpaceSettingPortlet() throws Exception {
+    uiSpaceSetting = createUIComponent(UISpaceSetting.class, null, null);
+    uiSpaceSetting.setDisplayBack(false);
     addChild(uiSpaceSetting);
-  } 
+  }
+  
+  public void initData() throws Exception {
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    Space space  = spaceSrc.getSpaceByUrl(spaceUrl);
+    uiSpaceSetting.setValues(space);
+  }
+  
+  public void renderPopupMessages() throws Exception {
+    UIPopupMessages uiPopupMsg = getUIPopupMessages();
+    if(uiPopupMsg == null)  return ;
+    WebuiRequestContext  context =  WebuiRequestContext.getCurrentInstance() ;
+    uiPopupMsg.processRender(context);
+  }
 }

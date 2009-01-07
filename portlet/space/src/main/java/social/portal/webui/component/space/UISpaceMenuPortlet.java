@@ -19,11 +19,10 @@ package social.portal.webui.component.space;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.portal.webui.portal.UIPortal;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -48,13 +47,14 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   }
   
   public List<PageNode> getApps() throws Exception {
-    UIPortal uiPortal = Util.getUIPortal();
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     Space space = spaceSrc.getSpaceByUrl(spaceUrl);
     String spaceName = space.getShortName();
-    int spaceNav = (PortalConfig.GROUP_TYPE + "::spaces/" + spaceName).hashCode();
-    PageNavigation pageNav = uiPortal.getPageNavigation(spaceNav);
+    
+    UserPortalConfigService dataService = getApplicationComponent(UserPortalConfigService.class);
+    PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, "spaces/" + spaceName);
+    
     PageNode homeNode = pageNav.getNode(spaceName);
     List<PageNode> list = homeNode.getChildren();
     if(list == null) list = new ArrayList<PageNode>();
