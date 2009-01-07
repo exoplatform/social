@@ -656,6 +656,35 @@
                                             </field>
                                         </object>
                                     </value>
+                                    <value>
+                                        <object type="org.exoplatform.application.registry.Application">
+                                            <field name="applicationName">
+                                                <string>SpaceSettingPortlet</string>
+                                            </field>
+                                            <field name="categoryName">
+                                                <string>space</string>
+                                            </field>
+                                            <field name="displayName">
+                                                <string>Space Setting</string>
+                                            </field>
+                                            <field name="description">
+                                                <string>Setting information of space</string>
+                                            </field>
+                                            <field name="applicationType">
+                                                <string>portlet</string>
+                                            </field>
+                                            <field name="applicationGroup">
+                                                <string>space</string>
+                                            </field>
+                                            <field name="accessPermissions">
+                                                <collection type="java.util.ArrayList" item-type="java.lang.String">
+                                                    <value>
+                                                        <string>*:/platform/users</string>
+                                                    </value>
+                                                </collection>
+                                            </field>
+                                        </object>
+                                    </value>
                                 </collection>
                             </field>
                         </object>

@@ -127,6 +127,9 @@ public class SpaceServiceImpl implements SpaceService{
     // add user list to default application
     installApplication(space, "UserListPortlet");
     activateApplication(space, "UserListPortlet");
+    // add user list to default application
+    installApplication(space, "SpaceSettingPortlet");
+    activateApplication(space, "SpaceSettingPortlet");
     return space;
   }
 
