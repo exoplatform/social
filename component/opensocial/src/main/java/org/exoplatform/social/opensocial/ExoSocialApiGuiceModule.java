@@ -34,9 +34,9 @@ import org.apache.shindig.social.core.config.SocialApiGuiceModule;
 import org.apache.shindig.common.servlet.ParameterFetcher;
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
+import org.exoplatform.social.opensocial.model.impl.ExoPersonImpl;
 import org.exoplatform.social.opensocial.spi.ExoPeopleService;
 import org.exoplatform.social.opensocial.spi.ExoActivityService;
-import org.exoplatform.social.opensocial.model.ExoPersonImpl;
 
 import java.util.List;
 
