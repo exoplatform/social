@@ -19,6 +19,9 @@ package social.portal.webui.component;
 import java.util.Iterator;
 import java.util.List;
 
+import org.exoplatform.application.registry.Application;
+import org.exoplatform.commons.utils.ObjectPageList;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -35,12 +38,14 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 /**
@@ -64,8 +69,18 @@ import org.exoplatform.webui.event.EventListener;
 public class UIManageSpaceWorkingArea extends UIContainer {
 
   private boolean isAllSpace = false;
+  private UIPageIterator iterator_;
+  private final String iteratorID = "UIIteratorSpaceWorking";
   
-  public List<Space> getAllSpaces() throws Exception {
+  public UIManageSpaceWorkingArea() throws Exception {
+    iterator_ = createUIComponent(UIPageIterator.class, null, iteratorID);
+    addChild(iterator_);    
+    initSpacesList();
+  }
+  
+  public UIPageIterator getUIPageIterator() { return iterator_;}
+  
+  private List<Space> getAllSpaces() throws Exception {
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     List<Space> allSpaces = spaceSrc.getAllSpaces();
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
@@ -81,6 +96,20 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       }
     }
     return allSpaces;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Space> getSpaces() throws Exception {
+    List<Space> lists;
+    lists = iterator_.getCurrentPageData();
+    return lists;
+  }
+  
+  public void initSpacesList() throws Exception{
+    List<Space> listSpaces;
+    listSpaces = getAllSpaces();
+    PageList pageList = new ObjectPageList(listSpaces,5);
+    iterator_.setPageList(pageList);
   }
   
   public boolean isAllSpace() {
@@ -111,8 +140,9 @@ public class UIManageSpaceWorkingArea extends UIContainer {
   static public class ChangeListSpacesActionListener extends EventListener<UIManageSpaceWorkingArea> {
     public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
       UIManageSpaceWorkingArea uiForm = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
+      WebuiRequestContext requestContext = event.getRequestContext();      
       uiForm.isAllSpace = !uiForm.isAllSpace;
+      uiForm.initSpacesList();
       requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }
@@ -143,7 +173,7 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       String userID = requestContext.getRemoteUser();
 
       spaceService.leave(spaceId, userID);
-      
+      uiForm.initSpacesList();
       requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }

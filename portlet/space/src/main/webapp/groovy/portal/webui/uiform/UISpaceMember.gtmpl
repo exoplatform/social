@@ -16,7 +16,13 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<% import org.exoplatform.webui.core.UIPopupWindow; %>
+<% import org.exoplatform.webui.core.UIPopupWindow;
+	 import org.exoplatform.webui.core.UIPageIterator;
+	 
+	 UIPageIterator iteratorPenddingUsers = uicomponent.getUIPageIteratorPenddingUsers(); 
+	 UIPageIterator iteratorInvitedUsers = uicomponent.getUIPageIteratorInvitedUsers();
+	 UIPageIterator iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
+%>
 <div class="UISpaceMember">
 	<% uiform.begin() %>
 	<% String invitedUser = uicomponent.getUsersName(); 
@@ -90,8 +96,11 @@
 	  </div>
 	  <div style="clear: both;"><span></span></div>
   </div>
- </div> 
+ </div>  
   <% } %>
+  <% if(penddingUsers.size() > 0) { %>
+  <div><%_ctx.renderUIComponent(iteratorPenddingUsers) ;%></div>
+  <% } %>  
   <% List<String> invitedUsers = uicomponent.getInvitedUsers();%>
   <% if(invitedUsers.size() > 0) { %>
   <div class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></div>
@@ -110,8 +119,11 @@
 		  </div>
 		  <div style="clear: both;"><span></span></div>
 	  </div>
-  </div>
+  </div>    
   <% } %>
+  <% if(invitedUsers.size() > 0) { %>
+  <div><%_ctx.renderUIComponent(iteratorInvitedUsers) ;%></div>
+  <% } %>  
   <div class="TitleContainer" style="margin-top: 6px;">
 	  <table cellspacing="0" borderspacing="0" class="UIGrid" >
 		  <thead>
@@ -153,6 +165,7 @@
 		  </tbody>
 		</table>
   </div>
+  <div><%_ctx.renderUIComponent(iteratorExistingUsers) ;%></div>
   <% uiform.end() %>
   <% uiform.renderChild(UIPopupWindow.class) %>
 </div>

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.exoplatform.commons.utils.ObjectPageList;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.space.Space;
@@ -31,6 +33,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -82,6 +85,12 @@ public class UISpaceMember extends UIForm {
 
   private Space space;
   private final static String user = "user";
+  private UIPageIterator iteratorPenddingUsers;
+  private UIPageIterator iteratorInvitedUsers;
+  private UIPageIterator iteratorExistingUsers;
+  private final String iteratorPenddingID = "UIIteratorPendding";
+  private final String iteratorInvitedID = "UIIteratorInvited";
+  private final String iteratorExistingID = "UIIteratorExisting";
   
   public UISpaceMember() throws Exception {
     addUIFormInput(new UIFormStringInput(user,null,null)
@@ -89,36 +98,88 @@ public class UISpaceMember extends UIForm {
                     .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d._,]+\\p{L}$", "UISpaceMember.msg.Invalid-char"));
     UIPopupWindow searchUserPopup = addChild(UIPopupWindow.class, "SearchUser", "SearchUser");
     searchUserPopup.setWindowSize(640, 0); 
+    iteratorPenddingUsers = createUIComponent(UIPageIterator.class, null, iteratorPenddingID);
+    iteratorInvitedUsers = createUIComponent(UIPageIterator.class, null, iteratorInvitedID);
+    iteratorExistingUsers = createUIComponent(UIPageIterator.class, null, iteratorExistingID);
+    addChild(iteratorPenddingUsers);
+    addChild(iteratorInvitedUsers);
+    addChild(iteratorExistingUsers);
   }
   
-  public void setValue(Space space) {
+  public UIPageIterator getUIPageIteratorPenddingUsers() { return iteratorPenddingUsers;}
+  
+  public UIPageIterator getUIPageIteratorInvitedUsers() { return iteratorInvitedUsers;}
+  
+  public UIPageIterator getUIPageIteratorExistingUsers() { return iteratorExistingUsers;}
+  
+  public void setValue(Space space) throws SpaceException {
     this.space = space;
+    initPenddingUsers();
+    initInvitedUsers();
+    initExistingUsers();
   }
   
-  public List<String> getPenddingUsers() {
-    List<String> pendingUsersList = new ArrayList<String>();
+  @SuppressWarnings("unchecked")
+  public List<String> getPenddingUsers() throws Exception {
+    /*List<String> pendingUsersList = new ArrayList<String>();
     String[] pendingUsers = space.getPendingUsers();
     if(pendingUsers != null) {
       pendingUsersList.addAll(Arrays.asList(pendingUsers));
     }
-    return pendingUsersList;
+    return pendingUsersList;*/
+    List<String> lists;
+    lists = iteratorPenddingUsers.getCurrentPageData();
+    return lists;
   }
   
-  public List<String> getInvitedUsers() {
-    List<String> invitedUsersList = new ArrayList<String>();
+  public void initPenddingUsers() {
+    List<String> pendingUsersList = new ArrayList<String>();
+    String[] pendingUsers = space.getPendingUsers();
+    if(pendingUsers != null) {
+      pendingUsersList.addAll(Arrays.asList(pendingUsers));
+    }    
+    PageList pageList = new ObjectPageList(pendingUsersList,5);
+    iteratorPenddingUsers.setPageList(pageList);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<String> getInvitedUsers() throws Exception {
+    /*List<String> invitedUsersList = new ArrayList<String>();
     String[] invitedUsers = space.getInvitedUsers();
     if(invitedUsers != null) {
       invitedUsersList.addAll(Arrays.asList(invitedUsers));
     }
-    return invitedUsersList;
+    return invitedUsersList;*/
+    List<String> lists;
+    lists = iteratorInvitedUsers.getCurrentPageData();
+    return lists;
   }
   
+  public void initInvitedUsers() {
+    List<String> invitedUsersList = new ArrayList<String>();
+    String[] invitedUsers = space.getInvitedUsers();
+    if(invitedUsers != null) {
+      invitedUsersList.addAll(Arrays.asList(invitedUsers));
+    }       
+    PageList pageList = new ObjectPageList(invitedUsersList,5);
+    iteratorInvitedUsers.setPageList(pageList);
+  }
   
-  public List<String> getExistingUsers() throws SpaceException {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
+  @SuppressWarnings("unchecked")
+  public List<String> getExistingUsers() throws Exception {
+    /*ExoContainer container = ExoContainerContext.getCurrentContainer();
     SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
-
-    return spaceService.getMembers(space);
+    return spaceService.getMembers(space);*/
+    List<String> lists;
+    lists = iteratorExistingUsers.getCurrentPageData();
+    return lists;
+  }
+  
+  public void initExistingUsers() throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);           
+    PageList pageList = new ObjectPageList(spaceService.getMembers(space),5);
+    iteratorExistingUsers.setPageList(pageList);
   }
 
   public void setUsersName(String userName) {
@@ -177,7 +238,8 @@ public class UISpaceMember extends UIForm {
         else remainUsers += "," + usersIsMember;
         uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-is-member",new String[] {usersIsMember},ApplicationMessage.WARNING));
       }     
-      uiSpaceMember.setUsersName(remainUsers);    
+      uiSpaceMember.setUsersName(remainUsers);   
+      uiSpaceMember.initInvitedUsers();      
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
     }
@@ -203,8 +265,8 @@ public class UISpaceMember extends UIForm {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
 
-      spaceService.revokeInvitation(uiSpaceMember.space, userName);
-
+      spaceService.revokeInvitation(uiSpaceMember.space, userName); 
+      uiSpaceMember.initInvitedUsers();
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -216,8 +278,8 @@ public class UISpaceMember extends UIForm {
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
       
       SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      spaceService.declineRequest(uiSpaceMember.space, userName);
-      
+      spaceService.declineRequest(uiSpaceMember.space, userName);      
+      uiSpaceMember.initPenddingUsers();      
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -229,8 +291,8 @@ public class UISpaceMember extends UIForm {
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
 
-      spaceService.removeMember(uiSpaceMember.space, userName);
-
+      spaceService.removeMember(uiSpaceMember.space, userName);      
+      uiSpaceMember.initExistingUsers();
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -243,7 +305,8 @@ public class UISpaceMember extends UIForm {
 
       SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
       spaceService.validateRequest(uiSpaceMember.space, userName);
-
+      uiSpaceMember.initPenddingUsers();
+      uiSpaceMember.initExistingUsers();
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }

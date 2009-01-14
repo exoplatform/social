@@ -54,10 +54,11 @@ public class UISpaceApplication extends UIForm {
 
   private Space space_;
   private UIPageIterator iterator_;
+  private final String iteratorID = "UIIteratorSpaceApplication";
   
   public UISpaceApplication() throws Exception {
     addChild(UIPopupContainer.class, null, "UIPopupAddApp");
-    iterator_ = createUIComponent(UIPageIterator.class, null, null);
+    iterator_ = createUIComponent(UIPageIterator.class, null, iteratorID);
     addChild(iterator_);
   }
   

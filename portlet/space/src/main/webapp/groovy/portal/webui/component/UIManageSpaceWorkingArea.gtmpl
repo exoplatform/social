@@ -19,10 +19,15 @@
 <% 
 	import org.exoplatform.web.application.JavascriptManager;
 	import org.exoplatform.portal.webui.util.Util ;
-	def allSpaces = uicomponent.getAllSpaces();
+	import org.exoplatform.webui.core.UIPageIterator;
+	
+	//def allSpaces = uicomponent.getAllSpaces();
 	def rcontext = _ctx.getRequestContext() ;
   JavascriptManager jsmanager = rcontext.getJavascriptManager();
   jsmanager.importJavascript("social.webui.UIManageSpace") ;
+  
+  UIPageIterator iterator = uicomponent.getUIPageIterator();	
+  def allSpaces = uicomponent.getSpaces();
 %>
 <div class="UIManageSpaceWorkingArea" id="$uicomponent.id">
 	<% if(uicomponent.isAllSpace()) { %>
@@ -115,4 +120,5 @@
 			</div>
 		<% } %>
 	</div>
+	<div><%_ctx.renderUIComponent(iterator) ;%></div>
 </div>

@@ -55,9 +55,10 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
 
   private UIPageIterator iterator_;
   private String spaceId; 
+  private final String iteratorID = "UIIteratorAddSpaceApplication";
   
   public UIAddApplicationSpace() throws Exception {
-    iterator_ = createUIComponent(UIPageIterator.class, null, null);
+    iterator_ = createUIComponent(UIPageIterator.class, null, iteratorID);
     addChild(iterator_);
   }
   
