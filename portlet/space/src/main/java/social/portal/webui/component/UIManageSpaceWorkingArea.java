@@ -100,16 +100,22 @@ public class UIManageSpaceWorkingArea extends UIContainer {
   
   @SuppressWarnings("unchecked")
   public List<Space> getSpaces() throws Exception {
+    List<Space> listSpaces;
+    int currentPage = iterator_.getCurrentPage();
+    listSpaces = getAllSpaces();
+    PageList pageList = new ObjectPageList(listSpaces,5);
+    iterator_.setPageList(pageList);
+    iterator_.setCurrentPage(currentPage);
     List<Space> lists;
     lists = iterator_.getCurrentPageData();
     return lists;
   }
   
   public void initSpacesList() throws Exception{
-    List<Space> listSpaces;
+    /*List<Space> listSpaces;
     listSpaces = getAllSpaces();
     PageList pageList = new ObjectPageList(listSpaces,5);
-    iterator_.setPageList(pageList);
+    iterator_.setPageList(pageList);*/
   }
   
   public boolean isAllSpace() {
