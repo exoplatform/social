@@ -212,6 +212,7 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       if(uiControl != null) prContext.addUIComponentToUpdateByAjax(uiControl);
 
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+      uiForm.initSpacesList();
       prContext.addUIComponentToUpdateByAjax(uiWorkingWS) ;
       prContext.setFullRender(true);
 
@@ -234,9 +235,10 @@ public class UIManageSpaceWorkingArea extends UIContainer {
 
       spaceService.denyInvitation(spaceId,  userName);
 
-      UIApplication uiApp = requestContext.getUIApplication();
-      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      //UIApplication uiApp = requestContext.getUIApplication();
+      //uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
+      //requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      uiForm.initSpacesList();
       requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }

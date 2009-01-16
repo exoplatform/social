@@ -32,6 +32,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
+import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
  * Created by The eXo Platform SARL
@@ -51,7 +52,9 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
 
   final static private String SPACE_NAME = "spaceName";
   public UISpaceForm() throws Exception {
-    addUIFormInput(new UIFormStringInput(SPACE_NAME,SPACE_NAME,null).addValidator(MandatoryValidator.class));
+    addUIFormInput(new UIFormStringInput(SPACE_NAME,SPACE_NAME,null).
+                   addValidator(MandatoryValidator.class).
+                   addValidator(StringLengthValidator.class, 3, 30));
   }
   
   static public class CreateSpaceActionListener extends EventListener<UISpaceForm> {
