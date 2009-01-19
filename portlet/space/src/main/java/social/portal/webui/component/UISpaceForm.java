@@ -32,6 +32,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
@@ -55,6 +56,7 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
   public UISpaceForm() throws Exception {
     addUIFormInput(new UIFormStringInput(SPACE_NAME,SPACE_NAME,null).
                    addValidator(MandatoryValidator.class).
+                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}]+$", "UISpaceForm.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30));
   }
   
