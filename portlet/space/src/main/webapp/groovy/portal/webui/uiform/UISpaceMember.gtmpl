@@ -99,7 +99,13 @@
  </div>  
   <% } %>
   <% if(penddingUsers.size() > 0) { %>
-  <div><%_ctx.renderUIComponent(iteratorPenddingUsers) ;%></div>
+  <div>
+			<%
+				if(uicomponent.getUIPageIteratorPenddingUsers().getAvailablePage() > 1) {
+				_ctx.renderUIComponent(iteratorPenddingUsers) ;
+				}
+			%>	
+	</div>  
   <% } %>  
   <% List<String> invitedUsers = uicomponent.getInvitedUsers();%>
   <% if(invitedUsers.size() > 0) { %>
@@ -122,7 +128,13 @@
   </div>    
   <% } %>
   <% if(invitedUsers.size() > 0) { %>
-  <div><%_ctx.renderUIComponent(iteratorInvitedUsers) ;%></div>
+  <div>
+			<%
+				if(uicomponent.getUIPageIteratorInvitedUsers().getAvailablePage() > 1) {
+				_ctx.renderUIComponent(iteratorInvitedUsers) ;
+				}
+			%>	
+	</div>  
   <% } %>  
   <div class="TitleContainer" style="margin-top: 6px;">
 	  <table cellspacing="0" borderspacing="0" class="UIGrid" >
@@ -165,7 +177,13 @@
 		  </tbody>
 		</table>
   </div>
-  <div><%_ctx.renderUIComponent(iteratorExistingUsers) ;%></div>
+  <div>
+			<%
+				if(uicomponent.getUIPageIteratorExistingUsers().getAvailablePage() > 1) {
+				_ctx.renderUIComponent(iteratorExistingUsers) ;
+				}
+			%>	
+	</div>  
   <% uiform.end() %>
   <% uiform.renderChild(UIPopupWindow.class) %>
 </div>

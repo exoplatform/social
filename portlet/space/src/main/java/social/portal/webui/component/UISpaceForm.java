@@ -19,6 +19,7 @@ package social.portal.webui.component;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -66,11 +67,17 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
 
-      String spaceName = ((UIFormStringInput)uiForm.getChildById(SPACE_NAME)).getValue();
+      String spaceName = ((UIFormStringInput)uiForm.getChildById(SPACE_NAME)).getValue();      
+      String shortName = SpaceUtils.cleanString(spaceName);
+      if(shortName.length() < 3)
+      {
+        uiApp.addMessage(new ApplicationMessage("UISpaceForm.msg.length-invalid", null));
+        return;
+      }      
       String creator = requestContext.getRemoteUser();
       UISpacesManage uiSpaceManage = uiPorlet.getChild(UISpacesManage.class);
       UIManageSpaceWorkingArea uiUpdate = uiSpaceManage.getChild(UIManageSpaceWorkingArea.class);
-      try {
+      try {        
         spaceService.createSpace(spaceName, creator);
         uiForm.getAncestorOfType(UIPopupContainer.class).deActivate();
         uiUpdate.initSpacesList();

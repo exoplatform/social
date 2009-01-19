@@ -104,8 +104,13 @@ public class UIManageSpaceWorkingArea extends UIContainer {
     int currentPage = iterator_.getCurrentPage();
     listSpaces = getAllSpaces();
     PageList pageList = new ObjectPageList(listSpaces,5);
-    iterator_.setPageList(pageList);
-    iterator_.setCurrentPage(currentPage);
+    iterator_.setPageList(pageList);    
+    int pageCount = iterator_.getAvailablePage();
+    if(pageCount >= currentPage){
+      iterator_.setCurrentPage(currentPage);
+    }else if(pageCount < currentPage){
+      iterator_.setCurrentPage(currentPage-1);
+    }
     List<Space> lists;
     lists = iterator_.getCurrentPageData();
     return lists;
