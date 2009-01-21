@@ -2,7 +2,7 @@
 	import org.exoplatform.portal.config.model.PageNode;
 	import org.exoplatform.portal.webui.util.Util;
 	import org.exoplatform.social.space.SpaceUtils;
-	def apps = uicomponent.getApps();
+	def apps = uicomponent.getApps();	
 	def spaceUrl = SpaceUtils.getSpaceUrl();
 %>
 
@@ -17,6 +17,7 @@
 			</div>
 		</div>
   </div>
+  <% if(apps.size() != 0){ %>
   <div class="GadgetList">
 	<div class="DecoratorGadget">
 		<div class="DecoratorTL">
@@ -49,6 +50,7 @@
 				<div class="DecoratorBC"><span</span></div>
 			</div>
 		</div>
-	</div>
+	</div>	
   </div>
+  <% } %>
 </div>

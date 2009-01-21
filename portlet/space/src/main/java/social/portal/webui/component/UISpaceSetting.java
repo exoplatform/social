@@ -16,9 +16,12 @@
  */
 package social.portal.webui.component;
 
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -76,6 +79,18 @@ public class UISpaceSetting extends UIContainer {
     } catch (SpaceException e) {
       e.printStackTrace();
       return null;
+    }
+  }
+  
+  public boolean isLeader() throws Exception{
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
+    Space space = spaceSrc.getSpaceByUrl(spaceUrl);
+    String userId = Util.getPortalRequestContext().getRemoteUser(); 
+    if(spaceSrc.isLeader(space, userId)) {                       
+      return true;      
+    }else{
+      return false;
     }
   }
   

@@ -23,6 +23,7 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -56,7 +57,18 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, "spaces/" + spaceName);
     
     PageNode homeNode = pageNav.getNode(spaceName);
+    String userId = Util.getPortalRequestContext().getRemoteUser();       
     List<PageNode> list = homeNode.getChildren();
+    List<PageNode> listAppforMember = new ArrayList<PageNode>();
+    if(!spaceSrc.isLeader(space, userId)) {         
+      list = homeNode.getChildren();    
+      for(PageNode node:list){
+        if(!node.getName().equals("SpaceSettingPortlet")){
+          listAppforMember.add(node);
+        }
+      }           
+      return listAppforMember;
+    }    
     if(list == null) list = new ArrayList<PageNode>();
     return list;
   }
