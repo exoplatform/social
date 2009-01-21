@@ -59,15 +59,15 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     PageNode homeNode = pageNav.getNode(spaceName);
     String userId = Util.getPortalRequestContext().getRemoteUser();       
     List<PageNode> list = homeNode.getChildren();
-    List<PageNode> listAppforMember = new ArrayList<PageNode>();
+    PageNode pageNode = null;
     if(!spaceSrc.isLeader(space, userId)) {         
-      list = homeNode.getChildren();    
       for(PageNode node:list){
-        if(!node.getName().equals("SpaceSettingPortlet")){
-          listAppforMember.add(node);
+        if(node.getName().equals("SpaceSettingPortlet")){
+          pageNode = node;
+          break;
         }
-      }           
-      return listAppforMember;
+      }
+      if(pageNode != null) list.remove(pageNode); 
     }    
     if(list == null) list = new ArrayList<PageNode>();
     return list;

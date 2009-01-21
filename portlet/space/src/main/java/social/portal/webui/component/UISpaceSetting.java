@@ -82,10 +82,8 @@ public class UISpaceSetting extends UIContainer {
     }
   }
   
-  public boolean isLeader() throws Exception{
-    String spaceUrl = SpaceUtils.getSpaceUrl();
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space = spaceSrc.getSpaceByUrl(spaceUrl);
+  public boolean isLeader() throws Exception{    
+    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);    
     String userId = Util.getPortalRequestContext().getRemoteUser(); 
     if(spaceSrc.isLeader(space, userId)) {                       
       return true;      
