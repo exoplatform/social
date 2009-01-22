@@ -58,5 +58,11 @@
 		</div>
 	</div>
 	<% } %>
-	<div><%_ctx.renderUIComponent(iterator) ;%></div>
+	<div>
+			<%
+				if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
+				_ctx.renderUIComponent(iterator) ;
+				}
+			%>	
+	</div>	
 </div>
