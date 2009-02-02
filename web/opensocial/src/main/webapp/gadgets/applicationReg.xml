@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ **
+ * Created by The eXo Platform SARL
+ * Author : dang.tung
+ *          tungcnw@gmail.com
+ * Jan 20, 2009
+ *
+-->
+<Module>
+	<ModulePrefs author="eXoPlatform"
+		title="ApplicationRegistryGadget"
+		directory_title="ApplicationRegistryGadget"
+		title_url="http://www.exoplatform.org"
+		description="Sample gadget get information of Application Service of Portal">
+	<Require feature="dynamic-height" />	
+	</ModulePrefs>
+	<Content type="html">
+	<![CDATA[
+		<style type="text/css">
+			.ApplicationRegSample {font-size: 12px; color: #058EE6;}
+		</style>
+		<script type="text/javascript">
+			function ApplicationReg() {}
+			
+			ApplicationReg.prototype.makeRequest = function(url, callback) {
+				var params = {};
+				params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+				params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+				gadgets.io.makeRequest(url, callback, params);
+			}
+			
+			ApplicationReg.prototype.init = function() {
+				var siteUrl = 'http://localhost:8080/rest/json/application';
+				applicationReg.makeRequest(siteUrl,applicationReg.displayValue)
+			}
+			
+			ApplicationReg.prototype.displayValue = function(resp) {
+				var data = resp.data.apps;
+				var appRegSample = _gel("ApplicationRegSample");
+				for (var i = 0; i < data.length; i++) {
+					var app = data[i];
+					var AppClass = document.createElement('div');
+					AppClass.innerHTML = app.appId + '--' + app.appName;
+					AppClass.className = 'AppClass';
+					appRegSample.appendChild(AppClass);
+				}
+				console.log(resp.data);
+				gadgets.window.adjustHeight();
+			}
+			
+			var applicationReg = new ApplicationReg();
+			
+	    gadgets.util.registerOnLoadHandler(applicationReg.init);
+		</script>
+		
+		<div id="ApplicationRegSample" class="ApplicationRegSample">
+		
+		</div>
+	]]>
+	</Content>
+</Module>

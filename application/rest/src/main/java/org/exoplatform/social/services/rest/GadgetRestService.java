@@ -48,7 +48,7 @@ public class GadgetRestService implements ResourceContainer {
    * @throws Exception 
    */
   @HTTPMethod("GET")                                                                                                                                                                                           
-  @URITemplate("/private/json/application/")                                                                                                                                                                                   
+  @URITemplate("/json/application/")                                                                                                                                                                                   
   @OutputTransformer(Bean2JsonOutputTransformer.class)                                                                                                                                                         
   public Response get() throws Exception{
     List<Model> models_ = new ArrayList<Model>();
