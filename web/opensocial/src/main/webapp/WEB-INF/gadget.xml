@@ -36,4 +36,7 @@
     <gadget name="codeSharer">
 		<path>/gadgets/codeSharer.xml</path>
 	</gadget>
+  <gadget name="applicationReg">
+		<path>/gadgets/applicationReg.xml</path>
+	</gadget>
 </gadgets>
