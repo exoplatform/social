@@ -16,12 +16,10 @@
  */
 package social.portal.webui.component;
 
-import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
-import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -58,7 +56,7 @@ public class UISpaceSetting extends UIContainer {
     UISpaceInfo uiSpaceInfo = getChild(UITabPane.class).getChild(UISpaceInfo.class);
     uiSpaceInfo.setValue(space);
     UISpaceMember uiSpaceMember = getChild(UITabPane.class).getChild(UISpaceMember.class);
-    uiSpaceMember.setValue(space);
+    uiSpaceMember.setValue(space.getId());
     UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).getChild(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
     this.space = space;

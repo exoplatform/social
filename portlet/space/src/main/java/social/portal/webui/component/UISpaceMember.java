@@ -22,12 +22,9 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
-import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -84,7 +81,8 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
 
 public class UISpaceMember extends UIForm {
 
-  private Space space;
+  private String spaceId;
+  private SpaceService spaceService = null;
   private final static String user = "user";
   private UIPageIterator iteratorPenddingUsers;
   private UIPageIterator iteratorInvitedUsers;
@@ -107,57 +105,58 @@ public class UISpaceMember extends UIForm {
     addChild(iteratorExistingUsers);
   }
   
+  private SpaceService getSpaceService() {
+    if(spaceService == null) {
+      spaceService = getApplicationComponent(SpaceService.class);
+    }
+    return spaceService; 
+  }
+  
   public UIPageIterator getUIPageIteratorPenddingUsers() { return iteratorPenddingUsers;}
   
   public UIPageIterator getUIPageIteratorInvitedUsers() { return iteratorInvitedUsers;}
   
   public UIPageIterator getUIPageIteratorExistingUsers() { return iteratorExistingUsers;}
   
-  public void setValue(Space space) throws Exception {
-    this.space = space;
+  public void setValue(String spaceId) throws Exception {
+    this.spaceId = spaceId;
   }
   
   @SuppressWarnings("unchecked")
   public List<String> getPenddingUsers() throws Exception {
-    List<String> lists;
     List<String> pendingUsersList = new ArrayList<String>();
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space spacePendding = spaceSrc.getSpaceById(space.getId());    
-    String[] pendingUsers = spacePendding.getPendingUsers();
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);    
+    String[] pendingUsers = space.getPendingUsers();
     if(pendingUsers != null) {
       pendingUsersList.addAll(Arrays.asList(pendingUsers));
     }    
     PageList pageList = new ObjectPageList(pendingUsersList,5);
     iteratorPenddingUsers.setPageList(pageList);
-    lists = iteratorPenddingUsers.getCurrentPageData();
-    return lists;
+    return iteratorPenddingUsers.getCurrentPageData();
   }
     
   @SuppressWarnings("unchecked")
   public List<String> getInvitedUsers() throws Exception {
-    List<String> lists;
     List<String> invitedUsersList = new ArrayList<String>(); 
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space spaceInvited = spaceSrc.getSpaceById(space.getId());
-    String[] invitedUsers = spaceInvited.getInvitedUsers();    
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
+    String[] invitedUsers = space.getInvitedUsers();    
     if(invitedUsers != null) {
       invitedUsersList.addAll(Arrays.asList(invitedUsers));
     }       
     PageList pageList = new ObjectPageList(invitedUsersList,5);
     iteratorInvitedUsers.setPageList(pageList);
-    lists = iteratorInvitedUsers.getCurrentPageData();
-    return lists;
+    return iteratorInvitedUsers.getCurrentPageData();
   }
   
   @SuppressWarnings("unchecked")
   public List<String> getExistingUsers() throws Exception {    
-    List<String> lists;
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);      
+    SpaceService spaceService = getSpaceService();
+    Space space  = spaceService.getSpaceById(spaceId);
     PageList pageList = new ObjectPageList(spaceService.getMembers(space),5);
     iteratorExistingUsers.setPageList(pageList);
-    lists = iteratorExistingUsers.getCurrentPageData();
-    return lists;
+    return iteratorExistingUsers.getCurrentPageData();
   }
 
   public void setUsersName(String userName) {
@@ -169,9 +168,8 @@ public class UISpaceMember extends UIForm {
   }
   
   public boolean isLeader(String userName) throws Exception {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
-    
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
     return spaceService.isLeader(space, userName);
   }
   
@@ -181,13 +179,14 @@ public class UISpaceMember extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
       String[] invitedUserList = uiSpaceMember.getUsersName().split(",");      
-      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
       String usersNotExist = null;
       String usersIsInvited = null;
       String usersIsMember = null;
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
       for(String invitedUser : invitedUserList){
         try {
-          spaceService.invite(uiSpaceMember.space, invitedUser);
+          spaceService.invite(space, invitedUser);
         } catch (SpaceException e) {
           if(e.getCode() == SpaceException.Code.USER_NOT_EXIST) {
             if(usersNotExist == null) usersNotExist = invitedUser;
@@ -239,10 +238,8 @@ public class UISpaceMember extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
-
-      spaceService.revokeInvitation(uiSpaceMember.space, userName); 
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      spaceService.revokeInvitation(uiSpaceMember.spaceId, userName); 
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -253,9 +250,8 @@ public class UISpaceMember extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
       
-      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      Space space = spaceService.getSpaceById(uiSpaceMember.space.getId());
-      spaceService.declineRequest(space, userName);      
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      spaceService.declineRequest(uiSpaceMember.spaceId, userName);      
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -265,9 +261,9 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
-
-      spaceService.removeMember(uiSpaceMember.space, userName);      
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      spaceService.removeMember(space, userName);      
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -278,9 +274,8 @@ public class UISpaceMember extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
-      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      Space space = spaceService.getSpaceById(uiSpaceMember.space.getId());
-      spaceService.validateRequest(space, userName);
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      spaceService.validateRequest(uiSpaceMember.spaceId, userName);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -291,8 +286,9 @@ public class UISpaceMember extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
-      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      spaceService.setLeader(uiSpaceMember.space, userName, false);
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      spaceService.setLeader(space, userName, false);
 
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
@@ -304,9 +300,10 @@ public class UISpaceMember extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
-      SpaceService spaceService = uiSpaceMember.getApplicationComponent(SpaceService.class);
-      spaceService.setLeader(uiSpaceMember.space, userName, true);
-
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      spaceService.setLeader(space, userName, true);
+      
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
