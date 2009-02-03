@@ -108,9 +108,16 @@ public class UISpaceApplication extends UIForm {
       String appId = context.getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceApp.getApplicationComponent(SpaceService.class);
       spaceService.removeApplication(uiSpaceApp.space_, appId);
-      //TODO: Why do we need to reload the Space object
       uiSpaceApp.setValue(spaceService.getSpaceById(uiSpaceApp.space_.getId()));
       context.addUIComponentToUpdateByAjax(uiSpaceApp);
+      
+      //TODO: need to improve in the feature to easy chase code
+      //      have to refresh left navigation in home page of each space
+      UISpaceSetting uiSpaceSetting = (UISpaceSetting)uiSpaceApp.getAncestorOfType(UISpaceSetting.class);
+      boolean isBack = uiSpaceSetting.isBack();
+      if(!isBack) {
+      SpaceUtils.updateWorkingWorkSpace();
+      }
     }
   }
 }

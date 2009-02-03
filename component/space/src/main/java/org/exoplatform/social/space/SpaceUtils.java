@@ -29,6 +29,8 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -133,5 +135,13 @@ public class  SpaceUtils {
         return;
       }
     }
+  }
+  
+  public static void updateWorkingWorkSpace() {
+    UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
+    UIWorkingWorkspace uiWorkingWS = uiPortalApplication.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+    PortalRequestContext pContext = Util.getPortalRequestContext();
+    pContext.addUIComponentToUpdateByAjax(uiWorkingWS);
+    pContext.setFullRender(true);
   }
 }
