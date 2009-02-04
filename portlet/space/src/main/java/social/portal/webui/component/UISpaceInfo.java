@@ -45,7 +45,6 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 )
 public class UISpaceInfo extends UIForm {
 
-  
   public UISpaceInfo() throws Exception {
     addUIFormInput((UIFormStringInput)new UIFormStringInput("id","id",null).setRendered(false)).
     addUIFormInput(new UIFormStringInput("name","name",null).
@@ -59,6 +58,8 @@ public class UISpaceInfo extends UIForm {
   
   public void setValue(Space space) throws Exception {
     invokeGetBindingBean(space);
+    //TODO: have to find the way to don't need the line code below. 
+    getUIStringInput("tag").setValue(space.getTag());
   }
   
   static public class SaveActionListener extends EventListener<UISpaceInfo> {
@@ -69,8 +70,7 @@ public class UISpaceInfo extends UIForm {
       Space space = spaceSrc.getSpaceById(id);
       uiSpaceInfo.invokeSetBindingBean(space);
       spaceSrc.saveSpace(space, false);
-      UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceSetting);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceInfo);
     }
   }
 }
