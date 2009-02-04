@@ -25,10 +25,7 @@
 %>
 <div class="UISpaceMember">
 	<% uiform.begin() %>
-	<% String invitedUser = uicomponent.getUsersName(); 
-		 if(invitedUser == null) invitedUser = "";
-		 String searchUserAction = uicomponent.event("SearchUser") + "; return false;";
-	%>
+	<% String searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
 	<div class="TitleContainer" style="background: none;" >
 	  <div class="InviteSocialLeft">
 	    <div class="InviteSocialRight">
