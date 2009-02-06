@@ -56,9 +56,18 @@ import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class ExoPeopleService extends ExoService implements PersonService, AppDataService {
 
+  private Injector injector;
+  
+  @Inject
+  public ExoPeopleService(Injector injector) {
+    this.injector = injector;
+  }
+  
   private static final Comparator<Person> NAME_COMPARATOR = new Comparator<Person>() {
     public int compare(Person person, Person person1) {
       String name = person.getName().getFormatted();
@@ -122,7 +131,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   }
 
   private Person convertToPerson(Identity identity, Set<String> fields) {
-    Person p = new ExoPersonImpl();
+    Person p = injector.getInstance(Person.class);
     Profile pro = identity.getProfile();
 
     for (String field : fields) {
