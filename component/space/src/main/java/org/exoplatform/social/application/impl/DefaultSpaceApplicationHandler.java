@@ -70,7 +70,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       spaceNav.setOwnerId(groupId);
       spaceNav.setModifiable(true);
       // default application
-      PageNode pageNode = createPageNodeFromApplication(space, HOME_APPLICATION);
+      PageNode pageNode = createPageNodeFromApplication(space, HOME_APPLICATION, true);
       
       spaceNav.addNode(pageNode) ;
       
@@ -100,7 +100,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   
   private void activeApplicationClassic(Space space, String appId) throws SpaceException {
     String spaceNav = space.getGroupId().substring(1);
-    PageNode pageNode = createPageNodeFromApplication(space, appId);
+    PageNode pageNode = createPageNodeFromApplication(space, appId, false);
     
     PageNavigation nav;
     try {
@@ -155,11 +155,11 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     return null;
   }
   
-  private PageNode createPageNodeFromApplication(Space space, String appId) throws SpaceException {
+  private PageNode createPageNodeFromApplication(Space space, String appId, boolean isRoot) throws SpaceException {
     // create application
     List<Application> apps;
     try {
-      apps = SpaceUtils.getAllApplications(space.getId());
+      apps = SpaceUtils.getAllApplications(space.getGroupId());
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
     }
@@ -184,7 +184,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     }
     
     String pageName;
-    if(appId.equals(HOME_APPLICATION)) 
+    if(isRoot) 
       pageName = space.getShortName();
     else pageName = app.getApplicationName();
 
@@ -211,7 +211,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
 
     // create new PageNode
     String label = app.getDisplayName();
-    if(appId.equals(HOME_APPLICATION)) label = pageName;
+    if(isRoot) label = pageName;
     PageNode pageNode = new PageNode();
     pageNode.setUri(pageName);
     pageNode.setName(pageName);

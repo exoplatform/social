@@ -24,8 +24,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -43,6 +46,9 @@ import com.ibm.icu.text.Transliterator;
 
 
 public class  SpaceUtils {
+  
+  private final static String SPACE_GROUP = "/spaces";
+  
   @SuppressWarnings("unchecked")
   public static Group createGroupFromExistGroup(Group parrentGroup, Group exitsGroup, String name) throws Exception {
     PortalContainer portalContainer = PortalContainer.getInstance();
@@ -65,19 +71,28 @@ public class  SpaceUtils {
     return newGroup;
   }
   
-  public static List<Application> getAllApplications(String spaceId) throws Exception {
-    List<Application> list = new CopyOnWriteArrayList<Application>() ;
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    ApplicationRegistryService appRegistrySrc = (ApplicationRegistryService)portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+  public static List<Application> getAllApplications(String groupId) throws Exception {
+    
+    List<Application> list = new CopyOnWriteArrayList<Application>();
+    ExoContainer exoContainer = ExoContainerContext.getCurrentContainer();
+    ApplicationRegistryService appRegistrySrc = (ApplicationRegistryService)exoContainer
+                                                  .getComponentInstanceOfType(ApplicationRegistryService.class);
+    
+    List<ApplicationCategory> listCategory = appRegistrySrc.getApplicationCategories();
+    Iterator<ApplicationCategory> cateItr = listCategory.iterator();
     String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
-    List<ApplicationCategory> listCategory = appRegistrySrc.getApplicationCategories(Util.getPortalRequestContext().getRemoteUser(), applicationTypes);
-    Iterator<ApplicationCategory> cateItr = listCategory.iterator() ;
-    while (cateItr.hasNext()) {
+    while(cateItr.hasNext()) {
       ApplicationCategory cate = cateItr.next();
-      List<Application> applications = cate.getApplications();
-      Iterator<Application> appIterator = applications.iterator() ;
+      if(!hasAccessPermission(cate, groupId)){
+        cateItr.remove();
+        continue;
+      }
+      List<Application> applications = appRegistrySrc.getApplications(cate, applicationTypes);
+      Iterator<Application> appIterator = applications.iterator();
       while (appIterator.hasNext()) {
-        list.add(appIterator.next());
+        Application app = appIterator.next();
+        if(!hasAccessPermission(app, groupId)) appIterator.remove();
+        else list.add(app);
       }
     }
     return list;
@@ -143,5 +158,34 @@ public class  SpaceUtils {
     PortalRequestContext pContext = Util.getPortalRequestContext();
     pContext.addUIComponentToUpdateByAjax(uiWorkingWS);
     pContext.setFullRender(true);
+  }
+  
+  private static boolean hasAccessPermission(Application app, String groupId) throws Exception {
+    List<String> permissions = app.getAccessPermissions() ; 
+    if(permissions == null) return false ;
+    for(String ele : permissions) {
+      if(hasViewPermission(ele, groupId)) return true;
+    }
+    return false;
+  }
+  private static boolean hasAccessPermission(ApplicationCategory app, String groupId) throws Exception {
+    List<String> permissions = app.getAccessPermissions() ; 
+    if(permissions == null) return false ;
+    for(String ele : permissions) {
+      if(hasViewPermission(ele, groupId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static boolean hasViewPermission(String expPerm, String groupId) throws Exception {
+    String[] temp = expPerm.split(":") ;
+    if(temp.length < 2) return false;
+    String tempExp = temp[1].trim();
+    if(tempExp.equals(groupId) || tempExp.equals(SPACE_GROUP)) {
+      return true;
+    }
+    return false;
   }
 }

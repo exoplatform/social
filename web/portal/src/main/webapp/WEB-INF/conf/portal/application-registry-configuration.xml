@@ -592,7 +592,7 @@
                             <field name="accessPermissions">
                                 <collection type="java.util.ArrayList" item-type="java.lang.String">
                                     <value>
-                                        <string>*:/platform/users</string>
+                                        <string>*:/spaces</string>
                                     </value>
                                 </collection>
                             </field>
@@ -621,7 +621,7 @@
                                             <field name="accessPermissions">
                                                 <collection type="java.util.ArrayList" item-type="java.lang.String">
                                                     <value>
-                                                        <string>*:/platform/users</string>
+                                                        <string>*:/spaces</string>
                                                     </value>
                                                 </collection>
                                             </field>
@@ -650,7 +650,7 @@
                                             <field name="accessPermissions">
                                                 <collection type="java.util.ArrayList" item-type="java.lang.String">
                                                     <value>
-                                                        <string>*:/platform/users</string>
+                                                        <string>*:/spaces</string>
                                                     </value>
                                                 </collection>
                                             </field>
@@ -679,7 +679,7 @@
                                             <field name="accessPermissions">
                                                 <collection type="java.util.ArrayList" item-type="java.lang.String">
                                                     <value>
-                                                        <string>*:/platform/users</string>
+                                                        <string>*:/spaces</string>
                                                     </value>
                                                 </collection>
                                             </field>

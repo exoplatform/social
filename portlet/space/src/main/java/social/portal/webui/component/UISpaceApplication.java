@@ -70,7 +70,7 @@ public class UISpaceApplication extends UIForm {
   public void setValue(Space space) throws Exception {
     space_ = space;
     List<Application> lists = new ArrayList<Application>();
-    List<Application> allApps = SpaceUtils.getAllApplications(space.getId());
+    List<Application> allApps = SpaceUtils.getAllApplications(space.getGroupId());
     String spaceApps = space_.getApp();
     if(spaceApps != null) {
       String[] apps = spaceApps.split(",");
