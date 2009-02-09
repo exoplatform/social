@@ -60,6 +60,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
   private UIPageIterator iterator_;
   private String spaceId; 
   private final String iteratorID = "UIIteratorAddSpaceApplication";
+  private final String HOME_APPLICATION = "HomeSpacePortlet";
   
   public UIAddApplicationSpace() throws Exception {
     iterator_ = createUIComponent(UIPageIterator.class, null, iteratorID);
@@ -77,7 +78,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
     if(appList != null) {
       for(Application app : list) {
         String appName = app.getApplicationName();
-        if(appList.contains(appName)){
+        if(appList.contains(appName) || appName.equals(HOME_APPLICATION)){
           list.remove(app);
         }
       }

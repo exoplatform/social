@@ -59,9 +59,6 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
 
   public void initSpace(Space space) throws SpaceException {
     try {
-      ExoContainer eXoContainer = ExoContainerContext.getCurrentContainer();
-      UserPortalConfigService dataService = (UserPortalConfigService) eXoContainer.getComponentInstanceOfType(UserPortalConfigService.class);
-      
       String groupId = space.getGroupId().substring(1);
       
       // create new space navigation
@@ -78,7 +75,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       List<PageNavigation> pnavigations = uiPortal.getNavigations();
       pnavigations.add(spaceNav);
       //uiPortal.setNavigation(pnavigations);
-      dataService.create(spaceNav);
+      configService.create(spaceNav);
 
     } catch (Exception e) {
       //TODO:should rollback what has to be rollback here

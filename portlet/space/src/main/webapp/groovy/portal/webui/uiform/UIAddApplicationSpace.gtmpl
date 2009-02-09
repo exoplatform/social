@@ -27,6 +27,7 @@
 <div class="UIAddApplicationSpace">
 	<% uiform.begin() %>
 	<div class="ContainerSpace">
+		<% if(applications.size() > 0) { %>
 		<% for(app in applications)  {%>
 			<div class="ContentSpace">
 				<div class="ApplicationIcon"><span/></div>
@@ -48,8 +49,13 @@
 				<div style="clear: left;"><span/></div>
 			</div>
 		<% } %>
+		<% } else { %>
+		<div class= "EmptyData"><%= uiform.getLabel('empty'); %></div>
+		<% } %>
 	</div>
+	<% if(uicomponent.getUIPageIterator().getAvailablePage() > 1) { %>
 	<div><%_ctx.renderUIComponent(iterator) ;%></div>
+	<% } %>
 	<div class="AplicationButton">
 			<a class="ActionButton" href="<%= uicomponent.event("Close") %>">
 			  <div class="AplicationButtonL">
