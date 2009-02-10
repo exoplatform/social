@@ -156,7 +156,7 @@
 
 .UISpaceSettingPortlet .ContainerSpace .ApplicationIcon{
 	background: url('background/ApplicationIcon.gif') no-repeat left;
-	width: 70px; height: 80px;
+	width: 73px; height: 80px;
 	float: left;
 }
 
@@ -303,6 +303,23 @@
 	text-align: center;
 	margin: auto;
 }
+
+/*=========================Add Application Space==============================*/
+
+.UIAddApplicationSpace {
+  background: url('background/ManageSpacesPortletBG.gif') repeat;
+}
+
+.UIAddApplicationSpace .ContainerSpace{
+	background: none;
+	border:none;
+	padding: 8px;
+}
+
+.UIManageSpacesPortlet .SelectUserIcon {
+  background: url('/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/SelectIcon.gif') center ;
+}
+
 
 /*==============BUTTON BACK===============================*/
 .UISpaceSettingPortlet .BackButton {
