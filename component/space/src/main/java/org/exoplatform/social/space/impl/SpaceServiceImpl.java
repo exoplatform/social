@@ -159,6 +159,10 @@ public class SpaceServiceImpl implements SpaceService{
     activateApplication(getSpaceById(spaceId), appId);
   }
 
+  public void removeApplication(String spaceId, String appId) throws SpaceException {
+    removeApplication(getSpaceById(spaceId), appId);
+  }
+  
   public void removeApplication(Space space, String appId) throws SpaceException {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.removeApplication(space, appId);
@@ -296,8 +300,6 @@ public class SpaceServiceImpl implements SpaceService{
     space.setInvitedUsers(removeItemFromArray(invitedUser, userId));
     saveSpace(space, false);
     addMember(space, userId);
-    //System.out.println("\n\n\n come here");
-    //SpaceUtils.reloadPortal();
   }
 
   public void addMember(Space space, String userId) throws SpaceException {

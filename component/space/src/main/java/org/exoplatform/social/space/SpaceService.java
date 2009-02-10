@@ -97,7 +97,7 @@ public interface SpaceService {
   void activateApplication(Space space, String appId) throws SpaceException;
 
   void removeApplication(Space space, String appId) throws SpaceException;
-
+  void removeApplication(String spaceId, String appId) throws SpaceException;
 
   void activateApplication(String spaceId, String appId) throws SpaceException;
 

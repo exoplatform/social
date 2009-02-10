@@ -21,18 +21,11 @@ import java.util.List;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
-import org.exoplatform.web.application.ApplicationMessage;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupComponent;
 import org.exoplatform.webui.core.UIPopupContainer;
@@ -108,25 +101,16 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
   static public class InstallActionListener extends EventListener<UIAddApplicationSpace> {
     public void execute(Event<UIAddApplicationSpace> event) throws Exception {
       UIAddApplicationSpace uiform = event.getSource();
-      WebuiRequestContext request = event.getRequestContext();
       SpaceService spaceService = uiform.getApplicationComponent(SpaceService.class);
       
       String appId = event.getRequestContext().getRequestParameter(OBJECTID);
       spaceService.installApplication(uiform.spaceId, appId);
       spaceService.activateApplication(uiform.spaceId, appId);
-      UIAddApplicationSpace uiSpaceApp = event.getSource();
       
-      UISpaceApplication uiForm = (UISpaceApplication)uiSpaceApp.getAncestorOfType(UISpaceApplication.class);
+      UISpaceApplication uiForm = (UISpaceApplication)uiform.getAncestorOfType(UISpaceApplication.class);
       Space space = spaceService.getSpaceById(uiform.spaceId);
       uiForm.setValue(space);
-//      TODO: need to improve in the feature to easy chase code
-//            have to refresh left navigation in home page of each space
-      UISpaceSetting uiSpaceSetting = (UISpaceSetting)uiForm.getAncestorOfType(UISpaceSetting.class);
-      boolean isBack = uiSpaceSetting.isBack();
-      if(!isBack) {
-        SpaceUtils.updateWorkingWorkSpace();
-      }
-      request.addUIComponentToUpdateByAjax(uiForm);
+      SpaceUtils.updateWorkingWorkSpace();
       UIPopupContainer uiPopup = uiForm.getChild(UIPopupContainer.class);
       uiPopup.cancelPopupAction();
       

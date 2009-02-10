@@ -19,7 +19,6 @@
 <% import org.exoplatform.webui.core.UITabPane; %>
 <div class="UISpaceSetting" id="$uicomponent.id">
 <% if(uicomponent.isLeader()){ %>
-<% String backAction = uicomponent.event("Back") + "; return false;" %>
 	<div class="SpaceName">
 		<div class="SpaceNameL">
 			<div class="SpaceNameR">
@@ -29,17 +28,6 @@
 			</div>
 		</div>
 	</div>
-	<% if(uicomponent.isBack()) { %>
-	<div class="BackButton" onclick="$backAction">
-		<div class="BackButtonL">
-			<div class="BackButtonR">
-				<div class="BackButtonC">
-					<div class="BackButtonIcon">Back</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<% } %>
 	<div style="clear: right;"><span></span></div>
 	<div><% uicomponent.renderChild(UITabPane.class);%></div>
 <% } %>

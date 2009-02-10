@@ -20,13 +20,9 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UITabPane;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -35,13 +31,11 @@ import org.exoplatform.webui.event.EventListener;
  */
 
 @ComponentConfig(
-    template =  "app:/groovy/portal/webui/uiform/UISpaceSetting.gtmpl",
-    events = @EventConfig(listeners = UISpaceSetting.BackActionListener.class)
+    template =  "app:/groovy/portal/webui/uiform/UISpaceSetting.gtmpl"
 )
 public class UISpaceSetting extends UIContainer {
 
   private Space space;
-  private boolean isBack = true;
   
   public UISpaceSetting() throws Exception {
     UITabPane uiTabPane = addChild(UITabPane.class, null, null);
@@ -51,7 +45,6 @@ public class UISpaceSetting extends UIContainer {
     uiTabPane.setSelectedTab(1);
   }
   
-  
   public void setValues(Space space) throws Exception {
     UISpaceInfo uiSpaceInfo = getChild(UITabPane.class).getChild(UISpaceInfo.class);
     uiSpaceInfo.setValue(space);
@@ -60,14 +53,6 @@ public class UISpaceSetting extends UIContainer {
     UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).getChild(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
     this.space = space;
-  }
-  
-  public void setDisplayBack(boolean isBack) {
-    this.isBack = isBack;
-  }
-  
-  public boolean isBack() {
-    return isBack;
   }
   
   public String getSpaceName() {
@@ -85,19 +70,8 @@ public class UISpaceSetting extends UIContainer {
     String userId = Util.getPortalRequestContext().getRemoteUser(); 
     if(spaceSrc.isLeader(space, userId)) {                       
       return true;      
-    }else{
+    } else {
       return false;
-    }
-  }
-  
-  static public class BackActionListener extends EventListener<UISpaceSetting> {
-    public void execute(Event<UISpaceSetting> event) throws Exception {
-      UISpaceSetting uiSpaceSetting = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      UIManageSpacesPortlet uiPortlet = uiSpaceSetting.getAncestorOfType(UIManageSpacesPortlet.class);
-      uiPortlet.getChild(UISpacesManage.class).setRendered(true);
-      uiSpaceSetting.setRendered(false);
-      requestContext.addUIComponentToUpdateByAjax(uiPortlet);
     }
   }
   

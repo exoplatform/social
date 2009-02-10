@@ -16,7 +16,6 @@
  */
 package social.portal.webui.component;
 
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -71,8 +70,7 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
 
       String spaceName = ((UIFormStringInput)uiForm.getChildById(SPACE_NAME)).getValue();      
       String shortName = SpaceUtils.cleanString(spaceName);
-      if(shortName.length() < 3)
-      {
+      if(shortName.length() < 3) {
         uiApp.addMessage(new ApplicationMessage("UISpaceForm.msg.length-invalid", null));
         return;
       }      

@@ -60,8 +60,6 @@ public class UISpaceInvitation extends UIForm{
       UIApplication uiApp = requestContext.getUIApplication();
       // back
       UIManageSpacesPortlet uiPortlet = uiForm.getAncestorOfType(UIManageSpacesPortlet.class);
-      uiPortlet.getChild(UISpaceSetting.class).setRendered(false);
-      uiPortlet.getChild(UISpacesManage.class).setRendered(true);
       uiForm.setRendered(false);
       uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.accept", null));
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
@@ -84,8 +82,6 @@ public class UISpaceInvitation extends UIForm{
 
       // back
       UIManageSpacesPortlet uiPortlet = uiForm.getAncestorOfType(UIManageSpacesPortlet.class);
-      uiPortlet.getChild(UISpaceSetting.class).setRendered(false);
-      uiPortlet.getChild(UISpacesManage.class).setRendered(true);
       uiForm.setRendered(false);
       uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());

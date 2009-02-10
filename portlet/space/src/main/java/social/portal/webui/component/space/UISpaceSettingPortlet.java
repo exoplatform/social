@@ -46,7 +46,6 @@ public class UISpaceSettingPortlet extends UIPortletApplication {
   
   public UISpaceSettingPortlet() throws Exception {
     uiSpaceSetting = createUIComponent(UISpaceSetting.class, null, null);
-    uiSpaceSetting.setDisplayBack(false);
     addChild(uiSpaceSetting);
   }
   

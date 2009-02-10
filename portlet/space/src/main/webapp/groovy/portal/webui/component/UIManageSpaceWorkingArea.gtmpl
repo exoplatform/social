@@ -98,7 +98,8 @@
 						  </div>
 						</div>
 						<% if(option == 2) { %>
-						<div class ="SpaceAction" onclick="$editAction">
+						<!-- TODO: hard code SpaceSettingPortlet -->
+						<div class ="SpaceAction" onclick="location.href='$pageURI'+'/SpaceSettingPortlet'">
 						  <div class="LeftButton">
 						    <div class="RightButton">
 						      <div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.edit") %></div>

@@ -37,7 +37,6 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
-import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -59,7 +58,6 @@ import org.exoplatform.webui.event.EventListener;
     events = {
         @EventConfig(listeners = UIManageSpaceWorkingArea.RequestJoinActionListener.class),
         @EventConfig(listeners = UIManageSpaceWorkingArea.ChangeListSpacesActionListener.class),
-        @EventConfig(listeners = UIManageSpaceWorkingArea.EditSpaceActionListener.class),
         @EventConfig(listeners = UIManageSpaceWorkingArea.LeaveSpaceActionListener.class),
         @EventConfig(listeners = UIManageSpaceWorkingArea.AcceptUserActionListener.class),
         @EventConfig(listeners = UIManageSpaceWorkingArea.DenyUserActionListener.class)
@@ -154,22 +152,6 @@ public class UIManageSpaceWorkingArea extends UIContainer {
       uiForm.isAllSpace = !uiForm.isAllSpace;
       uiForm.initSpacesList();
       requestContext.addUIComponentToUpdateByAjax(uiForm);
-    }
-  }
-  
-  static public class EditSpaceActionListener extends EventListener<UIManageSpaceWorkingArea> {
-    public void execute(Event<UIManageSpaceWorkingArea> event) throws Exception {
-      UIManageSpaceWorkingArea uiForm = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      UIManageSpacesPortlet uiPortlet = uiForm.getAncestorOfType(UIManageSpacesPortlet.class);
-      UISpaceSetting uiSpaceSetting = uiPortlet.getChild(UISpaceSetting.class);
-      uiPortlet.getChild(UISpacesManage.class).setRendered(false);
-      uiSpaceSetting.setRendered(true);
-      String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
-      Space space = spaceService.getSpaceById(spaceId);
-      uiSpaceSetting.setValues(space);
-      requestContext.addUIComponentToUpdateByAjax(uiPortlet);
     }
   }
   

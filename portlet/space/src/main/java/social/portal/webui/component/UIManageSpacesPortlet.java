@@ -38,7 +38,6 @@ public class UIManageSpacesPortlet extends UIPortletApplication {
   public UIManageSpacesPortlet() throws Exception {
     addChild(UIPopupContainer.class, null, "ManageSpacesPopup");
     addChild(UISpacesManage.class,null , null);
-    addChild(UISpaceSetting.class, null, null).setRendered(false);
   }
   
   public void renderPopupMessages() throws Exception {

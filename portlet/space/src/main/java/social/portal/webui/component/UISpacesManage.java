@@ -55,7 +55,6 @@ public class UISpacesManage extends UIContainer {
       
       UIManageSpacesPortlet uiPortlet = uiSpaceManage.getAncestorOfType(UIManageSpacesPortlet.class);
       UISpaceInvitation uiSpaceInvitation = uiSpaceManage.getChild(UISpaceInvitation.class);
-      uiPortlet.getChild(UISpaceSetting.class).setRendered(false);
       uiSpaceManage.setRendered(true);
       
       String leader = requestContext.getRequestParameter("leader");
