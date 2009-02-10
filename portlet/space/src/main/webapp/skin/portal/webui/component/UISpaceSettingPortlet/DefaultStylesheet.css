@@ -135,6 +135,10 @@
 	font-weight: bold;
 }
 
+.UISpaceSettingPortlet .EmptyData {
+	text-align: center;
+	color: red;
+}
 
 .UISpaceSettingPortlet .ContainerSpace{
 	background: #f5f5f5;

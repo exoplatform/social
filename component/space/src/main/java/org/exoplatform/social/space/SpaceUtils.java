@@ -28,6 +28,7 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -179,6 +180,7 @@ public class  SpaceUtils {
   }
 
   private static boolean hasViewPermission(String expPerm, String groupId) throws Exception {
+    if(UserACL.EVERYONE.equals(expPerm)) return true;
     String[] temp = expPerm.split(":") ;
     if(temp.length < 2) return false;
     String tempExp = temp[1].trim();
