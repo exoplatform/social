@@ -37,6 +37,7 @@
 	<% } %>
 	<div class="LabelBrown">Browse by: <span style="font-weight: bold; color: #6598d1;">Name, Tags, Size, Activity</span></div>
 	<div class="ContainerSpace">
+	<% if(allSpaces.size() > 0) {%>
 		<% for(objSpace in allSpaces) { %>
 			<div class="ContentSpace">
 				<div class="CommunityIcon"><span></span></div>
@@ -119,12 +120,15 @@
 				<div style="clear: left;"><span></span></div>
 			</div>
 		<% } %>
+	<% } else { %>
+			<div class="EmptyData"><%= _ctx.appRes(uicomponent.getId() + ".label.empty") %></div>
+	<% } %>	
 	</div>
 	<div>
-			<%
-				if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
-				_ctx.renderUIComponent(iterator) ;
-				}
-			%>	
+	<%
+		if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
+		_ctx.renderUIComponent(iterator) ;
+		}
+	%>	
 	</div>
 </div>

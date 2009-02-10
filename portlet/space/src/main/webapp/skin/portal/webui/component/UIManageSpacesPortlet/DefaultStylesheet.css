@@ -69,7 +69,10 @@
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .Line{
 	border-bottom:1px solid #B7B7B7;
 }
-
+.UIManageSpacesPortlet .EmptyData {
+	text-align: center;
+	color: red;
+}
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .Text{
 	line-height: 16px;
 }

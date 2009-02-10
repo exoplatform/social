@@ -19,7 +19,6 @@ package social.portal.webui.component;
 import java.util.Iterator;
 import java.util.List;
 
-import org.exoplatform.application.registry.Application;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.application.PortalRequestContext;
