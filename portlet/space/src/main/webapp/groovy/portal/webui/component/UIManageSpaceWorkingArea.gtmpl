@@ -31,9 +31,9 @@
 %>
 <div class="UIManageSpaceWorkingArea" id="$uicomponent.id">
 	<% if(uicomponent.isAllSpace()) { %>
-		<div class="LabelSpace"><a a href="<%= uicomponent.event("ChangeListSpaces") %>">All Spaces<span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[only your]</span></a></div>
+		<div class="LabelSpace"><%= _ctx.appRes(uicomponent.getId() + ".label.allSpace") %><a href="<%= uicomponent.event("ChangeListSpaces") %>"><span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[<%= _ctx.appRes(uicomponent.getId() + ".label.only-your") %>]</a></span></div>
 	<% } else { %>
-		<div class="LabelSpace"><a href="<%= uicomponent.event("ChangeListSpaces") %>">Your Spaces<span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[All]</span></a></div>
+		<div class="LabelSpace"><%= _ctx.appRes(uicomponent.getId() + ".label.yourSpace") %><a href="<%= uicomponent.event("ChangeListSpaces") %>"><span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[<%= _ctx.appRes(uicomponent.getId() + ".label.all") %>]</a></span></div>
 	<% } %>
 	<div class="LabelBrown">Browse by: <span style="font-weight: bold; color: #6598d1;">Name, Tags, Size, Activity</span></div>
 	<div class="ContainerSpace">
