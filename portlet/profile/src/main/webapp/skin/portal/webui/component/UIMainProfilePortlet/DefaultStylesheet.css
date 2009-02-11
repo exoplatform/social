@@ -19,6 +19,9 @@
 */
 @import "/dashboard/skin/dashboard/webui/component/UIDashboardPortlet/DefaultStylesheet.css";
 
+.UIProfileListPortlet {
+	zoom: 100%;
+}
 
 .UIProfile {
 	padding: 8px;
