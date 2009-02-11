@@ -16,31 +16,30 @@
  */
 
 .UISpaceMenuPortlet {
-	width: 232px;
-	padding: 6px;
+	padding: 4px 0px;
 }
 
 .UISpaceMenuPortlet .HomeSpaceLogoBG {
 
 }
 
-.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGL{
+.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGL {
 	background: url(DefaultSkin/background/LogoBGL.gif) no-repeat left;
 	padding-left: 6px;
 }
 
-.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGR{
+.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGR {
 	background: url(DefaultSkin/background/LogoBGR.gif) no-repeat right;
 	padding-right: 6px;
 }
 
 
-.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGC{
+.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGC {
 	background: url(DefaultSkin/background/LogoBGC.gif) repeat-x;
 	height: 84px;
 }
 
-.UISpaceMenuPortlet .HomeSpaceLogoBG .HomeSpaceLogo{
+.UISpaceMenuPortlet .HomeSpaceLogoBG .HomeSpaceLogo {
 	background: url(DefaultSkin/background/HomeSpaceLogo.gif) no-repeat left 13px;
 	padding-left: 68px;
 	font-weight: bold;

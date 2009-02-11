@@ -30,7 +30,7 @@
 	  <div class="InviteSocialLeft">
 	    <div class="InviteSocialRight">
 	      <div class="InviteSocialCenter">
-	        <div style="width: 430px; margin: auto;">
+	        <div style="width: 450px; margin: auto;">
 						<div class="SearchInviteForm">
 						  <div class="AddInvite"><% uiform.renderField("user") %></div>
 						  	<div class="SearchInviteButton" style="float: left;">

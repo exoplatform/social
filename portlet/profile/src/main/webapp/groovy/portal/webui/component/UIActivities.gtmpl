@@ -31,11 +31,13 @@
     <div class="ContentSpace">
     <div class="CommunityIcon"><span></span></div>
     <div class="CommunityContainer">
-        <div class="CommunityMane Line">
-            <div class="CommunityName" style="float: left; cursor:pointer;">${it.title}</div>
-            <div style="clear: both;"><span></span></div>
-        </div>
-        <div class="Text Line">${it.body}</div>
+	    <div class="CommunityMane Line">
+	        <div class="CommunityName" style="float: left; cursor:pointer;">${it.title}</div>
+	        <div style="clear: both;"><span></span></div>
+	    </div>
+	  <% if(it.body != null) { %>
+    	<div class="Text Line">${it.body}</div>
+    <% } %>
     </div>
     </div>
 

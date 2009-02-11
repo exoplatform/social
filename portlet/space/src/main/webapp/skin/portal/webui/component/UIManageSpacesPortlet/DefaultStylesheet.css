@@ -17,6 +17,7 @@
 .UIManageSpacesPortlet {
 	padding: 4px;
 	background: url('background/ManageSpacesPortletBG.gif') repeat;
+	zoom: 100%;
 }
 
 .UIManageSpacesPortlet .LeftSpacesPortlet{

@@ -28,11 +28,11 @@
 		} else { %>
 		<div class="LeftSpacesPortlet" >
 			  <% uicomponent.renderChild(ManageSpaceControlArea.class);%>
-			</div>
-			<div class="RightSpacesPortlet" >
-				<%  uicomponent.renderChild(UIManageSpaceWorkingArea.class); %>
-			</div>
-			<div style="clear: left"><span></span></div>
+		</div>
+		<div class="RightSpacesPortlet" >
+			<%  uicomponent.renderChild(UIManageSpaceWorkingArea.class); %>
+		</div>
+		<div style="clear: left; height: 0px;"><span></span></div>
 		<% } %>
 	</div>
 </div>

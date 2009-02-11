@@ -87,7 +87,9 @@
   <%  } %>
             <div style="clear: both;"><span></span></div>
         </div>
+        <% if(position.length() > 0) { %>
         <div class="Text Line">${position}</div>
+        <%  } %>
         <div class="TagsName">
           <a href="${profileURL}" class="CommunityNameMiddle">Profile</a> |
           <a href="${dashboardURL}" class="CommunityNameMiddle">Dashboard</a> |

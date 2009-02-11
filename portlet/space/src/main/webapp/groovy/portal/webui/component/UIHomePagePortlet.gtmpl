@@ -22,7 +22,7 @@
 			<div class="RightHomeBackground"><span><span/></div>
 		</div>
 	</div>
-	<table style="table-layout: fixed; width: 100%;">
+	<table style="table-layout: fixed; _width: 99.5%; margin: auto">
 	  <tbody>
 		  <tr>
 		    <td>

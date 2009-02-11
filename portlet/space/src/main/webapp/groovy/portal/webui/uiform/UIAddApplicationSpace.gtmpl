@@ -56,17 +56,23 @@
 	<% if(uicomponent.getUIPageIterator().getAvailablePage() > 1) { %>
 	<div><%_ctx.renderUIComponent(iterator) ;%></div>
 	<% } %>
-	<div class="AplicationButton">
-			<a class="ActionButton" href="<%= uicomponent.event("Close") %>">
-			  <div class="AplicationButtonL">
-				  <div class="AplicationButtonR">
-				    <div class="AplicationButtonC">
-			       		Close
-				    </div>
-			    </div>
-			</div>
-		</a>
- 	</div>
+	<table style="width: auto; margin: auto">
+		<tr>
+			<td>
+				<div class="AplicationButton" style="padding: 10px;">
+						<a class="ActionButton" href="<%= uicomponent.event("Close") %>">
+						  <div class="AplicationButtonL">
+							  <div class="AplicationButtonR">
+							    <div class="AplicationButtonC">
+						       		Close
+							    </div>
+						    </div>
+						</div>
+					</a>
+			 	</div>
+ 			</td>
+ 		</tr>
+ 	</table>
  	<div style="clear: right;"><span/></div>
 	<% uiform.end() %>
 </div>

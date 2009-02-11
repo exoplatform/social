@@ -17,7 +17,7 @@
 
 -->
 <div class="ManageSpaceControlArea" id="$uicomponent.id">
-	<a class="CreateSpaceButton" href="<%=uicomponent.event("CreateSpace") %>"><span></span></a>
+	<a class="CreateSpaceButton" href="<%=uicomponent.event("CreateSpace") %>"></a>
 	<div class="LeftButton">
 		<div class="RightButton">
 			<div class="CenterButton">Admin</div>

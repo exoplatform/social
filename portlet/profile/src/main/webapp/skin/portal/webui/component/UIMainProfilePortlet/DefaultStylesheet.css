@@ -25,6 +25,7 @@
 	font-family: tahoma;
 	font-size: 11px;
 	background: white;
+	zoom: 100%;
 }
 
 .UIProfile .AvatarSpace{
@@ -101,7 +102,9 @@
 
 .UIProfile .ContainerSpace .PortletContent .AddIcon{
 	background: url(background/AddIcon.gif) no-repeat center;
-	padding: 5px 11px;
+	display: block;
+	width: 22px;
+	height: 22px;
 }
 
 .UIProfile h2{
@@ -249,7 +252,6 @@
 	padding: 8px;
 	margin-bottom:4px;
 	height: 80px;
-    position:relative;
 }
 
 .UIProfileList .ContainerSpace .CommunityIcon{
