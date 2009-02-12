@@ -29,7 +29,7 @@
   <div class="ContainerSpace">
 		<% for(app in applications)  {%>
 		<div class="ContentSpace">
-			<div class="ApplicationIcon"><span/></div>
+			<div class="ApplicationIcon"><span></span></div>
 			<div class="CommunityContainer">
 				<div class="CommunityMane Line">
 					<div style="float: left;" class="CommunityName"><%= app.getDisplayName() %></div>
@@ -41,11 +41,11 @@
 					    </div>
 					  </div>
         </div>
-					<div style="clear: both;"><span/></div>
+					<div style="clear: both;"><span></span></div>
 				</div>
 				<div class="Text"><%= app.getDescription() %></div>
 			</div>
-			<div style="clear: left;"><span/></div>
+			<div style="clear: left;"><span></span></div>
 		</div>
 		<% } %>
 	</div>
