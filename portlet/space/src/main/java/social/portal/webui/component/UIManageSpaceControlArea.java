@@ -31,19 +31,19 @@ import org.exoplatform.webui.event.EventListener;
  */
 
 @ComponentConfig(
-    template = "app:/groovy/portal/webui/component/ManageSpaceControlArea.gtmpl",
+    template = "app:/groovy/portal/webui/component/UIManageSpaceControlArea.gtmpl",
     events = {
-        @EventConfig(listeners = ManageSpaceControlArea.CreateSpaceActionListener.class)
+        @EventConfig(listeners = UIManageSpaceControlArea.CreateSpaceActionListener.class)
     }
 )
-public class ManageSpaceControlArea extends UIContainer {
+public class UIManageSpaceControlArea extends UIContainer {
 
-  public ManageSpaceControlArea() throws Exception {
+  public UIManageSpaceControlArea() throws Exception {
   }
   
-  static public class CreateSpaceActionListener extends EventListener<ManageSpaceControlArea> {
-    public void execute(Event<ManageSpaceControlArea> event) throws Exception {
-      ManageSpaceControlArea controlArea = event.getSource();
+  static public class CreateSpaceActionListener extends EventListener<UIManageSpaceControlArea> {
+    public void execute(Event<UIManageSpaceControlArea> event) throws Exception {
+      UIManageSpaceControlArea controlArea = event.getSource();
       UIManageSpacesPortlet uiPortlet = (UIManageSpacesPortlet)controlArea.getAncestorOfType(UIManageSpacesPortlet.class);
       UIPopupContainer uiPopup = uiPortlet.getChild(UIPopupContainer.class);
       uiPopup.activate(UISpaceForm.class, 560);

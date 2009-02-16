@@ -58,7 +58,7 @@ public interface SpaceService {
   void saveSpace(Space space, boolean isNew) throws SpaceException;
 
 
-  Space createSpace(String spaceName, String creator) throws SpaceException;
+  Space createSpace(Space space, String creator) throws SpaceException;
 
   void leave(Space space, String userId) throws SpaceException;
   void leave(String spaceId, String userId) throws SpaceException;

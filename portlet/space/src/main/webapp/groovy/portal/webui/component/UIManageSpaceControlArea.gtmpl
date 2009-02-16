@@ -16,7 +16,7 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<div class="ManageSpaceControlArea" id="$uicomponent.id">
+<div class="UIManageSpaceControlArea" id="$uicomponent.id">
 	<a class="CreateSpaceButton" href="<%=uicomponent.event("CreateSpace") %>"></a>
 	<div class="LeftButton">
 		<div class="RightButton">

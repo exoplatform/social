@@ -35,12 +35,15 @@ public class Space {
   private String[] invitedUsers;
   private String type;
   private String url;
+  private String visibility;
+  private String registration;
 
-//  public final static String WEBOS = "webos";
-//  public final static String CLASSIC = "classic";
   public final static String ACTIVE_STATUS = "actived";
   public final static String DEACTIVE_STATUS = "deactived";
   public final static String INSTALL_STATUS = "install";
+  public final static String PUBLIC = "public";
+  public final static String PRIVATE = "private";
+  public final static String HIDDEN = "hidden";
   
   public Space() {}
   
@@ -134,5 +137,21 @@ public class Space {
   
   public void setUrl(String url) {
     this.url = url;
+  }
+  
+  public String getVisibility() {
+    return visibility;
+  }
+  
+  public void setVisibility(String visibility) {
+    this.visibility = visibility;
+  }
+  
+  public String getRegistration() {
+    return registration;
+  }
+  
+  public void setRegistration(String registration) {
+    this.registration = registration;
   }
 }

@@ -16,16 +16,44 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+<% 
+	import org.exoplatform.web.application.JavascriptManager;
+	
+  def rcontext = _ctx.getRequestContext() ;
+  JavascriptManager jsmanager = rcontext.getJavascriptManager();
+  jsmanager.importJavascript("eXo.social.space.UISpaceForm") ;
+%>
 <div class="UISpaceForm">
 	<% uiform.begin() %>
 	<div class="SpaceBanner"><span></span></div>
 	<div class="SpaceContent">
 		<div class="LeftContent">
-			<div class="MameSpace">Name of the space</div>
+			<div class="MameSpace"><%= uiform.getLabel('spaceName') %></div>
 			<div class="FieldComponent"><% uiform.renderChild(0); %></div>
+			<div class="FieldRadio">
+				<div class="ButtonShow" style="display:block" onclick="eXo.social.space.UISpaceForm.moreOptions(this);"><a href="#"><%= uiform.getLabel('moreOptions')  %></a></div>
+				<div class="ButtonHide" style="display:none" onclick="eXo.social.space.UISpaceForm.hideMoreOptions(this);"><a href="#"><%= uiform.getLabel('hideMoreOptions')  %></a></div>
+				<div class="OptionsWrap" style="display:none">
+					<div class="SpaceOptionRadio" onclick="eXo.social.space.UISpaceForm.checkRadio(this);">
+						<% uiform.renderChild(1); %>
+						<label for="check1">
+							<%= uiform.getLabel('privateMessage') %>
+						</label>
+						<div style="clear: left;"><span></span></div>
+					</div>
+					<div class="SpaceOptionRadio" onclick="eXo.social.space.UISpaceForm.checkRadio(this);">
+						<% uiform.renderChild(2) %>
+						<label for="check2">
+							<%= uiform.getLabel('hiddenMessage') %>
+						</label>
+						<div style="clear: left;"><span></span></div>
+					</div>
+				</div>
+				
+			</div>
 		</div>
 		<a class="RightContent" href="<%= uicomponent.event("CreateSpace") %>"><span></span></a>
-		<div style="clear: left;"><span></span></div>
+		<div style="clear: both;"><span></span></div>
 	</div>
 	 <%uiform.end()%>
 </div>

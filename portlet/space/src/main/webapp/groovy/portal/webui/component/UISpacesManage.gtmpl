@@ -17,7 +17,7 @@
 
 -->
 <%
-  import social.portal.webui.component.ManageSpaceControlArea;
+  import social.portal.webui.component.UIManageSpaceControlArea;
   import social.portal.webui.component.UIManageSpaceWorkingArea;
   import social.portal.webui.component.UISpaceInvitation;
 %>
@@ -27,7 +27,7 @@
 			uicomponent.renderChild(UISpaceInvitation.class);
 		} else { %>
 		<div class="LeftSpacesPortlet" >
-			  <% uicomponent.renderChild(ManageSpaceControlArea.class);%>
+			  <% uicomponent.renderChild(UIManageSpaceControlArea.class);%>
 		</div>
 		<div class="RightSpacesPortlet" >
 			<%  uicomponent.renderChild(UIManageSpaceWorkingArea.class); %>

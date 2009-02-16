@@ -42,7 +42,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UISpacesManage extends UIContainer {
 
   public UISpacesManage() throws Exception {
-    addChild(ManageSpaceControlArea.class,null,null);
+    addChild(UIManageSpaceControlArea.class,null,null);
     addChild(UIManageSpaceWorkingArea.class, null, null);
     addChild(UISpaceInvitation.class,null,null).setRendered(false);
   }

@@ -44,6 +44,8 @@ public class JCRStorage {
   final static private String SPACE_INVITED_USER = "exo:invitedUsers".intern();
   final static private String SPACE_TYPE = "exo:type".intern();
   final static private String SPACE_URL = "exo:url".intern();
+  final static private String SPACE_VISIBILITY = "exo:visibility".intern();
+  final static private String SPACE_REGISTRATION = "exo:registration".intern();
 
   private NodeHierarchyCreator nodeHierarchyCreator_ ;
 
@@ -141,6 +143,8 @@ public class JCRStorage {
     spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUsers());
     spaceNode.setProperty(SPACE_TYPE, space.getType());
     spaceNode.setProperty(SPACE_URL, space.getUrl());
+    spaceNode.setProperty(SPACE_VISIBILITY, space.getVisibility());
+    spaceNode.setProperty(SPACE_REGISTRATION, space.getRegistration());
   }
 
   private Space getSpace(Node spaceNode) throws Exception{
@@ -156,6 +160,8 @@ public class JCRStorage {
     if(spaceNode.hasProperty(SPACE_INVITED_USER)) space.setInvitedUsers(ValuesToStrings(spaceNode.getProperty(SPACE_INVITED_USER).getValues()));
     if(spaceNode.hasProperty(SPACE_TYPE)) space.setType(spaceNode.getProperty(SPACE_TYPE).getString());
     if(spaceNode.hasProperty(SPACE_URL)) space.setUrl(spaceNode.getProperty(SPACE_URL).getString());
+    if(spaceNode.hasProperty(SPACE_VISIBILITY)) space.setVisibility(spaceNode.getProperty(SPACE_VISIBILITY).getString());
+    if(spaceNode.hasProperty(SPACE_REGISTRATION)) space.setRegistration(spaceNode.getProperty(SPACE_REGISTRATION).getString());
     return space;
   }
   

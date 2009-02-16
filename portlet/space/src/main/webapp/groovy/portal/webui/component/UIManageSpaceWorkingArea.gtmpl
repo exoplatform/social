@@ -43,8 +43,16 @@
 				<div class="CommunityIcon"><span></span></div>
 				<div class="CommunityContainer">
 					<div class="CommunityMane Line">
-					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + objSpace.getUrl() ; %>
+					<% String pageURI = Util.getPortalRequestContext().getPortalURI() + objSpace.getUrl() ;
+						 int option = uicomponent.displayAction(objSpace.getId());
+						 if(option > 1) {
+					%>	 
 						<div class="CommunityName" style="float: left; cursor:pointer;"><a href="$pageURI" class="CommunityNameMiddle"><%= objSpace.getName() %></a></div>
+						<% } else {
+							String message = _ctx.appRes(uicomponent.getId() + ".msg.can-not.access");
+						%>
+						<div class="CommunityName" style="float: left; cursor:pointer;"><a href="#" onclick="alert('$message');" class="CommunityNameMiddle"><%= objSpace.getName() %></a></div>
+						<% } %>
 						<% 
 							 String requestJoin = uicomponent.event("RequestJoin", objSpace.getId()) + "; return false;";
 							 String leaveAction = uicomponent.event("LeaveSpace",objSpace.getId()) + "; return false;";
@@ -52,7 +60,6 @@
 							 String acceptAction = uicomponent.event("AcceptUser", objSpace.getId()) + "; return false;";
 							 String denyAction = uicomponent.event("DenyUser", objSpace.getId()) + "; return false;";
 							 
-							 int option = uicomponent.displayAction(objSpace.getId());
 							 boolean isInvited = uicomponent.isInInvitedList(objSpace);
 							 
 							 if(isInvited) {

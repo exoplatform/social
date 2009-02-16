@@ -22,6 +22,7 @@ import java.util.List;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.Page;
@@ -184,9 +185,15 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     if(isRoot) 
       pageName = space.getShortName();
     else pageName = app.getApplicationName();
-
+    
+    String visibility = space.getVisibility();
+    if(visibility.equals(Space.PUBLIC)) {
+      page.setAccessPermissions(new String[]{UserACL.EVERYONE});
+    } else {
+      page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+    }
+    
     page.setName(pageName);
-    page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
     page.setEditPermission("manager:" + space.getGroupId());
     page.setModifiable(true);
     

@@ -111,7 +111,7 @@
 	background: url('background/LeftButton17x35.gif') no-repeat left;
 	padding-left: 17px;
 	margin: 10px;
-    display:none;
+   display:none;
 }
 
 .UIManageSpacesPortlet .LeftSpacesPortlet .RightButton {
@@ -165,8 +165,8 @@
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent{
-	background: url('background/SpaceContent.gif') repeat-x;
-	width:541px; height: 136px;
+	background: #F5F5F5 url('background/SpaceContent.gif') repeat-x;
+	width:541px;
 	margin-top: 4px;
 }
 
@@ -197,6 +197,60 @@
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldComponent input{
 	width: 270px;
 }
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio {
+	margin:5px 0px 20px 88px;
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .ButtonHide {
+	background: url('background/icon-close.png') left 50% no-repeat;
+	padding: 4px 16px;
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .ButtonShow {
+	background: url('background/icon-open.png') left 50% no-repeat;
+	padding: 4px 16px;
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio {
+	margin-bottom: 20px;
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap {
+	padding: 6px;
+	border: solid 1px #dbdbdb;
+	margin: 0px 10px 0px 0px;
+	width: 270px;
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
+	border: solid 1px #ffebc6;
+	padding: 4px;
+	margin-bottom: 3px;
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:hover,
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .selected,
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:focus {
+	background: #ffebc6;
+	border: solid 1px #ff9000;
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
+	
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap input {
+	display: block;
+	float: left;
+}
+
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap label {
+	display: block;
+	margin-left: 20px;
+	width: 232px;
+}
+
 /***********************UI Space Invitation********************************/
 .UIManageSpacesPortlet .UISpaceInvitation .Banner{
 	background: url('background/SpaceBanner.gif') no-repeat left;

@@ -72,7 +72,7 @@ public class SpaceServiceImpl implements SpaceService{
     return orgService;
   }
 
-  public Space createSpace(String spaceName, String creator) throws SpaceException {
+  public Space createSpace(Space space, String creator) throws SpaceException {
     OrganizationService orgService = getOrgService();
 
     GroupHandler groupHandler = orgService.getGroupHandler();
@@ -84,7 +84,7 @@ public class SpaceServiceImpl implements SpaceService{
       groupParent = groupHandler.findGroupById(SPACE_PARENT);
       //Create new group
       newGroup = groupHandler.createGroupInstance();
-
+      String spaceName = space.getName();
       shortName = SpaceUtils.cleanString(spaceName);
       String groupId = groupParent.getId() + "/" + shortName;
       if(groupHandler.findGroupById(groupId) != null) {
@@ -110,9 +110,8 @@ public class SpaceServiceImpl implements SpaceService{
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_CREATOR, e);
     }
 
+    // TODO: dang.tung we'll remove it to the UI, don't use in service
     // Store space to database
-    Space space = new Space();
-    space.setName(spaceName);
     space.setGroupId(newGroup.getId());
     space.setType(DefaultSpaceApplicationHandler.NAME);
     space.setDescription("edit this description to explain what your space is about");
@@ -120,6 +119,7 @@ public class SpaceServiceImpl implements SpaceService{
     //                 url of space = parent's short name + space's short name 
     space.setUrl(shortName);
     saveSpace(space, true);
+    //-------------------------------------------------------------------------------
     
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.initSpace(space);
