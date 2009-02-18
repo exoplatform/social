@@ -22,6 +22,14 @@
 	<component>
     <key>org.exoplatform.social.space.SpaceService</key>
     <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
+    <init-params>
+  		<properties-param>
+  		<name>space</name>
+  		<description>default value of space</description>
+  		<property name="visibility" value="private"></property>
+  		<property name="registration" value="validation"></property>
+  		</properties-param>
+  	</init-params>	
   </component>
   
   <component>

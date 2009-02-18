@@ -16,12 +16,8 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<%
-  import org.exoplatform.webui.core.UIPopupContainer;
-%>
 <div >
 	<div class="UIManageSpacesPortlet" id="$uicomponent.id"> 
-		<%uicomponent.renderChild(UIPopupContainer.class);%>
 		<% uicomponent.renderChildren() %>	
 	 	<%uicomponent.renderPopupMessages(); %>
 	</div>

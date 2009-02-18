@@ -76,6 +76,3 @@ public class UISpaceSetting extends UIContainer {
   }
   
 }
-
-
-

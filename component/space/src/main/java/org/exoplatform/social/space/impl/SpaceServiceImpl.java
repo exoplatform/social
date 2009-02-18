@@ -19,6 +19,7 @@ package org.exoplatform.social.space.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.Map;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
@@ -43,6 +46,8 @@ import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -53,15 +58,19 @@ public class SpaceServiceImpl implements SpaceService{
   final static public String SPACE_PARENT = "/spaces";
   final static public String MEMBER = "member";
   final static public String MANAGER = "manager";
-
-
+   
+  private String visibility;
+  private String registration;
   private JCRStorage storage;
   private OrganizationService orgService = null;
   private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
 
-  public SpaceServiceImpl(NodeHierarchyCreator nodeHierarchyCreator) throws Exception {
+  public SpaceServiceImpl(InitParams params, NodeHierarchyCreator nodeHierarchyCreator) throws Exception {
     storage = new JCRStorage(nodeHierarchyCreator);
-
+    PropertiesParam properties = params.getPropertiesParam("space");
+    if(properties == null) throw new Exception("the 'space' properties parameter is expected.");
+    visibility = properties.getProperty("visibility");
+    registration = properties.getProperty("registration");
   }
 
   private OrganizationService getOrgService() {
@@ -112,6 +121,8 @@ public class SpaceServiceImpl implements SpaceService{
 
     // TODO: dang.tung we'll remove it to the UI, don't use in service
     // Store space to database
+    if(space.getVisibility().equals("")) space.setVisibility(visibility);
+    space.setRegistration(registration);
     space.setGroupId(newGroup.getId());
     space.setType(DefaultSpaceApplicationHandler.NAME);
     space.setDescription("edit this description to explain what your space is about");
@@ -171,7 +182,24 @@ public class SpaceServiceImpl implements SpaceService{
 
   public List<Space> getAllSpaces() throws SpaceException {
     try {
-      return storage.getAllSpaces();
+      List<Space> spaces = storage.getAllSpaces();
+      Collections.sort(spaces, new SpaceComparator());
+      return spaces;
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+  
+  public List<Space> getAllSpaces(String userId) throws SpaceException {
+    try {
+      List<Space> spaces = getAllSpaces();
+      Iterator<Space> itr = spaces.iterator();
+      while(itr.hasNext()) {
+        Space space = itr.next();
+        if(space.getVisibility().equals(Space.HIDDEN) && !isMember(space, userId))
+          itr.remove();
+      }
+      return spaces;
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
@@ -536,4 +564,9 @@ public class SpaceServiceImpl implements SpaceService{
     } else return new String[] {str};
   }
   
+  private class SpaceComparator implements Comparator<Space> {
+    public int compare(Space space1, Space space2) {
+      return space1.getName().compareToIgnoreCase(space2.getName());
+    }
+  }
 }

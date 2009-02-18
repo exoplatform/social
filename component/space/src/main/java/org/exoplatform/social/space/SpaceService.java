@@ -34,6 +34,14 @@ public interface SpaceService {
   List<Space> getAllSpaces() throws SpaceException;
   
   /**
+   * Gets all space
+   * @return get All space of Portal base on the User
+   *         if space is private and User isn't member, space will be removed. 
+   * @throws Exception
+   */
+  List<Space> getAllSpaces(String userId) throws SpaceException;
+  
+  /**
    * Gets a space by its id
    * @param id Id of space
    * @return space with id specified

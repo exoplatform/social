@@ -18,7 +18,6 @@ package social.portal.webui.component;
 
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.UIPopupMessages;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -36,7 +35,6 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIManageSpacesPortlet extends UIPortletApplication {
 
   public UIManageSpacesPortlet() throws Exception {
-    addChild(UIPopupContainer.class, null, "ManageSpacesPopup");
     addChild(UISpacesManage.class,null , null);
   }
   

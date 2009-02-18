@@ -19,7 +19,6 @@ package social.portal.webui.component;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -39,17 +38,18 @@ import org.exoplatform.webui.event.EventListener;
 public class UIManageSpaceControlArea extends UIContainer {
 
   public UIManageSpaceControlArea() throws Exception {
+    addChild(UIPopupWindow.class,null,"UICreateSpaceForm");
+    
   }
   
   static public class CreateSpaceActionListener extends EventListener<UIManageSpaceControlArea> {
     public void execute(Event<UIManageSpaceControlArea> event) throws Exception {
-      UIManageSpaceControlArea controlArea = event.getSource();
-      UIManageSpacesPortlet uiPortlet = (UIManageSpacesPortlet)controlArea.getAncestorOfType(UIManageSpacesPortlet.class);
-      UIPopupContainer uiPopup = uiPortlet.getChild(UIPopupContainer.class);
-      uiPopup.activate(UISpaceForm.class, 560);
-      uiPopup.getChild(UIPopupWindow.class).setId("CreateSpace");
+      UIManageSpaceControlArea uiControlArea = event.getSource();
+      UISpaceForm uiSpaceForm = uiControlArea.createUIComponent(UISpaceForm.class, null, null);
+      UIPopupWindow uiPopup = uiControlArea.getChild(UIPopupWindow.class);
+      uiPopup.setUIComponent(uiSpaceForm);
+      uiPopup.setShow(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
-      
     }
   }
   

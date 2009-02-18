@@ -16,11 +16,13 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+<% import org.exoplatform.webui.core.UIPopupWindow; %>
 <div class="UIManageSpaceControlArea" id="$uicomponent.id">
 	<a class="CreateSpaceButton" href="<%=uicomponent.event("CreateSpace") %>"></a>
 	<div class="LeftButton">
 		<div class="RightButton">
 			<div class="CenterButton">Admin</div>
 		</div>
-	</div>	
+	</div>
+	<% uicomponent.renderChild(UIPopupWindow.class); %>	
 </div>

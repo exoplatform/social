@@ -30,6 +30,7 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupComponent;
 import org.exoplatform.webui.core.UIPopupContainer;
+import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
@@ -55,7 +56,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
         @EventConfig(listeners = UISpaceForm.CreateSpaceActionListener.class )
       }
 )
-public class UISpaceForm extends UIForm implements UIPopupComponent{
+public class UISpaceForm extends UIForm{
 
   final static private String SPACE_NAME = "spaceName";
 //  final static private String SPACE_PUBLIC = "UISpacePublic";
@@ -86,9 +87,10 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
   static public class CreateSpaceActionListener extends EventListener<UISpaceForm> {
     public void execute(Event<UISpaceForm> event) throws Exception {
       UISpaceForm uiForm = event.getSource();
-      UIManageSpacesPortlet uiPorlet = uiForm.getAncestorOfType(UIManageSpacesPortlet.class);
-      SpaceService spaceService = uiPorlet.getApplicationComponent(SpaceService.class);
-
+      UISpacesManage uiSpaceManage =  uiForm.getAncestorOfType(UISpacesManage.class);
+      SpaceService spaceService = uiSpaceManage.getApplicationComponent(SpaceService.class);
+      UIManageSpaceWorkingArea uiSpaceWorkingArea = uiSpaceManage.getChild(UIManageSpaceWorkingArea.class);
+      
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
 
@@ -103,20 +105,17 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
       String visibility = ((UIFormRadioBoxInput)uiForm.getChildById(SPACE_PRIVATE)).getValue();
       if(visibility.equals("")) 
         visibility = ((UIFormRadioBoxInput)uiForm.getChildById(SPACE_HIDDEN)).getValue();
-      if(visibility.equals("")) visibility = Space.PRIVATE;
       String creator = requestContext.getRemoteUser();
-      
-      UISpacesManage uiSpaceManage = uiPorlet.getChild(UISpacesManage.class);
-      UIManageSpaceWorkingArea uiUpdate = uiSpaceManage.getChild(UIManageSpaceWorkingArea.class);
       
       Space space = new Space();
       try {
         space.setName(spaceName);
         space.setVisibility(visibility);
         spaceService.createSpace(space, creator);
-        uiForm.getAncestorOfType(UIPopupContainer.class).deActivate();
-        uiUpdate.initSpacesList();
-        requestContext.addUIComponentToUpdateByAjax(uiPorlet);
+        UIPopupWindow uiPopup = uiForm.getParent();
+        uiPopup.setShow(false);
+        requestContext.addUIComponentToUpdateByAjax(uiPopup);
+        requestContext.addUIComponentToUpdateByAjax(uiSpaceWorkingArea);
       } catch (SpaceException e) {
         e.printStackTrace();
         if(e.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
@@ -127,7 +126,4 @@ public class UISpaceForm extends UIForm implements UIPopupComponent{
     }
   }
   
-  public void activate() throws Exception {}
-  public void deActivate() throws Exception {}
-    
 }
