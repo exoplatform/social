@@ -45,7 +45,6 @@
 					AppClass.className = 'AppClass';
 					appRegSample.appendChild(AppClass);
 				}
-				console.log(resp.data);
 				gadgets.window.adjustHeight();
 			}
 			

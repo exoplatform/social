@@ -42,6 +42,7 @@ public class UISpaceSetting extends UIContainer {
     uiTabPane.addChild(UISpaceInfo.class, null, null);
     uiTabPane.addChild(UISpaceMember.class, null, null);
     uiTabPane.addChild(UISpaceApplication.class, null, null);
+    uiTabPane.addChild(UISpacePermission.class, null, null);
     uiTabPane.setSelectedTab(1);
   }
   
@@ -52,6 +53,8 @@ public class UISpaceSetting extends UIContainer {
     uiSpaceMember.setValue(space.getId());
     UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).getChild(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
+    UISpacePermission uiSpacePermission = getChild(UITabPane.class).getChild(UISpacePermission.class);
+    uiSpacePermission.setValue(space);
     this.space = space;
   }
   

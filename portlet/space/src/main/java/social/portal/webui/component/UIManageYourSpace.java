@@ -58,7 +58,6 @@ import com.sun.java_cup.internal.sym;
 @ComponentConfig(
     template = "app:/groovy/portal/webui/component/UIManageYourSpace.gtmpl",
     events = {
-        @EventConfig(listeners = UIManageYourSpace.RequestJoinActionListener.class),
         @EventConfig(listeners = UIManageYourSpace.ChangeListSpacesActionListener.class),
         @EventConfig(listeners = UIManageYourSpace.LeaveSpaceActionListener.class),
         @EventConfig(listeners = UIManageYourSpace.AcceptUserActionListener.class),
@@ -234,23 +233,6 @@ public class UIManageYourSpace extends UIContainer {
 
       spaceService.denyInvitation(spaceId,  userName);
 
-      requestContext.addUIComponentToUpdateByAjax(uiForm);
-    }
-  }
-  
-  static public class RequestJoinActionListener extends EventListener<UIManageYourSpace> {
-    public void execute(Event<UIManageYourSpace> event) throws Exception {
-      UIManageYourSpace uiForm = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();      
-      SpaceService spaceService = uiForm.getSpaceService();
-
-      String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String userName = uiForm.getRemoteUser();      
-      spaceService.requestJoin(spaceId, userName);
-
-      UIApplication uiApp = requestContext.getUIApplication();
-      uiApp.addMessage(new ApplicationMessage("UIManageYourSpace.msg.success-join-user", null,ApplicationMessage.INFO));
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }

@@ -33,7 +33,10 @@
 	<gadget name="ComplianceTest08">
 		<url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>
 	</gadget>
-    <gadget name="codeSharer">
+  <gadget name="codeSharer">
 		<path>/gadgets/codeSharer.xml</path>
+	</gadget>
+  <gadget name="applicationReg">
+		<path>/gadgets/applicationReg.xml</path>
 	</gadget>
 </gadgets>

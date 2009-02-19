@@ -64,6 +64,8 @@ public class UIManageAllSpace extends UIContainer {
 
   private UIPageIterator iterator_;
   private final String iteratorID = "UIIteratorSpaceWorking";
+  private SpaceService spaceSrc = null;
+  private String userId = null;
   
   public UIManageAllSpace() throws Exception {
     iterator_ = createUIComponent(UIPageIterator.class, null, iteratorID);
@@ -73,9 +75,19 @@ public class UIManageAllSpace extends UIContainer {
   public UIPageIterator getUIPageIterator() { return iterator_;}
   
   private List<Space> getAllSpaces() throws Exception {
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    String userId = Util.getPortalRequestContext().getRemoteUser();
+    SpaceService spaceSrc = getSpaceService();
+    String userId = getRemoteUser();
     return spaceSrc.getAllSpaces(userId);
+  }
+  
+  private String getRemoteUser() {
+    if(userId == null) userId = Util.getPortalRequestContext().getRemoteUser();
+    return userId;
+  }
+  
+  private SpaceService getSpaceService() {
+    if(spaceSrc == null) spaceSrc = getApplicationComponent(SpaceService.class);
+    return spaceSrc;
   }
   
   @SuppressWarnings("unchecked")
@@ -98,10 +110,10 @@ public class UIManageAllSpace extends UIContainer {
   
   public int displayAction(String spaceId) throws SpaceException {
     // 0: request to join, 1: in pendingList, 2: manager, 3: member
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
+    SpaceService spaceSrc = getSpaceService();
     Space space = spaceSrc.getSpaceById(spaceId);
     
-    String userId = Util.getPortalRequestContext().getRemoteUser();
+    String userId = getRemoteUser();
     if(spaceSrc.isMember(space, userId)) {
       if(spaceSrc.isLeader(space, userId)) return 2;
       return 3;
@@ -110,8 +122,8 @@ public class UIManageAllSpace extends UIContainer {
   }
   
   public boolean isInInvitedList(Space space) {
-    String userId = Util.getPortalRequestContext().getRemoteUser();
-    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    String userId = getRemoteUser();
+    SpaceService spaceService = getSpaceService();
     
     if(spaceService.isInvited(space, userId)) return true;
     return false;
@@ -134,9 +146,9 @@ public class UIManageAllSpace extends UIContainer {
       UIManageAllSpace uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
 
-      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
-      String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String userID = requestContext.getRemoteUser();
+      SpaceService spaceService = uiForm.getSpaceService();
+      String spaceId = requestContext.getRequestParameter(OBJECTID);
+      String userID = uiForm.getRemoteUser();
 
       spaceService.leave(spaceId, userID);
       requestContext.addUIComponentToUpdateByAjax(uiForm);
@@ -149,10 +161,10 @@ public class UIManageAllSpace extends UIContainer {
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
       
-      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
+      SpaceService spaceService = uiForm.getSpaceService();
 
-      String userName = requestContext.getRemoteUser();
-      String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
+      String userName = uiForm.getRemoteUser();
+      String spaceId = requestContext.getRequestParameter(OBJECTID);
       
       try {
         spaceService.acceptInvitation(spaceId, userName);
@@ -194,8 +206,8 @@ public class UIManageAllSpace extends UIContainer {
       String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIManageAllSpace uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      String userName = requestContext.getRemoteUser();
-      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
+      String userName = uiForm.getRemoteUser();
+      SpaceService spaceService = uiForm.getSpaceService();
 
       spaceService.denyInvitation(spaceId,  userName);
 
@@ -205,18 +217,23 @@ public class UIManageAllSpace extends UIContainer {
   
   static public class RequestJoinActionListener extends EventListener<UIManageAllSpace> {
     public void execute(Event<UIManageAllSpace> event) throws Exception {
-      UIManageAllSpace workingAllSpaceArea = event.getSource();
+      UIManageAllSpace uiForm = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();      
-      SpaceService spaceService = workingAllSpaceArea.getApplicationComponent(SpaceService.class);
+      SpaceService spaceService = uiForm.getSpaceService();
 
-      String spaceId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String userName = requestContext.getRemoteUser();      
-      spaceService.requestJoin(spaceId, userName);
+      String spaceId = requestContext.getRequestParameter(OBJECTID);
+      String userId = requestContext.getRemoteUser();
+      Space space = spaceService.getSpaceById(spaceId);
+      String registration = space.getRegistration();
+      if(registration.equals(Space.OPEN)) spaceService.addMember(space, userId);
+      else if (registration.equals(Space.VALIDATION)) spaceService.requestJoin(space, userId);
+      else {
+        UIApplication uiApp = requestContext.getUIApplication();
+        uiApp.addMessage(new ApplicationMessage("UIManageAllSpace.msg.close-space", null,ApplicationMessage.INFO));
+        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      }
 
-      UIApplication uiApp = requestContext.getUIApplication();
-      uiApp.addMessage(new ApplicationMessage("UIManageAllSpace.msg.success-join-user", null,ApplicationMessage.INFO));
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
-      requestContext.addUIComponentToUpdateByAjax(workingAllSpaceArea);
+      requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }
 

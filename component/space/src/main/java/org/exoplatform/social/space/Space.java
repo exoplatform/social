@@ -44,6 +44,9 @@ public class Space {
   public final static String PUBLIC = "public";
   public final static String PRIVATE = "private";
   public final static String HIDDEN = "hidden";
+  public final static String OPEN = "open";
+  public final static String VALIDATION = "validation";
+  public final static String CLOSE = "close";
   
   public Space() {}
   
