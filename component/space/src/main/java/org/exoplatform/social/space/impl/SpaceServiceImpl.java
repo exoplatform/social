@@ -384,9 +384,23 @@ public class SpaceServiceImpl implements SpaceService{
   }
 
   public void requestJoin(Space space, String userId) throws SpaceException {
-    String[] pendingUsers = space.getPendingUsers();
-    space.setPendingUsers(addItemToArray(pendingUsers, userId));
-    saveSpace(space, false);
+    if(isInvited(space, userId)) {
+      addMember(space, userId);
+      String[] invitedUsers = space.getInvitedUsers();
+      space.setInvitedUsers(removeItemFromArray(invitedUsers, userId));
+      saveSpace(space, false);
+      return;
+    }
+    String registration = space.getRegistration();
+    if(registration.equals(Space.OPEN)) {
+      addMember(space, userId);
+    } else if (registration.equals(Space.VALIDATION)) {
+      String[] pendingUsers = space.getPendingUsers();
+      space.setPendingUsers(addItemToArray(pendingUsers, userId));
+      saveSpace(space, false);
+    } else {
+      throw new SpaceException(SpaceException.Code.UNABLE_REQUEST_TO_JOIN);
+    }
   }
   
   public void declineRequest(String spaceId, String userId) throws SpaceException {

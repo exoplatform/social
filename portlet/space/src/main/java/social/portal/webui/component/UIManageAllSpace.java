@@ -224,16 +224,17 @@ public class UIManageAllSpace extends UIContainer {
       String spaceId = requestContext.getRequestParameter(OBJECTID);
       String userId = requestContext.getRemoteUser();
       Space space = spaceService.getSpaceById(spaceId);
-      String registration = space.getRegistration();
-      if(registration.equals(Space.OPEN)) spaceService.addMember(space, userId);
-      else if (registration.equals(Space.VALIDATION)) spaceService.requestJoin(space, userId);
-      else {
-        UIApplication uiApp = requestContext.getUIApplication();
-        uiApp.addMessage(new ApplicationMessage("UIManageAllSpace.msg.close-space", null,ApplicationMessage.INFO));
-        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      try {
+        spaceService.requestJoin(space, userId);
+      } catch (SpaceException e) {
+        if(e.getCode().equals(SpaceException.Code.UNABLE_REQUEST_TO_JOIN)) {
+          UIApplication uiApp = requestContext.getUIApplication();
+          uiApp.addMessage(new ApplicationMessage("UIManageAllSpace.msg.close-space", null,ApplicationMessage.INFO));
+          requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+        }
+      } finally {
+        requestContext.addUIComponentToUpdateByAjax(uiForm);
       }
-
-      requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }
 
