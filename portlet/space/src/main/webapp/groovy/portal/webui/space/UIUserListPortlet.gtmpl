@@ -23,7 +23,8 @@
 	UIPageIterator iterator = uicomponent.getUIPageIterator();
 %>
 <div class="UIUserListPortlet" id="$uicomponent.id">
-	<% List<User> listUsers = uicomponent.getUsersInSpace(); 
+	<% List<User> listUsers = uicomponent.getUsersInSpace();
+		 if(listUsers.size() > 0 ){	 
 		 for(user in listUsers) {
 	%>
 	<div class="UserlistContainer">
@@ -55,6 +56,13 @@
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+	<% } %>
+	<% } else { %>
+	<div class="UserlistContainer">
+		<div class="UserlistContent">
+			<div class="EmptyData"><%= _ctx.appRes(uicomponent.getId() + ".label.empty") %></div>
 		</div>
 	</div>
 	<% } %>

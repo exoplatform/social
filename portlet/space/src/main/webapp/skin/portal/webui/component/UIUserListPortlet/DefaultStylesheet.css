@@ -19,6 +19,12 @@
 	background: #ECEDEE;
 }
 
+.UIUserListPortlet .EmptyData {
+	color:#FF5604;
+	font-style:italic;
+	text-align:center;
+}
+
 .UIUserListPortlet .UserlistContainer {
 	border: 1px solid #b7b7b7;
 	padding: 4px;

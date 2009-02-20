@@ -71,8 +71,9 @@
 	border-bottom:1px solid #B7B7B7;
 }
 .UIManageSpacesPortlet .EmptyData {
-	text-align: center;
-	color: red;
+	color:#FF5604;
+	font-style:italic;
+	text-align:center;
 }
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .Text{
 	line-height: 16px;

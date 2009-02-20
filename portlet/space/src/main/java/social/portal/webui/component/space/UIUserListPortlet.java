@@ -19,16 +19,13 @@ package social.portal.webui.component.space;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPortletApplication;
@@ -73,12 +70,7 @@ public class UIUserListPortlet extends UIPortletApplication {
     }
   
   private String getSpaceName() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    HttpServletRequest request = pcontext.getRequest();
-    String url = request.getRequestURL().toString();
-    String[] tempSplit = url.split("/");
-    String spaceName = tempSplit[tempSplit.length-2];
-    return spaceName;
+    return SpaceUtils.getSpaceUrl();
   }
   
   @SuppressWarnings("unchecked")
