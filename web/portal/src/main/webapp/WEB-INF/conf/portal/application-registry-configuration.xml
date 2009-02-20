@@ -261,7 +261,7 @@
                                                 <string>SiteMapPortlet</string>
                                             </field>
                                             <field name="displayName">
-                                                <string>SiteMap</string>
+                                                <string>Site map</string>
                                             </field>
                                             <field name="description">
                                                 <string>SiteMap</string>
@@ -607,7 +607,7 @@
                                                 <string>space</string>
                                             </field>
                                             <field name="displayName">
-                                                <string>User List</string>
+                                                <string>List users</string>
                                             </field>
                                             <field name="description">
                                                 <string>User list of space</string>
@@ -665,7 +665,7 @@
                                                 <string>space</string>
                                             </field>
                                             <field name="displayName">
-                                                <string>Space Setting</string>
+                                                <string>Space settings</string>
                                             </field>
                                             <field name="description">
                                                 <string>Setting information of space</string>

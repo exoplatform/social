@@ -225,7 +225,7 @@
   <portlet>
     <description xml:lang="EN">User List Portlet</description>
     <portlet-name>UserListPortlet</portlet-name>
-    <display-name xml:lang="EN">User List</display-name>
+    <display-name xml:lang="EN">List users</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
     <init-param>
@@ -292,7 +292,7 @@
   <portlet>
     <description xml:lang="EN">Space Setting Portlet</description>
     <portlet-name>SpaceSettingPortlet</portlet-name>
-    <display-name xml:lang="EN">Space Setting</display-name>
+    <display-name xml:lang="EN">Space settings</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
     <init-param>
