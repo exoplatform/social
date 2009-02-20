@@ -17,6 +17,7 @@
 package social.portal.webui.component.space;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -30,6 +31,8 @@ import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+
+import java.util.Collections;
 
 /**
  * Created by The eXo Platform SARL
@@ -51,25 +54,30 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     Space space = spaceSrc.getSpaceByUrl(spaceUrl);
-    String spaceName = space.getShortName();
     
     UserPortalConfigService dataService = getApplicationComponent(UserPortalConfigService.class);
-    PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, "spaces/" + spaceName);
+    PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId().substring(1));
     
-    PageNode homeNode = pageNav.getNode(spaceName);
+    PageNode homeNode = pageNav.getNode(spaceUrl);
     String userId = Util.getPortalRequestContext().getRemoteUser();       
     List<PageNode> list = homeNode.getChildren();
     PageNode pageNode = null;
-    if(!spaceSrc.isLeader(space, userId)) {         
-      for(PageNode node:list){
-        if(node.getName().equals("SpaceSettingPortlet")){
-          pageNode = node;
-          break;
-        }
+    for(PageNode node:list){
+      if(node.getName().equals("SpaceSettingPortlet")){
+        pageNode = node;
+        break;
       }
-      if(pageNode != null) list.remove(pageNode); 
-    }    
-    if(list == null) list = new ArrayList<PageNode>();
+    }
+    if(pageNode != null) list.remove(pageNode); 
+    Collections.sort(list, new ApplicationComparator());
+    if(spaceSrc.isLeader(space, userId) && pageNode != null) list.add(pageNode);
     return list;
   }
+  
+  private class ApplicationComparator implements Comparator<PageNode> {
+    public int compare(PageNode pageNode1, PageNode pageNode2) {
+      return pageNode1.getResolvedLabel().compareToIgnoreCase(pageNode2.getResolvedLabel());
+    }
+  }
+  
 }
