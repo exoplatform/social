@@ -122,7 +122,7 @@
 		              def type = it.get("key");
 		              if (!isEdit) {
 		          %>
-		          <li><%=type + " " + phone%></li>
+		          <li><%=type + ": " + phone%></li>
 		          <% } else { %>
 		          <li class="propertyEl">
 		            <input type="hidden" name="profile.phones<%=i%>.key" value="work"/>
@@ -183,7 +183,7 @@
 		              def type = it.get("key");
 		              if (!isEdit) {
 		          %>
-		          <li><%=type + " " + im%></li>
+		          <li><%=type%>: <%=im%></li>
 		          <% } else { %>
 		          <li class="propertyEl">
 		            <select name="profile.ims<%=i%>.key">
