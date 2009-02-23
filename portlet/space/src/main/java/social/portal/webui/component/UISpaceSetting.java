@@ -40,9 +40,9 @@ public class UISpaceSetting extends UIContainer {
   public UISpaceSetting() throws Exception {
     UITabPane uiTabPane = addChild(UITabPane.class, null, null);
     uiTabPane.addChild(UISpaceInfo.class, null, null);
+    uiTabPane.addChild(UISpacePermission.class, null, null);
     uiTabPane.addChild(UISpaceMember.class, null, null);
     uiTabPane.addChild(UISpaceApplication.class, null, null);
-    uiTabPane.addChild(UISpacePermission.class, null, null);
     uiTabPane.setSelectedTab(1);
   }
   
