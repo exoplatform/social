@@ -168,6 +168,8 @@ public class UIManageAllSpace extends UIContainer {
       
       try {
         spaceService.acceptInvitation(spaceId, userName);
+        uiApp.addMessage(new ApplicationMessage("UISpaceManage.msg.user-accept-invited", null));
+        requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       } catch (SpaceException e) {
         if(e.getCode() == SpaceException.Code.USER_NOT_INVITED) {
           uiApp.addMessage(new ApplicationMessage("UISpaceManage.msg.user-revoke", null));
