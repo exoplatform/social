@@ -80,10 +80,13 @@ public class UIDisplayProfileList  extends UIComponent {
       RelationshipManager rm = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
 
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-
+      
       if(rel == null) {
         rel = rm.create(currIdentity, requestedIdentity);
         rel.setStatus(Relationship.Type.PENDING);
+        rm.save(rel);
+      } else {
+        rel.setStatus(Relationship.Type.CONFIRM);
         rm.save(rel);
       }
     }
