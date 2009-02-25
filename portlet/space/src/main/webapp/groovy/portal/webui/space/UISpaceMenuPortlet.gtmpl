@@ -4,6 +4,7 @@
 	import org.exoplatform.social.space.SpaceUtils;
 	def apps = uicomponent.getApps();	
 	def spaceUrl = SpaceUtils.getSpaceUrl();
+	String appSelected = uicomponent.getAppSelected();
 %>
 
 <div id="$uicomponent.id" class="UISpaceMenuPortlet">
@@ -35,7 +36,11 @@
 							<div class="ListContentR">
 								<div class="ListContentC">
 									<div class="ApplicationIcon ListContentFont">
+									<% if(node.getName().equals(appSelected)) { %>
+									<a href="$pageURI" class="ApplicationSelected"><%= node.getResolvedLabel() %></a>
+									<% } else { %>
 									 <a href="$pageURI"><%= node.getResolvedLabel() %></a>
+									 <% } %>
 									</div>
 								</div>
 							</div>

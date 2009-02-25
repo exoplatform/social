@@ -16,10 +16,11 @@
  */
 package social.portal.webui.component.space;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
@@ -31,8 +32,6 @@ import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
-
-import java.util.Collections;
 
 /**
  * Created by The eXo Platform SARL
@@ -78,6 +77,13 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     public int compare(PageNode pageNode1, PageNode pageNode2) {
       return pageNode1.getResolvedLabel().compareToIgnoreCase(pageNode2.getResolvedLabel());
     }
+  }
+  
+  public String getAppSelected() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestUrl = pcontext.getRequestURI();
+    String[] split = requestUrl.split("/");
+    return split[split.length - 1];
   }
   
 }

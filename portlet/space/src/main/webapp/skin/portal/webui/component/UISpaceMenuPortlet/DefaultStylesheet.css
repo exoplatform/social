@@ -139,3 +139,7 @@
 .UISpaceMenuPortlet .ListContent .ListContentFont a{
 	color: white;
 }
+
+.UISpaceMenuPortlet .ListContent .ListContentFont .ApplicationSelected{
+	color: #058EE6;
+}
