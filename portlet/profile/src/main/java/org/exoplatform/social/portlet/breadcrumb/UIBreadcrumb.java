@@ -40,11 +40,12 @@ public class UIBreadcrumb extends UIComponent {
     Map<String, String> url = URLUtils.decodeURL();
 
     PathElement el = createElement("home", URLUtils.generateURL(null, null, null));
-    el.getPotentialChild().add(createElement("mydashboard", URLUtils.generateURL("mydashboard", null, null)));
-    el.getPotentialChild().add(createElement("people", URLUtils.generateURL("people", null, null)));
-    el.getPotentialChild().add(createElement("spaces", URLUtils.generateURL("spaces", null, null)));
+    if(getCurrentUserName() != null) {
+      el.getPotentialChild().add(createElement("mydashboard", URLUtils.generateURL("mydashboard", null, null)));
+      el.getPotentialChild().add(createElement("people", URLUtils.generateURL("people", null, null)));
+      el.getPotentialChild().add(createElement("spaces", URLUtils.generateURL("spaces", null, null)));
+    }
     res.add(el);
-
     if(url.containsKey(URLUtils.MODULE)) {
       String moduleName = url.get(URLUtils.MODULE);
       el = createElement(moduleName, URLUtils.generateURL(moduleName, null, null));
