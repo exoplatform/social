@@ -70,7 +70,8 @@ public class UISpaceInfo extends UIForm {
       Space space = spaceSrc.getSpaceById(id);
       uiSpaceInfo.invokeSetBindingBean(space);
       spaceSrc.saveSpace(space, false);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceInfo);
+      UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceSetting);
     }
   }
 }
