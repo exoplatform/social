@@ -32,8 +32,6 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
@@ -46,8 +44,6 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-
-import com.sun.java_cup.internal.sym;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -67,13 +63,17 @@ import com.sun.java_cup.internal.sym;
 public class UIManageYourSpace extends UIContainer {
 
   private UIPageIterator iterator_;
+  private UIPageIterator iteratorInvited_;
   private final String iteratorID = "UIIteratorSpaceWorking";
+  private final String iteratorInvitedID = "UIIteratorInvitedSpaceWorking";
   private SpaceService spaceSrc = null;
   private String userName = null;
   
   public UIManageYourSpace() throws Exception {
     iterator_ = createUIComponent(UIPageIterator.class, null, iteratorID);
-    addChild(iterator_);    
+    addChild(iterator_);
+    iteratorInvited_ = createUIComponent(UIPageIterator.class, null, iteratorInvitedID);
+    addChild(iteratorInvited_);
   }
   
   private SpaceService getSpaceService() {
@@ -89,6 +89,7 @@ public class UIManageYourSpace extends UIContainer {
   }
   
   public UIPageIterator getUIPageIterator() { return iterator_;}
+  public UIPageIterator getUIPageInvitedIterator() { return iteratorInvited_;}
   
   private List<Space> getAllSpaces() throws Exception {
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
@@ -107,7 +108,7 @@ public class UIManageYourSpace extends UIContainer {
   @SuppressWarnings("unchecked")
   public List<Space> getSpaces() throws Exception {
     int currentPage = iterator_.getCurrentPage();
-    PageList pageList = new ObjectPageList(getAllSpaces(),5);
+    PageList pageList = new ObjectPageList(getAllSpaces(),2);
     iterator_.setPageList(pageList);    
     int pageCount = iterator_.getAvailablePage();
     if(pageCount >= currentPage){
@@ -118,7 +119,9 @@ public class UIManageYourSpace extends UIContainer {
     return iterator_.getCurrentPageData();
   }
   
-  public List<Space> getInvitedSpaces() throws SpaceException {
+  @SuppressWarnings("unchecked")
+  public List<Space> getInvitedSpaces() throws Exception {
+    int currentPage = iteratorInvited_.getCurrentPage();
     SpaceService spaceService = getSpaceService();
     List<Space> allSpaces = spaceService.getAllSpaces();
     Iterator<Space> itr = allSpaces.iterator();
@@ -127,7 +130,15 @@ public class UIManageYourSpace extends UIContainer {
       Space space = itr.next();
       if(!spaceService.isInvited(space, userId)) itr.remove();
     }
-    return allSpaces;
+    PageList pageList = new ObjectPageList(allSpaces,2);
+    iteratorInvited_.setPageList(pageList);
+    int pageCount = iteratorInvited_.getAvailablePage();
+    if(pageCount >= currentPage) {
+      iteratorInvited_.setCurrentPage(currentPage);
+    } else if(pageCount < currentPage) {
+      iteratorInvited_.setCurrentPage(currentPage-1);
+    }
+    return iteratorInvited_.getCurrentPageData();
   }
   
   public int displayAction(String spaceId) throws SpaceException {

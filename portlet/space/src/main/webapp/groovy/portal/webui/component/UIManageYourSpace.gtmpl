@@ -21,15 +21,16 @@
 	import org.exoplatform.portal.webui.util.Util ;
 	import org.exoplatform.webui.core.UIPageIterator;
   
-  UIPageIterator iterator = uicomponent.getUIPageIterator();	
+  UIPageIterator iterator = uicomponent.getUIPageIterator();
+  UIPageIterator iteratorInvited = uicomponent.getUIPageInvitedIterator()	
   def allSpaces = uicomponent.getSpaces();
   def invitedSpaces = uicomponent.getInvitedSpaces();
 %>
 <div class="UIManageYourSpace" id="$uicomponent.id">
 	<div class="LabelSpace"><%= _ctx.appRes(uicomponent.getId() + ".label.yourSpace") %><a href="<%= uicomponent.event("ChangeListSpaces") %>"><span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[<%= _ctx.appRes(uicomponent.getId() + ".label.all") %>]</a></span></div>
 	<div class="LabelBrown">Browse by: <span style="font-weight: bold; color: #6598d1;">Name, Tags, Size, Activity</span></div>
-	<div class="ContainerSpace">Invited
 	<% if(invitedSpaces.size() > 0) {%>
+	<div class="ContainerSpace">Invited
 		<% for(objSpace in invitedSpaces) { %>
 			<div class="ContentSpace">
 				<div class="CommunityIcon"><span></span></div>
@@ -69,13 +70,18 @@
 				<div style="clear: left;"><span></span></div>
 			</div>
 		<% } %>
-	<% } else { %>
-			<div class="EmptyData"><%= _ctx.appRes(uicomponent.getId() + ".label.empty") %></div>
-	<% } %>	
 	</div>
-	
-	<div class="ContainerSpace">Yours
+	<% } %>
+	<div>
+	<%
+		if(iteratorInvited.getAvailablePage() > 1) {
+		_ctx.renderUIComponent(iteratorInvited) ;
+		}
+	%>	
+	</div>
+	<div class="ContainerSpace">
 	<% if(allSpaces.size() > 0) {%>
+	Yours
 		<% for(objSpace in allSpaces) { %>
 			<div class="ContentSpace">
 				<div class="CommunityIcon"><span></span></div>
@@ -140,7 +146,7 @@
 	</div>
 	<div>
 	<%
-		if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
+		if(iterator.getAvailablePage() > 1) {
 		_ctx.renderUIComponent(iterator) ;
 		}
 	%>	
