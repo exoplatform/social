@@ -50,7 +50,7 @@
 			</div>
 		<% } %>
 		<% } else { %>
-		<div class= "EmptyData" style="background: white"><%= uiform.getLabel('empty'); %></div>
+		<div class= "EmptyData" style="background: white; border: 1px solid #b7b7b7; padding: 50px 0px;"><%= uiform.getLabel('empty'); %></div>
 		<% } %>
 	</div>
 	<% if(uicomponent.getUIPageIterator().getAvailablePage() > 1) { %>

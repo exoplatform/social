@@ -76,8 +76,17 @@
 	line-height: 24px;
 }
 
+.UISpaceSettingPortlet .UISpaceMember .UIGrid a {
+	color: #058ee6;
+	text-decoration: underline;
+}
+
+.UISpaceSettingPortlet .UISpaceMember .UIGrid a:hover {
+	text-decoration: none;
+}
+
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .AddInviteButton {
-	float: right;
+	padding: 0px 15px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchInviteButton {

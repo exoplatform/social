@@ -34,7 +34,7 @@
   def gender = profile.getPropertyValue("gender");
 
 %>
-<div style="background: #D6E4ED ;">
+<div>
 <% uicomponent.renderChildren(); %>
 
 <div class="PortletContent">

@@ -40,11 +40,11 @@
 	font-weight: bold;
 }
 
-
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace{
 	background: #f5f5f5;
 	border:1px solid #c7c7c7;
 	padding: 8px;
+	margin: 5px 0px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .ContentSpace{
@@ -91,7 +91,6 @@
 	font-family: tahoma;
 	font-weight: bold;
 }
-
 
 .UIManageSpacesPortlet .RightSpacesPortlet .LabelBrown{
 	color: #a6a6a6;

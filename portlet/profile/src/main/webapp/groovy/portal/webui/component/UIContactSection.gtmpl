@@ -33,7 +33,7 @@
   def urls = Utils.sort(profile.getPropertyValue("urls"), "key");
   def ims = Utils.sort(profile.getPropertyValue("ims"), "key");
 %>
-<div style="background: #D6E4ED ;">
+<div>
 		<% uicomponent.renderChild(UITitleBar.class); %>
 	<div class="PortletContent">
 	

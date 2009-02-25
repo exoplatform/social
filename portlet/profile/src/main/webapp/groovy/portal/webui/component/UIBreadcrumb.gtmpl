@@ -40,7 +40,7 @@
 	     </li>
 	<% } %>
 	</ul>
-	<span style="clear: left;">&nbsp;</span>
+	<div style="clear: left;"><span></span></div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 startList = function() {
 	if (document.all&&document.getElementById) {

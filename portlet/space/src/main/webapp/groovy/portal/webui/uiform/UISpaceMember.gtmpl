@@ -48,15 +48,15 @@
 						  <div style="clear: left;"><span></span></div>
 				  	</div>
 				  	<div class="UIActionContainer">
-						  	<a onclick="$searchUserAction" href="#">
+						  	<div onclick="$searchUserAction">
 							    <div class="LeftButton">
 							      <div class="RightButton">
 							        <div class="CenterButton">
-							        	 <%= _ctx.appRes(uicomponent.getId() + ".label.search")%>								        	 				        	
+							        	 <a href="#"><%= _ctx.appRes(uicomponent.getId() + ".label.search")%></a>
 							        </div>
 							      </div>
 							    </div>
-							  </a>
+							  </div>
 						</div>
 					  
 					  <div style="clear: left;"><span></span></div>
@@ -154,11 +154,11 @@
 				  <td class="text"><span class="label" id="label"><%= user %></span></td>
 	  			<td class="text"><span class="label" id="label"><%= _ctx.appRes(uicomponent.getId() + ".label.makeOffice")%></span></td>
 	  			<% if(isLeader) {%>  
-	  			<td class="text"><span class="label" id="label" style="cursor: pointer;" onclick="$removeLeader"><%= _ctx.appRes(uicomponent.getId() + ".label.removeLeader")%></span></td>  
+	  			<td class="text" style="text-align: center"><a class="label" id="label" href="$removeLeader"><%= _ctx.appRes(uicomponent.getId() + ".label.removeLeader")%></a></td>  
 			  	<% } else { %>
-			  	<td class="text"><span class="label" id="label" style="cursor: pointer;" onclick="$makeLeader"><%= _ctx.appRes(uicomponent.getId() + ".label.makeLeader")%></span></td>
+			  	<td class="text" style="text-align: center"><a class="label" id="label" href="$makeLeader"><%= _ctx.appRes(uicomponent.getId() + ".label.makeLeader")%></a></td>
 			  	<% } %>
-			  	<td align="center" >
+			  	<td>
 				  	<div class="AddInviteButton">
 				  	  <div class="LeftButton">
 					      <div class="RightButton">
