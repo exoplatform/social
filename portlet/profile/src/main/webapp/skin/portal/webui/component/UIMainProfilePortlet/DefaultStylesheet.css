@@ -17,7 +17,6 @@
 /*
   need to find a better way of doing than the import from another portlet
 */
-@import "/dashboard/skin/dashboard/webui/component/UIDashboardPortlet/DefaultStylesheet.css";
 
 .UIProfileListPortlet {
 	zoom: 100%;
