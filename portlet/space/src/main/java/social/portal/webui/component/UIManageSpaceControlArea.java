@@ -38,8 +38,9 @@ import org.exoplatform.webui.event.EventListener;
 public class UIManageSpaceControlArea extends UIContainer {
 
   public UIManageSpaceControlArea() throws Exception {
-    addChild(UIPopupWindow.class,null,"UICreateSpaceForm");
-    
+    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, "UICreateSpaceForm");
+    uiPopup.setWindowSize(560, 0);
+    addChild(uiPopup);
   }
   
   static public class CreateSpaceActionListener extends EventListener<UIManageSpaceControlArea> {
