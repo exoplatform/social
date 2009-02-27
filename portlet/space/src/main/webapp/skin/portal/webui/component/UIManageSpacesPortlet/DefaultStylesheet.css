@@ -14,42 +14,57 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
+ 
 .UIManageSpacesPortlet {
 	padding: 4px;
 	background: url('background/ManageSpacesPortletBG.gif') repeat;
 	zoom: 100%;
 }
 
+.UIManageSpacesPortlet .UISpacesManage {
+  background: #fff url('background/BackgroundSpacesManage.gif') repeat-y top left ;
+  border: 1px solid #91a8ae;
+}
+
 .UIManageSpacesPortlet .LeftSpacesPortlet{
 	float: left;
-	background: white;
-	width: 232px;
+	width: 244px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet {
-	margin-left: 236px;
-	background: white;
+	margin-left: 270px;
 	padding: 6px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .LabelSpace {
-	color: #53515c;
+	color: #0b4352;
 	line-height: 35px;
-	font-size: 14px;
+	font-size: 18px;
 	font-family: tahoma;
 	font-weight: bold;
 }
 
-.UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace{
+.UIManageSpacesPortlet .RightSpacesPortlet .TitleContentSpace {
+	background: url('background/TitleContentSpace.gif') repeat-x left;
+	color: #d0e947;
+	font-size: 12px;
+	font-weight: bold;
+	height: 16px;
+	margin-top: 5px;
+	padding: 8px 0px 0px 15px;
+}
+
+.UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace {
 	background: #f5f5f5;
-	border:1px solid #c7c7c7;
+	border:1px solid #d5d5d5;
+	border-top: none;
 	padding: 8px;
-	margin: 5px 0px;
+	margin: 0px 0px 5px 0px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .ContentSpace{
 	background: white;
-	border:1px solid #c7c7c7;
+	border:1px solid #e6e3e3;
 	padding: 8px;
 	margin-bottom:4px;
 	height: 80px;
@@ -68,7 +83,7 @@
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .Line{
-	border-bottom:1px solid #B7B7B7;
+	border-bottom:1px solid #dddddd;
 }
 .UIManageSpacesPortlet .EmptyData {
 	color:#FF5604;
@@ -76,17 +91,18 @@
 	text-align:center;
 }
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .Text{
-	line-height: 16px;
+	line-height: 26px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .TagsName{
 	color: #b7b7b7;
-	line-height: 16px;
+	line-height: 26px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .CommunityMane{
 	color: #0d6e8f;
-	height: 20px;
+	height: 26px;
+	line-height: 26px;
 	font-size: 12px;
 	font-family: tahoma;
 	font-weight: bold;
@@ -97,13 +113,14 @@
 	line-height: 16px;
 	font-size: 11px;
 	font-family: tahoma;
-    display:none;
+  display:none;
 }
 
 .UIManageSpacesPortlet .LeftSpacesPortlet .CreateSpaceButton{
 	background: url('background/CreateSpaceButton.gif') no-repeat left;
-	width: 226px; height: 107px;
-	margin: 16px 0px 0px 3px;
+	width: 218px; 
+	height: 91px;
+	margin: 30px 0px 0px 3px;
 	display:block;
 }
 
@@ -111,7 +128,7 @@
 	background: url('background/LeftButton17x35.gif') no-repeat left;
 	padding-left: 17px;
 	margin: 10px;
-   display:none;
+  display:none;
 }
 
 .UIManageSpacesPortlet .LeftSpacesPortlet .RightButton {
@@ -139,35 +156,38 @@
 
 
 .UIManageSpacesPortlet .RightSpacesPortlet .LeftButton {
-	background: url('background/LeftButton3x18.gif') no-repeat left;
+	background: url('background/ButtonSpaces.gif') no-repeat left top;
 	padding-left: 3px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .RightButton {
-	background: url('background/RightButton3x18.gif') no-repeat right;
+	background: url('background/ButtonSpaces.gif') no-repeat right top;
 	padding-right: 3px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .CenterButton {
-	background: url('background/CenterButton1x18.gif') repeat-x ;
+	background: url('background/ButtonSpaces.gif') repeat-x left -18px ;
 	line-height: 18px;
 	padding: 0px 10px;
+	color: #7f7a77;
+	font-size: 11px;
 }
 
 
 .UIManageSpacesPortlet .UISpaceForm {
-	padding: 4px;
+	padding: 1px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceBanner{
 	background: url('background/SpaceBanner.gif') no-repeat left;
-	width:541px; height: 194px;
+	width: 547px; 
+	height: 120px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent{
-	background: #F5F5F5 url('background/SpaceContent.gif') repeat-x;
-	width:541px;
-	margin-top: 4px;
+	background: #fff url('background/SpaceContent.gif') repeat-x;
+	width: 547px;
+	margin-top: 1px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .LeftContent{
@@ -177,16 +197,17 @@
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .RightContent{
 	float: left;
-	background: url('background/CreateButton80x82.gif') no-repeat left;
-	width:80px; height: 82px;
-	margin:31px 0px 0px 20px;
+	background: url('background/CreateButton.gif') no-repeat left;
+	width: 79px; 
+	height: 79px;
+	margin: 31px 0px 0px 20px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .MameSpace{
-	color:#02729a;
+	color: #087196;
 	font-weight: bold;
 	font-size: 14px;
-	margin:40px 0px 0px 88px;
+	margin: 40px 0px 0px 88px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldComponent{
@@ -217,23 +238,24 @@
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap {
-	padding: 6px;
+	padding: 6px;\
+	background: #f5f5f5;
 	border: solid 1px #dbdbdb;
 	margin: 0px 10px 0px 0px;
 	width: 270px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
-	border: solid 1px #ffebc6;
-	padding: 4px;
+	border: solid 1px #dae4ea;
+	padding: 6px;
 	margin-bottom: 3px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:hover,
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .selected,
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:focus {
-	background: #ffebc6;
-	border: solid 1px #ff9000;
+	background: #dae4ea;
+	border: solid 1px #5c8ea2;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
@@ -324,7 +346,8 @@
 
 .UIManageSpacesPortlet .UISpaceInvitation .InvitationContainer .InvitationAvartar{
 	background:url('background/InvitationAvartar.gif') no-repeat left;
-	width: 101px; height: 128px;
+	width: 101px; 
+	height: 128px;
 	margin: auto;
 }
 
@@ -363,3 +386,4 @@
 	font-weight: bold;
 	font-size: 12px;
 }
+

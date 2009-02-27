@@ -15,8 +15,9 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 .UIUserListPortlet {
-	padding: 10px;
-	background: #ECEDEE;
+	background:white none repeat scroll 0 0;
+  border:1px solid #E6E6E6;
+  padding:4px;
 }
 
 .UIUserListPortlet .EmptyData {
@@ -26,14 +27,14 @@
 }
 
 .UIUserListPortlet .UserlistContainer {
-	border: 1px solid #b7b7b7;
-	padding: 4px;
-	margin-top: 6px;
+	background:#D8E4EC url(/space/skin/portal/webui/component/UISpaceSettingPortlet/background/BGWorkingAreaWithHelp.gif) repeat-x scroll left top;
+  padding:30px 35px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserlistContent {
 	background: white;
 	padding: 8px;
+	border: 1px solid #aeaeae;
 }
 
 

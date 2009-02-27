@@ -27,7 +27,7 @@
   def invitedSpaces = uicomponent.getInvitedSpaces();
 %>
 <div class="UIManageYourSpace" id="$uicomponent.id">
-	<div class="LabelSpace"><%= _ctx.appRes(uicomponent.getId() + ".label.yourSpace") %><a href="<%= uicomponent.event("ChangeListSpaces") %>"><span style="color: #373737; font-weight: normal; font-size: 11px; margin-left: 10px;">[<%= _ctx.appRes(uicomponent.getId() + ".label.all") %>]</a></span></div>
+	<div class="LabelSpace"><%= _ctx.appRes(uicomponent.getId() + ".label.yourSpace") %><a href="<%= uicomponent.event("ChangeListSpaces") %>"><span style="color: #8a8a8a; font-weight: bold; font-size: 11px; margin-left: 20px;">[<%= _ctx.appRes(uicomponent.getId() + ".label.all") %>]</a></span></div>
 	<div class="LabelBrown">Browse by: <span style="font-weight: bold; color: #6598d1;">Name, Tags, Size, Activity</span></div>
 	<% if(invitedSpaces.size() > 0) {%>
 	<div class="ContainerSpace">Invited
@@ -79,9 +79,11 @@
 		}
 	%>	
 	</div>
-	<div class="ContainerSpace">
+	<div class="TitleContentSpace">
 	<% if(allSpaces.size() > 0) {%>
 	Yours
+	</div>
+	<div class="ContainerSpace">
 		<% for(objSpace in allSpaces) { %>
 			<div class="ContentSpace">
 				<div class="CommunityIcon"><span></span></div>

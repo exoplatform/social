@@ -1,14 +1,14 @@
 .UISpaceSettingPortlet {
-	border: 1px solid #B7B7B7;
-	margin: 4px;
+	border: 1px solid #e6e6e6;
+	padding: 4px;
 	background: white;
 }
+
 /********************************UI Space Member********************************/
 .UISpaceSettingPortlet .UISpaceMember .AddInviteContent {
 	padding: 12px 0px 0px 8px;
 	height: 50px;
 }
-
 
 .UISpaceSettingPortlet .UISpaceMember .AddInvite {
 	float: left;
@@ -94,21 +94,22 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .LeftButton {
-	background: url('background/LeftButton3x18.gif') no-repeat left center;
+	background: url('background/ButtonSpaces.gif') no-repeat left top;
 	padding-left: 3px;
 	margin: 2px 0px 0px 0px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .RightButton {
-	background: url('background/RightButton3x18.gif') no-repeat right center;
+	background: url('background/ButtonSpaces.gif') no-repeat right top;
 	padding-right: 3px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .CenterButton {
-	background: url('background/CenterButton1x18.gif') repeat-x center;
+	background: url('background/ButtonSpaces.gif') repeat-x left -18px ;
 	line-height: 18px;
 	padding: 0px 10px;
-	font-weight: normal;
+	color: #7f7a77;
+	font-size: 11px;
 	cursor: pointer;
 }
 
@@ -214,19 +215,21 @@
 
 
 .UISpaceSettingPortlet .LeftButton {
-	background: url('background/LeftButton3x18.gif') no-repeat left center;
+	background: url('background/ButtonSpaces.gif') no-repeat left top;
 	padding-left: 3px;
 }
 
 .UISpaceSettingPortlet .RightButton {
-	background: url('background/RightButton3x18.gif') no-repeat right center;
+	background: url('background/ButtonSpaces.gif') no-repeat right top;
 	padding-right: 3px;
 }
 
 .UISpaceSettingPortlet .CenterButton {
-	background: url('background/CenterButton1x18.gif') repeat-x center;
+	background: url('background/ButtonSpaces.gif') repeat-x left -18px ;
 	line-height: 18px;
 	padding: 0px 10px;
+	color: #7f7a77;
+	font-size: 11px;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton {
@@ -283,33 +286,20 @@
 
 /*==============SPACE NAME===============================*/
 .UISpaceSettingPortlet .SpaceName {
-	width: 400px;
+  background: #47718d;
+  padding: 0px 15px;
 	margin: auto;
-}
-
-.UISpaceSettingPortlet .SpaceName .SpaceNameL {
-	background: url('background/SpaceNameL.gif') no-repeat left center;
-	padding-left: 22px;
-}
-
-.UISpaceSettingPortlet .SpaceName .SpaceNameR {
-	background: url('background/SpaceNameR.gif') no-repeat right center;
-	padding-right: 22px;
-}
-
-.UISpaceSettingPortlet .SpaceName .SpaceNameC {
-	background: url('background/SpaceNameC.gif') repeat-x center;
-	line-height: 23px;
+	line-height: 40px;
 }
 
 .UISpaceSettingPortlet .SpaceName .Name {
-	width: 80%;
+  background: url('background/NameTitle.gif') no-repeat left center;
+  padding-left: 40px;
 	overflow: hidden;
 	white-space: nowrap;
-	color: white;
-	font-size: 12px;
+	color: #b3e1ee;
+	font-size: 14px;
 	font-weight: bold;
-	text-align: center;
 	margin: auto;
 }
 
@@ -357,3 +347,10 @@
 	padding-left: 24px;
 	line-height: 24px;
 }
+
+.ApplicationTDContainer .WorkingAreaWithHelp {
+  background: #d8e4ec url('background/BGWorkingAreaWithHelp.gif') repeat-x left top;
+  padding: 30px 35px;
+}
+
+

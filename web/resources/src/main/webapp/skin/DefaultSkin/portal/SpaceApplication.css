@@ -1,3 +1,31 @@
-.MenuTDContainer {
-	width: 250px;
+
+
+.TRContainer .MenuTDContainer {
+	width: 244px;
 }
+
+.TRContainer .MenuTDContainer .UIContainer {
+	padding: 0;
+}
+
+.UIPage .UIRowContainer {
+	padding: 0;
+}
+
+.TRContainer .ApplicationTDContainer {
+	padding: 15px 12px 15px 32px;
+}
+
+.TRContainer .ApplicationTDContainer .UIContainer {
+	padding: 0;
+}
+
+.TRContainer .ApplicationTDContainer .UITabPane .TabPaneContent {
+  padding: 4px 0px 0px 0px; 
+}
+
+.UITableColumnContainer {
+  background: #fff url('background/BackgroundSpacesManage.gif') repeat-y top left;
+  border: 1px solid #91a8ae;
+}
+

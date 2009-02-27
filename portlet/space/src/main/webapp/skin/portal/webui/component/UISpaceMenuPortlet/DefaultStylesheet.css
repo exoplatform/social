@@ -15,131 +15,64 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-.UISpaceMenuPortlet {
-	padding: 4px 0px;
+.MenuTDContainer .UISpaceMenuPortlet {
+	padding: 15px 12px;
 }
 
-.UISpaceMenuPortlet .HomeSpaceLogoBG {
+.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogoBG {
 
 }
 
-.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGL {
-	background: url(DefaultSkin/background/LogoBGL.gif) no-repeat left;
-	padding-left: 6px;
-}
-
-.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGR {
-	background: url(DefaultSkin/background/LogoBGR.gif) no-repeat right;
-	padding-right: 6px;
-}
-
-
-.UISpaceMenuPortlet .HomeSpaceLogoBG .LogoBGC {
-	background: url(DefaultSkin/background/LogoBGC.gif) repeat-x;
-	height: 84px;
-}
-
-.UISpaceMenuPortlet .HomeSpaceLogoBG .HomeSpaceLogo {
-	background: url(DefaultSkin/background/HomeSpaceLogo.gif) no-repeat left 13px;
-	padding-left: 68px;
+.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogo {
+	background: url('DefaultSkin/background/HomeSpaceLogo.gif') no-repeat left center;
+	padding-left: 45px;
 	font-weight: bold;
-	color: white;
-	line-height: 84px;
-	font-size: 18px;
-}
-
-.UISpaceMenuPortlet .GadgetList{
-	margin-top: 4px;
-}
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorTL{
-	background: url(DefaultSkin/background/DecoratorTL.gif) no-repeat left;
-	padding-left: 6px;
-}
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorTR{
-	background: url(DefaultSkin/background/DecoratorTR.gif) no-repeat right;
-	padding-right: 6px;
-}
-
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorTC{
-	background: url(DefaultSkin/background/DecoratorTC.gif) repeat-x;
-	height: 13px;
-}
-
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorML{
-	background: url(DefaultSkin/background/DecoratorML.gif) repeat-y left;
-	padding-left: 6px;
-}
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorMR{
-	background: url(DefaultSkin/background/DecoratorMR.gif) repeat-y right;
-	padding-right: 6px;
-}
-
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorMC{
-	padding: 8px;
-	background: #83b0bb;
-}
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorBL{
-	background: url(DefaultSkin/background/DecoratorBL.gif) no-repeat left;
-	padding-left: 6px;
-}
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorBR{
-	background: url(DefaultSkin/background/DecoratorBR.gif) no-repeat right;
-	padding-right: 6px;
-}
-
-
-.UISpaceMenuPortlet .DecoratorGadget .DecoratorBC{
-	background: url(DefaultSkin/background/DecoratorBC.gif) repeat-x;
-	height: 4px;
-}
-
-.UISpaceMenuPortlet .ListContent {
-	margin-top: 4px;
-}
-
-.UISpaceMenuPortlet .ListContent .ListContentL{
-	background: url(DefaultSkin/background/ListContentL.gif) no-repeat left;
-	padding-left: 4px;
-}
-
-.UISpaceMenuPortlet .ListContent .ListContentR{
-	background: url(DefaultSkin/background/ListContentR.gif) no-repeat right;
-	padding-right: 4px;
-}
-
-
-.UISpaceMenuPortlet .ListContent .ListContentC{
-	background: url(DefaultSkin/background/ListContentC.gif) repeat-x;
-	height: 61px;
-}
-
-.UISpaceMenuPortlet .ListContent .ApplicationIcon{
-	background: url(DefaultSkin/background/Application.gif) no-repeat left center;
-	padding-left: 65px;
 	line-height: 60px;
+	font-family: arial;
+	font-size: 14px;
+	color: #b3e1ee;
+	margin-left: 15px;
 }
 
-.UISpaceMenuPortlet .ListContent .ListContentFont{
+.MenuTDContainer .UISpaceMenuPortlet .GadgetList {
+	border: 1px solid #dadbdd;
+	padding: 5px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .GadgetList .DecoratorGadget {
+  background: url('DefaultSkin/background/BGSpaceMenuPortlet.gif') repeat-y left top;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .LineMenu {
+  background: url(DefaultSkin/background/LineMenu.gif) no-repeat left top;
+  height: 3px;
+  width: 208px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ListContent {
+	margin: 0px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ListContent .ApplicationIcon {
+	background: url(DefaultSkin/background/Application.gif) no-repeat left center;
+	padding-left: 45px;
+	line-height: 60px;
+	margin-left: 15px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont {
 	font-weight: bold;
+	font-family: arial;
 	font-size: 14px;
-	color: white;
-	width: 120px;
+	color: #b3e1ee;
 	overflow: hidden;
 	white-space: nowrap;
 }
 
-.UISpaceMenuPortlet .ListContent .ListContentFont a{
-	color: white;
+.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont a {
+	color: #b3e1ee;
 }
 
-.UISpaceMenuPortlet .ListContent .ListContentFont .ApplicationSelected{
-	color: #058EE6;
+.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont .ApplicationSelected {
+	color: #ecfbff;
 }
