@@ -21,8 +21,11 @@ import java.util.List;
 
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
@@ -76,13 +79,17 @@ public class UISpacePermission extends UIForm {
     public void execute(Event<UISpacePermission> event) throws Exception {
       UISpacePermission uiSpacePermission = event.getSource();
       SpaceService spaceSrc = uiSpacePermission.getApplicationComponent(SpaceService.class);
+      WebuiRequestContext requestContext = event.getRequestContext();
       String visibility = ((UIFormRadioBoxInput)uiSpacePermission.getChildById(SPACE_VISIBILITY)).getValue();
       String registration = ((UIFormRadioBoxInput)uiSpacePermission.getChildById(SPACE_REGISTRATION)).getValue();
       Space space = spaceSrc.getSpaceById(uiSpacePermission.spaceId);
       space.setVisibility(visibility);
       space.setRegistration(registration);
       spaceSrc.saveSpace(space, false);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpacePermission);
+      UIApplication uiApp = requestContext.getUIApplication();
+      uiApp.addMessage(new ApplicationMessage("UISpacePermission.msg.update-success", null, ApplicationMessage.INFO));
+      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      requestContext.addUIComponentToUpdateByAjax(uiSpacePermission);
     }
   }
 }

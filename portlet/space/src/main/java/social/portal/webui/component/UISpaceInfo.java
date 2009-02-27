@@ -18,8 +18,11 @@ package social.portal.webui.component;
 
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -66,12 +69,16 @@ public class UISpaceInfo extends UIForm {
     public void execute(Event<UISpaceInfo> event) throws Exception {
       UISpaceInfo uiSpaceInfo = event.getSource();
       SpaceService spaceSrc = uiSpaceInfo.getApplicationComponent(SpaceService.class);
+      WebuiRequestContext requestContext = event.getRequestContext();
       String id = uiSpaceInfo.getUIStringInput("id").getValue();
       Space space = spaceSrc.getSpaceById(id);
       uiSpaceInfo.invokeSetBindingBean(space);
       spaceSrc.saveSpace(space, false);
+      UIApplication uiApp = requestContext.getUIApplication();
+      uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));
       UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceSetting);
+      requestContext.addUIComponentToUpdateByAjax(uiSpaceSetting);
+      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
     }
   }
 }
