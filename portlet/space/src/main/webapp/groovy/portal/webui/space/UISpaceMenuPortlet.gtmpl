@@ -11,7 +11,7 @@
   <div class="GadgetList">
 		<div class="DecoratorGadget">
 	<% String home = Util.getPortalRequestContext().getPortalURI() + spaceUrl %>
-      <div class="HomeSpaceLogo"><a href="$home" style="color: #B3E1EE">HOME</a></div>
+      <div class="HomeSpaceLogo"><a href="$home">HOME</a></div>
   <% if(apps.size() != 0){ %>
 			<% for(PageNode node in apps) { %>
 			<% String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/"+node.getName() ; %>

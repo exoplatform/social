@@ -30,8 +30,12 @@
 	line-height: 60px;
 	font-family: arial;
 	font-size: 14px;
-	color: #b3e1ee;
+	color: #fff;
 	margin-left: 15px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogo a {
+	color: #fff;
 }
 
 .MenuTDContainer .UISpaceMenuPortlet .GadgetList {
@@ -70,9 +74,9 @@
 }
 
 .MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont a {
-	color: #b3e1ee;
+	color: #fff;
 }
 
 .MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont .ApplicationSelected {
-	color: #ecfbff;
+	color: #a1eaff;
 }

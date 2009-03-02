@@ -286,7 +286,7 @@
 
 /*==============SPACE NAME===============================*/
 .UISpaceSettingPortlet .SpaceName {
-  background: #47718d;
+  background: #559bc1;
   padding: 0px 15px;
 	margin: auto;
 	line-height: 40px;
@@ -297,7 +297,7 @@
   padding-left: 40px;
 	overflow: hidden;
 	white-space: nowrap;
-	color: #b3e1ee;
+	color: #fff;
 	font-size: 14px;
 	font-weight: bold;
 	margin: auto;
@@ -349,7 +349,7 @@
 }
 
 .ApplicationTDContainer .WorkingAreaWithHelp {
-  background: #d8e4ec url('background/BGWorkingAreaWithHelp.gif') repeat-x left top;
+  background: #deecf4 url('background/BGWorkingAreaWithHelp.gif') repeat-x left top;
   padding: 30px 35px;
 }
 
