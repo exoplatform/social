@@ -269,19 +269,20 @@
 }
 
 .UISpaceSettingPortlet .AplicationButton .AplicationButtonL {
-	background: url('background/LeftButton3x18.gif') no-repeat left center;
+	background: url('background/ButtonSpaces.gif') no-repeat left top ;
 	padding-left: 3px;
 }
 
 .UISpaceSettingPortlet .AplicationButton .AplicationButtonR {
-	background: url('background/RightButton3x18.gif') no-repeat right center;
+	background: url('background/ButtonSpaces.gif') no-repeat right top;
 	padding-right: 3px;
 }
 
 .UISpaceSettingPortlet .AplicationButton .AplicationButtonC {
-	background: url('background/CenterButton1x18.gif') repeat-x center;
+	background: url('background/ButtonSpaces.gif') repeat-x left -18px;
 	line-height: 18px;
 	padding: 0px 10px;
+	color: #7F7A77;
 }
 
 /*==============SPACE NAME===============================*/
@@ -306,7 +307,9 @@
 /*=========================Add Application Space==============================*/
 
 .UIAddApplicationSpace {
-  background: url('background/ManageSpacesPortletBG.gif') repeat;
+  background: #fff url('background/SpaceContent2.gif') repeat-x;
+	margin: 1px;
+	padding-top: 25px;
 }
 
 .UIAddApplicationSpace .ContainerSpace{
