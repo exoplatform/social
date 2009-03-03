@@ -64,8 +64,9 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContent {
-	height: 34px;
-	border-bottom: 1px solid #777777
+	height: 24px;
+	border-bottom: 1px solid #777777;
+	padding: 5px 0px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .Title {
@@ -86,7 +87,8 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .AddInviteButton {
-	padding: 0px 15px;
+	padding: 0px 12px;
+	float: right;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchInviteButton {
