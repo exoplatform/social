@@ -42,6 +42,7 @@
 	font-size: 18px;
 	font-family: tahoma;
 	font-weight: bold;
+	height: 35px;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .TitleContentSpace {
@@ -59,6 +60,7 @@
 	border: 1px solid #d5d5d5;
 	padding: 8px;
 	margin: 0px 0px 5px 0px;
+	height: 100%;
 }
 
 .UIManageSpacesPortlet .RightSpacesPortlet .ContainerSpace .ContentSpace{
