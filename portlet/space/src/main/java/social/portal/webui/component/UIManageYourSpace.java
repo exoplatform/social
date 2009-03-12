@@ -207,6 +207,7 @@ public class UIManageYourSpace extends UIContainer {
         if(e.getCode() == SpaceException.Code.USER_NOT_INVITED) {
           uiApp.addMessage(new ApplicationMessage("UISpaceManage.msg.user-revoke", null));
           requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+          requestContext.addUIComponentToUpdateByAjax(uiForm);
           return;
         }
       }

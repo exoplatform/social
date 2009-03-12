@@ -367,7 +367,7 @@ public class SpaceServiceImpl implements SpaceService{
 
   public void denyInvitation(Space space, String userId) throws SpaceException {
     String[] invitedUsers = space.getInvitedUsers();
-    space.setInvitedUsers(removeItemFromArray(invitedUsers, userId));
+    if(isInvited(space, userId)) space.setInvitedUsers(removeItemFromArray(invitedUsers, userId));
     saveSpace(space, false);
   }
 

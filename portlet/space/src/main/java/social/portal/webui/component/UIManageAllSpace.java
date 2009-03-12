@@ -18,6 +18,7 @@ package social.portal.webui.component;
 
 import java.util.List;
 
+import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -174,6 +175,7 @@ public class UIManageAllSpace extends UIContainer {
         if(e.getCode() == SpaceException.Code.USER_NOT_INVITED) {
           uiApp.addMessage(new ApplicationMessage("UISpaceManage.msg.user-revoke", null));
           requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+          requestContext.addUIComponentToUpdateByAjax(uiForm);
           return;
         }
       }
