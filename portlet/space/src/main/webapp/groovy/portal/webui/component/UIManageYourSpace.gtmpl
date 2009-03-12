@@ -80,9 +80,9 @@
 		}
 	%>	
 	</div>
+	<% if(allSpaces.size() > 0) {%>
 	<div class="TitleContentSpace">Yours</div>
 	<div class="ContainerSpace">
-	<% if(allSpaces.size() > 0) {%>
 		<% for(objSpace in allSpaces) { %>
 			<div class="ContentSpace">
 				<div class="CommunityIcon"><span></span></div>
@@ -141,10 +141,8 @@
 				<div style="clear: left;"><span></span></div>
 			</div>
 		<% } %>
-	<% } else { %>
-			<div class="EmptyData"><%= _ctx.appRes(uicomponent.getId() + ".label.empty") %></div>
-	<% } %>	
 	</div>
+	<% } %>	
 	<div>
 	<%
 		if(iterator.getAvailablePage() > 1) {
@@ -152,4 +150,9 @@
 		}
 	%>	
 	</div>
+	<% if(invitedSpaces.size() == 0 && allSpaces.size() == 0) {%>
+	<div class="ContainerSpace">
+		<div class="EmptyData"><%= _ctx.appRes(uicomponent.getId() + ".label.empty") %></div>
+	</div>
+	<% } %>
 </div>
