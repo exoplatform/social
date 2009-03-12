@@ -64,7 +64,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UIManageAllSpace extends UIContainer {
 
   private UIPageIterator iterator_;
-  private final String iteratorID = "UIIteratorSpaceWorking";
+  private final String iteratorID = "UIIteratorAllSpaceWorking";
   private SpaceService spaceSrc = null;
   private String userId = null;
   
