@@ -46,6 +46,7 @@
 .UIBreadcrumbPortlet li { /* all list items */
 	float: left;
 	position: relative;
+	height: 25px;
 }
 
 .UIBreadcrumbPortlet ul.PotentialChild { 
