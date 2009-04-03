@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<node-navigation>
+  <owner-type>portal</owner-type>
+  <owner-id>classic</owner-id>
+  <priority>1</priority>
+
+  <page-nodes>
+	 <node>
+	  <uri>home</uri>
+	  <name>home</name>
+	  <label>#{portal.classic.home}</label>
+	  <page-reference>portal::classic::homepage</page-reference>	    
+	 </node>
+     <node>
+      <uri>register</uri>
+      <name>register</name>
+      <label>#{portal.classic.register}</label>
+      <page-reference>portal::classic::register</page-reference>
+     </node>
+     <node>
+	    <uri>mydashboard</uri>
+	    <name>mydashboard</name>
+	    <label>#{portal.classic.mydashboard}</label>
+      <page-reference>portal::classic::MyDashboard</page-reference>
+	 </node>
+	 <node>
+	    <uri>people</uri>
+	    <name>people</name>
+	    <label>#{portal.classic.people}</label>
+      <page-reference>portal::classic::Profile</page-reference>
+	  </node>
+      <node>
+	    <uri>canvas</uri>
+	    <name>canvas</name>
+	    <label>#{portal.classic.canvas}</label>
+      <page-reference>portal::classic::Canvas</page-reference>
+	  </node>
+	  <node>
+	    <uri>spaces</uri>
+	    <name>spaces</name>
+	    <label>#{portal.classic.spaces}</label>
+	    <page-reference>portal::classic::manageSpaces</page-reference>
+	  </node>
+  </page-nodes>
+</node-navigation>

@@ -1,0 +1,186 @@
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<% import org.exoplatform.webui.core.UIPopupWindow;
+	 import org.exoplatform.webui.core.UIPageIterator;
+	 
+	 UIPageIterator iteratorPenddingUsers = uicomponent.getUIPageIteratorPenddingUsers(); 
+	 UIPageIterator iteratorInvitedUsers = uicomponent.getUIPageIteratorInvitedUsers();
+	 UIPageIterator iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
+%>
+<div class="UISpaceMember">
+	<% uiform.begin() %>
+	<% String searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
+	<div class="TitleContainer" style="background: none;" >
+	  <div class="InviteSocialLeft">
+	    <div class="InviteSocialRight">
+	      <div class="InviteSocialCenter">
+	        <div style="width: 450px; margin: auto;">
+						<div class="SearchInviteForm">
+						  <div class="AddInvite"><% uiform.renderField("user") %></div>
+						  	<div class="SearchInviteButton" style="float: left;">
+						  
+							    <div class="LeftButton">
+							      <div class="RightButton">
+							        <div class="CenterButton">
+							          <% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
+						          <div class="IconButton" onclick="$inviteAction"><%= _ctx.appRes(uicomponent.getId() + ".button.invite")%></div>
+							        </div>
+							      </div>
+							    </div>
+						  
+								</div>
+						  <div style="clear: left;"><span></span></div>
+				  	</div>
+				  	<div class="UIActionContainer">
+						  	<div onclick="$searchUserAction">
+							    <div class="LeftButton">
+							      <div class="RightButton">
+							        <div class="CenterButton">
+							        	 <a href="#"><%= _ctx.appRes(uicomponent.getId() + ".label.search")%></a>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+					  
+					  <div style="clear: left;"><span></span></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	  
+
+  </div>
+  <% List<String> penddingUsers = uicomponent.getPenddingUsers();%>
+  <% if(penddingUsers.size() > 0) { %>
+  <div class="TitleBar">Pending</div>
+  <% } %>
+	<% for(obj0 in penddingUsers) { %>	 	  
+  <div class="TitleContainer">
+  	<div class="TitleContent">
+	    <div class="Title"><%= obj0 %></div>
+	    <div class="AddInviteButton">
+		    <div class="LeftButton">
+		      <div class="RightButton">
+		        <% String declineAction = uicomponent.event("DeclineUser",obj0) + "; return false;" %>
+		        <div class="CenterButton" onclick="$declineAction"><%= _ctx.appRes(uicomponent.getId() + ".button.decline")%></div>
+		      </div>
+		    </div>
+		  </div>
+	  <div class="AddInviteButton">
+	    <div class="LeftButton">
+	      <div class="RightButton">
+	      	<% String validateAction = uicomponent.event("ValidateUser",obj0) + "; return false;"%>
+	        <div class="CenterButton" onclick="$validateAction"><%= _ctx.appRes(uicomponent.getId() + ".button.validate")%></div>
+	      </div>
+	    </div>
+	  </div>
+	  <div style="clear: both;"><span></span></div>
+  </div>
+ </div>  
+  <% } %>
+  <% if(penddingUsers.size() > 0) { %>
+  <div>
+			<%
+				if(uicomponent.getUIPageIteratorPenddingUsers().getAvailablePage() > 1) {
+				_ctx.renderUIComponent(iteratorPenddingUsers) ;
+				}
+			%>	
+	</div>  
+  <% } %>  
+  <% List<String> invitedUsers = uicomponent.getInvitedUsers();%>
+  <% if(invitedUsers.size() > 0) { %>
+  <div class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></div>
+  <% } %>
+	<%	 for(obj in invitedUsers) { %>
+  <div class="TitleContainer">
+  	<div class="TitleContent">
+	    <div class="Title"><%= obj %></div>
+	    <div class="AddInviteButton">
+		    <div class="LeftButton">
+		      <div class="RightButton">
+		      <% String revokeAction = uicomponent.event("RevokeInvitedUser",obj) + "; return false;"; %>
+		        <div class="CenterButton" onclick="$revokeAction"><%= _ctx.appRes(uicomponent.getId() + ".button.revoke")%></div>
+		      </div>
+		    </div>
+		  </div>
+		  <div style="clear: both;"><span></span></div>
+	  </div>
+  </div>    
+  <% } %>
+  <% if(invitedUsers.size() > 0) { %>
+  <div>
+			<%
+				if(uicomponent.getUIPageIteratorInvitedUsers().getAvailablePage() > 1) {
+				_ctx.renderUIComponent(iteratorInvitedUsers) ;
+				}
+			%>	
+	</div>  
+  <% } %>  
+  <div class="TitleContainer" style="margin-top: 6px;">
+	  <table cellspacing="0" borderspacing="0" class="UIGrid" >
+		  <thead>
+		    <tr>
+			    <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
+			    <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.office")%></th>
+			    <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.leader")%></th>
+			    <th class="TitleBar" style="width: 80px;"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  <% List<String> existingUsers = uicomponent.getExistingUsers();
+		  	 for(user in existingUsers) {
+		  	 boolean isLeader = uicomponent.isLeader(user);
+		  	 String removeLeader = uicomponent.event("RemoveLeader", user) + "; return false;";
+		  	 String makeLeader = uicomponent.event("MakeLeader", user) + "; return false;";
+		  %>
+				<tr class="EvenRow">
+				  <td class="text"><span class="label" id="label"><%= user %></span></td>
+	  			<td class="text"><span class="label" id="label"><%= _ctx.appRes(uicomponent.getId() + ".label.makeOffice")%></span></td>
+	  			<% if(isLeader) {%>  
+	  			<td class="text" style="text-align: center"><a class="label" id="label" onclick="$removeLeader" href="#"><%= _ctx.appRes(uicomponent.getId() + ".label.removeLeader")%></a></td>  
+			  	<% } else { %>
+			  	<td class="text" style="text-align: center"><a class="label" id="label" onclick="$makeLeader" href="#"><%= _ctx.appRes(uicomponent.getId() + ".label.makeLeader")%></a></td>
+			  	<% } %>
+			  	<td>
+				  	<div class="AddInviteButton">
+				  	  <div class="LeftButton">
+					      <div class="RightButton">
+					      	<% String removeAction = uicomponent.event("RemoveUser",user) + "; return false;"; %>
+					        <div class="CenterButton" onclick="$removeAction"><%= _ctx.appRes(uicomponent.getId() + ".button.remove")%></div>
+					      </div>
+					    </div>
+				    </div>
+				    <div style="clear: right;"><span></span></div>
+			  	</td>
+				</tr>
+			<% } %>	
+		  </tbody>
+		</table>
+  </div>
+  <div>
+			<%
+				if(uicomponent.getUIPageIteratorExistingUsers().getAvailablePage() > 1) {
+				_ctx.renderUIComponent(iteratorExistingUsers) ;
+				}
+			%>	
+	</div>  
+  <% uiform.end() %>
+  <% uiform.renderChild(UIPopupWindow.class) %>
+</div>

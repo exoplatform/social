@@ -1,0 +1,198 @@
+/*
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+package org.exoplatform.social.core.relationship;
+
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.relationship.storage.JCRStorage;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+
+import java.util.List;
+import java.util.ArrayList;
+
+public class RelationshipManager {
+  private JCRStorage storage;
+
+
+  public RelationshipManager(NodeHierarchyCreator nodeHierarchyCreator, IdentityManager im) throws Exception {
+    this.storage = new JCRStorage(nodeHierarchyCreator, im);
+  }
+
+  public Relationship getById(String id) throws Exception {
+    return this.storage.getRelationship(id);
+  }
+
+  /**
+   * mark a relationship as confirmed
+   *
+   * @param relationship
+   */
+  public void confirm(Relationship relationship) throws Exception {
+    relationship.setStatus(Relationship.Type.CONFIRM);
+    for (Property prop : relationship.getProperties()) {
+      prop.setStatus(Relationship.Type.CONFIRM);
+    }
+    save(relationship);
+
+  }
+
+  /**
+   * mark a relationship as ignored
+   *
+   * @param relationship
+   */
+  public void ignore(Relationship relationship) throws Exception {
+    relationship.setStatus(Relationship.Type.IGNORE);
+    for (Property prop : relationship.getProperties()) {
+      prop.setStatus(Relationship.Type.IGNORE);
+    }
+    save(relationship);
+  }
+
+  /**
+   * return all the pending relationship: sent and received
+   *
+   * @param identity
+   * @return
+   */
+  public List<Relationship> getPending(Identity identity) throws Exception {
+    List<Relationship> rels = get(identity);
+    List<Relationship> pendingRel = new ArrayList<Relationship>();
+    for (Relationship rel : rels) {
+      if (rel.getStatus() == Relationship.Type.PENDING) {
+        pendingRel.add(rel);
+      } else {
+        if (rel.getProperties(Relationship.Type.PENDING).size() > 0)
+          pendingRel.add(rel);
+      }
+    }
+    return pendingRel;
+  }
+
+  /**
+   * if toConfirm is true, it return list of pending relationship received not confirmed
+   * if toConfirm is false, it return list of relationship sent not confirmed yet
+   *
+   * @param identity
+   * @param toConfirm
+   * @return
+   */
+  public List<Relationship> getPending(Identity identity, boolean toConfirm) throws Exception {
+    List<Relationship> rels = get(identity);
+    List<Relationship> pendingRel = new ArrayList<Relationship>();
+    for (Relationship rel : rels) {
+      if (rel.getStatus() == Relationship.Type.PENDING && !toConfirm) {
+        pendingRel.add(rel);
+      } else if (rel.getStatus() == Relationship.Type.PENDING && toConfirm
+              && !identity.getId().equals(rel.getIdentity1().getId())) {
+        pendingRel.add(rel);
+      } else {
+        List<Property> props = rel.getProperties(Relationship.Type.PENDING);
+        for (Property prop : props) {
+          if (toConfirm == prop.getInitiator().getId().equals(identity.getId())) {
+            pendingRel.add(rel);
+            break;  
+          }
+        }
+      }
+    }
+    return pendingRel;
+  }
+
+  public List<Relationship> getContacts(Identity identity) throws Exception {
+    List<Relationship> rels = get(identity);
+    List<Relationship> contacts = new ArrayList<Relationship>();
+    for (Relationship rel : rels) {
+      if (rel.getStatus() == Relationship.Type.CONFIRM) {
+        contacts.add(rel);
+      }
+    }
+    return contacts;
+  }
+
+
+  /**
+   * return all the relationship associated with a given identity
+   *
+   * @param id
+   * @return
+   * @throws Exception
+   */
+  public List<Relationship> get(Identity id) throws Exception {
+    return this.storage.getRelationshipByIdentity(id);
+  }
+
+  /**
+   * return all the relationship associated with a given identityId
+   *
+   * @param id
+   * @return
+   * @throws Exception
+   */
+  public List<Relationship> getByIdentityId(String id) throws Exception {
+    return this.storage.getRelationshipByIdentityId(id);
+  }
+
+  /**
+   * return all the identity associated with a given identity
+   * TODO check if the relation has been validated
+   *
+   * @param id
+   * @return
+   * @throws Exception
+   */
+  public List<Identity> getIdentities(Identity id) throws Exception {
+    return this.storage.getRelationshipIdentitiesByIdentity(id);
+  }
+
+
+  public Relationship create(Identity id1, Identity id2) {
+    return new Relationship(id1, id2);
+  }
+
+  public void save(Relationship rel) throws Exception {
+    if(rel.getIdentity1().getId().equals(rel.getIdentity2().getId()))
+      throw new Exception("the two identity are the same");
+    for (Property prop :rel.getProperties())  {
+      
+      //if the initator ID is not in the member of the relationship, we throw an exception
+      if(!(prop.getInitiator().getId().equals(rel.getIdentity1().getId())
+          || prop.getInitiator().getId().equals(rel.getIdentity2().getId()))) {
+
+        throw new Exception("the property initiator is not member of the relationship");
+      }
+    }
+    this.storage.saveRelationship(rel);
+  }
+
+  public List findRoute(Identity id1, Identity id2) {
+    return null;
+  }
+
+  public Relationship getRelationship(Identity id1, Identity id2) throws Exception {
+    List<Relationship> rels = get(id1);
+    String sId2 = id2.getId();
+
+    for (Relationship rel : rels) {
+      if (rel.getIdentity1().getId().equals(sId2) || rel.getIdentity2().getId().equals(sId2)) {
+        return rel;
+      }
+    }
+    return null;
+  }
+
+}

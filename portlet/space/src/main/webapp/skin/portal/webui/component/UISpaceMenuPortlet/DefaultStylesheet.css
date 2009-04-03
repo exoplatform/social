@@ -1,0 +1,82 @@
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+
+.MenuTDContainer .UISpaceMenuPortlet {
+	padding: 15px 12px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogoBG {
+
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogo {
+	background: url('DefaultSkin/background/HomeSpaceLogo.gif') no-repeat left center;
+	padding-left: 45px;
+	font-weight: bold;
+	line-height: 60px;
+	font-family: arial;
+	font-size: 14px;
+	color: #fff;
+	margin-left: 15px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogo a {
+	color: #fff;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .GadgetList {
+	border: 1px solid #dadbdd;
+	padding: 5px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .GadgetList .DecoratorGadget {
+  background: url('DefaultSkin/background/BGSpaceMenuPortlet.gif') repeat-y left top;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .LineMenu {
+  background: url(DefaultSkin/background/LineMenu.gif) no-repeat left top;
+  height: 3px;
+  width: 208px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ListContent {
+	margin: 0px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ListContent .ApplicationIcon {
+	background: url(DefaultSkin/background/Application.gif) no-repeat left center;
+	padding-left: 45px;
+	line-height: 60px;
+	margin-left: 15px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont {
+	font-weight: bold;
+	font-family: arial;
+	font-size: 14px;
+	color: #b3e1ee;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont a {
+	color: #fff;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont .ApplicationSelected {
+	color: #a1eaff;
+}

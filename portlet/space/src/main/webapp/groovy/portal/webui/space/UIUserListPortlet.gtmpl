@@ -1,0 +1,76 @@
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<% 	
+	import org.exoplatform.services.organization.User; 
+	import org.exoplatform.webui.core.UIPageIterator;
+	 	
+	UIPageIterator iterator = uicomponent.getUIPageIterator();
+%>
+<div class="UIUserListPortlet" id="$uicomponent.id">
+	<% List<User> listUsers = uicomponent.getUsersInSpace();
+		 if(listUsers.size() > 0 ){	 
+		 for(user in listUsers) {
+	%>
+	<div class="UserlistContainer">
+		<div class="UserlistContent">
+			<div class="AvartarIcon">
+				<div class="UserContainer">
+				  <div class="UserBarTitleName"><%= user.getUserName() %></div>
+				  <div class="UIForm">
+						<table class="UIFormGrid">
+						  <tbody>
+						    <tr>
+						      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.FirstName")%>:</td>
+						      <td class="FieldComponent"><%= user.getFirstName() %></td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.LastName")%>:</td>
+						      <td class="FieldComponent"><%= user.getLastName() %></td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.EmailAddress")%>:</td>
+						      <td class="FieldComponent"><%= user.getEmail() %></td>
+						    </tr>
+						    <tr>
+						      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.Membership")%>:</td>
+						      <td class="FieldComponent"><%=_ctx.appRes(uicomponent.getName() + ".label." + uicomponent.getMemberships(user.getUserName()))%></td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<% } %>
+	<% } else { %>
+	<div class="UserlistContainer">
+		<div class="UserlistContent">
+			<div class="EmptyData"><%= _ctx.appRes(uicomponent.getId() + ".label.empty") %></div>
+		</div>
+	</div>
+	<% } %>
+	<div>
+			<%
+				if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
+				_ctx.renderUIComponent(iterator) ;
+				}
+			%>	
+	</div>	
+</div>

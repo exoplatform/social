@@ -1,0 +1,66 @@
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+.UIUserListPortlet {
+	background:white none repeat scroll 0 0;
+  border:1px solid #E6E6E6;
+  padding:4px;
+}
+
+.UIUserListPortlet .EmptyData {
+	color:#FF5604;
+	font-style:italic;
+	text-align:center;
+}
+
+.UIUserListPortlet .UserlistContainer {
+	background:#DEECF4 url(/space/skin/portal/webui/component/UISpaceSettingPortlet/background/BGWorkingAreaWithHelp.gif) repeat-x scroll left top;
+  padding:30px 35px;
+}
+
+.UIUserListPortlet .UserlistContainer .UserlistContent {
+	background: white;
+	padding: 8px;
+	border: 1px solid #aeaeae;
+}
+
+
+.UIUserListPortlet .UserlistContainer .UserlistContent .UIFormGrid {
+	margin: 0px;
+}
+
+.UIUserListPortlet .UserlistContainer .UserlistContent .AvartarIcon {
+	background:transparent url(background/AvartarIcon.gif) no-repeat left 5px ;
+	padding-left: 66px;
+}
+
+.UIUserListPortlet .UserlistContainer .UserContainer {
+	padding: 4px;
+}
+
+.UIUserListPortlet .UserlistContainer .UserBarTitleName {
+	color: white;
+	background: #AEC7CC;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 24px;
+	padding-left: 12px;
+}
+
+.UIUserListPortlet .UserlistContainer .UserContainer .FieldComponent {
+	font-weight: bold;
+}
+

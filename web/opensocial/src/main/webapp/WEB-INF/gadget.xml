@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<gadgets>
+	<gadget name="codeRunner">
+		<path>/gadgets/codeRunner.xml</path>
+	</gadget>
+    <gadget name="SocialHelloWorld">
+		<path>/gadgets/SocialHelloWorld.xml</path>
+	</gadget>
+    <gadget name="statusUpdate">
+		<path>/gadgets/statusUpdate.xml</path>
+	</gadget>
+    <gadget name="socialRssAggregator">
+		<path>/gadgets/socialRssAggregator.xml</path>
+	</gadget>
+	<gadget name="ComplianceTest08">
+		<url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>
+	</gadget>
+  <gadget name="codeSharer">
+		<path>/gadgets/codeSharer.xml</path>
+	</gadget>
+  <gadget name="applicationReg">
+		<path>/gadgets/applicationReg.xml</path>
+	</gadget>
+</gadgets>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>                                                                                                                                         
+  <component>                                                                                                                                           
+    <type>org.exoplatform.social.services.rest.GadgetRestService</type>                                                                             
+  </component>                                                                                                                                                                                                                                                                                   
+</configuration>

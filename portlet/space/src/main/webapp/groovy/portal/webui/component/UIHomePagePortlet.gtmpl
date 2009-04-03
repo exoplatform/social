@@ -1,0 +1,75 @@
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<div class="UISocialHomepage" id="$uicomponent.id">
+	<div class="HomeBackground">
+		<div class="LeftHomeBackground">
+			<div class="RightHomeBackground"><span><span/></div>
+		</div>
+	</div>
+	<table style="table-layout: fixed; _width: 99.5%; margin: auto">
+	  <tbody>
+		  <tr>
+		    <td>
+					<div style="margin: 8px 4px 0px 0px;" class="Decorator">
+						<div class="DecoratorML">
+			    			<div class="DecoratorMR">
+			    				<div class="DecoratorMC">
+			    					<div class="PeopleIcon">
+				    					<div class="Title"><%= _ctx.appRes("UIHomePagePortlet.title.people")%></div>
+				    					<div class="Label"><%= _ctx.appRes("UIHomePagePortlet.label.addSocial")%></div>
+				    					<div class="Label">&nbsp;</div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.createSocial")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.displayInfo")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.createSkill")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.help")%></div>			
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.userInterface")%></div>
+								</div>
+							</div>
+						</div>	
+						
+					</div>				    
+				</td>
+		    <td>
+					<div style="margin: 8px 4px 0px 0px;" class="Decorator">
+						<div class="DecoratorML">
+			    			<div class="DecoratorMR">
+			    				<div class="DecoratorMC">
+			    					<div class="SpaceIcon">
+				    					<div class="Title"><%= _ctx.appRes("UIHomePagePortlet.title.space")%></div>
+				    					<div class="Label"><%= _ctx.appRes("UIHomePagePortlet.label.addCommunities")%></div>
+				    					<div class="Label">&nbsp;</div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.regroup")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.information")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.improve")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.easy")%></div>
+										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.userFriendly")%></div>			
+								</div>
+							</div>
+						</div>	
+					</div>			    
+		    </td>
+		    <td style="width: 212px;">
+					<div  class="DownloadButton"><div style="padding-top: 54px;"><%=_ctx.appRes("UIHomePagePortlet.label.download")%></div></div>
+					<div  class="FeedBackButton"><div style="padding-top: 80px;"><a href="mailto:jeremi@exoplatform.com"><%=_ctx.appRes("UIHomePagePortlet.label.feedback")%></a></div></div>	
+					<div  class="ContactButton"><div style="padding-top: 80px;"><a href="http://www.exoplatform.com/portal/public/en/aboutUS/contactus"><%=_ctx.appRes("UIHomePagePortlet.label.contact")%></a></div></div>				    
+		    </td>
+		  </tr>
+		</tbody>
+	</table>
+</div>
