@@ -2,11 +2,11 @@
     <parent>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>config</artifactId>
-      <version>trunk</version>
+      <version>1.0-alpha3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>exo.social.component.space</artifactId>
-    <version>trunk</version>
+    <version>1.0-alpha3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>eXo Social Space Service</name>
     <url>http://www.exoplatform.org</url>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>org.exoplatform.jcr</groupId>
             <artifactId>exo.jcr.component.ext</artifactId>
-            <version>trunk</version>
+            <version>${org.exoplatform.jcr.version}</version>
         </dependency>
         <dependency>
             <groupId>org.exoplatform.kernel</groupId>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.exoplatform.jcr</groupId>
             <artifactId>exo.jcr.component.core</artifactId>
-            <version>trunk</version>
+            <version>${org.exoplatform.jcr.version}</version>
         </dependency>
         
         <dependency>

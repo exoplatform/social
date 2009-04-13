@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.opensocial.service;
 
+import org.apache.shindig.social.core.util.ContainerConf;
 import org.apache.shindig.social.opensocial.service.DataRequestHandler;
 import org.apache.shindig.social.opensocial.service.RequestItem;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
@@ -37,12 +38,13 @@ public class ExoContainerHandler  extends DataRequestHandler {
 
 //  private final ExoActivityService activityService;
 //  private final ExoPeopleService peopleService;
-
+    private static ContainerConf containerConf;
 
   private static final String POST_PATH = "/samplecontainer/{type}/{doevil}";
 
 
   public ExoContainerHandler() {
+    super(containerConf);
 /*    ExoContainer container = ExoContainerContext.getCurrentContainer();
 
 

@@ -2,7 +2,7 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>config</artifactId>
-    <version>trunk</version>
+    <version>1.0-alpha3-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <modelVersion>4.0.0</modelVersion>
