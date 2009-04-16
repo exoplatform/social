@@ -282,7 +282,7 @@ function hideShowDiv(divToShow, divToHide) {
   <span id="addActivity">
     <input id="newActivity" type="text"/>
     <input type="button" onclick="postNewActivity(); return false;" value="add"/>
-    <input type="button" onclick="hideShowDiv('addActivityText','addActivity'); return false;" value="cancel"/>
+    <input type="button" onclick="hideShowDiv('addActivityText','addActivity'); return false;" value="cancel" style= "display:none"/>
   </span>
 </div>
 <div id="stream" style="display:none"></div>
