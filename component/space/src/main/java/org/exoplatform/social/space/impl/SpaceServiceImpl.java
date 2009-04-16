@@ -392,6 +392,10 @@ public class SpaceServiceImpl implements SpaceService{
       return;
     }
     String registration = space.getRegistration();
+    String visibility = space.getVisibility();
+    if(visibility.equals(Space.HIDDEN)) {
+      throw new SpaceException(SpaceException.Code.UNABLE_REQUEST_TO_JOIN_HIDDEN);
+    }
     if(registration.equals(Space.OPEN)) {
       addMember(space, userId);
     } else if (registration.equals(Space.VALIDATION)) {

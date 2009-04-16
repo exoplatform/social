@@ -47,7 +47,8 @@ public class SpaceException extends Exception{
     ERROR_SENDING_CONFIRMATION_EMAIL,
     USER_NOT_EXIST,
     ERROR_SETTING_LEADER_STATUS,
-    UNABLE_REQUEST_TO_JOIN
+    UNABLE_REQUEST_TO_JOIN,
+    UNABLE_REQUEST_TO_JOIN_HIDDEN
   }
 
   private final Code code;
