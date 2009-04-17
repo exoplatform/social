@@ -26,22 +26,62 @@ import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 
+import java.util.Date;
 import java.util.List;
 
 @ComponentConfig(
     template =  "app:/groovy/portal/webui/component/UIActivities.gtmpl"
 )
 public class UIActivities  extends UIContainer {
-
-
-
   public List<Activity> getActivities() throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     ActivityManager am = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
 
     Identity id = im.getIdentityByRemoteId("organization", URLUtils.getCurrentUser());
-
+    List<Activity> listActivity = am.getActivities(id);
     return am.getActivities(id);
+  }
+  
+  public String timeToPrettyString(Long postedTime) {
+    long time = (new Date().getTime() - postedTime)/1000;
+    long value = 0;
+    if (time < 60) {
+      return "less than a minute ago";
+    } else {
+      if (time < 120) {
+        return "about a minute ago";
+      } else {
+        if (time < 3600) {
+          value = Math.round(time / 60);
+          return "about " + value + " minutes ago";
+        } else {
+          if (time < 7200) {
+            return "about an hour ago";
+          } else {
+            if (time < 86400) {
+              value = Math.round(time / 3600);
+              return "about " + value + " hours ago";
+            } else {
+              if (time < 172800) {
+                return "about a day ago";
+              } else {
+                if (time < 2592000) {
+                  value = Math.round(time / 86400);
+                  return "about " +value + " days ago";
+                } else {
+                  if (time < 5184000) {
+                    return "about a month ago";
+                  } else {
+                    value = Math.round(time / 2592000);
+                    return "about " + value + " months ago";
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

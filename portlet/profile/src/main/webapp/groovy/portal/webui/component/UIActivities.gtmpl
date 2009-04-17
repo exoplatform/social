@@ -36,7 +36,7 @@
 	        <div style="clear: both;"><span></span></div>
 	    </div>
 	  <% if(it.body != null) { %>
-    	<div class="Text Line">${it.body}</div>
+    	<div class="Text Line">${it.body}<br><span><em>posted <%= uicomponent.timeToPrettyString(it.postedTime) %></em></span></div>
     <% } %>
     </div>
     </div>
