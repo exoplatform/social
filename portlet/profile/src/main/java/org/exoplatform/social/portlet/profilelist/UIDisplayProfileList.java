@@ -129,8 +129,7 @@ public class UIDisplayProfileList  extends UIComponent {
       RelationshipManager rm = portlet.getRelationshipManager();
 
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-
-      rm.remove(rel);
+      if(rel!=null) rm.remove(rel);
     }
   }
   

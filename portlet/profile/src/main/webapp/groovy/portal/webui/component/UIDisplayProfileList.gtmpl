@@ -83,19 +83,31 @@
 		    		</div>
   <% } else if (contactStatus == UIProfileList.Status.ALIEN) { %>
             <div class="ActionBar" onclick="<%=uicomponent.event("AddContact",identity.getId())%>">
-			<div class="LeftButton">
-				<div class="RightButton">
-					<div class="CenterButton">
-						<div class="SaveIcon">
-							<%=_ctx.appRes(uicomponent.getName() + ".label.AddAsContact")%>
-						</div>
-					</div>
-				</div>
-			</div>
-		    </div>
+							<div class="LeftButton">
+								<div class="RightButton">
+									<div class="CenterButton">
+										<div class="SaveIcon">
+											<%=_ctx.appRes(uicomponent.getName() + ".label.AddAsContact")%>
+										</div>
+									</div>
+								</div>
+							</div>
+		    		</div>
   <%  } else if (contactStatus == UIProfileList.Status.PENDING) { %>
             <span class="waitingConfirmation">[Waiting for confirmation]</span>
-  <%  } %>
+  <%  } else if (contactStatus == UIProfileList.Status.CONTACTS) { %>
+  					<div class="ActionBar" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">
+							<div class="LeftButton">
+								<div class="RightButton">
+									<div class="CenterButton">
+										<div class="SaveIcon">
+											<%=_ctx.appRes(uicomponent.getName() + ".label.Remove")%>
+										</div>
+									</div>
+								</div>
+							</div>
+		    		</div>
+  <% } %>
             <div style="clear: both;"><span></span></div>
         </div>
         <% if(position.length() > 0) { %>
