@@ -51,6 +51,15 @@ public class RelationshipManager {
   }
 
   /**
+   * remove a relationship
+   *
+   * @param relationship
+   */
+  public void remove(Relationship relationship) throws Exception {
+   storage.removeRelationship(relationship); 
+  }
+  
+  /**
    * mark a relationship as ignored
    *
    * @param relationship

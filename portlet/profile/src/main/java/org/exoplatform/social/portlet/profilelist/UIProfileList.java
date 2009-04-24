@@ -115,7 +115,7 @@ public class UIProfileList extends UIContainer {
         }
         else if (rel.getStatus().equals(Relationship.Type.IGNORE)) {
             //TODO to change
-          return Status.PENDING;
+          return Status.ALIEN;
         }
       }
     }

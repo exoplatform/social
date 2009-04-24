@@ -79,7 +79,6 @@ public class JCRStorage {
     } else {
       relationshipNode = relationshipHomeNode.getSession().getNodeByUUID(relationship.getId());
     }
-
     Node id1Node = relationshipHomeNode.getSession().getNodeByUUID(relationship.getIdentity1().getId());
     Node id2Node = relationshipHomeNode.getSession().getNodeByUUID(relationship.getIdentity2().getId());
 
@@ -98,6 +97,13 @@ public class JCRStorage {
       relationshipNode.save();
     }
     loadProperties(relationship, relationshipNode);
+  }
+  
+  public void removeRelationship(Relationship relationship) throws Exception {
+    Node relationshipHomeNode = getRelationshipServiceHome();
+    Node relationshipNode = relationshipHomeNode.getSession().getNodeByUUID(relationship.getId());
+    relationshipNode.remove();
+    relationshipHomeNode.save();
   }
 
   private void updateProperties(Relationship relationship, Node relationshipNode) throws Exception {
