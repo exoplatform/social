@@ -21,16 +21,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.rest.HTTPMethod;
-import org.exoplatform.services.rest.OutputTransformer;
-import org.exoplatform.services.rest.Response;
-import org.exoplatform.services.rest.URITemplate;
-import org.exoplatform.services.rest.container.ResourceContainer;
-import org.exoplatform.ws.frameworks.json.transformer.Bean2JsonOutputTransformer;
+import org.exoplatform.services.rest.resource.ResourceContainer;
 
 /**
  * Created by The eXo Platform SARL
@@ -47,10 +48,13 @@ public class GadgetRestService implements ResourceContainer {
    * @return @see {@link Response} .
    * @throws Exception 
    */
-  @HTTPMethod("GET")                                                                                                                                                                                           
-  @URITemplate("/json/application/")                                                                                                                                                                                   
-  @OutputTransformer(Bean2JsonOutputTransformer.class)                                                                                                                                                         
-  public Response get() throws Exception{
+//  @HTTPMethod("GET")                                                                                                                                                                                           
+//  @URITemplate("/json/application/")                                                                                                                                                                                   
+//  @OutputTransformer(Bean2JsonOutputTransformer.class) 
+  @GET
+  @Path("/json/application/")
+  @Produces({MediaType.APPLICATION_JSON})
+  public ListModel get() throws Exception{
     List<Model> models_ = new ArrayList<Model>();
     ListModel listModels = new ListModel();
     
@@ -73,7 +77,7 @@ public class GadgetRestService implements ResourceContainer {
     }
     
     listModels.setApps(models_);
-    return Response.Builder.ok(listModels).mediaType("application/json").build();
+    return listModels;
   }
   
   public class Model {

@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.opensocial.service;
 
-import org.apache.shindig.social.core.util.ContainerConf;
+//import org.apache.shindig.social.core.util.ContainerConf;
 import org.apache.shindig.social.opensocial.service.DataRequestHandler;
 import org.apache.shindig.social.opensocial.service.RequestItem;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
@@ -27,6 +27,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONObject;
 import org.json.JSONException;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.opensocial.spi.ExoActivityService;
 import org.exoplatform.social.opensocial.spi.ExoPeopleService;
 import com.google.inject.Inject;
@@ -36,20 +38,20 @@ import java.io.IOException;
 
 public class ExoContainerHandler  extends DataRequestHandler {
 
-//  private final ExoActivityService activityService;
-//  private final ExoPeopleService peopleService;
-    private static ContainerConf containerConf;
+  private final ExoActivityService activityService;
+  private final ExoPeopleService peopleService;
+//    private static ContainerConf containerConf;
 
   private static final String POST_PATH = "/samplecontainer/{type}/{doevil}";
 
 
   public ExoContainerHandler() {
-    super(containerConf);
-/*    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    //super(containerConf);
+	ExoContainer container = ExoContainerContext.getCurrentContainer();
 
 
-    this.activityService = container.getComponentInstanceOfType(ExoActivityService.class);
-    this.peopleService = container.getComponentInstanceOfType(ExoPeopleService.class);*/
+    this.activityService = (ExoActivityService) container.getComponentInstanceOfType(ExoActivityService.class);
+    this.peopleService = (ExoPeopleService) container.getComponentInstanceOfType(ExoPeopleService.class);
   }
 
   /**

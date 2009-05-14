@@ -30,7 +30,10 @@
       org.apache.shindig.common.PropertiesModule:org.apache.shindig.gadgets.DefaultGuiceModule:org.exoplatform.social.opensocial.ExoSocialApiGuiceModule:org.apache.shindig.gadgets.oauth.OAuthModule
     </param-value>
   </context-param>
-
+  <context-param>
+    <param-name>portalContainerName</param-name>
+    <param-value>portal</param-value>
+  </context-param>	
   <filter>
     <filter-name>authFilter</filter-name>
     <filter-class>org.apache.shindig.auth.AuthenticationServletFilter</filter-class>
