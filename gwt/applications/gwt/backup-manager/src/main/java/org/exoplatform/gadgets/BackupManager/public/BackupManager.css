@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #FFFFFF;
+  color: black;
+  font-family: Arial, sans-serif;
+  font-size: small;
+  overflow:scroll;
+}
+
+.backupmanager-panel {
+  background: #FFFFFF; 
+}
+
+.backupManager-tableCell {
+	cursor:pointer;
+}

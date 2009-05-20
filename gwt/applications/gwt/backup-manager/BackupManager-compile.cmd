@@ -1,0 +1,1 @@
+@java -Xmx256M -cp "%~dp0\src\main\java;%~dp0\bin;D:/exo/gwt/gwt-windows-1.5.3/gwt-user.jar;D:/exo/gwt/gwt-windows-1.5.3/gwt-dev-windows.jar;D:/exo/gwt/gwt-gadgets.jar;D:/exo/gwt/gwt-rest.jar;D:/exo/gwt/smartgwt-1.0b2/smartgwt.jar" com.google.gwt.dev.GWTCompiler -out "%~dp0\www" %* org.exoplatform.gadgets.BackupManager.BackupManager

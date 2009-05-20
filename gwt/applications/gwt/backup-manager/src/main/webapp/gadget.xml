@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<gadgets>
+	<gadget name="GWTBackupManager">
+		<path>/org.exoplatform.gadgets.BackupManager.BackupManager/org.exoplatform.gadgets.BackupManager.client.BackupManager.gadget.xml</path>
+	</gadget>
+</gadgets>

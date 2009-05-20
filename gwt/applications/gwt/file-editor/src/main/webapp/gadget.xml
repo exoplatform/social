@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<gadgets>
+	<gadget name="WebFileEditor">
+		<path>/org.exoplatform.gadgets.WebFileEditor.WebFileEditor/org.exoplatform.gadgets.WebFileEditor.client.WebFileEditor.gadget.xml</path>
+	</gadget>
+</gadgets>
