@@ -29,3 +29,13 @@
   border: 1px solid #91a8ae;
 }
 
+#gwtGadget .UIColumns {
+	width: 100%;
+}
+
+#dashboard-gwtGadget .UIColumn {
+	width: 100%;
+}
+#gwtGadget .gadgets-gadget {
+	width: 99%;
+}
