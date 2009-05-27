@@ -65,7 +65,7 @@
 						String description = objSpace.getDescription() != null ? objSpace.getDescription() : ""; 
 						String tag = objSpace.getTag() != null ? objSpace.getTag() : "";
 					%>
-					<div class="Text Line"><%= _ctx.appRes(uicomponent.getId() + ".label.description") %>: <%= description %></div>
+					<div class="Text Line"><%= description %></div>
 					<div class="TagsName"><%= _ctx.appRes(uicomponent.getId() + ".label.tags") %>: <%= tag %></div>
 				</div>
 				<div style="clear: left;"><span></span></div>
@@ -135,7 +135,7 @@
 						String description = objSpace.getDescription() != null ? objSpace.getDescription() : ""; 
 						String tag = objSpace.getTag() != null ? objSpace.getTag() : "";
 					%>
-					<div class="Text Line"><%= _ctx.appRes(uicomponent.getId() + ".label.description") %>: <%= description %></div>
+					<div class="Text Line"><%= description %></div>
 					<div class="TagsName"><%= _ctx.appRes(uicomponent.getId() + ".label.tags") %>: <%= tag %></div>
 				</div>
 				<div style="clear: left;"><span></span></div>

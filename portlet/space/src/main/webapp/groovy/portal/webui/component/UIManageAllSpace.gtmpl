@@ -20,7 +20,7 @@
 	import org.exoplatform.web.application.JavascriptManager;
 	import org.exoplatform.portal.webui.util.Util ;
 	import org.exoplatform.webui.core.UIPageIterator;
-  
+  import org.exoplatform.social.space.Space;
   UIPageIterator iterator = uicomponent.getUIPageIterator();	
   def allSpaces = uicomponent.getSpaces();
 %>
@@ -75,7 +75,13 @@
 						<div class ="SpaceAction" onclick="$requestJoin">
 						  <div class="LeftButton">
 						    <div class="RightButton">
-						      <div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.request") %></div>
+						    <% if(objSpace.getRegistration().equals(Space.OPEN)) {
+						    %>
+						    	<div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.request-open") %></div>
+						    <% } else {
+						    %>
+						    	<div class="CenterButton"><%= _ctx.appRes(uicomponent.getId() + ".label.request") %></div>
+						    <% }%>
 						    </div>
 						  </div>
 						</div>
@@ -113,7 +119,7 @@
 						String description = objSpace.getDescription() != null ? objSpace.getDescription() : ""; 
 						String tag = objSpace.getTag() != null ? objSpace.getTag() : "";
 					%>
-					<div class="Text Line"><%= _ctx.appRes(uicomponent.getId() + ".label.description") %>: <%= description %></div>
+					<div class="Text Line"><%= description %></div>
 					<div class="TagsName"><%= _ctx.appRes(uicomponent.getId() + ".label.tags") %>: <%= tag %></div>
 				</div>
 				<div style="clear: left;"><span></span></div>
