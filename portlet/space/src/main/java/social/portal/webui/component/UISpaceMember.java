@@ -178,6 +178,12 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
+      setInvitedUser(uiSpaceMember, uiApp);
+      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+    }
+    
+    public void setInvitedUser(UISpaceMember uiSpaceMember, UIApplication uiApp) throws Exception {
       String[] invitedUserList = uiSpaceMember.getUsersName().split(",");      
       String usersNotExist = null;
       String usersIsInvited = null;
@@ -216,8 +222,6 @@ public class UISpaceMember extends UIForm {
         uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-is-member",new String[] {usersIsMember},ApplicationMessage.WARNING));
       }     
       uiSpaceMember.setUsersName(remainUsers);   
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
     }
   }
   
@@ -316,6 +320,9 @@ public class UISpaceMember extends UIForm {
       UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
       uiPopup.setUIComponent(null);
       uiPopup.setShow(false);
+      InviteActionListener inviteActionListener = new InviteActionListener();
+      UIApplication uiApp = event.getRequestContext().getUIApplication();
+      inviteActionListener.setInvitedUser(uiSpaceMember, uiApp);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
