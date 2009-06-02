@@ -39,10 +39,4 @@
   <gadget name="applicationReg">
 		<path>/gadgets/applicationReg.xml</path>
 	</gadget>
-<!--	<gadget name="backupManager">
-		<path>/gadgets/backupManager.xml</path>
-	</gadget>
-	<gadget name="webFileEditor">
-		<path>/gadgets/webFileEditor.xml</path>
-	</gadget>-->
 </gadgets>

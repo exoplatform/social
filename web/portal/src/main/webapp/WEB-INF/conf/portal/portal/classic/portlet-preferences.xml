@@ -152,31 +152,5 @@
         <read-only>false</read-only>
     </preference>
   </portlet-preferences>
-  
-  <portlet-preferences>
-    <owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <window-id>portal#classic:/dashboard/DashboardPortlet/gwtGadget</window-id>
-    <preference>
-        <name>totalColumns</name>
-        <value>1</value>
-        <read-only>false</read-only>
-    </preference>
-    <preference>
-        <name>isPrivate</name>
-        <value>1</value>
-        <read-only>false</read-only>
-    </preference>
-    <preference>
-        <name>owner</name>
-        <value>__CURRENT_USER__</value>
-        <read-only>false</read-only>
-    </preference>
-	<preference>
-        <name>template</name>
-        <value>gwt-gadget</value>
-        <read-only>false</read-only>
-  </preference>
-  </portlet-preferences>
 
 </portlet-preferences-set>

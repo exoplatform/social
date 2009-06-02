@@ -38,4 +38,37 @@
   <component>                                                                                                                                                                                                  
     <type>org.exoplatform.services.jcr.ext.backup.server.HTTPBackupAgent</type>                                                                                                                                
   </component>
+  <component>                                                                                                                     
+    <type>org.exoplatform.services.jcr.ext.resource.NodeRepresentationService</type>                                              
+  </component>                                                                                                                    
+  <component>                                                                                                                     
+     <type>org.exoplatform.services.jcr.ext.resource.jcr.Handler</type>                                                           
+  </component>                                                                                                                    
+  <component>                                                                                                                     
+    <type>org.exoplatform.services.jcr.ext.resource.representation.NtFileNodeRepresentationFactory</type>                         
+  </component>                                                                                                                    
+  <component>                                                                                                                     
+    <type>org.exoplatform.services.jcr.ext.resource.representation.NtResourceNodeRepresentationFactory</type>                     
+  </component>                                                                                                                    
+                                                                                                                                  
+  <component>                                                                                                                     
+    <type>org.exoplatform.services.jcr.ext.script.groovy.GroovyScript2RestLoader</type>                                           
+    <init-params>                                                                                                                 
+      <object-param>                                                                                                              
+        <name>observation.config</name>                                                                                           
+        <object type="org.exoplatform.services.jcr.ext.script.groovy.ObservationListenerConfiguration">                           
+          <field name="repository">                                                                                               
+            <string>repository</string>                                                                                           
+          </field>                                                                                                                
+          <field name="workspaces">                                                                                               
+            <collection type="java.util.ArrayList">                                                                               
+              <value>                                                                                                             
+            <string>collaboration</string>                                                                                        
+              </value>                                                                                                            
+            </collection>                                                                                                         
+          </field>                                                                                                                
+        </object>                                                                                                                 
+      </object-param>                                                                                                             
+    </init-params>                                                                                                                
+  </component>
 </configuration>

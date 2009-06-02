@@ -106,18 +106,5 @@
       <show-info-bar>false</show-info-bar>
     </application>
   </page>
-
-	<page>
-  	<page-id>portal::classic::gwtGadget</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <name>gwtGadget</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>portal#classic:/dashboard/DashboardPortlet/gwtGadget</instance-id>
-      <title>GWTGadget</title>
-      <show-info-bar>false</show-info-bar>
-    </application>
-  </page>
+  
 </page-set>
