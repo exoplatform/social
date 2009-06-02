@@ -17,7 +17,8 @@
 package org.exoplatform.social.space;
 
 import java.util.List;
-
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -27,19 +28,27 @@ import java.util.List;
 public interface SpaceService {
   
   /**
-   * Gets all space
+   * Gets all spaces
    * @return get All space of Portal
    * @throws Exception
    */
   List<Space> getAllSpaces() throws SpaceException;
   
   /**
-   * Gets all space
+   * Gets all spaces
    * @return get All space of Portal base on the User
-   *         if space is private and User isn't member, space will be removed. 
+   *         if space is hidden and User isn't member of that space, space will be removed. 
    * @throws Exception
    */
   List<Space> getAllSpaces(String userId) throws SpaceException;
+  
+  /**
+   * Gets all ordered spaces
+   * @return get all ordered spaces of Portal base on the User Id
+   *         if space is hidden and User isn't member of that space, space will be removed. 
+   * @throws SpaceException
+   */
+  List<Space> getAllOrderedSpaces(String userId) throws SpaceException;
   
   /**
    * Gets a space by its id
@@ -48,6 +57,17 @@ public interface SpaceService {
    * @throws Exception
    */
   Space getSpaceById(String id) throws SpaceException;
+  
+  
+  /**
+   * Get all ordered spaces: pending -> leader -> member
+   * @param userId Id of user
+   * @return all ordered spaces of a user
+   *          that the user is member or pending member
+   * @throws SpaceException
+   */
+  List<Space> getUserOrderedSpaces(String userId) throws SpaceException;
+  
   
   /**
    * Gets a space by its url
