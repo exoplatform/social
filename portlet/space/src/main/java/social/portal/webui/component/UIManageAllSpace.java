@@ -96,7 +96,7 @@ public class UIManageAllSpace extends UIContainer {
     List<Space> listSpaces;
     int currentPage = iterator_.getCurrentPage();
     listSpaces = getAllSpaces();
-    PageList pageList = new ObjectPageList(listSpaces,5);
+    PageList pageList = new ObjectPageList(listSpaces,10);
     iterator_.setPageList(pageList);    
     int pageCount = iterator_.getAvailablePage();
     if(pageCount >= currentPage){

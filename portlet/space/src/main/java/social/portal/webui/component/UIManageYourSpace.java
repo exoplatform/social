@@ -108,7 +108,7 @@ public class UIManageYourSpace extends UIContainer {
   @SuppressWarnings("unchecked")
   public List<Space> getSpaces() throws Exception {
     int currentPage = iterator_.getCurrentPage();
-    PageList pageList = new ObjectPageList(getAllSpaces(),2);
+    PageList pageList = new ObjectPageList(getAllSpaces(),5);
     iterator_.setPageList(pageList);    
     int pageCount = iterator_.getAvailablePage();
     if(pageCount >= currentPage){
@@ -130,7 +130,7 @@ public class UIManageYourSpace extends UIContainer {
       Space space = itr.next();
       if(!spaceService.isInvited(space, userId)) itr.remove();
     }
-    PageList pageList = new ObjectPageList(allSpaces,2);
+    PageList pageList = new ObjectPageList(allSpaces,5);
     iteratorInvited_.setPageList(pageList);
     int pageCount = iteratorInvited_.getAvailablePage();
     if(pageCount >= currentPage) {
