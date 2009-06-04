@@ -16,55 +16,50 @@
  */
 package org.exoplatform.social.portlet.profilelist;
 
-import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.core.UIComponent;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
-import org.exoplatform.social.core.relationship.RelationshipManager;
-import org.exoplatform.social.core.relationship.Relationship;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import java.util.List;
 
-@ComponentConfig(
-    template =  "app:/groovy/portal/webui/component/UIDisplayProfileList.gtmpl",
-    events = {
-        @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
-        @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),
-        @EventConfig(listeners = UIDisplayProfileList.DenyContactActionListener.class)
-    }
-)
-public class UIDisplayProfileList  extends UIComponent {
-  private IdentityManager identityManager_ = null;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.relationship.Relationship;
+import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+
+@ComponentConfig(template = "app:/groovy/portal/webui/component/UIDisplayProfileList.gtmpl", events = {
+    @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.DenyContactActionListener.class) })
+public class UIDisplayProfileList extends UIComponent {
+  private IdentityManager     identityManager_ = null;
+
   private RelationshipManager relationManager_ = null;
-  
+
   public List<Profile> getList() throws Exception {
-    return ((UIProfileList)this.getParent()).getList();
+    return ((UIProfileList) this.getParent()).getList();
   }
 
   public boolean isRelationshipList() {
-    UIProfileList.Type type = ((UIProfileList)this.getParent()).getCurrentType();
+    UIProfileList.Type type = ((UIProfileList) this.getParent()).getCurrentType();
     return type.equals(UIProfileList.Type.PENDING) || type.equals(UIProfileList.Type.CONTACTS);
   }
 
   public UIProfileList.Type getCurrentType() {
-    return ((UIProfileList)this.getParent()).getCurrentType();
+    return ((UIProfileList) this.getParent()).getCurrentType();
   }
 
   public Identity getCurrentIdentity() throws Exception {
-    return ((UIProfileList)this.getParent()).getCurrentIdentity();
+    return ((UIProfileList) this.getParent()).getCurrentIdentity();
   }
 
-  public UIProfileList.Status getContactStatus(Identity identity) throws Exception {
-    return ((UIProfileList)this.getParent()).getContactStatus(identity);
+  public Relationship.Type getContactStatus(Identity identity) throws Exception {
+    return ((UIProfileList) this.getParent()).getContactStatus(identity);
   }
 
   public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
@@ -72,18 +67,19 @@ public class UIDisplayProfileList  extends UIComponent {
       UIDisplayProfileList portlet = event.getSource();
 
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = ((UIProfileList)portlet.getParent()).getCurrentUserName();
+      String currUserId = ((UIProfileList) portlet.getParent()).getCurrentUserName();
 
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, currUserId);
+      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+                                                       currUserId);
 
       Identity requestedIdentity = im.getIdentityById(userId);
 
       RelationshipManager rm = portlet.getRelationshipManager();
 
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-      
-      if(rel == null) {
+
+      if (rel == null) {
         rel = rm.create(currIdentity, requestedIdentity);
         rel.setStatus(Relationship.Type.PENDING);
         rm.save(rel);
@@ -93,15 +89,17 @@ public class UIDisplayProfileList  extends UIComponent {
       }
     }
   }
+
   public static class AcceptContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList portlet = event.getSource();
 
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = ((UIProfileList)portlet.getParent()).getCurrentUserName();
+      String currUserId = ((UIProfileList) portlet.getParent()).getCurrentUserName();
 
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, currUserId);
+      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+                                                       currUserId);
 
       Identity requestedIdentity = im.getIdentityById(userId);
 
@@ -113,38 +111,40 @@ public class UIDisplayProfileList  extends UIComponent {
       rm.save(rel);
     }
   }
-  
+
   public static class DenyContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList portlet = event.getSource();
-      
+
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = ((UIProfileList)portlet.getParent()).getCurrentUserName();
-      
+      String currUserId = ((UIProfileList) portlet.getParent()).getCurrentUserName();
+
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, currUserId);
+      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+                                                       currUserId);
 
       Identity requestedIdentity = im.getIdentityById(userId);
 
       RelationshipManager rm = portlet.getRelationshipManager();
 
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-      if(rel!=null) rm.remove(rel);
+      if (rel != null)
+        rm.remove(rel);
     }
   }
-  
+
   private IdentityManager getIdentityManager() {
-    if(identityManager_ == null) {
+    if (identityManager_ == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
-      identityManager_ =  (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      identityManager_ = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     }
     return identityManager_;
   }
-  
+
   private RelationshipManager getRelationshipManager() {
-    if(relationManager_ == null) {
+    if (relationManager_ == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
-      relationManager_ =  (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+      relationManager_ = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
     }
     return relationManager_;
   }

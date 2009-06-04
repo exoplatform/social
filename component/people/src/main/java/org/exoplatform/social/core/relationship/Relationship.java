@@ -16,23 +16,24 @@
  */
 package org.exoplatform.social.core.relationship;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.social.core.identity.model.Identity;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class Relationship {
-  private String id;
-  private List<Property> properties;
-  private Identity identity1;
-  private Identity identity2;
-  private Type status = Type.PENDING;
+  private String         id;
 
+  private List<Property> properties;
+
+  private Identity       identity1;
+
+  private Identity       identity2;
+
+  private Type           status = Type.PENDING;
 
   public enum Type {
-    PENDING,
-    CONFIRM,
-    IGNORE;
+    PENDING, CONFIRM, IGNORE, ALIEN, REQUIRE_VALIDATION, SELF
   }
 
   public Relationship(Identity identity1, Identity identity2) {
@@ -95,9 +96,9 @@ public class Relationship {
     this.status = status;
   }
 
-  public List<Property> getProperties(Type status){
+  public List<Property> getProperties(Type status) {
     List<Property> pendingProps = new ArrayList<Property>();
-    for(Property prop:properties) {
+    for (Property prop : properties) {
       if (prop.getStatus() == status)
         pendingProps.add(prop);
     }

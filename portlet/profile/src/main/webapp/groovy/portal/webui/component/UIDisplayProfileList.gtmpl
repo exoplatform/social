@@ -18,7 +18,8 @@
 -->
 <%
   import org.exoplatform.portal.webui.util.Util ;
-  import org.exoplatform.social.portlet.profilelist.UIProfileList
+  import org.exoplatform.social.portlet.profilelist.UIProfileList;
+  import org.exoplatform.social.core.relationship.Relationship;
 
   def list = uicomponent.getList();
   def isRelationship =  uicomponent.isRelationshipList();
@@ -58,7 +59,7 @@
     <div class="CommunityContainer">
         <div class="CommunityMane Line">
             <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${profileURL}" class="CommunityNameMiddle">${fullName}</a></div>
-  <% if (contactStatus == UIProfileList.Status.REQUIRE_VALIDATION) { %>
+  <% if (contactStatus == Relationship.Type.REQUIRE_VALIDATION) { %>
 		    		<div class="ActionBar" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">
 							<div class="LeftButton">
 								<div class="RightButton">
@@ -81,7 +82,7 @@
 								</div>
 							</div>
 		    		</div>
-  <% } else if (contactStatus == UIProfileList.Status.ALIEN) { %>
+  <% } else if (contactStatus == Relationship.Type.ALIEN) { %>
             <div class="ActionBar" onclick="<%=uicomponent.event("AddContact",identity.getId())%>">
 							<div class="LeftButton">
 								<div class="RightButton">
@@ -93,9 +94,9 @@
 								</div>
 							</div>
 		    		</div>
-  <%  } else if (contactStatus == UIProfileList.Status.PENDING) { %>
+  <%  } else if (contactStatus == Relationship.Type.PENDING) { %>
             <span class="waitingConfirmation">[Waiting for confirmation]</span>
-  <%  } else if (contactStatus == UIProfileList.Status.CONTACTS) { %>
+  <%  } else if (contactStatus == Relationship.Type.CONFIRM) { %>
   					<div class="ActionBar" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">
 							<div class="LeftButton">
 								<div class="RightButton">

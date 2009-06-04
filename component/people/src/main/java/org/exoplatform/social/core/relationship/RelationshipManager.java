@@ -16,17 +16,16 @@
  */
 package org.exoplatform.social.core.relationship;
 
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.relationship.storage.JCRStorage;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.storage.JCRStorage;
 
 public class RelationshipManager {
   private JCRStorage storage;
-
 
   public RelationshipManager(NodeHierarchyCreator nodeHierarchyCreator, IdentityManager im) throws Exception {
     this.storage = new JCRStorage(nodeHierarchyCreator, im);
@@ -38,7 +37,7 @@ public class RelationshipManager {
 
   /**
    * mark a relationship as confirmed
-   *
+   * 
    * @param relationship
    */
   public void confirm(Relationship relationship) throws Exception {
@@ -52,16 +51,16 @@ public class RelationshipManager {
 
   /**
    * remove a relationship
-   *
+   * 
    * @param relationship
    */
   public void remove(Relationship relationship) throws Exception {
-   storage.removeRelationship(relationship); 
+    storage.removeRelationship(relationship);
   }
-  
+
   /**
    * mark a relationship as ignored
-   *
+   * 
    * @param relationship
    */
   public void ignore(Relationship relationship) throws Exception {
@@ -74,7 +73,7 @@ public class RelationshipManager {
 
   /**
    * return all the pending relationship: sent and received
-   *
+   * 
    * @param identity
    * @return
    */
@@ -93,9 +92,10 @@ public class RelationshipManager {
   }
 
   /**
-   * if toConfirm is true, it return list of pending relationship received not confirmed
-   * if toConfirm is false, it return list of relationship sent not confirmed yet
-   *
+   * if toConfirm is true, it return list of pending relationship received not
+   * confirmed if toConfirm is false, it return list of relationship sent not
+   * confirmed yet
+   * 
    * @param identity
    * @param toConfirm
    * @return
@@ -107,14 +107,14 @@ public class RelationshipManager {
       if (rel.getStatus() == Relationship.Type.PENDING && !toConfirm) {
         pendingRel.add(rel);
       } else if (rel.getStatus() == Relationship.Type.PENDING && toConfirm
-              && !identity.getId().equals(rel.getIdentity1().getId())) {
+          && !identity.getId().equals(rel.getIdentity1().getId())) {
         pendingRel.add(rel);
       } else {
         List<Property> props = rel.getProperties(Relationship.Type.PENDING);
         for (Property prop : props) {
           if (toConfirm == prop.getInitiator().getId().equals(identity.getId())) {
             pendingRel.add(rel);
-            break;  
+            break;
           }
         }
       }
@@ -133,10 +133,9 @@ public class RelationshipManager {
     return contacts;
   }
 
-
   /**
    * return all the relationship associated with a given identity
-   *
+   * 
    * @param id
    * @return
    * @throws Exception
@@ -147,7 +146,7 @@ public class RelationshipManager {
 
   /**
    * return all the relationship associated with a given identityId
-   *
+   * 
    * @param id
    * @return
    * @throws Exception
@@ -157,9 +156,9 @@ public class RelationshipManager {
   }
 
   /**
-   * return all the identity associated with a given identity
-   * TODO check if the relation has been validated
-   *
+   * return all the identity associated with a given identity TODO check if the
+   * relation has been validated
+   * 
    * @param id
    * @return
    * @throws Exception
@@ -168,19 +167,21 @@ public class RelationshipManager {
     return this.storage.getRelationshipIdentitiesByIdentity(id);
   }
 
-
   public Relationship create(Identity id1, Identity id2) {
     return new Relationship(id1, id2);
   }
 
   public void save(Relationship rel) throws Exception {
-    if(rel.getIdentity1().getId().equals(rel.getIdentity2().getId()))
+    if (rel.getIdentity1().getId().equals(rel.getIdentity2().getId()))
       throw new Exception("the two identity are the same");
-    for (Property prop :rel.getProperties())  {
-      
-      //if the initator ID is not in the member of the relationship, we throw an exception
-      if(!(prop.getInitiator().getId().equals(rel.getIdentity1().getId())
-          || prop.getInitiator().getId().equals(rel.getIdentity2().getId()))) {
+    for (Property prop : rel.getProperties()) {
+
+      // if the initator ID is not in the member of the relationship, we throw
+      // an exception
+      if (!(prop.getInitiator().getId().equals(rel.getIdentity1().getId()) || prop.getInitiator()
+                                                                                  .getId()
+                                                                                  .equals(rel.getIdentity2()
+                                                                                             .getId()))) {
 
         throw new Exception("the property initiator is not member of the relationship");
       }
@@ -195,7 +196,6 @@ public class RelationshipManager {
   public Relationship getRelationship(Identity id1, Identity id2) throws Exception {
     List<Relationship> rels = get(id1);
     String sId2 = id2.getId();
-
     for (Relationship rel : rels) {
       if (rel.getIdentity1().getId().equals(sId2) || rel.getIdentity2().getId().equals(sId2)) {
         return rel;
@@ -204,4 +204,21 @@ public class RelationshipManager {
     return null;
   }
 
+  // TODO: dang.tung - get relation ship status of one identity in one relation
+  // ship.
+  public Relationship.Type getRelationshipStatus(Relationship rel, Identity id) {
+    if (rel == null)
+      return Relationship.Type.ALIEN;
+    Identity identity1 = rel.getIdentity1();
+    if (rel.getStatus().equals(Relationship.Type.PENDING)) {
+      if (identity1.getId().equals(id.getId()))
+        return Relationship.Type.PENDING;
+      else
+        return Relationship.Type.REQUIRE_VALIDATION;
+    } else if (rel.getStatus().equals(Relationship.Type.IGNORE)) {
+      // TODO need to change in future
+      return Relationship.Type.ALIEN;
+    }
+    return Relationship.Type.ALIEN;
+  }
 }
