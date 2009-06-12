@@ -107,4 +107,17 @@
     </application>
   </page>
   
+  <page>
+  	<page-id>portal::classic::activities</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <name>activities</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletActivities</instance-id>
+      <title>Activities</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
 </page-set>

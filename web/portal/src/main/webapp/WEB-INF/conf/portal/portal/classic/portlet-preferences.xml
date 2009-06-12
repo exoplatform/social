@@ -121,6 +121,17 @@
         <read-only>false</read-only>
     </preference>
   </portlet-preferences>
+  
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletActivities</window-id>
+    <preference>
+        <name>url</name>
+        <value>http://localhost:8080/rest/jcr/repository/gadgets/gadgets/statusUpdate.xml</value>
+        <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
 
   <portlet-preferences>
     <owner-type>portal</owner-type>

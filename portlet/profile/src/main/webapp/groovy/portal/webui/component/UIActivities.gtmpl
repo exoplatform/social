@@ -18,8 +18,13 @@
 -->
 <%
   import org.exoplatform.portal.webui.util.Util ;
-
+	import org.exoplatform.web.application.JavascriptManager;
+	
+  def rcontext = _ctx.getRequestContext() ;
+  JavascriptManager jsmanager = rcontext.getJavascriptManager();
+  jsmanager.importJavascript("eXo.social.activities.UIActivities") ;
   def list = uicomponent.getActivities();
+  
 %>
 
 <div class="UIProfileList" id="$uicomponent.id">
@@ -36,7 +41,7 @@
 	        <div style="clear: both;"><span></span></div>
 	    </div>
 	  <% if(it.body != null) { %>
-    	<div class="Text Line">${it.body}<br><span><em>posted <%= uicomponent.timeToPrettyString(it.postedTime) %></em></span></div>
+    	<div class="Text Line">${it.body}<br><span onclick="eXo.social.activities.UIActivities.setTimeZone()"><em>posted <%= uicomponent.timeToPrettyString(it.postedTime) %></em></span></div>
     <% } %>
     </div>
     </div>

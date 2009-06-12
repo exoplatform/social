@@ -47,7 +47,7 @@
 	    <label>#{portal.classic.people}</label>
       <page-reference>portal::classic::Profile</page-reference>
 	  </node>
-      <node>
+    <node>
 	    <uri>canvas</uri>
 	    <name>canvas</name>
 	    <label>#{portal.classic.canvas}</label>
@@ -58,6 +58,12 @@
 	    <name>spaces</name>
 	    <label>#{portal.classic.spaces}</label>
 	    <page-reference>portal::classic::manageSpaces</page-reference>
+	  </node>
+	  <node>
+	    <uri>activities</uri>
+	    <name>activities</name>
+	    <label>#{portal.classic.activities}</label>
+	    <page-reference>portal::classic::activities</page-reference>
 	  </node>
   </page-nodes>
 </node-navigation>
