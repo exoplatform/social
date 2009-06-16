@@ -24,10 +24,12 @@
   JavascriptManager jsmanager = rcontext.getJavascriptManager();
   jsmanager.importJavascript("eXo.social.activities.UIActivities") ;
   def list = uicomponent.getActivities();
-  
+  def compId = uicomponent.getId();
+
 %>
 
 <div class="UIProfileList" id="$uicomponent.id">
+	<div><input type="button" value="Change to local time" onclick="eXo.social.activities.UIActivities.changeTimeZone(this)" /></div> 
   <div class="ContainerSpace">
 
   <% list.each { 
@@ -41,7 +43,7 @@
 	        <div style="clear: both;"><span></span></div>
 	    </div>
 	  <% if(it.body != null) { %>
-    	<div class="Text Line">${it.body}<br><span onclick="eXo.social.activities.UIActivities.setTimeZone()"><em>posted <%= uicomponent.timeToPrettyString(it.postedTime) %></em></span></div>
+    	<div class="Text Line">${it.body}<br><em>posted <%= uicomponent.timeToPrettyString(it.postedTime) %></em></div>
     <% } %>
     </div>
     </div>

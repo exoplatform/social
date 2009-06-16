@@ -18,14 +18,27 @@
 /** 
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
  */
-
+eXo = window.eXo || {};
 eXo.social = eXo.social || {};
 eXo.social.activities = eXo.social.activities || {};
 
 function UIActivities() {};
 
-UIActivities.prototype.setTimeZone = function() {
-	alert("need to do this task")
-}
+
+UIActivities.prototype.changeTimeZone = function(btn) {	
+	var uiActivities = btn.parentNode.parentNode;
+	var DOMUtil = eXo.core.DOMUtil;
+	var portletFragment = DOMUtil.findAncestorByClass(btn, "PORTLET-FRAGMENT");
+	var compId = portletFragment.parentNode.id;
+	var uicomp = uiActivities.id;
+	
+	// Get client's timezone offset in minutes, multiple with -1 for the time zone.
+	var timezone = new Date().getTimezoneOffset() * (-1);
+	var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
+	href += "&portal:type=action&uicomponent=" + uicomp;
+	href += "&op=ChangeTimeZone";
+	href += "&objectId=" + timezone + "&ajaxRequest=true";
+	ajaxGet(href);
+};
 
 eXo.social.activities.UIActivities = new UIActivities();

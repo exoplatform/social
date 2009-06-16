@@ -16,23 +16,45 @@
  */
 package org.exoplatform.social.portlet.activities;
 
-import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.social.core.activitystream.model.Activity;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
+import javax.mail.internet.PreencodedMimeBodyPart;
+
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.rest.PerRequestObjectFactory;
 import org.exoplatform.social.core.activitystream.ActivityManager;
+import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.portlet.URLUtils;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-
-import java.util.Date;
-import java.util.List;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfig(
-    template =  "app:/groovy/portal/webui/component/UIActivities.gtmpl"
+    template =  "app:/groovy/portal/webui/component/UIActivities.gtmpl",
+    events = {
+        @EventConfig(listeners = UIActivities.ChangeTimeZoneActionListener.class)
+    }
 )
 public class UIActivities  extends UIContainer {
+  private int timeZoneOffset = -1;
+  
+  public void setTimeZoneOffset(int tzo) {
+    timeZoneOffset = tzo;
+  }
+  
+  public int getTimeZoneOffset() {
+    return timeZoneOffset;
+  }
+  
   public List<Activity> getActivities() throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     ActivityManager am = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
@@ -44,6 +66,22 @@ public class UIActivities  extends UIContainer {
   }
   
   public String timeToPrettyString(Long postedTime) {
+    String pattern = "EEE MMM d yyyy HH:mm:ss z";
+    SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+    if (timeZoneOffset == -1) {
+      // Set system default timezone
+      sdf.setTimeZone(TimeZone.getDefault());
+    } else {
+      int minutes = timeZoneOffset % 60;
+      int hours = (timeZoneOffset - minutes) / 60;
+      String timezoneId = "GMT";
+      timezoneId += (timeZoneOffset > 0 ? "+" : "-") + (hours < 10 || hours > -9 ? "0": "") + Math.abs(hours) + ":" + (minutes < 10 ? "0" : "") + minutes;
+      sdf.setTimeZone(TimeZone.getTimeZone(timezoneId));
+      
+    }
+    return sdf.format(new Date(postedTime));
+    
+    /*
     long time = (new Date().getTime() - postedTime)/1000;
     long value = 0;
     if (time < 60) {
@@ -82,6 +120,20 @@ public class UIActivities  extends UIContainer {
           }
         }
       }
+    }
+    */
+  }
+  
+  static public class ChangeTimeZoneActionListener extends EventListener<UIActivities> {
+    public void execute(Event<UIActivities> event) throws Exception {
+      String offset = event.getRequestContext().getRequestParameter(OBJECTID);
+     UIActivities uiActivities = event.getSource();
+     try {
+       uiActivities.timeZoneOffset = Integer.parseInt(offset);
+     } catch (Exception ex) {
+       uiActivities.timeZoneOffset = -1;
+     }
+     event.getRequestContext().addUIComponentToUpdateByAjax(uiActivities);
     }
   }
 }
