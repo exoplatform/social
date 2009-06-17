@@ -94,14 +94,7 @@ public class UIManageYourSpace extends UIContainer {
   private List<Space> getAllSpaces() throws Exception {
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     String userId = getRemoteUser();
-    List<Space> allSpaces = spaceSrc.getAllSpaces();
-    Iterator<Space> itr = allSpaces.iterator();
-    while(itr.hasNext()) {
-      Space space = itr.next();
-      if(!(spaceSrc.isMember(space, userId) || spaceSrc.isPending(space, userId))){
-        itr.remove();
-      }
-    }
+    List<Space> allSpaces = spaceSrc.getUserOrderedSpaces(userId);
     return allSpaces;
   }
   
