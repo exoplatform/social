@@ -38,6 +38,8 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 @ComponentConfig(
     template =  "app:/groovy/portal/webui/component/UIActivities.gtmpl",
     events = {
@@ -62,7 +64,9 @@ public class UIActivities  extends UIContainer {
 
     Identity id = im.getIdentityByRemoteId("organization", URLUtils.getCurrentUser());
     List<Activity> listActivity = am.getActivities(id);
-    return am.getActivities(id);
+    // Reverse order of activity so that newer activity is placed on the top stack
+    Collections.reverse(listActivity);
+    return listActivity;
   }
   
   public String timeToPrettyString(Long postedTime) {
@@ -70,15 +74,16 @@ public class UIActivities  extends UIContainer {
     SimpleDateFormat sdf = new SimpleDateFormat(pattern);
     if (timeZoneOffset == -1) {
       // Set system default timezone
-      sdf.setTimeZone(TimeZone.getDefault());
-    } else {
-      int minutes = timeZoneOffset % 60;
-      int hours = (timeZoneOffset - minutes) / 60;
-      String timezoneId = "GMT";
-      timezoneId += (timeZoneOffset > 0 ? "+" : "-") + (hours < 10 || hours > -9 ? "0": "") + Math.abs(hours) + ":" + (minutes < 10 ? "0" : "") + minutes;
-      sdf.setTimeZone(TimeZone.getTimeZone(timezoneId));
-      
+      TimeZone tz = TimeZone.getDefault();
+      timeZoneOffset = tz.getRawOffset()/(1000 * 60); // convert offset from miliseconds to mins
     }
+    
+    int minutes = timeZoneOffset % 60;
+    int hours = (timeZoneOffset - minutes) / 60;
+    String timezoneId = "GMT";
+    timezoneId += (timeZoneOffset > 0 ? "+" : "-") + (hours < 10 || hours > -9 ? "0": "") + Math.abs(hours) + ":" + (minutes < 10 ? "0" : "") + minutes;
+    sdf.setTimeZone(TimeZone.getTimeZone(timezoneId));
+    
     return sdf.format(new Date(postedTime));
     
     /*
