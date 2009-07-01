@@ -156,6 +156,40 @@
   </portlet> 
   
   <portlet>
+    <description xml:lang="EN">Manage Spaces Portlet1</description>
+    <portlet-name>ManageSpacesPortlet1</portlet-name>
+    <display-name xml:lang="EN">Manage Spaces 1</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/ManageSpaces1/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.ManageSpacesPortlet1</resource-bundle>
+    
+    <portlet-info>
+      <title>Manage Spaces Portlet 1</title>
+      <short-title>Manage Spaces Portlet 1</short-title>
+      <keywords>managespaces1</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIManageSpacesPortlet1.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet> 
+  
+  <portlet>
     <description xml:lang="EN">Social Navigation Portlet</description>
     <portlet-name>SocialNavigationPortlet</portlet-name>
     <display-name xml:lang="EN">Social Navigation</display-name>

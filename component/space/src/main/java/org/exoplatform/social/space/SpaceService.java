@@ -29,14 +29,14 @@ public interface SpaceService {
   
   /**
    * Gets all spaces
-   * @return get All space of Portal
+   * @return get all spaces of Portal
    * @throws Exception
    */
   List<Space> getAllSpaces() throws SpaceException;
   
   /**
-   * Gets all spaces
-   * @return get All space of Portal base on the User
+   * Gets all spaces of a user
+   * @return get all spaces of Portal based on the User
    *         if space is hidden and User isn't member of that space, space will be removed. 
    * @throws Exception
    */
@@ -46,7 +46,7 @@ public interface SpaceService {
    * Gets all ordered spaces
    * @return get all ordered spaces of Portal base on the User Id
    *         if space is hidden and User isn't member of that space, space will be removed. 
-   * @throws SpaceException
+   * @throws Exception
    */
   List<Space> getAllOrderedSpaces(String userId) throws SpaceException;
   
@@ -58,21 +58,63 @@ public interface SpaceService {
    */
   Space getSpaceById(String id) throws SpaceException;
   
-  
   /**
-   * Get all ordered spaces: pending -> leader -> member
+   * Get all ordered spaces of a user. This will based on priority -> alphabet in (leader -> member)
    * @param userId Id of user
    * @return all ordered spaces of a user
    *          that the user is member or pending member
    * @throws SpaceException
    */
+  List<Space> getOrderedSpaces(String userId) throws SpaceException;
+  
+  /**
+   * Get all ordered spaces of a user
+   * @param userId
+   * @return List<Space>
+   * @throws SpaceException
+   * @Deprecated
+   */
   List<Space> getUserOrderedSpaces(String userId) throws SpaceException;
   
+  /**
+   * Get user's invited spaces
+   * @param userId
+   * @return List<Space> all user's invited spaces
+   * @throws SpaceException
+   */
+  List<Space> getInvitedSpaces(String userId) throws SpaceException;
+  
+  
+  /**
+   * Get all spaces of a user
+   * @param userId Id of user
+   * @return List<Space> all spaces of a user
+   *          that the user is member or
+   * @throws SpaceException
+   */
+  List<Space> getSpaces(String userId) throws SpaceException;
+  
+  /**
+   * Get all user's public spaces that user can request to join
+   * @param userId Id of user
+   * @return List<Space> all ordered spaces of a user
+   *          that the user is member or pending member
+   * @throws SpaceException
+   */
+  List<Space> getPublicSpaces(String userId) throws SpaceException;
+  
+  /**
+   * Get all user's pending spaces that user can revoke that request
+   * @param userId
+   * @return List<Space>
+   * @throws SpaceException
+   */
+  List<Space> getPendingSpaces(String userId) throws SpaceException;
   
   /**
    * Gets a space by its url
    * @param url Url of space
-   * @return space with url specified
+   * @return Space space with string url specified
    * @throws Exception
    */
   Space getSpaceByUrl(String url) throws SpaceException;

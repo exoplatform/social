@@ -1,0 +1,78 @@
+<!--
+
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<% 
+	import org.exoplatform.portal.webui.util.Util;
+	import org.exoplatform.webui.core.UIPopupWindow;
+	  
+  def userSpaces = uicomponent.getUserSpaces()
+  def invitedSpaces = uicomponent.getInvitedSpaces()
+%>
+
+<div class="UIManageMySpaces" id="$uicomponent.id">
+    <div class="ContainerSpace">
+        <div class="InvitedSpaces">
+            <div class="Title">Invited Space</div>
+        <%for (space in invitedSpaces) {
+            def acceptAction = uicomponent.event("Accept", space.getId()) + "; return false"
+            def denyAction = uicomponent.event("Deny", space.getId()) + "; return false"
+        %>
+            <div class="InvitedSpacesContent">
+                <div class="SpaceIcon"></div>
+                <div class="SpaceName"><%= space.getName() %></div>
+                <div class="SpaceAction" onclick="<%= acceptAction %>">Accept</div>
+                <div class="SpaceAction" onclick="<%= denyAction %>">Deny</div>
+                <div class="Delimeter">_____</div>
+            </div>
+         <%}%>
+        </div>
+        <div class="MySpaces">
+            <div class="Title">My Spaces</div>
+	     <%for (space in userSpaces) {
+	          def editSpaceAction = uicomponent.event("EditSpace", space.getId()) + "; return false"
+	          def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.getId()) + "; return false"
+	          def deleteSpaceAction = uicomponent.event("DeleteSpace", space.getId()) + "; return false"
+	          def leaveSpaceAction = uicomponent.event("LeaveSpace", space.getId()) + "; return false"
+	          def role = uicomponent.getRole(space.getId())
+	          def pageUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+	      %>
+            <!-- Leader -->
+            <%if (role == 1) {%>
+            <div class="MySpacesContent">
+                <div class="SpaceIcon"></div>
+                <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.getName() %></a></div>
+                <div class="SpaceAction" onclick="<%= editSpaceAction %>">Edit Space</div>
+                <div class="SpaceAction" onclick="<%= editSpaceNavigationAction %>">Edit Space Navigation</div>
+                <div class="SpaceAction" onclick="<%= deleteSpaceAction %>">Delete Space</div>
+            </div>
+            <%}%>
+            <!-- Member -->
+            <%if (role == 2) {%>
+            <div class="MySpacesContent">
+                <div class="SpaceIcon"></div>
+                <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.getName() %></a></div>
+                <div class="SpaceAction" onclick="<%= leaveSpaceAction %>">Leave</div>
+            </div>
+            <%}%>
+            <div class="Delimeter">______</div>
+      <%}%>
+        </div>
+        <div class="AddSpace"><a href="javascript:<%= uicomponent.event("AddSpace") %>">Add Space</a></div>
+    </div>
+    <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+</div>

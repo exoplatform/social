@@ -40,11 +40,11 @@
 			      <value>0</value>	    
 			    </value-param>
 			    
-			    <value-param>
-			      <name>gadgets.hostName</name>
-			      <description>Gadget server url</description>
-			      <value>http://localhost:8080</value>	    
-			    </value-param>
+        <value-param>
+          <name>gadgets.hostName</name>
+          <description>Gadget server url</description>
+          <value>http://localhost:8080/eXoGadgetServer/gadgets/</value>     
+        </value-param>
 			    
 		  		<properties-param>
 		  			<name>developerInfo</name>
@@ -606,120 +606,6 @@
                             </field>
                         </object>
                     </object-param>
-										<object-param>
-                        <name>gwtGadget</name>
-                        <description>gwtGadget</description>
-                        <object type="org.exoplatform.application.registry.ApplicationCategory">
-                            <field name="name">
-                                <string>gwtGadget</string>
-                            </field>
-                            <field name="displayName">
-                                <string>GWT Gadget</string>
-                            </field>
-                            <field name="description">
-                                <string>gwt gadget</string>
-                            </field>
-                            <field name="accessPermissions">
-                                <collection type="java.util.ArrayList" item-type="java.lang.String">
-                                    <value>
-                                        <string>*:/platform/users</string>
-                                    </value>
-                                </collection>
-                            </field>
-                            <field name="applications">
-                                <collection type="java.util.ArrayList">
-                                    <value>
-                                        <object type="org.exoplatform.application.registry.Application">
-                                            <field name="categoryName">
-                                                <string>gwtGadget</string>
-                                            </field>
-                                            <field name="applicationName">
-                                                <string>GWTBackupManager</string>
-                                            </field>
-                                            <field name="displayName">
-                                                <string>Backup Manager</string>
-                                            </field>
-                                            <field name="description">
-                                                <string>Backup Manager</string>
-                                            </field>
-                                            <field name="applicationType">
-                                                <string>eXoGadget</string>
-                                            </field>
-                                            <field name="applicationGroup">
-                                                <string>eXoGadgets</string>
-                                            </field>
-                                            <field name="accessPermissions">
-                                                <collection type="java.util.ArrayList" item-type="java.lang.String">
-                                                    <value>
-                                                        <string>*:/platform/users</string>
-                                                    </value>
-                                                </collection>
-                                            </field>
-                                        </object>
-                                    </value>
-                                    <value>
-                                        <object type="org.exoplatform.application.registry.Application">
-                                            <field name="categoryName">
-                                                <string>gwtGadget</string>
-                                            </field>
-                                            <field name="applicationName">
-                                                <string>WebFileEditor</string>
-                                            </field>
-                                            <field name="displayName">
-                                                <string>Web File Editor</string>
-                                            </field>
-                                            <field name="description">
-                                                <string>Web File Editor</string>
-                                            </field>
-                                            <field name="applicationType">
-                                                <string>eXoGadget</string>
-                                            </field>
-                                            <field name="applicationGroup">
-                                                <string>eXoGadgets</string>
-                                            </field>
-                                            <field name="accessPermissions">
-                                                <collection type="java.util.ArrayList" item-type="java.lang.String">
-                                                    <value>
-                                                        <string>*:/platform/users</string>
-                                                    </value>
-                                                </collection>
-                                            </field>
-                                        </object>
-                                    </value>
-                                    <value>
-                                        <object type="org.exoplatform.application.registry.Application">
-                                            <field name="categoryName">
-                                                <string>gwtGadget</string>
-                                            </field>
-                                            <field name="applicationName">
-                                                <string>GWTGroovyEditor</string>
-                                            </field>
-                                            <field name="displayName">
-                                                <string>GWT Groovy Editor</string>
-                                            </field>
-                                            <field name="description">
-                                                <string>GWT Groovy Editor</string>
-                                            </field>
-                                            <field name="applicationType">
-                                                <string>eXoGadget</string>
-                                            </field>
-                                            <field name="applicationGroup">
-                                                <string>eXoGadgets</string>
-                                            </field>
-                                            <field name="accessPermissions">
-                                                <collection type="java.util.ArrayList" item-type="java.lang.String">
-                                                    <value>
-                                                        <string>*:/platform/users</string>
-                                                    </value>
-                                                </collection>
-                                            </field>
-                                        </object>
-                                    </value>
-                                </collection>
-                            </field>
-                        </object>
-                    </object-param>
-
 										<object-param>
                         <name>space</name>
                         <description>description</description>

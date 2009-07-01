@@ -19,6 +19,7 @@ package org.exoplatform.social.space.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,8 +46,6 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
-
-import java.util.Collections;
 
 /**
  * Created by The eXo Platform SARL
@@ -280,48 +279,51 @@ public class SpaceServiceImpl implements SpaceService{
    *          that the user is member or pending member.
    * @throws Exception
    */
-  private List<Space> getUserSpaces(String userId) throws SpaceException {
+  public List<Space> getSpaces(String userId) throws SpaceException {
     
     List<Space> userSpaces = getAllSpaces();
     Iterator<Space> itr = userSpaces.iterator();
     while(itr.hasNext()) {
       Space space = itr.next();
-      if(!(isMember(space, userId) || isPending(space, userId))){
+      if(!isMember(space, userId)){
         itr.remove();
       }
     }
     return userSpaces;
   }
 
-  public List<Space> getUserOrderedSpaces(String userId) throws SpaceException {
-    List<Space> userSpaces = getUserSpaces(userId);
+  public List<Space> getInvitedSpaces(String userId) throws SpaceException {
+    List<Space> spaces = getAllSpaces();
+    Iterator<Space> itr = spaces.iterator();
+    while(itr.hasNext()) {
+      Space space = itr.next();
+      if (!isInvited(space, userId)) {
+        itr.remove();
+      }
+    }
+    return spaces;
+  }
+  
+  public List<Space> getOrderedSpaces(String userId) throws SpaceException {
+    List<Space> userSpaces = getSpaces(userId);
     Iterator<Space> itr = userSpaces.iterator();
     
     List<Space> orderedSpaces = new ArrayList<Space>();
-    List<Space> leaderSpaces = new ArrayList<Space>();
     List<Space> memberSpaces = new ArrayList<Space>();
     
     while (itr.hasNext()) {
       Space space = itr.next();
      
-      if (isPending(space, userId)) { // Add pending spaces to orderedSpaces
-        orderedSpaces.add(space);
-      } else if (isMember(space, userId)) { // Get user's member spaces
+     if (isMember(space, userId)) { // Get user's member spaces
           if (isLeader(space, userId)) { // Add user's leader spaces
-            leaderSpaces.add(space);
+            orderedSpaces.add(space);
           } else {
             memberSpaces.add(space);
           }
         }
      }
     
-    // Adding all pending, leader, member spaces to userOrderedSpaces
-    itr = leaderSpaces.iterator();
-    while (itr.hasNext()) {
-      Space space = itr.next();
-      orderedSpaces.add(space);
-    }
-    
+    // Adding all leader, member spaces to orderedSpaces
     itr = memberSpaces.iterator();
     while (itr.hasNext()) {
       Space space = itr.next();
@@ -698,4 +700,38 @@ public class SpaceServiceImpl implements SpaceService{
       return space1.getName().compareToIgnoreCase(space2.getName());
     }
   }
+
+  public List<Space> getPublicSpaces(String userId) throws SpaceException {
+      List<Space> spaces = getAllSpaces();
+      Iterator<Space> itr = spaces.iterator();
+      while(itr.hasNext()) {
+        Space space = itr.next();
+        if(space.getVisibility().equals(Space.HIDDEN) || isMember(space, userId) || isInvited(space, userId) || isPending(space, userId)) {
+          itr.remove();
+        }
+      }
+      return spaces;    
+  }
+  
+  public List<Space> getPendingSpaces(String userId) throws SpaceException {
+    List<Space> spaces = getAllSpaces();
+    Iterator<Space> itr = spaces.iterator();
+    while (itr.hasNext()) {
+      Space space = itr.next();
+      if (!isPending(space, userId)) {
+        itr.remove();
+      }
+    }
+    return spaces;
+  }
+  
+  /*
+   * @deprecated
+   * @see org.exoplatform.social.space.SpaceService#getOrderedSpaces(java.lang.String)
+   */
+  public List<Space> getUserOrderedSpaces(String userId) throws SpaceException {
+    
+    return getOrderedSpaces(userId);
+  }
+
 }
