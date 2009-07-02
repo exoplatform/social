@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.ext</artifactId>
-      <version>trunk</version>
+      <version>${org.exoplatform.jcr.version}</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.core</artifactId>
-      <version>trunk</version>
+      <version>${org.exoplatform.jcr.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.shindig</groupId>
