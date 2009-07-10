@@ -17,13 +17,13 @@
 
 -->
 <% 
-	import org.exoplatform.portal.webui.util.Util;
-	import org.exoplatform.webui.core.UIPopupWindow;
-	  
+	import org.exoplatform.portal.webui.util.Util
+	import org.exoplatform.webui.core.UIPopupWindow
+	import social.portal.webui.component.UIManageMySpaces
+	
   def userSpaces = uicomponent.getUserSpaces()
   def invitedSpaces = uicomponent.getInvitedSpaces()
 %>
-
 <div class="UIManageMySpaces" id="$uicomponent.id">
     <div class="ContainerSpace">
         <div class="InvitedSpaces">

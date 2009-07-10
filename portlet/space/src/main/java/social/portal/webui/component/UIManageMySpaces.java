@@ -41,7 +41,7 @@ import org.exoplatform.webui.event.EventListener;
   events = {
       @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class), 
       @EventConfig(listeners = UIManageMySpaces.EditSpaceNavigationActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class),
+      @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpace.msg.confirm-space-delete"),
       @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.AddSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.AcceptActionListener.class),
@@ -50,12 +50,14 @@ import org.exoplatform.webui.event.EventListener;
 )
 public class UIManageMySpaces extends UIContainer {
 
+  private final String POPUP_ADD_SPACE = "popupAddSpace";
+  
   private SpaceService spaceService = null;
   private String userId = null;
   
   public UIManageMySpaces() throws Exception {
     // Add UIPopup for displaying UIAddSpaceForm
-    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, null);
+    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);
     uiPopup.setWindowSize(500, 0);
     addChild(uiPopup);
@@ -166,12 +168,13 @@ public class UIManageMySpaces extends UIContainer {
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
       // TODO Auto-generated method stub
-//      UIManageMySpaces uiManageMySpaces = event.getSource();
-//      UIPopupWindow uiPopup = uiManageMySpaces.getChild(UIPopupWindow.class);
-//      UIAddSpaceForm uiAddSpaceForm = uiManageMySpaces.createUIComponent(UIAddSpaceForm.class, null, null);
-//      uiPopup.setUIComponent(uiAddSpaceForm);
-//      uiPopup.setShow(true);
-//      event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
+      UIManageMySpaces uiManageMySpaces = event.getSource();
+      UIPopupWindow uiPopup = uiManageMySpaces.getChild(UIPopupWindow.class);
+      System.out.println("\n\n\n uipopadd" + uiPopup.getId());
+      UISpaceAddForm uiAddSpaceForm = uiManageMySpaces.createUIComponent(UISpaceAddForm.class, null, null);
+      uiPopup.setUIComponent(uiAddSpaceForm);
+      uiPopup.setShow(true);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
     }
     
   }

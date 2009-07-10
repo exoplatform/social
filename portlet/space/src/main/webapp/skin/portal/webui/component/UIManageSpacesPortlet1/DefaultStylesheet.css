@@ -26,5 +26,102 @@
 	
 }
 
+.UIManageSpacesPortlet1 .UISpaceForm {
+    padding: 1px;
+}
 
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceBanner{
+    background: url('background/SpaceBanner.gif') no-repeat left;
+    width: 547px; 
+    height: 120px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent {
+    background: #fff url('background/SpaceContent.gif') repeat-x;
+    width: 547px;
+    margin-top: 1px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .LeftContent{
+    float: left;
+}
+
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .RightContent{
+    float: left;
+    background: url('background/CreateButton.gif') no-repeat left;
+    width: 79px; 
+    height: 79px;
+    margin: 31px 0px 0px 20px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .MameSpace{
+    color: #087196;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 40px 0px 0px 88px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldComponent{
+    margin:4px 0px 0px 88px;
+    /*width: 270px;*/
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldComponent input{
+    width: 270px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio {
+    margin:5px 0px 20px 88px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .ButtonHide {
+    background: url('background/icon-close.png') left 50% no-repeat;
+    padding: 4px 16px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .ButtonShow {
+    background: url('background/icon-open.png') left 50% no-repeat;
+    padding: 4px 16px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio {
+    margin-bottom: 20px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap {
+    padding: 6px;\
+    background: #f5f5f5;
+    border: solid 1px #dbdbdb;
+    margin: 0px 10px 0px 0px;
+    width: 270px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
+    border: solid 1px #dae4ea;
+    padding: 6px;
+    margin-bottom: 3px;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:hover,
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .selected,
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:focus {
+    background: #dae4ea;
+    border: solid 1px #5c8ea2;
+}
+
+.UIManageSpacesPortlet11 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
+    
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap input {
+    display: block;
+    float: left;
+}
+
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap label {
+    display: block;
+    margin-left: 20px;
+    width: 232px;
+}
 
