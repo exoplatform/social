@@ -19,7 +19,6 @@ package social.portal.webui.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.velocity.runtime.parser.node.SetExecutor;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;

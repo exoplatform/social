@@ -29,7 +29,10 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+/*
+ //TODO: hoatle Portal removed UIControlWorkspace
 import org.exoplatform.portal.webui.workspace.UIControlWorkspace;
+*/
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.space.Space;
@@ -213,10 +216,11 @@ public class UIManageYourSpace extends UIContainer {
 
       UIPortalApplication uiPortalApp = uiPortal.getAncestorOfType(UIPortalApplication.class);
       PortalRequestContext prContext = Util.getPortalRequestContext();
-
+      /*
+      //TODO: hoatle Portal removed UIControlWorkspace
       UIControlWorkspace uiControl = uiPortalApp.getChildById(UIPortalApplication.UI_CONTROL_WS_ID);
       if(uiControl != null) prContext.addUIComponentToUpdateByAjax(uiControl);
-
+      */
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
       prContext.addUIComponentToUpdateByAjax(uiWorkingWS) ;
       prContext.setFullRender(true);

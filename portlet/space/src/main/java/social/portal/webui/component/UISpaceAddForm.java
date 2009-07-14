@@ -16,6 +16,7 @@
  */
 package social.portal.webui.component;
 
+import org.exoplatform.social.space.Space;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -70,7 +71,10 @@ public class UISpaceAddForm extends UIFormTabPane {
 
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
-    	//TODO: hoatle
+    	//TODO: hoatle Create new group or binding to existing group if remote user is manager of that group
+      UISpaceAddForm uiAddForm = event.getSource();
+      Space space = new Space();
+      uiAddForm.invokeSetBindingBean(space);
     }
     
   }
