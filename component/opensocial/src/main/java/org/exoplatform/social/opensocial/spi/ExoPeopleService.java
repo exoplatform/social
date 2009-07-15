@@ -27,9 +27,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
-import org.apache.shindig.social.ResponseError;
+import org.apache.shindig.protocol.DataCollection;
+import org.apache.shindig.protocol.ProtocolException;
+import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.protocol.model.SortOrder;
 import org.apache.shindig.social.core.model.ListFieldImpl;
 import org.apache.shindig.social.core.model.NameImpl;
 import org.apache.shindig.social.core.model.UrlImpl;
@@ -38,11 +43,8 @@ import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.model.Url;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
-import org.apache.shindig.social.opensocial.spi.DataCollection;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
-import org.apache.shindig.social.opensocial.spi.RestfulCollection;
-import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
@@ -77,7 +79,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   };
 
     
-  public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds, GroupId groupId, CollectionOptions collectionOptions, Set<String> fields, SecurityToken token) throws SocialSpiException {
+  public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds, GroupId groupId, CollectionOptions collectionOptions, Set<String> fields, SecurityToken token) throws ProtocolException {
     List<Person> result = Lists.newArrayList();
     try {
 
@@ -113,13 +115,13 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       return ImmediateFuture.newInstance(new RestfulCollection<Person>(
           result, collectionOptions.getFirst(), totalSize));
     } catch (Exception je) {
-      throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.getMessage(), je);
+      throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
   }
 
 
 
-  public Future<Person> getPerson(UserId id, Set<String> fields, SecurityToken token) throws SocialSpiException {
+  public Future<Person> getPerson(UserId id, Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
 
         Identity identity = getIdentity(id.getUserId(token));
@@ -127,7 +129,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 
         return ImmediateFuture.newInstance(convertToPerson(identity, fields));
     } catch (Exception e) {
-      throw new SocialSpiException(ResponseError.INTERNAL_ERROR, e.getMessage(), e);    }
+      throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
+      }
   }
 
   private Person convertToPerson(Identity identity, Set<String> fields) {
@@ -214,7 +217,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     return l;
   }
 
-  public Future<DataCollection> getPersonData(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws SocialSpiException {
+  public Future<DataCollection> getPersonData(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
       Map<String, Map<String, String>> idToData = new HashMap<String, Map<String, String>>();
@@ -228,7 +231,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }
       return ImmediateFuture.newInstance(new DataCollection(idToData));
     } catch (Exception e) {
-      throw new SocialSpiException(ResponseError.INTERNAL_ERROR, e.getMessage(), e);
+      throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
   }
 
@@ -260,7 +263,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     userGadgetStorage.delete(userID, gadgetId, instanceID, keys);
   }
 
-  public Future<Void> deletePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws SocialSpiException {
+  public Future<Void> deletePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
       String userId = user.getUserId(token);
 
@@ -270,12 +273,12 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 
       deletePreferences(id.getRemoteId(), gadgetId, instanceId, fields);
     } catch (Exception e) {
-      throw new SocialSpiException(ResponseError.INTERNAL_ERROR, e.getMessage(), e);
+      throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
     return ImmediateFuture.newInstance(null);
   }
 
-  public Future<Void> updatePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, Map<String, String> values, SecurityToken token) throws SocialSpiException {
+  public Future<Void> updatePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, Map<String, String> values, SecurityToken token) throws ProtocolException {
     //TODO: remove the fields that are in the fields list and not in the values map
     try {
       String userId = user.getUserId(token);
@@ -286,7 +289,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 
       savePreferences(id.getRemoteId(), gadgetId, instanceId, values);
     } catch (Exception e) {
-      throw new SocialSpiException(ResponseError.INTERNAL_ERROR, e.getMessage(), e);
+      throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
     return ImmediateFuture.newInstance(null);
   }

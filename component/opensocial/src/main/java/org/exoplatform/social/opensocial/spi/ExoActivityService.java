@@ -16,9 +16,10 @@
  */
 package org.exoplatform.social.opensocial.spi;
 
+import org.apache.shindig.protocol.ProtocolException;
+import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.*;
 import org.apache.shindig.social.opensocial.model.Activity;
-import org.apache.shindig.social.ResponseError;
 import org.apache.shindig.social.core.model.ActivityImpl;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
@@ -32,13 +33,15 @@ import java.util.Set;
 import java.util.List;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.common.collect.Lists;
 
 public class ExoActivityService extends ExoService implements ActivityService {
   public final static String OPENSOCIAL_PREFIX = "opensocial:";
   public final static int OPENSOCIAL_PREFIX_LENGTH = OPENSOCIAL_PREFIX.length();
 
-  public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws SocialSpiException {
+  public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, CollectionOptions options, SecurityToken token) throws SocialSpiException {
     List<Activity> result = Lists.newArrayList();
 
     PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
@@ -52,11 +55,11 @@ public class ExoActivityService extends ExoService implements ActivityService {
       }
       return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result));
     } catch (Exception je) {
-      throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.getMessage(), je);
+      throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
   }
 
-  public Future<RestfulCollection<Activity>> getActivities(UserId userId, GroupId groupId, String appId, Set<String> fields, Set<String> activityIds, SecurityToken token) throws SocialSpiException {
+  public Future<RestfulCollection<Activity>> getActivities(UserId userId, GroupId groupId, String appId, Set<String> fields, CollectionOptions options, Set<String> activityIds, SecurityToken token) throws SocialSpiException {
     List<Activity> result = Lists.newArrayList();
     try {
       String user = userId.getUserId(token);
@@ -77,16 +80,16 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
       return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result));
     } catch (Exception je) {
-      throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.getMessage(), je);
+      throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
   }
 
   public Future<Activity> getActivity(UserId userId, GroupId groupId, String appId, Set<String> fields, String activityId, SecurityToken token) throws SocialSpiException {
-    throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, null);
+    throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, null);
   }
 
   public Future<Void> deleteActivities(UserId userId, GroupId groupId, String appId, Set<String> activityIds, SecurityToken token) throws SocialSpiException {
-    throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, null);
+    throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, null);
   }
 
   public Future<Void> createActivity(UserId userId, GroupId groupId, String appId, Set<String> fields, Activity activity, SecurityToken token) throws SocialSpiException {
@@ -100,7 +103,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
       return ImmediateFuture.newInstance(null);
     } catch (Exception e) {
-      throw new SocialSpiException(ResponseError.INTERNAL_ERROR, e.getMessage(), e);
+      throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
   }
 

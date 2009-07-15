@@ -23,15 +23,16 @@ import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.apache.shindig.social.opensocial.spi.GroupId;
-import org.apache.shindig.social.opensocial.spi.SocialSpiException;
-import org.apache.shindig.social.ResponseError;
 import org.apache.shindig.auth.SecurityToken;
 
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.Sets;
 
@@ -50,13 +51,13 @@ public class ExoService {
       String userId = user.getUserId(token);
 
       Identity id = getIdentity(userId);
+      Set<Identity> returnVal = Sets.newLinkedHashSet();
 
       if (group == null) {
-        return Sets.newLinkedHashSet(id);
+        returnVal.add(id);
       }
-
-      Set<Identity> returnVal = Sets.newLinkedHashSet();
-      switch (group.getType()) {
+      else {
+        switch (group.getType()) {
         case all:
         case friends:
         case groupId:
@@ -65,6 +66,7 @@ public class ExoService {
         case self:
           returnVal.add(id);
           break;
+        }
       }
       return returnVal;
     }
@@ -110,7 +112,7 @@ public class ExoService {
       }
 
       if(identity == null) {
-          throw  new SocialSpiException(ResponseError.BAD_REQUEST, "this user does not exist");
+          throw  new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "this user does not exist");
       }
       return identity;
     }

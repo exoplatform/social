@@ -1,6 +1,6 @@
 package org.exoplatform.social.opensocial.model;
 
-import org.apache.shindig.social.opensocial.model.Exportablebean;
+import org.apache.shindig.protocol.model.Exportablebean;
 import org.exoplatform.social.opensocial.model.impl.SpaceImpl;
 
 import com.google.inject.ImplementedBy;

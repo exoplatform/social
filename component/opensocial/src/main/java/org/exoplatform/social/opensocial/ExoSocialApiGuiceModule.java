@@ -16,29 +16,18 @@
  */
 package org.exoplatform.social.opensocial;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
-import com.google.inject.name.Names;
-import org.apache.shindig.social.opensocial.service.DataServiceServletFetcher;
-import org.apache.shindig.social.opensocial.service.BeanConverter;
-import org.apache.shindig.social.opensocial.service.HandlerDispatcher;
-import org.apache.shindig.social.opensocial.spi.PersonService;
-import org.apache.shindig.social.opensocial.spi.AppDataService;
-import org.apache.shindig.social.opensocial.spi.ActivityService;
-import org.apache.shindig.social.opensocial.model.Person;
-import org.apache.shindig.social.core.util.BeanXmlConverter;
-import org.apache.shindig.social.core.util.BeanJsonConverter;
-import org.apache.shindig.social.core.util.BeanAtomConverter;
-import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
 import org.apache.shindig.social.core.config.SocialApiGuiceModule;
-import org.apache.shindig.common.servlet.ParameterFetcher;
-import org.apache.shindig.auth.AnonymousAuthenticationHandler;
-import org.apache.shindig.auth.AuthenticationHandler;
+import org.apache.shindig.social.opensocial.model.Person;
+import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
+import org.apache.shindig.social.opensocial.spi.ActivityService;
+import org.apache.shindig.social.opensocial.spi.AppDataService;
+import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.exoplatform.social.opensocial.model.impl.ExoPersonImpl;
-import org.exoplatform.social.opensocial.spi.ExoPeopleService;
+import org.exoplatform.social.opensocial.oauth.EXoOAuthDataStore;
 import org.exoplatform.social.opensocial.spi.ExoActivityService;
+import org.exoplatform.social.opensocial.spi.ExoPeopleService;
 
-import java.util.List;
+import com.google.inject.name.Names;
 
 public class ExoSocialApiGuiceModule  extends SocialApiGuiceModule {
 
@@ -51,13 +40,15 @@ public class ExoSocialApiGuiceModule  extends SocialApiGuiceModule {
   protected void configure() {
     super.configure();
 
+    bind(String.class).annotatedWith(Names.named("shindig.canonical.json.db"))
+    .toInstance("sampledata/canonicaldb.json");
     bind(PersonService.class).to(ExoPeopleService.class);
     bind(AppDataService.class).to(ExoPeopleService.class);
     bind(ActivityService.class).to(ExoActivityService.class);
 
     bind(Person.class).to(ExoPersonImpl.class);
-//    bind(ExoContainerHandler.class).to(ExoContainerHandler.class);
-
+    bind(OAuthDataStore.class).to(EXoOAuthDataStore.class);
+    
   }
 
 

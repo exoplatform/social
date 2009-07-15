@@ -17,16 +17,12 @@
 package org.exoplatform.social.portlet.activities;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import javax.mail.internet.PreencodedMimeBodyPart;
-
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.services.rest.PerRequestObjectFactory;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -37,8 +33,6 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @ComponentConfig(
     template =  "app:/groovy/portal/webui/component/UIActivities.gtmpl",
@@ -65,7 +59,7 @@ public class UIActivities  extends UIContainer {
     Identity id = im.getIdentityByRemoteId("organization", URLUtils.getCurrentUser());
     List<Activity> listActivity = am.getActivities(id);
     // Reverse order of activity so that newer activity is placed on the top stack
-    Collections.reverse(listActivity);
+    java.util.Collections.reverse(listActivity);
     return listActivity;
   }
   
