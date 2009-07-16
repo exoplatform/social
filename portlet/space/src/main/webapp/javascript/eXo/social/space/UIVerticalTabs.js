@@ -65,7 +65,7 @@ UIVerticalTabs.prototype.changeTabForUITabPane = function(clickedEle, tabId, url
 //  }
 
 };
-
+eXo = eXo || {};
 eXo.social = eXo.social || {};
 eXo.social.space = eXo.social.space || {};
 eXo.social.space.UIVerticalTabs = new UIVerticalTabs();

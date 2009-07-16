@@ -16,6 +16,10 @@
 	*          hoatlevan@gmail.com 
 	* Jun 17, 2009 
 	*/
+
+var eXo = eXo || {};
+eXo.social = eXo.social || {}; 
+
 function ViewerFriend() {
 	this.startIndex = 0;
 	this.itemsPerPage = 5;
@@ -26,9 +30,12 @@ function ViewerFriend() {
 	this.displayedItems = 0;
 	this.totalPages = 1;
 	this.currentPage = 1;
-	//TODO: find the better solution
-	eXo.social.vf.that = this; // Make sure can call this object from any where
-								// when *this* not applicable
+	
+}
+
+ViewerFriend.init = function() {
+    eXo.social.viewerFriend = new ViewerFriend();
+    eXo.social.viewerFriend.start();
 }
 
 //Constants
@@ -37,7 +44,7 @@ ViewerFriend.PREVIOUS = "previous";
 ViewerFriend.NEXT = "next";
 ViewerFriend.LAST = "last";
 
-ViewerFriend.prototype.init = function() {
+ViewerFriend.prototype.start = function() {
 	this.setPrefs();
 	this.loadFriends();
 	this.registerPagingAction();
@@ -66,10 +73,11 @@ ViewerFriend.prototype.loadFriends = function() {
 
 	function onLoadFriends(data) {
 		if (!data.hadError()) {
-			viewerFriend.viewer = data.get('viewer').getData();
-			viewerFriend.viewerFriends = data.get('viewerFriends').getData();
-			viewerFriend.totalItems = viewerFriend.viewerFriends.getTotalSize();
-			viewerFriend.totalPages = Math.viewerFriend.display();
+			eXo.social.viewerFriend.viewer = data.get('viewer').getData();
+			eXo.social.viewerFriend.viewerFriends = data.get('viewerFriends').getData();
+			eXo.social.viewerFriend.totalItems = eXo.social.viewerFriend.viewerFriends.getTotalSize();
+			eXo.social.viewerFriend.totalPages = Math.ceil(eXo.social.viewerFriend.totalItems/eXo.social.viewerFriend.itemsPerPage);
+			eXo.social.viewerFriend.display();
 		}
 	}
 }
@@ -79,9 +87,13 @@ ViewerFriend.prototype.display = function() {
 	var friendsDisplay = [];
 	if (this.viewer != null) {
 		viewerDisplay = this.viewer.getDisplayName();
+	} else {
+	   alert("ERROR!!!")
 	}
-
-	if (this.viewerFriends != null) {
+	
+	var viewerEl = document.getElementById("viewer");
+  var friendsEl = document.getElementById("friends");
+	if (this.totalItems > 0) {
 		this.viewerFriends
 				.each( function(person) {
 					if (person.getId()) {
@@ -89,28 +101,27 @@ ViewerFriend.prototype.display = function() {
 								+ "</li>");
 					}
 				});
+		friendsEl.innerHTML = "<ul>" + friendsDisplay.join() + "</ul>";
 	} else {
 		friendDisplay = viewerDisplay + " has no friends yet.";
+		friendsEl.innerHTML = friendDisplay;
 	}
-
-	var viewerEl = document.getElementById("viewer");
-	var friendsEl = document.getElementById("friends");
+	
 	viewerEl.innerHTML = viewerDisplay;
-	friendsEl.innerHTML = "<ul>" + friendsDisplay.join() + "</ul>";
 }
 
 ViewerFriend.prototype.registerPagingAction = function() {
     var allPages = [];
     for (i = 1; i <= this.totalPages; i++) {
         //TODO: find better solution instead of vf. Should create DOM element on the fly
-        var str = "<a href='#' onclick='vf.that.toPage("+i+")'>" + i + " " + "</a>";
+        var str = "<a href='#' onclick='eXo.social.viewerFriend.toPage("+i+")'>" + i + " " + "</a>";
         allPages.push(str);
     }
     var firstEl = getEl("first");
     var lastEl  = getEl("last");
     var nextEl = getEl("next");
     var previousEl = getEl("previous");
-    var allPagesEl = getEl("allPages");
+    var allPagesEl = getEl("pages");
     allPagesEl.innerHTML = allPages.join(); 
     
     binding(firstEl, "onclick", this.firstPage);
@@ -147,37 +158,37 @@ ViewerFriend.prototype.registerPagingAction = function() {
 //}
 
 ViewerFriend.prototype.firstPage = function() {
-    if (eXo.social.vf.that.currentPage != 1) {
-		  eXo.social.vf.that.curentPage = 1;
-		  eXo.social.vf.that.init();
+    if (eXo.social.viewerFriend.currentPage != 1) {
+		  eXo.social.viewerFriend.curentPage = 1;
+		  eXo.social.viewerFriend.start();
 	  }
 }
 
 ViewerFriend.prototype.lastPage = function() {
-    if (eXo.social.vf.that.currentPage != eXo.social.vf.that.totalPages) {
-        eXo.social.vf.that.currentPage = eXo.social.vf.that.totalPages;
-        eXo.social.vf.that.init();
+    if (eXo.social.viewerFriend.currentPage != eXo.social.viewerFriend.totalPages) {
+        eXo.social.viewerFriend.currentPage = eXo.social.viewerFriend.totalPages;
+        eXo.social.viewerFriend.start();
     }
     
 }
 
 ViewerFriend.prototype.nextPage = function() {
-    if (eXo.social.vf.that.currentPage < eXo.social.vf.that.totalPages) {
-        eXo.social.vf.that.currentPage += eXo.social.vf.that.currentPage;
-        eXo.social.vf.that.init();
+    if (eXo.social.viewerFriend.currentPage < eXo.social.viewerFriend.totalPages) {
+        eXo.social.viewerFriend.currentPage += 1;
+        eXo.social.viewerFriend.start();
     }
 }
 
 ViewerFriend.prototype.previousPage = function() {
-    if (eXo.social.vf.that.currentPage > 1) {
-        eXo.social.vf.that.currentPage -= eXo.social.vf.that.currentPage;
-        eXo.social.vf.that.init();
+    if (eXo.social.viewerFriend.currentPage > 1) {
+        eXo.social.viewerFriend.currentPage -= 1;
+        eXo.social.viewerFriend.start();
     }
 }
 
 ViewerFriend.prototype.toPage = function(pageNum) {
-    if (pageNum > 0 && pageNum < eXo.social.vf.that.totalPages) {
-        eXo.social.vf.that.currentPage = pageNum;
-        eXo.social.vf.that.init();
+    if (pageNum > 0 && pageNum < eXo.social.viewerFriend.totalPages) {
+        eXo.social.viewerFriend.currentPage = pageNum;
+        eXo.social.viewerFriend.start();
     }
 }
