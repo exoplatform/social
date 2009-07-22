@@ -28,14 +28,13 @@ function ViewerFriend() {
 	this.prefs = null;
 	this.totalItems = 0;
 	this.displayedItems = 0;
-	this.totalPages = 1;
+	this.totalPages = 0;
 	this.currentPage = 1;
 	
 }
 
-ViewerFriend.init = function() {
-    eXo.social.viewerFriend = new ViewerFriend();
-    eXo.social.viewerFriend.start();
+ViewerFriend.prototype.init = function() {    
+    this.start();
 }
 
 //Constants
@@ -46,8 +45,8 @@ ViewerFriend.LAST = "last";
 
 ViewerFriend.prototype.start = function() {
 	this.setPrefs();
-	this.loadFriends();
-	this.registerPagingAction();
+	eXo.social.viewerFriend = new ViewerFriend();
+	this.loadFriends();	
 }
 
 ViewerFriend.prototype.setPrefs = function() {
@@ -58,8 +57,9 @@ ViewerFriend.prototype.setPrefs = function() {
 ViewerFriend.prototype.loadFriends = function() {
 	var req = opensocial.newDataRequest();
 	var opts = {};
-	opts[opensocial.DataRequest.PeopleRequestFields.FIRST] = this.startIndex;
-	opts[opensocial.DataRequest.PeopleRequestFields.MAX] = this.itemsPerPage;
+	
+	opts[opensocial.DataRequest.PeopleRequestFields.FIRST] = eXo.social.viewerFriend.startIndex;
+	opts[opensocial.DataRequest.PeopleRequestFields.MAX] = eXo.social.viewerFriend.itemsPerPage;
 	opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = [
 			opensocial.Person.Field.AGE, opensocial.Person.Field.NAME,
 			opensocial.Person.Field.GENDER,
@@ -72,7 +72,8 @@ ViewerFriend.prototype.loadFriends = function() {
 	req.send(onLoadFriends);
 
 	function onLoadFriends(data) {
-		if (!data.hadError()) {
+		if (!data.hadError()) {		
+			
 			eXo.social.viewerFriend.viewer = data.get('viewer').getData();
 			eXo.social.viewerFriend.viewerFriends = data.get('viewerFriends').getData();
 			eXo.social.viewerFriend.totalItems = eXo.social.viewerFriend.viewerFriends.getTotalSize();
@@ -85,110 +86,148 @@ ViewerFriend.prototype.loadFriends = function() {
 ViewerFriend.prototype.display = function() {
 	var viewerDisplay = "";
 	var friendsDisplay = [];
-	if (this.viewer != null) {
-		viewerDisplay = this.viewer.getDisplayName();
+	if (eXo.social.viewerFriend.viewer != null) {
+		viewerDisplay = eXo.social.viewerFriend.viewer.getDisplayName();
 	} else {
 	   alert("ERROR!!!")
 	}
 	
 	var viewerEl = document.getElementById("viewer");
-  var friendsEl = document.getElementById("friends");
-	if (this.totalItems > 0) {
-		this.viewerFriends
+	var friendsEl = document.getElementById("friends");
+	var totalPageEl = document.getElementById("totalPages");
+	    
+	if (eXo.social.viewerFriend.totalItems > 0) {
+		eXo.social.viewerFriend.viewerFriends
 				.each( function(person) {
 					if (person.getId()) {
 						friendsDisplay.push('<li>' + person.getDisplayName()
 								+ "</li>");
 					}
 				});
-		friendsEl.innerHTML = "<ul>" + friendsDisplay.join() + "</ul>";
+		friendsEl.innerHTML = "<ul>" + friendsDisplay.join(" ") + "</ul>";		
 	} else {
 		friendDisplay = viewerDisplay + " has no friends yet.";
 		friendsEl.innerHTML = friendDisplay;
 	}
-	
+			
 	viewerEl.innerHTML = viewerDisplay;
+	
+	if (eXo.social.viewerFriend.totalPages > 1) {
+		eXo.social.viewerFriend.registerPagingAction();	
+	}
+	
+	gadgets.window.adjustHeight();
 }
 
 ViewerFriend.prototype.registerPagingAction = function() {
-    var allPages = [];
-    for (i = 1; i <= this.totalPages; i++) {
-        //TODO: find better solution instead of vf. Should create DOM element on the fly
-        var str = "<a href='#' onclick='eXo.social.viewerFriend.toPage("+i+")'>" + i + " " + "</a>";
+	var allPageEl = this.getEl("page");
+	allPageEl.innerHTML = this.setDisplayPaging(eXo.social.viewerFriend.currentPage);
+	
+	var allPages = [];
+	var allPagesEl = this.getEl("pages");	
+	var totalpagesEl = _gel("totalPages");
+	totalpagesEl.innerHTML = eXo.social.viewerFriend.totalPages;
+
+	for (i=1; i<=eXo.social.viewerFriend.totalPages;i++) {
+        var str="";
+    	
+        if (i == eXo.social.viewerFriend.currentPage) {
+        	str = "<a href='#' class ='Number PageSelected' onclick='eXo.social.viewerFriend.toPage("+i+")'>" + i + "</a>";
+        } else {
+        	str = "<a href='#' class ='Number' onclick='eXo.social.viewerFriend.toPage("+i+")'>" + i + "</a>";
+        }
+        
         allPages.push(str);
     }
-    var firstEl = getEl("first");
-    var lastEl  = getEl("last");
-    var nextEl = getEl("next");
-    var previousEl = getEl("previous");
-    var allPagesEl = getEl("pages");
-    allPagesEl.innerHTML = allPages.join(); 
-    
-    binding(firstEl, "onclick", this.firstPage);
-    binding(lastEl, "onclick", this.lastPage);
-    binding(nextEl, "onclick", this.nextPage);
-    binding(previousEl, "onclick", this.previousPage);
-    
-    
-    function binding(el, action, func) {
-        el.action = func;
-    }
-    
-    
-    function getEl(elId) {
-        var el = document.getElementById(elId);
-        if (el) {
-            return el; 
-        } else {
-            alert("element: " + elId + " not found!");
-        }
+	
+    allPagesEl.innerHTML = allPages.join(" ");    
+}
+
+ViewerFriend.prototype.setDisplayPaging = function(currentPage) {
+	var rtnHTML="";
+	var totalPage = eXo.social.viewerFriend.totalPages;
+	var lastPageTag = this.createTag("last", "Icon NextTopPageIcon","eXo.social.viewerFriend.lastPage()");
+	var nextPageTag = this.createTag("next", "Icon NextPageIcon","eXo.social.viewerFriend.nextPage()");
+	var previousPageTag = this.createTag("previous", "Icon LastPageIcon","eXo.social.viewerFriend.previousPage()");
+	var firstPageTag = this.createTag("first", "Icon LastTopPageIcon","eXo.social.viewerFriend.firstPage()");
+	var previousDisTag = this.createTag("previous", "Icon DisableLastPageIcon","void()");
+	var firstDisTag = this.createTag("first", "Icon DisableLastTopPageIcon","void()");
+	var lastDisTag = this.createTag("last", "Icon DisableNextTopPageIcon","void()");
+	var nextDisTag = this.createTag("next", "Icon DisableNextPageIcon","void()");
+	var pagesTag = "<div id='pages'></div>";
+	
+	if (totalPage == 1) {
+		rtnHTML= this.createHTML(firstDisTag, previousDisTag, pagesTag, nextDisTag, lastDisTag);
+	} else if ((currentPage > 1) && (currentPage < totalPage)) {
+		rtnHTML= this.createHTML(firstPageTag, previousPageTag, pagesTag, nextPageTag, lastPageTag);		
+	} else if (currentPage == 1) {
+		rtnHTML= this.createHTML(firstDisTag, previousDisTag, pagesTag, nextPageTag, lastPageTag);
+	} else if (currentPage == totalPage) {
+		rtnHTML= this.createHTML(firstPageTag, previousPageTag, pagesTag, nextDisTag, lastDisTag);
+	}	
+	
+	return rtnHTML;
+}
+
+ViewerFriend.prototype.createHTML = function(last, next, pages, previous, first) {
+	var HTML="";
+	HTML+= "<a class='TotalPages'>Total pages:</a>";
+	HTML+="<a class='PagesTotalNumber' id='totalPages'></a>";
+	
+	HTML+= last;
+	HTML+= next;		
+	HTML+= pages;
+	HTML+= previous;
+	HTML+= first;	
+	
+	return HTML;
+}
+
+ViewerFriend.prototype.createTag = function(id, cls, action) {
+	return "<a  id='" +id+"' class='"+cls+"' href='#' onclick='"+action+"'> </a>";
+}
+
+ViewerFriend.prototype.getEl = function (elId) {
+    var el = document.getElementById(elId);
+    if (el) {
+        return el; 
+    } else {
+        alert("element: " + elId + " not found!");
     }
 }
 
-//ViewerFriend.prototype.pageActionListener(elId) {
-//    if (elId === ViewerFriend.FIRST) {
-//    
-//    } else if (elId === ViewerFriend.PREVIOUS) {
-//    
-//    } else if (elId == ViewerFriend.NEXT) {
-//    
-//    } else if (elId == ViewerFriend.LAST) {
-//    
-//    }
-//}
-
 ViewerFriend.prototype.firstPage = function() {
     if (eXo.social.viewerFriend.currentPage != 1) {
-		  eXo.social.viewerFriend.curentPage = 1;
-		  eXo.social.viewerFriend.start();
-	  }
+		  eXo.social.viewerFriend.currentPage = 1;
+		  this.toPage(eXo.social.viewerFriend.currentPage);
+	}
 }
 
 ViewerFriend.prototype.lastPage = function() {
     if (eXo.social.viewerFriend.currentPage != eXo.social.viewerFriend.totalPages) {
         eXo.social.viewerFriend.currentPage = eXo.social.viewerFriend.totalPages;
-        eXo.social.viewerFriend.start();
-    }
-    
+        this.toPage(eXo.social.viewerFriend.currentPage);
+    }    
 }
 
 ViewerFriend.prototype.nextPage = function() {
     if (eXo.social.viewerFriend.currentPage < eXo.social.viewerFriend.totalPages) {
         eXo.social.viewerFriend.currentPage += 1;
-        eXo.social.viewerFriend.start();
+        this.toPage(eXo.social.viewerFriend.currentPage);
     }
 }
 
 ViewerFriend.prototype.previousPage = function() {
     if (eXo.social.viewerFriend.currentPage > 1) {
         eXo.social.viewerFriend.currentPage -= 1;
-        eXo.social.viewerFriend.start();
+        this.toPage(eXo.social.viewerFriend.currentPage);
     }
 }
 
-ViewerFriend.prototype.toPage = function(pageNum) {
-    if (pageNum > 0 && pageNum < eXo.social.viewerFriend.totalPages) {
+ViewerFriend.prototype.toPage = function(pageNum) {	
+    if ((pageNum > 0) && (pageNum <= eXo.social.viewerFriend.totalPages)) {
         eXo.social.viewerFriend.currentPage = pageNum;
-        eXo.social.viewerFriend.start();
+        eXo.social.viewerFriend.startIndex = (eXo.social.viewerFriend.currentPage - 1)*eXo.social.viewerFriend.itemsPerPage;
+        eXo.social.viewerFriend.loadFriends();
     }
 }

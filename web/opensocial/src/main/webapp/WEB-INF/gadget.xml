@@ -42,4 +42,7 @@
 	<gadget name="viewerFriends">
 		<path>/gadgets/viewerFriends.xml</path>
 	</gadget>
+	<gadget name="rssFetch">
+		<path>/gadgets/rssFetch.xml</path>
+	</gadget>
 </gadgets>
