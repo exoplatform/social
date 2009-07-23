@@ -33,7 +33,8 @@ function ViewerFriend() {
 	
 }
 
-ViewerFriend.prototype.init = function() {    
+ViewerFriend.prototype.init = function() {  
+	eXo.social.viewerFriend = new ViewerFriend();
     this.start();
 }
 
@@ -44,14 +45,13 @@ ViewerFriend.NEXT = "next";
 ViewerFriend.LAST = "last";
 
 ViewerFriend.prototype.start = function() {
-	this.setPrefs();
-	eXo.social.viewerFriend = new ViewerFriend();
+	this.setPrefs();	
 	this.loadFriends();	
 }
 
 ViewerFriend.prototype.setPrefs = function() {
 	this.prefs = new gadgets.Prefs();
-	this.itemsPerPage = this.prefs.getInt("itemsPerPage");
+	eXo.social.viewerFriend.itemsPerPage = this.prefs.getInt("itemsPerPage");
 }
 
 ViewerFriend.prototype.loadFriends = function() {
@@ -228,6 +228,6 @@ ViewerFriend.prototype.toPage = function(pageNum) {
     if ((pageNum > 0) && (pageNum <= eXo.social.viewerFriend.totalPages)) {
         eXo.social.viewerFriend.currentPage = pageNum;
         eXo.social.viewerFriend.startIndex = (eXo.social.viewerFriend.currentPage - 1)*eXo.social.viewerFriend.itemsPerPage;
-        eXo.social.viewerFriend.loadFriends();
+        eXo.social.viewerFriend.start();
     }
 }
