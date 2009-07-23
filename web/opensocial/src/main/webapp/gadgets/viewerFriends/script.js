@@ -29,8 +29,7 @@ function ViewerFriend() {
 	this.totalItems = 0;
 	this.displayedItems = 0;
 	this.totalPages = 0;
-	this.currentPage = 1;
-	
+	this.currentPage = 1;	
 }
 
 ViewerFriend.prototype.init = function() {  
