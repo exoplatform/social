@@ -22,8 +22,8 @@
 -->
 <Module>
 	<ModulePrefs author="eXoPlatform"
-		description="Gadget for displaying viewer's friends" directory_title="ViewerFriendsGadget"
-		title="ViewerFriendsGadget" title_url="http://www.google.com.vn">
+		description="Gadget for displaying viewer's friends" directory_title="Viewer Friends Gadget"
+		title="Viewer Friends Gadget" title_url="http://www.google.com.vn">
 		<Require feature="setprefs" />
 		<Require feature="opensocial-0.7" />
 		<Require feature="dynamic-height" />
