@@ -29,6 +29,7 @@
 		<Require feature="minimessage"/>
 		<Require feature="opensocial-0.7"></Require>
 		<Require feature="settitle"></Require>
+		<Require feature="views"></Require>
 	</ModulePrefs>
 	<UserPref datatype="enum" default_value="10"
 		display_name="RSS displayed on a page:" name="rssPerPage">
@@ -40,7 +41,7 @@
 	</UserPref>
 	<UserPref name="rssurl" display_name="FEED URL" default_value="http://blog.exoplatform.org/feed/" required="true" />
 	
-	<Content type="html">
+	<Content type="html" view="home">
 	<![CDATA[
     <style type="text/css">
 				.UIPageIterator {    
@@ -158,8 +159,141 @@
     
 	  <link rel="stylesheet" type="text/css" href="rssFetch/style.css"></link>
 	  <script type="text/javascript" src="rssFetch/script.js"></script>
+	  
+    <div id="rssFeed" style="height: 229px; overflow: auto;"></div>
+		
+		
+		<script type="text/javascript">
+			var prefs = new _IG_Prefs(__MODULE_ID__);
+    	var feedurl = prefs.getString("rssurl");
+		  var rssOnPage = prefs.getInt("rssPerPage");
+		  
+    	var rssFetch = new RssFetch();
+      gadgets.util.registerOnLoadHandler(rssFetch.refreshFeed());    	
+		</script>
+	]]>
+	</Content>
+	
+	<Content type="html" view="canvas">
+	<![CDATA[
+    <style type="text/css">
+				.UIPageIterator {    
+				  margin: 5px auto 0px auto;
+				  width: 99%;
+				}
+				
+				.UIPageIterator a {
+				  color:#333333;
+					display:block;
+					float:right;
+					font-size: 11px;
+					font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
+				}
+				
+				.UIPageIterator .Number {
+					border: 1px solid #DFDFDF;
+					padding: 0 3px;
+					margin-left: 1px; /* orientation=lt */
+					margin-right: 1px; /* orientation=rt */
+					cursor: pointer;
+					line-height: 15px;
+				}
+				
+        a {
+        	color:#082E2A;
+        	text-decoration: none;
+        	font-size: 11px;
+        	font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
+        }
+        
+				div {
+					margin:0;
+					outline-color:-moz-use-text-color;
+					outline-style:none;
+					outline-width:medium;
+					padding:0;
+					font-size:11px;
+          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
+				}
+				
+				.ClearRight {
+				  clear:right;
+        }
+        
+				.UIPageIterator .PageSelected {
+					color:#F16701;
+					font-weight:bold;
+				}
 
-		<div id="rssFeed" style="height: 229px; overflow: auto;"></div>
+				.UIPageIterator .Number:hover {
+					color: #0183F1;
+					border: 1px solid #B6B6B6;
+				}
+				
+				.UIPageIterator .PageSelected {
+					color: #F16701;
+					font-weight: bold;
+				}
+				
+				.UIPageIterator .Icon {
+					margin-left: 0.5px; /* orientation=lt */
+					margin-right: 0px; /* orientation=rt */
+					width: 18px;
+					height: 17px;
+					cursor: pointer;
+				}
+				
+				.UIPageIterator .PagesTotalNumber {
+					color: #0183F1;
+					margin: 0 3px 0 1px; /* orientation=lt */
+					line-height: 17px;	
+					font-size: 11px;
+					font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
+				}
+				
+				.UIPageIterator .TotalPages {
+					font-size: 11px;
+					line-height: 17px;
+					font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
+				}
+				
+				.UIPageIterator .LastTopPageIcon {
+				  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -17px; /* orientation=lt */
+				}
+				
+				.UIPageIterator .NextTopPageIcon {
+				  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -51px; /* orientation=lt */
+				}
+				
+				.UIPageIterator .LastPageIcon {
+				  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -119px; /* orientation=lt */
+				}
+				
+				.UIPageIterator .NextPageIcon {
+				  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -85px;	/* orientation=lt */
+				}
+				
+				.UIPageIterator .DisableLastTopPageIcon {
+				  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left top; /* orientation=lt */
+				}
+				
+				.UIPageIterator .DisableNextTopPageIcon {
+				  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -34px; /* orientation=lt */
+				}
+				
+				.UIPageIterator .DisableLastPageIcon {
+				  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -102px; /* orientation=lt */
+				}
+				
+				.UIPageIterator .DisableNextPageIcon {
+				  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -68px; /* orientation=lt */
+				}      
+    </style>
+    
+	  <link rel="stylesheet" type="text/css" href="rssFetch/style.css"></link>
+	  <script type="text/javascript" src="rssFetch/script.js"></script>
+	  
+	  <div id="rssFeed" style="overflow: auto;"></div>
 		
 		
 		<script type="text/javascript">

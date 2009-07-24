@@ -62,6 +62,8 @@ RssFetch.prototype.refreshFeed = function() {
 
 RssFetch.prototype.loadPage = function() {
 	var feedEl = _gel("rssFeed");
+	var currentView = gadgets.views.getCurrentView().getName();
+	
 	var bullet = "<img src='" + eXo.social.thisRssFetch.getFavicon(feedurl) + "' alt='' border=0 align='absmiddle' style='height:16;width:16;' onerror='this.style.visibility=\"hidden\";'>&nbsp;&nbsp;";
 	
 	while ( feedEl.hasChildNodes() )
@@ -89,11 +91,19 @@ RssFetch.prototype.loadPage = function() {
         
         itemEl.id = 'item_'+i;
         item_title.id = 'title_'+i;
-        item_more.id = 'more_'+i;
-        item_more.style.display='none';
+        item_more.id = 'more_'+i;        
         item_desc.id = 'desc_'+i;
         item_date.id = 'date_'+i;
         item_link.id = 'link_'+i;
+        if (currentView == "home") {
+        	item_more.style.display='none';
+        }
+        
+        if (currentView == "canvas") {
+        	item_date.style.fontSize="12";
+    		item_desc.style.fontSize="14";
+    		item_link.style.fontSize="14";
+        }
         
         itemEl.className = 'item';
         item_title.className = 'title';
@@ -113,10 +123,14 @@ RssFetch.prototype.loadPage = function() {
 				var description = node.firstChild.nodeValue;
 			} else if (node.nodeName == "pubDate") {  
 				var date = node.firstChild.nodeValue;
-			} 					  
+			} 				
 		}
-
-		item_title.innerHTML = bullet + "<a style='text-decoration:underline;' id='link_title_"+i+"' class='titlelink' href='" + link + "' onclick='eXo.social.thisRssFetch.toggleDescription("+i+");return false;'>" + title + "</a>";
+		
+		if (currentView == "home") {
+			item_title.innerHTML = bullet + "<a style='text-decoration:underline;' id='link_title_"+i+"' class='titlelink' href='" + link + "' onclick='eXo.social.thisRssFetch.toggleDescription("+i+");return false;'>" + title + "</a>";
+		} else {
+			item_title.innerHTML = bullet + "<a style='text-decoration:underline; font-size:14px;' id='link_title_"+i+"' class='titlelink' href='" + link + "' onclick='eXo.social.thisRssFetch.toggleDescription("+i+");return false;'>" + title + "</a>";
+		}
 		item_date.innerHTML = date;
 		item_desc.innerHTML = description;
 		item_link.innerHTML = this.generateLinkContent(i, link);
@@ -157,9 +171,9 @@ RssFetch.prototype.loadPage = function() {
 	        var str="";
 	    	
 	        if (i == eXo.social.thisRssFetch.currentPage) {
-	        	str = "<a href='#' class ='Number PageSelected' onclick='eXo.social.thisRssFetch.toPage("+i+")'>" + i + "</a>";
+	        	str = "<a class ='Number PageSelected' onclick='eXo.social.thisRssFetch.toPage("+i+")'>" + i + "</a>";
 	        } else {
-	        	str = "<a href='#' class ='Number' onclick='eXo.social.thisRssFetch.toPage("+i+")'>" + i + "</a>";
+	        	str = "<a class ='Number' onclick='eXo.social.thisRssFetch.toPage("+i+")'>" + i + "</a>";
 	        }
 	        
 	        allPages.push(str);
@@ -213,7 +227,7 @@ RssFetch.prototype.createHTML = function(last, next, pages, previous, first) {
 	return HTML;
 }
 RssFetch.prototype.createTag = function(id, cls, action) {
-	return "<a  id='" +id+"' class='"+cls+"' href='#' onclick='"+action+"'> </a>";
+	return "<a  id='" +id+"' class='"+cls+"' onclick='"+action+"'> </a>";
 }
 
 RssFetch.prototype.getEl = function (elId) {
