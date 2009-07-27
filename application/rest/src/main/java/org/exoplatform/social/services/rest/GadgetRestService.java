@@ -39,18 +39,15 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  *          tungcnw@gmail.com
  * Jan 20, 2009          
  */
-
+@Path("/social/")
 public class GadgetRestService implements ResourceContainer {
 
   /**
-   * Return request with JSON body which represent application object.
-   * @param key the key.
-   * @return @see {@link Response} .
-   * @throws Exception 
+   * Return request with JSON body which represent application object.<br>
+   * 
+   * @return Registried applications list.
+   * @throws Exception When getApplicationCategories() method throw an Exception.
    */
-//  @HTTPMethod("GET")                                                                                                                                                                                           
-//  @URITemplate("/json/application/")                                                                                                                                                                                   
-//  @OutputTransformer(Bean2JsonOutputTransformer.class) 
   @GET
   @Path("/json/application/")
   @Produces({MediaType.APPLICATION_JSON})
@@ -62,7 +59,8 @@ public class GadgetRestService implements ResourceContainer {
     ApplicationRegistryService appRegistrySrc = (ApplicationRegistryService)portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
     String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
     List<ApplicationCategory> listCategory = appRegistrySrc.getApplicationCategories();
-    Iterator<ApplicationCategory> cateItr = listCategory.iterator() ;
+    Iterator<ApplicationCategory> cateItr = listCategory.iterator();
+
     while (cateItr.hasNext()) {
       ApplicationCategory cate = cateItr.next();
       List<Application> applications = appRegistrySrc.getApplications(cate, applicationTypes);
@@ -80,8 +78,15 @@ public class GadgetRestService implements ResourceContainer {
     return listModels;
   }
   
+  /**
+   * Describe an Application entity from application registry service of portal.<br>
+   * We have to need it for model of converter from rest service.
+   */
   public class Model {
+    /** Application Id. */
     private String appId_;
+    
+    /** Application name. */
     private String appName_;
     
     public void setAppId(String appId) { appId_ = appId; }
@@ -91,7 +96,12 @@ public class GadgetRestService implements ResourceContainer {
     public String getAppName() {return appName_ ;}
   }
   
+  /**
+   * List that contains applications from application registry service of portal<br>
+   * Need this class for converter from rest service.
+   */
   public class ListModel {
+    /** Application list variable */
     private List<Model> apps_;
     
     public void setApps(List<Model> apps) { apps_ = apps; }
