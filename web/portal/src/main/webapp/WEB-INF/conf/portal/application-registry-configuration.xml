@@ -550,13 +550,13 @@
                                                 <string>tools</string>
                                             </field>
                                             <field name="applicationName">
-                                                <string>socialRssAggregator</string>
+                                                <string>rssFetch</string>
                                             </field>
                                             <field name="displayName">
-                                                <string>Social RSS Reader</string>
+                                                <string>Social RSS Fetcher</string>
                                             </field>
                                             <field name="description">
-                                                <string>Social RSS Reader</string>
+                                                <string>Social RSS Fetcher</string>
                                             </field>
                                             <field name="applicationType">
                                                 <string>eXoGadget</string>
