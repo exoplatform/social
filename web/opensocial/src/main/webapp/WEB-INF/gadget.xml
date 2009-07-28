@@ -18,17 +18,11 @@
 
 -->
 <gadgets>
-	<gadget name="codeRunner">
-		<path>/gadgets/codeRunner.xml</path>
-	</gadget>
-    <gadget name="SocialHelloWorld">
+	<gadget name="SocialHelloWorld">
 		<path>/gadgets/SocialHelloWorld.xml</path>
 	</gadget>
     <gadget name="statusUpdate">
 		<path>/gadgets/statusUpdate.xml</path>
-	</gadget>
-    <gadget name="socialRssAggregator">
-		<path>/gadgets/socialRssAggregator.xml</path>
 	</gadget>
 	<gadget name="ComplianceTest08">
 		<url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>
@@ -45,4 +39,8 @@
 	<gadget name="rssFetch">
 		<path>/gadgets/rssFetch.xml</path>
 	</gadget>
+	<gadget name="restBookService">
+		<path>/gadgets/restBookService.xml</path>
+	</gadget>
+	
 </gadgets>
