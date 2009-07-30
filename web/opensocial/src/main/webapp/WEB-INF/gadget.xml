@@ -38,9 +38,8 @@
 	</gadget>
 	<gadget name="rssFetch">
 		<path>/gadgets/rssFetch.xml</path>
+	</gadget>	
+	<gadget name="userSpaceRestService">
+		<path>/gadgets/userSpaceRestService.xml</path>
 	</gadget>
-	<gadget name="restBookService">
-		<path>/gadgets/restBookService.xml</path>
-	</gadget>
-	
 </gadgets>

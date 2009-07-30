@@ -23,15 +23,18 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceService;
+
 
 /**
  * Created by The eXo Platform SARL
@@ -79,6 +82,48 @@ public class GadgetRestService implements ResourceContainer {
   }
   
   /**
+   * Return request with JSON body contains space information.<br>
+   * 
+   * @return List of user's space.
+   * @throws Exception When getAllSpaces() method throw an Exception.
+   */
+  @GET
+  @Path("/space/getMySpace/{userId}/")
+  @Produces({MediaType.APPLICATION_JSON})
+  public ListSpace getMySpace(@PathParam("userId") String userId) throws Exception {
+    ListSpace listSpaces = new ListSpace();
+    List<Space> mySpace = new ArrayList<Space>();
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    SpaceService spaceSrc = (SpaceService)portalContainer.getComponentInstanceOfType(SpaceService.class);
+    mySpace = spaceSrc.getAllSpaces(userId);
+    
+    listSpaces.setSpaces(mySpace);
+    
+    return listSpaces;
+  }
+  
+  /**
+   * Return request with JSON body contains pending space information.<br>
+   * 
+   * @return List of user's pending space.
+   * @throws Exception When getPendingSpaces() method throw an Exception.
+   */
+  @GET
+  @Path("/space/getPendingSpace/{userId}/")
+  @Produces({MediaType.APPLICATION_JSON})
+  public ListSpace getPendingSpace(@PathParam("userId") String userId) throws Exception {
+    ListSpace listSpaces = new ListSpace();
+    List<Space> pendingSpaces = new ArrayList<Space>();
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    SpaceService spaceSrc = (SpaceService)portalContainer.getComponentInstanceOfType(SpaceService.class);
+    pendingSpaces = spaceSrc.getPendingSpaces(userId);
+    
+    listSpaces.setSpaces(pendingSpaces);
+    
+    return listSpaces;
+  }
+  
+  /**
    * Describe an Application entity from application registry service of portal.<br>
    * We have to need it for model of converter from rest service.
    */
@@ -106,5 +151,16 @@ public class GadgetRestService implements ResourceContainer {
     
     public void setApps(List<Model> apps) { apps_ = apps; }
     public List<Model> getApps() { return apps_; }
+  }
+  
+  /**
+   * List that contains space from space service.<br>
+   * Need this class for converter from rest service.
+   */
+  public class ListSpace {
+    private List<Space> spaces_;
+    
+    public void setSpaces(List<Space> spaces) { spaces_ = spaces; }
+    public List<Space> getSpaces() { return spaces_; }
   }
 }
