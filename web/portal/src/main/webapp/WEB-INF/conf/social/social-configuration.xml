@@ -28,7 +28,7 @@
     <init-params>                                                                                                                                                                                              
       <properties-param>                                                                                                                                                                                       
         <name>backup-properties</name>                                                                                                                                                                         
-        <property name="default-incremental-job-period" value="3600" /> <!-- set default incremental period = 60 minutes -->                                                                                   
+        <property name="default-incremental-job-period" value="3600" />                                                                                   
         <property name="full-backup-type" value="org.exoplatform.services.jcr.ext.backup.impl.fs.FullBackupJob" />                                                                                             
         <property name="incremental-backup-type" value="org.exoplatform.services.jcr.ext.backup.impl.fs.IncrementalBackupJob" />                                                                               
         <property name="backup-dir" value="target/backup" />                                                                                                                                                   
@@ -63,7 +63,7 @@
           <field name="workspaces">                                                                                               
             <collection type="java.util.ArrayList">                                                                               
               <value>                                                                                                             
-            <string>collaboration</string>                                                                                        
+            <string>portal-system</string>                                                                                        
               </value>                                                                                                            
             </collection>                                                                                                         
           </field>                                                                                                                
