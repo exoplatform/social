@@ -227,6 +227,17 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
+  public void deleteSpace(Space space) throws SpaceException {
+    //TODO hoatle delete space
+  }
+  
+  public void deleteSpace(String spaceId) throws SpaceException {
+    deleteSpace(getSpaceById(spaceId));
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public void initApp(Space space) throws SpaceException {
     SpaceApplicationHandler spaceAppHandler = getSpaceApplicationHandler(space);
     spaceAppHandler.initApp(space);

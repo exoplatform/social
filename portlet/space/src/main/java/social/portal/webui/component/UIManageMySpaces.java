@@ -24,6 +24,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.WebuiConfiguration;
@@ -58,7 +59,6 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIManageMySpaces extends UIContainer {
-  static private Log log = ExoLogger.getLogger(UIManageMySpaces.class);
   //Message Bundle
   static public final String LBL_INVITED_SPACES = "UIManageMySpaces.label.invited-spaces";
   static public final String LBL_MY_SPACES = "UIManageMySpaces.label.my-spaces";
@@ -130,7 +130,7 @@ public class UIManageMySpaces extends UIContainer {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
     List<Space> userSpaces = spaceService.getSpaces(userId);
-    return userSpaces;
+    return SpaceUtils.getOrderedSpaces(userSpaces);
   }
   
   /**
@@ -143,7 +143,7 @@ public class UIManageMySpaces extends UIContainer {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
     List<Space> invitedSpaces = spaceService.getInvitedSpaces(userId);
-    return invitedSpaces;
+    return SpaceUtils.getOrderedSpaces(invitedSpaces);
   }
   
   /**
@@ -231,7 +231,6 @@ public class UIManageMySpaces extends UIContainer {
       try {
         spaceService.removeMember(spaceId, userId);
       } catch(SpaceException se) {
-        log.warn(se);
         msg = MSG_ERROR_LEAVE_SPACE;
         uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
@@ -254,7 +253,9 @@ public class UIManageMySpaces extends UIContainer {
     public void execute(Event<UIManageMySpaces> event) throws Exception {
       UIManageMySpaces uiManageMySpaces = event.getSource();
       UIPopupWindow uiPopup = uiManageMySpaces.getChild(UIPopupWindow.class);
-      UISpaceAddForm uiAddSpaceForm = uiManageMySpaces.createUIComponent(UISpaceAddForm.class, null, null);
+      UISpaceAddForm uiAddSpaceForm = uiManageMySpaces.createUIComponent(UISpaceAddForm.class,
+                                                                         null,
+                                                                         null);
       uiPopup.setUIComponent(uiAddSpaceForm);
       uiPopup.setShow(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
@@ -281,7 +282,6 @@ public class UIManageMySpaces extends UIContainer {
         spaceService.acceptInvitation(spaceId, userId);
       } catch(SpaceException se) {
         msg = MSG_ERROR_ACCEPT_INVITATION;
-        log.warn(se);
         uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
       }
@@ -311,7 +311,6 @@ public class UIManageMySpaces extends UIContainer {
       } catch(SpaceException se) {
         msg = MSG_ERROR_DENY_INVITATION;
         uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
-        log.warn(se);
       }
       msg = MSG_DENY_INVITATION_SUCCESS;
       uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));

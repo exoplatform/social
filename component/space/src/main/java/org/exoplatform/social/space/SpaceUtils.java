@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.space;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -330,11 +331,32 @@ public class SpaceUtils {
   /**
    * Sort spaces list by priority and alphabet order
    * @param spaces
-   * @return
+   * @return ordered spaces list
    */
-  static public List<Space> getOrderedSpace(List<Space> spaces) {
-    //TODO hoatle getOrderedSpace
-    return spaces;
+  static public List<Space> getOrderedSpaces(List<Space> spaces) {
+    Iterator<Space> itr = spaces.iterator();
+    List<Space> orderedSpaces = new ArrayList<Space>();
+    List<Space> middleSpaces = new ArrayList<Space>();
+    List<Space> lowSpaces = new ArrayList<Space>();
+    Space space = null;
+    while(itr.hasNext()) {
+      space = itr.next();
+      String priority = space.getPriority();
+      if (priority.equals(Space.HIGH_PRIORITY)) {
+        orderedSpaces.add(space);
+      } else if (priority.equals(Space.MIDDLE_PRIORITY)) {
+        middleSpaces.add(space);
+      } else if (priority.equals(Space.LOW_PRIORITY)) {
+        lowSpaces.add(space);
+      }
+    }
+    for (Space sp: middleSpaces) {
+      orderedSpaces.add(sp);
+    }
+    for (Space sp: lowSpaces) {
+      orderedSpaces.add(sp);
+    }
+    return orderedSpaces;
   }
   
   /**

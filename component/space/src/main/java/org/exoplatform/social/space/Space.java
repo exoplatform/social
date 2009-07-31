@@ -48,6 +48,9 @@ public class Space {
   public final static String OPEN = "open";
   public final static String VALIDATION = "validation";
   public final static String CLOSE = "close";
+  public final static String HIGH_PRIORITY = "1";
+  public final static String MIDDLE_PRIORITY = "2";
+  public final static String LOW_PRIORITY = "3";
   
   public Space() {}
   

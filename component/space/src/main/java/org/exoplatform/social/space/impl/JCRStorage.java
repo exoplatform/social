@@ -46,6 +46,7 @@ public class JCRStorage {
   final static private String SPACE_URL = "exo:url".intern();
   final static private String SPACE_VISIBILITY = "exo:visibility".intern();
   final static private String SPACE_REGISTRATION = "exo:registration".intern();
+  final static private String SPACE_PRIORITY = "exo:priority".intern();
 
   private NodeHierarchyCreator nodeHierarchyCreator_ ;
 
@@ -145,6 +146,7 @@ public class JCRStorage {
     spaceNode.setProperty(SPACE_URL, space.getUrl());
     spaceNode.setProperty(SPACE_VISIBILITY, space.getVisibility());
     spaceNode.setProperty(SPACE_REGISTRATION, space.getRegistration());
+    spaceNode.setProperty(SPACE_PRIORITY, space.getPriority());
   }
 
   private Space getSpace(Node spaceNode) throws Exception{
@@ -162,6 +164,7 @@ public class JCRStorage {
     if(spaceNode.hasProperty(SPACE_URL)) space.setUrl(spaceNode.getProperty(SPACE_URL).getString());
     if(spaceNode.hasProperty(SPACE_VISIBILITY)) space.setVisibility(spaceNode.getProperty(SPACE_VISIBILITY).getString());
     if(spaceNode.hasProperty(SPACE_REGISTRATION)) space.setRegistration(spaceNode.getProperty(SPACE_REGISTRATION).getString());
+    if(spaceNode.hasProperty(SPACE_PRIORITY)) space.setPriority(spaceNode.getProperty(SPACE_PRIORITY).getString());
     return space;
   }
   

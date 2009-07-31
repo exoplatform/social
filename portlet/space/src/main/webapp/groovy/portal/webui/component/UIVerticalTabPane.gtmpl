@@ -25,26 +25,26 @@
     <div class="TabPaneContent">
         <div class="UIVerticalTabs">
             <div class="TabsContainer">
-                        <%
-	                        String selTabId = uicomponent.getSelectedTabId() ;
-	                        for(uiChild in uicomponent.getChildren()) {
-	                          if(!uiChild.isRendered()) continue ; 
-	                          String style = "NormalTab" ;
-	                          String tabId = uiChild.getId();
-	                          if(tabId.equals(selTabId)) style="SelectedTab" ;
-	                        %>
-		                        <div class="UITab NormalTabStyle">
-		                          <div class="$style">
-		                            <div class="LeftTab">
-		                              <div class="RightTab">			         	   	                                
-		                                <% String actionLink = "ajaxAsyncGetRequest('" + uicomponent.url("SelectTab",tabId) + "', true)" %>                
-		                                <div class="MiddleTab" onclick="eXo.social.space.UIVerticalTabs.displayTabContent(this); $actionLink"><%=_ctx.appRes("UITabPane.title." + uiChild.getId());%></div>
-		                              </div>
-		                            </div>
-		                          </div>
-		                        </div>              
-	                        <%}%>
+            <%
+                String selTabId = uicomponent.getSelectedTabId() ;
+                for(uiChild in uicomponent.getChildren()) {
+                  if(!uiChild.isRendered()) continue ; 
+                  String style = "NormalTab" ;
+                  String tabId = uiChild.getId();
+                  if(tabId.equals(selTabId)) style="SelectedTab" ;
+                %>
+                    <div class="UITab NormalTabStyle">
+                      <div class="$style">
+                        <div class="LeftTab">
+                          <div class="RightTab">			         	   	                                
+                            <% String actionLink = "ajaxAsyncGetRequest('" + uicomponent.url("SelectTab",tabId) + "', true)" %>                
+                            <div class="MiddleTab" onclick="eXo.social.space.UIVerticalTabs.displayTabContent(this); $actionLink"><%=_ctx.appRes("UITabPane.title." + uiChild.getId());%></div>
+                          </div>
                         </div>
+                      </div>
+                    </div>              
+                <%}%>
+            </div>
         </div>
         <div class="UIVerticalTabContentContainer">
             <%

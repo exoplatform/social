@@ -19,6 +19,7 @@ package social.portal.webui.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.social.space.Space;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormSelectBox;
@@ -61,9 +62,9 @@ public class UISpaceSettings extends UIFormInputSet {
                    addValidator(StringLengthValidator.class, 3, 30));
     
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
-    SelectItemOption<String> pHight = new SelectItemOption<String>(PRIORITY_HIGH, "1");
-    SelectItemOption<String> pMiddle = new SelectItemOption<String>(PRIORITY_MIDDLE, "2");
-    SelectItemOption<String> pLow = new SelectItemOption<String>(PRIORITY_LOW, "3");
+    SelectItemOption<String> pHight = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
+    SelectItemOption<String> pMiddle = new SelectItemOption<String>(PRIORITY_MIDDLE, Space.MIDDLE_PRIORITY);
+    SelectItemOption<String> pLow = new SelectItemOption<String>(PRIORITY_LOW, Space.LOW_PRIORITY);
     priorityList.add(pHight);
     priorityList.add(pMiddle);
     priorityList.add(pLow);

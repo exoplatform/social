@@ -16,6 +16,8 @@
  */
 package social.portal.webui.component;
 
+import java.util.ResourceBundle;
+
 import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -55,11 +57,13 @@ import org.exoplatform.webui.organization.account.UIGroupSelector;
 public class UISpaceAddForm extends UIFormTabPane {
 
   // Message for UIApplication
+  static private final String MSG_DEFAULT_SPACE_DESCRIPTION       = "UISpaceAddForm.msg.default-space-description";
+  
   static private final String MSG_ERROR_SPACE_CREATION            = "UISpaceAddForm.msg.error-space-creation";
 
   static private final String MSG_ERROR_DATASTORE                 = "UISpaceAddForm.msg.error-space-not-saved";
 
-  static private final String MSG_ERROR_UNABLE_TO_INIT_APP              = "UISpaceAddForm.msg.error-unable-to-init-app";
+  static private final String MSG_ERROR_UNABLE_TO_INIT_APP        = "UISpaceAddForm.msg.error-unable-to-init-app";
 
   static private final String MSG_ERROR_UNABLE_TO_ADD_CREATOR     = "UISpaceAddForm.msg.error-unable-to-add-creator";
 
@@ -108,14 +112,18 @@ public class UISpaceAddForm extends UIFormTabPane {
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
       UISpaceAddForm uiAddForm = event.getSource();
-      WebuiRequestContext uiRequestContext = event.getRequestContext();
-      UIApplication uiApplication = uiRequestContext.getUIApplication();
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIApplication uiApplication = ctx.getUIApplication();
       SpaceService spaceService = uiAddForm.getApplicationComponent(SpaceService.class);
       UISpaceGroupBound uiGroupBound = uiAddForm.getChild(UISpaceGroupBound.class);
       UIFormCheckBoxInput<Boolean> uiUseExisting = uiGroupBound.getChild(UIFormCheckBoxInput.class);
-      String creator = uiRequestContext.getRemoteUser();
+      String creator = ctx.getRemoteUser();
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
+      if (space.getDescription() == null) {
+        space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
+      }
       String msg = "";
       try {
         if (uiUseExisting.isChecked()) {// create space from an existing group
@@ -156,7 +164,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
       UIManageMySpaces uiManageMySpaces = uiPopup.getParent();
-      uiRequestContext.addUIComponentToUpdateByAjax(uiManageMySpaces);
+      ctx.addUIComponentToUpdateByAjax(uiManageMySpaces);
     }
   }
 

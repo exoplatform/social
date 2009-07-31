@@ -39,14 +39,15 @@
         <div class="InvitedSpaces">
             <div class="InvitedSpaceLabel"><%= labelInvitedSpaces %></div>
         <%for (space in invitedSpaces) {
-            def acceptAction = uicomponent.event("Accept", space.getId()) + "; return false"
-            def denyAction = uicomponent.event("Deny", space.getId()) + "; return false"
+            def acceptAction = uicomponent.event("Accept", space.id) + "; return false"
+            def denyAction = uicomponent.event("Deny", space.id) + "; return false"
         %>
             <div class="InvitedSpacesContent">
                 <div class="SpaceIcon"></div>
-                <div class="SpaceName"><%= space.getName() %></div>
-                <div class="SpaceAction" onclick="<%= acceptAction %>"><%= labelActionAccept %></div>
-                <div class="SpaceAction" onclick="<%= denyAction %>"><%= labelActionDeny %></div>
+                <div class="SpaceName"><%= space.name %></div>
+                <div class="SpaceDescription"><%= space.description %></div>
+                <div class="SpaceAction" onclick="<%= acceptAction %>"><a href="#accept-space"><%= labelActionAccept %></a></div>
+                <div class="SpaceAction" onclick="<%= denyAction %>"><a href="#deny-space"><%= labelActionDeny %></a></div>
                 <div class="Delimeter">_____</div>
             </div>
          <%}%>
@@ -55,27 +56,29 @@
             <div class="MySpacesLabel"><%= labelMySpaces %></div>
 	     <%for (space in userSpaces) {
 	          def editSpaceAction = uicomponent.event("EditSpace", space.getId()) + "; return false"
-	          def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.getId()) + "; return false"
-	          def deleteSpaceAction = uicomponent.event("DeleteSpace", space.getId()) + "; return false"
-	          def leaveSpaceAction = uicomponent.event("LeaveSpace", space.getId()) + "; return false"
-	          def role = uicomponent.getRole(space.getId())
+	          def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.id) + "; return false"
+	          def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
+	          def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
+	          def role = uicomponent.getRole(space.id)
 	          def pageUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
 	      %>
             <!-- Leader -->
             <%if (role == 1) {%>
             <div class="MySpacesContent">
                 <div class="SpaceIcon"></div>
-                <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.getName() %></a></div>
-                <div class="SpaceAction" onclick="<%= editSpaceAction %>"><%= labelActionEditSpace %></div>
-                <div class="SpaceAction" onclick="<%= editSpaceNavigationAction %>"><%= labelActionEditSpaceNavigation %></div>
-                <div class="SpaceAction" onclick="<%= deleteSpaceAction %>"><%= labelActionDeleteSpace %></div>
+                <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.name %></a></div>
+                <div class="SpaceDescription"><%= space.description %></div>
+                <div class="SpaceAction" onclick="<%= editSpaceAction %>"><a href="#edit-space"><%= labelActionEditSpace %></a></div>
+                <div class="SpaceAction" onclick="<%= editSpaceNavigationAction %>"><a href="#edit-space-navigation"><%= labelActionEditSpaceNavigation %></a></div>
+                <div class="SpaceAction" onclick="<%= deleteSpaceAction %>"><a href="#delete-space"><%= labelActionDeleteSpace %></a></div>
             </div>
             <%}%>
             <!-- Member -->
             <%if (role == 2) {%>
             <div class="MySpacesContent">
                 <div class="SpaceIcon"></div>
-                <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.getName() %></a></div>
+                <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.name %></a></div>
+                <div class="SpaceDescription"><%= space.description %></div>
                 <div class="SpaceAction" onclick="<%= leaveSpaceAction %>"><%= labelActionLeaveSpace %></div>
             </div>
             <%}%>

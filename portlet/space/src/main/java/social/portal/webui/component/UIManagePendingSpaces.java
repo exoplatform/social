@@ -51,7 +51,6 @@ public class UIManagePendingSpaces extends UIContainer {
   static public final String LBL_ACTION_REVOKE_PENDING = "UIManagePendingSpaces.label.action-revoke-pending";
   static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error-revoke-pending";
   static private final String MSG_REVOKE_PENDING_SUCCESS = "UIManagePendingSpaces.msg.revoke-pending-success";
-  static private Log log = ExoLogger.getLogger(UIManagePendingSpaces.class);
   SpaceService spaceService = null;
   String userId = null;
   
@@ -97,7 +96,7 @@ public class UIManagePendingSpaces extends UIContainer {
     return pendingSpaces;
   }
   
-  /*
+  /**
    * This action is triggered when user clicks on RevokePending action
    */
   static public class RevokePendingActionListener extends EventListener<UIManagePendingSpaces> {
@@ -114,7 +113,6 @@ public class UIManagePendingSpaces extends UIContainer {
         spaceService.revokeInvitation(spaceId, userId);
         msg = MSG_REVOKE_PENDING_SUCCESS;
       } catch(SpaceException se) {
-        log.warn(se);
         msg = MSG_ERROR_REVOKE_PENDING;
         uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;

@@ -130,6 +130,20 @@ public interface SpaceService {
   void saveSpace(Space space, boolean isNew) throws SpaceException;
   
   /**
+   * Delete space
+   * @param space
+   * @throws SpaceException
+   */
+  void deleteSpace(Space space) throws SpaceException;
+  
+  /**
+   * Delete space
+   * @param spaceId
+   * @throws SpaceException
+   */
+  void deleteSpace(String spaceId) throws SpaceException;
+  
+  /**
    * Initialize default application to space.
    * 
    * Set HomeSpacePortlet to be the root page of that space node
