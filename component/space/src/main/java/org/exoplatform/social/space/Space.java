@@ -37,6 +37,7 @@ public class Space {
   private String url;
   private String visibility;
   private String registration;
+  private String priority;
 
   public final static String ACTIVE_STATUS = "actived";
   public final static String DEACTIVE_STATUS = "deactived";
@@ -156,5 +157,13 @@ public class Space {
   
   public void setRegistration(String registration) {
     this.registration = registration;
+  }
+  
+  public String getPriority() {
+    return priority;
+  }
+  
+  public void setPriority(String priority) {
+    this.priority = priority;
   }
 }

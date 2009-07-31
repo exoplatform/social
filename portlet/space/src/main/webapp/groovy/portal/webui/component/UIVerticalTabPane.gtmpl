@@ -18,8 +18,6 @@
 -->
 
 <%
-  //def rcontext = _ctx.getRequestContext() ;
-  //rcontext.getJavascriptManager().importJavascript('eXo.webui.UIHorizontalTabs');
   def rcontext = _ctx.getRequestContext();
   rcontext.getJavascriptManager().importJavascript('eXo.social.space.UIVerticalTabs');
 %>

@@ -24,6 +24,9 @@ import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
+import org.exoplatform.webui.form.validator.ExpressionValidator;
+import org.exoplatform.webui.form.validator.MandatoryValidator;
+import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
  * This UI is used in UIAddSpaceForm.
@@ -44,15 +47,19 @@ public class UISpaceSettings extends UIFormInputSet {
   private final String SPACE_DESCRIPTION = "description";
   
   //These priority variables should be set in Space.java model
-  private final String PRIORITY_HIGH = "hight";
+  private final String PRIORITY_HIGH = "high";
   private final String PRIORITY_MIDDLE = "middle";
   private final String PRIORITY_LOW = "low";
   
+  //Message
+  private final String MSG_INVALID_SPACE_NAME = "UISpaceSettings.msg.invalid-space-name";
   public UISpaceSettings(String name) throws Exception {
     super(name);
-    addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null));
+    addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null).
+                   addValidator(MandatoryValidator.class).
+                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}]+$", MSG_INVALID_SPACE_NAME).
+                   addValidator(StringLengthValidator.class, 3, 30));
     
-    // TODO: Add Priority Options HIGH (1) - MIDDLE (2) - LOW (3)
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
     SelectItemOption<String> pHight = new SelectItemOption<String>(PRIORITY_HIGH, "1");
     SelectItemOption<String> pMiddle = new SelectItemOption<String>(PRIORITY_MIDDLE, "2");
@@ -64,7 +71,6 @@ public class UISpaceSettings extends UIFormInputSet {
         
     UIFormSelectBox selectPriority = new UIFormSelectBox(SPACE_PRIORITY, SPACE_PRIORITY, priorityList);
     addUIFormInput(selectPriority);
-    // Add Description
     addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null));
   }
 }

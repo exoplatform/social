@@ -19,20 +19,25 @@ package social.portal.webui.component;
 import java.util.List;
 
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
 /**
+ * UIManagePendingSpaces: list all pending spaces which user can revoke pending.
  * Created by The eXo Platform SAS
  * Author : hoatle
  *          hoatlevan@gmail.com
- *          hoat.le@exoplatform.com
  * Jun 23, 2009  
  */
 @ComponentConfig(
@@ -42,14 +47,26 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIManagePendingSpaces extends UIContainer {
-  
+  static public final String LBL_PENDING_SPACES = "UIManagePendingSpaces.label.pending-spaces";
+  static public final String LBL_ACTION_REVOKE_PENDING = "UIManagePendingSpaces.label.action-revoke-pending";
+  static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error-revoke-pending";
+  static private final String MSG_REVOKE_PENDING_SUCCESS = "UIManagePendingSpaces.msg.revoke-pending-success";
+  static private Log log = ExoLogger.getLogger(UIManagePendingSpaces.class);
   SpaceService spaceService = null;
   String userId = null;
   
+  /**
+   * Constructor
+   * @throws Exception
+   */
   public UIManagePendingSpaces() throws Exception {
     
   }
   
+  /**
+   * get {@SpaceService}
+   * @return spaceService
+   */
   private SpaceService getSpaceService() {
     if (spaceService == null) {
       spaceService = getApplicationComponent(SpaceService.class);
@@ -57,6 +74,10 @@ public class UIManagePendingSpaces extends UIContainer {
     return spaceService;
   }
   
+  /**
+   * Get remote user
+   * @return userId
+   */
   private String getUserId() {
     if (userId == null) {
       userId = Util.getPortalRequestContext().getRemoteUser();
@@ -64,6 +85,11 @@ public class UIManagePendingSpaces extends UIContainer {
     return userId;
   }
   
+  /**
+   * get pending spaces by userId
+   * @return
+   * @throws SpaceException
+   */
   public List<Space> getPendingSpaces() throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
@@ -75,11 +101,26 @@ public class UIManagePendingSpaces extends UIContainer {
    * This action is triggered when user clicks on RevokePending action
    */
   static public class RevokePendingActionListener extends EventListener<UIManagePendingSpaces> {
-
     @Override
     public void execute(Event<UIManagePendingSpaces> event) throws Exception {
-      // TODO Auto-generated method stub
-      
+      UIManagePendingSpaces uiPendingSpaces = event.getSource();
+      SpaceService spaceService = uiPendingSpaces.getApplicationComponent(SpaceService.class);
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIApplication uiApp = ctx.getUIApplication();
+      String spaceId = ctx.getRequestParameter(OBJECTID);
+      String userId = ctx.getRemoteUser();
+      String msg = "";
+      try {
+        spaceService.revokeInvitation(spaceId, userId);
+        msg = MSG_REVOKE_PENDING_SUCCESS;
+      } catch(SpaceException se) {
+        log.warn(se);
+        msg = MSG_ERROR_REVOKE_PENDING;
+        uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
+        return;
+      }
+      uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
+      ctx.addUIComponentToUpdateByAjax(uiPendingSpaces);
     }
     
   }

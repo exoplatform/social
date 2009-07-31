@@ -16,19 +16,8 @@
  */
 package social.portal.webui.component.space;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.exoplatform.dashboard.webui.component.DashboardParent;
 import org.exoplatform.dashboard.webui.component.UIDashboard;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.portal.webui.portal.UIPortal;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
@@ -67,7 +56,7 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     try {
       Space space = spaceSrc.getSpaceByUrl(spaceUrl);
-      if(memberShipHandler.findMembershipByUserGroupAndType(remoteUser, "/spaces/" + space.getShortName(), "manager") != null) return true;
+      if(memberShipHandler.findMembershipByUserGroupAndType(remoteUser, space.getGroupId(), "manager") != null) return true;
     } catch (Exception e) {
       e.printStackTrace();
     }

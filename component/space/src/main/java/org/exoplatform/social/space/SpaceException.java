@@ -48,7 +48,8 @@ public class SpaceException extends Exception{
     USER_NOT_EXIST,
     ERROR_SETTING_LEADER_STATUS,
     UNABLE_REQUEST_TO_JOIN,
-    UNABLE_REQUEST_TO_JOIN_HIDDEN
+    UNABLE_REQUEST_TO_JOIN_HIDDEN,
+    UNABLE_TO_INIT_APP
   }
 
   private final Code code;

@@ -20,12 +20,19 @@
 	import org.exoplatform.webui.form.UIFormInputInfo
 	import org.exoplatform.webui.form.UIFormCheckBoxInput
 	import social.portal.webui.component.UISpaceGroupBound
-    
+	
+	def lblCheckbox = _ctx.appRes(UISpaceGroupBound.LBL_CHECKBOX)
+	def lblDescription = _ctx.appRes(UISpaceGroupBound.LBL_DESCRIPTION)
+	def lblSelectedGroup = _ctx.appRes(UISpaceGroupBound.LBL_SELECTED_GROUP)
+	
+	def uiCheckbox = uicomponent.getChild(UIFormCheckBoxInput.class)
+	def checked = uiCheckbox.isChecked()
 %>
 <div class="UISpaceGroupBound" id="$uicomponent.id">
-    <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %></div>
-    <div class="UIGroupBoundLabel">Use an existing group</div>
-    <div clas="UIGroupBoundDescription">Description here...</div>
-    <div class="UIGroupSelected">Selected Group: <% uicomponent.renderChild(UIFormInputInfo.class) %></div>
+    <%if (checked) {%>
+    <div class="UIGroupSelected"><%= lblSelectedGroup %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
+    <%}%>
+    <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><%= lblCheckbox %></span></div>
+    <div clas="UIGroupBoundDescription"><%= lblDescription %></div>    
     <div class="UIGroupBoundPopup"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

@@ -18,7 +18,7 @@
 /** 
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
  */
-
+var eXo = eXo || {};
 eXo.social = eXo.social || {};
 eXo.social.space = eXo.social.space || {};
 

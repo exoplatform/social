@@ -65,7 +65,7 @@ public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
     List<Application> list;
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     Space space = spaceSrc.getSpaceById(spaceId);
-    list = SpaceUtils.getAllApplications(space.getGroupId());
+    list = SpaceUtils.getApplications(space.getGroupId());
     // remove installed app
     String appList = space.getApp();
     if(appList != null) {

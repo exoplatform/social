@@ -25,49 +25,64 @@ import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
 /**
- * This class is used to build UI for setting space's visibility
- * Setting variables:
- *        - Visibility: Private or Hidden
- *        - Registration: Open, Validation or Close 
- * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- *          hoat.le@exoplatform.com
- * Jul 1, 2009  
+ * This class is used to build UI for setting space's visibility Setting
+ * variables: 
+ * - Visibility: Private or Hidden 
+ * - Registration: Open, Validation or Close 
+ * 
+ * Created by The eXo Platform SAS 
+ * 
+ * @author hoatle
+ * @author hoatlevan@gmail.com
+ * @since  Jul 1, 2009
  */
 
 public class UISpaceVisibility extends UIFormInputSet {
-  private final String SPACE_VISIBILITY = "visibility";
-  private final String SPACE_REGISTRATION = "registration";
+  private final String UI_SPACE_VISIBILITY   = "UIVisibility";
+
+  private final String UI_SPACE_REGISTRATION = "UIRegistration";
+
+  private final String VISIBILITY_BINDING    = "visibility";
+
+  private final String REGISTRATION_BINDING  = "registration";
   
+  /**
+   * Constructor
+   * @param name
+   * @throws Exception
+   */
   public UISpaceVisibility(String name) throws Exception {
     super(name);
     List<SelectItemOption<String>> spaceVisibility = new ArrayList<SelectItemOption<String>>(2);
-    
+
     SelectItemOption<String> privateOption = new SelectItemOption<String>(Space.PRIVATE);
-    privateOption.setSelected(true);
     spaceVisibility.add(privateOption);
-    
+
     SelectItemOption<String> hiddenOption = new SelectItemOption<String>(Space.HIDDEN);
     spaceVisibility.add(hiddenOption);
-    
-    UIFormRadioBoxInput uiRadioVisibility = new UIFormRadioBoxInput(SPACE_VISIBILITY, SPACE_VISIBILITY, spaceVisibility);
+
+    UIFormRadioBoxInput uiRadioVisibility = new UIFormRadioBoxInput(UI_SPACE_VISIBILITY,
+                                                                    VISIBILITY_BINDING,
+                                                                    spaceVisibility);
+    uiRadioVisibility.setValue(Space.PRIVATE);
     addUIFormInput(uiRadioVisibility);
-    
+
     List<SelectItemOption<String>> spaceRegistration = new ArrayList<SelectItemOption<String>>(3);
-    
+
     SelectItemOption<String> openOption = new SelectItemOption<String>(Space.OPEN);
-    openOption.setSelected(false);
     spaceRegistration.add(openOption);
-    
+
     SelectItemOption<String> validationOption = new SelectItemOption<String>(Space.VALIDATION);
     validationOption.setSelected(true);
     spaceRegistration.add(validationOption);
-    
+
     SelectItemOption<String> closeOption = new SelectItemOption<String>(Space.CLOSE);
     spaceRegistration.add(closeOption);
-    
-    UIFormRadioBoxInput uiRadioRegistration = new UIFormRadioBoxInput(SPACE_REGISTRATION, SPACE_VISIBILITY, spaceRegistration);
+
+    UIFormRadioBoxInput uiRadioRegistration = new UIFormRadioBoxInput(UI_SPACE_REGISTRATION,
+                                                                      REGISTRATION_BINDING,
+                                                                      spaceRegistration);
+    uiRadioRegistration.setValue(Space.VALIDATION);
     addUIFormInput(uiRadioRegistration);
   }
 }

@@ -2,6 +2,10 @@
  * A class to manage vertical tabs
  * TODO : could be a good thing to implement a scroll manager directly in this class
  */
+var eXo = eXo || {};
+eXo.social = eXo.social || {};
+eXo.social.space = eXo.social.space || {};
+
 function UIVerticalTabs() {
   this.backupNavigationTabStyle;
   this.backupItemStyle;
@@ -65,7 +69,4 @@ UIVerticalTabs.prototype.changeTabForUITabPane = function(clickedEle, tabId, url
 //  }
 
 };
-eXo = eXo || {};
-eXo.social = eXo.social || {};
-eXo.social.space = eXo.social.space || {};
 eXo.social.space.UIVerticalTabs = new UIVerticalTabs();

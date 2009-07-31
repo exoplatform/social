@@ -16,11 +16,19 @@
  */
 package social.portal.webui.component;
 
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.ComponentConfigs;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
+import org.exoplatform.webui.organization.account.UIGroupSelector;
 /**
  * This UI component is used for setting space's bound to a group
  * 
@@ -28,29 +36,81 @@ import org.exoplatform.webui.form.UIFormInputInfo;
  * A popup window will be displayed for user to choose from existing group
  *
  * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- *          hoat.le@exoplatform.com
- * Jul 1, 2009  
+ * @author  hoatle
+ * @author  hoatlevan@gmail.com
+ * @since   Jul 1, 2009  
  */
-@ComponentConfig(
-  template = "app:/groovy/portal/webui/component/UISpaceGroupBound.gtmpl"
-)
+@ComponentConfigs({
+  @ComponentConfig(
+    template = "app:/groovy/portal/webui/component/UISpaceGroupBound.gtmpl",
+    events = {@EventConfig(listeners = UISpaceGroupBound.SelectGroupActionListener.class, phase=Phase.DECODE) }
+  ),
+  @ComponentConfig(
+    type = UIPopupWindow.class,
+    id = "SelectGroup",
+    template =  "system:/groovy/webui/core/UIPopupWindow.gtmpl",
+    events = @EventConfig(listeners = UISpaceGroupBound.ClosePopupActionListener.class, name = "ClosePopup")
+ )
+})
+
 public class UISpaceGroupBound extends UIContainer {
   private final String USE_EXISTING_GROUP = "useExistingGroup";
   private final String POPUP_GROUP_BOUND = "UIPopupGroupBound";
   private final String SELECTED_GROUP = "groupId";
+  
+  static public final String LBL_CHECKBOX = "UISpaceGroupBound.label.checkbox";
+  static public final String LBL_DESCRIPTION = "UISpaceGroupBound.label.description";
+  static public final String LBL_SELECTED_GROUP = "UISpaceGroupBound.label.selected-group";
+  
   public UISpaceGroupBound() throws Exception {
-    UIFormCheckBoxInput<Boolean> useExisting = new UIFormCheckBoxInput<Boolean>(USE_EXISTING_GROUP, null, false);
-    useExisting.setOnChange("ToogleUseGroup");
-    addChild(useExisting);
-    
+    UIFormCheckBoxInput<Boolean> uiUseExisting = new UIFormCheckBoxInput<Boolean>(USE_EXISTING_GROUP, null, false);
+    uiUseExisting.setOnChange("ToggleUseGroup");
+    addChild(uiUseExisting);
     UIFormInputInfo uiFormInputInfo = new UIFormInputInfo(SELECTED_GROUP, SELECTED_GROUP, null);
     addChild(uiFormInputInfo);
     
-    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_GROUP_BOUND);
+    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "SelectGroup", POPUP_GROUP_BOUND);
     uiPopup.setWindowSize(500, 0);
     addChild(uiPopup);
   }
- 
+  
+  /**
+   * When user click on select group on UIGroupSelector
+   */
+  static public class SelectGroupActionListener extends EventListener<UIGroupSelector> {
+    public void execute(Event<UIGroupSelector> event) throws Exception {
+      WebuiRequestContext context = event.getRequestContext();
+      String groupId = context.getRequestParameter(OBJECTID);
+      UIGroupSelector uiGroupSelector = event.getSource();
+      UISpaceGroupBound uiGroupBound = uiGroupSelector.getAncestorOfType(UISpaceGroupBound.class);
+      UIFormInputInfo uiFormInputInfo = uiGroupBound.getChild(UIFormInputInfo.class);
+      uiFormInputInfo.setValue(groupId);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiGroupBound);
+    }
+  }
+  
+  /**
+   * Check if user selected a group or  not when closing the popup,
+   * if not un-check the checked check box
+   */
+  static public class ClosePopupActionListener extends EventListener<UIPopupWindow> {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void execute(Event<UIPopupWindow> event) throws Exception {
+      UIPopupWindow uiPopup = event.getSource();
+      UISpaceGroupBound uiGroupBound = uiPopup.getAncestorOfType(UISpaceGroupBound.class);
+      UIGroupSelector uiGroupSelector = (UIGroupSelector)uiPopup.getUIComponent();
+      Group group = uiGroupSelector.getCurrentGroup();
+      if (group == null) {
+        UIFormCheckBoxInput<Boolean> uiUseExisting = uiGroupBound.getChild(UIFormCheckBoxInput.class);
+        uiUseExisting.setChecked(false);
+      } else {
+        UIFormInputInfo uiSelected = uiGroupBound.getChild(UIFormInputInfo.class);
+        uiSelected.setValue(group.getId());
+      }
+      uiPopup.setShow(false);
+    }
+    
+  }
 }

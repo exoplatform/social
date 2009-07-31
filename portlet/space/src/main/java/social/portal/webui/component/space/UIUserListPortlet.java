@@ -25,6 +25,9 @@ import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPageIterator;
@@ -54,9 +57,9 @@ public class UIUserListPortlet extends UIPortletApplication {
   @SuppressWarnings("unchecked")
   public void init() throws Exception {
     int n = iterator_.getCurrentPage();
-    String spaceName = getSpaceName();
+    Space space = getSpace();
     List<User> users;
-    String groupId = "/spaces/" + spaceName;
+    String groupId = space.getGroupId();
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
     PageList usersPageList = orgSrc.getUserHandler().findUsersByGroup(groupId);
     users = usersPageList.getAll();
@@ -69,8 +72,10 @@ public class UIUserListPortlet extends UIPortletApplication {
     return iterator_;
     }
   
-  private String getSpaceName() {
-    return SpaceUtils.getSpaceUrl();
+  private Space getSpace() throws SpaceException {
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    return spaceService.getSpaceByUrl(spaceUrl);
   }
   
   @SuppressWarnings("unchecked")
@@ -84,7 +89,7 @@ public class UIUserListPortlet extends UIPortletApplication {
     String memberShip = null;
     OrganizationService orgService = getApplicationComponent(OrganizationService.class);
     MembershipHandler memberShipHandler = orgService.getMembershipHandler();
-    Collection<Membership> memberShips= memberShipHandler.findMembershipsByUserAndGroup(userName, "/spaces/" + getSpaceName());
+    Collection<Membership> memberShips= memberShipHandler.findMembershipsByUserAndGroup(userName, getSpace().getGroupId());
     for(Membership aaa : memberShips) {
       if(memberShip == null) memberShip = aaa.getMembershipType();
       else memberShip += "," + aaa.getMembershipType();

@@ -16,14 +16,20 @@
  */
 package social.portal.webui.component;
 
+import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
@@ -31,67 +37,134 @@ import org.exoplatform.webui.form.UIFormTabPane;
 import org.exoplatform.webui.organization.account.UIGroupSelector;
 
 /**
- * UIAddSpaceForm to create new space
+ * UIAddSpaceForm to create new space. By using this UIForm, user can create a
+ * brand new space or a space from an existing group
  * 
- * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- * Jun 29, 2009  
+ * @author hoatle hoatlevan@gmail.com
+ * @since Jun 29, 2009
  */
 @ComponentConfig(
-   lifecycle = UIFormLifecycle.class,
-   template =  "system:/groovy/webui/form/UIFormTabPane.gtmpl",
-   events = {
+  lifecycle = UIFormLifecycle.class,
+  template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",
+  events = {
     @EventConfig(listeners = UISpaceAddForm.CreateActionListener.class),
-    @EventConfig(listeners = UISpaceAddForm.ToogleUseGroupActionListener.class),
-    @EventConfig(listeners = UISpaceAddForm.SelectGroupActionListener.class)
+    @EventConfig(listeners = UISpaceAddForm.ToggleUseGroupActionListener.class, phase = Phase.DECODE)
   }
 )
+
 public class UISpaceAddForm extends UIFormTabPane {
-  private final String SPACE_SETTINGS = "Settings";
-  private final String SPACE_VISIBILITY = "Visibility";
-  private final String SPACE_GROUP_BOUND = "GroupBound";
-  
-  
+
+  // Message for UIApplication
+  static private final String MSG_ERROR_SPACE_CREATION            = "UISpaceAddForm.msg.error-space-creation";
+
+  static private final String MSG_ERROR_DATASTORE                 = "UISpaceAddForm.msg.error-space-not-saved";
+
+  static private final String MSG_ERROR_UNABLE_TO_INIT_APP              = "UISpaceAddForm.msg.error-unable-to-init-app";
+
+  static private final String MSG_ERROR_UNABLE_TO_ADD_CREATOR     = "UISpaceAddForm.msg.error-unable-to-add-creator";
+
+  static private final String MSG_ERROR_UNABLE_TO_ADD_APPLICATION = "UISpaceAddForm.msg.error-unable-to-add-application";
+
+  static private final String MSG_SPACE_CREATION_SUCCESS          = "UISpaceAddForm.msg.space-creation-success";
+
+  static private final String MSG_ERROR_SPACE_ALREADY_EXIST       = "UISpaceAddForm.msg.error-space-already-exist";
+
+  private final String        SPACE_SETTINGS                      = "Settings";
+
+  private final String        SPACE_VISIBILITY                    = "Visibility";
+
+  private final String        SPACE_GROUP_BOUND                   = "GroupBound";
+
+  /**
+   * Constructor: add 3 UI component to this UIFormTabPane:
+   * 
+   * <pre>
+   * {@link UISpaceSettings}
+   * {@link UISpaceVisibility}
+   * {@link UISpaceGroupBound}
+   * </pre>
+   * 
+   * @throws Exception
+   */
   public UISpaceAddForm() throws Exception {
-    super("UIAddSpaceForm");
+    super("UISpaceAddForm");
     UIFormInputSet uiSpaceSettings = new UISpaceSettings(SPACE_SETTINGS);
     addChild(uiSpaceSettings);
-    
+
     UIFormInputSet uiSpaceVisibility = new UISpaceVisibility(SPACE_VISIBILITY);
     addChild(uiSpaceVisibility);
-    
+
     addChild(UISpaceGroupBound.class, null, SPACE_GROUP_BOUND);
-    
-    setActions(new String[] {"Create"});
+
+    setActions(new String[] { "Create" });
     setSelectedTab(1);
   }
-  
-  static public class CreateActionListener extends EventListener<UISpaceAddForm> {
 
+  /**
+   * listener for create space action
+   */
+  static public class CreateActionListener extends EventListener<UISpaceAddForm> {
+    @SuppressWarnings("unchecked")
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
-    	//TODO: hoatle Create new group or binding to existing group if remote user is manager of that group
       UISpaceAddForm uiAddForm = event.getSource();
+      WebuiRequestContext uiRequestContext = event.getRequestContext();
+      UIApplication uiApplication = uiRequestContext.getUIApplication();
+      SpaceService spaceService = uiAddForm.getApplicationComponent(SpaceService.class);
+      UISpaceGroupBound uiGroupBound = uiAddForm.getChild(UISpaceGroupBound.class);
+      UIFormCheckBoxInput<Boolean> uiUseExisting = uiGroupBound.getChild(UIFormCheckBoxInput.class);
+      String creator = uiRequestContext.getRemoteUser();
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
-    }
-    
-  }
-  
-  static  public class SelectGroupActionListener extends EventListener<UISpaceAddForm> {   
-    public void execute(Event<UISpaceAddForm> event) throws Exception {
-     WebuiRequestContext context = event.getRequestContext();
-     String groupId = context.getRequestParameter(OBJECTID);
-     UISpaceAddForm uiAddForm = event.getSource();
-     UISpaceGroupBound uiGroupBound = uiAddForm.getChild(UISpaceGroupBound.class);
-     UIFormInputInfo uiFormInputInfo = uiGroupBound.getChild(UIFormInputInfo.class);
-     uiFormInputInfo.setValue(groupId);
+      String msg = "";
+      try {
+        if (uiUseExisting.isChecked()) {// create space from an existing group
+          UIFormInputInfo uiSelectedGroup = uiGroupBound.getChild(UIFormInputInfo.class);
+          space = spaceService.createSpace(space, creator, uiSelectedGroup.getValue());
+        } else { // Create new space
+          space = spaceService.createSpace(space, creator);
+        }
+        space.setType(DefaultSpaceApplicationHandler.NAME);
+        spaceService.saveSpace(space, true);
+        spaceService.initApp(space);
+        // Install some more applications
+        spaceService.installApplication(space, "UserListPortlet");
+        spaceService.activateApplication(space, "UserListPortlet");
+
+        spaceService.installApplication(space, "SpaceSettingPortlet");
+        spaceService.activateApplication(space, "SpaceSettingPortlet");
+        
+      } catch (SpaceException se) {
+        if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
+          msg = MSG_ERROR_SPACE_ALREADY_EXIST;
+        } else if (se.getCode() == SpaceException.Code.UNABLE_TO_ADD_CREATOR) {
+          msg = MSG_ERROR_UNABLE_TO_ADD_CREATOR;
+        } else if (se.getCode() == SpaceException.Code.ERROR_DATASTORE) {
+          msg = MSG_ERROR_DATASTORE;
+        } else if (se.getCode() == SpaceException.Code.UNABLE_TO_INIT_APP) {
+          msg = MSG_ERROR_UNABLE_TO_INIT_APP;
+        } else if (se.getCode() == SpaceException.Code.UNABLE_TO_ADD_APPLICATION) {
+          msg = MSG_ERROR_UNABLE_TO_ADD_APPLICATION;
+        } else {
+          msg = MSG_ERROR_SPACE_CREATION;
+        }
+        uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
+        return;
+      }
+      msg = UISpaceAddForm.MSG_SPACE_CREATION_SUCCESS;
+      uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
+      UIPopupWindow uiPopup = uiAddForm.getParent();
+      uiPopup.setShow(false);
+      UIManageMySpaces uiManageMySpaces = uiPopup.getParent();
+      uiRequestContext.addUIComponentToUpdateByAjax(uiManageMySpaces);
     }
   }
 
-  static public class ToogleUseGroupActionListener extends EventListener<UISpaceAddForm> {
-
+  /**
+   * listener for toggle use existing group action When this action is
+   * triggered, a group selector poup will show up for choosing.
+   */
+  static public class ToggleUseGroupActionListener extends EventListener<UISpaceAddForm> {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
@@ -100,17 +173,18 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIFormCheckBoxInput<Boolean> uiUseExistingGroup = uiSpaceGroupBound.getChild(UIFormCheckBoxInput.class);
       if (uiUseExistingGroup.isChecked()) {
         UIPopupWindow uiPopup = uiSpaceGroupBound.getChild(UIPopupWindow.class);
-        UIGroupSelector uiGroupSelector = uiSpaceAddForm.createUIComponent(UIGroupSelector.class, null, null);
+        UIGroupSelector uiGroupSelector = uiSpaceAddForm.createUIComponent(UIGroupSelector.class,
+                                                                           null,
+                                                                           null);
         uiPopup.setUIComponent(uiGroupSelector);
         uiPopup.setShowMask(true);
         uiPopup.setShow(true);
       } else {
-    	  UIFormInputInfo uiFormInputInfo = uiSpaceGroupBound.getChild(UIFormInputInfo.class);
-    	  uiFormInputInfo.setValue(null);
+        UIFormInputInfo uiFormInputInfo = uiSpaceGroupBound.getChild(UIFormInputInfo.class);
+        uiFormInputInfo.setValue(null);
       }
     }
-    
+
   }
-  
 
 }

@@ -81,7 +81,7 @@ public class UIManageAllSpace extends UIContainer {
   private List<Space> getAllSpaces() throws Exception {
     SpaceService spaceSrc = getSpaceService();
     String userId = getRemoteUser();
-    return spaceSrc.getAllOrderedSpaces(userId);
+    return spaceSrc.getAllSpaces(userId);
   }
   
   private String getRemoteUser() {
@@ -129,7 +129,12 @@ public class UIManageAllSpace extends UIContainer {
     String userId = getRemoteUser();
     SpaceService spaceService = getSpaceService();
     
-    if(spaceService.isInvited(space, userId)) return true;
+    try {
+      if(spaceService.isInvited(space, userId)) return true;
+    } catch (SpaceException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return false;
   }
   
@@ -153,8 +158,7 @@ public class UIManageAllSpace extends UIContainer {
       SpaceService spaceService = uiForm.getSpaceService();
       String spaceId = requestContext.getRequestParameter(OBJECTID);
       String userID = uiForm.getRemoteUser();
-
-      spaceService.leave(spaceId, userID);
+      spaceService.removeMember(spaceId, userID);
       requestContext.addUIComponentToUpdateByAjax(uiForm);
     }
   }

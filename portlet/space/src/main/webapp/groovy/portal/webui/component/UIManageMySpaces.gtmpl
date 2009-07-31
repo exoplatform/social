@@ -21,13 +21,23 @@
 	import org.exoplatform.webui.core.UIPopupWindow
 	import social.portal.webui.component.UIManageMySpaces
 	
+	def labelInvitedSpaces = _ctx.appRes(UIManageMySpaces.LBL_INVITED_SPACES)
+	def labelMySpaces = _ctx.appRes(UIManageMySpaces.LBL_MY_SPACES)
+	def labelActionAccept = _ctx.appRes(UIManageMySpaces.LBL_ACTION_ACCEPT)
+	def labelActionDeny = _ctx.appRes(UIManageMySpaces.LBL_ACTION_DENY)
+	def labelActionEditSpace = _ctx.appRes(UIManageMySpaces.LBL_ACTION_EDIT_SPACE)
+	def labelActionEditSpaceNavigation = _ctx.appRes(UIManageMySpaces.LBL_ACTION_EDIT_SPACE_NAVIGATION)
+	def labelActionDeleteSpace = _ctx.appRes(UIManageMySpaces.LBL_ACTION_DELETE_SPACE)
+	def labelActionLeaveSpace = _ctx.appRes(UIManageMySpaces.LBL_ACTION_LEAVE_SPACE)
+	def labelActionAddSpace = _ctx.appRes(UIManageMySpaces.LBL_ACTION_ADD_SPACE)
+	
   def userSpaces = uicomponent.getUserSpaces()
   def invitedSpaces = uicomponent.getInvitedSpaces()
 %>
 <div class="UIManageMySpaces" id="$uicomponent.id">
     <div class="ContainerSpace">
         <div class="InvitedSpaces">
-            <div class="Title">Invited Space</div>
+            <div class="InvitedSpaceLabel"><%= labelInvitedSpaces %></div>
         <%for (space in invitedSpaces) {
             def acceptAction = uicomponent.event("Accept", space.getId()) + "; return false"
             def denyAction = uicomponent.event("Deny", space.getId()) + "; return false"
@@ -35,14 +45,14 @@
             <div class="InvitedSpacesContent">
                 <div class="SpaceIcon"></div>
                 <div class="SpaceName"><%= space.getName() %></div>
-                <div class="SpaceAction" onclick="<%= acceptAction %>">Accept</div>
-                <div class="SpaceAction" onclick="<%= denyAction %>">Deny</div>
+                <div class="SpaceAction" onclick="<%= acceptAction %>"><%= labelActionAccept %></div>
+                <div class="SpaceAction" onclick="<%= denyAction %>"><%= labelActionDeny %></div>
                 <div class="Delimeter">_____</div>
             </div>
          <%}%>
         </div>
         <div class="MySpaces">
-            <div class="Title">My Spaces</div>
+            <div class="MySpacesLabel"><%= labelMySpaces %></div>
 	     <%for (space in userSpaces) {
 	          def editSpaceAction = uicomponent.event("EditSpace", space.getId()) + "; return false"
 	          def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.getId()) + "; return false"
@@ -56,9 +66,9 @@
             <div class="MySpacesContent">
                 <div class="SpaceIcon"></div>
                 <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.getName() %></a></div>
-                <div class="SpaceAction" onclick="<%= editSpaceAction %>">Edit Space</div>
-                <div class="SpaceAction" onclick="<%= editSpaceNavigationAction %>">Edit Space Navigation</div>
-                <div class="SpaceAction" onclick="<%= deleteSpaceAction %>">Delete Space</div>
+                <div class="SpaceAction" onclick="<%= editSpaceAction %>"><%= labelActionEditSpace %></div>
+                <div class="SpaceAction" onclick="<%= editSpaceNavigationAction %>"><%= labelActionEditSpaceNavigation %></div>
+                <div class="SpaceAction" onclick="<%= deleteSpaceAction %>"><%= labelActionDeleteSpace %></div>
             </div>
             <%}%>
             <!-- Member -->
@@ -66,13 +76,13 @@
             <div class="MySpacesContent">
                 <div class="SpaceIcon"></div>
                 <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.getName() %></a></div>
-                <div class="SpaceAction" onclick="<%= leaveSpaceAction %>">Leave</div>
+                <div class="SpaceAction" onclick="<%= leaveSpaceAction %>"><%= labelActionLeaveSpace %></div>
             </div>
             <%}%>
             <div class="Delimeter">______</div>
       <%}%>
         </div>
-        <div class="AddSpace"><a href="javascript:<%= uicomponent.event("AddSpace") %>">Add Space</a></div>
+        <div class="AddSpace"><a href="javascript:<%= uicomponent.event("AddSpace") %>"><%= labelActionAddSpace %></a></div>
     </div>
     <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

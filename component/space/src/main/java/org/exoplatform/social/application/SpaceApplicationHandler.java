@@ -27,10 +27,48 @@ import org.exoplatform.social.space.SpaceException;
  */
 
 public interface SpaceApplicationHandler {
-  public void initSpace(Space space) throws SpaceException;
+  /**
+   * Initialize HomeSpacePortlet application as a root page node of a space
+   * @param space
+   * @throws SpaceException
+   */
+  public void initApp(Space space) throws SpaceException;
+  
+  /**
+   * Install an application to a space
+   * @param space
+   * @param appId
+   * @throws SpaceException
+   */
   public void installApplication(Space space, String appId) throws SpaceException;
+  
+  /**
+   * Activate an installed application in a space
+   * @param space
+   * @param appId
+   * @throws SpaceException
+   */
   public void activateApplication(Space space, String appId) throws SpaceException;
+  
+  /**
+   * Deactivate an installed application in a space
+   * @param space
+   * @param appId
+   * @throws SpaceException
+   */
   public void deactiveApplication(Space space, String appId) throws SpaceException;
+  
+  /**
+   * Remove an application in a space
+   * @param space
+   * @param appId
+   * @throws SpaceException
+   */
   public void removeApplication(Space space, String appId) throws SpaceException;
+  
+  /**
+   * Get name
+   * @return
+   */
   public String getName();
 }
