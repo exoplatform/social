@@ -219,6 +219,6 @@ public class RelationshipManager {
       // TODO need to change in future
       return Relationship.Type.ALIEN;
     }
-    return Relationship.Type.ALIEN;
+    return Relationship.Type.CONFIRM;
   }
 }
