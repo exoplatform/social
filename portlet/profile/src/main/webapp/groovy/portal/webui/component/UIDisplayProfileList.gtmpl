@@ -24,33 +24,33 @@
   def list = uicomponent.getList();
   def isRelationship =  uicomponent.isRelationshipList();
   def currIdentity = uicomponent.getCurrentIdentity();
-  def isPendingList = uicomponent.currentType.equals(UIProfileList.Type.PENDING)
-  def isAll = uicomponent.currentType.equals(UIProfileList.Type.ALL)
+  def isPendingList = uicomponent.currentType.equals(UIProfileList.Type.PENDING);
+  def isAll = uicomponent.currentType.equals(UIProfileList.Type.ALL);
 %>
 
 <div class="UIProfileList" id="$uicomponent.id">
   <div class="ContainerSpace">
 
   <% list.each {
-    def identity = null;
-    if (isRelationship) {
-      if (currIdentity.id == it.identity1.id) {
-        identity = it.identity2;
-      } else {
-        identity = it.identity1;
-      }
-    } else {
-      identity = it;
-    }
-
-    def profileURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId()
-    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard"
-    def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities"
-    def fullName = identity.profile.fullName
-    def contactStatus = uicomponent.getContactStatus(identity)
-    def position = identity.profile.getPropertyValue("position")
-    if (!position) {
-      position = ""
+	    def identity = null;
+	    if (isRelationship) {
+	      if (currIdentity.id == it.identity1.id) {
+	        identity = it.identity2;
+	      } else {
+	        identity = it.identity1;
+	      }
+	    } else {
+	      identity = it;
+	    }
+	
+	    def profileURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId();
+	    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard";
+	    def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities";
+	    def fullName = identity.profile.fullName;
+	    def contactStatus = uicomponent.getContactStatus(identity);
+	    def position = identity.profile.getPropertyValue("position");
+	    if (!position) {
+	      position = "";
     }
 
   %>
@@ -95,7 +95,18 @@
 							</div>
 		    		</div>
   <%  } else if (contactStatus == Relationship.Type.PENDING) { %>
-            <span class="waitingConfirmation">[Waiting for confirmation]</span>
+            <div class="ActionBar" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">
+							<div class="LeftButton">
+								<div class="RightButton">
+									<div class="CenterButton">
+										<div class="SaveIcon">
+											<%=_ctx.appRes(uicomponent.getName() + ".label.Revoke")%>
+										</div>
+									</div>
+								</div>
+							</div>
+		    		</div>
+            <span class="waitingConfirmation">[Waiting for confirmation]</span>            
   <%  } else if (contactStatus == Relationship.Type.CONFIRM) { %>
   					<div class="ActionBar" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">
 							<div class="LeftButton">
