@@ -36,4 +36,37 @@
     </application>
   </page>
   
+  <page>
+  	<page-id>portal::@owner@::profile</page-id>
+    <owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>profile</name>
+    <title>Profile</title>
+	  <access-permissions>*:/platform/users</access-permissions>
+	  <edit-permission>*:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/profile/mainProfile/mainProfileRandom</instance-id>
+      <title>mainProfile</title>
+      <show-info-bar>true</show-info-bar>
+      <show-application-state>true</show-application-state>
+      <show-application-mode>true</show-application-mode>
+    </application>
+  </page>
+  
+  <page>
+  	<page-id>portal::@owner@::space</page-id>
+    <owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>space</name>
+    <title>Space</title>
+	  <access-permissions>*:/platform/users</access-permissions>
+	  <edit-permission>*:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/space/ManageSpacesPortlet/managespaces</instance-id>
+      <title>ManageSpaces</title>
+      <show-info-bar>true</show-info-bar>
+      <show-application-state>true</show-application-state>
+      <show-application-mode>true</show-application-mode>
+    </application>
+  </page>
 </page-set>
