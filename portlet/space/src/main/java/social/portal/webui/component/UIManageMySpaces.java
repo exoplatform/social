@@ -19,15 +19,12 @@ package social.portal.webui.component;
 import java.util.List;
 
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.webui.config.WebuiConfiguration;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
@@ -51,7 +48,7 @@ import org.exoplatform.webui.event.EventListener;
   events = {
       @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class), 
       @EventConfig(listeners = UIManageMySpaces.EditSpaceNavigationActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpace.msg.confirm-space-delete"),
+      @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpace.msg.confirm_space_delete"),
       @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.AddSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.AcceptActionListener.class),
@@ -60,25 +57,15 @@ import org.exoplatform.webui.event.EventListener;
 )
 public class UIManageMySpaces extends UIContainer {
   //Message Bundle
-  static public final String LBL_INVITED_SPACES = "UIManageMySpaces.label.invited-spaces";
-  static public final String LBL_MY_SPACES = "UIManageMySpaces.label.my-spaces";
-  static public final String LBL_ACTION_ACCEPT = "UIManageMySpaces.label.action-accept";
-  static public final String LBL_ACTION_DENY = "UIManageMySpaces.label.action-deny";
-  static public final String LBL_ACTION_EDIT_SPACE = "UIManageMySpaces.label.action-edit-space";
-  static public final String LBL_ACTION_EDIT_SPACE_NAVIGATION = "UIManageMySpaces.label.action-edit-space-navigation";
-  static public final String LBL_ACTION_DELETE_SPACE = "UIManageMySpaces.label.action-delete-space";
-  static public final String LBL_ACTION_LEAVE_SPACE = "UIManageMySpaces.label.action-leave";
-  static public final String LBL_ACTION_ADD_SPACE = "UIManageMySpaces.label.action-add-space";
+  static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
+  static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
+  static private final String MSG_LEAVE_SPACE_SUCCESS = "UIManageMySpaces.msg.leave_space_success";
   
-  static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning-leave-space";
-  static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error-leave-space";
-  static private final String MSG_LEAVE_SPACE_SUCCESS = "UIManageMySpaces.msg.leave-space-success";
+  static private final String MSG_ERROR_ACCEPT_INVITATION = "UIManageMySpaces.msg.error_accept_invitation";
+  static private final String MSG_ACCEPT_INVITATION_SUCCESS = "UIManageMySpaces.msg.accept_invitation_success";
   
-  static private final String MSG_ERROR_ACCEPT_INVITATION = "UIManageMySpaces.msg.error-accept-invited";
-  static private final String MSG_ACCEPT_INVITATION_SUCCESS = "UIManageMySpaces.msg.accept-invited-success";
-  
-  static private final String MSG_ERROR_DENY_INVITATION = "UIManageMySpaces.msg.error-deny-invitation";
-  static private final String MSG_DENY_INVITATION_SUCCESS = "UIManageMySpaces.msg.deny-invitation-success";
+  static private final String MSG_ERROR_DENY_INVITATION = "UIManageMySpaces.msg.error_deny_invitation";
+  static private final String MSG_DENY_INVITATION_SUCCESS = "UIManageMySpaces.msg.deny_invitation_success";
   
   static public final Integer LEADER = 1, MEMBER = 2;
   
@@ -93,7 +80,6 @@ public class UIManageMySpaces extends UIContainer {
    * @throws Exception
    */
   public UIManageMySpaces() throws Exception {
-    // Add UIPopup for displaying UIAddSpaceForm
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);
     uiPopup.setWindowSize(500, 0);
@@ -157,13 +143,10 @@ public class UIManageMySpaces extends UIContainer {
   public int getRole(String spaceId) throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    Space space = spaceService.getSpaceById(spaceId);
-    
-    if(spaceService.isMember(space, userId)) {
-      if(spaceService.isLeader(space, userId)) return LEADER;
+    if(spaceService.isMember(spaceId, userId)) {
       return MEMBER;
     }
-    return 0;
+    return LEADER;
   }
   
   /**
@@ -204,7 +187,7 @@ public class UIManageMySpaces extends UIContainer {
 
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
-      // TODO DeleteSpaceActionListener
+      // TODO hoatle DeleteSpaceActionListener
     }
     
   }
@@ -222,7 +205,7 @@ public class UIManageMySpaces extends UIContainer {
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = ctx.getRemoteUser();
-      String msg = "";
+      String msg = MSG_LEAVE_SPACE_SUCCESS;
       if (spaceService.isOnlyLeader(spaceId, userId)) {
         msg = MSG_WARNING_LEAVE_SPACE;
         uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.WARNING));
@@ -235,10 +218,7 @@ public class UIManageMySpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
       }
-      
-      msg = MSG_LEAVE_SPACE_SUCCESS;
       uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
-      ctx.addUIComponentToUpdateByAjax(uiMySpaces);
     }
   }
   
@@ -258,7 +238,6 @@ public class UIManageMySpaces extends UIContainer {
                                                                          null);
       uiPopup.setUIComponent(uiAddSpaceForm);
       uiPopup.setShow(true);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
     }
     
   }
@@ -277,7 +256,7 @@ public class UIManageMySpaces extends UIContainer {
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = ctx.getRemoteUser();
-      String msg = "";
+      String msg = MSG_ACCEPT_INVITATION_SUCCESS;
       try {
         spaceService.acceptInvitation(spaceId, userId);
       } catch(SpaceException se) {
@@ -285,9 +264,7 @@ public class UIManageMySpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
       }
-      msg = MSG_ACCEPT_INVITATION_SUCCESS;
       uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
-      ctx.addUIComponentToUpdateByAjax(uiMySpaces);
     }
   }
   
@@ -305,16 +282,14 @@ public class UIManageMySpaces extends UIContainer {
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = ctx.getRemoteUser();
-      String msg = "";
+      String msg = MSG_DENY_INVITATION_SUCCESS;
       try {
         spaceService.denyInvitation(spaceId, userId);
       } catch(SpaceException se) {
         msg = MSG_ERROR_DENY_INVITATION;
         uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
       }
-      msg = MSG_DENY_INVITATION_SUCCESS;
-      uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
-      ctx.addUIComponentToUpdateByAjax(uiMySpaces);      
+      uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));    
     }    
   }
 }

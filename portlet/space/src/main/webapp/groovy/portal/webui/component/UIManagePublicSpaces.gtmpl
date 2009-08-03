@@ -17,22 +17,21 @@
 
 -->
 <% 
-  import social.portal.webui.component.UIManagePublicSpaces
-  def labelActionRequestToJoin = _ctx.appRes(UIManagePublicSpaces.LBL_ACTION_REQUEST_TO_JOIN)
-  def labelPublicSpaces = _ctx.appRes(UIManagePublicSpaces.LBL_PUBLIC_SPACES)
+  def labelActionRequestToJoin = _ctx.appRes("${uicomponent.id}.label.action_request_to_join")
+  def labelPublicSpaces = _ctx.appRes("${uicomponent.id}.label.public_spaces")
   def publicSpaces = uicomponent.getPublicSpaces()
 %>
 <div class="UIManagePublicSpaces" id="$uicomponent.id">
     <div class="ContainerSpace">
         <div><%= labelPublicSpaces %></div>
       <%for (space in publicSpaces) {
-            def requestJoinAction = uicomponent.event("RequestJoin", space.getId()) + "; false";
+            def requestJoinAction = uicomponent.event("RequestJoin", space.id) + "; false";
       %>
         <div class="PublicSpaces">
             <div class="SpaceIcon"></div>
-            <div class="SpaceName"><%= space.getName() %></div>
-            <div class="SpaceDescription"><%= space.getDescription() %></div>
-            <div class="SpaceAction" onclick="<%= requestJoinAction %>"><%= labelActionRequestToJoin %></div>
+            <div class="SpaceName"><%= space.name %></div>
+            <div class="SpaceDescription"><%= space.description %></div>
+            <div class="SpaceAction" onclick="<%= requestJoinAction %>"><a href="#RequestJoin"><%= labelActionRequestToJoin %></a></div>
             <div class="SpaceDelimiter">________</div>
         </div>
       <%}%>

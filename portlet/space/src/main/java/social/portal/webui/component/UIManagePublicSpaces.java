@@ -48,15 +48,15 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIManagePublicSpaces extends UIContainer {
-  
-  static public final String LBL_ACTION_REQUEST_TO_JOIN = "UIManagePublicSpaces.label.action-request-to-join";
-  static public final String LBL_PUBLIC_SPACES = "UIManagePublicSpaces.label.public-spaces";
-  static private final String MSG_ERROR_REQUEST_JOIN = "UIManagePublicSpaces.msg.error-request-join"; 
-  static private final String MSG_REQUEST_JOIN_SUCCESS = "UIManagePublicSpaces.msg.request-join-success";
-  static private Log log = ExoLogger.getLogger(UIManagePublicSpaces.class);
+  static private final String MSG_ERROR_REQUEST_JOIN = "UIManagePublicSpaces.msg.error_request_join"; 
+  static private final String MSG_REQUEST_JOIN_SUCCESS = "UIManagePublicSpaces.msg.request_join_success";
   private SpaceService spaceService = null;
   private String userId = null;
   
+  /**
+   * Constructor
+   * @throws Exception
+   */
   public UIManagePublicSpaces() throws Exception { 
     
   }
@@ -85,23 +85,19 @@ public class UIManagePublicSpaces extends UIContainer {
     public void execute(Event<UIManagePublicSpaces> event) throws Exception {
      UIManagePublicSpaces uiPublicSpaces = event.getSource();
      WebuiRequestContext ctx = event.getRequestContext();
-     String msg = "";
+     String msg = MSG_REQUEST_JOIN_SUCCESS;
      UIApplication uiApp = ctx.getUIApplication();
      SpaceService spaceService = uiPublicSpaces.getApplicationComponent(SpaceService.class);
      String spaceId = ctx.getRequestParameter(OBJECTID);
      String userId = ctx.getRemoteUser();
      try {
        spaceService.requestJoin(spaceId, userId);
-      
      } catch(SpaceException se) {
-       log.warn(se);
        msg = MSG_ERROR_REQUEST_JOIN;
        uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
        return;
      }
-     msg = MSG_REQUEST_JOIN_SUCCESS;
      uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
-     ctx.addUIComponentToUpdateByAjax(uiPublicSpaces);
     }
   }
   

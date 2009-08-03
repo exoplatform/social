@@ -20,14 +20,18 @@
 	import org.exoplatform.webui.form.UIFormInputInfo
 	import org.exoplatform.webui.form.UIFormCheckBoxInput
 	
+	def lblCheckbox = _ctx.appRes("${uicomponent.id}.label.checkbox")
+	def lblDescription = _ctx.appRes("${uicomponent.id}.label.description")
+	def lblSelectedGroup = _ctx.appRes("${uicomponent.id}.label.selected_group")
+	
 	def uiCheckbox = uicomponent.getChild(UIFormCheckBoxInput.class)
 	def checked = uiCheckbox.isChecked()
 %>
 <div class="UISpaceGroupBound" id="$uicomponent.id">
     <%if (checked) {%>
-    <div class="UIGroupSelected"><%= _ctx.appRes(uicomponent.id + ".label.checkbox") %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
+    <div class="UIGroupSelected"><%= lblSelectedGroup %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
     <%}%>
-    <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><%= _ctx.appRes(uicomponent.id + ".label.selectedGroup") %></span></div>
-    <div clas="UIGroupBoundDescription"><%= _ctx.appRes(uicomponent.id + ".label.description") %></div>    
+    <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><%= lblCheckbox %></span></div>
+    <div clas="UIGroupBoundDescription"><%= lblDescription %></div>    
     <div class="UIGroupBoundPopup"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

@@ -19,8 +19,6 @@ package social.portal.webui.component;
 import java.util.List;
 
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
@@ -47,10 +45,8 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIManagePendingSpaces extends UIContainer {
-  static public final String LBL_PENDING_SPACES = "UIManagePendingSpaces.label.pending-spaces";
-  static public final String LBL_ACTION_REVOKE_PENDING = "UIManagePendingSpaces.label.action-revoke-pending";
-  static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error-revoke-pending";
-  static private final String MSG_REVOKE_PENDING_SUCCESS = "UIManagePendingSpaces.msg.revoke-pending-success";
+  static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error_revoke_pending";
+  static private final String MSG_REVOKE_PENDING_SUCCESS = "UIManagePendingSpaces.msg.revoke_pending_success";
   SpaceService spaceService = null;
   String userId = null;
   
@@ -110,7 +106,7 @@ public class UIManagePendingSpaces extends UIContainer {
       String userId = ctx.getRemoteUser();
       String msg = "";
       try {
-        spaceService.revokeInvitation(spaceId, userId);
+        spaceService.revokeRequestJoin(spaceId, userId);
         msg = MSG_REVOKE_PENDING_SUCCESS;
       } catch(SpaceException se) {
         msg = MSG_ERROR_REVOKE_PENDING;
@@ -118,7 +114,6 @@ public class UIManagePendingSpaces extends UIContainer {
         return;
       }
       uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
-      ctx.addUIComponentToUpdateByAjax(uiPendingSpaces);
     }
     
   }

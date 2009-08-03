@@ -53,7 +53,7 @@ public class UISpaceSettings extends UIFormInputSet {
   private final String PRIORITY_LOW = "low";
   
   //Message
-  private final String MSG_INVALID_SPACE_NAME = "UISpaceSettings.msg.invalid-space-name";
+  private final String MSG_INVALID_SPACE_NAME = "UISpaceSettings.msg.invalid_space_name";
   public UISpaceSettings(String name) throws Exception {
     super(name);
     addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null).

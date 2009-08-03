@@ -57,7 +57,7 @@ public class UISpaceGroupBound extends UIContainer {
   private final String USE_EXISTING_GROUP = "useExistingGroup";
   private final String POPUP_GROUP_BOUND = "UIPopupGroupBound";
   private final String SELECTED_GROUP = "groupId";
-  
+    
   public UISpaceGroupBound() throws Exception {
     UIFormCheckBoxInput<Boolean> uiUseExisting = new UIFormCheckBoxInput<Boolean>(USE_EXISTING_GROUP, null, false);
     uiUseExisting.setOnChange("ToggleUseGroup");

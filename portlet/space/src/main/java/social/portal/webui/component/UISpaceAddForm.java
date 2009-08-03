@@ -57,27 +57,25 @@ import org.exoplatform.webui.organization.account.UIGroupSelector;
 public class UISpaceAddForm extends UIFormTabPane {
 
   // Message for UIApplication
-  static private final String MSG_DEFAULT_SPACE_DESCRIPTION       = "UISpaceAddForm.msg.default-space-description";
+  static private final String MSG_DEFAULT_SPACE_DESCRIPTION       = "UISpaceAddForm.msg.default_space_description";
   
-  static private final String MSG_ERROR_SPACE_CREATION            = "UISpaceAddForm.msg.error-space-creation";
+  static private final String MSG_ERROR_SPACE_CREATION            = "UISpaceAddForm.msg.error_space_creation";
 
-  static private final String MSG_ERROR_DATASTORE                 = "UISpaceAddForm.msg.error-space-not-saved";
+  static private final String MSG_ERROR_DATASTORE                 = "UISpaceAddForm.msg.error_space_not_saved";
 
-  static private final String MSG_ERROR_UNABLE_TO_INIT_APP        = "UISpaceAddForm.msg.error-unable-to-init-app";
+  static private final String MSG_ERROR_UNABLE_TO_INIT_APP        = "UISpaceAddForm.msg.error_unable_to_init_app";
 
-  static private final String MSG_ERROR_UNABLE_TO_ADD_CREATOR     = "UISpaceAddForm.msg.error-unable-to-add-creator";
+  static private final String MSG_ERROR_UNABLE_TO_ADD_CREATOR     = "UISpaceAddForm.msg.error_unable_to_add_creator";
 
-  static private final String MSG_ERROR_UNABLE_TO_ADD_APPLICATION = "UISpaceAddForm.msg.error-unable-to-add-application";
+  static private final String MSG_ERROR_UNABLE_TO_ADD_APPLICATION = "UISpaceAddForm.msg.error_unable_to_add_application";
 
-  static private final String MSG_SPACE_CREATION_SUCCESS          = "UISpaceAddForm.msg.space-creation-success";
+  static private final String MSG_SPACE_CREATION_SUCCESS          = "UISpaceAddForm.msg.space_creation_success";
 
-  static private final String MSG_ERROR_SPACE_ALREADY_EXIST       = "UISpaceAddForm.msg.error-space-already-exist";
+  static private final String MSG_ERROR_SPACE_ALREADY_EXIST       = "UISpaceAddForm.msg.error_space_already_exist";
 
   private final String        SPACE_SETTINGS                      = "UISpaceSettings";
 
   private final String        SPACE_VISIBILITY                    = "UISpaceVisibility";
-
-  private final String        SPACE_GROUP_BOUND                   = "UISpaceGroupBound";
 
   /**
    * Constructor: add 3 UI component to this UIFormTabPane:
@@ -98,7 +96,7 @@ public class UISpaceAddForm extends UIFormTabPane {
     UIFormInputSet uiSpaceVisibility = new UISpaceVisibility(SPACE_VISIBILITY);
     addChild(uiSpaceVisibility);
 
-    addChild(UISpaceGroupBound.class, null, SPACE_GROUP_BOUND);
+    addChild(UISpaceGroupBound.class, null, null);
 
     setActions(new String[] { "Create" });
     setSelectedTab(1);
@@ -108,7 +106,6 @@ public class UISpaceAddForm extends UIFormTabPane {
    * listener for create space action
    */
   static public class CreateActionListener extends EventListener<UISpaceAddForm> {
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
       UISpaceAddForm uiAddForm = event.getSource();
@@ -124,7 +121,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       if (space.getDescription() == null) {
         space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
       }
-      String msg = UISpaceAddForm.MSG_SPACE_CREATION_SUCCESS;;
+      String msg = MSG_SPACE_CREATION_SUCCESS;
       try {
         if (selectedGroup != null) {// create space from an existing group
           space = spaceService.createSpace(space, creator, selectedGroup);
