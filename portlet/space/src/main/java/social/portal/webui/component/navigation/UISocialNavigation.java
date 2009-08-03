@@ -52,17 +52,14 @@ public class UISocialNavigation extends UIComponent {
   
   public List<PageNavigation> getNavigations() throws Exception {
     List<PageNavigation> result = new ArrayList<PageNavigation>();
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     UIPortal uiPortal = Util.getUIPortal();
     int portalNav = (PortalConfig.PORTAL_TYPE + "::" + uiPortal.getName()).hashCode();
     PageNavigation portalNavigation = uiPortal.getPageNavigation(portalNav);
-    if(Util.getPortalRequestContext().getRemoteUser() == null) {
-      List<PageNode> child = new ArrayList<PageNode>();
-      child.add(portalNavigation.getNode("home"));
-      // very bad hack it's not customizable :(
-      child.add(portalNavigation.getNode("register"));
-      portalNavigation.setNodes((ArrayList<PageNode>) child);
-    }
+    portalNavigation = PageNavigationUtils.filter(portalNavigation, context.getRemoteUser());
+
     result.add(portalNavigation);
+    
     return result;
   }
   
