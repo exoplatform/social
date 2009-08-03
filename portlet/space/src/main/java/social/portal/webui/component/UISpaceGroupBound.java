@@ -58,20 +58,30 @@ public class UISpaceGroupBound extends UIContainer {
   private final String POPUP_GROUP_BOUND = "UIPopupGroupBound";
   private final String SELECTED_GROUP = "groupId";
   
-  static public final String LBL_CHECKBOX = "UISpaceGroupBound.label.checkbox";
-  static public final String LBL_DESCRIPTION = "UISpaceGroupBound.label.description";
-  static public final String LBL_SELECTED_GROUP = "UISpaceGroupBound.label.selected-group";
-  
   public UISpaceGroupBound() throws Exception {
     UIFormCheckBoxInput<Boolean> uiUseExisting = new UIFormCheckBoxInput<Boolean>(USE_EXISTING_GROUP, null, false);
     uiUseExisting.setOnChange("ToggleUseGroup");
     addChild(uiUseExisting);
-    UIFormInputInfo uiFormInputInfo = new UIFormInputInfo(SELECTED_GROUP, SELECTED_GROUP, null);
+    UIFormInputInfo uiFormInputInfo = new UIFormInputInfo(SELECTED_GROUP, null, null);
     addChild(uiFormInputInfo);
     
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "SelectGroup", POPUP_GROUP_BOUND);
     uiPopup.setWindowSize(500, 0);
     addChild(uiPopup);
+  }
+  
+  /**
+   * Gets selected group from group bound
+   */
+  @SuppressWarnings("unchecked")
+  public String getSelectedGroup() {
+    UIFormCheckBoxInput<Boolean> uiCheckBox = getChild(UIFormCheckBoxInput.class);
+    if(uiCheckBox.isChecked()) {
+      UIFormInputInfo uiInfo = getChild(UIFormInputInfo.class);
+      return uiInfo.getValue();
+    }
+    return null;
+      
   }
   
   /**

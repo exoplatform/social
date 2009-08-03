@@ -73,11 +73,11 @@ public class UISpaceAddForm extends UIFormTabPane {
 
   static private final String MSG_ERROR_SPACE_ALREADY_EXIST       = "UISpaceAddForm.msg.error-space-already-exist";
 
-  private final String        SPACE_SETTINGS                      = "Settings";
+  private final String        SPACE_SETTINGS                      = "UISpaceSettings";
 
-  private final String        SPACE_VISIBILITY                    = "Visibility";
+  private final String        SPACE_VISIBILITY                    = "UISpaceVisibility";
 
-  private final String        SPACE_GROUP_BOUND                   = "GroupBound";
+  private final String        SPACE_GROUP_BOUND                   = "UISpaceGroupBound";
 
   /**
    * Constructor: add 3 UI component to this UIFormTabPane:
@@ -116,7 +116,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIApplication uiApplication = ctx.getUIApplication();
       SpaceService spaceService = uiAddForm.getApplicationComponent(SpaceService.class);
       UISpaceGroupBound uiGroupBound = uiAddForm.getChild(UISpaceGroupBound.class);
-      UIFormCheckBoxInput<Boolean> uiUseExisting = uiGroupBound.getChild(UIFormCheckBoxInput.class);
+      String selectedGroup = uiGroupBound.getSelectedGroup();
       String creator = ctx.getRemoteUser();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       Space space = new Space();
@@ -124,11 +124,10 @@ public class UISpaceAddForm extends UIFormTabPane {
       if (space.getDescription() == null) {
         space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
       }
-      String msg = "";
+      String msg = UISpaceAddForm.MSG_SPACE_CREATION_SUCCESS;;
       try {
-        if (uiUseExisting.isChecked()) {// create space from an existing group
-          UIFormInputInfo uiSelectedGroup = uiGroupBound.getChild(UIFormInputInfo.class);
-          space = spaceService.createSpace(space, creator, uiSelectedGroup.getValue());
+        if (selectedGroup != null) {// create space from an existing group
+          space = spaceService.createSpace(space, creator, selectedGroup);
         } else { // Create new space
           space = spaceService.createSpace(space, creator);
         }
@@ -159,7 +158,6 @@ public class UISpaceAddForm extends UIFormTabPane {
         uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
       }
-      msg = UISpaceAddForm.MSG_SPACE_CREATION_SUCCESS;
       uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
