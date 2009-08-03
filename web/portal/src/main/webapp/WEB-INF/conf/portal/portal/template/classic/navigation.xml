@@ -29,5 +29,19 @@
       <label>Home</label>
       <page-reference>portal::@owner@::sitemap</page-reference>
     </node> 
+    
+    <node>
+      <uri>profile</uri>
+      <name>profile</name>
+      <label>People</label>
+      <page-reference>portal::@owner@::profile</page-reference>
+    </node>
+    
+    <node>
+      <uri>space</uri>
+      <name>space</name>
+      <label>Space</label>
+      <page-reference>portal::@owner@::space</page-reference>
+    </node> 
   </page-nodes>
 </node-navigation>
