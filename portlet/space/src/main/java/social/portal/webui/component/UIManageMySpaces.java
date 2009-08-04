@@ -204,21 +204,18 @@ public class UIManageMySpaces extends UIContainer {
       WebuiRequestContext ctx = event.getRequestContext();
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
-      String userId = ctx.getRemoteUser();
-      String msg = MSG_LEAVE_SPACE_SUCCESS;
+      String userId = uiMySpaces.getUserId();
       if (spaceService.isOnlyLeader(spaceId, userId)) {
-        msg = MSG_WARNING_LEAVE_SPACE;
-        uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.WARNING));
+        uiApp.addMessage(new ApplicationMessage(MSG_WARNING_LEAVE_SPACE, null, ApplicationMessage.WARNING));
         return;
       }
       try {
         spaceService.removeMember(spaceId, userId);
       } catch(SpaceException se) {
-        msg = MSG_ERROR_LEAVE_SPACE;
-        uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_LEAVE_SPACE, null, ApplicationMessage.ERROR));
         return;
       }
-      uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
+      uiApp.addMessage(new ApplicationMessage(MSG_LEAVE_SPACE_SUCCESS, null, ApplicationMessage.INFO));
     }
   }
   
@@ -255,16 +252,14 @@ public class UIManageMySpaces extends UIContainer {
       WebuiRequestContext ctx = event.getRequestContext();
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
-      String userId = ctx.getRemoteUser();
-      String msg = MSG_ACCEPT_INVITATION_SUCCESS;
+      String userId = uiMySpaces.getUserId();
       try {
         spaceService.acceptInvitation(spaceId, userId);
       } catch(SpaceException se) {
-        msg = MSG_ERROR_ACCEPT_INVITATION;
-        uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_ACCEPT_INVITATION, null, ApplicationMessage.ERROR));
         return;
       }
-      uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
+      uiApp.addMessage(new ApplicationMessage(MSG_ACCEPT_INVITATION_SUCCESS, null, ApplicationMessage.INFO));
     }
   }
   
@@ -281,15 +276,13 @@ public class UIManageMySpaces extends UIContainer {
       WebuiRequestContext ctx = event.getRequestContext();
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
-      String userId = ctx.getRemoteUser();
-      String msg = MSG_DENY_INVITATION_SUCCESS;
+      String userId = uiMySpaces.getUserId();
       try {
         spaceService.denyInvitation(spaceId, userId);
       } catch(SpaceException se) {
-        msg = MSG_ERROR_DENY_INVITATION;
-        uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DENY_INVITATION, null, ApplicationMessage.ERROR));
       }
-      uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));    
+      uiApp.addMessage(new ApplicationMessage(MSG_DENY_INVITATION_SUCCESS, null, ApplicationMessage.INFO));    
     }    
   }
 }

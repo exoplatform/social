@@ -51,14 +51,6 @@ public class UIManagePendingSpaces extends UIContainer {
   String userId = null;
   
   /**
-   * Constructor
-   * @throws Exception
-   */
-  public UIManagePendingSpaces() throws Exception {
-    
-  }
-  
-  /**
    * get {@SpaceService}
    * @return spaceService
    */
@@ -99,21 +91,18 @@ public class UIManagePendingSpaces extends UIContainer {
     @Override
     public void execute(Event<UIManagePendingSpaces> event) throws Exception {
       UIManagePendingSpaces uiPendingSpaces = event.getSource();
-      SpaceService spaceService = uiPendingSpaces.getApplicationComponent(SpaceService.class);
+      SpaceService spaceService = uiPendingSpaces.getSpaceService();
       WebuiRequestContext ctx = event.getRequestContext();
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
-      String userId = ctx.getRemoteUser();
-      String msg = "";
+      String userId = uiPendingSpaces.getUserId();
       try {
         spaceService.revokeRequestJoin(spaceId, userId);
-        msg = MSG_REVOKE_PENDING_SUCCESS;
       } catch(SpaceException se) {
-        msg = MSG_ERROR_REVOKE_PENDING;
-        uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REVOKE_PENDING, null, ApplicationMessage.ERROR));
         return;
       }
-      uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
+      uiApp.addMessage(new ApplicationMessage(MSG_REVOKE_PENDING_SUCCESS, null, ApplicationMessage.INFO));
     }
     
   }

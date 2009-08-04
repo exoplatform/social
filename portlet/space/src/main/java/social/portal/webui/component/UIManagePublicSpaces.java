@@ -19,8 +19,6 @@ package social.portal.webui.component;
 import java.util.List;
 
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
@@ -53,14 +51,6 @@ public class UIManagePublicSpaces extends UIContainer {
   private SpaceService spaceService = null;
   private String userId = null;
   
-  /**
-   * Constructor
-   * @throws Exception
-   */
-  public UIManagePublicSpaces() throws Exception { 
-    
-  }
-      
   private String getUserId() {
     if(userId == null) userId = Util.getPortalRequestContext().getRemoteUser();
     return userId;
@@ -85,19 +75,17 @@ public class UIManagePublicSpaces extends UIContainer {
     public void execute(Event<UIManagePublicSpaces> event) throws Exception {
      UIManagePublicSpaces uiPublicSpaces = event.getSource();
      WebuiRequestContext ctx = event.getRequestContext();
-     String msg = MSG_REQUEST_JOIN_SUCCESS;
      UIApplication uiApp = ctx.getUIApplication();
-     SpaceService spaceService = uiPublicSpaces.getApplicationComponent(SpaceService.class);
+     SpaceService spaceService = uiPublicSpaces.getSpaceService();
      String spaceId = ctx.getRequestParameter(OBJECTID);
-     String userId = ctx.getRemoteUser();
+     String userId = uiPublicSpaces.getUserId();
      try {
        spaceService.requestJoin(spaceId, userId);
      } catch(SpaceException se) {
-       msg = MSG_ERROR_REQUEST_JOIN;
-       uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
+       uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REQUEST_JOIN, null, ApplicationMessage.ERROR));
        return;
      }
-     uiApp.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
+     uiApp.addMessage(new ApplicationMessage(MSG_REQUEST_JOIN_SUCCESS, null, ApplicationMessage.INFO));
     }
   }
   
