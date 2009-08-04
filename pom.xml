@@ -4,20 +4,20 @@
       <artifactId>parent</artifactId>
       <version>1.1.1</version>
   </parent>
-    
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>config</artifactId>
   <name>eXo Social Config</name>
   <version>1.0-alpha3-SNAPSHOT</version>
   <packaging>pom</packaging>
-  
+
   <scm>
     <connection>scm:svn:http://svn.exoplatform.org/projects/social/1.0-alpha3-SNAPSHOT/</connection>
     <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/1.0-alpha3-SNAPSHOT/</developerConnection>
     <url>http://fisheye.exoplatform.org/browse/projects/social/1.0-alpha3-SNAPSHOT/</url>
   </scm>
-  
+
   <issueManagement>
     <system>jira</system>
     <url>http://jira.exoplatform.org/browse/SOC</url>
@@ -183,7 +183,7 @@
           </releases>
       </pluginRepository>
   </pluginRepositories>
-  
+
 
   <profiles>
     <profile>
@@ -214,7 +214,7 @@
                     </mapping>
                     <excludes>
                         <exclude>**/web.xml</exclude>
-                    </excludes>              
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -229,15 +229,16 @@
     </profile>
   </profiles>
     <properties>
-        <org.exoplatform.kernel.version>2.1.2</org.exoplatform.kernel.version>
-        <org.exoplatform.core.version>2.2.2</org.exoplatform.core.version>
+      <org.exoplatform.kernel.version>2.1.2</org.exoplatform.kernel.version>
+      <org.exoplatform.core.version>2.2.2</org.exoplatform.core.version>
     	<org.exoplatform.ws.version>2.0.2</org.exoplatform.ws.version>
-        <org.exoplatform.jcr.version>1.11.2</org.exoplatform.jcr.version>
-        <org.exoplatform.pc.version>2.1.2-SNAPSHOT</org.exoplatform.pc.version>
-	<org.shindig.version>SNAPSHOT-r790473</org.shindig.version>
-      	<org.exoplatform.portal.version>2.6-SNAPSHOT</org.exoplatform.portal.version>
-	<org.exoplatform.social.version>1.0-alpha3-SNAPSHOT</org.exoplatform.social.version>
+      <org.exoplatform.jcr.version>1.11.2</org.exoplatform.jcr.version>
+      <org.exoplatform.pc.version>2.1.2</org.exoplatform.pc.version>
+	    <org.shindig.version>SNAPSHOT-r790473</org.shindig.version>
+      <org.exoplatform.portal.version>2.6-SNAPSHOT</org.exoplatform.portal.version>
+	    <org.exoplatform.social.version>1.0-alpha3-SNAPSHOT</org.exoplatform.social.version>
       <test.classes>Test</test.classes>
       <test.skip>true</test.skip>
     </properties>
 </project>
+
