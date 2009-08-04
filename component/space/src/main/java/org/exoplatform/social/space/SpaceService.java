@@ -41,14 +41,6 @@ public interface SpaceService {
   List<Space> getAllSpaces() throws SpaceException;
   
   /**
-   * Gets all spaces of the portal excluding spaces which is hidden && in which user is not a member
-   * @return get all spaces of portal based on userId
-   *         if space is hidden and user is not a member of that space, space will not be included. 
-   * @throws SpaceException with code SpaceException.Code.ERROR_DATASTORE
-   */
-  List<Space> getAllSpaces(String userId) throws SpaceException;
-  
-  /**
    * Get a space by its id
    * @param spaceId Id of that space
    * @return space with id specified
@@ -192,78 +184,7 @@ public interface SpaceService {
    * @return space with new pending list
    * @throws SpaceException
    */
-  Space addPending(Space space, String userId) throws SpaceException;
   
-  /**
-   * Add a userId to the pending list of a space
-   * @param spaceId
-   * @param userId
-   * @return space with new pending list
-   * @throws SpaceException
-   */
-  Space addPending(String spaceId, String userId) throws SpaceException;
-  
-  /**
-   * Remove a userId from pending list of a space
-   * @param space
-   * @param userId
-   * @return space with new pending list
-   * @throws SpaceException
-   */
-  Space removePending(Space space, String userId) throws SpaceException;
-
-  /**
-   * Remove a userId from pending list of a space
-   * @param spaceId
-   * @param userId
-   * @return space with new pending list
-   * @throws SpaceException
-   */
-  Space removePending(String spaceId, String userId) throws SpaceException;
-  
-  /**
-   * Add a userId to the invited list of a space
-   * @param space
-   * @param userId
-   * @return space with new invited list
-   * @throws SpaceException
-   */
-  Space addInvited(Space space, String userId) throws SpaceException;
-  
-  /**
-   * Add a userId to the invited list of a space
-   * @param spaceId
-   * @param userId
-   * @return space with new invited list
-   * @throws SpaceException
-   */
-  Space addInvited(String spaceId, String userId) throws SpaceException;
-  
-  /**
-   * Remove a userId from the invited list of a space
-   * @param space
-   * @param userId
-   * @return space with new invited list
-   * @throws SpaceException
-   */
-  Space removeInvited(Space space, String userId) throws SpaceException;
-  
-  /**
-   * Remove a userId from the invited list of a space
-   * 
-   * @param spaceId
-   * @param userId
-   * @return space with new invited list
-   * @throws SpaceException
-   */
-  Space removeInvited(String spaceId, String userId) throws SpaceException;
-
-  /**
-   * Get all members from a space
-   * @param space
-   * @return list of members
-   * @throws SpaceException
-   */
   List<String> getMembers(Space space) throws SpaceException;
 
   /**

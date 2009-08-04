@@ -81,7 +81,7 @@ public class UIManageAllSpace extends UIContainer {
   private List<Space> getAllSpaces() throws Exception {
     SpaceService spaceSrc = getSpaceService();
     String userId = getRemoteUser();
-    return spaceSrc.getAllSpaces(userId);
+    return null;//spaceSrc.getAllSpaces(userId);
   }
   
   private String getRemoteUser() {

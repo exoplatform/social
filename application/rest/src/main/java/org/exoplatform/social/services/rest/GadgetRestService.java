@@ -95,7 +95,7 @@ public class GadgetRestService implements ResourceContainer {
     List<Space> mySpace = new ArrayList<Space>();
     PortalContainer portalContainer = PortalContainer.getInstance();
     SpaceService spaceSrc = (SpaceService)portalContainer.getComponentInstanceOfType(SpaceService.class);
-    mySpace = spaceSrc.getAllSpaces(userId);
+    mySpace = spaceSrc.getSpaces(userId);
     
     listSpaces.setSpaces(mySpace);
     

@@ -91,24 +91,6 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public List<Space> getAllSpaces(String userId) throws SpaceException {
-    try {
-      List<Space> spaces = getAllSpaces();
-      Iterator<Space> itr = spaces.iterator();
-      while(itr.hasNext()) {
-        Space space = itr.next();
-        if(space.getVisibility().equals(Space.HIDDEN) && !isMember(space, userId))
-          itr.remove();
-      }
-      return spaces;
-    } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
-    }
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
   public Space getSpaceById(String id) throws SpaceException {
     try {
       return storage.getSpaceById(id);
@@ -302,7 +284,7 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public Space addPending(Space space, String userId) throws SpaceException {
+  private Space addPending(Space space, String userId) throws SpaceException {
     space.setPendingUsers(addItemToArray(space.getPendingUsers(), userId));
     return space;
   }
@@ -310,14 +292,7 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public Space addPending(String spaceId, String userId) throws SpaceException {
-    return addPending(getSpaceById(spaceId), userId);
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public Space removePending(Space space, String userId) throws SpaceException {
+  private Space removePending(Space space, String userId) throws SpaceException {
     space.setPendingUsers(removeItemFromArray(space.getPendingUsers(), userId));
     return space;
   }
@@ -325,14 +300,7 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public Space removePending(String spaceId, String userId) throws SpaceException {
-    return removePending(getSpaceById(spaceId), userId);
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public Space addInvited(Space space, String userId) throws SpaceException {
+  private Space addInvited(Space space, String userId) throws SpaceException {
     space.setInvitedUsers(addItemToArray(space.getInvitedUsers(), userId));
     return space;
   }
@@ -340,23 +308,9 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public Space addInvited(String spaceId, String userId) throws SpaceException {
-    return addInvited(getSpaceById(spaceId), userId);
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public Space removeInvited(Space space, String userId) throws SpaceException {
+  private Space removeInvited(Space space, String userId) throws SpaceException {
     space.setInvitedUsers(removeItemFromArray(space.getInvitedUsers(), userId));
     return space;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public Space removeInvited(String spaceId, String userId) throws SpaceException {
-    return removeInvited(getSpaceById(spaceId), userId);
   }
   
   /**
