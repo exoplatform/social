@@ -35,6 +35,95 @@
 %>
 <div class="UIManageMySpaces" id="$uicomponent.id">
     <div class="ContainerSpace">
+    
+    	<div class="SpaceContent">
+    		<div class="AvartarSpace">
+    			<img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+    		</div>
+    		<div class="MySpacesContent">
+    			<div class="ContentBar">
+    				<div class="MySpaceLable">Foolball</div>
+    				<div class="DeleteSpace ButtonIconSpace" title="Delete Space"><span></span></div>
+    				<div class="EditSpaceManager ButtonIconSpace" title="Edit Space Manager"><span></span></div>
+    				<div class="EditSpace ButtonIconSpace" title="Edit Space"><span></span></div>
+    				<div style="clear: left;"><span></span></div>
+    			</div>
+    			<div class="MySpacesContentContent">
+    				<table class="UIGridSpace">
+    					<tr>
+    						<td class="FieldLabel">Description:</td>
+    						<td class="FieldComponent">football UITeam</td>
+    					</tr>
+    					<tr>
+    						<td class="FieldLabel">Size:</td>
+    						<td class="FieldComponent">1024 KB</td>
+    					</tr>
+    				</table>
+    			</div>
+    		</div>
+    		<div style="clear: left;"><span></span></div>
+    	</div>
+    	<div class="SpaceContent">
+    		<div class="AvartarSpace">
+    			<img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+    		</div>
+    		<div class="MySpacesContent">
+    			<div class="ContentBar">
+    				<div class="MySpaceLable">Foolball</div>
+    				<div class="DeleteSpace ButtonIconSpace" title="Delete Space"><span></span></div>
+    				<div class="EditSpaceManager ButtonIconSpace" title="Edit Space Manager"><span></span></div>
+    				<div class="EditSpace ButtonIconSpace" title="Edit Space"><span></span></div>
+    				<div style="clear: left;"><span></span></div>
+    			</div>
+    			<div class="MySpacesContentContent">
+    				<table class="UIGridSpace">
+    					<tr>
+    						<td class="FieldLabel">Description:</td>
+    						<td class="FieldComponent">football UITeam</td>
+    					</tr>
+    					<tr>
+    						<td class="FieldLabel">Size:</td>
+    						<td class="FieldComponent">1024 KB</td>
+    					</tr>
+    				</table>
+    			</div>
+    		</div>
+    		<div style="clear: left;"><span></span></div>
+    	</div>
+    	<div class="SpaceContent">
+    		<div class="AvartarSpace">
+    			<img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+    		</div>
+    		<div class="MySpacesContent">
+    			<div class="ContentBar">
+    				<div class="MySpaceLable">Foolball</div>
+    				<div class="DeleteSpace ButtonIconSpace" title="Delete Space"><span></span></div>
+    				<div class="EditSpaceManager ButtonIconSpace" title="Edit Space Manager"><span></span></div>
+    				<div class="EditSpace ButtonIconSpace" title="Edit Space"><span></span></div>
+    				<div style="clear: left;"><span></span></div>
+    			</div>
+    			<div class="MySpacesContentContent">
+    				<table class="UIGridSpace">
+    					<tr>
+    						<td class="FieldLabel">Description:</td>
+    						<td class="FieldComponent">football UITeam</td>
+    					</tr>
+    					<tr>
+    						<td class="FieldLabel">Size:</td>
+    						<td class="FieldComponent">1024 KB</td>
+    					</tr>
+    				</table>
+    			</div>
+    		</div>
+    		<div style="clear: left;"><span></span></div>
+    	</div>
+    
+    
+    
+    
+    
+    
+    
         <div class="InvitedSpaces">
             <div class="InvitedSpaceLabel"><%= labelInvitedSpaces %></div>
         <%for (space in invitedSpaces) {
@@ -87,4 +176,25 @@
         <div class="AddSpace" onclick="<%= uicomponent.event("AddSpace") %>"><a href="#AddSpace"><%= labelActionAddSpace %></a></div>
     </div>
     <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+    
+    <div class="UIAction">
+		<table class="ActionContainer">
+			<tbody><tr>
+	 	 		<td>
+					
+					<div class="ActionButton LightBlueStyle" onclick="javascript:eXo.webui.UIForm.submitForm('Account#UIAccountForm','Reset',true)">
+						<div class="ButtonLeft">
+							<div class="ButtonRight">
+								<div class="ButtonMiddle">
+									<a href="javascript:void(0);">Add Space</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+	 			</td>
+			</tr>
+		</tbody>
+	</table>
+  </div>
 </div>

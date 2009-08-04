@@ -16,16 +16,186 @@
  */
  
 .UIManageSpacesPortlet1 {
+	
 }
 
-.UIVerticalTabs {
+.UIManageSpacesPortlet1 .UIVerticalTabs {
     float:left;
     width: 200px;
 }
 
-.UIVerticalTabContentContainer {
-	
+.UIManageSpacesPortlet1 .UITabPane .TabPaneContent {
+    padding: 0px;
+    background: url('background/LeftContentTab.gif') repeat-y 199px;;
 }
+
+
+.UIManageSpacesPortlet1 .UITabPane .TabPaneContent .UIVerticalTabs{
+    padding: 0px;
+}
+
+.UIManageSpacesPortlet1 .UITabPane .TabPaneContent .TabsContainer{
+    padding: 10px 0px 10px 10px;
+}
+
+.UIManageSpacesPortlet1 .TabsContainer .NormalTabStyle{
+    padding-left: 10px;
+}
+
+.UIManageSpacesPortlet1 .TabsContainer .SelectedTab{
+    margin-top: 4px;
+}
+
+.UIManageSpacesPortlet1 .TabsContainer .SelectedTab .LeftTab{
+    padding-left: 4px;
+    background: url('background/LeftTab.gif') no-repeat left;
+}
+
+.UIManageSpacesPortlet1 .TabsContainer .SelectedTab .MiddleTab{
+    height: 38px;
+    background: url('background/MiddleTab.gif') repeat-x;
+    padding: 0px 0px 0px 18px;
+    line-height: 38px;
+    color: #f3771d;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.UIManageSpacesPortlet1 .TabsContainer .NormalTab{
+    margin-top: 4px;
+    padding-right: 1px;
+}
+
+.UIManageSpacesPortlet1 .TabsContainer .NormalTab .LeftTab{
+    padding-left: 4px;
+    background: url('background/LeftNomalTab.gif') no-repeat left;
+}
+
+.UIManageSpacesPortlet1 .TabsContainer .NormalTab .MiddleTab{
+    height: 38px;
+    background: url('background/MiddleNomalTab.gif') repeat-x;
+    padding: 0px 0px 0px 18px;
+    line-height: 38px;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+
+
+
+
+.UIManageSpacesPortlet1 .UIVerticalTabContentContainer {
+	margin-left: 201px;
+	background: url('background/UIVerticalTabContentBG.gif') repeat-y left;
+	padding: 10px 10px 10px 17px ;
+}
+
+.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .ContainerSpace{
+	height: 400px;
+	overflow: auto;
+}
+
+.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UITabContent{
+	padding:4px;
+	border: 1px solid #dadada;
+	background: #f9f9f9;
+}
+
+.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UITabContent .UIManageMySpaces{
+	padding:8px;
+	border: 1px solid #dadada;
+	background: white;
+}
+
+.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UIManageMySpaces .SpaceContent{
+	padding:8px;
+	border-bottom: 1px solid #dadada;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .SpaceContent .AvartarSpace{
+	float: left;
+	width: 90px; height: 80px;
+	background: url('background/Avartar.gif') no-repeat left;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .SpaceContent .MySpacesContent{
+	margin-left: 100px;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .SpaceContent .MySpacesContentContent{
+	padding: 8px;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContentContent .UIGridSpace{
+	width: 100%;
+	table-layout: fixed;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .ContentBar{
+	border-bottom: 1px dotted #b7b7b7;
+	height: 24px;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .MySpaceLable{
+	float: left;
+	font-weight: bold;
+	padding-left: 8px;
+	color: #0077d4;
+	font-size: 12px;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .FieldLabel{
+	font-weight: bold;
+	width: 100px;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .FieldComponent{
+	width: 100%;
+	overflow: hidden;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .ButtonIconSpace{
+	float: right;
+	width: 24px; height: 18px;
+	cursor: pointer;
+	margin-left: 4px;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .EditSpace{
+	background: url('background/EditSpace.gif') no-repeat center;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .EditSpaceManager{
+	background: url('background/EditSpaceManager.gif') no-repeat center;
+}
+
+.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .DeleteSpace{
+	background: url('background/DeleteSpace.gif') no-repeat center;
+}
+
+.UIManageSpacesPortlet1 .UIAction .LightBlueStyle .ButtonLeft {
+	background:transparent url(background/ButtonLeft.gif) no-repeat scroll left top;
+	padding-left: 6px;
+}
+
+.UIManageSpacesPortlet1 .UIAction .LightBlueStyle .ButtonRight {
+	background:transparent url(background/ButtonRight.gif) no-repeat scroll right top;
+	padding-right: 6px;
+}
+
+.UIManageSpacesPortlet1 .UIAction .LightBlueStyle .ButtonMiddle {
+	background:transparent url(background/ButtonMiddle.gif) repeat-x ;
+	height: 31px;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 30px;
+}
+
+
+
+
 
 .UIManageSpacesPortlet1 .UISpaceForm {
     padding: 1px;
@@ -111,7 +281,7 @@
     border: solid 1px #5c8ea2;
 }
 
-.UIManageSpacesPortlet11 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
     
 }
 
