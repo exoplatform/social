@@ -21,86 +21,65 @@
 
 .UIManageSpacesPortlet1 .UIVerticalTabs {
     float:left;
-    width: 200px;
+    width: 200px;F
 }
 
 .UIManageSpacesPortlet1 .UITabPane .TabPaneContent {
     padding: 0px;
-    background: url('background/LeftContentTab.gif') repeat-y 199px;;
+    background: url('background/LeftContentTab.gif') repeat-y 112px;;
 }
 
 
 .UIManageSpacesPortlet1 .UITabPane .TabPaneContent .UIVerticalTabs{
-    padding: 0px;
+    padding: 10px 0px 10px 0px;
 }
 
 .UIManageSpacesPortlet1 .UITabPane .TabPaneContent .TabsContainer{
-    padding: 10px 0px 10px 10px;
-}
-
-.UIManageSpacesPortlet1 .TabsContainer .NormalTabStyle{
-    padding-left: 10px;
+    border-top: 1px solid #a3a3a3;
 }
 
 .UIManageSpacesPortlet1 .TabsContainer .SelectedTab{
-    margin-top: 4px;
-}
-
-.UIManageSpacesPortlet1 .TabsContainer .SelectedTab .LeftTab{
-    padding-left: 4px;
-    background: url('background/LeftTab.gif') no-repeat left;
+    background: white url('background/SelectedTab.gif') repeat-y ;
+    height: 26px;
+    border-bottom: 1px solid #9e9e9e;
+    padding-left: 16px;
 }
 
 .UIManageSpacesPortlet1 .TabsContainer .SelectedTab .MiddleTab{
-    height: 38px;
-    background: url('background/MiddleTab.gif') repeat-x;
-    padding: 0px 0px 0px 18px;
-    line-height: 38px;
-    color: #f3771d;
-    font-weight: bold;
-    font-size: 12px;
+	background: url('background/SelectedTabIcon.gif') no-repeat left center ;
+	height: 26px;
+	line-height: 26px;
+	font-weight: bold;
+	padding-left: 12px;
+	color: #ff7500; 
 }
+
 
 .UIManageSpacesPortlet1 .TabsContainer .NormalTab{
-    margin-top: 4px;
-    padding-right: 1px;
-}
-
-.UIManageSpacesPortlet1 .TabsContainer .NormalTab .LeftTab{
-    padding-left: 4px;
-    background: url('background/LeftNomalTab.gif') no-repeat left;
+    height: 26px;
+    border-bottom: 1px solid #c8c8c8;
+    padding-left: 16px;
 }
 
 .UIManageSpacesPortlet1 .TabsContainer .NormalTab .MiddleTab{
-    height: 38px;
-    background: url('background/MiddleNomalTab.gif') repeat-x;
-    padding: 0px 0px 0px 18px;
-    line-height: 38px;
-    color: white;
+	background: url('background/NormalTabIcon.gif') no-repeat left center ;
+    height: 26px;
+    line-height: 26px;
     font-weight: bold;
-    font-size: 12px;
-    cursor: pointer;
+    padding-left: 12px;
+    color: #0077d4; 
 }
-
-
 
 
 
 .UIManageSpacesPortlet1 .UIVerticalTabContentContainer {
 	margin-left: 201px;
-	background: url('background/UIVerticalTabContentBG.gif') repeat-y left;
-	padding: 10px 10px 10px 17px ;
+	padding: 10px ;
 }
 
 .UIManageSpacesPortlet1 .UIVerticalTabContentContainer .ContainerSpace{
 	height: 400px;
 	overflow: auto;
-}
-
-.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UITabContent{
-	padding:4px;
-	border: 1px solid #dadada;
-	background: #f9f9f9;
 }
 
 .UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UITabContent .UIManageMySpaces{
