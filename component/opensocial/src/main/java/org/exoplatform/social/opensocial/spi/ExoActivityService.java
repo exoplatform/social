@@ -53,7 +53,13 @@ public class ExoActivityService extends ExoService implements ActivityService {
         //TODO filter by appID
         result.addAll(convertToOSActivities(am.getActivities(id), fields));
       }
-      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result));
+      
+      // Add for applying paging.
+      int totalSize = result.size();
+      int last = options.getFirst() + options.getMax();
+      result = result.subList(options.getFirst(), Math.min(last, totalSize));
+      
+      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, totalSize));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
@@ -78,7 +84,12 @@ public class ExoActivityService extends ExoService implements ActivityService {
         }
       }
 
-      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result));
+      // Add for applying paging.
+      int totalSize = result.size();
+      int last = options.getFirst() + options.getMax();
+      result = result.subList(options.getFirst(), Math.min(last, totalSize));
+      
+      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, totalSize));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }

@@ -24,6 +24,7 @@
  </ModulePrefs>
  <Content type="html">
    <![CDATA[
+
 <style type="text/css">
 	#streamcontainer {
 		height: 229px;
@@ -120,88 +121,124 @@
     padding: .5em;
   }
 </style>
-
 <script type="text/javascript">
+var eXo = eXo || {};
+eXo.social = eXo.social || {};
 
-gadgets.util.registerOnLoadHandler(refreshActivities);
-
-function refreshActivities() {
-  var req = opensocial.newDataRequest();
-  if (!viewer) {
-    req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
-    req.add(req.newFetchPersonRequest('OWNER'), 'owner');
-
-    var opts = {};
-    opts[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
-    opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40;
-    opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
-                   [opensocial.Person.Field.NAME,
-                   opensocial.Person.Field.THUMBNAIL_URL];
-    req.add(req.newFetchPeopleRequest('OWNER_FRIENDS', opts), 'ownerContacts');
-  }
-
-
-  req.add(req.newFetchActivitiesRequest('OWNER'), 'ownerActivities');
-  req.add(req.newFetchActivitiesRequest('OWNER_FRIENDS'), 'activities');
-  req.send(handleActivities);
+function StatusUpdate() {
+	this.more = 0;
+	this.MAX = 3;
+	this.viewer = null;
+	this.owner = null;
+	this.ownerContacts = null;
+	this.activities = null;
 }
 
-function postNewActivity() {
-  var activityElement = document.getElementById('newActivity');
-	// Check for blank spaces, if yes return false without any update
-	var reWhiteSpace = new RegExp(/^\s+$/);
-	if (activityElement.value == "" || reWhiteSpace.test(activityElement.value)) {
-		return false;
+StatusUpdate.prototype.init = function() {
+  eXo.social.statusUpdate = new StatusUpdate();
+	eXo.social.statusUpdate.refresh();	
+}
+
+StatusUpdate.prototype.refresh = function() {
+
+  // Create request for getting totalsize of owner and owner-friend activities.
+  var reqTotalSize = opensocial.newDataRequest();
+  
+  //For reducing the returning array size, set 1 for MAX 
+  var params = {};
+  params[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
+	params[opensocial.DataRequest.PeopleRequestFields.MAX] = 1;
+	
+  reqTotalSize.add(reqTotalSize.newFetchActivitiesRequest('OWNER', params), 'ownerActivities');   
+  reqTotalSize.add(reqTotalSize.newFetchActivitiesRequest('OWNER_FRIENDS', params), 'activities');
+  reqTotalSize.send(process);
+  
+ 	function process(data) {
+ 	  var totalOwnerActs = data.get('ownerActivities').getData()['activities'].getTotalSize();;
+  	var totalOwnerFriendActs = data.get('activities').getData()['activities'].getTotalSize();;
+
+	  var totalSize = totalOwnerActs;
+	  eXo.social.statusUpdate.MAX = 3*(eXo.social.statusUpdate.more + 1);
+	  
+	  if (totalOwnerActs > totalOwnerFriendActs)  totalSize = totalOwnerFriendActs;
+	  if (eXo.social.statusUpdate.MAX > totalSize) {
+	  	eXo.social.statusUpdate.MAX = 2*eXo.social.statusUpdate.MAX - totalSize;
+	  }
+	  
+	  //Create request for getting owner and owner-friend activities.
+	  var req = opensocial.newDataRequest();	
+	
+	  if (!eXo.social.statusUpdate.viewer) {
+	    req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
+	    req.add(req.newFetchPersonRequest('OWNER'), 'owner');
+	
+	    var opts = {};
+	    opts[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
+	    opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40;
+	    opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
+	                   [opensocial.Person.Field.NAME,
+	                   opensocial.Person.Field.THUMBNAIL_URL];
+	    req.add(req.newFetchPeopleRequest('OWNER_FRIENDS', opts), 'ownerContacts');
+	  }
+	
+	  var opts_act = {};
+	  opts_act[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
+	  opts_act[opensocial.DataRequest.ActivityRequestFields.MAX] = eXo.social.statusUpdate.MAX;
+	  req.add(req.newFetchActivitiesRequest('OWNER', opts_act), 'ownerActivities');   
+	  req.add(req.newFetchActivitiesRequest('OWNER_FRIENDS', opts_act), 'activities');
+	  req.send(eXo.social.statusUpdate.handleActivities);
 	}
-  var activity = opensocial.newActivity({ 'title' : activityElement.value,
-    'body' : activityElement.value});
-
-  activityElement.value = '';
-  opensocial.requestCreateActivity(activity, "HIGH", refreshActivities);
 }
 
-var viewer;
-var owner;
-var ownerContacts;
-var activities;
-function handleActivities(dataResponse) {
-  if (!viewer) {
-    viewer = dataResponse.get('viewer').getData();
-    owner = dataResponse.get('owner').getData();
-    ownerContacts = dataResponse.get('ownerContacts').getData();
-  }
-  activities = dataResponse.get('ownerActivities').getData()['activities'].asArray();
-  activities = activities.concat(dataResponse.get('activities').getData()['activities'].asArray());
+StatusUpdate.prototype.handleActivities = function(dataResponse) {
+  if (!eXo.social.statusUpdate.viewer) {
+    eXo.social.statusUpdate.viewer = dataResponse.get('viewer').getData();
+    eXo.social.statusUpdate.owner = dataResponse.get('owner').getData();
+    eXo.social.statusUpdate.ownerContacts = dataResponse.get('ownerContacts').getData();
+  }  
+  
+  eXo.social.statusUpdate.activities = dataResponse.get('ownerActivities').getData()['activities'].asArray();
+  eXo.social.statusUpdate.activities = eXo.social.statusUpdate.activities.concat(dataResponse.get('activities').getData()['activities'].asArray());
+  
+  //Total activities
+  var totalAct = dataResponse.get('ownerActivities').getData()['activities'].getTotalSize();
+  totalAct+= dataResponse.get('activities').getData()['activities'].getTotalSize();
+
   document.getElementById('stream').style.display = 'block';
 
   var html = '';
-  if (!activities || activities.length == 0) {
-    document.getElementById('stream').innerHTML = owner.getDisplayName() + ' do not have any updates yet';
+  if (!eXo.social.statusUpdate.activities || eXo.social.statusUpdate.activities.length == 0) {
+    document.getElementById('stream').innerHTML = eXo.social.statusUpdate.owner.getDisplayName() + ' do not have any updates yet';
     return;
   }
-
-  activities = activities.sort(sortUpdates);
-
-  for (var i = 0; i < activities.length; i++) {
+  eXo.social.statusUpdate.activities = eXo.social.statusUpdate.activities.sort(eXo.social.statusUpdate.sortUpdates);
+  var activitiesLength = eXo.social.statusUpdate.activities.length;
+  
+  if (activitiesLength < totalAct) {
+		document.getElementById('more').style.display = 'block';
+  } else {
+		document.getElementById('more').style.display = 'none';
+  }
+  for (var i = 0; i < activitiesLength; i++) {
     html += '<div class="streamrow">';
-    html += '<div class="streamdescription">' + getName(activities[i].getField('userId')) + '</div>';
+    html += '<div class="streamdescription">' + eXo.social.statusUpdate.getName(eXo.social.statusUpdate.activities[i].getField('userId')) + '</div>';
 
     html += '<div class="streamcontents">';
     html += '<img src="http://www.google.com/s2/sharing/resources/static/images/quot.png?hl=en_US"/>';
 
-    var body = activities[i].getField('body') || '';
-    var url = activities[i].getField('url');
+    var body = eXo.social.statusUpdate.activities[i].getField('body') || '';
+    var url = eXo.social.statusUpdate.activities[i].getField('url');
     html += '<span class="streamhtmlcontents">' + body + '</span>';
-	// html += '<div class="streamhtmlsmall">posted on ' + ("" + (new Date(activities[i].getField('postedTime')))).substring(0, 24) + '</div>';
+	// html += '<div class="streamhtmlsmall">posted on ' + ("" + (new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')))).substring(0, 24) + '</div>';
     html += '<div class="streamhtmlsmall">';
-	if (url) 
+	if (url)
 		html += '<a href="' + url + '">link</a> | ';
-	html += 'posted ' + timeToPrettyString(activities[i].getField('postedTime')) + '</div>';
+	html += 'posted ' + eXo.social.statusUpdate.timeToPrettyString(eXo.social.statusUpdate.activities[i].getField('postedTime')) + '</div>';
 
     html += '</div>';
 
     html += '<div class="mediaitems">';
-    var mediaItems = activities[i].getField('mediaItems');
+    var mediaItems = eXo.social.statusUpdate.activities[i].getField('mediaItems');
     if (mediaItems) {
       for (var j = 0; j < mediaItems.length; j++) {
         if (mediaItems[j].getField('type') == 'image') {
@@ -214,27 +251,35 @@ function handleActivities(dataResponse) {
     html += '</div>';
     html += '<div class="streamrowline"></div>';
   }
+  
   document.getElementById('stream').innerHTML = html;
-  document.getElementById('streamtitle').innerHTML = 'Activities from ' + owner.getDisplayName() + "'s contacts";
+  document.getElementById('streamtitle').innerHTML = 'Activities from ' + eXo.social.statusUpdate.owner.getDisplayName() + "'s contacts";
+  document.getElementById('more').innerHTML = '<a style="text-decoration:none;" href="#" onclick="eXo.social.statusUpdate.displayMore();">more</a>';
+  	
   gadgets.window.adjustHeight();
 }
 
-function getName(id) {
+StatusUpdate.prototype.displayMore = function() {
+		eXo.social.statusUpdate.more += 1;
+		eXo.social.statusUpdate.refresh();
+}
+
+StatusUpdate.prototype.getName = function(id) {
   if (id == null)
     return "";
-  if (id == owner.getId())
-    return owner.getDisplayName();
-  var person = ownerContacts.getById(id);
+  if (id == eXo.social.statusUpdate.owner.getId())
+    return eXo.social.statusUpdate.owner.getDisplayName();
+  var person = eXo.social.statusUpdate.ownerContacts.getById(id);
   if (person == null)
     return "";
   return person.getDisplayName();
 }
 
-function sortUpdates(a, b) {
+StatusUpdate.prototype.sortUpdates = function(a, b) {
   return b.getField('postedTime') - a.getField('postedTime');
 }
 
-function timeToPrettyString(B) {
+StatusUpdate.prototype.timeToPrettyString = function(B) {
     if (isNaN(B)) {
         return "an indeterminate amount of time ago"
     }
@@ -243,12 +288,26 @@ function timeToPrettyString(B) {
     return date;
 }
 
-function hideShowDiv(divToShow, divToHide) {
+StatusUpdate.prototype.postNewActivity = function(){
+  var activityElement = document.getElementById('newActivity');
+	// Check for blank spaces, if yes return false without any update
+	var reWhiteSpace = new RegExp(/^\s+$/);
+	if (activityElement.value == "" || reWhiteSpace.test(activityElement.value)) {
+		return false;
+	}
+  var activity = opensocial.newActivity({ 'title' : activityElement.value,
+    'body' : activityElement.value});
+
+  activityElement.value = '';
+  opensocial.requestCreateActivity(activity, "HIGH", statusUpdates.refresh);
+}
+
+StatusUpdate.prototype.hideShowDiv = function(divToShow, divToHide) {
   document.getElementById(divToShow).style.display = 'block';
   document.getElementById(divToHide).style.display = 'none';
 }
 
-function streamSubmit(e) { // Handle ENTER keypress
+StatusUpdate.prototype.streamSubmit = function(e) { // Handle ENTER keypress
 	var keyNum;
 	var ENTER_KEY_NUM = 13;
 	if(window.event) {// IE
@@ -258,22 +317,27 @@ function streamSubmit(e) { // Handle ENTER keypress
   	keyNum = e.which;
   }
   if (ENTER_KEY_NUM == keyNum) {
-  	postNewActivity();
+  	eXo.social.statusUpdate.postNewActivity();
   	return false;
   }
 }
+
+var statusUpdates = new StatusUpdate();
+gadgets.util.registerOnLoadHandler(statusUpdates.init());
+
 </script>
 <div id="streamcontainer">
 <div id="streamtitle" class="streamtitle"></div>
 <div class="addActivityDiv">
   <div>What are you doing?</div>
   <span id="addActivity">
-    <input id="newActivity" type="text" onkeypress="streamSubmit(event);"/>
-    <input type="button" onclick="postNewActivity(); return false;" value="add"/>
-    <input type="button" onclick="hideShowDiv('addActivityText','addActivity'); return false;" value="cancel" style= "display:none"/>
-  </span>
+    <input id="newActivity" type="text" onkeypress="eXo.social.statusUpdate.streamSubmit(event);"/>
+    <input type="button" onclick="eXo.social.statusUpdate.postNewActivity(); return false;" value="add"/>
+    <input type="button" onclick="eXo.social.statusUpdate.hideShowDiv('addActivityText','addActivity'); return false;" value="cancel" style= "display:none"/>
+  </span>  
 </div>
 <div id="stream" style="display:none"></div>
+<div id="more" style="text-align:right;"></div>
 </div>
 ]]>
 </Content>
