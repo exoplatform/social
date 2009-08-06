@@ -1,6 +1,5 @@
 /**
  * A class to manage vertical tabs
- * TODO : could be a good thing to implement a scroll manager directly in this class
  */
 var eXo = eXo || {};
 eXo.social = eXo.social || {};
@@ -29,17 +28,17 @@ UIVerticalTabs.prototype.displayTabContent = function(clickedEle) {
  */
 UIVerticalTabs.prototype.changeTabForUITabPane = function(clickedEle, tabId, url) {
   var DOMUtil = eXo.core.DOMUtil;
-  var uiSelectTab = DOMUtil.findAncestorByClass(clickedEle, "UITab") ;
+  var uiSelectTab = DOMUtil.findAncestorByClass(clickedEle, "UIVerticalTab") ;
   
 
   var uiVerticalTabs = DOMUtil.findAncestorByClass(clickedEle, "UIVerticalTabs") ;
-  var uiTabs = eXo.core.DOMUtil.findDescendantsByClass(uiVerticalTabs, "div", "UITab") ;
+  var uiTabs = eXo.core.DOMUtil.findDescendantsByClass(uiVerticalTabs, "div", "UIVerticalTab") ;
   var parentdVerticalTab = uiVerticalTabs.parentNode ;
   var contentTabContainer = DOMUtil.findFirstDescendantByClass(parentdVerticalTab, "div", "UIVerticalTabContentContainer") ;
-  var uiTabContents = DOMUtil.findChildrenByClass(contentTabContainer, "div", "UITabContent") ;
+  var uiTabContents = DOMUtil.findChildrenByClass(contentTabContainer, "div", "UIVerticalTabContent") ;
   var form = DOMUtil.getChildrenByTagName(contentTabContainer, "form") ;
  	if(form.length > 0) {
- 	  var tmp = DOMUtil.findChildrenByClass(form[0], "div", "UITabContent") ;
+ 	  var tmp = DOMUtil.findChildrenByClass(form[0], "div", "UIVerticalTabContent") ;
   	  for(var i = 0; i < tmp.length; i++) {
   		uiTabContents.push(tmp[i]) ;
   	  }
@@ -62,11 +61,5 @@ UIVerticalTabs.prototype.changeTabForUITabPane = function(clickedEle, tabId, url
 				eXo.ecm.UIJCRExplorer.initViewNodeScroll();
 		} catch(e) {void(0);}
 	}
-//  if(tabId !=null){
-//  	//TODO: modify: dang.tung
-//    url = url+"&objectId="+tabId ;
-//    ajaxAsyncGetRequest(url, false) ;
-//  }
-
 };
 eXo.social.space.UIVerticalTabs = new UIVerticalTabs();

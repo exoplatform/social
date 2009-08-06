@@ -18,6 +18,9 @@ package social.portal.webui.component;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -119,6 +122,13 @@ public class UIManageMySpaces extends UIContainer {
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
   
+  public String getAbsoluteSpaceUrl(Space space) {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    HttpServletRequest request = portalRequestContext.getRequest();
+    String str = request.getRequestURL().toString();
+    return str.substring(0, str.indexOf(portalRequestContext.getRequestContextPath()));
+  }
+  
   /**
    * Get spaces which user is invited to join
    * 
@@ -143,10 +153,10 @@ public class UIManageMySpaces extends UIContainer {
   public int getRole(String spaceId) throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    if(spaceService.isMember(spaceId, userId)) {
-      return MEMBER;
+    if(spaceService.isLeader(spaceId, userId)) {
+      return LEADER;
     }
-    return LEADER;
+    return MEMBER;
   }
   
   /**

@@ -21,31 +21,36 @@
 
 .UIManageSpacesPortlet1 .UIVerticalTabs {
     float:left;
-    width: 200px;F
+    width: 200px;
 }
 
-.UIManageSpacesPortlet1 .UITabPane .TabPaneContent {
+.UIManageSpacesPortlet1 .UIVerticalTabs .UIVerticalTab {
+    cursor: pointer;
+}
+
+
+.UIManageSpacesPortlet1 .UIVerticalTabPane .VerticalTabPaneContent {
     padding: 0px;
     background: url('background/LeftContentTab.gif') repeat-y 112px;;
 }
 
 
-.UIManageSpacesPortlet1 .UITabPane .TabPaneContent .UIVerticalTabs{
+.UIManageSpacesPortlet1 .UIVerticalTabPane .VerticalTabPaneContent .UIVerticalTabs{
     padding: 10px 0px 10px 0px;
 }
 
-.UIManageSpacesPortlet1 .UITabPane .TabPaneContent .TabsContainer{
+.UIManageSpacesPortlet1 .UIVerticalTabPane .VerticalTabPaneContent .VerticalTabsContainer{
     border-top: 1px solid #a3a3a3;
 }
 
-.UIManageSpacesPortlet1 .TabsContainer .SelectedTab{
+.UIManageSpacesPortlet1 .VerticalTabsContainer .SelectedTab{
     background: white url('background/SelectedTab.gif') repeat-y ;
     height: 26px;
     border-bottom: 1px solid #9e9e9e;
     padding-left: 16px;
 }
 
-.UIManageSpacesPortlet1 .TabsContainer .SelectedTab .MiddleTab{
+.UIManageSpacesPortlet1 .VerticalTabsContainer .SelectedTab .MiddleTab{
 	background: url('background/SelectedTabIcon.gif') no-repeat left center ;
 	height: 26px;
 	line-height: 26px;
@@ -55,13 +60,13 @@
 }
 
 
-.UIManageSpacesPortlet1 .TabsContainer .NormalTab{
+.UIManageSpacesPortlet1 .VerticalTabsContainer .NormalTab{
     height: 26px;
     border-bottom: 1px solid #c8c8c8;
     padding-left: 16px;
 }
 
-.UIManageSpacesPortlet1 .TabsContainer .NormalTab .MiddleTab{
+.UIManageSpacesPortlet1 .VerticalTabsContainer .NormalTab .MiddleTab{
 	background: url('background/NormalTabIcon.gif') no-repeat left center ;
     height: 26px;
     line-height: 26px;
@@ -82,42 +87,42 @@
 	overflow: auto;
 }
 
-.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UITabContent .UIManageMySpaces{
+.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UIVerticalTabContent .UIManageSpaces{
 	padding:8px;
 	border: 1px solid #dadada;
 	background: white;
 }
 
-.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UIManageMySpaces .SpaceContent{
+.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UIManageSpaces .SpaceContent{
 	padding:8px;
 	border-bottom: 1px solid #dadada;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .SpaceContent .AvartarSpace{
+.UIManageSpacesPortlet1 .UIManageSpaces .SpaceContent .AvatarSpace{
 	float: left;
 	width: 90px; height: 80px;
-	background: url('background/Avartar.gif') no-repeat left;
+	background: url('background/Avatar.gif') no-repeat left;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .SpaceContent .MySpacesContent{
+.UIManageSpacesPortlet1 .UIManageSpaces .SpaceContent .MySpacesContent{
 	margin-left: 100px;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .SpaceContent .MySpacesContentContent{
+.UIManageSpacesPortlet1 .UIManageSpaces .SpaceContent .MySpacesContentContent{
 	padding: 8px;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContentContent .UIGridSpace{
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContentContent .UIGridSpace{
 	width: 100%;
 	table-layout: fixed;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .ContentBar{
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .ContentBar{
 	border-bottom: 1px dotted #b7b7b7;
 	height: 24px;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .MySpaceLable{
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .MySpaceLabel{
 	float: left;
 	font-weight: bold;
 	padding-left: 8px;
@@ -125,34 +130,66 @@
 	font-size: 12px;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .FieldLabel{
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .MySpaceLabel a{
+    float: left;
+    font-weight: bold;
+    padding-left: 8px;
+    color: #0077d4;
+    font-size: 12px;
+}
+
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .FieldLabel{
 	font-weight: bold;
 	width: 100px;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .FieldComponent{
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .FieldComponent{
 	width: 100%;
 	overflow: hidden;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .ButtonIconSpace{
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .ButtonIconSpace{
 	float: right;
 	width: 24px; height: 18px;
 	cursor: pointer;
 	margin-left: 4px;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .EditSpace{
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .EditSpace{
 	background: url('background/EditSpace.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .EditSpaceManager{
-	background: url('background/EditSpaceManager.gif') no-repeat center;
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .EditSpaceNavigation{
+	background: url('background/EditSpaceNavigation.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageMySpaces .MySpacesContent .DeleteSpace{
+.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .DeleteSpace{
 	background: url('background/DeleteSpace.gif') no-repeat center;
 }
+
+/*BEGIN:: TODO: UI team: create more icons*/
+
+.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .AcceptSpace {
+  /*background: url('background/AcceptSpace.gif') no-repeat center;*/
+}
+
+.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .DenySpace {
+  /*background: url('background/DenySpace.gif') no-repeat center;*/
+}
+
+.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .LeaveSpace {
+  /*background: url('background/LeaveSpace.gif') no-repeat center;*/
+}
+
+.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .RequestJoin {
+  /*background: url('background/RequestJoin.gif') no-repeat center;*/
+}
+
+.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .RevokePending {
+  /*background: url('background/RevokePending.gif') no-repeat center;*/
+}
+
+/*END:: TODO: UI team: create more icons*/
 
 .UIManageSpacesPortlet1 .UIAction .LightBlueStyle .ButtonLeft {
 	background:transparent url(background/ButtonLeft.gif) no-repeat scroll left top;

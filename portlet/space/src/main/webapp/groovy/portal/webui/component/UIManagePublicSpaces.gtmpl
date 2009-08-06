@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
     Copyright (C) 2003-2009 eXo Platform SAS.
@@ -16,24 +18,47 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<% 
+*/
+%>
+<%
+  import org.exoplatform.social.space.SpaceUtils
+  
   def labelActionRequestToJoin = _ctx.appRes("${uicomponent.id}.label.action_request_to_join")
-  def labelPublicSpaces = _ctx.appRes("${uicomponent.id}.label.public_spaces")
+  def fieldLabelDescription = _ctx.appRes("${uicomponent.id}.fieldLabel.description")
+  def fieldLabelMembers = _ctx.appRes("${uicomponent.id}.fieldLabel.members")
+  def fieldLabelUrl = _ctx.appRes("${uicomponent.id}.fieldLabel.url")
   def publicSpaces = uicomponent.getPublicSpaces()
 %>
-<div class="UIManagePublicSpaces" id="$uicomponent.id">
+<div class="UIManageSpaces" id="$uicomponent.id">
     <div class="ContainerSpace">
-        <div><%= labelPublicSpaces %></div>
       <%for (space in publicSpaces) {
             def requestJoinAction = uicomponent.event("RequestJoin", space.id) + "; false";
       %>
-        <div class="PublicSpaces">
-            <div class="SpaceIcon"></div>
-            <div class="SpaceName"><%= space.name %></div>
-            <div class="SpaceDescription"><%= space.description %></div>
-            <div class="SpaceAction" onclick="<%= requestJoinAction %>"><a href="#RequestJoin"><%= labelActionRequestToJoin %></a></div>
-            <div class="SpaceDelimiter">________</div>
+      <div class="SpaceContent">
+        <div class="AvatarSpace">
+           <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
         </div>
+        <div class="MySpacesContent">
+            <div class="ContentBar">
+                <div class="MySpaceLabel"><%= space.name %></div>
+                <div onclick="<%= requestJoinAction %>" class="RequestJoin ButtonIconSpace" title="<%= labelActionRequestToJoin %>"><span>[RJ]</span></div>
+                <div style="clear: left;"><span></span></div>
+            </div>
+            <div class="MySpacesContentContent">
+                <table class="UIGridSpace">
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
+                        <td class="FieldComponent"><%= space.description %></td>
+                    </tr>
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
+                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div style="clear: left;"><span></span></div>
+      </div>
       <%}%>
     </div>
 </div>

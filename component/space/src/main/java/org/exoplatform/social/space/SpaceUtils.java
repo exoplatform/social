@@ -360,6 +360,18 @@ public class SpaceUtils {
   }
   
   /**
+   * Utitily for counting the number of members in a space
+   * @param space
+   * @return
+   * @throws SpaceException
+   */
+  static public int countMembers(Space space) throws SpaceException {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    SpaceService spaceService = (SpaceService)portalContainer.getComponentInstanceOfType(SpaceService.class);
+    return spaceService.getMembers(space).size();
+  }
+  
+  /**
    * Checking whether a group can have access to an application
    * @param app
    * @param groupId

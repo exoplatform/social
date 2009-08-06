@@ -1,3 +1,5 @@
+<%
+/*
 <!--
     Copyright (C) 2003-2009 eXo Platform SAS.
 
@@ -15,6 +17,8 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+*/
+%>
 <div>
     <div class="UIManageSpacesPortlet1" id="$uicomponent.id"> 
         <% uicomponent.renderChildren() %>

@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
     Copyright (C) 2003-2009 eXo Platform SAS.
@@ -13,15 +15,19 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 -->
+*/
+%>
 <% 
 	import org.exoplatform.portal.webui.util.Util
 	import org.exoplatform.webui.core.UIPopupWindow
+	import org.exoplatform.social.space.SpaceUtils
+	import social.portal.webui.component.UIManageMySpaces
+	
 	
 	def labelInvitedSpaces = _ctx.appRes("${uicomponent.id}.label.invited_spaces")
-	def labelMySpaces = _ctx.appRes("${uicomponent.id}.label.my_spaces")
 	def labelActionAccept = _ctx.appRes("${uicomponent.id}.label.action_accept")
 	def labelActionDeny = _ctx.appRes("${uicomponent.id}.label.action_deny")
 	def labelActionEditSpace = _ctx.appRes("${uicomponent.id}.label.action_edit_space")
@@ -29,152 +35,130 @@
 	def labelActionDeleteSpace = _ctx.appRes("${uicomponent.id}.label.action_delete_space")
 	def labelActionLeaveSpace = _ctx.appRes("${uicomponent.id}.label.action_leave_space")
 	def labelActionAddSpace = _ctx.appRes("${uicomponent.id}.label.action_add_space")
-	
+	def fieldLabelDescription = _ctx.appRes("${uicomponent.id}.fieldLabel.description")
+  def fieldLabelMembers = _ctx.appRes("${uicomponent.id}.fieldLabel.members")
+  def fieldLabelUrl = _ctx.appRes("${uicomponent.id}.fieldLabel.url")
+  
   def userSpaces = uicomponent.getUserSpaces()
   def invitedSpaces = uicomponent.getInvitedSpaces()
 %>
-<div class="UIManageMySpaces" id="$uicomponent.id">
+<div class="UIManageSpaces" id="$uicomponent.id">
     <div class="ContainerSpace">
     
-    	<div class="SpaceContent">
-    		<div class="AvartarSpace">
-    			<img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
-    		</div>
-    		<div class="MySpacesContent">
-    			<div class="ContentBar">
-    				<div class="MySpaceLable">Foolball</div>
-    				<div class="DeleteSpace ButtonIconSpace" title="Delete Space"><span></span></div>
-    				<div class="EditSpaceManager ButtonIconSpace" title="Edit Space Manager"><span></span></div>
-    				<div class="EditSpace ButtonIconSpace" title="Edit Space"><span></span></div>
-    				<div style="clear: left;"><span></span></div>
-    			</div>
-    			<div class="MySpacesContentContent">
-    				<table class="UIGridSpace">
-    					<tr>
-    						<td class="FieldLabel">Description:</td>
-    						<td class="FieldComponent">football UITeam</td>
-    					</tr>
-    					<tr>
-    						<td class="FieldLabel">Size:</td>
-    						<td class="FieldComponent">1024 KB</td>
-    					</tr>
-    				</table>
-    			</div>
-    		</div>
-    		<div style="clear: left;"><span></span></div>
-    	</div>
-    	<div class="SpaceContent">
-    		<div class="AvartarSpace">
-    			<img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
-    		</div>
-    		<div class="MySpacesContent">
-    			<div class="ContentBar">
-    				<div class="MySpaceLable">Foolball</div>
-    				<div class="DeleteSpace ButtonIconSpace" title="Delete Space"><span></span></div>
-    				<div class="EditSpaceManager ButtonIconSpace" title="Edit Space Manager"><span></span></div>
-    				<div class="EditSpace ButtonIconSpace" title="Edit Space"><span></span></div>
-    				<div style="clear: left;"><span></span></div>
-    			</div>
-    			<div class="MySpacesContentContent">
-    				<table class="UIGridSpace">
-    					<tr>
-    						<td class="FieldLabel">Description:</td>
-    						<td class="FieldComponent">football UITeam</td>
-    					</tr>
-    					<tr>
-    						<td class="FieldLabel">Size:</td>
-    						<td class="FieldComponent">1024 KB</td>
-    					</tr>
-    				</table>
-    			</div>
-    		</div>
-    		<div style="clear: left;"><span></span></div>
-    	</div>
-    	<div class="SpaceContent">
-    		<div class="AvartarSpace">
-    			<img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
-    		</div>
-    		<div class="MySpacesContent">
-    			<div class="ContentBar">
-    				<div class="MySpaceLable">Foolball</div>
-    				<div class="DeleteSpace ButtonIconSpace" title="Delete Space"><span></span></div>
-    				<div class="EditSpaceManager ButtonIconSpace" title="Edit Space Manager"><span></span></div>
-    				<div class="EditSpace ButtonIconSpace" title="Edit Space"><span></span></div>
-    				<div style="clear: left;"><span></span></div>
-    			</div>
-    			<div class="MySpacesContentContent">
-    				<table class="UIGridSpace">
-    					<tr>
-    						<td class="FieldLabel">Description:</td>
-    						<td class="FieldComponent">football UITeam</td>
-    					</tr>
-    					<tr>
-    						<td class="FieldLabel">Size:</td>
-    						<td class="FieldComponent">1024 KB</td>
-    					</tr>
-    				</table>
-    			</div>
-    		</div>
-    		<div style="clear: left;"><span></span></div>
-    	</div>
-    
-    
-    
-    
-    
-    
-    
-        <div class="InvitedSpaces">
-            <div class="InvitedSpaceLabel"><%= labelInvitedSpaces %></div>
-        <%for (space in invitedSpaces) {
-            def acceptAction = uicomponent.event("Accept", space.id) + "; return false"
-            def denyAction = uicomponent.event("Deny", space.id) + "; return false"
-        %>
-            <div class="InvitedSpacesContent">
-                <div class="SpaceIcon"></div>
-                <div class="SpaceName"><%= space.name %></div>
-                <div class="SpaceDescription"><%= space.description %></div>
-                <div class="SpaceAction" onclick="<%= acceptAction %>"><a href="AcceptSpace"><%= labelActionAccept %></a></div>
-                <div class="SpaceAction" onclick="<%= denyAction %>"><a href="DenySpace"><%= labelActionDeny %></a></div>
-                <div class="Delimeter">_____</div>
-            </div>
-         <%}%>
+	    <%for (space in invitedSpaces) {
+	        def acceptAction = uicomponent.event("Accept", space.id) + "; return false"
+	        def denyAction = uicomponent.event("Deny", space.id) + "; return false"
+	    %>
+      <div class="SpaceContent">
+        <div class="AvatarSpace">
+            <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
         </div>
-        <div class="MySpaces">
-            <div class="MySpacesLabel"><%= labelMySpaces %></div>
-	     <%for (space in userSpaces) {
-	          def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
-	          def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.id) + "; return false"
-	          def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
-	          def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
-	          def role = uicomponent.getRole(space.id)
-	          def pageUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
-	      %>
-            <!-- Leader -->
-            <%if (role == 1) {%>
-            <div class="MySpacesContent">
-                <div class="SpaceIcon"></div>
-                <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.name %></a></div>
-                <div class="SpaceDescription"><%= space.description %></div>
-                <div class="SpaceAction" onclick="<%= editSpaceAction %>"><a href="#EditSpace"><%= labelActionEditSpace %></a></div>
-                <div class="SpaceAction" onclick="<%= editSpaceNavigationAction %>"><a href="#EditSpaceNavigation"><%= labelActionEditSpaceNavigation %></a></div>
-                <div class="SpaceAction" onclick="<%= deleteSpaceAction %>"><a href="#DeleteSpace"><%= labelActionDeleteSpace %></a></div>
+        <div class="MySpacesContent">
+            <div class="ContentBar">
+                <div class="MySpaceLabel"><%= space.name %></div>
+                <div onclick="<%= denyAction %>" class="DenySpace ButtonIconSpace" title="<%= labelActionDeny %>"><span>[D]</span></div>
+                <div onclick="<%= acceptAction %>" class="AcceptSpace ButtonIconSpace" title="<%= labelActionAccept %>"><span>[A]</span></div>
+                <div style="clear: left;"><span></span></div>
             </div>
-            <%}%>
-            <!-- Member -->
-            <%if (role == 2) {%>
-            <div class="MySpacesContent">
-                <div class="SpaceIcon"></div>
-                <div class="SpaceName"><a href="<%= pageUrl %>"><%= space.name %></a></div>
-                <div class="SpaceDescription"><%= space.description %></div>
-                <div class="SpaceAction" onclick="<%= leaveSpaceAction %>"><a href="#LeaveSpace"><%= labelActionLeaveSpace %></a></div>
+            <div class="MySpacesContentContent">
+                <table class="UIGridSpace">
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
+                        <td class="FieldComponent"><%= space.description %></td>
+                    </tr>
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
+                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+                    </tr>
+                </table>
             </div>
-            <%}%>
-            <div class="Delimeter">______</div>
+        </div>
+        <div style="clear: left;"><span></span></div>
+      </div>
+    <%}%>    
+    
+	  <%for (space in userSpaces) {
+	      def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
+	      def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.id) + "; return false"
+	      def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
+	      def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
+	      def role = uicomponent.getRole(space.id)
+	      def pageUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+	      def spaceName = space.name
+	  %>
+          
+      <!-- Leader -->
+      <% if (role == UIManageMySpaces.LEADER) {%>
+      <div class="SpaceContent">
+          <a href="<%= pageUrl %>">
+            <div class="AvatarSpace">
+                <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+            </div>
+          </a>
+        <div class="MySpacesContent">
+            <div class="ContentBar">
+                <div class="MySpaceLabel"><a href="<%= pageUrl %>"><%= space.name %></a></div>
+                <div onclick="<%= deleteSpaceAction %>" class="DeleteSpace ButtonIconSpace" title="<%= labelActionDeleteSpace %>"><span></span></div>
+                <div onclick="<%= editSpaceNavigationAction %>" class="EditSpaceNavigation ButtonIconSpace" title="<%= labelActionEditSpaceNavigation %>"><span></span></div>
+                <div onclick="location.href='<%= pageUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
+                <div style="clear: left;"><span></span></div>
+            </div>
+            <div class="MySpacesContentContent">
+                <table class="UIGridSpace">
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
+                        <td class="FieldComponent"><%= space.description %></td>
+                    </tr>
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
+                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+                    </tr>
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelUrl %></td>
+                        <td class="FieldComponent"><a href="<%= pageUrl %>"><%= uicomponent.getAbsoluteSpaceUrl(space) + pageUrl %></a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div style="clear: left;"><span></span></div>
+      </div>
+      <% }%>
+    <!-- Member -->
+      <%if (role == UIManageMySpaces.MEMBER) {%>
+      <div class="SpaceContent">
+        <div class="AvatarSpace">
+            <a href="<%= pageUrl %>"><img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/></a>
+        </div>
+        <div class="MySpacesContent">
+            <div class="ContentBar">
+                <div class="MySpaceLabel"><a href="<%= pageUrl %>"><%= space.name %></a></div>
+                <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span>[L]</span></div>
+                <div style="clear: left;"><span></span></div>
+            </div>
+            <div class="MySpacesContentContent">
+                <table class="UIGridSpace">
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
+                        <td class="FieldComponent"><%= space.description %></td>
+                    </tr>
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
+                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+                    </tr>
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelUrl %></td>
+                        <td class="FieldComponent"><%= pageUrl %></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div style="clear: left;"><span></span></div>
+      </div>
       <%}%>
-        </div>
-        <div class="AddSpace" onclick="<%= uicomponent.event("AddSpace") %>"><a href="#AddSpace"><%= labelActionAddSpace %></a></div>
+
+    <%}%>
     </div>
+    
     <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
     
     <div class="UIAction">
@@ -182,11 +166,11 @@
 			<tbody><tr>
 	 	 		<td>
 					
-					<div class="ActionButton LightBlueStyle" onclick="javascript:eXo.webui.UIForm.submitForm('Account#UIAccountForm','Reset',true)">
+					<div class="ActionButton LightBlueStyle" onclick="<%= uicomponent.event("AddSpace") %>">
 						<div class="ButtonLeft">
 							<div class="ButtonRight">
 								<div class="ButtonMiddle">
-									<a href="javascript:void(0);">Add Space</a>
+									<a href="#AddSpace"><%= labelActionAddSpace %></a>
 								</div>
 							</div>
 						</div>
