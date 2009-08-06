@@ -92,10 +92,9 @@ public class GadgetRestService implements ResourceContainer {
   @Produces({MediaType.APPLICATION_JSON})
   public ListSpace getMySpace(@PathParam("userId") String userId) throws Exception {
     ListSpace listSpaces = new ListSpace();
-    List<Space> mySpace = new ArrayList<Space>();
     PortalContainer portalContainer = PortalContainer.getInstance();
     SpaceService spaceSrc = (SpaceService)portalContainer.getComponentInstanceOfType(SpaceService.class);
-    mySpace = spaceSrc.getSpaces(userId);
+    List<Space> mySpace = spaceSrc.getSpaces(userId);
     
     listSpaces.setSpaces(mySpace);
     
@@ -113,10 +112,9 @@ public class GadgetRestService implements ResourceContainer {
   @Produces({MediaType.APPLICATION_JSON})
   public ListSpace getPendingSpace(@PathParam("userId") String userId) throws Exception {
     ListSpace listSpaces = new ListSpace();
-    List<Space> pendingSpaces = new ArrayList<Space>();
     PortalContainer portalContainer = PortalContainer.getInstance();
     SpaceService spaceSrc = (SpaceService)portalContainer.getComponentInstanceOfType(SpaceService.class);
-    pendingSpaces = spaceSrc.getPendingSpaces(userId);
+    List<Space> pendingSpaces = spaceSrc.getPendingSpaces(userId);
     
     listSpaces.setSpaces(pendingSpaces);
     

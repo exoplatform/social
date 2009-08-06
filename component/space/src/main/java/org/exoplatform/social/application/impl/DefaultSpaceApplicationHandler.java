@@ -201,7 +201,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     child.setShowInfoBar(false);
     
     // create new Page
-    Page page = new Page();
+    Page page = null;
     try {
       page = configService.createPageTemplate("space", PortalConfig.GROUP_TYPE, space.getGroupId().substring(1));
     } catch (Exception e) {
