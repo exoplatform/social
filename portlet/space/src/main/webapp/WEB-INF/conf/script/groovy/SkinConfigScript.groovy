@@ -16,12 +16,6 @@
  */
 /***************************ManageCommunitiesPortlet**************************************************/
 SkinService.addSkin(
-    "space/ManageSpacesPortlet",
-    "Default",
-    "/space/skin/portal/webui/component/UIManageSpacesPortlet/DefaultStylesheet.css",
-    ServletContext
-) ;
-SkinService.addSkin(
     "space/SocialNavigationPortlet",
     "Default",
     "/space/skin/portal/webui/component/UISocialNavigationPortlet/DefaultStylesheet.css",

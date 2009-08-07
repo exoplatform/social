@@ -17,12 +17,8 @@
 package social.portal.webui.component;
 
 import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceService;
-import org.exoplatform.web.application.ApplicationMessage;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -49,43 +45,11 @@ public class UISpaceInvitation extends UIForm{
   
   static public class AcceptActionListener extends EventListener<UISpaceInvitation> {
     public void execute(Event<UISpaceInvitation> event) throws Exception {
-      UISpaceInvitation uiForm = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
-      Space space = uiForm.space;
-      String userName = requestContext.getRemoteUser();
-
-      spaceService.acceptInvitation(space, userName);
-
-      UIApplication uiApp = requestContext.getUIApplication();
-      // back
-      UIManageSpacesPortlet uiPortlet = uiForm.getAncestorOfType(UIManageSpacesPortlet.class);
-      uiForm.setRendered(false);
-      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.accept", null));
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
-      requestContext.addUIComponentToUpdateByAjax(uiPortlet);
-      
     }
   }
    
   static public class DeclineActionListener extends EventListener<UISpaceInvitation> {
     public void execute(Event<UISpaceInvitation> event) throws Exception {
-      UISpaceInvitation uiForm = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      SpaceService spaceService = uiForm.getApplicationComponent(SpaceService.class);
-      Space space = uiForm.space;
-      UIApplication uiApp = requestContext.getUIApplication();
-      String username = requestContext.getRemoteUser();
-
-      spaceService.denyInvitation(space, username);
-      
-
-      // back
-      UIManageSpacesPortlet uiPortlet = uiForm.getAncestorOfType(UIManageSpacesPortlet.class);
-      uiForm.setRendered(false);
-      uiApp.addMessage(new ApplicationMessage("UISpaceInvitation.msg.decline", null));
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
-      requestContext.addUIComponentToUpdateByAjax(uiPortlet);
     }
   }
   
@@ -96,5 +60,9 @@ public class UISpaceInvitation extends UIForm{
   
   public String getLeader() {
     return leaderName;
+  }
+  
+  public Space getSpace() {
+    return space;
   }
 }

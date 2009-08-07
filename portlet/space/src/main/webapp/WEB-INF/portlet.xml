@@ -121,39 +121,6 @@
       </preference>
     </portlet-preferences>
   </portlet>
-	<portlet>
-    <description xml:lang="EN">Manage Spaces Portlet</description>
-    <portlet-name>ManageSpacesPortlet</portlet-name>
-    <display-name xml:lang="EN">Manage Spaces</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/ManageSpaces/webui/configuration.xml</value>
-    </init-param>    
-
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.ManageSpacesPortlet</resource-bundle>
-    
-    <portlet-info>
-      <title>Manage Spaces Portlet</title>
-      <short-title>Manage Spaces Portlet</short-title>
-      <keywords>managespaces</keywords>
-    </portlet-info>     
-
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIManageSpacesPortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-  </portlet> 
   
   <portlet>
     <description xml:lang="EN">Manage Spaces Portlet1</description>
