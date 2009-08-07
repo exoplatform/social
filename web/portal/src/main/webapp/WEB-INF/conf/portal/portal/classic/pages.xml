@@ -106,7 +106,7 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <application>
-      <instance-id>portal#classic:/space/ManageSpacesPortlet/managespaces</instance-id>
+      <instance-id>portal#classic:/space/ManageSpacesPortlet1/managespaces</instance-id>
       <title>ManageSpaces</title>
       <show-info-bar>false</show-info-bar>
     </application>

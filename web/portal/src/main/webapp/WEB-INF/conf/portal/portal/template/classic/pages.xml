@@ -62,7 +62,7 @@
 	  <access-permissions>*:/platform/users</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>
     <application>
-      <instance-id>portal#@owner@:/space/ManageSpacesPortlet/managespaces</instance-id>
+      <instance-id>portal#@owner@:/space/ManageSpacesPortlet1/managespaces</instance-id>
       <title>ManageSpaces</title>
       <show-info-bar>true</show-info-bar>
       <show-application-state>true</show-application-state>
