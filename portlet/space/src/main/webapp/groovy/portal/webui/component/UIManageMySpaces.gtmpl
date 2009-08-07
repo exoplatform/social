@@ -166,15 +166,43 @@
 			<tbody><tr>
 	 	 		<td>
 					
-					<div class="ActionButton LightBlueStyle" onclick="<%= uicomponent.event("AddSpace") %>">
-						<div class="ButtonLeft">
-							<div class="ButtonRight">
-								<div class="ButtonMiddle">
-									<a href="#AddSpace"><%= labelActionAddSpace %></a>
+					<div class="ActionButton LightBlueStyle" onclick="">
+							<div class="ButtonLeft">
+								<div class="ButtonRight">
+									<div class="ButtonMiddle">
+										<a href="javascript:void(0);">AcceptSpace</a>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+						<div class="ActionButton LightBlueStyle" onclick="">
+							<div class="ButtonLeft">
+								<div class="ButtonRight">
+									<div class="ButtonMiddle">
+										<a href="javascript:void(0);">DenySpace</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ActionButton LightBlueStyle" onclick="">
+							<div class="ButtonLeft">
+								<div class="ButtonRight">
+									<div class="ButtonMiddle">
+										<a href="javascript:void(0);">LeaveSpace</a>
+									</div>
+								</div>
+							</div>
+						</div>
+							
+						<div class="ActionButton LightBlueStyle" onclick="">
+							<div class="ButtonLeft">
+								<div class="ButtonRight">
+									<div class="ButtonMiddle">
+										<a href="javascript:void(0);">RequestJoin</a>
+									</div>
+								</div>
+							</div>
+						</div>
 					
 	 			</td>
 			</tr>

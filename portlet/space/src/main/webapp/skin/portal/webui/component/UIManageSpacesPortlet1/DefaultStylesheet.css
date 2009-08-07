@@ -167,51 +167,6 @@
 	background: url('background/DeleteSpace.gif') no-repeat center;
 }
 
-/*BEGIN:: TODO: UI team: create more icons*/
-
-.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .AcceptSpace {
-  /*background: url('background/AcceptSpace.gif') no-repeat center;*/
-}
-
-.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .DenySpace {
-  /*background: url('background/DenySpace.gif') no-repeat center;*/
-}
-
-.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .LeaveSpace {
-  /*background: url('background/LeaveSpace.gif') no-repeat center;*/
-}
-
-.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .RequestJoin {
-  /*background: url('background/RequestJoin.gif') no-repeat center;*/
-}
-
-.UIManageSpacesPortlet1 UIManageSpaces .MySpacesContent .RevokePending {
-  /*background: url('background/RevokePending.gif') no-repeat center;*/
-}
-
-/*END:: TODO: UI team: create more icons*/
-
-.UIManageSpacesPortlet1 .UIAction .LightBlueStyle .ButtonLeft {
-	background:transparent url(background/ButtonLeft.gif) no-repeat scroll left top;
-	padding-left: 6px;
-}
-
-.UIManageSpacesPortlet1 .UIAction .LightBlueStyle .ButtonRight {
-	background:transparent url(background/ButtonRight.gif) no-repeat scroll right top;
-	padding-right: 6px;
-}
-
-.UIManageSpacesPortlet1 .UIAction .LightBlueStyle .ButtonMiddle {
-	background:transparent url(background/ButtonMiddle.gif) repeat-x ;
-	height: 31px;
-	font-size: 12px;
-	font-weight: bold;
-	line-height: 30px;
-}
-
-
-
-
 
 .UIManageSpacesPortlet1 .UISpaceForm {
     padding: 1px;
