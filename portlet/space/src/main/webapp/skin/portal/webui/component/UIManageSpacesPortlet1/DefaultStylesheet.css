@@ -31,7 +31,7 @@
 
 .UIManageSpacesPortlet1 .UIVerticalTabPane .VerticalTabPaneContent {
     padding: 0px;
-    background: url('background/LeftContentTab.gif') repeat-y 112px;;
+    background: white url('background/LeftContentTab.gif') repeat-y 112px;;
 }
 
 
