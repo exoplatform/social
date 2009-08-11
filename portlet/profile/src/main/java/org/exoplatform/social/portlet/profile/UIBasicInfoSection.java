@@ -22,6 +22,12 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 
+/**
+ * Created by The eXo Platform SARL
+ * Modified : dang.tung
+ *          tungcnw@gmail.com
+ * Aug 11, 2009          
+ */
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
