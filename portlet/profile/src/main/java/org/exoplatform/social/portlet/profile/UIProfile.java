@@ -16,22 +16,19 @@
  */
 package org.exoplatform.social.portlet.profile;
 
-import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
-import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.portlet.URLUtils;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.portal.webui.portal.UIPortal;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.application.PortalRequestContext;
-
-import java.util.List;
-import java.util.ArrayList;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 
 @ComponentConfig(

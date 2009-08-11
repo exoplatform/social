@@ -34,9 +34,9 @@
   def gender = profile.getPropertyValue("gender");
 
 %>
+<% uiform.begin() %>
 <div>
 <% uicomponent.renderChildren(); %>
-
 <div class="PortletContent">
 <table class="UIFormGrid">
   <tbody>
@@ -81,3 +81,4 @@
 </table>
 </div>
 </div>
+<% uiform.end() %>
