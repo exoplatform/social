@@ -20,12 +20,9 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.ProfileMapper;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 
 /**
@@ -35,20 +32,11 @@ import org.exoplatform.webui.form.UIForm;
  * Aug 11, 2009          
  */
 
-@ComponentConfig(
-  template = "system:/groovy/webui/form/UIForm.gtmpl",
-  lifecycle = UIFormLifecycle.class,
-  events = {
-    @EventConfig(listeners = UIProfileSection.SaveActionListener.class),
-    @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase = Phase.DECODE)
-  }
-)
 public abstract class UIProfileSection extends UIForm {
   private boolean isEditMode;
   private boolean isMultipart = false;
   private String currentProperty;
   private ProfileMapper profilemapper;
-
 
   public Profile getProfile() throws Exception {
     UIProfile uiProfile = this.getAncestorOfType(UIProfile.class);
@@ -130,9 +118,7 @@ public abstract class UIProfileSection extends UIForm {
 
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
-
       sect.setEditMode("true".equals(event.getRequestContext().getRequestParameter(OBJECTID)));
-
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
     }
   }
@@ -140,10 +126,9 @@ public abstract class UIProfileSection extends UIForm {
   public static class SaveActionListener extends EventListener<UIProfileSection> {
 
     public void execute(Event<UIProfileSection> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
       UIProfileSection sect = event.getSource();
-
       sect.setEditMode(false);
-
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
     }
   }
