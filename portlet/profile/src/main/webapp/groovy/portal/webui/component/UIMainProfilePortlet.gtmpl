@@ -40,6 +40,6 @@
     else { %>
     Unexpected URL
     <% }
-
+	uicomponent.renderPopupMessages();
   %>
 </div>

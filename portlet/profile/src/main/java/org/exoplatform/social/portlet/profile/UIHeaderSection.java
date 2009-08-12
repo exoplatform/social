@@ -16,19 +16,50 @@
  */
 package org.exoplatform.social.portlet.profile;
 
-import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.webui.form.validator.MandatoryValidator;
+import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 
 @ComponentConfig(
+    lifecycle = UIFormLifecycle.class,
     template =  "app:/groovy/portal/webui/component/UIHeaderSection.gtmpl",
     events = {
-        @EventConfig(listeners = UIProfileSection.EditActionListener.class),
-        @EventConfig(listeners = UIProfileSection.SaveActionListener.class)
+        @EventConfig(listeners = UIHeaderSection.EditActionListener.class, phase = Phase.DECODE),
+        @EventConfig(listeners = UIHeaderSection.SaveActionListener.class)
     }
 )
 public class UIHeaderSection extends UIProfileSection {
+  
+  public UIHeaderSection() throws Exception {
+    addUIFormInput(new UIFormStringInput("profilePosition", null, null).
+                   addValidator(MandatoryValidator.class).
+                   addValidator(StringLengthValidator.class, 3, 30));
+  }
 
-  public UIHeaderSection() throws Exception { }
+  public static class SaveActionListener extends EventListener<UIHeaderSection> {
+    public void execute(Event<UIHeaderSection> event) throws Exception {
+      UIHeaderSection uiHeader = event.getSource();
+      uiHeader.setEditMode(false);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiHeader);
+      System.out.println("\n\n\n\n save");
+    }
+  }
+  
+  public static class EditActionListener extends EventListener<UIHeaderSection> {
+    public void execute(Event<UIHeaderSection> event) throws Exception {
+      UIHeaderSection uiHeader = event.getSource();
+      uiHeader.setEditMode(true);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiHeader);
+      System.out.println("\n\n\n\n edit");
+    }
+  }
 
 }

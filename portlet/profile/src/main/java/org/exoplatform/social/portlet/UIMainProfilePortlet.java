@@ -16,16 +16,15 @@
  */
 package org.exoplatform.social.portlet;
 
+import org.exoplatform.social.portlet.activities.UIActivities;
+import org.exoplatform.social.portlet.dashboard.UISocialDashboard;
+import org.exoplatform.social.portlet.profile.UIProfile;
+import org.exoplatform.social.portlet.profilelist.UIProfileList;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIPopupMessages;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
-import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.social.portlet.profilelist.UIProfileList;
-import org.exoplatform.social.portlet.profile.UIProfile;
-import org.exoplatform.social.portlet.dashboard.UISocialDashboard;
-import org.exoplatform.social.portlet.activities.UIActivities;
-import org.exoplatform.portal.webui.portal.UIPortal;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.application.PortalRequestContext;
 
 @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class,
@@ -38,5 +37,12 @@ public class UIMainProfilePortlet extends UIPortletApplication {
     addChild(UIProfile.class, null, null);
     addChild(UISocialDashboard.class, null, null);
     addChild(UIActivities.class, null, null);
+  }
+  
+  public void renderPopupMessages() throws Exception {
+    UIPopupMessages uiPopupMsg = getUIPopupMessages();
+    if(uiPopupMsg == null)  return ;
+    WebuiRequestContext  context =  WebuiRequestContext.getCurrentInstance() ;
+    uiPopupMsg.processRender(context);
   }
 }
