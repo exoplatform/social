@@ -22,11 +22,11 @@
 %>
 <%
   import org.exoplatform.social.space.SpaceUtils
-  
-  def labelActionRequestToJoin = _ctx.appRes("${uicomponent.id}.label.action_request_to_join")
-  def fieldLabelDescription = _ctx.appRes("${uicomponent.id}.fieldLabel.description")
-  def fieldLabelMembers = _ctx.appRes("${uicomponent.id}.fieldLabel.members")
-  def fieldLabelUrl = _ctx.appRes("${uicomponent.id}.fieldLabel.url")
+  def uicomponentId = uicomponent.id
+  def labelActionRequestToJoin = _ctx.appRes("${uicomponentId}.label.action_request_to_join")
+  def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
+  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
+  def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
   def publicSpaces = uicomponent.getPublicSpaces()
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">

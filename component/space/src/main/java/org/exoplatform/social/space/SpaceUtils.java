@@ -329,6 +329,19 @@ public class SpaceUtils {
   }
   
   /**
+   * Get PageNavigation from a space's groupId
+   * @param space
+   * @return
+   * @throws Exception 
+   */
+  static public PageNavigation getGroupNavigation(String groupId) throws Exception {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+    groupId = groupId.substring(1);
+    return (PageNavigation) configService.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+  }
+  
+  /**
    * Sort spaces list by priority and alphabet order
    * @param spaces
    * @return ordered spaces list

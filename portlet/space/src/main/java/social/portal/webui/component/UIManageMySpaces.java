@@ -16,11 +16,22 @@
  */
 package social.portal.webui.component;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.DataStorage;
+import org.exoplatform.portal.config.Query;
+import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.navigation.UINavigationManagement;
+import org.exoplatform.portal.webui.navigation.UINavigationNodeSelector;
+import org.exoplatform.portal.webui.page.UIPageNodeForm2;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -29,12 +40,16 @@ import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.UIVirtualList;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 
 /**
  * UIManageMySpaces
@@ -46,9 +61,10 @@ import org.exoplatform.webui.event.EventListener;
  *          hoatlevan@gmail.com
  * Jun 29, 2009  
  */
-@ComponentConfig(
-  template="app:/groovy/portal/webui/component/UIManageMySpaces.gtmpl",
-  events = {
+@ComponentConfigs({
+  @ComponentConfig(
+    template="app:/groovy/portal/webui/component/UIManageMySpaces.gtmpl",
+    events = {
       @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class), 
       @EventConfig(listeners = UIManageMySpaces.EditSpaceNavigationActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpace.msg.confirm_space_delete"),
@@ -56,8 +72,21 @@ import org.exoplatform.webui.event.EventListener;
       @EventConfig(listeners = UIManageMySpaces.AddSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.AcceptActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.DenyActionListener.class)
-  }
-)
+    }
+  ),
+  @ComponentConfig(  
+    type = UIPageNodeForm2.class,
+    lifecycle = UIFormLifecycle.class,
+      template = "system:/groovy/webui/form/UIFormTabPane.gtmpl" ,    
+      events = {
+        @EventConfig(listeners = UIPageNodeForm2.SaveActionListener.class ),
+        @EventConfig(listeners = UIPageNodeForm2.BackActionListener.class, phase = Phase.DECODE),
+        @EventConfig(listeners = UIPageNodeForm2.SwitchPublicationDateActionListener.class, phase = Phase.DECODE ),
+        @EventConfig(listeners = UIPageNodeForm2.ClearPageActionListener.class, phase = Phase.DECODE),
+        @EventConfig(listeners = UIPageNodeForm2.CreatePageActionListener.class, phase = Phase.DECODE)
+      }
+  )   
+})
 public class UIManageMySpaces extends UIContainer {
   //Message Bundle
   static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
@@ -77,7 +106,7 @@ public class UIManageMySpaces extends UIContainer {
   
   private SpaceService spaceService = null;
   private String userId = null;
-  
+  private List<PageNavigation> navigations;
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
    * @throws Exception
@@ -108,7 +137,30 @@ public class UIManageMySpaces extends UIContainer {
       userId = Util.getPortalRequestContext().getRemoteUser();
     return userId;
   }
-  
+  /**
+   * Load Navigations
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  private void loadNavigations() throws Exception {
+    navigations = new ArrayList<PageNavigation>();
+    UserACL userACL = getApplicationComponent(UserACL.class);
+    DataStorage dataStorage = getApplicationComponent(DataStorage.class);
+    // load all navigation that user has edit permission
+    Query<PageNavigation> query = new Query<PageNavigation>(PortalConfig.GROUP_TYPE,
+                                                            null,
+                                                            PageNavigation.class);
+    List<PageNavigation> navis = dataStorage.find(query, new Comparator<PageNavigation>(){
+      public int compare(PageNavigation pconfig1, PageNavigation pconfig2) {
+        return pconfig1.getOwnerId().compareTo(pconfig2.getOwnerId());
+      }
+    }).getAll();
+    for (PageNavigation ele : navis) {
+      if (userACL.hasEditPermission(ele)) {
+        navigations.add(ele);
+      }
+    }
+  }
   /**
    * Get spaces in which user is member or leader
    * 
@@ -182,8 +234,25 @@ public class UIManageMySpaces extends UIContainer {
   static public class EditSpaceNavigationActionListener extends EventListener<UIManageMySpaces> {
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
-      // TODO hoatle EditSpaceNavigationActionListener
+      UIManageMySpaces uiMySpaces = event.getSource();
+      uiMySpaces.loadNavigations();
+      SpaceService spaceService = uiMySpaces.getSpaceService();
+      WebuiRequestContext ctx = event.getRequestContext();
+      Space space = spaceService.getSpaceById(ctx.getRequestParameter(OBJECTID));
+      PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
+      UIPopupWindow uiPopup = uiMySpaces.getChild(UIPopupWindow.class);
+      UINavigationManagement pageManager = uiPopup.createUIComponent(UINavigationManagement.class,
+                                                                   null,
+                                                                   null,
+                                                                   uiPopup);
+      pageManager.setOwner(groupNav.getOwnerId());
+      pageManager.setOwnerType(groupNav.getOwnerType());
       
+      UINavigationNodeSelector selector = pageManager.getChild(UINavigationNodeSelector.class);
+      selector.loadNavigationByNavId(groupNav.getId(), uiMySpaces.navigations);
+      uiPopup.setUIComponent(pageManager);
+      uiPopup.setWindowSize(800, 0);
+      uiPopup.setShow(true);
     }
     
   }
@@ -244,6 +313,7 @@ public class UIManageMySpaces extends UIContainer {
                                                                          null,
                                                                          null);
       uiPopup.setUIComponent(uiAddSpaceForm);
+      uiPopup.setWindowSize(500, 0);
       uiPopup.setShow(true);
     }
     
