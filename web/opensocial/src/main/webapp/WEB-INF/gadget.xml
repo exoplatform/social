@@ -22,7 +22,7 @@
 		<path>/gadgets/SocialHelloWorld.xml</path>
 	</gadget>
     <gadget name="statusUpdate">
-		<path>/gadgets/statusUpdate.xml</path>
+		<path>/gadgets/activities.xml</path>
 	</gadget>
 	<gadget name="ComplianceTest08">
 		<url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>

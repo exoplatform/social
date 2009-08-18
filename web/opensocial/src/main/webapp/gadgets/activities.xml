@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<Module>
+ <ModulePrefs title="Status updates">
+   <Require feature="opensocial-0.7"></Require>
+   <Require feature="dynamic-height"></Require>
+   <Require feature="settitle"></Require>
+ </ModulePrefs>
+ <Content type="html">
+   <![CDATA[
+
+<link rel="stylesheet" type="text/css" href="activities/style.css"></link>
+<script type="text/javascript" src="activities/script.js"></script>
+<script type="text/javascript">
+
+	var statusUpdates = new StatusUpdate();
+	gadgets.util.registerOnLoadHandler(statusUpdates.init());
+
+</script>
+
+<div class="GadgetContent">
+	<div class="ActivityForm">
+		<span>What're you doing?</span>
+		<div class="AddActivityForm">
+			<div class="ButtonAdd" onclick="eXo.social.statusUpdate.postNewActivity(); return false;"> Add</div>
+			<input type="text" id ="newActivity" name="activityInputBox" onkeypress="eXo.social.statusUpdate.streamSubmit(event);"/>
+			<div class="ClearRight"><span></span></div>
+		</div>
+	</div>
+	<div id="ActivitiesContainer">
+	</div>
+</div>
+<div id="more" style="text-align:right;"></div>
+</div>
+]]>
+</Content>
+</Module>

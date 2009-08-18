@@ -1,127 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    Copyright (C) 2003-2007 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-<Module>
- <ModulePrefs title="Status updates">
-   <Require feature="opensocial-0.7"></Require>
-   <Require feature="dynamic-height"></Require>
- </ModulePrefs>
- <Content type="html">
-   <![CDATA[
-
-<style type="text/css">
-	#streamcontainer {
-		height: 229px;
-		overflow: auto;
-	}
-  .streamtitle,
-  .socialHeading {
-    font-family:arial,helvetica,sans-serif;
-    font-size:13pt;
-    font-weight:bold;
-  }
-
-  .streamtitle {
-    background-color: #E0ECFF;
-    border-top: 1px solid blue;
-    padding: .25em;
-  }
-
-  .socialDescription a {
-    color:#999999;
-  }
-
-  .streamdescription,
-  .streamdescription a,
-  .streamdescription a:visited {
-    color:#408BFE;
-    font-size:12pt;
-    font-weight:bold;
-    text-decoration:underline;
-    font-family:arial,helvetica,sans-serif;
-  }
-
-  .streamhtmlsmall {
-    font-size:8pt;
-  }
-
-  .streamurl a {
-    color:#008000;
-    font-size:10pt;
-    font-family:arial,helvetica,sans-serif;
-    text-decoration:underline;
-  }
-
-  .streamrow {
-    clear: both;
-  }
-
-  .streamrowline {
-    border-bottom:1px solid #DDE9F5;
-    clear:both;
-    height:0px;
-    margin:5px;
-  }
-
-  .streamcontents {
-    padding: .5em;
-  }
-
-  .streamhtmlcontents {
-    color:#333333;
-    font-size:10pt;
-    line-height:130%;
-    padding:2px 0pt 3px 10px;
-    font-family:arial,helvetica,sans-serif;
-  }
-
-  .mediaitems {
-    padding-left: 5em;
-  }
-
-  .addActivityDiv {
-    clear:both;
-    padding-bottom:15px;
-  }
-
-  #addActivityText {
-    color:#999999;
-    font-size:10pt;
-    font-weight:normal;
-    font-family:arial,helvetica,sans-serif;
-  }
-
-  .leftcolumn {
-    float: left;
-    width: 47%;
-  }
-
-  .rightcolumn {
-    float: right;
-    width: 47%;
-  }
-
-  #addActivity {
-    padding: .5em;
-  }
-</style>
-<script type="text/javascript">
 var eXo = eXo || {};
 eXo.social = eXo.social || {};
 
@@ -203,12 +79,11 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
   //Total activities
   var totalAct = dataResponse.get('ownerActivities').getData()['activities'].getTotalSize();
   totalAct+= dataResponse.get('activities').getData()['activities'].getTotalSize();
-
-  document.getElementById('stream').style.display = 'block';
+	gadgets.window.setTitle("Activities from " + eXo.social.statusUpdate.owner.getDisplayName() + "'s contact");
 
   var html = '';
   if (!eXo.social.statusUpdate.activities || eXo.social.statusUpdate.activities.length == 0) {
-    document.getElementById('stream').innerHTML = eXo.social.statusUpdate.owner.getDisplayName() + ' do not have any updates yet';
+    document.getElementById('ActivitiesContainer').innerHTML = '<div class= "Empty">' + eXo.social.statusUpdate.owner.getDisplayName() + ' do not have any updates yet' + '</div>';
     return;
   }
   eXo.social.statusUpdate.activities = eXo.social.statusUpdate.activities.sort(eXo.social.statusUpdate.sortUpdates);
@@ -220,40 +95,36 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 		document.getElementById('more').style.display = 'none';
   }
   for (var i = 0; i < activitiesLength; i++) {
-    html += '<div class="streamrow">';
-    html += '<div class="streamdescription">' + eXo.social.statusUpdate.getName(eXo.social.statusUpdate.activities[i].getField('userId')) + '</div>';
-
-    html += '<div class="streamcontents">';
-    html += '<img src="http://www.google.com/s2/sharing/resources/static/images/quot.png?hl=en_US"/>';
-
-    var body = eXo.social.statusUpdate.activities[i].getField('body') || '';
-    var url = eXo.social.statusUpdate.activities[i].getField('url');
-    html += '<span class="streamhtmlcontents">' + body + '</span>';
-	// html += '<div class="streamhtmlsmall">posted on ' + ("" + (new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')))).substring(0, 24) + '</div>';
-    html += '<div class="streamhtmlsmall">';
-	if (url)
-		html += '<a href="' + url + '">link</a> | ';
-	html += 'posted ' + eXo.social.statusUpdate.timeToPrettyString(eXo.social.statusUpdate.activities[i].getField('postedTime')) + '</div>';
-
-    html += '</div>';
-
-    html += '<div class="mediaitems">';
-    var mediaItems = eXo.social.statusUpdate.activities[i].getField('mediaItems');
-    if (mediaItems) {
+    html += '<div class="ActivitiesContent">';
+    html += '<a href="#" class="TitleItem">' + eXo.social.statusUpdate.getName(eXo.social.statusUpdate.activities[i].getField('userId')) + '</a>';
+		html += '<div>';
+		var mediaItems = eXo.social.statusUpdate.activities[i].getField('mediaItems');
+		if (mediaItems) {
       for (var j = 0; j < mediaItems.length; j++) {
         if (mediaItems[j].getField('type') == 'image') {
-          html += '<img height="150px" style="padding-right:.5em;" src="' + mediaItems[j].getField('url') + '"/>';
-        }
-      }
-    }
-    html += '</div>';
-
-    html += '</div>';
-    html += '<div class="streamrowline"></div>';
+					html += '<a href="#" class="ImageItem">';
+					html += '<img src="' + mediaItems[j].getField('url') + '" width="25" height="25"/>';
+					html += '</a>';
+      	}
+			}
+    } else {
+				html += '<a href="#" class="ImageItem">';
+				html += '<img src="http://localhost:8080/social/gadgets/activities/Backgrouds/Gadget.gif" width="25" height="25"/>';
+				html += '</a>';		
+		}
+		var body = eXo.social.statusUpdate.activities[i].getField('body') || '';
+		var url = eXo.social.statusUpdate.activities[i].getField('url');
+		html += '<div class="Content">' + body + '</div>';
+		html += '<div class="ClearLeft"><span></span></div>';
+		html += '</div>';
+		html += '<div class="NewsDate">';
+		if (url) html += '<a href="' + url + '" target="_blank">link</a>' + ' | ';
+		html += 'posted on ' + ("" + (new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')))).substring(0, 24) + '</div>';
+		html += '</div>';
+		if(i < activitiesLength -1 )html += '<hr/>';
   }
   
-  document.getElementById('stream').innerHTML = html;
-  document.getElementById('streamtitle').innerHTML = 'Activities from ' + eXo.social.statusUpdate.owner.getDisplayName() + "'s contacts";
+  document.getElementById('ActivitiesContainer').innerHTML = html;
   document.getElementById('more').innerHTML = '<a style="text-decoration:none;" href="#" onclick="eXo.social.statusUpdate.displayMore();">more</a>';
   	
   gadgets.window.adjustHeight();
@@ -321,24 +192,3 @@ StatusUpdate.prototype.streamSubmit = function(e) { // Handle ENTER keypress
   	return false;
   }
 }
-
-var statusUpdates = new StatusUpdate();
-gadgets.util.registerOnLoadHandler(statusUpdates.init());
-
-</script>
-<div id="streamcontainer">
-<div id="streamtitle" class="streamtitle"></div>
-<div class="addActivityDiv">
-  <div>What are you doing?</div>
-  <span id="addActivity">
-    <input id="newActivity" type="text" onkeypress="eXo.social.statusUpdate.streamSubmit(event);"/>
-    <input type="button" onclick="eXo.social.statusUpdate.postNewActivity(); return false;" value="add"/>
-    <input type="button" onclick="eXo.social.statusUpdate.hideShowDiv('addActivityText','addActivity'); return false;" value="cancel" style= "display:none"/>
-  </span>  
-</div>
-<div id="stream" style="display:none"></div>
-<div id="more" style="text-align:right;"></div>
-</div>
-]]>
-</Content>
-</Module>

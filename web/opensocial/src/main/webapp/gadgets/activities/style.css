@@ -1,0 +1,96 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+a:link, a:hover, a:active, a:visited  {
+	text-decoration: none;
+}
+
+img {
+	border: none;
+}
+
+.ClearRight {
+	clear: right;
+}
+
+body {	
+	background: url('Backgrouds/Bg.jpg') repeat-x left top;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+/************ Gadger content *************/
+.GadgetContent {
+	background: #ffffff;
+	padding-bottom: 10px;
+}
+
+.GadgetContent .ActivityForm {
+	background: #e0ecff;
+	padding: 6px 0 0 10px;
+	font-weight: bold;
+	height: 48px;
+}
+
+.GadgetContent .Empty {
+	color: red;
+	text-align: center;
+}
+
+.GadgetContent .ActivityForm .AddActivityForm {
+	margin: 5px 20px 0 0;
+}
+
+.GadgetContent .ActivityForm input {
+	border: 1px solid #c5c6a9;
+	height: 18px;
+}
+
+.GadgetContent .ActivityForm .ButtonAdd  {
+	background: url('Backgrouds/ButtonAdd.gif') no-repeat left top;
+	float: right;
+	height: 19px;
+	line-height: 17px;
+	text-align: center;
+	width: 33px;	
+	cursor: pointer;
+}
+
+.GadgetContent .ActivitiesContent {
+	padding-left: 10px;
+	margin-top: 5px;
+}
+
+.ActivitiesContent a.TitleItem {
+	color: #2276fc;
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.GadgetContent .ActivitiesContent .ImageItem {
+	display: block;
+	float: left;
+}
+
+.GadgetContent .ActivitiesContent .Content {
+	height: 30px;
+	overflow: hidden;
+	padding-left: 5px;
+}
+
+.GadgetContent .ActivitiesContent .NewsDate {
+	color: #737373;
+	font-size: 9px;
+	padding-bottom: 5px;
+}
+
+/********** Line *********/
+hr {
+	color: #e0ecff;
+	background-color: #e0ecff;
+	height: 0.5px;
+	margin: 0 5px 0 5px;
+}
