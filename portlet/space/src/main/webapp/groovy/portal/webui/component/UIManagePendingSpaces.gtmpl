@@ -41,7 +41,7 @@
 	    <div class="MySpacesContent">
 	      <div class="ContentBar">
 	        <div class="MySpaceLabel"><%= space.name %></div>
-	        <div onclick="<%= revokePendingAction %>" class="RevokePending ButtonIconSpace" title="<%= labelActionRevokePending %>"><span>[RP]</span></div>
+	        <div onclick="<%= revokePendingAction %>" class="RevokePending ButtonIconSpace" title="<%= labelActionRevokePending %>"><span></span></div>
 	        <div style="clear: left;"><span></span></div>
 	      </div>
 	      <div class="MySpacesContentContent">

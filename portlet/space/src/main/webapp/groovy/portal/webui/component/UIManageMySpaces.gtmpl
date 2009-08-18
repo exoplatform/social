@@ -56,8 +56,8 @@
         <div class="MySpacesContent">
             <div class="ContentBar">
                 <div class="MySpaceLabel"><%= space.name %></div>
-                <div onclick="<%= denyAction %>" class="DenySpace ButtonIconSpace" title="<%= labelActionDeny %>"><span>[D]</span></div>
-                <div onclick="<%= acceptAction %>" class="AcceptSpace ButtonIconSpace" title="<%= labelActionAccept %>"><span>[A]</span></div>
+                <div onclick="<%= denyAction %>" class="DenySpace ButtonIconSpace" title="<%= labelActionDeny %>"><span></span></div>
+                <div onclick="<%= acceptAction %>" class="AcceptSpace ButtonIconSpace" title="<%= labelActionAccept %>"><span></span></div>
                 <div style="clear: left;"><span></span></div>
             </div>
             <div class="MySpacesContentContent">
