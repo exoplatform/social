@@ -26,11 +26,18 @@
 	def labelActionRevokePending = _ctx.appRes("${uicomponentId}.label.action_revoke_pending")
 	def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
+  def labelNoPending = _ctx.appRes("${uicomponentId}.label.no_pending")
 	def pendingSpaces = uicomponent.getPendingSpaces()
 %>
 
 <div class="UIManageSpaces" id="$uicomponent.id">
   <div class="ContainerSpace">
+    <%if (pendingSpaces.size == 0) {%>
+    <div class="SpaceContent">
+        <div class="NoPending"><%= labelNoPending %></div>
+        <div style="clear: left;"><span></span></div>
+    </div>
+    <%}%>
     <%for (space in pendingSpaces) {
         def revokePendingAction = uicomponent.event("RevokePending", space.id) + "; return false"
     %>

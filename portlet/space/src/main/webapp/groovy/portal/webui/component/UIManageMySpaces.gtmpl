@@ -38,13 +38,12 @@
 	def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
   def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
-  
+  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
   def userSpaces = uicomponent.getUserSpaces()
   def invitedSpaces = uicomponent.getInvitedSpaces()
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
     <div class="ContainerSpace">
-    
 	    <%for (space in invitedSpaces) {
 	        def acceptAction = uicomponent.event("Accept", space.id) + "; return false"
 	        def denyAction = uicomponent.event("Deny", space.id) + "; return false"
@@ -76,7 +75,11 @@
         <div style="clear: left;"><span></span></div>
       </div>
     <%}%>    
-    
+    <%if (userSpaces.size() == 0) {%>
+      <div class="SpaceContent NoSpaces">
+            <%= labelNoSpaces %>
+      </div>
+    <%}%>
 	  <%for (space in userSpaces) {
 	      def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
 	      def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.id) + "; return false"
