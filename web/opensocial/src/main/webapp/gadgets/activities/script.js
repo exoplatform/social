@@ -3,7 +3,7 @@ eXo.social = eXo.social || {};
 
 function StatusUpdate() {
 	this.more = 0;
-	this.MAX = 3;
+	this.MAX = 2;
 	this.viewer = null;
 	this.owner = null;
 	this.ownerContacts = null;
@@ -16,7 +16,6 @@ StatusUpdate.prototype.init = function() {
 }
 
 StatusUpdate.prototype.refresh = function() {
-
   // Create request for getting totalsize of owner and owner-friend activities.
   var reqTotalSize = opensocial.newDataRequest();
   
@@ -34,7 +33,7 @@ StatusUpdate.prototype.refresh = function() {
   	var totalOwnerFriendActs = data.get('activities').getData()['activities'].getTotalSize();;
 
 	  var totalSize = totalOwnerActs;
-	  eXo.social.statusUpdate.MAX = 3*(eXo.social.statusUpdate.more + 1);
+	  eXo.social.statusUpdate.MAX = 2 * (eXo.social.statusUpdate.more + 1);
 	  
 	  if (totalOwnerActs > totalOwnerFriendActs)  totalSize = totalOwnerFriendActs;
 	  if (eXo.social.statusUpdate.MAX > totalSize) {
@@ -86,7 +85,7 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
     document.getElementById('ActivitiesContainer').innerHTML = '<div class= "Empty">' + eXo.social.statusUpdate.owner.getDisplayName() + ' do not have any updates yet' + '</div>';
     return;
   }
-  eXo.social.statusUpdate.activities = eXo.social.statusUpdate.activities.sort(eXo.social.statusUpdate.sortUpdates);
+  //eXo.social.statusUpdate.activities = eXo.social.statusUpdate.activities.sort(eXo.social.statusUpdate.sortUpdates);
   var activitiesLength = eXo.social.statusUpdate.activities.length;
   
   if (activitiesLength < totalAct) {
@@ -131,8 +130,13 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 }
 
 StatusUpdate.prototype.displayMore = function() {
-		eXo.social.statusUpdate.more += 1;
-		eXo.social.statusUpdate.refresh();
+	eXo.social.statusUpdate.more += 1;
+	if(eXo.social.statusUpdate.more == 2) {
+		eXo.social.statusUpdate.more -= 1;
+		alert("Please go to canvas view to see more details!");
+		return;
+	}
+	eXo.social.statusUpdate.refresh();
 }
 
 StatusUpdate.prototype.getName = function(id) {

@@ -29,6 +29,7 @@ import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 
 import java.util.concurrent.Future;
+import java.util.Collections;
 import java.util.Set;
 import java.util.List;
 import java.util.Date;
@@ -53,7 +54,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
         //TODO filter by appID
         result.addAll(convertToOSActivities(am.getActivities(id), fields));
       }
-      
+      // last time go first.
+      Collections.reverse(result);
       // Add for applying paging.
       int totalSize = result.size();
       int last = options.getFirst() + options.getMax();
