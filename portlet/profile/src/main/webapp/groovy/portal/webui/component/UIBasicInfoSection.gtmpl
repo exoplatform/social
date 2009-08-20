@@ -16,69 +16,60 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+<% import org.exoplatform.social.portlet.profile.UITitleBar;%>
 <%
   def profile = uicomponent.getProfile();
-  def isEdit = uicomponent.isEditMode();
-  def isEditable = uicomponent.isEditable();
-
-  def rcontext = _ctx.getRequestContext();
-  def jsManager = rcontext.getJavascriptManager();
-
-
-  def firstName = profile.getPropertyValue("firstName");
-  firstName = (firstName == null ? "": firstName);
-
-  def lastName = profile.getPropertyValue("lastName");
-  lastName = (lastName == null ? "": lastName);
-
-  def gender = profile.getPropertyValue("gender");
-
+  
+	def firstName = profile.getPropertyValue("firstName");
+	firstName = (firstName == null ? "": firstName);
+	
+	def lastName = profile.getPropertyValue("lastName");
+	lastName = (lastName == null ? "": lastName);
+	
+	def gender = profile.getPropertyValue("gender");
+	gender = (gender == null ? "male" : gender);
+	def isEdit = uicomponent.isEditMode();
 %>
+<div class="UIBasicInfoSection">
 <% uiform.begin() %>
-<div>
-<% uicomponent.renderChildren(); %>
-<div class="PortletContent">
-<table class="UIFormGrid">
-  <tbody>
-
-    <tr>
-      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.firstName")%></td>
-      <td class="FieldComponent">
-        <% if(!isEdit) {   %>
-          <%=firstName %>
-        <% } else {%>
-          <input type="text" value="<%=firstName %>" name="profile.firstName" />
-        <% }%>
-      </td>
-    </tr>
-    <tr>
-      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.lastName")%></td>
-      <td class="FieldComponent">
-        <% if(!isEdit) {   %>
-          <%=lastName %>
-        <% } else {%>
-          <input type="text" value="<%=lastName %>" name="profile.lastName" />
-        <% }%>
-      </td>
-    </tr>
-    <% if(isEdit || gender != null) { %>
-    <tr>
-      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.gender")%></td>
-      <td class="FieldComponent">
-        <% if(!isEdit) {   %>
-          <%=gender %>
-        <% } else {%>
-          <select class="slct" name="profile.gender">
-              <option value=""><%=_ctx.appRes(uicomponent.getName() + ".label.choose")%></option>
-              <option value="female" <%=(gender.equals("female") ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.female")%></option>
-              <option value="male" <%=(gender.equals("male") ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.male")%></option>
-            </select>
-        <% }%>
-      </td>
-    </tr>
-    <% } %>
-  </tbody>
-</table>
-</div>
-</div>
+<% uicomponent.renderChild(UITitleBar.class); %>
+	<div class="PortletContent">
+	
+		<table class="UIFormGrid">
+			<tbody>
+				<% if (!isEdit) { %>
+					<tr>
+			      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.firstName")+": " %></td>
+			      <td class="FieldComponent"><%=firstName %></td>
+			    </tr>
+			    <tr>
+			      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.lastName")+": " %></td>
+			      <td class="FieldComponent"><%=lastName %></td>
+			    </tr>
+			    <tr>
+			      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.gender")+": " %></td>
+			      <td class="FieldComponent"><%=gender %></td>
+			    </tr>
+				<% } else {%>
+					<%						  
+					  uicomponent.setValue();
+						List children = uiform.getChildren();		
+						int bound = children.size() - 1;
+						for(i in 1..bound) { 
+							if(children.get(i).isRendered()) {								 
+					%>
+								<tr>
+									<td class="FieldLabel"><%=uicomponent.getLabel(children.get(i).getName())+": " %></td>
+									<td class="FieldComponent"><% uiform.renderField(children.get(i)) %></td>
+								</tr>
+					<%
+							}
+						}			
+					%>
+				<%}%>	
+			</tbody>	
+		</table>
+	
+	</div>
 <% uiform.end() %>
+</div>
