@@ -28,12 +28,23 @@
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
 
-  def emails = Utils.sort(profile.getPropertyValue("emails"), "key");
-  def phones = Utils.sort(profile.getPropertyValue("phones"), "key");
-  def urls = Utils.sort(profile.getPropertyValue("urls"), "key");
-  def ims = Utils.sort(profile.getPropertyValue("ims"), "key");
+  def emails = profile.getPropertyValue("emails");
+  def phones = profile.getPropertyValue("phones");
+  def ims = profile.getPropertyValue("ims");
+  def urls = profile.getPropertyValue("urls");
+  
+  def emailChilds = uicomponent.getEmailChilds();
+  def phoneChilds = uicomponent.getPhoneChilds();
+  def urlChilds = uicomponent.getUrlChilds();
+  def imsChilds = uicomponent.getImsChilds();
+  
+  def emailCount = uicomponent.getEmailCount();
+  def phoneCount = uicomponent.getPhoneCount();
+  def urlCount = uicomponent.getUrlCount();
+  def imsCount = uicomponent.getImsCount();
 %>
-<div>
+<div class="UIContactSection">
+<% uiform.begin() %>
 		<% uicomponent.renderChild(UITitleBar.class); %>
 	<div class="PortletContent">
 	
@@ -41,276 +52,219 @@
 		  <tbody>
 		    <!--              emails          -->
 		    <tr>
-
 		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.emails")%></td>
 		      <td class="FieldComponent">
-		        <ul id="profile.emails.container">
-		          <% def i = 0;
-		          emails.each {
-		            def email = it.get("value");
-		            def type = it.get("key");
+		        <ul>
+		          <% 
 		            if (!isEdit) {
-		          %>
-		          <li><a href="mailto:${email}">${email}</a> (${type})</li>
-		          <% } else {
-		          %>
-		          <li class="propertyEl">
-		            <select name="profile.emails<%=i%>.key">
-		              <option value="work" <%=(type.equals("work") ? "selected" : "")%>>Work</option>
-		              <option value="home" <%=(type.equals("home") ? "selected" : "")%>>Home</option>
-		              <option value="other" <%=(type.equals("other") ? "selected" : "")%>>Other</option>
-		            </select>
-		            <input type="text" value="<%=email%>" name="profile.emails<%=i%>.value" id="profile.emails<%=i%>.value"/>
-		            <a class="DeleteIcon" href="#" onclick="eXo.social.profile.UIProfileSection.removeEl(this); return false;">&nbsp</a>
-		          </li>
-		          <%
-		                jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.addValidator("profile.emails__ID__.value", eXo.social.profile.Validate.Email, "${i}")""");
-		                jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.increasePropertyCounter("profile.emails")""");
-		                i += 1;
+		              if (emails != null) {
+				            emails.each {
+					            def email = it.get("value");
+					            def type = it.get("key");
+				      %>
+				          		<li><a href="mailto:${email}">${email}</a> (${type})</li>
+		          <% 	  }
+		              } else { %>
+		              <li id="profile.email.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noEmails")%></li>
+		          <%    
 		              }
-		            }
 		          %>
+		          <% } else { %>
+		          <li class="propertyEl"> 
+			           <%			
+			           if (emailCount > 1) {      			            								     
+			           	for (i in 0..emailCount-1) {			           	
+			           		if (emailChilds.get(i).isRendered()) {
+			           			if (i % 2 != 0) {
+				           			uiform.renderField(emailChilds.get(i));
+				           			%>
+				           				<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+emailChilds.get(i-1).getId()+"."+emailChilds.get(i).getId())%>">&nbsp</a><br>
+				           			<%
+				           		} else {
+				           			uiform.renderField(emailChilds.get(i));
+				           		}
+			           		}
+			           %>			            
+			           <%}
+			          }%>
+			           
+		          </li>
+		          <% } %>		          
 		        </ul>
-		        <%
-		          if (isEdit) {
-		            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.addInitPropertyFunction("profile.emails", function(n, id){eXo.social.profile.UIProfileSection.addValidator("profile.emails__ID__.value", eXo.social.profile.Validate.Email, id)})""");            
-		            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.initProperty("profile.emails")""");
-
-		            uicomponent.setCurrentProperty("profile.emails");
-		        %>
-
-		        <div id="profile.emails.template" class="profileTemplate"><li class="propertyEl">
-		          <select name="profile.emails__ID__.key">
-		            <option value="work">Work</option>
-		            <option value="home">Home</option>
-		            <option value="other">Other</option>
-		          </select>
-		          <input type="text" value="" name="profile.emails__ID__.value" id="profile.emails__ID__.value"/>
-		          <a class="DeleteIcon" href="#" onclick="eXo.social.profile.UIProfileSection.removeEl(this); return false;">&nbsp</a>
-		        </li></div>
-		        <%
-		          }
-		        %>
-
 		      </td>
 		      <%
 		          if (isEdit) {
 		      %>
 		      <td class="FieldComponent">
-		        <a class="AddIcon" href="#" onclick="eXo.social.profile.UIProfileSection.insertProperty('profile.emails'); return false;">&nbsp</a>
+		      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "email")%>">&nbsp</a>
 		      </td>
 		      <% } %>
 		    </tr>
 		    <!--              end of emails          -->
-		    <!--              phones          -->
+		   <!--              phones          -->
+		    
 		    <tr>
 		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%></td>
 		      <td class="FieldComponent">
-		        <ul id="profile.phones.container">
-		          <%
-		            i = 0;
-
-		            if (isEdit) {
+		        <ul>
+		        <%
+		        if (isEdit) {
 		              def display = (phones == null || phones.length == 0 ? "list-item" : "none")
-		          %>
+		          
+		          if (phoneCount <= 0) { %>
                       <li id="profile.phones.isEmpty" style="display:${display}"><%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%></li>
-		          <%
-		            }
-
-		            phones.each {
-		              def phone = it.get("value");
-		              def type = it.get("key");
-		              if (!isEdit) {
+              <%
+              }
+		        }
+		        %>
+		        <%
+							if (!isEdit) {
+							  if (phones != null) {
+			            phones.each {
+			              def phone = it.get("value");
+			              def type = it.get("key");
+		              
 		          %>
-		          <li><%=type + ": " + phone%></li>
+		          			<li><%=type + ": " + phone%></li>
+		          <%	}
+		             } else { %>
+									<li id="profile.phones.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%></li>		             
+		          <%}%>
 		          <% } else { %>
-		          <li class="propertyEl">
-		            <input type="hidden" name="profile.phones<%=i%>.key" value="work"/>
-		            <input type="text" value="<%=phone%>" name="profile.phones<%=i%>.value" id="profile.phones<%=i%>.value"/>
-		            <a class="DeleteIcon" href="#" onclick="eXo.social.profile.UIProfileSection.removeEl(this); return false;">&nbsp</a>
+		          
+		          <li class="propertyEl"> 
+		          <%			      	
+		          if (phoneCount > 0) {		            								     
+			           	for (i in 0..phoneCount-1) {			           	
+			           		if (phoneChilds.get(i).isRendered()) {
+				           			uiform.renderField(phoneChilds.get(i));
+				           			%>
+				           			  <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a><br>
+				           			<%
+				         		}
+			         		}
+			        }
+			           %>			            
 		          </li>
-		          <%
-		                jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.addValidator("profile.phones${i}.value", eXo.social.profile.Validate.Phone)""");
-		                jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.increasePropertyCounter("profile.phones")""");
-
-		                i += 1;
-		              }
-		            }
-		          %>
-		        </ul>
-		        <%
-		          if (isEdit) {
-		            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.addInitPropertyFunction("profile.phones", function(n, id){eXo.social.profile.UIProfileSection.addValidator("profile.phones__ID__.value", eXo.social.profile.Validate.Phone, id)})""");
-		            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.initProperty("profile.phones")""");
-
-
-		            uicomponent.setCurrentProperty("profile.phones");  
-		        %>
-		        <div id="profile.phones.template" class="profileTemplate"><li class="propertyEl">
-		          <input type="hidden" name="profile.phones__ID__.key" value="work"/>
-		          <input type="text" name="profile.phones__ID__.value" id="profile.phones__ID__.value"/>
-		          <a class="DeleteIcon" href="#" onclick="eXo.social.profile.UIProfileSection.removeEl(this); return false;">&nbsp</a>
-		        </li></div>
-		        <%
-		          }
-		        %>
+		          <% } %>	
+		        </ul>		        
 		      </td>
 		      <%
 		          if (isEdit) {
 		      %>
 		      <td class="FieldComponent">
-		        <a class="AddIcon" href="#" onclick="eXo.social.profile.UIProfileSection.insertProperty('profile.phones'); return false;">&nbsp</a>
+		        <a class="AddIcon" onclick="<%=uicomponent.event("Add", "phone")%>">&nbsp</a>
 		      </td>
 		      <% } %>
 		    </tr>
 		    <!--              end of phones          -->
-		    <!--              ims          -->
+        <!--              ims          -->
 		    <tr>
 		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%></td>
 		      <td class="FieldComponent">
-		        <ul id="profile.ims.container">
-		          <%
-		            i = 0;
-
-		            if (isEdit && (ims == null || (ims.length == 0))) {
-		          %>
-                      <li id="profile.ims.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%></li>
-		          <%
-		            }
-
-		            ims.each {
-		              def im = it.get("value");
-		              def type = it.get("key");
-		              if (!isEdit) {
-		          %>
-		          <li><%=type%>: <%=im%></li>
+		        <ul>
+		        <%
+		        	
+							if (!isEdit) {
+								if (ims != null) {
+			            ims.each {
+			              def im = it.get("value");
+			              def type = it.get("key");
+			              
+			          %>
+			          <li><%=type%>: <%=im%></li>
+			          <%}
+			         } else { %>
+			         <li id="profile.ims.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%></li>
+			         <% } 
+			          %>
 		          <% } else { %>
 		          <li class="propertyEl">
-		            <select name="profile.ims<%=i%>.key">
-		              <option value="gtalk" <%=(type.equals("gtalk") ? "selected" : "")%>>Gtalk</option>
-		              <option value="msn" <%=(type.equals("msn") ? "selected" : "")%>>Msn</option>
-		              <option value="skype" <%=(type.equals("skype") ? "selected" : "")%>>Skype</option>
-		              <option value="yahoo" <%=(type.equals("yahoo") ? "selected" : "")%>>Yahoo</option>
-		              <option value="other" <%=(type.equals("other") ? "selected" : "")%>>Other</option>
-		            </select>
-		            <input type="text" value="<%=im%>" name="profile.ims<%=i%>.value" id="profile.ims<%=i%>.value"/>
-                    <a class="DeleteIcon" href="#" onclick="eXo.social.profile.UIProfileSection.removeEl(this); return false;">&nbsp</a>
-                  </li>
-		          <%
-		                jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.increasePropertyCounter("profile.ims")""");
-
-		                i += 1;
-		              }
-		            }
-		          %>
-		        </ul>
-		        <%
-		          if (isEdit) {
-		            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.initProperty("profile.ims")""");
-
-
-		            uicomponent.setCurrentProperty("profile.ims");
-		        %>
-		        <div id="profile.ims.template" class="profileTemplate"><li class="propertyEl">
-		          <select name="profile.ims__ID__.key">
-		              <option value="gtalk">Gtalk</option>
-		              <option value="msn">Msn</option>
-		              <option value="skype">Skype</option>
-		              <option value="yahoo">Yahoo</option>
-		              <option value="other">Other</option>
-		            </select>
-		          <input type="text" name="profile.ims__ID__.value" id="profile.ims__ID__.value"/>
-		          <a class="DeleteIcon" href="#" onclick="eXo.social.profile.UIProfileSection.removeEl(this); return false;">&nbsp</a>
-		        </li></div>
-		        <%
-		          }
-		        %>
+		          <%			      	
+		          if (imsCount > 1) {		            								     
+			           	for (i in 0..imsCount-1) {			           	
+			           		if (imsChilds.get(i).isRendered()) {
+			           			if (i % 2 != 0) {
+				           			uiform.renderField(imsChilds.get(i));
+				           			%>
+				           				<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>">&nbsp</a><br>
+				           			<%
+				           		} else {
+				           			uiform.renderField(imsChilds.get(i));
+				           		}
+			           		}
+			           %>			            
+			           <%}
+			         } else {%>
+			         		<li id="profile.ims.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%></li>
+			         <%}%>
+			           
+		          </li>
+		          <% } %>
+		        </ul>		        
 		      </td>
 		      <%
 		          if (isEdit) {
 		      %>
 		      <td class="FieldComponent">
-		        <a class="AddIcon" href="#" onclick="eXo.social.profile.UIProfileSection.insertProperty('profile.ims'); return false;">&nbsp</a>
+		      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "ims")%>">&nbsp</a>
 		      </td>
-              <% } %>
+		      <% } %>
 		    </tr>
 		    <!--              end of ims          -->
 		    <!--              URL          -->
 		    <tr>
 		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%></td>
 		      <td class="FieldComponent">
-		        <ul id="profile.urls.container">
-		          <%
-		            i = 0;
-
-                   if (isEdit && (urls == null || (urls.length == 0))) {
-                  %>
-                         <li id="profile.urls.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
-                  <%
-                    }
-
-
+		        <ul>
+		        <%
+              if (!isEdit) {
+               if (urls != null) {
 		            urls.each {
 		              def url = it.get("value");
 		              def type = it.get("key");
-		              if (!isEdit) {
+		              
 		          %>
 		          <li><a href="${url}">${type}</a></li>
+		          <%}
+		          } else { %>
+		          <li id="profile.url.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
+		          <% }	
+		          %>
 		          <% } else { %>
 		          <li class="propertyEl">
-		            <span class="label" style="">
-		              <label for="profile.urls<%=i%>.key">Website Title</label>
-		            </span>
-		            <input type="text" value="<%=type%>" name="profile.urls<%=i%>.key" id="profile.urls<%=i%>.key"/>
-		            <span class="label" style="">
-		              <label for="profile.urls<%=i%>.value">URL (ex: http://www.site.com)</label>
-		            </span>
-		            <input type="text" value="<%=url%>" name="profile.urls<%=i%>.value" id="profile.urls<%=i%>.value"/>
-		            <a class="DeleteIcon" href="#" onclick="eXo.social.profile.UIProfileSection.removeEl(this); return false;">&nbsp</a>
+		            <%			   
+		            if (urlCount > 1) {   			            								     
+			           	for (i in 0..urlCount-1) {			           	
+			           		if (urlChilds.get(i).isRendered()) {
+			           			if (i % 2 != 0) {
+				           			uiform.renderField(urlChilds.get(i));
+				           			%>
+				           				<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>">&nbsp</a><br>
+				           			<%
+				           		} else {
+				           			uiform.renderField(urlChilds.get(i));
+				           		}
+			           		}
+			           %>			            
+			           <%}
+			         } else {%>
+			         		<li id="profile.urls.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
+			         <%}%>			           
 		          </li>
-		          <%
-		                jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.addValidator("profile.urls${i}.value", eXo.social.profile.Validate.URL)""");
-		                jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.increasePropertyCounter("profile.urls")""");
-
-		                i += 1;
-		              }
-		            }
-		          %>
+		          <% } %>
 		        </ul>
-		        <%
-		          if (isEdit) {
-		            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.initProperty("profile.urls")""");
-		            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.addInitPropertyFunction("profile.urls", function(n, id){eXo.social.profile.UIProfileSection.addValidator("profile.urls__ID__.value", eXo.social.profile.Validate.URL, id)})""");
-
-
-		            uicomponent.setCurrentProperty("profile.urls");
-		        %>
-		        <div id="profile.urls.template" class="profileTemplate"><li class="propertyEl">
-		        <span class="label__TMPL__" style="">
-		          <label for="profile.urls__ID__.key">Website Title</label>
-		        </span>
-		        <input type="text" name="profile.urls__ID__.key" id="profile.urls__ID__.key" value=""/>
-		        <span class="label__TMPL__" style="">
-		          <label for="profile.urls__ID__.value">URL (ex: http://www.site.com)</label>
-		        </span>
-		        <input type="text" name="profile.urls__ID__.value" id="profile.urls__ID__.value" value=""/>
-                <a class="DeleteIcon" href="#" onclick="eXo.social.profile.UIProfileSection.removeEl(this); return false;">&nbsp</a>
-              	</li></div>
-		        <%
-		          }
-		        %>
 		      </td>
 		      <%
 		          if (isEdit) {
 		      %>
 		      <td class="FieldComponent">
-		        <a class="AddIcon" href="#" onclick="eXo.social.profile.UIProfileSection.insertProperty('profile.urls'); return false;">&nbsp</a>
+		      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "urls")%>">&nbsp</a>
 		      </td>
 		      <% } %>
 		    </tr>
-
 		  </tbody>
 		</table>
-
 	</div>
+	<% uiform.end() %>
 </div>
