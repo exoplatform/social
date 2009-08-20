@@ -14,4 +14,4 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-JavascriptService.addJavascript("social.webui", "/javascript/social/webui/UIManageSpace.js", ServletContext);
+JavascriptService.addJavascript("eXo.social.webui.UIVerticalTabs", "/javascript/eXo/social/webui/UIVerticalTabs.js", ServletContext);

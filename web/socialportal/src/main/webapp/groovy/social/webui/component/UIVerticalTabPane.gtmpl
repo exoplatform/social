@@ -19,7 +19,7 @@
 
 <%
   def rcontext = _ctx.getRequestContext();
-  rcontext.getJavascriptManager().importJavascript('eXo.social.space.UIVerticalTabs');
+  rcontext.getJavascriptManager().importJavascript('eXo.social.webui.UIVerticalTabs');
 %>
 <div class="UIVerticalTabPane" id="$uicomponent.id">
     <div class="VerticalTabPaneContent">
@@ -38,7 +38,7 @@
                         <div class="LeftTab">
                           <div class="RightTab">			         	   	                                
                             <% String actionLink = "ajaxAsyncGetRequest('" + uicomponent.url("SelectTab",tabId) + "', true)" %>                
-                            <div class="MiddleTab" onclick="eXo.social.space.UIVerticalTabs.displayTabContent(this); $actionLink"><%=_ctx.appRes("UITabPane.title." + uiChild.getId());%></div>
+                            <div class="MiddleTab" onclick="eXo.social.webui.UIVerticalTabs.displayTabContent(this); $actionLink"><%=_ctx.appRes("UITabPane.title." + uiChild.getId());%></div>
                           </div>
                         </div>
                       </div>

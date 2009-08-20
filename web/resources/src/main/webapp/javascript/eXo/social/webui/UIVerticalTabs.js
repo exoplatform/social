@@ -3,7 +3,7 @@
  */
 var eXo = eXo || {};
 eXo.social = eXo.social || {};
-eXo.social.space = eXo.social.space || {};
+eXo.social.webui = eXo.social.webui || {};
 
 function UIVerticalTabs() {
   this.backupNavigationTabStyle;
@@ -62,4 +62,4 @@ UIVerticalTabs.prototype.changeTabForUITabPane = function(clickedEle, tabId, url
 		} catch(e) {void(0);}
 	}
 };
-eXo.social.space.UIVerticalTabs = new UIVerticalTabs();
+eXo.social.webui.UIVerticalTabs = new UIVerticalTabs();

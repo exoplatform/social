@@ -38,7 +38,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   @ComponentConfig (
     id = "UIVerticalTabPane",
     type = UITabPane.class,
-    template =  "app:/groovy/portal/webui/component/UIVerticalTabPane.gtmpl",
+    template =  "system:/groovy/social/webui/component/UIVerticalTabPane.gtmpl",
     events = {
       @EventConfig(listeners = UITabPane.SelectTabActionListener.class)
     }                    
