@@ -17,7 +17,7 @@
 
 -->
 <%
-	import org.exoplatform.webui.core.UIPopupWindow;
+	import org.exoplatform.webui.form.UIFormStringInput;
   def profile = uicomponent.getProfile();
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
@@ -26,8 +26,8 @@
   if (isEditable)
     position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): position);
   else
-    position = (position == null ? "": position);
-%>
+    position = (position == null ? "": position);      
+%>	
 <div class="UIHeaderSection">
 <% uiform.begin() %>
 	<h2><%=profile.getFullName() %></h2>
@@ -35,7 +35,8 @@
 	    <% if(!isEdit) {   %>
 	      <%=position %> <span><% if(isEditable) { %>(<a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a>) <% } %></span>
 	    <% } else {%>
-	      <input type="text" value="<%=position %>" name="profile.position"/> <a href="<%=uicomponent.event("Save") %>">send</a>
+	      <%uicomponent.setValue();%>
+	      <% uiform.renderChild(UIFormStringInput.class) %> (<a href="<%=uicomponent.event("Save") %>">Send</a>)
 	    <% }%>
 	</h3>
 <% uiform.end() %>
