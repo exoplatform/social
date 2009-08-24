@@ -98,6 +98,11 @@
 	border-bottom: 1px solid #dadada;
 }
 
+.UIManageSpacesPortlet1 .UIVerticalTabContentContainer .UIManageSpaces .SpaceContent .NotYet {
+ color: #ff0000;
+ text-align: center;
+}
+
 .UIManageSpacesPortlet1 .UIManageSpaces .SpaceContent .AvatarSpace{
 	float: left;
 	width: 90px; height: 80px;
@@ -212,7 +217,7 @@
     margin: 31px 0px 0px 20px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .MameSpace{
+.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .NameSpace{
     color: #087196;
     font-weight: bold;
     font-size: 14px;

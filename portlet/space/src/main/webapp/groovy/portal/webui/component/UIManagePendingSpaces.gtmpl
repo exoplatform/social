@@ -34,7 +34,7 @@
   <div class="ContainerSpace">
     <%if (pendingSpaces.size == 0) {%>
     <div class="SpaceContent">
-        <div class="NoPending"><%= labelNoPending %></div>
+        <div class="NotYet"><%= labelNoPending %></div>
         <div style="clear: left;"><span></span></div>
     </div>
     <%}%>

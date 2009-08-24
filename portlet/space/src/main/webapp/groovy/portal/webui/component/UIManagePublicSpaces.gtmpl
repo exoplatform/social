@@ -26,7 +26,6 @@
   def labelActionRequestToJoin = _ctx.appRes("${uicomponentId}.label.action_request_to_join")
   def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
-  def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
   def labelNoPublic = _ctx.appRes("${uicomponentId}.label.no_public")
   def publicSpaces = uicomponent.getPublicSpaces()
 %>
@@ -34,7 +33,7 @@
     <div class="ContainerSpace">
       <%if (publicSpaces.size() == 0) {%>
       <div class="SpaceContent">
-        <div class="NoPublic"><%= labelNoPublic %></div>
+        <div class="NotYet"><%= labelNoPublic %></div>
         <div style="clear: left;"><span></span></div>
       </div>
       <%}%>

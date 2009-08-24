@@ -4,6 +4,10 @@
 	background: white;
 }
 
+.UISpaceSettingPortlet .UISpaceSetting .UITabPane .GrayTabContainer {
+    clear: both;
+}
+
 /********************************UI Space Member********************************/
 .UISpaceSettingPortlet .UISpaceMember .AddInviteContent {
 	padding: 12px 0px 0px 8px;
@@ -68,6 +72,8 @@
 	border-bottom: 1px solid #777777;
 	padding: 5px 0px;
 }
+
+
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .Title {
 	Float: left;

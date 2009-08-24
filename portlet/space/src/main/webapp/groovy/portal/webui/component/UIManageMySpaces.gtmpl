@@ -76,8 +76,9 @@
       </div>
     <%}%>    
     <%if (userSpaces.size() == 0) {%>
-      <div class="SpaceContent NoSpaces">
-            <%= labelNoSpaces %>
+      <div class="SpaceContent">
+        <div class="NotYet"><%= labelNoSpaces %></div>
+        <div style="clear: left;"><span></span></div>
       </div>
     <%}%>
 	  <%for (space in userSpaces) {

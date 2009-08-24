@@ -16,6 +16,9 @@
  */
 package social.portal.webui.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -24,9 +27,11 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
@@ -47,7 +52,12 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
       }
 )
 public class UISpaceInfo extends UIForm {
-
+  private final String SPACE_PRIORITY = "priority";
+  //These priority variables should be set in Space.java model
+  private final String PRIORITY_HIGH = "high";
+  private final String PRIORITY_MIDDLE = "middle";
+  private final String PRIORITY_LOW = "low";
+  
   public UISpaceInfo() throws Exception {
     addUIFormInput((UIFormStringInput)new UIFormStringInput("id","id",null).setRendered(false)).
     addUIFormInput(new UIFormStringInput("name","name",null).
@@ -55,8 +65,17 @@ public class UISpaceInfo extends UIForm {
                    addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}]+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30)).
     addUIFormInput(new UIFormTextAreaInput("description","description",null)
-        .addValidator(StringLengthValidator.class, 0, 255)).
-    addUIFormInput(new UIFormStringInput("tag","tag",null));
+        .addValidator(StringLengthValidator.class, 0, 255));
+    List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
+    SelectItemOption<String> pHight = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
+    SelectItemOption<String> pMiddle = new SelectItemOption<String>(PRIORITY_MIDDLE, Space.MIDDLE_PRIORITY);
+    SelectItemOption<String> pLow = new SelectItemOption<String>(PRIORITY_LOW, Space.LOW_PRIORITY);
+    priorityList.add(pHight);
+    priorityList.add(pMiddle);
+    priorityList.add(pLow);
+    UIFormSelectBox selectPriority = new UIFormSelectBox(SPACE_PRIORITY, SPACE_PRIORITY, priorityList);
+    addUIFormInput(selectPriority);
+    addUIFormInput((UIFormStringInput)new UIFormStringInput("tag","tag",null).setRendered(false));
   }
   
   public void setValue(Space space) throws Exception {
