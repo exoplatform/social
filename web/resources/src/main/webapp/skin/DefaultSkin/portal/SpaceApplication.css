@@ -29,6 +29,11 @@
   border: 1px solid #91a8ae;
 }
 
+.UIToolbarContainer .UITableColumnContainer {
+  background: none;
+  border: none;
+}
+
 #gwtGadget .UIColumns {
 	width: 100%;
 }
