@@ -1,5 +1,56 @@
+<%
+	import org.exoplatform.portal.webui.util.Util ;
+ 
+	def invitedRelation = uicomponent.getInvitedRelation();
+	def myRelation = uicomponent.getMyRelation();
+	def currIdentity = uicomponent.getCurrentIdentity();
+%>
 <div class="UIMyRelation">
 <% uiform.begin() %>
-	my relation
+	<div class="ContainerSpace">
+	<% for(relation in myRelation) {
+		def identity = null;
+		if (currIdentity.id == relation.identity1.id) {
+	  	identity = relation.identity2;
+	  } else {
+  	  identity = relation.identity1;
+	  }
+	  def profileURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId();
+    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard";
+    def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities";
+    def fullName = identity.profile.fullName;
+    def position = identity.profile.getPropertyValue("position");
+    def actionLink = uicomponent.event("Remove",identity.getId());
+	 %>
+		<div class="ContentSpace">
+    	<div class="CommunityIcon"><span/></div>
+    	<div class="CommunityContainer">
+        <div class="CommunityMane Line">
+            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
+  
+            <div onclick="$actionLink" class="ActionBar">
+							<div class="LeftButton">
+								<div class="RightButton">
+									<div class="CenterButton">
+										<div class="SaveIcon">
+											Remove
+										</div>
+									</div>
+								</div>
+							</div>
+		    		</div>
+  
+            <div style="clear: both;"><span/></div>
+        </div>
+        
+        <div class="TagsName">
+          <a class="CommunityNameMiddle" href="/portal/private/classic/people/demo">Profile</a> |
+          <a class="CommunityNameMiddle" href="/portal/private/classic/people/demo/dashboard">Dashboard</a> |
+          <a class="CommunityNameMiddle" href="/portal/private/classic/people/demo/activities">Activities</a>
+        </div>
+    	</div>
+    </div>
+	<% } %>
+  </div>
 <% uiform.end() %>
 </div>

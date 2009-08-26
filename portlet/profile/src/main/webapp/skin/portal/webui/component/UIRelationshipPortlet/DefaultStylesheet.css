@@ -1,2 +1,94 @@
-.UIRelationshipPortlet {
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+/*
+  need to find a better way of doing than the import from another portlet
+*/
+
+.ContainerSpace{
+	background: #f5f5f5;
+	border:1px solid #c7c7c7;
+	padding: 8px;
+}
+
+.ContainerSpace .ContentSpace {
+	background: white;
+	border:1px solid #c7c7c7;
+	padding: 8px;
+	margin-bottom:4px;
+	height: 80px;
+}
+
+.ContainerSpace .CommunityIcon {
+	background: url('background/ImgAvatar.gif') no-repeat left;
+	width: 70px; height: 80px;
+	float: left;
+}
+
+
+.ContainerSpace .CommunityContainer {
+	padding-left: 16px;
+	margin-left: 76px;
+}
+
+.ContainerSpace .Line {
+	border-bottom:1px solid #B7B7B7;
+}
+
+.ContainerSpace .Text {
+	line-height: 16px;
+}
+
+.ContainerSpace .TagsName {
+	color: #b7b7b7;
+	line-height: 16px;
+}
+
+.ContainerSpace .CommunityMane {
+	color: #0d6e8f;
+	height: 20px;
+	font-size: 12px;
+	font-family: tahoma;
+	font-weight: bold;
+}
+
+.ContainerSpace .ActionBar {
+	float: right;
+	margin: 3px 4px 0px 0px;
+	cursor: pointer;
+}
+
+.ActionBar .LeftButton {
+	background: url('background/LeftButton3x18.gif') no-repeat left;
+	padding-left: 3px;
+}
+
+.ActionBar .RightButton {
+	background: url('background/RightButton3x18.gif') no-repeat right;
+	padding-right: 3px;
+}
+
+.ActionBar .CenterButton {
+	background: url('background/CenterButton1x18.gif') repeat-x ;
+	line-height: 18px;
+	padding: 0px 10px;
+}
+
+.ActionBar .CenterButton .SaveIcon{
+	background: url('background/SaveIcon.gif') no-repeat left;
+	line-height: 18px; width: auto;
+	padding-left: 20px;
 }
