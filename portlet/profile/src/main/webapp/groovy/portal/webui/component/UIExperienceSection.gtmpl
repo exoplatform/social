@@ -19,200 +19,143 @@
 <%
   import org.exoplatform.social.portlet.profile.Utils;
   import org.exoplatform.social.portlet.profile.UITitleBar;
-  import org.exoplatform.social.portlet.profile.UIAddButton;
-
+  
   def profile = uicomponent.getProfile();
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
-
-  def rcontext = _ctx.getRequestContext();
-  def jsManager = rcontext.getJavascriptManager();
-
-  def exp = Utils.sort(profile.getPropertyValue("experiences"), "startDateYear", "startDateMonth", true);
+  def childs = uicomponent.getChilds();
+  def childSize = childs.size();
+  
+  def exp = profile.getPropertyValue("experiences");
+  def pastExp = uicomponent.getPastExperience();
+  def currentExp = uicomponent.getCurrentExperience();
 %>
-<% uicomponent.renderChild(UITitleBar.class); %>
-
 <div class="experience">
-  <ul id="profile.experiences.container">
-  <% def i = 0;
-    exp.each {
-      def position = it.get("position");
-      def company = it.get("company");
-      def startDateMonth = it.get("startDateMonth");
-      def startDateYear = it.get("startDateYear");
-      def endDateMonth = it.get("endDateMonth");
-      def endDateYear = it.get("endDateYear");
-      def isCurrent = it.get("isCurrent");
-      def description = it.get("description");
+<%uiform.begin()%>
+	<% uicomponent.renderChild(UITitleBar.class); %>
+	<div class="PortletContent">
+  	<%if (isEdit && isEditable) {%>
+    	<%if (childSize > 1) {%>
+   			<%for (int i=1; i < childSize; i +=6) {%>
+			    <div class="Experience">
+			    <table class="UIFormGrid">
+			      <tbody>
+	          <tr>
+		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></td>
+		          <td class="FieldComponent">
+		          <%if (childs.get(i).isRendered()) {
+		          	uiform.renderField(childs.get(i));
+		          }%>
+		          </td>
+		        </tr>
+		        <tr>
+		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></td>
+		          <td class="FieldComponent">
+		          <%if (childs.get(i + 1).isRendered()) {
+		            uiform.renderField(childs.get(i + 1));
+		          }%>
+		          </td>
+		        </tr>
+		        <tr>
+		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
+		          <td class="FieldComponent">
+		          <%if (childs.get(i + 2).isRendered()) {
+		          	uiform.renderField(childs.get(i + 2));
+		          }%>
+		          </td>
+		        </tr>
+		        <tr>
+		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
+		          <td class="FieldComponent">
+		          <%if (childs.get(i + 3).isRendered()) {%>
+		            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%> <%uiform.renderField(childs.get(i + 3));%><br />
+		          <%}%>
+		            <%if (childs.get(i + 4).isRendered()) {
+		            	uiform.renderField(childs.get(i + 4));
+		            }%>
+		          </td>
+		        </tr>
+		        <tr>
+		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
+		          <td class="FieldComponent">
+		          <%if (childs.get(i + 5).isRendered()) {
+		            uiform.renderField(childs.get(i + 5));
+		          }%>
+		          </td>
+		        </tr>
+		      </tbody>
+		    </table>
+		    </div>
+   <%} //end for
+   	} // end if childSize
   %>
-
-  <% if(!isEdit) { %>
-    <li>
-    <b>${position} at ${company}</b><br />
-    <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${endDateYear} <% } %><br />
-    ${description}
-    </li>
-
+	  	<div class="UIAction">
+  <table align="center" class="ActionContainer" onclick="<%=uicomponent.event("Add")%>">
+    <tbody><tr>
+      <td align="center">
+        <div class="ButtonLeft">
+          <div class="ButtonRight">
+            <div class="ButtonMiddle">
+              <div class="AddButton"><%=_ctx.appRes(uicomponent.getName() + ".label.Add")%></div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody></table>
+</div>  	
   <% } else { %>
-    <li>
-    <table class="UIFormGrid">
-      <tbody>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></td>
-          <td class="FieldComponent">
-            <input type="text" value="<%=company %>" name="profile.experiences${i}.company"/>
-          </td>
-        </tr>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></td>
-          <td class="FieldComponent">
-            <input type="text" value="<%=position %>" name="profile.experiences${i}.position"/>
-          </td>
-        </tr>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
-          <td class="FieldComponent">
-            <select class="slct" name="profile.experiences${i}.startDateMonth">
-              <option value=""><%=_ctx.appRes(uicomponent.getName() + ".label.choose")%></option>
-              <option value="1" <%=(startDateMonth == 1 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_1")%></option>
-              <option value="2" <%=(startDateMonth == 2 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_2")%></option>
-              <option value="3" <%=(startDateMonth == 3 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_3")%></option>
-              <option value="4" <%=(startDateMonth == 4 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_4")%></option>
-              <option value="5" <%=(startDateMonth == 5 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_5")%></option>
-              <option value="6" <%=(startDateMonth == 6 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_6")%></option>
-              <option value="7" <%=(startDateMonth == 7 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_7")%></option>
-              <option value="8" <%=(startDateMonth == 8 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_8")%></option>
-              <option value="9" <%=(startDateMonth == 9 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_9")%></option>
-              <option value="10" <%=(startDateMonth == 10 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_10")%></option>
-              <option value="11" <%=(startDateMonth == 11 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_11")%></option>
-              <option value="12" <%=(startDateMonth == 12 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_12")%></option>
-            </select>
-            <input type="text" maxlength="4" value="${startDateYear}" name="profile.experiences${i}.startDateYear"/>
-          </td>
-        </tr>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
-          <td class="FieldComponent">
-            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%> <input type="radio" value="true" id="profile.experiences${i}.isCurrent_true" name="profile.experiences${i}.isCurrent" <%=(isCurrent ? " checked='checked'" : "")%>/><%=_ctx.appRes(uicomponent.getName() + ".label.Yes")%> <input type="radio" value="false" id="profile.experiences${i}.isCurrent_false" name="profile.experiences${i}.isCurrent" <%=(!isCurrent ? " checked='checked'" : "")%>/> <%=_ctx.appRes(uicomponent.getName() + ".label.No")%><br />
-            <div class="endDate" <% if(isCurrent) {%>style="display:none;"<% } %>>
-              <select class="slct" name="profile.experiences${i}.endDateMonth">
-                <option value=""><%=_ctx.appRes(uicomponent.getName() + ".label.choose")%></option>
-                <option value="1" <%=(endDateMonth == 1 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_1")%></option>
-                <option value="2" <%=(endDateMonth == 2 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_2")%></option>
-                <option value="3" <%=(endDateMonth == 3 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_3")%></option>
-                <option value="4" <%=(endDateMonth == 4 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_4")%></option>
-                <option value="5" <%=(endDateMonth == 5 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_5")%></option>
-                <option value="6" <%=(endDateMonth == 6 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_6")%></option>
-                <option value="7" <%=(endDateMonth == 7 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_7")%></option>
-                <option value="8" <%=(endDateMonth == 8 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_8")%></option>
-                <option value="9" <%=(endDateMonth == 9 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_9")%></option>
-                <option value="10" <%=(endDateMonth == 10 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_10")%></option>
-                <option value="11" <%=(endDateMonth == 11 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_11")%></option>
-                <option value="12" <%=(endDateMonth == 12 ? "selected" : "")%>><%=_ctx.appRes(uicomponent.getName() + ".label.month_12")%></option>
-              </select>
-              <input type="text" maxlength="4" value="${endDateYear}" name="profile.experiences${i}.endDateYear"/>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
-          <td class="FieldComponent">
-            <input type="text" value="<%=description %>" name="profile.experiences${i}.description"/>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </li>
-  <%
-      jsManager.addOnLoadJavascript("""eXo.social.profile.Event.addListener("profile.experiences${i}.isCurrent_true", "click", eXo.social.profile.UIProfileSection.toggleEndDate)""");
-      jsManager.addOnLoadJavascript("""eXo.social.profile.Event.addListener("profile.experiences${i}.isCurrent_false", "click", eXo.social.profile.UIProfileSection.toggleEndDate)""");
-      jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.increasePropertyCounter("profile.experiences")""");
-      i += 1;
-    }
-  }
+    <%if (exp != null) {%>
+    <%if (currentExp.size() != 0) { %>
+    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b>Current</b></div>
+    <%  currentExp.each {
+		      def position = it.get("position");
+		      def company = it.get("company");
+		      def startDate = it.get("startDate");
+		      def endDate = it.get("endDate");
+		      def isCurrent = it.get("isCurrent");
+		      def description = it.get("description");
+		      def endDateMonth = uicomponent.getMonth(endDate);
+		      def endDateYear = uicomponent.getYear(endDate);
+		      def startDateMonth = uicomponent.getMonth(startDate);
+		      def startDateYear = uicomponent.getYear(startDate);
+		      def startDateDate = uicomponent.getDate(startDate);
+		      def endDateDate = uicomponent.getDate(endDate);
+	  %>  <div class="Experience">
+			    <b>${position} at ${company}</b><br />
+			    <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
+			    <%if(description != null) {%>${description} <%}%><br>
+			  </div>
+    <%  } // End each
+    }%>
+    <%if (pastExp.size() != 0) { %>
+    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b>Past</b></div>
+    <%  pastExp.each {
+		      def position = it.get("position");
+		      def company = it.get("company");
+		      def startDate = it.get("startDate");
+		      def endDate = it.get("endDate");
+		      def isCurrent = it.get("isCurrent");
+		      def description = it.get("description");
+		      def endDateMonth = uicomponent.getMonth(endDate);
+		      def endDateYear = uicomponent.getYear(endDate);
+		      def startDateMonth = uicomponent.getMonth(startDate);
+		      def startDateYear = uicomponent.getYear(startDate);
+		      def startDateDate = uicomponent.getDate(startDate);
+		      def endDateDate = uicomponent.getDate(endDate);
+	    %>
+	      <div class="Experience">
+			    <b>${position} at ${company}</b><br/>
+			    <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
+			    <%if(description != null) {%>${description} <%}%>
+			  </div>
+		    <%}%>
+      <%}%>
+    <%} else {%>
+    		<%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%>
+    <%}%>
+  <%} //end if else
   %>
-  </ul>
-        <%
-          if (isEdit) {
-            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.initProperty("profile.experiences")""");
-
-            jsManager.addOnLoadJavascript("""eXo.social.profile.UIProfileSection.addInitPropertyFunction("profile.experiences", function(n, id){eXo.social.profile.Event.addListener("profile.experiences" + id + ".isCurrent_true", "click", eXo.social.profile.UIProfileSection.toggleEndDate);eXo.social.profile.Event.addListener("profile.experiences" + id + ".isCurrent_false", "click", eXo.social.profile.UIProfileSection.toggleEndDate);})""");
-
-
-            uicomponent.setCurrentProperty("profile.experiences");
-            uicomponent.renderChild(UIAddButton.class);
-        %>
-
-        <div id="profile.experiences.template" class="profileTemplate"><li>
-    <table class="UIFormGrid">
-      <tbody>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></td>
-          <td class="FieldComponent">
-            <input type="text" value="" name="profile.experiences__ID__.company"/>
-          </td>
-        </tr>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></td>
-          <td class="FieldComponent">
-            <input type="text" value="" name="profile.experiences__ID__.position"/>
-          </td>
-        </tr>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
-          <td class="FieldComponent">
-            <select class="slct" name="profile.experiences__ID__.startDateMonth">
-              <option value=""><%=_ctx.appRes(uicomponent.getName() + ".label.choose")%></option>
-              <option value="1"><%=_ctx.appRes(uicomponent.getName() + ".label.month_1")%></option>
-              <option value="2"><%=_ctx.appRes(uicomponent.getName() + ".label.month_2")%></option>
-              <option value="3"><%=_ctx.appRes(uicomponent.getName() + ".label.month_3")%></option>
-              <option value="4"><%=_ctx.appRes(uicomponent.getName() + ".label.month_4")%></option>
-              <option value="5"><%=_ctx.appRes(uicomponent.getName() + ".label.month_5")%></option>
-              <option value="6"><%=_ctx.appRes(uicomponent.getName() + ".label.month_6")%></option>
-              <option value="7"><%=_ctx.appRes(uicomponent.getName() + ".label.month_7")%></option>
-              <option value="8"><%=_ctx.appRes(uicomponent.getName() + ".label.month_8")%></option>
-              <option value="9"><%=_ctx.appRes(uicomponent.getName() + ".label.month_9")%></option>
-              <option value="10"><%=_ctx.appRes(uicomponent.getName() + ".label.month_10")%></option>
-              <option value="11"><%=_ctx.appRes(uicomponent.getName() + ".label.month_11")%></option>
-              <option value="12"><%=_ctx.appRes(uicomponent.getName() + ".label.month_12")%></option>
-            </select>
-            <input type="text" maxlength="4" value="" name="profile.experiences__ID__.startDateYear"/>
-          </td>
-        </tr>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
-          <td class="FieldComponent">
-            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%> <input type="radio" value="true" id="profile.experiences__ID__.isCurrent_true" name="profile.experiences__ID__.isCurrent" /><%=_ctx.appRes(uicomponent.getName() + ".label.Yes")%> <input type="radio" value="false" id="profile.experiences__ID__.isCurrent_false" name="profile.experiences__ID__.isCurrent" checked='checked'/> <%=_ctx.appRes(uicomponent.getName() + ".label.No")%><br />
-            <div class="endDate" style="display:block;">
-            <select class="slct" name="profile.experiences__ID__.endDateMonth">
-              <option value=""><%=_ctx.appRes(uicomponent.getName() + ".label.choose")%></option>
-              <option value="1"><%=_ctx.appRes(uicomponent.getName() + ".label.month_1")%></option>
-              <option value="2"><%=_ctx.appRes(uicomponent.getName() + ".label.month_2")%></option>
-              <option value="3"><%=_ctx.appRes(uicomponent.getName() + ".label.month_3")%></option>
-              <option value="4"><%=_ctx.appRes(uicomponent.getName() + ".label.month_4")%></option>
-              <option value="5"><%=_ctx.appRes(uicomponent.getName() + ".label.month_5")%></option>
-              <option value="6"><%=_ctx.appRes(uicomponent.getName() + ".label.month_6")%></option>
-              <option value="7"><%=_ctx.appRes(uicomponent.getName() + ".label.month_7")%></option>
-              <option value="8"><%=_ctx.appRes(uicomponent.getName() + ".label.month_8")%></option>
-              <option value="9"><%=_ctx.appRes(uicomponent.getName() + ".label.month_9")%></option>
-              <option value="10"><%=_ctx.appRes(uicomponent.getName() + ".label.month_10")%></option>
-              <option value="11"><%=_ctx.appRes(uicomponent.getName() + ".label.month_11")%></option>
-              <option value="12"><%=_ctx.appRes(uicomponent.getName() + ".label.month_12")%></option>
-            </select>
-            <input type="text" maxlength="4" value="" name="profile.experiences__ID__.endDateYear"/>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
-          <td class="FieldComponent">
-            <input type="text" value="" name="profile.experiences__ID__.description"/>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </li></div>
-        <%
-          }
-        %>
+  </div>
+	<% uiform.end() %>
 </div>

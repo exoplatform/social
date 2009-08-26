@@ -42,12 +42,18 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 )
 
 public class UIHeaderSection extends UIProfileSection {
+  /** POSITION. */
+  final public static String POSITION = "position";
+  /** REGEX EXPRESSION. */
+  final public static String REGEX_EXPRESSION = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
+  /** INVALID CHARACTER MESSAGE. */
+  final public static String INVALID_CHAR_MESSAGE = "UIHeaderSection.msg.Invalid-char";
   
   public UIHeaderSection() throws Exception { 
-    addUIFormInput(new UIFormStringInput("position", "position", null)
+    addUIFormInput(new UIFormStringInput(POSITION, POSITION, null)
                    .addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 30)
-                   .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$", "UIHeaderSection.msg.Invalid-char"));
+                   .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
   }
   
   /**
@@ -74,13 +80,13 @@ public class UIHeaderSection extends UIProfileSection {
       UIProfileSection sect = event.getSource();       
       UIHeaderSection uiHeaderSect = (UIHeaderSection)sect;
       
-      UIFormStringInput uiPosition = uiHeaderSect.getChildById("position");
+      UIFormStringInput uiPosition = uiHeaderSect.getChildById(POSITION);
       String position = uiPosition.getValue();
       
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
       Profile p = uiHeaderSect.getProfile();
-      p.setProperty("position", position);
+      p.setProperty(POSITION, position);
       
       im.saveProfile(p);      
     }
@@ -92,9 +98,9 @@ public class UIHeaderSection extends UIProfileSection {
    * @throws Exception
    */
   public void setValue() throws Exception {
-    UIFormStringInput uiPosition = getChildById("position");
+    UIFormStringInput uiPosition = getChildById(POSITION);
     Profile profile = getProfile();
-    String position = (String) profile.getProperty("position");
+    String position = (String) profile.getProperty(POSITION);
     position = (position == null ? "": position);
     uiPosition.setValue(position);
   }

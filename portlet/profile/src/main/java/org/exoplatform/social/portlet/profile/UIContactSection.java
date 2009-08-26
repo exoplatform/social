@@ -59,6 +59,59 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
     }
 )
 public class UIContactSection extends UIProfileSection {
+  /** EMAILS. */
+  final public static String EMAILS = "emails";
+  /** PHONES. */
+  final public static String PHONES = "phones";
+  /** IMS. */
+  final public static String IMS = "ims";
+  /** URLS. */
+  final public static String URLS = "urls";
+  /** URL. */
+  final public static String URL = "url";
+  /** EMAIL. */
+  final public static String EMAIL = "email";
+  /** PHONE. */
+  final public static String PHONE = "phone";
+  /** FONE. */
+  final public static String FONE = "fone";
+  /** RLU. */
+  final public static String RLU = "rlu";
+  /** WORK. */
+  final public static String WORK = "Work";
+  /** HOME. */
+  final public static String HOME = "Home";
+  /** OTHER. */
+  final public static String OTHER = "Other";
+  /** GTALK. */
+  final public static String GTALK = "Gtalk";
+  /** MSN. */
+  final public static String MSN = "Msn";
+  /** SKYPE. */
+  final public static String SKYPE = "Skype";
+  /** YAHOO. */
+  final public static String YAHOO = "Yahoo";
+  /** WEBSITE TITLE. */
+  final public static String WEBSITE_TITLE = "Website Title";
+  /** URL EXAMPLE. */
+  final public static String URL_EXAMPLE = "URL (ex: http://www.site.com)";
+  /** KEY. */
+  final public static String KEY = "key";
+  /** VALUE. */
+  final public static String VALUE = "value";
+  /** EMAIL REGEX EXPRESSION. */
+  final public static String EMAIL_REGEX_EXPRESSION = "^([^@\\s]+)@((?:[-a-z0-9]+\\.)+[a-z]{2,})$";
+  /** INVALID EMAIl. */
+  final public static String INVALID_EMAIl = "UIContactSect.msg.Invalid-email";
+  /** PHONE REGEX EXPRESSION. */
+  final public static String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().-]+$";
+  /** INVALID PHONE. */
+  final public static String INVALID_PHONE = "UIContactSect.msg.Invalid-phone";
+  /** URL REGEX EXPRESSION. */
+  final public static String URL_REGEX_EXPRESSION = "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
+  /** INVALID URL. */
+  final public static String INVALID_URL = "UIContactSect.msg.Invalid-url";
+  
   /** Number of email. */
   private int emailCount = 0;
   /** Number of phone. */
@@ -227,19 +280,19 @@ public class UIContactSection extends UIProfileSection {
     List<UIComponent> listURLUIComp = getUrlChilds();
 
     emails = getProfileForSave(emailCount, listEmailUIComp, null);
-    phones = getProfileForSave(phoneCount, listPhoneUIComp, "work");
+    phones = getProfileForSave(phoneCount, listPhoneUIComp, WORK);
     ims = getProfileForSave(imsCount, listIMSUIComp, null);
-    urls = getProfileForSave(urlCount, listURLUIComp, "url");
+    urls = getProfileForSave(urlCount, listURLUIComp, URL);
     
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     
     Profile p = getProfile();     
     
-    p.setProperty("emails", emails);
-    p.setProperty("phones", phones);
-    p.setProperty("ims", ims);
-    p.setProperty("urls", urls);
+    p.setProperty(EMAILS, emails);
+    p.setProperty(PHONES, phones);
+    p.setProperty(IMS, ims);
+    p.setProperty(URLS, urls);
     
     im.saveProfile(p);
   }
@@ -259,15 +312,15 @@ public class UIContactSection extends UIProfileSection {
     String key = null;
     UIFormStringInput uiStringInput = null;
     UIFormSelectBox uiSelectBox = null;
-    if ("work".equals(uiStringType)) {
+    if (WORK.equals(uiStringType)) {
       for (int i = 0; i < count; i++) {       
         HashMap<String, String> uiMap = new HashMap<String, String>();
         key = uiStringType;
         uiStringInput = (UIFormStringInput) listUIComp.get(i); 
         value = uiStringInput.getValue();
 
-        uiMap.put("key",key);
-        uiMap.put("value", value);
+        uiMap.put(KEY,key);
+        uiMap.put(VALUE, value);
         profileMap.add(uiMap);
       }
     } else {
@@ -285,8 +338,8 @@ public class UIContactSection extends UIProfileSection {
           value = uiStringInput.getValue();
         }          
         
-        uiMap.put("key",key);
-        uiMap.put("value", value);
+        uiMap.put(KEY,key);
+        uiMap.put(VALUE, value);
         profileMap.add(uiMap);
       }
     }
@@ -316,10 +369,10 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void setValue() throws Exception {
-    setValueByType(getEmailChilds(), "emails");
-    setValueByType(getPhoneChilds(), "phones");
-    setValueByType(getImsChilds(), "ims");
-    setValueByType(getUrlChilds(), "urls");
+    setValueByType(getEmailChilds(), EMAILS);
+    setValueByType(getPhoneChilds(), PHONES);
+    setValueByType(getImsChilds(), IMS);
+    setValueByType(getUrlChilds(), URLS);
   }
   
   /**
@@ -339,7 +392,7 @@ public class UIContactSection extends UIProfileSection {
     
     if ((profiles == null) || (profiles.size() == 0)) {
       if (listChildSize != 0) {
-        if ("phones".equals(uiType)) {
+        if (PHONES.equals(uiType)) {
           String id1 = listChilds.get(listChildSize-1).getName();
           removeFormInput(id1, null);
           return;
@@ -354,58 +407,58 @@ public class UIContactSection extends UIProfileSection {
       }
     } else {
       for (HashMap<String, String> map : profiles) {
-        listProfile.add(map.get("key"));
-        listProfile.add(map.get("value"));
+        listProfile.add(map.get(KEY));
+        listProfile.add(map.get(VALUE));
       }
       
       int listProfileSize = listProfile.size();
-      
-      if ("phones".equalsIgnoreCase(uiType)) {
-        int run = listProfileSize;
-        while( run > 2*listChildSize) {
-          addUIFormInput("phone");
-          run -= 2;
+      int totalProfile = 0;
+      if (PHONES.equalsIgnoreCase(uiType)) {
+        totalProfile = listProfileSize;
+        while( totalProfile > 2*listChildSize) {
+          addUIFormInput(PHONE);
+          totalProfile -= 2;
         }
-        int run1 = listProfileSize;
-        while( run1 < 2*listChildSize) {
+        totalProfile = listProfileSize;
+        while( totalProfile < 2*listChildSize) {
           String id1 = listChilds.get(listChildSize-1).getName();
           removeFormInput(id1, null);
-          run1 += 2;
+          totalProfile += 2;
         }
         
         for (int i = 0; i < listProfileSize/2; i++) {
           ((UIFormInput)getPhoneChilds().get(i)).setValue(listProfile.get(2*i + 1));
         }
       } else {
-        int run2 = listProfileSize;
-        while (run2 > listChildSize) {
-          if ("emails".equals(uiType)) {
-            addUIFormInput("email");
-          } else if ("ims".equals(uiType)) {
-            addUIFormInput("ims");
-          } else if ("urls".equals(uiType)) {
-            addUIFormInput("rlu");
+        totalProfile = listProfileSize;
+        while (totalProfile > listChildSize) {
+          if (EMAILS.equals(uiType)) {
+            addUIFormInput(EMAIL);
+          } else if (IMS.equals(uiType)) {
+            addUIFormInput(IMS);
+          } else if (URLS.equals(uiType)) {
+            addUIFormInput(RLU);
           }
-          run2 -= 2;
+          totalProfile -= 2;
         }
-        int run3 = listProfileSize;
-        while (run3 < listChildSize) {
+        totalProfile = listProfileSize;
+        while (totalProfile < listChildSize) {
           String id1 = listChilds.get(listChildSize-1).getName();
           String id2 = listChilds.get(listChildSize-2).getName();
           removeFormInput(id1, id2);
           
-          run3 += 2;
+          totalProfile += 2;
         }
         
-        if ("emails".equals(uiType)) {
+        if (EMAILS.equals(uiType)) {
           for (int i = 0; i <= listProfileSize - 1; i++) {
             ((UIFormInput)getEmailChilds().get(i)).setValue(listProfile.get(i));
           }
-        } else if ("ims".equals(uiType)) {
+        } else if (IMS.equals(uiType)) {
           for (int i = 0; i <= listProfileSize - 1; i++) {
             ((UIFormInput)getImsChilds().get(i)).setValue(listProfile.get(i));
           }
-        } else if ("urls".equals(uiType)) {
+        } else if (URLS.equals(uiType)) {
           for (int i = 0; i <= listProfileSize - 1; i++) {
             ((UIFormInput)getUrlChilds().get(i)).setValue(listProfile.get(i));
           }
@@ -421,22 +474,22 @@ public class UIContactSection extends UIProfileSection {
    * @param id2 The id of next component.
    */
   private void removeFormInput(String id1, String id2) {
-    if (id1.startsWith("fone")) {
+    if (id1.startsWith(FONE)) {
       removeChildById(id1);
       --phoneCount;
     } else {      
       removeChildById(id1);
       removeChildById(id2);
-      if (id1.startsWith("email")) {
+      if (id1.startsWith(EMAIL)) {
         emailCount -= 2;
-      } else if (id1.startsWith("ims")) {
+      } else if (id1.startsWith(IMS)) {
         imsCount -= 2;
-      } else if (id1.startsWith("rlu")) {
+      } else if (id1.startsWith(RLU)) {
         urlCount -= 2;
       }
     }
   }
-  
+
   /**
    * Add component with the input type.<br>
    * 
@@ -445,30 +498,30 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void addUIFormInput(String type) throws Exception {
-    if ("email".equals(type)) {
-      createUISelectBox(new String[]{"Work", "Home", "Other"}, "email");
-      addUIFormInput(new UIFormStringInput("email" + (++emailIdx), null, null)
+    if (EMAIL.equals(type)) {
+      createUISelectBox(new String[]{WORK, HOME, OTHER}, EMAIL);
+      addUIFormInput(new UIFormStringInput(EMAIL + (++emailIdx), null, null)
       .addValidator(MandatoryValidator.class)
       .addValidator(StringLengthValidator.class, 3, 30).addValidator(ExpressionValidator
-      .class, "^([^@\\s]+)@((?:[-a-z0-9]+\\.)+[a-z]{2,})$", "UIContactSect.msg.Invalid-email"));
-    } else if ("phone".equals(type)) {
+      .class, EMAIL_REGEX_EXPRESSION, INVALID_EMAIl));
+    } else if (PHONE.equals(type)) {
       phoneCount += 1;
-      addUIFormInput(new UIFormStringInput("fone" + (++phoneIdx),null,null)
+      addUIFormInput(new UIFormStringInput(FONE + (++phoneIdx),null,null)
       .addValidator(MandatoryValidator.class)
       .addValidator(StringLengthValidator.class, 3, 20)
-      .addValidator(ExpressionValidator.class, "^[\\d\\s ().-]+$", "UIContactSect.msg.Invalid-phone"));
-    } else if ("ims".equals(type)) {
-      createUISelectBox(new String[]{"Gtalk", "Msn", "Skype", "Yahoo", "Other"}, "ims");
-      addUIFormInput(new UIFormStringInput("ims" + (++imsIdx),null,null)
+      .addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, INVALID_PHONE));
+    } else if (IMS.equals(type)) {
+      createUISelectBox(new String[]{GTALK, MSN, SKYPE, YAHOO, OTHER}, IMS);
+      addUIFormInput(new UIFormStringInput(IMS + (++imsIdx),null,null)
       .addValidator(MandatoryValidator.class)
       .addValidator(StringLengthValidator.class, 3, 60));
     } else {
       urlCount += 2;
-      addUIFormInput(new UIFormStringInput("rlu" + (++urlIdx),null,"Website Title"));
-      addUIFormInput(new UIFormStringInput("rlu" + (++urlIdx), null,"URL (ex: http://www.site.com)")
+      addUIFormInput(new UIFormStringInput(RLU + (++urlIdx),null, WEBSITE_TITLE));
+      addUIFormInput(new UIFormStringInput(RLU + (++urlIdx), null, URL_EXAMPLE)
       .addValidator(MandatoryValidator.class)
       .addValidator(ExpressionValidator
-      .class, "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$", "UIContactSect.msg.Invalid-url"));
+      .class, URL_REGEX_EXPRESSION, INVALID_URL));
     }
   }
 
@@ -485,10 +538,10 @@ public class UIContactSection extends UIProfileSection {
       options.add(new SelectItemOption<String>(values[idx]));
     }
     
-    if ("email".equals(uiName)) {
+    if (EMAIL.equals(uiName)) {
       emailCount += 2;
       addUIFormInput(new UIFormSelectBox(uiName + (++emailIdx), null, options));
-    } else if ("ims".equals(uiName)) {
+    } else if (IMS.equals(uiName)) {
       imsCount += 2;
       addUIFormInput(new UIFormSelectBox(uiName + (++imsIdx), null, options));
     } 

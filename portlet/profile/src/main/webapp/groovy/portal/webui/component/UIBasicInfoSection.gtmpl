@@ -29,6 +29,7 @@
 	def gender = profile.getPropertyValue("gender");
 	gender = (gender == null ? "male" : gender);
 	def isEdit = uicomponent.isEditMode();
+	def isEditable = uicomponent.isEditable();
 %>
 <div class="UIBasicInfoSection">
 <% uiform.begin() %>
@@ -37,39 +38,36 @@
 	
 		<table class="UIFormGrid">
 			<tbody>
-				<% if (!isEdit) { %>
-					<tr>
-			      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.firstName")+": " %></td>
-			      <td class="FieldComponent"><%=firstName %></td>
-			    </tr>
-			    <tr>
-			      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.lastName")+": " %></td>
-			      <td class="FieldComponent"><%=lastName %></td>
-			    </tr>
-			    <tr>
-			      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.gender")+": " %></td>
-			      <td class="FieldComponent"><%=gender %></td>
-			    </tr>
-				<% } else {%>
-					<%						  
+				<%if (isEdit && isEditable) {		  
 					  uicomponent.setValue();
 						List children = uiform.getChildren();		
 						int bound = children.size() - 1;
 						for(i in 1..bound) { 
 							if(children.get(i).isRendered()) {								 
-					%>
+				%>
 								<tr>
 									<td class="FieldLabel"><%=uicomponent.getLabel(children.get(i).getName())+": " %></td>
 									<td class="FieldComponent"><% uiform.renderField(children.get(i)) %></td>
 								</tr>
-					<%
-							}
+				<%    }
 						}			
-					%>
+				%>				
+				<%} else {%>
+						<tr>
+				      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.firstName")+": " %></td>
+				      <td class="FieldComponent"><%=firstName %></td>
+				    </tr>
+				    <tr>
+				      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.lastName")+": " %></td>
+				      <td class="FieldComponent"><%=lastName %></td>
+				    </tr>
+				    <tr>
+				      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.gender")+": " %></td>
+				      <td class="FieldComponent"><%=gender %></td>
+				    </tr>
 				<%}%>	
 			</tbody>	
 		</table>
-	
 	</div>
 <% uiform.end() %>
 </div>

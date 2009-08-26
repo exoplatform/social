@@ -55,22 +55,9 @@
 		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.emails")%></td>
 		      <td class="FieldComponent">
 		        <ul>
-		          <% 
-		            if (!isEdit) {
-		              if (emails != null) {
-				            emails.each {
-					            def email = it.get("value");
-					            def type = it.get("key");
-				      %>
-				          		<li><a href="mailto:${email}">${email}</a> (${type})</li>
-		          <% 	  }
-		              } else { %>
-		              <li id="profile.email.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noEmails")%></li>
-		          <%    
-		              }
-		          %>
-		          <% } else { %>
-		          <li class="propertyEl"> 
+		        <%if (isEdit && isEditable) { 
+		        %>
+		         	<li class="propertyEl"> 
 			           <%			
 			           if (emailCount > 1) {      			            								     
 			           	for (i in 0..emailCount-1) {			           	
@@ -86,18 +73,34 @@
 			           		}
 			           %>			            
 			           <%}
-			          }%>
-			           
+			          } else { %>
+				           <%=_ctx.appRes(uicomponent.getName() + ".label.noEmails")%>
+					      <%}%>
 		          </li>
+		          <% } else { %>
+		           <% 
+		              if (emails != null) {
+				            emails.each {
+					            def email = it.get("value");
+					            def type = it.get("key");
+				      %>
+				          		<li><a href="mailto:${email}">${email}</a> (${type})</li>
+		          <%   } //End each
+		             } else { %>
+		              <li id="profile.email.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noEmails")%></li>
+		          <%    
+		              } // End if emails != null
+		          %>
+		          
 		          <% } %>		          
 		        </ul>
 		      </td>
 		      <%
-		          if (isEdit) {
+		      if (isEdit && isEditable) {
 		      %>
-		      <td class="FieldComponent">
-		      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "email")%>">&nbsp</a>
-		      </td>
+			      <td class="FieldComponent">
+			      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "email")%>">&nbsp</a>
+			      </td>
 		      <% } %>
 		    </tr>
 		    <!--              end of emails          -->
@@ -108,53 +111,44 @@
 		      <td class="FieldComponent">
 		        <ul>
 		        <%
-		        if (isEdit) {
-		              def display = (phones == null || phones.length == 0 ? "list-item" : "none")
-		          
-		          if (phoneCount <= 0) { %>
-                      <li id="profile.phones.isEmpty" style="display:${display}"><%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%></li>
-              <%
-              }
-		        }
-		        %>
-		        <%
-							if (!isEdit) {
-							  if (phones != null) {
-			            phones.each {
-			              def phone = it.get("value");
-			              def type = it.get("key");
-		              
-		          %>
-		          			<li><%=type + ": " + phone%></li>
-		          <%	}
-		             } else { %>
-									<li id="profile.phones.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%></li>		             
-		          <%}%>
+							if (isEdit && isEditable) { %>
+							  <li class="propertyEl"> 
+				          <%			      	
+				          if (phoneCount > 0) {		            								     
+					           	for (i in 0..phoneCount-1) {			           	
+					           		if (phoneChilds.get(i).isRendered()) {
+						           			uiform.renderField(phoneChilds.get(i));
+						           			%>
+						           			  <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a><br>
+						           			<%
+						         		}
+					         		}
+					        } else {
+					           %>
+					           <%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%>
+					      <%}%>			            
+		          	</li>
 		          <% } else { %>
-		          
-		          <li class="propertyEl"> 
-		          <%			      	
-		          if (phoneCount > 0) {		            								     
-			           	for (i in 0..phoneCount-1) {			           	
-			           		if (phoneChilds.get(i).isRendered()) {
-				           			uiform.renderField(phoneChilds.get(i));
-				           			%>
-				           			  <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a><br>
-				           			<%
-				         		}
-			         		}
-			        }
-			           %>			            
-		          </li>
+				          <%if (phones != null) {
+					            phones.each {
+					              def phone = it.get("value");
+					              def type = it.get("key");
+				              
+				          %>
+				          			<li><%=type + ": " + phone%></li>
+				          <%	}
+				             } else { %>
+											<li id="profile.phones.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%></li>		             
+				          <%}%>
 		          <% } %>	
 		        </ul>		        
 		      </td>
 		      <%
-		          if (isEdit) {
+		      if (isEdit && isEditable) {
 		      %>
-		      <td class="FieldComponent">
-		        <a class="AddIcon" onclick="<%=uicomponent.event("Add", "phone")%>">&nbsp</a>
-		      </td>
+			      <td class="FieldComponent">
+			        <a class="AddIcon" onclick="<%=uicomponent.event("Add", "phone")%>">&nbsp</a>
+			      </td>
 		      <% } %>
 		    </tr>
 		    <!--              end of phones          -->
@@ -164,22 +158,8 @@
 		      <td class="FieldComponent">
 		        <ul>
 		        <%
-		        	
-							if (!isEdit) {
-								if (ims != null) {
-			            ims.each {
-			              def im = it.get("value");
-			              def type = it.get("key");
-			              
-			          %>
-			          <li><%=type%>: <%=im%></li>
-			          <%}
-			         } else { %>
-			         <li id="profile.ims.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%></li>
-			         <% } 
-			          %>
-		          <% } else { %>
-		          <li class="propertyEl">
+		        	if (isEdit && isEditable) { %>
+								<li class="propertyEl">
 		          <%			      	
 		          if (imsCount > 1) {		            								     
 			           	for (i in 0..imsCount-1) {			           	
@@ -200,15 +180,28 @@
 			         <%}%>
 			           
 		          </li>
+		          <% } else { %>
+				          <%if (ims != null) {
+					            ims.each {
+					              def im = it.get("value");
+					              def type = it.get("key");
+					              
+					          %>
+					          <li><%=type%>: <%=im%></li>
+					          <%}
+					         } else { %>
+					         <li id="profile.ims.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%></li>
+					         <% } 
+					          %>
 		          <% } %>
 		        </ul>		        
 		      </td>
 		      <%
-		          if (isEdit) {
+		      if (isEdit && isEditable) {
 		      %>
-		      <td class="FieldComponent">
-		      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "ims")%>">&nbsp</a>
-		      </td>
+			      <td class="FieldComponent">
+			      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "ims")%>">&nbsp</a>
+			      </td>
 		      <% } %>
 		    </tr>
 		    <!--              end of ims          -->
@@ -218,21 +211,8 @@
 		      <td class="FieldComponent">
 		        <ul>
 		        <%
-              if (!isEdit) {
-               if (urls != null) {
-		            urls.each {
-		              def url = it.get("value");
-		              def type = it.get("key");
-		              
-		          %>
-		          <li><a href="${url}">${type}</a></li>
-		          <%}
-		          } else { %>
-		          <li id="profile.url.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
-		          <% }	
-		          %>
-		          <% } else { %>
-		          <li class="propertyEl">
+              if (isEdit && isEditable) { %>
+               <li class="propertyEl">
 		            <%			   
 		            if (urlCount > 1) {   			            								     
 			           	for (i in 0..urlCount-1) {			           	
@@ -248,19 +228,32 @@
 			           		}
 			           %>			            
 			           <%}
-			         } else {%>
-			         		<li id="profile.urls.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
-			         <%}%>			           
-		          </li>
+				         } else {%>
+				         		<li id="profile.urls.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
+				         <%}%>			           
+		          	</li>
+		       <% } else { %>
+			          <%if (urls != null) {
+			            urls.each {
+			              def url = it.get("value");
+			              def type = it.get("key");
+			              
+			          %>
+			          <li><a href="${url}">${type}</a></li>
+			          <%}
+			          } else { %>
+			          <li id="profile.url.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
+			          <% }	
+			          %>
 		          <% } %>
 		        </ul>
 		      </td>
 		      <%
-		          if (isEdit) {
+		      if (isEdit && isEditable) {
 		      %>
-		      <td class="FieldComponent">
-		      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "urls")%>">&nbsp</a>
-		      </td>
+			      <td class="FieldComponent">
+			      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "urls")%>">&nbsp</a>
+			      </td>
 		      <% } %>
 		    </tr>
 		  </tbody>

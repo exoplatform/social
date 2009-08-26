@@ -23,20 +23,27 @@
   def isEditable = uicomponent.isEditable();
 
   def position = profile.getPropertyValue("position");
+  
   if (isEditable)
     position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): position);
   else
     position = (position == null ? "": position);      
+    
+    System.out.println("\n\n\n ===============================position: "+position);
 %>	
 <div class="UIHeaderSection">
 <% uiform.begin() %>
 	<h2><%=profile.getFullName() %></h2>
 	<h3>
-	    <% if(!isEdit) {   %>
-	      <%=position %> <span><% if(isEditable) { %>(<a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a>) <% } %></span>
-	    <% } else {%>
-	      <%uicomponent.setValue();%>
-	      <% uiform.renderChild(UIFormStringInput.class) %> (<a href="<%=uicomponent.event("Save") %>">Send</a>)
+	    <% if(!isEdit) { %>
+	      		<%=position%> <span><% if(isEditable) { %>(<a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a>) <% } %></span>
+	    <% } else {
+		    		if (isEditable) { %>
+				      <%uicomponent.setValue();%>
+				      <% uiform.renderChild(UIFormStringInput.class) %> (<a href="<%=uicomponent.event("Save") %>">Send</a>)
+		      <%} else {%>
+		      	<%=position%>
+		      <%}%>
 	    <% }%>
 	</h3>
 <% uiform.end() %>

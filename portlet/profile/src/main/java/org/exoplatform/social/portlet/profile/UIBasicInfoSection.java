@@ -54,23 +54,37 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 )
 
 public class UIBasicInfoSection extends UIProfileSection {
-
+  /** FIRST NAME. */
+  final public static String FIRST_NAME = "firstName";
+  /** LAST NAME. */
+  final public static String LAST_NAME = "lastName";
+  /** GENDER. */
+  final public static String GENDER = "gender";
+  /** MALE. */
+  final public static String MALE = "male";
+  /** FEMALE. */
+  final public static String FEMALE = "female";
+  /** REGEX EXPRESSION. */
+  final public static String REGEX_EXPRESSION = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
+  /** INVALID CHARACTER MESSAGE. */
+  final public static String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
+  
   public UIBasicInfoSection() throws Exception {
     addChild(UITitleBar.class, null, null);
     
-    addUIFormInput(new UIFormStringInput("firstName", "firstname", null)
+    addUIFormInput(new UIFormStringInput(FIRST_NAME, FIRST_NAME, null)
                    .addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 30)
-                   .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$", "UIBasicInfoSection.msg.Invalid-char"));
-    addUIFormInput(new UIFormStringInput("lastName", "lastname", null)
+                   .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
+    addUIFormInput(new UIFormStringInput(LAST_NAME, LAST_NAME, null)
                    .addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 30)
-                   .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$", "UIBasicInfoSection.msg.Invalid-char"));
+                   .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
 
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    options.add(new SelectItemOption<String>("male")) ;
-    options.add(new SelectItemOption<String>("female")) ;
-    addUIFormInput(new UIFormSelectBox("gender", "gender", options));
+    options.add(new SelectItemOption<String>(MALE)) ;
+    options.add(new SelectItemOption<String>(FEMALE)) ;
+    addUIFormInput(new UIFormSelectBox(GENDER, GENDER, options));
   }
   
   /**
@@ -96,20 +110,20 @@ public class UIBasicInfoSection extends UIProfileSection {
   }  
   
   /**
-   * Get information from profile and set value into uicomponent.
+   * Get information from profile and set value into components.
    * 
    * @throws Exception
    */
   public void setValue() throws Exception {
     Profile profile = getProfile();
-    String firstName = (String) profile.getProperty("firstName");
+    String firstName = (String) profile.getProperty(FIRST_NAME);
     firstName = (firstName == null ? "": firstName);
-    String lastName = (String) profile.getProperty("lastName");
+    String lastName = (String) profile.getProperty(LAST_NAME);
     lastName = (lastName == null ? "": lastName);
-    String gender = (String) profile.getProperty("gender");
-    UIFormStringInput uiFirstName = getChildById("firstName");
-    UIFormStringInput uiLastName = getChildById("lastName");
-    UIFormSelectBox uiGender = getChildById("gender");
+    String gender = (String) profile.getProperty(GENDER);
+    UIFormStringInput uiFirstName = getChildById(FIRST_NAME);
+    UIFormStringInput uiLastName = getChildById(LAST_NAME);
+    UIFormSelectBox uiGender = getChildById(GENDER);
     uiFirstName.setValue(firstName);
     uiLastName.setValue(lastName);
     uiGender.setValue(gender);    
@@ -122,9 +136,9 @@ public class UIBasicInfoSection extends UIProfileSection {
    * @throws Exception
    */
   private static void saveProfile(UIBasicInfoSection uiBasicInfoSection) throws Exception {
-    UIFormStringInput uiFirstName = uiBasicInfoSection.getChildById("firstName");
-    UIFormStringInput uiLastName = uiBasicInfoSection.getChildById("lastName");
-    UIFormSelectBox uiGender = uiBasicInfoSection.getChildById("gender");
+    UIFormStringInput uiFirstName = uiBasicInfoSection.getChildById(FIRST_NAME);
+    UIFormStringInput uiLastName = uiBasicInfoSection.getChildById(LAST_NAME);
+    UIFormSelectBox uiGender = uiBasicInfoSection.getChildById(GENDER);
     String firstName = uiFirstName.getValue();
     String lastName = uiLastName.getValue();
     String gender = uiGender.getValue();
@@ -132,9 +146,9 @@ public class UIBasicInfoSection extends UIProfileSection {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     Profile p = uiBasicInfoSection.getProfile();
-    p.setProperty("firstName", firstName);
-    p.setProperty("lastName", lastName);
-    p.setProperty("gender", gender);
+    p.setProperty(FIRST_NAME, firstName);
+    p.setProperty(LAST_NAME, lastName);
+    p.setProperty(GENDER, gender);
     
     im.saveProfile(p);    
   }
