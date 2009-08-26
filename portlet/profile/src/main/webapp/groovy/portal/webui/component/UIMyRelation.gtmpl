@@ -1,0 +1,5 @@
+<div class="UIMyRelation">
+<% uiform.begin() %>
+	my relation
+<% uiform.end() %>
+</div>

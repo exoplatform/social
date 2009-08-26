@@ -1,0 +1,83 @@
+.UIVerticalTabs {
+    float:left;
+    width: 200px;
+}
+
+.UIVerticalTabs .UIVerticalTab {
+    cursor: pointer;
+}
+
+
+.UIVerticalTabPane .VerticalTabPaneContent {
+    padding: 0px;
+    background: white url('background/LeftContentTab.gif') repeat-y 112px;;
+}
+
+
+.UIVerticalTabPane .VerticalTabPaneContent .UIVerticalTabs{
+    padding: 10px 0px 10px 0px;
+}
+
+.UIVerticalTabPane .VerticalTabPaneContent .VerticalTabsContainer{
+    border-top: 1px solid #a3a3a3;
+}
+
+.VerticalTabsContainer .SelectedTab{
+    background: white url('background/SelectedTab.gif') repeat-y ;
+    height: 26px;
+    border-bottom: 1px solid #9e9e9e;
+    padding-left: 16px;
+}
+
+.VerticalTabsContainer .SelectedTab .MiddleTab{
+	background: url('background/SelectedTabIcon.gif') no-repeat left center ;
+	height: 26px;
+	line-height: 26px;
+	font-weight: bold;
+	padding-left: 12px;
+	color: #ff7500; 
+}
+
+
+.VerticalTabsContainer .NormalTab{
+    height: 26px;
+    border-bottom: 1px solid #c8c8c8;
+    padding-left: 16px;
+}
+
+.VerticalTabsContainer .NormalTab .MiddleTab{
+	background: url('background/NormalTabIcon.gif') no-repeat left center ;
+    height: 26px;
+    line-height: 26px;
+    font-weight: bold;
+    padding-left: 12px;
+    color: #0077d4; 
+}
+
+
+
+.UIVerticalTabContentContainer {
+	margin-left: 201px;
+	padding: 10px ;
+}
+
+.UIVerticalTabContentContainer .ContainerSpace{
+	/*height: 400px;*/
+	/*overflow: auto;*/
+}
+
+.UIVerticalTabContentContainer .UIVerticalTabContent .UIManageSpaces{
+	padding:8px;
+	border: 1px solid #dadada;
+	background: white;
+}
+
+.UIVerticalTabContentContainer .UIManageSpaces .SpaceContent{
+	padding:8px;
+	border-bottom: 1px solid #dadada;
+}
+
+.UIVerticalTabContentContainer .UIManageSpaces .SpaceContent .NotYet {
+ color: #ff0000;
+ text-align: center;
+}

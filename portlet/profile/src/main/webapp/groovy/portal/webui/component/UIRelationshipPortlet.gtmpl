@@ -1,0 +1,6 @@
+<div class="UIRelationshipPortlet" id="$uicomponent.id">
+	<% 	
+		uicomponent.renderChildren();
+		uicomponent.renderPopupMessages();
+	 %>
+</div>

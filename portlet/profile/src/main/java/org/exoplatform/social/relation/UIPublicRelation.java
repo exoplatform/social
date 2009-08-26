@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2003-2007 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
@@ -14,6 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-@import url(/eXoResources/skin/PortletThemes/Stylesheet.css) ;
-@import url(DefaultSkin/portal/SpaceApplication.css) ;
-@import url(DefaultSkin/webui/component/UIVerticalTabs/Stylesheet.css);
+package org.exoplatform.social.relation;
+
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.form.UIForm;
+
+/**
+ * Created by The eXo Platform SAS
+ * Author : dang.tung
+ *          tungcnw@gmail.com
+ * Aug 25, 2009  
+ */
+@ComponentConfig(
+    template =  "app:/groovy/portal/webui/component/UIPublicRelation.gtmpl"
+)
+public class UIPublicRelation extends UIForm {
+}

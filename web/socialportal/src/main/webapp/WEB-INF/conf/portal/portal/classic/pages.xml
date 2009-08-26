@@ -49,6 +49,11 @@
       <title>New Account</title>
       <show-info-bar>false</show-info-bar>
     </application>
+    <application>
+      <instance-id>group#platform/guests:/profile/relationship/relationship1</instance-id>
+      <title>Relationship</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
   </page>
 
   <page>

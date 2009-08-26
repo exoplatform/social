@@ -1,0 +1,5 @@
+<div class="UIMyRelation">
+<% uiform.begin() %>
+	public relation
+<% uiform.end() %>
+</div>
