@@ -44,7 +44,9 @@ import org.exoplatform.webui.form.UIForm;
     lifecycle = UIFormLifecycle.class,
     template =  "app:/groovy/portal/webui/component/UIMyRelation.gtmpl",
     events = {
-        @EventConfig(listeners = UIMyRelation.RemoveActionListener.class) 
+        @EventConfig(listeners = UIMyRelation.RemoveActionListener.class),
+        @EventConfig(listeners = UIMyRelation.AcceptActionListener.class),
+        @EventConfig(listeners = UIMyRelation.DenyActionListener.class)
       }
 )
 public class UIMyRelation extends UIForm {
@@ -62,7 +64,7 @@ public class UIMyRelation extends UIForm {
   public List<Relationship> getInvitedRelation() throws Exception {
     RelationshipManager relationshipManager = getRelationshipManager();
     Identity currId = getCurrentIdentity();
-    return relationshipManager.getContacts(currId);
+    return relationshipManager.getPending(currId, false);
   }
   
   private RelationshipManager getRelationshipManager() {
@@ -82,6 +84,48 @@ public class UIMyRelation extends UIForm {
   }
   
   static public class RemoveActionListener extends EventListener<UIMyRelation> {
+    @Override
+    public void execute(Event<UIMyRelation> event) throws Exception {
+      UIMyRelation uiMyRelation = event.getSource();
+      String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
+      String currUserId = uiMyRelation.getCurrentUserName();
+
+      IdentityManager im = uiMyRelation.getIdentityManager();
+      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+                                                       currUserId);
+
+      Identity requestedIdentity = im.getIdentityById(identityId);
+
+      RelationshipManager rm = uiMyRelation.getRelationshipManager();
+
+      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
+      if (rel != null)
+        rm.remove(rel);
+    }
+  }
+  
+  static public class AcceptActionListener extends EventListener<UIMyRelation> {
+    @Override
+    public void execute(Event<UIMyRelation> event) throws Exception {
+      UIMyRelation uiMyRelation = event.getSource();
+      String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
+      String currUserId = uiMyRelation.getCurrentUserName();
+      IdentityManager im = uiMyRelation.getIdentityManager();
+      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+                                                       currUserId);
+
+      Identity requestedIdentity = im.getIdentityById(identityId);
+
+      RelationshipManager rm = uiMyRelation.getRelationshipManager();
+
+      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
+
+      rel.setStatus(Relationship.Type.CONFIRM);
+      rm.save(rel);  
+    }
+  }
+  
+  static public class DenyActionListener extends EventListener<UIMyRelation> {
     @Override
     public void execute(Event<UIMyRelation> event) throws Exception {
       UIMyRelation uiMyRelation = event.getSource();

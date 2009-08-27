@@ -4,23 +4,85 @@
 	def invitedRelation = uicomponent.getInvitedRelation();
 	def myRelation = uicomponent.getMyRelation();
 	def currIdentity = uicomponent.getCurrentIdentity();
+	def portalURI = Util.getPortalRequestContext().getPortalURI();
+	def profileURL, dashboardURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
 %>
 <div class="UIMyRelation">
 <% uiform.begin() %>
 	<div class="ContainerSpace">
+	<% for(relation in invitedRelation) {
+		def identity = relation.identity1;
+	  profileURL = portalURI + "people/" + identity.getRemoteId();
+    dashboardURL = portalURI + "people/" + identity.getRemoteId() + "/dashboard";
+    actititesURL = portalURI + "people/" + identity.getRemoteId() + "/activities";
+    fullName = identity.profile.fullName;
+    position = identity.profile.getPropertyValue("position");
+    actionAccept = uicomponent.event("Accept",identity.getId());
+    actionDeny = uicomponent.event("Deny",identity.getId());
+    position = identity.profile.getPropertyValue("position");
+	  if (!position) 
+      position = "";
+	 %>
+		<div class="ContentSpace">
+    	<div class="CommunityIcon"><span/></div>
+    	<div class="CommunityContainer">
+        <div class="CommunityMane Line">
+            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
+  
+		    		<div onclick="$actionDeny" class="ActionBar">
+							<div class="LeftButton">
+								<div class="RightButton">
+									<div class="CenterButton">
+										<div class="SaveIcon">
+											<%=_ctx.appRes(uicomponent.getId() + ".label.Deny")%>
+										</div>
+									</div>
+								</div>
+							</div>
+		    		</div>
+            <div onclick="$actionAccept" class="ActionBar">
+							<div class="LeftButton">
+								<div class="RightButton">
+									<div class="CenterButton">
+										<div class="SaveIcon">
+											<%=_ctx.appRes(uicomponent.getId() + ".label.Accept")%>
+										</div>
+									</div>
+								</div>
+							</div>
+		    		</div>
+  
+            <div style="clear: both;"><span/></div>
+        </div>
+        <% if(position.length() > 0) { %>
+        <div class="Text Line">${position}</div>
+        <%  } %>
+        <div class="TagsName">
+          <a class="CommunityNameMiddle" href="$profileURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
+          <a class="CommunityNameMiddle" href="$dashboardURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Dashboard")%></a> |
+          <a class="CommunityNameMiddle" href="$actititesURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
+        </div>
+    	</div>
+    </div>
+	<% } %>
+	
+	
 	<% for(relation in myRelation) {
-		def identity = null;
+		def id = null;
 		if (currIdentity.id == relation.identity1.id) {
-	  	identity = relation.identity2;
+	  	id = relation.identity2;
 	  } else {
-  	  identity = relation.identity1;
+  	  id = relation.identity1;
 	  }
-	  def profileURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId();
-    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard";
-    def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities";
-    def fullName = identity.profile.fullName;
-    def position = identity.profile.getPropertyValue("position");
-    def actionLink = uicomponent.event("Remove",identity.getId());
+	  profileURL = portalURI + "people/" + id.getRemoteId();
+    dashboardURL = portalURI + "people/" + id.getRemoteId() + "/dashboard";
+    actititesURL = portalURI + "people/" + id.getRemoteId() + "/activities";
+    fullName = id.profile.fullName;
+    position = id.profile.getPropertyValue("position");
+    def actionLink = uicomponent.event("Remove",id.getId());
+    position = id.profile.getPropertyValue("position");
+	  if (!position)
+      position = "";
 	 %>
 		<div class="ContentSpace">
     	<div class="CommunityIcon"><span/></div>
@@ -33,7 +95,7 @@
 								<div class="RightButton">
 									<div class="CenterButton">
 										<div class="SaveIcon">
-											Remove
+											<%=_ctx.appRes(uicomponent.getId() + ".label.Remove")%>
 										</div>
 									</div>
 								</div>
@@ -42,11 +104,13 @@
   
             <div style="clear: both;"><span/></div>
         </div>
-        
+        <% if(position.length() > 0) { %>
+        <div class="Text Line">${position}</div>
+        <%  } %>
         <div class="TagsName">
-          <a class="CommunityNameMiddle" href="/portal/private/classic/people/demo">Profile</a> |
-          <a class="CommunityNameMiddle" href="/portal/private/classic/people/demo/dashboard">Dashboard</a> |
-          <a class="CommunityNameMiddle" href="/portal/private/classic/people/demo/activities">Activities</a>
+          <a class="CommunityNameMiddle" href="$profileURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
+          <a class="CommunityNameMiddle" href="$dashboardURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Dashboard")%></a> |
+          <a class="CommunityNameMiddle" href="$actititesURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
         </div>
     	</div>
     </div>

@@ -127,7 +127,7 @@ public class RelationshipManager {
      }
      return pendingRel;
     }
-    for (Relationship relationship : pendingRel) {
+    for (Relationship relationship : rels) {
       if(getRelationshipStatus(relationship, identity).equals(Relationship.Type.REQUIRE_VALIDATION))
         pendingRel.add(relationship);
     }
