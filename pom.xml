@@ -7,7 +7,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>config</artifactId>
+  <artifactId>sc</artifactId>
   <name>eXo Social Config</name>
   <version>1.0-alpha3-SNAPSHOT</version>
   <packaging>pom</packaging>

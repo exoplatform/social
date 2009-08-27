@@ -22,7 +22,7 @@ under the License.
 
   <parent>
     <groupId>org.exoplatform.social</groupId>
-    <artifactId>config</artifactId>
+    <artifactId>sc</artifactId>
     <version>1.0-alpha3-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
