@@ -72,6 +72,23 @@ public class RelationshipManager {
   }
 
   /**
+   * return all the public relationship
+   * 
+   * @param identity
+   * @return
+   */
+  public List<Relationship> getPublicRelation(Identity identity) throws Exception {
+    List<Relationship> rels = get(identity);
+    List<Relationship> publicRel = new ArrayList<Relationship>();
+    for (Relationship rel : rels) {
+      if (rel.getStatus() == Relationship.Type.ALIEN) {
+        publicRel.add(rel);
+      }
+    }
+    return publicRel;
+  }
+  
+  /**
    * return all the pending relationship: sent and received
    * 
    * @param identity
@@ -103,23 +120,37 @@ public class RelationshipManager {
   public List<Relationship> getPending(Identity identity, boolean toConfirm) throws Exception {
     List<Relationship> rels = get(identity);
     List<Relationship> pendingRel = new ArrayList<Relationship>();
-    for (Relationship rel : rels) {
-      if (rel.getStatus() == Relationship.Type.PENDING && !toConfirm) {
-        pendingRel.add(rel);
-      } else if (rel.getStatus() == Relationship.Type.PENDING && toConfirm
-          && !identity.getId().equals(rel.getIdentity1().getId())) {
-        pendingRel.add(rel);
-      } else {
-        List<Property> props = rel.getProperties(Relationship.Type.PENDING);
-        for (Property prop : props) {
-          if (toConfirm == prop.getInitiator().getId().equals(identity.getId())) {
-            pendingRel.add(rel);
-            break;
-          }
-        }
-      }
+    if(toConfirm) {
+     for(Relationship rel : rels) {
+       if(getRelationshipStatus(rel, identity).equals(Relationship.Type.PENDING))
+         pendingRel.add(rel);
+     }
+     return pendingRel;
+    }
+    for (Relationship relationship : pendingRel) {
+      if(getRelationshipStatus(relationship, identity).equals(Relationship.Type.REQUIRE_VALIDATION))
+        pendingRel.add(relationship);
     }
     return pendingRel;
+//    List<Relationship> rels = get(identity);
+//    List<Relationship> pendingRel = new ArrayList<Relationship>();
+//    for (Relationship rel : rels) {
+//      if (rel.getStatus() == Relationship.Type.PENDING && !toConfirm) {
+//        pendingRel.add(rel);
+//      } else if (rel.getStatus() == Relationship.Type.PENDING && toConfirm
+//          && !identity.getId().equals(rel.getIdentity1().getId())) {
+//        pendingRel.add(rel);
+//      } else {
+//        List<Property> props = rel.getProperties(Relationship.Type.PENDING);
+//        for (Property prop : props) {
+//          if (toConfirm == prop.getInitiator().getId().equals(identity.getId())) {
+//            pendingRel.add(rel);
+//            break;
+//          }
+//        }
+//      }
+//    }
+//    return pendingRel;
   }
 
   public List<Relationship> getContacts(Identity identity) throws Exception {
