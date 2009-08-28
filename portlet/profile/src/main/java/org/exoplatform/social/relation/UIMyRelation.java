@@ -18,6 +18,7 @@ package org.exoplatform.social.relation;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -33,6 +34,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
  * Created by The eXo Platform SAS
@@ -50,21 +52,81 @@ import org.exoplatform.webui.form.UIForm;
       }
 )
 public class UIMyRelation extends UIForm {
-  
+  /** UIFormPageIterator */
+  UIFormPageIterator uiFormPageIteratorInvited;
+  /** UIFormPageIterator ID. */
+  private final String iteratorIDInvited = "UIFormPageIteratorInvited";
+  /** UIFormPageIterator */
+  UIFormPageIterator uiFormPageIteratorContact;
+  /** UIFormPageIterator ID. */
+  private final String iteratorIDContact = "UIFormPageIteratorContact";
   private RelationshipManager relationshipManager;
   private Identity currIdentity = null;
   private IdentityManager identityManager = null;
   
+  /**
+   * Get UIFormPageIterator.
+   * @return
+   */
+  public UIFormPageIterator getUiFormPageIteratorInvited() {
+    return uiFormPageIteratorInvited;
+  }
+
+  /**
+   * Get UIFormPageIterator.
+   * @return
+   */
+  public UIFormPageIterator getUiFormPageIteratorContact() {
+    return uiFormPageIteratorContact;
+  }
+  
+  /**
+   * Constructor.
+   * @throws Exception 
+   */
+  public UIMyRelation() throws Exception {
+    uiFormPageIteratorInvited = createUIComponent(UIFormPageIterator.class, null, iteratorIDInvited);
+    addChild(uiFormPageIteratorInvited);
+    uiFormPageIteratorContact = createUIComponent(UIFormPageIterator.class, null, iteratorIDContact);
+    addChild(uiFormPageIteratorContact);
+  }
+  
+  @SuppressWarnings("unchecked")
   public List<Relationship> getMyRelation() throws Exception {
     RelationshipManager relationshipManager = getRelationshipManager();
     Identity currId = getCurrentIdentity();
-    return relationshipManager.getContacts(currId);
+    List<Relationship> listContacts = relationshipManager.getContacts(currId);
+    int curPage = uiFormPageIteratorContact.getCurrentPage();
+    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 2);
+    uiFormPageIteratorContact.setPageList(pageListContact) ;  
+    int availablePageCount = uiFormPageIteratorContact.getAvailablePage();
+    if(availablePageCount >= curPage){
+      uiFormPageIteratorContact.setCurrentPage(curPage);
+    }else if(availablePageCount < curPage){
+      uiFormPageIteratorContact.setCurrentPage(curPage-1);
+    }
+    List<Relationship> contactLists;
+    contactLists = uiFormPageIteratorContact.getCurrentPageData();
+    return contactLists;
   }
   
+  @SuppressWarnings("unchecked")
   public List<Relationship> getInvitedRelation() throws Exception {
     RelationshipManager relationshipManager = getRelationshipManager();
     Identity currId = getCurrentIdentity();
-    return relationshipManager.getPending(currId, false);
+    List<Relationship> listRelationShip = relationshipManager.getPending(currId, false);
+    int currentPage = uiFormPageIteratorInvited.getCurrentPage();
+    LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 2);
+    uiFormPageIteratorInvited.setPageList(pageList) ;  
+    int pageCount = uiFormPageIteratorInvited.getAvailablePage();
+    if(pageCount >= currentPage){
+      uiFormPageIteratorInvited.setCurrentPage(currentPage);
+    }else if(pageCount < currentPage){
+      uiFormPageIteratorInvited.setCurrentPage(currentPage-1);
+    }
+    List<Relationship> lists;
+    lists = uiFormPageIteratorInvited.getCurrentPageData();
+    return lists;
   }
   
   private RelationshipManager getRelationshipManager() {

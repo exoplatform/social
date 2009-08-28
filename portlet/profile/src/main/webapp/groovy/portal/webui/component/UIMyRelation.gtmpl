@@ -1,15 +1,27 @@
 <%
 	import org.exoplatform.portal.webui.util.Util ;
+ 	import org.exoplatform.webui.form.UIFormPageIterator;
  
 	def invitedRelation = uicomponent.getInvitedRelation();
 	def myRelation = uicomponent.getMyRelation();
 	def currIdentity = uicomponent.getCurrentIdentity();
 	def portalURI = Util.getPortalRequestContext().getPortalURI();
 	def profileURL, dashboardURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
+	UIFormPageIterator iteratorInvited = uicomponent.getUiFormPageIteratorInvited();
+	UIFormPageIterator iteratorContact = uicomponent.getUiFormPageIteratorContact();
 %>
 <div class="UIMyRelation">
 <% uiform.begin() %>
 	<div class="ContainerSpace">
+	<%if ((invitedRelation.size() + myRelation.size()) == 0) {%>
+      <div class="ContentSpace">
+        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+        <div style="clear: left;"><span></span></div>
+      </div>
+  <%}%>
+  <%if (invitedRelation.size() > 0) {%> 
+  	<div><b>Invited</b></div>
+  <%}%>
 	<% for(relation in invitedRelation) {
 		def identity = relation.identity1;
 	  profileURL = portalURI + "people/" + identity.getRemoteId();
@@ -65,8 +77,16 @@
     	</div>
     </div>
 	<% } %>
-	
-	
+	<%
+	 		if (uicomponent.getUiFormPageIteratorInvited().getAvailablePage() > 1) {
+	 			uicomponent.renderUIComponent(iteratorInvited) ;
+	 		}
+ 	%>
+ 	
+ 	
+	<%if (myRelation.size() > 0) {%> 
+  	<br /><div><b>Contact</b></div>
+  <%}%>
 	<% for(relation in myRelation) {
 		def id = null;
 		if (currIdentity.id == relation.identity1.id) {
@@ -115,6 +135,11 @@
     	</div>
     </div>
 	<% } %>
+	<%
+	 		if (uicomponent.getUiFormPageIteratorContact().getAvailablePage() > 1) {
+	 			uicomponent.renderUIComponent(iteratorContact) ;
+	 		}
+ 	%>
   </div>
 <% uiform.end() %>
 </div>
