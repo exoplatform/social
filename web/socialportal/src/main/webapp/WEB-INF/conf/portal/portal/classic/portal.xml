@@ -27,31 +27,7 @@
   <properties>
     <entry key="sessionAlive">onDemand</entry>
   </properties>  
- 	<portal-layout>
- 		<container template="system:/groovy/portal/webui/container/UIToolbarContainer.gtmpl">
-		  <access-permissions>*:/platform/administrators; *:/organization/management/executive-board</access-permissions>
-			<container id="StarToolBarPortelt" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-			  <application>
-			    <instance-id>portal#classic:/exoadmin/StarToolbarPortlet/starportlet</instance-id>
-		      <access-permissions>Everyone</access-permissions>
-			    <show-info-bar>false</show-info-bar>
-			  </application>			
-			</container>
-			<container id="UserToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-			  <application>
-			    <instance-id>portal#classic:/exoadmin/UserToolbarPortlet/userportlet</instance-id>
-		      <access-permissions>Everyone</access-permissions>
-			    <show-info-bar>false</show-info-bar>
-			  </application>			
-			</container>
-			<container id="AdminToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-			  <application>
-			    <instance-id>portal#classic:/exoadmin/AdminToolbarPortlet/adminportlet</instance-id>
-		      <access-permissions>Everyone</access-permissions>
-			    <show-info-bar>false</show-info-bar>
-			  </application>
-			</container>
-		</container> 		
+ 	<portal-layout> 		
 		<application>
 	    <instance-id>portal#classic:/space/BannerPortlet/banner</instance-id>
 	    <show-info-bar>false</show-info-bar>

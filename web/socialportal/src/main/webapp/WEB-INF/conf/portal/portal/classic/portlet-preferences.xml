@@ -3,6 +3,7 @@
 
     Copyright (C) 2003-2007 eXo Platform SAS.
 
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU Affero General Public License
     as published by the Free Software Foundation; either version 3
@@ -32,7 +33,7 @@
   <portlet-preferences>
     <owner-type>portal</owner-type>
     <owner-id>classic</owner-id>
-    <window-id>portal#classic:/socialPortletWeb/SocialNavigationPortlet/toolbar</window-id>
+    <window-id>portal#classic:/space/SocialNavigationPortlet/toolbar</window-id>
     <preference>
       <name>useAJAX</name>
       <value>true</value>
@@ -66,26 +67,12 @@
   <portlet-preferences>
     <owner-type>portal</owner-type>
     <owner-id>classic</owner-id>
-    <window-id>portal#classic:/web/HomePagePortlet/homepageportlet</window-id>
+    <window-id>portal#classic:/space/HomePagePortlet/homepageportlet</window-id>
     <preference>
       <name>template</name>
-      <value>system:/templates/groovy/webui/component/UIHomePagePortlet.gtmpl</value>
+      <value>par:/groovy/portal/webui/component/UIHomePagePortlet.gtmpl</value>
       <read-only>false</read-only>
     </preference>
-  </portlet-preferences>
-
-  <portlet-preferences>
-    <owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <window-id>portal#classic:/profile/profile/profileRandom</window-id>
-    <preference />
-  </portlet-preferences>
-
-  <portlet-preferences>
-    <owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <window-id>portal#classic:/profile/profileList/profileListRandom</window-id>
-    <preference />
   </portlet-preferences>
 
   <portlet-preferences>
@@ -102,13 +89,6 @@
 	        <value>socialRssAggregator</value>
 	        <read-only>false</read-only>
 	    </preference>
-  </portlet-preferences>
-
-  <portlet-preferences>
-    <owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <window-id>portal#classic:/profile/breadcrumb/breadcrumbRandom</window-id>
-    <preference />
   </portlet-preferences>
 
   <portlet-preferences>
