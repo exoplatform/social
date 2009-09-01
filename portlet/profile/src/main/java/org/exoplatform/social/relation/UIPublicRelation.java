@@ -16,8 +16,24 @@
  */
 package org.exoplatform.social.relation;
 
+import java.util.List;
+
+import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.Relationship;
+import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
  * Created by The eXo Platform SAS
@@ -26,7 +42,143 @@ import org.exoplatform.webui.form.UIForm;
  * Aug 25, 2009  
  */
 @ComponentConfig(
-    template =  "app:/groovy/portal/webui/component/UIPublicRelation.gtmpl"
+    lifecycle = UIFormLifecycle.class,
+    template =  "app:/groovy/portal/webui/component/UIPublicRelation.gtmpl",
+    events = { 
+                @EventConfig(listeners = UIPublicRelation.AddContactActionListener.class)
+              }
 )
 public class UIPublicRelation extends UIForm {
+  /** UIFormPageIterator */
+  UIFormPageIterator uiFormPageIteratorPublic;
+  /** UIFormPageIterator ID. */
+  private final String iteratorIDPublic = "UIFormPageIteratorPublicRelation";
+  /** Current identity. */
+  Identity            currIdentity = null;
+  /** RelationshipManager */
+  RelationshipManager rm           = null;
+  /** IdentityManager */
+  IdentityManager     im           = null;
+  
+  /**
+   * Get UIFormPageIterator.
+   * @return
+   */
+  public UIFormPageIterator getUiFormPageIterator() {
+    return uiFormPageIteratorPublic;
+  }
+
+  /**
+   * Constructor.
+   * @throws Exception 
+   */
+  public UIPublicRelation() throws Exception {
+    uiFormPageIteratorPublic = createUIComponent(UIFormPageIterator.class, null, iteratorIDPublic);
+    addChild(uiFormPageIteratorPublic);
+  }
+  
+  /**
+   * Get list of identity that have not got any relation with current identity (status is Alien).
+   *  
+   * @return
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  public List<Identity> getPublicRelationList() throws Exception {
+    RelationshipManager relm = getRelationshipManager();
+    Identity currentIdentity = getCurrentIdentity();
+    List<Identity> listIdentity= relm.getPublicRelation(currentIdentity);
+    int currentPage = uiFormPageIteratorPublic.getCurrentPage();
+    LazyPageList<Identity> pageList = new LazyPageList<Identity>(new IdentityListAccess(listIdentity), 1);
+    uiFormPageIteratorPublic.setPageList(pageList) ;  
+    int pageCount = uiFormPageIteratorPublic.getAvailablePage();
+    if(pageCount >= currentPage){
+      uiFormPageIteratorPublic.setCurrentPage(currentPage);
+    }else if(pageCount < currentPage){
+      uiFormPageIteratorPublic.setCurrentPage(currentPage-1);
+    }
+    List<Identity> lists;
+    lists = uiFormPageIteratorPublic.getCurrentPageData();
+    return lists;
+  }
+    
+  /**
+   * Get current identity.
+   * 
+   * @return
+   * @throws Exception
+   */
+  public Identity getCurrentIdentity() throws Exception {
+    if (currIdentity == null) {
+      IdentityManager im = getIdentityManager();
+      currIdentity = im.getIdentityByRemoteId("organization", getCurrentUserName());
+    }
+    return currIdentity;
+  }
+  
+  /**
+   * Get current user name.
+   * 
+   * @return
+   */
+  public String getCurrentUserName() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    return context.getRemoteUser();
+  }
+  
+  /**
+   * Add identity to contact list.
+   * 
+   */
+  public static class AddContactActionListener extends EventListener<UIPublicRelation> {
+    @Override
+    public void execute(Event<UIPublicRelation> event) throws Exception {
+      UIPublicRelation portlet = event.getSource();
+
+      String userId = event.getRequestContext().getRequestParameter(OBJECTID);
+      String currUserId = portlet.getCurrentUserName();
+
+      IdentityManager im = portlet.getIdentityManager();
+      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+                                                       currUserId);
+
+      Identity requestedIdentity = im.getIdentityById(userId);
+
+      RelationshipManager rm = portlet.getRelationshipManager();
+
+      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
+
+      if (rel == null) {
+        rel = rm.create(currIdentity, requestedIdentity);
+        rel.setStatus(Relationship.Type.PENDING);
+        rm.save(rel);
+      }
+    }
+  }
+    
+  /**
+   * Get Relationship manager.
+   * 
+   * @return
+   */
+  private RelationshipManager getRelationshipManager() {
+    if (rm == null) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      rm = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+    }
+    return rm;
+  }
+  
+  /**
+   * Get identity manager.
+   * 
+   * @return
+   */
+  private IdentityManager getIdentityManager() {
+    if (im == null) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return im;
+  }
 }
