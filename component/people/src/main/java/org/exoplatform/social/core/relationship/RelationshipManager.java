@@ -19,6 +19,8 @@ package org.exoplatform.social.core.relationship;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -77,15 +79,18 @@ public class RelationshipManager {
    * @param identity
    * @return
    */
-  public List<Relationship> getPublicRelation(Identity identity) throws Exception {
-    List<Relationship> rels = get(identity);
-    List<Relationship> publicRel = new ArrayList<Relationship>();
-    for (Relationship rel : rels) {
-      if (rel.getStatus() == Relationship.Type.ALIEN) {
-        publicRel.add(rel);
+  public List<Identity> getPublicRelation(Identity identity) throws Exception {
+    List<Identity> ids = new ArrayList<Identity>();
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    List<Identity> allIds = im.getIdentities("organization");
+    for (Identity id : allIds) {
+      if (!(id.getId().equals(identity.getId())) && (getRelationship(identity, id) == null)) {
+        ids.add(id);
       }
     }
-    return publicRel;
+    
+    return ids;
   }
   
   /**
