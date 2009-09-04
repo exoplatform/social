@@ -1,92 +1,30 @@
 <%
 	import org.exoplatform.portal.webui.util.Util ;
  	import org.exoplatform.webui.form.UIFormPageIterator;
+ 	import org.exoplatform.webui.core.UIVirtualList;
  
-	def invitedRelation = uicomponent.getInvitedRelation();
 	def myRelation = uicomponent.getMyRelation();
 	def currIdentity = uicomponent.getCurrentIdentity();
 	def portalURI = Util.getPortalRequestContext().getPortalURI();
 	def profileURL, dashboardURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
-	UIFormPageIterator iteratorInvited = uicomponent.getUiFormPageIteratorInvited();
 	UIFormPageIterator iteratorContact = uicomponent.getUiFormPageIteratorContact();
+	def loadData = uicomponent.loadInvited();
 %>
 <div class="UIMyRelation">
 <% uiform.begin() %>
 	<div class="ContainerSpace">
-	<%if ((invitedRelation.size() + myRelation.size()) == 0) {%>
-      <div class="ContentSpace">
+	<%if ((loadData == 0) && (myRelation.size() == 0)) {%>
+		<div class="ContentSpace">
         <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
         <div style="clear: left;"><span></span></div>
-      </div>
-  <%}%>
-  <%if (invitedRelation.size() > 0) {%> 
-  	<div><b>Invited</b></div>
-  <%}%>
-	<% for(relation in invitedRelation) {
-		def identity = relation.identity1;
-	  profileURL = portalURI + "people/" + identity.getRemoteId();
-    dashboardURL = portalURI + "people/" + identity.getRemoteId() + "/dashboard";
-    actititesURL = portalURI + "people/" + identity.getRemoteId() + "/activities";
-    fullName = identity.profile.fullName;
-    position = identity.profile.getPropertyValue("position");
-    actionAccept = uicomponent.event("Accept",identity.getId());
-    actionDeny = uicomponent.event("Deny",identity.getId());
-    position = identity.profile.getPropertyValue("position");
-	  if (!position) 
-      position = "";
-	 %>
-		<div class="ContentSpace">
-    	<div class="CommunityIcon"><span/></div>
-    	<div class="CommunityContainer">
-        <div class="CommunityMane Line">
-            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
-  
-		    		<div onclick="$actionDeny" class="ActionBar">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getId() + ".label.Deny")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-            <div onclick="$actionAccept" class="ActionBar">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getId() + ".label.Accept")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-  
-            <div style="clear: both;"><span/></div>
-        </div>
-        <% if(position.length() > 0) { %>
-        <div class="Text Line">${position}</div>
-        <%  } %>
-        <div class="TagsName">
-          <a class="CommunityNameMiddle" href="$profileURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
-          <a class="CommunityNameMiddle" href="$dashboardURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Dashboard")%></a> |
-          <a class="CommunityNameMiddle" href="$actititesURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
-        </div>
-    	</div>
-    </div>
-	<% } %>
-	<%
-	 		if (uicomponent.getUiFormPageIteratorInvited().getAvailablePage() > 1) {
-	 			uicomponent.renderUIComponent(iteratorInvited) ;
-	 		}
- 	%>
- 	
- 	
+   	</div>
+	<%}%>		
+	<%if (loadData > 0) {%>
+				<br /><div><b>Invited</b></div>
+				<% uicomponent.renderChild(UIVirtualList.class) %>
+	<%}%>
 	<%if (myRelation.size() > 0) {%> 
   	<br /><div><b>Contact</b></div>
-  <%}%>
 	<% for(relation in myRelation) {
 		def id = null;
 		if (currIdentity.id == relation.identity1.id) {
@@ -135,6 +73,7 @@
     	</div>
     </div>
 	<% } %>
+	<%}%>
 	<%
 	 		if (uicomponent.getUiFormPageIteratorContact().getAvailablePage() > 1) {
 	 			uicomponent.renderUIComponent(iteratorContact) ;

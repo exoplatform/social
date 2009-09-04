@@ -1,0 +1,68 @@
+<%
+	import org.exoplatform.portal.webui.util.Util ;
+ 	import org.exoplatform.social.core.relationship.Relationship;
+ 	import org.exoplatform.social.relation.UIMyRelation;
+ 
+  def listRelation = (List<Relationship>)uicomponent.getBeans();
+  UIMyRelation uiMyRelation = uicomponent.getAncestorOfType(UIMyRelation.class);
+	def currIdentity = uiMyRelation.getCurrentIdentity();
+	def portalURI = Util.getPortalRequestContext().getPortalURI();
+	def profileURL, dashboardURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
+%>
+<div id="$uicomponent.id" class="FeedBox">
+	<% for(relation in listRelation) {
+		def identity = relation.identity1;
+	  profileURL = portalURI + "people/" + identity.getRemoteId();
+    dashboardURL = portalURI + "people/" + identity.getRemoteId() + "/dashboard";
+    actititesURL = portalURI + "people/" + identity.getRemoteId() + "/activities";
+    fullName = identity.profile.fullName;
+    position = identity.profile.getPropertyValue("position");
+    actionAccept = uiMyRelation.event("Accept",identity.getId());
+    actionDeny = uiMyRelation.event("Deny",identity.getId());
+    position = identity.profile.getPropertyValue("position");
+	  if (!position) 
+      position = "";
+	 %>
+		<div class="ContentSpace">
+    	<div class="CommunityIcon"><span/></div>
+    	<div class="CommunityContainer">
+        <div class="CommunityMane Line">
+            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
+  
+		    		<div onclick="$actionDeny" class="ActionBar">
+							<div class="LeftButton">
+								<div class="RightButton">
+									<div class="CenterButton">
+										<div class="SaveIcon">
+											<%=_ctx.appRes(uiMyRelation.getId() + ".label.Deny")%>
+										</div>
+									</div>
+								</div>
+							</div>
+		    		</div>
+            <div onclick="$actionAccept" class="ActionBar">
+							<div class="LeftButton">
+								<div class="RightButton">
+									<div class="CenterButton">
+										<div class="SaveIcon">
+											<%=_ctx.appRes(uiMyRelation.getId() + ".label.Accept")%>
+										</div>
+									</div>
+								</div>
+							</div>
+		    		</div>
+  
+            <div style="clear: both;"><span/></div>
+        </div>
+        <% if(position.length() > 0) { %>
+        <div class="Text Line">${position}</div>
+        <%  } %>
+        <div class="TagsName">
+          <a class="CommunityNameMiddle" href="$profileURL"><%=_ctx.appRes(uiMyRelation.getId() + ".label.Profile")%></a> |
+          <a class="CommunityNameMiddle" href="$dashboardURL"><%=_ctx.appRes(uiMyRelation.getId() + ".label.Dashboard")%></a> |
+          <a class="CommunityNameMiddle" href="$actititesURL"><%=_ctx.appRes(uiMyRelation.getId() + ".label.Activities")%></a>
+        </div>
+    	</div>
+    </div>
+	<% } %>
+</div>

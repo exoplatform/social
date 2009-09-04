@@ -16,9 +16,11 @@
  */
 package org.exoplatform.social.relation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -29,7 +31,10 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIRepeater;
+import org.exoplatform.webui.core.UIVirtualList;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -42,20 +47,23 @@ import org.exoplatform.webui.form.UIFormPageIterator;
  *          tungcnw@gmail.com
  * Aug 25, 2009  
  */
-@ComponentConfig(
-    lifecycle = UIFormLifecycle.class,
-    template =  "app:/groovy/portal/webui/component/UIMyRelation.gtmpl",
-    events = {
-        @EventConfig(listeners = UIMyRelation.RemoveActionListener.class),
-        @EventConfig(listeners = UIMyRelation.AcceptActionListener.class),
-        @EventConfig(listeners = UIMyRelation.DenyActionListener.class)
-      }
+@ComponentConfigs( {
+    @ComponentConfig(
+        lifecycle = UIFormLifecycle.class,
+        template =  "app:/groovy/portal/webui/component/UIMyRelation.gtmpl",
+        events = {
+            @EventConfig(listeners = UIMyRelation.RemoveActionListener.class),
+            @EventConfig(listeners = UIMyRelation.AcceptActionListener.class),
+            @EventConfig(listeners = UIMyRelation.DenyActionListener.class)
+        }
+    ),
+    @ComponentConfig(
+        id = "UIInvited",
+        type = UIRepeater.class,
+        template = "app:/groovy/portal/webui/component/UIInvited.gtmpl") 
+  }
 )
 public class UIMyRelation extends UIForm {
-  /** UIFormPageIterator */
-  UIFormPageIterator uiFormPageIteratorInvited;
-  /** UIFormPageIterator ID. */
-  private final String iteratorIDInvited = "UIFormPageIteratorInvited";
   /** UIFormPageIterator */
   UIFormPageIterator uiFormPageIteratorContact;
   /** UIFormPageIterator ID. */
@@ -64,14 +72,6 @@ public class UIMyRelation extends UIForm {
   private Identity currIdentity = null;
   private IdentityManager identityManager = null;
   
-  /**
-   * Get UIFormPageIterator.
-   * @return
-   */
-  public UIFormPageIterator getUiFormPageIteratorInvited() {
-    return uiFormPageIteratorInvited;
-  }
-
   /**
    * Get UIFormPageIterator.
    * @return
@@ -85,48 +85,48 @@ public class UIMyRelation extends UIForm {
    * @throws Exception 
    */
   public UIMyRelation() throws Exception {
-    uiFormPageIteratorInvited = createUIComponent(UIFormPageIterator.class, null, iteratorIDInvited);
-    addChild(uiFormPageIteratorInvited);
+    UIVirtualList virtualList = addChild(UIVirtualList.class, null, null);      
+    virtualList.setPageSize(2);
+    UIRepeater uiRepeater = createUIComponent(UIRepeater.class, "UIInvited", null);
+    virtualList.setUIComponent(uiRepeater);
+    
     uiFormPageIteratorContact = createUIComponent(UIFormPageIterator.class, null, iteratorIDContact);
     addChild(uiFormPageIteratorContact);
   }
   
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("deprecation")
+  public int loadInvited() throws Exception {
+    RelationshipManager relationshipManager = getRelationshipManager();
+    Identity currId = getCurrentIdentity();
+    List<Relationship> listRelationShip = relationshipManager.getPending(currId, false);
+    if (listRelationShip == null) listRelationShip = new ArrayList<Relationship>();
+    UIVirtualList virtualList = getChild(UIVirtualList.class);
+    virtualList.dataBind(new ObjectPageList<Relationship>(listRelationShip, listRelationShip.size()));
+    return listRelationShip.size();
+  }
+  
   public List<Relationship> getMyRelation() throws Exception {
     RelationshipManager relationshipManager = getRelationshipManager();
     Identity currId = getCurrentIdentity();
     List<Relationship> listContacts = relationshipManager.getContacts(currId);
-    int curPage = uiFormPageIteratorContact.getCurrentPage();
-    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 2);
-    uiFormPageIteratorContact.setPageList(pageListContact) ;  
-    int availablePageCount = uiFormPageIteratorContact.getAvailablePage();
-    if(availablePageCount >= curPage){
-      uiFormPageIteratorContact.setCurrentPage(curPage);
-    }else if(availablePageCount < curPage){
-      uiFormPageIteratorContact.setCurrentPage(curPage-1);
-    }
-    List<Relationship> contactLists;
-    contactLists = uiFormPageIteratorContact.getCurrentPageData();
+    List<Relationship> contactLists = getDisplayRelationList(listContacts, uiFormPageIteratorContact);
     return contactLists;
   }
-  
+
   @SuppressWarnings("unchecked")
-  public List<Relationship> getInvitedRelation() throws Exception {
-    RelationshipManager relationshipManager = getRelationshipManager();
-    Identity currId = getCurrentIdentity();
-    List<Relationship> listRelationShip = relationshipManager.getPending(currId, false);
-    int currentPage = uiFormPageIteratorInvited.getCurrentPage();
-    LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 2);
-    uiFormPageIteratorInvited.setPageList(pageList) ;  
-    int pageCount = uiFormPageIteratorInvited.getAvailablePage();
-    if(pageCount >= currentPage){
-      uiFormPageIteratorInvited.setCurrentPage(currentPage);
-    }else if(pageCount < currentPage){
-      uiFormPageIteratorInvited.setCurrentPage(currentPage-1);
+  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts, UIFormPageIterator uiFormPageIterator) throws Exception {
+    int curPage = uiFormPageIterator.getCurrentPage();
+    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 1);
+    uiFormPageIterator.setPageList(pageListContact) ;  
+    int availablePageCount = uiFormPageIterator.getAvailablePage();
+    if(availablePageCount >= curPage){
+      uiFormPageIterator.setCurrentPage(curPage);
+    }else if(availablePageCount < curPage){
+      uiFormPageIterator.setCurrentPage(curPage-1);
     }
-    List<Relationship> lists;
-    lists = uiFormPageIteratorInvited.getCurrentPageData();
-    return lists;
+    List<Relationship> contactLists;
+    contactLists = uiFormPageIterator.getCurrentPageData();
+    return contactLists;
   }
   
   private RelationshipManager getRelationshipManager() {
