@@ -108,7 +108,7 @@
     <window-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletActivities</window-id>
     <preference>
         <name>url</name>
-        <value>http://localhost:8080/rest/jcr/repository/gadgets/gadgets/statusUpdate.xml</value>
+        <value>http://localhost:8080/rest/jcr/repository/gadgets/gadgets/activities.xml</value>
         <read-only>false</read-only>
     </preference>
   </portlet-preferences>
