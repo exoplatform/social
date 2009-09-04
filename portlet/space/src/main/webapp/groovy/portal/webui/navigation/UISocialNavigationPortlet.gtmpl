@@ -1,21 +1,3 @@
-<!--
-
-    Copyright (C) 2003-2007 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
 <% 
   import org.exoplatform.portal.config.model.PageNode ;
   import org.exoplatform.portal.config.model.PageNavigation ;
@@ -77,9 +59,9 @@
 		}
 		
   	String icon = node.getIcon();
-    if(icon == null) icon = "PageNodeIcon";
+    if(icon == null) icon = "DefaultPageIcon"; 
     String arrowIcon = "MenuItemRight";
-    if (node.getChildren() != null && node.getChildren().size() > 0) arrowIcon = "RightItemIcon";
+    if (node.getChildren() != null && node.getChildren().size() > 0) arrowIcon = "ArrowIcon"; 
 
     String label = node.resolvedLabel;
     String title = "";
@@ -94,30 +76,30 @@
 	      String onclickEvt = uicomponent.event("SelectNode",  nav.getId() + "::" + node.getUri()) + ";return false;" ;
 		  	print """
 		  			<div class="MenuItem $tabStyleNavigation" >
-							<a href="$pageURI" class="$arrowIcon" onclick="$onclickEvt" title="$title">
-								<div class="ItemIcon $icon" style="border-left: none;">
-		  							$label
+		  				<div class="$arrowIcon" title="$title">
+								<div class="ItemIcon $icon">
+									<a href="$pageURI" onclick="$onclickEvt">$label</a>
 								</div>
-							</a>
+							</div>
 				""" ;
 			} else {
 		  	print """
 		  			<div class="MenuItem $tabStyleNavigation" >
-		  			  <a href="$pageURI" class="$arrowIcon" title="$title">
-								<div class="ItemIcon $icon" >
-										$label
+							<div class="$arrowIcon" title="$title">
+								<div class="ItemIcon $icon">
+									<a href="$pageURI">$label</a>
 								</div>
-							</a>
+							</div>
 				""" ;
 			}
 		} else {
 			print """
 	  			<div class="MenuItem $tabStyleNavigation" >
-	  			  <a class="$arrowIcon" title="$title">
-							<div class="ItemIcon $icon" >
-									$label
+						<div class="$arrowIcon" title="$title">
+							<div class="ItemIcon $icon">
+								<a href="$pageURI">$label</a>
 							</div>
-						</a>
+						</div>
 			""" ;
 		}
 		
@@ -151,7 +133,7 @@
 			                  tabStyleNavigation = "SelectedNavigationTab" ;
 			                }
 			                String icon = node.getIcon();
-									    if(icon == null) icon = "PageNodeIcon";
+									    if(icon == null) icon = "DefaultPageIcon";
 			        %>      
 			        
 					            <div class="UITab">
