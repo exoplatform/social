@@ -71,15 +71,15 @@
   </page>
 
   <page>
-  	<page-id>portal::classic::Profile</page-id>
+  	<page-id>portal::classic::RelationShip</page-id>
   	<owner-type>portal</owner-type>
     <owner-id>classic</owner-id>
-    <name>Profile</name>
+    <name>RelationShip</name>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <application>
-      <instance-id>portal#classic:/profile/mainProfile/mainProfileRandom</instance-id>
-      <title>mainProfile</title>
+      <instance-id>portal#classic:/profile/relationship/relationships</instance-id>
+      <title>RelationShip</title>
       <show-info-bar>false</show-info-bar>
     </application>
   </page>

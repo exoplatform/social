@@ -31,10 +31,10 @@
     </node> 
     
     <node>
-      <uri>profile</uri>
-      <name>profile</name>
+      <uri>RelationShip</uri>
+      <name>RelationShip</name>
       <label>People</label>
-      <page-reference>portal::@owner@::profile</page-reference>
+      <page-reference>portal::@owner@::RelationShip</page-reference>
     </node>
     
     <node>

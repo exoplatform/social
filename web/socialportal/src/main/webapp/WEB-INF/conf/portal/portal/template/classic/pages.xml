@@ -37,16 +37,16 @@
   </page>
   
   <page>
-  	<page-id>portal::@owner@::profile</page-id>
+  	<page-id>portal::@owner@::RelationShip</page-id>
     <owner-type>portal</owner-type>
     <owner-id>@owner@</owner-id>
-    <name>profile</name>
-    <title>Profile</title>
+    <name>RelationShip</name>
+    <title>RelationShip</title>
 	  <access-permissions>*:/platform/users</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>
     <application>
-      <instance-id>portal#@owner@:/profile/mainProfile/mainProfileRandom</instance-id>
-      <title>mainProfile</title>
+      <instance-id>portal#@owner@:/profile/relationship/relationships</instance-id>
+      <title>RelationShip</title>
       <show-info-bar>true</show-info-bar>
       <show-application-state>true</show-application-state>
       <show-application-mode>true</show-application-mode>

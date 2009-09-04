@@ -45,7 +45,7 @@
 	    <uri>people</uri>
 	    <name>people</name>
 	    <label>#{portal.classic.people}</label>
-      <page-reference>portal::classic::Profile</page-reference>
+      <page-reference>portal::classic::RelationShip</page-reference>
 	  </node>
     <node>
 	    <uri>canvas</uri>
