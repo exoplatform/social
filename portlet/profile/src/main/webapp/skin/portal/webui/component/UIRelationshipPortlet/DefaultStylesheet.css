@@ -92,3 +92,12 @@
 	line-height: 18px; width: auto;
 	padding-left: 20px;
 }
+
+.ContainerSpace .WaitingConfirmation {
+	padding-left:5px;
+}
+
+.ContainerSpace .NotYet {
+	color:#FF0000;
+	text-align:center;
+}
