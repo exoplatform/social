@@ -59,6 +59,5 @@
  		}
  %>
  </div>
- <span style="clear: left;">&nbsp;</span>
 <% uiform.end() %>
 </div>

@@ -57,6 +57,7 @@ public class UIRelationshipPortlet extends UIPortletApplication {
     uiTabpane.addChild(UIMyRelation.class, null, null);
     uiTabpane.addChild(UIPendingRelation.class, null, null);
     uiTabpane.addChild(UIPublicRelation.class, null, null);
+    uiTabpane.setSelectedTab(1);
     addChild(uiTabpane);
   }
   

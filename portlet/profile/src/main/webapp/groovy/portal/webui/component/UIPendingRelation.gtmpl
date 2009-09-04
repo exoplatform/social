@@ -65,7 +65,6 @@
 	 			uicomponent.renderUIComponent(iterator) ;
 	 		}
  		%>
-		 <span style="clear: left;">&nbsp;</span>
 	</div>
 <% uiform.end() %>
 </div>
