@@ -87,19 +87,11 @@
                           onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints/>
       </propertyDefinition>
-      <propertyDefinition name="startDateMonth" requiredType="Long" autoCreated="false" mandatory="true"
+      <propertyDefinition name="startDate" requiredType="String" autoCreated="false" mandatory="true"
                           onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints/>
       </propertyDefinition>
-      <propertyDefinition name="startDateYear" requiredType="Long" autoCreated="false" mandatory="true"
-                          onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="endDateMonth" requiredType="Long" autoCreated="false" mandatory="false"
-                          onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
-      <propertyDefinition name="endDateYear" requiredType="Long" autoCreated="false" mandatory="false"
+      <propertyDefinition name="endDate" requiredType="String" autoCreated="false" mandatory="false"
                           onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints/>
       </propertyDefinition>
