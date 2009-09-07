@@ -21,7 +21,7 @@
 	<gadget name="SocialHelloWorld">
 		<path>/gadgets/SocialHelloWorld.xml</path>
 	</gadget>
-    <gadget name="activities">
+    <gadget name="statusUpdate">
 		<path>/gadgets/activities.xml</path>
 	</gadget>
 	<gadget name="ComplianceTest08">

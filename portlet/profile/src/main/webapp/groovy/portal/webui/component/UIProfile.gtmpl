@@ -30,10 +30,10 @@
 //  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.pure','/profile/javascript/') ;
 
   def identity = uicomponent.getProfile().identity;
-
-  def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard"
-  def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities"
-
+	def uriObj = uicomponent.getCurrentUriObj();
+  def dashboardURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/dashboard"
+  def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities"
+	
 %>
   <div class="UIProfile" id="$uicomponent.id">
     <div class="LeftColumn">

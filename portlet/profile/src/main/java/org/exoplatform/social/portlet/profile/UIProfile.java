@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -60,6 +62,15 @@ public class UIProfile extends UIContainer {
     return sects;
   }
 
+  public String getCurrentUriObj() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestUrl = pcontext.getRequestURI();
+    String portalUrl = pcontext.getPortalURI();
+    String uriObj = requestUrl.replace(portalUrl, "");
+    if (uriObj.contains("/"))
+      uriObj = uriObj.split("/")[0];
+    return uriObj;
+  }
 
   public Profile getProfile() throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
