@@ -34,10 +34,15 @@ public class URLUtils {
   public static String getCurrentUser() {
     PortalRequestContext request = Util.getPortalRequestContext() ;
     String uri = request.getNodePath();
+    String requestUrl = request.getRequestURI();
+    String portalUrl = request.getPortalURI();
+    String uriObj = requestUrl.replace(portalUrl, "");
+    if (uriObj.contains("/"))
+      uriObj = uriObj.split("/")[0];
     String[] els = uri.split("/");
 
     // check first if we are on the page of a user
-    if (els.length >= 3 && els[1].equals("people")) {
+    if (els.length >= 3 && els[1].equals(uriObj)) {
       return els[2];
     }
     return null;

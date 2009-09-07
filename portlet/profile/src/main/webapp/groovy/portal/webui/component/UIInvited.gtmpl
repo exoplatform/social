@@ -8,13 +8,14 @@
 	def currIdentity = uiMyRelation.getCurrentIdentity();
 	def portalURI = Util.getPortalRequestContext().getPortalURI();
 	def profileURL, dashboardURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
+	def uriObj = uiMyRelation.getCurrentUriObj();
 %>
 <div id="$uicomponent.id" class="FeedBox">
 	<% for(relation in listRelation) {
 		def identity = relation.identity1;
-	  profileURL = portalURI + "people/" + identity.getRemoteId();
-    dashboardURL = portalURI + "people/" + identity.getRemoteId() + "/dashboard";
-    actititesURL = portalURI + "people/" + identity.getRemoteId() + "/activities";
+	  profileURL = portalURI + uriObj + "/" + identity.getRemoteId();
+    dashboardURL = portalURI + uriObj + "/" + identity.getRemoteId() + "/dashboard";
+    actititesURL = portalURI + uriObj + "/" + identity.getRemoteId() + "/activities";
     fullName = identity.profile.fullName;
     position = identity.profile.getPropertyValue("position");
     actionAccept = uiMyRelation.event("Accept",identity.getId());

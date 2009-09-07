@@ -46,7 +46,7 @@ public class UISocialNavigationPortlet extends UIPortletApplication {
     String template =  prefers.getValue("template", "app:/groovy/portal/webui/navigation/UISocialNavigationPortlet.gtmpl") ;
     
     UISocialNavigation portalNavigation = addChild(UISocialNavigation.class, "UIHorizontalNavigation", null);
-    portalNavigation.setUseAjax(Boolean.valueOf(prefers.getValue("useAJAX", "false"))) ;
+    portalNavigation.setUseAjax(Boolean.valueOf(prefers.getValue("useAJAX", "true"))) ;
     portalNavigation.getComponentConfig().setTemplate(template) ;
   }
 }

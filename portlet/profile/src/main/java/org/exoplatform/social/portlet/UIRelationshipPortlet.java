@@ -16,7 +16,10 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.portal.account.UIAccountSetting;
+import org.exoplatform.dashboard.webui.component.UIDashboard;
+import org.exoplatform.social.portlet.activities.UIActivities;
+import org.exoplatform.social.portlet.dashboard.UISocialDashboard;
+import org.exoplatform.social.portlet.profile.UIProfile;
 import org.exoplatform.social.relation.UIMyRelation;
 import org.exoplatform.social.relation.UIPendingRelation;
 import org.exoplatform.social.relation.UIPublicRelation;
@@ -59,6 +62,9 @@ public class UIRelationshipPortlet extends UIPortletApplication {
     uiTabpane.addChild(UIPublicRelation.class, null, null);
     uiTabpane.setSelectedTab(1);
     addChild(uiTabpane);
+    addChild(UIProfile.class,null,null);
+    addChild(UISocialDashboard.class, null, null);
+    addChild(UIActivities.class, null, null);
   }
   
   public void renderPopupMessages() throws Exception {

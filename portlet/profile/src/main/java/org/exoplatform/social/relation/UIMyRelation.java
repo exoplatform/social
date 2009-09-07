@@ -113,10 +113,20 @@ public class UIMyRelation extends UIForm {
     return contactLists;
   }
 
+  public String getCurrentUriObj() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestUrl = pcontext.getRequestURI();
+    String portalUrl = pcontext.getPortalURI();
+    String uriObj = requestUrl.replace(portalUrl, "");
+    if (uriObj.contains("/"))
+      uriObj = uriObj.split("/")[0];
+    return uriObj;
+  }
+  
   @SuppressWarnings("unchecked")
   private List<Relationship> getDisplayRelationList(List<Relationship> listContacts, UIFormPageIterator uiFormPageIterator) throws Exception {
     int curPage = uiFormPageIterator.getCurrentPage();
-    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 1);
+    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
     uiFormPageIterator.setPageList(pageListContact) ;  
     int availablePageCount = uiFormPageIterator.getAvailablePage();
     if(availablePageCount >= curPage){

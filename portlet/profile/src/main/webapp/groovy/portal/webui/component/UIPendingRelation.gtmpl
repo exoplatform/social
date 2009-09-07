@@ -5,8 +5,9 @@
   def list = uicomponent.getPendingRelationList();
   def currIdentity = uicomponent.getCurrentIdentity();
   UIFormPageIterator iterator = uicomponent.getUiFormPageIterator();
+  def uriObj = uicomponent.getCurrentUriObj();
 %>
-<div class="UIPendingRelation">
+<div class="UITabPane">
 <% uiform.begin() %>
 	<div class="ContainerSpace">
 	<%if (list.size() == 0) {%>
@@ -22,9 +23,9 @@
 			  } else {
 		  	  identity = relation.identity1;
 			  }
-		    def profileURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId();
-		    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard";
-		    def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities";
+		    def profileURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId();
+		    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/dashboard";
+		    def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities";
 		    def fullName = identity.profile.fullName;
 		    def actionLink = uicomponent.event("DenyContact", identity.getId());
 		    def position = identity.profile.getPropertyValue("position");

@@ -42,8 +42,8 @@
       <page-reference>portal::classic::MyDashboard</page-reference>
 	 </node>
 	 <node>
-	    <uri>people</uri>
-	    <name>people</name>
+	    <uri>relationship</uri>
+	    <name>relationship</name>
 	    <label>#{portal.classic.people}</label>
       <page-reference>portal::classic::RelationShip</page-reference>
 	  </node>

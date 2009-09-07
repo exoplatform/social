@@ -20,7 +20,7 @@
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();  
 %>
-<div class="TitleBar">
+<div class="TitleBar" id="$uicomponent.id">
   <h4><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></h4>
   <% if (isEditable) {
   %>

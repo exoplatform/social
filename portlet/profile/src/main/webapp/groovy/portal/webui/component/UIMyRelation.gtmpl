@@ -9,8 +9,9 @@
 	def profileURL, dashboardURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
 	UIFormPageIterator iteratorContact = uicomponent.getUiFormPageIteratorContact();
 	def loadData = uicomponent.loadInvited();
+	def uriObj = uicomponent.getCurrentUriObj();
 %>
-<div class="UIMyRelation">
+<div class="UITabPane">
 <% uiform.begin() %>
 	<div class="ContainerSpace">
 	<%if ((loadData == 0) && (myRelation.size() == 0)) {%>
@@ -32,9 +33,9 @@
 	  } else {
   	  id = relation.identity1;
 	  }
-	  profileURL = portalURI + "people/" + id.getRemoteId();
-    dashboardURL = portalURI + "people/" + id.getRemoteId() + "/dashboard";
-    actititesURL = portalURI + "people/" + id.getRemoteId() + "/activities";
+	  profileURL = portalURI + uriObj + "/" + id.getRemoteId();
+    dashboardURL = portalURI + uriObj + "/" + id.getRemoteId() + "/dashboard";
+    actititesURL = portalURI + uriObj + "/" + id.getRemoteId() + "/activities";
     fullName = id.profile.fullName;
     position = id.profile.getPropertyValue("position");
     def actionLink = uicomponent.event("Remove",id.getId());

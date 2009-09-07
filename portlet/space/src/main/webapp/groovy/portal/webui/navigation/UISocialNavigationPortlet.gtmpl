@@ -7,14 +7,40 @@
   def rcontext = _ctx.getRequestContext() ;
 	JavascriptManager jsmanager = rcontext.getJavascriptManager();
 	jsmanager.importJavascript('eXo.webui.UIHorizontalTabs');
-	jsmanager.importJavascript('eXo.portal.UIPortalNavigation') ;
-	jsmanager.addOnLoadJavascript('eXo.portal.UIPortalNavigation.onLoad');
+	jsmanager.importJavascript('eXo.portal.UIPortalNavigation2') ;
+	jsmanager.addOnLoadJavascript('eXo.portal.UIPortalNavigation2.onLoad');
 	
-	jsmanager.addOnLoadJavascript('eXo.portal.UIPortalNavigation.loadScroll');
+	jsmanager.addOnLoadJavascript('eXo.portal.UIPortalNavigation2.loadScroll');
 	//jsmanager.addOnResizeJavascript('eXo.portal.UIPortalNavigation.initScroll');
 
   navigations = uicomponent.getNavigations();
+	PageNode mySiteRoot = createRootNode(_ctx.appRes("UIPortalNavigation.Root.MySite"));
+	PageNode mySpaceRoot = createRootNode(_ctx.appRes("UIPortalNavigation.Root.MySpace"));	
+	
+	for(nav in navigations) {
+		String ownerType = nav.getOwnerType();
+		if (ownerType.equals("portal")) {
+			addNodesToRoot(mySiteRoot, nav.getNodes());
+		} else if (ownerType.equals("group")) {
+			addNodesToRoot(mySpaceRoot, nav.getNodes());
+		}
+	}
+	
+	public PageNode createRootNode(String name) {			
+		PageNode node = new PageNode();
+		node.setShowPublicationDate(false);
+		node.setVisible(true) ;
+		node.setModifiable(false);
+		node.setLabel(name);		
+		node.setName(name);			
+		return node;
+	}
 
+	public void addNodesToRoot(PageNode root, ArrayList<PageNode> nodes) {
+		for(PageNode ele : nodes) {
+			root.getChildren().add(ele);
+		}
+	}
   public void renderChildrenContainer(PageNavigation nav, PageNode node) {
   	print """
   		<div class="MenuItemContainer" style="display: none;">
@@ -60,7 +86,7 @@
 		
   	String icon = node.getIcon();
     if(icon == null) icon = "DefaultPageIcon"; 
-    String arrowIcon = "MenuItemRight";
+    String arrowIcon = "";
     if (node.getChildren() != null && node.getChildren().size() > 0) arrowIcon = "ArrowIcon"; 
 
     String label = node.resolvedLabel;

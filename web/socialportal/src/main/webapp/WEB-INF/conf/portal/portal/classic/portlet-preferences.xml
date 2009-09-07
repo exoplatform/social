@@ -36,7 +36,7 @@
     <window-id>portal#classic:/space/SocialNavigationPortlet/toolbar</window-id>
     <preference>
       <name>useAJAX</name>
-      <value>true</value>
+      <value>false</value>
       <read-only>false</read-only>
     </preference>
   </portlet-preferences>
@@ -78,15 +78,15 @@
   <portlet-preferences>
     <owner-type>portal</owner-type>
     <owner-id>classic</owner-id>
-    <window-id>portal#classic:/profile/mainProfile/mainProfileRandom</window-id>
+    <window-id>portal#classic:/profile/relationship/relationships</window-id>
 	<preference>
         <name>template</name>
         <value>my-dashboard</value>
         <read-only>false</read-only>
     </preference>
 	    <preference>
-	        <name>aggregatorId</name>
-	        <value>socialRssAggregator</value>
+	        <name>rssFetchId</name>
+	        <value>rssFetch</value>
 	        <read-only>false</read-only>
 	    </preference>
   </portlet-preferences>

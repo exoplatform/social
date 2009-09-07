@@ -28,9 +28,17 @@
 
 %>
 
-<div class="UIProfileList" id="$uicomponent.id">
-	<div><input type="button" value="Change to local time" onclick="eXo.social.activities.UIActivities.changeTimeZone(this)" /></div> 
-  <div class="ContainerSpace">
+<div class="UITabPane" id="$uicomponent.id">
+<div class="ContainerSpace">
+	<%
+		if (list.size() == 0) { %>
+    <div class="ContentSpace">
+	    <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+	    <div style="clear: left;"><span></span></div>
+	  </div>
+    </div>
+	<%	}
+	%>
 
   <% list.each { 
 

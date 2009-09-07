@@ -19,11 +19,8 @@ package org.exoplatform.social.portlet.dashboard;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupMessages;
 import org.exoplatform.webui.core.UIApplication;
-import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
-import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.dashboard.webui.component.*;
@@ -47,10 +44,10 @@ public class UISocialDashboard extends UIContainer implements DashboardParent{
       PortletRequestContext context = (PortletRequestContext) WebuiRequestContext
         .getCurrentInstance();
       PortletPreferences pref = context.getRequest().getPreferences();
-      String aggregatorId = pref.getValue("aggregatorId", "socialRssAggregator") ;
+      String rssFetchId = pref.getValue("rssFetchId", "rssFetch") ;
       String containerTemplate = pref.getValue("template", "three-columns") ;
       dashboard.setContainerTemplate(containerTemplate) ;
-      dashboard.getChild(UIDashboardSelectContainer.class).setAggregatorId(aggregatorId) ;
+      dashboard.getChild(UIDashboardSelectContainer.class).setAggregatorId(rssFetchId) ;
     }
 
     public boolean canEdit() {
@@ -65,10 +62,16 @@ public class UISocialDashboard extends UIContainer implements DashboardParent{
 
     public String getDashboardOwner() {
       PortalRequestContext request = Util.getPortalRequestContext() ;
+      String reqtUrl = request.getRequestURI();
+      String prtUrl = request.getPortalURI();
+      String uriObj = reqtUrl.replace(prtUrl, "");
+      if (uriObj.contains("/"))
+        uriObj = uriObj.split("/")[0];
       String uri = request.getNodePath();
-
-      if (uri.endsWith("/dashboard") && uri.startsWith("/people/")) {
-        return uri.substring(8, uri.length() - 10);
+      String uriObjWithSlash = "/" + uriObj + "/";
+      String[] els = uri.split("/");
+      if (uri.endsWith("/dashboard") && uri.startsWith(uriObjWithSlash)) {
+        return els[2];
       } else {
         PortletRequestContext context = (PortletRequestContext) WebuiRequestContext
           .getCurrentInstance();

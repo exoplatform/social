@@ -21,6 +21,8 @@ import java.util.List;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -89,7 +91,7 @@ public class UIPendingRelation extends UIForm {
     Identity currentIdentity = getCurrentIdentity();
     List<Relationship> listRelationShip = relm.getPending(currentIdentity, true);
     int currentPage = uiFormPageIterator_.getCurrentPage();
-    LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 1);
+    LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
     uiFormPageIterator_.setPageList(pageList) ;  
     int pageCount = uiFormPageIterator_.getAvailablePage();
     if(pageCount >= currentPage){
@@ -103,6 +105,16 @@ public class UIPendingRelation extends UIForm {
     return lists;
   }
     
+  public String getCurrentUriObj() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestUrl = pcontext.getRequestURI();
+    String portalUrl = pcontext.getPortalURI();
+    String uriObj = requestUrl.replace(portalUrl, "");
+    if (uriObj.contains("/"))
+      uriObj = uriObj.split("/")[0];
+    return uriObj;
+  }
+  
   /**
    * Get current identity.
    * 
