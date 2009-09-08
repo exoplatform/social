@@ -41,6 +41,17 @@
     </preference>
   </portlet-preferences>
 
+	<portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/web/BreadcumbsPortlet/breadcumbs</window-id>
+    <preference>
+      <name>template</name>
+      <value>system:/groovy/webui/core/UIBreadcumbs.gtmpl</value>
+      <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+  
   <portlet-preferences>
     <owner-type>portal</owner-type>
     <owner-id>classic</owner-id>

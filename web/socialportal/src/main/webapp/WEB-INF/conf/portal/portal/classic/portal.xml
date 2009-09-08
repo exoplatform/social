@@ -38,12 +38,12 @@
 	    <show-info-bar>false</show-info-bar>
 	  </application>
 		
-	  <application>
-	    <instance-id>portal#classic:/profile/breadcrumb/breadcrumbRandom</instance-id>
+		<application>
+	    <instance-id>portal#classic:/web/BreadcumbsPortlet/breadcumbs</instance-id>
+      <access-permissions>Everyone</access-permissions>
 	    <show-info-bar>false</show-info-bar>
 	  </application>
-	  
-	
+	    
 	  <page-body> </page-body>
 	  
 	  <application>
