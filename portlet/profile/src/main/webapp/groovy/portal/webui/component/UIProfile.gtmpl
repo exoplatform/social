@@ -38,7 +38,7 @@
   <div class="UIProfile" id="$uicomponent.id">
     <div class="LeftColumn">
 	  <div class="AvatarSpace">
-		<img class="Image" src="/profile/skin/portal/webui/component/UIMainProfilePortlet/background/ImgAvatar.gif" />
+		<div class="Image"><span></span></div>
 	  </div>
 	  <ul class="UserLinkList">
         <li><a href="${dashboardURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.Dashboard")%></a></li>
