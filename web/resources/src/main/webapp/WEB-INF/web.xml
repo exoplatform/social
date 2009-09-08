@@ -5,7 +5,6 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>eXoResourcesSocial</display-name>
-
   <filter>
     <filter-name>ResourceRequestFilter</filter-name>
     <filter-class>org.exoplatform.portal.application.ResourceRequestFilter</filter-class>
@@ -16,13 +15,14 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- ================================================================== -->
-  <!--           LISTENER                                                 -->
-  <!-- ================================================================== -->
-  <listener>
-    <listener-class>org.exoplatform.portal.webui.skin.SkinConfigListener</listener-class>
-  </listener>
-  <listener>
-    <listener-class>org.exoplatform.portal.webui.javascript.JavascriptListener</listener-class>
-  </listener>
+  <servlet>
+    <servlet-name>GateInServlet</servlet-name>
+    <servlet-class>org.gatein.wci.api.GateInServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GateInServlet</servlet-name>
+    <url-pattern>/gateinservlet</url-pattern>
+  </servlet-mapping>
+
 </web-app>

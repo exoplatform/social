@@ -18,8 +18,11 @@
 -->
 
 <%
-  def rcontext = _ctx.getRequestContext();
-  rcontext.getJavascriptManager().importJavascript('eXo.social.webui.UIVerticalTabs');
+	import org.exoplatform.web.application.JavascriptManager;
+	def rcontext = _ctx.getRequestContext();
+	JavascriptManager jsmanager = rcontext.getJavascriptManager();
+  jsmanager.importJavascript('eXo.social.webui.UIVerticalTabs');
+  //rcontext.getJavascriptManager().addCustomizedOnLoadScript('eXo.social.webui.UIVerticalTabs.init();');
 %>
 <div class="UIVerticalTabPane" id="$uicomponent.id">
     <div class="VerticalTabPaneContent">

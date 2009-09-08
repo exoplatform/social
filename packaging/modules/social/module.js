@@ -29,20 +29,7 @@ function getModule(params) {
   module.web.socialportal = 
     new Project("org.exoplatform.social", "exo.social.web.portal", "exo-portal", module.version).
     addDependency(jcr.frameworks.command) .
-    addDependency(jcr.frameworks.web).
-    addDependency(new Project("org.gatein.mop", "mop.api", "jar", "1.0.0-SNAPSHOT")).
-    addDependency(new Project("org.gatein.mop", "mop.spi", "jar", "1.0.0-SNAPSHOT")).
-    addDependency(new Project("org.gatein.mop", "mop.core", "jar", "1.0.0-SNAPSHOT")).
-    addDependency(new Project("org.chromattic", "chromattic.api", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.chromattic", "chromattic.common", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.chromattic", "chromattic.spi", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.chromattic", "chromattic.core", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.chromattic", "chromattic.apt", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.reflext", "reflext.api", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.reflext", "reflext.core", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.reflext", "reflext.spi", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.reflext", "reflext.jlr", "jar", "1.0.0-beta1")).
-    addDependency(new Project("org.reflext", "reflext.api", "jar", "1.0.0-beta1"));
+    addDependency(jcr.frameworks.web);
 	
   module.web.eXoResources = new Project("org.exoplatform.social", "exo.social.web.socialResources", "war", module.version);
   module.web.eXoResources.deployName = "eXoResourcesSocial" ;

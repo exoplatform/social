@@ -25,7 +25,7 @@ UIVerticalTabs.prototype.displayTabContent = function(clickedEle) {
  *  . changes the style of the tab
  *  . displays the tab content of the selected tab (display: block)
  * if tabId are provided, can get the tab content by Ajax
- */
+ */`
 UIVerticalTabs.prototype.changeTabForUITabPane = function(clickedEle, tabId, url) {
   var DOMUtil = eXo.core.DOMUtil;
   var uiSelectTab = DOMUtil.findAncestorByClass(clickedEle, "UIVerticalTab") ;

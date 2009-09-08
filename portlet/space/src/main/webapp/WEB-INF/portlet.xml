@@ -17,9 +17,13 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<portlet-app version="1.0" xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+<!--portlet-app version="1.0" xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"> 
+             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"--> 
+	
+	<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
+	
 	<portlet>
     <description xml:lang="EN">Banner Portlet</description>
     <portlet-name>BannerPortlet</portlet-name>
@@ -48,7 +52,7 @@
     <portlet-preferences>
       <preference>
         <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIBannerPortlet.gtmpl</value>
+        <value>par:/groovy/portal/webui/component/UIBannerPortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>
@@ -82,7 +86,7 @@
     <portlet-preferences>
       <preference>
         <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIWarningPortlet.gtmpl</value>
+        <value>par:/groovy/portal/webui/component/UIWarningPortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>
@@ -116,7 +120,7 @@
     <portlet-preferences>
       <preference>
         <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIHomePagePortlet.gtmpl</value>
+        <value>par:/groovy/portal/webui/component/UIHomePagePortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>
@@ -147,13 +151,13 @@
       <keywords>managespaces1</keywords>
     </portlet-info>     
 
-    <portlet-preferences>
+    <!--portlet-preferences>
       <preference>
         <name>template</name>
         <value>app:/groovy/portal/webui/component/UIManageSpacesPortlet1.gtmpl</value>
         <read-only>false</read-only>
       </preference>
-    </portlet-preferences>
+    </portlet-preferences-->
   </portlet> 
   
   <portlet>
@@ -181,13 +185,13 @@
       <keywords>socialnavigation</keywords>
     </portlet-info>     
 
-    <portlet-preferences>
+    <!-- portlet-preferences>
       <preference>
         <name>template</name>
         <value>app:/groovy/portal/webui/navigation/UISocialNavigationPortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
-    </portlet-preferences>
+    </portlet-preferences-->
   </portlet>
   <portlet>
     <description xml:lang="EN">Home Space Portlet</description>
@@ -217,7 +221,7 @@
     <portlet-preferences>
       <preference>
         <name>template</name>
-        <value>app:/groovy/portal/webui/space/UIHomeSpacePortlet.gtmpl</value>
+        <value>par:/groovy/portal/webui/space/UIHomeSpacePortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>
@@ -248,13 +252,13 @@
       <keywords>userlist</keywords>
     </portlet-info>     
 
-    <portlet-preferences>
+    <!-- portlet-preferences>
       <preference>
         <name>template</name>
         <value>app:/groovy/portal/webui/space/UIUserListPortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
-    </portlet-preferences>
+    </portlet-preferences-->
   </portlet>
   
   <portlet>
@@ -282,13 +286,13 @@
       <keywords>spaceMenu</keywords>
     </portlet-info>     
 
-    <portlet-preferences>
+    <!-- portlet-preferences>
       <preference>
         <name>template</name>
         <value>app:/groovy/portal/webui/space/UISpaceMenuPortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
-    </portlet-preferences>
+    </portlet-preferences-->
   </portlet>
   <portlet>
     <description xml:lang="EN">Space Setting Portlet</description>
@@ -315,12 +319,12 @@
       <keywords>spaceSetting</keywords>
     </portlet-info>     
 
-    <portlet-preferences>
+    <!-- portlet-preferences>
       <preference>
         <name>template</name>
         <value>app:/groovy/portal/webui/space/UISpaceSettingPortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
-    </portlet-preferences>
+    </portlet-preferences-->
   </portlet> 
 </portlet-app>

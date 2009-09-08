@@ -66,11 +66,8 @@ function getProduct(version) {
   product.addServerPatch("tomcat", portal.server.tomcat.patch) ;
   product.addServerPatch("jboss",  portal.server.jboss.patch) ;
   product.addServerPatch("jonas",  portal.server.jonas.patch) ;
-	print("\n\n\n\n =====================\n\n\n");
   product.module = social ;
-	print("\n\n\n\n ==========1===========\n\n\n");
   product.dependencyModule = [kernel, core, ws, eXoJcr, portal];
-	print("\n\n\n\n ===========2==========\n\n\n");
 
 
   return product ;

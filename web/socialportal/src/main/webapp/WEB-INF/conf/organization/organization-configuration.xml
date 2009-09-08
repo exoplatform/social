@@ -209,7 +209,7 @@
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$User">
                     <field  name="userName"><string>root</string></field>
-                    <field  name="password"><string>exo</string></field>
+                    <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Root</string></field>
                     <field  name="lastName"><string>Root</string></field>
                     <field  name="email"><string>root@localhost</string></field>
@@ -225,7 +225,7 @@
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$User">
                     <field  name="userName"><string>john</string></field>
-                    <field  name="password"><string>exo</string></field>
+                    <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>John</string></field>
                     <field  name="lastName"><string>Anthony</string></field>
                     <field  name="email"><string>john@localhost</string></field>
@@ -240,7 +240,7 @@
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$User">
                     <field  name="userName"><string>marry</string></field>
-                    <field  name="password"><string>exo</string></field>
+                    <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Marry</string></field>
                     <field  name="lastName"><string>Kelly</string></field>
                     <field  name="email"><string>marry@localhost</string></field>
@@ -252,7 +252,7 @@
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$User">
                     <field  name="userName"><string>demo</string></field>
-                    <field  name="password"><string>exo</string></field>
+                    <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Demo</string></field>
                     <field  name="lastName"><string>exo</string></field>
                     <field  name="email"><string>demo@localhost</string></field>
