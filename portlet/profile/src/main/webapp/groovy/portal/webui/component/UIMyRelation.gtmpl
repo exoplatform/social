@@ -11,75 +11,75 @@
 	def loadData = uicomponent.loadInvited();
 	def uriObj = uicomponent.getCurrentUriObj();
 %>
-<div class="UITabPane">
-<% uiform.begin() %>
-	<div class="ContainerSpace">
-	<%if ((loadData == 0) && (myRelation.size() == 0)) {%>
-		<div class="ContentSpace">
-        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
-        <div style="clear: left;"><span></span></div>
-   	</div>
-	<%}%>		
-	<%if (loadData > 0) {%>
-				<br /><div><b>Invited</b></div>
-				<% uicomponent.renderChild(UIVirtualList.class) %>
-	<%}%>
-	<%if (myRelation.size() > 0) {%> 
-  	<br /><div><b>Contact</b></div>
-	<% for(relation in myRelation) {
-		def id = null;
-		if (currIdentity.id == relation.identity1.id) {
-	  	id = relation.identity2;
-	  } else {
-  	  id = relation.identity1;
-	  }
-	  profileURL = portalURI + uriObj + "/" + id.getRemoteId();
-    dashboardURL = portalURI + uriObj + "/" + id.getRemoteId() + "/dashboard";
-    actititesURL = portalURI + uriObj + "/" + id.getRemoteId() + "/activities";
-    fullName = id.profile.fullName;
-    position = id.profile.getPropertyValue("position");
-    def actionLink = uicomponent.event("Remove",id.getId());
-    position = id.profile.getPropertyValue("position");
-	  if (!position)
-      position = "";
-	 %>
-		<div class="ContentSpace">
-    	<div class="CommunityIcon"><span/></div>
-    	<div class="CommunityContainer">
-        <div class="CommunityMane Line">
-            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
-  
-            <div onclick="$actionLink" class="ActionBar">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getId() + ".label.Remove")%>
+<div class="UIMyRelation">
+	<div class="UITabPane">
+	<% uiform.begin() %>
+		<div class="ContainerSpace">
+			<%if ((loadData == 0) && (myRelation.size() == 0)) {%>
+				<div class="ContentSpace">
+		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+		        <div style="clear: left;"><span></span></div>
+		   	</div>
+			<%}%>		
+			<%if (loadData > 0) {%>
+						<br /><div><b>Invited</b></div>
+						<% uicomponent.renderChild(UIVirtualList.class) %>
+			<%}%>
+			<%if (myRelation.size() > 0) {%> 
+		  	<br /><div><b>Contact</b></div>
+			<% for(relation in myRelation) {
+				def id = null;
+				if (currIdentity.id == relation.identity1.id) {
+			  	id = relation.identity2;
+			  } else {
+		  	  id = relation.identity1;
+			  }
+			  profileURL = portalURI + uriObj + "/" + id.getRemoteId();
+		    actititesURL = portalURI + uriObj + "/" + id.getRemoteId() + "/activities";
+		    fullName = id.profile.fullName;
+		    position = id.profile.getPropertyValue("position");
+		    def actionLink = uicomponent.event("Remove",id.getId());
+		    position = id.profile.getPropertyValue("position");
+			  if (!position)
+		      position = "";
+		 %>
+			<div class="ContentSpace">
+	    	<div class="CommunityIcon"><span/></div>
+	    	<div class="CommunityContainer">
+	        <div class="CommunityMane Line">
+	            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
+	  
+	            <div onclick="$actionLink" class="ActionBar">
+								<div class="LeftButton">
+									<div class="RightButton">
+										<div class="CenterButton">
+											<div class="SaveIcon">
+												<%=_ctx.appRes(uicomponent.getId() + ".label.Remove")%>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-		    		</div>
-  
-            <div style="clear: both;"><span/></div>
-        </div>
-        <% if(position.length() > 0) { %>
-        <div class="Text Line">${position}</div>
-        <%  } %>
-        <div class="TagsName">
-          <a class="CommunityNameMiddle" href="$profileURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
-          <a class="CommunityNameMiddle" href="$dashboardURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Dashboard")%></a> |
-          <a class="CommunityNameMiddle" href="$actititesURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
-        </div>
-    	</div>
-    </div>
-	<% } %>
-	<%}%>
-	<%
-	 		if (uicomponent.getUiFormPageIteratorContact().getAvailablePage() > 1) {
-	 			uicomponent.renderUIComponent(iteratorContact) ;
-	 		}
- 	%>
-  </div>
-<% uiform.end() %>
+			    		</div>
+	  
+	            <div style="clear: both;"><span/></div>
+	        </div>
+	        <% if(position.length() > 0) { %>
+	        <div class="Text Line">${position}</div>
+	        <%  } %>
+	        <div class="TagsName">
+	          <a class="CommunityNameMiddle" href="$profileURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
+	          <a class="CommunityNameMiddle" href="$actititesURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
+	        </div>
+	    	</div>
+	    </div>
+		<% } %>
+		<%}%>
+		<%
+		 		if (uicomponent.getUiFormPageIteratorContact().getAvailablePage() > 1) {
+		 			uicomponent.renderUIComponent(iteratorContact) ;
+		 		}
+	 	%>
+	  </div>
+	<% uiform.end() %>
+	</div>
 </div>

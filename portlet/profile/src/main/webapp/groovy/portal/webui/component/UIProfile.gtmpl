@@ -31,7 +31,6 @@
 
   def identity = uicomponent.getProfile().identity;
 	def uriObj = uicomponent.getCurrentUriObj();
-  def dashboardURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/dashboard"
   def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities"
 	
 %>
@@ -41,7 +40,6 @@
 		<div class="Image"><span></span></div>
 	  </div>
 	  <ul class="UserLinkList">
-        <li><a href="${dashboardURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.Dashboard")%></a></li>
         <li><a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.LastActivity")%></a></li>
 	  </ul>
 	</div>

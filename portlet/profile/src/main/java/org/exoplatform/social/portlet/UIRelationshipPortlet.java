@@ -16,9 +16,7 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.dashboard.webui.component.UIDashboard;
 import org.exoplatform.social.portlet.activities.UIActivities;
-import org.exoplatform.social.portlet.dashboard.UISocialDashboard;
 import org.exoplatform.social.portlet.profile.UIProfile;
 import org.exoplatform.social.relation.UIMyRelation;
 import org.exoplatform.social.relation.UIPendingRelation;
@@ -63,7 +61,6 @@ public class UIRelationshipPortlet extends UIPortletApplication {
     uiTabpane.setSelectedTab(1);
     addChild(uiTabpane);
     addChild(UIProfile.class,null,null);
-    addChild(UISocialDashboard.class, null, null);
     addChild(UIActivities.class, null, null);
   }
   

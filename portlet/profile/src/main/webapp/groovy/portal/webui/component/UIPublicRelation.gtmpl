@@ -7,58 +7,58 @@
   UIFormPageIterator iterator = uicomponent.getUiFormPageIterator();
   def uriObj = uicomponent.getCurrentUriObj();
 %>
-<div class="UITabPane">
-<% uiform.begin() %>
-<div class="ContainerSpace">
-	<%if (list.size() == 0) {%>
-	  <div class="ContentSpace">
-	    <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
-	    <div style="clear: left;"><span></span></div>
-	  </div>
-  <%}%>
-	<% for(identity in list) {
-	    def profileURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId();
-	    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/dashboard";
-	    def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities";
-	    def fullName = identity.profile.fullName;
-	    def actionLink = uicomponent.event("AddContact", identity.getId());
-	    def position = identity.profile.getPropertyValue("position");
-	    if (!position) position = "";
-  %>
-    <div class="ContentSpace">
-    <div class="CommunityIcon"><span></span></div>
-    <div class="CommunityContainer">
-	    <div class="CommunityMane Line">
-	        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${profileURL}" class="CommunityNameMiddle">${fullName}</a></div>
-	        <div  class="ActionBar" onclick="$actionLink">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getId() + ".label.AddAsContact")%>
+<div class="UIPublicRelation">
+	<div class="UITabPane">
+	<% uiform.begin() %>
+		<div class="ContainerSpace">
+			<%if (list.size() == 0) {%>
+			  <div class="ContentSpace">
+			    <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+			    <div style="clear: left;"><span></span></div>
+			  </div>
+		  <%}%>
+			<% for(identity in list) {
+			    def profileURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId();
+			    def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities";
+			    def fullName = identity.profile.fullName;
+			    def actionLink = uicomponent.event("AddContact", identity.getId());
+			    def position = identity.profile.getPropertyValue("position");
+			    if (!position) position = "";
+		  %>
+	    <div class="ContentSpace">
+	    <div class="CommunityIcon"><span></span></div>
+	    <div class="CommunityContainer">
+		    <div class="CommunityMane Line">
+		        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${profileURL}" class="CommunityNameMiddle">${fullName}</a></div>
+		        <div  class="ActionBar" onclick="$actionLink">
+								<div class="LeftButton">
+									<div class="RightButton">
+										<div class="CenterButton">
+											<div class="SaveIcon">
+												<%=_ctx.appRes(uicomponent.getId() + ".label.AddAsContact")%>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-		    	</div>
-	        <div style="clear: both;"><span></span></div>
+			    	</div>
+		        <div style="clear: both;"><span></span></div>
+		    </div>
+		    <% if(position.length() > 0) { %>
+		    		<div class="Text Line">${position}</div>
+		    <%  } %>
+		    <div class="TagsName">
+		      <a href="${profileURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
+		      <a href="${actititesURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
+		    </div>
 	    </div>
-	    <% if(position.length() > 0) { %>
-	    		<div class="Text Line">${position}</div>
-	    <%  } %>
-	    <div class="TagsName">
-	      <a href="${profileURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
-	      <a href="${dashboardURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Dashboard")%></a> |
-	      <a href="${actititesURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
 	    </div>
-    </div>
-    </div>
-  <% } %>
-  <%
- 		if (uicomponent.getUiFormPageIterator().getAvailablePage() > 1) {
- 			uicomponent.renderUIComponent(iterator) ;
- 		}
- %>
- </div>
-<% uiform.end() %>
+	  <% } %>
+	  <%
+	 		if (uicomponent.getUiFormPageIterator().getAvailablePage() > 1) {
+	 			uicomponent.renderUIComponent(iterator) ;
+	 		}
+	 %>
+	 </div>
+	<% uiform.end() %>
+	</div>
 </div>
