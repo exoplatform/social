@@ -84,8 +84,8 @@
   	<owner-type>portal</owner-type>
     <owner-id>classic</owner-id>
     <name>Canvas</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
+    <access-permissions>*:/developer</access-permissions>
+    <edit-permission>manager:/developer</edit-permission>
     <application>
       <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletRandom</instance-id>
       <title>Canvas</title>

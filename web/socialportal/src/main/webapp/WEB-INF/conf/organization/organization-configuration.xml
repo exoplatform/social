@@ -200,6 +200,14 @@
                     <field  name="description"><string>the /spaces group</string></field>
                     <field  name="label"><string>Spaces</string></field>
                   </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
+                    <field  name="name"><string>developer</string></field>
+                    <field  name="parentId"><string></string></field>
+                    <field  name="description"><string>the /developer group</string></field>
+                    <field  name="label"><string>Developer</string></field>
+                  </object>
                 </value>                 
               </collection>
             </field>
