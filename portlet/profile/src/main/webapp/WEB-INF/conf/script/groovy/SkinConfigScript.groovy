@@ -26,6 +26,12 @@
     "/profile/skin/portal/webui/component/UIRelationshipPortlet/DefaultStylesheet.css",
     ServletContext
 ) ;
+SkinService.addSkin(
+    "profile/myprofile",
+    "Default",
+    "/profile/skin/portal/webui/component/UIRelationshipPortlet/DefaultStylesheet.css",
+    ServletContext
+) ;
  SkinService.addSkin(
     "profile/profileList",
     "Default",

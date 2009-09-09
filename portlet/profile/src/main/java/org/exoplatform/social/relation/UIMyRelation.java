@@ -119,7 +119,7 @@ public class UIMyRelation extends UIForm {
     String portalUrl = pcontext.getPortalURI();
     String uriObj = requestUrl.replace(portalUrl, "");
     if (uriObj.contains("/"))
-      uriObj = uriObj.split("/")[0];
+      uriObj = uriObj.split("/")[0] + "/" + uriObj.split("/")[1];
     return uriObj;
   }
   

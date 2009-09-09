@@ -1,0 +1,21 @@
+<%
+	import org.exoplatform.social.portlet.profile.UIProfile;
+	import org.exoplatform.social.portlet.activities.UIActivities;
+	import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.portlet.URLUtils;
+	
+	def app = URLUtils.getCurrentApplication();
+%>
+<div class="UIMyProfilePortlet" id="$uicomponent.id">
+	<%
+    if(app == null)
+      uicomponent.renderChild(UIProfile.class);
+    else if (app.equals("activities"))
+      uicomponent.renderChild(UIActivities.class);
+    else { %>
+    	Unexpected URL
+    <% }
+		
+		uicomponent.renderPopupMessages();
+  %>
+</div>

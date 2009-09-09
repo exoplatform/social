@@ -59,6 +59,40 @@
   </portlet>
  
  <portlet>
+    <description xml:lang="EN">MyProfile Portlet</description>
+    <portlet-name>myprofile</portlet-name>
+    <display-name xml:lang="EN">MyProfile</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/myprofile/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.RelationshipPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>MyProfile Portlet</title>
+      <short-title>MyProfile Portlet</short-title>
+      <keywords>myprofile</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIMyProfilePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+  
+ <portlet>
     <description xml:lang="EN">Profile Portlet</description>
     <portlet-name>profile</portlet-name>
     <display-name xml:lang="EN">Profile Display</display-name>

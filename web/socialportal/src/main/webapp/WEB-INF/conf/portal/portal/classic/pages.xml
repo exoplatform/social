@@ -65,6 +65,20 @@
     </application>
   </page>
 
+	<page>
+  	<page-id>portal::classic::MyProfile</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <name>MyProfile</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#classic:/profile/myprofile/myprofiles</instance-id>
+      <title>MyProfile</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+  
   <page>
   	<page-id>portal::classic::RelationShip</page-id>
   	<owner-type>portal</owner-type>

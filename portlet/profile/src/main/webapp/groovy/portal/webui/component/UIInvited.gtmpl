@@ -7,14 +7,13 @@
   UIMyRelation uiMyRelation = uicomponent.getAncestorOfType(UIMyRelation.class);
 	def currIdentity = uiMyRelation.getCurrentIdentity();
 	def portalURI = Util.getPortalRequestContext().getPortalURI();
-	def profileURL, dashboardURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
+	def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
 	def uriObj = uiMyRelation.getCurrentUriObj();
 %>
 <div id="$uicomponent.id" class="FeedBox">
 	<% for(relation in listRelation) {
 		def identity = relation.identity1;
 	  profileURL = portalURI + uriObj + "/" + identity.getRemoteId();
-    dashboardURL = portalURI + uriObj + "/" + identity.getRemoteId() + "/dashboard";
     actititesURL = portalURI + uriObj + "/" + identity.getRemoteId() + "/activities";
     fullName = identity.profile.fullName;
     position = identity.profile.getPropertyValue("position");
@@ -60,7 +59,6 @@
         <%  } %>
         <div class="TagsName">
           <a class="CommunityNameMiddle" href="$profileURL"><%=_ctx.appRes(uiMyRelation.getId() + ".label.Profile")%></a> |
-          <a class="CommunityNameMiddle" href="$dashboardURL"><%=_ctx.appRes(uiMyRelation.getId() + ".label.Dashboard")%></a> |
           <a class="CommunityNameMiddle" href="$actititesURL"><%=_ctx.appRes(uiMyRelation.getId() + ".label.Activities")%></a>
         </div>
     	</div>

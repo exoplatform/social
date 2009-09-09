@@ -40,11 +40,11 @@ public class URLUtils {
     if (uriObj.contains("/"))
       uriObj = uriObj.split("/")[0];
     String[] els = uri.split("/");
-
     // check first if we are on the page of a user
-    if (els.length >= 3 && els[1].equals(uriObj)) {
-      return els[2];
+    if (els.length > 3) {
+      return els[3];
     }
+      
     return null;
   }
 
@@ -54,8 +54,8 @@ public class URLUtils {
     String[] els = uri.split("/");
 
     // check first if we are on the page of a user
-    if (els.length >= 4) {
-      return els[3];
+    if (els.length > 4) {
+      return els[4];
     }
     return null;
   }

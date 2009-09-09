@@ -42,10 +42,22 @@
       <page-reference>portal::classic::MyDashboard</page-reference>
 	 </node>
 	 <node>
-	    <uri>relationship</uri>
-	    <name>relationship</name>
-	    <label>#{portal.classic.people}</label>
-      <page-reference>portal::classic::RelationShip</page-reference>
+	    <uri>myprofile</uri>
+	    <name>myprofile</name>
+	    <label>#{portal.classic.myprofile}</label>
+      <page-reference>portal::classic::MyProfile</page-reference>
+      <node>
+		    <uri>myprofile/relationship</uri>
+		    <name>relationship</name>
+		    <label>#{portal.classic.myrelation}</label>
+	      <page-reference>portal::classic::RelationShip</page-reference>
+	  	</node>
+      <node>
+		    <uri>myprofile/activities</uri>
+		    <name>activities</name>
+		    <label>#{portal.classic.myactivities}</label>
+		    <page-reference>portal::classic::activities</page-reference>
+	  	</node>
 	  </node>
     <node>
 	    <uri>canvas</uri>
@@ -58,12 +70,6 @@
 	    <name>spaces</name>
 	    <label>#{portal.classic.spaces}</label>
 	    <page-reference>portal::classic::manageSpaces</page-reference>
-	  </node>
-	  <node>
-	    <uri>activities</uri>
-	    <name>activities</name>
-	    <label>#{portal.classic.activities}</label>
-	    <page-reference>portal::classic::activities</page-reference>
 	  </node>
 	  <node>
 	    <uri>groupnavigation</uri>
