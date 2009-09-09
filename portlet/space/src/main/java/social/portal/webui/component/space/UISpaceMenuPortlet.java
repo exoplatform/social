@@ -55,7 +55,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     Space space = spaceSrc.getSpaceByUrl(spaceUrl);
     
     UserPortalConfigService dataService = getApplicationComponent(UserPortalConfigService.class);
-    PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId().substring(1));
+    PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
     
     PageNode homeNode = pageNav.getNode(spaceUrl);
     String userId = Util.getPortalRequestContext().getRemoteUser();       

@@ -305,7 +305,7 @@ public class SpaceUtils {
   static public PageNavigation createGroupNavigation(String groupId) throws SpaceException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
-    groupId = groupId.substring(1);
+    //groupId = groupId.substring(1);
     PageNavigation spaceNav;
     try {
       spaceNav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);

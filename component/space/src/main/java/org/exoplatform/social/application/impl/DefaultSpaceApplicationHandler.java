@@ -140,7 +140,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    */
   private void removeApplicationClassic(Space space, String appId) throws SpaceException {
     try {
-      String spaceNav = space.getGroupId().substring(1);
+      String spaceNav = space.getGroupId();
       PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
       PageNode homeNode = nav.getNode(space.getShortName());
       List<PageNode> childNodes = homeNode.getChildren();
@@ -199,15 +199,13 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     child.setInstanceId(windowId.toString());
     child.setTitle(app.getDisplayName());
     child.setShowInfoBar(false);
-    
     // create new Page
     Page page = null;
     try {
-      page = configService.createPageTemplate("space", PortalConfig.GROUP_TYPE, space.getGroupId().substring(1));
+      page = configService.createPageTemplate("space", PortalConfig.GROUP_TYPE, space.getGroupId());
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
     }
-    
     String pageName;
     if(isRoot) 
       pageName = space.getUrl();

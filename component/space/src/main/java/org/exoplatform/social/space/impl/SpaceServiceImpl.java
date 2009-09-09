@@ -320,11 +320,20 @@ public class SpaceServiceImpl implements SpaceService {
   public List<String> getMembers(Space space) throws SpaceException {
     try {
       OrganizationService orgService = getOrgService();
-      PageList usersPageList = orgService.getUserHandler().findUsersByGroup(space.getGroupId());
-      List<User> users = usersPageList.getAll();
+      //TODO tung.dang: temp change for using from gatein - have to roll back
+      //--------------------------------------------------------------------
+      GroupHandler groupHandler = orgService.getGroupHandler();
+      Group group = groupHandler.findGroupById(space.getGroupId());
+      MembershipHandler memberShipHandler = orgService.getMembershipHandler();
+      Collection list = memberShipHandler.findMembershipsByGroup(group);
       List<String> usernames = new ArrayList<String>();
-      for(User obj : users)
-        usernames.add(obj.getUserName());
+      for (Object obj : list) {
+        Membership membership = (Membership) obj;
+        usernames.add(membership.getUserName());
+      }
+//      PageList usersPageList = orgService.getUserHandler().findUsersByGroup(space.getGroupId());
+//      List<User> users = usersPageList.getAll();
+      //----------------------------------------------------------------------
       return usernames;
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);

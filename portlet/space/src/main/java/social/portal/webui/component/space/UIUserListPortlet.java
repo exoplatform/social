@@ -16,6 +16,7 @@
  */
 package social.portal.webui.component.space;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
@@ -58,11 +60,14 @@ public class UIUserListPortlet extends UIPortletApplication {
   public void init() throws Exception {
     int n = iterator_.getCurrentPage();
     Space space = getSpace();
-    List<User> users;
-    String groupId = space.getGroupId();
+    List<User> users = new ArrayList<User>();
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
-    PageList usersPageList = orgSrc.getUserHandler().findUsersByGroup(groupId);
-    users = usersPageList.getAll();
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    UserHandler userHandler = orgSrc.getUserHandler();
+    List<String> userNames = spaceService.getMembers(space);
+    for (String name : userNames) {
+      users.add(userHandler.findUserByName(name));
+    }
     PageList pageList = new ObjectPageList(users,3);
     iterator_.setPageList(pageList);
     if (n <= pageList.getAvailablePage()) iterator_.setCurrentPage(n);
