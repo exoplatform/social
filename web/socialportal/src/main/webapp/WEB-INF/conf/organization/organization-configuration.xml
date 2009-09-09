@@ -240,7 +240,8 @@
                     <field  name="groups">
                       <string>
                       	member:/platform/administrators,member:/platform/users,
-                      	manager:/organization/management/executive-board
+                      	manager:/organization/management/executive-board,
+                      	manager:/developer
                       </string>
                     </field>
                   </object>

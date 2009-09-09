@@ -23,6 +23,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.commons.utils.PageList;
 
 import java.util.List;
@@ -47,7 +48,14 @@ public class OrganizationIdentityProvider extends IdentityProvider {
 
 
   public final Identity  getIdentityByRemoteId(final Identity identity) throws Exception {
-    User user = organizationService.getUserHandler().findUserByName(identity.getRemoteId());
+    //TODO: tung.dang need to review again.
+    User user = null;
+    try {
+      UserHandler userHandler = organizationService.getUserHandler();
+      user = userHandler.findUserByName(identity.getRemoteId());
+    } catch (Exception e) {
+      return null;
+    }
     if (user == null) {
       return null;
     }
