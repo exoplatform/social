@@ -1,0 +1,157 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+a:link, a:hover, a:active, a:visited  {
+	text-decoration: none;
+}
+
+img {
+	border: none;
+}
+
+.ClearRight {
+	clear: right;
+}
+
+body {	
+	background: url('Backgrouds/Bg.jpg') repeat-x left top;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+/************ Gadger content *************/
+.GadgetContent {
+	background: #ffffff;
+	padding-bottom: 10px;
+}
+
+.GadgetContent .TopGadgetContent {
+	padding: 2px;
+}
+
+.GadgetContent .ActivityForm {
+	background: #d3d3d3;
+	padding: 3px 0 0 8px;
+	font-weight: bold;
+	height: 74px;
+}
+
+.GadgetContent .ActivityForm form {
+	margin: 5px 12px 0 0;
+}
+
+.GadgetContent .ActivityForm input {
+	border: 1px solid #c5c6a9;
+	height: 42px;
+	width: 816px;
+}
+
+.GadgetContent .ActivityForm .ButtonAdd  {
+	background: url('Backgrouds/ButtonAddCanvasMode.gif') no-repeat left top;
+	float: right;
+	height: 44px;
+	line-height: 44px;
+	text-align: center;
+	width: 44px;	
+	cursor: pointer;
+}
+
+.GadgetContent .ActivityForm .AddActivityForm {
+	margin: 5px 20px 0 0;
+}
+
+.GadgetContent .CommentInput .ButtonComment  {
+	background: url('Backgrouds/Comment.gif') no-repeat left top;
+	float: right;
+	height: 22px;
+	line-height: 22px;
+	text-align: center;
+	width: 74px;	
+	cursor: pointer;
+}
+
+.GadgetContent .ActivitiesContent {
+	padding-left: 20px;
+	padding-right: 20px;
+	margin-top: 5px;
+}
+
+.ActivitiesContent a.TitleItem {
+	color: #2276fc;
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.GadgetContent .ActivitiesContent .ImageItem {
+	display: block;
+	float: left;
+}
+
+.GadgetContent .ActivitiesContent .Content {
+	overflow: hidden;
+	padding-left: 5px;
+}
+
+.GadgetContent .ActivitiesContent .NewsDate {
+	color: #737373;
+	font-size: 9px;
+	padding-bottom: 5px;
+}
+
+.GadgetContent .ActivitiesContent .NewsComment {
+	color: #737373;
+	padding: 5px;
+}
+
+.GadgetContent .ActivitiesContent .ContainerView {
+	padding-bottom: 5px;
+	border: 1px solid #f1f1f1;
+	margin-top: 4px;
+}
+
+.GadgetContent .ActivitiesContent .Container {
+	margin-left: 40px;
+	padding-bottom: 5px;
+}
+
+.GadgetContent .ActivitiesContent .TitleBar {
+	color: #737373;
+	padding: 5px 8px 5px 12px;
+	background: #f1f1f1;
+}
+
+.GadgetContent .ActivitiesContent .ContainerView .ShowContent {
+	padding: 5px 0px 5px 0px;
+	border-bottom: 1px solid #f1f1f1;
+	margin: 5px 5px 0px 5px;
+}
+
+.GadgetContent .ActivitiesContent  .CommentInput {
+	margin-top: 5px;
+}
+
+.GadgetContent .ActivitiesContent  .CommentInput input {
+	border: 1px solid #c7c7c7;
+	width: 750px;
+	height: 19px;
+}
+
+.GadgetContent .Empty {
+	color: red;
+	text-align: center;
+}
+
+/********** Line *********/
+hr {
+	color: #e0ecff;
+	background-color: #e0ecff;
+	border: 0;
+	height: 1px;
+	margin: 5px 20px;
+	_margin: 0px 20px;
+}
+

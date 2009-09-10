@@ -22,17 +22,16 @@
    <Require feature="opensocial-0.7"></Require>
    <Require feature="dynamic-height"></Require>
    <Require feature="settitle"></Require>
+   <Require feature="views"></Require>
  </ModulePrefs>
- <Content type="html">
+ <Content type="html" view="home">
    <![CDATA[
 
 <link rel="stylesheet" type="text/css" href="activities/style.css"></link>
 <script type="text/javascript" src="activities/script.js"></script>
 <script type="text/javascript">
-
 	var statusUpdates = new StatusUpdate();
 	gadgets.util.registerOnLoadHandler(statusUpdates.init());
-
 </script>
 
 <div class="GadgetContent">
@@ -49,6 +48,34 @@
 </div>
 <div id="more" style="text-align:right;"></div>
 </div>
+]]>
+</Content>
+<Content type="html" view="canvas">
+   <![CDATA[
+
+<link rel="stylesheet" type="text/css" href="activities/CanvasModeStyleSheet.css"></link>
+<script type="text/javascript" src="activities/script.js"></script>
+<script type="text/javascript">
+	var statusUpdates = new StatusUpdate();
+	gadgets.util.registerOnLoadHandler(statusUpdates.init());
+</script>
+
+<div class="GadgetContent">
+	<div class="TopGadgetContent">
+		<div class="ActivityForm">
+			<span>What're you doing?</span>
+			<div class="AddActivityForm">
+				<div class="ButtonAdd" onclick="eXo.social.statusUpdate.postNewActivity(); return false;"> Add</div>
+				<input type="text" id ="newActivity" name="activityInputBox" onkeypress="eXo.social.statusUpdate.streamSubmit(event);"/>
+				<div class="ClearRight"><span></span></div>
+			</div>
+		</div>
+		<div id="ActivitiesContainer"></div>
+	</div>
+</div>
+<div id="more" style="text-align:right;"></div>
+</div>
+
 ]]>
 </Content>
 </Module>

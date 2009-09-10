@@ -12,7 +12,7 @@ function StatusUpdate() {
 
 StatusUpdate.prototype.init = function() {
   eXo.social.statusUpdate = new StatusUpdate();
-	eXo.social.statusUpdate.refresh();	
+  eXo.social.statusUpdate.refresh();	
 }
 
 StatusUpdate.prototype.refresh = function() {
@@ -66,6 +66,7 @@ StatusUpdate.prototype.refresh = function() {
 }
 
 StatusUpdate.prototype.handleActivities = function(dataResponse) {
+  var currentView = gadgets.views.getCurrentView().getName();
   if (!eXo.social.statusUpdate.viewer) {
     eXo.social.statusUpdate.viewer = dataResponse.get('viewer').getData();
     eXo.social.statusUpdate.owner = dataResponse.get('owner').getData();
@@ -78,7 +79,7 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
   //Total activities
   var totalAct = dataResponse.get('ownerActivities').getData()['activities'].getTotalSize();
   totalAct+= dataResponse.get('activities').getData()['activities'].getTotalSize();
-	gadgets.window.setTitle("Activities from " + eXo.social.statusUpdate.owner.getDisplayName() + "'s contact");
+  gadgets.window.setTitle("Activities from " + eXo.social.statusUpdate.owner.getDisplayName() + "'s contact");
 
   var html = '';
   if (!eXo.social.statusUpdate.activities || eXo.social.statusUpdate.activities.length == 0) {
@@ -119,7 +120,19 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 		html += '<div class="NewsDate">';
 		if (url) html += '<a href="' + url + '" target="_blank">link</a>' + ' | ';
 		html += 'posted on ' + ("" + (new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')))).substring(0, 24) + '</div>';
+		
+		if (currentView == "canvas") {
+			var timeAgo = eXo.social.statusUpdate.timeDetermineAgo(new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')));
+			html += '<div id="NewsComment" class="NewsComment">';
+			html += timeAgo;
+			html += '<a class="Links" id="comment'+ i +'" href="#">' + ' Comment ' + '</a>';
+			html += ' | ';
+			html += '<a class="Links"  id="like'+ i +'" href="#">' + ' Like ' + '</a>';
+			html += '</div>';
+		}
+		
 		html += '</div>';
+		
 		if(i < activitiesLength -1 )html += '<hr/>';
   }
   
@@ -161,6 +174,50 @@ StatusUpdate.prototype.timeToPrettyString = function(B) {
     var date = new Date();
     date.setTime(B);
     return date;
+}
+
+StatusUpdate.prototype.timeDetermineAgo = function(B) {
+    if (isNaN(B)) {
+        return "an indeterminate amount of time ago"
+    }
+    time = (new Date().getTime() - B) / 1000;
+    if (time < 60) {
+        return "less than a minute ago"
+    } else {
+        if (time < 120) {
+            return "about a minute ago"
+        } else {
+            if (time < 3600) {
+                var A = Math.round(time / 60);
+                return "about " + A + " minutes ago"
+            } else {
+                if (time < 7200) {
+                    return "about an hour ago"
+                } else {
+                    if (time < 86400) {
+                        var A = Math.round(time / 3600);
+                        return "about " + A + " hours ago"
+                    } else {
+                        if (time < 172800) {
+                            return "about a day ago"
+                        } else {
+                            if (time < 2592000) {
+                                var A = Math.round(time / 86400);
+                                return "about " + A + " days ago"
+                            } else {
+                                if (time < 5184000) {
+                                    return "about a month ago"
+                                } else {
+                                    var A = Math.round(time / 2592000);
+                                    return "about " + A + " months ago"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 StatusUpdate.prototype.postNewActivity = function(){
