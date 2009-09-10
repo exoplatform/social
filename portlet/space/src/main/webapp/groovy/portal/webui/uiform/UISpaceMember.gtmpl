@@ -34,12 +34,10 @@
 						<div class="SearchInviteForm">
 						  <div class="AddInvite"><% uiform.renderField("user") %></div>
 						  	<div class="SearchInviteButton" style="float: left;">
-						  
 							    <div class="LeftButton">
 							      <div class="RightButton">
 							        <div class="CenterButton">
-							          <% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
-						          <div class="IconButton" onclick="$inviteAction"><%= _ctx.appRes(uicomponent.getId() + ".button.invite")%></div>
+						          	<div class="IconButton" onclick="$searchUserAction"><%= _ctx.appRes(uicomponent.getId() + ".label.search")%></div>
 							        </div>
 							      </div>
 							    </div>
@@ -47,16 +45,17 @@
 								</div>
 						  <div style="clear: left;"><span></span></div>
 				  	</div>
-				  	<div class="UIActionContainer">
-						  	<div onclick="$searchUserAction">
-							    <div class="LeftButton">
-							      <div class="RightButton">
-							        <div class="CenterButton">
-							        	 <a href="#"><%= _ctx.appRes(uicomponent.getId() + ".label.search")%></a>
-							        </div>
-							      </div>
-							    </div>
-							  </div>
+				  	<div class="SearchInviteButton">
+				  		<div class="UIActionContainer" style="padding: 8px 0px; margin-left:0px">
+				  			<% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
+						    <div class="LeftButton">
+						      <div class="RightButton">
+						        <div class="CenterButton">
+						        	 <div class="InviteButton" onclick="$inviteAction"><%= _ctx.appRes(uicomponent.getId() + ".button.invite")%></div>
+						        </div>
+						      </div>
+						    </div>
+							</div>
 						</div>
 					  
 					  <div style="clear: left;"><span></span></div>
