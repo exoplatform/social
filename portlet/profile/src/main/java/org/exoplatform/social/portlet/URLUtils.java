@@ -34,14 +34,11 @@ public class URLUtils {
   public static String getCurrentUser() {
     PortalRequestContext request = Util.getPortalRequestContext() ;
     String uri = request.getNodePath();
-    String requestUrl = request.getRequestURI();
-    String portalUrl = request.getPortalURI();
-    String uriObj = requestUrl.replace(portalUrl, "");
-    if (uriObj.contains("/"))
-      uriObj = uriObj.split("/")[0];
     String[] els = uri.split("/");
     // check first if we are on the page of a user
     if (els.length > 3) {
+      if ((els.length == 4) && els[3].equals("activities"))
+         return els[2];
       return els[3];
     }
       
@@ -54,8 +51,9 @@ public class URLUtils {
     String[] els = uri.split("/");
 
     // check first if we are on the page of a user
-    if (els.length > 4) {
-      return els[4];
+    if (els.length >= 4) {
+      if (els[els.length - 1].equals("activities"))
+        return els[els.length - 1];
     }
     return null;
   }
