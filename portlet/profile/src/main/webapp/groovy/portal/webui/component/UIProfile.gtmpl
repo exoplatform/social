@@ -34,14 +34,20 @@
 	def uriObj = uicomponent.getCurrentUriObj();
   def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities"
 	
-	def labelChangeAvatar = _ctx.appRes("${uicomponent.id}.label.change_avatar")
+	def labelChangeAvatar = _ctx.appRes("${uicomponent.id}.label.change_avatar");
+	def imageSource = uicomponent.getImageSource();
 	
 %>
   <div class="UIProfile" id="$uicomponent.id">
     <div class="LeftColumn">
 	  <div class="AvatarSpace">
-		  <div class="Image"><span></span></div>
-		  <a href="#" onclick="${uicomponent.event('ChangeAvatar')}" id="AvatarChangeLink" class="ShowedAvatarChangeLink" title=""><%= labelChangeAvatar %></a>
+		  <div class="Image" onclick="${uicomponent.event('ChangeAvatar')}" title="Click to chage avatar">
+		  	<% if(imageSource == null) { %>
+		  		<img src="/profile/skin/portal/webui/component/UIRelationshipPortlet/background/ImgAvatar.gif" width="156" height="197">
+		  	<% } else { %>
+		  		<img src="$imageSource" width="156" height="197">
+		  	<% } %>
+		  </div>
 	  </div>
 	  <ul class="UserLinkList">
         <li><a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.LastActivity")%></a></li>

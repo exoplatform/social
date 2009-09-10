@@ -19,8 +19,12 @@ package org.exoplatform.social.portlet.profile;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.download.DownloadService;
 import org.exoplatform.download.InputStreamDownloadResource;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -54,6 +58,7 @@ import org.exoplatform.webui.form.UIFormUploadInput;
 })
 public class UIAvatarUploader extends UIForm {
   private UIFormUploadInput uiAvatarUploadInput;
+  final public static String AVARTAR = "avatar";
   private byte[] imageBytes = null;
   //private final Integer avatarWidth = 156;
   //private final Integer avatarHeight = 197;
@@ -105,11 +110,17 @@ public class UIAvatarUploader extends UIForm {
       UIFormUploadInput uiAvatarUploadInput = uiAvatarUploader.getChild(UIFormUploadInput.class);
       UIPopupWindow uiPopup = uiAvatarUploader.getParent();
       InputStream input = uiAvatarUploadInput.getUploadDataAsStream();
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      UIProfile uiProfile = uiAvatarUploader.getAncestorOfType(UIProfile.class);
       if (input == null) {
         uiApp.addMessage(new ApplicationMessage(MSG_IMG_NOT_UPLOADED, null, ApplicationMessage.WARNING));
       } else {
         uiPopup.setShow(false);
         uiAvatarUploader.setImageBytes(input);
+        Profile p = uiProfile.getProfile();
+        p.setProperty(AVARTAR, uiAvatarUploader.getImageSource());
+        im.saveProfile(p);
       }
       //TODO Save to database
       //Update UIProfile

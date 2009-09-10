@@ -16,11 +16,14 @@
  */
 package org.exoplatform.social.portlet.profile;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.download.DownloadService;
+import org.exoplatform.download.InputStreamDownloadResource;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -108,6 +111,11 @@ public class UIProfile extends UIContainer {
       return false;
 
     return getCurrentProfileID().equals(rUser);
+  }
+  
+  protected String getImageSource() throws Exception {
+    Profile p = getProfile();
+    return (String) p.getProperty("avatar");
   }
   
   /**
