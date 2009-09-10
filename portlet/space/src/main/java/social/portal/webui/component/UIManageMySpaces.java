@@ -114,7 +114,7 @@ public class UIManageMySpaces extends UIContainer {
   public UIManageMySpaces() throws Exception {
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);
-    uiPopup.setWindowSize(500, 0);
+    uiPopup.setWindowSize(400, 0);
     addChild(uiPopup);
   }
   
@@ -251,7 +251,7 @@ public class UIManageMySpaces extends UIContainer {
       UINavigationNodeSelector selector = pageManager.getChild(UINavigationNodeSelector.class);
       selector.loadNavigationByNavId(groupNav.getId(), uiMySpaces.navigations);
       uiPopup.setUIComponent(pageManager);
-      uiPopup.setWindowSize(800, 0);
+      //uiPopup.setWindowSize(400, 0);
       uiPopup.setShow(true);
     }
     

@@ -276,7 +276,6 @@ public class SpaceUtils {
   static public void addCreatorToGroup(String creator, String groupId) throws SpaceException {
     PortalContainer portalContainer = PortalContainer.getInstance();
     OrganizationService organizationService = (OrganizationService) portalContainer.getComponentInstanceOfType(OrganizationService.class);
-    // System.out.println(organizationService);
     try {
       // TODO: check whether user is already manager?
       GroupHandler groupHandler = organizationService.getGroupHandler();
@@ -337,7 +336,6 @@ public class SpaceUtils {
   static public PageNavigation getGroupNavigation(String groupId) throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
-    groupId = groupId.substring(1);
     return (PageNavigation) configService.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
   }
   
