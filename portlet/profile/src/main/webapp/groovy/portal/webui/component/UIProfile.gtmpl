@@ -17,15 +17,16 @@
 
 -->
 <%
-  import org.exoplatform.portal.webui.util.Util ;
-
+  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.webui.core.UIPopupWindow
   
   def rcontext = _ctx.getRequestContext() ;
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileSection','/profile/javascript/') ;
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.LiveValidation','/profile/javascript/') ;
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.FancyLabel','/profile/javascript/') ;
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.Event','/profile/javascript/') ;
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.Type','/profile/javascript/') ;
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileSection','/profile/javascript/')
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.LiveValidation','/profile/javascript/')
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.FancyLabel','/profile/javascript/')
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.Event','/profile/javascript/')
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.Type','/profile/javascript/')
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIAvatarUploader','/profile/javascript')
 //  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.DOMAssistant','/profile/javascript/') ;
 //  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.pure','/profile/javascript/') ;
 
@@ -33,11 +34,14 @@
 	def uriObj = uicomponent.getCurrentUriObj();
   def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities"
 	
+	def labelChangeAvatar = _ctx.appRes("${uicomponent.id}.label.change_avatar")
+	
 %>
   <div class="UIProfile" id="$uicomponent.id">
     <div class="LeftColumn">
 	  <div class="AvatarSpace">
-		<div class="Image"><span></span></div>
+		  <div class="Image"><span></span></div>
+		  <a href="#" onclick="${uicomponent.event('ChangeAvatar')}" id="AvatarChangeLink" class="ShowedAvatarChangeLink" title=""><%= labelChangeAvatar %></a>
 	  </div>
 	  <ul class="UserLinkList">
         <li><a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.LastActivity")%></a></li>
@@ -53,4 +57,5 @@
 		</div>
 	</div>
 	<div style="clear: left;"><span></span></div>
+	<div class="UIAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

@@ -46,6 +46,13 @@
   background: url(background/ImgAvatar.gif) no-repeat left;
 }
 
+.UIProfile .AvatarSpace .HiddenAvatarChangeLink {
+  display: none;
+}
+
+.UIProfile .AvatarSpace .ShowedAvatarChangeLink {
+  display: inline;
+}
 
 .UIProfile .ContainerSpace {
 	margin-left: 200px;

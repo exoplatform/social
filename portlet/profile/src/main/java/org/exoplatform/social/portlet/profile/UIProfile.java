@@ -29,23 +29,40 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 
 @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class,
-    template = "app:/groovy/portal/webui/component/UIProfile.gtmpl"
+    template = "app:/groovy/portal/webui/component/UIProfile.gtmpl",
+    events = {
+      @EventConfig(listeners=UIProfile.ChangeAvatarActionListener.class)
+    }
 )
 public class UIProfile extends UIContainer {
-
+  
+  private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
+  
+  /**
+   * Constructor to initialize UIAvatarUploader popup and info sections
+   * @throws Exception
+   */
   public UIProfile() throws Exception {
+    
     List sections = getSections();
     java.util.Iterator it = sections.iterator();
     while (it.hasNext()) {
       Class sect = (Class) it.next();
       addChild(sect, null, null);
     }
+    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
+    uiPopup.setWindowSize(500, 0);
+    addChild(uiPopup);
   }
 
 
@@ -92,7 +109,25 @@ public class UIProfile extends UIContainer {
 
     return getCurrentProfileID().equals(rUser);
   }
+  
+  /**
+   * Action trigger for editting avatar. An UIAvatarUploader popup should be displayed.
+   * @author hoatle
+   *
+   */
+  static public class ChangeAvatarActionListener extends EventListener<UIProfile> {
 
+    @Override
+    public void execute(Event<UIProfile> event) throws Exception {
+      UIProfile uiProfile = event.getSource();
+      UIPopupWindow uiPopup = uiProfile.getChild(UIPopupWindow.class);
+      UIAvatarUploader uiAvatarUploader = uiProfile.createUIComponent(UIAvatarUploader.class, null, null);
+      uiPopup.setUIComponent(uiAvatarUploader);
+      uiPopup.setShow(true);
+    }
+    
+  }
+  
   private String getCurrentProfileID() {
     String username = URLUtils.getCurrentUser();
     if(username != null)
