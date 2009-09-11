@@ -32,7 +32,7 @@
 
 <div class="UIManageSpaces" id="$uicomponent.id">
   <div class="ContainerSpace">
-    <%if (pendingSpaces.size == 0) {%>
+    <%if (pendingSpaces.size() == 0) {%>
     <div class="SpaceContent">
         <div class="NotYet"><%= labelNoPending %></div>
         <div style="clear: left;"><span></span></div>

@@ -18,9 +18,11 @@ package social.portal.webui.component;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -28,6 +30,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -50,6 +53,17 @@ public class UIManagePublicSpaces extends UIContainer {
   static private final String MSG_REQUEST_JOIN_SUCCESS = "UIManagePublicSpaces.msg.request_join_success";
   private SpaceService spaceService = null;
   private String userId = null;
+  private UIPageIterator iterator;
+  private final String ITERATOR_ID = "UIIteratorPublicSpaces";
+  private final Integer SPACES_PER_PAGE = 4;
+  
+  /**
+   * Constructor to initialize iterator
+   * @throws Exception
+   */
+  public UIManagePublicSpaces() throws Exception {
+    iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
+  }
   
   private String getUserId() {
     if(userId == null) userId = Util.getPortalRequestContext().getRemoteUser();
@@ -60,12 +74,43 @@ public class UIManagePublicSpaces extends UIContainer {
     if(spaceService == null) spaceService = getApplicationComponent(SpaceService.class);
     return spaceService;
   }
-
-  public List<Space> getPublicSpaces() throws SpaceException {
+  /**
+   * Get UIPageIterator
+   * @return
+   */
+  public UIPageIterator getUIPageIterator() {
+    return iterator;
+  }
+  
+  /**
+   * Get all public spaces of a user
+   * @return
+   * @throws SpaceException
+   */
+  private List<Space> getAllPublicSpaces() throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    List<Space> publicSpaces = spaceService.getPublicSpaces(userId);
-    return publicSpaces;
+    return spaceService.getPublicSpaces(userId);
+  }
+  
+  /**
+   * Get paginated public spaces so that user can request to join
+   * @return
+   * @throws Exception 
+   */
+  @SuppressWarnings("unchecked")
+  public List<Space> getPublicSpaces() throws Exception {
+    int currentPage = iterator.getCurrentPage();
+    List<Space> spaceList = getAllPublicSpaces();
+    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaceList), SPACES_PER_PAGE);
+    iterator.setPageList(pageList);
+    int pageCount = iterator.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iterator.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iterator.setCurrentPage(currentPage - 1);
+    }
+    return iterator.getCurrentPageData();
   }
   
   /**

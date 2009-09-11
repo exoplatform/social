@@ -22,6 +22,7 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.exoplatform.webui.event.Event.Phase;
 
 /**
  * Created by The eXo Platform SAS
@@ -48,7 +49,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIManageSpacesPortlet1 extends UIPortletApplication {
 
   public UIManageSpacesPortlet1() throws Exception {
-    UITabPane uiTabPane = createUIComponent(UITabPane.class, "UIVerticalTabPane", null);
+    UITabPane uiTabPane = createUIComponent(UITabPane.class, "UIVerticalTabPane", "ManageSpacesTabPane");
     uiTabPane.addChild(UIManageMySpaces.class, null, null);
     uiTabPane.addChild(UIManagePublicSpaces.class, null, null);
     uiTabPane.addChild(UIManagePendingSpaces.class, null, null);

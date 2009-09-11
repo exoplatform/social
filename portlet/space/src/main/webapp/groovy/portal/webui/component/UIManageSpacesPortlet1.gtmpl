@@ -19,8 +19,6 @@
 -->
 */
 %>
-<div>
-    <div class="UIManageSpacesPortlet1" id="$uicomponent.id"> 
-        <% uicomponent.renderChildren() %>
-    </div>
+<div class="UIManageSpacesPortlet1" id="$uicomponent.id"> 
+    <% uicomponent.renderChildren() %>
 </div>

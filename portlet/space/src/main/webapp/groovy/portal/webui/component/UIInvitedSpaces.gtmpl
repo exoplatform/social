@@ -1,0 +1,65 @@
+<%
+/*
+<!--
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+import org.exoplatform.social.space.SpaceUtils
+
+def spaces = uicomponent.beans
+def parent = uicomponent.parent
+def uiManageMySpaces = parent.parent
+uiManageMySpaces.loadInvitedSpaces()
+def uicomponentId = uiManageMySpaces.id
+def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
+def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
+def labelActionAcceptSpace = _ctx.appRes("${uicomponentId}.label.action_accept_space")
+def labelActionDenySpace = _ctx.appRes("${uicomponentId}.label.action_deny_space")
+%>
+<div id="$uicomponent.id" class="FeedBox">
+<% spaces.each({space->
+   def acceptAction = parent.event("Accept", space.id)
+   def denyAction = parent.event("Deny", space.id)
+%>
+    <div class="SpaceContent">
+		  <div class="AvatarSpace">
+			    <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+			</div>
+			<div class="MySpacesContent">
+			    <div class="ContentBar">
+			        <div class="MySpaceLabel"><%= space.name %></div>
+			        <div onclick="$denyAction" class="DenySpace ButtonIconSpace" title="$labelActionDenySpace"><span></span></div>
+			        <div onclick="$acceptAction" class="AcceptSpace ButtonIconSpace" title="$labelActionAcceptSpace"><span></span></div>
+			        <div style="clear: left;"><span></span></div>
+			    </div>
+			    <div class="MySpacesContentContent">
+			        <table class="UIGridSpace">
+			            <tr>
+			                <td class="FieldLabel"><%= fieldLabelDescription %></td>
+			                <td class="FieldComponent"><%= space.description %></td>
+			            </tr>
+			            <tr>
+			                <td class="FieldLabel"><%= fieldLabelMembers %></td>
+			                <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+			            </tr>
+			        </table>
+			    </div>
+			</div>
+			<div style="clear: left;"><span></span></div>
+    </div>
+<%})%>
+</div>

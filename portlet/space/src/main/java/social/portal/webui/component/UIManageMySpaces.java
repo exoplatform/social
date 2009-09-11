@@ -22,7 +22,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.exoplatform.commons.utils.ObjectPageList;
+import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
@@ -35,6 +36,7 @@ import org.exoplatform.portal.webui.page.UIPageNodeForm2;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -44,7 +46,9 @@ import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.UIRepeater;
 import org.exoplatform.webui.core.UIVirtualList;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -85,7 +89,12 @@ import org.exoplatform.webui.event.Event.Phase;
         @EventConfig(listeners = UIPageNodeForm2.ClearPageActionListener.class, phase = Phase.DECODE),
         @EventConfig(listeners = UIPageNodeForm2.CreatePageActionListener.class, phase = Phase.DECODE)
       }
-  )   
+  ),
+  @ComponentConfig(
+    id = "UIInvitedSpaces",
+    type = UIRepeater.class,
+    template = "app:/groovy/portal/webui/component/UIInvitedSpaces.gtmpl"
+  )
 })
 public class UIManageMySpaces extends UIContainer {
   //Message Bundle
@@ -103,19 +112,45 @@ public class UIManageMySpaces extends UIContainer {
   
   
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
-  
+  private final Integer INVITED_SPACES_PER_PAGE = 4;
+  private UIPageIterator iterator;
+  private final Integer SPACES_PER_PAGE = 4;
+  private final String ITERATOR_ID = "UIIteratorMySpaces";
   private SpaceService spaceService = null;
   private String userId = null;
   private List<PageNavigation> navigations;
+  
+  private UIVirtualList uiVirtualList;
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
    * @throws Exception
    */
   public UIManageMySpaces() throws Exception {
+    uiVirtualList = addChild(UIVirtualList.class, null, null);
+    UIRepeater uiInvitedSpaces = createUIComponent(UIRepeater.class, "UIInvitedSpaces", "UIInvitedSpaces");
+    uiVirtualList.setPageSize(INVITED_SPACES_PER_PAGE);
+    uiVirtualList.setUIComponent(uiInvitedSpaces);
+    iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);
     uiPopup.setWindowSize(400, 0);
     addChild(uiPopup);
+  }
+  /**
+   * Get UIPageIterator
+   * @return
+   */
+  public UIPageIterator getMySpacesUIPageIterator() {
+    return iterator;
+  }
+  
+  /**
+   * Load InvitedSpaces
+   * @return
+   * @throws Exception 
+   */
+  public void loadInvitedSpaces() throws Exception {
+    uiVirtualList.dataBind(getInvitedPageList());
   }
   
   /**
@@ -141,7 +176,6 @@ public class UIManageMySpaces extends UIContainer {
    * Load Navigations
    * @throws Exception
    */
-  @SuppressWarnings("unchecked")
   private void loadNavigations() throws Exception {
     navigations = new ArrayList<PageNavigation>();
     UserACL userACL = getApplicationComponent(UserACL.class);
@@ -161,17 +195,37 @@ public class UIManageMySpaces extends UIContainer {
       }
     }
   }
+  
   /**
-   * Get spaces in which user is member or leader
-   * 
-   * @return userSpaces List<Space>
+   * Get all user's spaces
+   * @return
    * @throws Exception
    */
-  public List<Space> getUserSpaces() throws Exception {
+  private List<Space> getAllUserSpaces() throws Exception {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
     List<Space> userSpaces = spaceService.getSpaces(userId);
     return SpaceUtils.getOrderedSpaces(userSpaces);
+  }
+  /**
+   * Get paginated spaces in which user is member or leader
+   * 
+   * @return paginated spaces list
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  public List<Space> getUserSpaces() throws Exception {
+    int currentPage = iterator.getCurrentPage();
+    List<Space> spaceList = getAllUserSpaces();
+    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaceList), SPACES_PER_PAGE);
+    iterator.setPageList(pageList);
+    int pageCount = iterator.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iterator.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iterator.setCurrentPage(currentPage - 1);
+    }
+    return iterator.getCurrentPageData();
   }
   
   public String getAbsoluteSpaceUrl(Space space) {
@@ -181,13 +235,24 @@ public class UIManageMySpaces extends UIContainer {
     return str.substring(0, str.indexOf(portalRequestContext.getRequestContextPath()));
   }
   
+  private PageList<Space> getInvitedPageList() throws Exception {
+    List<Space> invitedList = getAllInvitedSpaces();
+    //return (PageList<Space>) new ObjectPageList<Space>(invitedList, invitedList.size());
+    Integer invitedListSize = 0;
+    if (invitedList.size() == 0) {
+      invitedListSize = 1;
+    } else {
+      invitedListSize = invitedList.size();
+    }
+    return new LazyPageList<Space>(new SpaceListAccess(invitedList), invitedListSize); 
+  }
+  
   /**
-   * Get spaces which user is invited to join
-   * 
-   * @return invitedSpaces List<Space>
+   * Get all spaces which user is invited to join
+   * @return
    * @throws Exception
    */
-  public List<Space> getInvitedSpaces() throws Exception {
+  public List<Space> getAllInvitedSpaces() throws Exception {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
     List<Space> invitedSpaces = spaceService.getInvitedSpaces(userId);
@@ -213,7 +278,7 @@ public class UIManageMySpaces extends UIContainer {
   
   /**
    * This action is triggered when user click on EditSpace
-   * 
+   * Currently, when user click on EditSpace, they will be redirected to /xxx/SpaceSettingPortlet
    * When user click on editSpace, the user is redirected to SpaceSettingPortlet
    *
    */

@@ -55,7 +55,7 @@ public class UISpaceInfo extends UIForm {
   private final String SPACE_PRIORITY = "priority";
   //These priority variables should be set in Space.java model
   private final String PRIORITY_HIGH = "high";
-  private final String PRIORITY_MIDDLE = "middle";
+  private final String PRIORITY_IMMEDIATE = "immediate";
   private final String PRIORITY_LOW = "low";
   
   public UISpaceInfo() throws Exception {
@@ -67,14 +67,15 @@ public class UISpaceInfo extends UIForm {
     addUIFormInput(new UIFormTextAreaInput("description","description",null)
         .addValidator(StringLengthValidator.class, 0, 255));
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
-    SelectItemOption<String> pHight = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
-    SelectItemOption<String> pMiddle = new SelectItemOption<String>(PRIORITY_MIDDLE, Space.MIDDLE_PRIORITY);
+    SelectItemOption<String> pHigh = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
+    SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_IMMEDIATE, Space.MIDDLE_PRIORITY);
     SelectItemOption<String> pLow = new SelectItemOption<String>(PRIORITY_LOW, Space.LOW_PRIORITY);
-    priorityList.add(pHight);
-    priorityList.add(pMiddle);
+    priorityList.add(pHigh);
+    priorityList.add(pImmediate);
     priorityList.add(pLow);
     UIFormSelectBox selectPriority = new UIFormSelectBox(SPACE_PRIORITY, SPACE_PRIORITY, priorityList);
     addUIFormInput(selectPriority);
+    //temporary disable tag
     addUIFormInput((UIFormStringInput)new UIFormStringInput("tag","tag",null).setRendered(false));
   }
   

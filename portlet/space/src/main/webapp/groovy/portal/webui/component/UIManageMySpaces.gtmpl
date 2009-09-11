@@ -22,14 +22,18 @@
 %>
 <% 
 	import org.exoplatform.portal.webui.util.Util
+	import org.exoplatform.webui.core.UIPageIterator
 	import org.exoplatform.webui.core.UIPopupWindow
+	import org.exoplatform.webui.core.UIVirtualList
 	import org.exoplatform.social.space.SpaceUtils
 	import social.portal.webui.component.UIManageMySpaces
 	
+	//Reload uiVirtualList
+	uicomponent.loadInvitedSpaces()
+	
 	def uicomponentId = uicomponent.id
 	def labelInvitedSpaces = _ctx.appRes("${uicomponentId}.label.invited_spaces")
-	def labelActionAccept = _ctx.appRes("${uicomponentId}.label.action_accept")
-	def labelActionDeny = _ctx.appRes("${uicomponentId}.label.action_deny")
+	def labelYourSpaces = _ctx.appRes("${uicomponentId}.label.your_spaces")
 	def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
 	def labelActionEditSpaceNavigation = _ctx.appRes("${uicomponentId}.label.action_edit_space_navigation")
 	def labelActionDeleteSpace = _ctx.appRes("${uicomponentId}.label.action_delete_space")
@@ -39,47 +43,26 @@
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
   def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
   def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
+  def iterator = uicomponent.getMySpacesUIPageIterator()
   def userSpaces = uicomponent.getUserSpaces()
-  def invitedSpaces = uicomponent.getInvitedSpaces()
+  def hasInvited = false
+  if (uicomponent.getAllInvitedSpaces().size > 0) hasInvited = true
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
-    <div class="ContainerSpace">
-	    <%for (space in invitedSpaces) {
-	        def acceptAction = uicomponent.event("Accept", space.id) + "; return false"
-	        def denyAction = uicomponent.event("Deny", space.id) + "; return false"
-	    %>
-      <div class="SpaceContent">
-        <div class="AvatarSpace">
-            <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
-        </div>
-        <div class="MySpacesContent">
-            <div class="ContentBar">
-                <div class="MySpaceLabel"><%= space.name %></div>
-                <div onclick="<%= denyAction %>" class="DenySpace ButtonIconSpace" title="<%= labelActionDeny %>"><span></span></div>
-                <div onclick="<%= acceptAction %>" class="AcceptSpace ButtonIconSpace" title="<%= labelActionAccept %>"><span></span></div>
-                <div style="clear: left;"><span></span></div>
-            </div>
-            <div class="MySpacesContentContent">
-                <table class="UIGridSpace">
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
-                        <td class="FieldComponent"><%= space.description %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
-                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div style="clear: left;"><span></span></div>
-      </div>
-    <%}%>    
+    <% if (hasInvited) { %>
+    <div class="InvitedSpaces">
+        <div><%= labelInvitedSpaces %></div>
+        <% uicomponent.renderChild(UIVirtualList.class) %>
+    </div>
+    <%}%>
+    <div class="ContainerSpace">   
     <%if (userSpaces.size() == 0) {%>
       <div class="SpaceContent">
         <div class="NotYet"><%= labelNoSpaces %></div>
         <div style="clear: left;"><span></span></div>
       </div>
+    <%} else {%>
+      <div><%= labelYourSpaces %></div>
     <%}%>
 	  <%for (space in userSpaces) {
 	      def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
@@ -90,7 +73,6 @@
 	      def pageUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
 	      def spaceName = space.name
 	  %>
-          
       <!-- Leader -->
       <% if (role == UIManageMySpaces.LEADER) {%>
       <div class="SpaceContent">
@@ -136,7 +118,7 @@
         <div class="MySpacesContent">
             <div class="ContentBar">
                 <div class="MySpaceLabel"><a href="<%= pageUrl %>"><%= space.name %></a></div>
-                <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span>[L]</span></div>
+                <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span></span></div>
                 <div style="clear: left;"><span></span></div>
             </div>
             <div class="MySpacesContentContent">
@@ -162,7 +144,13 @@
 
     <%}%>
     </div>
-    
+    <div>
+    <%
+        if (iterator.getAvailablePage() > 1) {
+            _ctx.renderUIComponent(iterator)
+        }
+    %>
+    </div>
     <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
     
     <div class="UIAction">

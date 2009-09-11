@@ -21,12 +21,14 @@
 */
 %>
 <%
+  import org.exoplatform.webui.core.UIPageIterator
   import org.exoplatform.social.space.SpaceUtils
   def uicomponentId = uicomponent.id
   def labelActionRequestToJoin = _ctx.appRes("${uicomponentId}.label.action_request_to_join")
   def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
   def labelNoPublic = _ctx.appRes("${uicomponentId}.label.no_public")
+  def iterator = uicomponent.getUIPageIterator()
   def publicSpaces = uicomponent.getPublicSpaces()
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
@@ -66,5 +68,12 @@
         <div style="clear: left;"><span></span></div>
       </div>
       <%}%>
+    </div>
+    <div>
+    <%
+        if (iterator.getAvailablePage() > 1) {
+            _ctx.renderUIComponent(iterator)
+        }
+    %>
     </div>
 </div>

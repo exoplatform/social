@@ -18,9 +18,11 @@ package social.portal.webui.component;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -28,6 +30,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -49,6 +52,17 @@ public class UIManagePendingSpaces extends UIContainer {
   static private final String MSG_REVOKE_PENDING_SUCCESS = "UIManagePendingSpaces.msg.revoke_pending_success";
   SpaceService spaceService = null;
   String userId = null;
+  private UIPageIterator iterator;
+  private final String ITERATOR_ID = "UIIteratorPendingSpaces";
+  private final Integer SPACES_PER_PAGE = 4;
+  
+  /**
+   * Contructor to initialize iterator
+   * @throws Exception
+   */
+  public UIManagePendingSpaces() throws Exception {
+    iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
+  }
   
   /**
    * get {@SpaceService}
@@ -73,15 +87,42 @@ public class UIManagePendingSpaces extends UIContainer {
   }
   
   /**
-   * get pending spaces by userId
+   * Get UIPageIterator
+   * @return
+   */
+  public UIPageIterator getUIPageIterator() {
+    return iterator;
+  }
+  
+  /**
+   * Get all pending spaces of a user
    * @return
    * @throws SpaceException
    */
-  public List<Space> getPendingSpaces() throws SpaceException {
+  private List<Space> getAllPendingSpaces() throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    List<Space> pendingSpaces = spaceService.getPendingSpaces(userId);
-    return pendingSpaces;
+    return spaceService.getPendingSpaces(userId);
+  }
+  
+  /**
+   * Get paginated pending spaces so that the user can revoke pending
+   * @return
+   * @throws Exception 
+   */
+  @SuppressWarnings("unchecked")
+  public List<Space> getPendingSpaces() throws Exception {
+    int currentPage = iterator.getCurrentPage();
+    List<Space> spaceList = getAllPendingSpaces();
+    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaceList), SPACES_PER_PAGE);
+    iterator.setPageList(pageList);
+    int pageCount = iterator.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iterator.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iterator.setCurrentPage(currentPage - 1);
+    }
+    return iterator.getCurrentPageData();
   }
   
   /**
