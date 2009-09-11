@@ -37,73 +37,86 @@
   	<%if (isEdit && isEditable) {%>
     	<%if (childSize > 1) {%>
    			<%for (int i=1; i < childSize; i +=6) {%>
-			    <div class="Experience">
-			    <table class="UIFormGrid">
-			      <tbody>
-	          <tr>
-		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></td>
-		          <td class="FieldComponent">
-		          <%if (childs.get(i).isRendered()) {
-		          	uiform.renderField(childs.get(i));
-		          }%>
-		          </td>
-		        </tr>
-		        <tr>
-		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></td>
-		          <td class="FieldComponent">
-		          <%if (childs.get(i + 1).isRendered()) {
-		            uiform.renderField(childs.get(i + 1));
-		          }%>
-		          </td>
-		        </tr>
-		        <tr>
-		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
-		          <td class="FieldComponent">
-		          <%if (childs.get(i + 2).isRendered()) {
-		          	uiform.renderField(childs.get(i + 2));
-		          }%>
-		          </td>
-		        </tr>
-		        <tr>
-		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
-		          <td class="FieldComponent">
-		          <%if (childs.get(i + 3).isRendered()) {%>
-		            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%> <%uiform.renderField(childs.get(i + 3));%><br />
-		          <%}%>
-		            <%if (childs.get(i + 4).isRendered()) {
-		            	uiform.renderField(childs.get(i + 4));
-		            }%>
-		          </td>
-		        </tr>
-		        <tr>
-		          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
-		          <td class="FieldComponent">
-		          <%if (childs.get(i + 5).isRendered()) {
-		            uiform.renderField(childs.get(i + 5));
-		          }%>
-		          </td>
-		        </tr>
-		      </tbody>
-		    </table>
+			    <div class="Experience" style="background:#e0eee0 none; margin-top:10px">
+				    <table class="UIFormGrid">
+				      <tbody>
+		          <tr>
+			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></td>
+			          <td class="FieldComponent">
+				          <%if (childs.get(i).isRendered()) {
+				          	uiform.renderField(childs.get(i));
+				          }%>
+			          </td>
+			          <% if ((i + 6) >= childSize) {%>
+			          	<td width="270">&nbsp</td>
+				          <td class="FieldComponent">
+				          	<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+i)%>">&nbsp</a>
+				          </td>
+				          <td>
+				          	<a class="AddIcon" href="#" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
+				          </td>
+			          <% } else {%>
+			          	<td width="300">&nbsp</td>
+				          <td class="FieldComponent">
+				          	<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+i)%>">&nbsp</a>
+				          </td>
+			          <% } %>
+			        </tr>
+			        <tr>
+			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></td>
+			          <td class="FieldComponent">
+			          <%if (childs.get(i + 1).isRendered()) {
+			            uiform.renderField(childs.get(i + 1));
+			          }%>
+			          </td>
+			        </tr>
+			        <tr>
+			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
+			          <td class="FieldComponent">
+			          <%if (childs.get(i + 2).isRendered()) {
+			          	uiform.renderField(childs.get(i + 2));
+			          }%>
+			          </td>
+			        </tr>
+			        <tr>
+			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
+			          <td class="FieldComponent">
+			          <%if (childs.get(i + 3).isRendered()) {%>
+			            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%> <%uiform.renderField(childs.get(i + 3));%><br />
+			          <%}%>
+			            <%if (childs.get(i + 4).isRendered()) {
+			            	uiform.renderField(childs.get(i + 4));
+			            }%>
+			          </td>
+			        </tr>
+			        <tr>
+			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
+			          <td class="FieldComponent">
+			          <%if (childs.get(i + 5).isRendered()) {
+			            uiform.renderField(childs.get(i + 5));
+			          }%>
+			          </td>
+			        </tr>
+			      </tbody>
+			    </table>
 		    </div>
    <%} //end for
-   	} // end if childSize
-  %>
-	  	<div class="UIAction">
-  <table align="center" class="ActionContainer" onclick="<%=uicomponent.event("Add")%>">
-    <tbody><tr>
-      <td align="center">
-        <div class="ButtonLeft">
-          <div class="ButtonRight">
-            <div class="ButtonMiddle">
-              <div class="AddButton"><%=_ctx.appRes(uicomponent.getName() + ".label.Add")%></div>
-            </div>
-          </div>
-        </div>
-      </td>
-    </tr>
-    </tbody></table>
-</div>  	
+   	} else { 
+  %>		
+  	<table class="UIFormGrid">
+  		<tbody>
+  			<tr>
+  				<td width="50%">&nbsp</td>
+  				<td class="FieldComponent">
+  					<%=_ctx.appRes(uicomponent.getId() + ".label.noneExperience")%>
+  				</td>
+  				<td>
+    				<a class="AddIcon" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
+    		  </td>
+			  </tr>
+			 </tbody>
+		</table>
+    <% } %>
   <% } else { %>
     <%if (exp != null) {%>
     <%if (currentExp.size() != 0) { %>
@@ -152,7 +165,7 @@
 		    <%}%>
       <%}%>
     <%} else {%>
-    		<%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%>
+    		<div class="NoneExperience"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
     <%}%>
   <%} //end if else
   %>

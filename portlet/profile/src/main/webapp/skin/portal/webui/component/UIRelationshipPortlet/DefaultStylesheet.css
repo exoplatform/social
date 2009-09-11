@@ -73,7 +73,7 @@
 
 .UIProfile .ContainerSpace .PortletContent {
 	background: #f5f9fb;
-	border: 1px solid #d6e4ed;
+	border: 1px solid #d3d3d3;
 	padding: 8px;
 	height: 100%;
 }
@@ -379,3 +379,6 @@ input.hint, textarea.hint {
 	text-align:center;
 }
 
+.ContainerSpace .NoneExperience {
+	text-align:center;
+}

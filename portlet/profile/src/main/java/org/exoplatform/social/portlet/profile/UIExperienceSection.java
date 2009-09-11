@@ -55,6 +55,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
         @EventConfig(listeners = UIExperienceSection.EditActionListener.class, phase=Phase.DECODE),
         @EventConfig(listeners = UIExperienceSection.SaveActionListener.class),
         @EventConfig(listeners = UIExperienceSection.AddActionListener.class),
+        @EventConfig(listeners = UIExperienceSection.RemoveActionListener.class,  phase=Phase.DECODE),
         @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE)
       }
   ),
@@ -168,6 +169,39 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
+   *  Add component when Add button is clicked. 
+   *
+   */
+  public static class RemoveActionListener extends EventListener<UIExperienceSection> {
+    public void execute(Event<UIExperienceSection> event) throws Exception {
+      UIExperienceSection uiForm = event.getSource();
+      String block = event.getRequestContext().getRequestParameter(OBJECTID);
+      int blockIdx = Integer.parseInt(block);
+      String companyId = null;
+      String positionId = null;
+      String startDateId = null;
+      String isCurrentId = null;
+      String endDateId = null;
+      String descriptionId = null;
+      List<UIComponent> listChild = uiForm.getChilds();
+
+      companyId = listChild.get(blockIdx).getId();
+      positionId = listChild.get(blockIdx+1).getId();
+      startDateId = listChild.get(blockIdx+2).getId();
+      isCurrentId = listChild.get(blockIdx+3).getId();
+      endDateId = listChild.get(blockIdx+4).getId();
+      descriptionId = listChild.get(blockIdx+5).getId();
+
+      uiForm.removeChildById(companyId);
+      uiForm.removeChildById(positionId);
+      uiForm.removeChildById(startDateId);
+      uiForm.removeChildById(isCurrentId);
+      uiForm.removeChildById(endDateId);
+      uiForm.removeChildById(descriptionId);
+    }
+  }
+  
+  /**
    *  Save experience informations to profile. 
    *
    */
@@ -197,8 +231,8 @@ public class UIExperienceSection extends UIProfileSection {
       List<UIComponent> listChild = uiExpSection.getChilds();
       List<Object> listProfile = new ArrayList<Object>();
       int childSize = listChild.size() - 1; // List of children include UITitleBar child.
-      String positionId = null;
       String companyId = null;
+      String positionId = null;
       String startDateId = null;
       String isCurrentId = null;
       String endDateId = null;
@@ -216,8 +250,8 @@ public class UIExperienceSection extends UIProfileSection {
         }
       } else {
         for (HashMap<String, Object> map : experiences) {
-          listProfile.add(map.get(POSITION));
           listProfile.add(map.get(COMPANY));
+          listProfile.add(map.get(POSITION));
           listProfile.add(map.get(START_DATE));
           listProfile.add(map.get(IS_CURRENT));
           listProfile.add(map.get(END_DATE));
@@ -235,15 +269,15 @@ public class UIExperienceSection extends UIProfileSection {
         } else if (totalProfiles < childSize) {
           numberOfChildren = childSize;
           while (totalProfiles < numberOfChildren) {
-            positionId = listChild.get(childSize-5).getName();
-            companyId = listChild.get(childSize-4).getName();
+            companyId = listChild.get(childSize-5).getName();
+            positionId = listChild.get(childSize-4).getName();
             startDateId = listChild.get(childSize-3).getName();
             isCurrentId = listChild.get(childSize-2).getName();
             endDateId = listChild.get(childSize-1).getName();
             descriptionId = listChild.get(childSize).getName();
-            
-            sect.removeChildById(positionId);
+
             sect.removeChildById(companyId);
+            sect.removeChildById(positionId);
             sect.removeChildById(startDateId);
             sect.removeChildById(isCurrentId);
             sect.removeChildById(endDateId);
@@ -259,6 +293,7 @@ public class UIExperienceSection extends UIProfileSection {
           ((UIFormInput)listChildForSetValue.get(idx + 2)).setValue(listProfile.get(idx+1));
           ((UIFormInput)listChildForSetValue.get(idx + 3)).setValue(listProfile.get(idx+2));
           ((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 4)).setValue((Boolean)listProfile.get(idx+3));
+          ((UIFormDateTimeInput)listChildForSetValue.get(idx + 5)).setRendered(!((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 4)).getValue());
           ((UIFormInput)listChildForSetValue.get(idx + 5)).setValue(listProfile.get(idx+4));
           ((UIFormInput)listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx+5));
         }
@@ -358,11 +393,15 @@ public class UIExperienceSection extends UIProfileSection {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     Profile p = getProfile(); 
-    
     List<UIComponent> listUIComp = getChilds();
     int totalUIComponent = listUIComp.size() - 1; // List of children not include UITitleBar child.
     
     if (totalUIComponent == 0) {
+      if (p != null) {
+        p.setProperty(EXPERIENCE, experiences);
+        im.saveProfile(p);
+      }
+      
       return 0;
     }
     
@@ -406,8 +445,8 @@ public class UIExperienceSection extends UIProfileSection {
       uiStringInput = (UIFormStringInput)listUIComp.get(i + 5);
       description = uiStringInput.getValue();
       
-      uiMap.put(POSITION,position); 
       uiMap.put(COMPANY, company);
+      uiMap.put(POSITION,position); 
       uiMap.put(START_DATE, startDate);
       uiMap.put(END_DATE, endDate);
       uiMap.put(IS_CURRENT, isCurrent);
@@ -447,6 +486,11 @@ public class UIExperienceSection extends UIProfileSection {
       .addValidator(DateTimeValidator.class)) ;
     
     addUIFormInput(new UIFormStringInput(DESCRIPTION + expIdx, null, null));
+  }
+  
+  private void removeExperience(String blockNum) {
+    // TODO Auto-generated method stub
+    System.out.println("\n\n\n\n=============== block: " + blockNum);
   }
   
   /**
