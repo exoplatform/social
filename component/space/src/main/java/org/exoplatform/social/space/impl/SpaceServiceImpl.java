@@ -262,6 +262,9 @@ public class SpaceServiceImpl implements SpaceService {
       if (memberships.size() == 0) {
         throw new SpaceException(SpaceException.Code.USER_NOT_MEMBER);
       }
+      if (isOnlyLeader(space, userId)) {
+        throw new SpaceException(SpaceException.Code.USER_ONLY_LEADER);
+      }
 
       Iterator<Membership> itr = memberships.iterator();
       while(itr.hasNext()) {
@@ -269,7 +272,9 @@ public class SpaceServiceImpl implements SpaceService {
         memberShipHandler.removeMembership(mbShip.getId(), true);
       }
     } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_USER, e);
+      if (e instanceof SpaceException) {
+        throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_USER, e);
+      }
     }
   }
   
@@ -362,6 +367,9 @@ public class SpaceServiceImpl implements SpaceService {
         GroupHandler groupHandler = orgService.getGroupHandler();
         membershipHandler.linkMembership(user, groupHandler.findGroupById(space.getGroupId()), mbshipTypeManager, true);
       } else {
+        if (isOnlyLeader(space, userId)) {
+          throw new SpaceException(SpaceException.Code.USER_ONLY_LEADER);
+        }
         Membership memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), space.getGroupId(), MANAGER);
         membershipHandler.removeMembership(memberShip.getId(), true);
         MembershipType mbShipTypeMember = orgService.getMembershipTypeHandler().findMembershipType(MEMBER);
@@ -369,7 +377,7 @@ public class SpaceServiceImpl implements SpaceService {
         membershipHandler.linkMembership(user, groupHandler.findGroupById(space.getGroupId()), mbShipTypeMember, true);
       }
     } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.ERROR_SETTING_LEADER_STATUS, e); 
+        throw new SpaceException(SpaceException.Code.ERROR_SETTING_LEADER_STATUS, e);
     }
   }
   

@@ -228,13 +228,6 @@ public class UIManageMySpaces extends UIContainer {
     return iterator.getCurrentPageData();
   }
   
-  public String getAbsoluteSpaceUrl(Space space) {
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    HttpServletRequest request = portalRequestContext.getRequest();
-    String str = request.getRequestURL().toString();
-    return str.substring(0, str.indexOf(portalRequestContext.getRequestContextPath()));
-  }
-  
   private PageList<Space> getInvitedPageList() throws Exception {
     List<Space> invitedList = getAllInvitedSpaces();
     //return (PageList<Space>) new ObjectPageList<Space>(invitedList, invitedList.size());

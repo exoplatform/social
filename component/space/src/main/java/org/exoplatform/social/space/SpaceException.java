@@ -33,6 +33,7 @@ public class SpaceException extends Exception{
     UNABLE_TO_CREATE_PAGE,
     UNABLE_TO_ADD_CREATOR,
     UNABLE_TO_REMOVE_USER,
+    USER_ONLY_LEADER, //user is the only leader of a space
     USER_NOT_MEMBER,
     USER_NOT_INVITED,
     ERROR_DATASTORE,

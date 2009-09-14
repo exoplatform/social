@@ -33,7 +33,7 @@
 	
 	def uicomponentId = uicomponent.id
 	def labelInvitedSpaces = _ctx.appRes("${uicomponentId}.label.invited_spaces")
-	def labelYourSpaces = _ctx.appRes("${uicomponentId}.label.your_spaces")
+	def labelMySpaces = _ctx.appRes("${uicomponentId}.label.my_spaces")
 	def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
 	def labelActionEditSpaceNavigation = _ctx.appRes("${uicomponentId}.label.action_edit_space_navigation")
 	def labelActionDeleteSpace = _ctx.appRes("${uicomponentId}.label.action_delete_space")
@@ -62,7 +62,7 @@
         <div style="clear: left;"><span></span></div>
       </div>
     <%} else {%>
-      <div><%= labelYourSpaces %></div>
+      <div><%= labelMySpaces %></div>
     <%}%>
 	  <%for (space in userSpaces) {
 	      def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
@@ -70,23 +70,24 @@
 	      def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
 	      def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
 	      def role = uicomponent.getRole(space.id)
-	      def pageUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+	      def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
 	      def spaceName = space.name
 	  %>
       <!-- Leader -->
       <% if (role == UIManageMySpaces.LEADER) {%>
       <div class="SpaceContent">
-          <a href="<%= pageUrl %>">
+          
             <div class="AvatarSpace">
-                <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+                <a href="<%= spaceUrl %>">
+                    <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+                </a>
             </div>
-          </a>
         <div class="MySpacesContent">
             <div class="ContentBar">
-                <div class="MySpaceLabel"><a href="<%= pageUrl %>"><%= space.name %></a></div>
+                <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
                 <div onclick="<%= deleteSpaceAction %>" class="DeleteSpace ButtonIconSpace" title="<%= labelActionDeleteSpace %>"><span></span></div>
                 <div onclick="<%= editSpaceNavigationAction %>" class="EditSpaceNavigation ButtonIconSpace" title="<%= labelActionEditSpaceNavigation %>"><span></span></div>
-                <div onclick="location.href='<%= pageUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
+                <div onclick="location.href='<%= spaceUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
                 <div style="clear: left;"><span></span></div>
             </div>
             <div class="MySpacesContentContent">
@@ -101,7 +102,7 @@
                     </tr>
                     <tr>
                         <td class="FieldLabel"><%= fieldLabelUrl %></td>
-                        <td class="FieldComponent"><a href="<%= pageUrl %>"><%= uicomponent.getAbsoluteSpaceUrl(space) + pageUrl %></a></td>
+                        <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
                     </tr>
                 </table>
             </div>
@@ -113,11 +114,11 @@
       <%if (role == UIManageMySpaces.MEMBER) {%>
       <div class="SpaceContent">
         <div class="AvatarSpace">
-            <a href="<%= pageUrl %>"><img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/></a>
+            <a href="<%= spaceUrl %>"><img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/></a>
         </div>
         <div class="MySpacesContent">
             <div class="ContentBar">
-                <div class="MySpaceLabel"><a href="<%= pageUrl %>"><%= space.name %></a></div>
+                <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
                 <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span></span></div>
                 <div style="clear: left;"><span></span></div>
             </div>
@@ -133,7 +134,7 @@
                     </tr>
                     <tr>
                         <td class="FieldLabel"><%= fieldLabelUrl %></td>
-                        <td class="FieldComponent"><a href="<%= pageUrl %>"><%= uicomponent.getAbsoluteSpaceUrl(space) + pageUrl %></a></td>
+                        <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
                     </tr>
                 </table>
             </div>

@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
@@ -371,7 +373,7 @@ public class SpaceUtils {
   }
   
   /**
-   * Utitily for counting the number of members in a space
+   * Utility for counting the number of members in a space
    * @param space
    * @return
    * @throws SpaceException
@@ -380,6 +382,18 @@ public class SpaceUtils {
     PortalContainer portalContainer = PortalContainer.getInstance();
     SpaceService spaceService = (SpaceService)portalContainer.getComponentInstanceOfType(SpaceService.class);
     return spaceService.getMembers(space).size();
+  }
+  
+  /**
+   * Utility for getting absolute url
+   * @return
+   * @throws SpaceException
+   */
+  static public String getAbsoluteUrl() throws SpaceException {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    HttpServletRequest request = portalRequestContext.getRequest();
+    String str = request.getRequestURL().toString();
+    return str.substring(0, str.indexOf(portalRequestContext.getRequestContextPath()));
   }
   
   /**

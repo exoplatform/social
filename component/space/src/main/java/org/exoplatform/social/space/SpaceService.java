@@ -163,6 +163,8 @@ public interface SpaceService {
   
   /**
    * Remove member from a space
+   * If the member is the only leader from that space, member remove is not allowed and throws SpaceException
+   * with Code = USER_ONLY_LEADER
    * @param space
    * @param userId
    * @throws SpaceException
@@ -200,7 +202,7 @@ public interface SpaceService {
    * 
    * If isLeader == true, that user will be assigned "manager" membership and removed "member" membership
    * Otherwise, that user will be assigned "member" membership and removed "manager" membership
-   *  
+   * However, if that user is the only leader, that user is not allowed to be removed from manager membership.
    * @param space
    * @param userId
    * @param isLeader

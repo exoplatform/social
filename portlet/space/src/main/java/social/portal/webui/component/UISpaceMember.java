@@ -25,6 +25,7 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceException.Code;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -81,6 +82,9 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
 
 public class UISpaceMember extends UIForm {
 
+  static private final String MSG_ERROR_REMOVE_MEMBER = "UISpaceMember.msg.error_remove_member";
+  static private final String MSG_ERROR_REMOVE_LEADER = "UISpaceMember.msg.error_remove_leader";
+  
   private String spaceId;
   private SpaceService spaceService = null;
   private final static String user = "user";
@@ -266,11 +270,15 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceMember.getSpaceService();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-      spaceService.removeMember(space, userName);      
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+      try {
+        spaceService.removeMember(space, userName);      
+      } catch(SpaceException se) {
+          uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_MEMBER, null, ApplicationMessage.WARNING));
+      }
     }
   }
   
@@ -290,13 +298,16 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
       SpaceService spaceService = uiSpaceMember.getSpaceService();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-      spaceService.setLeader(space, userName, false);
-
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+      try {
+        spaceService.setLeader(space, userName, false);
+      } catch(SpaceException se) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_LEADER, null, ApplicationMessage.WARNING));
+      }
     }
   }
   
