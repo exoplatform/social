@@ -8,6 +8,121 @@
     clear: both;
 }
 
+.UISpaceSettingPortlet .SpaceName {
+    border-bottom: 10px solid #F7F7F9;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs {
+    background:transparent url('background/NormalTabStyle.gif') repeat-x scroll center top;
+    padding:0 6px;
+    height:27px;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab {
+    color:#307DCC;
+    line-height:27px;
+    margin-right:2px;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .LeftTab {
+    background:transparent url('background/SelectedLeftTab.gif') no-repeat scroll left;
+    line-height:27px;
+    padding-left:6px;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .RightTab {
+    background:transparent url('background/SelectedRightTab.gif') no-repeat scroll right;
+    line-height:27px;
+    padding-right:6px;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .MiddleTab {
+    background:transparent url('background/SelectedMiddleTab.gif') repeat-x scroll center;
+    color: #202020;
+    cursor:pointer;
+    font-weight:normal;
+    line-height:27px;
+    padding:0 8px;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab {
+    margin-right: 2px;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .LeftTab {
+    background:transparent url('background/NormalLeftTab.gif') no-repeat scroll left;
+    line-height:27px;
+    padding-left:5px;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .RightTab {
+    background:transparent url('background/NormalRightTab.gif') no-repeat scroll right;
+    line-height:27px;
+    padding-right:5px;
+}
+
+.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .MiddleTab {
+    background:transparent url('background/NormalMiddleTab.gif') repeat-x scroll center;
+    color: #202020;
+    cursor:pointer;
+    font-weight:normal;
+    line-height:27px;
+    padding:0 8px;
+}
+
+.UISpaceSettingPortlet .UITabPane .UITabContentContainer {
+    background:white none repeat scroll 0 0;
+    border: 1px solid #5a83a1;
+    border-top: none;
+}
+
+.UISpaceSettingPortlet .UITabContentContainer .UITabContent {
+    background:#fbfbfb;
+    padding:10px;
+}
+
+
+.UISpaceSettingPortlet .UIAction {
+    padding:15px 0px 15px 0px;
+}
+
+.UISpaceSettingPortlet .UIAction .ActionContainer {
+    margin:auto;
+    width:auto;
+}
+
+.UISpaceSettingPortlet .UIAction .ActionButton {
+    cursor:pointer;
+    display:block;
+    float:left;
+    margin:0 3px;
+}
+
+.UISpaceSettingPortlet .UIAction .ButtonLeft {
+    background:transparent url('background/SimpleButtonLeft.gif') no-repeat left;
+    padding:0 0 0 2px;
+    height: 23px;
+}
+
+.UISpaceSettingPortlet .UIAction .ButtonRight {
+    background:transparent url('background/SimpleButtonRight.gif') no-repeat right;
+    padding:0 2px 0 0;
+    height: 23px;
+}
+
+.UISpaceSettingPortlet .UIAction .ButtonMiddle {
+    background:transparent url('background/SimpleButtonMiddle.gif') repeat-x center bottom;
+    line-height:23px;
+    padding:0 12px;
+    text-align:center;
+    white-space:nowrap;
+}
+
+.UISpaceSettingPortlet .UIAction a {
+    color:black;
+    text-decoration:none;
+}
+
 /********************************UI Space Member********************************/
 .UISpaceSettingPortlet .UISpaceMember .AddInviteContent {
 	padding: 12px 0px 0px 8px;

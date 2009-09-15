@@ -207,3 +207,175 @@
     width: 232px;
 }
 
+
+/*Style for UISpaceAddForm*/
+
+.UIManageSpaces .UIPopupWindow .PopupContent {
+    background: #F7F7F9;
+}
+
+.UIManageSpaces .UIHorizontalTabs .CenterHorizontalTabs {
+    background:transparent url('background/NormalTabStyle.gif') repeat-x scroll center top;
+    padding:0 6px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .TabsContainer {
+    height:27px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .UITab {
+    float:left;
+    font-weight:bold;
+    text-align:center;
+    width:auto;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .SelectedTab {
+    color:#307DCC;
+    line-height:27px;
+    margin-right:2px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .SelectedTab .LeftTab {
+    background:transparent url('background/SelectedLeftTab.gif') no-repeat scroll left;
+    line-height:27px;
+    padding-left:6px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .SelectedTab .RightTab {
+    background:transparent url('background/SelectedRightTab.gif') no-repeat scroll right;
+    line-height:27px;
+    padding-right:6px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .SelectedTab .MiddleTab {
+    background:transparent url('background/SelectedMiddleTab.gif') repeat-x scroll center;
+    cursor:pointer;
+    font-weight:normal;
+    line-height:27px;
+    padding:0 8px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .NormalTab {
+    color:#202020;
+    font-weight:normal;
+    line-height:27px;
+    margin-right:2px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .NormalTab {
+    color:#202020;
+    font-weight:normal;
+    line-height:27px;
+    margin-right:2px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .NormalTab .LeftTab {
+    background:transparent url('background/NormalLeftTab.gif') no-repeat scroll left;
+    line-height:27px;
+    padding-left:5px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .NormalTab .RightTab {
+    background:transparent url('background/NormalRightTab.gif') no-repeat scroll right;
+    line-height:27px;
+    padding-right:5px;
+}
+
+.UIManageSpaces .UIHorizontalTabs .NormalTabStyle .NormalTab .MiddleTab {
+    background:transparent url('background/NormalMiddleTab.gif') repeat-x scroll center;
+    cursor:pointer;
+    line-height:27px;
+    padding:0 8px;
+}
+
+.UIManageSpaces .UIForm .UITabContentContainer {
+    background:white none repeat scroll 0 0;
+    border: 1px solid #5a83a1;
+    border-top: none;
+}
+
+.UIManageSpaces .UITabContentContainer .UITabContent {
+    background:#fbfbfb;
+    padding:10px;
+}
+
+.UIManageSpaces .UIFormGrid td.FieldLabel {
+    padding:4px;
+    text-align:right;
+    vertical-align:top;
+}
+
+.UIManageSpaces .UIFormGrid td.FieldComponent {
+    padding:4px;
+}
+
+.UIManageSpaces .HorizontalLayout textarea {
+    height:54px;
+    width:235px;
+}
+
+.UIManageSpaces .UIFormGrid {
+    margin:auto;
+    width:auto;
+}
+
+
+
+
+.UIManageSpaces .UIFormGrid input {
+    border:1px solid #B7B7B7;
+    cursor:text;
+    height:18px;
+    line-height:18px;
+    width:236px;
+}
+
+
+.UIManageSpaces .UIAction {
+    padding:15px 0px 15px 0px;
+}
+
+.UIManageSpaces .UIAction .ActionContainer {
+    margin:auto;
+    width:auto;
+}
+
+.UIManageSpaces .UIAction .ActionButton {
+    cursor:pointer;
+    display:block;
+    float:left;
+    margin:0 3px;
+}
+
+.UIManageSpaces .UIAction .ButtonLeft {
+    background:transparent url('background/SimpleButtonLeft.gif') no-repeat left;
+    padding:0 0 0 2px;
+    height: 23px;
+}
+
+.UIManageSpaces .UIAction .ButtonRight {
+    background:transparent url('background/SimpleButtonRight.gif') no-repeat right;
+    padding:0 2px 0 0;
+    height: 23px;
+}
+
+.UIManageSpaces .UIAction .ButtonMiddle {
+    background:transparent url('background/SimpleButtonMiddle.gif') repeat-x center bottom;
+    line-height:23px;
+    padding:0 12px;
+    text-align:center;
+    white-space:nowrap;
+}
+
+.UIManageSpaces .UIAction a {
+    color:black;
+    text-decoration:none;
+}
+
+.UIManageSpaces .UIGroupBoundDescription {
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: justify;
+    margin-top: 10px;
+}

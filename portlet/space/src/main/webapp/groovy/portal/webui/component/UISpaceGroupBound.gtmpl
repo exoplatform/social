@@ -31,7 +31,7 @@
     <%if (checked) {%>
     <div class="UIGroupSelected"><%= lblSelectedGroup %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
     <%}%>
-    <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><label for="UseExistingGroup"><%= lblCheckbox %></label></span></div>
-    <div clas="UIGroupBoundDescription"><%= lblDescription %></div>    
+    <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><label for="useExistingGroup"><%= lblCheckbox %></label></span></div>
+    <div class="UIGroupBoundDescription"><%= lblDescription %></div>    
     <div class="UIGroupBoundPopup"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>
