@@ -1,0 +1,19 @@
+<%	
+	import org.exoplatform.portal.webui.util.Util ;
+	
+	def spacesLink = Util.getPortalRequestContext().getPortalURI() + "spaces";
+%> 
+<div class="UISpacePortlet" id="$uicomponent.id">
+	<div class="UIHorizontalTabs">
+		<div class="TabsContainer" style="position: relative">
+			
+			<div class="UITab NormalToolbarTab">
+				<div class="">
+							<a class="SpacesIcon TBIcon" href="<%= spacesLink %>">
+									<%=_ctx.appRes("UISpacePortlet.label.Spaces")%>
+							</a>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>
