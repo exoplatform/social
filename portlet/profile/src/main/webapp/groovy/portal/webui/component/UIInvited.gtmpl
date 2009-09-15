@@ -2,6 +2,15 @@
 	import org.exoplatform.portal.webui.util.Util ;
  	import org.exoplatform.social.core.relationship.Relationship;
  	import org.exoplatform.social.relation.UIMyRelation;
+ 	import org.exoplatform.social.core.identity.model.ProfileAttachment;
+ 	import org.exoplatform.container.PortalContainer;
+ 	import org.exoplatform.services.jcr.RepositoryService;
+ 	
+ 	PortalContainer portalContainer = PortalContainer.getInstance();
+ 	String portalName = portalContainer.getPortalContainerInfo().getContainerName();
+	
+ 	RepositoryService rService = uicomponent.getApplicationComponent(RepositoryService.class) ;    
+  String repository = rService.getCurrentRepository().getConfiguration().getName() ;
  
   def listRelation = (List<Relationship>)uicomponent.getBeans();
   UIMyRelation uiMyRelation = uicomponent.getAncestorOfType(UIMyRelation.class);
@@ -22,9 +31,21 @@
     position = identity.profile.getPropertyValue("position");
 	  if (!position) 
       position = "";
+    
+    String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/CommunityIcon.gif";
+    ProfileAttachment att = identity.profile.getProperty("avatar");
+		if (att != null) {
+			try {
+  			imageSource = "/" + portalName + "/rest/jcr/" + repository + "/" + att.getWorkspace();
+  			imageSource = imageSource + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+				} catch (Exception e) {}
+		}
+      
 	 %>
 		<div class="ContentSpace">
-    	<div class="CommunityIcon"><span/></div>
+    	<div class="CommunityIcon">
+    		<img src="$imageSource" width="65" height="70">
+    	</div>
     	<div class="CommunityContainer">
         <div class="CommunityMane Line">
             <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>

@@ -34,6 +34,7 @@
   <module>component/space</module>
 	<module>webui/social</module>
 	<module>application/rest</module>
+	<module>packaging</module>
   </modules>
 
   <build>

@@ -16,27 +16,49 @@
  */
 package org.exoplatform.social.core.identity;
 
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
-import org.exoplatform.services.jcr.impl.core.value.StringValue;
-import org.exoplatform.services.jcr.impl.core.value.LongValue;
-import org.exoplatform.services.jcr.impl.core.value.DoubleValue;
-import org.exoplatform.services.jcr.impl.core.value.BooleanValue;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import javax.jcr.version.VersionException;
+
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-
-import javax.jcr.*;
-import javax.jcr.version.VersionException;
-import javax.jcr.nodetype.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.Query;
-import java.util.*;
-import java.io.IOException;
+import org.exoplatform.services.jcr.access.AccessControlEntry;
+import org.exoplatform.services.jcr.access.PermissionType;
+import org.exoplatform.services.jcr.access.SystemIdentity;
+import org.exoplatform.services.jcr.core.ExtendedNode;
+import org.exoplatform.services.jcr.ext.app.SessionProviderService;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.services.jcr.impl.core.value.BooleanValue;
+import org.exoplatform.services.jcr.impl.core.value.DoubleValue;
+import org.exoplatform.services.jcr.impl.core.value.LongValue;
+import org.exoplatform.services.jcr.impl.core.value.StringValue;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.ProfileAttachment;
 
 
 public class JCRStorage {
@@ -53,9 +75,7 @@ public class JCRStorage {
   final private static String IDENTITY_PROVIDERID = "exo:providerId".intern();
 
   final private static String PROFILE_IDENTITY = "exo:identity".intern();
-
-
-
+  final private static String PROFILE_AVATAR = "avatar".intern();
 
   private ProfileConfig config = null;
 
@@ -188,11 +208,11 @@ public class JCRStorage {
 
 
     if (p.getId() == null) {
-      System.out.println("saving all the profileHomeNode");
+      //System.out.println("saving all the profileHomeNode");
       profileHomeNode.save();
       p.setId(profileNode.getUUID());
     } else {
-      System.out.println("saving the profileNode");
+      //System.out.println("saving the profileNode");
       profileNode.save();
     }
   }
@@ -229,23 +249,23 @@ public class JCRStorage {
       }
       else if (propValue instanceof String) {
         n.setProperty(name, (String) propValue);
-        System.out.println("setting the prop " + name + " = " + propValue);
+        //System.out.println("setting the prop " + name + " = " + propValue);
       }
       else if (propValue instanceof Double) {
         n.setProperty(name, (Double) propValue);
-        System.out.println("setting the prop " + name + " = " + propValue);
+        //System.out.println("setting the prop " + name + " = " + propValue);
       }
       else if (propValue instanceof Boolean) {
         n.setProperty(name, (Boolean) propValue);
-        System.out.println("setting the prop " + name + " = " + propValue);
+        //System.out.println("setting the prop " + name + " = " + propValue);
       }
       else if (propValue instanceof Long) {
         n.setProperty(name, (Long) propValue);
-        System.out.println("setting the prop " + name + " = " + propValue);
+        //System.out.println("setting the prop " + name + " = " + propValue);
       }
       else if ((propValue instanceof String[] && ((String[])propValue).length == 1)) {
         n.setProperty(name, ((String[])propValue)[0]);
-        System.out.println("setting the prop " + name + " = " + propValue);
+        //System.out.println("setting the prop " + name + " = " + propValue);
       }
       else if (propValue instanceof String[]) {
         setProperty(name, (String[]) propValue, n);
@@ -253,12 +273,43 @@ public class JCRStorage {
       else if (propValue instanceof List) {
         setProperty(name, (List<Map>) propValue, n);
       }
-      
+      else if (propValue instanceof ProfileAttachment) {
+        //fix id6 load
+        ExtendedNode extNode = (ExtendedNode)n ;
+        if (extNode.canAddMixin("exo:privilegeable")) extNode.addMixin("exo:privilegeable");
+        String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE} ;
+        extNode.setPermission(SystemIdentity.ANY, arrayPers) ;
+        List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;   
+        for(AccessControlEntry accessControlEntry : permsList) {
+          extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;      
+        }
+        ProfileAttachment profileAtt = (ProfileAttachment) propValue;
+        if(profileAtt.getFileName() != null) {
+          Node nodeFile = null ;
+          try {
+            nodeFile = n.getNode(name) ;
+          } catch (PathNotFoundException ex) {
+            nodeFile = n.addNode(name, "nt:file");
+          }
+          Node nodeContent = null ;
+          try {
+            nodeContent = nodeFile.getNode("jcr:content") ;
+          } catch (PathNotFoundException ex) {
+            nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
+          }
+          nodeContent.setProperty("jcr:mimeType", profileAtt.getMimeType()) ;
+          nodeContent.setProperty("jcr:data", profileAtt.getInputStream());
+          nodeContent.setProperty("jcr:lastModified", Calendar.getInstance().getTimeInMillis());
+        }
+        else {
+          if(n.hasNode(name)) n.getNode(name).remove() ;
+        }
+      }
     }
   }
 
   private void setProperty(String name, List<Map> props, Node n) throws Exception, ConstraintViolationException, VersionException {
-    System.out.println("setting the List prop " + name + " = " + props);
+    //System.out.println("setting the List prop " + name + " = " + props);
 
     String ntName = getNodeTypeName(name);
     if (ntName == null) {
@@ -284,19 +335,19 @@ public class JCRStorage {
 
         if (propValue instanceof String) {
           propNode.setProperty(key, (String) propValue);
-          System.out.println("setting the prop String " + key + " = " + propValue);
+          //System.out.println("setting the prop String " + key + " = " + propValue);
         }
         else if (propValue instanceof Double) {
           propNode.setProperty(key, (Double) propValue);
-          System.out.println("setting the prop Double" + key + " = " + propValue);
+          //System.out.println("setting the prop Double" + key + " = " + propValue);
         }
         else if (propValue instanceof Boolean) {
           propNode.setProperty(key, (Boolean) propValue);
-          System.out.println("setting the prop Boolean" + key + " = " + propValue);
+          //System.out.println("setting the prop Boolean" + key + " = " + propValue);
         }
         else if (propValue instanceof Long) {
           propNode.setProperty(key, (Long) propValue);
-          System.out.println("setting the prop Long" + key + " = " + propValue);
+//          System.out.println("setting the prop Long" + key + " = " + propValue);
         }
       }
 
@@ -308,7 +359,7 @@ public class JCRStorage {
     for (String value : propValue) {
       if(value != null && value.length() > 0) {
         values.add(new StringValue(value));
-        System.out.println("setting the multi prop " + name + " = " + value);
+//        System.out.println("setting the multi prop " + name + " = " + value);
       }
     }
     n.setProperty(name, values.toArray(new Value[values.size()]));
@@ -326,17 +377,17 @@ public class JCRStorage {
 
     while (it.hasNext()) {
       Property prop = (Property) it.next();
-      System.out.println("is the profile NT? " + prop.getParent().getPrimaryNodeType().getName()
-          + " " + prop.getParent().getUUID());
+//      System.out.println("is the profile NT? " + prop.getParent().getPrimaryNodeType().getName()
+//          + " " + prop.getParent().getUUID());
       if (prop.getParent().isNodeType(PROFILE_NODETYPE)) {
-        System.out.println("found the profile");
+        //System.out.println("found the profile");
         Node n = prop.getParent();
         p.setId(n.getUUID());
         loadProfile(p, n);
         return;
       }
     }
-    System.out.println("did not find the profile");
+    //System.out.println("did not find the profile");
   }
 
   protected boolean isForcedMultiValue(String key) {
@@ -348,25 +399,36 @@ public class JCRStorage {
   }
 
   protected void loadProfile(Profile p, Node n) throws RepositoryException {
-    System.out.println("Loading the profile");
+    //System.out.println("Loading the profile");
     PropertyIterator props = n.getProperties();
 
     copyPropertiesToMap(props, p.getProperties());
-    System.out.println("finished to load the props");
+    //System.out.println("finished to load the props");
 
     NodeIterator it = n.getNodes();
     while(it.hasNext()) {
       Node node = it.nextNode();
-      System.out.println("Loading the node:" + node.getName());
-      List l = (List) p.getProperty(node.getName());
-      if(l == null) {
-        p.setProperty(node.getName(), new ArrayList());
-        l = (List) p.getProperty(node.getName());
+      //System.out.println("Loading the node:" + node.getName());
+      if(node.getName().equals(PROFILE_AVATAR)) {
+        if (node.isNodeType("nt:file")) {
+          ProfileAttachment file = new ProfileAttachment();
+          file.setId(node.getPath());
+          file.setMimeType(node.getNode("jcr:content").getProperty("jcr:mimeType").getString());
+          file.setFileName(node.getName());
+          file.setWorkspace(node.getSession().getWorkspace().getName());
+          p.setProperty(node.getName(), file);
+        }
+      } else {
+        List l = (List) p.getProperty(node.getName());
+        if(l == null) {
+          p.setProperty(node.getName(), new ArrayList());
+          l = (List) p.getProperty(node.getName());
+        }
+        l.add(copyPropertiesToMap(node.getProperties(), new HashMap()));
       }
-      l.add(copyPropertiesToMap(node.getProperties(), new HashMap()));
-      System.out.println("finish Loading the node:" + node.getName());
+      //System.out.println("finish Loading the node:" + node.getName());
     }
-    System.out.println("nodetype: " + n.getPrimaryNodeType().getName());
+    //System.out.println("nodetype: " + n.getPrimaryNodeType().getName());
   }
 
   private Map copyPropertiesToMap(PropertyIterator props, Map map) throws RepositoryException {
@@ -387,16 +449,16 @@ public class JCRStorage {
           map.put(prop.getName(), v.getDouble());
         else if (v instanceof BooleanValue)
           map.put(prop.getName(), v.getBoolean());
-        System.out.println("loading " + prop.getName() + " = " + v.getString());
+        //System.out.println("loading " + prop.getName() + " = " + v.getString());
       }
       catch (ValueFormatException e) {
-        System.out.println("trying multivalue");
+        //System.out.println("trying multivalue");
         Value[] values = prop.getValues();
         List<String> res = new ArrayList<String>();
-
+          
         for(Value v : values) {
           res.add(v.getString());
-          System.out.println("loading multi" + prop.getName() + " = " + v.getString());
+          //System.out.println("loading multi" + prop.getName() + " = " + v.getString());
         }
         map.put(prop.getName(), res.toArray(new String[res.size()]));
       }
@@ -405,7 +467,7 @@ public class JCRStorage {
   }
 
   public String getType(String nodetype, String property) throws Exception {
-    System.out.println("getType(" + nodetype + ", " + property + ")");
+    //System.out.println("getType(" + nodetype + ", " + property + ")");
 
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     SessionProviderService sProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class);
@@ -416,7 +478,7 @@ public class JCRStorage {
 
     for(PropertyDefinition pDef : pDefs) {
       if(pDef.getName().equals(property)) {
-        System.out.println("getType(" + nodetype + ", " + property + ") ==" + pDef.getRequiredType());
+        //System.out.println("getType(" + nodetype + ", " + property + ") ==" + pDef.getRequiredType());
         return PropertyType.nameFromValue(pDef.getRequiredType());
       }
     }

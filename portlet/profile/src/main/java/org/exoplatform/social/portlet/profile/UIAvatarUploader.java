@@ -21,10 +21,12 @@ import java.io.InputStream;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.download.DownloadService;
-import org.exoplatform.download.InputStreamDownloadResource;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.ProfileAttachment;
+import org.exoplatform.upload.UploadResource;
+import org.exoplatform.upload.UploadService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -35,7 +37,6 @@ import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormUploadInput;
 
@@ -48,7 +49,6 @@ import org.exoplatform.webui.form.UIFormUploadInput;
 @ComponentConfigs ({
   @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
-    //template = "app:/groovy/portal/webui/component/UIAvatarUploader.gtmpl",
     template = "system:/groovy/webui/form/UIForm.gtmpl",
     events = {
       @EventConfig(listeners = UIAvatarUploader.ChangeActionListener.class),
@@ -59,9 +59,6 @@ import org.exoplatform.webui.form.UIFormUploadInput;
 public class UIAvatarUploader extends UIForm {
   private UIFormUploadInput uiAvatarUploadInput;
   final public static String AVARTAR = "avatar";
-  private byte[] imageBytes = null;
-  //private final Integer avatarWidth = 156;
-  //private final Integer avatarHeight = 197;
   static final String MSG_IMG_NOT_UPLOADED = UIAvatarUploader.class.getSimpleName()+".msg.img_not_loaded";
   /**
    * Constructor: Add UIFormUploadInput
@@ -72,27 +69,28 @@ public class UIAvatarUploader extends UIForm {
     setActions(new String[]{"Change", "Cancel"});
   }
   
-  protected void setImageBytes(InputStream input) throws Exception {
-    if (input != null) {
-      imageBytes = new byte[input.available()];
-      input.read(imageBytes);
-    } else {
-      imageBytes = null;
-    }
-  }
-  
-  protected byte[] getImageBytes() {
-    return imageBytes;
-  }
-  
-  protected String getImageSource() throws Exception {
-    if (imageBytes == null || imageBytes.length == 0) return null;
-    ByteArrayInputStream byteImage = new ByteArrayInputStream(imageBytes);
-    DownloadService downloadService = getApplicationComponent(DownloadService.class);
-    InputStreamDownloadResource downloadResource = new InputStreamDownloadResource(byteImage, "image");
-    downloadResource.setDownloadName("image");
-    return downloadService.getDownloadLink(downloadService.addDownloadResource(downloadResource));
-  }
+  //TODO dang.tung - don't need now
+//  protected void setImageBytes(InputStream input) throws Exception {
+//    if (input != null) {
+//      imageBytes = new byte[input.available()];
+//      input.read(imageBytes);
+//    } else {
+//      imageBytes = null;
+//    }
+//  }
+//  
+//  protected byte[] getImageBytes() {
+//    return imageBytes;
+//  }
+//  
+//  protected String getImageSource() throws Exception {
+//    if (imageBytes == null || imageBytes.length == 0) return null;
+//    ByteArrayInputStream byteImage = new ByteArrayInputStream(imageBytes);
+//    DownloadService downloadService = getApplicationComponent(DownloadService.class);
+//    InputStreamDownloadResource downloadResource = new InputStreamDownloadResource(byteImage, "image");
+//    downloadResource.setDownloadName("image");
+//    return downloadService.getDownloadLink(downloadService.addDownloadResource(downloadResource));
+//  }
   
   /**
    * This action will be triggered when user click on change avatar button.
@@ -113,17 +111,24 @@ public class UIAvatarUploader extends UIForm {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
       UIProfile uiProfile = uiAvatarUploader.getAncestorOfType(UIProfile.class);
+      
       if (input == null) {
         uiApp.addMessage(new ApplicationMessage(MSG_IMG_NOT_UPLOADED, null, ApplicationMessage.WARNING));
       } else {
         uiPopup.setShow(false);
-        uiAvatarUploader.setImageBytes(input);
         Profile p = uiProfile.getProfile();
-        p.setProperty(AVARTAR, uiAvatarUploader.getImageSource());
+        ProfileAttachment profileAtt = new ProfileAttachment();
+        profileAtt.setInputStream(new ByteArrayInputStream(uiAvatarUploadInput.getUploadData()));
+        UploadResource uploadResource = uiAvatarUploadInput.getUploadResource();
+        profileAtt.setMimeType(uploadResource.getMimeType());
+        profileAtt.setFileName(uploadResource.getFileName());
+        p.setProperty(AVARTAR, profileAtt);
         im.saveProfile(p);
+        
+        UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
+        uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
       }
-      //TODO Save to database
-      //Update UIProfile
+      
       ctx.addUIComponentToUpdateByAjax(uiPopup.getParent());
     }
     

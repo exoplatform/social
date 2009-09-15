@@ -264,8 +264,6 @@
 }
 
 .UITabPane .ContainerSpace .CommunityIcon {
-	background: url('background/CommunityIcon.gif') no-repeat left;
-	width: 65px; height: 70px;
 	float: left;
 }
 

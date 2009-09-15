@@ -16,19 +16,19 @@
  */
 package org.exoplatform.social.portlet.profile;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.download.DownloadService;
-import org.exoplatform.download.InputStreamDownloadResource;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -115,7 +115,21 @@ public class UIProfile extends UIContainer {
   
   protected String getImageSource() throws Exception {
     Profile p = getProfile();
-    return (String) p.getProperty("avatar");
+    ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
+    if (att != null) {
+      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
+              + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+    }
+    return null;
+  }
+  
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
   }
   
   /**
