@@ -23,7 +23,21 @@
 		    <show-info-bar>false</show-info-bar>
 		  </application>
 		</container>
+		<container id="UserRelationPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		  <application>
+		    <instance-id>portal#classic:/profile/UserRelationPortlet/userrelationportlet</instance-id>
+	      <access-permissions>Everyone</access-permissions>
+		    <show-info-bar>false</show-info-bar>
+		  </application>			
+		</container>
+		<container id="CanvasPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		  <application>
+		    <instance-id>portal#classic:/profile/CanvasPortlet/canvasportlet</instance-id>
+	      <access-permissions>*:/developer</access-permissions>
+		    <show-info-bar>false</show-info-bar>
+		  </application>			
+		</container>
 	</container>
-	
+
 	<site-body/>
 </container>

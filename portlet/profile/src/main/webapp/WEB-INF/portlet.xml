@@ -23,7 +23,83 @@
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
              
+ <portlet>
+   <description xml:lang="EN">User Relation Portlet</description>
+   <portlet-name>UserRelationPortlet</portlet-name>
+   <display-name xml:lang="EN">User Relation Portlet</display-name>
+   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   
+   <init-param>
+     <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/GroovyPortlet/webui/configuration.xml</value>
+   </init-param>    
+
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+     <portlet-mode>help</portlet-mode>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.web.UserRelationPortlet</resource-bundle>
+   <portlet-info>
+     <title>User Relation Portlet</title>
+     <short-title>UserRelation</short-title>
+     <keywords>System</keywords>
+   </portlet-info>
+   
+   <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIUserRelationPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+   
+   <security-role-ref>
+     <role-name>admin</role-name>
+     <role-link>admin</role-link>
+   </security-role-ref>
+ </portlet>
  
+ <portlet>
+    <description xml:lang="EN">Canvas Portlet</description>
+    <portlet-name>CanvasPortlet</portlet-name>
+    <display-name xml:lang="EN">Canvas Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    
+    <init-param>
+     <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/GroovyPortlet/webui/configuration.xml</value>
+   </init-param>   
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.CanvasPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Canvas Portlet</title>
+      <short-title>Canvas</short-title>
+      <keywords>System</keywords>
+    </portlet-info>
+    
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UICanvasPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+    
+    <security-role-ref>
+      <role-name>admin</role-name>
+      <role-link>admin</role-link>
+    </security-role-ref>
+  </portlet>
+  
  <portlet>
     <description xml:lang="EN">Relationship Portlet</description>
     <portlet-name>relationship</portlet-name>

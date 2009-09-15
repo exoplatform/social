@@ -45,6 +45,7 @@
 	    <uri>myprofile</uri>
 	    <name>myprofile</name>
 	    <label>#{portal.classic.myprofile}</label>
+	    <visible>false</visible>
       <page-reference>portal::classic::MyProfile</page-reference>
       <node>
 		    <uri>myprofile/relationship</uri>
@@ -63,6 +64,7 @@
 	    <uri>canvas</uri>
 	    <name>canvas</name>
 	    <label>#{portal.classic.canvas}</label>
+	    <visible>false</visible>
       <page-reference>portal::classic::Canvas</page-reference>
 	  </node>
 	  <node>

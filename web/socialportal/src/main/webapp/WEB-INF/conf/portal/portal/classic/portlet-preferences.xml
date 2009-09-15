@@ -102,6 +102,28 @@
 	    </preference>
   </portlet-preferences>
 
+	<portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/profile/UserRelationPortlet/userrelationportlet</window-id>
+	  <preference>
+      <name>template</name>
+      <value>app:/groovy/portal/webui/component/UIUserRelationPortlet.gtmpl</value>
+      <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+
+	<portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <window-id>portal#classic:/profile/CanvasPortlet/canvasportlet</window-id>
+	  <preference>
+      <name>template</name>
+      <value>app:/groovy/portal/webui/component/UICanvasPortlet.gtmpl</value>
+      <read-only>false</read-only>
+    </preference>
+  </portlet-preferences>
+  
   <portlet-preferences>
     <owner-type>portal</owner-type>
     <owner-id>classic</owner-id>

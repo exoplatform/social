@@ -104,11 +104,11 @@
       <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletRandom</instance-id>
       <title>Canvas</title>
       <!-- show-info-bar>false</show-info-bar -->
-    </application>
+    <!-- </application>
        <application>
       <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletRandom1</instance-id>
       <title>Canvas</title>
-      <!-- show-info-bar>false</show-info-bar -->
+    -->
     </application>
   </page>
 
