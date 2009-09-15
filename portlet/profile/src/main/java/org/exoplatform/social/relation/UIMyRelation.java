@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -96,14 +95,14 @@ public class UIMyRelation extends UIForm {
     addChild(uiFormPageIteratorContact);
   }
   
-  @SuppressWarnings("deprecation")
   public int loadInvited() throws Exception {
     RelationshipManager relationshipManager = getRelationshipManager();
     Identity currId = getCurrentIdentity();
     List<Relationship> listRelationShip = relationshipManager.getPending(currId, false);
     if (listRelationShip == null) listRelationShip = new ArrayList<Relationship>();
     UIVirtualList virtualList = getChild(UIVirtualList.class);
-    virtualList.dataBind(new ObjectPageList<Relationship>(listRelationShip, listRelationShip.size()));
+    LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 2);
+    virtualList.dataBind(pageList);
     return listRelationShip.size();
   }
   
@@ -115,16 +114,6 @@ public class UIMyRelation extends UIForm {
     return contactLists;
   }
 
-  public String getCurrentUriObj() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String requestUrl = pcontext.getRequestURI();
-    String portalUrl = pcontext.getPortalURI();
-    String uriObj = requestUrl.replace(portalUrl, "");
-    if (uriObj.contains("/"))
-      uriObj = uriObj.split("/")[0] + "/" + uriObj.split("/")[1];
-    return uriObj;
-  }
-  
   @SuppressWarnings("unchecked")
   private List<Relationship> getDisplayRelationList(List<Relationship> listContacts, UIFormPageIterator uiFormPageIterator) throws Exception {
     int curPage = uiFormPageIterator.getCurrentPage();

@@ -2,11 +2,13 @@
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormPageIterator;
   import org.exoplatform.social.core.identity.model.ProfileAttachment;
+  import org.exoplatform.portal.application.PortalRequestContext;
   
   def list = uicomponent.getPublicRelationList();
   def currIdentity = uicomponent.getCurrentIdentity();
   UIFormPageIterator iterator = uicomponent.getUiFormPageIterator();
-  def uriObj = uicomponent.getCurrentUriObj();
+  PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def requestURI = pcontext.getRequestURI();
 %>
 <div class="UIPublicRelation">
 	<div class="UITabPane">
@@ -19,8 +21,8 @@
 			  </div>
 		  <%}%>
 			<% for(identity in list) {
-			    def profileURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId();
-			    def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities";
+			    def profileURL = requestURI + "/" + identity.getRemoteId();
+			    def activitiesURL = requestURI + "/" + identity.getRemoteId() + "/activities";
 			    def fullName = identity.profile.fullName;
 			    def actionLink = uicomponent.event("AddContact", identity.getId());
 			    def position = identity.profile.getPropertyValue("position");
@@ -60,7 +62,7 @@
 		    <%  } %>
 		    <div class="TagsName">
 		      <a href="${profileURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
-		      <a href="${actititesURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
+		      <a href="${activitiesURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
 		    </div>
 	    </div>
 	    </div>

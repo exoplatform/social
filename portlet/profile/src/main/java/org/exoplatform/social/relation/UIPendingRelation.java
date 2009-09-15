@@ -22,8 +22,6 @@ import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
@@ -107,20 +105,11 @@ public class UIPendingRelation extends UIForm {
     return lists;
   }
     
-  public String getCurrentUriObj() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String requestUrl = pcontext.getRequestURI();
-    String portalUrl = pcontext.getPortalURI();
-    String uriObj = requestUrl.replace(portalUrl, "");
-    if (uriObj.contains("/"))
-      uriObj = uriObj.split("/")[0] + "/" + uriObj.split("/")[1];
-    return uriObj;
-  }
-  
   public String getPortalName() {
     PortalContainer pcontainer =  PortalContainer.getInstance();
     return pcontainer.getPortalContainerInfo().getContainerName();  
   }
+  
   public String getRepository() throws Exception {
     RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
     return rService.getCurrentRepository().getConfiguration().getName() ;

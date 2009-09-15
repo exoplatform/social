@@ -3,14 +3,15 @@
  	import org.exoplatform.webui.form.UIFormPageIterator;
  	import org.exoplatform.webui.core.UIVirtualList;
  	import org.exoplatform.social.core.identity.model.ProfileAttachment;
+ 	import org.exoplatform.portal.application.PortalRequestContext;
  
 	def myRelation = uicomponent.getMyRelation();
 	def currIdentity = uicomponent.getCurrentIdentity();
-	def portalURI = Util.getPortalRequestContext().getPortalURI();
-	def profileURL, dashboardURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
+	def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
 	UIFormPageIterator iteratorContact = uicomponent.getUiFormPageIteratorContact();
 	def loadData = uicomponent.loadInvited();
-	def uriObj = uicomponent.getCurrentUriObj();
+	PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def requestURI = pcontext.getRequestURI();
 %>
 <div class="UIMyRelation">
 	<div class="UITabPane">
@@ -35,8 +36,8 @@
 			  } else {
 		  	  id = relation.identity1;
 			  }
-			  profileURL = portalURI + uriObj + "/" + id.getRemoteId();
-		    actititesURL = portalURI + uriObj + "/" + id.getRemoteId() + "/activities";
+			  profileURL = requestURI + "/" + id.getRemoteId();
+		    activitiesURL = requestURI + "/" + id.getRemoteId() + "/activities";
 		    fullName = id.profile.fullName;
 		    position = id.profile.getPropertyValue("position");
 		    def actionLink = uicomponent.event("Remove",id.getId());
@@ -80,7 +81,7 @@
 	        <%  } %>
 	        <div class="TagsName">
 	          <a class="CommunityNameMiddle" href="$profileURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
-	          <a class="CommunityNameMiddle" href="$actititesURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
+	          <a class="CommunityNameMiddle" href="$activitiesURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
 	        </div>
 	    	</div>
 	    </div>
