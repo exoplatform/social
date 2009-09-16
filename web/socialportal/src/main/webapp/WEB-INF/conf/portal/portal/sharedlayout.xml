@@ -30,13 +30,6 @@
 		    <show-info-bar>false</show-info-bar>
 		  </application>			
 		</container>
-		<container id="CanvasPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <application>
-		    <instance-id>portal#classic:/profile/CanvasPortlet/canvasportlet</instance-id>
-	      <access-permissions>*:/developer</access-permissions>
-		    <show-info-bar>false</show-info-bar>
-		  </application>			
-		</container>
 		<container id="SpacePortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 		  <application>
 		    <instance-id>portal#classic:/space/SpacePortlet/spaceportlet</instance-id>
