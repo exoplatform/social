@@ -49,9 +49,9 @@
 		  	<% } %>
 		  </div>
 	  </div>
-	  <ul class="UserLinkList">
-        <li><a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.LastActivity")%></a></li>
-	  </ul>
+	  <div class="UserActivitiesLink">
+        <a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.LastActivities")%></a>
+	  </div>
 	</div>
   <div class="ContainerSpace" >
 		<div class="LeftContainer" >

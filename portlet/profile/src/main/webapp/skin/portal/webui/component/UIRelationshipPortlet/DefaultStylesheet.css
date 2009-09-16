@@ -245,7 +245,9 @@
 .UIProfile .ContainerSpace .EditButtons {
   float:right;
 }
-
+.UIProfile .LeftColumn .UserActivitiesLink {
+	padding-left: 50px;
+}
 /**
  * Refactor to share the css with Spaces
  */

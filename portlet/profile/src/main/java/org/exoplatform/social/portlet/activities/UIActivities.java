@@ -23,6 +23,8 @@ import java.util.TimeZone;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -61,6 +63,25 @@ public class UIActivities  extends UIContainer {
     // Reverse order of activity so that newer activity is placed on the top stack
     java.util.Collections.reverse(listActivity);
     return listActivity;
+  }
+  
+  public Identity getCurrentIdentity() throws Exception {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+
+    Identity currentId = im.getIdentityByRemoteId("organization", URLUtils.getCurrentUser());
+    
+    return currentId;
+  }
+  
+  public String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();  
+  }
+  
+  public String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
   }
   
   public String timeToPrettyString(Long postedTime) {
