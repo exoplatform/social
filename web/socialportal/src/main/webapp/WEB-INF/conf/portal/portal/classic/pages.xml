@@ -51,20 +51,6 @@
     </application>
   </page>
 
-  <page>
-  	<page-id>portal::classic::MyDashboard</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <name>MyDashboard</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>portal#classic:/dashboard/DashboardPortlet/dashboardRandom</instance-id>
-      <title>dashboard</title>
-      <show-info-bar>false</show-info-bar>
-    </application>
-  </page>
-
 	<page>
   	<page-id>portal::classic::MyProfile</page-id>
   	<owner-type>portal</owner-type>
@@ -90,25 +76,6 @@
       <instance-id>portal#classic:/profile/relationship/relationships</instance-id>
       <title>RelationShip</title>
       <show-info-bar>false</show-info-bar>
-    </application>
-  </page>
-
-  <page>
-  	<page-id>portal::classic::Canvas</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <name>Canvas</name>
-    <access-permissions>*:/developer</access-permissions>
-    <edit-permission>manager:/developer</edit-permission>
-    <application>
-      <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletRandom</instance-id>
-      <title>Canvas</title>
-      <!-- show-info-bar>false</show-info-bar -->
-    <!-- </application>
-       <application>
-      <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletRandom1</instance-id>
-      <title>Canvas</title>
-    -->
     </application>
   </page>
 

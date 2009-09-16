@@ -90,7 +90,7 @@
     <owner-type>portal</owner-type>
     <owner-id>classic</owner-id>
     <window-id>portal#classic:/profile/relationship/relationships</window-id>
-	<preference>
+		<preference>
         <name>template</name>
         <value>my-dashboard</value>
         <read-only>false</read-only>
@@ -112,17 +112,6 @@
       <read-only>false</read-only>
     </preference>
   </portlet-preferences>
-
-	<portlet-preferences>
-    <owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <window-id>portal#classic:/profile/CanvasPortlet/canvasportlet</window-id>
-	  <preference>
-      <name>template</name>
-      <value>app:/groovy/portal/webui/component/UICanvasPortlet.gtmpl</value>
-      <read-only>false</read-only>
-    </preference>
-  </portlet-preferences>
   
   <portlet-preferences>
     <owner-type>portal</owner-type>
@@ -138,52 +127,10 @@
   <portlet-preferences>
     <owner-type>portal</owner-type>
     <owner-id>classic</owner-id>
-    <window-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletRandom</window-id>
-    <preference>
-        <name>url</name>
-        <value>http://localhost:8080/rest/jcr/repository/gadgets/gadgets/codeRunner.xml</value>
-        <read-only>false</read-only>
-    </preference>
-  </portlet-preferences>
-  
-  <portlet-preferences>
-    <owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
     <window-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletActivities</window-id>
     <preference>
         <name>url</name>
         <value>http://localhost:8080/rest/jcr/repository/gadgets/gadgets/activities.xml</value>
-        <read-only>false</read-only>
-    </preference>
-  </portlet-preferences>
-
-  <portlet-preferences>
-    <owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <window-id>portal#classic:/dashboard/DashboardPortlet/dashboardRandom</window-id>
-    <preference>
-        <name>totalColumns</name>
-        <value>3</value>
-        <read-only>false</read-only>
-    </preference>
-    <preference>
-        <name>isPrivate</name>
-        <value>1</value>
-        <read-only>false</read-only>
-    </preference>
-    <preference>
-        <name>owner</name>
-        <value>__CURRENT_USER__</value>
-        <read-only>false</read-only>
-    </preference>
-	<preference>
-        <name>template</name>
-        <value>my-dashboard</value>
-        <read-only>false</read-only>
-    </preference>
-    <preference>
-        <name>aggregatorId</name>
-        <value>socialRssAggregator</value>
         <read-only>false</read-only>
     </preference>
   </portlet-preferences>

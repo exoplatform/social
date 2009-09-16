@@ -35,12 +35,6 @@
       <label>#{portal.classic.register}</label>
       <page-reference>portal::classic::register</page-reference>
      </node>
-     <node>
-	    <uri>mydashboard</uri>
-	    <name>mydashboard</name>
-	    <label>#{portal.classic.mydashboard}</label>
-      <page-reference>portal::classic::MyDashboard</page-reference>
-	 </node>
 	 <node>
 	    <uri>myprofile</uri>
 	    <name>myprofile</name>
@@ -59,13 +53,6 @@
 		    <label>#{portal.classic.myactivities}</label>
 		    <page-reference>portal::classic::activities</page-reference>
 	  	</node>
-	  </node>
-    <node>
-	    <uri>canvas</uri>
-	    <name>canvas</name>
-	    <label>#{portal.classic.canvas}</label>
-	    <visible>false</visible>
-      <page-reference>portal::classic::Canvas</page-reference>
 	  </node>
 	  <node>
 	    <uri>spaces</uri>
