@@ -64,6 +64,27 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
   
   /**
+   * De-initialize HomeSpacePortlet application.
+   * @param space
+   */
+  public void deInitApp(Space space) throws SpaceException {
+    try {
+      String groupId = space.getGroupId();
+      PageNavigation spaceNav = SpaceUtils.getGroupNavigation(groupId);
+      ArrayList<PageNode> spaceNodes = spaceNav.getNodes();
+      for (PageNode spaceNode : spaceNodes) {
+        String pageId = spaceNode.getPageReference();
+        Page page = configService.getPage(pageId);
+        configService.remove(page);
+      }
+      SpaceUtils.removeGroupNavigation(groupId);
+    } catch(Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_DEINIT_APP, e);
+    }
+  }
+  
+  
+  /**
    * {@inheritDoc}
    */
   public void activateApplication(Space space, String appId) throws SpaceException {
@@ -89,6 +110,48 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    */
   public void removeApplication(Space space, String appId) throws SpaceException {
     removeApplicationClassic(space, appId);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void removeApplications(Space space) throws SpaceException {
+    List<Application> apps;
+    try {
+      apps = getSpaceApplications(space);
+      //Remove HomeSpacePortlet by calling deInitApp(Space space)
+      apps.remove(getApplication(apps, HOME_APPLICATION));
+      for (Application app : apps) {
+        removeApplication(space, app.getApplicationName());
+      }
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATIONS, e);
+    }
+  }
+  
+  /**
+   * Get all applications installed in a space
+   * @param space
+   * @return
+   * @throws Exception
+   */
+  private List<Application> getSpaceApplications(Space space) throws Exception {
+    List<Application> allApps = SpaceUtils.getApplications(space.getGroupId());
+    List<Application> appList = new ArrayList<Application>();
+    String spaceApps = space.getApp();
+    if(spaceApps != null) {
+      String[] apps = spaceApps.split(",");
+      for(String obj : apps) {
+        String appId = obj.split(":")[0];
+        for(Application app : allApps) {
+          if(app.getApplicationName().equals(appId)) {
+            appList.add(app);
+            break;
+          }
+        }
+      }
+    }
+    return appList;
   }
   
   /**
@@ -158,6 +221,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     }
     
   }
+  
   
   /**
    * Get an application from a list
