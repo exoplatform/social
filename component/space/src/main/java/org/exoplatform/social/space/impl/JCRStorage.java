@@ -23,6 +23,7 @@ import org.exoplatform.social.space.Space;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.NodeIterator;
+import javax.jcr.Session;
 import javax.jcr.Value;
 
 import java.util.List;
@@ -117,6 +118,20 @@ public class JCRStorage {
       return null;
     }
     return null;
+  }
+  
+  public void deleteSpace(String id) throws Exception {
+    Session session;
+    try {
+      Node spaceHomeNode = getSpaceHome();
+      session = spaceHomeNode.getSession();
+      Node spaceNode = session.getNodeByUUID(id);
+      if(spaceNode != null) {
+        spaceNode.remove();
+        session.save();
+      }
+    }catch (PathNotFoundException e) {
+    }
   }
 
   public void saveSpace(Space space, boolean isNew) throws Exception {
