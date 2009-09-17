@@ -233,7 +233,6 @@ public class UIManageMySpaces extends UIContainer {
   
   private PageList<Space> getInvitedPageList() throws Exception {
     List<Space> invitedList = getAllInvitedSpaces();
-    //return (PageList<Space>) new ObjectPageList<Space>(invitedList, invitedList.size());
     Integer invitedListSize = 0;
     if (invitedList.size() == 0) {
       invitedListSize = 1;
@@ -314,7 +313,6 @@ public class UIManageMySpaces extends UIContainer {
       uiPopup.setUIComponent(pageManager);
       //uiPopup.setWindowSize(400, 0);
       uiPopup.setShow(true);
-      ctx.addUIComponentToUpdateByAjax(uiMySpaces);
     }
     
   }
@@ -366,7 +364,7 @@ public class UIManageMySpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_LEAVE_SPACE, null, ApplicationMessage.ERROR));
         return;
       }
-      uiApp.addMessage(new ApplicationMessage(MSG_LEAVE_SPACE_SUCCESS, null, ApplicationMessage.INFO));
+      //uiApp.addMessage(new ApplicationMessage(MSG_LEAVE_SPACE_SUCCESS, null, ApplicationMessage.INFO));
     }
   }
   
@@ -411,7 +409,7 @@ public class UIManageMySpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_ACCEPT_INVITATION, null, ApplicationMessage.ERROR));
         return;
       }
-      uiApp.addMessage(new ApplicationMessage(MSG_ACCEPT_INVITATION_SUCCESS, null, ApplicationMessage.INFO));
+      //uiApp.addMessage(new ApplicationMessage(MSG_ACCEPT_INVITATION_SUCCESS, null, ApplicationMessage.INFO));
     }
   }
   
@@ -434,7 +432,7 @@ public class UIManageMySpaces extends UIContainer {
       } catch(SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DENY_INVITATION, null, ApplicationMessage.ERROR));
       }
-      uiApp.addMessage(new ApplicationMessage(MSG_DENY_INVITATION_SUCCESS, null, ApplicationMessage.INFO));    
+      //uiApp.addMessage(new ApplicationMessage(MSG_DENY_INVITATION_SUCCESS, null, ApplicationMessage.INFO));    
     }    
   }
 }

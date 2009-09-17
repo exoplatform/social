@@ -45,8 +45,11 @@
       <%for (space in publicSpaces) {
             def requestJoinAction = uicomponent.event("RequestJoin", space.id) + "; false";
             def visibility = space.visibility
+            def registration = space.registration
             def isPublic = false
+            def isClose = false
             if (visibility.equals(Space.PUBLIC)) isPublic = true
+            if (registration.equals(Space.CLOSE)) isClose = true
             def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
       %>
       <div class="SpaceContent">
@@ -60,9 +63,9 @@
                 <%} else {%>
                     <div class="MySpaceLabel"><%= space.name %></div>
                 <%}%>
-                
-                
+                <% if (!isClose) {%>
                 <div onclick="<%= requestJoinAction %>" class="RequestJoin ButtonIconSpace" title="<%= labelActionRequestToJoin %>"><span></span></div>
+                <%}%>
                 <div style="clear: left;"><span></span></div>
             </div>
             <div class="MySpacesContentContent">

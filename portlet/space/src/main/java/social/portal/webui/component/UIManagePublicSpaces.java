@@ -130,7 +130,7 @@ public class UIManagePublicSpaces extends UIContainer {
      try {
        spaceService.requestJoin(space, userId);
      } catch(SpaceException se) {
-       uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REQUEST_JOIN, new String[]{space.getName()}, ApplicationMessage.ERROR));
+       uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REQUEST_JOIN, null, ApplicationMessage.ERROR));
        return;
      }
 //     if (registration.equals(Space.OPEN)) {

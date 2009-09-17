@@ -119,8 +119,6 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     List<Application> apps;
     try {
       apps = getSpaceApplications(space);
-      //Remove HomeSpacePortlet by calling deInitApp(Space space)
-      apps.remove(getApplication(apps, HOME_APPLICATION));
       for (Application app : apps) {
         removeApplication(space, app.getApplicationName());
       }
