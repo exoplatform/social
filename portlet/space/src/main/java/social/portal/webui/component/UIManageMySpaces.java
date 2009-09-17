@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.codehaus.groovy.tools.shell.commands.SetCommand;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -311,6 +312,7 @@ public class UIManageMySpaces extends UIContainer {
       uiPopup.setUIComponent(pageManager);
       //uiPopup.setWindowSize(400, 0);
       uiPopup.setShow(true);
+      ctx.addUIComponentToUpdateByAjax(uiMySpaces);
     }
     
   }

@@ -155,7 +155,7 @@ public class UISpaceAddForm extends UIFormTabPane {
         uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
       }
-      uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
+      //uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
       UIManageMySpaces uiManageMySpaces = uiPopup.getParent();

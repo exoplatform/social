@@ -143,7 +143,7 @@ public class UIManagePendingSpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REVOKE_PENDING, null, ApplicationMessage.ERROR));
         return;
       }
-      uiApp.addMessage(new ApplicationMessage(MSG_REVOKE_PENDING_SUCCESS, null, ApplicationMessage.INFO));
+      //uiApp.addMessage(new ApplicationMessage(MSG_REVOKE_PENDING_SUCCESS, null, ApplicationMessage.INFO));
     }
     
   }

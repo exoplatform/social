@@ -133,11 +133,11 @@ public class UIManagePublicSpaces extends UIContainer {
        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REQUEST_JOIN, new String[]{space.getName()}, ApplicationMessage.ERROR));
        return;
      }
-     if (registration.equals(Space.OPEN)) {
-      uiApp.addMessage(new ApplicationMessage(MSG_JOIN_SUCCESS, null, ApplicationMessage.INFO)); 
-     } else {
-       uiApp.addMessage(new ApplicationMessage(MSG_REQUEST_JOIN_SUCCESS, null, ApplicationMessage.INFO));
-     }
+//     if (registration.equals(Space.OPEN)) {
+//      uiApp.addMessage(new ApplicationMessage(MSG_JOIN_SUCCESS, null, ApplicationMessage.INFO)); 
+//     } else {
+//       uiApp.addMessage(new ApplicationMessage(MSG_REQUEST_JOIN_SUCCESS, null, ApplicationMessage.INFO));
+//     }
     }
   }
   

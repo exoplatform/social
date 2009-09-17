@@ -53,8 +53,8 @@ public class UISpacePermission extends UIForm {
   private String spaceId;
   
   public UISpacePermission() throws Exception {
-    List<SelectItemOption<String>> spaceVisibility = new ArrayList<SelectItemOption<String>>(3);
-    spaceVisibility.add(new SelectItemOption<String>(Space.PUBLIC));
+    List<SelectItemOption<String>> spaceVisibility = new ArrayList<SelectItemOption<String>>(2);
+    //spaceVisibility.add(new SelectItemOption<String>(Space.PUBLIC));
     spaceVisibility.add(new SelectItemOption<String>(Space.PRIVATE));
     spaceVisibility.add(new SelectItemOption<String>(Space.HIDDEN));
     UIFormRadioBoxInput uiRadioVisibility = new UIFormRadioBoxInput(SPACE_VISIBILITY,null,spaceVisibility);

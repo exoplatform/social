@@ -53,9 +53,10 @@ public class UISpaceVisibility extends UIFormInputSet {
    */
   public UISpaceVisibility(String name) throws Exception {
     super(name);
-    List<SelectItemOption<String>> spaceVisibility = new ArrayList<SelectItemOption<String>>(3);
-    SelectItemOption<String> publicOption = new SelectItemOption<String>(Space.PUBLIC);
-    spaceVisibility.add(publicOption);
+//    List<SelectItemOption<String>> spaceVisibility = new ArrayList<SelectItemOption<String>>(3);
+//    SelectItemOption<String> publicOption = new SelectItemOption<String>(Space.PUBLIC);
+//    spaceVisibility.add(publicOption);
+    List<SelectItemOption<String>> spaceVisibility = new ArrayList<SelectItemOption<String>>(2);
     SelectItemOption<String> privateOption = new SelectItemOption<String>(Space.PRIVATE);
     spaceVisibility.add(privateOption);
 
