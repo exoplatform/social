@@ -33,8 +33,8 @@ import java.util.HashMap;
 
 public class OrganizationIdentityProvider extends IdentityProvider {
   private JCRStorage storage;
-    private OrganizationService organizationService;
-    public final static String NAME = "organization";
+  private OrganizationService organizationService;
+  public final static String NAME = "organization";
 
   public OrganizationIdentityProvider(JCRStorage storage, OrganizationService organizationService) {
     this.storage = storage;
@@ -47,7 +47,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
 
 
 
-  public final Identity  getIdentityByRemoteId(final Identity identity) throws Exception {
+  public final Identity getIdentityByRemoteId(final Identity identity) throws Exception {
     //TODO: tung.dang need to review again.
     User user = null;
     try {
@@ -61,7 +61,9 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     }
 
     loadIdentity(user, identity);
-
+    
+    //TODO dang.tung need to save profile in database if node doesn't exist
+    saveProfile(identity.getProfile());
     return identity;
   }
 

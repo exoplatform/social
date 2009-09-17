@@ -68,6 +68,14 @@ public class IdentityManager {
   public Identity getIdentityByRemoteId(String providerId, String remoteId) throws Exception {
     return getIdentityByRemoteId(providerId, remoteId, true);  
   }
+  
+  public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFiler profileFilter) throws Exception {
+    return storage.getIdentitiesByProfileFilter(providerId, profileFilter);
+  }
+  
+  public List<Identity> getIdentitiesByProfileFilter(ProfileFiler profileFilter) throws Exception {
+    return getIdentitiesByProfileFilter(null, profileFilter);  
+  }
 
   /**
    * This function return an Identity object that specific to
@@ -81,17 +89,15 @@ public class IdentityManager {
    * TODO improve the performance by specifying what needs to be loaded
    */
   public Identity getIdentityByRemoteId(String providerId, String remoteId, boolean loadProfile) throws Exception {
-    System.out.println("getting the identity for " + providerId + " and remoteid:" + remoteId);
+    //System.out.println("getting the identity for " + providerId + " and remoteid:" + remoteId);
     Identity identity = storage.getIdentityByRemoteId(providerId, remoteId);
     if (identity == null) {
-      System.out.println("create the identity for " + providerId + " and remoteid:" + remoteId);
+      //System.out.println("create the identity for " + providerId + " and remoteid:" + remoteId);
       identity = getNewIdentity(providerId, remoteId);
-
     }
-    System.out.println("identityProviders = " + identityProviders);
+    //System.out.println("identityProviders = " + identityProviders);
     if(loadProfile)
       identity = identityProviders.get(identity.getProviderId()).getIdentityByRemoteId(identity);
-
     return identity;
   }
 

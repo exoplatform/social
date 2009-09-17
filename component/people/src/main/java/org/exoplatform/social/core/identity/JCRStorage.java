@@ -183,6 +183,27 @@ public class JCRStorage {
 
     return identity;
   }
+  
+  public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFiler profileFilter) throws Exception {
+    Node profileHomeNode = getProfileServiceHome();
+
+    StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
+        .append("/").append(PROFILE_NODETYPE);
+    queryString.append("[jcr:contains(@firstName, ").append("'").append(profileFilter.getUserName()).append("')]");
+    
+    
+    
+    QueryManager queryManager = profileHomeNode.getSession().getWorkspace().getQueryManager();
+    Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
+    QueryResult queryResult = query.execute();
+    NodeIterator nodeIterator = queryResult.getNodes();
+    System.out.println("\n\n\n\n\n items: " + nodeIterator.getSize());
+    while (nodeIterator.hasNext()) {
+      Node profileNode = (Node) nodeIterator.next();
+      //TODO: dang.tung need to convert to identity.
+    }
+    return null;
+  }
 
   public void saveProfile(Profile p) throws Exception {
     Node profileHomeNode = getProfileServiceHome();

@@ -24,6 +24,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
@@ -36,6 +37,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormPageIterator;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * Created by The eXo Platform SAS
@@ -47,8 +49,9 @@ import org.exoplatform.webui.form.UIFormPageIterator;
     lifecycle = UIFormLifecycle.class,
     template =  "app:/groovy/portal/webui/component/UIPublicRelation.gtmpl",
     events = { 
-                @EventConfig(listeners = UIPublicRelation.AddContactActionListener.class)
-              }
+      @EventConfig(listeners = UIPublicRelation.AddContactActionListener.class),
+      @EventConfig(listeners = UIPublicRelation.SearchActionListener.class)
+    }
 )
 public class UIPublicRelation extends UIForm {
   /** UIFormPageIterator */
@@ -62,6 +65,17 @@ public class UIPublicRelation extends UIForm {
   /** IdentityManager */
   IdentityManager     im           = null;
   
+
+  /**
+   * Constructor.
+   * @throws Exception 
+   */
+  public UIPublicRelation() throws Exception {
+    addUIFormInput(new UIFormStringInput("search", null));
+    uiFormPageIteratorPublic = createUIComponent(UIFormPageIterator.class, null, iteratorIDPublic);
+    addChild(uiFormPageIteratorPublic);
+  }
+  
   /**
    * Get UIFormPageIterator.
    * @return
@@ -69,16 +83,6 @@ public class UIPublicRelation extends UIForm {
   public UIFormPageIterator getUiFormPageIterator() {
     return uiFormPageIteratorPublic;
   }
-
-  /**
-   * Constructor.
-   * @throws Exception 
-   */
-  public UIPublicRelation() throws Exception {
-    uiFormPageIteratorPublic = createUIComponent(UIFormPageIterator.class, null, iteratorIDPublic);
-    addChild(uiFormPageIteratorPublic);
-  }
-  
   /**
    * Get list of identity that have not got any relation with current identity (status is Alien).
    *  
@@ -155,6 +159,17 @@ public class UIPublicRelation extends UIForm {
         rel.setStatus(Relationship.Type.PENDING);
         rm.save(rel);
       }
+    }
+  }
+  
+  public static class SearchActionListener extends EventListener<UIPublicRelation> {
+    @Override
+    public void execute(Event<UIPublicRelation> event) throws Exception {
+      UIPublicRelation uiPub = event.getSource();
+      ProfileFiler filter = new ProfileFiler();
+      String identityName = uiPub.getUIStringInput("search").getValue();
+      filter.setUserName(identityName);
+      uiPub.getIdentityManager().getIdentitiesByProfileFilter(filter);
     }
   }
     
