@@ -251,6 +251,22 @@ public class SpaceUtils {
   }
   
   /**
+   * Remove a Group owning a space
+   * @param space
+   * @throws SpaceException
+   */
+  static public void removeGroup(Space space) throws SpaceException {
+    try {
+    OrganizationService organizationService = getOrganizationService();
+    GroupHandler groupHandler = organizationService.getGroupHandler();
+    Group group = groupHandler.findGroupById(space.getGroupId());
+    groupHandler.removeGroup(group, true);
+    } catch(Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_GROUP, e);
+    }
+  }
+  
+  /**
    * Checking if a space has existed,
    * 
    * @param spaceName
@@ -327,6 +343,31 @@ public class SpaceUtils {
       // TODO:should rollback what has to be rollback here
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
     }
+  }
+  
+  /**
+   * Remove group navigations.
+   * @param groupId
+   * @throws SpaceException
+   */
+  static public void removeGroupNavigation(String groupId) throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+    PageNavigation spaceNav;
+    try {
+      spaceNav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+      if (spaceNav != null) {
+        UIPortal uiPortal = Util.getUIPortal();
+        List<PageNavigation> pnavigations = uiPortal.getNavigations();
+        pnavigations.remove(spaceNav);
+        configService.remove(spaceNav);
+      } else {
+        throw new Exception("spaceNav is null");
+      }
+    } catch(Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_NAV, e);
+    }
+    
   }
   
   /**

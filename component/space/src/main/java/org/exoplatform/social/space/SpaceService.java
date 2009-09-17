@@ -122,7 +122,7 @@ public interface SpaceService {
   void saveSpace(Space space, boolean isNew) throws SpaceException;
   
   /**
-   * Delete space
+   * Delete space. When deleting a space, all it's page navigations and it's group will be deleted.
    * @param space
    * @throws SpaceException
    */

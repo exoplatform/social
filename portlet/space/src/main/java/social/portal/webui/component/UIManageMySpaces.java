@@ -109,6 +109,8 @@ public class UIManageMySpaces extends UIContainer {
   static private final String MSG_ERROR_DENY_INVITATION = "UIManageMySpaces.msg.error_deny_invitation";
   static private final String MSG_DENY_INVITATION_SUCCESS = "UIManageMySpaces.msg.deny_invitation_success";
   
+  static private final String MSG_ERROR_DELETE_SPACE = "UIManageMySpaces.msg.error_delete_space";
+  
   static public final Integer LEADER = 1, MEMBER = 2;
   
   
@@ -327,6 +329,16 @@ public class UIManageMySpaces extends UIContainer {
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
       // TODO hoatle DeleteSpaceActionListener
+      UIManageMySpaces uiMySpaces = event.getSource();
+      SpaceService spaceService = uiMySpaces.getSpaceService();
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIApplication uiApp = ctx.getUIApplication();
+      String spaceId = ctx.getRequestParameter(OBJECTID);
+      try {
+        spaceService.deleteSpace(spaceId);
+      } catch(SpaceException se) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DELETE_SPACE, null, ApplicationMessage.ERROR));
+      }
     }
     
   }

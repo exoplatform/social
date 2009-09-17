@@ -122,15 +122,12 @@ public class JCRStorage {
   
   public void deleteSpace(String id) throws Exception {
     Session session;
-    try {
-      Node spaceHomeNode = getSpaceHome();
-      session = spaceHomeNode.getSession();
-      Node spaceNode = session.getNodeByUUID(id);
-      if(spaceNode != null) {
-        spaceNode.remove();
-        session.save();
-      }
-    }catch (PathNotFoundException e) {
+    Node spaceHomeNode = getSpaceHome();
+    session = spaceHomeNode.getSession();
+    Node spaceNode = session.getNodeByUUID(id);
+    if(spaceNode != null) {
+      spaceNode.remove();
+      session.save();
     }
   }
 
