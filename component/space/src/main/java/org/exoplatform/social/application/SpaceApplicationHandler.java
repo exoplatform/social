@@ -35,6 +35,13 @@ public interface SpaceApplicationHandler {
   public void initApp(Space space) throws SpaceException;
   
   /**
+   * De-initialize 
+   * @param space
+   * @throws SpaceException
+   */
+  public void deInitApp(Space space) throws SpaceException;
+  
+  /**
    * Install an application to a space
    * @param space
    * @param appId
@@ -65,6 +72,13 @@ public interface SpaceApplicationHandler {
    * @throws SpaceException
    */
   public void removeApplication(Space space, String appId) throws SpaceException;
+  
+  /**
+   * Remove all applications in a space
+   * @param space
+   * @throws SpaceException
+   */
+  public void removeApplications(Space space) throws SpaceException;
   
   /**
    * Get name
