@@ -33,6 +33,7 @@ import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.navigation.UINavigationManagement;
 import org.exoplatform.portal.webui.navigation.UINavigationNodeSelector;
+import org.exoplatform.portal.webui.page.UIPageForm;
 import org.exoplatform.portal.webui.page.UIPageNodeForm2;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
@@ -85,7 +86,7 @@ import org.exoplatform.webui.event.Event.Phase;
       template = "system:/groovy/webui/form/UIFormTabPane.gtmpl" ,    
       events = {
         @EventConfig(listeners = UIPageNodeForm2.SaveActionListener.class ),
-        @EventConfig(listeners = UIPageNodeForm2.BackActionListener.class, phase = Phase.DECODE),
+        @EventConfig(listeners = UIManageMySpaces.BackActionListener.class, phase = Phase.DECODE),
         @EventConfig(listeners = UIPageNodeForm2.SwitchPublicationDateActionListener.class, phase = Phase.DECODE ),
         @EventConfig(listeners = UIPageNodeForm2.ClearPageActionListener.class, phase = Phase.DECODE),
         @EventConfig(listeners = UIPageNodeForm2.CreatePageActionListener.class, phase = Phase.DECODE)
@@ -122,7 +123,7 @@ public class UIManageMySpaces extends UIContainer {
   private SpaceService spaceService = null;
   private String userId = null;
   private List<PageNavigation> navigations;
-  
+  private PageNavigation selectedNavigation;
   private UIVirtualList uiVirtualList;
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
@@ -210,6 +211,23 @@ public class UIManageMySpaces extends UIContainer {
     List<Space> userSpaces = spaceService.getSpaces(userId);
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
+  
+  /**
+   * Get selected navigation
+   * @return
+   */
+  public PageNavigation getSelectedNavigation() {
+    return selectedNavigation;
+  }
+  
+  /**
+   * Set selected navigation
+   * @param navigation
+   */
+  public void setSelectedNavigation(PageNavigation navigation) {
+    selectedNavigation = navigation;
+  }
+  
   /**
    * Get paginated spaces in which user is member or leader
    * 
@@ -300,6 +318,7 @@ public class UIManageMySpaces extends UIContainer {
       WebuiRequestContext ctx = event.getRequestContext();
       Space space = spaceService.getSpaceById(ctx.getRequestParameter(OBJECTID));
       PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
+      uiMySpaces.setSelectedNavigation(groupNav);
       UIPopupWindow uiPopup = uiMySpaces.getChild(UIPopupWindow.class);
       UINavigationManagement pageManager = uiPopup.createUIComponent(UINavigationManagement.class,
                                                                    null,
@@ -309,10 +328,40 @@ public class UIManageMySpaces extends UIContainer {
       pageManager.setOwnerType(groupNav.getOwnerType());
       
       UINavigationNodeSelector selector = pageManager.getChild(UINavigationNodeSelector.class);
+      ArrayList<PageNavigation> list = new ArrayList<PageNavigation>();
+      list.add(groupNav);
+      selector.initNavigations(list);
       selector.loadNavigationByNavId(groupNav.getId(), uiMySpaces.navigations);
       uiPopup.setUIComponent(pageManager);
-      //uiPopup.setWindowSize(400, 0);
+      uiPopup.setWindowSize(400, 400);
       uiPopup.setShow(true);
+    }
+    
+  }
+  
+  /**
+   * This action trigger when user click on back button from UINavigationManagement
+   * @author hoatle
+   *
+   */
+  static public class BackActionListener extends EventListener<UIPageNodeForm2> {
+
+    @Override
+    public void execute(Event<UIPageNodeForm2> event) throws Exception {
+      UIPageNodeForm2 uiPageNode = event.getSource();
+      UIManageMySpaces uiMySpaces = uiPageNode.getAncestorOfType(UIManageMySpaces.class);
+      PageNavigation selectedNavigation = uiMySpaces.getSelectedNavigation();
+      UIPopupWindow uiPopup = uiMySpaces.getChild(UIPopupWindow.class);
+      UINavigationManagement pageManager = uiMySpaces.createUIComponent(UINavigationManagement.class, null, null);
+      pageManager.setOwner(selectedNavigation.getOwnerId());
+      UINavigationNodeSelector selector = pageManager.getChild(UINavigationNodeSelector.class);
+      ArrayList<PageNavigation> list = new ArrayList<PageNavigation>();
+      list.add(selectedNavigation);
+      selector.initNavigations(list);
+      uiPopup.setUIComponent(pageManager);
+      uiPopup.setWindowSize(400, 400);
+      uiPopup.setRendered(true);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup.getParent());
     }
     
   }
