@@ -49,8 +49,10 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
 import org.exoplatform.portal.application.UserGadgetStorage;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.opensocial.model.impl.ExoPersonImpl;
 import org.exoplatform.social.opensocial.model.impl.SpaceImpl;
 import org.exoplatform.social.space.Space;
@@ -187,10 +189,18 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
             }
           }
           ((ExoPersonImpl) p).setSpaces(spaces);
-        } catch (SpaceException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+        } catch (SpaceException e) {}
+      }
+      else if(Person.Field.THUMBNAIL_URL.toString().equals(field)) {
+        ProfileAttachment att = (ProfileAttachment) pro.getProperty("avatar");
+        String avatar = null;
+        if (att != null) {
+          try {
+            avatar = "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
+            + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+          } catch (Exception e) {}
         }
+        p.setThumbnailUrl(avatar);
       }
     }
 
@@ -292,5 +302,15 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
     return ImmediateFuture.newInstance(null);
+  }
+  
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();  
+  }
+  private String getRepository() throws Exception {
+    PortalContainer pContainer = PortalContainer.getInstance();
+    RepositoryService rService = (RepositoryService) pContainer.getComponentInstanceOfType(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName() ;
   }
 }

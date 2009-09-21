@@ -86,7 +86,6 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
     document.getElementById('ActivitiesContainer').innerHTML = '<div class= "Empty">' + eXo.social.statusUpdate.owner.getDisplayName() + ' do not have any updates yet' + '</div>';
     return;
   }
-  //eXo.social.statusUpdate.activities = eXo.social.statusUpdate.activities.sort(eXo.social.statusUpdate.sortUpdates);
   var activitiesLength = eXo.social.statusUpdate.activities.length;
   
   if (activitiesLength < totalAct) {
@@ -97,21 +96,25 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
   for (var i = 0; i < activitiesLength; i++) {
     html += '<div class="ActivitiesContent">';
     html += '<a href="#" class="TitleItem">' + eXo.social.statusUpdate.getName(eXo.social.statusUpdate.activities[i].getField('userId')) + '</a>';
-		html += '<div>';
-		var mediaItems = eXo.social.statusUpdate.activities[i].getField('mediaItems');
-		if (mediaItems) {
+//    var image = eXo.social.statusUpdate.getAvatar(eXo.social.statusUpdate.activities[i].getField('userId'));
+//    html += '<div>';
+//    html += '<img src="' + image + '" width="65" height="70"/>'; 
+//    html += '</div>';
+    html += '<div>';
+	var mediaItems = eXo.social.statusUpdate.activities[i].getField('mediaItems');
+	if (mediaItems) {
       for (var j = 0; j < mediaItems.length; j++) {
         if (mediaItems[j].getField('type') == 'image') {
 					html += '<a href="#" class="ImageItem">';
 					html += '<img src="' + mediaItems[j].getField('url') + '" width="25" height="25"/>';
 					html += '</a>';
       	}
-			}
-    } else {
+      }
+	  } else {
 				html += '<a href="#" class="ImageItem">';
 				html += '<img src="http://localhost:8080/social/gadgets/activities/Backgrouds/Gadget.gif" width="25" height="25"/>';
 				html += '</a>';		
-		}
+	  }
 		var body = eXo.social.statusUpdate.activities[i].getField('body') || '';
 		var url = eXo.social.statusUpdate.activities[i].getField('url');
 		html += '<div class="Content">' + body + '</div>';
@@ -163,8 +166,20 @@ StatusUpdate.prototype.getName = function(id) {
   return person.getDisplayName();
 }
 
-StatusUpdate.prototype.sortUpdates = function(a, b) {
-  return b.getField('postedTime') - a.getField('postedTime');
+StatusUpdate.prototype.getAvatar = function(id) {
+  if (id == null)
+    return "";
+  var person = null;
+  if (id == eXo.social.statusUpdate.owner.getId())
+	  person = eXo.social.statusUpdate.owner;
+  else
+	  person = eXo.social.statusUpdate.ownerContacts.getById(id);
+  if (person == null)
+    return "";
+  var avatarUrl = person.getField(opensocial.Person.Field.THUMBNAIL_URL);
+  if(avatarUrl == 'undefined') 
+	  return "http://localhost:8080/social/gadgets/activities/Backgrouds/AvartarIcon.gif";
+  return person.getField('thumbnailUrl');
 }
 
 StatusUpdate.prototype.timeToPrettyString = function(B) {

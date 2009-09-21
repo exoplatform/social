@@ -43,12 +43,12 @@
 }
 
 .UIUserListPortlet .UserlistContainer .UserlistContent .AvartarIcon {
-	background:transparent url(background/AvartarIcon.gif) no-repeat left 5px ;
-	padding-left: 66px;
+	float: left;
+	width: 65px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer {
-	padding: 4px;
+	margin-left: 70px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserBarTitleName {

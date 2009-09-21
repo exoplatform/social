@@ -22,11 +22,19 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
@@ -49,11 +57,23 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIUserListPortlet extends UIPortletApplication {
   
   private UIPageIterator iterator_;
+  private IdentityManager identityManager_ = null;
   
   public UIUserListPortlet() throws Exception {
     iterator_ = createUIComponent(UIPageIterator.class, null, null);
     addChild(iterator_);
     init();
+  }
+  
+  public String getUserAvatar(String userId) throws Exception {
+    Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
+    Profile profile = identity.getProfile();
+    ProfileAttachment attach = (ProfileAttachment) profile.getProperty("avatar");
+    if (attach != null) {
+      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + attach.getWorkspace()
+              + attach.getDataPath() + "?rnd=" + System.currentTimeMillis();
+    }
+    return null;
   }
   
   @SuppressWarnings("unchecked")
@@ -98,8 +118,24 @@ public class UIUserListPortlet extends UIPortletApplication {
     for(Membership aaa : memberShips) {
       if(memberShip == null) memberShip = aaa.getMembershipType();
       else memberShip += "," + aaa.getMembershipType();
-        
     }
     return memberShip;
+  }
+  
+  private IdentityManager getIdentityManager() {
+    if(identityManager_ == null) {
+      PortalContainer pcontainer =  PortalContainer.getInstance();
+      identityManager_ = (IdentityManager) pcontainer.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return identityManager_;
+  }
+  
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();  
+  }
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class);    
+    return rService.getCurrentRepository().getConfiguration().getName();
   }
 }
