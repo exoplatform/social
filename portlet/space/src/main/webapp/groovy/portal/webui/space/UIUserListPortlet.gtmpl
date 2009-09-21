@@ -17,12 +17,13 @@
 
 -->
 <% 	
-	import org.exoplatform.services.organization.User; 
-	import org.exoplatform.webui.core.UIPageIterator;
-	 	
-	UIPageIterator iterator = uicomponent.getUIPageIterator();
+	import org.exoplatform.services.organization.User
+	import org.exoplatform.webui.core.UIPageIterator
+	import social.portal.webui.component.UISpaceUserSearch
+	UIPageIterator iterator = uicomponent.getUIPageIterator()
 %>
 <div class="UIUserListPortlet" id="$uicomponent.id">
+  <% uicomponent.renderChild(UISpaceUserSearch.class) %>
 	<% List<User> listUsers = uicomponent.getUsersInSpace();
 		 if(listUsers.size() > 0 ){	 
 		 	for(user in listUsers) {

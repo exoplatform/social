@@ -22,8 +22,6 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.Membership;
@@ -39,10 +37,19 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.ComponentConfigs;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
+
+import social.portal.webui.component.UISpaceUserSearch;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -50,21 +57,38 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
  * Nov 07, 2008          
  */
 
-@ComponentConfig(
+@ComponentConfigs ({
+  @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class, 
-    template = "app:/groovy/portal/webui/space/UIUserListPortlet.gtmpl"
-)
+    template = "app:/groovy/portal/webui/space/UIUserListPortlet.gtmpl",
+    events = {
+      @EventConfig(listeners=UIUserListPortlet.SearchActionListener.class, phase=Phase.DECODE)
+    }
+  )
+})
 public class UIUserListPortlet extends UIPortletApplication {
   
   private UIPageIterator iterator_;
+  private List<User> userList;
+  private final Integer ITEMS_PER_PAGE = 3;
   private IdentityManager identityManager_ = null;
   
   public UIUserListPortlet() throws Exception {
     iterator_ = createUIComponent(UIPageIterator.class, null, null);
     addChild(iterator_);
+    
+    addChild(UISpaceUserSearch.class,null , null);
     init();
   }
   
+  public void setUserList(List<User> userList) {
+    this.userList = userList;
+  }
+  
+  public List<User> getUserList() {
+    return userList;
+  }
+
   public String getUserAvatar(String userId) throws Exception {
     Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
     Profile profile = identity.getProfile();
@@ -78,20 +102,29 @@ public class UIUserListPortlet extends UIPortletApplication {
   
   @SuppressWarnings("unchecked")
   public void init() throws Exception {
-    int n = iterator_.getCurrentPage();
     Space space = getSpace();
-    List<User> users = new ArrayList<User>();
+    userList = new ArrayList<User>();
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     UserHandler userHandler = orgSrc.getUserHandler();
     List<String> userNames = spaceService.getMembers(space);
     for (String name : userNames) {
-      users.add(userHandler.findUserByName(name));
+      userList.add(userHandler.findUserByName(name));
     }
-    PageList pageList = new ObjectPageList(users,3);
+
+  }
+  
+  /**
+   * This method is called by template file
+   * @throws Exception
+   */
+  private void update() throws Exception {
+    int n = iterator_.getCurrentPage();
+    PageList pageList = new ObjectPageList(userList, ITEMS_PER_PAGE);
     iterator_.setPageList(pageList);
     if (n <= pageList.getAvailablePage()) iterator_.setCurrentPage(n);
   }
+  
 
   public UIPageIterator getUIPageIterator() throws Exception { 
     return iterator_;
@@ -105,7 +138,7 @@ public class UIUserListPortlet extends UIPortletApplication {
   
   @SuppressWarnings("unchecked")
   public List<User> getUsersInSpace() throws Exception{
-    init();
+    update();
     return iterator_.getCurrentPageData();
   }
   
@@ -120,6 +153,20 @@ public class UIUserListPortlet extends UIPortletApplication {
       else memberShip += "," + aaa.getMembershipType();
     }
     return memberShip;
+  }
+  
+  /**
+   * Get the userList from UISpaceUserSearch
+   * and then update UIUserListPortlet
+   */
+  static public class SearchActionListener extends EventListener<UIUserListPortlet> {
+    @Override
+    public void execute(Event<UIUserListPortlet> event) throws Exception {
+      UIUserListPortlet uiUserListPortlet = event.getSource();
+      UISpaceUserSearch uiUserSearch = uiUserListPortlet.getChild(UISpaceUserSearch.class);
+      uiUserListPortlet.setUserList(uiUserSearch.getUserList());
+    }
+    
   }
   
   private IdentityManager getIdentityManager() {
