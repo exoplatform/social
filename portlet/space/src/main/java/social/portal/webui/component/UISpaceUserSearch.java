@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -177,7 +178,7 @@ public class UISpaceUserSearch extends UIForm {
       String keyword = uiSearch.getUIStringInput(FIELD_KEYWORD).getValue();
       String filter = uiSearch.getUIFormSelectBox(FIELD_FILTER).getValue();
       uiSearch.setUserList(uiSearch.search(keyword, filter, uiSearch.getGroupId()));
-      uiSearch.getParent().createEvent("Search", Phase.DECODE, ctx).broadcast();
+      uiSearch.<UIComponent>getParent().createEvent("Search", Phase.DECODE, ctx).broadcast();
     }
     
   }
