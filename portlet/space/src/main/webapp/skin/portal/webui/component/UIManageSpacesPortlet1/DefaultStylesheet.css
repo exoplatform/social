@@ -23,6 +23,7 @@
 	float: left;
 	width: 90px; height: 80px;
 	background: url('background/Avatar.gif') no-repeat left;
+	border: 1px solid #c7c7c7;
 }
 
 .UIManageSpacesPortlet1 .UIManageSpaces .SpaceContent .MySpacesContent{

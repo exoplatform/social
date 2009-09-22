@@ -29,6 +29,7 @@
 .UIUserListPortlet .UserlistContainer {
 	background:#DEECF4 url(/space/skin/portal/webui/component/UISpaceSettingPortlet/background/BGWorkingAreaWithHelp.gif) repeat-x scroll left top;
   padding:30px 35px;
+  margin-top: 4px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserlistContent {
@@ -45,6 +46,7 @@
 .UIUserListPortlet .UserlistContainer .UserlistContent .AvartarIcon {
 	float: left;
 	width: 65px;
+	border: 1px solid #c7c7c7;
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer {
