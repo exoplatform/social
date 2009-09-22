@@ -1,8 +1,14 @@
 .UISpaceSettingPortlet {
 	border: 1px solid #e6e6e6;
-	padding: 4px;
+	padding: 1px;
 	background: white;
 }
+
+.UISpaceSettingPortlet .UISpaceSetting .UITabPane{
+	padding: 0px 4px 4px 4px;
+	background: #f7f7f9;
+}
+
 
 .UISpaceSettingPortlet .UISpaceSetting .UITabPane .GrayTabContainer {
     clear: both;
@@ -51,13 +57,13 @@
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .LeftTab {
     background:transparent url('background/NormalLeftTab.gif') no-repeat scroll left;
-    line-height:27px;
+    line-height:26px;
     padding-left:5px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .RightTab {
     background:transparent url('background/NormalRightTab.gif') no-repeat scroll right;
-    line-height:27px;
+    line-height:26px;
     padding-right:5px;
 }
 
@@ -66,7 +72,7 @@
     color: #202020;
     cursor:pointer;
     font-weight:normal;
-    line-height:27px;
+    line-height:26px;
     padding:0 8px;
 }
 
