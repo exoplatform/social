@@ -382,3 +382,8 @@ input.hint, textarea.hint {
 .ContainerSpace .NoneExperience {
 	text-align:center;
 }
+
+
+.UIMyProfilePortlet .UITabPane .ContainerSpace .CommunityIcon {
+	border: 1px solid #c7c7c7;
+}
