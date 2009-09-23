@@ -120,7 +120,7 @@ public class SpaceServiceImpl implements SpaceService {
     Iterator<Space> itr = userSpaces.iterator();
     while(itr.hasNext()) {
       Space space = itr.next();
-      if(!isMember(space, userId)){
+      if(!hasAccessPermission(space, userId)){
         itr.remove();
       }
     }
@@ -403,7 +403,6 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public boolean isLeader(Space space, String userId) throws SpaceException {
     try {
-      if (userId.equals(getUserACL().getSuperUser())) return true;
       OrganizationService orgService = getOrgService();
       MembershipHandler memberShipHandler = orgService.getMembershipHandler();
 
@@ -453,7 +452,6 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public boolean isMember(Space space, String userId) throws SpaceException {
     try {
-      if(userId.equals(getUserACL().getSuperUser())) return true;
       OrganizationService orgService = getOrgService();
       MembershipHandler memberShipHandler = orgService.getMembershipHandler();
 
@@ -469,6 +467,35 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public boolean isMember(String spaceId, String userId) throws SpaceException {
     return isMember(getSpaceById(spaceId), userId);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public boolean hasAccessPermission(Space space, String userId) throws SpaceException {
+    if (userId.equals(getUserACL().getSuperUser())) return true;
+    if (isMember(space, userId)) return true;    
+    return false;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public boolean hasAccessPermission(String spaceId, String userId) throws SpaceException {
+    return hasAccessPermission(getSpaceById(spaceId), userId);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public boolean hasEditPermission(Space space, String userId) throws SpaceException {
+    if (userId.equals(getUserACL().getSuperUser())) return true;
+    if (isLeader(space, userId)) return true;
+    return false;
+  }
+  
+  public boolean hasEditPermission(String spaceId, String userId) throws SpaceException {
+    return hasEditPermission(getSpaceById(spaceId), userId);
   }
   
   /**
@@ -639,7 +666,7 @@ public class SpaceServiceImpl implements SpaceService {
 
     if(isInvited(space, userId)) {
       throw new SpaceException(SpaceException.Code.USER_ALREADY_INVITED);
-    } else if (isMember(space, userId)) {
+    } else if (isMember(space, userId) && !userId.equals(getUserACL().getSuperUser())) {
       throw new SpaceException(SpaceException.Code.USER_ALREADY_MEMBER);
     }
     if(isPending(space, userId)) {

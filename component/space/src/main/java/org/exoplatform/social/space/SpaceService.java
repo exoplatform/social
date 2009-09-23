@@ -225,7 +225,6 @@ public interface SpaceService {
   
   /**
    * Checking whether a user is a space's leader.
-   * Root is considered as a leader by default but actually, he is not.
    * @param space
    * @param userId
    * @return true if that user if a leader otherwise false
@@ -235,7 +234,6 @@ public interface SpaceService {
   
   /**
    * Checking whether a user is a space's leader.
-   * Root is considered as a leader by default but actually, he is not.
    * @param spaceId
    * @param userId
    * @return
@@ -263,7 +261,6 @@ public interface SpaceService {
 
   /**
    * Checking whether a user is a space's member.
-   * Root is considered as a leader by default but actually, he is not.
    * @param space
    * @param userId
    * @return true if that user is a member; otherwise, false
@@ -273,13 +270,48 @@ public interface SpaceService {
   
   /**
    * Checking whether a user is a space's member.
-   * Root is considered as a leader by default but actually, he is not.
    * @param spaceId
    * @param userId
    * @return true if that user is a member; otherwise,false
    * @throws SpaceException
    */
   boolean isMember(String spaceId, String userId) throws SpaceException;
+  
+  /**
+   * If user is root or user is space's member, return true
+   * @param space
+   * @param userId
+   * @return
+   * @throws SpaceException
+   */
+  boolean hasAccessPermission(Space space, String userId) throws SpaceException;
+  
+  /**
+   * If user is root or user is space's member, return true
+   * @param spaceId
+   * @param userId
+   * @return
+   * @throws SpaceException
+   */
+  boolean hasAccessPermission(String spaceId, String userId) throws SpaceException;
+  
+  /**
+   * If user is root or user is space's manager, return true
+   * @param space
+   * @param userId
+   * @return
+   * @throws SpaceException
+   */
+  boolean hasEditPermission(Space space, String userId) throws SpaceException;
+  
+  /**
+   * If user is root or user is space's manager, return true
+   * @param spaceId
+   * @param userId
+   * @return
+   * @throws SpaceException
+   */
+  boolean hasEditPermission(String spaceId, String userId) throws SpaceException;
   
   /**
    * Checking whether a user is in the invited list of a space
