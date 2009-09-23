@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.identity;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +33,7 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -184,25 +186,38 @@ public class JCRStorage {
     return identity;
   }
   
+  public Identity getIdentity(Node identityNode) throws Exception {
+    Identity identity = null;
+    identity = new Identity(identityNode.getUUID());
+    identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
+    identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
+    System.out.println("\n\n\n username: " + identity.getRemoteId());
+    return identity;
+  }
+  
   public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFiler profileFilter) throws Exception {
     Node profileHomeNode = getProfileServiceHome();
-
+    Session session = profileHomeNode.getSession() ;
+    QueryManager queryManager = session.getWorkspace().getQueryManager() ;
     StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
         .append("/").append(PROFILE_NODETYPE);
-    queryString.append("[jcr:contains(@firstName, ").append("'").append(profileFilter.getUserName()).append("')]");
-    
-    
-    
-    QueryManager queryManager = profileHomeNode.getSession().getWorkspace().getQueryManager();
-    Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
-    QueryResult queryResult = query.execute();
+    String userName = profileFilter.getUserName();
+    if(userName.indexOf("*")<0){
+      if(userName.charAt(0)!='*') userName = "*"+userName ;
+      if(userName.charAt(userName.length()-1)!='*') userName += "*" ;
+    }
+    queryString.append("[jcr:contains(@firstName, ").append("'").append(userName).append("')");
+    queryString.append(" or jcr:contains(@lastName, ").append("'").append(userName).append("')]");
+    Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
+    QueryResult queryResult = query1.execute();
     NodeIterator nodeIterator = queryResult.getNodes();
-    System.out.println("\n\n\n\n\n items: " + nodeIterator.getSize());
+    List<Identity> listIdentity = new ArrayList<Identity>();
     while (nodeIterator.hasNext()) {
       Node profileNode = (Node) nodeIterator.next();
-      //TODO: dang.tung need to convert to identity.
+      Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
+      listIdentity.add(getIdentity(identityNode));
     }
-    return null;
+    return listIdentity;
   }
 
   public void saveProfile(Profile p) throws Exception {

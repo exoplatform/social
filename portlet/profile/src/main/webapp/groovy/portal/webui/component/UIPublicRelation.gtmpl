@@ -14,6 +14,7 @@
 	<div class="UITabPane">
 	<% uiform.begin() %>
 		<div class="ContainerSpace">
+		<!--<div><% uiform.renderChild("search") %><span onclick="<%= uiform.event("Search") %>">Search</span></div>-->
 			<%if (list.size() == 0) {%>
 			  <div class="ContentSpace">
 			    <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
