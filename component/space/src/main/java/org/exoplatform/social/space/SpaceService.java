@@ -224,7 +224,8 @@ public interface SpaceService {
   void setLeader(String spaceId, String userId, boolean isLeader) throws SpaceException; 
   
   /**
-   * Checking whether a user is a space's leader
+   * Checking whether a user is a space's leader.
+   * Root is considered as a leader by default but actually, he is not.
    * @param space
    * @param userId
    * @return true if that user if a leader otherwise false
@@ -233,7 +234,8 @@ public interface SpaceService {
   boolean isLeader(Space space, String userId) throws SpaceException;
   
   /**
-   * Checking whether a user is a space's leader
+   * Checking whether a user is a space's leader.
+   * Root is considered as a leader by default but actually, he is not.
    * @param spaceId
    * @param userId
    * @return
@@ -260,7 +262,8 @@ public interface SpaceService {
   boolean isOnlyLeader(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is a space's member
+   * Checking whether a user is a space's member.
+   * Root is considered as a leader by default but actually, he is not.
    * @param space
    * @param userId
    * @return true if that user is a member; otherwise, false
@@ -269,7 +272,8 @@ public interface SpaceService {
   boolean isMember(Space space, String userId) throws SpaceException;
   
   /**
-   * Checking whether a user is a space's member
+   * Checking whether a user is a space's member.
+   * Root is considered as a leader by default but actually, he is not.
    * @param spaceId
    * @param userId
    * @return true if that user is a member; otherwise,false

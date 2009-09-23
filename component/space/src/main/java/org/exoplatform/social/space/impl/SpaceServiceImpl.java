@@ -30,6 +30,7 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
@@ -59,6 +60,7 @@ public class SpaceServiceImpl implements SpaceService {
    
   private JCRStorage storage;
   private OrganizationService orgService = null;
+  private UserACL userACL = null;
   private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
   
   /**
@@ -401,6 +403,7 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public boolean isLeader(Space space, String userId) throws SpaceException {
     try {
+      if (userId.equals(getUserACL().getSuperUser())) return true;
       OrganizationService orgService = getOrgService();
       MembershipHandler memberShipHandler = orgService.getMembershipHandler();
 
@@ -450,6 +453,7 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public boolean isMember(Space space, String userId) throws SpaceException {
     try {
+      if(userId.equals(getUserACL().getSuperUser())) return true;
       OrganizationService orgService = getOrgService();
       MembershipHandler memberShipHandler = orgService.getMembershipHandler();
 
@@ -776,6 +780,19 @@ public class SpaceServiceImpl implements SpaceService {
       orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
     }
     return orgService;
+  }
+  
+  /**
+   * Get UserACL
+   * 
+   * @return userACL
+   */
+  private UserACL getUserACL() {
+    if (userACL == null) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      return (UserACL) container.getComponentInstanceOfType(UserACL.class);
+    }
+    return userACL;
   }
   
   /**
