@@ -8,7 +8,9 @@ function StatusUpdate() {
 	this.owner = null;
 	this.ownerContacts = null;
 	this.activities = null;
+	this.active = false;
 }
+
 
 StatusUpdate.prototype.init = function() {
   eXo.social.statusUpdate = new StatusUpdate();
@@ -236,16 +238,32 @@ StatusUpdate.prototype.timeDetermineAgo = function(B) {
 }
 
 StatusUpdate.prototype.postNewActivity = function(){
+  var currentView = gadgets.views.getCurrentView().getName();
   var activityElement = document.getElementById('newActivity');
-	// Check for blank spaces, if yes return false without any update
-	var reWhiteSpace = new RegExp(/^\s+$/);
-	if (activityElement.value == "" || reWhiteSpace.test(activityElement.value)) {
-		return false;
-	}
-  var activity = opensocial.newActivity({ 'title' : activityElement.value,
-    'body' : activityElement.value});
-
-  activityElement.value = '';
+  
+  if ((currentView == 'canvas') && (this.active == false)) return;
+  
+  // Check for blank spaces, if yes return false without any update
+  var reWhiteSpace = new RegExp(/^\s+$/);
+  var text = activityElement.innerHTML;
+  var content = text.replace(/<p>/gi, "<br>").replace(/<\/\p>/gi, "<br>");
+  var activityContent = content.replace(/<br>/gi, " ");
+  if (activityContent  == "" || reWhiteSpace.test(activityElement.innerHTML)) {
+	return false;	
+  }
+  if ((activityContent == "What're you doing?") && (activityElement.style.minHeight == "12px")) return;
+  var activity = opensocial.newActivity({ 'title' : activityContent, 'body' : activityContent});
+  
+  if (currentView == 'home') {
+	activityElement.style.color="#777777";
+	activityElement.style.minHeight="12px";
+	activityElement.innerHTML = "What're you doing?";
+  } else if (currentView == 'canvas') {
+	this.active = false;
+	activityElement.style.minHeight="20px";
+	activityElement.style.color="#777777";
+	activityElement.innerHTML = "What're you doing?";
+  }
   opensocial.requestCreateActivity(activity, "HIGH", statusUpdates.refresh);
 }
 

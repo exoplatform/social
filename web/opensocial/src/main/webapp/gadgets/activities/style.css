@@ -30,7 +30,6 @@ body {
 	background: #d3d3d3;
 	padding: 6px 0 0 10px;
 	font-weight: bold;
-	height: 48px;
 }
 
 .GadgetContent .Empty {
@@ -39,7 +38,25 @@ body {
 }
 
 .GadgetContent .ActivityForm .AddActivityForm {
-	margin: 5px 20px 0 0;
+	margin: 0 20px 0 0;
+}
+
+.GadgetContent .ActivityForm .UIComposer_InputArea {
+	background: #FFFFFF none repeat scroll 0 0;
+	border-color: #AEAEAE #BBBBBB #BBBBBB;
+	overflow-x: hidden;
+	min-height: 12px;
+	max-height: 60px;
+	font-weight: normal;
+	border-style: solid;
+	border-width: 1px;
+	display: block;
+	position: relative;
+	width: 210px;
+	float: left;
+	margin: 0 0 5px;
+	padding: 2px 5px 3px;
+	color: #777777;
 }
 
 .GadgetContent .ActivityForm input {
@@ -47,7 +64,7 @@ body {
 	height: 18px;
 }
 
-.GadgetContent .ActivityForm .ButtonAdd  {
+.GadgetContent .ActivityForm .ButtonAdd {
 	background: url('Backgrouds/ButtonAdd.gif') no-repeat left top;
 	float: right;
 	height: 19px;
@@ -55,8 +72,14 @@ body {
 	text-align: center;
 	width: 33px;	
 	cursor: pointer;
+	color: #000000;
 }
 
+.GadgetContent .ActivityForm .ClearBoth {
+	clear:both; 
+	height:0px;
+ }
+ 
 .GadgetContent .ActivitiesContent {
 	padding-left: 10px;
 	margin-top: 5px;

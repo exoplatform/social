@@ -23,6 +23,7 @@
    <Require feature="dynamic-height"></Require>
    <Require feature="settitle"></Require>
    <Require feature="views"></Require>
+   <Require feature="opensocial-i18n"></Require>
  </ModulePrefs>
  <Content type="html" view="home">
    <![CDATA[
@@ -31,16 +32,56 @@
 <script type="text/javascript" src="activities/script.js"></script>
 <script type="text/javascript">
 	var statusUpdates = new StatusUpdate();
+	
+	function focusFirstTask(textarea) {
+		if(textarea.innerHTML == "What're you doing?") {
+			textarea.style.color="#000000";
+			textarea.style.minHeight="20px";
+			textarea.focus();
+			textarea.innerHTML = "";
+		}
+	}
+	
+	function getTextContent (el)
+	{
+		
+		if (el.textContent) {
+			return el.textContent.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+		}
+		
+		if (el.innerText) {
+			return el.innerText.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+		}
+		
+		if (el.innerHTML) {
+			return el.innerHTML.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+		}
+		
+		return null;
+	}
+		
+	function lostFocus(textarea) {
+		var text = getTextContent(textarea);
+		if (text != null) {
+			var content = text.replace(/^\s+/g, '').replace(/\s+$/g, '');
+		}
+		
+		if((text == null) || (content == "")) {
+			textarea.style.color="#777777";
+			textarea.innerHTML = "What're you doing?";
+			textarea.style.minHeight="12px";
+		}
+	}
+	
 	gadgets.util.registerOnLoadHandler(statusUpdates.init());
 </script>
 
 <div class="GadgetContent">
 	<div class="ActivityForm">
-		<span>What're you doing?</span>
+		<div id="newActivity" name="activityInputBox" style="min-height:12px;" class="UIComposer_InputArea" contenteditable="true" onfocus="focusFirstTask(this);" onBlur="lostFocus(this);">What're you doing?</div>
 		<div class="AddActivityForm">
 			<div class="ButtonAdd" onclick="eXo.social.statusUpdate.postNewActivity(); return false;"> Add</div>
-			<input type="text" id ="newActivity" name="activityInputBox" onkeypress="eXo.social.statusUpdate.streamSubmit(event);"/>
-			<div class="ClearRight"><span></span></div>
+			<div class="ClearBoth"><span></span></div>
 		</div>
 	</div>
 	<div id="ActivitiesContainer">
@@ -57,20 +98,64 @@
 <script type="text/javascript" src="activities/script.js"></script>
 <script type="text/javascript">
 	var statusUpdates = new StatusUpdate();
+	
+	function focusFirstTask(textarea) {
+		eXo.social.statusUpdate.active=true;
+		if(textarea.innerHTML == "What're you doing?") {
+			textarea.style.color="#000000";
+			textarea.focus();
+			textarea.style.minHeight="30px";
+			textarea.innerHTML = "";
+		}
+	}
+	
+	function getTextContent (el)
+	{
+		
+		if (el.textContent) {
+			return el.textContent.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+		}
+		
+		if (el.innerText) {
+			return el.innerText.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+		}
+		
+		if (el.innerHTML) {
+			return el.innerHTML.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+		}
+		
+		return null;
+	}
+		
+	function lostFocus(textarea) {
+	
+		var text = getTextContent(textarea);
+		if (text != null) {
+			var content = text.replace(/^\s+/g, '').replace(/\s+$/g, '');
+		}
+		
+		if((text == null) || (content == "")) {
+			eXo.social.statusUpdate.active=false;
+			textarea.style.color="#777777";
+			textarea.innerHTML = "What're you doing?";
+			textarea.style.minHeight="20px";
+		} else {
+			eXo.social.statusUpdate.active=true;
+		}
+	}
+	
 	gadgets.util.registerOnLoadHandler(statusUpdates.init());
 </script>
 
 <div class="GadgetContent">
-	<div class="TopGadgetContent">
-		<div class="ActivityForm">
-			<span>What're you doing?</span>
-			<div class="AddActivityForm">
-				<div class="ButtonAdd" onclick="eXo.social.statusUpdate.postNewActivity(); return false;"> Add</div>
-				<input type="text" id ="newActivity" name="activityInputBox" onkeypress="eXo.social.statusUpdate.streamSubmit(event);"/>
-				<div class="ClearRight"><span></span></div>
-			</div>
+	<div class="ActivityForm">
+		<div id="newActivity" name="activityInputBox" class="UIComposer_InputArea" contenteditable="true" onfocus="focusFirstTask(this);" onBlur="lostFocus(this);">What're you doing?</div>
+		<div class="AddActivityForm">
+			<div class="ButtonAdd" onclick="eXo.social.statusUpdate.postNewActivity(); return false;"> Add</div>
+			<div class="ClearBoth"><span></span></div>
 		</div>
-		<div id="ActivitiesContainer"></div>
+	</div>
+	<div id="ActivitiesContainer">
 	</div>
 </div>
 <div id="more" style="text-align:right;"></div>
