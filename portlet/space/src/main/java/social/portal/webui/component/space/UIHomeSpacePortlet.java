@@ -60,14 +60,11 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
     PortletRequestContext context = (PortletRequestContext) WebuiRequestContext
     .getCurrentInstance();
     String remoteUser = context.getRemoteUser();
-    //TODO: dang.tung - should use SpaceService to check isLeader
-    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
-    MembershipHandler memberShipHandler = orgSrc.getMembershipHandler();
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     try {
       Space space = spaceSrc.getSpaceByUrl(spaceUrl);
-      if(memberShipHandler.findMembershipByUserGroupAndType(remoteUser, space.getGroupId(), "manager") != null) return true;
+      return spaceSrc.hasEditPermission(space, remoteUser);
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -283,7 +283,7 @@ public class UIManageMySpaces extends UIContainer {
   public int getRole(String spaceId) throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    if(spaceService.isLeader(spaceId, userId)) {
+    if(spaceService.hasEditPermission(spaceId, userId)) {
       return LEADER;
     }
     return MEMBER;

@@ -69,7 +69,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     }
     if(pageNode != null) list.remove(pageNode); 
     Collections.sort(list, new ApplicationComparator());
-    if(spaceSrc.isLeader(space, userId) && pageNode != null) list.add(pageNode);
+    if(spaceSrc.hasEditPermission(space, userId) && pageNode != null) list.add(pageNode);
     return list;
   }
   
