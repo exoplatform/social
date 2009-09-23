@@ -9,9 +9,9 @@
 		    <show-info-bar>false</show-info-bar>
 		  </application>			
 		</container>
-		<container id="UserToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		<container id="SocialUserToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 		  <application>
-		    <instance-id>portal#classic:/exoadmin/UserToolbarPortlet/userportlet</instance-id>
+		    <instance-id>portal#classic:/profile/SocialUserToolBarPortlet/userportlet</instance-id>
 	      <access-permissions>Everyone</access-permissions>
 		    <show-info-bar>false</show-info-bar>
 		  </application>			
@@ -22,21 +22,7 @@
 	      <access-permissions>*:/platform/administrators</access-permissions>
 		    <show-info-bar>false</show-info-bar>
 		  </application>
-		</container>
-		<container id="UserRelationPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <application>
-		    <instance-id>portal#classic:/profile/UserRelationPortlet/userrelationportlet</instance-id>
-	      <access-permissions>Everyone</access-permissions>
-		    <show-info-bar>false</show-info-bar>
-		  </application>			
-		</container>
-		<container id="SpacePortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <application>
-		    <instance-id>portal#classic:/space/SpacePortlet/spaceportlet</instance-id>
-	      <access-permissions>Everyone</access-permissions>
-		    <show-info-bar>false</show-info-bar>
-		  </application>			
-		</container>
+		</container>		
 	</container>
 
 	<site-body/>

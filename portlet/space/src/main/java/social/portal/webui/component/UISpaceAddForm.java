@@ -22,6 +22,7 @@ import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -158,8 +159,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       //uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
-      UIManageMySpaces uiManageMySpaces = uiPopup.getParent();
-      ctx.addUIComponentToUpdateByAjax(uiManageMySpaces);
+      SpaceUtils.updateWorkingWorkSpace();
     }
   }
 

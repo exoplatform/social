@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -96,9 +97,10 @@ public class UISpaceInfo extends UIForm {
       spaceSrc.saveSpace(space, false);
       UIApplication uiApp = requestContext.getUIApplication();
       uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));
-      UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceSetting);
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      SpaceUtils.updateWorkingWorkSpace();
+//      UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
+//      requestContext.addUIComponentToUpdateByAjax(uiSpaceSetting);
+//      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
     }
   }
 }

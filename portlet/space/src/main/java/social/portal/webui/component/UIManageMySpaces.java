@@ -386,6 +386,8 @@ public class UIManageMySpaces extends UIContainer {
       } catch(SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DELETE_SPACE, null, ApplicationMessage.ERROR));
       }
+      
+      SpaceUtils.updateWorkingWorkSpace();
     }
     
   }
@@ -414,6 +416,7 @@ public class UIManageMySpaces extends UIContainer {
         return;
       }
       //uiApp.addMessage(new ApplicationMessage(MSG_LEAVE_SPACE_SUCCESS, null, ApplicationMessage.INFO));
+      SpaceUtils.updateWorkingWorkSpace();
     }
   }
   
@@ -459,6 +462,7 @@ public class UIManageMySpaces extends UIContainer {
         return;
       }
       //uiApp.addMessage(new ApplicationMessage(MSG_ACCEPT_INVITATION_SUCCESS, null, ApplicationMessage.INFO));
+      SpaceUtils.updateWorkingWorkSpace();
     }
   }
   
