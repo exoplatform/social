@@ -69,12 +69,54 @@
 .UIVerticalTabContentContainer .UIVerticalTabContent .UIManageSpaces{
 	padding:8px;
 	border: 1px solid #dadada;
-	background: white;
+	background: white url('background/SpaceContentBG.gif') repeat-x top ;
 }
 
 .UIVerticalTabContentContainer .UIManageSpaces .SpaceContent{
 	padding:8px;
 	border-bottom: 1px solid #dadada;
+}
+
+.UIVerticalTabContentContainer .UIManageSpaces .SearchSpaces .Lable{
+	color: #0a4da6;
+	width: 100px;
+	text-align: right;
+	float: left;
+}
+
+.UIVerticalTabContentContainer .UIManageSpaces .SearchSpaces .Search{
+	width: 346px;
+	border: 1px solid #c7c7c7;
+	margin-left: 8px;
+	float: left;
+}
+
+.UIVerticalTabContentContainer .UIManageSpaces .FilterSpaces {
+	margin: 8px 0px;
+}
+
+.UIVerticalTabContentContainer .UIManageSpaces .FilterSpaces .Lable{
+	color: #0a4da6;
+	width: 100px;
+	text-align: right;
+	float: left;
+}
+
+.UIVerticalTabContentContainer .UIManageSpaces .FilterSpaces .FilterBy{
+	width: 80px;
+	border: 1px solid #c7c7c7;
+	margin-left: 8px;
+	float: left;
+}
+
+.UIVerticalTabContentContainer .UIManageSpaces .FilterSpaces .ButtonFilter{
+	float: left;
+	width: 78px;
+	margin-left: 8px;
+	line-height: 19px;
+	text-align: center;
+	color: white;
+	background: url('background/ButtonFilter.gif') no-repeat left;
 }
 
 .UIVerticalTabContentContainer .UIManageSpaces .SpaceContent .NotYet {
