@@ -15,7 +15,7 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 .UIUserListPortlet {
-	background:white none repeat scroll 0 0;
+	background: white url('background/SpaceContentBG.gif') repeat-x top ;
   border:1px solid #E6E6E6;
   padding:4px;
 }
@@ -27,8 +27,7 @@
 }
 
 .UIUserListPortlet .UserlistContainer {
-	background:#DEECF4 url(/space/skin/portal/webui/component/UISpaceSettingPortlet/background/BGWorkingAreaWithHelp.gif) repeat-x scroll left top;
-  padding:30px 35px;
+  padding:4px;
   margin-top: 4px;
 }
 
