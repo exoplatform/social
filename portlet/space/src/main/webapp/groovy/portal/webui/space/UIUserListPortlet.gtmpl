@@ -33,7 +33,7 @@
 	%>
 	<div class="UserlistContainer">
 		<div class="UserlistContent">
-			<div class="AvartarIcon">
+			<div class="MiniAvatarSpaceBG">
 				<img src="$imageSource" width="65" height="70">
 			</div>
 			<div class="UserContainer">

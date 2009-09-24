@@ -50,19 +50,7 @@
   if (uicomponent.getAllInvitedSpaces().size > 0) hasInvited = true
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
-    <div class="SearchSpaces">
-    	<div class="Lable">Contact Search:</div>
-    	<input type="text" class="Search"/>
-    	<div style="clear: left;"><span></span></div>
-    </div>
-    <div class="FilterSpaces">
-    	<div class="Lable">Filter by:</div>
-    	<input type="text" class="FilterBy"/>
-    	<input type="text" class="FilterBy"/>
-    	<input type="text" class="FilterBy"/>
-    	<div class="ButtonFilter">Filter</div>
-    	<div style="clear: left;"><span></span></div>
-    </div>
+    
     <div class="InvitedSpaces">
         <% if (hasInvited) { style="display:block;" %>
             
@@ -93,9 +81,9 @@
       <% if (role == UIManageMySpaces.LEADER) {%>
       <div class="SpaceContent">
           
-            <div class="AvatarSpace">
+            <div class="MiniAvatarSpaceBG">
                 <a href="<%= spaceUrl %>">
-                    <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+                    <img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
                 </a>
             </div>
         <div class="MySpacesContent">
