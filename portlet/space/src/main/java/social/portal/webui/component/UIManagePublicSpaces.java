@@ -16,9 +16,11 @@
  */
 package social.portal.webui.component;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -95,6 +97,16 @@ public class UIManagePublicSpaces extends UIContainer {
   }
   
   /**
+   * Checking if remote user has edit permission  of a space
+   * @param space
+   * @return
+   */
+  public boolean hasEditPermission(Space space) throws Exception {
+    SpaceService spaceService = getSpaceService();
+    return spaceService.hasEditPermission(space, getUserId());
+  }
+  
+  /**
    * Get paginated public spaces so that user can request to join
    * @return
    * @throws Exception 
@@ -126,7 +138,7 @@ public class UIManagePublicSpaces extends UIContainer {
      String spaceId = ctx.getRequestParameter(OBJECTID);
      String userId = uiPublicSpaces.getUserId();
      Space space = spaceService.getSpaceById(spaceId);
-     String registration = space.getRegistration();
+     //String registration = space.getRegistration();
      try {
        spaceService.requestJoin(space, userId);
      } catch(SpaceException se) {

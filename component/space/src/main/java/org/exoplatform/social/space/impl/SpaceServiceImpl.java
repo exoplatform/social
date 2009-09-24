@@ -120,11 +120,37 @@ public class SpaceServiceImpl implements SpaceService {
     Iterator<Space> itr = userSpaces.iterator();
     while(itr.hasNext()) {
       Space space = itr.next();
-      if(!hasAccessPermission(space, userId)){
+      if(!isMember(space, userId)){
         itr.remove();
       }
     }
     return userSpaces;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Space> getAccessableSpaces(String userId) throws SpaceException {
+    List<Space> accessiableSpaces = getAllSpaces();
+    Iterator<Space> itr = accessiableSpaces.iterator();
+    while (itr.hasNext()) {
+      Space space = itr.next();
+      if (!hasAccessPermission(space, userId)) itr.remove();
+    }
+    return accessiableSpaces;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Space> getEditableSpaces(String userId) throws SpaceException {
+    List<Space> editableSpaces = getAllSpaces();
+    Iterator<Space> itr = editableSpaces.iterator();
+    while (itr.hasNext()) {
+      Space space = itr.next();
+      if (!hasEditPermission(space, userId)) itr.remove();
+    }
+    return editableSpaces;
   }
   
   /**
@@ -272,9 +298,11 @@ public class SpaceServiceImpl implements SpaceService {
       if (memberships.size() == 0) {
         throw new SpaceException(SpaceException.Code.USER_NOT_MEMBER);
       }
+      /*
       if (isOnlyLeader(space, userId)) {
         throw new SpaceException(SpaceException.Code.USER_ONLY_LEADER);
       }
+      */
 
       Iterator<Membership> itr = memberships.iterator();
       while(itr.hasNext()) {

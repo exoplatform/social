@@ -66,6 +66,22 @@ public interface SpaceService {
   List<Space> getSpaces(String userId) throws SpaceException;
   
   /**
+   * Get spaces of a user which user has access permission
+   * @param userId
+   * @return
+   * @throws SpaceException
+   */
+  List<Space> getAccessableSpaces(String userId) throws SpaceException;
+  
+  /**
+   * Get spaces of a user which user has edit permission
+   * @param userId
+   * @return
+   * @throws SpaceException
+   */
+  List<Space> getEditableSpaces(String userId) throws SpaceException;
+  
+  /**
    * Get user's invited spaces and that user can accept or deny the request
    * @param userId
    * @return spaces list of all user's invited spaces
