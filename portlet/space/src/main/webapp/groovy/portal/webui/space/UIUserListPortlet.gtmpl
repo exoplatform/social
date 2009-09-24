@@ -34,7 +34,7 @@
 	<div class="UserlistContainer">
 		<div class="UserlistContent">
 			<div class="MiniAvatarSpaceBG">
-				<img src="$imageSource" width="65" height="70">
+				<img src="$imageSource" width="70" height="84">
 			</div>
 			<div class="UserContainer">
 			  <div class="UserBarTitleName"><%= user.getUserName() %></div>

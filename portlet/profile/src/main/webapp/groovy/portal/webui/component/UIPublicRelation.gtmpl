@@ -14,7 +14,19 @@
 	<div class="UITabPane">
 	<% uiform.begin() %>
 		<div class="ContainerSpace">
-		<!--<div><% uiform.renderChild("search") %><span onclick="<%= uiform.event("Search") %>">Search</span></div>-->
+			<div class="SearchSpaces">
+	      <div class="Lable">Contact Search:</div>
+	      <input type="text" class="Search"/>
+	      <div style="clear: left;"><span></span></div>
+	     </div>
+	     <div class="FilterSpaces">
+	      <div class="Lable">Filter by:</div>
+	      <input type="text" class="FilterBy"/>
+	      <input type="text" class="FilterBy"/>
+	      <input type="text" class="FilterBy"/>
+	      <div class="ButtonFilter">Filter</div>
+	      <div style="clear: left;"><span></span></div>
+	     </div>
 			<%if (list.size() == 0) {%>
 			  <div class="ContentSpace">
 			    <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
@@ -40,7 +52,7 @@
 		  %>
 	    <div class="ContentSpace">
 	    <div class="MiniAvatarSpaceBG">
-	    	<img src="$imageSource" width="65" height="70">
+	    	<img src="$imageSource" width="70" height="84">
 	    </div>
 	    <div class="CommunityContainer">
 		    <div class="CommunityMane Line">

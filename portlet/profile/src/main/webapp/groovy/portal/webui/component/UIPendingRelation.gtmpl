@@ -44,8 +44,8 @@
 	    		}
 		  %>
 			  	<div class="ContentSpace">
-			    <div class="CommunityIcon">
-						<img src="$imageSource" width="65" height="70">
+			    <div class="MiniAvatarSpaceBG">
+						<img src="$imageSource" width="70" height="84">
 					</div>
 			    <div class="CommunityContainer">
 				    <div class="CommunityMane Line">
