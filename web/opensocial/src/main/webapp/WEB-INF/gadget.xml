@@ -42,4 +42,7 @@
 	<gadget name="userSpaceRestService">
 		<path>/gadgets/userSpaceRestService.xml</path>
 	</gadget>
+	<gadget name="codeRunner">
+		<path>/gadgets/codeRunner.xml</path>
+	</gadget>
 </gadgets>
