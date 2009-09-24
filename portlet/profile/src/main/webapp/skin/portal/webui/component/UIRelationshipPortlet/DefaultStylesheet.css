@@ -262,7 +262,7 @@
 	border:1px solid #c7c7c7;
 	padding: 8px;
 	margin-bottom:4px;
-	height: 80px;
+	height: 100px;
 }
 
 .UITabPane .ContainerSpace .CommunityIcon {
@@ -381,9 +381,4 @@ input.hint, textarea.hint {
 
 .ContainerSpace .NoneExperience {
 	text-align:center;
-}
-
-
-.UIMyProfilePortlet .UITabPane .ContainerSpace .CommunityIcon {
-	border: 1px solid #c7c7c7;
 }
