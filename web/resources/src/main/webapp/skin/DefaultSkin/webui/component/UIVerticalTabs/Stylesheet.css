@@ -61,7 +61,8 @@
 	padding: 10px ;
 }
 
-.UIVerticalTabContentContainer .ContainerSpace{
+.UIVerticalTabContentContainer .UIVerticalTabContent .UIPublicRelation .ContainerSpace{
+	background: white url('background/SpaceContentBG.gif') repeat-x top ;
 	/*height: 400px;*/
 	/*overflow: auto;*/
 }
@@ -69,47 +70,46 @@
 .UIVerticalTabContentContainer .UIVerticalTabContent .UIManageSpaces{
 	padding:8px;
 	border: 1px solid #dadada;
-	background: white url('background/SpaceContentBG.gif') repeat-x top ;
 }
 
-.UIVerticalTabContentContainer .UIManageSpaces .SpaceContent{
+.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .SpaceContent{
 	padding:8px;
 	border-bottom: 1px solid #dadada;
 }
 
-.UIVerticalTabContentContainer .UIManageSpaces .SearchSpaces .Lable{
+.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .SearchSpaces .Lable{
 	color: #0a4da6;
 	width: 100px;
 	text-align: right;
 	float: left;
 }
 
-.UIVerticalTabContentContainer .UIManageSpaces .SearchSpaces .Search{
+.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .SearchSpaces .Search{
 	width: 346px;
 	border: 1px solid #c7c7c7;
 	margin-left: 8px;
 	float: left;
 }
 
-.UIVerticalTabContentContainer .UIManageSpaces .FilterSpaces {
+.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .FilterSpaces {
 	margin: 8px 0px;
 }
 
-.UIVerticalTabContentContainer .UIManageSpaces .FilterSpaces .Lable{
+.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .FilterSpaces .Lable{
 	color: #0a4da6;
 	width: 100px;
 	text-align: right;
 	float: left;
 }
 
-.UIVerticalTabContentContainer .UIManageSpaces .FilterSpaces .FilterBy{
+.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .FilterSpaces .FilterBy{
 	width: 80px;
 	border: 1px solid #c7c7c7;
 	margin-left: 8px;
 	float: left;
 }
 
-.UIVerticalTabContentContainer .UIManageSpaces .FilterSpaces .ButtonFilter{
+.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .FilterSpaces .ButtonFilter{
 	float: left;
 	width: 78px;
 	margin-left: 8px;

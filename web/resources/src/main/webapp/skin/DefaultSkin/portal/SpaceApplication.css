@@ -44,3 +44,10 @@
 #gwtGadget .gadgets-gadget {
 	width: 99%;
 }
+
+.MiniAvatarSpaceBG {
+	background: url('background/AvatarSpace.gif') no-repeat left top;
+	padding: 8px 0px 0px 8px;
+	width: 85px; height: 102px;
+	float: left;
+}
