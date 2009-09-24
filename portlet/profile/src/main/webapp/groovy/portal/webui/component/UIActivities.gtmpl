@@ -54,7 +54,7 @@
 
   %>
     <div class="ContentSpace">
-    <div class="CommunityIcon">
+    <div class="MiniAvatarSpaceBG">
     	<img src="$imageSource" width="65" height="70">
     </div>
     <div class="CommunityContainer">
