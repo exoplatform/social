@@ -78,6 +78,7 @@
 		      <a href="${activitiesURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
 		    </div>
 	    </div>
+	    <div style="clear: left;"></div>
 	    </div>
 	  <% } %>
 	  <%
