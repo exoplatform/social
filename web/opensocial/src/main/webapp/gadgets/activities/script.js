@@ -97,11 +97,13 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
   }
   for (var i = 0; i < activitiesLength; i++) {
     html += '<div class="ActivitiesContent">';
+    var image = eXo.social.statusUpdate.getAvatar(eXo.social.statusUpdate.activities[i].getField('userId'));
+    html += '<div class="MiniAvatarSpaceBG">';
+    html += '<img src="' + image + '" width="65" height="70"/>'; 
+    html += '</div>';
+    html += '<div class="Content">';
     html += '<a href="#" class="TitleItem">' + eXo.social.statusUpdate.getName(eXo.social.statusUpdate.activities[i].getField('userId')) + '</a>';
-//    var image = eXo.social.statusUpdate.getAvatar(eXo.social.statusUpdate.activities[i].getField('userId'));
-//    html += '<div>';
-//    html += '<img src="' + image + '" width="65" height="70"/>'; 
-//    html += '</div>';
+    
     html += '<div>';
 	var mediaItems = eXo.social.statusUpdate.activities[i].getField('mediaItems');
 	if (mediaItems) {
@@ -112,20 +114,17 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 					html += '</a>';
       	}
       }
-	  } else {
+	 } else {
 				html += '<a href="#" class="ImageItem">';
 				html += '<img src="http://localhost:8080/social/gadgets/activities/Backgrouds/Gadget.gif" width="25" height="25"/>';
 				html += '</a>';		
-	  }
+	 }
 		var body = eXo.social.statusUpdate.activities[i].getField('body') || '';
 		var url = eXo.social.statusUpdate.activities[i].getField('url');
 		html += '<div class="Content">' + body + '</div>';
 		html += '<div class="ClearLeft"><span></span></div>';
 		html += '</div>';
-		html += '<div class="NewsDate">';
-		if (url) html += '<a href="' + url + '" target="_blank">link</a>' + ' | ';
-		html += 'posted on ' + ("" + (new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')))).substring(0, 24) + '</div>';
-		
+		html += '<br>';
 		if (currentView == "canvas") {
 			var timeAgo = eXo.social.statusUpdate.timeDetermineAgo(new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')));
 			html += '<div id="NewsComment" class="NewsComment">';
@@ -134,10 +133,17 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 			html += ' | ';
 			html += '<a class="Links"  id="like'+ i +'" href="#">' + ' Like ' + '</a>';
 			html += '</div>';
+		} else {
+			var timeAgo = eXo.social.statusUpdate.timeDetermineAgo(new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')));
+			html += '<div class="NewsDate">';
+			if (url) html += '<a href="' + url + '" target="_blank">link</a>' + ' | ';
+			html += timeAgo + '</div>';
 		}
 		
 		html += '</div>';
+		html += '<div style="clear: left;"><span></span></div>';
 		
+		html += '</div>';
 		if(i < activitiesLength -1 )html += '<hr/>';
   }
   
@@ -179,8 +185,9 @@ StatusUpdate.prototype.getAvatar = function(id) {
   if (person == null)
     return "";
   var avatarUrl = person.getField(opensocial.Person.Field.THUMBNAIL_URL);
-  if(avatarUrl == 'undefined') 
+  if(avatarUrl == undefined) {
 	  return "http://localhost:8080/social/gadgets/activities/Backgrouds/AvartarIcon.gif";
+  }
   return person.getField('thumbnailUrl');
 }
 
@@ -198,6 +205,7 @@ StatusUpdate.prototype.timeDetermineAgo = function(B) {
         return "an indeterminate amount of time ago"
     }
     time = (new Date().getTime() - B) / 1000;
+    
     if (time < 60) {
         return "less than a minute ago"
     } else {
@@ -215,21 +223,7 @@ StatusUpdate.prototype.timeDetermineAgo = function(B) {
                         var A = Math.round(time / 3600);
                         return "about " + A + " hours ago"
                     } else {
-                        if (time < 172800) {
-                            return "about a day ago"
-                        } else {
-                            if (time < 2592000) {
-                                var A = Math.round(time / 86400);
-                                return "about " + A + " days ago"
-                            } else {
-                                if (time < 5184000) {
-                                    return "about a month ago"
-                                } else {
-                                    var A = Math.round(time / 2592000);
-                                    return "about " + A + " months ago"
-                                }
-                            }
-                        }
+                    	return '' + eXo.social.statusUpdate.getPostedDate(B);
                     }
                 }
             }
@@ -237,7 +231,49 @@ StatusUpdate.prototype.timeDetermineAgo = function(B) {
     }
 }
 
-StatusUpdate.prototype.postNewActivity = function(){
+StatusUpdate.prototype.getPostedDate = function(D) {
+	var d_names = new Array("Sunday", "Monday", "Tuesday",
+	"Wednesday", "Thursday", "Friday", "Saturday");
+
+	var m_names = new Array("January", "February", "March", 
+	"April", "May", "June", "July", "August", "September", 
+	"October", "November", "December");
+
+	var curr_month = D.getMonth();
+	var curr_year = D.getFullYear();
+	var curr_day = D.getDay();
+	var curr_date = D.getDate();
+	var a_p = "";
+	var curr_hour = D.getHours();
+	
+	if (curr_hour < 12) {
+	   a_p = "AM";
+	}
+	else {
+	   a_p = "PM";
+	}
+	if (curr_hour == 0) {
+	   curr_hour = 12;
+	}
+	if (curr_hour > 12) {
+	   curr_hour = curr_hour - 12;
+	}
+
+	var curr_min = D.getMinutes();
+
+	curr_min = curr_min + "";
+
+	if (curr_min.length == 1) {
+	   curr_min = "0" + curr_min;
+	}
+
+	var time = (curr_hour + " : " + curr_min + " " + a_p);
+	var date = (d_names[curr_day] + " " + curr_date + " " + m_names[curr_month] + " " + curr_year);
+	
+	return (date + " at " + time);
+}
+
+StatusUpdate.prototype.postNewActivity = function() {
   var currentView = gadgets.views.getCurrentView().getName();
   var activityElement = document.getElementById('newActivity');
   

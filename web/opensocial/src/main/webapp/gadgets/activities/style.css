@@ -11,6 +11,10 @@ img {
 	border: none;
 }
 
+.ClearLeft {
+	clear: left;
+}
+
 .ClearRight {
 	clear: right;
 }
@@ -85,6 +89,13 @@ body {
 	margin-top: 5px;
 }
 
+.MiniAvatarSpaceBG {
+	background: url('background/AvatarSpace.gif') no-repeat left top;
+	padding: 8px 0px 0px 8px;
+	width: 85px; height: 102px;
+	float: left;
+}
+
 .ActivitiesContent a.TitleItem {
 	color: #2276fc;
 	display: block;
@@ -99,7 +110,6 @@ body {
 }
 
 .GadgetContent .ActivitiesContent .Content {
-	height: 30px;
 	overflow: hidden;
 	padding-left: 5px;
 }

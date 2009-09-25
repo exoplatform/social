@@ -11,6 +11,10 @@ img {
 	border: none;
 }
 
+.ClearLeft {
+	clear: left;
+}
+
 .ClearRight {
 	clear: right;
 }
@@ -95,9 +99,15 @@ body {
 }
 
 .GadgetContent .ActivitiesContent {
-	padding-left: 20px;
-	padding-right: 20px;
 	margin-top: 5px;
+	padding-left: 7px;
+}
+
+.MiniAvatarSpaceBG {
+	background: url('background/AvatarSpace.gif') no-repeat left top;
+	padding: 5px 0px 0px 8px;
+	width: 85px; height: 102px;
+	float: left;
 }
 
 .ActivitiesContent a.TitleItem {
@@ -126,7 +136,6 @@ body {
 
 .GadgetContent .ActivitiesContent .NewsComment {
 	color: #737373;
-	padding: 5px;
 }
 
 .GadgetContent .ActivitiesContent .ContainerView {
@@ -169,10 +178,10 @@ body {
 
 /********** Line *********/
 hr {
-	color: #e0ecff;
-	background-color: #e0ecff;
+	color: #d3d3d3;
+	background-color: #d3d3d3;
 	border: 0;
 	height: 1px;
-	margin: 5px 20px;
+	margin: 5px 10px;
 	_margin: 0px 20px;
 }
