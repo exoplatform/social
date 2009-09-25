@@ -17,6 +17,7 @@
 package org.exoplatform.social.portlet.activities;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -60,6 +61,7 @@ public class UIActivities  extends UIContainer {
 
     Identity id = im.getIdentityByRemoteId("organization", URLUtils.getCurrentUser());
     List<Activity> listActivity = am.getActivities(id);
+    
     // Reverse order of activity so that newer activity is placed on the top stack
     java.util.Collections.reverse(listActivity);
     return listActivity;
@@ -84,9 +86,11 @@ public class UIActivities  extends UIContainer {
     return rService.getCurrentRepository().getConfiguration().getName() ;
   }
   
-  public String timeToPrettyString(Long postedTime) {
-    String pattern = "EEE MMM d yyyy HH:mm:ss z";
+  public String getPostedTime(Long postedTime) {
+    // Pattern for output posted date time.
+    String pattern = "EEE, d MMM yyyy HH:mm:ss";
     SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+    
     if (timeZoneOffset == -1) {
       // Set system default timezone
       TimeZone tz = TimeZone.getDefault();
@@ -98,10 +102,7 @@ public class UIActivities  extends UIContainer {
     String timezoneId = "GMT";
     timezoneId += (timeZoneOffset > 0 ? "+" : "-") + (hours < 10 || hours > -9 ? "0": "") + Math.abs(hours) + ":" + (minutes < 10 ? "0" : "") + minutes;
     sdf.setTimeZone(TimeZone.getTimeZone(timezoneId));
-    
-    return sdf.format(new Date(postedTime));
-    
-    /*
+
     long time = (new Date().getTime() - postedTime)/1000;
     long value = 0;
     if (time < 60) {
@@ -121,28 +122,58 @@ public class UIActivities  extends UIContainer {
               value = Math.round(time / 3600);
               return "about " + value + " hours ago";
             } else {
-              if (time < 172800) {
-                return "about a day ago";
-              } else {
-                if (time < 2592000) {
-                  value = Math.round(time / 86400);
-                  return "about " +value + " days ago";
-                } else {
-                  if (time < 5184000) {
-                    return "about a month ago";
-                  } else {
-                    value = Math.round(time / 2592000);
-                    return "about " + value + " months ago";
-                  }
-                }
-              }
+              return getPostedDate(new Date(postedTime));
             }
           }
         }
       }
     }
-    */
   }
+  
+  private String getPostedDate(Date date) {
+    String [] d_names = {"Sunday", "Monday", "Tuesday",
+    "Wednesday", "Thursday", "Friday", "Saturday"};
+
+    String [] m_names =  {"January", "February", "March", 
+    "April", "May", "June", "July", "August", "September", 
+    "October", "November", "December"};
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    
+    int curr_month = calendar.get(Calendar.MONTH) + 1;
+    int curr_year = calendar.get(Calendar.YEAR);
+    int curr_day = calendar.get(Calendar.DAY_OF_WEEK);
+    int curr_date = calendar.get(Calendar.DATE);
+    String a_p = "";
+    int curr_hour = calendar.get(Calendar.HOUR);
+    
+    if (curr_hour < 12) {
+       a_p = "AM";
+    }
+    else {
+       a_p = "PM";
+    }
+    if (curr_hour == 0) {
+       curr_hour = 12;
+    }
+    if (curr_hour > 12) {
+       curr_hour = curr_hour - 12;
+    }
+
+    int curr_min = calendar.get(Calendar.MINUTE);
+
+    String curr_min_str = Integer.toString(curr_min);
+
+    if (curr_min_str.length() == 1) {
+      curr_min_str = "0" + curr_min_str;
+    }
+
+    String time = (curr_hour + " : " + curr_min_str + " " + a_p);
+    String dates = (d_names[curr_day] + " " + curr_date + " " + m_names[curr_month] + " " + curr_year);
+    
+    return (dates + " at " + time);
+  }
+  
   
   static public class ChangeTimeZoneActionListener extends EventListener<UIActivities> {
     public void execute(Event<UIActivities> event) throws Exception {

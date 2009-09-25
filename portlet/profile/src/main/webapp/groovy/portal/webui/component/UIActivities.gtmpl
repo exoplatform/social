@@ -17,17 +17,16 @@
 
 -->
 <%
-  import org.exoplatform.portal.webui.util.Util ;
+	import org.exoplatform.portal.webui.util.Util ;
 	import org.exoplatform.web.application.JavascriptManager;
 	import org.exoplatform.social.core.identity.model.ProfileAttachment;
 	
   def rcontext = _ctx.getRequestContext() ;
   JavascriptManager jsmanager = rcontext.getJavascriptManager();
-  jsmanager.importJavascript("eXo.social.activities.UIActivities") ;
+  jsmanager.importJavascript("eXo.social.activities.UIActivities");
   def list = uicomponent.getActivities();
   def compId = uicomponent.getId();
 	def identity = uicomponent.getCurrentIdentity();
-	
 	String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/CommunityIcon.gif";
 	ProfileAttachment att = identity.profile.getProperty("avatar");
 	if (att != null) {
@@ -36,6 +35,8 @@
   		imageSource = imageSource + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
 		} catch (Exception e) {}
 	}
+	
+	String mediaItemSource="http://localhost:8080/social/gadgets/activities/Backgrouds/Gadget.gif";
 %>
 
 <div class="UITabPane" id="$uicomponent.id">
@@ -59,15 +60,30 @@
     </div>
     <div class="CommunityContainer">
 	    <div class="CommunityMane Line">
-	        <div class="CommunityName" style="float: left; cursor:pointer;">${it.title}</div>
+	        <div class="CommunityName" style="float: left; cursor:pointer;">${identity.profile.fullName}</div>
 	        <div style="clear: both;"><span></span></div>
 	    </div>
-	  <% if(it.body != null) { %>
-    	<div class="Text Line">${it.body}<br><em>posted <%= uicomponent.timeToPrettyString(it.postedTime) %></em></div>
-    <% } %>
+		  <% if(it.body != null) { %>
+		  		<div class="Text Line">
+			  		<a href="#" class="ImageItem">
+			  		<%
+			  			def mediaItems = it.getMediaItems();
+							if ((mediaItems != null) && (mediaItems.size()) > 0) {
+						      for (mediaItem in mediaItems) {
+						        if (mediaItem.getType() == "image") {
+						        	mediaItemSource = mediaItem.getUrl();
+										}
+						      }
+							 } 
+			  		%>
+							<img src="$mediaItemSource" width="25" height="25"/>
+						</a>
+		    		${it.body}<br><br><em><%= uicomponent.getPostedTime(it.postedTime) %></em>
+		    	</div>
+	    <% } %>
+	    </div>
+	    <div style="clear: left;"><span></span></div>
     </div>
-    </div>
-
   <% } %>
   </div>
   <div style="clear: left;"><span></span></div>
