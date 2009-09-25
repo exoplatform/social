@@ -140,9 +140,9 @@ public class UIActivities  extends UIContainer {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     
-    int curr_month = calendar.get(Calendar.MONTH) + 1;
+    int curr_month = calendar.get(Calendar.MONTH);
     int curr_year = calendar.get(Calendar.YEAR);
-    int curr_day = calendar.get(Calendar.DAY_OF_WEEK);
+    int curr_day = calendar.get(Calendar.DAY_OF_WEEK) - 1;
     int curr_date = calendar.get(Calendar.DATE);
     String a_p = "";
     int curr_hour = calendar.get(Calendar.HOUR);
