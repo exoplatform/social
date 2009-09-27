@@ -31,6 +31,7 @@
   def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
   def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
+  def fieldLabelStatus = _ctx.appRes("${uicomponentId}.fieldLabel.status")
   def labelNoPublic = _ctx.appRes("${uicomponentId}.label.no_public")
   def iterator = uicomponent.getUIPageIterator()
   def publicSpaces = uicomponent.getPublicSpaces()
@@ -54,10 +55,12 @@
             if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true
             if (registration.equals(Space.CLOSE)) isClose = true
             def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+            //Temporary use private as visible
+            if (visibility.equals(Space.PRIVATE)) visibility = "visible"
       %>
       <div class="SpaceContent">
-        <div class="AvatarSpace">
-           <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+        <div class="MiniAvatarSpaceBG">
+           <img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
         </div>
         <div class="MySpacesContent">
             <div class="ContentBar">
@@ -90,7 +93,10 @@
                         <td class="FieldComponent"><a href="${spaceUrl}"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
                     </tr>            
                   <%}%>
-
+                    <tr>
+                        <td class="FieldLabel"><%= fieldLabelStatus %></td>
+                        <td class="FieldComponent">${visibility}; ${registration}</td>
+                    </tr>
                 </table>
             </div>
         </div>

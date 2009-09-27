@@ -26,6 +26,7 @@
 	def labelActionRevokePending = _ctx.appRes("${uicomponentId}.label.action_revoke_pending")
 	def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
+  def fieldLabelStatus = _ctx.appRes("${uicomponentId}.fieldLabel.status")
   def labelNoPending = _ctx.appRes("${uicomponentId}.label.no_pending")
 	def pendingSpaces = uicomponent.getPendingSpaces()
 %>
@@ -40,10 +41,13 @@
     <%}%>
     <%for (space in pendingSpaces) {
         def revokePendingAction = uicomponent.event("RevokePending", space.id) + "; return false"
+        def visibility = space.visibility
+        def registration = space.registration
+        if (visibility.equals("private")) visibility = "visible"
     %>
     <div class="SpaceContent">
-      <div class="AvatarSpace">
-        <img src="" class="ImgAvatar" id="" width="70px" onload="" alt=""/>
+      <div class="MiniAvatarSpaceBG">
+        <img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
       </div>
 	    <div class="MySpacesContent">
 	      <div class="ContentBar">
@@ -61,6 +65,10 @@
 	              <td class="FieldLabel"><%= fieldLabelMembers %></td>
 	              <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
 	            </tr>
+                <tr>
+                    <td class="FieldLabel"><%= fieldLabelStatus %></td>
+                    <td class="FieldComponent">${visibility}; ${registration}</td>
+                </tr>
 	          </table>
 	      </div>
 	    </div>

@@ -522,6 +522,9 @@ public class SpaceServiceImpl implements SpaceService {
     return false;
   }
   
+  /**
+   * {@inheritDoc}
+   */
   public boolean hasEditPermission(String spaceId, String userId) throws SpaceException {
     return hasEditPermission(getSpaceById(spaceId), userId);
   }
@@ -672,6 +675,9 @@ public class SpaceServiceImpl implements SpaceService {
     }
   }
   
+  /**
+   * {@inheritDoc}
+   */
   public void revokeRequestJoin(String spaceId, String userId) throws SpaceException {
     revokeRequestJoin(getSpaceById(spaceId), userId);
   }
