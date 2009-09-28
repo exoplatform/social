@@ -127,7 +127,7 @@ public class UISocialUserToolBarPortlet extends UIPortletApplication {
   private List<Space> getAllUserSpaces() throws Exception {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    List<Space> userSpaces = spaceService.getSpaces(userId);
+    List<Space> userSpaces = spaceService.getAccessibleSpaces(userId);
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
   

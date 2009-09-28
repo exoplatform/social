@@ -194,7 +194,7 @@ public class UIManageMySpaces extends UIContainer {
   private List<Space> getAllUserSpaces() throws Exception {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    List<Space> userSpaces = spaceService.getAccessableSpaces(userId);
+    List<Space> userSpaces = spaceService.getAccessibleSpaces(userId);
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
   

@@ -130,7 +130,7 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public List<Space> getAccessableSpaces(String userId) throws SpaceException {
+  public List<Space> getAccessibleSpaces(String userId) throws SpaceException {
     List<Space> accessiableSpaces = getAllSpaces();
     Iterator<Space> itr = accessiableSpaces.iterator();
     while (itr.hasNext()) {

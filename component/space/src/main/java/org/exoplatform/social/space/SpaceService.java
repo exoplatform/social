@@ -71,7 +71,7 @@ public interface SpaceService {
    * @return
    * @throws SpaceException
    */
-  List<Space> getAccessableSpaces(String userId) throws SpaceException;
+  List<Space> getAccessibleSpaces(String userId) throws SpaceException;
   
   /**
    * Get spaces of a user which user has edit permission
