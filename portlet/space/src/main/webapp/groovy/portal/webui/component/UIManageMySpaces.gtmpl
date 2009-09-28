@@ -42,6 +42,11 @@
 	def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
   def fieldLabelStatus = _ctx.appRes("${uicomponentId}.fieldLabel.status")
+  def visibleStatus = _ctx.appRes("${uicomponentId}.status.visible")
+  def hiddenStatus = _ctx.appRes("${uicomponentId}.status.hidden")
+  def openStatus = _ctx.appRes("${uicomponentId}.status.open")
+  def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
+  def closeStatus = _ctx.appRes("${uicomponentId}.status.close")
   def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
   def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
   def iterator = uicomponent.getMySpacesUIPageIterator()
@@ -76,9 +81,24 @@
 	      def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
 	      def role = uicomponent.getRole(space.id)
 	      def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
-	      def spaceName = space.name
+	      //def spaceName = space.name
 	      def visibility = space.visibility
 	      if (visibility.equals("private")) visibility = "visible"
+	      def status = ""
+	      if (visibility.equals("visible")) {
+	       status += visibleStatus
+	      } else {
+	       status += hiddenStatus
+	      }
+	      status += " "
+	      def registration = space.registration
+	      if (registration.equals("open")) {
+	       status += openStatus
+	      } else if (registration.equals("validation")) {
+	       status += validationStatus
+	      } else {
+	       status += closeStatus
+	      }
 	  %>
       <!-- Leader -->
       <% if (role == UIManageMySpaces.LEADER) {%>
@@ -113,7 +133,7 @@
                     </tr>
                     <tr>
                         <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                        <td class="FieldComponent">${visibility}; ${space.registration}</td>
+                        <td class="FieldComponent">$status</td>
                     </tr>
                 </table>
             </div>
@@ -149,7 +169,7 @@
                     </tr>
                     <tr>
                         <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                        <td class="FieldComponent">${visibility}; ${space.registration}</td>
+                        <td class="FieldComponent">$status</td>
                     </tr>
                 </table>
             </div>

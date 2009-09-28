@@ -27,6 +27,7 @@
 	def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
   def fieldLabelStatus = _ctx.appRes("${uicomponentId}.fieldLabel.status")
+  def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
   def labelNoPending = _ctx.appRes("${uicomponentId}.label.no_pending")
 	def pendingSpaces = uicomponent.getPendingSpaces()
 %>
@@ -67,7 +68,7 @@
 	            </tr>
                 <tr>
                     <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                    <td class="FieldComponent">${visibility}; ${registration}</td>
+                    <td class="FieldComponent">$validationStatus</td>
                 </tr>
 	          </table>
 	      </div>
