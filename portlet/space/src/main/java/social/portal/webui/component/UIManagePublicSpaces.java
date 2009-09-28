@@ -16,7 +16,7 @@
  */
 package social.portal.webui.component;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -51,9 +51,7 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIManagePublicSpaces extends UIContainer {
-  static private final String MSG_JOIN_SUCCESS = "UIManagePublicSpaces.msg.join_success";
   static private final String MSG_ERROR_REQUEST_JOIN = "UIManagePublicSpaces.msg.error_request_join"; 
-  static private final String MSG_REQUEST_JOIN_SUCCESS = "UIManagePublicSpaces.msg.request_join_success";
   private SpaceService spaceService = null;
   private String userId = null;
   private UIPageIterator iterator;
@@ -93,6 +91,8 @@ public class UIManagePublicSpaces extends UIContainer {
   private List<Space> getAllPublicSpaces() throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
+    UserACL userACL = getApplicationComponent(UserACL.class);
+    if (userId.equals(userACL.getSuperUser())) return new ArrayList<Space>();
     return spaceService.getPublicSpaces(userId);
   }
   
@@ -138,18 +138,12 @@ public class UIManagePublicSpaces extends UIContainer {
      String spaceId = ctx.getRequestParameter(OBJECTID);
      String userId = uiPublicSpaces.getUserId();
      Space space = spaceService.getSpaceById(spaceId);
-     //String registration = space.getRegistration();
      try {
        spaceService.requestJoin(space, userId);
      } catch(SpaceException se) {
        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REQUEST_JOIN, null, ApplicationMessage.ERROR));
        return;
      }
-//     if (registration.equals(Space.OPEN)) {
-//      uiApp.addMessage(new ApplicationMessage(MSG_JOIN_SUCCESS, null, ApplicationMessage.INFO)); 
-//     } else {
-//       uiApp.addMessage(new ApplicationMessage(MSG_REQUEST_JOIN_SUCCESS, null, ApplicationMessage.INFO));
-//     }
     }
   }
   

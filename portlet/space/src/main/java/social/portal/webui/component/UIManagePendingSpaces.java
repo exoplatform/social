@@ -49,7 +49,6 @@ import org.exoplatform.webui.event.EventListener;
 )
 public class UIManagePendingSpaces extends UIContainer {
   static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error_revoke_pending";
-  static private final String MSG_REVOKE_PENDING_SUCCESS = "UIManagePendingSpaces.msg.revoke_pending_success";
   SpaceService spaceService = null;
   String userId = null;
   private UIPageIterator iterator;
@@ -57,7 +56,7 @@ public class UIManagePendingSpaces extends UIContainer {
   private final Integer SPACES_PER_PAGE = 4;
   
   /**
-   * Contructor to initialize iterator
+   * Constructor to initialize iterator
    * @throws Exception
    */
   public UIManagePendingSpaces() throws Exception {
@@ -143,9 +142,6 @@ public class UIManagePendingSpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REVOKE_PENDING, null, ApplicationMessage.ERROR));
         return;
       }
-      //uiApp.addMessage(new ApplicationMessage(MSG_REVOKE_PENDING_SUCCESS, null, ApplicationMessage.INFO));
     }
-    
   }
-
 }

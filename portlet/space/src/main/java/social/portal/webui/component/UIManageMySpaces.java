@@ -20,12 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.codehaus.groovy.tools.shell.commands.SetCommand;
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.UserACL;
@@ -33,7 +28,6 @@ import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.navigation.UINavigationManagement;
 import org.exoplatform.portal.webui.navigation.UINavigationNodeSelector;
-import org.exoplatform.portal.webui.page.UIPageForm;
 import org.exoplatform.portal.webui.page.UIPageNodeForm2;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
@@ -102,18 +96,10 @@ public class UIManageMySpaces extends UIContainer {
   //Message Bundle
   static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
   static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
-  static private final String MSG_LEAVE_SPACE_SUCCESS = "UIManageMySpaces.msg.leave_space_success";
-  
   static private final String MSG_ERROR_ACCEPT_INVITATION = "UIManageMySpaces.msg.error_accept_invitation";
-  static private final String MSG_ACCEPT_INVITATION_SUCCESS = "UIManageMySpaces.msg.accept_invitation_success";
-  
   static private final String MSG_ERROR_DENY_INVITATION = "UIManageMySpaces.msg.error_deny_invitation";
-  static private final String MSG_DENY_INVITATION_SUCCESS = "UIManageMySpaces.msg.deny_invitation_success";
-  
   static private final String MSG_ERROR_DELETE_SPACE = "UIManageMySpaces.msg.error_delete_space";
-  
   static public final Integer LEADER = 1, MEMBER = 2;
-  
   
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
   private final Integer INVITED_SPACES_PER_PAGE = 4;
@@ -249,7 +235,7 @@ public class UIManageMySpaces extends UIContainer {
     return iterator.getCurrentPageData();
   }
   
-  private PageList<Space> getInvitedPageList() throws Exception {
+  private LazyPageList<Space> getInvitedPageList() throws Exception {
     List<Space> invitedList = getAllInvitedSpaces();
     Integer invitedListSize = 0;
     if (invitedList.size() == 0) {
@@ -375,7 +361,6 @@ public class UIManageMySpaces extends UIContainer {
 
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
-      // TODO hoatle DeleteSpaceActionListener
       UIManageMySpaces uiMySpaces = event.getSource();
       SpaceService spaceService = uiMySpaces.getSpaceService();
       WebuiRequestContext ctx = event.getRequestContext();
@@ -386,7 +371,6 @@ public class UIManageMySpaces extends UIContainer {
       } catch(SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DELETE_SPACE, null, ApplicationMessage.ERROR));
       }
-      
       SpaceUtils.updateWorkingWorkSpace();
     }
     
@@ -415,7 +399,6 @@ public class UIManageMySpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_LEAVE_SPACE, null, ApplicationMessage.ERROR));
         return;
       }
-      //uiApp.addMessage(new ApplicationMessage(MSG_LEAVE_SPACE_SUCCESS, null, ApplicationMessage.INFO));
       SpaceUtils.updateWorkingWorkSpace();
     }
   }
@@ -461,7 +444,6 @@ public class UIManageMySpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_ACCEPT_INVITATION, null, ApplicationMessage.ERROR));
         return;
       }
-      //uiApp.addMessage(new ApplicationMessage(MSG_ACCEPT_INVITATION_SUCCESS, null, ApplicationMessage.INFO));
       SpaceUtils.updateWorkingWorkSpace();
     }
   }
@@ -484,8 +466,7 @@ public class UIManageMySpaces extends UIContainer {
         spaceService.denyInvitation(spaceId, userId);
       } catch(SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DENY_INVITATION, null, ApplicationMessage.ERROR));
-      }
-      //uiApp.addMessage(new ApplicationMessage(MSG_DENY_INVITATION_SUCCESS, null, ApplicationMessage.INFO));    
+      } 
     }    
   }
 }
