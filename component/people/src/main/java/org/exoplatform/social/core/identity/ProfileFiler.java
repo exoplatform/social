@@ -29,7 +29,25 @@ package org.exoplatform.social.core.identity;
  */
 public class ProfileFiler {
   /* filer by user profile name*/
-  private String userName;
+  private String userName = null;
+  /* filer by user profile position*/
+  private String position = null;
+  /* filer by user profile company*/
+  private String company = null;
+  /* filer by user profile gender*/
+  private String gender = null;
+  /* has filter or not*/
+  private boolean hasFilter = false;
+  
+  
+  public boolean isHasFilter() { return hasFilter; }
+  public void setHasFilter(boolean hasFilter) { this.hasFilter = hasFilter; }
+  public String getPosition() { return position; }
+  public void setPosition(String position) { this.position = position; }
+  public String getCompany() { return company; }
+  public void setCompany(String company) { this.company = company; }
+  public String getGender() { return gender; }
+  public void setGender(String gender) { this.gender = gender; }
   public void setUserName(String userName) { this.userName = userName; }
   public String getUserName() { return userName; }
 }

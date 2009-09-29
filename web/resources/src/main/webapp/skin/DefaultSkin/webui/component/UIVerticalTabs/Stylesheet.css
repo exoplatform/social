@@ -61,56 +61,70 @@
 	padding: 10px ;
 }
 
-.UIVerticalTabContentContainer .UIVerticalTabContent .UIPublicRelation .ContainerSpace{
+.UIVerticalTabContentContainer .UIVerticalTabContent .ContainerSpace .UIProfileUserSearch {
 	background: white url('background/SpaceContentBG.gif') repeat-x top ;
 	/*height: 400px;*/
 	/*overflow: auto;*/
 }
 
-.UIVerticalTabContentContainer .UIVerticalTabContent .UIManageSpaces{
+.UIVerticalTabContentContainer .UIVerticalTabContent .UIManageSpaces {
 	padding:8px;
 	border: 1px solid #dadada;
 }
 
-.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .SpaceContent{
+.UIVerticalTabContentContainer  .UIPublicRelation .ContainerSpace .SpaceContent {
 	padding:8px;
 	border-bottom: 1px solid #dadada;
 }
 
-.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .SearchSpaces .Lable{
+.UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .SearchSpaces {
+	margin-bottom: 5px;
+}
+
+.UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .SearchSpaces .AdvanceSearchLable {
+	color:#2200CC;
+	float:left;
+	margin-left:7px;
+	text-align:left;
+	width:45px;
+	cursor: pointer;
+}
+
+.UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable {
 	color: #0a4da6;
 	width: 100px;
 	text-align: right;
 	float: left;
 }
 
-.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .SearchSpaces .Search{
-	width: 346px;
+.UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search {
+	width: 330px;
 	border: 1px solid #c7c7c7;
 	margin-left: 8px;
 	float: left;
 	padding-left: 15px;
 }
 
-.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .FilterSpaces {
+.UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .FilterSpaces {
 	margin: 8px 0px;
 }
 
-.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .FilterSpaces .Lable{
+.UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .FilterSpaces .Lable {
 	color: #0a4da6;
 	width: 100px;
 	text-align: right;
 	float: left;
 }
 
-.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .FilterSpaces .FilterBy{
+.UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .FilterSpaces .FilterBy {
 	width: 80px;
 	border: 1px solid #c7c7c7;
 	margin-left: 8px;
 	float: left;
+	color: #C7C7C7;
 }
 
-.UIVerticalTabContentContainer .UIPublicRelation .ContainerSpace .FilterSpaces .ButtonFilter{
+.UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .FilterSpaces .ButtonFilter {
 	float: left;
 	width: 78px;
 	margin-left: 8px;

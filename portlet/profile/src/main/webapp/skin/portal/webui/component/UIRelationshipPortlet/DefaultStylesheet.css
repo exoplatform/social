@@ -264,6 +264,14 @@
 	margin-bottom:4px;
 }
 
+.UITabPane .ContainerSpace .ActivityContentSpace {
+	background: white;
+	border:1px solid #c7c7c7;
+	padding: 8px;
+	margin-bottom:4px;
+	width: 928px;
+}
+
 .UITabPane .ContainerSpace .CommunityIcon {
 	float: left;
 }
@@ -381,4 +389,8 @@ input.hint, textarea.hint {
 
 .ContainerSpace .NoneExperience {
 	text-align:center;
+}
+
+.ContainerSpace .SearchSpaces .FilterBy {
+	color: #C7C7C7;
 }

@@ -3,6 +3,10 @@
   import org.exoplatform.webui.form.UIFormPageIterator;
   import org.exoplatform.social.core.identity.model.ProfileAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
+  import org.exoplatform.social.portlet.profile.UIProfileUserSearch; 
+  
+  def rcontext = _ctx.getRequestContext() ;
+  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileUserSearch','/profile/javascript/');
   
   def list = uicomponent.getPublicRelationList();
   def currIdentity = uicomponent.getCurrentIdentity();
@@ -14,19 +18,7 @@
 	<div class="UITabPane">
 	<% uiform.begin() %>
 		<div class="ContainerSpace">
-			<div class="SearchSpaces">
-	      <div class="Lable">Contact Search:</div>
-	      <input type="text" class="Search"/>
-	      <div style="clear: left;"><span></span></div>
-	     </div>
-	     <div class="FilterSpaces">
-	      <div class="Lable">Filter by:</div>
-	      <input type="text" class="FilterBy"/>
-	      <input type="text" class="FilterBy"/>
-	      <input type="text" class="FilterBy"/>
-	      <div class="ButtonFilter">Filter</div>
-	      <div style="clear: left;"><span></span></div>
-	     </div>
+			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
 			<%if (list.size() == 0) {%>
 			  <div class="ContentSpace">
 			    <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
@@ -78,7 +70,7 @@
 		      <a href="${activitiesURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
 		    </div>
 	    </div>
-	    <div style="clear: left;"></div>
+	    <div style="clear: left;"><span></span></div>
 	    </div>
 	  <% } %>
 	  <%

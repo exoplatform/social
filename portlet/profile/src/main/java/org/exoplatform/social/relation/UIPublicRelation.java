@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.relation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -24,17 +25,18 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormPageIterator;
 import org.exoplatform.webui.form.UIFormStringInput;
@@ -50,7 +52,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
     template =  "app:/groovy/portal/webui/component/UIPublicRelation.gtmpl",
     events = { 
       @EventConfig(listeners = UIPublicRelation.AddContactActionListener.class),
-      @EventConfig(listeners = UIPublicRelation.SearchActionListener.class)
+      @EventConfig(listeners = UIPublicRelation.SearchActionListener.class, phase = Phase.DECODE)
     }
 )
 public class UIPublicRelation extends UIForm {
@@ -65,13 +67,17 @@ public class UIPublicRelation extends UIForm {
   /** IdentityManager */
   IdentityManager     im           = null;
   
-
+  UIProfileUserSearch uiProfileUserSearch = null;
+  private List<Identity> identityList;
+  
   /**
    * Constructor.
    * @throws Exception 
    */
   public UIPublicRelation() throws Exception {
     addUIFormInput(new UIFormStringInput("search", null));
+    uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIPublicRelationSearch");
+    addChild(uiProfileUserSearch);
     uiFormPageIteratorPublic = createUIComponent(UIFormPageIterator.class, null, iteratorIDPublic);
     addChild(uiFormPageIteratorPublic);
   }
@@ -91,9 +97,7 @@ public class UIPublicRelation extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<Identity> getPublicRelationList() throws Exception {
-    RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentIdentity();
-    List<Identity> listIdentity= relm.getPublicRelation(currentIdentity);
+    List<Identity> listIdentity = getIdentityList();
     int currentPage = uiFormPageIteratorPublic.getCurrentPage();
     LazyPageList<Identity> pageList = new LazyPageList<Identity>(new IdentityListAccess(listIdentity), 5);
     uiFormPageIteratorPublic.setPageList(pageList) ;  
@@ -132,6 +136,16 @@ public class UIPublicRelation extends UIForm {
     return context.getRemoteUser();
   }
   
+  public String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();  
+  }
+  
+  public String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
   /**
    * Add identity to contact list.
    * 
@@ -158,6 +172,7 @@ public class UIPublicRelation extends UIForm {
         rel = rm.create(currIdentity, requestedIdentity);
         rel.setStatus(Relationship.Type.PENDING);
         rm.save(rel);
+        portlet.setIdentityList(portlet.removeIdentity(requestedIdentity));
       }
     }
   }
@@ -166,10 +181,9 @@ public class UIPublicRelation extends UIForm {
     @Override
     public void execute(Event<UIPublicRelation> event) throws Exception {
       UIPublicRelation uiPub = event.getSource();
-      ProfileFiler filter = new ProfileFiler();
-      String identityName = uiPub.getUIStringInput("search").getValue();
-      filter.setUserName(identityName);
-      uiPub.getIdentityManager().getIdentitiesByProfileFilter(filter);
+      UIProfileUserSearch uiProfileUserSearch = uiPub.getChild(UIProfileUserSearch.class);
+      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      uiPub.setIdentityList(identityList);
     }
   }
     
@@ -199,12 +213,31 @@ public class UIPublicRelation extends UIForm {
     return im;
   }
   
-  public String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();  
+  private void setIdentityList(List<Identity> identities) {
+    identityList = identities;
   }
-  public String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
+  
+  private List<Identity> removeIdentity(Identity reqIdentity) throws Exception {
+    List<Identity> rtnIdentityList = new ArrayList<Identity>();
+    String reqRemoteUser = reqIdentity.getRemoteId();
+    String remoteUser = null;
+    for (Identity id : identityList) {
+      remoteUser = id.getRemoteId();
+      if (!reqRemoteUser.equals(remoteUser)) {
+        rtnIdentityList.add(id);
+      }
+    }
+    
+    return rtnIdentityList;
+  }
+  
+  private List<Identity> getIdentityList() throws Exception {
+    RelationshipManager relm = getRelationshipManager();
+    Identity currentIdentity = getCurrentIdentity();
+    if (identityList == null) {
+      return relm.getPublicRelation(currentIdentity);
+    }
+    
+    return identityList;
   }
 }
