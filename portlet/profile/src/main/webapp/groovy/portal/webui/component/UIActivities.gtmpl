@@ -43,7 +43,7 @@
 <div class="ContainerSpace">
 	<%
 		if (list.size() == 0) { %>
-    <div class="ContentSpace">
+    <div class="ActivityContentSpace">
 	    <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
 	    <div style="clear: left;"><span></span></div>
 	  </div>
@@ -54,7 +54,7 @@
   <% list.each { 
 
   %>
-    <div class="ContentSpace">
+    <div class="ActivityContentSpace">
     <div class="MiniAvatarSpaceBG">
     	<img src="$imageSource" width="70" height="84">
     </div>

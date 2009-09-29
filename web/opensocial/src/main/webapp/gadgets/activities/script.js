@@ -99,7 +99,7 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
     html += '<div class="ActivitiesContent">';
     var image = eXo.social.statusUpdate.getAvatar(eXo.social.statusUpdate.activities[i].getField('userId'));
     html += '<div class="MiniAvatarSpaceBG">';
-    html += '<img src="' + image + '" width="65" height="70"/>'; 
+    html += '<img src="' + image + '" width="70" height="84"/>'; 
     html += '</div>';
     html += '<div class="Content">';
     html += '<a href="#" class="TitleItem">' + eXo.social.statusUpdate.getName(eXo.social.statusUpdate.activities[i].getField('userId')) + '</a>';
