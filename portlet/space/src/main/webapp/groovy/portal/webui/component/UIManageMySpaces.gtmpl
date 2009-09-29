@@ -84,21 +84,22 @@
 	      //def spaceName = space.name
 	      def visibility = space.visibility
 	      if (visibility.equals("private")) visibility = "visible"
-	      def status = ""
+	      def status
+	      
 	      if (visibility.equals("visible")) {
-	       status += visibleStatus
+	       status = "${visibleStatus} "
+	       def registration = space.registration
+         if (registration.equals("open")) {
+          status += openStatus
+         } else if (registration.equals("validation")) {
+          status += validationStatus
+         } else {
+           status += closeStatus
+         }
 	      } else {
-	       status += hiddenStatus
+	       status = "${hiddenStatus}"
 	      }
-	      status += " "
-	      def registration = space.registration
-	      if (registration.equals("open")) {
-	       status += openStatus
-	      } else if (registration.equals("validation")) {
-	       status += validationStatus
-	      } else {
-	       status += closeStatus
-	      }
+
 	  %>
       <!-- Leader -->
       <% if (role == UIManageMySpaces.LEADER) {%>
