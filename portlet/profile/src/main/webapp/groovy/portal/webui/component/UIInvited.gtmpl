@@ -44,9 +44,9 @@
       
 	 %>
 		<div class="ContentSpace">
-    	<div class="CommunityIcon">
-    		<img src="$imageSource" width="65" height="70">
-    	</div>
+    	<div class="MiniAvatarSpaceBG">
+		  		<img src="$imageSource" width="70" height="84">
+	    </div>
     	<div class="CommunityContainer">
         <div class="CommunityMane Line">
             <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
@@ -84,6 +84,7 @@
           <a class="CommunityNameMiddle" href="$activitiesURL"><%=_ctx.appRes(uiMyRelation.getId() + ".label.Activities")%></a>
         </div>
     	</div>
+    	<div style="clear: left;"><span></span></div>
     </div>
 	<% } %>
 </div>

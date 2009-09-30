@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.relation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -28,12 +29,14 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormPageIterator;
 
@@ -47,7 +50,8 @@ import org.exoplatform.webui.form.UIFormPageIterator;
     lifecycle = UIFormLifecycle.class,
     template =  "app:/groovy/portal/webui/component/UIPendingRelation.gtmpl",
     events = { 
-        @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class)
+        @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class),
+        @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE)
       }
 )
 public class UIPendingRelation extends UIForm {
@@ -61,7 +65,17 @@ public class UIPendingRelation extends UIForm {
   RelationshipManager rm           = null;
   /** IdentityManager */
   IdentityManager     im           = null;
+  UIProfileUserSearch uiProfileUserSearchPending = null;
+  private List<Identity> identityList;
   
+  public List<Identity> getIdentityList() {
+    return identityList;
+  }
+
+  public void setIdentityList(List<Identity> identityList) {
+    this.identityList = identityList;
+  }
+
   /**
    * Get UIFormPageIterator.
    * @return
@@ -77,6 +91,8 @@ public class UIPendingRelation extends UIForm {
   public UIPendingRelation() throws Exception {
     uiFormPageIterator_ = createUIComponent(UIFormPageIterator.class, null, iteratorID_);
     addChild(uiFormPageIterator_);
+    uiProfileUserSearchPending = createUIComponent(UIProfileUserSearch.class, null, "UIPendingRelationSearch");
+    addChild(uiProfileUserSearchPending);
   }
   
   /**
@@ -87,9 +103,7 @@ public class UIPendingRelation extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<Relationship> getPendingRelationList() throws Exception {
-    RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentIdentity();
-    List<Relationship> listRelationShip = relm.getPending(currentIdentity, true);
+    List<Relationship> listRelationShip = getPendingRelationships();
     int currentPage = uiFormPageIterator_.getCurrentPage();
     LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
     uiFormPageIterator_.setPageList(pageList) ;  
@@ -163,6 +177,34 @@ public class UIPendingRelation extends UIForm {
     }
   }
   
+  public static class SearchActionListener extends EventListener<UIPendingRelation> {
+    @Override
+    public void execute(Event<UIPendingRelation> event) throws Exception {
+      UIPendingRelation uiPending = event.getSource();
+      UIProfileUserSearch uiProfileUserSearch = uiPending.getChild(UIProfileUserSearch.class);
+      List<Identity> identityList = uiProfileUserSearch.getidentityList(false);
+      uiPending.setIdentityList(identityList);
+    }
+  }
+  
+  /**
+   * Get pending relationships from searched result identities. 
+   * 
+   * @return Relationship list.
+   * @throws Exception
+   */
+  private List<Relationship> getPendingRelationships() throws Exception {
+    RelationshipManager relm = getRelationshipManager();
+    Identity currentIdentity = getCurrentIdentity();
+    List<Identity> matchIdentities = getIdentityList();
+    
+    if (matchIdentities == null) {
+      return relm.getPending(currentIdentity, true);
+    }
+    
+    return relm.getPending(currentIdentity, matchIdentities, true);
+  }
+  
   /**
    * Get Relationship manager.
    * 
@@ -188,4 +230,5 @@ public class UIPendingRelation extends UIForm {
     }
     return im;
   }
+  
 }

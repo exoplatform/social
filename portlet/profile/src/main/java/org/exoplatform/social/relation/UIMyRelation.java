@@ -31,6 +31,7 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -39,6 +40,7 @@ import org.exoplatform.webui.core.UIVirtualList;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormPageIterator;
 
@@ -55,7 +57,8 @@ import org.exoplatform.webui.form.UIFormPageIterator;
         events = {
             @EventConfig(listeners = UIMyRelation.RemoveActionListener.class),
             @EventConfig(listeners = UIMyRelation.AcceptActionListener.class),
-            @EventConfig(listeners = UIMyRelation.DenyActionListener.class)
+            @EventConfig(listeners = UIMyRelation.DenyActionListener.class),
+            @EventConfig(listeners = UIMyRelation.SearchActionListener.class, phase = Phase.DECODE)
         }
     ),
     @ComponentConfig(
@@ -72,7 +75,14 @@ public class UIMyRelation extends UIForm {
   private RelationshipManager relationshipManager;
   private Identity currIdentity = null;
   private IdentityManager identityManager = null;
+  UIProfileUserSearch uiProfileUserSearchRelation = null;
+  private List<Identity> identityList;
   
+  
+  public List<Identity> getIdentityList() { return identityList; }
+
+  public void setIdentityList(List<Identity> identityList) { this.identityList = identityList; }
+
   /**
    * Get UIFormPageIterator.
    * @return
@@ -93,12 +103,12 @@ public class UIMyRelation extends UIForm {
     
     uiFormPageIteratorContact = createUIComponent(UIFormPageIterator.class, null, iteratorIDContact);
     addChild(uiFormPageIteratorContact);
+    uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIMyRelationSearch");
+    addChild(uiProfileUserSearchRelation);
   }
   
   public int loadInvited() throws Exception {
-    RelationshipManager relationshipManager = getRelationshipManager();
-    Identity currId = getCurrentIdentity();
-    List<Relationship> listRelationShip = relationshipManager.getPending(currId, false);
+    List<Relationship> listRelationShip = getInvitedRelations();
     if (listRelationShip == null) listRelationShip = new ArrayList<Relationship>();
     UIVirtualList virtualList = getChild(UIVirtualList.class);
     LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 2);
@@ -107,9 +117,7 @@ public class UIMyRelation extends UIForm {
   }
   
   public List<Relationship> getMyRelation() throws Exception {
-    RelationshipManager relationshipManager = getRelationshipManager();
-    Identity currId = getCurrentIdentity();
-    List<Relationship> listContacts = relationshipManager.getContacts(currId);
+    List<Relationship> listContacts = getMyContacts();
     List<Relationship> contactLists = getDisplayRelationList(listContacts, uiFormPageIteratorContact);
     return contactLists;
   }
@@ -128,14 +136,6 @@ public class UIMyRelation extends UIForm {
     List<Relationship> contactLists;
     contactLists = uiFormPageIterator.getCurrentPageData();
     return contactLists;
-  }
-  
-  private RelationshipManager getRelationshipManager() {
-    if(relationshipManager == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
-    }
-    return relationshipManager;
   }
   
   public Identity getCurrentIdentity() throws Exception {
@@ -209,6 +209,54 @@ public class UIMyRelation extends UIForm {
     }
   }
   
+  public static class SearchActionListener extends EventListener<UIMyRelation> {
+    @Override
+    public void execute(Event<UIMyRelation> event) throws Exception {
+      UIMyRelation uiMyRelation = event.getSource();
+      UIProfileUserSearch uiProfileUserSearch = uiMyRelation.getChild(UIProfileUserSearch.class);
+      List<Identity> identityList = uiProfileUserSearch.getidentityList(false);
+      uiMyRelation.setIdentityList(identityList);
+    }
+  }
+  
+  /**
+   * Get contact relationships from searched result identities. 
+   * 
+   * @return Relationship list.
+   * @throws Exception
+   */
+  private List<Relationship> getInvitedRelations() throws Exception {
+    RelationshipManager relm = getRelationshipManager();
+    Identity currentIdentity = getCurrentIdentity();
+    
+    List<Identity> matchIdentities = getIdentityList();
+    
+    if (matchIdentities == null) {
+      return relm.getPending(currentIdentity, false);
+    }
+    
+    return relm.getPending(currIdentity, matchIdentities, false);
+  }
+  
+  /**
+   * Get invited relationships from searched result identities. 
+   * 
+   * @return Relationship list.
+   * @throws Exception
+   */
+  private List<Relationship> getMyContacts() throws Exception {
+    RelationshipManager relm = getRelationshipManager();
+    Identity currentIdentity = getCurrentIdentity();
+    
+    List<Identity> matchIdentities = getIdentityList();
+    
+    if (matchIdentities == null) {
+      return relm.getContacts(currentIdentity);
+    }
+    
+    return relm.getContacts(currIdentity, matchIdentities);
+  }
+  
   private IdentityManager getIdentityManager() {
     if(identityManager == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
@@ -226,8 +274,17 @@ public class UIMyRelation extends UIForm {
     PortalContainer pcontainer =  PortalContainer.getInstance();
     return pcontainer.getPortalContainerInfo().getContainerName();  
   }
+  
   public String getRepository() throws Exception {
     RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
     return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
+  private RelationshipManager getRelationshipManager() {
+    if(relationshipManager == null) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+    }
+    return relationshipManager;
   }
 }

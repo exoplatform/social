@@ -32,7 +32,6 @@ import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.RelationshipManager;
-import org.exoplatform.social.relation.UIPublicRelation;
 
 /**
  * UIProfileUserSearch for search users in profile.
@@ -58,7 +57,7 @@ public class UIProfileUserSearch extends UIComponent {
   Identity            currIdentity = null;
   private List<Identity> identityList = null;
   boolean hasAdvanceSearch = false;
-  
+ 
   /**
    * Constructor to initialize form fields
    * @throws Exception
@@ -77,8 +76,18 @@ public class UIProfileUserSearch extends UIComponent {
   /**
    * identityList getter
    * @return
+   * @throws Exception 
    */
-  public List<Identity> getidentityList() {
+  public List<Identity> getidentityList(boolean includeCurrentIdentity) throws Exception {
+    List<Identity> identities = new ArrayList<Identity>();
+    List<Identity> identityLst = this.identityList;
+    if ((!includeCurrentIdentity) && (identityLst != null)) {
+        for (Identity id : identityLst) {
+          if (!id.getRemoteId().equals(getCurrentIdentity().getRemoteId())) identities.add(id); 
+        }
+      return identities; 
+    }
+  
     return identityList;
   }
 
@@ -92,11 +101,8 @@ public class UIProfileUserSearch extends UIComponent {
     public void execute(Event<UIProfileUserSearch> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UIProfileUserSearch uiSearch = event.getSource();
-      List<Identity> matchIdentities = new ArrayList<Identity>();
       List<Identity> identities = new ArrayList<Identity>();
-      RelationshipManager relManager = uiSearch.getRelationshipManager();
-      Identity identity = uiSearch.getCurrentIdentity();
-      
+      IdentityManager idm = uiSearch.getIdentityManager();
       String userContact = event.getRequestContext().getRequestParameter("userContact");
 //      String position = event.getRequestContext().getRequestParameter("position");
 //      String company = event.getRequestContext().getRequestParameter("company");
@@ -122,12 +128,7 @@ public class UIProfileUserSearch extends UIComponent {
 //      }
       
       if (filter.isHasFilter()) {
-        matchIdentities = uiSearch.getIdentityManager().getIdentitiesByProfileFilter(filter);
-        for (Identity id : matchIdentities) {
-          if (!(id.getId().equals(identity.getId())) && (relManager.getRelationship(identity, id) == null)) {
-            identities.add(id);
-          }
-        }
+        identities = idm.getIdentitiesByProfileFilter(filter);
       } else { 
         identities = null;
       }
@@ -142,25 +143,25 @@ public class UIProfileUserSearch extends UIComponent {
   }
   
   /**
-   * Get Relationship manager.
+   * Get identity manager.
    * 
    * @return
    */
-  private RelationshipManager getRelationshipManager() {
-    if (rm == null) {
+  private IdentityManager getIdentityManager() {
+    if (im == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
-      rm = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+      im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     }
-    return rm;
+    return im;
   }
-
+  
   /**
    * Get current identity.
    * 
    * @return
    * @throws Exception
    */
-  private Identity getCurrentIdentity() throws Exception {
+  public Identity getCurrentIdentity() throws Exception {
     if (currIdentity == null) {
       IdentityManager im = getIdentityManager();
       currIdentity = im.getIdentityByRemoteId("organization", getCurrentUserName());
@@ -177,16 +178,5 @@ public class UIProfileUserSearch extends UIComponent {
     RequestContext context = RequestContext.getCurrentInstance();
     return context.getRemoteUser();
   }
-  /**
-   * Get identity manager.
-   * 
-   * @return
-   */
-  private IdentityManager getIdentityManager() {
-    if (im == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    }
-    return im;
-  }
+  
 }

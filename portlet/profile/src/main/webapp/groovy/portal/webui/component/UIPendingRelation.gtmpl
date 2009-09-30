@@ -3,6 +3,7 @@
   import org.exoplatform.webui.form.UIFormPageIterator;
   import org.exoplatform.social.core.identity.model.ProfileAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
+  import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
   
   def list = uicomponent.getPendingRelationList();
   def currIdentity = uicomponent.getCurrentIdentity();
@@ -14,6 +15,7 @@
 	<div class="UITabPane">
 	<% uiform.begin() %>
 		<div class="ContainerSpace">
+			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
 			<%if (list.size() == 0) {%>
 		      <div class="ContentSpace">
 		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>

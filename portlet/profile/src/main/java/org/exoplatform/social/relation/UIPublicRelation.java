@@ -97,7 +97,7 @@ public class UIPublicRelation extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<Identity> getPublicRelationList() throws Exception {
-    List<Identity> listIdentity = getIdentityList();
+    List<Identity> listIdentity = getPublicIdentities();
     int currentPage = uiFormPageIteratorPublic.getCurrentPage();
     LazyPageList<Identity> pageList = new LazyPageList<Identity>(new IdentityListAccess(listIdentity), 5);
     uiFormPageIteratorPublic.setPageList(pageList) ;  
@@ -172,7 +172,6 @@ public class UIPublicRelation extends UIForm {
         rel = rm.create(currIdentity, requestedIdentity);
         rel.setStatus(Relationship.Type.PENDING);
         rm.save(rel);
-        portlet.setIdentityList(portlet.removeIdentity(requestedIdentity));
       }
     }
   }
@@ -182,7 +181,7 @@ public class UIPublicRelation extends UIForm {
     public void execute(Event<UIPublicRelation> event) throws Exception {
       UIPublicRelation uiPub = event.getSource();
       UIProfileUserSearch uiProfileUserSearch = uiPub.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      List<Identity> identityList = uiProfileUserSearch.getidentityList(false);
       uiPub.setIdentityList(identityList);
     }
   }
@@ -217,27 +216,27 @@ public class UIPublicRelation extends UIForm {
     identityList = identities;
   }
   
-  private List<Identity> removeIdentity(Identity reqIdentity) throws Exception {
-    List<Identity> rtnIdentityList = new ArrayList<Identity>();
-    String reqRemoteUser = reqIdentity.getRemoteId();
-    String remoteUser = null;
-    for (Identity id : identityList) {
-      remoteUser = id.getRemoteId();
-      if (!reqRemoteUser.equals(remoteUser)) {
-        rtnIdentityList.add(id);
+  private List<Identity> getIdentityList() throws Exception {
+    return identityList;
+  }
+  
+  private List<Identity> getPublicIdentities() throws Exception {
+    RelationshipManager relManager = getRelationshipManager();
+    Identity currentIdentity = getCurrentIdentity();
+    List<Identity> matchIdentities = getIdentityList();
+    List<Identity> identities = new ArrayList<Identity>();
+    
+    if (matchIdentities == null) {
+      return relManager.getPublicRelation(currentIdentity);
+    }
+    
+    for (Identity id : matchIdentities) {
+      if (!(id.getId().equals(currentIdentity.getId())) && (relManager.getRelationship(currentIdentity, id) == null)) {
+        identities.add(id);
       }
     }
     
-    return rtnIdentityList;
+    return identities;
   }
   
-  private List<Identity> getIdentityList() throws Exception {
-    RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentIdentity();
-    if (identityList == null) {
-      return relm.getPublicRelation(currentIdentity);
-    }
-    
-    return identityList;
-  }
 }

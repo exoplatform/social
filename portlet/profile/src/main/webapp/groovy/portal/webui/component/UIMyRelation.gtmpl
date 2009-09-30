@@ -4,6 +4,7 @@
  	import org.exoplatform.webui.core.UIVirtualList;
  	import org.exoplatform.social.core.identity.model.ProfileAttachment;
  	import org.exoplatform.portal.application.PortalRequestContext;
+ 	import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
  
 	def myRelation = uicomponent.getMyRelation();
 	def currIdentity = uicomponent.getCurrentIdentity();
@@ -17,6 +18,7 @@
 	<div class="UITabPane">
 	<% uiform.begin() %>
 		<div class="ContainerSpace">
+			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
 			<%if ((loadData == 0) && (myRelation.size() == 0)) {%>
 				<div class="ContentSpace">
 		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
@@ -84,7 +86,7 @@
 	          <a class="CommunityNameMiddle" href="$activitiesURL"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
 	        </div>
 	    	</div>
-	    	<div style="clear: left;"></div>
+	    	<div style="clear: left;"><span></span></div>
 	    </div>
 		<% } %>
 		<%}%>

@@ -19,6 +19,7 @@ package org.exoplatform.social.core.relationship;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.chromattic.api.RelationshipType;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
@@ -158,6 +159,63 @@ public class RelationshipManager {
 //    return pendingRel;
   }
 
+  /**
+   * Get pending relations in 2 case:
+   *  - if toConfirm is true, it return list of pending relationship received not confirmed 
+   *  - if toConfirm is false, it return list of relationship sent not confirmed yet
+   *  
+   * @param currIdentity
+   * @param identities
+   * @param toConfirm
+   * @return
+   * @throws Exception
+   */
+  public List<Relationship> getPending(Identity currIdentity, List<Identity> identities, boolean toConfirm) throws Exception {
+    List<Relationship> pendingRels = getPending(currIdentity, true);
+    List<Relationship> invitedRels = getPending(currIdentity, false);
+    List<Relationship> pendingRel = new ArrayList<Relationship>();
+    if (toConfirm) {
+      for (Identity id : identities) {
+        for (Relationship rel : pendingRels) {
+          if (rel.getIdentity2().getRemoteId().equals(id.getRemoteId())) 
+            pendingRel.add(rel);
+        }
+      }
+      
+      return pendingRel;
+    }
+    
+    for (Identity id : identities) {
+      for (Relationship rel : invitedRels) {
+        if (rel.getIdentity1().getRemoteId().equals(id.getRemoteId())) 
+          pendingRel.add(rel);
+      }
+    }
+    
+    return pendingRel;
+  }
+  
+  /**
+   * Get contacts that match the search result.
+   * 
+   * @param currIdentity
+   * @param identities
+   * @return
+   * @throws Exception
+   */
+  public List<Relationship> getContacts(Identity currIdentity, List<Identity> identities) throws Exception {
+    List<Relationship> contacts = getContacts(currIdentity);
+    List<Relationship> relations = new ArrayList<Relationship>();
+    for (Identity id : identities) {
+      for (Relationship contact : contacts) {
+        if (contact.getIdentity1().getRemoteId().equals(id.getRemoteId())) 
+          relations.add(contact);
+      }
+    }
+    
+    return relations;
+  }
+  
   public List<Relationship> getContacts(Identity identity) throws Exception {
     List<Relationship> rels = get(identity);
     List<Relationship> contacts = new ArrayList<Relationship>();
