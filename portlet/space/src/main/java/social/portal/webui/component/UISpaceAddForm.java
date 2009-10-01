@@ -43,7 +43,7 @@ import org.exoplatform.webui.organization.account.UIGroupSelector;
  * UIAddSpaceForm to create new space. By using this UIForm, user can create a
  * brand new space or a space from an existing group
  * 
- * @author hoatle hoatlevan@gmail.com
+ * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since Jun 29, 2009
  */
 @ComponentConfig(
@@ -57,25 +57,15 @@ import org.exoplatform.webui.organization.account.UIGroupSelector;
 
 public class UISpaceAddForm extends UIFormTabPane {
 
-  // Message for UIApplication
   static private final String MSG_DEFAULT_SPACE_DESCRIPTION       = "UISpaceAddForm.msg.default_space_description";
-  
   static private final String MSG_ERROR_SPACE_CREATION            = "UISpaceAddForm.msg.error_space_creation";
-
   static private final String MSG_ERROR_DATASTORE                 = "UISpaceAddForm.msg.error_space_not_saved";
-
   static private final String MSG_ERROR_UNABLE_TO_INIT_APP        = "UISpaceAddForm.msg.error_unable_to_init_app";
-
   static private final String MSG_ERROR_UNABLE_TO_ADD_CREATOR     = "UISpaceAddForm.msg.error_unable_to_add_creator";
-
   static private final String MSG_ERROR_UNABLE_TO_ADD_APPLICATION = "UISpaceAddForm.msg.error_unable_to_add_application";
-
   static private final String MSG_SPACE_CREATION_SUCCESS          = "UISpaceAddForm.msg.space_creation_success";
-
   static private final String MSG_ERROR_SPACE_ALREADY_EXIST       = "UISpaceAddForm.msg.error_space_already_exist";
-
   private final String        SPACE_SETTINGS                      = "UISpaceSettings";
-
   private final String        SPACE_VISIBILITY                    = "UISpaceVisibility";
 
   /**
@@ -99,7 +89,7 @@ public class UISpaceAddForm extends UIFormTabPane {
 
     addChild(UISpaceGroupBound.class, null, null);
 
-    setActions(new String[] { "Create" });
+    setActions(new String[] {"Create"});
     setSelectedTab(1);
   }
 
@@ -156,7 +146,6 @@ public class UISpaceAddForm extends UIFormTabPane {
         uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
       }
-      //uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.INFO));
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
       SpaceUtils.updateWorkingWorkSpace();
@@ -187,7 +176,5 @@ public class UISpaceAddForm extends UIFormTabPane {
         uiFormInputInfo.setValue(null);
       }
     }
-
   }
-
 }

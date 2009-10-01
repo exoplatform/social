@@ -93,7 +93,6 @@ import org.exoplatform.webui.event.Event.Phase;
   )
 })
 public class UIManageMySpaces extends UIContainer {
-  //Message Bundle
   static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
   static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
   static private final String MSG_ERROR_ACCEPT_INVITATION = "UIManageMySpaces.msg.error_accept_invitation";
@@ -235,6 +234,11 @@ public class UIManageMySpaces extends UIContainer {
     return iterator.getCurrentPageData();
   }
   
+  /**
+   * Get invited page list
+   * @return
+   * @throws Exception
+   */
   private LazyPageList<Space> getInvitedPageList() throws Exception {
     List<Space> invitedList = getAllInvitedSpaces();
     Integer invitedListSize = 0;
@@ -285,7 +289,7 @@ public class UIManageMySpaces extends UIContainer {
 
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
-      // TODO hoatle EditSpaceActionListener
+      // Currently, not used yet
     }
   }
   

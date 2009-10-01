@@ -33,7 +33,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 @ComponentConfigs({
   @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class,
-    template = "app:/groovy/portal/webui/component/UIManageSpacesPortlet1.gtmpl"
+    template = "app:/groovy/portal/webui/component/UIManageSpacesPortlet.gtmpl"
   ),
   @ComponentConfig (
     id = "UIVerticalTabPane",
@@ -45,9 +45,9 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   )                
 })
 
-public class UIManageSpacesPortlet1 extends UIPortletApplication {
+public class UIManageSpacesPortlet extends UIPortletApplication {
 
-  public UIManageSpacesPortlet1() throws Exception {
+  public UIManageSpacesPortlet() throws Exception {
     UITabPane uiTabPane = createUIComponent(UITabPane.class, "UIVerticalTabPane", "ManageSpacesTabPane");
     uiTabPane.addChild(UIManageMySpaces.class, null, null);
     uiTabPane.addChild(UIManagePublicSpaces.class, null, null);

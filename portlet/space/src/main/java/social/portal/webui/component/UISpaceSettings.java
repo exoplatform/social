@@ -49,7 +49,7 @@ public class UISpaceSettings extends UIFormInputSet {
   
   //These priority variables should be set in Space.java model
   private final String PRIORITY_HIGH = "high";
-  private final String PRIORITY_IMMEDIATE = "immediate";
+  private final String PRIORITY_INTERMEDIATE = "intermediate";
   private final String PRIORITY_LOW = "low";
   
   //Message
@@ -63,7 +63,7 @@ public class UISpaceSettings extends UIFormInputSet {
     
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
     SelectItemOption<String> pHight = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
-    SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_IMMEDIATE, Space.MIDDLE_PRIORITY);
+    SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_INTERMEDIATE, Space.INTERMEDIATE_PRIORITY);
     SelectItemOption<String> pLow = new SelectItemOption<String>(PRIORITY_LOW, Space.LOW_PRIORITY);
     priorityList.add(pHight);
     priorityList.add(pImmediate);

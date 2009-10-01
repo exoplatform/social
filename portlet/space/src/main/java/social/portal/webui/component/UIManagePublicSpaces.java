@@ -146,5 +146,4 @@ public class UIManagePublicSpaces extends UIContainer {
      }
     }
   }
-  
 }  

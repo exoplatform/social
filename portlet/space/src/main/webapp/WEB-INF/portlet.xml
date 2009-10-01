@@ -127,14 +127,14 @@
   </portlet>
   
   <portlet>
-    <description xml:lang="EN">Manage Spaces Portlet1</description>
-    <portlet-name>ManageSpacesPortlet1</portlet-name>
-    <display-name xml:lang="EN">Manage Spaces 1</display-name>
+    <description xml:lang="EN">Manage Spaces Portlet</description>
+    <portlet-name>ManageSpacesPortlet</portlet-name>
+    <display-name xml:lang="EN">Manage Spaces</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/ManageSpaces1/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/web/ManageSpaces/webui/configuration.xml</value>
     </init-param>    
 
     <expiration-cache>0</expiration-cache>
@@ -143,18 +143,18 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.ManageSpacesPortlet1</resource-bundle>
+    <resource-bundle>locale.portlet.web.ManageSpacesPortlet</resource-bundle>
     
     <portlet-info>
-      <title>Manage Spaces Portlet 1</title>
-      <short-title>Manage Spaces Portlet 1</short-title>
-      <keywords>managespaces1</keywords>
+      <title>Manage Spaces Portlet</title>
+      <short-title>Manage Spaces Portlet</short-title>
+      <keywords>managespaces</keywords>
     </portlet-info>     
 
     <!--portlet-preferences>
       <preference>
         <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIManageSpacesPortlet1.gtmpl</value>
+        <value>app:/groovy/portal/webui/component/UIManageSpacesPortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
     </portlet-preferences-->

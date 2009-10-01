@@ -18,7 +18,7 @@
 -->
 <webui-configuration>  
   <application>     
-    <ui-component-root>social.portal.webui.component.UIManageSpacesPortlet1</ui-component-root>
+    <ui-component-root>social.portal.webui.component.UIManageSpacesPortlet</ui-component-root>
     <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
     <application-lifecycle-listeners>       
       <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>       

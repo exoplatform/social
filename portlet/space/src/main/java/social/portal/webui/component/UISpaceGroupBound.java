@@ -121,6 +121,5 @@ public class UISpaceGroupBound extends UIContainer {
       }
       uiPopup.setShow(false);
     }
-    
   }
 }

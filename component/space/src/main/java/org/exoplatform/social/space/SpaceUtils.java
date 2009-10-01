@@ -398,7 +398,7 @@ public class SpaceUtils {
       String priority = space.getPriority();
       if (priority.equals(Space.HIGH_PRIORITY)) {
         orderedSpaces.add(space);
-      } else if (priority.equals(Space.MIDDLE_PRIORITY)) {
+      } else if (priority.equals(Space.INTERMEDIATE_PRIORITY)) {
         middleSpaces.add(space);
       } else if (priority.equals(Space.LOW_PRIORITY)) {
         lowSpaces.add(space);

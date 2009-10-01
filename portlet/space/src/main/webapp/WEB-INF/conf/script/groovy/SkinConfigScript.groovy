@@ -59,8 +59,8 @@ SkinService.addSkin(
 ) ;
 
 SkinService.addSkin(
-   "space/ManageSpacesPortlet1",
+   "space/ManageSpacesPortlet",
    "Default",
-   "/space/skin/portal/webui/component/UIManageSpacesPortlet1/DefaultStylesheet.css",
+   "/space/skin/portal/webui/component/UIManageSpacesPortlet/DefaultStylesheet.css",
    ServletContext
 ) ;

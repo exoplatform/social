@@ -69,7 +69,7 @@ public class UISpaceInfo extends UIForm {
         .addValidator(StringLengthValidator.class, 0, 255));
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
     SelectItemOption<String> pHigh = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
-    SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_IMMEDIATE, Space.MIDDLE_PRIORITY);
+    SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_IMMEDIATE, Space.INTERMEDIATE_PRIORITY);
     SelectItemOption<String> pLow = new SelectItemOption<String>(PRIORITY_LOW, Space.LOW_PRIORITY);
     priorityList.add(pHigh);
     priorityList.add(pImmediate);
@@ -98,9 +98,6 @@ public class UISpaceInfo extends UIForm {
       UIApplication uiApp = requestContext.getUIApplication();
       uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));
       SpaceUtils.updateWorkingWorkSpace();
-//      UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
-//      requestContext.addUIComponentToUpdateByAjax(uiSpaceSetting);
-//      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
     }
   }
 }

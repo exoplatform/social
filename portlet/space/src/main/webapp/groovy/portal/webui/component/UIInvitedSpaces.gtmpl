@@ -28,6 +28,11 @@ def uicomponentId = uiManageMySpaces.id
 def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
 def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
 def fieldLabelStatus = _ctx.appRes("${uicomponentId}.fieldLabel.status")
+def visibleStatus = _ctx.appRes("${uicomponentId}.status.visible")
+def hiddenStatus = _ctx.appRes("${uicomponentId}.status.hidden")
+def openStatus = _ctx.appRes("${uicomponentId}.status.open")
+def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
+def closeStatus = _ctx.appRes("${uicomponentId}.status.close")
 def labelActionAcceptSpace = _ctx.appRes("${uicomponentId}.label.action_accept_space")
 def labelActionDenySpace = _ctx.appRes("${uicomponentId}.label.action_deny_space")
 %>
@@ -36,8 +41,21 @@ def labelActionDenySpace = _ctx.appRes("${uicomponentId}.label.action_deny_space
    def acceptAction = parent.event("Accept", space.id)
    def denyAction = parent.event("Deny", space.id)
    def visibility = space.visibility
-   def registration = space.registration
    if (visibility.equals("private")) visibility = "visible"
+   def status
+   if (visibility.equals("visible")) {
+    status = "${visibleStatus} "
+    def registration = space.registration
+    if (registration.equals("open")) {
+     status += openStatus
+    } else if (registration.equals("validation")) {
+      status += validationStatus
+    } else {
+      status += closeStatus
+    }
+   } else {
+    status = "${hiddenStatus}"
+   }
 %>
     <div class="SpaceContent">
 		  <div class="AvatarSpace">
@@ -62,7 +80,7 @@ def labelActionDenySpace = _ctx.appRes("${uicomponentId}.label.action_deny_space
 			            </tr>
                 <tr>
                     <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                    <td class="FieldComponent">${visibility}; ${registration}</td>
+                    <td class="FieldComponent">$status</td>
                 </tr>
 			        </table>
 			    </div>

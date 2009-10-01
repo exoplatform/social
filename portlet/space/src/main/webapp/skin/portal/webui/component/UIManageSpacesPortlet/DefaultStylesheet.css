@@ -15,35 +15,35 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
  
-.UIManageSpacesPortlet1 {
+.UIManageSpacesPortlet {
 	
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .SpaceContent .AvatarSpace{
+.UIManageSpacesPortlet .UIManageSpaces .SpaceContent .AvatarSpace{
 	float: left;
 	height: 80px;
 	background: url('background/Avatar.gif') no-repeat left;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .SpaceContent .MySpacesContent{
+.UIManageSpacesPortlet .UIManageSpaces .SpaceContent .MySpacesContent{
 	margin-left: 100px;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .SpaceContent .MySpacesContentContent{
+.UIManageSpacesPortlet .UIManageSpaces .SpaceContent .MySpacesContentContent{
 	padding: 8px;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContentContent .UIGridSpace{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContentContent .UIGridSpace{
 	width: 100%;
 	table-layout: fixed;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .ContentBar{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .ContentBar{
 	border-bottom: 1px dotted #b7b7b7;
 	height: 24px;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .MySpaceLabel{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .MySpaceLabel{
 	float: left;
 	font-weight: bold;
 	padding-left: 8px;
@@ -51,7 +51,7 @@
 	font-size: 12px;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .MySpaceLabel a{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .MySpaceLabel a{
     float: left;
     font-weight: bold;
     padding-left: 8px;
@@ -59,77 +59,77 @@
     font-size: 12px;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .FieldLabel{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .FieldLabel{
 	font-weight: bold;
 	width: 100px;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .FieldComponent{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .FieldComponent{
 	width: 100%;
 	overflow: hidden;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .ButtonIconSpace{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .ButtonIconSpace{
 	float: right;
 	width: 24px; height: 18px;
 	cursor: pointer;
 	margin-left: 4px;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .AcceptSpace{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .AcceptSpace{
     background: url('background/AcceptSpace.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .DenySpace{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .DenySpace{
     background: url('background/DenySpace.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .LeaveSpace{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .LeaveSpace{
     background: url('background/LeaveSpace.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .EditSpace{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .EditSpace{
 	background: url('background/EditSpace.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .EditSpaceNavigation{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .EditSpaceNavigation{
 	background: url('background/EditSpaceNavigation.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .DeleteSpace{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .DeleteSpace{
 	background: url('background/DeleteSpace.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .RequestJoin{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .RequestJoin{
     background: url('background/RequestJoin.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UIManageSpaces .MySpacesContent .RevokePending{
+.UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .RevokePending{
     background: url('background/RevokePending.gif') no-repeat center;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm {
+.UIManageSpacesPortlet .UISpaceForm {
     padding: 1px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceBanner{
+.UIManageSpacesPortlet .UISpaceForm .SpaceBanner{
     background: url('background/SpaceBanner.gif') no-repeat left;
     width: 547px; 
     height: 120px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent {
     background: #fff url('background/SpaceContent.gif') repeat-x;
     width: 547px;
     margin-top: 1px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .LeftContent{
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .LeftContent{
     float: left;
 }
 
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .RightContent{
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .RightContent{
     float: left;
     background: url('background/CreateButton.gif') no-repeat left;
     width: 79px; 
@@ -137,41 +137,41 @@
     margin: 31px 0px 0px 20px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .NameSpace{
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .NameSpace{
     color: #087196;
     font-weight: bold;
     font-size: 14px;
     margin: 40px 0px 0px 88px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldComponent{
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldComponent{
     margin:4px 0px 0px 88px;
     /*width: 270px;*/
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldComponent input{
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldComponent input{
     width: 270px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio {
     margin:5px 0px 20px 88px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .ButtonHide {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .ButtonHide {
     background: url('background/icon-close.png') left 50% no-repeat;
     padding: 4px 16px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .ButtonShow {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .ButtonShow {
     background: url('background/icon-open.png') left 50% no-repeat;
     padding: 4px 16px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio {
     margin-bottom: 20px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap {
     padding: 6px;
     background: #f5f5f5;
     border: solid 1px #dbdbdb;
@@ -179,29 +179,29 @@
     width: 270px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
     border: solid 1px #dae4ea;
     padding: 6px;
     margin-bottom: 3px;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:hover,
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .selected,
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:focus {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:hover,
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .selected,
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio:focus {
     background: #dae4ea;
     border: solid 1px #5c8ea2;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .SpaceOptionRadio {
     
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap input {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap input {
     display: block;
     float: left;
 }
 
-.UIManageSpacesPortlet1 .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap label {
+.UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .OptionsWrap label {
     display: block;
     margin-left: 20px;
     width: 232px;

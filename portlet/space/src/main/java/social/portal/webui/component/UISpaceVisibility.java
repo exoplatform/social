@@ -39,11 +39,8 @@ import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
 public class UISpaceVisibility extends UIFormInputSet {
   private final String UI_SPACE_VISIBILITY   = "UIVisibility";
-
   private final String UI_SPACE_REGISTRATION = "UIRegistration";
-
   private final String VISIBILITY_BINDING    = "visibility";
-
   private final String REGISTRATION_BINDING  = "registration";
   
   /**
