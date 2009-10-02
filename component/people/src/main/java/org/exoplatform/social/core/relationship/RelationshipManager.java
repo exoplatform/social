@@ -177,8 +177,10 @@ public class RelationshipManager {
     if (toConfirm) {
       for (Identity id : identities) {
         for (Relationship rel : pendingRels) {
-          if (rel.getIdentity2().getRemoteId().equals(id.getRemoteId())) 
+          if (rel.getIdentity2().getRemoteId().equals(id.getRemoteId())) {
             pendingRel.add(rel);
+            break;
+          }
         }
       }
       
@@ -187,8 +189,10 @@ public class RelationshipManager {
     
     for (Identity id : identities) {
       for (Relationship rel : invitedRels) {
-        if (rel.getIdentity1().getRemoteId().equals(id.getRemoteId())) 
+        if (rel.getIdentity1().getRemoteId().equals(id.getRemoteId())) {
           pendingRel.add(rel);
+          break;
+        }
       }
     }
     
@@ -208,8 +212,10 @@ public class RelationshipManager {
     List<Relationship> relations = new ArrayList<Relationship>();
     for (Identity id : identities) {
       for (Relationship contact : contacts) {
-        if (contact.getIdentity1().getRemoteId().equals(id.getRemoteId())) 
+        if (contact.getIdentity1().getRemoteId().equals(id.getRemoteId())) {
           relations.add(contact);
+          break;
+        }
       }
     }
     

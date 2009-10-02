@@ -182,7 +182,7 @@ public class UIPendingRelation extends UIForm {
     public void execute(Event<UIPendingRelation> event) throws Exception {
       UIPendingRelation uiPending = event.getSource();
       UIProfileUserSearch uiProfileUserSearch = uiPending.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getidentityList(false);
+      List<Identity> identityList = uiProfileUserSearch.getidentityList();
       uiPending.setIdentityList(identityList);
     }
   }

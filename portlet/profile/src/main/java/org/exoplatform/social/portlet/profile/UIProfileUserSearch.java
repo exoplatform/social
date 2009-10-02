@@ -17,6 +17,7 @@
 package org.exoplatform.social.portlet.profile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.exoplatform.web.application.RequestContext;
@@ -31,6 +32,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 
 /**
@@ -48,7 +50,20 @@ import org.exoplatform.social.core.relationship.RelationshipManager;
   }
 )
 public class UIProfileUserSearch extends UIComponent {
-
+  /** USER CONTACT. */
+  final public static String USER_CONTACT = "userContact";
+  /** COMPANY. */
+  final public static String COMPANY = "company";
+  /** POSITION. */
+  final public static String POSITION = "position";
+  /** GENDER. */
+  final public static String GENDER = "gender";
+  /** SEARCH. */
+  final public static String SEARCH = "Search";
+  /** EXPERIENCE. */
+  final public static String EXPERIENCE = "experiences";
+  /** ORGANIZATION. */
+  final public static String ORGANIZATION = "organization";
   /** IdentityManager */
   IdentityManager     im           = null;
   /** RelationshipManager */
@@ -78,16 +93,7 @@ public class UIProfileUserSearch extends UIComponent {
    * @return
    * @throws Exception 
    */
-  public List<Identity> getidentityList(boolean includeCurrentIdentity) throws Exception {
-    List<Identity> identities = new ArrayList<Identity>();
-    List<Identity> identityLst = this.identityList;
-    if ((!includeCurrentIdentity) && (identityLst != null)) {
-        for (Identity id : identityLst) {
-          if (!id.getRemoteId().equals(getCurrentIdentity().getRemoteId())) identities.add(id); 
-        }
-      return identities; 
-    }
-  
+  public List<Identity> getidentityList() throws Exception {
     return identityList;
   }
 
@@ -101,45 +107,73 @@ public class UIProfileUserSearch extends UIComponent {
     public void execute(Event<UIProfileUserSearch> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UIProfileUserSearch uiSearch = event.getSource();
+      List<Identity> identitiesSearchResult = new ArrayList<Identity>();
       List<Identity> identities = new ArrayList<Identity>();
       IdentityManager idm = uiSearch.getIdentityManager();
-      String userContact = event.getRequestContext().getRequestParameter("userContact");
-//      String position = event.getRequestContext().getRequestParameter("position");
-//      String company = event.getRequestContext().getRequestParameter("company");
-//      String gender = event.getRequestContext().getRequestParameter("gender");
+      String userContact = event.getRequestContext().getRequestParameter(USER_CONTACT);
+      String position = event.getRequestContext().getRequestParameter(POSITION);
+      String company = event.getRequestContext().getRequestParameter(COMPANY);
+      String gender = event.getRequestContext().getRequestParameter(GENDER);
       
       ProfileFiler filter = new ProfileFiler();
       
-      if ((userContact != null) && (userContact.length() != 0)) {
-        filter.setUserName(userContact);
-        filter.setHasFilter(true);
-      }
-//      if ((position != null) && (position.length() != 0)) {
-//        filter.setPosition(position);
-//        filter.setHasFilter(true);
-//      }
-//      if ((company != null) && (company.length() != 0)) {
-//        filter.setCompany(company);
-//        filter.setHasFilter(true);
-//      }
-//      if ((gender != null) && (gender.length() != 0)) {
-//        filter.setGender(gender);
-//        filter.setHasFilter(true);
-//      }
+      filter.setUserName(userContact);
+      filter.setPosition(position);
+      filter.setGender(gender);
       
-      if (filter.isHasFilter()) {
-        identities = idm.getIdentitiesByProfileFilter(filter);
-      } else { 
-        identities = null;
+      identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
+      
+      if (identitiesSearchResult != null) {
+          for (Identity id : identitiesSearchResult) {
+            if (!id.getRemoteId().equals(uiSearch.getCurrentIdentity().getRemoteId())) identities.add(id); 
+          }
+      }
+      
+      if (company.length() > 0) {
+        identities = uiSearch.getIdentitiesByCompany(company, identities);
       }
       
       uiSearch.setIdentityList(identities);
-      Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent().createEvent("Search", Event.Phase.DECODE, ctx);
+      
+      Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();
       }
     }
     
+  }
+  
+  /**
+   * Filter identity follow company information.
+   * 
+   * @param company
+   * @param identities
+   * @return List of identities that has company information match.
+   */
+  @SuppressWarnings("unchecked")
+  private List<Identity> getIdentitiesByCompany(String company, List<Identity> identities) {
+      List<Identity> identityLst = new ArrayList<Identity>();
+      String comp = null;
+      ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
+      
+      if (identities.size() > 0) {
+        for (Identity id : identities) {
+          Profile profile = id.getProfile();
+          experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(EXPERIENCE);
+          if (experiences != null) {
+            for (HashMap<String, Object> exp : experiences) {
+              comp = (String) exp.get(COMPANY);
+              if (comp != null) {
+                if (comp.contains(company)) {
+                  identityLst.add(id);
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      return identityLst;
   }
   
   /**
@@ -164,7 +198,7 @@ public class UIProfileUserSearch extends UIComponent {
   public Identity getCurrentIdentity() throws Exception {
     if (currIdentity == null) {
       IdentityManager im = getIdentityManager();
-      currIdentity = im.getIdentityByRemoteId("organization", getCurrentUserName());
+      currIdentity = im.getIdentityByRemoteId(ORGANIZATION, getCurrentUserName());
     }
     return currIdentity;
   }

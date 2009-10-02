@@ -191,7 +191,7 @@ public class JCRStorage {
     identity = new Identity(identityNode.getUUID());
     identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
     identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
-    System.out.println("\n\n\n username: " + identity.getRemoteId());
+//    System.out.println("\n\n\n username: " + identity.getRemoteId());
     Profile profile = new Profile(identity);
     loadProfile(profile);
     identity.setProfile(profile);
@@ -205,38 +205,45 @@ public class JCRStorage {
     StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
         .append("/").append(PROFILE_NODETYPE);
     String userName = profileFilter.getUserName();
-//    String position = profileFilter.getPosition();
-//    String company = profileFilter.getCompany();
-//    String gender = profileFilter.getGender();
-    
-    if(userName.indexOf("*")<0){
-      if(userName.charAt(0)!='*') userName = "*"+userName ;
-      if(userName.charAt(userName.length()-1)!='*') userName += "*" ;
+    String position = profileFilter.getPosition();
+    String gender = profileFilter.getGender();
+
+    if ((userName.length() != 0) || (position.length() != 0) || (gender.length() != 0)) {
+      queryString.append("[");
     }
-    queryString.append("[jcr:contains(@firstName, ").append("'").append(userName).append("')");
-    queryString.append(" or jcr:contains(@lastName, ").append("'").append(userName).append("')]");
     
-//    if ((position != null) && (position.length() != 0) ) {
-//      if(position.indexOf("*")<0){
-//        if(position.charAt(0)!='*') position = "*"+position ;
-//        if(position.charAt(position.length()-1)!='*') position += "*" ;
-//      }
-//      queryString.append("[jcr:contains(@position, ").append("'").append(position).append("')");
-//    }
-//    if ((company != null) && (company.length() != 0) ) {
-//      if(company.indexOf("*")<0){
-//        if(company.charAt(0)!='*') company = "*"+company ;
-//        if(company.charAt(company.length()-1)!='*') company += "*" ;
-//      }
-//      queryString.append("[jcr:contains(@company, ").append("'").append(company).append("')");
-//    }
-//    if ((gender != null) && (gender.length() != 0) ) {
-//      if(gender.indexOf("*")<0){
-//        if(gender.charAt(0)!='*') gender = "*"+gender ;
-//        if(gender.charAt(gender.length()-1)!='*') gender += "*" ;
-//      }
-//      queryString.append("[jcr:contains(@gender, ").append("'").append(gender).append("')");
-//    }
+    if (userName.length() != 0) {
+      if(userName.indexOf("*")<0){
+        if(userName.charAt(0)!='*') userName = "*"+userName ;
+        if(userName.charAt(userName.length()-1)!='*') userName += "*" ;
+      }
+      queryString.append("(jcr:contains(@firstName, ").append("'").append(userName).append("')");
+      queryString.append(" or jcr:contains(@lastName, ").append("'").append(userName).append("'))");
+    }
+    
+    if (position.length() != 0) {
+      if(position.indexOf("*")<0){
+        if(position.charAt(0)!='*') position = "*"+position ;
+        if(position.charAt(position.length()-1)!='*') position += "*" ;
+      }
+      if (userName.length() != 0) {
+        queryString.append(" and jcr:contains(@position, ").append("'").append(position).append("')");
+      } else {
+        queryString.append("jcr:contains(@position, ").append("'").append(position).append("')");
+      }
+    }
+
+    if (gender.length() != 0) {
+      if ((userName.length() != 0) || (position.length() != 0)) {
+        queryString.append(" and (@gender ").append("= '").append(gender).append("')");
+      } else {
+        queryString.append(" @gender ").append("= '").append(gender).append("'");
+      }
+    }
+    
+    if ((userName.length() != 0) || (position.length() != 0) || (gender.length() != 0)) {
+      queryString.append("]");
+    }
     
     Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
     QueryResult queryResult = query1.execute();

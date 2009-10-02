@@ -18,73 +18,122 @@ var eXo = window.eXo;
 eXo.social = eXo.social || {};
 eXo.social.profile = eXo.social.profile || {};
 
-
 function UIProfileUserSearch() {
-	var posActivated = false;
-	var compActivated = false;
-	var gendActivated = false;
+   this.searchId = null;
+   this.positionId = null;
+   this.companyId = null;
+   this.genderId = null;
+   this.filterId = null;
 };
 
+/**
+ *	Change status some component when it is activated.
+ *	
+ *	@var filter {Object} Object is activated.
+ *	@return void						
+ */
 UIProfileUserSearch.prototype.activeFilterText = function(filter) {
 	if ((filter.value == 'Position') || (filter.value == 'Company') || (filter.value == 'Gender')) {
-		filter.style.color="#000000";
 		filter.value='';
-		if (filter.id == 'Position') {
-			this.posActivated=true;
-		} else if (filter.id == 'Company') {
-			this.compActivated=true;
-		} else {
-			this.gendActivated=true;
-		}
+		filter.focus();
 	}
+	filter.style.color="#000000";
 }
 
+/**
+ *	Change status some component when it is blurred.
+ *	
+ *	@var filter {Object} Object is on blurred.
+ *	@return void						
+ */
 UIProfileUserSearch.prototype.onBlurFilterText = function(filter) {
-	if (filter.value == '') {
+	var DOMUtil = eXo.core.DOMUtil;
+	var searchEl = DOMUtil.findAncestorByClass(filter, 'UIProfileUserSearch');
+	var componentId = searchEl.id;
+	this.createId(componentId);
+	
+	if ((filter.value.trim() == '') || (filter.value.trim() == 'Gender')) {
 		filter.style.color="#C7C7C7";
-		if (filter.id == 'Position') {
+		
+		if (filter.id == this.positionId) {
 			filter.value='Position';
-			this.posActivated=false;
-		} else if (filter.id == 'Company') {
+		} 
+		
+		if (filter.id == this.companyId) {
 			filter.value='Company';
-			this.compActivated=false;
-		} else {
-			filter.value='Gender';
-			this.gendActivated=false;
 		}
-	}
+		
+		if (filter.id == this.genderId) {
+			filter.value='Gender';
+		}
+	} 
 }
 
-UIProfileUserSearch.prototype.toggleFilter = function(oldLabel, newLabel, filterId, moreSearchId) {
-	var filter = document.getElementById(filterId);
-	var moreSearch = document.getElementById(moreSearchId);
+/**
+ *	Display or not for advance search block.
+ *	
+ *	@var newLabel {String} Label to be change when it is displayed.
+ *       filterId {String} Id of filter block.
+ *       elementId {String} Id of element that is displayed
+ *       currentEl {Object} Element is clicked.
+ *	@return void						
+ */
+UIProfileUserSearch.prototype.toggleFilter = function(newLabel, filterBlockId, elementId, currentEl) {
+	var filter = document.getElementById(filterBlockId);
+	var element = document.getElementById(elementId);
+	
 	if (filter.style.display == 'none') {
-		moreSearch.innerHTML=newLabel;
+		currentEl.innerHTML="";
+		element.innerHTML=newLabel;
 		filter.style.display = "block";
     } else {
-    	moreSearch.innerHTML=oldLabel;
+    	currentEl.innerHTML="";
+    	element.innerHTML=newLabel;
     	filter.style.display = "none";
     }
 };
 
-UIProfileUserSearch.prototype.searchProfileUser = function(element, id) {
+/**
+ *	Create and send action when search button is clicked.
+ *	
+ *	@var element {Object} Search text box.
+ *	@return void						
+ */
+UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   var DOMUtil = eXo.core.DOMUtil;
   var searchEl = DOMUtil.findAncestorByClass(element, 'UIProfileUserSearch');
-  
+  var componentId = searchEl.id;
+  this.createId(componentId);
+  var filterEl = document.getElementById(this.filterId);
   var userContact="";
+  var position="";
+  var gender="";
+  var company="";
+  var searchSpacesEl = DOMUtil.findDescendantById(searchEl, this.searchId);
   
-  if (id == null) {
+  if (element.id == this.searchId) {
 	  userContact = element.value;
   } else {
-	  var searchSpacesEl = DOMUtil.findDescendantById(searchEl, id);
 	  userContact = searchSpacesEl.value;
   }
   
-//  var position = document.getElementById("Position").value;
-//  var company = document.getElementById("Company").value;
-//  var gender = document.getElementById("Gender").value;
-  
-  
+  if (filterEl.style.display != 'none') {
+	  position = document.getElementById(this.positionId).value;
+	  if (position == 'Position') {
+		  position = "";
+	  }
+	  
+	  company = document.getElementById(this.companyId).value;
+	  if (company == 'Company') {
+		  company = "";
+	  }
+		  
+	  gender = document.getElementById(this.genderId).value;
+	  
+	  if (gender == 'Gender') {
+		  gender = "";
+	  }
+  } 
   
   if(searchEl != null ) {
 	var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
@@ -93,35 +142,43 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element, id) {
 		var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
 		href += "&portal:type=action&uicomponent=" + searchEl.id;
 		href += "&op=Search";
-		if ((userContact != null) && (userContact.length != 0)) {
-			href += "&userContact=" + userContact;
-		}
-		
-//		if ((this.posActivated) && (position != null) && (position.length != 0)) {
-//			href += "&position=" + position;
-//		}
-//		if ((this.compActivated) && (company != null) && (company.length != 0)) {
-//			href += "&company=" + company;
-//		}
-//		if ((this.gendActivated) && (gender != null) && (gender.length != 0)) {
-//			href += "&gender=" + gender;
-//		}
-		
+		href += "&userContact=" + userContact.trim();
+		href += "&position=" + position.trim();
+	    href += "&company=" + company;
+		href += "&gender=" + gender;
 		href += "&ajaxRequest=true";
 		ajaxGet(href,true);
 	} 
   }
-}
+};
 
+/**
+ *	Call function when Enter Key is pressed in search text box.
+ *	
+ *	@var event {Object} Event.
+ *	@return void						
+ */
 UIProfileUserSearch.prototype.setEnterKey = function(event) {
 	var e = event || window.event;
 	var elementInput = e.srcElement || e.target;
 	var keynum = e.keyCode || e.which;  
-	
 	if(keynum == 13) {
-		eXo.social.profile.UIProfileUserSearch.searchProfileUser(elementInput, null);
+		eXo.social.profile.UIProfileUserSearch.searchProfileUser(elementInput);
 	}						
-}
+};
 
+/**
+ *	Create id of elements with input component ID.
+ *	
+ *	@var componentId {String} Current component ID.
+ *	@return void						
+ */
+UIProfileUserSearch.prototype.createId = function(componentId) {
+	this.searchId = 'Search' + componentId;
+	this.positionId = 'Position' + componentId;
+	this.companyId = 'Company' + componentId;
+	this.genderId = 'Gender' + componentId;
+	this.filterId = 'Filter' + componentId;
+};
 /*===================================================================*/
 eXo.social.profile.UIProfileUserSearch = new UIProfileUserSearch();
