@@ -405,9 +405,6 @@ public class SpaceServiceImpl implements SpaceService {
         GroupHandler groupHandler = orgService.getGroupHandler();
         membershipHandler.linkMembership(user, groupHandler.findGroupById(space.getGroupId()), mbshipTypeManager, true);
       } else {
-        if (isOnlyLeader(space, userId)) {
-          throw new SpaceException(SpaceException.Code.USER_ONLY_LEADER);
-        }
         Membership memberShip = membershipHandler.findMembershipByUserGroupAndType(user.getUserName(), space.getGroupId(), MANAGER);
         membershipHandler.removeMembership(memberShip.getId(), true);
         MembershipType mbShipTypeMember = orgService.getMembershipTypeHandler().findMembershipType(MEMBER);

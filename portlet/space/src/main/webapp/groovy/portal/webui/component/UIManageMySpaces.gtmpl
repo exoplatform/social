@@ -81,7 +81,6 @@
 	      def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
 	      def role = uicomponent.getRole(space.id)
 	      def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
-	      //def spaceName = space.name
 	      def visibility = space.visibility
 	      if (visibility.equals("private")) visibility = "visible"
 	      def status

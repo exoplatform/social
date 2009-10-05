@@ -22,12 +22,16 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.social.space.SpaceException.Code;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -116,6 +120,14 @@ public class UISpaceMember extends UIForm {
     return spaceService; 
   }
   
+  private UserACL getUserACL() throws Exception {
+    return getApplicationComponent(UserACL.class);
+  }
+  
+  private String getRemoteUser() throws Exception {
+    return Util.getPortalRequestContext().getRemoteUser();
+  }
+  
   public UIPageIterator getUIPageIteratorPenddingUsers() { return iteratorPenddingUsers;}
   
   public UIPageIterator getUIPageIteratorInvitedUsers() { return iteratorInvitedUsers;}
@@ -169,6 +181,25 @@ public class UISpaceMember extends UIForm {
   
   public String getUsersName() {
     return getUIStringInput(user).getValue(); 
+  }
+  
+  /**
+   * Checking whether the remote user is super user
+   * @return
+   * @throws Exception 
+   */
+  public boolean isSuperUser() throws Exception {
+    return getRemoteUser().equals(getUserACL().getSuperUser());
+  }
+  
+  /**
+   * Get spaceUrl
+   * @return
+   * @throws Exception
+   */
+  public String getSpaceUrl() throws Exception {
+   Space space = getSpaceService().getSpaceById(spaceId);
+   return Util.getPortalRequestContext().getPortalURI() + space.getUrl();
   }
   
   public boolean isLeader(String userName) throws Exception {
