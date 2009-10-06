@@ -57,12 +57,16 @@ public class SpaceServiceImpl implements SpaceService {
   final static public String SPACE_PARENT = "/spaces";
   final static public String MEMBER = "member";
   final static public String MANAGER = "manager";
-   
+  
+  private final String propertiesParamName = "space";
+  private final String homeNodeAppProperty = "homeNodeApp";
+  private final String appsProperty = "apps";
+  private String homeNodeApp;
+  private String[] apps;
   private JCRStorage storage;
   private OrganizationService orgService = null;
   private UserACL userACL = null;
   private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
-  
   /**
    * SpaceServiceImpl constructor
    * Initialize <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
@@ -72,7 +76,9 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public SpaceServiceImpl(InitParams params, NodeHierarchyCreator nodeHierarchyCreator) throws Exception {
     storage = new JCRStorage(nodeHierarchyCreator);
-    PropertiesParam properties = params.getPropertiesParam("space");
+    PropertiesParam properties = params.getPropertiesParam(propertiesParamName);
+    homeNodeApp = properties.getProperty(homeNodeAppProperty);
+    apps = properties.getProperty(appsProperty).split(",");
     if(properties == null) throw new Exception("the 'space' properties parameter is expected.");
   }
   
@@ -257,7 +263,7 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void initApp(Space space) throws SpaceException {
     SpaceApplicationHandler spaceAppHandler = getSpaceApplicationHandler(space);
-    spaceAppHandler.initApp(space);
+    spaceAppHandler.initApp(space, homeNodeApp, apps);
   }
   
   /**

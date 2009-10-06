@@ -25,9 +25,9 @@
     <init-params>
   		<properties-param>
   		<name>space</name>
-  		<description>default value of space</description>
-  		<property name="visibility" value="private"></property>
-  		<property name="registration" value="validation"></property>
+  		<description>Configure the applicatins to install in a space</description>
+  		<property name="homeNodeApp" value="HomeSpacePortlet"></property>
+  		<property name="apps" value="UserListPortlet, SpaceSettingPortlet"></property>
   		</properties-param>
   	</init-params>	
   </component>

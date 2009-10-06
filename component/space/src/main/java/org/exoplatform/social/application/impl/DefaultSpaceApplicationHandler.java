@@ -44,18 +44,25 @@ import org.exoplatform.social.space.SpaceUtils;
 public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   public static final String NAME = "classic";
   public static final String APPLICATION = "Application";
-  public static final String HOME_APPLICATION = "HomeSpacePortlet";
   private ExoContainer container = ExoContainerContext.getCurrentContainer() ;
   private UserPortalConfigService configService = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
   
   /**
    * {@inheritDoc}
    */
-  public void initApp(Space space) throws SpaceException {
+  public void initApp(Space space, String homeNodeApp, String[] apps) throws SpaceException {
     try {
       PageNavigation spaceNav = SpaceUtils.createGroupNavigation(space.getGroupId());
-      PageNode pageNode = createPageNodeFromApplication(space, HOME_APPLICATION, true);
-      spaceNav.addNode(pageNode);
+      PageNode homeNode = createPageNodeFromApplication(space, homeNodeApp, true);
+      for (String app : apps) {
+        app = app.trim();
+        PageNode appNode = createPageNodeFromApplication(space, app, false);
+        List<PageNode> childNodes = homeNode.getChildren();
+        if(childNodes == null) childNodes = new ArrayList<PageNode>();
+        childNodes.add(appNode);
+        homeNode.setChildren((ArrayList<PageNode>) childNodes);
+      }
+      spaceNav.addNode(homeNode);
       configService.update(spaceNav);
       SpaceUtils.setNavigation(spaceNav);
     } catch(Exception e) {

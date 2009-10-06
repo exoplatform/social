@@ -122,12 +122,6 @@ public class UISpaceAddForm extends UIFormTabPane {
         space.setType(DefaultSpaceApplicationHandler.NAME);
         spaceService.saveSpace(space, true);
         spaceService.initApp(space);
-        // Install some more applications
-        spaceService.installApplication(space, "UserListPortlet");
-        spaceService.activateApplication(space, "UserListPortlet");
-
-        spaceService.installApplication(space, "SpaceSettingPortlet");
-        spaceService.activateApplication(space, "SpaceSettingPortlet");
         
       } catch (SpaceException se) {
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {

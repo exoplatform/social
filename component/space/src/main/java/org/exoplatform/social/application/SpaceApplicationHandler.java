@@ -28,11 +28,12 @@ import org.exoplatform.social.space.SpaceException;
 
 public interface SpaceApplicationHandler {
   /**
-   * Initialize HomeSpacePortlet application as a root page node of a space
+   * Initialize HomeSpacePortlet application as a root page node of a space.
+   * Add apps to this space.
    * @param space
    * @throws SpaceException
    */
-  public void initApp(Space space) throws SpaceException;
+  public void initApp(Space space, String homeNodeApp, String[] apps) throws SpaceException;
   
   /**
    * De-initialize 
