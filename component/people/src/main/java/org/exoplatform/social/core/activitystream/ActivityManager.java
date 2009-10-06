@@ -15,11 +15,11 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */package org.exoplatform.social.core.activitystream;
 
+import java.util.List;
+
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-
-import java.util.List;
 
 
 public class ActivityManager {
@@ -30,6 +30,11 @@ public class ActivityManager {
   }
 
   //TODO should also filter by appID
+  public Activity getActivity(String activityId) throws Exception {
+    return storage.load(activityId);
+  }
+  
+//TODO should also filter by appID
   public List<Activity> getActivities(Identity identity) throws Exception {
     return storage.getActivities(identity);
   }
@@ -52,6 +57,11 @@ public class ActivityManager {
 
 
     return storage.save(userId, activity);
+  }
+  
+  public Activity saveActivity(Activity activity) throws Exception {
+    activity.setUpdated(System.currentTimeMillis());
+    return storage.save(activity.getUserId(), activity);
   }
 
   public Activity recordActivity(String userId, String type, String title, String body) throws Exception {

@@ -16,8 +16,8 @@
  */
 package org.exoplatform.social.core.activitystream.model;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public class Activity {
   private String body = null;
@@ -35,7 +35,8 @@ public class Activity {
   private String type = null;
   private String replytoId = null;
   private boolean hidden = false;
-
+  private String[] likeIdentitiesId = null;
+  
   public Activity(String userId, String type, String title, String body) {
     this.userId = userId;
     this.type = type;
@@ -150,27 +151,35 @@ public class Activity {
     this.userId = userId;
   }
 
-    public String getReplytoId() {
-        return replytoId;
-    }
+  public String getReplytoId() {
+      return replytoId;
+  }
 
-    public void setReplytoId(String replytoId) {
-        this.replytoId = replytoId;
-    }
+  public void setReplytoId(String replytoId) {
+      this.replytoId = replytoId;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+      return type;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setType(String type) {
+      this.type = type;
+  }
 
-    public boolean isHidden() {
-        return hidden;
-    }
+  public boolean isHidden() {
+      return hidden;
+  }
 
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
+  public void setHidden(boolean hidden) {
+      this.hidden = hidden;
+  }
+  
+  public void setLikeIdentitiesId(String[] likeIdentitiesId) {
+   this.likeIdentitiesId = likeIdentitiesId;
+  }
+  
+  public String[] getLikeIdentitiesId() {
+    return likeIdentitiesId;
+  }
 }

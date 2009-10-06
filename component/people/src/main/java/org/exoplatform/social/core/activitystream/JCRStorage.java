@@ -16,16 +16,17 @@
  */
 package org.exoplatform.social.core.activitystream;
 
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.social.core.activitystream.model.Activity;
-import org.exoplatform.social.core.identity.model.Identity;
+import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.jcr.NodeIterator;
-import java.util.List;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Value;
+
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.social.core.activitystream.model.Activity;
+import org.exoplatform.social.core.identity.model.Identity;
 
 import com.google.common.collect.Lists;
 
@@ -47,7 +48,8 @@ public class JCRStorage {
   private static final String USER_ID =  "exo:userId".intern();
   private static final String TYPE =  "exo:type".intern();
   private static final String HIDDEN =  "exo:hidden".intern();
-
+  private static final String LIKE_IDENTITIES_ID = "exo:like".intern();
+  
   private NodeHierarchyCreator nodeHierarchyCreator;
 
 
@@ -125,8 +127,11 @@ public class JCRStorage {
     if(activity.getUrl() != null) {
       activityNode.setProperty(URL, activity.getUrl());  
     }
+    //if(activity.getLikeIdentitiesId() != null) {
+      activityNode.setProperty(LIKE_IDENTITIES_ID, activity.getLikeIdentitiesId());  
+    //}
     activityNode.setProperty(HIDDEN, activity.isHidden());
-
+    
     if (activity.getId() == null) {
       activityHomeNode.save();
       activity.setId(activityNode.getUUID());
@@ -144,7 +149,7 @@ public class JCRStorage {
     return null;
   }
 
-  private Activity load(Node n) throws RepositoryException {
+  private Activity load(Node n) throws Exception {
     Activity activity = new Activity();
     activity.setId(n.getUUID());
 
@@ -169,7 +174,8 @@ public class JCRStorage {
     //TODO: replace by a reference to the identity node
     if (n.hasProperty(USER_ID))
       activity.setUserId(n.getProperty(USER_ID).getString());
-
+    if (n.hasProperty(LIKE_IDENTITIES_ID))
+      activity.setLikeIdentitiesId(ValuesToStrings(n.getProperty(LIKE_IDENTITIES_ID).getValues()));
     return activity;
   }
 
@@ -182,5 +188,14 @@ public class JCRStorage {
       activities.add(load(node));
     }
     return activities;
+  }
+  
+  private String [] ValuesToStrings(Value[] Val) throws Exception {
+    if(Val.length == 1) return new String[]{Val[0].getString()};
+    String[] Str = new String[Val.length];
+    for(int i = 0; i < Val.length; ++i) {
+      Str[i] = Val[i].getString();
+    }
+    return Str;
   }
 }

@@ -176,6 +176,10 @@ body {
 	text-align: center;
 }
 
+.LikeContent {
+	color: red;
+}
+
 /********** Line *********/
 hr {
 	color: #d3d3d3;

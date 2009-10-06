@@ -2,5 +2,8 @@
 <configuration>                                                                                                                                         
   <component>                                                                                                                                           
     <type>org.exoplatform.social.services.rest.GadgetRestService</type>                                                                             
-  </component>                                                                                                                                                                                                                                                                                   
+  </component>
+  <component>                                                                                                                                           
+    <type>org.exoplatform.social.services.rest.opensocial.ActivitiesRestService</type>                                                                             
+  </component>                                                                                                                                                                                                                                                                                                      
 </configuration>

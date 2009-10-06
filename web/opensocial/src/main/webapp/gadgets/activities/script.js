@@ -121,6 +121,10 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 	 }
 		var body = eXo.social.statusUpdate.activities[i].getField('body') || '';
 		var url = eXo.social.statusUpdate.activities[i].getField('url');
+		var id =  eXo.social.statusUpdate.activities[i].getField('id');
+		var getLikeId = 'http://localhost:8080/rest/social/activities/getLikeIds/' + id;
+		var userId = eXo.social.statusUpdate.viewer.getId();
+
 		html += '<div class="Content">' + body + '</div>';
 		html += '<div class="ClearLeft"><span></span></div>';
 		html += '</div>';
@@ -129,10 +133,15 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 			var timeAgo = eXo.social.statusUpdate.timeDetermineAgo(new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')));
 			html += '<div id="NewsComment" class="NewsComment">';
 			html += timeAgo;
-			html += '<a class="Links" id="comment'+ i +'" href="#">' + ' Comment ' + '</a>';
+			html += '<a class="Links" href="#">' + ' Comment ' + '</a>';
 			html += ' | ';
-			html += '<a class="Links"  id="like'+ i +'" href="#">' + ' Like ' + '</a>';
+			var likeLink = 'http://localhost:8080/rest/social/activities/setLikeId/' + id + '/' + userId;
+			var likeOnclick = 'eXo.social.statusUpdate.makeRequest(' 
+			+ '\'' + likeLink + '\'' + ', eXo.social.statusUpdate.displayValue, 0)';
+			html += '<a class="Links" href="#" onclick="' + likeOnclick + '" id="Like' + id + '">Like</a>';
 			html += '</div>';
+			html += '<div class="LikeContent" id="LikeContent' + id + '"></div>'
+			eXo.social.statusUpdate.makeRequest(getLikeId, eXo.social.statusUpdate.displayValue, 0);
 		} else {
 			var timeAgo = eXo.social.statusUpdate.timeDetermineAgo(new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')));
 			html += '<div class="NewsDate">';
@@ -163,7 +172,7 @@ StatusUpdate.prototype.displayMore = function() {
 	eXo.social.statusUpdate.refresh();
 }
 
-StatusUpdate.prototype.getName = function(id) {
+StatusUpdate.prototype.getName = function(id) {	
   if (id == null)
     return "";
   if (id == eXo.social.statusUpdate.owner.getId())
@@ -198,6 +207,61 @@ StatusUpdate.prototype.timeToPrettyString = function(B) {
     var date = new Date();
     date.setTime(B);
     return date;
+}
+
+StatusUpdate.prototype.makeRequest = function(url, callback, refreshInterval) {
+	var ts = new Date().getTime();
+	var sep = "?";
+	  
+	if (refreshInterval && refreshInterval > 0) {
+	    ts = Math.floor(ts / (refreshInterval * 1000));
+	}
+	if (url.indexOf("?") > -1) {
+	   sep = "&";
+	}
+	  
+	url = [ url, sep, "nocache=", ts ].join("");
+	var params = {};
+	params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+	params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+	gadgets.io.makeRequest(url, callback, params);
+}
+
+StatusUpdate.prototype.displayValue = function(reponse) {
+	if(!reponse.data) return;
+	var activityId = reponse.data.activityId;
+	var data = reponse.data.ids;
+	var text = '';
+	var contentBlock = _gel('LikeContent' + activityId);
+	var likeBlock = _gel('Like' + activityId);
+	var userId = eXo.social.statusUpdate.viewer.getId();
+	var likeLink = 'http://localhost:8080/rest/social/activities/setLikeId/' + activityId + '/' + userId;
+	var unlikeLink = 'http://localhost:8080/rest/social/activities/removeLikeId/' + activityId + '/' + userId;
+	if(eXo.social.statusUpdate.isYou(data)) {
+		likeBlock.innerHTML = 'unlike';
+		likeBlock.setAttribute('onclick', 'eXo.social.statusUpdate.makeRequest(' 
+								+ '\'' + unlikeLink + '\'' + ', eXo.social.statusUpdate.displayValue, 0)'); 
+		text += 'You';
+		if(data.length == 2) text += ' and 1 person';
+		else if (data.length > 2) text += ' and ' + data.length + ' people';
+	}
+	else {
+		likeBlock.innerHTML = 'like';
+		likeBlock.setAttribute('onclick', 'eXo.social.statusUpdate.makeRequest(' 
+								+ '\'' + likeLink + '\'' + ', eXo.social.statusUpdate.displayValue, 0)');
+		if(data.length == 1) text += '1 person';
+		else text += data.length + ' people';
+	}
+	text += ' like this';
+	if(data.length > 0) contentBlock.innerHTML = text;
+	else contentBlock.innerHTML = "";
+}
+
+StatusUpdate.prototype.isYou = function(data) {
+	for(var i=0; i< data.length; i++) {
+		if(data[i] == eXo.social.statusUpdate.owner.getId()) return true;
+	}
+	return false;
 }
 
 StatusUpdate.prototype.timeDetermineAgo = function(B) {
