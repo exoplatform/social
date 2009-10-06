@@ -194,9 +194,19 @@ public class UISpaceMember extends UIForm {
    * @return
    * @throws Exception
    */
-  public String getSpaceUrl() throws Exception {
+  public String getHomeSpaceUrl() throws Exception {
    Space space = getSpaceService().getSpaceById(spaceId);
    return Util.getPortalRequestContext().getPortalURI() + space.getUrl();
+  }
+  
+  /**
+   * Get Manage Spaces Url (UIManageMySpaces)
+   * @return
+   * @throws Exception
+   */
+  public String getManageSpacesUrl() throws Exception {
+    //TODO hoatle: Hard-coded
+    return Util.getPortalRequestContext().getPortalURI() + "spaces";
   }
   
   public boolean isLeader(String userName) throws Exception {

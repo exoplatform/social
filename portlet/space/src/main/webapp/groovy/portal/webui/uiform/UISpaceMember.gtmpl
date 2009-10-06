@@ -146,8 +146,14 @@
 		  <% List<String> existingUsers = uicomponent.getExistingUsers();
 		  	 for(user in existingUsers) {
 		  	 boolean isLeader = uicomponent.isLeader(user);
-		  	 String removeLeader = uicomponent.event("RemoveLeader", user) + "; return false;";
-		  	 String makeLeader = uicomponent.event("MakeLeader", user) + "; return false;";
+		  	 def manageSpacesUrl = ""
+		  	 def homeSpaceUrl = ""
+         if (!uicomponent.isSuperUser()) {
+            manageSpacesUrl = uicomponent.manageSpacesUrl
+            homeSpaceUrl = uicomponent.homeSpaceUrl
+         }
+		  	 String removeLeader = uicomponent.event("RemoveLeader", user) + "; window.location.href='$homeSpaceUrl'"
+		  	 String makeLeader = uicomponent.event("MakeLeader", user) + "; return false;"
 		  %>
 				<tr class="EvenRow">
 				  <td class="text"><span class="label" id="label"><%= user %></span></td>
@@ -161,13 +167,8 @@
 				  	<div class="AddInviteButton">
 				  	  <div class="LeftButton">
 					      <div class="RightButton">
-					      	<% String removeAction = uicomponent.event("RemoveUser",user)
-					      	    def url = ""
-					      	    if (!uicomponent.isSuperUser()) {
-					      	     url = uicomponent.spaceUrl
-					      	    }
-					      	%>
-					        <div class="CenterButton"><a href="$removeAction; window.location.href='$url'"><%= _ctx.appRes(uicomponent.getId() + ".button.remove")%></a></div>
+					      	<% String removeAction = uicomponent.event("RemoveUser",user)%>
+					        <div class="CenterButton"><a href="$removeAction; window.location.href='$manageSpacesUrl'"><%= _ctx.appRes(uicomponent.getId() + ".button.remove")%></a></div>
 					      </div>
 					    </div>
 				    </div>
