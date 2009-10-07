@@ -62,6 +62,7 @@
 	}	
 	
 	void renderUserSpaces() {
+		def portalURI = Util.getPortalRequestContext().getPortalURI();
  		def userSpaces = uicomponent.getAllUserSpaces();
  		String clazz = "";
 		if (userSpaces.size > 0) {
