@@ -1,7 +1,7 @@
 
 
 .TRContainer .MenuTDContainer {
-	width: 244px;
+	width: 220px;
 }
 
 .TRContainer .MenuTDContainer .UIContainer {
@@ -13,7 +13,7 @@
 }
 
 .TRContainer .ApplicationTDContainer {
-	padding: 15px 12px 15px 32px;
+	padding: 8px;
 }
 
 .TRContainer .ApplicationTDContainer .UIContainer {
@@ -25,7 +25,6 @@
 }
 
 .UITableColumnContainer {
-  background: #fff url('background/BackgroundSpacesManage.gif') repeat-y top left;
   border: 1px solid #91a8ae;
 }
 
