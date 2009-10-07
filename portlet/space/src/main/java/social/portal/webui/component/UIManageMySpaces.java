@@ -77,14 +77,14 @@ import org.exoplatform.webui.event.Event.Phase;
   @ComponentConfig(  
     type = UIPageNodeForm2.class,
     lifecycle = UIFormLifecycle.class,
-      template = "system:/groovy/webui/form/UIFormTabPane.gtmpl" ,    
-      events = {
-        @EventConfig(listeners = UIPageNodeForm2.SaveActionListener.class ),
-        @EventConfig(listeners = UIManageMySpaces.BackActionListener.class, phase = Phase.DECODE),
-        @EventConfig(listeners = UIPageNodeForm2.SwitchPublicationDateActionListener.class, phase = Phase.DECODE ),
-        @EventConfig(listeners = UIPageNodeForm2.ClearPageActionListener.class, phase = Phase.DECODE),
-        @EventConfig(listeners = UIPageNodeForm2.CreatePageActionListener.class, phase = Phase.DECODE)
-      }
+    template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",    
+    events = {
+      @EventConfig(listeners = UIPageNodeForm2.SaveActionListener.class),
+      @EventConfig(listeners = UIManageMySpaces.BackActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm2.SwitchPublicationDateActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm2.ClearPageActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm2.CreatePageActionListener.class, phase = Phase.DECODE)
+    }
   ),
   @ComponentConfig(
     id = "UIInvitedSpaces",
@@ -321,7 +321,6 @@ public class UIManageMySpaces extends UIContainer {
       ArrayList<PageNavigation> list = new ArrayList<PageNavigation>();
       list.add(groupNav);
       selector.initNavigations(list);
-      selector.loadNavigationByNavId(groupNav.getId(), uiMySpaces.navigations);
       uiPopup.setUIComponent(pageManager);
       uiPopup.setWindowSize(400, 400);
       uiPopup.setShow(true);
@@ -351,7 +350,7 @@ public class UIManageMySpaces extends UIContainer {
       uiPopup.setUIComponent(pageManager);
       uiPopup.setWindowSize(400, 400);
       uiPopup.setRendered(true);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup.getParent());
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
     
   }
