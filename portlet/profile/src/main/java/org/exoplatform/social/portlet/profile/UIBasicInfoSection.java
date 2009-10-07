@@ -60,6 +60,8 @@ public class UIBasicInfoSection extends UIProfileSection {
   final public static String LAST_NAME = "lastName";
   /** GENDER. */
   final public static String GENDER = "gender";
+  /** DEFAULT GENDER. */
+  final public static String GENDER_DEFAULT = "Gender";
   /** MALE. */
   final public static String MALE = "male";
   /** FEMALE. */
@@ -82,8 +84,9 @@ public class UIBasicInfoSection extends UIProfileSection {
                    .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
 
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    options.add(new SelectItemOption<String>(MALE)) ;
-    options.add(new SelectItemOption<String>(FEMALE)) ;
+    options.add(new SelectItemOption<String>(GENDER_DEFAULT));
+    options.add(new SelectItemOption<String>(MALE));
+    options.add(new SelectItemOption<String>(FEMALE));
     addUIFormInput(new UIFormSelectBox(GENDER, GENDER, options));
   }
   
@@ -121,6 +124,7 @@ public class UIBasicInfoSection extends UIProfileSection {
     String lastName = (String) profile.getProperty(LAST_NAME);
     lastName = (lastName == null ? "": lastName);
     String gender = (String) profile.getProperty(GENDER);
+    gender = (gender == null ? "": gender);
     UIFormStringInput uiFirstName = getChildById(FIRST_NAME);
     UIFormStringInput uiLastName = getChildById(LAST_NAME);
     UIFormSelectBox uiGender = getChildById(GENDER);
@@ -142,6 +146,7 @@ public class UIBasicInfoSection extends UIProfileSection {
     String firstName = uiFirstName.getValue();
     String lastName = uiLastName.getValue();
     String gender = uiGender.getValue();
+    gender = ("Gender".equals(gender) ? "" : gender);
     
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);

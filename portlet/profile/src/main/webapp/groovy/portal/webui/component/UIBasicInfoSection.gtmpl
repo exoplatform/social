@@ -21,13 +21,12 @@
   def profile = uicomponent.getProfile();
   
 	def firstName = profile.getPropertyValue("firstName");
-	firstName = (firstName == null ? "": firstName);
+	firstName = (firstName == null ? "" : firstName);
 	
 	def lastName = profile.getPropertyValue("lastName");
-	lastName = (lastName == null ? "": lastName);
+	lastName = (lastName == null ? "" : lastName);
 	
 	def gender = profile.getPropertyValue("gender");
-	gender = (gender == null ? "male" : gender);
 	def isEdit = uicomponent.isEditMode();
 	def isEditable = uicomponent.isEditable();
 %>
@@ -61,10 +60,12 @@
 				      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.lastName")+": " %></td>
 				      <td class="FieldComponent"><%=lastName %></td>
 				    </tr>
-				    <tr>
-				      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.gender")+": " %></td>
-				      <td class="FieldComponent"><%=gender %></td>
-				    </tr>
+				    <% if ((gender != null) && (gender != "")) {%>
+					    <tr>
+					      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.gender")+": " %></td>
+					      <td class="FieldComponent"><%=gender %></td>
+					    </tr>
+				    <% } %>
 				<%}%>	
 			</tbody>	
 		</table>
