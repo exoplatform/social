@@ -24,14 +24,14 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
              
  <portlet>
-   <description xml:lang="EN">Social User ToolBar Portlet</description>
-   <portlet-name>SocialUserToolBarPortlet</portlet-name>
-   <display-name xml:lang="EN">Social User ToolBar Portlet</display-name>
+   <description xml:lang="EN">My Profile ToolBar Portlet</description>
+   <portlet-name>MyProfileToolbarPortlet</portlet-name>
+   <display-name xml:lang="EN">My Profile ToolBar Portlet</display-name>
    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
    
    <init-param>
      <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/socialusertoolbar/webui/configuration.xml</value>
+     <value>/WEB-INF/conf/portlet/web/myprofiletoolbar/webui/configuration.xml</value>
    </init-param>    
 
    <expiration-cache>0</expiration-cache>
@@ -40,10 +40,10 @@
      <portlet-mode>help</portlet-mode>
    </supports>
    <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.web.UISocialUserToolBarPortlet</resource-bundle>
+   <resource-bundle>locale.portlet.web.MyProfileToolBarPortlet</resource-bundle>
    <portlet-info>
-     <title>Social User ToolBar Portlet</title>
-     <short-title>SocialUserToolBar</short-title>
+     <title>My Profile ToolBar Portlet</title>
+     <short-title>MyProfileToolBar</short-title>
      <keywords>System</keywords>
    </portlet-info>
    
@@ -53,6 +53,96 @@
    </security-role-ref>
  </portlet>
 
+ <portlet>
+   <description xml:lang="EN">Sites ToolBar Portlet</description>
+   <portlet-name>SitesToolbarPortlet</portlet-name>
+   <display-name xml:lang="EN">Sites ToolBar Portlet</display-name>
+   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   
+   <init-param>
+     <name>webui.configuration</name>
+     <value>/WEB-INF/conf/portlet/web/sitestoolbar/webui/configuration.xml</value>
+   </init-param>    
+
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+     <portlet-mode>help</portlet-mode>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.web.SitesToolBarPortlet</resource-bundle>
+   <portlet-info>
+     <title>Sites ToolBar Portlet</title>
+     <short-title>SitesToolBar</short-title>
+     <keywords>System</keywords>
+   </portlet-info>
+   
+   <security-role-ref>
+     <role-name>admin</role-name>
+     <role-link>admin</role-link>
+   </security-role-ref>
+ </portlet>
+ 
+ <portlet>
+   <description xml:lang="EN">Spaces ToolBar Portlet</description>
+   <portlet-name>SpacesToolbarPortlet</portlet-name>
+   <display-name xml:lang="EN">Spaces ToolBar Portlet</display-name>
+   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   
+   <init-param>
+     <name>webui.configuration</name>
+     <value>/WEB-INF/conf/portlet/web/spacestoolbar/webui/configuration.xml</value>
+   </init-param>    
+
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+     <portlet-mode>help</portlet-mode>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.web.SpacesToolBarPortlet</resource-bundle>
+   <portlet-info>
+     <title>Spaces ToolBar Portlet</title>
+     <short-title>SpacesToolBar</short-title>
+     <keywords>System</keywords>
+   </portlet-info>
+   
+   <security-role-ref>
+     <role-name>admin</role-name>
+     <role-link>admin</role-link>
+   </security-role-ref>
+ </portlet>
+ 
+ <portlet>
+   <description xml:lang="EN">DashBoard ToolBar Portlet</description>
+   <portlet-name>DashBoardToolbarPortlet</portlet-name>
+   <display-name xml:lang="EN">DashBoard ToolBar Portlet</display-name>
+   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   
+   <init-param>
+     <name>webui.configuration</name>
+     <value>/WEB-INF/conf/portlet/web/dashboardtoolbar/webui/configuration.xml</value>
+   </init-param>    
+
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+     <portlet-mode>help</portlet-mode>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.web.DashBoardToolBarPortlet</resource-bundle>
+   <portlet-info>
+     <title>DashBoard ToolBar Portlet</title>
+     <short-title>DashBoardToolBar</short-title>
+     <keywords>System</keywords>
+   </portlet-info>
+   
+   <security-role-ref>
+     <role-name>admin</role-name>
+     <role-link>admin</role-link>
+   </security-role-ref>
+ </portlet>
+ 
  <portlet>
     <description xml:lang="EN">Relationship Portlet</description>
     <portlet-name>relationship</portlet-name>

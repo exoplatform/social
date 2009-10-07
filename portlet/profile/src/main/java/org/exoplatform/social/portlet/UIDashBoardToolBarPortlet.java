@@ -52,19 +52,19 @@ import org.exoplatform.webui.event.Event.Phase;
 
 /**
  * Created by The eXo Platform SAS
- * Author : @gmail.com
- * Sep 21, 2009  
+ * Author : hanhvq@gmail.com
+ * Oct 7, 2009  
  */
 @ComponentConfig(
                  lifecycle = UIApplicationLifecycle.class,
-                 template = "app:/groovy/portal/webui/component/UISocialUserToolBarPortlet.gtmpl",
+                 template = "app:/groovy/portal/webui/component/UIDashBoardToolBarPortlet.gtmpl",
                  events = {
-                	 @EventConfig(name = "AddDefaultDashboard", listeners = UISocialUserToolBarPortlet.AddDashboardActionListener.class)
+                	 @EventConfig(name = "AddDefaultDashboard", listeners = UIDashBoardToolBarPortlet.AddDashboardActionListener.class)
                  }
 )
-public class UISocialUserToolBarPortlet extends UIPortletApplication {
+public class UIDashBoardToolBarPortlet extends UIPortletApplication {
   
-  public UISocialUserToolBarPortlet() throws Exception {  }
+  public UIDashBoardToolBarPortlet() throws Exception {  }
   
   private SpaceService spaceService = null;
   private String userId = null;
@@ -123,38 +123,13 @@ public class UISocialUserToolBarPortlet extends UIPortletApplication {
   	return getPageNavigation(PortalConfig.USER_TYPE + "::" + remoteUser);
   }
   
-  @SuppressWarnings("unused")
-  private List<Space> getAllUserSpaces() throws Exception {
-    SpaceService spaceService = getSpaceService();
-    String userId = getUserId();
-    List<Space> userSpaces = spaceService.getAccessibleSpaces(userId);
-    return SpaceUtils.getOrderedSpaces(userSpaces);
-  }
-  
-  private SpaceService getSpaceService() {
-    if(spaceService == null) {
-      spaceService = getApplicationComponent(SpaceService.class);
-    }
-    return spaceService; 
-  }
-  
-  /**
-   * Get remote user Id
-   * @return userId
-   */
-  private String getUserId() {
-    if(userId == null) 
-      userId = Util.getPortalRequestContext().getRemoteUser();
-    return userId;
-  }
-  
-  static public class AddDashboardActionListener extends EventListener<UISocialUserToolBarPortlet>{
+  static public class AddDashboardActionListener extends EventListener<UIDashBoardToolBarPortlet>{
   	
   	private final static String PAGE_TEMPLATE = "dashboard";
     private static Log logger = ExoLogger.getExoLogger(AddDashboardActionListener.class);
     
-  	public void execute(Event<UISocialUserToolBarPortlet> event) throws Exception {
-  		UISocialUserToolBarPortlet toolBarPortlet = event.getSource();
+  	public void execute(Event<UIDashBoardToolBarPortlet> event) throws Exception {
+  		UIDashBoardToolBarPortlet toolBarPortlet = event.getSource();
   		String nodeName = event.getRequestContext().getRequestParameter(UIComponent.OBJECTID);
   	  PageNavigation userNavigation = toolBarPortlet.getCurrentUserNavigation();
   	  UserPortalConfigService configService = toolBarPortlet.getApplicationComponent(UserPortalConfigService.class);

@@ -9,9 +9,30 @@
 		    <show-info-bar>false</show-info-bar>
 		  </application>			
 		</container>
-		<container id="SocialUserToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		<container id="MyProfileToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 		  <application>
-		    <instance-id>portal#classic:/profile/SocialUserToolBarPortlet/userportlet</instance-id>
+		    <instance-id>portal#classic:/profile/MyProfileToolbarPortlet/myprofiletoolbarportlet</instance-id>
+	      <access-permissions>Everyone</access-permissions>
+		    <show-info-bar>false</show-info-bar>
+		  </application>			
+		</container>
+		<container id="SitesToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		  <application>
+		    <instance-id>portal#classic:/profile/SitesToolbarPortlet/sitestoolbarportlet</instance-id>
+	      <access-permissions>Everyone</access-permissions>
+		    <show-info-bar>false</show-info-bar>
+		  </application>			
+		</container>
+		<container id="SpacesToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		  <application>
+		    <instance-id>portal#classic:/profile/SpacesToolbarPortlet/spacestoolbarportlet</instance-id>
+	      <access-permissions>Everyone</access-permissions>
+		    <show-info-bar>false</show-info-bar>
+		  </application>			
+		</container>
+		<container id="DashboardToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		  <application>
+		    <instance-id>portal#classic:/profile/DashBoardToolbarPortlet/dashboardtoolbarportlet</instance-id>
 	      <access-permissions>Everyone</access-permissions>
 		    <show-info-bar>false</show-info-bar>
 		  </application>			
