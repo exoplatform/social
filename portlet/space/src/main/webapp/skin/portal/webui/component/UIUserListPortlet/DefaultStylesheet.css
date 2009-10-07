@@ -15,10 +15,46 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 .UIUserListPortlet {
-	background: white url('background/SpaceContentBG.gif') repeat-x top ;
-  border:1px solid #E6E6E6;
   padding:4px;
 }
+
+.UIUserListPortlet .UISpaceUserSearchL{
+	background: url('background/UISpaceUserSearchL.gif') no-repeat left top ;
+  padding-left:8px;
+}
+
+.UIUserListPortlet .UISpaceUserSearchR{
+	background: url('background/UISpaceUserSearchR.gif') no-repeat right top ;
+  padding-right:8px;
+}
+
+.UIUserListPortlet .UISpaceUserSearchM{
+	background: url('background/UISpaceUserSearchM.gif') repeat-x ;
+  padding:8px 0px 4px 8px;
+}
+
+
+.UIUserListPortlet .UserlistBottomL{
+	background: url('background/UserlistBottomL.gif') no-repeat left top ;
+  padding-left:7px;
+}
+
+.UIUserListPortlet .UserlistBottomR{
+	background: url('background/UserlistBottomR.gif') no-repeat right top ;
+  padding-right:7px;
+}
+
+.UIUserListPortlet .UserlistBottomM{
+	background: url('background/UserlistBottomM.gif') repeat-x ;
+  height:7px;
+}
+
+.UIUserListPortlet .UserlistContainer{
+	border-left: 1px solid #e1e1e1;
+	border-right: 1px solid #e1e1e1;
+	padding: 8px;
+}
+
 
 .UIUserListPortlet .EmptyData {
 	color:#FF5604;
@@ -26,15 +62,11 @@
 	text-align:center;
 }
 
-.UIUserListPortlet .UserlistContainer {
-  padding:4px;
-  margin-top: 4px;
-}
 
 .UIUserListPortlet .UserlistContainer .UserlistContent {
-	background: white;
+	background: white url('background/UserlistContent.gif') repeat-x top;
 	padding: 8px;
-	border: 1px solid #aeaeae;
+	border: 1px solid #f1f1f1;
 }
 
 
@@ -53,15 +85,19 @@
 }
 
 .UIUserListPortlet .UserlistContainer .UserBarTitleName {
-	color: white;
-	background: #AEC7CC;
+	color: #6D84B4;
 	font-size: 12px;
 	font-weight: bold;
 	line-height: 24px;
 	padding-left: 12px;
+	border-bottom: 1px dotted #c1c1c1;
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer .FieldComponent {
 	font-weight: bold;
+}
+
+.UIUserListPortlet .UserlistContainer .UserContainer td.FieldLabel {
+	text-align: left;
 }
 

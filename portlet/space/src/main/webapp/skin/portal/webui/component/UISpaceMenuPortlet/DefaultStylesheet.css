@@ -16,67 +16,60 @@
  */
 
 .MenuTDContainer .UISpaceMenuPortlet {
-	padding: 15px 12px;
+	padding: 8px;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogoBG {
-
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogo {
-	background: url('DefaultSkin/background/HomeSpaceLogo.gif') no-repeat left center;
-	padding-left: 45px;
+.MenuTDContainer .UISpaceMenuPortlet .Home .HomeSpace{
+	background: url('DefaultSkin/background/HomeMenuBG.gif') no-repeat left center;
+	padding-left: 65px;
 	font-weight: bold;
-	line-height: 60px;
-	font-family: arial;
-	font-size: 14px;
-	color: #fff;
-	margin-left: 15px;
+	line-height: 41px;
+	font-size: 12px;
+	color: #2d52a1;
+	display: block;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .HomeSpaceLogo a {
-	color: #fff;
+.MenuTDContainer .UISpaceMenuPortlet .Home a:hover{
+	background: url('DefaultSkin/background/HomeMenuHover.gif') no-repeat left center;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .GadgetList {
-	border: 1px solid #dadbdd;
-	padding: 5px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .GadgetList .DecoratorGadget {
-  background: url('DefaultSkin/background/BGSpaceMenuPortlet.gif') repeat-y left top;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .LineMenu {
-  background: url(DefaultSkin/background/LineMenu.gif) no-repeat left top;
-  height: 3px;
-  width: 208px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .ListContent {
-	margin: 0px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .ListContent .ApplicationIcon {
-	background: url(DefaultSkin/background/Application.gif) no-repeat left center;
-	padding-left: 45px;
-	line-height: 60px;
-	margin-left: 15px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont {
+.MenuTDContainer .UISpaceMenuPortlet .ListUser .ListUserBG {
+	background: url('DefaultSkin/background/ListUserBG.gif') no-repeat left center;
+	padding-left: 65px;
 	font-weight: bold;
-	font-family: arial;
-	font-size: 14px;
-	color: #b3e1ee;
-	overflow: hidden;
-	white-space: nowrap;
+	line-height: 41px;
+	font-size: 12px;
+	color: #2d52a1;
+	display: block;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont a {
-	color: #fff;
+.MenuTDContainer .UISpaceMenuPortlet .ListUser a:hover{
+	background: url('DefaultSkin/background/ListUserHover.gif') no-repeat left center;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .ListContent .ListContentFont .ApplicationSelected {
-	color: #a1eaff;
+.MenuTDContainer .UISpaceMenuPortlet .SpaceSetting .SpaceSettingBG {
+	background: url('DefaultSkin/background/SpaceSettingBG.gif') no-repeat left center;
+	padding-left: 65px;
+	font-weight: bold;
+	line-height: 41px;
+	font-size: 12px;
+	color: #2d52a1;
+	display: block;
 }
+
+.MenuTDContainer .UISpaceMenuPortlet .SpaceSetting a:hover{
+	background: url('DefaultSkin/background/SpaceSettingHover.gif') no-repeat left center;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .BottomSpaceListBG {
+	background: url('DefaultSkin/background/BottomSpaceListBG.gif') no-repeat left center;
+	height: 10px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .SpaceListBG {
+	border-left: 1px solid #e1e1e1;
+	border-right: 1px solid #e1e1e1;
+	height: 60px;
+	width: 200px;
+}
+

@@ -23,7 +23,13 @@
 	UIPageIterator iterator = uicomponent.getUIPageIterator()
 %>
 <div class="UIUserListPortlet" id="$uicomponent.id">
-  <% uicomponent.renderChild(UISpaceUserSearch.class) %>
+	<div class="UISpaceUserSearchL">
+  	<div class="UISpaceUserSearchR">
+  		<div class="UISpaceUserSearchM">
+  			<% uicomponent.renderChild(UISpaceUserSearch.class) %>
+  		</div>
+  	</div>
+  </div>
 	<% List<User> listUsers = uicomponent.getUsersInSpace();
 		 if(listUsers.size() > 0 ){	 
 		 	for(user in listUsers) {
@@ -79,4 +85,9 @@
 				}
 			%>	
 	</div>	
+	<div class="UserlistBottomL">
+		<div class="UserlistBottomR">
+			<div class="UserlistBottomM"><span></span></div>
+		</div>
+	</div>
 </div>
