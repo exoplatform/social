@@ -23,7 +23,7 @@
 <Module>
 	<ModulePrefs author="eXoPlatform"
 		description="Gadget for fetching rss" directory_title="RssFetcherGadget"
-		title="RssFetcherGadget" title_url="http://www.google.com.vn">
+		title="RssFetcherGadget" title_url="http://www.google.com.vn" scrolling="false">
 		<Require feature="dynamic-height" />
 		<Require feature="setprefs"/>
 		<Require feature="minimessage"/>
@@ -160,7 +160,7 @@
 	  <link rel="stylesheet" type="text/css" href="rssFetch/style.css"></link>
 	  <script type="text/javascript" src="rssFetch/script.js"></script>
 	  
-    <div id="rssFeed" style="height: 229px; overflow: auto;"></div>
+    <div id="rssFeed" style="overflow: auto;"></div>
 		
 		
 		<script type="text/javascript">
