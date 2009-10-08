@@ -16,7 +16,7 @@
  */
  
 .UIManageSpacesPortlet {
-	
+	padding: 8px;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .SpaceContent .AvatarSpace{
@@ -34,28 +34,25 @@
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContentContent .UIGridSpace{
-	width: 100%;
 	table-layout: fixed;
+	width: auto;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .ContentBar{
-	border-bottom: 1px dotted #b7b7b7;
 	height: 24px;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .MySpaceLabel{
 	float: left;
 	font-weight: bold;
-	padding-left: 8px;
-	color: #0077d4;
+	color: #6d84b4;
 	font-size: 12px;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .MySpaceLabel a{
     float: left;
     font-weight: bold;
-    padding-left: 8px;
-    color: #0077d4;
+    color: #6d84b4;
     font-size: 12px;
 }
 
