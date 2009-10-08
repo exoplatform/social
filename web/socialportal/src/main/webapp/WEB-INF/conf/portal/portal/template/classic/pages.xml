@@ -20,53 +20,120 @@
 <page-set>  
 
   <page>
-  	<page-id>portal::@owner@::sitemap</page-id>
+  	<page-id>portal::@owner@::homepage</page-id>
     <owner-type>portal</owner-type>
     <owner-id>@owner@</owner-id>
-    <name>sitemap</name>
-    <title>Site Map</title>
+    <name>homepage</name>
+    <title>Home Page</title>
 	  <access-permissions>Everyone</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>
     <application>
-      <instance-id>portal#@owner@:/web/SiteMapPortlet/sitemapportlet</instance-id>
-      <title>Site Map portlet</title>
-      <show-info-bar>true</show-info-bar>
-      <show-application-state>true</show-application-state>
-      <show-application-mode>true</show-application-mode>
+      <instance-id>portal#@owner@:/space/HomePagePortlet/homepageportlet</instance-id>
+      <title>Home Page portlet</title>
+      <show-info-bar>false</show-info-bar>
+      <show-application-state>false</show-application-state>
+      <show-application-mode>false</show-application-mode>
     </application>
   </page>
   
   <page>
-  	<page-id>portal::@owner@::relationship</page-id>
+  	<page-id>portal::@owner@::register</page-id>
     <owner-type>portal</owner-type>
     <owner-id>@owner@</owner-id>
-    <name>relationship</name>
-    <title>relationship</title>
-	  <access-permissions>*:/platform/users</access-permissions>
+    <name>register</name>
+    <title>Register</title>
+	  <access-permissions>Everyone</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>group#platform/guests:/exoadmin/AccountPortlet/Account</instance-id>
+      <title>New Account</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+  
+  <page>
+  	<page-id>portal::@owner@::MyProfile</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>MyProfile</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/profile/myprofile/myprofiles</instance-id>
+      <title>MyProfile</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+  
+  <page>
+  	<page-id>portal::@owner@::RelationShip</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>RelationShip</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
     <application>
       <instance-id>portal#@owner@:/profile/relationship/relationships</instance-id>
-      <title>relationship</title>
-      <show-info-bar>true</show-info-bar>
-      <show-application-state>true</show-application-state>
-      <show-application-mode>true</show-application-mode>
+      <title>RelationShip</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+
+  <page>
+  	<page-id>portal::@owner@::manageSpaces</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>manageSpaces</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/space/ManageSpacesPortlet/managespaces</instance-id>
+      <title>ManageSpaces</title>
+      <show-info-bar>false</show-info-bar>
     </application>
   </page>
   
   <page>
-  	<page-id>portal::@owner@::space</page-id>
+  	<page-id>portal::@owner@::activities</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>activities</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/dashboard/GadgetPortlet/GadgetPortletActivities</instance-id>
+      <title>Activities</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+  
+  <page>
     <owner-type>portal</owner-type>
     <owner-id>@owner@</owner-id>
-    <name>space</name>
-    <title>Space</title>
+    <name>groupnavigation</name>
+    <title>Group Navigation</title>
 	  <access-permissions>*:/platform/users</access-permissions>
-	  <edit-permission>*:/platform/administrators</edit-permission>
+	  <edit-permission>*:/platform/administrators</edit-permission>    
     <application>
-      <instance-id>portal#@owner@:/space/ManageSpacesPortlet1/managespaces</instance-id>
-      <title>ManageSpaces</title>
-      <show-info-bar>true</show-info-bar>
-      <show-application-state>true</show-application-state>
-      <show-application-mode>true</show-application-mode>
-    </application>
+      <instance-id>group#organization/management/executive-board:/exoadmin/GroupNavigationPortlet/GroupNavigation</instance-id>
+      <title>Group Navigation</title>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>false</show-info-bar>
+    </application>  
+  </page>
+  
+  <page>
+    <owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>portalnavigation</name>
+    <title>Portal Navigation</title>
+	  <access-permissions>*:/platform/users</access-permissions>
+	  <edit-permission>*:/platform/administrators</edit-permission>    
+    <application>
+      <instance-id>group#organization/management/executive-board:/exoadmin/PortalNavigationPortlet/PortalNavigation</instance-id>
+      <title>Portal Navigation</title>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>false</show-info-bar>
+    </application>  
   </page>
 </page-set>

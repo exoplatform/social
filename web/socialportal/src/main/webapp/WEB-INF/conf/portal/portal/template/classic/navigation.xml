@@ -23,25 +23,59 @@
   <priority>1</priority>
 
   <page-nodes>
-    <node>
-      <uri>home</uri>
-      <name>home</name>
-      <label>Home</label>
-      <page-reference>portal::@owner@::sitemap</page-reference>
-    </node> 
-    
-    <node>
-      <uri>relationship</uri>
-      <name>relationship</name>
-      <label>relationship</label>
-      <page-reference>portal::@owner@::relationship</page-reference>
-    </node>
-    
-    <node>
-      <uri>space</uri>
-      <name>space</name>
-      <label>Space</label>
-      <page-reference>portal::@owner@::space</page-reference>
-    </node> 
+  	<node>
+	  <uri>home</uri>
+	  <name>home</name>
+	  <label>Home</label>
+	  <page-reference>portal::@owner@::homepage</page-reference>	    
+	 </node>
+   
+   <node>
+      <uri>register</uri>
+      <name>register</name>
+      <label>Register</label>
+      <page-reference>portal::@owner@::register</page-reference>
+   </node>
+	 
+   <node>
+	    <uri>myprofile</uri>
+	    <name>myprofile</name>
+	    <label>My Profile</label>
+	    <visible>false</visible>
+      <page-reference>portal::@owner@::MyProfile</page-reference>
+      <node>
+		    <uri>myprofile/relationship</uri>
+		    <name>relationship</name>
+		    <label>My Relations</label>
+	      <page-reference>portal::@owner@::RelationShip</page-reference>
+	  	</node>
+      <node>
+		    <uri>myprofile/activities</uri>
+		    <name>activities</name>
+		    <label>My Activities</label>
+		    <page-reference>portal::@owner@::activities</page-reference>
+	  	</node>
+	  </node>
+	  <node>
+	    <uri>spaces</uri>
+	    <name>spaces</name>
+	    <label>Spaces</label>
+	    <visible>false</visible>
+	    <page-reference>portal::@owner@::manageSpaces</page-reference>
+	  </node>
+	  <node>
+	    <uri>groupnavigation</uri>
+	    <name>groupnavigation</name>
+	    <label>Groupnavigation</label>
+	    <visible>false</visible>
+	    <page-reference>portal::@owner@::groupnavigation</page-reference>	    
+	  </node>
+	  <node>
+	    <uri>portalnavigation</uri>
+	    <name>portalnavigation</name>
+	    <label>Portalnavigation</label>
+	    <visible>false</visible>
+	    <page-reference>portal::@owner@::portalnavigation</page-reference>	    
+	  </node>
   </page-nodes>
 </node-navigation>

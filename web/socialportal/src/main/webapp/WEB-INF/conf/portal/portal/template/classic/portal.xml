@@ -34,7 +34,7 @@
 	  </application>
 
 	  <application>
-	  	<instance-id>portal#@owner@:/web/NavigationPortlet/toolbar</instance-id>
+	  	<instance-id>portal#@owner@:/web/SocialNavigationPortlet/toolbar</instance-id>
 	    <show-info-bar>false</show-info-bar>
 	  </application>
 		
