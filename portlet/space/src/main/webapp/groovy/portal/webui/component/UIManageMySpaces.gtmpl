@@ -56,18 +56,18 @@
   if (uicomponent.getAllInvitedSpaces().size > 0) hasInvited = true
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
-    <div class="TopManageSpacesL">
-    	<div class="TopManageSpacesR">
-    		<div class="TopManageSpacesM"><span></span></div>
-    	</div>
+  <div class="TopManageSpacesL">
+   	<div class="TopManageSpacesR">
+    	<div class="TopManageSpacesM"><span></span></div>
     </div>
-    <div class="InvitedSpaces">
+  </div>
+  <div class="InvitedSpaces">
         <% if (hasInvited) { style="display:block;" %>
             
-        <div><%= labelInvitedSpaces %></div>
+  	<div><%= labelInvitedSpaces %></div>
         <%}%>
-        <div style="$style"><% uicomponent.renderChild(UIVirtualList.class) %></div>
-    </div>
+    <div style="$style"><% uicomponent.renderChild(UIVirtualList.class) %></div>
+  </div>
 
 	  <%for (space in userSpaces) {
 	      def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
@@ -97,186 +97,183 @@
 	  %>
       <!-- Leader -->
       <% if (role == UIManageMySpaces.LEADER) {%>
-      <div class="SpaceContentBlue">
-          
-            <div class="MiniAvatarSpaceBG">
-                <a href="<%= spaceUrl %>">
-                    <img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
-                </a>
-            </div>
-        <div class="MySpacesContent">
-            <div class="ContentBar">
-                <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
-                <div onclick="<%= deleteSpaceAction %>" class="DeleteSpace ButtonIconSpace" title="<%= labelActionDeleteSpace %>"><span></span></div>
-                <div onclick="<%= editSpaceNavigationAction %>" class="EditSpaceNavigation ButtonIconSpace" title="<%= labelActionEditSpaceNavigation %>"><span></span></div>
-                <div onclick="location.href='<%= spaceUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
-                <div style="clear: left;"><span></span></div>
-            </div>
-            <div class="MySpacesContentContent">
-                <table class="UIGridSpace">
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
-                        <td class="FieldComponent"><%= space.description %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
-                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelUrl %></td>
-                        <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                        <td class="FieldComponent">$status</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+	<div class="SpaceContentBlue">
+        
+  	<div class="MiniAvatarSpaceBG">
+      <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
+    </div>
+    <div class="MySpacesContent">
+      <div class="ContentBar">
+        <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
+        <div onclick="<%= deleteSpaceAction %>" class="DeleteSpace ButtonIconSpace" title="<%= labelActionDeleteSpace %>"><span></span></div>
+        <div onclick="<%= editSpaceNavigationAction %>" class="EditSpaceNavigation ButtonIconSpace" title="<%= labelActionEditSpaceNavigation %>"><span></span></div>
+        <div onclick="location.href='<%= spaceUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
         <div style="clear: left;"><span></span></div>
+    	</div>
+    	<div class="MySpacesContentContent">
+        <table class="UIGridSpace">
+        	<tr>
+            <td class="FieldLabel"><%= fieldLabelDescription %></td>
+            <td class="FieldComponent"><%= space.description %></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelMembers %></td>
+            <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelUrl %></td>
+            <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelStatus %></td>
+            <td class="FieldComponent">$status</td>
+	        </tr>
+	      </table>
       </div>
-      <div class="SpaceContentGray">
-          
-            <div class="MiniAvatarSpaceBG">
-                <a href="<%= spaceUrl %>">
-                    <img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
-                </a>
-            </div>
-        <div class="MySpacesContent">
-            <div class="ContentBar">
-                <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
-                <div onclick="<%= deleteSpaceAction %>" class="DeleteSpace ButtonIconSpace" title="<%= labelActionDeleteSpace %>"><span></span></div>
-                <div onclick="<%= editSpaceNavigationAction %>" class="EditSpaceNavigation ButtonIconSpace" title="<%= labelActionEditSpaceNavigation %>"><span></span></div>
-                <div onclick="location.href='<%= spaceUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
-                <div style="clear: left;"><span></span></div>
-            </div>
-            <div class="MySpacesContentContent">
-                <table class="UIGridSpace">
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
-                        <td class="FieldComponent"><%= space.description %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
-                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelUrl %></td>
-                        <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                        <td class="FieldComponent">$status</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+    </div>
+    <div style="clear: left;"><span></span></div>
+  </div>
+  <div class="SpaceContentGray">
+  	       
+  	<div class="MiniAvatarSpaceBG">
+	    <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
+		</div>
+	  <div class="MySpacesContent">
+	   	<div class="ContentBar">
+        <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
+        <div onclick="<%= deleteSpaceAction %>" class="DeleteSpace ButtonIconSpace" title="<%= labelActionDeleteSpace %>"><span></span></div>
+        <div onclick="<%= editSpaceNavigationAction %>" class="EditSpaceNavigation ButtonIconSpace" title="<%= labelActionEditSpaceNavigation %>"><span></span></div>
+        <div onclick="location.href='<%= spaceUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
         <div style="clear: left;"><span></span></div>
+    	</div>
+      <div class="MySpacesContentContent">
+        <table class="UIGridSpace">
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelDescription %></td>
+            <td class="FieldComponent"><%= space.description %></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelMembers %></td>
+            <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelUrl %></td>
+            <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelStatus %></td>
+            <td class="FieldComponent">$status</td>
+	        </tr>
+        </table>
       </div>
+   	</div>
+    <div style="clear: left;"><span></span></div>
+  </div>
       <% }%>
     <!-- Member -->
       <%if (role == UIManageMySpaces.MEMBER) {%>
-      <div class="SpaceContentBlue">
-        <div class="MiniAvatarSpaceBG">
-            <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
-        </div>
-        <div class="MySpacesContent">
-            <div class="ContentBar">
-                <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
-                <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span></span></div>
-                <div style="clear: left;"><span></span></div>
-            </div>
-            <div class="MySpacesContentContent">
-                <table class="UIGridSpace">
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
-                        <td class="FieldComponent"><%= space.description %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
-                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelUrl %></td>
-                        <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                        <td class="FieldComponent">$status</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div style="clear: left;"><span></span></div>
+	<div class="SpaceContentBlue">
+	  <div class="MiniAvatarSpaceBG">
+	    <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
+	  </div>
+		<div class="MySpacesContent">
+	    <div class="ContentBar">
+	      <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
+	      <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span></span></div>
+	      <div style="clear: left;"><span></span></div>
+	    </div>
+      <div class="MySpacesContentContent">
+        <table class="UIGridSpace">
+	        <tr>
+	          <td class="FieldLabel"><%= fieldLabelDescription %></td>
+	          <td class="FieldComponent"><%= space.description %></td>
+          </tr>
+          <tr>
+	          <td class="FieldLabel"><%= fieldLabelMembers %></td>
+	          <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+          </tr>
+          <tr>
+	          <td class="FieldLabel"><%= fieldLabelUrl %></td>
+	          <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
+          </tr>
+          <tr>
+	          <td class="FieldLabel"><%= fieldLabelStatus %></td>
+	          <td class="FieldComponent">$status</td>
+	        </tr>
+	      </table>
       </div>
-      <div class="SpaceContentGray">
-        <div class="MiniAvatarSpaceBG">
-            <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
-        </div>
-        <div class="MySpacesContent">
-            <div class="ContentBar">
-                <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
-                <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span></span></div>
-                <div style="clear: left;"><span></span></div>
-            </div>
-            <div class="MySpacesContentContent">
-                <table class="UIGridSpace">
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
-                        <td class="FieldComponent"><%= space.description %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
-                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelUrl %></td>
-                        <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                        <td class="FieldComponent">$status</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div style="clear: left;"><span></span></div>
-      </div>
+    </div>
+    <div style="clear: left;"><span></span></div>
+  </div>
+  <div class="SpaceContentGray">
+	  <div class="MiniAvatarSpaceBG">
+	    <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
+	  </div>
+	  <div class="MySpacesContent">
+	    <div class="ContentBar">
+	      <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
+	      <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span></span></div>
+	      <div style="clear: left;"><span></span></div>
+	   	</div>
+	    <div class="MySpacesContentContent">
+	      <table class="UIGridSpace">
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelDescription %></td>
+            <td class="FieldComponent"><%= space.description %></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelMembers %></td>
+            <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelUrl %></td>
+            <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
+	        </tr>
+	        <tr>
+            <td class="FieldLabel"><%= fieldLabelStatus %></td>
+            <td class="FieldComponent">$status</td>
+          </tr>
+	      </table>
+	    </div>
+	  </div>
+	  <div style="clear: left;"><span></span></div>
+	</div>
       <%}%>
 
     <%}%>
-    <div class="BottomManageSpacesL">
-    	<div class="BottomManageSpacesR">
-    		<div class="BottomManageSpacesM"><span></span></div>
-    	</div>
+  <div class="BottomManageSpacesL">
+  	<div class="BottomManageSpacesR">
+    	<div class="BottomManageSpacesM"><span></span></div>
     </div>
-    </div>
-    <div>
+  </div>
+
+	<div>
     <%
         if (iterator.getAvailablePage() > 1) {
             _ctx.renderUIComponent(iterator)
         }
     %>
-    </div>
-    <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+  </div>
+  <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
     
-    <div class="UIAction">
+  <div class="UIAction">
 		<table class="ActionContainer">
-			<tbody><tr>
-	 	 		<td>
-            <div class="ActionButton LightBlueStyle" onclick="<%= uicomponent.event("AddSpace") %>">
-                <div class="ButtonLeft">
-                    <div class="ButtonRight">
-                        <div class="ButtonMiddle">
-                            <a href="#AddSpace"><%= labelActionAddSpace %></a>
-                        </div>
-                    </div>
-                </div>
-            </div>					
-	 			</td>
-			</tr>
-		</tbody>
-	</table>
+			<tbody>
+				<tr>
+			 	 	<td>
+		        <div class="ActionButton LightBlueStyle" onclick="<%= uicomponent.event("AddSpace") %>">
+		          <div class="ButtonLeft">
+	              <div class="ButtonRight">
+		              <div class="ButtonMiddle">
+		                <a href="#AddSpace"><%= labelActionAddSpace %></a>
+		              </div>
+	              </div>
+		          </div>
+		        </div>					
+			 		</td>
+				</tr>
+			</tbody>
+		</table>
   </div>
   
 </div>

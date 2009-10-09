@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-var eXo = window.eXo;
-eXo.social = eXo.social || {};
-eXo.social.profile = eXo.social.profile || {};
 
 function UIProfileUserSearch() {
    this.searchId = null;
@@ -181,4 +178,6 @@ UIProfileUserSearch.prototype.createId = function(componentId) {
 	this.filterId = 'Filter' + componentId;
 };
 /*===================================================================*/
+if(!eXo.social) eXo.social = {};
+if(!eXo.social.profile) eXo.social.profile = {};
 eXo.social.profile.UIProfileUserSearch = new UIProfileUserSearch();

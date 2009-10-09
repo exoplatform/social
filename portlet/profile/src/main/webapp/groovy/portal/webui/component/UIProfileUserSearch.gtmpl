@@ -36,6 +36,10 @@ def hideMoreSearchId = "HideMoreSearch" + uicomponentId;
 def positionId = "Position" + uicomponentId;
 def companyId = "Company" + uicomponentId;
 def genderId = "Gender" + uicomponentId;
+
+def rcontext = _ctx.getRequestContext();
+rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileUserSearch','/profile/javascript');
+
 %>
 <div class="UIProfileUserSearch" id="$uicomponentId">
  <div class="SearchSpaces" name="SearchSpaces">

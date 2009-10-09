@@ -19,16 +19,8 @@
 <%
   import org.exoplatform.portal.webui.util.Util
   import org.exoplatform.webui.core.UIPopupWindow
-  
-  def rcontext = _ctx.getRequestContext() ;
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileSection','/profile/javascript/')
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.LiveValidation','/profile/javascript/')
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.FancyLabel','/profile/javascript/')
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.Event','/profile/javascript/')
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.Type','/profile/javascript/')
-  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIAvatarUploader','/profile/javascript')
-//  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.DOMAssistant','/profile/javascript/') ;
-//  rcontext.getJavascriptManager().importJavascript('eXo.social.profile.pure','/profile/javascript/') ;
+
+  //rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIAvatarUploader','/profile/javascript')
 
   def identity = uicomponent.getProfile().identity;
 	def uriObj = uicomponent.getCurrentUriObj();
