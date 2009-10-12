@@ -51,6 +51,8 @@
   def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
   def iterator = uicomponent.getMySpacesUIPageIterator()
   def userSpaces = uicomponent.getUserSpaces()
+  def mySpaceIdx = 0
+  def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/Avatar.gif"
   def hasInvited = false
   def style="display:none;"
   if (uicomponent.getAllInvitedSpaces().size > 0) hasInvited = true
@@ -61,6 +63,12 @@
     	<div class="TopManageSpacesM"><span></span></div>
     </div>
   </div>
+  <%if (userSpaces.size() == 0) {%>
+      <div class="SpaceContent">
+        <div class="NotYet"><%= labelNoSpaces %></div>
+        <div style="clear: left;"><span></span></div>
+      </div>
+  <%}%>
   <div class="InvitedSpaces">
         <% if (hasInvited) { style="display:block;" %>
             
@@ -93,14 +101,18 @@
 	      } else {
 	       status = "${hiddenStatus}"
 	      }
-
+				mySpaceIdx += 1;
 	  %>
+	  
+	  <% if (mySpaceIdx % 2 == 0) { %>
+	  <div class="SpaceContentBlue">
+	  <% } else { %>
+	  <div class="SpaceContentGray">
+	  <% } %>
       <!-- Leader -->
       <% if (role == UIManageMySpaces.LEADER) {%>
-	<div class="SpaceContentBlue">
-        
   	<div class="MiniAvatarSpaceBG">
-      <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
+      <a href="<%= spaceUrl %>"><img src="$imageSource" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
     </div>
     <div class="MySpacesContent">
       <div class="ContentBar">
@@ -133,79 +145,9 @@
     </div>
     <div style="clear: left;"><span></span></div>
   </div>
-  <div class="SpaceContentGray">
-  	       
-  	<div class="MiniAvatarSpaceBG">
-	    <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
-		</div>
-	  <div class="MySpacesContent">
-	   	<div class="ContentBar">
-        <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
-        <div onclick="<%= deleteSpaceAction %>" class="DeleteSpace ButtonIconSpace" title="<%= labelActionDeleteSpace %>"><span></span></div>
-        <div onclick="<%= editSpaceNavigationAction %>" class="EditSpaceNavigation ButtonIconSpace" title="<%= labelActionEditSpaceNavigation %>"><span></span></div>
-        <div onclick="location.href='<%= spaceUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
-        <div style="clear: left;"><span></span></div>
-    	</div>
-      <div class="MySpacesContentContent">
-        <table class="UIGridSpace">
-	        <tr>
-            <td class="FieldLabel"><%= fieldLabelDescription %></td>
-            <td class="FieldComponent"><%= space.description %></td>
-	        </tr>
-	        <tr>
-            <td class="FieldLabel"><%= fieldLabelMembers %></td>
-            <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-	        </tr>
-	        <tr>
-            <td class="FieldLabel"><%= fieldLabelUrl %></td>
-            <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
-	        </tr>
-	        <tr>
-            <td class="FieldLabel"><%= fieldLabelStatus %></td>
-            <td class="FieldComponent">$status</td>
-	        </tr>
-        </table>
-      </div>
-   	</div>
-    <div style="clear: left;"><span></span></div>
-  </div>
       <% }%>
     <!-- Member -->
       <%if (role == UIManageMySpaces.MEMBER) {%>
-	<div class="SpaceContentBlue">
-	  <div class="MiniAvatarSpaceBG">
-	    <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
-	  </div>
-		<div class="MySpacesContent">
-	    <div class="ContentBar">
-	      <div class="MySpaceLabel"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
-	      <div onclick="<%= leaveSpaceAction %>" class="LeaveSpace ButtonIconSpace" title="<%= labelActionLeaveSpace %>"><span></span></div>
-	      <div style="clear: left;"><span></span></div>
-	    </div>
-      <div class="MySpacesContentContent">
-        <table class="UIGridSpace">
-	        <tr>
-	          <td class="FieldLabel"><%= fieldLabelDescription %></td>
-	          <td class="FieldComponent"><%= space.description %></td>
-          </tr>
-          <tr>
-	          <td class="FieldLabel"><%= fieldLabelMembers %></td>
-	          <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-          </tr>
-          <tr>
-	          <td class="FieldLabel"><%= fieldLabelUrl %></td>
-	          <td class="FieldComponent"><a href="<%= spaceUrl %>"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
-          </tr>
-          <tr>
-	          <td class="FieldLabel"><%= fieldLabelStatus %></td>
-	          <td class="FieldComponent">$status</td>
-	        </tr>
-	      </table>
-      </div>
-    </div>
-    <div style="clear: left;"><span></span></div>
-  </div>
-  <div class="SpaceContentGray">
 	  <div class="MiniAvatarSpaceBG">
 	    <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/></a>
 	  </div>

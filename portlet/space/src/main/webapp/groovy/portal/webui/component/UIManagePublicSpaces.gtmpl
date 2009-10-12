@@ -39,8 +39,15 @@
   def labelNoPublic = _ctx.appRes("${uicomponentId}.label.no_public")
   def iterator = uicomponent.getUIPageIterator()
   def publicSpaces = uicomponent.getPublicSpaces()
+  def publicSpaceIdx = 0
+  def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/Avatar.gif"
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
+  <div class="TopManageSpacesL">
+   	<div class="TopManageSpacesR">
+    	<div class="TopManageSpacesM"><span></span></div>
+    </div>
+  </div>
     <div class="ContainerSpace">
       <%if (publicSpaces.size() == 0) {%>
       <div class="SpaceContent">
@@ -55,6 +62,7 @@
             def isPublic = false
             def isClose = false
             def hasEditPermission = false
+            
             //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
             if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true
             if (registration.equals(Space.CLOSE)) isClose = true
@@ -69,10 +77,16 @@
             } else {
                 status += closeStatus
             }
+            
+            publicSpaceIdx += 1;
       %>
-      <div class="SpaceContent">
+      <% if (publicSpaceIdx % 2 == 0) { %>
+		  	<div class="SpaceContentBlue">
+		  <% } else { %>
+		  	<div class="SpaceContentGray">
+		  <% } %>
         <div class="MiniAvatarSpaceBG">
-           <img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
+           <img src="$imageSource" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
         </div>
         <div class="MySpacesContent">
             <div class="ContentBar">
@@ -116,6 +130,13 @@
       </div>
       <%}%>
     </div>
+    
+  <div class="BottomManageSpacesL">
+  	<div class="BottomManageSpacesR">
+    	<div class="BottomManageSpacesM"><span></span></div>
+    </div>
+  </div>
+  
     <div>
     <%
         if (iterator.getAvailablePage() > 1) {

@@ -30,9 +30,16 @@
   def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
   def labelNoPending = _ctx.appRes("${uicomponentId}.label.no_pending")
 	def pendingSpaces = uicomponent.getPendingSpaces()
+	def pendingSpaceIdx = 0
+	def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/Avatar.gif"
 %>
 
 <div class="UIManageSpaces" id="$uicomponent.id">
+  <div class="TopManageSpacesL">
+   	<div class="TopManageSpacesR">
+    	<div class="TopManageSpacesM"><span></span></div>
+    </div>
+  </div>
   <div class="ContainerSpace">
     <%if (pendingSpaces.size() == 0) {%>
     <div class="SpaceContent">
@@ -44,11 +51,16 @@
         def revokePendingAction = uicomponent.event("RevokePending", space.id) + "; return false"
         def visibility = space.visibility
         def registration = space.registration
+        pendingSpaceIdx += 1
         if (visibility.equals("private")) visibility = "visible"
     %>
-    <div class="SpaceContent">
+    <% if (pendingSpaceIdx % 2 == 0) { %>
+	  <div class="SpaceContentBlue">
+	  <% } else { %>
+	  <div class="SpaceContentGray">
+	  <% } %>
       <div class="MiniAvatarSpaceBG">
-        <img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
+        <img src="$imageSource" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
       </div>
 	    <div class="MySpacesContent">
 	      <div class="ContentBar">
@@ -76,5 +88,11 @@
 	    <div style="clear: left;"><span></span></div>
     </div>
     <%}%>
+  </div>
+  
+  <div class="BottomManageSpacesL">
+  	<div class="BottomManageSpacesR">
+    	<div class="BottomManageSpacesM"><span></span></div>
+    </div>
   </div>
 </div>
