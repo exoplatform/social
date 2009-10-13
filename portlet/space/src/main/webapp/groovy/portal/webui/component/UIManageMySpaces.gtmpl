@@ -52,7 +52,7 @@
   def iterator = uicomponent.getMySpacesUIPageIterator()
   def userSpaces = uicomponent.getUserSpaces()
   def mySpaceIdx = 0
-  def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/AvartarDefault.gif"
+  def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/AvartarGroupDefault.gif"
   def hasInvited = false
   def style="display:none;"
   if (uicomponent.getAllInvitedSpaces().size > 0) hasInvited = true
@@ -149,7 +149,7 @@
     <!-- Member -->
       <%if (role == UIManageMySpaces.MEMBER) {%>
 	  <div class="MiniAvatarSpaceBG">
-	    <a href="<%= spaceUrl %>"><img src="" class="AvatarSpace" id="" width="60px" onload="" alt=""/></a>
+	    <a href="<%= spaceUrl %>"><img src="" id="" width="60px" onload="" alt=""/></a>
 	  </div>
 	  <div class="MySpacesContent">
 	    <div class="ContentBar">

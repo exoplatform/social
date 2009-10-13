@@ -33,19 +33,6 @@
 	background: url('DefaultSkin/background/HomeMenuHover.gif') no-repeat left center;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .ListUser .ListUserBG {
-	background: url('DefaultSkin/background/ListUserBG.gif') no-repeat left center;
-	padding-left: 65px;
-	font-weight: bold;
-	line-height: 41px;
-	font-size: 12px;
-	color: #2d52a1;
-	display: block;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .ListUser a:hover{
-	background: url('DefaultSkin/background/ListUserHover.gif') no-repeat left center;
-}
 
 .MenuTDContainer .UISpaceMenuPortlet .SpaceSetting .SpaceSettingBG {
 	background: url('DefaultSkin/background/SpaceSettingBG.gif') no-repeat left center;
