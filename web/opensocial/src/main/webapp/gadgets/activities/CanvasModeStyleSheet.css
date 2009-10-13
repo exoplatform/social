@@ -52,10 +52,11 @@ body {
 }
 
 
-.GadgetContent .ActivityForm .Composer_InputArea {
+.GadgetContent .ActivityForm .UIComposer_InputArea {
 	background: #FFFFFF none repeat scroll 0 0;
 	border-color: #AEAEAE #BBBBBB #BBBBBB;
 	overflow-x: hidden;
+	overflow-y: auto; 
 	min-height: 20px;
 	max-height: 120px;
 	font-weight: normal;
@@ -67,6 +68,7 @@ body {
 	margin: 5 0 5px;
 	padding: 2px 5px 3px;
 	color: #777777;
+	cursor: text;
 }
 
 .GadgetContent .ActivityForm .ButtonAdd {

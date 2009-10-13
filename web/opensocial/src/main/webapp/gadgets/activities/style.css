@@ -61,6 +61,7 @@ body {
 	margin: 0 0 5px;
 	padding: 2px 5px 3px;
 	color: #777777;
+	cursor: text;
 }
 
 .GadgetContent .ActivityForm input {

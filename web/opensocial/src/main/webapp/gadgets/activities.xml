@@ -39,6 +39,7 @@
 			textarea.style.minHeight="20px";
 			textarea.focus();
 			textarea.innerHTML = "";
+			textarea.appendChild(document.createElement('br'));
 		}
 	}
 	
@@ -46,15 +47,15 @@
 	{
 		
 		if (el.textContent) {
-			return el.textContent.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+			return el.textContent.replace(/&nbsp;/g,' ').replace(/<br>/gi, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
 		}
 		
 		if (el.innerText) {
-			return el.innerText.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+			return el.innerText.replace(/&nbsp;/g,' ').replace(/<br>/gi, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
 		}
 		
 		if (el.innerHTML) {
-			return el.innerHTML.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+			return el.innerHTML.replace(/&nbsp;/g,' ').replace(/<br>/gi, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
 		}
 		
 		return null;
@@ -70,6 +71,7 @@
 			textarea.style.color="#777777";
 			textarea.innerHTML = "What're you doing?";
 			textarea.style.minHeight="12px";
+			textarea.removeChild(textarea.getElementsByTagName('br'));
 		}
 	}
 	
@@ -106,6 +108,7 @@
 			textarea.focus();
 			textarea.style.minHeight="30px";
 			textarea.innerHTML = "";
+			textarea.appendChild(document.createElement('br'));
 		}
 	}
 	
@@ -113,15 +116,15 @@
 	{
 		
 		if (el.textContent) {
-			return el.textContent.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+			return el.textContent.replace(/&nbsp;/g,' ').replace(/<br>/gi, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
 		}
 		
 		if (el.innerText) {
-			return el.innerText.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+			return el.innerText.replace(/&nbsp;/g,' ').replace(/<br>/gi, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
 		}
 		
 		if (el.innerHTML) {
-			return el.innerHTML.replace(/&nbsp;/g,' ').replace(/<br>/g, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
+			return el.innerHTML.replace(/&nbsp;/g,' ').replace(/<br>/gi, " ").replace(/<p>/gi, " ").replace(/<\/\p>/gi, " ");
 		}
 		
 		return null;
@@ -133,12 +136,12 @@
 		if (text != null) {
 			var content = text.replace(/^\s+/g, '').replace(/\s+$/g, '');
 		}
-		
 		if((text == null) || (content == "")) {
 			eXo.social.statusUpdate.active=false;
 			textarea.style.color="#777777";
 			textarea.innerHTML = "What're you doing?";
 			textarea.style.minHeight="20px";
+			textarea.removeChild(textarea.getElementsByTagName('br'));
 		} else {
 			eXo.social.statusUpdate.active=true;
 		}
