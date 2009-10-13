@@ -127,6 +127,7 @@
 }
 
 .UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .SearchSpaces {
+	font-size: 11px;
 	margin-bottom: 5px;
 }
 
@@ -156,24 +157,26 @@
 }
 
 .UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search {
-	width: 330px;
+	width: 242px;
 	border: 1px solid #c7c7c7;
 	margin-left: 8px;
 	float: left;
 	padding-left: 15px;
+	font-size: 11px;
 }
 
 .UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .SearchSpaces .ButtonSearch {
 	float: left;
 	width: 40px;
 	margin-left: 8px;
-	line-height: 19px;
+	line-height: 18px;
 	text-align: center;
 	color: white;
 	background: url('background/ButtonFilter.gif') no-repeat left;
 }
 
 .UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .FilterSpaces {
+	font-size: 11px;
 	margin: 8px 0px;
 }
 
@@ -191,6 +194,7 @@
 	margin-top: 1px;
 	float: left;
 	color: #C7C7C7;
+	font-size: 11px;
 }
 
 .UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .FilterSpaces .FilterByCompany {
@@ -200,6 +204,7 @@
 	margin-top: 1px;
 	float: left;
 	color: #C7C7C7;
+	font-size: 11px;
 }
 
 .UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .FilterSpaces .FilterByGender {
@@ -207,6 +212,7 @@
 	margin-left: 8px;
 	float: left;
 	color: #C7C7C7;
+	font-size: 11px;
 }
 
 .UIVerticalTabContentContainer .UIManageSpaces .SpaceContent .NotYet {

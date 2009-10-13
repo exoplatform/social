@@ -28,7 +28,7 @@
   def compId = uicomponent.getId();
 	def identity = uicomponent.getCurrentIdentity();
 	
-	String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/CommunityIcon.gif";
+	String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/AvartarDefault.gif";
 	ProfileAttachment att = identity.profile.getProperty("avatar");
 	if (att != null) {
 		try {
@@ -65,7 +65,7 @@
   %>
   <div class="ContentSpace">
     <div class="MiniAvatarSpaceBG">
-    	<img src="$imageSource" width="70" height="84">
+    	<img src="$imageSource" width="60" height="60">
     </div>
     <div class="CommunityContainer">
 	    <div class="CommunityMane Line">

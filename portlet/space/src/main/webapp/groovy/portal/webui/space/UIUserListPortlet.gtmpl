@@ -39,11 +39,12 @@
 	%>
 	<div class="UserlistContainer">
 		<div class="UserlistContent">
-			<div class="MiniAvatarSpaceBG">
+			<div class="MiniAvatarSpaceBG" style="margin-top: 18px;">
 				<img src="$imageSource" width="60" height="60">
 			</div>
 			<div class="UserContainer">
 			  <div class="UserBarTitleName"><%= user.getUserName() %></div>
+			  <div class="Line"><span></span></div>
 			  <div class="UIForm">
 					<table class="UIFormGrid">
 					  <tbody>

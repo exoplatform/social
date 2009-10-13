@@ -34,6 +34,15 @@
   color: #6d84b4;
 }
 
+.UIUserListPortlet .UISpaceUserSearchM input {
+	height: 14px;
+	font-size: 11px;
+}
+
+.UIUserListPortlet .UISpaceUserSearchM .selectbox {
+	font-size: 11px;
+}
+
 .UIUserListPortlet .UISpaceUserSearchM a{
 	color:#6D84B4;
 }
@@ -80,7 +89,7 @@
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer {
-	margin-left: 70px;
+	margin-left: 82px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserBarTitleName {
@@ -89,7 +98,11 @@
 	font-weight: bold;
 	line-height: 24px;
 	padding-left: 12px;
+}
+
+.UIUserListPortlet .UserlistContainer .Line {
 	border-bottom: 1px dotted #c1c1c1;
+	margin-left: 12px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer .FieldComponent {
