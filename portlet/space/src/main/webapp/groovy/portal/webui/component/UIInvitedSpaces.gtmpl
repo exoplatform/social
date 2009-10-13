@@ -59,7 +59,7 @@ def labelActionDenySpace = _ctx.appRes("${uicomponentId}.label.action_deny_space
 %>
     <div class="SpaceContent">
 		  <div class="MiniAvatarSpaceBG">
-			    <img src="" class="AvatarSpace" id="" width="70px" onload="" alt=""/>
+			    <img src=""  id="" width="60px" onload="" alt=""/>
 			</div>
 			<div class="MySpacesContent">
 			    <div class="ContentBar">

@@ -35,12 +35,12 @@
 		 	for(user in listUsers) {
 		 		String imageSource = uicomponent.getUserAvatar(user.getUserName());
 		 		if(imageSource == null)
-		 			imageSource = "/space/skin/portal/webui/component/UIUserListPortlet/background/AvartarIcon.gif"
+		 			imageSource = "/space/skin/portal/webui/component/UIUserListPortlet/background/AvartarDefault.gif"
 	%>
 	<div class="UserlistContainer">
 		<div class="UserlistContent">
 			<div class="MiniAvatarSpaceBG">
-				<img src="$imageSource" width="70" height="84">
+				<img src="$imageSource" width="60" height="60">
 			</div>
 			<div class="UserContainer">
 			  <div class="UserBarTitleName"><%= user.getUserName() %></div>
