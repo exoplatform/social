@@ -30,7 +30,12 @@
 
 .UIUserListPortlet .UISpaceUserSearchM{
 	background: url('background/UISpaceUserSearchM.gif') repeat-x ;
-  padding:8px 0px 4px 8px;
+  padding:8px 0px 4px 48px;
+  color: #6d84b4;
+}
+
+.UIUserListPortlet .UISpaceUserSearchM a{
+	color:#6D84B4;
 }
 
 
@@ -72,12 +77,6 @@
 
 .UIUserListPortlet .UserlistContainer .UserlistContent .UIFormGrid {
 	margin: 0px;
-}
-
-.UIUserListPortlet .UserlistContainer .UserlistContent .AvartarIcon {
-	float: left;
-	width: 65px;
-	border: 1px solid #c7c7c7;
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer {
