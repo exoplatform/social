@@ -45,8 +45,8 @@
 }
 
 .MiniAvatarSpaceBG {
-	background: url('background/AvatarSpace.gif') no-repeat left top;
+	background: url('background/UserlistAvatar.png') no-repeat left top;
 	padding: 8px 0px 0px 8px;
-	width: 85px; height: 102px;
+	width: 82px; height: 84px;
 	float: left;
 }

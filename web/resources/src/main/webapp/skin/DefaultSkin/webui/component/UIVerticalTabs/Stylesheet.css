@@ -1,3 +1,7 @@
+.UIRelationshipPortlet{
+	padding: 8px;
+}
+
 .UIVerticalTabs {
     float:left;
     width: 200px;
@@ -13,7 +17,7 @@
 }
 
 .UIVerticalTabPane .VerticalTabPaneContent {
-    padding-bottom:15px;
+    padding-bottom:75px;
     background: url(background/BottomContentTab.gif) no-repeat left bottom;
 }
 
@@ -208,4 +212,5 @@
 .UIVerticalTabContentContainer .UIManageSpaces .SpaceContent .NotYet {
  color: #ff0000;
  text-align: center;
+ background: #f1f3f5;
 }
