@@ -23,6 +23,12 @@ import java.util.List;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.portal.PageNodeEvent;
+import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -317,6 +323,15 @@ public class UISpaceMember extends UIForm {
       } catch(SpaceException se) {
           uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_MEMBER, null, ApplicationMessage.WARNING));
       }
+      if(!uiSpaceMember.isSuperUser()) {
+        UIPortal uiPortal = Util.getUIPortal();
+        UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
+        PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, uiPortal.getName());
+        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
+            PageNodeEvent.CHANGE_PAGE_NODE,
+            uri);
+        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+      }
     }
   }
   
@@ -345,6 +360,20 @@ public class UISpaceMember extends UIForm {
         spaceService.setLeader(space, userName, false);
       } catch(SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_LEADER, null, ApplicationMessage.WARNING));
+      }
+      if(!uiSpaceMember.isSuperUser()) {
+        UIPortal uiPortal = Util.getUIPortal();
+        PageNavigation nav = uiPortal.getSelectedNavigation();
+        PageNode homeNode = nav.getNode(space.getUrl());
+        String uri = nav.getId() + "::" + homeNode.getUri();
+        System.out.println("\n\n\n\n\n uri: " + uri);
+        //        UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
+//        PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, uiPortal.getName());
+//        String uri = nav.getId() + "::spaces"; 
+        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
+            PageNodeEvent.CHANGE_PAGE_NODE,
+            uri);
+        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
       }
     }
   }

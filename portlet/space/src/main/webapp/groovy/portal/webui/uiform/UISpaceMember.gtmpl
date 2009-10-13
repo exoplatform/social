@@ -146,20 +146,20 @@
 		  <% List<String> existingUsers = uicomponent.getExistingUsers();
 		  	 for(user in existingUsers) {
 		  	 boolean isLeader = uicomponent.isLeader(user);
-		  	 def manageSpacesUrl = ""
-		  	 def homeSpaceUrl = ""
+		  	 def manageSpacesUrl = "#"
+		  	 def homeSpaceUrl = "#"
          if (!uicomponent.isSuperUser()) {
             manageSpacesUrl = uicomponent.manageSpacesUrl
             homeSpaceUrl = uicomponent.homeSpaceUrl
          }
-		  	 String removeLeader = uicomponent.event("RemoveLeader", user) + "; window.location.href='$homeSpaceUrl'"
+		  	 String removeLeader = uicomponent.event("RemoveLeader", user) + "; return false;"
 		  	 String makeLeader = uicomponent.event("MakeLeader", user) + "; return false;"
 		  %>
 				<tr class="EvenRow">
 				  <td class="text"><span class="label" id="label"><%= user %></span></td>
 	  			<td class="text"><span class="label" id="label"><%= _ctx.appRes(uicomponent.getId() + ".label.makeOffice")%></span></td>
 	  			<% if(isLeader) {%>  
-	  			<td class="text" style="text-align: center"><a class="label" id="label" onclick="$removeLeader" href="#"><%= _ctx.appRes(uicomponent.getId() + ".label.removeLeader")%></a></td>  
+	  			<td class="text" style="text-align: center"><a class="label" id="label" onclick="$removeLeader" href="$homeSpaceUrl"><%= _ctx.appRes(uicomponent.getId() + ".label.removeLeader")%></a></td>  
 			  	<% } else { %>
 			  	<td class="text" style="text-align: center"><a class="label" id="label" onclick="$makeLeader" href="#"><%= _ctx.appRes(uicomponent.getId() + ".label.makeLeader")%></a></td>
 			  	<% } %>
@@ -168,7 +168,7 @@
 				  	  <div class="LeftButton">
 					      <div class="RightButton">
 					      	<% String removeAction = uicomponent.event("RemoveUser",user)%>
-					        <div class="CenterButton"><a href="$removeAction; window.location.href='$manageSpacesUrl'"><%= _ctx.appRes(uicomponent.getId() + ".button.remove")%></a></div>
+					        <div class="CenterButton"><a href="$manageSpacesUrl" onclick="$removeAction"><%= _ctx.appRes(uicomponent.getId() + ".button.remove")%></a></div>
 					      </div>
 					    </div>
 				    </div>
