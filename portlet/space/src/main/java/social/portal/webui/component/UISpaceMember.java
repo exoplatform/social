@@ -327,6 +327,7 @@ public class UISpaceMember extends UIForm {
         UIPortal uiPortal = Util.getUIPortal();
         UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
         PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, uiPortal.getName());
+        String uri = nav.getId() + "::spaces"; 
         PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
             PageNodeEvent.CHANGE_PAGE_NODE,
             uri);
@@ -366,10 +367,6 @@ public class UISpaceMember extends UIForm {
         PageNavigation nav = uiPortal.getSelectedNavigation();
         PageNode homeNode = nav.getNode(space.getUrl());
         String uri = nav.getId() + "::" + homeNode.getUri();
-        System.out.println("\n\n\n\n\n uri: " + uri);
-        //        UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
-//        PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, uiPortal.getName());
-//        String uri = nav.getId() + "::spaces"; 
         PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
             PageNodeEvent.CHANGE_PAGE_NODE,
             uri);
