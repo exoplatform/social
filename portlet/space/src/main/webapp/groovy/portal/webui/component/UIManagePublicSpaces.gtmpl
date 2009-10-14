@@ -40,7 +40,7 @@
   def iterator = uicomponent.getUIPageIterator()
   def publicSpaces = uicomponent.getPublicSpaces()
   def publicSpaceIdx = 0
-  def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/AvartarDefault.gif"
+  def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/AvartarGroupDefault.gif"
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
   <div class="TopManageSpacesL">
@@ -86,7 +86,7 @@
 		  	<div class="SpaceContentGray">
 		  <% } %>
         <div class="MiniAvatarSpaceBG">
-           <img src="$imageSource"  id="" width="60px" onload="" alt=""/>
+           <img src="$imageSource"  id="" width="60px" height="60px" onload="" alt=""/>
         </div>
         <div class="MySpacesContent">
             <div class="ContentBar">

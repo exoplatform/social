@@ -31,7 +31,7 @@
   def labelNoPending = _ctx.appRes("${uicomponentId}.label.no_pending")
 	def pendingSpaces = uicomponent.getPendingSpaces()
 	def pendingSpaceIdx = 0
-	def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/Avatar.gif"
+	def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/AvartarGroupDefault.gif"
 %>
 
 <div class="UIManageSpaces" id="$uicomponent.id">
@@ -60,7 +60,7 @@
 	  <div class="SpaceContentGray">
 	  <% } %>
       <div class="MiniAvatarSpaceBG">
-        <img src="$imageSource" class="AvatarSpace" id="" width="60px" onload="" alt=""/>
+        <img src="$imageSource" class="AvatarSpace" id="" width="60px" height="60px" onload="" alt=""/>
       </div>
 	    <div class="MySpacesContent">
 	      <div class="ContentBar">
