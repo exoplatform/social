@@ -63,7 +63,7 @@
     	<div class="TopManageSpacesM"><span></span></div>
     </div>
   </div>
-  <%if (userSpaces.size() == 0) {%>
+  <%if ((userSpaces.size() == 0) && (!hasInvited)) {%>
       <div class="SpaceContent">
         <div class="NotYet"><%= labelNoSpaces %></div>
         <div style="clear: left;"><span></span></div>
@@ -149,7 +149,7 @@
     <!-- Member -->
       <%if (role == UIManageMySpaces.MEMBER) {%>
 	  <div class="MiniAvatarSpaceBG">
-	    <a href="<%= spaceUrl %>"><img src="" id="" width="60px" onload="" alt=""/></a>
+	    <a href="<%= spaceUrl %>"><img src="$imageSource" id="" height="60px" width="60px" onload="" alt=""/></a>
 	  </div>
 	  <div class="MySpacesContent">
 	    <div class="ContentBar">
