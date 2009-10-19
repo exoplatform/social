@@ -32,7 +32,7 @@
 <div class="UIHeaderSection">
 <% uiform.begin() %>
 	<h2><%=profile.getFullName() %></h2>
-	<h3>
+	<div class="SendPosition">
 	    <% if(!isEdit) { %>
 	      		<%=position%> <span><% if(isEditable) { %>(<a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a>) <% } %></span>
 	    <% } else {
@@ -43,6 +43,6 @@
 		      	<%=position%>
 		      <%}%>
 	    <% }%>
-	</h3>
+	</div>
 <% uiform.end() %>
 </div>
