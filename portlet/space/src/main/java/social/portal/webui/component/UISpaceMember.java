@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
@@ -33,6 +34,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -332,6 +334,9 @@ public class UISpaceMember extends UIForm {
             PageNodeEvent.CHANGE_PAGE_NODE,
             uri);
         uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+        PortalRequestContext pcontext = Util.getPortalRequestContext();
+        pcontext.setResponseComplete(false);
+        SpaceUtils.updateWorkingWorkSpace();
       }
     }
   }
