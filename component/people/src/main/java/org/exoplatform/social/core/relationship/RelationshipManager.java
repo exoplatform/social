@@ -210,9 +210,11 @@ public class RelationshipManager {
   public List<Relationship> getContacts(Identity currIdentity, List<Identity> identities) throws Exception {
     List<Relationship> contacts = getContacts(currIdentity);
     List<Relationship> relations = new ArrayList<Relationship>();
+    Identity identityRel = null;
     for (Identity id : identities) {
       for (Relationship contact : contacts) {
-        if (contact.getIdentity1().getRemoteId().equals(id.getRemoteId())) {
+        identityRel = contact.getIdentity1().getRemoteId().equals(currIdentity.getRemoteId()) ? contact.getIdentity2() : contact.getIdentity1();  
+        if (identityRel.getRemoteId().equals(id.getRemoteId())) {
           relations.add(contact);
           break;
         }
