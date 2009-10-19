@@ -19,16 +19,19 @@
 -->
 <Module>
  <ModulePrefs title="Status updates">
-   <Require feature="opensocial-0.7"></Require>
-   <Require feature="dynamic-height"></Require>
-   <Require feature="settitle"></Require>
-   <Require feature="views"></Require>
-   <Require feature="opensocial-i18n"></Require>
+   <Require feature="opensocial-0.7" />
+   <Require feature="dynamic-height" />
+   <Require feature="settitle" />
+   <Require feature="views" />
+   <Require feature="opensocial-i18n" />
+   <Require feature="dynamic-height" /> 
  </ModulePrefs>
  <Content type="html" view="home">
    <![CDATA[
 
 <link rel="stylesheet" type="text/css" href="activities/style.css"></link>
+<script type="text/javascript" src="activities/ie-patch.js"></script>
+<script type="text/javascript" src="activities/linkshare.js"></script>
 <script type="text/javascript" src="activities/script.js"></script>
 <script type="text/javascript">
 	var statusUpdates = new StatusUpdate();
@@ -74,18 +77,18 @@
 			textarea.removeChild(textarea.getElementsByTagName('br'));
 		}
 	}
-	
-	gadgets.util.registerOnLoadHandler(statusUpdates.init());
+	gadgets.util.registerOnLoadHandler(statusUpdates.init);
 </script>
 
 <div class="GadgetContent">
 	<div class="ActivityForm">
-		<div id="newActivity" name="activityInputBox" style="min-height:12px;" class="UIComposer_InputArea" contenteditable="true" onfocus="focusFirstTask(this);" onBlur="lostFocus(this);">What're you doing?</div>
+		<div id="newActivity" name="activityInputBox" style="min-height:12px;" class="UIComposer_InputArea" contenteditable="true" onfocus="focusFirstTask(this);" onblur="lostFocus(this);">What're you doing?</div>
 		<div class="AddActivityForm">
 			<div class="ButtonAdd" onclick="eXo.social.statusUpdate.postNewActivity(); return false;"> Add</div>
 			<div class="ClearBoth"><span></span></div>
 		</div>
 	</div>
+	<div id="extension"></div>
 	<div id="ActivitiesContainer">
 	</div>
 </div>
@@ -95,8 +98,9 @@
 </Content>
 <Content type="html" view="canvas">
    <![CDATA[
-
 <link rel="stylesheet" type="text/css" href="activities/CanvasModeStyleSheet.css"></link>
+<script type="text/javascript" src="activities/ie-patch.js"></script>
+<script type="text/javascript" src="activities/linkshare.js"></script>
 <script type="text/javascript" src="activities/script.js"></script>
 <script type="text/javascript">
 	var statusUpdates = new StatusUpdate();
@@ -147,7 +151,7 @@
 		}
 	}
 	
-	gadgets.util.registerOnLoadHandler(statusUpdates.init());
+	gadgets.util.registerOnLoadHandler(statusUpdates.init);
 </script>
 
 <div class="GadgetContent">
@@ -158,6 +162,7 @@
 			<div class="ClearBoth"><span></span></div>
 		</div>
 	</div>
+	<div id="extension"></div>
 	<div id="ActivitiesContainer">
 	</div>
 </div>

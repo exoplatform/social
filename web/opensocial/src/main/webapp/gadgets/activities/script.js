@@ -14,7 +14,10 @@ function StatusUpdate() {
 
 StatusUpdate.prototype.init = function() {
   eXo.social.statusUpdate = new StatusUpdate();
-  eXo.social.statusUpdate.refresh();	
+  eXo.social.statusUpdate.refresh();
+  //create and use linkShare object
+  eXo.social.linkShare = new eXo.social.LinkShare();
+  eXo.social.linkShare.init();
 }
 
 StatusUpdate.prototype.refresh = function() {
@@ -24,15 +27,15 @@ StatusUpdate.prototype.refresh = function() {
   //For reducing the returning array size, set 1 for MAX 
   var params = {};
   params[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
-	params[opensocial.DataRequest.PeopleRequestFields.MAX] = 1;
+  params[opensocial.DataRequest.PeopleRequestFields.MAX] = 1;
 	
   reqTotalSize.add(reqTotalSize.newFetchActivitiesRequest('OWNER', params), 'ownerActivities');   
   reqTotalSize.add(reqTotalSize.newFetchActivitiesRequest('OWNER_FRIENDS', params), 'activities');
   reqTotalSize.send(process);
   
- 	function process(data) {
+  function process(data) {
  	  var totalOwnerActs = data.get('ownerActivities').getData()['activities'].getTotalSize();;
-  	var totalOwnerFriendActs = data.get('activities').getData()['activities'].getTotalSize();;
+  	  var totalOwnerFriendActs = data.get('activities').getData()['activities'].getTotalSize();;
 
 	  var totalSize = totalOwnerActs;
 	  eXo.social.statusUpdate.MAX = 2 * (eXo.social.statusUpdate.more + 1);
@@ -340,18 +343,29 @@ StatusUpdate.prototype.getPostedDate = function(D) {
 StatusUpdate.prototype.postNewActivity = function() {
   var currentView = gadgets.views.getCurrentView().getName();
   var activityElement = document.getElementById('newActivity');
-  
-  if ((currentView == 'canvas') && (this.active == false)) return;
-  
-  // Check for blank spaces, if yes return false without any update
+  // replace tag
   var reWhiteSpace = new RegExp(/^\s+$/);
   var text = activityElement.innerHTML;
   var content = text.replace(/<p>/gi, "<br>").replace(/<\/\p>/gi, "<br>");
-  var activityContent = content.replace(/<br>/gi, " ");
-  if (activityContent  == "" || reWhiteSpace.test(activityElement.innerHTML)) {
-	return false;	
+  var activityContent = content.replace(/<br>/gi, " "); //why?
+  
+    //for linkShare
+  if (eXo.social.linkShare.content != null) {
+  	if (activityContent == "What're you doing?") {
+  		activityContent = "";
+  	}
+  	eXo.social.linkShare.save(activityContent, statusUpdates.refresh);
+  	return;
+  } else {
+	  if (activityContent  == "" || reWhiteSpace.test(activityElement.innerHTML)) {
+		return false;	
+	  }
+	  if ((activityContent == "What're you doing?") && (activityElement.style.minHeight == "12px")) return;
   }
-  if ((activityContent == "What're you doing?") && (activityElement.style.minHeight == "12px")) return;
+  
+  if ((currentView == 'canvas') && (this.active == false)) return;
+  //activityContent = "<div class=\"Status\">" + activityContent + "</div>";
+  
   var activity = opensocial.newActivity({ 'title' : activityContent, 'body' : activityContent});
   
   if (currentView == 'home') {

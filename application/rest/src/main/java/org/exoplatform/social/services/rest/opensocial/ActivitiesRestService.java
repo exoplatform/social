@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.services.rest.opensocial;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -115,6 +116,21 @@ public class ActivitiesRestService implements ResourceContainer {
     identitiesId.setActivityId(activityId);
     return identitiesId;
   }
+  
+  @GET
+  @Path("/linkshare/{link}/{lang}")
+  @Produces({MediaType.APPLICATION_JSON})
+  public LinkShare getLinkShare(@PathParam("link") String link, @PathParam("lang") String lang) throws Exception {
+    link = URLDecoder.decode(link, "utf-8");
+    LinkShare ls;
+    if (lang != null) {
+      ls = LinkShare.getInstance(link, lang);
+    } else {
+      ls = LinkShare.getInstance(link);
+    }
+    return ls;
+  }
+  
   /**
    * List IdentititesId like an activities
    */
