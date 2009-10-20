@@ -21,53 +21,30 @@ StatusUpdate.prototype.init = function() {
 }
 
 StatusUpdate.prototype.refresh = function() {
-  // Create request for getting totalsize of owner and owner-friend activities.
-  var reqTotalSize = opensocial.newDataRequest();
-  
-  //For reducing the returning array size, set 1 for MAX 
-  var params = {};
-  params[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
-  params[opensocial.DataRequest.PeopleRequestFields.MAX] = 1;
-	
-  reqTotalSize.add(reqTotalSize.newFetchActivitiesRequest('OWNER', params), 'ownerActivities');   
-  reqTotalSize.add(reqTotalSize.newFetchActivitiesRequest('OWNER_FRIENDS', params), 'activities');
-  reqTotalSize.send(process);
-  
-  function process(data) {
- 	  var totalOwnerActs = data.get('ownerActivities').getData()['activities'].getTotalSize();;
-  	  var totalOwnerFriendActs = data.get('activities').getData()['activities'].getTotalSize();;
+  eXo.social.statusUpdate.MAX = 2 * (eXo.social.statusUpdate.more + 1);
+  	  
+  //Create request for getting owner and owner-friend activities.
+  var req = opensocial.newDataRequest();	
 
-	  var totalSize = totalOwnerActs;
-	  eXo.social.statusUpdate.MAX = 2 * (eXo.social.statusUpdate.more + 1);
-	  
-	  if (totalOwnerActs > totalOwnerFriendActs)  totalSize = totalOwnerFriendActs;
-	  if (eXo.social.statusUpdate.MAX > totalSize) {
-	  	eXo.social.statusUpdate.MAX = 2*eXo.social.statusUpdate.MAX - totalSize;
-	  }
-	  
-	  //Create request for getting owner and owner-friend activities.
-	  var req = opensocial.newDataRequest();	
-	
-	  if (!eXo.social.statusUpdate.viewer) {
-	    req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
-	    req.add(req.newFetchPersonRequest('OWNER'), 'owner');
-	
-	    var opts = {};
-	    opts[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
-	    opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40;
-	    opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
-	                   [opensocial.Person.Field.NAME,
-	                   opensocial.Person.Field.THUMBNAIL_URL];
-	    req.add(req.newFetchPeopleRequest('OWNER_FRIENDS', opts), 'ownerContacts');
-	  }
-	
-	  var opts_act = {};
-	  opts_act[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
-	  opts_act[opensocial.DataRequest.ActivityRequestFields.MAX] = eXo.social.statusUpdate.MAX;
-	  req.add(req.newFetchActivitiesRequest('OWNER', opts_act), 'ownerActivities');   
-	  req.add(req.newFetchActivitiesRequest('OWNER_FRIENDS', opts_act), 'activities');
-	  req.send(eXo.social.statusUpdate.handleActivities);
-	}
+  if (!eXo.social.statusUpdate.viewer) {
+    req.add(req.newFetchPersonRequest('VIEWER'), 'viewer');
+    req.add(req.newFetchPersonRequest('OWNER'), 'owner');
+
+    var opts = {};
+    opts[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
+    opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40;
+    opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
+                   [opensocial.Person.Field.NAME,
+                   opensocial.Person.Field.THUMBNAIL_URL];
+    req.add(req.newFetchPeopleRequest('OWNER_FRIENDS', opts), 'ownerContacts');
+  }
+
+  var opts_act = {};
+  opts_act[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
+  opts_act[opensocial.DataRequest.ActivityRequestFields.MAX] = 2*eXo.social.statusUpdate.MAX;
+  req.add(req.newFetchActivitiesRequest('OWNER', opts_act), 'ownerActivities');   
+  req.add(req.newFetchActivitiesRequest('OWNER_FRIENDS', opts_act), 'activities');
+  req.send(eXo.social.statusUpdate.handleActivities);
 }
 
 StatusUpdate.prototype.handleActivities = function(dataResponse) {
@@ -80,6 +57,7 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
   
   eXo.social.statusUpdate.activities = dataResponse.get('ownerActivities').getData()['activities'].asArray();
   eXo.social.statusUpdate.activities = eXo.social.statusUpdate.activities.concat(dataResponse.get('activities').getData()['activities'].asArray());
+  eXo.social.statusUpdate.activities.sort(sortPostedTimeHandler);
   
   //Total activities
   var totalAct = dataResponse.get('ownerActivities').getData()['activities'].getTotalSize();
@@ -92,13 +70,17 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
     return;
   }
   var activitiesLength = eXo.social.statusUpdate.activities.length;
+  var displayActivityNum = activitiesLength;
+  if (activitiesLength > 2*eXo.social.statusUpdate.MAX) {
+	  displayActivityNum = 2*eXo.social.statusUpdate.MAX;
+  }
   
-  if (activitiesLength < totalAct) {
+  if (displayActivityNum < totalAct) {
 		document.getElementById('more').style.display = 'block';
   } else {
 		document.getElementById('more').style.display = 'none';
   }
-  for (var i = 0; i < activitiesLength; i++) {
+  for (var i = 0; i < displayActivityNum; i++) {
     html += '<div class="ActivitiesContent">';
     var image = eXo.social.statusUpdate.getAvatar(eXo.social.statusUpdate.activities[i].getField('userId'));
     html += '<div class="MiniAvatarSpaceBG">';
@@ -167,11 +149,11 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 
 StatusUpdate.prototype.displayMore = function() {
 	eXo.social.statusUpdate.more += 1;
-	if(eXo.social.statusUpdate.more == 2) {
-		eXo.social.statusUpdate.more -= 1;
+	if (gadgets.views.getCurrentView().getName() != 'canvas') {
 		alert("Please go to canvas view to see more details!");
 		return;
 	}
+	
 	eXo.social.statusUpdate.refresh();
 }
 
@@ -384,6 +366,16 @@ StatusUpdate.prototype.postNewActivity = function() {
 StatusUpdate.prototype.hideShowDiv = function(divToShow, divToHide) {
   document.getElementById(divToShow).style.display = 'block';
   document.getElementById(divToHide).style.display = 'none';
+}
+
+function sortPostedTimeHandler(activity1, activity2) {	
+	if (activity1.getField('postedTime') > activity2.getField('postedTime')) {
+		return -1;
+	}
+	else if (activity1.getField('postedTime') < activity2.getField('postedTime')) {
+		return 1;
+	}
+	return 0;
 }
 
 StatusUpdate.prototype.streamSubmit = function(e) { // Handle ENTER keypress

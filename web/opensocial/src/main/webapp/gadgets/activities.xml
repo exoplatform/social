@@ -37,6 +37,7 @@
 	var statusUpdates = new StatusUpdate();
 	
 	function focusFirstTask(textarea) {
+		textarea.style.outlineStyle= "none";
 		if(textarea.innerHTML == "What're you doing?") {
 			textarea.style.color="#000000";
 			textarea.style.minHeight="20px";
@@ -74,7 +75,6 @@
 			textarea.style.color="#777777";
 			textarea.innerHTML = "What're you doing?";
 			textarea.style.minHeight="12px";
-			textarea.removeChild(textarea.getElementsByTagName('br'));
 		}
 	}
 	gadgets.util.registerOnLoadHandler(statusUpdates.init);
@@ -107,6 +107,7 @@
 	
 	function focusFirstTask(textarea) {
 		eXo.social.statusUpdate.active=true;
+		textarea.style.outlineStyle= "none";
 		if(textarea.innerHTML == "What're you doing?") {
 			textarea.style.color="#000000";
 			textarea.focus();
@@ -145,7 +146,6 @@
 			textarea.style.color="#777777";
 			textarea.innerHTML = "What're you doing?";
 			textarea.style.minHeight="20px";
-			textarea.removeChild(textarea.getElementsByTagName('br'));
 		} else {
 			eXo.social.statusUpdate.active=true;
 		}
