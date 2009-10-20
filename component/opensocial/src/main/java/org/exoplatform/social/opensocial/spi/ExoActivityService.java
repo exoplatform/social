@@ -27,9 +27,11 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.webui.core.UIComponent;
 
 import java.util.concurrent.Future;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.List;
 import java.util.Date;
@@ -55,7 +57,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
         result.addAll(convertToOSActivities(am.getActivities(id), fields));
       }
       // last time go first.
-      Collections.reverse(result);
+//      Collections.reverse(result);
+      sortActivity(result);
       // Add for applying paging.
       int totalSize = result.size();
       int last = options.getFirst() + options.getMax();
@@ -159,5 +162,29 @@ public class ExoActivityService extends ExoService implements ActivityService {
       res.add(convertToOSActivity(activity, fields));
     }
     return res;
+  }
+  
+  /**
+   * Sort a list in increase order of posted time.<br>
+   * 
+   * @param lstActivities List for sorting.
+   * @return A sorted array in increase order.
+   */
+  private List<Activity> sortActivity(List<Activity> lstActivities) {    
+    Collections.sort(lstActivities, new ActivityComparator());       
+    return lstActivities;
+  }
+
+  /**
+   *   Implement ActivityComparator class for sorting in increase order of posted time.<br>
+   *
+   */
+  private class ActivityComparator implements Comparator<Activity> {
+    /**
+     * Compare 2 activity by posted time
+     */
+    public int compare(Activity act1, Activity act2) {
+      return (int) (act2.getPostedTime() - act1.getPostedTime());
+    }
   }
 }
