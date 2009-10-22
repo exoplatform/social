@@ -15,8 +15,8 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-.MenuTDContainer .UISpaceMenuPortlet {
-	padding: 8px;
+.MenuTDContainer .UISpaceMenuPortlet .Home{
+	background: none;
 }
 
 .MenuTDContainer .UISpaceMenuPortlet .Home .HomeSpace{
@@ -27,6 +27,7 @@
 	font-size: 12px;
 	color: #2d52a1;
 	display: block;
+	border-bottom: 1px solid #d7d7d7;
 }
 
 .MenuTDContainer .UISpaceMenuPortlet .Home a:hover{
@@ -42,21 +43,25 @@
 	font-size: 12px;
 	color: #2d52a1;
 	display: block;
+	border-bottom: 1px solid #e7e7e7; 
+}
+
+.UIPageBody .UIComponentBlock .MenuTDContainer .NormalContainerBlock {
+	padding:14px 8px 8px 10px;
+}
+
+.UIPageBody .UIComponentBlock .MenuTDContainer .NormalContainerBlock .LeftContainerBlock {
+	background:white url(/eXoResourcesSocial/skin/DefaultSkin/webui/component/UIVerticalTabs/background/LeftContentTab.gif) no-repeat scroll left top;
+	padding:0;
+}
+
+.UIPageBody .UIComponentBlock .MenuTDContainer .NormalContainerBlock .RightContainerBlock {
+	background:transparent url(/eXoResourcesSocial/skin/DefaultSkin/webui/component/UIVerticalTabs/background/BottomContentTab.gif) no-repeat scroll left bottom;
+	padding-bottom:75px;
 }
 
 .MenuTDContainer .UISpaceMenuPortlet .SpaceSetting a:hover{
 	background: url('DefaultSkin/background/SpaceSettingHover.gif') no-repeat left center;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .BottomSpaceListBG {
-	background: url('DefaultSkin/background/BottomSpaceListBG.gif') no-repeat left center;
-	height: 10px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .SpaceListBG {
-	border-left: 1px solid #e1e1e1;
-	border-right: 1px solid #e1e1e1;
-	height: 60px;
-	width: 200px;
-}
 
