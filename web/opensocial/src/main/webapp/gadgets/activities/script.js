@@ -7,6 +7,7 @@ function StatusUpdate() {
 	this.viewer = null;
 	this.owner = null;
 	this.ownerContacts = null;
+	this.likeActivites = null;
 	this.activities = null;
 	this.active = false;
 }
@@ -35,7 +36,8 @@ StatusUpdate.prototype.refresh = function() {
     opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40;
     opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
                    [opensocial.Person.Field.NAME,
-                   opensocial.Person.Field.THUMBNAIL_URL];
+                   opensocial.Person.Field.THUMBNAIL_URL,
+                   opensocial.Person.Field.PROFILE_URL];
     req.add(req.newFetchPeopleRequest('OWNER_FRIENDS', opts), 'ownerContacts');
   }
 
@@ -126,6 +128,7 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 			html += '<a class="Links" href="#" onclick="' + likeOnclick + '" id="Like' + id + '">Like</a>';
 			html += '</div>';
 			html += '<div class="LikeContent" id="LikeContent' + id + '"></div>'
+			html += '<div class="LikeDetail" id="LikeDetail' + id + '" style="display:none; width:420px; min-height:80px; background-color:#F2F2F2; padding-top:5px;"></div>'
 			eXo.social.statusUpdate.makeRequest(getLikeId, eXo.social.statusUpdate.displayValue, 0);
 		} else {
 			var timeAgo = eXo.social.statusUpdate.timeDetermineAgo(new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')));
@@ -162,7 +165,8 @@ StatusUpdate.prototype.getName = function(id) {
     return "";
   if (id == eXo.social.statusUpdate.owner.getId())
     return eXo.social.statusUpdate.owner.getDisplayName();
-  var person = eXo.social.statusUpdate.ownerContacts.getById(id);
+  var person = null;
+  person = eXo.social.statusUpdate.ownerContacts.getById(id);
   if (person == null)
     return "";
   return person.getDisplayName();
@@ -183,6 +187,20 @@ StatusUpdate.prototype.getAvatar = function(id) {
 	  return "http://localhost:8080/social/gadgets/activities/Backgrouds/AvartarDefault.gif";
   }
   return person.getField('thumbnailUrl');
+}
+
+StatusUpdate.prototype.getProfileUrl = function(id) {
+	  if (id == null)
+	    return "";
+	  var person = null;
+	  if (id == eXo.social.statusUpdate.owner.getId())
+		  person = eXo.social.statusUpdate.owner;
+	  else
+		  person = eXo.social.statusUpdate.ownerContacts.getById(id);
+	  if (person == null)
+	    return "";
+	 
+	  return person.getField('profileUrl');
 }
 
 StatusUpdate.prototype.timeToPrettyString = function(B) {
@@ -216,30 +234,70 @@ StatusUpdate.prototype.displayValue = function(reponse) {
 	if(!reponse.data) return;
 	var activityId = reponse.data.activityId;
 	var data = reponse.data.ids;
+	var likeInfos = reponse.data.likeInfos;
 	var text = '';
 	var contentBlock = _gel('LikeContent' + activityId);
 	var likeBlock = _gel('Like' + activityId);
 	var userId = eXo.social.statusUpdate.viewer.getId();
 	var likeLink = 'http://localhost:8080/rest/social/activities/setLikeId/' + activityId + '/' + userId;
 	var unlikeLink = 'http://localhost:8080/rest/social/activities/removeLikeId/' + activityId + '/' + userId;
+	var getLikeId = 'http://localhost:8080/rest/social/activities/getLikeIds/' + activityId;
+	
 	if(eXo.social.statusUpdate.isYou(data)) {
 		likeBlock.innerHTML = 'unlike';
 		likeBlock.setAttribute('onclick', 'eXo.social.statusUpdate.makeRequest(' 
 								+ '\'' + unlikeLink + '\'' + ', eXo.social.statusUpdate.displayValue, 0)'); 
 		text += 'You';
+		text += '<a id="like_detail_'+activityId+'" class="Links" href="#" onclick="eXo.social.statusUpdate.displayLikeDetail('+'\''+activityId+'\''+')">';
 		if(data.length == 2) text += ' and 1 person';
-		else if (data.length > 2) text += ' and ' + data.length + ' people';
+		else if (data.length > 2) text += ' and ' + (data.length - 1) + ' people';
+		text += '</a>';
 	}
 	else {
 		likeBlock.innerHTML = 'like';
 		likeBlock.setAttribute('onclick', 'eXo.social.statusUpdate.makeRequest(' 
 								+ '\'' + likeLink + '\'' + ', eXo.social.statusUpdate.displayValue, 0)');
+		text += '<a id="like_detail_'+activityId+'" class="Links" href="#" onclick="eXo.social.statusUpdate.displayLikeDetail('+'\''+activityId+'\''+')">';
 		if(data.length == 1) text += '1 person';
 		else text += data.length + ' people';
+		text += '</a>';
 	}
 	text += ' like this';
-	if(data.length > 0) contentBlock.innerHTML = text;
-	else contentBlock.innerHTML = "";
+	if(data.length > 0) {
+		contentBlock.innerHTML = text;
+		eXo.social.statusUpdate.renderLikeDetail(activityId, likeInfos);
+	} else {
+		contentBlock.innerHTML = "";
+	}
+}
+
+StatusUpdate.prototype.renderLikeDetail = function(activityId, data) {
+	if(!data) return;
+	var likeId = '';
+	var likeDetailBlock = _gel('LikeDetail' + activityId);
+	var likeDetail = '';
+	for(var i=0; i< data.length; i++) {
+		likeDetail += '<div style="float:left; margin-bottom:3px; text-align:center;">';
+		likeDetail += '<a style="display:block; height:60px; margin:2px 3px 2px 6px; width:60px;" href="#">';
+		likeDetail += '<img src="' + data[i].thumbnail + '" width="60" height="60"/>';
+		likeDetail += '</a>';
+		likeDetail += '<span>';
+		likeDetail += '<a href="#">' +data[i].userName+'</a>';
+		likeDetail += '</span>';
+		likeDetail += '</div>';
+	}
+	likeDetailBlock.innerHTML = likeDetail;
+}
+
+StatusUpdate.prototype.displayLikeDetail = function(activityId) {
+	var likeDetailBlock = _gel('LikeDetail' + activityId);
+	if (likeDetailBlock.style.display == 'none') {
+		likeDetailBlock.style.display = 'block';
+	} else {
+		likeDetailBlock.style.display = 'none';
+	}
+	
+	gadgets.window.adjustHeight();
 }
 
 StatusUpdate.prototype.isYou = function(data) {

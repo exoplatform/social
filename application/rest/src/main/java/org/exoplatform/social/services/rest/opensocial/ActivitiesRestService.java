@@ -30,10 +30,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
-
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.ProfileAttachment;
+import org.exoplatform.social.core.identity.model.Identity;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -44,6 +48,7 @@ import org.exoplatform.social.core.activitystream.model.Activity;
 public class ActivitiesRestService implements ResourceContainer { 
   
   private ActivityManager activityManager = null;
+  private IdentityManager identityManager = null;
   
   /**
    * Return request with JSON body which represent identities id.<br>
@@ -59,14 +64,19 @@ public class ActivitiesRestService implements ResourceContainer {
     List<String> ids = new ArrayList<String>();
     PortalContainer portalContainer = PortalContainer.getInstance();
     ActivityManager activityManager = (ActivityManager) portalContainer.getComponentInstanceOfType(ActivityManager.class);
+    List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
     Activity activity = activityManager.getActivity(activityId);
     String[] likeIdentitiesId = activity.getLikeIdentitiesId();
     if(likeIdentitiesId != null) Collections.addAll(ids, likeIdentitiesId);
-    identitiesId.setIds(ids);
+    likeInfos = getLikeInfos(ids);
+    
     identitiesId.setActivityId(activityId);
+    identitiesId.setIds(ids);
+    identitiesId.setLikeInfos(likeInfos);
+    
     return identitiesId;
   }
-  
+
   /**
    * Return request with JSON body which represent identities id<br>
    * 
@@ -137,13 +147,66 @@ public class ActivitiesRestService implements ResourceContainer {
   public class ListIdentitiesId {
     /** ids list variable */
     private List<String> ids_;
+    /** like information model */
+    private List<LikeInfoModel> likeInfos_;
     /** activityId */
     private String activityId_;
     
     public void setActivityId(String activityId) { activityId_ = activityId;}
     public String getActivityId() {return activityId_;}
+
     public void setIds(List<String> ids) { ids_ = ids; }
     public List<String> getIds() { return ids_; }
+    public List<LikeInfoModel> getLikeInfos() { return likeInfos_;}
+    public void setLikeInfos(List<LikeInfoModel> likeInfos) { likeInfos_ = likeInfos; }
+  }
+  
+  public class LikeInfoModel {
+    /** thumbnail list variable */
+    private String thumbnail_;
+    /** user name list variable */
+    private String userName_;
+    /** activityId */
+    private String likeIdentityId_;
+    
+    public void setLikeIdentityId(String likeIdentityId) { likeIdentityId_ = likeIdentityId;}
+    public String getLikeIdentityId() {return likeIdentityId_;}
+    public String getThumbnail() { return thumbnail_;}
+    public void setThumbnail(String thumbnail) { thumbnail_ = thumbnail;}
+    public String getUserName() { return userName_;}
+    public void setUserName(String userName) { userName_ = userName;}
+  }
+  
+  private List<LikeInfoModel> getLikeInfos(List<String> ids) throws Exception {
+    String thumbnail = null;
+    String userName = null;
+    Profile profile = null;
+    ProfileAttachment att = null;
+    Identity identity = null;
+    LikeInfoModel likeInfo = null;
+    IdentityManager im = getIdentityManager();
+    List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
+    List<String> thumbnails = new ArrayList<String>();
+    List<String> userNames = new ArrayList<String>();
+    for (String id : ids) {
+      identity = im.getIdentityById(id);
+      profile = identity.getProfile();
+      userName =(String) profile.getProperty("username");
+      att = (ProfileAttachment)profile.getProperty("avatar");
+      if (att != null) {
+        thumbnail = "/" + getPortalName()+"/rest/jcr/" + getRepository() + "/" + att.getWorkspace();
+        thumbnail = thumbnail + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+      } else {
+        thumbnail ="/profile/skin/portal/webui/component/UIRelationshipPortlet/background/AvartarDefault.gif";
+      }
+      likeInfo = new LikeInfoModel();
+      likeInfo.setLikeIdentityId(id);
+      likeInfo.setUserName(userName);
+      likeInfo.setThumbnail(thumbnail);
+      likeInfos.add(likeInfo);
+    }
+    
+    return likeInfos;
   }
   
   /**
@@ -181,5 +244,24 @@ public class ActivitiesRestService implements ResourceContainer {
       activityManager = (ActivityManager) portalContainer.getComponentInstanceOfType(ActivityManager.class);
     }
     return activityManager;
+  }
+  
+  private IdentityManager getIdentityManager () {
+    if(identityManager == null) {
+      PortalContainer portalContainer = PortalContainer.getInstance();
+      identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return identityManager;
+  }
+  
+  private String getRepository() throws Exception {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();  
   }
 }
