@@ -53,7 +53,7 @@ rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileUs
   <div class="Lable">${filterByLabel}</div>
   <input id="$positionId" type="text" class="FilterByPosition" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$positionLabel"/>
   <input id="$companyId" type="text" class="FilterByCompany" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$companyLabel"/>
-  <select class="FilterByGender" id="$genderId" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)">
+  <select class="FilterByGender" id="$genderId" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onMouseDown="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)">
   	<option selected="selected" value="Gender">${allLabel}</option>
 		<option value="male">${maleLabel}</option>
 		<option value="female">${femaleLabel}</option>

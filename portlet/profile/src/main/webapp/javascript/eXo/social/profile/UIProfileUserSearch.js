@@ -30,11 +30,11 @@ function UIProfileUserSearch() {
  *	@return void						
  */
 UIProfileUserSearch.prototype.activeFilterText = function(filter) {
-	if ((filter.value == 'Position') || (filter.value == 'Company') || (filter.value == 'Gender')) {
-		filter.value='';
-		filter.focus();
-	}
 	filter.style.color="#000000";
+	filter.focus();
+	if ((filter.value == 'Position') || (filter.value == 'Company')) {
+		filter.value='';
+	}
 }
 
 /**
@@ -58,10 +58,6 @@ UIProfileUserSearch.prototype.onBlurFilterText = function(filter) {
 		
 		if (filter.id == this.companyId) {
 			filter.value='Company';
-		}
-		
-		if (filter.id == this.genderId) {
-			filter.value='Gender';
 		}
 	} 
 }
