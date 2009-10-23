@@ -25,7 +25,8 @@
 
   <modules>
 	<module>component/people</module>
-	<module>component/opensocial</module>
+  <module>component/opensocial</module>
+  <module>extension</module>
 	<module>web/socialportal</module>
 	<module>web/resources</module>
   <module>web/opensocial</module>
