@@ -117,6 +117,10 @@
 }
 
 /**********************************/
+.UIToolbarContainer .SocialPeopleIcon {
+	background: url('background/ToolbarContainer.gif') no-repeat left -96px; /* orientation=lt */
+	background: url('background/ToolbarContainer.gif') no-repeat right -96px; /* orientation=rt */
+}
 
 .UIToolbarContainer .SocialMyProfileIcon {
 	background: url('background/ToolbarContainer.gif') no-repeat left -96px; /* orientation=lt */

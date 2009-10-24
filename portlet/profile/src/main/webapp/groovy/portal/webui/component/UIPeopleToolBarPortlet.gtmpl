@@ -1,0 +1,16 @@
+<%	
+	
+%> 
+<div class="UIPeopleToolBarPortlet" id="$uicomponent.id">
+	<div class="UIHorizontalTabs">
+		<div class="TabsContainer" style="position: relative">
+			<div class="UITab NormalToolbarTab">
+				<div class="">
+							<a class="SocialPeopleIcon TBIcon" href="#">
+									<%=_ctx.appRes("UIPeopleToolBarPortlet.label.People")%>
+							</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
