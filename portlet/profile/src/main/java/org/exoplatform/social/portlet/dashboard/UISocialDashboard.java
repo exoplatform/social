@@ -16,19 +16,20 @@
  */
 package org.exoplatform.social.portlet.dashboard;
 
+import javax.portlet.PortletPreferences;
+
+import org.exoplatform.dashboard.webui.component.DashboardParent;
+import org.exoplatform.dashboard.webui.component.UIDashboard;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.model.Container;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupMessages;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
-import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.application.portlet.PortletRequestContext;
-import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.dashboard.webui.component.*;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.config.model.Container;
-
-import javax.portlet.PortletPreferences;
 
 
 @ComponentConfig(
@@ -47,7 +48,7 @@ public class UISocialDashboard extends UIContainer implements DashboardParent{
       String rssFetchId = pref.getValue("rssFetchId", "rssFetch") ;
       String containerTemplate = pref.getValue("template", "three-columns") ;
       dashboard.setContainerTemplate(containerTemplate) ;
-      dashboard.getChild(UIDashboardSelectContainer.class).setAggregatorId(rssFetchId) ;
+      dashboard.setAggregatorId(rssFetchId) ;
     }
 
     public boolean canEdit() {

@@ -20,9 +20,6 @@ import javax.portlet.PortletRequest;
 
 import org.exoplatform.dashboard.webui.component.DashboardParent;
 import org.exoplatform.dashboard.webui.component.UIDashboard;
-import org.exoplatform.dashboard.webui.component.UIDashboardSelectContainer;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -53,7 +50,7 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
     String template =  prequest.getPreferences().getValue("homeSpaceTemplate", DEFAULT_TEMPLATE) ;
     String rssFetchId = prequest.getPreferences().getValue("rssFetchId", DEFAULT_RSSFETCH_ID) ;
     uiDashboard.setContainerTemplate(template);
-    uiDashboard.getChild(UIDashboardSelectContainer.class).setAggregatorId(rssFetchId) ;
+    uiDashboard.setAggregatorId(rssFetchId);
   }
 
   public boolean canEdit() {
