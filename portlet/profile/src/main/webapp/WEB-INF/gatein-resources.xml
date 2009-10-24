@@ -75,6 +75,20 @@
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIPeopleToolbarPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
+
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>profilenavigationportlet</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIProfileNavigation/DefaultStylesheet.css</css-path>
+	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>relationnavigationportlet</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIRelationNavigation/DefaultStylesheet.css</css-path>
+	</portlet-skin>
 			
 </gatein-resources>
 

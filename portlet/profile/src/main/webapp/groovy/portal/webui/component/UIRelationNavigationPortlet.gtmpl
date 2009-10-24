@@ -23,17 +23,17 @@
 	def invitationsURL = "http://localhost:8080/portal/private/classic/profile/relation/invitations/"
 	def requestsURL = "http://localhost:8080/portal/private/classic/profile/relation/requests/"
 %>
-  <div class="UIRelationNavigationPortlet" id="$uicomponent.id">
-    <div class="LeftColumn">
-		  <div class="UserActivitiesLink">
-	        <a href="${myfriendsURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.MyFriends")%></a>
-		  </div>
-		  <div class="UserActivitiesLink">
-	        <a href="${invitationsURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.Invitations")%></a>
-		  </div>
-		  <div class="UserActivitiesLink">
-	        <a href="${requestsURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.Requests")%></a>
-		  </div>
+<div class="UIRelationNavigationPortlet" id="$uicomponent.id">
+	<div class="RelTitle">My Friend</div>
+	<div class="UIVerclTab">
+	  <div class="SelectedTab Tab">
+        <a href="${myfriendsURL}" class="FriendIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.MyFriends")%></a>
+	  </div>
+	  <div class="NormalTab Tab">
+        <a href="${invitationsURL}" class="InviIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Invitations")%></a>
+	  </div>
+	  <div class="NormalTab Tab">
+        <a href="${requestsURL}" class="RequestIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Requests")%></a>
+	  </div>
 	</div>
-	<div style="clear: left;"><span></span></div>
 </div>

@@ -25,17 +25,20 @@
   def actititesURL = "http://localhost:8080/portal/private/classic/profile/activities/"
 	def profileURL = "http://localhost:8080/portal/private/classic/profile/myprofile/"
 %>
-  <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
-    <div class="LeftColumn">
-		  <div class="UserActivitiesLink">
-	        <a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.Activity")%></a>
-		  </div>
-		  <div class="UserActivitiesLink">
-	        <a href="${profileURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.Profile")%></a>
-		  </div>
-		  <div class="UserActivitiesLink">
-	        <a href="${relationURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.Relations")%></a>
-		  </div>
+<div class="UIProfileNavigationPortlet" id="$uicomponent.id">
+	<div class="ProfTitle">Me</div>
+	<a class="Avartar">
+		<img height="65" width="65" alt="" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif"/>
+	</a>
+	<div class="UIVerclTab">
+	  <div class="SelectedTab Tab">
+        <a href="${actititesURL}" class="ActivityIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Activity")%></a>
+	  </div>
+	  <div class="NormalTab Tab">
+        <a href="${profileURL}" class="ProfileIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Profile")%></a>
+	  </div>
+	  <div class="NormalTab Tab">
+        <a href="${relationURL}" class="RelationIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Relations")%></a>
+	  </div>
 	</div>
-	<div style="clear: left;"><span></span></div>
 </div>
