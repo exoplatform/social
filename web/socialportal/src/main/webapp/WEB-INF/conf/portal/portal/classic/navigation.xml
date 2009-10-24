@@ -40,6 +40,7 @@
     <uri>activities</uri>
     <name>activities</name>
     <label>#{portal.classic.activities}</label>
+    <visible>false</visible>
     <page-reference>portal::classic::activities</page-reference>
    </node>
    
@@ -47,6 +48,7 @@
     <uri>profile</uri>
     <name>profile</name>
     <label>#{portal.classic.profile}</label>
+    <visible>false</visible>
     <page-reference>portal::classic::profile</page-reference>
    </node>
    
@@ -54,6 +56,7 @@
     <uri>relations</uri>
     <name>relations</name>
     <label>#{portal.classic.relations}</label>
+    <visible>false</visible>
     <page-reference>portal::classic::relations</page-reference>
    </node>
 	  
