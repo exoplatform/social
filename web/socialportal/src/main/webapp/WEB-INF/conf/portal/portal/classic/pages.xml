@@ -100,11 +100,86 @@
     <name>activities</name>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletActivities</instance-id>
-      <title>Activities</title>
-      <show-info-bar>false</show-info-bar>
-    </application>
+    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	  		<application>
+				  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationact</instance-id>
+				  <title>profilenavigation</title>
+				  <show-info-bar>false</show-info-bar>
+				  <show-application-state>true</show-application-state>      
+				</application>
+	  	</container>
+	 		<container id="ProfileActivity" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 				<application>
+				  <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletActivities</instance-id>
+				  <title>profileactivities</title>
+				  <show-info-bar>false</show-info-bar>
+				  <show-application-state>true</show-application-state>      
+				</application>
+	 		</container>
+		</container>
+  </page>
+  
+  <page>
+  	<page-id>portal::classic::profile</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <name>profile</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+ 			<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	  		<application>
+				  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationact</instance-id>
+				  <title>profilenavigation</title>
+				  <show-info-bar>false</show-info-bar>
+				  <show-application-state>true</show-application-state>      
+				</application>
+	  	</container>
+ 			<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+ 				<application>
+			  <instance-id>portal#classic:/profile/myprofile/myprofiles1</instance-id>
+			  <title>profile</title>
+			  <show-info-bar>false</show-info-bar>
+			  <show-application-state>true</show-application-state>      
+			</application>
+ 		</container>
+	</container>
+  </page>
+  
+  <page>
+  	<page-id>portal::classic::relations</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>classic</owner-id>
+    <name>relations</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	  		<application>
+				  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationfriends</instance-id>
+				  <title>profilenavigation</title>
+				  <show-info-bar>false</show-info-bar>
+				  <show-application-state>true</show-application-state>      
+				</application>
+	  	</container>
+	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+				<application>
+				  <instance-id>portal#classic:/profile/relationnavigationportlet/relationnavigationfriends</instance-id>
+				  <title>relationnavigation</title>
+				  <show-info-bar>false</show-info-bar>
+				  <show-application-state>true</show-application-state>      
+				</application>
+	 		</container>
+	 		<container id="ProfileRelationDetails" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 			<application>
+				  <instance-id>group#platform/guests:/exoadmin/AccountPortlet/Account123</instance-id>
+				  <title>my friends</title>
+				  <show-info-bar>false</show-info-bar>
+				  <show-application-state>true</show-application-state>      
+				</application>
+	 		</container>
+		</container>
   </page>
   
   <page>
@@ -137,160 +212,4 @@
     </application>  
   </page>
   
-  
-  <page>
-  	<page-id>portal::classic::profile</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <name>profile</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
- 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-  		<application>
-			  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigation</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
-  	</container>
- 		<container id="MyProfile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
- 				<application>
-			  <instance-id>portal#classic:/profile/myprofile/myprofiles1</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
- 		</container>
-	</container>
-  </page>
-  <page>
-  	<page-id>portal::classic::activity</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <name>activity</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
- 		<container id="ProfileavigationAct" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-  		<application>
-			  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationact</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
-  	</container>
- 		<container id="Activity" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
- 				<application>
-			  <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletActivities</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
- 		</container>
-	</container>
-  </page>
-    
-  <page>
-  	<page-id>portal::classic::relationMyFriends</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <name>relationMyFriends</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
- 		<container id="ProfileNavigationMyFriends" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-  		<application>
-			  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationfriends</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
-  	</container>
- 		<container id="RelationNavigationMyFriends" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-			<application>
-			  <instance-id>portal#classic:/profile/relationnavigationportlet/relationnavigationfriends</instance-id>
-			  <title>relationnavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
- 		</container>
- 		<container id="MyFriends" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
- 			<application>
-			  <instance-id>group#platform/guests:/exoadmin/AccountPortlet/Account123</instance-id>
-			  <title>my friends</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
- 		</container>
-	</container>
-  </page>
-  <page>
-  	<page-id>portal::classic::relationInvitations</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <name>relationInvitations</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
- 		<container id="ProfileNavigationInvitations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-  		<application>
-			  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationinvi</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
-  	</container>
- 		<container id="RelationNavigationInvitations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-			<application>
-			  <instance-id>portal#classic:/profile/relationnavigationportlet/relationnavigationinvi</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
- 		</container>
- 		<container id="Invitations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
- 			<application>
-			  <instance-id>portal#classic:/dashboard/GadgetPortlet/GadgetPortletActivities</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
- 		</container>
-	</container>
-  </page>
-  <page>
-  	<page-id>portal::classic::relationRequests</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
-    <name>relationRequests</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
- 		<container id="ProfileNavigationRequests" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-  		<application>
-			  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationreq</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
-  	</container>
- 		<container id="RelationNavigationRequests" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-			<application>
-			  <instance-id>portal#classic:/profile/relationnavigationportlet/relationnavigationportletreq</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
- 		</container>
- 		<container id="Requests" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
- 			<application>
-			  <instance-id>portal#classic:/dashboard/GadgetPortlet/portletActivities</instance-id>
-			  <title>profilenavigation</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
- 		</container>
-	</container>
-  </page>
 </page-set>
