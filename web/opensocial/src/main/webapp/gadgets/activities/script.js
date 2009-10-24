@@ -125,10 +125,10 @@ StatusUpdate.prototype.handleActivities = function(dataResponse) {
 			var likeLink = 'http://localhost:8080/rest/social/activities/setLikeId/' + id + '/' + userId;
 			var likeOnclick = 'eXo.social.statusUpdate.makeRequest(' 
 			+ '\'' + likeLink + '\'' + ', eXo.social.statusUpdate.displayValue, 0)';
-			html += '<a class="Links" href="#" onclick="' + likeOnclick + '" id="Like' + id + '">Like</a>';
+			html += '<a class="Links" href="#" onclick="' + likeOnclick + '" id="Like' + id + '">like</a>';
 			html += '</div>';
 			html += '<div class="LikeContent" id="LikeContent' + id + '"></div>'
-			html += '<div class="LikeDetail" id="LikeDetail' + id + '" style="display:none; width:420px; min-height:80px; background-color:#F2F2F2; padding-top:5px;"></div>'
+			html += '<div class="LikeDetail" id="LikeDetail' + id + '" style="display:none; width:350px; min-height:85px; background-color:#F2F2F2; padding-top:5px;"></div>'
 			eXo.social.statusUpdate.makeRequest(getLikeId, eXo.social.statusUpdate.displayValue, 0);
 		} else {
 			var timeAgo = eXo.social.statusUpdate.timeDetermineAgo(new Date(eXo.social.statusUpdate.activities[i].getField('postedTime')));
@@ -276,15 +276,25 @@ StatusUpdate.prototype.renderLikeDetail = function(activityId, data) {
 	var likeId = '';
 	var likeDetailBlock = _gel('LikeDetail' + activityId);
 	var likeDetail = '';
+	var blockNum = 1;
+	var thumbnail = "http://localhost:8080/social/gadgets/activities/Backgrouds/AvartarDefault.gif";
 	for(var i=0; i< data.length; i++) {
+		if (data[i].thumbnail != null)	thumbnail = data[i].thumbnail;		
 		likeDetail += '<div style="float:left; margin-bottom:3px; text-align:center;">';
 		likeDetail += '<a style="display:block; height:60px; margin:2px 3px 2px 6px; width:60px;" href="#">';
-		likeDetail += '<img src="' + data[i].thumbnail + '" width="60" height="60"/>';
+		likeDetail += '<img src="' + thumbnail + '" alt="' + data[i].fullName + '" width="60" height="60"/>';
 		likeDetail += '</a>';
 		likeDetail += '<span>';
 		likeDetail += '<a href="#">' +data[i].userName+'</a>';
 		likeDetail += '</span>';
-		likeDetail += '</div>';
+		likeDetail += '</div>'; 
+		if ((i+1) % 5 == 0) {
+			likeDetail += '<div style="clear: both;"><span/></div>';
+		}
+		if ((i != 0) && (i % 5 == 0)) {
+			blockNum += 1;
+			likeDetailBlock.style.minHeight = blockNum*85;
+		}
 	}
 	likeDetailBlock.innerHTML = likeDetail;
 }

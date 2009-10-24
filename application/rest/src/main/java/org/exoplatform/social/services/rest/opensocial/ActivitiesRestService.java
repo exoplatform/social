@@ -30,6 +30,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
@@ -161,11 +163,17 @@ public class ActivitiesRestService implements ResourceContainer {
     public void setLikeInfos(List<LikeInfoModel> likeInfos) { likeInfos_ = likeInfos; }
   }
   
+  /**
+   * Model contain like detail information.
+   *
+   */
   public class LikeInfoModel {
     /** thumbnail list variable */
     private String thumbnail_;
     /** user name list variable */
     private String userName_;
+    /** full name */
+    private String fullName_;
     /** activityId */
     private String likeIdentityId_;
     
@@ -175,33 +183,41 @@ public class ActivitiesRestService implements ResourceContainer {
     public void setThumbnail(String thumbnail) { thumbnail_ = thumbnail;}
     public String getUserName() { return userName_;}
     public void setUserName(String userName) { userName_ = userName;}
+    public String getFullName() { return fullName_;}
+    public void setFullName(String fullName) { fullName_ = fullName;}
   }
   
+  /**
+   * Get all like information and add to list of model.
+   * @param ids
+   * @return List of like information model.
+   * @throws Exception
+   */
   private List<LikeInfoModel> getLikeInfos(List<String> ids) throws Exception {
     String thumbnail = null;
     String userName = null;
+    String fullName = null;
     Profile profile = null;
     ProfileAttachment att = null;
     Identity identity = null;
     LikeInfoModel likeInfo = null;
     IdentityManager im = getIdentityManager();
     List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
-    List<String> thumbnails = new ArrayList<String>();
-    List<String> userNames = new ArrayList<String>();
     for (String id : ids) {
       identity = im.getIdentityById(id);
       profile = identity.getProfile();
       userName =(String) profile.getProperty("username");
+      fullName = profile.getFullName();
       att = (ProfileAttachment)profile.getProperty("avatar");
       if (att != null) {
         thumbnail = "/" + getPortalName()+"/rest/jcr/" + getRepository() + "/" + att.getWorkspace();
         thumbnail = thumbnail + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
-      } else {
-        thumbnail ="/profile/skin/portal/webui/component/UIRelationshipPortlet/background/AvartarDefault.gif";
       }
+      
       likeInfo = new LikeInfoModel();
       likeInfo.setLikeIdentityId(id);
       likeInfo.setUserName(userName);
+      likeInfo.setFullName(fullName);
       likeInfo.setThumbnail(thumbnail);
       likeInfos.add(likeInfo);
     }
