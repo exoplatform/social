@@ -54,6 +54,78 @@
 		    <page-reference>portal::classic::activities</page-reference>
 	  	</node>
 	  </node>
+	  
+	  <node>
+	    <uri>profile</uri>
+	    <name>profile</name>
+	    <label>#{portal.classic.myprofile}</label>
+      <node>
+		    <uri>profile/activities</uri>
+		    <name>activities</name>
+		    <label>#{portal.classic.activity}</label>
+		    <page-reference>portal::classic::activity</page-reference>
+	  	</node>
+      <node>
+		    <uri>profile/myprofile</uri>
+		    <name>profile</name>
+		    <label>#{portal.classic.profile}</label>
+	      <page-reference>portal::classic::profile</page-reference>
+	  	</node>
+	  	<node>
+		    <uri>profile/relation</uri>
+		    <name>relation</name>
+		    <label>#{portal.classic.relations}</label>
+		    <node>
+			    <uri>profile/relation/myfriends</uri>
+			    <name>myfriends</name>
+			    <label>#{portal.classic.myfriends}</label>
+		      <page-reference>portal::classic::relationMyFriends</page-reference>
+		  	</node>
+		  	<node>
+			    <uri>profile/relation/invitations</uri>
+			    <name>invitations</name>
+			    <label>#{portal.classic.invitations}</label>
+		      <page-reference>portal::classic::relationInvitations</page-reference>
+		  	</node>
+		  	<node>
+			    <uri>profile/relation/requests</uri>
+			    <name>requests</name>
+			    <label>#{portal.classic.requests}</label>
+		      <page-reference>portal::classic::relationRequests</page-reference>
+		  	</node>
+	  	</node>
+	  </node>
+	  
+	  <node>
+	    <uri>space</uri>
+	    <name>space</name>
+	    <label>My Space</label>
+      <node>
+		    <uri>space/myspace</uri>
+		    <name>myspace</name>
+		    <label>My Space</label>
+		    <page-reference>portal::classic::activity</page-reference>
+	  	</node>
+      <node>
+		    <uri>space/invitations</uri>
+		    <name>invitations</name>
+		    <label>Invitations</label>
+	      <page-reference>portal::classic::profile</page-reference>
+	  	</node>
+	  	<node>
+		    <uri>space/pendings</uri>
+		    <name>pendings</name>
+		    <label>Pendings</label>
+		    <page-reference>portal::classic::profile</page-reference>
+	  	</node>
+	  	<node>
+		    <uri>space/publics</uri>
+		    <name>publics</name>
+		    <label>Publics</label>
+		    <page-reference>portal::classic::profile</page-reference>
+	  	</node>
+	  </node>
+	  
 	  <node>
 	    <uri>spaces</uri>
 	    <name>spaces</name>
