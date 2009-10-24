@@ -68,6 +68,13 @@
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIBreadcrumbPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>peopletoolbar</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIPeopleToolbarPortlet/DefaultStylesheet.css</css-path>
+	</portlet-skin>
 			
 </gatein-resources>
 
