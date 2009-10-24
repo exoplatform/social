@@ -47,8 +47,6 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
-import org.exoplatform.portal.application.UserGadgetStorage;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -252,25 +250,26 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   }
 
   private Map<String, String> getPreferences(String userID, String gadgetId, String instanceID, Set<String> fields) throws Exception {
-      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
-      UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
-
-      Map<String, String> values = userGadgetStorage.get(userID, gadgetId, instanceID, fields);
+//      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+//      UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
+//
+//      Map<String, String> values = userGadgetStorage.get(userID, gadgetId, instanceID, fields);
+    Map<String, String> values = null;
       return values;
   }
 
   private void savePreferences(String userID, String gadgetId, String instanceID, Map<String, String> values) throws Exception {
-    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
-    UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
-
-    userGadgetStorage.save(userID, gadgetId, instanceID, values);
+//    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+//    UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
+//
+//    userGadgetStorage.save(userID, gadgetId, instanceID, values);
   }
 
   private void deletePreferences(String userID, String gadgetId, String instanceID, Set<String> keys) throws Exception {
-    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
-    UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
-
-    userGadgetStorage.delete(userID, gadgetId, instanceID, keys);
+//    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+//    UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
+//
+//    userGadgetStorage.delete(userID, gadgetId, instanceID, keys);
   }
 
   public Future<Void> deletePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws ProtocolException {

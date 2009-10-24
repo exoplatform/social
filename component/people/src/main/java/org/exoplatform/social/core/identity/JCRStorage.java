@@ -47,11 +47,12 @@ import javax.jcr.version.VersionException;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
+import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.jcr.impl.core.value.BooleanValue;
@@ -78,9 +79,9 @@ public class JCRStorage {
 
   final private static String PROFILE_IDENTITY = "exo:identity".intern();
   final private static String PROFILE_AVATAR = "avatar".intern();
-
+  private Session session_ = null;
+  
   private ProfileConfig config = null;
-
 
 
   public JCRStorage(NodeHierarchyCreator nodeHierarchyCreator) {
@@ -132,7 +133,7 @@ public class JCRStorage {
       identityNode = identityHomeNode.addNode(IDENTITY_NODETYPE, IDENTITY_NODETYPE);
       identityNode.addMixin("mix:referenceable");
     } else {
-      identityNode = identityHomeNode.getSession().getNodeByUUID(identity.getId());
+      identityNode = getSession().getNodeByUUID(identity.getId());
     }
     identityNode.setProperty(IDENTITY_REMOTEID, identity.getRemoteId());
     identityNode.setProperty(IDENTITY_PROVIDERID, identity.getProviderId());
@@ -146,11 +147,9 @@ public class JCRStorage {
   }
 
   public Identity getIdentity(String id) throws Exception {
-    Node identityHomeNode = getIdentityServiceHome();
-
     Node identityNode;
     try {
-      identityNode = identityHomeNode.getSession().getNodeByUUID(id);
+      identityNode = getSession().getNodeByUUID(id);
     }
     catch (ItemNotFoundException e) {
       return null;
@@ -169,7 +168,8 @@ public class JCRStorage {
         .append("/").append(IDENTITY_NODETYPE).append("[(@")
         .append(IDENTITY_PROVIDERID).append("='").append(identityProvider).append("' and @")
         .append(IDENTITY_REMOTEID).append("='").append(id.replaceAll("'", "''")).append("')]");
-    QueryManager queryManager = identityHomeNode.getSession().getWorkspace().getQueryManager();
+    
+    QueryManager queryManager = getSession().getWorkspace().getQueryManager();
     Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
     QueryResult queryResult = query.execute();
     NodeIterator nodeIterator = queryResult.getNodes();
@@ -191,7 +191,6 @@ public class JCRStorage {
     identity = new Identity(identityNode.getUUID());
     identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
     identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
-//    System.out.println("\n\n\n username: " + identity.getRemoteId());
     Profile profile = new Profile(identity);
     loadProfile(profile);
     identity.setProfile(profile);
@@ -200,7 +199,7 @@ public class JCRStorage {
   
   public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFiler profileFilter) throws Exception {
     Node profileHomeNode = getProfileServiceHome();
-    Session session = profileHomeNode.getSession() ;
+    Session session = getSession() ;
     QueryManager queryManager = session.getWorkspace().getQueryManager() ;
     StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
         .append("/").append(PROFILE_NODETYPE);
@@ -269,12 +268,12 @@ public class JCRStorage {
       profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
       profileNode.addMixin("mix:referenceable");
 
-      Node identityNode = profileHomeNode.getSession().getNodeByUUID(p.getIdentity().getId());
+      Node identityNode = getSession().getNodeByUUID(p.getIdentity().getId());
 
       profileNode.setProperty(PROFILE_IDENTITY, identityNode);
     }
     else {
-      profileNode = profileHomeNode.getSession().getNodeByUUID(p.getId());
+      profileNode = getSession().getNodeByUUID(p.getId());
     }
 
     saveProfile(p, profileNode);
@@ -439,13 +438,11 @@ public class JCRStorage {
   }
 
   public void loadProfile(Profile p) throws Exception {
-    Node profileHomeNode = getProfileServiceHome();
-
     if (p.getIdentity().getId() == null) {
       throw new Exception("the identity has to be saved before loading the profile");
     }
 
-    Node idNode = profileHomeNode.getSession().getNodeByUUID(p.getIdentity().getId());
+    Node idNode = getSession().getNodeByUUID(p.getIdentity().getId());
     PropertyIterator it = idNode.getReferences();
 
     while (it.hasNext()) {
@@ -542,10 +539,7 @@ public class JCRStorage {
   public String getType(String nodetype, String property) throws Exception {
     //System.out.println("getType(" + nodetype + ", " + property + ")");
 
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    SessionProviderService sProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class);
-
-    NodeTypeManager ntManager = getProfileServiceHome().getSession().getWorkspace().getNodeTypeManager();
+    NodeTypeManager ntManager = getSession().getWorkspace().getNodeTypeManager();
     NodeType nt = ntManager.getNodeType(nodetype);
     PropertyDefinition[] pDefs = nt.getDeclaredPropertyDefinitions();
 
@@ -556,5 +550,16 @@ public class JCRStorage {
       }
     }
     return null;
+  }
+  
+  private Session getSession() throws Exception {
+    if(session_ == null) {
+      SessionProvider sessionProvider = SessionProvider.createSystemProvider();
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      RepositoryService repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
+      ManageableRepository repo = repositoryService.getCurrentRepository();
+      session_ = sessionProvider.getSession(repo.getConfiguration().getDefaultWorkspaceName(), repo);
+    }
+    return session_;
   }
 }
