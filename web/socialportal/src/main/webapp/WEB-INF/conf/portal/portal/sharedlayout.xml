@@ -9,40 +9,72 @@
 		    <show-info-bar>false</show-info-bar>
 		  </application>			
 		</container>
+		
+		<container id="UserToolBarSitePortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		  <portlet-application>
+        <portlet>
+          <application-ref>exoadmin</application-ref>
+          <portlet-ref>UserToolbarSitePortlet</portlet-ref>
+        </portlet>
+	      <access-permissions>Everyone</access-permissions>
+		    <show-info-bar>false</show-info-bar>
+		  </portlet-application>
+		</container>
+		
 		<container id="MyProfileToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <application>
-		    <instance-id>portal#classic:/profile/MyProfileToolbarPortlet/myprofiletoolbarportlet</instance-id>
+		  <portlet-application>
+        <portlet>
+          <application-ref>profile</application-ref>
+          <portlet-ref>MyProfileToolbarPortlet</portlet-ref>
+        </portlet>
 	      <access-permissions>Everyone</access-permissions>
 		    <show-info-bar>false</show-info-bar>
-		  </application>			
+		  </portlet-application>			
 		</container>
-		<container id="SitesToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <application>
-		    <instance-id>portal#classic:/profile/SitesToolbarPortlet/sitestoolbarportlet</instance-id>
-	      <access-permissions>Everyone</access-permissions>
-		    <show-info-bar>false</show-info-bar>
-		  </application>			
-		</container>
+		
+		
 		<container id="SpacesToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <application>
-		    <instance-id>portal#classic:/profile/SpacesToolbarPortlet/spacestoolbarportlet</instance-id>
+		 	<portlet-application>
+        <portlet>
+          <application-ref>profile</application-ref>
+          <portlet-ref>SpacesToolbarPortlet</portlet-ref>
+        </portlet>
 	      <access-permissions>Everyone</access-permissions>
 		    <show-info-bar>false</show-info-bar>
-		  </application>			
+		  </portlet-application>	
 		</container>
-		<container id="DashboardToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <application>
-		    <instance-id>portal#classic:/profile/DashBoardToolbarPortlet/dashboardtoolbarportlet</instance-id>
+		
+		<container id="UserToolBarDashboardPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		  <portlet-application>
+        <portlet>
+          <application-ref>exoadmin</application-ref>
+          <portlet-ref>UserToolbarDashboardPortlet</portlet-ref>
+        </portlet>
 	      <access-permissions>Everyone</access-permissions>
 		    <show-info-bar>false</show-info-bar>
-		  </application>			
+		  </portlet-application>
 		</container>
+		
 		<container id="AdminToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <application>
-		    <instance-id>portal#classic:/exoadmin/AdminToolbarPortlet/adminportlet</instance-id>
-	      <access-permissions>*:/platform/administrators</access-permissions>
+			<portlet-application>
+        <portlet>
+          <application-ref>exoadmin</application-ref>
+          <portlet-ref>AdminToolbarPortlet</portlet-ref>
+        </portlet>
+	      <access-permissions>Everyone</access-permissions>
 		    <show-info-bar>false</show-info-bar>
-		  </application>
+		  </portlet-application>
+		</container>
+		
+		<container id="UserInfoPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+		  <portlet-application>
+        <portlet>
+          <application-ref>exoadmin</application-ref>
+          <portlet-ref>UserInfoPortlet</portlet-ref>
+        </portlet>
+	      <access-permissions>Everyone</access-permissions>
+		    <show-info-bar>false</show-info-bar>
+		  </portlet-application>
 		</container>		
 	</container>
 

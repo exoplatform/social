@@ -34,7 +34,7 @@
 	        <div class="MiddleBanner">
 	        	<div class="BannerTitle"><span></span>
 				</div>
-				<div class="LeftLoginContainer">
+				<!--<div class="LeftLoginContainer">
 					<div class="RightLoginContainer">
 						<%if(prContext.getRemoteUser() != null) {%>
 							<div class="MiddleLoginContainer">
@@ -60,7 +60,7 @@
 					</div>
 					<div style="clear:both"><span></span></div>
 				</div>
-	        </div>
+	        --></div>
 	      </div>   
 	    </div>
 	  </div>
