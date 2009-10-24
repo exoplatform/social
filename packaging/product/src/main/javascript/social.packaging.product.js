@@ -1,27 +1,41 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 eXo.require("eXo.projects.Module") ;
 eXo.require("eXo.projects.Product") ;
 
 function getProduct(version) {
   var product = new Product();
-
-  product.name = "social" ;
+  
+  product.name = "eXoSocial" ;
   product.portalwar = "portal.war" ;
-  product.codeRepo = "social/trunk" ;
-  product.serverPluginVersion = "3.0.0-Beta01"
-	  
-  var kernel = Module.GetModule("kernel/tags/2.2.Alpha3") ;
-  var core = Module.GetModule("core/tags/2.3.Alpha4") ;
-  var ws = Module.GetModule("ws/tags/2.1.Alpha4", {kernel : kernel, core : core});
-  var eXoJcr = Module.GetModule("jcr/tags/1.12.Alpha4", {kernel : kernel, core : core, ws : ws}) ;
-//  var kernel = Module.GetModule("kernel/tags/2.1.2") ;
-//  var core = Module.GetModule("core/tags/2.2.2") ;
-//  var ws = Module.GetModule("ws/tags/2.0.2", {kernel : kernel, core : core});
-//  var eXoJcr = Module.GetModule("jcr/tags/1.11.2", {kernel : kernel, core : core, ws : ws}) ;
-  //var eXoPortletContainer = Module.GetModule("portlet-container/tags/2.1.2", {kernel : kernel, core : core, ws : ws}) ;
-  var portal = Module.GetModule("portal", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr});
-  var social = Module.GetModule("social", {kernel : kernel, core : core, eXoJcr : eXoJcr, portal : portal});
+  product.codeRepo = "social" ;//module in modules/portal/module.js
+  product.serverPluginVersion = "3.0.0-Beta02";
 
-  product.addDependencies(social.web.socialportal) ;
+  var kernel = Module.GetModule("kernel") ;
+  var core = Module.GetModule("core") ;
+  var ws = Module.GetModule("ws", {kernel : kernel, core : core});
+  var eXoJcr = Module.GetModule("jcr", {kernel : kernel, core : core, ws : ws}) ;
+  var portal = Module.GetModule("portal", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr});
+	var social = Module.GetModule("social", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr, portal:portal});
+  
+	product.addDependencies(social.web.socialportal) ;
   product.addDependencies(social.web.eXoResources) ;
   product.addDependencies(social.component.people) ;
   product.addDependencies(social.component.space) ;
@@ -38,14 +52,17 @@ function getProduct(version) {
   product.addDependencies(portal.eXoGadgetServer) ;
   product.addDependencies(portal.eXoGadgets) ;
   product.addDependencies(portal.webui.portal);
-
+  
   product.addDependencies(portal.web.eXoResources);
-  product.addDependencies(portal.web.eXoMacSkin);
-  product.addDependencies(portal.web.eXoVistaSkin);
 
-  product.removeDependency(new Project("org.exoplatform.jcr", "exo.jcr.component.ftp", "jar", eXoJcr.version));
+  product.addDependencies(portal.web.portal) ;
+  product.addDependencies(portal.sample.extension) ;
 
+  product.addServerPatch("tomcat", portal.server.tomcat.patch) ;
+  product.addServerPatch("jboss",  portal.server.jboss.patch) ;
+  product.addServerPatch("jbossear",  portal.server.jbossear.patch);
 
+	product.removeDependency(new Project("org.exoplatform.jcr", "exo.jcr.component.ftp", "jar", eXoJcr.version));
 
   //upgrade lib for opensocial
   product.removeDependency(new Project("commons-beanutils", "commons-beanutils", "jar", "1.6"));
@@ -61,12 +78,8 @@ function getProduct(version) {
   product.addDependencies(new Project("commons-httpclient", "commons-httpclient", "jar", "3.1"));
 
   product.addDependencies(new Project("findbugs", "annotations", "jar", "1.0.0"));
-
-
-  product.addServerPatch("tomcat", portal.server.tomcat.patch) ;
-  product.addServerPatch("jboss",  portal.server.jboss.patch) ;
-  product.addServerPatch("jonas",  portal.server.jonas.patch) ;
-  product.module = social ;
+ 
+	product.module = social ;
   product.dependencyModule = [kernel, core, ws, eXoJcr, portal];
 
 
