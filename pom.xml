@@ -12,11 +12,11 @@
   <version>1.0-alpha3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <scm>
+  <!--scm>
     <connection>scm:svn:http://svn.exoplatform.org/projects/social/1.0-alpha3-SNAPSHOT/</connection>
     <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/1.0-alpha3-SNAPSHOT/</developerConnection>
     <url>http://fisheye.exoplatform.org/browse/projects/social/1.0-alpha3-SNAPSHOT/</url>
-  </scm>
+  </scm-->
 
   <issueManagement>
     <system>jira</system>
@@ -64,7 +64,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration> <source>1.5</source><target>1.5</target><optimize>true</optimize></configuration>
       </plugin>
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.0.2</version>
@@ -87,7 +87,7 @@
             </manifestEntries>
           </archive>
         </configuration>
-      </plugin>
+      </plugin-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -154,7 +154,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!--plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
         <executions>
@@ -169,10 +169,10 @@
           <doCheck>false</doCheck>
           <doUpdate>false</doUpdate>
         </configuration>
-      </plugin>
+      </plugin-->
     </plugins>
   </build>
-  <pluginRepositories>
+  <!--pluginRepositories>
       <pluginRepository>
           <id>mc-release</id>
           <name>Local Maven repository of releases</name>
@@ -184,7 +184,7 @@
               <enabled>true</enabled>
           </releases>
       </pluginRepository>
-  </pluginRepositories>
+  </pluginRepositories-->
 
 
   <profiles>
@@ -205,7 +205,7 @@
                 </execution>
               </executions>
             </plugin-->
-            <plugin>
+            <!--plugin>
                 <groupId>com.google.code.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <configuration>
@@ -225,24 +225,27 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
           </plugins>
         </build>
     </profile>
   </profiles>
     <properties>
-      <org.exoplatform.kernel.version>2.2.Alpha3</org.exoplatform.kernel.version>
-      <org.exoplatform.core.version>2.3.Alpha4</org.exoplatform.core.version>
-      <org.exoplatform.ws.version>2.1.Alpha4</org.exoplatform.ws.version>
-      <org.exoplatform.jcr.version>1.12.Alpha4</org.exoplatform.jcr.version>
+      <org.exoplatform.kernel.version>2.2.0-Beta02</org.exoplatform.kernel.version>
+      <org.exoplatform.core.version>2.3.0-Beta02</org.exoplatform.core.version>
+      <org.exoplatform.ws.version>2.1.0-Beta02</org.exoplatform.ws.version>
+      <org.exoplatform.jcr.version>1.12.0-Beta02</org.exoplatform.jcr.version>
       <org.jibx.version>1.2.1</org.jibx.version>
       <org.shindig.version>SNAPSHOT-r790473</org.shindig.version>
-      <org.gatein.common.version>2.0.0-Beta01</org.gatein.common.version>
-      <org.gatein.wci.version>2.0.0-Beta01</org.gatein.wci.version>
-      <org.gatein.pc.version>2.1.0-Beta01</org.gatein.pc.version>
-      <org.gatein.mop.version>1.0.0-Beta03</org.gatein.mop.version>
-      <org.jboss.identity.idm>1.0.0.Beta2</org.jboss.identity.idm>
-      <org.exoplatform.portal.version>3.0.0-Beta01</org.exoplatform.portal.version>
+      <org.gatein.common.version>2.0.0-Beta03</org.gatein.common.version>
+      <org.gatein.wci.version>2.0.0-Beta02</org.gatein.wci.version>
+      <org.gatein.pc.version>2.1.0-Beta02</org.gatein.pc.version>
+      <org.jboss.identity.idm>1.0.0.Beta3</org.jboss.identity.idm>
+      <org.gatein.wsrp.version>1.0.0-Beta01</org.gatein.wsrp.version>
+      <org.gatein.mop.version>1.0.0-Beta09</org.gatein.mop.version>
+      <version.chromattic>1.0.0-beta5</version.chromattic>
+      <version.reflect>1.0.0-beta3</version.reflect>
+      <org.exoplatform.portal.version>3.0.0-Beta02</org.exoplatform.portal.version>
 	    <org.exoplatform.social.version>1.0-alpha3-SNAPSHOT</org.exoplatform.social.version>
       <test.classes>Test</test.classes>
       <test.skip>true</test.skip>
