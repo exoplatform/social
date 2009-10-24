@@ -17,13 +17,18 @@
 
 -->
 <%
-  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.portlet.profile.Utils;
+  import org.exoplatform.portal.application.PortalRequestContext;
 
-  //rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIAvatarUploader','/profile/javascript')
-
-	def relationURL = "http://localhost:8080/portal/private/classic/profile/relation/myfriends/"
-  def actititesURL = "http://localhost:8080/portal/private/classic/profile/activities/"
-	def profileURL = "http://localhost:8080/portal/private/classic/profile/myprofile/"
+	PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def portalURI = pcontext.getPortalURI();
+  def currIdentity = Utils.getCurrentIdentity();
+    
+  def actititesURL = portalURI + "activities/" + currIdentity.getRemoteId();
+  
+  def profileURL = portalURI + "profile/" + currIdentity.getRemoteId();
+	def relationURL = portalURI + "relations/yours/" + currIdentity.getRemoteId();
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
 	<div class="ProfTitle">Me</div>

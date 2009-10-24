@@ -17,11 +17,17 @@
 
 -->
 <%
-  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.portlet.profile.Utils;
+  import org.exoplatform.portal.application.PortalRequestContext;
 
-	def myfriendsURL = "http://localhost:8080/portal/private/classic/profile/relation/myfriends/"
-	def invitationsURL = "http://localhost:8080/portal/private/classic/profile/relation/invitations/"
-	def requestsURL = "http://localhost:8080/portal/private/classic/profile/relation/requests/"
+	PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def portalURI = pcontext.getPortalURI();
+  def currIdentity = Utils.getCurrentIdentity();
+    
+	def myfriendsURL = portalURI + "relations/yours/" + currIdentity.getRemoteId();
+	def invitationsURL = portalURI + "relations/invitations/" + currIdentity.getRemoteId();
+	def requestsURL = portalURI + "relations/requests/" + currIdentity.getRemoteId();
 %>
 <div class="UIRelationNavigationPortlet" id="$uicomponent.id">
 	<div class="RelTitle">My Friend</div>

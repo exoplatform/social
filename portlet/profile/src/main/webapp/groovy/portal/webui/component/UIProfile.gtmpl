@@ -17,15 +17,8 @@
 
 -->
 <%
-  import org.exoplatform.portal.webui.util.Util
   import org.exoplatform.webui.core.UIPopupWindow
 
-  //rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIAvatarUploader','/profile/javascript')
-
-  def identity = uicomponent.getProfile().identity;
-	def uriObj = uicomponent.getCurrentUriObj();
-  def actititesURL = Util.getPortalRequestContext().getPortalURI() + uriObj + "/" + identity.getRemoteId() + "/activities"
-	
 	def labelChangeAvatar = _ctx.appRes("${uicomponent.id}.label.change_avatar");
 	def imageSource = uicomponent.getImageSource();
 	
@@ -42,7 +35,7 @@
 		  </div>
 	  </div>
 	  <div class="UserActivitiesLink">
-        <a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getName() + ".label.LastActivities")%></a>
+        <a href="#" onclick="${uicomponent.event('ChangeAvatar')}"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
 	  </div>
 	</div>
   <div class="ContainerSpace" >

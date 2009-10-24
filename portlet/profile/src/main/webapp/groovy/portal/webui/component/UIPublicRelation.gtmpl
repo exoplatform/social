@@ -12,7 +12,7 @@
   def currIdentity = uicomponent.getCurrentIdentity();
   UIFormPageIterator iterator = uicomponent.getUiFormPageIterator();
   PortalRequestContext pcontext = Util.getPortalRequestContext();
-  def requestURI = pcontext.getRequestURI();
+  def portalURI = pcontext.getPortalURI();
 %>
 <div class="UIPublicRelation">
 	<div class="UITabPane">
@@ -26,8 +26,7 @@
 			  </div>
 		  <%}%>
 			<% for(identity in list) {
-			    def profileURL = requestURI + "/" + identity.getRemoteId();
-			    def activitiesURL = requestURI + "/" + identity.getRemoteId() + "/activities";
+			    def activitiesURL = portalURI + "activities/" + identity.getRemoteId();
 			    def fullName = identity.profile.fullName;
 			    def actionLink = uicomponent.event("AddContact", identity.getId());
 			    def position = identity.profile.getPropertyValue("position");
@@ -48,7 +47,7 @@
 	    </div>
 	    <div class="CommunityContainer">
 		    <div class="CommunityMane Line">
-		        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${profileURL}" class="CommunityNameMiddle">${fullName}</a></div>
+		        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" class="CommunityNameMiddle">${fullName}</a></div>
 		        <div  class="ActionBar" onclick="$actionLink">
 								<div class="LeftButton">
 									<div class="RightButton">
@@ -65,10 +64,6 @@
 		    <% if(position.length() > 0) { %>
 		    		<div class="Text Line">${position}</div>
 		    <%  } %>
-		    <div class="TagsName">
-		      <a href="${profileURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a> |
-		      <a href="${activitiesURL}" class="CommunityNameMiddle"><%=_ctx.appRes(uicomponent.getId() + ".label.Activities")%></a>
-		    </div>
 	    </div>
 	    <div style="clear: left;"><span></span></div>
 	    </div>

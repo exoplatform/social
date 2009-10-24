@@ -31,6 +31,7 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -266,6 +267,10 @@ public class UIMyRelation extends UIForm {
   }
   
   private String getCurrentUserName() {
+    String username = URLUtils.getCurrentUser();
+    if(username != null)
+      return username;
+    
     PortalRequestContext portalRequest = Util.getPortalRequestContext();
     return portalRequest.getRemoteUser();
   }

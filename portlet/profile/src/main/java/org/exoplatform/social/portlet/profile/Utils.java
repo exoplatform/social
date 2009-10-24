@@ -18,6 +18,13 @@ package org.exoplatform.social.portlet.profile;
 
 import java.util.*;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.portlet.URLUtils;
+import org.exoplatform.web.application.RequestContext;
+
 public class Utils {
 
   static public List sort(List l, String key1, String key2, boolean reverse) {
@@ -60,6 +67,16 @@ public class Utils {
     return (Map) select(l, key, value, true);
   }
 
+  static public Identity getCurrentIdentity() throws Exception {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      IdentityManager identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      RequestContext context = RequestContext.getCurrentInstance();
+      String currentUserName = context.getRemoteUser();
+      if (URLUtils.getCurrentUser() != null) currentUserName = URLUtils.getCurrentUser() ;
+      
+      return identityManager.getIdentityByRemoteId("organization", currentUserName);
+  }
+  
   protected static class MapSorter implements Comparator {
     private String key1;
     private String key2;

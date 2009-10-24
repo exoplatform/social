@@ -302,6 +302,84 @@
       </preference>
     </portlet-preferences>
   </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Relation Portlet</description>
+    <portlet-name>relation</portlet-name>
+    <display-name xml:lang="EN">Relation Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/relation/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.RelationPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Relation Portlet</title>
+      <short-title>Relation Portlet</short-title>
+      <keywords>relation</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Invitation Portlet</description>
+    <portlet-name>invitations</portlet-name>
+    <display-name xml:lang="EN">Invitation Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/invitation/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.InvitationPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Invitation Portlet</title>
+      <short-title>Invitation Portlet</short-title>
+      <keywords>invitations</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Request Portlet</description>
+    <portlet-name>requests</portlet-name>
+    <display-name xml:lang="EN">Request Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/request/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.RequestPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Request Portlet</title>
+      <short-title>Request Portlet</short-title>
+      <keywords>requests</keywords>
+    </portlet-info>     
+  </portlet>
 
   <portlet>
     <description xml:lang="EN">Profile List Portlet</description>
