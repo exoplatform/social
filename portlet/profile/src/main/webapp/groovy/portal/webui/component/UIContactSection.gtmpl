@@ -28,7 +28,7 @@
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
 
-  def emails = profile.getPropertyValue("emails");
+	def gender = profile.getPropertyValue("gender");
   def phones = profile.getPropertyValue("phones");
   def ims = profile.getPropertyValue("ims");
   def urls = profile.getPropertyValue("urls");
@@ -37,6 +37,7 @@
   def phoneChilds = uicomponent.getPhoneChilds();
   def urlChilds = uicomponent.getUrlChilds();
   def imsChilds = uicomponent.getImsChilds();
+  def genderChild = uicomponent.getGenderChild();
   
   def emailCount = uicomponent.getEmailCount();
   def phoneCount = uicomponent.getPhoneCount();
@@ -50,60 +51,25 @@
 	
 		<table class="UIFormGrid">
 		  <tbody>
-		    <!--              emails          -->
-		    <tr>
-		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.emails")%></td>
-		      <td class="FieldComponent">
-		        <ul>
-		        <%if (isEdit && isEditable) { 
-		        %>
-		         	<li class="propertyEl"> 
-			           <%			
-			           if (emailCount > 1) {      			            								     
-			           	for (i in 0..emailCount-1) {			           	
-			           		if (emailChilds.get(i).isRendered()) {
-			           			if (i % 2 != 0) {
-				           			uiform.renderField(emailChilds.get(i));
-				           			%>
-				           				<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+emailChilds.get(i-1).getId()+"."+emailChilds.get(i).getId())%>">&nbsp</a><br>
-				           			<%
-				           		} else {
-				           			uiform.renderField(emailChilds.get(i));
-				           		}
-			           		}
-			           %>			            
-			           <%}
-			          } else { %>
-				           <%=_ctx.appRes(uicomponent.getName() + ".label.noEmails")%>
-					      <%}%>
-		          </li>
-		          <% } else { %>
-		           <% 
-		              if (emails != null) {
-				            emails.each {
-					            def email = it.get("value");
-					            def type = it.get("key");
-				      %>
-				          		<li><a href="mailto:${email}">${email}</a> (${type})</li>
-		          <%   } //End each
-		             } else { %>
-		              <li id="profile.email.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noEmails")%></li>
-		          <%    
-		              } // End if emails != null
-		          %>
-		          
-		          <% } %>		          
-		        </ul>
-		      </td>
-		      <%
-		      if (isEdit && isEditable) {
-		      %>
-			      <td class="FieldComponent">
-			      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "email")%>">&nbsp</a>
-			      </td>
-		      <% } %>
-		    </tr>
-		    <!--              end of emails          -->
+		  <tr>
+		  <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%></td>
+		  <td class="FieldComponent">
+		  <ul>
+		  <%
+		    if (isEdit && isEditable) { %>
+      		<li class="propertyEl"><%uiform.renderField(genderChild);%></li>							
+	      <%
+	      }	else {
+	      %>
+       <% if ((gender != null) && (gender != "")) {%>
+				    <li class="propertyEl"><%=gender %></li>
+			<% }  else {%>
+						<li id="profile.noGender.isEmpty"><%=_ctx.appRes(uicomponent.getId() + ".label.noGender")%></li>
+			<% } %>
+			<% } %>
+			</ul>	
+			</td>    
+			</tr>		                 
 		   <!--              phones          -->
 		    
 		    <tr>

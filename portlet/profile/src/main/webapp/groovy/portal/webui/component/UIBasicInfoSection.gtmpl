@@ -16,57 +16,50 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<% import org.exoplatform.social.portlet.profile.UITitleBar;%>
+<% import org.exoplatform.social.portlet.profile.UIBasicInfoTitleBar;
+	 import org.exoplatform.services.organization.User;
+	 import org.exoplatform.services.security.ConversationState;
+	 import org.exoplatform.web.CacheUserProfileFilter;
+%>
 <%
-  def profile = uicomponent.getProfile();
+  //def profile = uicomponent.getProfile();
   
-	def firstName = profile.getPropertyValue("firstName");
-	firstName = (firstName == null ? "" : firstName);
+	//def firstName = profile.getPropertyValue("firstName");
+	//firstName = (firstName == null ? "" : firstName);
 	
-	def lastName = profile.getPropertyValue("lastName");
-	lastName = (lastName == null ? "" : lastName);
+	//def lastName = profile.getPropertyValue("lastName");
+	//lastName = (lastName == null ? "" : lastName);
 	
-	def gender = profile.getPropertyValue("gender");
+	//def gender = profile.getPropertyValue("gender");
+	// def emails = profile.getPropertyValue("emails");
 	def isEdit = uicomponent.isEditMode();
 	def isEditable = uicomponent.isEditable();
+	
+	def user = uicomponent.getViewUser();
+	def firstName = user.getFirstName();
+	def lastName = user.getLastName();
+	def email = user.getEmail();
 %>
 <div class="UIBasicInfoSection">
 <% uiform.begin() %>
-<% uicomponent.renderChild(UITitleBar.class); %>
+<% uicomponent.renderChild(UIBasicInfoTitleBar.class); %>
 	<div class="PortletContent">
 	
 		<table class="UIFormGrid">
 			<tbody>
-				<%if (isEdit && isEditable) {		  
-					  uicomponent.setValue();
-						List children = uiform.getChildren();		
-						int bound = children.size() - 1;
-						for(i in 1..bound) { 
-							if(children.get(i).isRendered()) {								 
-				%>
-								<tr>
-									<td class="FieldLabel"><%=uicomponent.getLabel(children.get(i).getName())+": " %></td>
-									<td class="FieldComponent"><% uiform.renderField(children.get(i)) %></td>
-								</tr>
-				<%    }
-						}			
-				%>				
-				<%} else {%>
-						<tr>
-				      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.firstName")+": " %></td>
-				      <td class="FieldComponent"><%=firstName %></td>
-				    </tr>
-				    <tr>
-				      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.lastName")+": " %></td>
-				      <td class="FieldComponent"><%=lastName %></td>
-				    </tr>
-				    <% if ((gender != null) && (gender != "")) {%>
-					    <tr>
-					      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.gender")+": " %></td>
-					      <td class="FieldComponent"><%=gender %></td>
-					    </tr>
-				    <% } %>
-				<%}%>	
+				
+			<tr>
+	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%></td>
+	      <td class="FieldComponent"><%=firstName %></td>
+	    </tr>
+	    <tr>
+	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%></td>
+	      <td class="FieldComponent"><%=lastName %></td>
+	    </tr>
+			<tr>
+		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%></td>
+		      <td class="FieldComponent"><%=email%></td>
+		  </tr>
 			</tbody>	
 		</table>
 	</div>

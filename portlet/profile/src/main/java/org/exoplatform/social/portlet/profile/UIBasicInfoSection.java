@@ -21,8 +21,15 @@ import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.portlet.URLUtils;
+import org.exoplatform.web.CacheUserProfileFilter;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -47,9 +54,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
     lifecycle = UIFormLifecycle.class,
     template =  "app:/groovy/portal/webui/component/UIBasicInfoSection.gtmpl",
     events = {
-        @EventConfig(listeners = UIProfileSection.EditActionListener.class, phase=Phase.DECODE),
-        @EventConfig(listeners = UIBasicInfoSection.SaveActionListener.class),
-        @EventConfig(listeners = UIProfileSection.CancelActionListener.class)
+        @EventConfig(listeners = UIProfileSection.EditActionListener.class, phase=Phase.DECODE)
     }
 )
 
@@ -72,7 +77,7 @@ public class UIBasicInfoSection extends UIProfileSection {
   final public static String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
   
   public UIBasicInfoSection() throws Exception {
-    addChild(UITitleBar.class, null, null);
+    addChild(UIBasicInfoTitleBar.class, null, null);
     
     addUIFormInput(new UIFormStringInput(FIRST_NAME, FIRST_NAME, null)
                    .addValidator(MandatoryValidator.class)
@@ -82,35 +87,51 @@ public class UIBasicInfoSection extends UIProfileSection {
                    .addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 30)
                    .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
+    addUIFormInput(new UIFormStringInput("Email", "Email", null));
 
-    List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    options.add(new SelectItemOption<String>(GENDER_DEFAULT));
-    options.add(new SelectItemOption<String>(MALE));
-    options.add(new SelectItemOption<String>(FEMALE));
-    addUIFormInput(new UIFormSelectBox(GENDER, GENDER, options));
+//    List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
+//    options.add(new SelectItemOption<String>(GENDER_DEFAULT));
+//    options.add(new SelectItemOption<String>(MALE));
+//    options.add(new SelectItemOption<String>(FEMALE));
+//    addUIFormInput(new UIFormSelectBox(GENDER, GENDER, options));
   }
   
-  /**
-   * Store profile information into database when form is submitted.
-   *
-   */
-  public static class SaveActionListener extends UIProfileSection.SaveActionListener {
-
-    public void execute(Event<UIProfileSection> event) throws Exception {
-      super.execute(event);
-      
-      UIProfileSection sect = event.getSource();    
-      
-      saveProfile((UIBasicInfoSection)sect);      
-      
-      //Get the UIHeaderSection to refresh it since it contains also the firstname and lastname
-      UIComponent parent = sect.getParent();
-      UIProfileSection header = parent.findFirstComponentOfType(UIHeaderSection.class);
-      if(header != null) {
-        event.getRequestContext().addUIComponentToUpdateByAjax(header);
-      }
-    }       
-  }  
+  public User getViewUser() throws Exception {
+    RequestContext context = RequestContext.getCurrentInstance();
+    String currentUserName = context.getRemoteUser();
+    String currentViewer = URLUtils.getCurrentUser();
+    
+    if(currentViewer != currentUserName) {
+      OrganizationService orgSer = getApplicationComponent(OrganizationService.class);
+      UserHandler userHandler = orgSer.getUserHandler();
+      return userHandler.findUserByName(currentViewer);      
+    }
+    
+    ConversationState state = ConversationState.getCurrent();
+    return (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+  }
+  
+//  /**
+//   * Store profile information into database when form is submitted.
+//   *
+//   */
+//  public static class SaveActionListener extends UIProfileSection.SaveActionListener {
+//
+//    public void execute(Event<UIProfileSection> event) throws Exception {
+//      super.execute(event);
+//      
+//      UIProfileSection sect = event.getSource();    
+//      
+//      saveProfile((UIBasicInfoSection)sect);      
+//      
+//      //Get the UIHeaderSection to refresh it since it contains also the firstname and lastname
+//      UIComponent parent = sect.getParent();
+//      UIProfileSection header = parent.findFirstComponentOfType(UIHeaderSection.class);
+//      if(header != null) {
+//        event.getRequestContext().addUIComponentToUpdateByAjax(header);
+//      }
+//    }       
+//  }  
   
   /**
    * Get information from profile and set value into components.
@@ -118,43 +139,48 @@ public class UIBasicInfoSection extends UIProfileSection {
    * @throws Exception
    */
   public void setValue() throws Exception {
-    Profile profile = getProfile();
-    String firstName = (String) profile.getProperty(FIRST_NAME);
-    firstName = (firstName == null ? "": firstName);
-    String lastName = (String) profile.getProperty(LAST_NAME);
-    lastName = (lastName == null ? "": lastName);
-    String gender = (String) profile.getProperty(GENDER);
-    gender = (gender == null ? "": gender);
-    UIFormStringInput uiFirstName = getChildById(FIRST_NAME);
-    UIFormStringInput uiLastName = getChildById(LAST_NAME);
-    UIFormSelectBox uiGender = getChildById(GENDER);
-    uiFirstName.setValue(firstName);
-    uiLastName.setValue(lastName);
-    uiGender.setValue(gender);    
+    ConversationState state = ConversationState.getCurrent();
+    User user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+    
+//    Profile profile = getProfile();
+//    String firstName = (String) profile.getProperty(FIRST_NAME);
+//    firstName = (firstName == null ? "": firstName);
+//    String lastName = (String) profile.getProperty(LAST_NAME);
+//    lastName = (lastName == null ? "": lastName);
+//    String gender = (String) profile.getProperty(GENDER);
+//    gender = (gender == null ? "": gender);
+//    UIFormStringInput uiFirstName = getChildById(FIRST_NAME);
+//    UIFormStringInput uiLastName = getChildById(LAST_NAME);
+//    UIFormStringInput uiEmail = getChildById("Email");
+//    UIFormSelectBox uiGender = getChildById(GENDER);
+//    uiFirstName.setValue(user.getFirstName());
+//    uiLastName.setValue(user.getLastName());
+//    uiEmail.setValue(user.getEmail());
+//    uiGender.setValue(gender);    
   }
   
-  /**
-   * Store profile information into database.
-   * 
-   * @param uiBasicInfoSection
-   * @throws Exception
-   */
-  private static void saveProfile(UIBasicInfoSection uiBasicInfoSection) throws Exception {
-    UIFormStringInput uiFirstName = uiBasicInfoSection.getChildById(FIRST_NAME);
-    UIFormStringInput uiLastName = uiBasicInfoSection.getChildById(LAST_NAME);
-    UIFormSelectBox uiGender = uiBasicInfoSection.getChildById(GENDER);
-    String firstName = uiFirstName.getValue();
-    String lastName = uiLastName.getValue();
-    String gender = uiGender.getValue();
-    gender = ("Gender".equals(gender) ? "" : gender);
-    
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Profile p = uiBasicInfoSection.getProfile();
-    p.setProperty(FIRST_NAME, firstName);
-    p.setProperty(LAST_NAME, lastName);
-    p.setProperty(GENDER, gender);
-    
-    im.saveProfile(p);    
-  }
+//  /**
+//   * Store profile information into database.
+//   * 
+//   * @param uiBasicInfoSection
+//   * @throws Exception
+//   */
+//  private static void saveProfile(UIBasicInfoSection uiBasicInfoSection) throws Exception {
+//    UIFormStringInput uiFirstName = uiBasicInfoSection.getChildById(FIRST_NAME);
+//    UIFormStringInput uiLastName = uiBasicInfoSection.getChildById(LAST_NAME);
+//    UIFormSelectBox uiGender = uiBasicInfoSection.getChildById(GENDER);
+//    String firstName = uiFirstName.getValue();
+//    String lastName = uiLastName.getValue();
+//    String gender = uiGender.getValue();
+//    gender = ("Gender".equals(gender) ? "" : gender);
+//    
+//    ExoContainer container = ExoContainerContext.getCurrentContainer();
+//    IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+//    Profile p = uiBasicInfoSection.getProfile();
+//    p.setProperty(FIRST_NAME, firstName);
+//    p.setProperty(LAST_NAME, lastName);
+//    p.setProperty(GENDER, gender);
+//    
+//    im.saveProfile(p);    
+//  }
 }

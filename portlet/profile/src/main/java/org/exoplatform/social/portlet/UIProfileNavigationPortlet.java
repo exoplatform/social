@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.portlet;
 
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -31,5 +33,17 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIProfileNavigationPortlet extends UIPortletApplication {
 
   public UIProfileNavigationPortlet() throws Exception {
+  }
+  
+  public String getSelectedNode() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestUrl = pcontext.getRequestURI();
+    String[] split = requestUrl.split("/");
+    if (split.length == 6) {
+      return split[split.length - 2];
+    } else if (split.length == 7) {
+      return split[split.length - 3];
+    }
+    return split[split.length-1];
   }
 }

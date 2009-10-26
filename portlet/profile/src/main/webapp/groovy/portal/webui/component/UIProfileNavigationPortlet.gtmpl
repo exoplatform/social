@@ -20,15 +20,15 @@
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.portlet.profile.Utils;
   import org.exoplatform.portal.application.PortalRequestContext;
-
+	
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def currIdentity = Utils.getCurrentIdentity();
     
   def actititesURL = portalURI + "activities/" + currIdentity.getRemoteId();
-  
   def profileURL = portalURI + "profile/" + currIdentity.getRemoteId();
 	def relationURL = portalURI + "relations/yours/" + currIdentity.getRemoteId();
+	def selectedNode = uicomponent.getSelectedNode();
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
 	<div class="ProfTitle">Me</div>
@@ -36,14 +36,26 @@
 		<img height="65" width="65" alt="" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif"/>
 	</a>
 	<div class="UIVerclTab">
+		<% if (selectedNode == "activities")  {%>
 	  <div class="SelectedTab Tab">
-        <a href="${actititesURL}" class="ActivityIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Activity")%></a>
-	  </div>
+	  <% } else  {%>
 	  <div class="NormalTab Tab">
-        <a href="${profileURL}" class="ProfileIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Profile")%></a>
+	  <%}%>
+        <a href="${actititesURL}" class="ActivityIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Activity")%></a>
 	  </div>
+	  <% if (selectedNode == "profile")  {%>
+	  <div class="SelectedTab Tab">
+	  <% } else  {%>
 	  <div class="NormalTab Tab">
-        <a href="${relationURL}" class="RelationIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Relations")%></a>
+	  <%}%>
+        <a href="${profileURL}" class="ProfileIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a>
+	  </div>
+	  <% if (selectedNode == "relations")  {%>
+	  <div class="SelectedTab Tab">
+	  <% } else  {%>
+	  <div class="NormalTab Tab">
+	  <%}%>
+        <a href="${relationURL}" class="RelationIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
 	  </div>
 	</div>
 </div>

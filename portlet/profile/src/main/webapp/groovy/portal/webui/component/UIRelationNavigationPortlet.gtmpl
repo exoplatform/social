@@ -28,17 +28,30 @@
 	def myfriendsURL = portalURI + "relations/yours/" + currIdentity.getRemoteId();
 	def invitationsURL = portalURI + "relations/invitations/" + currIdentity.getRemoteId();
 	def requestsURL = portalURI + "relations/requests/" + currIdentity.getRemoteId();
+	def selectedNode = uicomponent.getSelectedNode();
 %>
 <div class="UIRelationNavigationPortlet" id="$uicomponent.id">
-	<div class="RelTitle">My Friend</div>
+	<div class="RelTitle">My Relation</div>
 	<div class="UIVerclTab">
+	  <% if (selectedNode == "yours")  {%>
 	  <div class="SelectedTab Tab">
+	  <% } else  {%>
+	  <div class="NormalTab Tab">
+	  <%}%>
         <a href="${myfriendsURL}" class="FriendIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.MyFriends")%></a>
 	  </div>
+	  <% if (selectedNode == "invitations")  {%>
+	  <div class="SelectedTab Tab">
+	  <% } else  {%>
 	  <div class="NormalTab Tab">
+	  <%}%>
         <a href="${invitationsURL}" class="InviIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Invitations")%></a>
 	  </div>
+	  <% if (selectedNode == "requests")  {%>
+	  <div class="SelectedTab Tab">
+	  <% } else  {%>
 	  <div class="NormalTab Tab">
+	  <%}%>
         <a href="${requestsURL}" class="RequestIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Requests")%></a>
 	  </div>
 	</div>

@@ -111,6 +111,16 @@ public class UIContactSection extends UIProfileSection {
   final public static String URL_REGEX_EXPRESSION = "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
   /** INVALID URL. */
   final public static String INVALID_URL = "UIContactSect.msg.Invalid-url";
+  /** GENDER Child. */
+  final public static String GENDER_CHILD = "UITgender";
+  /** GENDER. */
+  final public static String GENDER = "gender";
+  /** DEFAULT GENDER. */
+  final public static String GENDER_DEFAULT = "Gender";
+  /** MALE. */
+  final public static String MALE = "male";
+  /** FEMALE. */
+  final public static String FEMALE = "female";
   
   /** Number of email. */
   private int emailCount = 0;
@@ -156,6 +166,12 @@ public class UIContactSection extends UIProfileSection {
    */
   public UIContactSection() throws Exception {
     addChild(UITitleBar.class, null, null);
+
+    List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
+    options.add(new SelectItemOption<String>(GENDER_DEFAULT));
+    options.add(new SelectItemOption<String>(MALE));
+    options.add(new SelectItemOption<String>(FEMALE));
+    addUIFormInput(new UIFormSelectBox(GENDER_CHILD, GENDER_CHILD, options));
   }
   
   /**
@@ -202,6 +218,15 @@ public class UIContactSection extends UIProfileSection {
    */
   public List<UIComponent> getUrlChilds() {
     return sortSubList(getSubList( emailCount + phoneCount + imsCount, emailCount + phoneCount + imsCount + urlCount));
+  }
+
+  /**
+   * Get gender child<br>
+   * 
+   * @return  gender child.
+   */
+  public UIComponent getGenderChild() {
+    return getChildById(GENDER_CHILD);
   }
   
   /**
@@ -269,17 +294,21 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void saveProfileInfo() throws Exception {
-    ArrayList<HashMap<String, String>> emails = new ArrayList<HashMap<String, String>>();
+//    ArrayList<HashMap<String, String>> emails = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> phones = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> ims = new ArrayList<HashMap<String, String>>();
     ArrayList<HashMap<String, String>> urls = new ArrayList<HashMap<String, String>>();
     
-    List<UIComponent> listEmailUIComp = getEmailChilds();
+//    List<UIComponent> listEmailUIComp = getEmailChilds();
     List<UIComponent> listPhoneUIComp = getPhoneChilds();
     List<UIComponent> listIMSUIComp = getImsChilds();
     List<UIComponent> listURLUIComp = getUrlChilds();
 
-    emails = getProfileForSave(emailCount, listEmailUIComp, null);
+    UIFormSelectBox uiGender = getChildById(GENDER_CHILD);
+    String gender = uiGender.getValue();
+    gender = ("Gender".equals(gender) ? "" : gender);
+    
+//    emails = getProfileForSave(emailCount, listEmailUIComp, null);
     phones = getProfileForSave(phoneCount, listPhoneUIComp, WORK);
     ims = getProfileForSave(imsCount, listIMSUIComp, null);
     urls = getProfileForSave(urlCount, listURLUIComp, URL);
@@ -289,10 +318,11 @@ public class UIContactSection extends UIProfileSection {
     
     Profile p = getProfile();     
     
-    p.setProperty(EMAILS, emails);
+//    p.setProperty(EMAILS, emails);
     p.setProperty(PHONES, phones);
     p.setProperty(IMS, ims);
     p.setProperty(URLS, urls);
+    p.setProperty(GENDER, gender);
     
     im.saveProfile(p);
   }
@@ -369,7 +399,7 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void setValue() throws Exception {
-    setValueByType(getEmailChilds(), EMAILS);
+//    setValueByType(getEmailChilds(), EMAILS);
     setValueByType(getPhoneChilds(), PHONES);
     setValueByType(getImsChilds(), IMS);
     setValueByType(getUrlChilds(), URLS);
@@ -389,6 +419,8 @@ public class UIContactSection extends UIProfileSection {
     ArrayList<HashMap<String, String>> profiles = (ArrayList<HashMap<String, String>>) profile.getProperty(uiType);
     List<String> listProfile = new ArrayList<String>();    
     int listChildSize = listChilds.size();
+    String gender = (String) profile.getProperty(GENDER);
+    if (gender != "") ((UIFormInput)getGenderChild()).setValue(gender);
     
     if ((profiles == null) || (profiles.size() == 0)) {
       if (listChildSize != 0) {

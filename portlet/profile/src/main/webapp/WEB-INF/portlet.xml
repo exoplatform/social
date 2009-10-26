@@ -331,7 +331,7 @@
   
   <portlet>
     <description xml:lang="EN">Invitation Portlet</description>
-    <portlet-name>invitations</portlet-name>
+    <portlet-name>invitation</portlet-name>
     <display-name xml:lang="EN">Invitation Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
