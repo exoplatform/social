@@ -23,12 +23,13 @@
   <name></name>
  	<container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
  		<container id="Menu" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-  		<application>
-			  <instance-id>/space/SpaceMenuPortlet</instance-id>
-			  <title>SpaceMenu</title>
-			  <show-info-bar>false</show-info-bar>
-			  <show-application-state>true</show-application-state>      
-			</application>
+			<portlet-application>
+        <portlet>
+          <application-ref>space</application-ref>
+          <portlet-ref>SpaceMenuPortlet</portlet-ref>
+        </portlet>
+		    <show-info-bar>false</show-info-bar>
+		  </portlet-application>
   	</container>
  		<container id="Application" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
  		</container>

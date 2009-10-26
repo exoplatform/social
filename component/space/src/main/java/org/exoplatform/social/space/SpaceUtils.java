@@ -61,6 +61,7 @@ public class SpaceUtils {
 
   static public final String  MANAGER     = "manager";
   
+  
   /**
    * Create a new group from an existing group.
    * This new group will get all data from existing group except for group name

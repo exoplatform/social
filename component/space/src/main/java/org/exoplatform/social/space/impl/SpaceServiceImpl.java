@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
@@ -304,11 +305,6 @@ public class SpaceServiceImpl implements SpaceService {
       if (memberships.size() == 0) {
         throw new SpaceException(SpaceException.Code.USER_NOT_MEMBER);
       }
-      /*
-      if (isOnlyLeader(space, userId)) {
-        throw new SpaceException(SpaceException.Code.USER_ONLY_LEADER);
-      }
-      */
 
       Iterator<Membership> itr = memberships.iterator();
       while(itr.hasNext()) {
@@ -368,21 +364,13 @@ public class SpaceServiceImpl implements SpaceService {
   public List<String> getMembers(Space space) throws SpaceException {
     try {
       OrganizationService orgService = getOrgService();
-      //TODO tung.dang: temp change for using from gatein - have to roll back
-      //--------------------------------------------------------------------
-      GroupHandler groupHandler = orgService.getGroupHandler();
-      Group group = groupHandler.findGroupById(space.getGroupId());
-      MembershipHandler memberShipHandler = orgService.getMembershipHandler();
-      Collection list = memberShipHandler.findMembershipsByGroup(group);
-      List<String> usernames = new ArrayList<String>();
-      for (Object obj : list) {
-        Membership membership = (Membership) obj;
-        usernames.add(membership.getUserName());
+      PageList usersPageList = orgService.getUserHandler().findUsersByGroup(space.getGroupId());
+      List<User> users = usersPageList.getAll();
+      ArrayList<String> userNames = new ArrayList<String>();
+      for (User user : users) {
+          userNames.add(user.getUserName());
       }
-//      PageList usersPageList = orgService.getUserHandler().findUsersByGroup(space.getGroupId());
-//      List<User> users = usersPageList.getAll();
-      //----------------------------------------------------------------------
-      return usernames;
+      return userNames;
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
     }

@@ -26,7 +26,7 @@
   		<properties-param>
   		<name>space</name>
   		<description>Configure the applicatins to install in a space</description>
-  		<property name="homeNodeApp" value="HomeSpacePortlet"></property>
+  		<property name="homeNodeApp" value="DashboardPortlet"></property>
   		<property name="apps" value="UserListPortlet, SpaceSettingPortlet"></property>
   		</properties-param>
   	</init-params>	

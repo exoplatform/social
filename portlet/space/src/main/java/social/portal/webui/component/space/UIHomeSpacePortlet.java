@@ -47,8 +47,8 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
     UIDashboard uiDashboard = addChild(UIDashboard.class, null, null);
     PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance() ;
     PortletRequest prequest = context.getRequest() ;
-    String template =  prequest.getPreferences().getValue("homeSpaceTemplate", DEFAULT_TEMPLATE) ;
-    String rssFetchId = prequest.getPreferences().getValue("rssFetchId", DEFAULT_RSSFETCH_ID) ;
+    String template =  prequest.getPreferences().getValue("template", DEFAULT_TEMPLATE) ;
+    String rssFetchId = prequest.getPreferences().getValue("aggregatorId", DEFAULT_RSSFETCH_ID) ;
     uiDashboard.setContainerTemplate(template);
     uiDashboard.setAggregatorId(rssFetchId);
   }

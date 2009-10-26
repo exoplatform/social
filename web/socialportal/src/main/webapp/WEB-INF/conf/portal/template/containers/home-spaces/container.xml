@@ -19,15 +19,15 @@
 -->
 <container template="classpath:groovy/dashboard/webui/component/UIColumnContainer.gtmpl">
   	<container template="classpath:groovy/dashboard/webui/component/UIContainer.gtmpl">
-		<application>
-	      	<instance-id>/eXoGadgets/rssFetch</instance-id>
-	      	<application-type>eXoGadget</application-type>
-	    </application>  	
+		<!-- application>
+      	<instance-id>/eXoGadgets/rssFetch</instance-id>
+      	<application-type>eXoGadget</application-type>
+	  </application-->  	
   	</container>
- 	<container template="classpath:groovy/dashboard/webui/component/UIContainer.gtmpl">
-		<application>
-	      	<instance-id>/eXoGadgets/statusUpdate</instance-id>
-	      	<application-type>eXoGadget</application-type>
-	    </application> 		
- 	</container>
+ 		<container template="classpath:groovy/dashboard/webui/component/UIContainer.gtmpl">
+			<!-- application>
+      	<instance-id>/eXoGadgets/statusUpdate</instance-id>
+      	<application-type>eXoGadget</application-type>
+  	  </application--> 		
+		</container>
 </container>
