@@ -101,7 +101,7 @@ public class UIBasicInfoSection extends UIProfileSection {
     String currentUserName = context.getRemoteUser();
     String currentViewer = URLUtils.getCurrentUser();
     
-    if(currentViewer != currentUserName) {
+    if((currentViewer != null) && (currentViewer != currentUserName)) {
       OrganizationService orgSer = getApplicationComponent(OrganizationService.class);
       UserHandler userHandler = orgSer.getUserHandler();
       return userHandler.findUserByName(currentViewer);      
