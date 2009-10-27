@@ -31,29 +31,69 @@
 }
 
 .UIProfile .AvatarSpace{
-  background: url(background/AvatarContainer.gif) no-repeat left;
-  width: 173px; height: 217px;
-  padding:16px 0px 0px 8px;
+  background: url('background/BLAvatarBG.gif') no-repeat left top;
+	width: 126px;
+	height: 126px;
+	padding: 7px 0px 0px 7px;
+	margin: 15px;
 }
 
 .UIProfile .LeftColumn {
-  width: 173px;
   float: left;
+	width:190px;
 }
 
 .UIProfile .AvatarSpace .Image {
+  width: 126px;
+	height: 126px;
 }
 
+.UIAction .ActionContainer {
+	padding-left:24px;
+	width:auto;
+}
+
+.UIProfile .ButtonChange .ButtonLeft{
+	background: url('background/ButtonChangeL.gif') no-repeat left top;
+	padding-left: 8px;
+}
+
+.UIProfile .ButtonChange .ButtonRight{
+	background: url('background/ButtonChangeR.gif') no-repeat right top;
+	padding-right: 18px;
+}
+
+.UIProfile .ButtonChange .ButtonMiddle{
+	background: url('background/ButtonChangeM.gif') repeat-x;
+	height: 18px;
+	padding: 0px 8px;
+	line-height: 14px;
+}
+
+.UIProfile .ActivitiesTitleBarR{
+	background: url('background/ActivitiesComponentBTR.gif') no-repeat right top;
+	padding-right: 5px;
+}
+
+
+.UIProfile .ActivitiesTitleBarM{
+	background: url('background/ActivitiesComponentBTM.gif') repeat-x;
+	height: 22px;
+	color: #7d7d7d;
+	line-height: 22px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.UIProfile .ContainerSpace {
+	margin-left:190px;
+}
 .UIProfile .AvatarSpace .HiddenAvatarChangeLink {
   display: none;
 }
 
 .UIProfile .AvatarSpace .ShowedAvatarChangeLink {
   display: inline;
-}
-
-.UIProfile .ContainerSpace {
-	margin-left: 200px;
 }
 
 .UIProfile .ContainerSpace .LeftContainer{
@@ -72,10 +112,8 @@
 }
 
 .UIProfile .ContainerSpace .PortletContent {
-	background: #f5f9fb;
-	border: 1px solid #d3d3d3;
-	padding: 8px;
-	height: 100%;
+	background:#FBFBFB none repeat scroll 0 0;
+	padding:8px;
 }
 
 .UIProfile .ContainerSpace .ActionBar .CenterButton .SaveIcon{
@@ -116,13 +154,45 @@
 }
 
 .UIProfile h2{
-	font-weight: bold;
-	font-size: 16px;
-	color: #406a80;
-	line-height: 30px;
-  margin-bottom:0px;
-  height: 30px;
+	color:#3A3A3A;
+	font-size:14px;
+	font-weight:bold;
+	margin: 4px 0px;
 }
+
+.UIProfile .ATitleBarL {
+	background: url('background/ATitleBarL.gif') no-repeat left top;
+	padding-left: 4px;
+	margin-top: 8px;
+}
+
+.UIProfile .ATitleBarR {
+	background: url('background/ATitleBarR.gif') no-repeat right top;
+	padding-right: 4px;
+}
+
+.UIProfile .ATitleBarM {
+	background: url('background/ATitleBarM.gif') repeat-x;
+	padding-left: 4px;
+}
+
+.UIProfile .ATitleBarC {
+	background: url('background/ATitleBarC.gif') no-repeat left top;
+	height:25px;
+	color: white;
+	margin-left: 8px;
+	line-height: 20px;
+	font-weight: bold;
+}
+
+.UIProfile .EditIcon {
+	background: url('background/EditIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+}
+
 
 .UIProfile h3{
 	font-size: 11px;
@@ -141,21 +211,8 @@
   margin-left:5px;
 }
 
-.UIProfile .ContainerSpace .TitleBar{
-	font-size: 11px;
-	font-weight: bold;
-	color: #466c83;
-	line-height: 20px;
-	background: #d6e4ed;
-	margin: 10px 0px 0px 0px;
-	padding-left: 6px;
-	height: 24px;
-	overflow: hidden;
-}
-
-.UIProfile .ContainerSpace .TitleBar h4{
-  float: left;
-  margin: 0px;
+.UIProfile .ATitleBarL .Title {
+	float: left;
 }
 
 .profileTemplate {
@@ -177,7 +234,6 @@
 .UIProfile .ContainerSpace .FieldLabel {
 	text-align: right;
 	padding: 4px;
-	color: #406c80;
 	font-weight: bold;
 	width: 120px;
 }

@@ -22,18 +22,19 @@
   String accountSetting = "javascript:if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'AccountSettings', true));" 
 %>
 <div class="TitleBar" id="$uicomponent.id">
-  <h4><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></h4>
-  <% if (isEditable) { %>
-    <div class="ActionBar" onclick="$accountSetting">
-			<div class="LeftButton">
-				<div class="RightButton">
-					<div class="CenterButton">
-						<div class="EditIcon">
-							<%=_ctx.appRes(uicomponent.getName() + ".label.edit")%>
-						</div>
-					</div>
+
+	
+	<div class="ATitleBarL">
+		<div class="ATitleBarR">
+			<div class="ATitleBarM">
+				<div class="ATitleBarC">
+					<div class="Title"><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></div>
+					<% if (isEditable) { %>
+						<a onclick="$accountSetting" href="#" class="EditIcon">&nbsp;</a>
+					<% } %>
 				</div>
 			</div>
 		</div>
-  <% } %>
+	</div>
+	
 </div>

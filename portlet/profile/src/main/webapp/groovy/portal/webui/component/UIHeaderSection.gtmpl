@@ -32,17 +32,17 @@
 <div class="UIHeaderSection">
 <% uiform.begin() %>
 	<h2><%=profile.getFullName() %></h2>
-	<div class="SendPosition">
+	<span>
 	    <% if(!isEdit) { %>
-	      		<%=position%> <span><% if(isEditable) { %>(<a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a>) <% } %></span>
+	      		<%=position%> <span><% if(isEditable) { %>(<a style="color: #058ee6;" href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a>) <% } %></span>
 	    <% } else {
 		    		if (isEditable) { %>
 				      <%uicomponent.setValue();%>
-				      <% uiform.renderChild(UIFormStringInput.class) %> (<a href="<%=uicomponent.event("Save") %>">Send</a>)
+				      <% uiform.renderChild(UIFormStringInput.class) %> (<a style="color: #058ee6;" href="<%=uicomponent.event("Save") %>">Send</a>)
 		      <%} else {%>
 		      	<%=position%>
 		      <%}%>
 	    <% }%>
-	</div>
+	</span>
 <% uiform.end() %>
 </div>

@@ -17,5 +17,8 @@
 
 -->
 <div class="UIProfilePortlet" id="$uicomponent.id">
+	<div class="ActivitiesTitleBarR">
+		<div class="ActivitiesTitleBarM">MY ACTIVITIES</div>
+	</div>
   <% uicomponent.renderChildren(); %>
 </div>

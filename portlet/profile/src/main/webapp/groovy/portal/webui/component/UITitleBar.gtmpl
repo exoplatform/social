@@ -21,46 +21,23 @@
   def isEditable = uicomponent.isEditable();  
 %>
 <div class="TitleBar" id="$uicomponent.id">
-  <h4><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></h4>
-  <% if (isEditable) {
-  %>
 
-    <% if (!isEdit) { %>
-    <div class="ActionBar" onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>">
-			<div class="LeftButton">
-				<div class="RightButton">
-					<div class="CenterButton">
-						<div class="EditIcon">
-							<%=_ctx.appRes(uicomponent.getName() + ".label.edit")%>
-						</div>
-					</div>
+	<div class="ATitleBarL">
+		<div class="ATitleBarR">
+			<div class="ATitleBarM">
+				<div class="ATitleBarC">
+					<div class="Title"><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></div>
+					<% if (isEditable) { %>
+						<% if (!isEdit) { %>
+							<a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>" href="#" class="EditIcon">&nbsp;</a>
+						<% } else { %>
+							<a onclick="<%=uicomponent.event("Cancel")%>" href="#" class="CancelIcon">&nbsp;</a>
+							<a onclick="<%=uicomponent.event("Save")%>" href="#" class="SaveIcon">&nbsp;</a>
+						 <% } %>
+					<% } %>
 				</div>
 			</div>
 		</div>
-    <% } else { %>
-    <div class="ActionBar" onclick="<%=uicomponent.event("Cancel")%>">
-			<div class="LeftButton">
-				<div class="RightButton">
-					<div class="CenterButton">
-						<div class="DeleteIcon">
-							<%=_ctx.appRes(uicomponent.getName() + ".label.cancel")%>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="ActionBar" onclick="<%=uicomponent.event("Save")%>">
-			<div class="LeftButton">
-				<div class="RightButton">
-					<div class="CenterButton">
-						<div class="SaveIcon">
-							<%=_ctx.appRes(uicomponent.getName() + ".label.save")%>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-    <% } %>
+	</div>
 
-  <% } %>
 </div>

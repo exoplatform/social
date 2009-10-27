@@ -28,24 +28,37 @@
 	  <div class="AvatarSpace">
 		  <div class="Image" onclick="${uicomponent.event('ChangeAvatar')}" title="Click to chage avatar">
 		  	<% if(imageSource == null) { %>
-		  		<img src="/profile/skin/portal/webui/component/UIRelationshipPortlet/background/ImgAvatar.gif" width="156" height="197">
+		  		<img src="/profile/skin/portal/webui/component/UIRelationshipPortlet/background/BLAvatar.gif" height="119px" width="119px" alt="">
 		  	<% } else { %>
-		  		<img src="$imageSource" width="156" height="197">
+		  		<img src="$imageSource" height="119px" width="119px">
 		  	<% } %>
 		  </div>
 	  </div>
-	  <div class="UserActivitiesLink">
-        <a href="#" onclick="${uicomponent.event('ChangeAvatar')}"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
-	  </div>
+	  <div class="UIAction">
+		<table class="ActionContainer">
+			<tbody>
+				<tr>
+					<td>
+						<div onclick="" class="ActionButton ButtonChange">
+						  <div class="ButtonLeft">
+							  <div class="ButtonRight">
+									<div class="ButtonMiddle">
+										<a href="#" onclick="${uicomponent.event('ChangeAvatar')}"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
+									</div>
+								</div>
+							</div>
+						</div>					
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
+	 
+  </div>
   <div class="ContainerSpace" >
-		<div class="LeftContainer" >
-			<div class="RightContainer" >
-				<div class="CenterContainer" >
+
           <% uicomponent.renderChildren(); %>
-				</div>
-			</div>
-		</div>
+			
 	</div>
 	<div style="clear: left;"><span></span></div>
 	<div class="UIAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
