@@ -27,7 +27,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIInvitationPortlet extends UIPortletApplication {
 
   public UIInvitationPortlet() throws Exception {
-    addChild(UIPublicRelation.class, null, null);
+    addChild(UIInvitationRelation.class, null, null);
   }
 
 }

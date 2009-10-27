@@ -31,7 +31,7 @@
 	def selectedNode = uicomponent.getSelectedNode();
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
-	<div class="ProfTitle">Me</div>
+	<div class="ProfTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Me")%></div>
 	<a class="Avartar">
 		<img height="65" width="65" alt="" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif"/>
 	</a>

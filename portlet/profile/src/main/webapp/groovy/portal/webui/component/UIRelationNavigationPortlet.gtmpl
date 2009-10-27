@@ -31,28 +31,28 @@
 	def selectedNode = uicomponent.getSelectedNode();
 %>
 <div class="UIRelationNavigationPortlet" id="$uicomponent.id">
-	<div class="RelTitle">My Relation</div>
+	<div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.MyRelations")%></div>
 	<div class="UIVerclTab">
 	  <% if (selectedNode == "yours")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${myfriendsURL}" class="FriendIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.MyFriends")%></a>
+        <a href="${myfriendsURL}" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.MyRelations")%></a>
 	  </div>
 	  <% if (selectedNode == "invitations")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${invitationsURL}" class="InviIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Invitations")%></a>
+        <a href="${invitationsURL}" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
 	  </div>
 	  <% if (selectedNode == "requests")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${requestsURL}" class="RequestIcon"><%=_ctx.appRes(uicomponent.getName() + ".label.Requests")%></a>
+        <a href="${requestsURL}" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
 	  </div>
 	</div>
 </div>

@@ -189,7 +189,7 @@
     <name>invitations</name>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
-    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+    <container id="sociallayout"  template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 	  		<application>
 				  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationfriends</instance-id>
@@ -224,7 +224,7 @@
     <name>requests</name>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
-    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+    <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 	  		<application>
 				  <instance-id>portal#classic:/profile/profilenavigationportlet/profilenavigationfriends</instance-id>

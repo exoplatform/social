@@ -31,7 +31,28 @@
 		<application-name>profile</application-name>
 		<portlet-name>profile</portlet-name>
 		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIMainProfilePortlet/DefaultStylesheet.css</css-path>
+		<css-path>/skin/portal/webui/component/UIRelationshipPortlet/DefaultStylesheet.css</css-path>
+	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>relation</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIRelationPortlet/DefaultStylesheet.css</css-path>
+	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>invitation</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIInvitationPortlet/DefaultStylesheet.css</css-path>
+	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>requests</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIRequestPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
 	
 	<portlet-skin>

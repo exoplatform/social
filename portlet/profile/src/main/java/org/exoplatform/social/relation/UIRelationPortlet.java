@@ -27,7 +27,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIRelationPortlet extends UIPortletApplication {
 
   public UIRelationPortlet() throws Exception {
-    addChild(UIMyRelation.class, null, null);
+    addChild(UIMyRelations.class, null, null);
   }
 
 }
