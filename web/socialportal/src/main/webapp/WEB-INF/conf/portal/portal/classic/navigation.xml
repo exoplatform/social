@@ -18,8 +18,6 @@
 
 -->
 <node-navigation>
-  <owner-type>portal</owner-type>
-  <owner-id>classic</owner-id>
   <priority>1</priority>
 
   <page-nodes>
@@ -29,10 +27,12 @@
 	  <label>#{portal.classic.home}</label>
 	  <page-reference>portal::classic::homepage</page-reference>	    
 	 </node>
+	 
    <node>
     <uri>register</uri>
     <name>register</name>
     <label>#{portal.classic.register}</label>
+    <visible>false</visible>
     <page-reference>portal::classic::register</page-reference>
    </node>
    
@@ -84,6 +84,7 @@
 	    <visible>false</visible>
 	    <page-reference>portal::classic::manageSpaces</page-reference>
 	  </node>
+	  
 	  <node>
 	    <uri>groupnavigation</uri>
 	    <name>groupnavigation</name>

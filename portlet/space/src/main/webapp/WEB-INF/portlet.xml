@@ -41,7 +41,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.GroovyPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.web.BannerPortlet</resource-bundle>
     
     <portlet-info>
       <title>Banner Portlet</title>
