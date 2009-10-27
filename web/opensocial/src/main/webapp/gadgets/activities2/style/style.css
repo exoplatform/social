@@ -1,0 +1,259 @@
+/**
+ * style.css
+ * stylesheet for status update app
+ */
+ 
+ * {
+	margin: 0;
+	padding: 0;
+}
+
+a:link, a:hover, a:active, a:visited  {
+	text-decoration: none;
+}
+
+
+.FloatLeft {
+	float: left;
+}
+
+.FloatRight {
+	float: right;
+}
+
+.ClearLeft {
+	clear: left;
+}
+
+.ClearRight {
+	clear: right;
+}
+
+.ClearBoth {
+	clear: both;
+}
+
+.DisplayNone {
+	display: none;
+}
+
+body {
+	font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+	font-size:11px;
+	height:100%;
+	margin:0px;
+	/*overflow-x:hidden;*/
+	padding:0px;
+}
+
+img {border: none}
+
+.ActivitiesComponent {
+	height: 120%;
+}
+
+.ActivitiesComponent  .ActivitiesComponentBT{
+	/*background: url('images/ActivitiesComponentBT.gif') no-repeat right bottom ;*/
+	/*height: 700px;*/
+}
+
+.ActivitiesComponent .ActivitiesTitleBarR{
+	background: url('images/ActivitiesComponentBTR.gif') no-repeat right top;
+	padding-right: 5px;
+}
+
+
+.ActivitiesComponent .ActivitiesTitleBarM{
+	background: url('images/ActivitiesComponentBTM.gif') repeat-x;
+	height: 22px;
+	color: #7d7d7d;
+	line-height: 22px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.ActivitiesComponent .ActivitiesContainer{
+	border-right: 1px solid #d6d6d6;
+	border-left: 1px solid #d6d6d6;
+	padding: 5px 20px 10px;
+	/*height: 550px;*/
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentL{
+	background: url('images/MyStatusComponentL.gif') no-repeat left top;
+	padding-left:5px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentR{
+	background: url('images/MyStatusComponentR.gif') no-repeat right top;
+	padding-right:5px;
+}
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM{
+	background: #f0f0f0;
+	height: 65px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusAvatarBG{
+	background: url('images/MyStatusAvatarBG.gif') no-repeat left top;
+	width: 27px; height: 27px;
+	padding: 2px;
+	margin: 8px;
+	float: left;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInput{
+	padding: 0px 0px 0px 50px;
+}
+
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputL{
+	background: url('images/MyStatusInputL.gif') no-repeat left top;
+	padding-left: 8px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputR{
+	background: url('images/MyStatusInputR.gif') no-repeat Right top;
+	padding-right: 2px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputM{
+	background: white;
+	height: 25px;
+	border-top:1px solid #d7d7d7;
+	border-bottom:1px solid #d7d7d7;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .Textbox{
+	border: none;
+	border-width: 0px;
+	width: 634px;
+	height: 18px;
+	float: left;
+	color: #777777;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .IconAdd{
+	background: url('images/IconAdd.gif') no-repeat Right center;
+	padding: 4px 13px;
+	float: right;
+}
+
+.ActivitiesComponent .ActivitiesContainer .InputExtension{
+	padding: 4px 0px 0px 33px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .InputExtension .Label{
+	float: left;
+}
+
+.ActivitiesComponent .ActivitiesContainer .InputExtension .AttachIcon{
+	float: left;
+	width: 16px;
+	height: 16px;
+	margin-left: 6px;
+	cursor: pointer;
+}
+
+.ActivitiesComponent .ActivitiesContainer .InputExtension .ImageAttach{
+	background: url('images/ImageAttach.gif') no-repeat left center;
+}
+
+.ActivitiesComponent .ActivitiesContainer .InputExtension .VideoAttach{
+	background: url('images/VideoAttach.gif') no-repeat left center;
+}
+
+.ActivitiesComponent .ActivitiesContainer .InputExtension .LinkAttach{
+	background: url('images/LinkAttach.gif') no-repeat left center;
+}
+
+.ATitleBarL {
+	background: url('images/ATitleBarL.gif') no-repeat left top;
+	padding-left: 4px;
+	margin-top: 8px;
+}
+
+.ATitleBarR {
+	background: url('images/ATitleBarR.gif') no-repeat right top;
+	padding-right: 4px;
+}
+
+.ATitleBarM {
+	background: url('images/ATitleBarM.gif') repeat-x;
+	padding-left: 4px;
+}
+
+.ATitleBarC {
+	background: url('images/ATitleBarC.gif') no-repeat left top;
+	height:25px;
+	color: white;
+	margin-left: 8px;
+	line-height: 20px;
+	font-weight: bold;
+}
+
+.ADecoratorContainer .ActivitiesContent{
+	background: #fbfbfb;
+	padding: 8px 8px 13px;
+}
+
+.ADecoratorContainerGray .ActivitiesContent{
+	background: #f2f2f2;
+	padding: 8px 8px 13px;
+	margin: 2px 0px;
+}
+
+.ListPeopleLike{
+	background: url('images/ListPeopleLike.gif') no-repeat 50px top;
+	padding-top: 6px;
+}
+
+.ListPeopleContent{
+	border: 1px solid #e5e1e2;
+	border-top: none;
+	padding: 8px;
+}
+
+.ListPeopleLikeBG{
+	background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
+	margin-left: 80px;
+	margin-bottom: 7px;
+}
+
+.ListPeopleLikeBG .ListPeopleLike .Title a{
+	color: #006cc6;
+}
+
+.AvatarPeopleBG{
+	background: url('images/AvatarPeopleBG.gif') no-repeat left top;
+	width: 52px;
+	height: 52px;
+	padding: 6px 0px 0px 6px;
+	float: left;
+	margin: 8px;
+}
+
+.ActivitiesContainer .TitleItem{
+	font-weight: bold;
+	color:#424242;
+	line-height: 24px;
+}
+
+.ActivitiesContainer .Content{
+	color:#424242;
+	line-height: 18px;
+}
+
+.ActivitiesContainer .Content span {
+	margin: 0 5px;
+}
+
+.ActivitiesContainer .NewsDate{
+	color:#9e9e9e;
+	line-height: 16px;
+	font-size: 10px;
+}
+
+.ActivitiesContainer .Likes {
+	line-height: 16px;
+	font-size: 10px;
+}

@@ -1,0 +1,14 @@
+/**
+ * home.css
+ * style for home view
+ * Overiding some styles from style.css
+ */
+ 
+ .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .Textbox{
+	width: 190px;
+	height: 20px;
+}
+ 
+ .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .IconAdd{
+	padding: 10px 15px;
+}
