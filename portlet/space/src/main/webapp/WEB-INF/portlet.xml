@@ -354,4 +354,108 @@
     </portlet-info>     
   </portlet>
   
+  <portlet>
+    <description xml:lang="EN">My Space Portlet</description>
+    <portlet-name>MySpacePortlet</portlet-name>
+    <display-name xml:lang="EN">My Space Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/MySpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.MySpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>My Space Portlet</title>
+      <short-title>My Space Portlet</short-title>
+      <keywords>MySpacePortlet</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Invitation Space Portlet</description>
+    <portlet-name>InvitationSpacePortlet</portlet-name>
+    <display-name xml:lang="EN">Invitation Space Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/InvitationSpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.InvitationSpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Invitation Space Portlet</title>
+      <short-title>Invitation Space Portlet</short-title>
+      <keywords>InvitationSpacePortlet</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Pending Space Portlet</description>
+    <portlet-name>PendingSpacePortlet</portlet-name>
+    <display-name xml:lang="EN">Space Navigation Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/PendingSpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.PendingSpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Pending Space Portlet</title>
+      <short-title>Pending Space Portlet</short-title>
+      <keywords>PendingSpacePortlet</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Public Space Portlet</description>
+    <portlet-name>PublicSpacePortlet</portlet-name>
+    <display-name xml:lang="EN">Public Space Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/PublicSpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.PublicSpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Public Space Portlet</title>
+      <short-title>Public Space Portlet</short-title>
+      <keywords>PublicSpacePortlet</keywords>
+    </portlet-info>     
+  </portlet>
+  
 </portlet-app>

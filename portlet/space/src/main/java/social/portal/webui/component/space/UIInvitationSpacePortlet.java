@@ -20,16 +20,12 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
-/**
- * Created by The eXo Platform SAS
- */
-
 @ComponentConfig(
- lifecycle = UIApplicationLifecycle.class,
- template = "app:/groovy/portal/webui/space/UISpaceNavigationPortlet.gtmpl"
+  lifecycle = UIApplicationLifecycle.class,
+  template = "app:/groovy/portal/webui/space/UIInvitationSpacePortlet.gtmpl"
 )
-public class UISpaceNavigationPortlet extends UIPortletApplication {
 
-  public UISpaceNavigationPortlet() throws Exception {
-  }
+public class UIInvitationSpacePortlet extends UIPortletApplication {
+  
+  public UIInvitationSpacePortlet() throws Exception {  }
 }

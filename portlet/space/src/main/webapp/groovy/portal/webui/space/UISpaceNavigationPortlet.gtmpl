@@ -17,14 +17,16 @@
 
 -->
 <%
-  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.portal.application.PortalRequestContext;
+	
+	PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def portalURI = pcontext.getPortalURI();
 
-  //rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIAvatarUploader','/profile/javascript')
-
-	def mySpaceURL = "http://localhost:8080/portal/private/classic/space/myspace/"
-  def invitationsURL = "http://localhost:8080/portal/private/classic/space/invitations/"
-	def pendingsURL = "http://localhost:8080/portal/private/classic/space/pendings/"
-	def publicsURL = "http://localhost:8080/portal/private/classic/space/publics/"
+	def mySpaceURL = portalURI + "mySpace";
+  def invitationsURL = portalURI + "invitationSpace";
+	def pendingsURL = portalURI + "pendingSpace";
+	def publicsURL = portalURI + "publicSpace";
 %>
   <div class="UISpaceNavigationPortlet" id="$uicomponent.id">
     <div class="LeftColumn">
