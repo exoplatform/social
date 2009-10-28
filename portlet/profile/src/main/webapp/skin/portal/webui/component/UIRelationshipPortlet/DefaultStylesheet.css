@@ -48,8 +48,8 @@
 	height: 126px;
 }
 
-.UIAction .ActionContainer {
-	padding-left:24px;
+.UIProfilePortlet .UIProfile .LeftColumn .UIAction {
+	padding:8px 24px 0px 0px;
 	width:auto;
 }
 
@@ -70,14 +70,9 @@
 	line-height: 14px;
 }
 
-.UIProfile .ActivitiesTitleBarR{
-	background: url('background/ActivitiesComponentBTR.gif') no-repeat right top;
-	padding-right: 5px;
-}
 
-
-.UIProfile .ActivitiesTitleBarM{
-	background: url('background/ActivitiesComponentBTM.gif') repeat-x;
+.ActivitiesTitleBarM{
+	background: #ebebeb;
 	height: 22px;
 	color: #7d7d7d;
 	line-height: 22px;

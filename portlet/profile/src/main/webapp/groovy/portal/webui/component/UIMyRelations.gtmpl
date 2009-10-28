@@ -16,6 +16,7 @@
 <div class="UIMyRelations">
 	<div class="UITabPane">
 	<% uiform.begin() %>
+		<div class="ActivitiesTitleBarM">MY FRIEND LIST</div>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
 			<%if (myRelation.size() == 0) {%>

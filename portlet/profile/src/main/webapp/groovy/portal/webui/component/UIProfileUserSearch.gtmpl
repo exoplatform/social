@@ -36,29 +36,48 @@ def hideMoreSearchId = "HideMoreSearch" + uicomponentId;
 def positionId = "Position" + uicomponentId;
 def companyId = "Company" + uicomponentId;
 def genderId = "Gender" + uicomponentId;
-
+def selectedStartChar = uicomponent.getSelectedStartChar();
 def rcontext = _ctx.getRequestContext();
 rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileUserSearch','/profile/javascript');
-
+def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 %>
 <div class="UIProfileUserSearch" id="$uicomponentId">
  <div class="SearchSpaces" name="SearchSpaces">
-  <div class="Lable">${contactSearchLabel}</div>
-  <input type="text" id="$searchId" class="Search" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);"/>
-  <div class="ButtonSearch" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUser(this, '$uicomponentId');">${filterLabel}</div>
-  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
-  <div style="clear: left;"><span></span></div>
+	<div class="SearchSpacesR ClearFix">
+	  <div class="Lable">${contactSearchLabel}</div>
+	  <input type="text" id="$searchId" class="Search" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);"/>
+	  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
+	  <div style="clear: left;"><span></span></div>
+	  <div class="Filter" id="$filterId" style="">
+		<div class="Lable">Filter:</div>
+		<input type="text" id="$positionId" class="Input" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$positionLabel"/>
+		<input type="text" id="$companyId" class="Input" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$companyLabel"/>
+		<select class="Select" id="$genderId" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onMouseDown="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)">
+			<option selected="selected" value="Gender">${allLabel}</option>
+			<option value="male">${maleLabel}</option>
+			<option value="female">${femaleLabel}</option>
+		</select>
+		<a id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</a>
+	  </div>
+	</div>
  </div>
- <div class="FilterSpaces" id="$filterId" style="display:none">
-  <div class="Lable">${filterByLabel}</div>
-  <input id="$positionId" type="text" class="FilterByPosition" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$positionLabel"/>
-  <input id="$companyId" type="text" class="FilterByCompany" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$companyLabel"/>
-  <select class="FilterByGender" id="$genderId" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onMouseDown="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)">
-  	<option selected="selected" value="Gender">${allLabel}</option>
-		<option value="male">${maleLabel}</option>
-		<option value="female">${femaleLabel}</option>
-	</select>
-  <div id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</div>
-  <div style="clear: left;"><span></span></div>
- </div>
+	<div class="ATitleBarL">
+		<div class="ATitleBarR">
+			<div class="ATitleBarM">
+				<div class="ATitleBarC">
+				Friend Deractoy
+				</div>
+			</div>
+		</div>
+	</div>
+ <div class="DirectorySpaces" id="DirectorySpaces">
+ 		<% for (ch in alphabets) { 
+ 				if ((selectedStartChar != null) && (selectedStartChar == ch)) {
+ 		%>
+ 					<a href="#/$ch" style="font-color:red;" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
+ 		 <%} else {%>
+ 					<a href="#/$ch" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
+ 			<% } %>
+ 		<% } %>
+ </dir>
 </div>

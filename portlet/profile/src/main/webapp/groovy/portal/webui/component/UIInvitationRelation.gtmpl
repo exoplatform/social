@@ -22,6 +22,7 @@
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def requestURI = pcontext.getRequestURI();
 %>
+<div class="ActivitiesTitleBarM">MY FRIEND LIST</div>
 <div class="UIInvitationRelation">
 	<div class="UITabPane">
 	<% uiform.begin() %>
