@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<page-set>  
+
+  <page>
+  	<page-id>portal::@owner@::homepage</page-id>
+    <owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>homepage</name>
+    <title>Home Page</title>
+	  <access-permissions>Everyone</access-permissions>
+	  <edit-permission>*:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/space/HomePagePortlet/homepageportlet</instance-id>
+      <title>Home Page portlet</title>
+      <show-info-bar>false</show-info-bar>
+      <show-application-state>false</show-application-state>
+      <show-application-mode>false</show-application-mode>
+    </application>
+  </page>
+  
+  <page>
+  	<page-id>portal::@owner@::register</page-id>
+    <owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>register</name>
+    <title>Register</title>
+	  <access-permissions>Everyone</access-permissions>
+	  <edit-permission>*:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>group#platform/guests:/exoadmin/AccountPortlet/Account</instance-id>
+      <title>New Account</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+  
+  <page>
+  	<page-id>portal::@owner@::MyProfile</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>MyProfile</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/profile/myprofile/myprofiles</instance-id>
+      <title>MyProfile</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+  
+  <page>
+  	<page-id>portal::@owner@::RelationShip</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>RelationShip</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/profile/relationship/relationships</instance-id>
+      <title>RelationShip</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+
+  <page>
+  	<page-id>portal::@owner@::manageSpaces</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>manageSpaces</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/space/ManageSpacesPortlet/managespaces</instance-id>
+      <title>ManageSpaces</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+  
+  <page>
+  	<page-id>portal::@owner@::activities</page-id>
+  	<owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>activities</name>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>portal#@owner@:/dashboard/GadgetPortlet/GadgetPortletActivities</instance-id>
+      <title>Activities</title>
+      <show-info-bar>false</show-info-bar>
+    </application>
+  </page>
+  
+  <page>
+    <owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>groupnavigation</name>
+    <title>Group Navigation</title>
+	  <access-permissions>*:/platform/users</access-permissions>
+	  <edit-permission>*:/platform/administrators</edit-permission>    
+    <application>
+      <instance-id>group#organization/management/executive-board:/exoadmin/GroupNavigationPortlet/GroupNavigation</instance-id>
+      <title>Group Navigation</title>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>false</show-info-bar>
+    </application>  
+  </page>
+  
+  <page>
+    <owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
+    <name>portalnavigation</name>
+    <title>Portal Navigation</title>
+	  <access-permissions>*:/platform/users</access-permissions>
+	  <edit-permission>*:/platform/administrators</edit-permission>    
+    <application>
+      <instance-id>group#organization/management/executive-board:/exoadmin/PortalNavigationPortlet/PortalNavigation</instance-id>
+      <title>Portal Navigation</title>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>false</show-info-bar>
+    </application>  
+  </page>
+</page-set>

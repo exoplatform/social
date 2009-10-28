@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<portal-config>
+  <portal-name>/developer</portal-name>
+  <locale>en</locale>
+  <access-permissions>Everyone</access-permissions>
+  <edit-permission>*:/platform/administrators</edit-permission>
+  <creator>root</creator>
+  <properties>
+    <entry key="sessionAlive">onDemand</entry>
+  </properties>
+    
+ 	<portal-layout>
+  </portal-layout>
+  
+</portal-config>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  
+  <page>
+  	<page-id>group::/developer::canvas</page-id>
+  	<owner-type>group</owner-type>
+    <owner-id>/developer</owner-id>
+    <name>canvas</name>
+    <title>Canvas</title>
+    <access-permissions>*:/developer</access-permissions>
+    <edit-permission>*:/platform/administrators</edit-permission>
+    <application>
+      <instance-id>group#/developer:/dashboard/GadgetPortlet/GadgetPortletRandom</instance-id>
+      <title>Cavas</title>
+      <access-permissions>*:/developer</access-permissions>
+      <show-info-bar>false</show-info-bar>
+      <show-application-state>false</show-application-state>
+      <show-application-mode>false</show-application-mode>
+    </application>  
+  </page>
+</page-set>
+
