@@ -84,8 +84,8 @@ public class UISpaceSearch extends UIComponent {
       UISpaceSearch uiSpaceSearch = event.getSource();
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
       String spaceName = event.getRequestContext().getRequestParameter("spaceName");
-      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName);
-      uiSpaceSearch.setSpaceList(spaceSearchResult);
+//      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName);
+//      uiSpaceSearch.setSpaceList(spaceSearchResult);
       Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();
