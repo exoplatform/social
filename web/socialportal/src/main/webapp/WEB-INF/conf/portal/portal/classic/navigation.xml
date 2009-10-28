@@ -85,6 +85,38 @@
 	    <page-reference>portal::classic::manageSpaces</page-reference>
 	  </node>
 	  
+	 <node>
+    <uri>mySpace</uri>
+    <name>mySpace</name>
+    <label>#{portal.classic.mySpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::mySpace</page-reference>
+   </node>
+   
+   <node>
+    <uri>invitationSpace</uri>
+    <name>invitationSpace</name>
+    <label>#{portal.classic.invitationSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::invitationSpace</page-reference>
+   </node>
+   
+   <node>
+    <uri>pendingSpace</uri>
+    <name>pendingSpace</name>
+    <label>#{portal.classic.pendingSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::pendingSpace</page-reference>
+   </node>
+   
+   <node>
+    <uri>publicSpace</uri>
+    <name>publicSpace</name>
+    <label>#{portal.classic.publicSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::publicSpace</page-reference>
+   </node>
+   
 	  <node>
 	    <uri>groupnavigation</uri>
 	    <name>groupnavigation</name>
