@@ -77,6 +77,14 @@ public class IdentityManager {
     return getIdentitiesByProfileFilter(null, profileFilter);  
   }
 
+  public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFiler profileFilter) throws Exception {
+    return storage.getIdentitiesFilterByAlphaBet(providerId, profileFilter);
+  }
+  
+  public List<Identity> getIdentitiesFilterByAlphaBet(ProfileFiler profileFilter) throws Exception {
+    return getIdentitiesFilterByAlphaBet(null, profileFilter);  
+  }
+  
   /**
    * This function return an Identity object that specific to
    * a special type.

@@ -256,6 +256,40 @@ public class JCRStorage {
     return listIdentity;
   }
 
+  public List<Identity> getIdentitiesFilterByAlphaBet(String identityProvider, ProfileFiler profileFilter) throws Exception {
+    Node profileHomeNode = getProfileServiceHome();
+    Session session = getSession() ;
+    QueryManager queryManager = session.getWorkspace().getQueryManager() ;
+    StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
+        .append("/").append(PROFILE_NODETYPE);
+    String userName = profileFilter.getUserName();
+
+    if (userName.length() != 0) {
+      queryString.append("[");
+    }
+    
+    if (userName.length() != 0) {
+      userName += "*" ;
+        
+      queryString.append("(jcr:contains(@firstName, ").append("'").append(userName).append("'))");
+    }
+    
+    if (userName.length() != 0) {
+      queryString.append("]");
+    }
+    
+    Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
+    QueryResult queryResult = query1.execute();
+    NodeIterator nodeIterator = queryResult.getNodes();
+    List<Identity> listIdentity = new ArrayList<Identity>();
+    while (nodeIterator.hasNext()) {
+      Node profileNode = (Node) nodeIterator.next();
+      Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
+      listIdentity.add(getIdentity(identityNode));
+    }
+    return listIdentity;
+  }
+  
   public void saveProfile(Profile p) throws Exception {
     Node profileHomeNode = getProfileServiceHome();
 
