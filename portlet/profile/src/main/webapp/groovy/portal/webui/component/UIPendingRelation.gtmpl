@@ -23,7 +23,17 @@
 		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
 		        <div style="clear: left;"><span></span></div>
 		      </div>
+			  
 		  <%}%>
+			<div class="ATitleBarL">
+				<div class="ATitleBarR">
+					<div class="ATitleBarM">
+						<div class="ATitleBarC">
+						Friend Listting
+						</div>
+					</div>
+				</div>
+			</div>
 			<%	for(relation in list) {
 					def identity = null;
 					if (currIdentity.id == relation.identity1.id) {
@@ -37,7 +47,7 @@
 			    def position = identity.profile.getPropertyValue("position");
 			    if (!position) position = "";
 			    
-			    String imageSource = "/eXoResourcesSocial/skin/ShareImages/Avartar.gif";
+			    String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/BLAvatar.gif";
 			    ProfileAttachment att = identity.profile.getProperty("avatar");
 	    		if (att != null) {
 						try {
@@ -46,34 +56,57 @@
 						} catch (Exception e) {}
 	    		}
 		  %>
-			  	<div class="ContentSpace">
-			    <div class="MiniAvatarSpaceBG">
-						<img src="$imageSource" width="65" height="65">
-					</div>
+				
+			  	<div class="ContentSpace ClearFix">
+			    <div class="AvartarPeopleBG">
+		           <img height="47px" width="47px" src="$imageSource"/>
+		        </div>
 			    <div class="CommunityContainer">
-				    <div class="CommunityMane Line">
-				        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" class="CommunityNameMiddle">${fullName}</a></div>
+				    <div class="CommunityMane Line ClearFix">
+				        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" style="color: #afafaf;">${fullName}</a></div>
 				       <% if (isEditable) {%>
-				        <div  class="ActionBar" onclick="$actionLink">
-										<div class="LeftButton">
-											<div class="RightButton">
-												<div class="CenterButton">
-													<div class="SaveIcon">
-														<%=_ctx.appRes(uicomponent.getId() + ".label.Revoke")%>
-													</div>
-												</div>
-											</div>
-										</div>
-					    	</div>
-					    	<span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
+					   <a href="#" class="RemoveIcon" onclick="$actionLink" >&nbsp;</a>
+					   <a href="#" class="StopIcon" onclick="$actionLink" >&nbsp;</a>
+					   <a href="#" class="SelectIcon" onclick="$actionLink" >&nbsp;</a>
+					   <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
 					    <% } %> 
-				        <div style="clear: both;"><span></span></div>
 				    </div>
 				    <% if(position.length() > 0) { %>
 				    		<div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
 				    <%  } %>
+				    <div class="CommunityContent">
+				    	<span style="padding: 4px;">Descriptions:</span>
+				    	<span style="padding: 4px;">Deverloper</span>
+				    </div>
 			    </div>
-			    <div style="clear: left;"></div>
+			    </div>
+				
+				
+				
+				
+				
+				<div class="ContentSpaceGray ClearFix">
+			    <div class="AvartarPeopleBG">
+		           <img height="47px" width="47px" src="$imageSource"/>
+		        </div>
+			    <div class="CommunityContainer">
+				    <div class="CommunityMane Line ClearFix">
+				        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" style="color: #afafaf;">${fullName}</a></div>
+				       <% if (isEditable) {%>
+					   <a href="#" class="RemoveIcon" onclick="$actionLink" >&nbsp;</a>
+					   <a href="#" class="StopIcon" onclick="$actionLink" >&nbsp;</a>
+					   <a href="#" class="SelectIcon" onclick="$actionLink" >&nbsp;</a>
+					   <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
+					    <% } %> 
+				    </div>
+				    <% if(position.length() > 0) { %>
+				    		<div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
+				    <%  } %>
+				    <div class="CommunityContent">
+				    	<span style="padding: 4px;">Descriptions:</span>
+				    	<span style="padding: 4px;">Deverloper</span>
+				    </div>
+			    </div>
 			    </div>
 		  <% } %>
 		  <%

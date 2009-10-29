@@ -48,6 +48,7 @@
   background: url(background/AvatarContainer.gif) no-repeat left;
   width: 173px; height: 217px;
   padding:16px 0px 0px 8px;
+  curdor: pointer;
 }
 
 .UIProfile .LeftColumn {
@@ -304,7 +305,7 @@
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search{
-	width: 256px;
+	width: 232px;
 	float: left;
 	background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
 	border: 1px solid #b7b7b7;
@@ -319,6 +320,7 @@
 	float: left;
 	border: 1px solid #b7b7b7;
 	margin-right: 4px;
+	font-size: 11px;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .AdvanceSearchLable{
@@ -331,6 +333,7 @@
 	float: left;
 	width: 82px;
 	border: 1px solid #b7b7b7;
+	font-size: 11px;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
@@ -393,14 +396,14 @@
 .UITabPane .ContainerSpace .ContentSpace {
 	background: white;
 	padding: 8px;
-	margin-bottom:4px;
+	margin-bottom:1px;
 	background: #fbfbfb;
 }
 
 .UITabPane .ContainerSpace .ContentSpaceGray {
 	background: white;
 	padding: 8px;
-	margin-bottom:4px;
+	margin-bottom:1px;
 	background: #f3f3f3;
 }
 
@@ -443,7 +446,7 @@
 .UITabPane .ContainerSpace .CommunityMane {
 	color: #0d6e8f;
 	height: 20px;
-	font-size: 12px;
+	font-size: 11px;
 	font-family: tahoma;
 	font-weight: bold;
 	margin-bottom: 5px;
@@ -452,7 +455,7 @@
 .ContainerSpace .CommunityMane {
 	color: #0d6e8f;
 	height: 20px;
-	font-size: 12px;
+	font-size: 11px;
 	font-family: tahoma;
 	font-weight: bold;
 	margin-bottom: 5px;
@@ -547,4 +550,25 @@ input.hint, textarea.hint {
 
 .ContainerSpace .SearchSpaces .FilterBy {
 	color: #C7C7C7;
+}
+
+.UITabPane .RemoveIcon{
+	background: url('background/RemoveIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}
+
+.UITabPane .StopIcon{
+	background: url('background/StopIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}
+
+.UITabPane .SelectIcon{
+	background: url('background/SelectIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
 }

@@ -48,6 +48,7 @@
   background: url(background/AvatarContainer.gif) no-repeat left;
   width: 173px; height: 217px;
   padding:16px 0px 0px 8px;
+  curdor: pointer;
 }
 
 .UIProfile .LeftColumn {
@@ -319,6 +320,7 @@
 	float: left;
 	border: 1px solid #b7b7b7;
 	margin-right: 4px;
+	font-size: 11px;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .AdvanceSearchLable{
@@ -331,6 +333,7 @@
 	float: left;
 	width: 82px;
 	border: 1px solid #b7b7b7;
+	font-size: 11px;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
