@@ -106,8 +106,7 @@ public class IdentityManager {
     //System.out.println("identityProviders = " + identityProviders);
     if(loadProfile) {
       IdentityProvider identityProvider = identityProviders.get(identity.getProviderId());
-      System.out.println("\n\n\n\n: identity: " + identityProvider.getIdentityByRemoteId(identity));
-      identity = identityProviders.get(identity.getProviderId()).getIdentityByRemoteId(identity);
+      identity = identityProvider.getIdentityByRemoteId(identity);
     }
     return identity;
   }

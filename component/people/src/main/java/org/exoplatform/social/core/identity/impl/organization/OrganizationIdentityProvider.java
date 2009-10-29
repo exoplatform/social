@@ -16,20 +16,19 @@
  */
 package org.exoplatform.social.core.identity.impl.organization;
 
-import org.exoplatform.social.core.identity.IdentityProvider;
-import org.exoplatform.social.core.identity.JCRStorage;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
-import org.exoplatform.commons.utils.PageList;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import org.exoplatform.social.core.identity.IdentityProvider;
+import org.exoplatform.social.core.identity.JCRStorage;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 
 public class OrganizationIdentityProvider extends IdentityProvider {
   private JCRStorage storage;
@@ -41,19 +40,22 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     this.organizationService = organizationService;
   }
 
-  public final String getName() {
+  public String getName() {
     return NAME;
   }
 
 
 
-  public final Identity getIdentityByRemoteId(final Identity identity) throws Exception {
+  public Identity getIdentityByRemoteId(Identity identity) throws Exception {
     //TODO: tung.dang need to review again.
     User user = null;
     try {
       UserHandler userHandler = organizationService.getUserHandler();
-      user = userHandler.findUserByName(identity.getRemoteId());
+      String remote = identity.getRemoteId();
+      System.out.println("\n\n\n\n find user by name: " + remote);
+      user = userHandler.findUserByName(remote);
     } catch (Exception e) {
+      e.printStackTrace();
       return null;
     }
     if (user == null) {
@@ -67,7 +69,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     return identity;
   }
 
-  private Identity loadIdentity(User user, final Identity identity) throws Exception {
+  private Identity loadIdentity(User user, Identity identity) throws Exception {
       Profile profile = identity.getProfile();
 
       profile.setProperty("firstName", user.getFirstName());
@@ -95,6 +97,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
   }
 
   public List<String> getAllUserId() throws Exception {
+    //TODO: dang tung - need to review again.
     PageList pl = organizationService.getUserHandler().getUserPageList(20);
     List<User> userList = pl.getAll();
     List<String> userIds = new ArrayList<String>();

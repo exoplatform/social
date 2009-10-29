@@ -102,7 +102,6 @@ public class ExoService {
     }
 
     protected Identity getIdentity(String id) throws Exception {
-      System.out.println("\n\n\n\n id: " + id);
       PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
       IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
