@@ -120,7 +120,7 @@
 	              </collection>
 	            </field>
 	            <field name="ownerType"><string>portal</string></field>
-	            <field name="templateLocation"><string>war:/conf/social-ext/portal/</string></field>
+	            <field name="templateLocation"><string>war:/conf/portal/</string></field>
 	          </object>
 	        </object-param> 
 	        <object-param>
@@ -136,7 +136,7 @@
 	              </collection>
 	            </field>
 	            <field  name="ownerType"><string>group</string></field>
-	            <field  name="templateLocation"><string>war:/conf/social-ext/portal</string></field> 
+	            <field  name="templateLocation"><string>war:/conf/portal</string></field> 
 	          </object>
 	        </object-param>       
 	        <object-param>
@@ -153,7 +153,7 @@
 	              </collection>
 	            </field>
 	            <field  name="ownerType"><string>user</string></field>
-	            <field  name="templateLocation"><string>war:/conf/social-ext/portal</string></field> 
+	            <field  name="templateLocation"><string>war:/conf/portal</string></field> 
 	          </object>
 	        </object-param>
 	        <object-param>
@@ -163,7 +163,7 @@
 	        		<field name="templates">
 	        			<collection type="java.util.ArrayList"></collection>
 	        		</field>
-	        		<field name="location"><string>war:/conf/social-ext/portal/template/pages</string></field>
+	        		<field name="location"><string>war:/conf/portal/template/pages</string></field>
 	        	</object>
 	        </object-param>
 	      </init-params>
