@@ -77,6 +77,22 @@
   </page>
   
   <page>
+    <name>people</name>
+    <title>Manage People</title>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <portlet-application>
+      <portlet>
+        <application-ref>profile</application-ref>
+        <portlet-ref>PeoplePortlet</portlet-ref>
+      </portlet>
+      <title>Manage People</title>
+      <access-permissions>*:/platform/users</access-permissions>
+      <show-info-bar>false</show-info-bar>      
+    </portlet-application>
+  </page>
+  
+  <page>
     <name>activities</name>
     <title>Activities</title>
     <access-permissions>*:/platform/users</access-permissions>

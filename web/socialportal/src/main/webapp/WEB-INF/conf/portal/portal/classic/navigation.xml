@@ -77,14 +77,22 @@
 	   </node>
    </node>
 	  
-	  <node>
-	    <uri>spaces</uri>
-	    <name>spaces</name>
-	    <label>#{portal.classic.spaces}</label>
+  <node>
+    <uri>spaces</uri>
+    <name>spaces</name>
+    <label>#{portal.classic.spaces}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::manageSpaces</page-reference>
+  </node>
+	 
+	 <node>
+	    <uri>people</uri>
+	    <name>people</name>
+	    <label>#{portal.classic.people}</label>
 	    <visible>false</visible>
-	    <page-reference>portal::classic::manageSpaces</page-reference>
-	  </node>
-	  
+	    <page-reference>portal::classic::people</page-reference>
+	 </node>
+	 
 	 <node>
     <uri>mySpace</uri>
     <name>mySpace</name>
