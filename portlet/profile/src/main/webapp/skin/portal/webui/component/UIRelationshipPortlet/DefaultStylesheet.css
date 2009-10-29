@@ -188,6 +188,26 @@
 	margin-top: 3px;
 }
 
+.UIProfile .CancelIcon {
+	background: url('background/CancelIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+	width: auto;
+	height: auto;
+}
+
+.UIProfile .SaveIcon {
+	background: url('background/SaveIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+	width: auto;
+	height: auto;
+}
+
 
 .UIProfile h3{
 	font-size: 11px;
@@ -245,6 +265,10 @@
 	margin: 0px;
   padding-left:0;
   list-style:none;
+}
+
+.UIProfile .ContainerSpace .FieldComponent .selectbox{
+	font-size: 11px;
 }
 
 .UIProfile .ContainerSpace .FieldComponent .LV_invalid_field {
