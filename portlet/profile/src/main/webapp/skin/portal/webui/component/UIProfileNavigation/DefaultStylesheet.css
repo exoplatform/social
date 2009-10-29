@@ -60,7 +60,7 @@
 .UIProfileNavigationPortlet .ProfTitle {
 	background: url(background/ProfTitle.gif) no-repeat center top;
 	color: #2f2f2f;
-	font-weight:bold;
+	font-weight: bold;
 	height: 26px;
 	line-height: 20px;
 	text-align: center;
@@ -68,13 +68,13 @@
 
 .UIProfileNavigationPortlet .Avartar {
 	background: url(background/BgProfAvartar.gif) no-repeat left top;
-	display:block;
-	height:64px;
-	margin:30px auto;
-	padding:6px 0;
-	text-align:center;
-	vertical-align:middle;
-	width:79px;
+	display: block;
+	height: 64px;
+	margin: 30px auto;
+	padding: 6px 0;
+	text-align: center;
+	vertical-align: middle;
+	width: 79px;
 }
 
 .UIVerclTab {
@@ -84,10 +84,10 @@
 }
 
 .UIVerclTab .Tab {
-	height:23px;
-	line-height:23px;
-	padding-right:20px;
-	text-align:right;
+	height: 23px;
+	line-height: 23px;
+	padding-right: 20px;
+	text-align: right;
 }
 
 .UIVerclTab .SelectedTab {

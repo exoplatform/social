@@ -1,0 +1,256 @@
+#UIContainer-sociallayout {
+	padding: 10px;
+}
+
+#sociallayout {
+	-moz-border-radius: 3px;
+	border: 1px solid #d6d6d6;
+}
+
+#sociallayout .UIComponentBlock {
+	background: none;
+}
+.ProfileNavigationTDContainer {
+	width: 162px;
+	background: #ededed;
+}
+
+.ProfileActivityTDContainer {
+	background: white;
+}
+
+.UISpaceNavigationPortlet .ProfTitle {
+	background: url(background/ProfTitle.gif) no-repeat center top;
+	color: #2f2f2f;
+	font-weight:bold;
+	height: 26px;
+	line-height: 20px;
+	text-align: center;
+}
+
+.UISpaceNavigationPortlet .Avartar {
+	background: url(background/BgProfAvartar.gif) no-repeat left top;
+	display: block;
+	height: 64px;
+	margin: 30px auto;
+	padding: 6px 0;
+	text-align: center;
+	vertical-align: middle;
+	width: 79px;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab {
+	width: 168px;
+	position: relative;
+	margin: 10px 0 30px;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab .Tab {
+	height: 23px;
+	line-height: 23px;
+	padding-right: 20px;
+	text-align: right;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab .SelectedTab {
+	background: url(background/SelectedTab.gif) no-repeat left top;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab .SelectedTab a {
+	color: white;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab .Tab a {
+	padding-right: 25px;
+	display: block;
+	font-weight: bold;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab .MySpaceIcon {
+	background: url('background/MySpaceIcon.gif') no-repeat right center;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab .InvitationIcon {
+	background: url('background/InvitationIcon.gif') no-repeat right center;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab .PendingIcon {
+	background: url('background/PendingIcon.gif') no-repeat right center;
+}
+
+.UISpaceNavigationPortlet .UIVerclTab .PublicIcon {
+	background: url('background/PublicIcon.gif') no-repeat right center;
+}
+
+
+
+.UIMySpacePortlet {
+	padding: 10px 20px;
+}
+
+.UIMySpacePortlet .TitleBar {
+	height: 22px;
+	color: #7d7d7d;
+	line-height: 22px;
+	text-align: center;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.UIMySpacePortlet .LeftBoxInput {
+	background: #f3f3f3 url('background/BoxInput.gif') no-repeat left top;
+	padding-left: 6px;
+	margin-bottom: 8px;
+}
+
+.UIMySpacePortlet .RightBoxInput {
+	background: url('background/BoxInput.gif') no-repeat right top;
+	padding-right: 6px;
+}
+
+.UIMySpacePortlet .CenterBoxInput {
+	background: #f3f3f3;
+	width: 100%;
+	padding: 10px 0px;
+}
+
+.UIMySpacePortlet .LeftContentInput {
+	float: left;
+	width: 20%;
+	text-align: right;
+	line-height: 22px;
+}
+
+.UIMySpacePortlet .CenterContentInput {
+	float: left;
+	width: 42%;
+	padding: 0px 10px;
+}
+
+.UIMySpacePortlet .RightContentInput {
+	float: left;
+	width: 20%;
+	line-height: 22px;
+}
+
+.UIMySpacePortlet .CenterContentInput input {
+	height: 18px;
+	background: #fff;
+	border: 1px solid #b8b8b8;
+	padding: 0px 3px;
+	color: #cbcbcb;
+}
+
+.UIMySpacePortlet .CenterContentInput .InputSearch {
+	background: #fff url('background/IconSearch.gif') no-repeat right top;
+}
+
+.UIMySpacePortlet .CenterContentInput select {
+	height: 18px;
+	background: #fff;
+	border: 1px solid #b8b8b8;
+	padding-left: 3px;
+	color: #cbcbcb;
+}
+
+
+.UIMySpacePortlet .BoxSpaceList {
+	margin-bottom: 8px;
+}
+
+.UIMySpacePortlet .CenterTitleBox {
+	background: url('background/TitleBox.gif') repeat-x left -52px;
+	height: 26px;
+}
+
+.UIMySpacePortlet .LeftTitleBox {
+	background: url('background/TitleBox.gif') no-repeat left top;
+	padding-left: 15px;
+}
+
+.UIMySpacePortlet .RightTitleBox {
+	background: url('background/TitleBox.gif') no-repeat right -26px;
+	padding-right: 4px;
+	color: #fff;
+	line-height: 18px;
+	height: 26px;
+	font-weight: bold;
+}
+
+.UIMySpacePortlet .NormalBox .ABC a {
+	margin-right: 3px;
+}
+
+.UIMySpacePortlet .NormalBox {
+	background: #fbfbfb;
+	padding: 8px 15px;
+	color: #3a3a3a;
+	margin-bottom: 1px;
+}
+
+.UIMySpacePortlet .GrayBox {
+	background: #f2f2f2;
+	padding: 8px 15px;
+	color: #3a3a3a;
+	margin-bottom: 1px;
+}
+
+.UIMySpacePortlet .BoxSpaceList .Image {
+	float: left;
+	width: 58px;
+	display: block;
+}
+
+.UIMySpacePortlet .BoxSpaceList .Image img {
+	width: 58px;
+	height: 58px;
+}
+
+.UIMySpacePortlet .BoxSpaceList .ContentBox {
+	padding: 0px 0px 0px 80px;
+}
+
+.UIMySpacePortlet .BoxSpaceList .ContentBox .TitleContent {
+	height: 24px;
+	border-bottom: 1px solid #ededed;
+}
+
+.UIMySpacePortlet .BoxSpaceList .TitleContent .Icon {
+	width: 20px;
+	height: 20px;
+	float: right;
+	display: block;
+	margin-left: 5px;
+}
+
+.UIMySpacePortlet .BoxSpaceList .TitleContent .Text {
+	margin-right: 50px;
+	font-weight: bold;
+	line-height: 24px;
+}
+
+.UIMySpacePortlet .BoxSpaceList .ContentBox .Content {
+	line-height: 16px;
+	padding-top: 5px;
+}
+
+.UIMySpacePortlet .IconDel {
+	background: url('background/IconDel.gif') no-repeat left top;
+}
+
+.UIMySpacePortlet .IconEditSpaceNavigation {
+	background: url('background/IconEditSpaceNavigation.gif') no-repeat left top;
+}
+
+.UIMySpacePortlet .IconEditSpace {
+	background: url('background/IconEditSpace.gif') no-repeat left top;
+}
+
+.UIMySpacePortlet .IconAccept {
+	background: url('background/IconAccept.gif') no-repeat left top;
+}
+
+.UIMySpacePortlet .IconAdd {
+	background: url('background/IconAdd.gif') no-repeat left top;
+}
+

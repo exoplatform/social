@@ -83,6 +83,13 @@
 		<css-path>/skin/portal/webui/component/UIManageSpacesPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
 	
+	<portlet-skin>
+		<application-name>space</application-name>
+		<portlet-name>spacenavigationportlet</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UISpaceNavigation/DefaultStylesheet.css</css-path>
+	</portlet-skin>
+	
 			
 </gatein-resources>
 

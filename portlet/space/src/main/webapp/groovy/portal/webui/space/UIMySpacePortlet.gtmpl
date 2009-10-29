@@ -17,5 +17,96 @@
 
 -->
 <div class="UIMySpacePortlet" id="$uicomponent.id">
-    <span><%=_ctx.appRes(uicomponent.getId() + ".label.MySpaceList")%></span>
+	<div class="TitleBar">SPACE LIST</div>
+	<div class="LeftBoxInput">
+		<div class="RightBoxInput">
+			<div class="CenterBoxInput">
+				<div class="LeftContentInput">
+					Find Space
+					<br/>Finter by
+				</div>
+				<div class="CenterContentInput">
+					<input class="InputSearch" type="text" name="Search" value="enter name..." style="width:285px" />
+					<div style="padding: 5px 0px;">
+						<input value="name..." style="width:80px" />
+						<input value="Location..." style="width:100px" />
+						<select style="width:80px">
+							<option>all...</option>
+							<option>1...</option>
+							<option>2...</option>
+						</select>
+					</div>
+				</div>
+				<div class="RightContentInput">More</div>
+				<div class="ClearBoth"><span></span></div>
+			</div>
+		</div>
+	</div>
+	<div class="BoxSpaceList">
+		<div class="CenterTitleBox">
+			<div class="LeftTitleBox">
+				<div class="RightTitleBox">Space Directory</div>
+			</div>
+		</div>
+		<div class="NormalBox">
+			<div class="ABC">
+			<a>A</a><a>B</a><a>C</a><a>D</a><a>E</a><a>F</a><a>G</a><a>H</a><a>J</a><a>K</a><a>L</a><a>M</a>
+			<a>N</a><a>O</a><a>P</a><a>Q</a><a>R</a><a>S</a><a>T</a><a>U</a><a>V</a><a>X</a><a>Y</a><a>Z</a>
+			</div>
+		</div>
+	</div><div class="BoxSpaceList">
+		<div class="CenterTitleBox">
+			<div class="LeftTitleBox">
+				<div class="RightTitleBox">SpaceListing</div>
+			</div>
+		</div>
+		<div class="NormalBox">
+			<a href="#demo" class="Image"><img alt="#" src="/space/skin/portal/webui/component/UISpaceNavigation/background/Avata.png" /></a>
+			<div class="ContentBox">
+				<div class="TitleContent">
+					<a href="#demo" class="Icon IconDel"><span></span></a>
+					<a href="#demo" class="Icon IconEditSpaceNavigation"><span></span></a>
+					<a href="#demo" class="Icon IconEditSpace"><span></span></a>
+					<div class="Text">Demo</div>
+					<div class="ClearBoth"><span></span></div>
+				</div>
+				<div class="Content">Public / 273 members
+					<br/>Discussing open source social networking
+				</div>
+			</div>
+			<div class="ClearBoth"><span></span></div>
+		</div>
+		<div class="GrayBox">
+			<a href="#demo" class="Image"><img alt="#" src="/space/skin/portal/webui/component/UISpaceNavigation/background/Avata.png" /></a>
+			<div class="ContentBox">
+				<div class="TitleContent">
+					<a href="#demo" class="Icon IconDel"><span></span></a>
+					<a href="#demo" class="Icon Icon1"><span></span></a>
+					<a href="#demo" class="Icon Icon2"><span></span></a>
+					<div class="Text">Demo</div>
+					<div class="ClearBoth"><span></span></div>
+				</div>
+				<div class="Content">Public / 273 members
+					<br/>Discussing open source social networking
+				</div>
+			</div>
+			<div class="ClearBoth"><span></span></div>
+		</div>
+		<div class="NormalBox">
+			<a href="#demo" class="Image"><img alt="#" src="/space/skin/portal/webui/component/UISpaceNavigation/background/Avata.png" /></a>
+			<div class="ContentBox">
+				<div class="TitleContent">
+					<a href="#demo" class="Icon IconDel"><span></span></a>
+					<a href="#demo" class="Icon Icon1"><span></span></a>
+					<a href="#demo" class="Icon Icon2"><span></span></a>
+					<div class="Text">Demo</div>
+					<div class="ClearBoth"><span></span></div>
+				</div>
+				<div class="Content">Public / 273 members
+					<br/>Discussing open source social networking
+				</div>
+			</div>
+			<div class="ClearBoth"><span></span></div>
+		</div>
+	</div>
 </div>
