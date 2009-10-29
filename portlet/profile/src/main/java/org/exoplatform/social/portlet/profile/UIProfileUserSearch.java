@@ -29,11 +29,14 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.social.portlet.URLUtils;
 
 /**
  * UIProfileUserSearch for search users in profile.
@@ -65,37 +68,40 @@ public class UIProfileUserSearch extends UIComponent {
   /** ORGANIZATION. */
   final public static String ORGANIZATION = "organization";
   /** IdentityManager */
-  IdentityManager     im           = null;
+  IdentityManager        im           = null;
   /** RelationshipManager */
-  RelationshipManager rm           = null;
+  RelationshipManager    rm           = null;
   /** Current identity. */
-  Identity            currIdentity = null;
+  Identity               currIdentity = null;
   private List<Identity> identityList = null;
-  boolean hasAdvanceSearch = false;
- 
+  boolean                hasAdvanceSearch = false;
+  /** Selected character when search by alphabet */
+  String selectedChar = null;
+  
   /**
    * Constructor to initialize form fields
    * @throws Exception
    */
-  public UIProfileUserSearch() throws Exception {
-  }
+  public UIProfileUserSearch() throws Exception { }
   
   /**
    * identityList setter
    * @param identityList
    */
-  public void setIdentityList(List<Identity> identityList) {
-    this.identityList = identityList;
-  }
+  public void setIdentityList(List<Identity> identityList) { this.identityList = identityList;}
   
   /**
    * identityList getter
    * @return
    * @throws Exception 
    */
-  public List<Identity> getidentityList() throws Exception {
-    return identityList;
-  }
+  public List<Identity> getidentityList() throws Exception { return identityList;}
+
+  
+  public String getSelectedChar() { return selectedChar;}
+
+  public void setSelectedChar(String selectedChar) { this.selectedChar = selectedChar;}
+
 
   /**
    * SearchActionListener
@@ -114,6 +120,13 @@ public class UIProfileUserSearch extends UIComponent {
       String position = event.getRequestContext().getRequestParameter(POSITION);
       String company = event.getRequestContext().getRequestParameter(COMPANY);
       String gender = event.getRequestContext().getRequestParameter(GENDER);
+      String charSearch = event.getRequestContext().getRequestParameter("charSearch");
+      
+      Boolean isSearchAlphaBet = Boolean.parseBoolean(event.getRequestContext().getRequestParameter("isSearchAlphaBet"));
+      if (isSearchAlphaBet)  {
+        userContact = charSearch;
+        uiSearch.setSelectedChar(charSearch);
+      }
       
       ProfileFiler filter = new ProfileFiler();
       
@@ -121,19 +134,31 @@ public class UIProfileUserSearch extends UIComponent {
       filter.setPosition(position);
       filter.setGender(gender);
       
-      identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
-      
-      if (identitiesSearchResult != null) {
-          for (Identity id : identitiesSearchResult) {
-            if (!id.getRemoteId().equals(uiSearch.getCurrentIdentity().getRemoteId())) identities.add(id); 
-          }
+      if (!isSearchAlphaBet) {
+        identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
+        
+        if (identitiesSearchResult != null) {
+            for (Identity id : identitiesSearchResult) {
+              if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id); 
+            }
+        }
+        
+        if (company.length() > 0) {
+          identities = uiSearch.getIdentitiesByCompany(company, identities);
+        }
+        
+        uiSearch.setIdentityList(identities);
+      } else {
+        identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(filter);
+        
+        if (identitiesSearchResult != null) {
+            for (Identity id : identitiesSearchResult) {
+              if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id); 
+            }
+        }
+        
+        uiSearch.setIdentityList(identities);
       }
-      
-      if (company.length() > 0) {
-        identities = uiSearch.getIdentitiesByCompany(company, identities);
-      }
-      
-      uiSearch.setIdentityList(identities);
       
       Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
@@ -196,13 +221,14 @@ public class UIProfileUserSearch extends UIComponent {
    * @throws Exception
    */
   public Identity getCurrentIdentity() throws Exception {
-    if (currIdentity == null) {
       IdentityManager im = getIdentityManager();
-      currIdentity = im.getIdentityByRemoteId(ORGANIZATION, getCurrentUserName());
-    }
-    return currIdentity;
+      return im.getIdentityByRemoteId(ORGANIZATION, getCurrentUserName());
   }
   
+  public Identity getCurrentViewerIdentity() throws Exception {
+    IdentityManager im = getIdentityManager();
+    return im.getIdentityByRemoteId(ORGANIZATION, getCurrentViewerUserName());
+  }
   /**
    * Get current user name.
    * 
@@ -211,6 +237,15 @@ public class UIProfileUserSearch extends UIComponent {
   public String getCurrentUserName() {
     RequestContext context = RequestContext.getCurrentInstance();
     return context.getRemoteUser();
+  }
+  
+  private String getCurrentViewerUserName() {
+    String username = URLUtils.getCurrentUser();
+    if(username != null)
+      return username;
+    
+    PortalRequestContext portalRequest = Util.getPortalRequestContext();
+    return portalRequest.getRemoteUser();
   }
   
 }

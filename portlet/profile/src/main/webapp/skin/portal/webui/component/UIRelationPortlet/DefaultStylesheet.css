@@ -369,6 +369,17 @@
 	padding: 8px;
 }
 
+.UITabPane .AvartarPeopleBG{
+ background: url('background/AvartarPeopleBG.gif') no-repeat left top;
+ width: 52px;
+ height: 52px;
+ padding: 6px 0px 0px 6px;
+ float: left;
+ margin: 8px;
+}
+
+
+
 
 
 
@@ -382,11 +393,26 @@
 }
 
 
+
 .UITabPane .ContainerSpace .ContentSpace {
 	background: white;
-	border:1px solid #c7c7c7;
 	padding: 8px;
 	margin-bottom:4px;
+	background: #fbfbfb;
+}
+
+.UITabPane .ContainerSpace .ContentSpace .DeleteIcon{
+	background: url('background/DeleteIcon') no-repeat right top;
+	padding: 8px;
+	margin-bottom:4px;
+	background: #fbfbfb;
+}
+
+.UITabPane .ContainerSpace .ContentSpaceGray {
+	background: white;
+	padding: 8px;
+	margin-bottom:4px;
+	background: #f3f3f3;
 }
 
 .UITabPane .ContainerSpace .ActivityContentSpace {

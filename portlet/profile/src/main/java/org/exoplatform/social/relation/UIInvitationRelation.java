@@ -33,6 +33,8 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
+import org.exoplatform.social.portlet.profile.Utils;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -122,11 +124,13 @@ public class UIInvitationRelation extends UIForm {
   }
   
   public Identity getCurrentIdentity() throws Exception {
-    if (currIdentity == null) {
       IdentityManager im = getIdentityManager();
-      currIdentity = im.getIdentityByRemoteId("organization", getCurrentUserName());
-    }
-    return currIdentity;
+      return im.getIdentityByRemoteId("organization", getCurrentUserName());
+  }
+  
+  public Identity getCurrentViewerIdentity() throws Exception {
+    IdentityManager im = getIdentityManager();
+    return im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
   }
   
   static public class RemoveActionListener extends EventListener<UIInvitationRelation> {
@@ -202,6 +206,14 @@ public class UIInvitationRelation extends UIForm {
     }
   }
   
+  public boolean isEditable () {
+    RequestContext context = RequestContext.getCurrentInstance();
+    String currentUserName = context.getRemoteUser();
+    String currentViewer = URLUtils.getCurrentUser();
+    
+    return currentUserName.equals(currentViewer);
+  }
+  
   /**
    * Get contact relationships from searched result identities. 
    * 
@@ -210,7 +222,7 @@ public class UIInvitationRelation extends UIForm {
    */
   private List<Relationship> getInvitedRelations() throws Exception {
     RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentIdentity();
+    Identity currentIdentity = getCurrentViewerIdentity();
     
     List<Identity> matchIdentities = getIdentityList();
     
@@ -229,11 +241,16 @@ public class UIInvitationRelation extends UIForm {
     return identityManager;
   }
   
-  private String getCurrentUserName() {
+  private String getCurrentViewerUserName() {
     String username = URLUtils.getCurrentUser();
     if(username != null)
       return username;
     
+    PortalRequestContext portalRequest = Util.getPortalRequestContext();
+    return portalRequest.getRemoteUser();
+  }
+  
+  private String getCurrentUserName() {
     PortalRequestContext portalRequest = Util.getPortalRequestContext();
     return portalRequest.getRemoteUser();
   }

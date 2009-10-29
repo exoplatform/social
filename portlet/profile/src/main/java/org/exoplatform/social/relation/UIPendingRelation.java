@@ -29,7 +29,9 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
+import org.exoplatform.social.portlet.profile.Utils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -136,11 +138,13 @@ public class UIPendingRelation extends UIForm {
    * @throws Exception
    */
   public Identity getCurrentIdentity() throws Exception {
-    if (currIdentity == null) {
       IdentityManager im = getIdentityManager();
-      currIdentity = im.getIdentityByRemoteId("organization", getCurrentUserName());
-    }
-    return currIdentity;
+      return im.getIdentityByRemoteId("organization", getCurrentUserName());
+  }
+  
+  public Identity getCurrentViewerIdentity() throws Exception {
+    IdentityManager im = getIdentityManager();
+    return im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
   }
   
   /**
@@ -153,6 +157,14 @@ public class UIPendingRelation extends UIForm {
     return context.getRemoteUser();
   }
 
+  public String getCurrentViewerUserName() {
+    String username = URLUtils.getCurrentUser();
+    if(username != null)
+      return username;
+    
+    RequestContext context = RequestContext.getCurrentInstance();
+    return context.getRemoteUser();
+  }
   /**
    *  Revoke the request with relation that has status is PENDING. 
    */
@@ -187,6 +199,14 @@ public class UIPendingRelation extends UIForm {
     }
   }
   
+  public boolean isEditable () {
+    RequestContext context = RequestContext.getCurrentInstance();
+    String currentUserName = context.getRemoteUser();
+    String currentViewer = URLUtils.getCurrentUser();
+    
+    return currentUserName.equals(currentViewer);
+  }
+  
   /**
    * Get pending relationships from searched result identities. 
    * 
@@ -195,7 +215,7 @@ public class UIPendingRelation extends UIForm {
    */
   private List<Relationship> getPendingRelationships() throws Exception {
     RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentIdentity();
+    Identity currentIdentity = getCurrentViewerIdentity();
     List<Identity> matchIdentities = getIdentityList();
     
     if (matchIdentities == null) {

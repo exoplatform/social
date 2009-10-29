@@ -36,7 +36,7 @@ def hideMoreSearchId = "HideMoreSearch" + uicomponentId;
 def positionId = "Position" + uicomponentId;
 def companyId = "Company" + uicomponentId;
 def genderId = "Gender" + uicomponentId;
-def selectedStartChar = uicomponent.getSelectedStartChar();
+def selectedStartChar = uicomponent.getSelectedChar();
 def rcontext = _ctx.getRequestContext();
 rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileUserSearch','/profile/javascript');
 def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];

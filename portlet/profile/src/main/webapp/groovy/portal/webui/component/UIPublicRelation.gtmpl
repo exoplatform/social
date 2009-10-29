@@ -8,6 +8,8 @@
   def rcontext = _ctx.getRequestContext() ;
   rcontext.getJavascriptManager().importJavascript('eXo.social.profile.UIProfileUserSearch','/profile/javascript/');
   
+  //def isEditable = uicomponent.isEditable();
+  def isEditable = true;
   def list = uicomponent.getPublicRelationList();
   def currIdentity = uicomponent.getCurrentIdentity();
   UIFormPageIterator iterator = uicomponent.getUiFormPageIterator();
@@ -32,7 +34,7 @@
 			    def position = identity.profile.getPropertyValue("position");
 			    if (!position) position = "";
 			    
-			    String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/AvartarDefault.gif";
+			    String imageSource = "/eXoResourcesSocial/skin/ShareImages/Avartar.gif";
 			    ProfileAttachment att = identity.profile.getProperty("avatar");
 	    		if (att != null) {
 						try {
@@ -42,12 +44,13 @@
 	    		}
 		  %>
 	    <div class="ContentSpace">
-	    <div class="MiniAvatarSpaceBG">
-	    	<img src="$imageSource" width="60" height="60">
-	    </div>
+    	<div class="AvartarPeopleBG">
+       <img height="47px" width="47px" src="$imageSource"/>
+    	</div>
 	    <div class="CommunityContainer">
 		    <div class="CommunityMane Line">
 		        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" class="CommunityNameMiddle">${fullName}</a></div>
+		       <% if (isEditable) {%>
 		        <div  class="ActionBar" onclick="$actionLink">
 								<div class="LeftButton">
 									<div class="RightButton">
@@ -59,10 +62,11 @@
 									</div>
 								</div>
 			    	</div>
+			    <% } %>
 		        <div style="clear: both;"><span></span></div>
 		    </div>
 		    <% if(position.length() > 0) { %>
-		    		<div class="Text Line">${position}</div>
+		    		<div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
 		    <%  } %>
 	    </div>
 	    <div style="clear: left;"><span></span></div>

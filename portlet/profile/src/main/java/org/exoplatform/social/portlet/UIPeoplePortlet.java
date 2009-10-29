@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2003-2009 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -14,21 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.relation;
+package org.exoplatform.social.portlet;
 
+import org.exoplatform.social.relation.UIPublicRelation;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+
+/**
+ * Created by The eXo Platform SAS
+ * Author : hanhvq@gmail.com
+ * Oct 24, 2009  
+ */
 @ComponentConfig(
-    lifecycle = UIApplicationLifecycle.class, 
-    template = "app:/groovy/portal/webui/component/UIRelationPortlet.gtmpl"
+                 lifecycle = UIApplicationLifecycle.class,
+                 template = "app:/groovy/portal/webui/component/UIPeoplePortlet.gtmpl"
 )
-public class UIRelationPortlet extends UIPortletApplication {
-
-  public UIRelationPortlet() throws Exception {
-    addChild(UIMyRelations.class, null, null);
-//    addChild(UIPublicRelation.class, null, null);
+public class UIPeoplePortlet extends UIPortletApplication {
+  
+  public UIPeoplePortlet() throws Exception {  
+    addChild(UIPublicRelation.class, null, null);
   }
-
+  
 }

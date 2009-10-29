@@ -111,5 +111,11 @@
 		<css-path>/skin/portal/webui/component/UIRelationNavigation/DefaultStylesheet.css</css-path>
 	</portlet-skin>
 			
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>PeoplePortlet</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIPeoplePortlet/DefaultStylesheet.css</css-path>
+	</portlet-skin>
 </gatein-resources>
 

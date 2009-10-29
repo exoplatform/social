@@ -145,6 +145,27 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   }
 };
 
+UIProfileUserSearch.prototype.searchProfileUserByAlphaBet = function(element, ch) {
+	  var DOMUtil = eXo.core.DOMUtil;
+	  var searchEl = DOMUtil.findAncestorByClass(element, 'UIProfileUserSearch');
+	  var componentId = searchEl.id;
+	  this.createId(componentId);
+	  var filterEl = document.getElementById(this.filterId);
+	  
+	  if(searchEl != null ) {
+		var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
+		if (portletFragment != null) {
+			var compId = portletFragment.parentNode.id;
+			var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
+			href += "&portal:type=action&uicomponent=" + searchEl.id;
+			href += "&op=Search";
+			href += "&charSearch=" + ch;
+			href += "&isSearchAlphaBet=true";
+			href += "&ajaxRequest=true";
+			ajaxGet(href,true);
+		} 
+	  }
+};
 /**
  *	Call function when Enter Key is pressed in search text box.
  *	

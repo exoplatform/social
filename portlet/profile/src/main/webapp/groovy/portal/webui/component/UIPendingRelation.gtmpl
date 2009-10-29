@@ -5,6 +5,7 @@
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
   
+  def isEditable = uicomponent.isEditable();
   def list = uicomponent.getPendingRelationList();
   def currIdentity = uicomponent.getCurrentIdentity();
   UIFormPageIterator iterator = uicomponent.getUiFormPageIterator();
@@ -52,6 +53,7 @@
 			    <div class="CommunityContainer">
 				    <div class="CommunityMane Line">
 				        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" class="CommunityNameMiddle">${fullName}</a></div>
+				       <% if (isEditable) {%>
 				        <div  class="ActionBar" onclick="$actionLink">
 										<div class="LeftButton">
 											<div class="RightButton">
@@ -63,11 +65,12 @@
 											</div>
 										</div>
 					    	</div>
-					    	<span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span> 
+					    	<span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
+					    <% } %> 
 				        <div style="clear: both;"><span></span></div>
 				    </div>
 				    <% if(position.length() > 0) { %>
-				    		<div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ":"%>${position}</div>
+				    		<div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
 				    <%  } %>
 			    </div>
 			    <div style="clear: left;"></div>

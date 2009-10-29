@@ -18,6 +18,20 @@
   need to find a better way of doing than the import from another portlet
 */
 
+.ClearFix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.ClearFix {
+	!display: inline-block;
+  !zoom: 1;
+  !display: block; 
+}
+
 .UIProfileListPortlet {
 	zoom: 100%;
 }
@@ -260,16 +274,134 @@
  * Refactor to share the css with Spaces
  */
 .UITabPane .ContainerSpace{
-	background: #f5f5f5;
-	border:1px solid #c7c7c7;
+	padding:8px 24px 8px 28px;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces {
+	background: url( "background/SearchSpaces.gif" ) no-repeat left top;
+	padding-left: 7px;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpacesR {
+	background: #f3f3f3 url( "background/SearchSpacesR.gif" ) no-repeat right top;
+	padding: 10px 7px 8px 7px;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable{
+	float: left;
+	padding: 4px 4px 4px 16px;
+	color:#909090;
+	width: 100px;
+	text-align: right;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Lable{
+	float: left;
+	padding: 4px 4px 4px 16px;
+	width: 100px;
+	text-align: right;
+	color: black;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search{
+	width: 232px;
+	float: left;
+	background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
+	border: 1px solid #b7b7b7;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter {
+	padding-top: 4px;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Input{
+	width: 82px;
+	float: left;
+	border: 1px solid #b7b7b7;
+	margin-right: 4px;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .AdvanceSearchLable{
+	float: left;
+	padding: 4px;
+	cursor: pointer;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Select{
+	float: left;
+	width: 82px;
+	border: 1px solid #b7b7b7;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
+	line-height: 18px;
+	margin-left: 4px;
+	cursor: pointer;
+}
+
+.UITabPane .ATitleBarL {
+	background: url('background/ATitleBarL.gif') no-repeat left top;
+	padding-left: 4px;
+	margin-top: 8px;
+}
+
+.UITabPane .ATitleBarR {
+	background: url('background/ATitleBarR.gif') no-repeat right top;
+	padding-right: 4px;
+}
+
+.UITabPane .ATitleBarM {
+	background: url('background/ATitleBarM.gif') repeat-x;
+	padding-left: 4px;
+}
+
+.UITabPane .ATitleBarC {
+	background: url('background/ATitleBarC.gif') no-repeat left top;
+	height:25px;
+	color: white;
+	margin-left: 8px;
+	line-height: 20px;
+	font-weight: bold;
+}
+
+.UITabPane .DirectorySpaces {
+	background: #fbfbfb;
 	padding: 8px;
 }
 
+.UITabPane .AvartarPeopleBG{
+ background: url('background/AvartarPeopleBG.gif') no-repeat left top;
+ width: 52px;
+ height: 52px;
+ padding: 6px 0px 0px 6px;
+ float: left;
+ margin: 8px;
+}
+
+
+.ActivitiesTitleBarM{
+	background: #ebebeb;
+	height: 21px;
+	color: #7d7d7d;
+	line-height: 21px;
+	text-align: center;
+	font-weight: bold;
+}
+
+
+
 .UITabPane .ContainerSpace .ContentSpace {
 	background: white;
-	border:1px solid #c7c7c7;
 	padding: 8px;
 	margin-bottom:4px;
+	background: #fbfbfb;
+}
+
+.UITabPane .ContainerSpace .ContentSpaceGray {
+	background: white;
+	padding: 8px;
+	margin-bottom:4px;
+	background: #f3f3f3;
 }
 
 .UITabPane .ContainerSpace .ActivityContentSpace {
