@@ -22,9 +22,9 @@
   				description="Status Update"
   				author_email="hoatlevan@gmail.com"
   				author_affiliation="eXo Platform">
-  	<Locale messages="activities/locale/ALL_ALL.xml" />
-  	<Locale lang="en" messages="activities/locale/en_ALL.xml" />
-  	<Locale lang="vi" messages="activities/locale/vi_ALL.xml" />
+  	<Locale messages="activities2/locale/ALL_ALL.xml" />
+  	<Locale lang="en" messages="activities2/locale/en_ALL.xml" />
+  	<Locale lang="vi" messages="activities2/locale/vi_ALL.xml" />
     <Require feature="opensocial-0.7" />
     <Require feature="dynamic-height" />
     <Require feature="settitle" />
@@ -52,7 +52,7 @@
   					<div class="MyStatusComponentR">
   						<div class="MyStatusComponentM">
   							<a href="#OwnerAvatar" class="MyStatusAvatarBG">
-  								<img id="OwnerAvatar" src="http://localhost:8080/social/gadgets/activities/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+  								<img id="OwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
   							</a>
   							<div style="height: 8px"><span></span></div>
   							<div id="UIComposer" class="MyStatusInput">
@@ -111,7 +111,7 @@
   					<div class="MyStatusComponentR">
   						<div class="MyStatusComponentM">
   							<a href="#OwnerAvatar" class="MyStatusAvatarBG">
-  								<img id="OwnerAvatar" src="http://localhost:8080/social/gadgets/activities/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+  								<img id="OwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
   							</a>
   							<div style="height: 8px"><span></span></div>
   							<div id="UIComposer" class="MyStatusInput">

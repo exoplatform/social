@@ -16,23 +16,23 @@
  */
 package org.exoplatform.social.opensocial.spi;
 
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
-import org.exoplatform.social.core.relationship.RelationshipManager;
-import org.exoplatform.social.core.relationship.Relationship;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
-import org.apache.shindig.protocol.ProtocolException;
-import org.apache.shindig.social.opensocial.spi.UserId;
-import org.apache.shindig.social.opensocial.spi.GroupId;
-import org.apache.shindig.auth.SecurityToken;
-
-import java.util.Set;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.protocol.ProtocolException;
+import org.apache.shindig.social.opensocial.spi.GroupId;
+import org.apache.shindig.social.opensocial.spi.UserId;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.RootContainer;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.Relationship;
+import org.exoplatform.social.core.relationship.RelationshipManager;
 
 import com.google.common.collect.Sets;
 
@@ -102,6 +102,7 @@ public class ExoService {
     }
 
     protected Identity getIdentity(String id) throws Exception {
+      System.out.println("\n\n\n\n id: " + id);
       PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
       IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 

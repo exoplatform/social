@@ -36,8 +36,8 @@ eXo.social.StatusUpdate = function() {
  */
 eXo.social.StatusUpdate.config = {
 	path : {
-		ROOT_PATH : "http://localhost:8080/social/gadgets/activities",
-		SCRIPT_PATH : "http://localhost:8080/social/gadgets/activities/script"
+		ROOT_PATH : "http://localhost:8080/social/gadgets/activities2",
+		SCRIPT_PATH : "http://localhost:8080/social/gadgets/activities2/script"
 	},
 	ui : {//dom id reference
 		UI_COMPOSER_TEXTAREA : "UIComposerTextArea",
@@ -335,18 +335,9 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse) {
   			var newEl = Util.addElement(UI_APPENDABLE_ROOT, 'div', null, html.join(''));
   			newEl.setAttribute('class', aDecoratorContainerClass);
   			Like.getLikeIds(activityId, Like.displayLike);
-  			gadgets.window.adjustHeight();
 	}
   }
-//	if (this.continueAddHeight) {
-//		debug.info('continueAddHeight!!!');
-//		eXo.social.StatusUpdate.adjustHeight();
-//		if (displayActivityNum == config.ui.MAX_ACTIVITIES) {
-//			this.continueAddHeight = false;
-//		}
-//	}
-	debug.info('adjustHeight!!!');
-	eXo.social.StatusUpdate.adjustHeight();
+		gadgets.window.adjustHeight();
 }
 
 /**

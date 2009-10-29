@@ -16,14 +16,14 @@
  */
 package org.exoplatform.social.core.identity;
 
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
+
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 
 
 public class IdentityManager {
@@ -104,8 +104,11 @@ public class IdentityManager {
       identity = getNewIdentity(providerId, remoteId);
     }
     //System.out.println("identityProviders = " + identityProviders);
-    if(loadProfile)
+    if(loadProfile) {
+      IdentityProvider identityProvider = identityProviders.get(identity.getProviderId());
+      System.out.println("\n\n\n\n: identity: " + identityProvider.getIdentityByRemoteId(identity));
       identity = identityProviders.get(identity.getProviderId()).getIdentityByRemoteId(identity);
+    }
     return identity;
   }
 

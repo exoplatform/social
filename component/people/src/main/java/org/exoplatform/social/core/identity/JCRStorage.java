@@ -47,6 +47,9 @@ import javax.jcr.version.VersionException;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.RootContainer;
+import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
@@ -589,8 +592,13 @@ public class JCRStorage {
   private Session getSession() throws Exception {
     if(session_ == null) {
       SessionProvider sessionProvider = SessionProvider.createSystemProvider();
+      RootContainer rootContainer = RootContainer.getInstance() ;
       ExoContainer container = ExoContainerContext.getCurrentContainer();
-      RepositoryService repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
+          PortalContainerInfo containerInfo = (PortalContainerInfo) container.getComponentInstanceOfType(PortalContainerInfo.class);
+      PortalContainer portalContainer = rootContainer.getPortalContainer(containerInfo.getContainerName()) ;
+      //ExoContainer container = ExoContainerContext.getCurrentContainer();
+//      PortalContainer container = PortalContainer.getInstance();
+      RepositoryService repositoryService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
       ManageableRepository repo = repositoryService.getCurrentRepository();
       session_ = sessionProvider.getSession(repo.getConfiguration().getDefaultWorkspaceName(), repo);
     }

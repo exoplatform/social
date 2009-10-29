@@ -40,7 +40,7 @@ a:link, a:hover, a:active, a:visited  {
 body {
 	font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
 	font-size:11px;
-	height:100%;
+	/*height:100%;*/
 	margin:0px;
 	/*overflow-x:hidden;*/
 	padding:0px;
@@ -49,7 +49,7 @@ body {
 img {border: none}
 
 .ActivitiesComponent {
-	height: 120%;
+	/*height: 120%;*/
 }
 
 .ActivitiesComponent  .ActivitiesComponentBT{
@@ -76,6 +76,7 @@ img {border: none}
 	border-right: 1px solid #d6d6d6;
 	border-left: 1px solid #d6d6d6;
 	padding: 5px 20px 10px;
+	border-bottom: 1px solid #d6d6d6;
 	/*height: 550px;*/
 }
 

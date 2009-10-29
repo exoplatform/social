@@ -63,7 +63,6 @@ eXo.social.Like.ref = {
  	}
  	var url = eXo.social.Like.config.URL_SET_LIKE_ID + '/' + activityId + '/' + userId;
  	eXo.social.Util.makeRequest(url, callback);
- 	eXo.social.StatusUpdate.adjustHeight(30);
  }
  
  /**
@@ -81,7 +80,6 @@ eXo.social.Like.ref = {
  	}
  	var url = eXo.social.Like.config.URL_REMOVE_LIKE_ID + '/' + activityId + '/' + userId;
  	eXo.social.Util.makeRequest(url, callback);
- 	eXo.social.StatusUpdate.adjustHeight(-30);
  }
  
 /**
@@ -115,6 +113,7 @@ eXo.social.Like.ref = {
 		like.innerHTML = Locale.getMsg('like');
 		like.onclick = function() { Like.setLikeId(activityId, viewerId, Like.displayLike); };
 		listPeopleLike.style.display = 'none';
+		gadgets.window.adjustHeight();
 		return;
 	}
 	if(statusUpdate.hasViewerId(ids)) {
@@ -159,6 +158,7 @@ eXo.social.Like.ref = {
 		};
 	}
 	Like.renderListPeople(activityId, likeInfos);
+	gadgets.window.adjustHeight();
  }
  
  /**
@@ -180,6 +180,7 @@ eXo.social.Like.ref = {
 		html.push('</a>');
 	}
 	listPeople.innerHTML = html.join('');
+	gadgets.window.adjustHeight();
 }
 
 /**

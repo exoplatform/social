@@ -53,6 +53,9 @@
 .ProfileActivityTDContainer {
 	background: white;
 }
+.ProfileActivityTDContainer .gadgets-gadget-content {
+	padding: 0px;
+}
 
 .UIProfileNavigationPortlet .ProfTitle {
 	background: url(background/ProfTitle.gif) no-repeat center top;
