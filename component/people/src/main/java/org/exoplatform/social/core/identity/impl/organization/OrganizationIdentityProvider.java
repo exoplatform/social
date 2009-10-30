@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
@@ -34,10 +35,13 @@ public class OrganizationIdentityProvider extends IdentityProvider {
   private JCRStorage storage;
   private OrganizationService organizationService;
   public final static String NAME = "organization";
+  //TODO: dang.tung: maybe we don't need it but it will fix the problem from portal - get user
+  private Map<String, User> userCache = new HashMap<String, User>();
 
   public OrganizationIdentityProvider(JCRStorage storage, OrganizationService organizationService) {
     this.storage = storage;
-    this.organizationService = organizationService;
+    PortalContainer container = PortalContainer.getInstance();
+    this.organizationService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
   }
 
   public String getName() {
@@ -49,19 +53,22 @@ public class OrganizationIdentityProvider extends IdentityProvider {
   public Identity getIdentityByRemoteId(Identity identity) throws Exception {
     //TODO: tung.dang need to review again.
     User user = null;
-    try {
-      UserHandler userHandler = organizationService.getUserHandler();
-      String remote = identity.getRemoteId();
-      System.out.println("\n\n\n\n find user by name: " + remote);
-      user = userHandler.findUserByName(remote);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
+    String remote = identity.getRemoteId();
+    user = getUserFromCache(remote);
+    if(user == null) {
+      try {
+        UserHandler userHandler = organizationService.getUserHandler();
+        user = userHandler.findUserByName(remote);
+      } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+      }
     }
     if (user == null) {
       return null;
     }
-
+    addUserToCache(user);
+    
     loadIdentity(user, identity);
     
     //TODO dang.tung need to save profile in database if node doesn't exist
@@ -106,5 +113,18 @@ public class OrganizationIdentityProvider extends IdentityProvider {
       userIds.add(user.getUserName());
     }
     return userIds;
+  }
+  
+  private User getUserFromCache(String userName) {
+    return userCache.get(userName);
+  }
+  
+  private void addUserToCache(User user) {
+    if(getUserFromCache(user.getUserName()) == null)
+      userCache.put(user.getUserName(), user);
+  }
+  
+  private void refreshCache() {
+    userCache.clear();
   }
 }

@@ -29,7 +29,6 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
 import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
@@ -105,11 +104,11 @@ public class ExoService {
       PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
       IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
-      Identity identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, id);
-
-      if (identity == null) {
-        identity = im.getIdentityById(id);
-      }
+      //Identity identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, id);
+      Identity identity = im.getIdentityById(id);
+//      if (identity == null) {
+//        identity = im.getIdentityById(id);
+//      }
 
       if(identity == null) {
           throw  new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "this user does not exist");
