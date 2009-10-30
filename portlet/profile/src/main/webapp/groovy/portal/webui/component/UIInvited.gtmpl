@@ -38,7 +38,7 @@
 		if (att != null) {
 			try {
   			imageSource = "/" + portalName + "/rest/jcr/" + repository + "/" + att.getWorkspace();
-  			imageSource = imageSource + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+  			imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
 				} catch (Exception e) {}
 		}
       

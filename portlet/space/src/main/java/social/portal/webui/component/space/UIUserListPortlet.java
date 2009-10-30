@@ -93,7 +93,7 @@ public class UIUserListPortlet extends UIPortletApplication {
     ProfileAttachment attach = (ProfileAttachment) profile.getProperty("avatar");
     if (attach != null) {
       return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + attach.getWorkspace()
-              + attach.getDataPath() + "?rnd=" + System.currentTimeMillis();
+              + attach.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
   }

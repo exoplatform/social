@@ -20,12 +20,13 @@
   import org.exoplatform.webui.core.UIPopupWindow
 
 	def imageSource = uicomponent.getImageSource();
-	
+	def changeAvatar = "return false;";
+	if(uicomponent.isEditable()) changeAvatar = uicomponent.event('ChangeAvatar'); 
 %>
   <div class="UIProfile" id="$uicomponent.id">
     <div class="LeftColumn">
 	  <div class="AvatarSpace">
-		  <div class="Image" onclick="${uicomponent.event('ChangeAvatar')}" title="Click to chage avatar">
+		  <div class="Image" onclick="$changeAvatar" title="Click to chage avatar">
 		  	<% if(imageSource == null) { %>
 		  		<img src="/profile/skin/portal/webui/component/UIRelationshipPortlet/background/BLAvatar.gif" height="119px" width="119px" alt="">
 		  	<% } else { %>
@@ -33,26 +34,27 @@
 		  	<% } %>
 		  </div>
 	  </div>
-	  <div class="UIAction">
-		<table class="ActionContainer">
-			<tbody>
-				<tr>
-					<td>
-						<div onclick="" class="ActionButton ButtonChange">
-						  <div class="ButtonLeft">
-							  <div class="ButtonRight">
-									<div class="ButtonMiddle">
-										<a href="#" onclick="${uicomponent.event('ChangeAvatar')}"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
-									</div>
-								</div>
-							</div>
-						</div>					
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	 
+	  <% if(uicomponent.isEditable()) { %>
+	  	  <div class="UIAction">
+					<table class="ActionContainer">
+						<tbody>
+							<tr>
+								<td>
+									<div onclick="" class="ActionButton ButtonChange">
+									  <div class="ButtonLeft">
+										  <div class="ButtonRight">
+												<div class="ButtonMiddle">
+													<a href="#" onclick="$changeAvatar"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
+												</div>
+											</div>
+										</div>
+									</div>					
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+	  <% } %>
   </div>
   <div class="ContainerSpace" >
 

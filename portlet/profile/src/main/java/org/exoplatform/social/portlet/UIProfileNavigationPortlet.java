@@ -16,8 +16,14 @@
  */
 package org.exoplatform.social.portlet;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.ProfileAttachment;
+import org.exoplatform.social.portlet.profile.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -45,5 +51,26 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
       return split[split.length - 3];
     }
     return split[split.length-1];
+  }
+  
+  protected String getImageSource() throws Exception {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    Identity currIdentity = Utils.getCurrentIdentity();
+    Profile p = currIdentity.getProfile();
+    ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
+    if (att != null) {
+      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
+              + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+    }
+    return null;
+  }
+  
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
   }
 }

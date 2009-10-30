@@ -29,11 +29,13 @@
   def profileURL = portalURI + "profile/" + currIdentity.getRemoteId();
 	def relationURL = portalURI + "relations/yours/" + currIdentity.getRemoteId();
 	def selectedNode = uicomponent.getSelectedNode();
+	def imageSource = uicomponent.getImageSource();
+	if(imageSource == null) imageSource = "/eXoResourcesSocial/skin/ShareImages/Avartar.gif";
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
 	<div class="ProfTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Me")%></div>
 	<a class="Avartar">
-		<img height="65" width="65" alt="" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif"/>
+		<img height="65" width="65" alt="" src="$imageSource"/>
 	</a>
 	<div class="UIVerclTab">
 		<% if (selectedNode == "activities")  {%>

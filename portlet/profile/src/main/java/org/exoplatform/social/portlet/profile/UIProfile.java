@@ -118,7 +118,7 @@ public class UIProfile extends UIContainer {
     ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
     if (att != null) {
       return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
-              + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+              + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
   }

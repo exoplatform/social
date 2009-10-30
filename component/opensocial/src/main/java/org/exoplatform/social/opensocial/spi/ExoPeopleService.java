@@ -195,7 +195,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         if (att != null) {
           try {
             avatar = "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
-            + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+            + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
           } catch (Exception e) {}
         }
         p.setThumbnailUrl(avatar);

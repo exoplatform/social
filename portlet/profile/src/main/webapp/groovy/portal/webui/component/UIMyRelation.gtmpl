@@ -52,7 +52,7 @@
     		if (att != null) {
 					try {
       			imageSource = "/" + uicomponent.getPortalName()+"/rest/jcr/" + uicomponent.getRepository() + "/" + att.getWorkspace();
-      			imageSource = imageSource + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+      			imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
 					} catch (Exception e) {}
     		}
 		 %>

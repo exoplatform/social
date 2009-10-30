@@ -30,16 +30,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
-import org.exoplatform.social.core.identity.model.Identity;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -211,7 +209,7 @@ public class ActivitiesRestService implements ResourceContainer {
       att = (ProfileAttachment)profile.getProperty("avatar");
       if (att != null) {
         thumbnail = "/" + getPortalName()+"/rest/jcr/" + getRepository() + "/" + att.getWorkspace();
-        thumbnail = thumbnail + att.getDataPath() + "?rnd=" + System.currentTimeMillis();
+        thumbnail = thumbnail + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
       }
       
       likeInfo = new LikeInfoModel();
