@@ -203,7 +203,7 @@ eXo.social.StatusUpdate.prototype.updateFriendsActivities = function() {
 	var params = {};
 	params[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
 	params[opensocial.DataRequest.ActivityRequestFields.MAx] = StatusUpdate.config.BATCH_SIZE + (StatusUpdate.config.BATCH_SIZE * this.friendsMoreClickedTimes);
-	req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.Group.OWNER_FRIENDS, params), 'ownerFriends');
+	req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.Group.OWNER_FRIENDS, params), 'ownerFriendsActivities');
 	req.send(function(res) {
 		statusUpdate.handleActivities(res, StatusUpdate.DataMode_FRIENDS_ONLY);
 	});
