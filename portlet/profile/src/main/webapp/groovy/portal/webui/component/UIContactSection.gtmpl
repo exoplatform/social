@@ -54,20 +54,18 @@
 		  <tr>
 		  <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%></td>
 		  <td class="FieldComponent">
-		  <ul>
 		  <%
 		    if (isEdit && isEditable) { %>
-      		<li class="propertyEl"><%uiform.renderField(genderChild);%></li>							
+      		<%uiform.renderField(genderChild);%>						
 	      <%
 	      }	else {
 	      %>
        <% if ((gender != null) && (gender != "")) {%>
-				    <li class="propertyEl"><%=gender %></li>
+				    <%=gender %>
 			<% }  else {%>
-						<li id="profile.noGender.isEmpty"><%=_ctx.appRes(uicomponent.getId() + ".label.noGender")%></li>
+						<%=_ctx.appRes(uicomponent.getId() + ".label.noGender")%>
 			<% } %>
 			<% } %>
-			</ul>	
 			</td>    
 			</tr>		                 
 		   <!--              phones          -->
@@ -75,17 +73,15 @@
 		    <tr>
 		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%></td>
 		      <td class="FieldComponent">
-		        <ul>
 		        <%
 							if (isEdit && isEditable) { %>
-							  <li class="propertyEl"> 
 				          <%			      	
 				          if (phoneCount > 0) {		            								     
 					           	for (i in 0..phoneCount-1) {			           	
 					           		if (phoneChilds.get(i).isRendered()) {
 						           			uiform.renderField(phoneChilds.get(i));
 						           			%>
-						           			  <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a><br>
+						           			  <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a>
 						           			<%
 						         		}
 					         		}
@@ -93,7 +89,6 @@
 					           %>
 					           <%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%>
 					      <%}%>			            
-		          	</li>
 		          <% } else { %>
 				          <%if (phones != null) {
 					            phones.each {
@@ -101,31 +96,26 @@
 					              def type = it.get("key");
 				              
 				          %>
-				          			<li><%=type + ": " + phone%></li>
+				          			<%=type + ": " + phone%><br>
 				          <%	}
 				             } else { %>
-											<li id="profile.phones.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%></li>		             
+											<%=_ctx.appRes(uicomponent.getName() + ".label.noPhones")%>		             
 				          <%}%>
 		          <% } %>	
-		        </ul>		        
-		      </td>
 		      <%
 		      if (isEdit && isEditable) {
 		      %>
-			      <td class="FieldComponent">
 			        <a class="AddIcon" onclick="<%=uicomponent.event("Add", "phone")%>">&nbsp</a>
-			      </td>
 		      <% } %>
+		      </td>
 		    </tr>
 		    <!--              end of phones          -->
         <!--              ims          -->
 		    <tr>
 		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%></td>
 		      <td class="FieldComponent">
-		        <ul>
 		        <%
 		        	if (isEdit && isEditable) { %>
-								<li class="propertyEl">
 		          <%			      	
 		          if (imsCount > 1) {		            								     
 			           	for (i in 0..imsCount-1) {			           	
@@ -133,19 +123,25 @@
 			           			if (i % 2 != 0) {
 				           			uiform.renderField(imsChilds.get(i));
 				           			%>
-				           				<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>">&nbsp</a><br>
+				           				<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>">&nbsp</a>
 				           			<%
-				           		} else {
+				           		} else { 
+				           			if (i != 0) {
+				           		%>
+				           			
+				           			<br>
+				           		
+				           		<%
+				           		}
 				           			uiform.renderField(imsChilds.get(i));
 				           		}
 			           		}
 			           %>			            
 			           <%}
 			         } else {%>
-			         		<li id="profile.ims.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%></li>
+			         		<%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%>
 			         <%}%>
 			           
-		          </li>
 		          <% } else { %>
 				          <%if (ims != null) {
 					            ims.each {
@@ -153,32 +149,27 @@
 					              def type = it.get("key");
 					              
 					          %>
-					          <li><%=type%>: <%=im%></li>
+					          <%=type%>: <%=im%><br>
 					          <%}
 					         } else { %>
-					         <li id="profile.ims.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%></li>
+					         	<%=_ctx.appRes(uicomponent.getName() + ".label.noIms")%>
 					         <% } 
 					          %>
 		          <% } %>
-		        </ul>		        
-		      </td>
 		      <%
 		      if (isEdit && isEditable) {
 		      %>
-			      <td class="FieldComponent">
 			      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "ims")%>">&nbsp</a>
-			      </td>
 		      <% } %>
+		      </td>
 		    </tr>
 		    <!--              end of ims          -->
 		    <!--              URL          -->
 		    <tr>
 		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%></td>
 		      <td class="FieldComponent">
-		        <ul>
 		        <%
               if (isEdit && isEditable) { %>
-               <li class="propertyEl">
 		            <%			   
 		            if (urlCount > 1) {   			            								     
 			           	for (i in 0..urlCount-1) {			           	
@@ -186,16 +177,19 @@
 			           			if (i % 2 != 0) {
 				           			uiform.renderField(urlChilds.get(i));
 				           			%>
-				           				<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>">&nbsp</a><br>
+				           				<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>">&nbsp</a>
 				           			<%
 				           		} else {
-				           			uiform.renderField(urlChilds.get(i));
+				           			if (i != 0) { %>
+				           			<br>
+				           		<% }
+				           			//uiform.renderField(urlChilds.get(i));
 				           		}
 			           		}
 			           %>			            
 			           <%}
 				         } else {%>
-				         		<li id="profile.urls.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
+				         		<%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%>
 				         <%}%>			           
 		          	</li>
 		       <% } else { %>
@@ -203,24 +197,20 @@
 			            urls.each {
 			              def url = it.get("value");
 			              def type = it.get("key");
-			              
 			          %>
-			          <li><a href="${url}">${type}</a></li>
+			          <a href="${url}">${url}</a><br>
 			          <%}
 			          } else { %>
-			          <li id="profile.url.isEmpty"><%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%></li>
+			          <%=_ctx.appRes(uicomponent.getName() + ".label.noUrls")%>
 			          <% }	
 			          %>
 		          <% } %>
-		        </ul>
-		      </td>
 		      <%
 		      if (isEdit && isEditable) {
 		      %>
-			      <td class="FieldComponent">
 			      	<a class="AddIcon" onclick="<%=uicomponent.event("Add", "urls")%>">&nbsp</a>
-			      </td>
 		      <% } %>
+		      </td>
 		    </tr>
 		  </tbody>
 		</table>

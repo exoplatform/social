@@ -29,6 +29,7 @@
   def exp = profile.getPropertyValue("experiences");
   def pastExp = uicomponent.getPastExperience();
   def currentExp = uicomponent.getCurrentExperience();
+  
 %>
 <div class="experience">
 <%uiform.begin()%>
@@ -36,8 +37,8 @@
 	<div class="PortletContent">
   	<%if (isEdit && isEditable) {%>
     	<%if (childSize > 1) {%>
-   			<%for (int i=1; i < childSize; i +=6) {%>
-			    <div class="Experience" style="background:#e0eee0 none; margin-top:10px">
+   			<%for (int i=1; i < childSize; i +=6) { %>
+			    <div class="Experience" style="background:#efefef none; margin:4px; padding: 8px;">
 				    <table class="UIFormGrid">
 				      <tbody>
 		          <tr>
@@ -48,15 +49,13 @@
 				          }%>
 			          </td>
 			          <% if ((i + 6) >= childSize) {%>
-			          	<td width="270">&nbsp</td>
+			          	<td width="24%">&nbsp</td>
 				          <td class="FieldComponent">
 				          	<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+i)%>">&nbsp</a>
-				          </td>
-				          <td>
-				          	<a class="AddIcon" href="#" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
+				           	<a class="AddIcon" href="#" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
 				          </td>
 			          <% } else {%>
-			          	<td width="300">&nbsp</td>
+			          	<td width="27%">&nbsp</td>
 				          <td class="FieldComponent">
 				          	<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+i)%>">&nbsp</a>
 				          </td>
@@ -106,11 +105,9 @@
   	<table class="UIFormGrid">
   		<tbody>
   			<tr>
-  				<td width="50%">&nbsp</td>
+  				<td width="40%">&nbsp</td>
   				<td class="FieldComponent">
   					<%=_ctx.appRes(uicomponent.getId() + ".label.noneExperience")%>
-  				</td>
-  				<td>
     				<a class="AddIcon" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
     		  </td>
 			  </tr>
@@ -120,6 +117,7 @@
   <% } else { %>
     <%if (exp != null) {%>
     <%if (currentExp.size() != 0) { %>
+    <div class="CurrentExperience" style="background:#efefef none; padding-left: 8px;">
     <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b>Current</b></div>
     <%  currentExp.each {
 		      def position = it.get("position");
@@ -139,9 +137,11 @@
 			    <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
 			    <%if(description != null) {%>${description} <%}%><br>
 			  </div>
-    <%  } // End each
-    }%>
+    <%  } %>
+    </div>
+    <% } %>
     <%if (pastExp.size() != 0) { %>
+    <div class="PassExperience" style="background:#d5d5d5 none; padding-left: 8px;">
     <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b>Past</b></div>
     <%  pastExp.each {
 		      def position = it.get("position");
@@ -163,6 +163,7 @@
 			    <%if(description != null) {%>${description} <%}%>
 			  </div>
 		    <%}%>
+		    </div>
       <%}%>
     <%} else {%>
     		<div class="NoneExperience"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>

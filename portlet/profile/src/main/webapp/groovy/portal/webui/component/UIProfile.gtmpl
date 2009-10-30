@@ -19,7 +19,6 @@
 <%
   import org.exoplatform.webui.core.UIPopupWindow
 
-	def labelChangeAvatar = _ctx.appRes("${uicomponent.id}.label.change_avatar");
 	def imageSource = uicomponent.getImageSource();
 	
 %>

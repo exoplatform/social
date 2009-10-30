@@ -36,7 +36,7 @@
 	height: 126px;
 	padding: 7px 0px 0px 7px;
 	margin: 15px;
-	curdor: pointer;
+	cursor: pointer;
 }
 
 .UIProfile .AvatarSpace{
@@ -147,14 +147,15 @@
 
 .UIProfile .ContainerSpace .PortletContent .DeleteIcon{
 	background: url(background/DeleteIcon.gif) no-repeat center;
-	padding: 5px 11px;
+	padding: 5px 6px;
+	margin-left: 4px;
 }
 
 .UIProfile .ContainerSpace .PortletContent .AddIcon{
 	background: url(background/AddIcon.gif) no-repeat center;
-	display: block;
 	width: 22px;
 	height: 22px;
+	padding: 5px 6px;
 }
 
 .UIProfile h2{

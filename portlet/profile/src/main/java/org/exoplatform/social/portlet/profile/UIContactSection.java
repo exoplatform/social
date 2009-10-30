@@ -362,9 +362,10 @@ public class UIContactSection extends UIProfileSection {
           uiStringInput = (UIFormStringInput) listUIComp.get(i+1); 
           value = uiStringInput.getValue();
         } else {
-          uiStringInput = (UIFormStringInput) listUIComp.get(i);
-          key = uiStringInput.getValue();
+          //uiStringInput = (UIFormStringInput) listUIComp.get(i);
+          //key = uiStringInput.getValue();
           uiStringInput = (UIFormStringInput) listUIComp.get(i+1); 
+          key = uiStringInput.getValue();
           value = uiStringInput.getValue();
         }          
         
