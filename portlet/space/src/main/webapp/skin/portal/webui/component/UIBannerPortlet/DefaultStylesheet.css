@@ -112,3 +112,12 @@
 	background: url('DefaultSkin/background/Container.gif') no-repeat left -103px;
 }
 
+.SocialPeopleIcon {
+background: url(/eXoResourcesSocial/skin/ShareImages/IconPeople_Space.gif) no-repeat left 7px;
+}
+
+.SocialSpacesIcon {
+background: url(/eXoResourcesSocial/skin/ShareImages/IconPeople_Space.gif) no-repeat left -27px;
+}
+
+
