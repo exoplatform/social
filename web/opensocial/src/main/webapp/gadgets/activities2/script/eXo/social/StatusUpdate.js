@@ -16,20 +16,26 @@ eXo.social = eXo.social || {};
  */
 eXo.social.StatusUpdate = function() {
 	this.shareable = false; //if false, click on share do nothing
-	this.refreshTime = 5 * 60 * 1000 //in mili seconds; should improve by detecting user's activity on app. Can be changed by user's pref
 	this.viewer = null;
 	this.owner = null;
 	this.ownerFriends = null;
-	this.activities = null;
+	this.ownerActivities = null; //stores all owner activites
+	this.ownerFriendsActivities = null; //stores all owner's friends' activities
 	this.linkShare = null;
 	this.uiComposer = null;
 	this.currentView = gadgets.views.getCurrentView().getName();
-	this.currentFirstActivity = null;
-	this.currentLastActivity = null;
-	this.olderFirstParam = null; //the FIRST param to get older activities
-	this.storedActivities = null; //stores new activites to notify users and then displays
-	this.continueAddHeight = true; //if true, adjustHeight with added height
+	this.newOwnerActivities = null; //stores new activites to notify users and then displays
+	this.newOwnerFriendsActivities = null;
+	this.ownerMoreClickedTimes = 0; //click num
+	this.friendsMoreClickedTimes = 0;
 }
+
+/**
+ * static varialbes 
+ */
+eXo.social.StatusUpdate.DataMode_BOTH = 'DataMode_BOTH';
+eXo.social.StatusUpdate.DataMode_OWNER_ONLY = 'DataMode_OWNER_ONLY';
+eXo.social.StatusUpdate.DataMode_FRIENDS_ONLY = 'DataMode_FRIENDS_ONLY';
 
 /**
  * static config object 
@@ -40,35 +46,19 @@ eXo.social.StatusUpdate.config = {
 		SCRIPT_PATH : "http://localhost:8080/social/gadgets/activities2/script"
 	},
 	ui : {//dom id reference
+		IMG_OWNER_AVATAR: "ImgOwnerAvatar",
 		UI_COMPOSER_TEXTAREA : "UIComposerTextArea",
 		UI_COMPOSER_EXTENSION : "UIComposerExtension",
-		UI_COMPOSER_SHARE_BUTTON: 'UIComposerShareButton',
-		UI_APPENDABLE_ROOT :"UIAppendableRoot",
-		UI_MORE : "UIMore",
-		HEIGHT_ADDED : 80, //fix bug iframe not fully resized
-		MAX_ACTIVITIES : 5 //default displays 5 item only
-	}
+		UI_COMPOSER_SHARE_BUTTON: "UIComposerShareButton",
+		UI_OWNER_APPENDABLE_ROOT :"UIOwnerAppendableRoot",
+		UI_OWNER_MORE : "UIOwnerMore",
+		UI_FRIENDS_APPENDABLE_ROOT: "UIFriendsAppendableRoot",
+		UI_FRIENDS_MORE: "UIFriendsMore"
+	},
+	BATCH_SIZE: 10, //batch size to get activities
+	MAX_ACTIVITIES : 5, //default displays 5 item only
+	REFRESH_TIME : 3 * 60 * 1000 //in miliseconds; should improve by detecting user's activity on app. Can be changed by user's pref
 };
-
-/**
- * called instead of gadgets.window.adjustHeight();
- * @param	opt_heightAdded if not provided, will use default config.ui.HEIGHT_ADDED
- * @static
- */
-eXo.social.StatusUpdate.adjustHeight = function(opt_heightAdded) {
-	var dm = gadgets.window.getViewportDimensions();
-	var height = dm.height;
-	if (!opt_heightAdded) {
-		height += eXo.social.StatusUpdate.config.ui.HEIGHT_ADDED
-	} else {
-			height += opt_heightAdded;
-	}
-	debug.info('height: ' + height);
-	window.setTimeout(function(height) {
-		debug.info(height);	
-		gadgets.window.adjustHeight(height);
-	}, 1000);
-}
 
 /**
  * main entry point for app
@@ -103,7 +93,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
 	this.uiComposer = uiComposer;
 	uiComposer.statusUpdate = this;
 	if (!uiComposerTextArea) {
-		debug.warn("uiComposerTextArea is null!");
+		debug.error("uiComposerTextArea is null!");
 		return;
 	}
 	//event handler attach
@@ -115,10 +105,9 @@ eXo.social.StatusUpdate.prototype.init = function() {
 	}, false);
 	var uiComposerShareButton = Util.getElementById(config.ui.UI_COMPOSER_SHARE_BUTTON);
 	if (!uiComposerShareButton) {
-		debug.warn('uiComposerShareButton is null');
+		debug.error('uiComposerShareButton is null');
 		return;
 	}
-	var statusUpdate = this;
 	Util.addEventListener(uiComposerShareButton, 'click', function() {
 		statusUpdate.share(this);
 	}, false);
@@ -142,12 +131,26 @@ eXo.social.StatusUpdate.prototype.init = function() {
 				return;
 			}
 			statusUpdate.viewer = response.get('viewer').getData();
-			statusUpdate.owner = response.get('owner').getData();
+			statusUpdate.owner = response.get('owner').getData(); 
 			statusUpdate.ownerFriends = response.get('ownerFriends').getData();
+			//updates owner avatar
+			var imgOwnerAvatar = Util.getElementById(config.ui.IMG_OWNER_AVATAR);
+			if (!imgOwnerAvatar) {
+				debug.error('imgOwnerAvatar is null!');
+				return;
+			}
+			imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId());
+			var ownerActivityTitle = Util.getElementById('OwnerActivityTitle');
+  			if (!ownerActivityTitle) {
+  				debug.error('ownerActivityTitle is null!!!');
+  				return;
+  			}
+  			ownerActivityTitle.innerHTML = Locale.getMsg('activities_of_displayName', [statusUpdate.owner.getDisplayName()]);
 			//BUG: can not use person.isViewer() or person.isOwner()
 			//debug.debug(this.viewer.isViewer());
 			//debug.debug(this.owner.isOwner());
 			statusUpdate.refresh();
+			//update 
 		}
 	})();
 	//refresh after a specific of time
@@ -156,25 +159,18 @@ eXo.social.StatusUpdate.prototype.init = function() {
 	//}, this.refreshTime);
 }
 
-///**
-// * gets activities 
-// */
-//eXo.social.StatusUpdate.prototype.getActivities = function() {
-//
-//}
-
 eXo.social.StatusUpdate.prototype.refresh = function() {
 	var StatusUpdate = eXo.social.StatusUpdate;
 	debug.info("Refresh!!!!");
-  	//this.MAX = 2 * (this.more + 1); 
   	//Create request for getting owner's and ownerFriends' activities.
   	var req = opensocial.newDataRequest();	
-
 	var opts_act = {};
  	opts_act[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
-  	opts_act[opensocial.DataRequest.ActivityRequestFields.MAX] = StatusUpdate.config.ui.MAX_ACTIVITIES;
+  	opts_act[opensocial.DataRequest.ActivityRequestFields.MAX] = StatusUpdate.config.BATCH_SIZE;
   	req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.PersonId.OWNER, opts_act), 'ownerActivities');
-  	req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.Group.OWNER_FRIENDS, opts_act), 'ownerFriendsActivities');
+  	if (this.viewer.getId() === this.owner.getId()) {
+  		req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.Group.OWNER_FRIENDS, opts_act), 'ownerFriendsActivities');
+  	}
   	var statusUpdate = this;
   	req.send(function(res) {
   		statusUpdate.handleActivities(res);
@@ -187,27 +183,54 @@ eXo.social.StatusUpdate.prototype.refresh = function() {
  * Notifies user the number of new activities.
  * After clicked on notification, updates
  */
-eXo.social.StatusUpdate.prototype.update = function() {
-	
+eXo.social.StatusUpdate.prototype.updateOwnerActivities = function() {
+	var StatusUpdate = eXo.social.StatusUpdate;
+	var statusUpdate = this;
+	var req = opensocial.newDataRequest();
+	var params = {};
+	params[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
+	params[opensocial.DataRequest.ActivityRequestFields.MAX] = StatusUpdate.config.BATCH_SIZE + (StatusUpdate.config.BATCH_SIZE * this.ownerMoreClickedTimes);
+	req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.PersonId.OWNER, params), 'ownerActivities');
+	req.send(function(res) {
+		statusUpdate.handleActivities(res, StatusUpdate.DataMode_OWNER_ONLY);
+	});
 }
 
-/**
- * gets all activities, stores all older activity than currentLastActitivy
- * when user clicks on More, display activities with specified batch size (config)
- */
-eXo.social.StatusUpdate.prototype.readMore = function() {
-	
+eXo.social.StatusUpdate.prototype.updateFriendsActivities = function() {
+	var StatusUpdate = eXo.social.StatusUpdate;
+	var statusUpdate = this;
+	var req = opensocial.newDataRequest();
+	var params = {};
+	params[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
+	params[opensocial.DataRequest.ActivityRequestFields.MAx] = StatusUpdate.config.BATCH_SIZE + (StatusUpdate.config.BATCH_SIZE * this.friendsMoreClickedTimes);
+	req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.Group.OWNER_FRIENDS, params), 'ownerFriends');
+	req.send(function(res) {
+		statusUpdate.handleActivities(res, StatusUpdate.DataMode_FRIENDS_ONLY);
+	});
 }
 
+
 /**
- * callback hander for activities 
+ * callback hander for activities
+ * @param	dataResponse 
+ * @param	opt_dataMode - can be StatusUpdate.DataMode_BOTH
+ *								  StatusUpdate.DataMode_OWNER_ONLY
+ *                                StatusUpdate.DataMode_FRIENDS_ONLY
  */
-eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse) {
+eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, dataMode) {
+	
 	var Locale = eXo.social.Locale;
 	var Util = eXo.social.Util;
 	var Like = eXo.social.Like;
+	var StatusUpdate = eXo.social.StatusUpdate;
+	var config = StatusUpdate.config;
+	var statusUpdate = this;
 	
+	var dataMode = dataMode || StatusUpdate.DataMode_BOTH;
 	//private methods
+	/**
+	 * sort activites by time 
+	 */
   	var  sortPostedTimeHandler = function(activity1, activity2) {	
 		if (activity1.getField('postedTime') > activity2.getField('postedTime')) {
 			return -1;
@@ -217,76 +240,78 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse) {
 		return 0;
   	}
   	
- 	if (dataResponse.hadError()) {
-  		debug.warn('dataResponse had error, please refresh!!!');
-  		debug.info(dataResponse);
-  		//TODO informs user, use mini message
-  		return;
-  	}
-  	
-  	var ownerActivityTitle = Util.getElementById('OwnerActivityTitle');
-  	if (!ownerActivityTitle) {
-  		debug.warn('ownerActivityTitle is null!!!');
-  		return;
-  	}
-  	ownerActivityTitle.innerHTML = Locale.getMsg('activities_of_ownerDisplayName', [this.owner.getDisplayName()]);
-  	
-  	var ownerActivities = dataResponse.get('ownerActivities').getData()['activities'].asArray();
- 	this.activities = ownerActivities;
- 	var totalActivities = dataResponse.get('ownerActivities').getData()['activities'].getTotalSize();
- 	if (this.viewer.getId() === this.owner.getId()) {
- 		var ownerFriendsActivities = dataResponse.get('ownerFriendsActivities').getData()['activities'].asArray();
- 		this.activities.concat(ownerFriendsActivities);
- 		totalActivities += ownerFriendsActivities.length;
- 	}
-  	this.activities.sort(sortPostedTimeHandler);
-  	
-  	var config = eXo.social.StatusUpdate.config;
-  	if (!this.activities || this.activities.length === 0) {
-    	Util.getElementById(config.ui.UI_APPENDABLE_ROOT).innerHTML = '<div id="NoActivity" class= "Empty">' + Locale.getMsg('ownerDisplayName_does_not_have_update', [this.owner.getDisplayName()]) + '</div>';
-    	return;
-  	}
-  	Util.getElementById(config.ui.UI_APPENDABLE_ROOT).innerHTML = ''; //resets
-  	var activitiesLength = this.activities.length;
-  	var displayActivityNum = activitiesLength;
-  	if (activitiesLength > config.ui.MAX_ACTIVITIES) {
-		displayActivityNum = config.ui.MAX_ACTIVITIES;
-		//TODO stores older activities
-  	}
-  
-//  	if (displayActivityNum < totalActivities) {
-//		Util.getElementById(config.ui.UI_MORE).style.display = 'block';
-//  	} else {
-//		Util.getElementById(config.ui.UI_MORE).style.display = 'none';
-//  	}
-  	var useLightBackground = true;
-  	var UI_APPENDABLE_ROOT= eXo.social.StatusUpdate.config.ui.UI_APPENDABLE_ROOT;
-  	for (var i = 0; i < displayActivityNum; i++) {
-  		var html = [];
-  		var aDecoratorContainerClass = 'ADecoratorContainer';
-  		if (!useLightBackground) {
-  			aDecoratorContainerClass = 'ADecoratorContainerGray';
-  			useLightBackground = true;
-  		} else {
-  			aDecoratorContainerClass = 'ADecoratorContainer';
-  			useLightBackground = false;
+  	/**
+  	 * gets html block of normal activity
+  	 * @param	activity object
+  	 */
+  	var getNormalActivityBlock = function(activity) {
+  		if (!activity) {
+  			debug.error('getNormalActivityBlock: activity is null.');
+  			debug.info(activity);
+  			return;
   		}
-  		var userId = this.activities[i].getField(opensocial.Activity.Field.USER_ID);
-  		var url = this.activities[i].getField(opensocial.Activity.Field.URL);
-		var activityId =  this.activities[i].getField(opensocial.Activity.Field.ID);
-		var viewerId = this.viewer.getId();
-  		var title = this.activities[i].getField(opensocial.Activity.Field.TITLE);
-  		var body = this.activities[i].getField(opensocial.Activity.Field.BODY);
-  		var userName = this.getName(userId);
-  		var avatarUrl = this.getAvatar(userId);
-  		var prettyTime = Util.toPrettyTime(new Date(this.activities[i].getField('postedTime')));
-  		var jsonBody = body.replace(/&#34;/g, '"');
-  		jsonBody = jsonBody.replace(/&#92;/g, "\\");
-  		jsonBody = gadgets.json.parse(jsonBody);
-  		if (jsonBody.data) { //process with json body, link display
-  			var data = jsonBody.data;
-  			html.push('<div class="ActivitiesContent"');
-  				html.push('<div class="MiniAvatarSpaceBG">');
+  		var userId = activity.getField(opensocial.Activity.Field.USER_ID);
+  		var url = activity.getField(opensocial.Activity.Field.URL);
+		var activityId =  activity.getField(opensocial.Activity.Field.ID);
+		var viewerId = statusUpdate.viewer.getId();
+  		var title = activity.getField(opensocial.Activity.Field.TITLE);
+  		var body = activity.getField(opensocial.Activity.Field.BODY);
+  		var userName = statusUpdate.getName(userId);
+  		var avatarUrl = statusUpdate.getAvatar(userId);
+  		var prettyTime = Util.toPrettyTime(new Date(activity.getField('postedTime')));
+  		var html = [];
+  		
+  		html.push('<div class="ActivitiesContent">');
+  			html.push('<a href="#" class="AvatarPeopleBG">');
+  				html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
+  			html.push('</a>');
+  			html.push('<div class="Content">');
+  				html.push('<div class="TitleItem" href="#">' + title + '</div>');
+  				html.push('<div class="Content">' + body + '</div>');
+  				html.push('<div class="NewsDate">' + prettyTime + '</div>');
+  			if (statusUpdate.currentView === 'canvas') {
+  				html.push('<a href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
+  			}
+  			html.push('</div>')
+  			html.push('<div class="ClearLeft"><span></span></div>');
+  		html.push('</div>');
+  		html.push('<div class="ListPeopleLikeBG">');
+  			html.push('<div id="ListPeopleLike' + activityId + '" class="ListPeopleLike DisplayNone">');
+  				html.push('<div class="ListPeopleContent"');
+  					html.push('<div id="TitleLike' + activityId + '" class="Title"></div>');
+  					html.push('<div style="display:none;" id="ListPeople' + activityId + '"></div>');
+  					html.push('<div class="ClearLeft"><span></span></div>');
+  				html.push('</div>');
+  			html.push('</div>');
+  		html.push('</div>');
+  		return html.join('');
+  	}
+  	
+  	/**
+  	 * get html block of link share activity
+  	 * @param	activity
+  	 * @param	data json object from activity.body.data
+  	 */
+  	var getLinkShareActivityBlock = function(activity, data) {
+	  	  	if (!activity || !data) {
+	  	  		debug.error('getLinkShareActivityBlock: activity or data is null.');
+	  	  		debug.info(activity);
+	  	  		debug.info(data);
+	  	  		return;
+	  	  	}
+  	  
+	  		var userId = activity.getField(opensocial.Activity.Field.USER_ID);
+	  		var url = activity.getField(opensocial.Activity.Field.URL);
+			var activityId =  activity.getField(opensocial.Activity.Field.ID);
+			var viewerId = statusUpdate.viewer.getId();
+	  		var title = activity.getField(opensocial.Activity.Field.TITLE);
+	  		var body = activity.getField(opensocial.Activity.Field.BODY);
+	  		var userName = statusUpdate.getName(userId);
+	  		var avatarUrl = statusUpdate.getAvatar(userId);
+	  		var prettyTime = Util.toPrettyTime(new Date(this.activities[i].getField('postedTime')));
+	  		var html = [];
+	  		html.push('<div class="ActivitiesContent"');
+	  			html.push('<div class="MiniAvatarSpaceBG">');
 	    			html.push('<img src="' + avatarUrl + '" width="60" height="60" />'); 
 	   			html.push('</div>');
 	    		html.push('<div class="UserName">');
@@ -304,40 +329,107 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse) {
   				html.push('</div>');
   				html.push('<div class="Title">' + data.title + '</div>');
   				html.push('<div class="Description">' + data.description + '</div>');
-  				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + data.link + '</div>')
-  			html.push('</div>')
-  		} else {//normal display
-  			//html.push('<div class="' + aDecoratorContainerClass + '">');
-  				html.push('<div class="ActivitiesContent">');
-  					html.push('<a href="#" class="AvatarPeopleBG">');
-  						html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
-  					html.push('</a>');
-  					html.push('<div class="Content">');
-  						html.push('<div class="TitleItem" href="#">' + title + '</div>');
-  						html.push('<div class="Content">' + body + '</div>');
-  						html.push('<div class="NewsDate">' + prettyTime + '</div>');
-  					if (this.currentView === 'canvas') {
-  						html.push('<a href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
-  					}
-  					html.push('</div>')
-  					html.push('<div class="ClearLeft"><span></span></div>');
-  				html.push('</div>');
-  				html.push('<div class="ListPeopleLikeBG">');
-  					html.push('<div id="ListPeopleLike' + activityId + '" class="ListPeopleLike DisplayNone">');
-  						html.push('<div class="ListPeopleContent"');
-  							html.push('<div id="TitleLike' + activityId + '" class="Title"></div>');
-  							html.push('<div class="DisplayNone" id="ListPeople' + activityId + '"></div>');
-  							html.push('<div class="ClearLeft"><span></span></div>');
-  						html.push('</div>');
-  					html.push('</div>');
-  				html.push('</div>');
-  			//html.push('</div>');
-  			var newEl = Util.addElement(UI_APPENDABLE_ROOT, 'div', null, html.join(''));
-  			newEl.setAttribute('class', aDecoratorContainerClass);
-  			Like.getLikeIds(activityId, Like.displayLike);
-	}
-  }
-		gadgets.window.adjustHeight();
+  				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + data.link + '</div>');
+  			html.push('</div>');
+  			return html.join('');
+  	}
+  	
+  	var displayActivities = function(appendableRootId, moreId, activities, isOwner, displayName) {
+  		if (!activities || activities.length === 0) {
+  			if (isOwner) {
+    			Util.getElementById(appendableRootId).innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [displayName]) + '</div>';
+    		} else {
+    			Util.getElementById(appendableRootId).innerHTML = '<div class="Empty">' + Locale.getMsg('displayName_do_not_have_update', [displayName]) + '</div>';
+    		}
+    		return;
+  		}
+  		Util.getElementById(appendableRootId).innerHTML = ''; //resets
+  		var activitiesLength = activities.length;
+  		var displayActivityNum = activitiesLength;
+  		var maxDisplayedActivity = 0;
+  		if (dataMode === StatusUpdate.DataMode_OWNER_ONLY) {
+  			maxDisplayedActivity = config.MAX_ACTIVITIES + config.MAX_ACTIVITIES * statusUpdate.ownerMoreClickedTimes;
+  		} else if (dataMode == StatusUpdate.DataMode_FRIENDS_ONLY) {
+  			maxDisplayedActivity = config.MAX_ACTIVITIES + config.MAX_ACTIVITIES * statusUpdate.friendsMoreClickedTimes;
+  		} else {
+  			maxDisplayedActivity = config.MAX_ACTIVITIES;
+  		}
+  		if (activitiesLength > maxDisplayedActivity) {
+			displayActivityNum = maxDisplayedActivity;
+			//TODO stores older activities
+  		}
+  		var uiMore = Util.getElementById(moreId);
+	  	if (displayActivityNum < activitiesLength) {
+			uiMore.style.display = 'block';
+			if (isOwner) {
+				uiMore.onclick = function() {
+					statusUpdate.ownerMoreClickedTimes += 1;
+					statusUpdate.updateOwnerActivities();
+				}	
+			} else {
+				uiMore.onclick = function() {
+					statusUpdate.friendsMoreClickedTimes += 1;
+					statusUpdate.updateFriendsActivities();
+				}
+			}
+	  	} else {
+			Util.getElementById(moreId).style.display = 'none';
+	  	}
+  		var useLightBackground = true;
+  		
+	  	for (var i = 0; i < displayActivityNum; i++) {
+	  		var html = '';
+	  		var aDecoratorContainerClass = '';
+	  		if (!useLightBackground) {
+	  			aDecoratorContainerClass = 'ADecoratorContainerGray';
+	  			useLightBackground = true;
+	  		} else {
+	  			aDecoratorContainerClass = 'ADecoratorContainer';
+	  			useLightBackground = false;
+	  		}
+			var activityId =  activities[i].getField(opensocial.Activity.Field.ID);
+	  		var body = activities[i].getField(opensocial.Activity.Field.BODY);
+	  		var jsonBody = body.replace(/&#34;/g, '"');
+	  		jsonBody = jsonBody.replace(/&#92;/g, "\\");
+	  		jsonBody = gadgets.json.parse(jsonBody);
+	  		if (jsonBody.data) { //process with json body, link display
+	  			var data = jsonBody.data;
+				html = getLinkShareActivityBlock(activities[i], data);
+	  		} else {//normal display
+				html = getNormalActivityBlock(activities[i]);
+			}
+			if (html === null) {
+				debug.error('html if null!!!');
+				return;
+			}
+			var newEl = Util.addElement(appendableRootId, 'div', null, html);
+	  		newEl.setAttribute('class', aDecoratorContainerClass);
+	  		if (statusUpdate.currentView === 'canvas') {
+	  			Like.getLikeIds(activityId, Like.displayLike);
+	  		}
+	  	}
+	 }
+	 
+ 	if (dataResponse.hadError()) {
+  		debug.error('dataResponse had error, please refresh!!!');
+  		debug.info(dataResponse);
+  		//TODO informs user, use mini message
+  		return;
+  	}
+  	if (dataMode === StatusUpdate.DataMode_BOTH || dataMode === StatusUpdate.DataMode_OWNER_ONLY) {
+  		this.ownerActivities = dataResponse.get('ownerActivities').getData()['activities'].asArray();
+  		this.ownerActivities.sort(sortPostedTimeHandler);
+  		displayActivities(config.ui.UI_OWNER_APPENDABLE_ROOT, config.ui.UI_OWNER_MORE, this.ownerActivities, true, this.owner.getDisplayName());
+  	}
+  	
+ 	if (this.viewer.getId() === this.owner.getId()) {
+ 		if (dataMode === StatusUpdate.DataMode_BOTH || dataMode === StatusUpdate.DataMode_FRIENDS_ONLY) {
+ 			this.ownerFriendsActivities = dataResponse.get('ownerFriendsActivities').getData()['activities'].asArray();
+ 			this.ownerFriendsActivities.sort(sortPostedTimeHandler);
+ 			displayActivities(config.ui.UI_FRIENDS_APPENDABLE_ROOT, config.ui.UI_FRIENDS_MORE, this.ownerFriendsActivities, false, Locale.getMsg('owner_friends'));
+ 		}
+ 	}  	
+	gadgets.window.adjustHeight();
 }
 
 /**
@@ -349,7 +441,7 @@ eXo.social.StatusUpdate.prototype.getName = function(userId) {
   	if (userId === this.owner.getId()) {
   		return this.owner.getDisplayName();
   	}
-    var person = this.ownerContacts.getById(userId);
+    var person = this.ownerFriends.getById(userId);
   	if (person !== null) {
   		return person.getDisplayName();	
   	}
@@ -368,7 +460,7 @@ eXo.social.StatusUpdate.prototype.getAvatar = function(userId) {
   	if (userId === this.owner.getId()) {
 		person = this.owner;	
 	} else {
-	 	person = this.ownerContacts.getById(id);
+	 	person = this.ownerFriends.getById(userId);
 	}
   	if (person !== null) {
   		newAvatarUrl = person.getField(opensocial.Person.Field.THUMBNAIL_URL);
@@ -455,7 +547,7 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 	var activity = opensocial.newActivity({ 'title' : this.viewer.getDisplayName(), 'body' : activityContent});
 	var statusUpdate = this;
 	opensocial.requestCreateActivity(activity, "HIGH", function() {
-		statusUpdate.refresh();}
+		statusUpdate.updateOwnerActivities();}
 	);
 	restore();
 }

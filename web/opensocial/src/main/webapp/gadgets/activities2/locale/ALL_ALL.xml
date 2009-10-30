@@ -8,8 +8,10 @@
 	<msg name="what_are_you_doing">What are you doing?</msg>
 	<msg name="share">Share</msg>
 	<msg name="attach">Attach</msg>
-	<msg name="activities_of_ownerDisplayName">Activities of {0}'s</msg>
-	<msg name="ownerDisplayName_does_not_have_update">{0} does not have any updates yet</msg>
+	<msg name="activities_of_displayName">Activities of {0}'s</msg>
+	<msg name="owner_friends">Owner's friends</msg>
+	<msg name="displayName_does_not_have_update">{0} does not have any updates yet</msg>
+	<msg name="displayName_do_not_have_update">{0} do not have any updates yet</msg>
 	<msg name="comment">Comment</msg>
 	<msg name="like">Like</msg>
 	<msg name="unlike">Unlike</msg>

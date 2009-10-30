@@ -191,11 +191,11 @@ eXo.social.Like.ref = {
  */
 eXo.social.Like.toggleDisplayListPeople = function(activityId) {
 	var Util = eXo.social.Util;
-	var likeDetailsBlock = Util.getElementById('LikeDetails' + activityId);
-	if (likeDetailsBlock.style.display === 'none') {
-		likeDetailsBlock.style.display = 'block';
+	var listPeople = Util.getElementById('ListPeople' + activityId);
+	if (listPeople.style.display === 'none') {
+		listPeople.style.display = 'block';
 	} else {
-		likeDetailBlock.style.display = 'none';
+		listPeople.style.display = 'none';
 	}
 	gadgets.window.adjustHeight();
 }
