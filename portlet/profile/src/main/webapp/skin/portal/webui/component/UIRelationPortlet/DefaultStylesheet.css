@@ -405,10 +405,10 @@
 }
 
 .UITabPane .ContainerSpace .ContentSpace .DeleteIcon{
-	background: url('background/DeleteIcon') no-repeat right top;
-	padding: 8px;
+	background: url(background/RemoveIcon.gif) no-repeat right top;
+	padding: 5px 6px;
 	margin-bottom:4px;
-	background: #fbfbfb;
+	float: right;
 }
 
 .UITabPane .ContainerSpace .ContentSpaceGray {

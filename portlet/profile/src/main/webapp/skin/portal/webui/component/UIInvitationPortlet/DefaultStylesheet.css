@@ -551,3 +551,18 @@ input.hint, textarea.hint {
 .ContainerSpace .SearchSpaces .FilterBy {
 	color: #C7C7C7;
 }
+
+
+.UITabPane .StopIcon{
+	background: url('background/StopIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}
+
+.UITabPane .SelectIcon{
+	background: url('background/SelectIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}

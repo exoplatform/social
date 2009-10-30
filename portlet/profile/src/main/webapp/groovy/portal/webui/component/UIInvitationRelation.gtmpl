@@ -92,6 +92,10 @@
         <% if(position.length() > 0) { %>
         <div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
         <%  } %>
+        <div class="CommunityContent">
+				    	<span style="padding: 4px;">Descriptions:</span>
+				    	<span style="padding: 4px;">Deverloper</span>
+				    </div>
     	</div>
     	<div style="clear: left;"><span></span></div>
     </div>

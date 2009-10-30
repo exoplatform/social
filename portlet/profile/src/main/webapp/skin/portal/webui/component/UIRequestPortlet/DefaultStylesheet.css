@@ -305,7 +305,7 @@
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search{
-	width: 232px;
+	width: 256px;
 	float: left;
 	background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
 	border: 1px solid #b7b7b7;
@@ -559,16 +559,3 @@ input.hint, textarea.hint {
 	margin-left: 4px;
 }
 
-.UITabPane .StopIcon{
-	background: url('background/StopIcon.gif') no-repeat left center ;
-	float: right;
-	padding: 5px 6px;
-	margin-left: 4px;
-}
-
-.UITabPane .SelectIcon{
-	background: url('background/SelectIcon.gif') no-repeat left center ;
-	float: right;
-	padding: 5px 6px;
-	margin-left: 4px;
-}

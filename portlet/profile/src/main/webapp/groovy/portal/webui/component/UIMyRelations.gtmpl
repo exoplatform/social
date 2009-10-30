@@ -20,6 +20,15 @@
 		<div class="ActivitiesTitleBarM">MY FRIEND LIST</div>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+			 <div class="ATitleBarL">
+				<div class="ATitleBarR">
+					<div class="ATitleBarM">
+						<div class="ATitleBarC">
+						Friend Listting
+						</div>
+					</div>
+				</div>
+			</div>
 			<%if (myRelation.size() == 0) {%>
 				<div class="ContentSpace">
 		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
@@ -28,7 +37,7 @@
 			<%}%>		
 			
 			<%if (myRelation.size() > 0) {%> 
-		  	<br /><div><b>Contact</b></div>
+		  
 			<% for(relation in myRelation) {
 				def id = null;
 				if (currIdentity.id == relation.identity1.id) {
@@ -53,19 +62,11 @@
 					} catch (Exception e) {}
     		}
 		 %>
-		 <div class="ATitleBarL">
-				<div class="ATitleBarR">
-					<div class="ATitleBarM">
-						<div class="ATitleBarC">
-						Friend Listting
-						</div>
-					</div>
-				</div>
-			</div>
+		
 			<div class="ContentSpace">
 	    	<div class="AvartarPeopleBG">
-           <img height="47px" width="47px" src="$imageSource"/>
-        </div>
+	           <img height="47px" width="47px" src="$imageSource"/>
+	        </div>
 	    	<div class="CommunityContainer">
 	        <div class="CommunityMane Line">
 	            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
@@ -75,9 +76,13 @@
 	  				<% } %>
 	            <div style="clear: both;"><span/></div>
 	        </div>
-	        <% if(position.length() > 0) { %>
-	        <div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
-	        <%  } %>
+		        <% if(position.length() > 0) { %>
+		        <div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
+		        <%  } %>
+				<div class="CommunityContent">
+				<span style="padding: 4px;">Descriptions:</span>
+				<span style="padding: 4px;">Deverloper</span>
+			</div>
 	    	</div>
 	    	<div style="clear: left;"><span></span></div>
 	    </div>

@@ -18,13 +18,6 @@
 	<% uiform.begin() %>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
-			<%if (list.size() == 0) {%>
-		      <div class="ContentSpace">
-		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
-		        <div style="clear: left;"><span></span></div>
-		      </div>
-			  
-		  <%}%>
 			<div class="ATitleBarL">
 				<div class="ATitleBarR">
 					<div class="ATitleBarM">
@@ -34,6 +27,14 @@
 					</div>
 				</div>
 			</div>
+			<%if (list.size() == 0) {%>
+		      <div class="ContentSpace">
+		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+		        <div style="clear: left;"><span></span></div>
+		      </div>
+			  
+		  <%}%>
+			
 			<%	for(relation in list) {
 					def identity = null;
 					if (currIdentity.id == relation.identity1.id) {
@@ -66,8 +67,7 @@
 				        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" style="color: #afafaf;">${fullName}</a></div>
 				       <% if (isEditable) {%>
 					   <a href="#" class="RemoveIcon" onclick="$actionLink" >&nbsp;</a>
-					   <a href="#" class="StopIcon" onclick="$actionLink" >&nbsp;</a>
-					   <a href="#" class="SelectIcon" onclick="$actionLink" >&nbsp;</a>
+					   
 					   <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
 					    <% } %> 
 				    </div>
