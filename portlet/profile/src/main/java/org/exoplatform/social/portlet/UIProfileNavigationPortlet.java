@@ -24,6 +24,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.portlet.profile.Utils;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -53,8 +54,19 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     return split[split.length-1];
   }
   
+  public boolean isMe () {
+    RequestContext context = RequestContext.getCurrentInstance();
+    String currentUserName = context.getRemoteUser();
+    String currentViewer = URLUtils.getCurrentUser();
+    
+    if (currentViewer == null) {
+      return true;
+    }
+    
+    return currentUserName.equals(currentViewer);
+  }
+  
   protected String getImageSource() throws Exception {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
     Identity currIdentity = Utils.getCurrentIdentity();
     Profile p = currIdentity.getProfile();
     ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
@@ -69,6 +81,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     PortalContainer pcontainer =  PortalContainer.getInstance() ;
     return pcontainer.getPortalContainerInfo().getContainerName() ;  
   }
+  
   private String getRepository() throws Exception {
     RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
     return rService.getCurrentRepository().getConfiguration().getName() ;
