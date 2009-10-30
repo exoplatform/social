@@ -11,23 +11,27 @@
   UIFormPageIterator iterator = uicomponent.getUiFormPageIterator();
   PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
+  def pendingRelationIdx = 0;
 %>
-<div class="ActivitiesTitleBarM">MY FRIEND LIST</div>
+<div class="ActivitiesTitleBarM">
+	<%=_ctx.appRes(uicomponent.getId() + ".label.MyRequestsList")%>
+</div>
 <div class="UIPendingRelation">
 	<div class="UITabPane">
 	<% uiform.begin() %>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+
 			<div class="ATitleBarL">
 				<div class="ATitleBarR">
 					<div class="ATitleBarM">
 						<div class="ATitleBarC">
-						Friend Listting
+							<%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
 						</div>
 					</div>
 				</div>
 			</div>
-			<%if (list.size() == 0) {%>
+			<%if ((list == null) || (list.size() == 0)) {%>
 		      <div class="ContentSpace">
 		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
 		        <div style="clear: left;"><span></span></div>
@@ -46,6 +50,7 @@
 			    def fullName = identity.profile.fullName;
 			    def actionLink = uicomponent.event("DenyContact", identity.getId());
 			    def position = identity.profile.getPropertyValue("position");
+			    pendingRelationIdx += 1;
 			    if (!position) position = "";
 			    
 			    String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/BLAvatar.gif";
@@ -57,8 +62,11 @@
 						} catch (Exception e) {}
 	    		}
 		  %>
-				
+				<% if (pendingRelationIdx % 2 == 0) { %>
 			  	<div class="ContentSpace ClearFix">
+			  <% } else {%>
+			  	<div class="ContentSpaceGray ClearFix">
+			  <% }%>
 			    <div class="AvartarPeopleBG">
 		           <img height="47px" width="47px" src="$imageSource"/>
 		        </div>
@@ -67,48 +75,17 @@
 				        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" style="color: #afafaf;">${fullName}</a></div>
 				       <% if (isEditable) {%>
 					   <a href="#" class="RemoveIcon" onclick="$actionLink" >&nbsp;</a>
-					   
 					   <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
 					    <% } %> 
 				    </div>
 				    <% if(position.length() > 0) { %>
-				    		<div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
-				    <%  } %>
-				    <div class="CommunityContent">
-				    	<span style="padding: 4px;">Descriptions:</span>
-				    	<span style="padding: 4px;">Deverloper</span>
-				    </div>
+			        <div class="CommunityContent" style="padding: 4px;">
+			        	<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+		        	</div>
+		        <% } %>
 			    </div>
 			    </div>
-				
-				
-				
-				
-				
-				<div class="ContentSpaceGray ClearFix">
-			    <div class="AvartarPeopleBG">
-		           <img height="47px" width="47px" src="$imageSource"/>
-		        </div>
-			    <div class="CommunityContainer">
-				    <div class="CommunityMane Line ClearFix">
-				        <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" style="color: #afafaf;">${fullName}</a></div>
-				       <% if (isEditable) {%>
-					   <a href="#" class="RemoveIcon" onclick="$actionLink" >&nbsp;</a>
-					   <a href="#" class="StopIcon" onclick="$actionLink" >&nbsp;</a>
-					   <a href="#" class="SelectIcon" onclick="$actionLink" >&nbsp;</a>
-					   <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
-					    <% } %> 
-				    </div>
-				    <% if(position.length() > 0) { %>
-				    		<div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
-				    <%  } %>
-				    <div class="CommunityContent">
-				    	<span style="padding: 4px;">Descriptions:</span>
-				    	<span style="padding: 4px;">Deverloper</span>
-				    </div>
-			    </div>
-			    </div>
-		  <% } %>
+		 <% } %>
 		  <%
 		 		if (uicomponent.getUiFormPageIterator().getAvailablePage() > 1) {
 		 			uicomponent.renderUIComponent(iterator) ;

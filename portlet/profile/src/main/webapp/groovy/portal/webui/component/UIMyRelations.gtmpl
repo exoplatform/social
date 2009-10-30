@@ -13,30 +13,34 @@
 	UIFormPageIterator iteratorContact = uicomponent.getUiFormPageIteratorContact();
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def requestURI = pcontext.getRequestURI();
+  def relationIdx = 0;
 %>
 <div class="UIMyRelations">
 	<div class="UITabPane">
 	<% uiform.begin() %>
-		<div class="ActivitiesTitleBarM">MY FRIEND LIST</div>
+		<div class="ActivitiesTitleBarM">
+			<%=_ctx.appRes(uicomponent.getId() + ".label.MyRelationsList")%>
+		</div>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+			
 			 <div class="ATitleBarL">
 				<div class="ATitleBarR">
 					<div class="ATitleBarM">
 						<div class="ATitleBarC">
-						Friend Listting
+						<%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
 						</div>
 					</div>
 				</div>
 			</div>
-			<%if (myRelation.size() == 0) {%>
+			<%if ((myRelation == null) || (myRelation.size() == 0)) {%>
 				<div class="ContentSpace">
 		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
 		        <div style="clear: left;"><span></span></div>
 		   	</div>
 			<%}%>		
 			
-			<%if (myRelation.size() > 0) {%> 
+			<%if ((myRelation != null) && (myRelation.size() > 0)) {%> 
 		  
 			<% for(relation in myRelation) {
 				def id = null;
@@ -50,6 +54,7 @@
 		    position = id.profile.getPropertyValue("position");
 		    def actionLink = uicomponent.event("Remove",id.getId());
 		    position = id.profile.getPropertyValue("position");
+		    relationIdx += 1;
 			  if (!position)
 		      position = "";
 		      
@@ -63,7 +68,11 @@
     		}
 		 %>
 		
-			<div class="ContentSpace">
+				<% if (relationIdx % 2 == 0) { %>
+			  	<div class="ContentSpace ClearFix">
+			  <% } else {%>
+			  	<div class="ContentSpaceGray ClearFix">
+			  <% }%>
 	    	<div class="AvartarPeopleBG">
 	           <img height="47px" width="47px" src="$imageSource"/>
 	        </div>
@@ -72,17 +81,15 @@
 	            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
 	  				<% if (isEditable) {%>
 	  					<a href="#" onclick="$actionLink" class="DeleteIcon">&nbsp;</a>
-	  
 	  				<% } %>
 	            <div style="clear: both;"><span/></div>
 	        </div>
 		        <% if(position.length() > 0) { %>
-		        <div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
+		        	<div class="CommunityContent" style="padding: 4px;">
+		        		<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+		        	</div>
 		        <%  } %>
-				<div class="CommunityContent">
-				<span style="padding: 4px;">Descriptions:</span>
-				<span style="padding: 4px;">Deverloper</span>
-			</div>
+				
 	    	</div>
 	    	<div style="clear: left;"><span></span></div>
 	    </div>

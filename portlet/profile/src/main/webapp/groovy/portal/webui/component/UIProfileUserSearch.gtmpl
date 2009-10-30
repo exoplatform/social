@@ -20,15 +20,17 @@
 def uicomponentId = uicomponent.id;
 
 def contactSearchLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
+def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
 def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreLabel");
 def hideLabel = _ctx.appRes("${uicomponentId}.label.HideLabel");
 def filterByLabel = _ctx.appRes("${uicomponentId}.label.FilterBy");
 def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
 def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
 def femaleLabel = _ctx.appRes("${uicomponentId}.label.FeMale");
-def positionLabel = _ctx.appRes("${uicomponentId}.label.Position");
-def companyLabel = _ctx.appRes("${uicomponentId}.label.Company");
+def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
+def companyDefaultVal = _ctx.appRes("${uicomponentId}.label.Company");
 def allLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
+def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
 def filterId = "Filter" + uicomponentId;
 def searchId = "Search" + uicomponentId;
 def moreSearchId = "MoreSearch" + uicomponentId;
@@ -45,14 +47,14 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
  <div class="SearchSpaces" name="SearchSpaces">
 	<div class="SearchSpacesR ClearFix">
 	  <div class="Lable">${contactSearchLabel}</div>
-	  <input type="text" id="$searchId" class="Search" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);"/>
+	  <input type="text" id="$searchId" style="color: #C7C7C7" class="Search" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$nameDefaultVal"/>
 	  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
 	  <div style="clear: left;"><span></span></div>
-	  <div class="Filter" id="$filterId" style="">
-		<div class="Lable">Filter:</div>
-		<input type="text" id="$positionId" class="Input" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$positionLabel"/>
-		<input type="text" id="$companyId" class="Input" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$companyLabel"/>
-		<select class="Select" id="$genderId" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onMouseDown="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)">
+	  <div class="Filter" id="$filterId" style="display:none">
+		<div class="Lable">${filterByLabel}:</div>
+		<input type="text" id="$positionId" class="Input" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$positionDefaultVal"/>
+		<input type="text" id="$companyId" class="Input" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)" value="$companyDefaultVal"/>
+		<select class="Select" id="$genderId" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onMouseDown="eXo.social.profile.UIProfileUserSearch.activeFilterText(this)" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this)">
 			<option selected="selected" value="Gender">${allLabel}</option>
 			<option value="male">${maleLabel}</option>
 			<option value="female">${femaleLabel}</option>
@@ -65,7 +67,7 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 		<div class="ATitleBarR">
 			<div class="ATitleBarM">
 				<div class="ATitleBarC">
-				Friend Deractoy
+				${relationDirectory}
 				</div>
 			</div>
 		</div>
@@ -74,9 +76,9 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
  		<% for (ch in alphabets) { 
  				if ((selectedStartChar != null) && (selectedStartChar == ch)) {
  		%>
- 					<a href="#/$ch" style="font-color:red;" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
+ 					<a href="#/$ch" style="font-color:red; margin-right:2px;" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
  		 <%} else {%>
- 					<a href="#/$ch" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
+ 					<a href="#/$ch" id="directoryId" style="font-color:black; margin-right:2px;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
  			<% } %>
  		<% } %>
  </dir>

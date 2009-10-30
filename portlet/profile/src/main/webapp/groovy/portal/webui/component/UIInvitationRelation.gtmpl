@@ -18,16 +18,28 @@
   def isEditable = uicomponent.isEditable();
 	def myInvitations = uicomponent.getInvitation();
 	def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
-	UIFormPageIterator iteratorContact = uicomponent.getUiFormPageIteratorContact();
+	UIFormPageIterator iteratorInvitation = uicomponent.getUiFormPageIteratorInvitation();
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def requestURI = pcontext.getRequestURI();
+  def invitationRelationIdx = 0
 %>
-<div class="ActivitiesTitleBarM">MY FRIEND LIST</div>
+<div class="ActivitiesTitleBarM">
+	<%=_ctx.appRes(uicomponent.getId() + ".label.MyInvitationsList")%>
+</div>
 <div class="UIInvitationRelation">
 	<div class="UITabPane">
 	<% uiform.begin() %>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+			<div class="ATitleBarL">
+				<div class="ATitleBarR">
+					<div class="ATitleBarM">
+						<div class="ATitleBarC">
+							<%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
+						</div>
+					</div>
+				</div>
+			</div>
 			<%if (myInvitations.size() == 0) {%>
 				<div class="ContentSpace">
 		        <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
@@ -35,7 +47,7 @@
 		   	</div>
 			<%}%>		
 			
-		<%if (myInvitations.size() > 0) {%> 
+		<%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>  
 			<% for(invitation in myInvitations) {
 						def identity = invitation.identity1;
 					  profileURL = requestURI + "/" + identity.getRemoteId();
@@ -44,10 +56,11 @@
 				    actionAccept = uicomponent.event("Accept",identity.getId());
 				    actionDeny = uicomponent.event("Deny",identity.getId());
 				    position = identity.profile.getPropertyValue("position");
+				    invitationRelationIdx += 1;
 					  if (!position) 
 				      position = "";
 				    
-				    String imageSource = "/eXoResourcesSocial/skin/ShareImages/Avartar.gif";
+				    String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/BLAvatar.gif";
 				    ProfileAttachment att = identity.profile.getProperty("avatar");
 						if (att != null) {
 							try {
@@ -56,51 +69,39 @@
 								} catch (Exception e) {}
 						}
 	 %>
-		<div class="ContentSpace">
-    	<div class="MiniAvatarSpaceBG">
-		  		<img src="$imageSource" width="65" height="65">
-	    </div>
+		<% if (invitationRelationIdx % 2 == 0) { %>
+		 	<div class="ContentSpace ClearFix">
+		<% } else {%>
+		 	<div class="ContentSpaceGray ClearFix">
+		<% }%>
+    	  <div class="AvartarPeopleBG">
+		   <img height="47px" width="47px" src="$imageSource"/>
+		</div>
     	<div class="CommunityContainer">
-        <div class="CommunityMane Line">
-            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
-  				<% if (isEditable) {%>
-		    		<div onclick="$actionDeny" class="ActionBar">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getId() + ".label.Deny")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-            <div onclick="$actionAccept" class="ActionBar">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getId() + ".label.Accept")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-  				<% } %>
-            <div style="clear: both;"><span/></div>
-        </div>
-        <% if(position.length() > 0) { %>
-        <div class="Text Line"><%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}</div>
-        <%  } %>
-        <div class="CommunityContent">
-				    	<span style="padding: 4px;">Descriptions:</span>
-				    	<span style="padding: 4px;">Deverloper</span>
-				    </div>
+			<div class="CommunityMane Line">
+	            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
+	  				<% if (isEditable) {%>
+					<a href="#" class="StopIcon" onclick="$actionDeny" >&nbsp;</a>
+					<a href="#" class="SelectIcon" onclick="$actionAccept" >&nbsp;</a>
+			    		
+	  				<% } %>
+	            <div style="clear: both;"><span/></div>
+	        </div>
+	        <% if(position.length() > 0) { %>
+	        <div class="CommunityContent" style="padding: 4px;">
+	        	<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+	        </div>
+	        <%  } %>
     	</div>
     	<div style="clear: left;"><span></span></div>
     </div>
 	<% } %>
 		<% } %>
+		<%
+		 		if (uicomponent.getUiFormPageIteratorInvitation().getAvailablePage() > 1) {
+		 			uicomponent.renderUIComponent(iteratorInvitation) ;
+		 		}
+	 	%>
 	  </div>
 	<% uiform.end() %>
 	</div>

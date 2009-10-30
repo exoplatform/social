@@ -19,17 +19,6 @@ package org.exoplatform.social.portlet.profile;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.portal.UIPortal;
-import org.exoplatform.web.application.RequestContext;
-
-import java.util.List;
-import java.util.ArrayList;
 
 @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class, 

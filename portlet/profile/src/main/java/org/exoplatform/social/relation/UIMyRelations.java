@@ -32,7 +32,6 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
-import org.exoplatform.social.portlet.profile.Utils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;

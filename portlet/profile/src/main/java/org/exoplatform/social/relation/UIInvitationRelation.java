@@ -70,7 +70,7 @@ public class UIInvitationRelation extends UIForm {
   /** UIFormPageIterator */
   UIFormPageIterator uiFormPageIteratorInvitation;
   /** UIFormPageIterator ID. */
-  private final String iteratorIDContact = "UIFormPageIteratorInvitation";
+  private final String iteratorIDInvitation = "UIFormPageIteratorInvitation";
   private RelationshipManager relationshipManager;
   private Identity currIdentity = null;
   private IdentityManager identityManager = null;
@@ -86,7 +86,7 @@ public class UIInvitationRelation extends UIForm {
    * Get UIFormPageIterator.
    * @return
    */
-  public UIFormPageIterator getUiFormPageIteratorContact() {
+  public UIFormPageIterator getUiFormPageIteratorInvitation() {
     return uiFormPageIteratorInvitation;
   }
   
@@ -95,7 +95,7 @@ public class UIInvitationRelation extends UIForm {
    * @throws Exception 
    */
   public UIInvitationRelation() throws Exception {
-    uiFormPageIteratorInvitation = createUIComponent(UIFormPageIterator.class, null, iteratorIDContact);
+    uiFormPageIteratorInvitation = createUIComponent(UIFormPageIterator.class, null, iteratorIDInvitation);
     addChild(uiFormPageIteratorInvitation);
     uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIInvitationRelationSearch");
     addChild(uiProfileUserSearchRelation);
@@ -230,7 +230,7 @@ public class UIInvitationRelation extends UIForm {
       return relm.getPending(currentIdentity, false);
     }
     
-    return relm.getPending(currIdentity, matchIdentities, false);
+    return relm.getPending(currentIdentity, matchIdentities, false);
   }
   
   private IdentityManager getIdentityManager() {

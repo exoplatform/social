@@ -291,7 +291,6 @@
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable{
 	float: left;
 	padding: 4px 4px 4px 16px;
-	color:#909090;
 	width: 100px;
 	text-align: right;
 }
@@ -309,6 +308,7 @@
 	float: left;
 	background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
 	border: 1px solid #b7b7b7;
+	font-size: 11px;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter {
@@ -405,6 +405,13 @@
 }
 
 .UITabPane .ContainerSpace .ContentSpace .DeleteIcon{
+	background: url(background/RemoveIcon.gif) no-repeat right top;
+	padding: 5px 6px;
+	margin-bottom:4px;
+	float: right;
+}
+
+.UITabPane .ContainerSpace .ContentSpaceGray .DeleteIcon{
 	background: url(background/RemoveIcon.gif) no-repeat right top;
 	padding: 5px 6px;
 	margin-bottom:4px;
