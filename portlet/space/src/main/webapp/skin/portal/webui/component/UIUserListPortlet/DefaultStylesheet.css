@@ -14,6 +14,330 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
+ .UIProfileSpace {
+	padding: 8px;
+	font-family: tahoma;
+	font-size: 11px;
+	background: white;
+	zoom: 100%;
+}
+
+.UIProfileSpace .AvatarSpace{
+  background: url('background/BLAvatarBG.gif') no-repeat left top;
+	width: 126px;
+	height: 126px;
+	padding: 7px 0px 0px 7px;
+	margin: 15px;
+}
+
+
+.UIProfileSpace .AvartarPeopleBG{
+	background: url('background/AvartarPeopleBG.gif') no-repeat left top;
+	width: 52px;
+	height: 52px;
+	padding: 6px 0px 0px 6px;
+	float: left;
+	margin: 8px;
+}
+
+.UIProfileSpace .LeftColumn {
+  float: left;
+	width:190px;
+}
+
+.UIProfileSpace .AvatarSpace .Image {
+  width: 126px;
+	height: 126px;
+}
+
+.UIProfilePortlet .UIProfile .LeftColumn .UIAction {
+	padding:8px 24px 0px 0px;
+	width:auto;
+}
+
+.UIProfileSpace .ButtonChange .ButtonLeft{
+	background: url('background/ButtonChangeL.gif') no-repeat left top;
+	padding-left: 8px;
+}
+
+.UIProfileSpace .ButtonChange .ButtonRight{
+	background: url('background/ButtonChangeR.gif') no-repeat right top;
+	padding-right: 18px;
+}
+
+.UIProfileSpace .ButtonChange .ButtonMiddle{
+	background: url('background/ButtonChangeM.gif') repeat-x;
+	height: 18px;
+	padding: 0px 8px;
+	line-height: 14px;
+}
+
+
+.ActivitiesTitleBarM{
+	background: #ebebeb;
+	height: 22px;
+	color: #7d7d7d;
+	line-height: 22px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.UIProfileSpace .ContainerSpace {
+	margin-left:190px;
+}
+.UIProfileSpace .AvatarSpace .HiddenAvatarChangeLink {
+  display: none;
+}
+
+.UIProfileSpace .AvatarSpace .ShowedAvatarChangeLink {
+  display: inline;
+}
+
+.UIProfileSpace .ContainerSpace .LeftContainer{
+	background: url(background/LeftContainerPortlet.gif) repeat-y left;
+	padding-left: 7px;
+}
+
+.UIProfileSpace .ContainerSpace .RightContainer{
+	background: url(background/RightContainerPortlet.gif) repeat-y right;
+	padding-right: 7px;
+}
+
+.UIProfileSpace .ContainerSpace .CenterContainer{
+	background: #f2f8fa;
+	padding: 10px;
+}
+
+.UIProfileSpace .ContainerSpace .PortletContent {
+	background:#FBFBFB none repeat scroll 0 0;
+	padding:8px;
+}
+
+.UIProfileSpace .ContainerSpace .ActionBar .CenterButton .SaveIcon{
+	background: url('background/SaveIcon.gif') no-repeat left;
+	line-height: 18px; width: auto;
+	padding-left: 20px;
+}
+
+.UIProfileSpace .ContainerSpace .ActionBar .CenterButton .SaveIcon{
+	background: url('background/SaveIcon.gif') no-repeat left;
+	line-height: 18px; width: auto;
+	padding-left: 20px;
+}
+
+.UIProfileSpace .ContainerSpace .ActionBar .CenterButton .EditIcon{
+	background: url('background/EditIcon.gif') no-repeat left;
+	line-height: 18px;
+	padding-left: 20px;
+	height: auto; width: auto;
+}
+
+.UIProfileSpace .ContainerSpace .ActionBar .CenterButton .DeleteIcon{
+	background: url('background/DeleteIconButton.gif') no-repeat left;
+	line-height: 18px; width: auto;
+	padding-left: 20px;
+}
+
+.UIProfileSpace .ContainerSpace .PortletContent .DeleteIcon{
+	background: url(background/DeleteIcon.gif) no-repeat center;
+	padding: 5px 11px;
+}
+
+.UIProfileSpace .ContainerSpace .PortletContent .AddIcon{
+	background: url(background/AddIcon.gif) no-repeat center;
+	display: block;
+	width: 22px;
+	height: 22px;
+}
+
+.UIProfileSpace h2{
+	color:#3A3A3A;
+	font-size:14px;
+	font-weight:bold;
+	margin: 4px 0px;
+}
+
+.UIProfileSpace .ATitleBarL {
+	background: url('background/ATitleBarL.gif') no-repeat left top;
+	padding-left: 4px;
+	margin-top: 8px;
+}
+
+.UIProfileSpace .ATitleBarR {
+	background: url('background/ATitleBarR.gif') no-repeat right top;
+	padding-right: 4px;
+}
+
+.UIProfileSpace .ATitleBarM {
+	background: url('background/ATitleBarM.gif') repeat-x;
+	padding-left: 4px;
+}
+
+.UIProfileSpace .ATitleBarC {
+	background: url('background/ATitleBarC.gif') no-repeat left top;
+	height:25px;
+	color: white;
+	margin-left: 8px;
+	line-height: 20px;
+	font-weight: bold;
+}
+
+.UIProfileSpace .EditIcon {
+	background: url('background/EditIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+}
+
+.UIProfileSpace .CancelIcon {
+	background: url('background/CancelIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+	width: auto;
+	height: auto;
+}
+
+.UIProfileSpace .SaveIcon {
+	background: url('background/SaveIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+	width: auto;
+	height: auto;
+}
+
+
+.UIProfileSpace h3{
+	font-size: 11px;
+	font-weight: bold;
+	color: #8c8c8e;
+  margin-top:0px;
+  margin-left:5px;
+  height: 20px;
+}
+
+.UIProfileSpace .SendPosition {
+	font-size: 11px;
+	font-weight: bold;
+	color: #8c8c8e;
+	margin-top:0px;
+  margin-left:5px;
+}
+
+.UIProfileSpace .ATitleBarL .Title {
+	float: left;
+}
+
+.profileTemplate {
+  display:none;
+}
+
+/**
+       FORM
+ */
+
+.UIProfileSpace .UIFormGrid {
+  padding: 8px 0px 0px 30px;
+  margin-bottom:0;
+  margin-left:30px;
+  margin-right:0;
+  margin-top:8px;
+}
+
+.UIProfileSpace .ContainerSpace .FieldLabel {
+	text-align: right;
+	padding: 4px;
+	font-weight: bold;
+	width: 120px;
+}
+
+.UIProfileSpace .ContainerSpace .FieldComponent {
+	padding: 4px;
+}
+
+.UIProfileSpace .ContainerSpace .FieldError{
+	color: red;
+}
+
+.UIProfileSpace .ContainerSpace .FieldComponent ul{
+	margin: 0px;
+  padding-left:0;
+  list-style:none;
+}
+
+.UIProfileSpace .ContainerSpace .FieldComponent .selectbox{
+	font-size: 11px;
+}
+
+.UIProfileSpace .ContainerSpace .FieldComponent .LV_invalid_field {
+  border:3px solid #CC0000;
+}
+
+.UIProfileSpace .ContainerSpace .FieldComponent .LV_invalid {
+  margin-left: 4px;
+  color: #CC0000;
+}
+
+
+.UIProfileSpace .AvartarPeopleBG{
+ background: url('background/AvartarPeopleBG.gif') no-repeat left top;
+ width: 52px;
+ height: 52px;
+ padding: 6px 0px 0px 6px;
+ float: left;
+ margin: 8px;
+}
+ 
+.UIProfileSpace .CommunityContainer {
+	padding-left: 16px;
+	margin-left: 76px;
+}
+
+.UIProfileSpace .Line {
+	border-bottom:1px solid #B7B7B7;
+}
+
+.UIProfileSpace .Text {
+	line-height: 16px;
+}
+
+.UIProfileSpace .TagsName {
+	color: #b7b7b7;
+	line-height: 16px;
+}
+
+.UIProfileSpace .CommunityMane {
+	color: #0d6e8f;
+	height: 20px;
+	font-size: 11px;
+	font-family: tahoma;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.UIProfileSpace .CommunityMane {
+	color: #0d6e8f;
+	height: 20px;
+	font-size: 11px;
+	font-family: tahoma;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.UIProfileSpace .Title {
+    display:inline;
+}
+
+
+
+
+
+ 
+ 
 .UIUserListPortlet {
   padding:4px;
 }

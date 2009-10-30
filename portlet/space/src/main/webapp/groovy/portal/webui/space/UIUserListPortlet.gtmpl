@@ -22,73 +22,80 @@
 	import social.portal.webui.component.UISpaceUserSearch
 	UIPageIterator iterator = uicomponent.getUIPageIterator()
 %>
-<div class="UIUserListPortlet" id="$uicomponent.id">
-	<div class="UISpaceUserSearchL">
-  	<div class="UISpaceUserSearchR">
-  		<div class="UISpaceUserSearchM">
-  			<% uicomponent.renderChild(UISpaceUserSearch.class) %>
-  		</div>
-  	</div>
-  </div>
-	<% List<User> listUsers = uicomponent.getUsersInSpace();
-		 if(listUsers.size() > 0 ){	 
-		 	for(user in listUsers) {
-		 		String imageSource = uicomponent.getUserAvatar(user.getUserName());
-		 		if(imageSource == null)
-		 			imageSource = "/space/skin/portal/webui/component/UIUserListPortlet/background/AvartarDefault.gif"
-	%>
-	<div class="UserlistContainer">
-		<div class="UserlistContent">
-			<div class="MiniAvatarSpaceBG" style="margin-top: 18px;">
-				<img src="$imageSource" width="60" height="60">
+
+<div class="ActivitiesTitleBarM">MY ACTIVITIES</div>
+<div class="UIProfileSpace" >
+	<div class="LeftColumn">
+		<div class="AvatarSpace">
+			<div class="Image" >
+			  	<img src="/profile/skin/portal/webui/component/UIRelationshipPortlet/background/BLAvatar.gif" height="119px" width="119px" alt="">
 			</div>
-			<div class="UserContainer">
-			  <div class="UserBarTitleName"><%= user.getUserName() %></div>
-			  <div class="Line"><span></span></div>
-			  <div class="UIForm">
-					<table class="UIFormGrid">
-					  <tbody>
-					    <tr>
-					      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.FirstName")%>:</td>
-					      <td class="FieldComponent"><%= user.getFirstName() %></td>
-					    </tr>
-					    <tr>
-					      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.LastName")%>:</td>
-					      <td class="FieldComponent"><%= user.getLastName() %></td>
-					    </tr>
-					    <tr>
-					      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.EmailAddress")%>:</td>
-					      <td class="FieldComponent"><%= user.getEmail() %></td>
-					    </tr>
-					    <tr>
-					      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.Membership")%>:</td>
-					      <td class="FieldComponent"><%=_ctx.appRes(uicomponent.getName() + ".label." + uicomponent.getMemberships(user.getUserName()))%></td>
-					    </tr>
-					  </tbody>
-					</table>
+		</div>
+		<div class="UIAction">
+			<table class="ActionContainer">
+				<tbody>
+					<tr>
+						<td>
+							<div onclick="" class="ActionButton ButtonChange">
+								<div class="ButtonLeft">
+									<div class="ButtonRight">
+										<div class="ButtonMiddle">
+											<a href="#" onclick="${uicomponent.event('ChangeAvatar')}"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
+										</div>
+									</div>
+								</div>
+							</div>					
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="ContainerSpace" >
+		<div class="UIHeaderSection">
+			<form method="post" action="" id="" class="UIForm">
+				<h2>Root Root</h2>
+				<span>Public </span>
+			</form>
+		</div>
+
+		<div class="UIBasicInfoSection">
+			<form method="post" action="" id="" class="UIForm">
+				<div id="" class="TitleBar">
+					<div class="ATitleBarL">
+						<div class="ATitleBarR">
+							<div class="ATitleBarM">
+								<div class="ATitleBarC">
+									<div class="Title">Basic information</div>
+									<a class="EditIcon" href="#" >&nbsp; </a>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div style="clear: both;"><span/></div>
-		</div>
-	</div>
-	<% } %>
-	<% } else { %>
-	<div class="UserlistContainer">
-		<div class="UserlistContent">
-			<div class="EmptyData"><%= _ctx.appRes(uicomponent.getId() + ".label.empty") %></div>
-		</div>
-	</div>
-	<% } %>
-	<div>
-			<%
-				if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
-				_ctx.renderUIComponent(iterator) ;
-				}
-			%>	
-	</div>	
-	<div class="UserlistBottomL">
-		<div class="UserlistBottomR">
-			<div class="UserlistBottomM"><span></span></div>
+				<div class="PortletContent">
+					<div class="AvartarPeopleBG">
+						<img height="47" width="47" src="/space/skin/portal/webui/component/UIUserListPortlet/background/AvartarPeople.gif"/>
+					</div>
+					<div class="CommunityContainer">
+						<div class="CommunityMane Line">
+							<div class="CommunityName" style="float: left; cursor: pointer;">
+								<a href="/portal/public/classic/relations/yours/root/demo" class="CommunityNameMiddle">Demo exo</a>
+							</div>
+							<a class="DeleteIcon" >&nbsp; </a>
+							<div style="clear: both;"><span/></div>
+						</div>
+						<div class="CommunityContent">
+							<span style="padding: 4px;">Descriptions:</span>
+							<span style="padding: 4px;">Deverloper</span>
+						</div>
+					</div>
+					<div style="clear: left;"><span><span/></div>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
+
+
+
