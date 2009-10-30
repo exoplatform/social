@@ -36,7 +36,7 @@ import org.exoplatform.social.space.SpaceService;
  * Oct 28, 2009  
  */
 @ComponentConfig(
-  template = "app:/groovy/portal/webui/component/UISpaceSearch.gtmpl",
+  template = "app:/groovy/portal/webui/space/UISpaceSearch.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceSearch.SearchActionListener.class) 
   }
@@ -48,6 +48,8 @@ public class UISpaceSearch extends UIComponent {
   final public static String SEARCH = "Search";
   SpaceService spaceService = null;
   private List<Space> spaceList = null;
+  /** Selected character when search by alphabet */
+  String selectedChar = null;
   
   /**
    * Constructor to initialize form fields
@@ -72,6 +74,10 @@ public class UISpaceSearch extends UIComponent {
     return spaceList;
   }
 
+  public String getSelectedChar() { return selectedChar;}
+
+  public void setSelectedChar(String selectedChar) { this.selectedChar = selectedChar;}
+  
   /**
    * SearchActionListener
    * Get the space name from request and search spaces that have name like input space name.
@@ -84,7 +90,8 @@ public class UISpaceSearch extends UIComponent {
       UISpaceSearch uiSpaceSearch = event.getSource();
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
       String spaceName = event.getRequestContext().getRequestParameter("spaceName");
-//      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName);
+      String isFirstChar = event.getRequestContext().getRequestParameter("isFirstCharOfSpaceName");
+//      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, isFirstChar);
 //      uiSpaceSearch.setSpaceList(spaceSearchResult);
       Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {

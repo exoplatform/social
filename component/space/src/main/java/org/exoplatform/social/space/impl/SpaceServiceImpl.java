@@ -98,6 +98,38 @@ public class SpaceServiceImpl implements SpaceService {
   
   /**
    * {@inheritDoc}
+   * @throws Exception 
+   */
+  public List<Space> getSpacesByName(String spaceName, boolean isFirstCharOfSpaceName) throws SpaceException {
+    List<Space> spaces;
+    try {
+      spaces = storage.getAllSpaces();
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+    
+    Iterator<Space> itr = spaces.iterator();
+    if (!isFirstCharOfSpaceName) {
+      while(itr.hasNext()) {
+        Space space = itr.next();
+        if(!space.getName().toLowerCase().contains(spaceName.toLowerCase())){
+          itr.remove();
+        }
+      }
+    } else {
+      while(itr.hasNext()) {
+        Space space = itr.next();
+        if(!space.getName().toLowerCase().startsWith(spaceName.toLowerCase())){
+          itr.remove();
+        }
+      }
+    }
+    
+    return spaces;
+  }
+  
+  /**
+   * {@inheritDoc}
    */
   public Space getSpaceById(String id) throws SpaceException {
     try {

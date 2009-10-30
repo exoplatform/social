@@ -41,6 +41,13 @@ public interface SpaceService {
   List<Space> getAllSpaces() throws SpaceException;
   
   /**
+   * Gets all spaces has name like space name input
+   * @return all spaces which like space name
+   * @throws SpaceException with code SpaceException.Code.ERROR_DATASTORE
+   */
+  List<Space> getSpacesByName(String spaceName, boolean isFirstCharOfSpaceName) throws SpaceException;
+  
+  /**
    * Get a space by its id
    * @param spaceId Id of that space
    * @return space with id specified
