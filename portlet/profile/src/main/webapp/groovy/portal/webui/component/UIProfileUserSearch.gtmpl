@@ -76,9 +76,9 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
  		<% for (ch in alphabets) { 
  				if ((selectedStartChar != null) && (selectedStartChar == ch)) {
  		%>
- 					<a href="#$ch" style="color:red;" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
+ 					<a href="#$ch" style="color:red; margin-right: 3px;" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
  		 <%} else {%>
- 					<a href="#$ch" id="directoryId" style="color:black;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
+ 					<a href="#$ch" id="directoryId" style="color:black; margin-right: 3px;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
  			<% } %>
  		<% } %>
  </div>
