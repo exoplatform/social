@@ -110,7 +110,7 @@ UISpaceSearch.prototype.setEnterKey = function(event) {
 	var elementInput = e.srcElement || e.target;
 	var keynum = e.keyCode || e.which;  
 	if(keynum == 13) {
-		eXo.social.profile.UISpaceSearch.searchSpaceByName(elementInput);
+		eXo.social.space.UISpaceSearch.searchSpaceByName(elementInput);
 	}						
 };
 

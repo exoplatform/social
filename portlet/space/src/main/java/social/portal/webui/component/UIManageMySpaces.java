@@ -44,13 +44,12 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupWindow;
-import org.exoplatform.webui.core.UIRepeater;
-import org.exoplatform.webui.core.UIVirtualList;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
+import social.portal.webui.component.space.UISpaceSearch;
 /**
  * UIManageMySpaces
  * Manage all user's spaces, user can edit, delete, leave space.
@@ -70,8 +69,7 @@ import org.exoplatform.webui.event.Event.Phase;
       @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpace.msg.confirm_space_delete"),
       @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.AddSpaceActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.AcceptActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.DenyActionListener.class)
+      @EventConfig(listeners = UIManageMySpaces.SearchActionListener.class , phase = Phase.DECODE)
     }
   ),
   @ComponentConfig(  
@@ -85,23 +83,15 @@ import org.exoplatform.webui.event.Event.Phase;
       @EventConfig(listeners = UIPageNodeForm2.ClearPageActionListener.class, phase = Phase.DECODE),
       @EventConfig(listeners = UIPageNodeForm2.CreatePageActionListener.class, phase = Phase.DECODE)
     }
-  ),
-  @ComponentConfig(
-    id = "UIInvitedSpaces",
-    type = UIRepeater.class,
-    template = "app:/groovy/portal/webui/component/UIInvitedSpaces.gtmpl"
   )
 })
 public class UIManageMySpaces extends UIContainer {
   static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
   static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
-  static private final String MSG_ERROR_ACCEPT_INVITATION = "UIManageMySpaces.msg.error_accept_invitation";
-  static private final String MSG_ERROR_DENY_INVITATION = "UIManageMySpaces.msg.error_deny_invitation";
   static private final String MSG_ERROR_DELETE_SPACE = "UIManageMySpaces.msg.error_delete_space";
   static public final Integer LEADER = 1, MEMBER = 2;
   
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
-  private final Integer INVITED_SPACES_PER_PAGE = 4;
   private UIPageIterator iterator;
   private final Integer SPACES_PER_PAGE = 4;
   private final String ITERATOR_ID = "UIIteratorMySpaces";
@@ -109,16 +99,14 @@ public class UIManageMySpaces extends UIContainer {
   private String userId = null;
   private List<PageNavigation> navigations;
   private PageNavigation selectedNavigation;
-  private UIVirtualList uiVirtualList;
+  private List<Space> spaces_; // for search result
+  
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
    * @throws Exception
    */
   public UIManageMySpaces() throws Exception {
-    uiVirtualList = addChild(UIVirtualList.class, null, null);
-    UIRepeater uiInvitedSpaces = createUIComponent(UIRepeater.class, "UIInvitedSpaces", "UIInvitedSpaces");
-    uiVirtualList.setPageSize(INVITED_SPACES_PER_PAGE);
-    uiVirtualList.setUIComponent(uiInvitedSpaces);
+    addChild(UISpaceSearch.class, null, "UIMySpaceSearch");
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);
@@ -131,15 +119,6 @@ public class UIManageMySpaces extends UIContainer {
    */
   public UIPageIterator getMySpacesUIPageIterator() {
     return iterator;
-  }
-  
-  /**
-   * Load InvitedSpaces
-   * @return
-   * @throws Exception 
-   */
-  public void loadInvitedSpaces() throws Exception {
-    uiVirtualList.dataBind(getInvitedPageList());
   }
   
   /**
@@ -219,47 +198,9 @@ public class UIManageMySpaces extends UIContainer {
    * @return paginated spaces list
    * @throws Exception
    */
-  @SuppressWarnings("unchecked")
   public List<Space> getUserSpaces() throws Exception {
-    int currentPage = iterator.getCurrentPage();
-    List<Space> spaceList = getAllUserSpaces();
-    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaceList), SPACES_PER_PAGE);
-    iterator.setPageList(pageList);
-    int pageCount = iterator.getAvailablePage();
-    if (pageCount >= currentPage) {
-      iterator.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      iterator.setCurrentPage(currentPage - 1);
-    }
-    return iterator.getCurrentPageData();
-  }
-  
-  /**
-   * Get invited page list
-   * @return
-   * @throws Exception
-   */
-  private LazyPageList<Space> getInvitedPageList() throws Exception {
-    List<Space> invitedList = getAllInvitedSpaces();
-    Integer invitedListSize = 0;
-    if (invitedList.size() == 0) {
-      invitedListSize = 1;
-    } else {
-      invitedListSize = invitedList.size();
-    }
-    return new LazyPageList<Space>(new SpaceListAccess(invitedList), invitedListSize); 
-  }
-  
-  /**
-   * Get all spaces which user is invited to join
-   * @return
-   * @throws Exception
-   */
-  public List<Space> getAllInvitedSpaces() throws Exception {
-    SpaceService spaceService = getSpaceService();
-    String userId = getUserId();
-    List<Space> invitedSpaces = spaceService.getInvitedSpaces(userId);
-    return SpaceUtils.getOrderedSpaces(invitedSpaces);
+    List<Space> listSpace = getMySpace();
+    return getDisplayMySpace(listSpace, iterator);
   }
   
   /**
@@ -279,6 +220,33 @@ public class UIManageMySpaces extends UIContainer {
     return MEMBER;
   }
   
+  public void setSpaces_(List<Space> spaces_) {
+    this.spaces_ = spaces_;
+  }
+  public List<Space> getSpaces_() {
+    return spaces_;
+  }
+  
+  private List<Space> getMySpace() throws Exception {
+    List<Space> spaces_ = getSpaces_();
+    if(spaces_ == null) spaces_ = getAllUserSpaces();
+    return spaces_;
+  }
+  
+  @SuppressWarnings("unchecked")
+  private List<Space> getDisplayMySpace(List<Space> spaces_, UIPageIterator pageIterator_) throws Exception {
+    int currentPage = pageIterator_.getCurrentPage();
+    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces_), SPACES_PER_PAGE);
+    pageIterator_.setPageList(pageList);
+    int pageCount = pageIterator_.getAvailablePage();
+    if (pageCount >= currentPage) {
+      pageIterator_.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      pageIterator_.setCurrentPage(currentPage - 1);
+    }
+    return pageIterator_.getCurrentPageData();
+  }
+
   /**
    * This action is triggered when user click on EditSpace
    * Currently, when user click on EditSpace, they will be redirected to /xxx/SpaceSettingPortlet
@@ -324,6 +292,7 @@ public class UIManageMySpaces extends UIContainer {
       uiPopup.setUIComponent(pageManager);
       uiPopup.setWindowSize(400, 400);
       uiPopup.setShow(true);
+      ctx.addUIComponentToUpdateByAjax(uiMySpaces);
     }
     
   }
@@ -423,53 +392,19 @@ public class UIManageMySpaces extends UIContainer {
       uiPopup.setUIComponent(uiAddSpaceForm);
       uiPopup.setWindowSize(500, 0);
       uiPopup.setShow(true);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
+      //event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
     
   }
   
-  /**
-   * This action is triggered when user clicks on Accept Space Invitation
-   * When accepting, that user will be the member of the space
-   */
-  static public class AcceptActionListener extends EventListener<UIManageMySpaces> {
-
+  public static class SearchActionListener extends EventListener<UIManageMySpaces> {
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
-      UIManageMySpaces uiMySpaces = event.getSource();
-      SpaceService spaceService = uiMySpaces.getSpaceService();
-      WebuiRequestContext ctx = event.getRequestContext();
-      UIApplication uiApp = ctx.getUIApplication();
-      String spaceId = ctx.getRequestParameter(OBJECTID);
-      String userId = uiMySpaces.getUserId();
-      try {
-        spaceService.acceptInvitation(spaceId, userId);
-      } catch(SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_ACCEPT_INVITATION, null, ApplicationMessage.ERROR));
-        return;
-      }
-      SpaceUtils.updateWorkingWorkSpace();
+      UIManageMySpaces uiForm = event.getSource();
+      UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
+      List<Space> spaceList = uiSpaceSearch.getSpaceList();
+      uiForm.setSpaces_(spaceList);
     }
-  }
-  
-  /**
-   * This action is triggered when user clicks on Deny Space Invitation
-   * When denying, that space will remove the user from pending
-   */
-  static public class DenyActionListener extends EventListener<UIManageMySpaces> {
-
-    @Override
-    public void execute(Event<UIManageMySpaces> event) throws Exception {
-      UIManageMySpaces uiMySpaces = event.getSource();
-      SpaceService spaceService = uiMySpaces.getSpaceService();
-      WebuiRequestContext ctx = event.getRequestContext();
-      UIApplication uiApp = ctx.getUIApplication();
-      String spaceId = ctx.getRequestParameter(OBJECTID);
-      String userId = uiMySpaces.getUserId();
-      try {
-        spaceService.denyInvitation(spaceId, userId);
-      } catch(SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DENY_INVITATION, null, ApplicationMessage.ERROR));
-      } 
-    }    
   }
 }

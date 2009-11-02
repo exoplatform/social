@@ -20,6 +20,8 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+import social.portal.webui.component.UIManageMySpaces;
+
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/portal/webui/space/UIMySpacePortlet.gtmpl"
@@ -27,5 +29,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 public class UIMySpacePortlet extends UIPortletApplication {
   
-  public UIMySpacePortlet() throws Exception {  }
+  public UIMySpacePortlet() throws Exception {
+    addChild(UIManageMySpaces.class, null, null);
+  }
 }

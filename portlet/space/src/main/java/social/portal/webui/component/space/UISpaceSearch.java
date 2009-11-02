@@ -18,14 +18,14 @@ package social.portal.webui.component.space;
 
 import java.util.List;
 
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceService;
 
 /**
  * UIProfileUserSearch for search users in profile.
@@ -91,8 +91,11 @@ public class UISpaceSearch extends UIComponent {
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
       String spaceName = event.getRequestContext().getRequestParameter("spaceName");
       String isFirstChar = event.getRequestContext().getRequestParameter("isFirstCharOfSpaceName");
-//      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, isFirstChar);
-//      uiSpaceSearch.setSpaceList(spaceSearchResult);
+      if(Boolean.parseBoolean(isFirstChar)) uiSpaceSearch.setSelectedChar(spaceName);
+      else uiSpaceSearch.setSelectedChar(null);
+      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, Boolean.parseBoolean(isFirstChar));
+      uiSpaceSearch.setSpaceList(spaceSearchResult);
+      
       Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();

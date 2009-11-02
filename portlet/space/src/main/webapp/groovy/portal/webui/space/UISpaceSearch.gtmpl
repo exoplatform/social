@@ -25,7 +25,6 @@ def uicomponentId = uicomponent.id;
 def spaceSearchLabel = _ctx.appRes("${uicomponentId}.label.SpaceSearch");
 def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
 def searchId = "Search" + uicomponentId;
-
 def selectedChar = uicomponent.getSelectedChar();
 def rcontext = _ctx.getRequestContext();
 rcontext.getJavascriptManager().importJavascript('eXo.social.space.UISpaceSearch','/space/javascript');
@@ -34,30 +33,39 @@ PortalRequestContext pcontext = Util.getPortalRequestContext();
 def portalURI = pcontext.getPortalURI();
 %>
 <div class="UISpaceSearch" id="$uicomponentId">
- <div class="SearchSpaces" name="SearchSpaces">
- <div class="SearchSpacesR ClearFix">
-  <div class="Lable">${spaceSearchLabel}</div>
-  <input type="text" id="$searchId" class="Search" onfocus="eXo.social.space.UISpaceSearch.activeSearchText()" onblur="eXo.social.space.UISpaceSearch.onBlurSearchText()" onkeydown="eXo.social.space.UISpaceSearch.setEnterKey(event);"/>
-  <div style="clear: left;"><span></span></div>
- </div>
- </div>
- <div class="ATitleBarL">
-		<div class="ATitleBarR">
-			<div class="ATitleBarM">
-				<div class="ATitleBarC">
-				Friend Deractoy
+	<!--search by name-->	
+	<div class="LeftBoxInput">
+		<div class="RightBoxInput">
+			<div class="CenterBoxInput">
+				<div class="LeftContentInput">
+					Find Space: 
+				</div>
+				<div class="CenterContentInput">
+					  <input type="text" id="$searchId" class="InputSearch" name="Search" value="Space name" style="width: 285px;" onfocus="eXo.social.space.UISpaceSearch.activeSearchText(this)" onblur="eXo.social.space.UISpaceSearch.onBlurSearchText(this)" onkeydown="eXo.social.space.UISpaceSearch.setEnterKey(event);"/>
+				</div>
+				<div class="ClearBoth"><span/></div>
+			</div>
+		</div>
+	</div>
+	
+	<!--search by directory-->
+	<div class="BoxSpaceList">
+			<div class="CenterTitleBox">
+				<div class="LeftTitleBox">
+					<div class="RightTitleBox">Space Directory</div>
+				</div>
+			</div>
+			<div class="NormalBox">
+				<div class="ABC">
+				 		<% for (ch in alphabets) {
+					 				if ((selectedChar != null) && (selectedChar == ch)) {
+					 		%>
+					 					<a href="#" style="color: red;" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
+					 		 <%} else {%>
+					 					<a href="#" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
+					 			<% } %>
+					 		<% } %>
 				</div>
 			</div>
 		</div>
- </div>
- <div class="DirectorySpaces" id="DirectorySpaces">
- 		<% for (ch in alphabets) { 
- 				if ((selectedChar != null) && (selectedChar == ch)) {
- 		%>
- 					<a href="$ch" style="font-color:red;" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
- 		 <%} else {%>
- 					<a href="$ch" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
- 			<% } %>
- 		<% } %>
- </dir>
 </div>

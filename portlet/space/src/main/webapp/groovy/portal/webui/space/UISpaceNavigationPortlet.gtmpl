@@ -29,22 +29,22 @@
 	def publicsURL = portalURI + "publicSpace";
 %>
   <div class="UISpaceNavigationPortlet" id="$uicomponent.id">
-    <div class="ProfTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Me")%></div>
+    <div class="ProfTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Space")%></div>
 	<a class="Avartar">
 		<img height="65" width="65" alt="" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif"/>
 	</a>
 	<div class="UIVerclTab">
 	  <div class="SelectedTab Tab">
-        <a href="#demo" class="MySpaceIcon">My Space</a>
+        <a href="$mySpaceURL" class="MySpaceIcon">My Space</a>
 	  </div>
 	  <div class="NormalTab Tab">
-        <a href="#demo" class="InvitationIcon">Invitation</a>
+        <a href="$invitationsURL" class="InvitationIcon">Invitation</a>
 	  </div>
 	  <div class="NormalTab Tab">
-        <a href="#demo" class="PendingIcon">Pending</a>
+        <a href="$pendingsURL" class="PendingIcon">Pending</a>
 	  </div>
 	  <div class="NormalTab Tab">
-        <a href="#demo" class="PublicIcon">Public</a>
+        <a href="$publicsURL" class="PublicIcon">Public</a>
 	  </div>
 	</div>
 </div>
