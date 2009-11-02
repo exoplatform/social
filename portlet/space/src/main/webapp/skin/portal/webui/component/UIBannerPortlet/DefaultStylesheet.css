@@ -33,31 +33,24 @@
 }
 
 .UIBannerPortlet .LeftLoginContainer {
-  background: url('DefaultSkin/background/Container.gif') no-repeat top left;
-  padding-left: 10px;
   float: right;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .UIBannerPortlet .RightLoginContainer {
-  background: url('DefaultSkin/background/Container.gif') no-repeat top right;
-  padding-right: 5px;
 }
 
 .UIBannerPortlet .MiddleLoginContainer {
-  background: url('DefaultSkin/background/Container.gif') left -50px repeat-x;
-  height: 45px;
-  padding: 5px 10px 0 10px;
-  width: 265px;
+  padding: 15px 10px 0 10px;
 }
 
 .UIBannerPortlet .MiddleLoginContainer a {
-  color: #0d62af;
+  color: #fff;
   display: block;
 }
 
 .UIBannerPortlet .MiddleLoginContainer a:hover {
-  color: #058ee6;
+  color: #0b4da3;
 }
 
 .UIBannerPortlet .MiddleLoginContainer .Name {
@@ -68,9 +61,8 @@
 }
 
 .UIBannerPortlet .MiddleLoginContainer .Logout {
-  background: url('DefaultSkin/background/Container.gif') no-repeat left -144px;
-  margin-right: 12px;
-  padding-left: 20px;
+  background: none;
+  margin-right: 15px;
   cursor: pointer;
   float: left;
   font-weight: bold;
@@ -80,9 +72,8 @@
 }
 
 .UIBannerPortlet .MiddleLoginContainer .Login {
-  background: url('DefaultSkin/background/Container.gif') no-repeat left -123px;
-  margin-right: 12px;
-  padding-left: 20px;
+  background: none;
+  margin-right: 15px;
   cursor: pointer;
   float: left;
   font-weight: bold;
@@ -92,8 +83,7 @@
 }
  
 .UIBannerPortlet .MiddleLoginContainer .Language {
-  background: url('DefaultSkin/background/Container.gif') no-repeat left -103px;
-  padding-left: 18px;
+  background: none;
   cursor: pointer;
   font-weight: bold;
   float: left;
@@ -103,15 +93,14 @@
 }
 
 .UIBannerPortlet .MiddleLoginContainer .Register {
-	margin-right: 12px;	
+	margin-right: 15px;	
 	cursor: pointer;
 	float: left;	 	
 	font-weight: bold;
 	display: block;
 	line-height: 17px;
 	background: none;
-	padding-left: 18px;
-	background: url('DefaultSkin/background/Container.gif') no-repeat left -103px;
+	background:none;
 }
 
 .SocialPeopleIcon {
