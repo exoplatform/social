@@ -166,18 +166,20 @@ eXo.social.Like.ref = {
   */
  eXo.social.Like.renderListPeople = function(activityId, likeInfos) {
  	var Util = eXo.social.Util;
-	if(!likeInfos || !activityId) {
-		debug.warn('activityId or likeInfos is null from Like.renderLikeDetail()');
+	if(!activityId) {
+		debug.warn('activityId is null from Like.renderLikeDetail()');
 		return;
 	}
 	var listPeople = Util.getElementById('ListPeople' + activityId);
 	var html = [];
 	var thumbnail = eXo.social.StatusUpdate.config.path.ROOT_PATH + '/style/images/AvatarPeople.gif';
-	for(var i = 0, length = likeInfos.length; i < length; i++) {
-		if (likeInfos[i].thumbnail !== null)	thumbnail = likeInfos[i].thumbnail;
-		html.push('<a href="#UserId"  class="AvartarPeopleBG">');
-			html.push('<img alt="" height="47px" width="47px" src="' + thumbnail + '" />');
-		html.push('</a>');
+	if (likeInfos !== null) {
+		for(var i = 0, length = likeInfos.length; i < length; i++) {
+			if (likeInfos[i].thumbnail !== null)	thumbnail = likeInfos[i].thumbnail;
+			html.push('<a href="#UserId"  class="AvartarPeopleBG">');
+				html.push('<img alt="" height="47px" width="47px" src="' + thumbnail + '" />');
+			html.push('</a>');
+		}
 	}
 	listPeople.innerHTML = html.join('');
 	gadgets.window.adjustHeight();

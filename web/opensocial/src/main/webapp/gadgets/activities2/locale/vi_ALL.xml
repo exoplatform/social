@@ -10,6 +10,7 @@
 	<msg name="attach">Gửi kèm</msg>
 	<msg name="owner_friends">Bạn của bạn</msg>
 	<msg name="activities_of_displayName">Hoạt động của {0}</msg>
+	<msg name="friends_activities">Hoạt động của bạn bè</msg>
 	<msg name="displayName_does_not_have_update">{0} chưa có cập nhật nào</msg>
 	<msg name="displayName_do_not_have_update">{0} chưa có cập nhật nào</msg>
 	<msg name="comment">Bình luận</msg>

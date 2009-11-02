@@ -41,11 +41,15 @@ eXo.social.StatusUpdate.DataMode_FRIENDS_ONLY = 'DataMode_FRIENDS_ONLY';
  * static config object 
  */
 eXo.social.StatusUpdate.config = {
+	//hard-code gets gadget's owner (not really)
+	IDENTITY_REST_URL : "http://localhost:8080/rest/social/activities/identity",
 	path : {
 		ROOT_PATH : "http://localhost:8080/social/gadgets/activities2",
 		SCRIPT_PATH : "http://localhost:8080/social/gadgets/activities2/script"
 	},
 	ui : {//dom id reference
+		UI_MY_STATUS_INPUT: "UIMyStatusInput",
+		UI_FRIENDS_ACTIVITIES: "UIFriendsActivities",
 		IMG_OWNER_AVATAR: "ImgOwnerAvatar",
 		UI_COMPOSER_TEXTAREA : "UIComposerTextArea",
 		UI_COMPOSER_EXTENSION : "UIComposerExtension",
@@ -111,8 +115,77 @@ eXo.social.StatusUpdate.prototype.init = function() {
 	Util.addEventListener(uiComposerShareButton, 'click', function() {
 		statusUpdate.share(this);
 	}, false);
+	
+	
 	//run to set viewer, owner, owner's friends
 	(function() {
+	
+		/**
+		 * hard-coded get username by url of top address
+		 * /activitites/root ; /activities/demo 
+		 * @return	username by url or null
+		 */
+		var getUsernameFromUrl = function() {
+			var address = window.top.location.href;
+			if (address !== null) {
+				var firstIndex = address.indexOf('/activities/');
+				if (firstIndex < 0) {
+					return null;
+				}
+				firstIndex += '/activities/'.length;
+				var lastIndex = address.length;
+				if (firstIndex >= lastIndex) {return null;}
+				
+				return address.substring(firstIndex, lastIndex);					
+			}
+			return null;
+		}
+		/**
+		 * fix ownerHandler
+		 * To detect the ownerId by url (hard-coded)
+		 */
+		var fixOwnerHandler = function(res) {
+			debug.info(res);
+			var data = res.data;
+			if (data !== null) {
+				var ownerId = data.id;
+				//regets ownerId if different id
+				if (ownerId !== statusUpdate.owner.getId()) {
+					var req = opensocial.newDataRequest();
+					req.add(req.newFetchPersonRequest(ownerId), 'owner');
+					req.send(function(res) {
+						if (res.hadError()) {
+							debug.error("Can not reget owner!");
+							debug.info(res);
+							return;
+						}
+						statusUpdate.owner = res.get('owner').getData();
+						//updates owner avatar
+						var imgOwnerAvatar = Util.getElementById(config.ui.IMG_OWNER_AVATAR);
+						if (!imgOwnerAvatar) {
+							debug.error('imgOwnerAvatar is null!');
+						return;
+						}
+						imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId());
+						var ownerActivityTitle = Util.getElementById('OwnerActivityTitle');
+  						if (!ownerActivityTitle) {
+  						debug.error('ownerActivityTitle is null!!!');
+  						return;
+  						}
+  						ownerActivityTitle.innerHTML = Locale.getMsg('activities_of_displayName', [statusUpdate.owner.getDisplayName()]);
+						//hides text input + friends's activitites
+						var uiMyStatusInput = Util.getElementById(config.ui.UI_MY_STATUS_INPUT);
+						var uiFriendsActivities = Util.getElementById(config.ui.UI_FRIENDS_ACTIVITIES);
+						uiMyStatusInput.style.display = 'none';
+						uiFriendsActivities.style.display = 'none';
+						statusUpdate.refresh();
+					});
+				} else {
+					statusUpdate.refresh();
+				}
+			}
+		}
+		
 		var req = opensocial.newDataRequest();
 		req.add(req.newFetchPersonRequest(opensocial.DataRequest.PersonId.VIEWER), 'viewer');
 		req.add(req.newFetchPersonRequest(opensocial.DataRequest.PersonId.OWNER), 'owner');
@@ -133,24 +206,18 @@ eXo.social.StatusUpdate.prototype.init = function() {
 			statusUpdate.viewer = response.get('viewer').getData();
 			statusUpdate.owner = response.get('owner').getData(); 
 			statusUpdate.ownerFriends = response.get('ownerFriends').getData();
-			//updates owner avatar
-			var imgOwnerAvatar = Util.getElementById(config.ui.IMG_OWNER_AVATAR);
-			if (!imgOwnerAvatar) {
-				debug.error('imgOwnerAvatar is null!');
-				return;
+			var username = getUsernameFromUrl();
+			debug.info('username: ' + username);
+			if (username !== null) {
+				var url = config.IDENTITY_REST_URL + "/" + username + "/id";
+				debug.info(url);
+				Util.makeRequest(url, fixOwnerHandler);
+			} else {
+				statusUpdate.refresh();
 			}
-			imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId());
-			var ownerActivityTitle = Util.getElementById('OwnerActivityTitle');
-  			if (!ownerActivityTitle) {
-  				debug.error('ownerActivityTitle is null!!!');
-  				return;
-  			}
-  			ownerActivityTitle.innerHTML = Locale.getMsg('activities_of_displayName', [statusUpdate.owner.getDisplayName()]);
 			//BUG: can not use person.isViewer() or person.isOwner()
 			//debug.debug(this.viewer.isViewer());
 			//debug.debug(this.owner.isOwner());
-			statusUpdate.refresh();
-			//update 
 		}
 	})();
 	//refresh after a specific of time
@@ -162,19 +229,62 @@ eXo.social.StatusUpdate.prototype.init = function() {
 eXo.social.StatusUpdate.prototype.refresh = function() {
 	var StatusUpdate = eXo.social.StatusUpdate;
 	debug.info("Refresh!!!!");
+	var statusUpdate = this;
   	//Create request for getting owner's and ownerFriends' activities.
   	var req = opensocial.newDataRequest();	
 	var opts_act = {};
  	opts_act[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
   	opts_act[opensocial.DataRequest.ActivityRequestFields.MAX] = StatusUpdate.config.BATCH_SIZE;
-  	req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.PersonId.OWNER, opts_act), 'ownerActivities');
+  	req.add(req.newFetchActivitiesRequest(statusUpdate.owner.getId(), opts_act), 'ownerActivities');
   	if (this.viewer.getId() === this.owner.getId()) {
   		req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.Group.OWNER_FRIENDS, opts_act), 'ownerFriendsActivities');
+  		req.send(function(res) {
+  			statusUpdate.handleActivities(res);
+  		});
+  	} else {
+  	  	req.send(function(res) {
+  			statusUpdate.handleActivities(res, StatusUpdate.DataMode_OWNER_ONLY);
+  		});
   	}
-  	var statusUpdate = this;
-  	req.send(function(res) {
-  		statusUpdate.handleActivities(res);
-  	});
+  	
+
+}
+
+/**
+ * gets new activities of owner's
+ * informs user about new activities to display
+ */
+eXo.social.StatusUpdate.prototype.getNewOwnerActivities = function() {
+	var config = eXo.social.StatusUpdate.config;
+	var statusUpdate = this;
+	var getEnough = false;
+	var newActivities = null;
+	var times = 0;
+	function getNewActivities() {
+		var req = opensocial.newDataRequest();
+		var params = {};
+		params[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
+		params[opensocial.DataRequest.ActivityRequestFields.MAX] = config.BATCH_SIZE + (config.BATCH_SIZE * times)
+		req.add(req.newFetchActivitiesRequest(statusUpdate.owner.getId(), params), 'ownerActivities');
+		req.send(ownerActivitiesHandler);
+		
+	}
+	
+	function ownerActivitiesHandler(res) {
+		if (res.hadError()) {
+			debug.warn('statusUpdate.getNewOwnerActivities: Error get activitites!!');
+			return;
+		}
+		debug.info(res);
+	}
+}
+
+/**
+ * gets new activities of owner's friends'
+ * informs user about new activities to display
+ */
+eXo.social.StatusUpdate.prototype.getNewOwnerFriendsActivities = function() {
+
 }
 
 /**
@@ -190,7 +300,7 @@ eXo.social.StatusUpdate.prototype.updateOwnerActivities = function() {
 	var params = {};
 	params[opensocial.DataRequest.ActivityRequestFields.FIRST] = 0;
 	params[opensocial.DataRequest.ActivityRequestFields.MAX] = StatusUpdate.config.BATCH_SIZE + (StatusUpdate.config.BATCH_SIZE * this.ownerMoreClickedTimes);
-	req.add(req.newFetchActivitiesRequest(opensocial.DataRequest.PersonId.OWNER, params), 'ownerActivities');
+	req.add(req.newFetchActivitiesRequest(statusUpdate.owner.getId(), params), 'ownerActivities');
 	req.send(function(res) {
 		statusUpdate.handleActivities(res, StatusUpdate.DataMode_OWNER_ONLY);
 	});
@@ -475,7 +585,7 @@ eXo.social.StatusUpdate.prototype.getAvatar = function(userId) {
  */
 eXo.social.StatusUpdate.prototype.hasViewerId = function(ids) {
 	for(var i=0, length=ids.length; i< length; i++) {
-		if(ids[i] === this.owner.getId()) return true;
+		if(ids[i] === this.viewer.getId()) return true;
 	}
 	return false;
 }

@@ -9,6 +9,7 @@
 	<msg name="share">Share</msg>
 	<msg name="attach">Attach</msg>
 	<msg name="activities_of_displayName">Activities of {0}'s</msg>
+	<msg name="friends_activities">Friends' activities</msg>
 	<msg name="owner_friends">Owner's friends</msg>
 	<msg name="displayName_does_not_have_update">{0} does not have any updates yet</msg>
 	<msg name="displayName_do_not_have_update">{0} do not have any updates yet</msg>

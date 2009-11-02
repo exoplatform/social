@@ -79,10 +79,24 @@
   						</div>
   					</div>
   				</div>
-  				<div id="UIAppendableRoot"> 
-  					<!-- the root to append activities block -->
+  				<div id="UIOwnerAppendableRoot"> 
+  					<!-- the root to append owner activities block -->
   				</div>
-  				<div id="UIMore" class="DisplayNone">__MSG_more__</div>
+  				<div id="UIOwnerMore" class="DisplayNone FloatRight"><a href="#ownerMore">__MSG_more__</a></div>
+  				<div class="ClearRight"><span>&nbsp</span></div>
+  				
+  				<div class="ATitleBarL">
+  					<div class="ATitleBarR">
+  						<div class="ATitleBarM">
+  							<div id="OwnerFriendsActivityTitle" class="ATitleBarC">__MSG_friends_activities__</div>
+  						</div>
+  					</div>
+  				</div>
+  				<div id="UIFriendsAppendableRoot"> 
+  					<!-- the root to append friends activities block -->
+  				</div>
+  				<div id="UIFriendsMore" class="FloatRight DisplayNone"><a href="#friendsMore">__MSG_more__</a></div>
+  				<div class="ClearRight"><span>&nbsp</span></div>
   			</div>
   		</div>
   	</div>
@@ -109,7 +123,7 @@
   			<div class="ActivitiesContainer">
   				<div class="MyStatusComponentL">
   					<div class="MyStatusComponentR">
-  						<div class="MyStatusComponentM">
+  						<div id="UIMyStatusInput" class="MyStatusComponentM">
   							<a href="#OwnerAvatar" class="MyStatusAvatarBG">
   								<img id="ImgOwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
   							</a>
@@ -143,19 +157,20 @@
   				</div>
   				<div id="UIOwnerMore" class="DisplayNone FloatRight"><a href="#ownerMore">__MSG_more__</a></div>
   				<div class="ClearRight"><span>&nbsp</span></div>
-  				
-  				<div class="ATitleBarL">
-  					<div class="ATitleBarR">
-  						<div class="ATitleBarM">
-  							<div id="OwnerFriendsActivityTitle" class="ATitleBarC">Friends' Activity</div>
-  						</div>
-  					</div>
+  				<div id="UIFriendsActivities">
+	  				<div class="ATitleBarL">
+	  					<div class="ATitleBarR">
+	  						<div class="ATitleBarM">
+	  							<div id="OwnerFriendsActivityTitle" class="ATitleBarC">__MSG_friends_activities__</div>
+	  						</div>
+	  					</div>
+	  				</div>
+	  				<div id="UIFriendsAppendableRoot"> 
+	  					<!-- the root to append friends activities block -->
+	  				</div>
+	  				<div id="UIFriendsMore" class="FloatRight DisplayNone"><a href="#friendsMore">__MSG_more__</a></div>
+	  				<div class="ClearRight"><span>&nbsp</span></div>
   				</div>
-  				<div id="UIFriendsAppendableRoot"> 
-  					<!-- the root to append friends activities block -->
-  				</div>
-  				<div id="UIFriendsMore" class="FloatRight DisplayNone"><a href="#friendsMore">__MSG_more__</a></div>
-  				<div class="ClearRight"><span>&nbsp</span></div>
   			</div>
   		</div>
   	</div>

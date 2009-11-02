@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.Servlet;
+import javax.servlet.http.HttpServlet;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,6 +32,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
@@ -38,6 +42,7 @@ import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
+import org.exoplatform.web.application.RequestContext;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -127,6 +132,29 @@ public class ActivitiesRestService implements ResourceContainer {
     return identitiesId;
   }
   
+  /**
+   * gets identity by username
+   * @param username
+   * @return
+   * @throws Exception
+   */
+  @GET
+  @Path("identity/{username}/id")
+  @Produces({MediaType.APPLICATION_JSON})
+  public UserId getId(@PathParam("username") String username) throws Exception {
+      IdentityManager identityManager = getIdentityManager();
+      String id = identityManager.getIdentityByRemoteId("organization", username).getId();
+      UserId userId = new UserId(id);
+      return userId;
+  }
+  
+  /**
+   * gets linkshare's data by JSON format after scanning the provided link
+   * @param link
+   * @param lang
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("/linkshare/{link}/{lang}")
   @Produces({MediaType.APPLICATION_JSON})
@@ -159,6 +187,24 @@ public class ActivitiesRestService implements ResourceContainer {
     public List<String> getIds() { return ids_; }
     public List<LikeInfoModel> getLikeInfos() { return likeInfos_;}
     public void setLikeInfos(List<LikeInfoModel> likeInfos) { likeInfos_ = likeInfos; }
+  }
+  
+  
+  public class UserId {
+	  private String id;
+	  
+	  public UserId() {
+		  
+	  }
+	  public UserId(String id) {
+		  this.id = id;
+	  }
+	  public void setId(String id) {
+		  this.id = id;
+	  }
+	  public String getId() {
+		  return id;
+	  }
   }
   
   /**
