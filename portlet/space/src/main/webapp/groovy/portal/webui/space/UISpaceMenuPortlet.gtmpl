@@ -11,13 +11,21 @@
 <div id="$uicomponent.id" class="UISpaceMenuPortlet">
 <% String home = Util.getPortalRequestContext().getPortalURI() + spaceUrl %>
 	<div class="SpaceMenuPortlet">
-  	<div class="Home"><a class="HomeSpace" href="$home">HOME</a></div>
+		<div class="ProfTitle">Space <%= spaceUrl %></div>
+		<a class="Avartar">
+			<img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif" alt=""/>
+		</a>
+		<% if(spaceUrl.equals(appSelected)) { %>
+  	<div class="Home"><a class="HomeSelect" href="$home">HOME</a></div>
+		<% } else { %>
+		<div class="Home"><a class="HomeSpace" href="$home">HOME</a></div>
+		<% } %>
   	<% if(apps.size() != 0) { 
   		for(PageNode node in apps) {
 			String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/"+node.getName();
 			if(node.getName().equals(appSelected)) {
   	%>
-	  <div class="SpaceSetting"><a class="SpaceSettingBG" href="$pageURI"><%= node.getResolvedLabel() %></a></div>
+	  <div class="SpaceSetting"><a class="SpaceSettingSelect" href="$pageURI"><%= node.getResolvedLabel() %></a></div>
 	  <% } else { %>
 	  <div class="SpaceSetting"><a class="SpaceSettingBG" href="$pageURI"><%= node.getResolvedLabel() %></a></div>
 	  <% } %>

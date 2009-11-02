@@ -62,8 +62,8 @@
 			<a href="#" class="Image"><img alt="#" src="$imageSource" /></a>
 			<div class="ContentBox">
 				<div class="TitleContent">
-					<a href="#" onclick="<%= denySpaceAction %>" title="Deny" class="Icon IconEditSpace"><span></span></a>
-					<a href="#" onclick="<%= acceptSpaceAction %>" title="Accept" class="Icon IconEditSpace"><span></span></a>
+					<a href="#" onclick="<%= denySpaceAction %>" title="Deny" class="Icon IconDeny"><span></span></a>
+					<a href="#" onclick="<%= acceptSpaceAction %>" title="Accept" class="Icon IconAccept"><span></span></a>
 					<div class="Text"><a href="#"><%= space.name %></a></div>
 					<div class="ClearBoth"><span></span></div>
 				</div>

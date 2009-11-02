@@ -160,6 +160,10 @@
 	background: url('background/IconEditSpace.gif') no-repeat left top;
 }
 
+.UIMySpacePortlet .IconLeaveSpace {
+	background: url('background/IconLeaveSpace.gif') no-repeat left top;
+}
+
 .UIMySpacePortlet .IconAccept {
 	background: url('background/IconAccept.gif') no-repeat left top;
 }

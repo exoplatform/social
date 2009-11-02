@@ -85,7 +85,7 @@
 
 
 .UIMySpacePortlet {
-	padding: 10px 20px;
+	padding: 0px 10px 20px;
 }
 
 .UIMySpacePortlet .TitleBar {
@@ -95,12 +95,14 @@
 	text-align: center;
 	font-weight: bold;
 	padding-bottom: 5px;
+	background: #EBEBEB none repeat scroll 0 0;
 }
 
 .UIMySpacePortlet .LeftBoxInput {
 	background: #f3f3f3 url('background/BoxInput.gif') no-repeat left top;
 	padding-left: 6px;
 	margin-bottom: 8px;
+	margin-top: 3px;
 }
 
 .UIMySpacePortlet .RightBoxInput {
@@ -252,4 +254,8 @@
 
 .UIMySpacePortlet .IconAdd {
 	background: url('background/IconAdd.gif') no-repeat left top;
+}
+
+.UIMySpacePortlet .IconLeave {
+	background: url('background/door_out.png') no-repeat left top;
 }
