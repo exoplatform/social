@@ -26,6 +26,7 @@
   import org.exoplatform.social.space.Space
   import org.exoplatform.social.space.SpaceUtils
   def uicomponentId = uicomponent.id
+  def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.space_listing")
   def labelActionRequestToJoin = _ctx.appRes("${uicomponentId}.label.action_request_to_join")
   def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
   def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
@@ -40,21 +41,21 @@
   def iterator = uicomponent.getUIPageIterator()
   def publicSpaces = uicomponent.getPublicSpaces()
   def publicSpaceIdx = 0
-  def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/AvartarGroupDefault.gif"
+  def String imageSource = "/space/skin/portal/webui/component/UIPublicSpacePortlet/DefaultSkin/background/Avatar.png"
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
-  <div class="TopManageSpacesL">
-   	<div class="TopManageSpacesR">
-    	<div class="TopManageSpacesM"><span></span></div>
-    </div>
-  </div>
-    <div class="ContainerSpace">
-      <%if (publicSpaces.size() == 0) {%>
-      <div class="SpaceContent">
-        <div class="NotYet"><%= labelNoPublic %></div>
-        <div style="clear: left;"><span></span></div>
-      </div>
-      <%}%>
+  <% uicomponent.renderChild("UIPublicSpaceSearch"); %>
+  <div class="BoxSpaceList">
+  	<div class="CenterTitleBox">
+  		<div class="LeftTitleBox">
+  			<div class="RightTitleBox">Space Listing</div>
+  		</div>
+  	</div>
+  <%if (publicSpaces.size() == 0) {%>
+	<div class="GrayBox">
+	  <div class="NotYet">No public spaces yet to request to join.</div>
+	</div>
+  <%}%>
       <%for (space in publicSpaces) {
             def requestJoinAction = uicomponent.event("RequestJoin", space.id) + "; false"
             def visibility = space.visibility
@@ -81,67 +82,33 @@
             publicSpaceIdx += 1;
       %>
       <% if (publicSpaceIdx % 2 == 0) { %>
-		  	<div class="SpaceContentBlue">
+		  	<div class="NormalBox">
 		  <% } else { %>
-		  	<div class="SpaceContentGray">
+		  	<div class="GrayBox">
 		  <% } %>
-        <div class="MiniAvatarSpaceBG">
-           <img src="$imageSource"  id="" width="60px" height="60px" onload="" alt=""/>
-        </div>
-        <div class="MySpacesContent">
-            <div class="ContentBar">
-                <%if (isPublic) {%>
-                    <div class="MySpaceLabel"><a href="${spaceUrl}"><%= space.name %></a></div>
-                <%} else {%>
-                    <div class="MySpaceLabel"><%= space.name %></div>
-                <%}%>
-                <% if (!isClose) {%>
-                <div onclick="<%= requestJoinAction %>" class="RequestJoin ButtonIconSpace" title="<%= labelActionRequestToJoin %>"><span></span></div>
-                <%}%>
-                <%if (hasEditPermission) {%>
-                <div onclick="location.href='<%= spaceUrl%>/SpaceSettingPortlet'" class="EditSpace ButtonIconSpace" title="<%= labelActionEditSpace %>"><span></span></div>
-                <%}%>
-                <div style="clear: left;"><span></span></div>
-            </div>
-            <div class="MySpacesContentContent">
-                <table class="UIGridSpace">
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelDescription %></td>
-                        <td class="FieldComponent"><%= space.description %></td>
-                    </tr>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelMembers %></td>
-                        <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-                    </tr>
-                  <%if (isPublic) {%>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelUrl %></td>
-                        <td class="FieldComponent"><a href="${spaceUrl}"><%= SpaceUtils.getAbsoluteUrl() + spaceUrl %></a></td>
-                    </tr>            
-                  <%}%>
-                    <tr>
-                        <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                        <td class="FieldComponent">$status</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div style="clear: left;"><span></span></div>
-      </div>
+		  		<% if (isPublic) { %>
+		  		<a href="$spaceUrl" class="Image"><img alt="" title="$space.name" src="$imageSource" /></a>
+		  		<%} else { %>
+		  		<a href="#" class="Image"><img alt="" title="$space.name" src="$imageSource" /></a>
+		  		<%} %>
+		  		
+		 		<div class="ContentBox">
+		 			<div class="TitleContent">
+		 				<a href="#" onclick="$requestJoinAction" title="$labelActionRequestToJoin" class="Icon IconAdd"><span></span></a>
+		 				<div class="Text"><a href="$spaceUrl">$space.name</a></div>
+		 				<div class="ClearBoth"><span></span></div>
+		 			</div>
+		 			<div class="Content">$space.visibility / <%= SpaceUtils.countMembers(space) %> $fieldLabelMembers <br />
+						$space.description		 				
+		 			</div>
+		 		</div>
+		 		<div class="ClearBoth"><span></span></div>
+		 	</div>
       <%}%>
-    </div>
-    
-  <div class="BottomManageSpacesL">
-  	<div class="BottomManageSpacesR">
-    	<div class="BottomManageSpacesM"><span></span></div>
-    </div>
-  </div>
-  
-    <div>
     <%
         if (iterator.getAvailablePage() > 1) {
             _ctx.renderUIComponent(iterator)
         }
     %>
-    </div>
+	</div>
 </div>

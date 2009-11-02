@@ -1,0 +1,153 @@
+.UIPublicSpacePortlet {
+	padding: 10px 20px;
+}
+
+.UIPublicSpacePortlet .TitleBar {
+	height: 22px;
+	color: #7d7d7d;
+	line-height: 22px;
+	text-align: center;
+	font-weight: bold;
+	padding-bottom: 5px;
+}
+
+.UIPublicSpacePortlet .LeftBoxInput {
+	background: #f3f3f3 url('background/BoxInput.gif') no-repeat left top;
+	padding-left: 6px;
+	margin-bottom: 8px;
+}
+
+.UIPublicSpacePortlet .RightBoxInput {
+	background: url('background/BoxInput.gif') no-repeat right top;
+	padding-right: 6px;
+}
+
+.UIPublicSpacePortlet .CenterBoxInput {
+	background: #f3f3f3;
+	width: 100%;
+	padding: 10px 0px;
+}
+
+.UIPublicSpacePortlet .LeftContentInput {
+	float: left;
+	width: 20%;
+	text-align: right;
+	line-height: 22px;
+}
+
+.UIPublicSpacePortlet .CenterContentInput {
+	float: left;
+	width: 42%;
+	padding: 0px 10px;
+}
+
+.UIPublicSpacePortlet .RightContentInput {
+	float: left;
+	width: 20%;
+	line-height: 22px;
+}
+
+.UIPublicSpacePortlet .CenterContentInput input {
+	height: 18px;
+	background: #fff;
+	border: 1px solid #b8b8b8;
+	padding: 0px 3px;
+	color: #cbcbcb;
+}
+
+.UIPublicSpacePortlet .CenterContentInput .InputSearch {
+	background: #fff url('background/IconSearch.gif') no-repeat right top;
+}
+
+.UIPublicSpacePortlet .CenterContentInput select {
+	height: 18px;
+	background: #fff;
+	border: 1px solid #b8b8b8;
+	padding-left: 3px;
+	color: #cbcbcb;
+}
+
+
+.UIPublicSpacePortlet .BoxSpaceList {
+	margin-bottom: 8px;
+}
+
+.UIPublicSpacePortlet .CenterTitleBox {
+	background: url('background/TitleBox.gif') repeat-x left -52px;
+	height: 26px;
+}
+
+.UIPublicSpacePortlet .LeftTitleBox {
+	background: url('background/TitleBox.gif') no-repeat left top;
+	padding-left: 15px;
+}
+
+.UIPublicSpacePortlet .RightTitleBox {
+	background: url('background/TitleBox.gif') no-repeat right -26px;
+	padding-right: 4px;
+	color: #fff;
+	line-height: 18px;
+	height: 26px;
+	font-weight: bold;
+}
+
+.UIPublicSpacePortlet .NormalBox .ABC a {
+	margin-right: 3px;
+}
+
+.UIPublicSpacePortlet .NormalBox {
+	background: #fbfbfb;
+	padding: 8px 15px;
+	color: #3a3a3a;
+	margin-bottom: 1px;
+}
+
+.UIPublicSpacePortlet .GrayBox {
+	background: #f2f2f2;
+	padding: 8px 15px;
+	color: #3a3a3a;
+	margin-bottom: 1px;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .Image {
+	float: left;
+	width: 58px;
+	display: block;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .Image img {
+	width: 58px;
+	height: 58px;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .ContentBox {
+	padding: 0px 0px 0px 80px;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .ContentBox .TitleContent {
+	height: 24px;
+	border-bottom: 1px solid #ededed;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .TitleContent .Icon {
+	width: 20px;
+	height: 20px;
+	float: right;
+	display: block;
+	margin-left: 5px;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .TitleContent .Text {
+	margin-right: 50px;
+	font-weight: bold;
+	line-height: 24px;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .ContentBox .Content {
+	line-height: 16px;
+	padding-top: 5px;
+}
+
+.UIPublicSpacePortlet .IconAdd {
+	background: url('background/IconAdd.gif') no-repeat left top;
+}

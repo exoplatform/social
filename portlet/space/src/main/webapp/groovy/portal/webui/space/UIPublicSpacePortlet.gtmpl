@@ -16,6 +16,13 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-  <div class="UIPublicSpacePortlet" id="$uicomponent.id">
-		<span><%=_ctx.appRes(uicomponent.getId() + ".label.MySpaceList")%></span>		  
-	</div>
+<%
+	def uicomponentId = uicomponent.id;
+	def labelSpaceList = _ctx.appRes("${uicomponentId}.label.space_list")
+
+%>
+<div class="UIPublicSpacePortlet" id="$uicomponentId">
+	<div class="TitleBar">PUBLIC SPACE LIST</div>
+	<% uicomponent.renderChildren(); %>
+</div>
+
