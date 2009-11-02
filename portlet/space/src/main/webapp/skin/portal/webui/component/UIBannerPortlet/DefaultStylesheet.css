@@ -19,15 +19,17 @@
 }
 
 .UIBannerPortlet .LeftBanner {
-  background: url('DefaultSkin/background/BannerPortlet.gif') repeat-x left top;
+  background: #b5b6b6;
+  border-top: 1px solid #a8a8ab;
+  padding-left: 8px;
 }
 
 .UIBannerPortlet .RightBanner {
-  background: url('DefaultSkin/background/Logo.gif') no-repeat left bottom;
+  background: url('DefaultSkin/background/LogoSocial.gif') no-repeat left bottom;
 }
 
 .UIBannerPortlet .MiddleBanner {
-  height: 74px ;
+  height: 43px ;
 }
 
 .UIBannerPortlet .LeftLoginContainer {
