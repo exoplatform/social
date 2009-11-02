@@ -17,9 +17,6 @@
 
 /*TODO dang.tung have to move eXoSocialResource*/
 /*--------------------------------------------------------------------*/
-.TRContainer .MenuTDContainer {
-	width: 220px;
-}
 
 .TRContainer .MenuTDContainer .UIContainer {
 	padding: 0;
@@ -30,7 +27,11 @@
 }
 
 .TRContainer .ApplicationTDContainer {
-	padding: 8px;
+	border: 1px solid #d6d6d6;
+	border-left: none;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-bottomright: 3px;
+	background: white;
 }
 
 .TRContainer .ApplicationTDContainer .UIContainer {
@@ -41,63 +42,125 @@
   padding: 4px 0px 0px 0px; 
 }
 
-.UITableColumnContainer {
-  border: 1px solid #91a8ae;
-}
 
 .UIToolbarContainer .UITableColumnContainer {
   background: none;
   border: none;
 }
+
+
+.ClearFix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.ClearFix {
+	!display: inline-block;
+  !zoom: 1;
+  !display: block; 
+}
+
+.TRContainer .MenuTDContainer {
+	border: 1px solid #d6d6d6;
+	border-right: none;
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	width: 162px;
+	background: #ededed;
+}
+
+#SpacePage {
+	padding: 10px;
+}
+
+#UIContainer-Menu .UIComponentBlock {
+	background: none;
+}
+
+.TRContainer .MenuTDContainer .ProfTitle {
+	background: url(DefaultSkin/background/ProfTitle.gif) no-repeat center top;
+	color: #2f2f2f;
+	font-weight:bold;
+	height: 26px;
+	line-height: 20px;
+	text-align: center;
+}
+
+.TRContainer .MenuTDContainer .Avartar {
+	background: url(DefaultSkin/background/BgProfAvartar.gif) no-repeat left top;
+	display: block;
+	height: 64px;
+	margin: 30px auto;
+	padding: 6px 0;
+	text-align: center;
+	vertical-align: middle;
+	width: 79px;
+}
+
 /*---------------------------------------------------------------------*/
 
 .MenuTDContainer .UISpaceMenuPortlet .Home{
 	background: none;
 }
 
+.MenuTDContainer .UISpaceMenuPortlet .Home .HomeSelect{
+	color: white;
+	background: url('DefaultSkin/background/HomeMenuHover.gif') no-repeat left center;
+	padding-right: 50px;
+	font-weight: bold;
+	line-height: 23px;
+	display: block;
+	text-align: right;
+	position:relative;
+	width: 117px;
+}
+
 .MenuTDContainer .UISpaceMenuPortlet .Home .HomeSpace{
 	background: url('DefaultSkin/background/HomeMenuBG.gif') no-repeat left center;
-	padding-left: 65px;
+	padding-right: 45px;
 	font-weight: bold;
-	line-height: 41px;
-	font-size: 12px;
-	color: #2d52a1;
+	line-height: 23px;
 	display: block;
-	border-bottom: 1px solid #d7d7d7;
+	text-align: right;
 }
 
 .MenuTDContainer .UISpaceMenuPortlet .Home a:hover{
 	background: url('DefaultSkin/background/HomeMenuHover.gif') no-repeat left center;
+	padding-right: 50px;
+	position:relative;
+	width: 117px;
 }
 
 
 .MenuTDContainer .UISpaceMenuPortlet .SpaceSetting .SpaceSettingBG {
 	background: url('DefaultSkin/background/SpaceSettingBG.gif') no-repeat left center;
-	padding-left: 65px;
+	padding-right: 45px;
 	font-weight: bold;
-	line-height: 41px;
-	font-size: 12px;
-	color: #2d52a1;
+	line-height: 23px;
 	display: block;
-	border-bottom: 1px solid #e7e7e7; 
+	text-align: right;
 }
 
-.UIPageBody .UIComponentBlock .MenuTDContainer .NormalContainerBlock {
-	padding:14px 8px 8px 10px;
-}
-
-.UIPageBody .UIComponentBlock .MenuTDContainer .NormalContainerBlock .LeftContainerBlock {
-	background:white url(/eXoResourcesSocial/skin/DefaultSkin/webui/component/UIVerticalTabs/background/LeftContentTab.gif) no-repeat scroll left top;
-	padding:0;
-}
-
-.UIPageBody .UIComponentBlock .MenuTDContainer .NormalContainerBlock .RightContainerBlock {
-	background:transparent url(/eXoResourcesSocial/skin/DefaultSkin/webui/component/UIVerticalTabs/background/BottomContentTab.gif) no-repeat scroll left bottom;
-	padding-bottom:75px;
+.MenuTDContainer .UISpaceMenuPortlet .SpaceSetting .SpaceSettingSelect{
+	background: url('DefaultSkin/background/SpaceSettingHover.gif') no-repeat left center;
+	color: white;
+	padding-right: 50px;
+	font-weight: bold;
+	line-height: 23px;
+	display: block;
+	text-align: right;
+	position:relative;
+	width: 117px;
 }
 
 .MenuTDContainer .UISpaceMenuPortlet .SpaceSetting a:hover{
 	background: url('DefaultSkin/background/SpaceSettingHover.gif') no-repeat left center;
+	padding-right: 50px;
+	position:relative;
+	width: 117px;
 }
 
 
