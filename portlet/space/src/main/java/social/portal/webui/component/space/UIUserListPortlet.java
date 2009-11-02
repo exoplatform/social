@@ -18,11 +18,13 @@ package social.portal.webui.component.space;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
@@ -60,14 +62,16 @@ import social.portal.webui.component.UISpaceUserSearch;
     lifecycle = UIApplicationLifecycle.class, 
     template = "app:/groovy/portal/webui/space/UIUserListPortlet.gtmpl",
     events = {
-      @EventConfig(listeners=UIUserListPortlet.SearchActionListener.class, phase=Phase.DECODE)
+      @EventConfig(
+         listeners=UIUserListPortlet.SearchActionListener.class, phase=Phase.DECODE)
     }
   )
 })
 public class UIUserListPortlet extends UIPortletApplication {
   
   private UIPageIterator iterator_;
-  private List<User> userList;
+  private List<User> memberList;
+  private List<User> leaderList;
   private final Integer ITEMS_PER_PAGE = 3;
   private IdentityManager identityManager_ = null;
   
@@ -76,15 +80,24 @@ public class UIUserListPortlet extends UIPortletApplication {
     addChild(iterator_);
     
     addChild(UISpaceUserSearch.class,null , null);
-    init();
+    initMember();
+    initLeader();
   }
   
-  public void setUserList(List<User> userList) {
-    this.userList = userList;
+  public void setMemberList(List<User> memberList) {
+    this.memberList = memberList;
   }
   
-  public List<User> getUserList() {
-    return userList;
+  public List<User> getMemberList() {
+    return memberList;
+  }
+  
+  public void setLeaderList(List<User> leaderList) {
+    this.leaderList = leaderList;
+  }
+  
+  public List<User> getLeaderList() {
+    return leaderList;
   }
 
   public String getUserAvatar(String userId) throws Exception {
@@ -98,16 +111,52 @@ public class UIUserListPortlet extends UIPortletApplication {
     return null;
   }
   
+  public Identity getIdentity(String userId) throws Exception {
+    Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
+    if (identity != null) {
+      return identity;
+    }
+    return null;
+  }
+  
   @SuppressWarnings("unchecked")
-  public void init() throws Exception {
+  public void initMember() throws Exception {
     Space space = getSpace();
-    userList = new ArrayList<User>();
+    memberList = new ArrayList<User>();
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     UserHandler userHandler = orgSrc.getUserHandler();
     List<String> userNames = spaceService.getMembers(space);
+    Iterator<String> itr = userNames.iterator();
+    while(itr.hasNext()) {
+      String userName = itr.next();
+      if(spaceService.isLeader(space, userName)){
+        itr.remove();
+      }
+    }
     for (String name : userNames) {
-      userList.add(userHandler.findUserByName(name));
+      memberList.add(userHandler.findUserByName(name));
+    }
+
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void initLeader() throws Exception {
+    Space space = getSpace();
+    leaderList = new ArrayList<User>();
+    OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    UserHandler userHandler = orgSrc.getUserHandler();
+    List<String> userNames = spaceService.getMembers(space);
+    Iterator<String> itr = userNames.iterator();
+    while(itr.hasNext()) {
+      String userName = itr.next();
+      if(!spaceService.isLeader(space, userName)){
+        itr.remove();
+      }
+    }
+    for (String name : userNames) {
+      leaderList.add(userHandler.findUserByName(name));
     }
 
   }
@@ -118,7 +167,8 @@ public class UIUserListPortlet extends UIPortletApplication {
    */
   private void update() throws Exception {
     int n = iterator_.getCurrentPage();
-    PageList pageList = new ObjectPageList(userList, ITEMS_PER_PAGE);
+    //// Check
+    PageList pageList = new ObjectPageList(memberList, ITEMS_PER_PAGE);
     iterator_.setPageList(pageList);
     if (n <= pageList.getAvailablePage()) iterator_.setCurrentPage(n);
   }
@@ -126,9 +176,9 @@ public class UIUserListPortlet extends UIPortletApplication {
 
   public UIPageIterator getUIPageIterator() throws Exception { 
     return iterator_;
-    }
+  }
   
-  private Space getSpace() throws SpaceException {
+  public Space getSpace() throws SpaceException {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     return spaceService.getSpaceByUrl(spaceUrl);
@@ -138,6 +188,12 @@ public class UIUserListPortlet extends UIPortletApplication {
   public List<User> getUsersInSpace() throws Exception{
     update();
     return iterator_.getCurrentPageData();
+  }
+  
+  public String getPath() {
+    String nodePath = Util.getPortalRequestContext().getNodePath();
+    String uriPath = Util.getPortalRequestContext().getRequestURI();
+    return uriPath.replaceAll(nodePath, "");
   }
   
   @SuppressWarnings("unchecked")
@@ -162,7 +218,9 @@ public class UIUserListPortlet extends UIPortletApplication {
     public void execute(Event<UIUserListPortlet> event) throws Exception {
       UIUserListPortlet uiUserListPortlet = event.getSource();
       UISpaceUserSearch uiUserSearch = uiUserListPortlet.getChild(UISpaceUserSearch.class);
-      uiUserListPortlet.setUserList(uiUserSearch.getUserList());
+      uiUserListPortlet.setMemberList(uiUserSearch.getUserList());
+      /////// Check .....
+      uiUserListPortlet.setLeaderList(uiUserSearch.getUserList());
     }
     
   }

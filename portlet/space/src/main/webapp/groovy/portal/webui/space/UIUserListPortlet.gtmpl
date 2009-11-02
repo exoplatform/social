@@ -20,82 +20,136 @@
 	import org.exoplatform.services.organization.User
 	import org.exoplatform.webui.core.UIPageIterator
 	import social.portal.webui.component.UISpaceUserSearch
+	import org.exoplatform.services.organization.User;
+	import org.exoplatform.social.space.Space;
+	
 	UIPageIterator iterator = uicomponent.getUIPageIterator()
+	def uicomponentId = uicomponent.getId()
+	def adminLabel = _ctx.appRes("${uicomponentId}.label.Admin")
+	def administratorLabel = _ctx.appRes("${uicomponentId}.label.Administrator")
+	def spaceMemberLabel = _ctx.appRes("${uicomponentId}.label.SpaceMember")
+	def leaderList = uicomponent.getLeaderList()
+	def memberList = uicomponent.getMemberList()
+	def space = uicomponent.getSpace();
+	def visibility = space.getVisibility();
+	def spaceName = space.getName();
+	def position = "";
 %>
 
-<div class="ActivitiesTitleBarM">MY ACTIVITIES</div>
+<div class="ActivitiesTitleBarM">USER LIST</div>
 <div class="UIProfileSpace" >
 	<div class="LeftColumn">
+		<%
+			def imgSrcAdmin = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+			def admin = leaderList.get(0);
+			def adminName = admin.getFirstName();
+			def adminImageSource = uicomponent.getUserAvatar(admin.getUserName());
+			def adminIdentity = uicomponent.getIdentity(admin.getUserName());
+			def adminProfileURL = uicomponent.getPath() + "/activities/" + adminIdentity.getRemoteId();
+			if (adminImageSource != null) imgSrcAdmin = adminImageSource;
+		%>
 		<div class="AvatarSpace">
 			<div class="Image" >
-			  	<img src="/profile/skin/portal/webui/component/UIRelationshipPortlet/background/BLAvatar.gif" height="119px" width="119px" alt="">
+			  	<img src="$imgSrcAdmin" height="119px" width="119px" alt="">
 			</div>
-		</div>
-		<div class="UIAction">
-			<table class="ActionContainer">
-				<tbody>
-					<tr>
-						<td>
-							<div onclick="" class="ActionButton ButtonChange">
-								<div class="ButtonLeft">
-									<div class="ButtonRight">
-										<div class="ButtonMiddle">
-											<a href="#" onclick="${uicomponent.event('ChangeAvatar')}"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
-										</div>
-									</div>
-								</div>
-							</div>					
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div  style="text-align:center"><a href="${adminProfileURL}" style="color: #afafaf;">($adminLabel $adminName)</a></div>
 		</div>
 	</div>
 	<div class="ContainerSpace" >
 		<div class="UIHeaderSection">
-			<form method="post" action="" id="" class="UIForm">
-				<h2>Root Root</h2>
-				<span>Public </span>
-			</form>
+				<h2>$spaceName</h2>
+				<span>$visibility</span>
 		</div>
 
-		<div class="UIBasicInfoSection">
-			<form method="post" action="" id="" class="UIForm">
 				<div id="" class="TitleBar">
 					<div class="ATitleBarL">
 						<div class="ATitleBarR">
 							<div class="ATitleBarM">
 								<div class="ATitleBarC">
-									<div class="Title">Basic information</div>
-									<a class="EditIcon" href="#" >&nbsp; </a>
+									<div class="Title">$administratorLabel</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="PortletContent">
+				
+					<% for(user in leaderList) {
+						def imgSrcLeader = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+						def userName = user.getFullName();
+						def leaderIdentity = uicomponent.getIdentity(user.getUserName());
+						def leaderImageSource = uicomponent.getUserAvatar(user.getUserName());
+						position = leaderIdentity.profile.getPropertyValue("position");
+						def profileURL = uicomponent.getPath() + "/activities/" + leaderIdentity.getRemoteId();
+						if (!position) position = "";
+						if (leaderImageSource != null) imgSrcLeader = leaderImageSource;
+					%>
+					<div class="PortletContent">
 					<div class="AvartarPeopleBG">
-						<img height="47" width="47" src="/space/skin/portal/webui/component/UIUserListPortlet/background/AvartarPeople.gif"/>
+						<img height="47" width="47" src="$imgSrcLeader"/>
 					</div>
 					<div class="CommunityContainer">
 						<div class="CommunityMane Line">
 							<div class="CommunityName" style="float: left; cursor: pointer;">
-								<a href="/portal/public/classic/relations/yours/root/demo" class="CommunityNameMiddle">Demo exo</a>
+								<a href="${profileURL}" style="color: #afafaf;">$userName</a>
 							</div>
-							<a class="DeleteIcon" >&nbsp; </a>
 							<div style="clear: both;"><span/></div>
 						</div>
-						<div class="CommunityContent">
-							<span style="padding: 4px;">Descriptions:</span>
-							<span style="padding: 4px;">Deverloper</span>
-						</div>
+						<% if(position.length() > 0) { %>
+	        <div class="CommunityContent" style="padding: 4px;">
+	        	<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+	        </div>
+	        <%  } %>
 					</div>
 					<div style="clear: left;"><span><span/></div>
 				</div>
-			</form>
-		</div>
+				<% } %>
+		
+				<div id="" class="TitleBar">
+					<div class="ATitleBarL">
+						<div class="ATitleBarR">
+							<div class="ATitleBarM">
+								<div class="ATitleBarC">
+									<div class="Title">$spaceMemberLabel</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			<% if(memberList.size() > 0)  {%>
+				<% for(user in memberList) {
+					def memberImgSrc = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+					def memberUserName = user.getFullName();
+					def memberIdentity = uicomponent.getIdentity(user.getUserName());
+					def memberImageSource = uicomponent.getUserAvatar(user.getUserName());
+					position = memberIdentity.profile.getPropertyValue("position");
+					if (!position) position = "";
+					def profileURL = uicomponent.getPath() + "/activities/" + memberIdentity.getRemoteId();
+					if (memberImageSource != null) memberImgSrc = memberImageSource;
+				%>
+				<div class="PortletContent">
+					<div class="AvartarPeopleBG">
+						<img height="47" width="47" src="$memberImgSrc"/>
+					</div>
+					<div class="CommunityContainer">
+						<div class="CommunityMane Line">
+							<div class="CommunityName" style="float: left; cursor: pointer;">
+								<a href="${profileURL}" style="color: #afafaf;">$memberUserName</a>
+							</div>
+							<div style="clear: both;"><span/></div>
+						</div>
+						<% if(position.length() > 0) { %>
+	        <div class="CommunityContent" style="padding: 4px;">
+	        	<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+	        </div>
+	        <%  } %>
+					</div>
+					<div style="clear: left;"><span><span/></div>
+				</div>
+			<% } %>
+			<%} else {%>
+			<div class="PortletContent">
+				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+			</div>
+			<% } %>
 	</div>
 </div>
-
-
-
