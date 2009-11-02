@@ -61,7 +61,7 @@ public class UIManagePublicSpaces extends UIContainer {
   private UIPageIterator iterator;
   private final String ITERATOR_ID = "UIIteratorPublicSpaces";
   private final Integer SPACES_PER_PAGE = 4;
-  private List<Space> spaceList; // for search result
+  private List<Space> spaces_; // for search result
   /**
    * Constructor to initialize iterator
    * @throws Exception
@@ -89,22 +89,15 @@ public class UIManagePublicSpaces extends UIContainer {
   }
   
   /**
-   * sets spaceList
-   * @param spaceList
-   */
-  public void setSpaceList(List<Space> spaceList) {
-	  this.spaceList = spaceList;
-  }
-  
-  /**
    * gets spaceList
    * @return
    * @throws Exception 
    */
-  public List<Space> getSpaceList() throws Exception {
-	  if (spaceList == null) spaceList = getAllPublicSpaces();
-	  return spaceList;
-  }
+  private List<Space> getSpaceList() throws Exception {
+	List<Space> spaceList = getSpaces_();
+    if(spaces_ == null)  spaceList = getAllPublicSpaces();
+    return spaceList;
+}
   
   /**
    * Get all public spaces of a user
@@ -191,8 +184,15 @@ public class UIManagePublicSpaces extends UIContainer {
       UIManagePublicSpaces uiForm = event.getSource();
       UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
       List<Space> spaceList = uiSpaceSearch.getSpaceList();
-      uiForm.setSpaceList(spaceList);
+      uiForm.setSpaces_(spaceList);
 	}
 	  
+  }
+  
+  public void setSpaces_(List<Space> spaces_) {
+	    this.spaces_ = spaces_;
+	  }
+  public List<Space> getSpaces_() {
+    return spaces_;
   }
 }  
