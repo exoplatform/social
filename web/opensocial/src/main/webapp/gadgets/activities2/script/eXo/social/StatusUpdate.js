@@ -133,19 +133,27 @@ eXo.social.StatusUpdate.prototype.init = function() {
 					return null;
 				}
 				firstIndex += '/activities/'.length;
-				var lastIndex = address.length;
-				if (firstIndex >= lastIndex) {return null;}
-				
+				//when url is appended with ?
+				var questionIndex = address.indexOf("?");
+				var lastIndex = 0;
+				if (questionIndex > 0) {
+					lastIndex = (address.substr(0, questionIndex)).length;
+				} else {
+					lastIndex = address.length;
+				}
+				if (firstIndex >= lastIndex) {
+					return null;
+				}
 				return address.substring(firstIndex, lastIndex);					
 			}
 			return null;
 		}
+		
 		/**
 		 * fix ownerHandler
 		 * To detect the ownerId by url (hard-coded)
 		 */
 		var fixOwnerHandler = function(res) {
-			debug.info(res);
 			var data = res.data;
 			if (data !== null) {
 				var ownerId = data.id;
@@ -160,19 +168,6 @@ eXo.social.StatusUpdate.prototype.init = function() {
 							return;
 						}
 						statusUpdate.owner = res.get('owner').getData();
-						//updates owner avatar
-						var imgOwnerAvatar = Util.getElementById(config.ui.IMG_OWNER_AVATAR);
-						if (!imgOwnerAvatar) {
-							debug.error('imgOwnerAvatar is null!');
-						return;
-						}
-						imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId());
-						var ownerActivityTitle = Util.getElementById('OwnerActivityTitle');
-  						if (!ownerActivityTitle) {
-  						debug.error('ownerActivityTitle is null!!!');
-  						return;
-  						}
-  						ownerActivityTitle.innerHTML = Locale.getMsg('activities_of_displayName', [statusUpdate.owner.getDisplayName()]);
 						//hides text input + friends's activitites
 						var uiMyStatusInput = Util.getElementById(config.ui.UI_MY_STATUS_INPUT);
 						var uiFriendsActivities = Util.getElementById(config.ui.UI_FRIENDS_ACTIVITIES);
@@ -227,9 +222,26 @@ eXo.social.StatusUpdate.prototype.init = function() {
 }
 
 eXo.social.StatusUpdate.prototype.refresh = function() {
+	var Util = eXo.social.Util;
+	var Locale = eXo.social.Locale;
 	var StatusUpdate = eXo.social.StatusUpdate;
+	var config = StatusUpdate.config;
 	debug.info("Refresh!!!!");
 	var statusUpdate = this;
+	//updates owner avatar
+	var imgOwnerAvatar = Util.getElementById(config.ui.IMG_OWNER_AVATAR);
+	if (!imgOwnerAvatar) {
+		debug.error('imgOwnerAvatar is null!');
+		return;
+	}
+	imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId());
+	var ownerActivityTitle = Util.getElementById('OwnerActivityTitle');
+  	if (!ownerActivityTitle) {
+  		debug.error('ownerActivityTitle is null!!!');
+  		return;
+  	}
+  	ownerActivityTitle.innerHTML = Locale.getMsg('activities_of_displayName', [statusUpdate.owner.getDisplayName()]);
+  	
   	//Create request for getting owner's and ownerFriends' activities.
   	var req = opensocial.newDataRequest();	
 	var opts_act = {};
