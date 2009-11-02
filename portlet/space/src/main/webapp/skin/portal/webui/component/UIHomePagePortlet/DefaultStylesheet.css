@@ -39,6 +39,7 @@
 	background: url('background/HomeBackground.jpg') no-repeat left top;
 	height: 254px;
 	width: 712px;
+	margin-bottom: 10px;
 }
 
 .UISocialHomepage .HomeBackgroundText {
