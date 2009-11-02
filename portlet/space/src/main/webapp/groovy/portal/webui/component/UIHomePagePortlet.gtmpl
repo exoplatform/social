@@ -17,59 +17,67 @@
 
 -->
 <div class="UISocialHomepage" id="$uicomponent.id">
-	<div class="HomeBackground">
-		<div class="LeftHomeBackground">
-			<div class="RightHomeBackground"><span><span/></div>
+	<div class="LeftSocialHomepage">
+		<div class="HomeBackground">
+			<div class="HomeBackgroundText">Enterprise Social Software</div>
+		</div>
+		<div class="LeftBoxDecorator">
+			<div class="RightBoxDecorator">
+				<div class="CenterBoxDecorator">
+					<div class="BoxLeft">
+						<div class="TitBoxLeft">
+							<div class="TitBoxLeftL">People</div>
+							<div class="TitBoxLeftR">Adding social networking to your work</div>
+							<div class="ClearBoth"><span></span></div>
+						</div>
+						<div class="ContentBoxLeft">
+							<a class="PeopleIcon IconBoxleft"><span></span></a>
+							<div class="TxtBoxLeft">Create and develop Social Networks
+								<br/>Display relevant information to each user
+								<br/>Create a skills index
+								<br/>Help to find the relevant person to solve
+								<br/>User-friendly interface 
+							</div>
+							<div class="ClearBoth"><span></span></div>
+						</div>
+					</div>
+					<div class="BoxLeft LineBoxLeft">
+						<div class="TitBoxLeft">
+							<div class="TitBoxLeftL">Space</div>
+							<div class="TitBoxLeftR">Adding communities to your work</div>
+							<div class="ClearBoth"><span></span></div>
+						</div>
+						<div class="ContentBoxLeft">
+							<a class="SpaceIcon IconBoxleft"><span></span></a>
+							<div class="TxtBoxLeft">Regroup people around projects or interest
+								<br/>Information aggregation
+								<br/>Improve the knowledge sharing
+								<br/>Easy to use community management
+								<br/>User-friendly interface 
+							</div>
+							<div class="ClearBoth"><span></span></div>
+						</div>
+					</div>
+					<div class="ClearBoth"><span></span></div>
+				</div>
+			</div>
 		</div>
 	</div>
-	<table style="table-layout: fixed; _width: 99.5%; margin: auto">
-	  <tbody>
-		  <tr>
-		    <td>
-					<div style="margin: 8px 4px 0px 0px;" class="Decorator">
-						<div class="DecoratorML">
-			    			<div class="DecoratorMR">
-			    				<div class="DecoratorMC">
-			    					<div class="PeopleIcon">
-				    					<div class="Title"><%= _ctx.appRes("UIHomePagePortlet.title.people")%></div>
-				    					<div class="Label"><%= _ctx.appRes("UIHomePagePortlet.label.addSocial")%></div>
-				    					<div class="Label">&nbsp;</div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.createSocial")%></div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.displayInfo")%></div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.createSkill")%></div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.help")%></div>			
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.userInterface")%></div>
-								</div>
-							</div>
-						</div>	
-						
-					</div>				    
-				</td>
-		    <td>
-					<div style="margin: 8px 4px 0px 0px;" class="Decorator">
-						<div class="DecoratorML">
-			    			<div class="DecoratorMR">
-			    				<div class="DecoratorMC">
-			    					<div class="SpaceIcon">
-				    					<div class="Title"><%= _ctx.appRes("UIHomePagePortlet.title.space")%></div>
-				    					<div class="Label"><%= _ctx.appRes("UIHomePagePortlet.label.addCommunities")%></div>
-				    					<div class="Label">&nbsp;</div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.regroup")%></div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.information")%></div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.improve")%></div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.easy")%></div>
-										<div class="CheckIcon"><%= _ctx.appRes("UIHomePagePortlet.info.userFriendly")%></div>			
-								</div>
-							</div>
-						</div>	
-					</div>			    
-		    </td>
-		    <td style="width: 212px;">
-					<div  class="DownloadButton"><div style="padding-top: 54px;"><%=_ctx.appRes("UIHomePagePortlet.label.download")%></div></div>
-					<div  class="FeedBackButton"><div style="padding-top: 80px;"><a href="mailto:jeremi@exoplatform.com"><%=_ctx.appRes("UIHomePagePortlet.label.feedback")%></a></div></div>	
-					<div  class="ContactButton"><div style="padding-top: 80px;"><a href="http://www.exoplatform.com/portal/public/en/aboutUS/contactus"><%=_ctx.appRes("UIHomePagePortlet.label.contact")%></a></div></div>				    
-		    </td>
-		  </tr>
-		</tbody>
-	</table>
+	<div class="RightSocialHomepage">
+		<div class="BoxRight">
+			<div class="TitBoxRight">DOWNDLOAD</div>
+			<a href="#demo" class="ImgBoxRight ImgDownload"><span></span></a>
+		</div>
+		<div class="LineBoxRight"><span></span></div>
+		<div class="BoxRight">
+			<div class="TitBoxRight">FEEDBACK</div>
+			<a href="#demo" class="ImgBoxRight ImgFeedBack"><span></span></a>
+		</div>
+		<div class="LineBoxRight"><span></span></div>
+		<div class="BoxRight">
+			<div class="TitBoxRight">CONTACT</div>
+			<a href="#demo" class="ImgBoxRight ImgContact"><span></span></a>
+		</div>
+	</div>
+	<div class="ClearBoth"><span></span></div>
 </div>

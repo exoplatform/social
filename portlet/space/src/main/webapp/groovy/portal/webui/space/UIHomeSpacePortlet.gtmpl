@@ -16,68 +16,9 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<div class="UISocialHomepage" id="$uicomponent.id">
-	<div class="LeftSocialHomepage">
-		<div class="HomeBackground">
-			<div class="HomeBackgroundText">Enterprise Social Software</div>
-		</div>
-		<div class="LeftBoxDecorator">
-			<div class="RightBoxDecorator">
-				<div class="CenterBoxDecorator">
-					<div class="BoxLeft">
-						<div class="TitBoxLeft">
-							<div class="TitBoxLeftL">People</div>
-							<div class="TitBoxLeftR">Adding social networking to your work</div>
-							<div class="ClearBoth"><span></span></div>
-						</div>
-						<div class="ContentBoxLeft">
-							<a class="PeopleIcon IconBoxleft"><span></span></a>
-							<div class="TxtBoxLeft">Create and develop Social Networks
-								<br/>Display relevant information to each user
-								<br/>Create a skills index
-								<br/>Help to find the relevant person to solve
-								<br/>User-friendly interface 
-							</div>
-							<div class="ClearBoth"><span></span></div>
-						</div>
-					</div>
-					<div class="BoxLeft LineBoxLeft">
-						<div class="TitBoxLeft">
-							<div class="TitBoxLeftL">Space</div>
-							<div class="TitBoxLeftR">Adding communities to your work</div>
-							<div class="ClearBoth"><span></span></div>
-						</div>
-						<div class="ContentBoxLeft">
-							<a class="SpaceIcon IconBoxleft"><span></span></a>
-							<div class="TxtBoxLeft">Regroup people around projects or interest
-								<br/>Information aggregation
-								<br/>Improve the knowledge sharing
-								<br/>Easy to use community management
-								<br/>User-friendly interface 
-							</div>
-							<div class="ClearBoth"><span></span></div>
-						</div>
-					</div>
-					<div class="ClearBoth"><span></span></div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="RightSocialHomepage">
-		<div class="BoxRight">
-			<div class="TitBoxRight">DOWNDLOAD</div>
-			<a href="#demo" class="ImgBoxRight ImgDownload"><span></span></a>
-		</div>
-		<div class="LineBoxRight"><span></span></div>
-		<div class="BoxRight">
-			<div class="TitBoxRight">FEEDBACK</div>
-			<a href="#demo" class="ImgBoxRight ImgFeedBack"><span></span></a>
-		</div>
-		<div class="LineBoxRight"><span></span></div>
-		<div class="BoxRight">
-			<div class="TitBoxRight">CONTACT</div>
-			<a href="#demo" class="ImgBoxRight ImgContact"><span></span></a>
-		</div>
-	</div>
-	<div class="ClearBoth"><span></span></div>
+<%
+	import org.exoplatform.dashboard.webui.component.UIDashboard;
+%>
+<div class="UIHomeSpacePortlet" id="$uicomponent.id">
+		<% uicomponent.renderChild(UIDashboard.class) %>
 </div>
