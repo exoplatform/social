@@ -20,6 +20,8 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+import social.portal.webui.component.UIManagePendingSpaces;
+
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/portal/webui/space/UIPendingSpacePortlet.gtmpl"
@@ -27,5 +29,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 public class UIPendingSpacePortlet extends UIPortletApplication {
   
-  public UIPendingSpacePortlet() throws Exception {  }
+  public UIPendingSpacePortlet() throws Exception {
+    addChild(UIManagePendingSpaces.class, null, null);
+  }
 }

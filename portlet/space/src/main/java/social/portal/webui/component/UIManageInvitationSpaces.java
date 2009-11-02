@@ -212,7 +212,6 @@ public class UIManageInvitationSpaces extends UIContainer {
      } 
    }    
   }
-
   
   public static class SearchActionListener extends EventListener<UIManageInvitationSpaces> {
     @Override
@@ -223,4 +222,5 @@ public class UIManageInvitationSpaces extends UIContainer {
       uiForm.setSpaces_(spaceList);
     }
   }
+  
 }

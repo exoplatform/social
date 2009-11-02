@@ -24,6 +24,7 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -33,6 +34,9 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
+
+import social.portal.webui.component.space.UISpaceSearch;
 
 /**
  * UIManagePendingSpaces: list all pending spaces which user can revoke pending.
@@ -44,7 +48,8 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "app:/groovy/portal/webui/component/UIManagePendingSpaces.gtmpl",
   events = {
-      @EventConfig(listeners = UIManagePendingSpaces.RevokePendingActionListener.class)
+      @EventConfig(listeners = UIManagePendingSpaces.RevokePendingActionListener.class),
+      @EventConfig(listeners = UIManagePendingSpaces.SearchActionListener.class , phase = Phase.DECODE)
   }
 )
 public class UIManagePendingSpaces extends UIContainer {
@@ -54,12 +59,13 @@ public class UIManagePendingSpaces extends UIContainer {
   private UIPageIterator iterator;
   private final String ITERATOR_ID = "UIIteratorPendingSpaces";
   private final Integer SPACES_PER_PAGE = 4;
-  
+  private List<Space> spaces_; // for search result
   /**
    * Constructor to initialize iterator
    * @throws Exception
    */
   public UIManagePendingSpaces() throws Exception {
+    addChild(UISpaceSearch.class, null, "UIPendingSpaceSearch");
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }
   
@@ -101,7 +107,19 @@ public class UIManagePendingSpaces extends UIContainer {
   private List<Space> getAllPendingSpaces() throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    return spaceService.getPendingSpaces(userId);
+    List<Space> userSpaces = spaceService.getPendingSpaces(userId);
+    return SpaceUtils.getOrderedSpaces(userSpaces);
+  }
+  
+  private List<Space> getSpaceList() throws Exception {
+    List<Space> spaces_ = getSpaces_();
+    if(spaces_ == null) spaces_ = getAllPendingSpaces();
+    return spaces_;
+  }
+  
+  public List<Space> getPendingSpaces() throws Exception {
+    List<Space> listSpace = getSpaceList();
+    return getDisplayPendingSpaces(listSpace, iterator);
   }
   
   /**
@@ -110,10 +128,9 @@ public class UIManagePendingSpaces extends UIContainer {
    * @throws Exception 
    */
   @SuppressWarnings("unchecked")
-  public List<Space> getPendingSpaces() throws Exception {
+  private List<Space> getDisplayPendingSpaces(List<Space> spaces, UIPageIterator iterator) throws Exception {
     int currentPage = iterator.getCurrentPage();
-    List<Space> spaceList = getAllPendingSpaces();
-    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaceList), SPACES_PER_PAGE);
+    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
     iterator.setPageList(pageList);
     int pageCount = iterator.getAvailablePage();
     if (pageCount >= currentPage) {
@@ -143,5 +160,21 @@ public class UIManagePendingSpaces extends UIContainer {
         return;
       }
     }
+  }
+  public static class SearchActionListener extends EventListener<UIManagePendingSpaces> {
+    @Override
+    public void execute(Event<UIManagePendingSpaces> event) throws Exception {
+      UIManagePendingSpaces uiForm = event.getSource();
+      UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
+      List<Space> spaceList = uiSpaceSearch.getSpaceList();
+      uiForm.setSpaces_(spaceList);
+    }
+  }
+  
+  public void setSpaces_(List<Space> spaces_) {
+    this.spaces_ = spaces_;
+  }
+  public List<Space> getSpaces_() {
+    return spaces_;
   }
 }

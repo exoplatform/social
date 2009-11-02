@@ -1,4 +1,4 @@
-<% 
+<%
 /*
 <!--
 
@@ -15,84 +15,70 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 -->
 */
 %>
-<%
+<% 
+	import org.exoplatform.portal.webui.util.Util
+	import org.exoplatform.webui.core.UIPageIterator
 	import org.exoplatform.social.space.SpaceUtils
+	import social.portal.webui.component.UIManageMySpaces
+	
 	def uicomponentId = uicomponent.id
-	def labelActionRevokePending = _ctx.appRes("${uicomponentId}.label.action_revoke_pending")
-	def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
-  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
-  def fieldLabelStatus = _ctx.appRes("${uicomponentId}.fieldLabel.status")
-  def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
-  def labelNoPending = _ctx.appRes("${uicomponentId}.label.no_pending")
-	def pendingSpaces = uicomponent.getPendingSpaces()
-	def pendingSpaceIdx = 0
-	def String imageSource = "/space/skin/portal/webui/component/UIManageSpacesPortlet/background/AvartarGroupDefault.gif"
+  def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
+  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
+  def iterator = uicomponent.getUIPageIterator()
+  def pendingSpaces = uicomponent.getPendingSpaces()
+  def mySpaceIdx = 0
+  def String imageSource = "/space/skin/portal/webui/component/UISpaceNavigation/background/Avata.png"
+  def style="display:none;"
 %>
-
-<div class="UIManageSpaces" id="$uicomponent.id">
-  <div class="TopManageSpacesL">
-   	<div class="TopManageSpacesR">
-    	<div class="TopManageSpacesM"><span></span></div>
-    </div>
-  </div>
-  <div class="ContainerSpace">
-    <%if (pendingSpaces.size() == 0) {%>
-    <div class="SpaceContent">
-        <div class="NotYet"><%= labelNoPending %></div>
-        <div style="clear: left;"><span></span></div>
-    </div>
-    <%}%>
-    <%for (space in pendingSpaces) {
-        def revokePendingAction = uicomponent.event("RevokePending", space.id) + "; return false"
-        def visibility = space.visibility
-        def registration = space.registration
-        pendingSpaceIdx += 1
-        if (visibility.equals("private")) visibility = "visible"
-    %>
-    <% if (pendingSpaceIdx % 2 == 0) { %>
-	  <div class="SpaceContentBlue">
+<div class="UIManageInvitationSpaces" id="$uicomponent.id">
+<% uicomponent.renderChild("UIPendingSpaceSearch"); %>
+	<div class="BoxSpaceList">
+		<div class="CenterTitleBox">
+			<div class="LeftTitleBox">
+				<div class="RightTitleBox">Space Listing</div>
+			</div>
+		</div>
+  <%if ((pendingSpaces.size() == 0)) {%>
+			<div class="GrayBox">
+				<div class="NotYet"><%= labelNoSpaces %></div>
+			</div>
+  <%}%>
+	  <%for (space in pendingSpaces) {
+	      def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false"
+				mySpaceIdx += 1;
+	  %>
+	  
+	  <% if (mySpaceIdx % 2 == 0) { %>
+	  <div class="NormalBox">
 	  <% } else { %>
-	  <div class="SpaceContentGray">
+	  <div class="GrayBox">
 	  <% } %>
-      <div class="MiniAvatarSpaceBG">
-        <img src="$imageSource" class="AvatarSpace" id="" width="60px" height="60px" onload="" alt=""/>
-      </div>
-	    <div class="MySpacesContent">
-	      <div class="ContentBar">
-	        <div class="MySpaceLabel"><%= space.name %></div>
-	        <div onclick="<%= revokePendingAction %>" class="RevokePending ButtonIconSpace" title="<%= labelActionRevokePending %>"><span></span></div>
-	        <div style="clear: left;"><span></span></div>
-	      </div>
-	      <div class="MySpacesContentContent">
-	        <table class="UIGridSpace">
-	          <tr>
-	            <td class="FieldLabel"><%= fieldLabelDescription %></td>
-	              <td class="FieldComponent"><%= space.description %></td>
-	            </tr>
-	            <tr>
-	              <td class="FieldLabel"><%= fieldLabelMembers %></td>
-	              <td class="FieldComponent"><%= SpaceUtils.countMembers(space) %></td>
-	            </tr>
-                <tr>
-                    <td class="FieldLabel"><%= fieldLabelStatus %></td>
-                    <td class="FieldComponent">$validationStatus</td>
-                </tr>
-	          </table>
-	      </div>
-	    </div>
-	    <div style="clear: left;"><span></span></div>
-    </div>
+			<a href="#" class="Image"><img alt="#" src="$imageSource" /></a>
+			<div class="ContentBox">
+				<div class="TitleContent">
+					<a href="#" onclick="<%= revokeSpaceAction %>" title="Revoke" class="Icon IconEditSpace"><span></span></a>
+					<div class="Text"><a href="#"><%= space.name %></a></div>
+					<div class="ClearBoth"><span></span></div>
+				</div>
+				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> members
+					<br/><%= space.description %>
+				</div>
+			</div>
+			<div class="ClearBoth"><span></span></div>
+			</div>
     <%}%>
+	<div>
+    <%
+        if (iterator.getAvailablePage() > 1) {
+            _ctx.renderUIComponent(iterator)
+        }
+    %>
   </div>
   
-  <div class="BottomManageSpacesL">
-  	<div class="BottomManageSpacesR">
-    	<div class="BottomManageSpacesM"><span></span></div>
-    </div>
-  </div>
+	</div>
 </div>
