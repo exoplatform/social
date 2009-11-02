@@ -16,6 +16,8 @@
  */
 package social.portal.webui.component.space;
 
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -31,5 +33,13 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UISpaceNavigationPortlet extends UIPortletApplication {
 
   public UISpaceNavigationPortlet() throws Exception {
+  }
+  
+  public String getSelectedNode() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestUrl = pcontext.getRequestURI();
+    String[] split = requestUrl.split("/");
+
+    return split[split.length-1];
   }
 }

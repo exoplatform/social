@@ -27,6 +27,7 @@
   def invitationsURL = portalURI + "invitationSpace";
 	def pendingsURL = portalURI + "pendingSpace";
 	def publicsURL = portalURI + "publicSpace";
+	def selectedNode = uicomponent.getSelectedNode();
 %>
   <div class="UISpaceNavigationPortlet" id="$uicomponent.id">
     <div class="ProfTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Space")%></div>
@@ -34,16 +35,32 @@
 		<img height="65" width="65" alt="" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif"/>
 	</a>
 	<div class="UIVerclTab">
+		<% if (selectedNode == "mySpace")  {%>
 	  <div class="SelectedTab Tab">
+	  <% } else  {%>
+	  <div class="NormalTab Tab">
+	  <%}%>
         <a href="$mySpaceURL" class="MySpaceIcon">My Space</a>
 	  </div>
+	  <% if (selectedNode == "invitationSpace")  {%>
+	  <div class="SelectedTab Tab">
+	  <% } else  {%>
 	  <div class="NormalTab Tab">
+	  <%}%>
         <a href="$invitationsURL" class="InvitationIcon">Invitation</a>
 	  </div>
+	  <% if (selectedNode == "pendingSpace")  {%>
+	  <div class="SelectedTab Tab">
+	  <% } else  {%>
 	  <div class="NormalTab Tab">
+	  <%}%>
         <a href="$pendingsURL" class="PendingIcon">Pending</a>
 	  </div>
+	  <% if (selectedNode == "publicSpace")  {%>
+	  <div class="SelectedTab Tab">
+	  <% } else  {%>
 	  <div class="NormalTab Tab">
+	  <%}%>
         <a href="$publicsURL" class="PublicIcon">Public</a>
 	  </div>
 	</div>
