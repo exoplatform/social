@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.relation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -33,13 +32,10 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
-import org.exoplatform.social.portlet.profile.Utils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIRepeater;
-import org.exoplatform.webui.core.UIVirtualList;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -72,7 +68,6 @@ public class UIInvitationRelation extends UIForm {
   /** UIFormPageIterator ID. */
   private final String iteratorIDInvitation = "UIFormPageIteratorInvitation";
   private RelationshipManager relationshipManager;
-  private Identity currIdentity = null;
   private IdentityManager identityManager = null;
   UIProfileUserSearch uiProfileUserSearchRelation = null;
   private List<Identity> identityList;

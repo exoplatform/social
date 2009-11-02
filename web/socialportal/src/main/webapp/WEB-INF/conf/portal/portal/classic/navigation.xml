@@ -88,7 +88,7 @@
 	 <node>
 	    <uri>people</uri>
 	    <name>people</name>
-	    <label>#{portal.classic.people}</label>
+	    <label>#{portal.classic.People}</label>
 	    <visible>false</visible>
 	    <page-reference>portal::classic::people</page-reference>
 	 </node>

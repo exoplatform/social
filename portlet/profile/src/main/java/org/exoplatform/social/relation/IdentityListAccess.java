@@ -30,7 +30,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 public class IdentityListAccess implements ListAccess<Identity> {
   private final List<Identity> list;
 
-  IdentityListAccess(List<Identity> list) {
+  public IdentityListAccess(List<Identity> list) {
     this.list = list;
   }
 

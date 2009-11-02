@@ -29,10 +29,10 @@ function UIProfileUserSearch() {
  *	@var filter {Object} Object is activated.
  *	@return void						
  */
-UIProfileUserSearch.prototype.activeFilterText = function(filter) {
+UIProfileUserSearch.prototype.activeFilterText = function(filter, defaultValue) {
 	filter.style.color="#000000";
 	filter.focus();
-	if ((filter.value == 'position') || (filter.value == 'company') || (filter.value == 'name')) {
+	if (filter.value == defaultValue) {
 		filter.value='';
 	}
 }
@@ -43,26 +43,15 @@ UIProfileUserSearch.prototype.activeFilterText = function(filter) {
  *	@var filter {Object} Object is on blurred.
  *	@return void						
  */
-UIProfileUserSearch.prototype.onBlurFilterText = function(filter) {
+UIProfileUserSearch.prototype.onBlurFilterText = function(filter, defaultValue) {
 	var DOMUtil = eXo.core.DOMUtil;
 	var searchEl = DOMUtil.findAncestorByClass(filter, 'UIProfileUserSearch');
 	var componentId = searchEl.id;
 	this.createId(componentId);
 	
-	if ((filter.value.trim() == '') || (filter.value.trim() == 'Gender')) {
+	if ((filter.value.trim() == '') || (filter.value.trim() == defaultValue)) {
 		filter.style.color="#C7C7C7";
-		
-		if (filter.id == this.positionId) {
-			filter.value='position';
-		} 
-		
-		if (filter.id == this.companyId) {
-			filter.value='company';
-		}
-		
-		if (filter.id == this.searchId) {
-			filter.value='name';
-		}
+		filter.value=defaultValue;
 	} 
 }
 
@@ -116,12 +105,12 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   
   if (filterEl.style.display != 'none') {
 	  position = document.getElementById(this.positionId).value;
-	  if (position == 'Position') {
+	  if (position == 'position') {
 		  position = "";
 	  }
 	  
 	  company = document.getElementById(this.companyId).value;
-	  if (company == 'Company') {
+	  if (company == 'company') {
 		  company = "";
 	  }
 		  

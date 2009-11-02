@@ -68,7 +68,6 @@ public class UIMyRelations extends UIForm {
   /** UIFormPageIterator ID. */
   private final String iteratorIDContact = "UIFormPageIteratorContact";
   private RelationshipManager relationshipManager;
-  private Identity currIdentity = null;
   private IdentityManager identityManager = null;
   UIProfileUserSearch uiProfileUserSearchRelation = null;
   private List<Identity> identityList;

@@ -18,122 +18,87 @@
 -->
 <%
   import org.exoplatform.portal.webui.util.Util ;
-  import org.exoplatform.social.portlet.profilelist.UIProfileList;
   import org.exoplatform.social.core.relationship.Relationship;
+  import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
+  import org.exoplatform.social.core.identity.model.ProfileAttachment;
+  import org.exoplatform.portal.application.PortalRequestContext;
+  import org.exoplatform.webui.core.UIPageIterator
 
   def list = uicomponent.getList();
-  def isRelationship =  uicomponent.isRelationshipList();
   def currIdentity = uicomponent.getCurrentIdentity();
-  def isPendingList = uicomponent.currentType.equals(UIProfileList.Type.PENDING);
-  def isAll = uicomponent.currentType.equals(UIProfileList.Type.ALL);
+  def iterator = uicomponent.getUIPageIterator();
 %>
-
 <div class="UIProfileList" id="$uicomponent.id">
   <div class="ContainerSpace">
-
+  <% uicomponent.renderChild(UIProfileUserSearch.class); %>
+	  <div class="ATitleBarL">
+			<div class="ATitleBarR">
+				<div class="ATitleBarM">
+					<div class="ATitleBarC">
+						<%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
+					</div>
+				</div>
+			</div>
+		</div>
+	<% if ((list == null) || (list.size() == 0)) {%>
+	  <div class="ContentSpace">
+	    <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+	  </div>
+  <%}%>
+		  
   <% list.each {
 	    def identity = null;
-	    if (isRelationship) {
-	      if (currIdentity.id == it.identity1.id) {
-	        identity = it.identity2;
-	      } else {
-	        identity = it.identity1;
-	      }
-	    } else {
-	      identity = it;
-	    }
-	
-	    def profileURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId();
-	    def dashboardURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/dashboard";
-	    def actititesURL = Util.getPortalRequestContext().getPortalURI() + "people/" + identity.getRemoteId() + "/activities";
+	    identity = it;
+	    def profileURL = uicomponent.getPath() + "/activities/" + identity.getRemoteId();
 	    def fullName = identity.profile.fullName;
+	    def addAction = uicomponent.event("AddContact", identity.getId());
 	    def contactStatus = uicomponent.getContactStatus(identity);
 	    def position = identity.profile.getPropertyValue("position");
-	    if (!position) {
-	      position = "";
-    }
-
+	    if (!position) {  position = ""; }
+	    
+	    String imageSource = "/profile/skin/portal/webui/component/UIPeoplePortlet/background/BLAvatar.gif";
+	    ProfileAttachment att = identity.profile.getProperty("avatar");
+			if (att != null) {
+				try {
+  			imageSource = "/" + uicomponent.getPortalName()+"/rest/jcr/" + uicomponent.getRepository() + "/" + att.getWorkspace();
+  			imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+				} catch (Exception e) {}
+			}
   %>
-    <div class="ContentSpace">
-    <div class="CommunityIcon"><span></span></div>
-    <div class="CommunityContainer">
-        <div class="CommunityMane Line">
-            <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${profileURL}" class="CommunityNameMiddle">${fullName}</a></div>
-  <% if (contactStatus == Relationship.Type.REQUIRE_VALIDATION) { %>
-		    		<div class="ActionBar" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getName() + ".label.Deny")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-            <div class="ActionBar" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getName() + ".label.Accept")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-  <% } else if (contactStatus == Relationship.Type.ALIEN) { %>
-            <div class="ActionBar" onclick="<%=uicomponent.event("AddContact",identity.getId())%>">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getName() + ".label.AddAsContact")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-  <%  } else if (contactStatus == Relationship.Type.PENDING) { %>
-            <div class="ActionBar" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getName() + ".label.Revoke")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-            <span class="waitingConfirmation">[Waiting for confirmation]</span>            
-  <%  } else if (contactStatus == Relationship.Type.CONFIRM) { %>
-  					<div class="ActionBar" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">
-							<div class="LeftButton">
-								<div class="RightButton">
-									<div class="CenterButton">
-										<div class="SaveIcon">
-											<%=_ctx.appRes(uicomponent.getName() + ".label.Remove")%>
-										</div>
-									</div>
-								</div>
-							</div>
-		    		</div>
-  <% } %>
-            <div style="clear: both;"><span></span></div>
-        </div>
-        <% if(position.length() > 0) { %>
-        <div class="Text Line">${position}</div>
-        <%  } %>
-        <div class="TagsName">
-          <a href="${profileURL}" class="CommunityNameMiddle">Profile</a> |
-          <a href="${dashboardURL}" class="CommunityNameMiddle">Dashboard</a> |
-          <a href="${actititesURL}" class="CommunityNameMiddle">Activities</a>
-        </div>
+    <div class="ContentSpace ClearFix">
+	    <div class="AvartarPeopleBG">
+	       <img height="47px" width="47px" src="$imageSource"/>
+	    </div>
+    
+	    <div class="CommunityContainer">
+	        <div class="CommunityMane Line ClearFix">
+	            <div class="CommunityName" style="float: left; cursor:pointer;">
+	            	<a href="${profileURL}" style="color: #afafaf;">${fullName}</a>
+	            </div>
+	  <% if (contactStatus == Relationship.Type.REQUIRE_VALIDATION) { %>
+			    		<a href="#" class="StopIcon" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+			   			<a href="#" class="SelectIcon" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
+	  <% } else if (contactStatus == Relationship.Type.ALIEN) { %>
+	  					<a href="#" class="AddIcon" onclick="$addAction" >&nbsp;</a>
+	  <%  } else if (contactStatus == Relationship.Type.PENDING) { %>
+	            <a href="#" class="RemoveIcon" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a> 
+	            <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>    
+	  <%  } else if (contactStatus == Relationship.Type.CONFIRM) { %>
+	  					<a href="#" class="RemoveIcon" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+	  <% } %>
+	        </div>
+	        <% if(position.length() > 0) { %>
+		        <div class="CommunityContent" style="padding: 4px;">
+		        	<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+		        </div>
+	        <%  } %>
+	    </div>
     </div>
-    </div>
-
   <% } %>
+  	<%
+        if (iterator.getAvailablePage() > 1) {
+            _ctx.renderUIComponent(iterator)
+        }
+    %>
   </div>
-  <span style="clear: left;">&nbsp;</span>
 </div>

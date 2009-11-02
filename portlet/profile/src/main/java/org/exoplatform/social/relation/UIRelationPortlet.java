@@ -28,7 +28,6 @@ public class UIRelationPortlet extends UIPortletApplication {
 
   public UIRelationPortlet() throws Exception {
     addChild(UIMyRelations.class, null, null);
-//    addChild(UIPublicRelation.class, null, null);
   }
 
 }

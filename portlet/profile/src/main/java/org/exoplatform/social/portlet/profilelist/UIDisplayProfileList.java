@@ -16,59 +16,96 @@
  */
 package org.exoplatform.social.portlet.profilelist;
 
+import java.util.Iterator;
 import java.util.List;
 
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.social.portlet.URLUtils;
+import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
+import org.exoplatform.social.relation.IdentityListAccess;
+import org.exoplatform.social.relation.RelationshipListAccess;
+import org.exoplatform.social.relation.UIInvitationRelation;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceListAccess;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.form.UIFormPageIterator;
 
-@ComponentConfig(template = "app:/groovy/portal/webui/component/UIDisplayProfileList.gtmpl", events = {
-    @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
-    @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),
-    @EventConfig(listeners = UIDisplayProfileList.DenyContactActionListener.class) })
-public class UIDisplayProfileList extends UIComponent {
+@ComponentConfig(
+    template = "app:/groovy/portal/webui/component/UIDisplayProfileList.gtmpl",
+    events = {
+            @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
+            @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),
+            @EventConfig(listeners = UIDisplayProfileList.DenyContactActionListener.class),
+            @EventConfig(listeners = UIDisplayProfileList.SearchActionListener.class, phase = Phase.DECODE)
+    }
+)
+            
+public class UIDisplayProfileList extends UIContainer {
   private IdentityManager     identityManager_ = null;
+  UIProfileUserSearch uiProfileUserSearchPeople = null;
+  private UIPageIterator iterator;
+  private final Integer PEOPLE_PER_PAGE = 10;
+  private final String ITERATOR_ID = "UIIteratorPeople";
+  private List<Identity> identityList;
+  
+  public List<Identity> getIdentityList() { return identityList; }
 
-  private RelationshipManager relationManager_ = null;
-
-  public List<Profile> getList() throws Exception {
-    return ((UIProfileList) this.getParent()).getList();
+  public void setIdentityList(List<Identity> identityList) { this.identityList = identityList; }
+  
+  /**
+   * Get UIPageIterator
+   * @return
+   */
+  public UIPageIterator getUIPageIterator() {
+    return iterator;
   }
-
-  public boolean isRelationshipList() {
-    UIProfileList.Type type = ((UIProfileList) this.getParent()).getCurrentType();
-    return type.equals(UIProfileList.Type.PENDING) || type.equals(UIProfileList.Type.CONTACTS);
+  
+  
+  public UIDisplayProfileList() throws Exception {
+    iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
+    uiProfileUserSearchPeople = createUIComponent(UIProfileUserSearch.class, null, "UIPeopleSearch");
+    addChild(uiProfileUserSearchPeople);
   }
-
-  public UIProfileList.Type getCurrentType() {
-    return ((UIProfileList) this.getParent()).getCurrentType();
-  }
-
-  public Identity getCurrentIdentity() throws Exception {
-    return ((UIProfileList) this.getParent()).getCurrentIdentity();
-  }
-
-  public Relationship.Type getContactStatus(Identity identity) throws Exception {
-    return ((UIProfileList) this.getParent()).getContactStatus(identity);
+  
+  public List<Identity> getList() throws Exception {
+    int currentPage = iterator.getCurrentPage();
+    List<Identity> peopleList = getProfiles();
+    LazyPageList<Identity> pageList = new LazyPageList<Identity>(new IdentityListAccess(peopleList), PEOPLE_PER_PAGE);
+    iterator.setPageList(pageList);
+    int pageCount = iterator.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iterator.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iterator.setCurrentPage(currentPage - 1);
+    }
+    
+    return iterator.getCurrentPageData();
   }
 
   public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList portlet = event.getSource();
-
+      
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = ((UIProfileList) portlet.getParent()).getCurrentUserName();
-
+      String currUserId = portlet.getCurrentUserName();
       IdentityManager im = portlet.getIdentityManager();
       Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
                                                        currUserId);
@@ -95,7 +132,7 @@ public class UIDisplayProfileList extends UIComponent {
       UIDisplayProfileList portlet = event.getSource();
 
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = ((UIProfileList) portlet.getParent()).getCurrentUserName();
+      String currUserId = portlet.getCurrentUserName();
 
       IdentityManager im = portlet.getIdentityManager();
       Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
@@ -117,7 +154,7 @@ public class UIDisplayProfileList extends UIComponent {
       UIDisplayProfileList portlet = event.getSource();
 
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = ((UIProfileList) portlet.getParent()).getCurrentUserName();
+      String currUserId = portlet.getCurrentUserName();
 
       IdentityManager im = portlet.getIdentityManager();
       Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
@@ -133,6 +170,16 @@ public class UIDisplayProfileList extends UIComponent {
     }
   }
 
+  public static class SearchActionListener extends EventListener<UIDisplayProfileList> {
+    @Override
+    public void execute(Event<UIDisplayProfileList> event) throws Exception {
+      UIDisplayProfileList uiMyRelation = event.getSource();
+      UIProfileUserSearch uiProfileUserSearch = uiMyRelation.getChild(UIProfileUserSearch.class);
+      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      uiMyRelation.setIdentityList(identityList);
+    }
+  }
+  
   private IdentityManager getIdentityManager() {
     if (identityManager_ == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
@@ -141,11 +188,79 @@ public class UIDisplayProfileList extends UIComponent {
     return identityManager_;
   }
 
-  private RelationshipManager getRelationshipManager() {
-    if (relationManager_ == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      relationManager_ = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+  private List<Identity> getProfiles() throws Exception {
+    List<Identity> matchIdentities = getIdentityList();
+    
+    if (matchIdentities == null) {
+      return loadAllProfiles();
     }
-    return relationManager_;
+    
+    return matchIdentities;
+  }
+  
+  public Identity getCurrentViewerIdentity() throws Exception {
+    IdentityManager im = getIdentityManager();
+    return im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
+  }
+  
+  private String getCurrentViewerUserName() {
+    String username = URLUtils.getCurrentUser();
+    if(username != null)
+      return username;
+    
+    PortalRequestContext portalRequest = Util.getPortalRequestContext();
+    
+    return portalRequest.getRemoteUser();
+  }
+  private List<Identity> loadAllProfiles() throws Exception {
+    IdentityManager im = getIdentityManager();
+    List<Identity> ids = im.getIdentities("organization");
+    Iterator<Identity> itr = ids.iterator();
+    while(itr.hasNext()) {
+      Identity id = itr.next();
+      if(id.getId() == getCurrentIdentity().getId()){
+        itr.remove();
+      }
+    }
+    return ids;
+  }
+  
+  public Relationship.Type getContactStatus(Identity identity) throws Exception {
+    if (identity.getId().equals(getCurrentIdentity().getId()))
+      return Relationship.Type.SELF;
+    RelationshipManager rm = getRelationshipManager();
+    Relationship rl = rm.getRelationship(identity, getCurrentIdentity());
+    return rm.getRelationshipStatus(rl, getCurrentIdentity());
+  }
+
+  private RelationshipManager getRelationshipManager() {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      return (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+  }
+
+  public String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();  
+  }
+  
+  public String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
+  public String getCurrentUserName() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    return context.getRemoteUser();
+  }
+
+  public Identity getCurrentIdentity() throws Exception {
+      IdentityManager im = getIdentityManager();
+      return im.getIdentityByRemoteId("organization", getCurrentUserName());
+  }
+  
+  public String getPath() {
+    String nodePath = Util.getPortalRequestContext().getNodePath();
+    String uriPath = Util.getPortalRequestContext().getRequestURI();
+    return uriPath.replaceAll(nodePath, "");
   }
 }

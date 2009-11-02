@@ -18,26 +18,6 @@
   need to find a better way of doing than the import from another portlet
 */
 
-/**
- * Copyright (C) 2003-2007 eXo Platform SAS.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see<http://www.gnu.org/licenses/>.
- */
-/*
-  need to find a better way of doing than the import from another portlet
-*/
-
 .ClearFix:after {
   content: ".";
   display: block;
@@ -294,29 +274,28 @@
 /**
  * Refactor to share the css with Spaces
  */
-.UITabPane .ContainerSpace{
+.UIPeoplePortlet .ContainerSpace{
 	padding:8px 24px 8px 28px;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces {
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces {
 	background: url( "background/SearchSpaces.gif" ) no-repeat left top;
 	padding-left: 7px;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpacesR {
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpacesR {
 	background: #f3f3f3 url( "background/SearchSpacesR.gif" ) no-repeat right top;
 	padding: 10px 7px 8px 7px;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable{
 	float: left;
 	padding: 4px 4px 4px 16px;
-	color:#909090;
 	width: 100px;
 	text-align: right;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Lable{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Lable{
 	float: left;
 	padding: 4px 4px 4px 16px;
 	width: 100px;
@@ -324,18 +303,19 @@
 	color: black;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search{
 	width: 256px;
 	float: left;
 	background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
 	border: 1px solid #b7b7b7;
+	font-size: 11px;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter {
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter {
 	padding-top: 4px;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Input{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Input{
 	width: 82px;
 	float: left;
 	border: 1px solid #b7b7b7;
@@ -343,42 +323,42 @@
 	font-size: 11px;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .AdvanceSearchLable{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .AdvanceSearchLable{
 	float: left;
 	padding: 4px;
 	cursor: pointer;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Select{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Select{
 	float: left;
 	width: 82px;
-	font-size: 11px;
 	border: 1px solid #b7b7b7;
+	font-size: 11px;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
 	line-height: 18px;
 	margin-left: 4px;
 	cursor: pointer;
 }
 
-.UITabPane .ATitleBarL {
+.UIPeoplePortlet .ATitleBarL {
 	background: url('background/ATitleBarL.gif') no-repeat left top;
 	padding-left: 4px;
 	margin-top: 8px;
 }
 
-.UITabPane .ATitleBarR {
+.UIPeoplePortlet .ATitleBarR {
 	background: url('background/ATitleBarR.gif') no-repeat right top;
 	padding-right: 4px;
 }
 
-.UITabPane .ATitleBarM {
+.UIPeoplePortlet .ATitleBarM {
 	background: url('background/ATitleBarM.gif') repeat-x;
 	padding-left: 4px;
 }
 
-.UITabPane .ATitleBarC {
+.UIPeoplePortlet .ATitleBarC {
 	background: url('background/ATitleBarC.gif') no-repeat left top;
 	height:25px;
 	color: white;
@@ -387,12 +367,12 @@
 	font-weight: bold;
 }
 
-.UITabPane .DirectorySpaces {
+.UIPeoplePortlet .DirectorySpaces {
 	background: #fbfbfb;
 	padding: 8px;
 }
 
-.UITabPane .AvartarPeopleBG{
+.UIPeoplePortlet .AvartarPeopleBG{
  background: url('background/AvartarPeopleBG.gif') no-repeat left top;
  width: 52px;
  height: 52px;
@@ -400,10 +380,6 @@
  float: left;
  margin: 8px;
 }
-
-
-
-
 
 
 .ActivitiesTitleBarM{
@@ -417,28 +393,21 @@
 
 
 
-.UITabPane .ContainerSpace .ContentSpace {
+.UIPeoplePortlet .ContainerSpace .ContentSpace {
 	background: white;
 	padding: 8px;
 	margin-bottom:4px;
 	background: #fbfbfb;
 }
 
-.UITabPane .ContainerSpace .ContentSpace .DeleteIcon{
-	background: url('background/DeleteIcon') no-repeat right top;
-	padding: 8px;
-	margin-bottom:4px;
-	background: #fbfbfb;
-}
-
-.UITabPane .ContainerSpace .ContentSpaceGray {
+.UIPeoplePortlet .ContainerSpace .ContentSpaceGray {
 	background: white;
 	padding: 8px;
 	margin-bottom:4px;
 	background: #f3f3f3;
 }
 
-.UITabPane .ContainerSpace .ActivityContentSpace {
+.UIPeoplePortlet .ContainerSpace .ActivityContentSpace {
 	background: white;
 	border:1px solid #c7c7c7;
 	padding: 8px;
@@ -446,12 +415,12 @@
 	width: 928px;
 }
 
-.UITabPane .ContainerSpace .CommunityIcon {
+.UIPeoplePortlet .ContainerSpace .CommunityIcon {
 	float: left;
 }
 
 
-.UITabPane .ContainerSpace .CommunityContainer {
+.UIPeoplePortlet .ContainerSpace .CommunityContainer {
 	padding-left: 16px;
 	margin-left: 76px;
 }
@@ -461,20 +430,20 @@
 	margin-left: 76px;
 }
 
-.UITabPane .ContainerSpace .Line {
+.UIPeoplePortlet .ContainerSpace .Line {
 	border-bottom:1px solid #B7B7B7;
 }
 
-.UITabPane .ContainerSpace .Text {
+.UIPeoplePortlet .ContainerSpace .Text {
 	line-height: 16px;
 }
 
-.UITabPane .ContainerSpace .TagsName {
+.UIPeoplePortlet .ContainerSpace .TagsName {
 	color: #b7b7b7;
 	line-height: 16px;
 }
 
-.UITabPane .ContainerSpace .CommunityMane {
+.UIPeoplePortlet .ContainerSpace .CommunityMane {
 	color: #0d6e8f;
 	height: 20px;
 	font-size: 12px;
@@ -492,67 +461,67 @@
 	margin-bottom: 5px;
 }
 
-.UITabPane .Title {
+.UIPeoplePortlet .Title {
     display:inline;
 }
 
-.UITabPane .waitingConfirmation {
+.UIPeoplePortlet .waitingConfirmation {
     padding-left:5px;
 }
 
-.UITabPane .noContact {
+.UIPeoplePortlet .noContact {
     background:#F5F5F5 none repeat scroll 0 0;
     padding:8px;
     text-align:center;
 }
 
-.UITabPane .noContact .noContactMsg {
+.UIPeoplePortlet .noContact .noContactMsg {
     font-size:18px;
 }
 
-.UITabPane  .SocialHeader {
+.UIPeoplePortlet  .SocialHeader {
 	height: 40px;
 	border-bottom: 1px dotted #b7b7b7;
 }
 
-.UITabPane  .SocialHeader h2 {
+.UIPeoplePortlet  .SocialHeader h2 {
 	margin: 0px;
 	height: 40px;
 	line-height: 40px;
 }
-.UITabPane .noContact .LeftNocontact{
+.UIPeoplePortlet .noContact .LeftNocontact{
 	background: url('background/LeftNocontact.gif') no-repeat left top;
 	padding-left: 9px; width: 60%;
 	margin: auto;
 }
 
-.UITabPane .noContact .RightNocontact{
+.UIPeoplePortlet .noContact .RightNocontact{
 	background: url('background/RightNocontact.gif') no-repeat right top;
 	padding-right: 9px;
 }
 
-.UITabPane .noContact .CenterNocontact{
+.UIPeoplePortlet .noContact .CenterNocontact{
 	height: 108px;
 	background: url('background/CenterNocontact.gif') repeat-x ;
 	padding: 18px 6px 0px 6px;
 }
 
-.UITabPane .noContact .IconSafety{
+.UIPeoplePortlet .noContact .IconSafety{
 	background: url('background/IconSafety.gif') no-repeat left center ;
 	padding-left: 50px ; color:#2c6c90;
 }
 
-.UITabPane .noContact .LeftButton{
+.UIPeoplePortlet .noContact .LeftButton{
 	background: url('background/noContactBTL.gif') no-repeat left ;
 	padding-left: 3px ; width: 160px; margin: auto; cursor: pointer;
 }
 
-.UITabPane .noContact .RightButton{
+.UIPeoplePortlet .noContact .RightButton{
 	background: url('background/noContactBTR.gif') no-repeat right ;
 	padding-right: 3px ;
 }
 
-.UITabPane .noContact .CenterButton{
+.UIPeoplePortlet .noContact .CenterButton{
 	background: url('background/noContactBTC.gif') repeat-x ;
 	height: 38px ;
 	text-align: center;
@@ -566,7 +535,7 @@ input.hint, textarea.hint {
 }
 
 
-.UITabPane .ContainerSpace .WaitingConfirmation {
+.UIPeoplePortlet .ContainerSpace .WaitingConfirmation {
 	padding-left:5px;
 }
 
@@ -581,4 +550,33 @@ input.hint, textarea.hint {
 
 .ContainerSpace .SearchSpaces .FilterBy {
 	color: #C7C7C7;
+}
+
+
+.UIPeoplePortlet .StopIcon{
+	background: url('background/StopIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}
+
+.UIPeoplePortlet .SelectIcon{
+	background: url('background/SelectIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}
+
+.UIPeoplePortlet .RemoveIcon{
+	background: url('background/RemoveIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}
+
+.UIPeoplePortlet .AddIcon{
+	background: url('background/AddIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
 }

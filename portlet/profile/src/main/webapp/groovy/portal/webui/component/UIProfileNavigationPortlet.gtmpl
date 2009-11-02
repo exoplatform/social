@@ -24,7 +24,7 @@
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def currIdentity = Utils.getCurrentIdentity();
-  def currentUser = currIdentity.getRemoteId();
+  def currentUser = currIdentity.profile.getPropertyValue("firstName");;
   def actititesURL = portalURI + "activities/" + currIdentity.getRemoteId();
   def profileURL = portalURI + "profile/" + currIdentity.getRemoteId();
 	def relationURL = portalURI + "relations/yours/" + currIdentity.getRemoteId();

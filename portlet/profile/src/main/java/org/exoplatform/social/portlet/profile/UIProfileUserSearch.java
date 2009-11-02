@@ -126,6 +126,8 @@ public class UIProfileUserSearch extends UIComponent {
       if (isSearchAlphaBet)  {
         userContact = charSearch;
         uiSearch.setSelectedChar(charSearch);
+      } else {
+        uiSearch.setSelectedChar(null);
       }
       
       ProfileFiler filter = new ProfileFiler();
