@@ -17,5 +17,6 @@
 
 -->
   <div class="UIInvitationSpacePortlet" id="$uicomponent.id">
-		<span><%=_ctx.appRes(uicomponent.getId() + ".label.MySpaceList")%></span>		  
+		<div class="TitleBar">SPACE LIST</div>
+			<% uicomponent.renderChildren(); %>		  
 	</div>

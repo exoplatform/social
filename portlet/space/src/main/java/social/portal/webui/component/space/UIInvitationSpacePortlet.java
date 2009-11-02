@@ -20,6 +20,8 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+import social.portal.webui.component.UIManageInvitationSpaces;
+
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/portal/webui/space/UIInvitationSpacePortlet.gtmpl"
@@ -27,5 +29,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 public class UIInvitationSpacePortlet extends UIPortletApplication {
   
-  public UIInvitationSpacePortlet() throws Exception {  }
+  public UIInvitationSpacePortlet() throws Exception {
+    addChild(UIManageInvitationSpaces.class, null, null);
+  }
 }

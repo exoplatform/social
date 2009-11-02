@@ -1,0 +1,86 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<% 
+	import org.exoplatform.portal.webui.util.Util
+	import org.exoplatform.webui.core.UIPageIterator
+	import org.exoplatform.social.space.SpaceUtils
+	import social.portal.webui.component.UIManageMySpaces
+	
+	def uicomponentId = uicomponent.id
+  def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
+  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
+  def iterator = uicomponent.getUIPageIterator()
+  def invitedSpaces = uicomponent.getInvitedSpaces()
+  def mySpaceIdx = 0
+  def String imageSource = "/space/skin/portal/webui/component/UISpaceNavigation/background/Avata.png"
+  def style="display:none;"
+%>
+<div class="UIManageInvitationSpaces" id="$uicomponent.id">
+<% uicomponent.renderChild("UIInvitationSpaceSearch"); %>
+	<div class="BoxSpaceList">
+		<div class="CenterTitleBox">
+			<div class="LeftTitleBox">
+				<div class="RightTitleBox">Space Listing</div>
+			</div>
+		</div>
+  <%if ((invitedSpaces.size() == 0)) {%>
+			<div class="GrayBox">
+				<div class="NotYet"><%= labelNoSpaces %></div>
+			</div>
+  <%}%>
+	  <%for (space in invitedSpaces) {
+	      def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false"
+	      def denySpaceAction = uicomponent.event("Deny", space.id) + "; return false"
+				mySpaceIdx += 1;
+	  %>
+	  
+	  <% if (mySpaceIdx % 2 == 0) { %>
+	  <div class="NormalBox">
+	  <% } else { %>
+	  <div class="GrayBox">
+	  <% } %>
+			<a href="#" class="Image"><img alt="#" src="$imageSource" /></a>
+			<div class="ContentBox">
+				<div class="TitleContent">
+					<a href="#" onclick="<%= denySpaceAction %>" title="Deny" class="Icon IconEditSpace"><span></span></a>
+					<a href="#" onclick="<%= acceptSpaceAction %>" title="Accept" class="Icon IconEditSpace"><span></span></a>
+					<div class="Text"><a href="#"><%= space.name %></a></div>
+					<div class="ClearBoth"><span></span></div>
+				</div>
+				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> members
+					<br/><%= space.description %>
+				</div>
+			</div>
+			<div class="ClearBoth"><span></span></div>
+			</div>
+    <%}%>
+	<div>
+    <%
+        if (iterator.getAvailablePage() > 1) {
+            _ctx.renderUIComponent(iterator)
+        }
+    %>
+  </div>
+  
+	</div>
+</div>
