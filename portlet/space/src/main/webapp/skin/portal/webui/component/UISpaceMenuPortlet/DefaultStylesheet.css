@@ -58,7 +58,7 @@
 }
 
 .ClearFix {
-	!display: inline-block;
+  !display: inline-block;
   !zoom: 1;
   !display: block; 
 }
@@ -192,17 +192,19 @@
 	width: 117px;
 }
 
-.UIGadgetPortlet .gadgets-gadget-content {
-	margin:auto;
-	padding:10px 0;
-	width:100%;
-}
 
 #Application .gadgets-gadget-content {
-	margin:auto;
-	padding:10px 0;
-	width:80%;
+	margin: auto;
+	padding: 10px 0px;
+	width: 80%;
 }
+
+#Application .UIGadgetPortlet .gadgets-gadget-content {
+	padding:10px 10px;
+	overflow:auto;
+	width: 97%;
+}
+
 .MenuTDContainer .UISpaceMenuPortlet .ApplicationAdd .ApplicationAddBG {
 	background: url('DefaultSkin/background/ApplicationAddBG.gif') no-repeat left center;
 	padding-right: 45px;
