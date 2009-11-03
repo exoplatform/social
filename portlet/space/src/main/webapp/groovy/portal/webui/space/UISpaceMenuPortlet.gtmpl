@@ -24,7 +24,31 @@
   		for(PageNode node in apps) {
   		def appIcon = "";
   		def SpaceClass = "";
-			String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/"+node.getName();
+  		def labelStr = "";
+			def labelStrPrev = "";
+			def appendLabel = " ...";
+  		def nodeLabel = node.getResolvedLabel();
+			String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + node.getName();
+			
+			if (nodeLabel.length() > 15) {
+				def labels = nodeLabel.split(" ");
+				for (i in 0..(labels.size()-1)) {
+					labelStr += " ";
+					labelStr += labels[i];
+					if (labelStr.length() > 15) {
+						break;
+					} else {
+						labelStrPrev = labelStr;
+					}
+				}
+				
+				if (labelStrPrev.length() == 0) { 
+					nodeLabel = nodeLabel.substring(0, 13) + appendLabel;
+				} else {
+					nodeLabel = labelStrPrev + appendLabel;
+				}
+  		}
+			
 			if (node.getName().equals("UserListPortlet")) {
 				appIcon = "UserListApp";
 			%>
@@ -39,11 +63,11 @@
 			if(node.getName().equals(appSelected)) {
 				appIcon = appIcon + "Select";
   	%>
-	  <a class="$appIcon" href="$pageURI"><%= node.getResolvedLabel() %></a>
+	  <a class="$appIcon" href="$pageURI">$nodeLabel</a>
 	  <% } else { 
 	  		appIcon = appIcon + "BG";
 	  %>
-	  <a class="$appIcon" href="$pageURI"><%= node.getResolvedLabel() %></a>
+	  <a class="$appIcon" href="$pageURI">$nodeLabel</a>
 	  <% } %>
 	  </div>
 	  <% } %>
