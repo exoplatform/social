@@ -32,7 +32,7 @@
   <div class="UISpaceNavigationPortlet" id="$uicomponent.id">
     <div class="ProfTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Space")%></div>
 	<a class="Avartar">
-		<img height="65" width="65" alt="" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif"/>
+		<img height="65px" width="65px" alt="" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif"/>
 	</a>
 	<div class="UIVerclTab">
 		<% if (selectedNode == "mySpace")  {%>

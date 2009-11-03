@@ -32,7 +32,7 @@
   def iterator = uicomponent.getUIPageIterator()
   def invitedSpaces = uicomponent.getInvitedSpaces()
   def mySpaceIdx = 0
-  def String imageSource = "/space/skin/portal/webui/component/UISpaceNavigation/background/Avata.png"
+  def String imageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif"
   def style="display:none;"
 %>
 <div class="UIManageInvitationSpaces" id="$uicomponent.id">

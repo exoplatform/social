@@ -41,7 +41,7 @@
   def iterator = uicomponent.getUIPageIterator()
   def publicSpaces = uicomponent.getPublicSpaces()
   def publicSpaceIdx = 0
-  def String imageSource = "/space/skin/portal/webui/component/UIPublicSpacePortlet/DefaultSkin/background/Avatar.png"
+  def String imageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif"
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
   <% uicomponent.renderChild("UIPublicSpaceSearch"); %>
