@@ -42,8 +42,7 @@
 	height: 26px;
 	line-height: 26px;
 	font-weight: bold;
-	padding-left: 12px;
-	color: #ff7500; 
+	color: white; 
 }
 
 
@@ -54,11 +53,9 @@
 }
 
 .VerticalTabsContainer .NormalTab .MiddleTab{
-	background: url('background/NormalTabIcon.gif') no-repeat left center ;
     height: 26px;
     line-height: 26px;
     font-weight: bold;
-    padding-left: 12px;
     color: #559BC1; 
 }
 
