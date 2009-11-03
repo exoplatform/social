@@ -29,7 +29,7 @@ def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
 def femaleLabel = _ctx.appRes("${uicomponentId}.label.FeMale");
 def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
 def companyDefaultVal = _ctx.appRes("${uicomponentId}.label.Company");
-def allLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
+def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
 def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
 def filterId = "Filter" + uicomponentId;
 def searchId = "Search" + uicomponentId;
@@ -54,11 +54,15 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 		<div class="Lable">${filterByLabel}:</div>
 		<input type="text" id="$positionId" class="Input" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$positionDefaultVal')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$positionDefaultVal')" value="$positionDefaultVal"/>
 		<input type="text" id="$companyId" class="Input" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$companyDefaultVal')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$companyDefaultVal')" value="$companyDefaultVal"/>
-		<select class="Select" id="$genderId" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onMouseDown="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$allLabel')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$allLabel')">
-			<option selected="selected" value="$allLabel">${allLabel}</option>
+		<select class="Select" id="$genderId" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onMouseDown="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$allGenderLabel')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$allGenderLabel')">
+			<option selected="selected" value="$allGenderLabel">${allGenderLabel}</option>
 			<option value="male">${maleLabel}</option>
 			<option value="female">${femaleLabel}</option>
 		</select>
+		<input id="defaultUserContact" type="hidden" value="$nameDefaultVal">
+		<input id="defaultPos" type="hidden" value="$positionDefaultVal">
+		<input id="defaultComp" type="hidden" value="$companyDefaultVal">
+		<input id="defaultGender" type="hidden" value="$allGenderLabel">
 		<a id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</a>
 	  </div>
 	</div>

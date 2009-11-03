@@ -17,6 +17,7 @@
 
 function UISpaceSearch() {
    this.searchId = null;
+   this.defaultSpaceName = "";
 };
 
 /**
@@ -26,9 +27,10 @@ function UISpaceSearch() {
  *	@return void						
  */
 UISpaceSearch.prototype.activeSearchText = function(searchBox) {
+	this.setDefaultValue();
 	searchBox.style.color="#000000";
 	searchBox.focus();
-	if (searchBox.value == 'Space name') {
+	if (searchBox.value == this.defaultSpaceName) {
 		searchBox.value='';
 	}
 };
@@ -40,9 +42,9 @@ UISpaceSearch.prototype.activeSearchText = function(searchBox) {
  *	@return void						
  */
 UISpaceSearch.prototype.onBlurSearchText = function(searchBox) {
-	if ((searchBox.value.trim() == '') || (searchBox.value.trim() == 'Space name')) {
+	if ((searchBox.value.trim() == '') || (searchBox.value.trim() == this.defaultSpaceName)) {
 		searchBox.style.color="#C7C7C7";
-		searchBox.value='Space name';
+		searchBox.value=this.defaultSpaceName;
 	} 
 };
 
@@ -113,6 +115,10 @@ UISpaceSearch.prototype.setEnterKey = function(event) {
 		eXo.social.space.UISpaceSearch.searchSpaceByName(elementInput);
 	}						
 };
+
+UISpaceSearch.prototype.setDefaultValue = function() {
+	this.defaultSpaceName = document.getElementById('defaultSpaceName').value;
+}
 
 /**
  *	Create id of elements with input component ID.

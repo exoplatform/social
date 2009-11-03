@@ -21,6 +21,10 @@ function UIProfileUserSearch() {
    this.companyId = null;
    this.genderId = null;
    this.filterId = null;
+   this.defaultUserContact = "";
+   this.defaultPos = "";
+   this.defaultComp = "";
+   this.defaultGender = "";
 };
 
 /**
@@ -29,9 +33,23 @@ function UIProfileUserSearch() {
  *	@var filter {Object} Object is activated.
  *	@return void						
  */
-UIProfileUserSearch.prototype.activeFilterText = function(filter, defaultValue) {
+UIProfileUserSearch.prototype.activeFilterText = function(filter) {
+	var DOMUtil = eXo.core.DOMUtil;
+	var searchEl = DOMUtil.findAncestorByClass(filter, 'UIProfileUserSearch');
+	var componentId = searchEl.id;
+	var defaultValue="";
+	this.createId(componentId);
+	this.setDefaultValue();
 	filter.style.color="#000000";
 	filter.focus();
+	if (filter.id == this.searchId) { 
+		defaultValue = this.defaultUserContact;
+	} else if (filter.id == this.positionId) {
+		defaultValue = this.defaultPos;
+	} else {
+		defaultValue = this.defaultComp;
+	}
+	
 	if (filter.value == defaultValue) {
 		filter.value='';
 	}
@@ -43,16 +61,22 @@ UIProfileUserSearch.prototype.activeFilterText = function(filter, defaultValue) 
  *	@var filter {Object} Object is on blurred.
  *	@return void						
  */
-UIProfileUserSearch.prototype.onBlurFilterText = function(filter, defaultValue) {
-	var DOMUtil = eXo.core.DOMUtil;
-	var searchEl = DOMUtil.findAncestorByClass(filter, 'UIProfileUserSearch');
-	var componentId = searchEl.id;
-	this.createId(componentId);
+UIProfileUserSearch.prototype.onBlurFilterText = function(filter) {
+	var defaultValue="";
+	if (filter.id == this.searchId) { 
+		defaultValue = this.defaultUserContact;
+	} else if (filter.id == this.positionId) {
+		defaultValue = this.defaultPos;
+	} else {
+		defaultValue = this.defaultComp;
+	}
 	
-	if ((filter.value.trim() == '') || (filter.value.trim() == defaultValue)) {
+	if (filter.value.trim() == '') {
 		filter.style.color="#C7C7C7";
 		filter.value=defaultValue;
-	} 
+	}
+	
+	if (filter.value.trim() == this.defaultGender) filter.style.color="#C7C7C7";
 }
 
 /**
@@ -71,11 +95,11 @@ UIProfileUserSearch.prototype.toggleFilter = function(newLabel, filterBlockId, e
 	if (filter.style.display == 'none') {
 		currentEl.innerHTML="";
 		element.innerHTML=newLabel;
-		filter.style.display = "block";
+		filter.style.display = 'block';
     } else {
     	currentEl.innerHTML="";
     	element.innerHTML=newLabel;
-    	filter.style.display = "none";
+    	filter.style.display = 'none';
     }
 };
 
@@ -89,38 +113,24 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   var DOMUtil = eXo.core.DOMUtil;
   var searchEl = DOMUtil.findAncestorByClass(element, 'UIProfileUserSearch');
   var componentId = searchEl.id;
-  this.createId(componentId);
   var filterEl = document.getElementById(this.filterId);
   var userContact="";
   var position="";
   var gender="";
   var company="";
-  var searchSpacesEl = DOMUtil.findDescendantById(searchEl, this.searchId);
   
-  if (element.id == this.searchId) {
-	  userContact = element.value;
-  } else {
-	  userContact = searchSpacesEl.value;
-  }
-  
+  userContact = element.value;
   if (filterEl.style.display != 'none') {
 	  position = document.getElementById(this.positionId).value;
-	  if (position == 'position') {
-		  position = "";
-	  }
-	  
 	  company = document.getElementById(this.companyId).value;
-	  if (company == 'company') {
-		  company = "";
-	  }
-		  
 	  gender = document.getElementById(this.genderId).value;
-	  
-	  if (gender == 'Gender') {
-		  gender = "";
-	  }
   } 
   
+  if (userContact == this.defaultUserContact)  userContact = "";
+  if (position == this.defaultPos)  position = "";
+  if (company == this.defaultComp)  company = "";
+  if (gender == this.defaultGender) gender = "";
+
   if(searchEl != null ) {
 	var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
 	if (portletFragment != null) {
@@ -130,7 +140,7 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
 		href += "&op=Search";
 		href += "&userContact=" + userContact.trim();
 		href += "&position=" + position.trim();
-	    href += "&company=" + company;
+	    href += "&company=" + company.trim();
 		href += "&gender=" + gender;
 		href += "&ajaxRequest=true";
 		ajaxGet(href,true);
@@ -174,6 +184,13 @@ UIProfileUserSearch.prototype.setEnterKey = function(event) {
 	}						
 };
 
+UIProfileUserSearch.prototype.setDefaultValue = function() {
+	this.defaultUserContact = document.getElementById('defaultUserContact').value;
+	this.defaultPos = document.getElementById('defaultPos').value;
+	this.defaultComp = document.getElementById('defaultComp').value;
+	this.defaultGender = document.getElementById('defaultGender').value;
+}
+
 /**
  *	Create id of elements with input component ID.
  *	
@@ -187,6 +204,7 @@ UIProfileUserSearch.prototype.createId = function(componentId) {
 	this.genderId = 'Gender' + componentId;
 	this.filterId = 'Filter' + componentId;
 };
+
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
 if(!eXo.social.profile) eXo.social.profile = {};

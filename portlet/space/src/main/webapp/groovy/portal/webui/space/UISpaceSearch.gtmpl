@@ -24,6 +24,7 @@ def uicomponentId = uicomponent.id;
 
 def spaceSearchLabel = _ctx.appRes("${uicomponentId}.label.SpaceSearch");
 def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
+def defaultSpaceName = _ctx.appRes("${uicomponentId}.label.SpaceName");
 def searchId = "Search" + uicomponentId;
 def selectedChar = uicomponent.getSelectedChar();
 def rcontext = _ctx.getRequestContext();
@@ -41,7 +42,8 @@ def portalURI = pcontext.getPortalURI();
 					Find Space: 
 				</div>
 				<div class="CenterContentInput">
-					  <input type="text" id="$searchId" class="InputSearch" name="Search" value="Space name" style="width: 285px;" onfocus="eXo.social.space.UISpaceSearch.activeSearchText(this)" onblur="eXo.social.space.UISpaceSearch.onBlurSearchText(this)" onkeydown="eXo.social.space.UISpaceSearch.setEnterKey(event);"/>
+					  <input type="text" id="$searchId" class="InputSearch" name="Search" value="$defaultSpaceName" style="width: 285px;" onfocus="eXo.social.space.UISpaceSearch.activeSearchText(this)" onblur="eXo.social.space.UISpaceSearch.onBlurSearchText(this)" onkeydown="eXo.social.space.UISpaceSearch.setEnterKey(event);"/>
+					  <input id="defaultSpaceName" type="hidden" value="$defaultSpaceName">
 				</div>
 				<div class="ClearBoth"><span/></div>
 			</div>
