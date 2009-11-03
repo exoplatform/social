@@ -67,8 +67,7 @@ public class ActivitiesRestService implements ResourceContainer {
   public ListIdentitiesId getIdentitiesId(@PathParam("activityId") String activityId) throws Exception {
     ListIdentitiesId identitiesId = new ListIdentitiesId();
     List<String> ids = new ArrayList<String>();
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    ActivityManager activityManager = (ActivityManager) portalContainer.getComponentInstanceOfType(ActivityManager.class);
+    ActivityManager activityManager = getActivityManager();
     List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
     Activity activity = activityManager.getActivity(activityId);
     String[] likeIdentitiesId = activity.getLikeIdentitiesId();
@@ -103,7 +102,11 @@ public class ActivitiesRestService implements ResourceContainer {
     activityManager.saveActivity(activity);
     Collections.addAll(ids, likeIdentitiesId);
     identitiesId.setIds(ids);
+    List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
+    likeInfos = getLikeInfos(ids);
     identitiesId.setActivityId(activityId);
+    identitiesId.setIds(ids);
+    identitiesId.setLikeInfos(likeInfos);
     return identitiesId;
   }
   
@@ -127,8 +130,11 @@ public class ActivitiesRestService implements ResourceContainer {
     activity.setLikeIdentitiesId(likeIdentitiesId);
     activityManager.saveActivity(activity);
     if(likeIdentitiesId != null) Collections.addAll(ids, likeIdentitiesId);
+    List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
+    likeInfos = getLikeInfos(ids);
     identitiesId.setIds(ids);
     identitiesId.setActivityId(activityId);
+    identitiesId.setLikeInfos(likeInfos);
     return identitiesId;
   }
   

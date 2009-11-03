@@ -56,7 +56,7 @@ eXo.social.Like.ref = {
   * @static
   */
  eXo.social.Like.setLikeId = function(activityId, userId, callback) {
- 	debug.info('aId: ' + activityId + '; userId: ' + userId);
+ 	//debug.info('aId: ' + activityId + '; userId: ' + userId);
  	if (!activityId || !userId) {
  		debug.warn("activityId or userId is null! activityId: " + activityId + "; userId: " + userId);
  		return;
@@ -158,7 +158,6 @@ eXo.social.Like.ref = {
 		};
 	}
 	Like.renderListPeople(activityId, likeInfos);
-	gadgets.window.adjustHeight();
  }
  
  /**
@@ -176,8 +175,8 @@ eXo.social.Like.ref = {
 	if (likeInfos !== null) {
 		for(var i = 0, length = likeInfos.length; i < length; i++) {
 			if (likeInfos[i].thumbnail !== null)	thumbnail = likeInfos[i].thumbnail;
-			html.push('<a href="#UserId"  class="AvartarPeopleBG">');
-				html.push('<img alt="" height="47px" width="47px" src="' + thumbnail + '" />');
+			html.push('<a href="#UserId"  class="AvatarPeopleBG">');
+				html.push('<img title="' + likeInfos[i].fullName + '" alt="" height="47px" width="47px" src="' + thumbnail + '" />');
 			html.push('</a>');
 		}
 	}
