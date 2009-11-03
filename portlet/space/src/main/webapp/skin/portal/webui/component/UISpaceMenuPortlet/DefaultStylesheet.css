@@ -192,6 +192,17 @@
 	width: 117px;
 }
 
+.UIGadgetPortlet .gadgets-gadget-content {
+	margin:auto;
+	padding:10px 0;
+	width:100%;
+}
+
+#Application .gadgets-gadget-content {
+	margin:auto;
+	padding:10px 0;
+	width:80%;
+}
 .MenuTDContainer .UISpaceMenuPortlet .ApplicationAdd .ApplicationAddBG {
 	background: url('DefaultSkin/background/ApplicationAddBG.gif') no-repeat left center;
 	padding-right: 45px;
