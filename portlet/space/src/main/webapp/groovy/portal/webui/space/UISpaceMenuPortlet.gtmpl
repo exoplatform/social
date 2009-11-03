@@ -13,7 +13,7 @@
 	<div class="SpaceMenuPortlet">
 		<div class="ProfTitle">Space <%= spaceUrl %></div>
 		<a class="Avartar">
-			<img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/Avartar.gif" alt=""/>
+			<img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt=""/>
 		</a>
 		<% if(spaceUrl.equals(appSelected)) { %>
   	<div class="Home"><a class="HomeSelect" href="$home">HOME</a></div>
@@ -22,13 +22,30 @@
 		<% } %>
   	<% if(apps.size() != 0) { 
   		for(PageNode node in apps) {
+  		def appIcon = "";
+  		def SpaceClass = "";
 			String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/"+node.getName();
+			if (node.getName().equals("UserListPortlet")) {
+				appIcon = "UserListApp";
+			%>
+				<div class="UserListApp">
+			<%	
+			} else if (node.getName().equals("SpaceSettingPortlet")) {
+				appIcon = "SpaceSetting";
+			%>
+				<div class="SpaceSetting">
+			<%}%>
+		<%
 			if(node.getName().equals(appSelected)) {
+				appIcon = appIcon + "Select";
   	%>
-	  <div class="SpaceSetting"><a class="SpaceSettingSelect" href="$pageURI"><%= node.getResolvedLabel() %></a></div>
-	  <% } else { %>
-	  <div class="SpaceSetting"><a class="SpaceSettingBG" href="$pageURI"><%= node.getResolvedLabel() %></a></div>
+	  <a class="$appIcon" href="$pageURI"><%= node.getResolvedLabel() %></a>
+	  <% } else { 
+	  		appIcon = appIcon + "BG";
+	  %>
+	  <a class="$appIcon" href="$pageURI"><%= node.getResolvedLabel() %></a>
 	  <% } %>
+	  </div>
 	  <% } %>
 	  <% } %>
 

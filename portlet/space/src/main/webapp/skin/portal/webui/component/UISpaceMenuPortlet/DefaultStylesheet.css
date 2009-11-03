@@ -156,6 +156,28 @@
 	width: 117px;
 }
 
+
+.MenuTDContainer .UISpaceMenuPortlet .UserListApp .UserListAppBG {
+	background: url('DefaultSkin/background/UserListAppBG.gif') no-repeat left center;
+	padding-right: 45px;
+	font-weight: bold;
+	line-height: 23px;
+	display: block;
+	text-align: right;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .UserListApp .UserListAppSelect {
+	background: url('DefaultSkin/background/UserListAppHover.gif') no-repeat left center;
+	color: white;
+	padding-right: 50px;
+	font-weight: bold;
+	line-height: 23px;
+	display: block;
+	text-align: right;
+	position:relative;
+	width: 117px;
+}
+
 .MenuTDContainer .UISpaceMenuPortlet .SpaceSetting a:hover{
 	background: url('DefaultSkin/background/SpaceSettingHover.gif') no-repeat left center;
 	padding-right: 50px;
@@ -163,4 +185,10 @@
 	width: 117px;
 }
 
+.MenuTDContainer .UISpaceMenuPortlet .UserListApp a:hover{
+	background: url('DefaultSkin/background/UserListAppHover.gif') no-repeat left center;
+	padding-right: 50px;
+	position:relative;
+	width: 117px;
+}
 
