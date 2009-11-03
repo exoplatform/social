@@ -192,3 +192,30 @@
 	width: 117px;
 }
 
+.MenuTDContainer .UISpaceMenuPortlet .ApplicationAdd .ApplicationAddBG {
+	background: url('DefaultSkin/background/ApplicationAddBG.gif') no-repeat left center;
+	padding-right: 45px;
+	font-weight: bold;
+	line-height: 23px;
+	display: block;
+	text-align: right;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ApplicationAdd .ApplicationAddSelect {
+	background: url('DefaultSkin/background/ApplicationAddHover.gif') no-repeat left center;
+	color: white;
+	padding-right: 50px;
+	font-weight: bold;
+	line-height: 23px;
+	display: block;
+	text-align: right;
+	position:relative;
+	width: 117px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet .ApplicationAdd a:hover{
+	background: url('DefaultSkin/background/ApplicationAddHover.gif') no-repeat left center;
+	padding-right: 50px;
+	position:relative;
+	width: 117px;
+}
