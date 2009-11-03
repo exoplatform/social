@@ -20,26 +20,31 @@
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.portlet.profile.Utils;
   import org.exoplatform.portal.application.PortalRequestContext;
-
-	PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def currIdentity = Utils.getCurrentIdentity();
-    
-	def myfriendsURL = portalURI + "relations/yours/" + currIdentity.getRemoteId();
-	def invitationsURL = portalURI + "relations/invitations/" + currIdentity.getRemoteId();
-	def requestsURL = portalURI + "relations/requests/" + currIdentity.getRemoteId();
-	def selectedNode = uicomponent.getSelectedNode();
+  def viewerId = uicomponent.getViewerId();
+  def ownerId = currIdentity.getRemoteId();
+  def myfriendsURL = "${portalURI}relations/yours/${ownerId}";
+  def invitationsURL = "${portalURI}relations/invitations/${ownerId}";
+  def requestsURL = "${portalURI}relations/requests/${ownerId}";
+  def selectedNode = uicomponent.getSelectedNode();
+  def isOwner = false;
+  if (ownerId.equals(viewerId)) {
+  	isOwner = true;
+  }
 %>
 <div class="UIRelationNavigationPortlet" id="$uicomponent.id">
-	<div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.MyRelations")%></div>
+	<div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></div>
 	<div class="UIVerclTab">
 	  <% if (selectedNode == "yours")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${myfriendsURL}" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.MyRelations")%></a>
+        <a href="${myfriendsURL}" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
 	  </div>
+  <%if (isOwner == true) {%>
 	  <% if (selectedNode == "invitations")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
@@ -54,5 +59,6 @@
 	  <%}%>
         <a href="${requestsURL}" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
 	  </div>
+  <%}%> 
 	</div>
 </div>

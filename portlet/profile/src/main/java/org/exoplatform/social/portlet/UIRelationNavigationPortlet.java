@@ -42,4 +42,9 @@ public class UIRelationNavigationPortlet extends UIPortletApplication {
    
     return split[split.length-2];
   }
+  
+  public String getViewerId() {
+	  PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+	  return portalRequestContext.getRemoteUser();
+  }
 }
