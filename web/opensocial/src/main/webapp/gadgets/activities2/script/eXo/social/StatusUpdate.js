@@ -28,6 +28,7 @@ eXo.social.StatusUpdate = function() {
 	this.newOwnerFriendsActivities = null;
 	this.ownerMoreClickedTimes = 0; //click num
 	this.friendsMoreClickedTimes = 0;
+	this.miniMessage = new gadgets.MiniMessage();
 }
 
 /**
@@ -36,6 +37,10 @@ eXo.social.StatusUpdate = function() {
 eXo.social.StatusUpdate.DataMode_BOTH = 'DataMode_BOTH';
 eXo.social.StatusUpdate.DataMode_OWNER_ONLY = 'DataMode_OWNER_ONLY';
 eXo.social.StatusUpdate.DataMode_FRIENDS_ONLY = 'DataMode_FRIENDS_ONLY';
+
+eXo.social.StatusUpdate.MessageType_ERROR = 'MessageType_ERROR';
+eXo.social.StatusUpdate.MessageType_INFO  = 'MessageType_INFO';
+eXo.social.StatusUpdate.MessageType_WARN = 'MessageType_WARN';
 
 /**
  * static config object 
@@ -69,9 +74,10 @@ eXo.social.StatusUpdate.config = {
  * @static 
  */
 eXo.social.StatusUpdate.main = function() {
+	//get full render from start BUG #SOC-375
+	gadgets.window.adjustHeight(); 
 	var statusUpdate = new eXo.social.StatusUpdate();
 	statusUpdate.init();
-	
 	//create and use linkShare object
 	var linkShare = eXo.social.linkShare = new eXo.social.LinkShare();
 	//set ref
@@ -81,7 +87,7 @@ eXo.social.StatusUpdate.main = function() {
 }
 
 /**
- * Init
+ * Inits
  */
 eXo.social.StatusUpdate.prototype.init = function() {
 	//alias imports
@@ -91,7 +97,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
 	var StatusUpdate = eXo.social.StatusUpdate;
 	var config = StatusUpdate.config;
 	var statusUpdate = this;
-	
+	var miniMessage = statusUpdate.miniMessage;
 	var uiComposerTextArea = Util.getElementById(config.ui.UI_COMPOSER_TEXTAREA);
 	var uiComposer = new UIComposer(uiComposerTextArea);
 	this.uiComposer = uiComposer;
@@ -151,7 +157,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
 		
 		/**
 		 * fix ownerHandler
-		 * To detect the ownerId by url (hard-coded)
+		 * To detect the ownerId by url (hard-coded), eXo Social container has to improve this.
 		 */
 		var fixOwnerHandler = function(res) {
 			var data = res.data;
@@ -163,8 +169,9 @@ eXo.social.StatusUpdate.prototype.init = function() {
 					req.add(req.newFetchPersonRequest(ownerId), 'owner');
 					req.send(function(res) {
 						if (res.hadError()) {
-							debug.error("Can not reget owner!");
+							debug.warn("Can not reget owner!");
 							debug.info(res);
+							miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
 							return;
 						}
 						statusUpdate.owner = res.get('owner').getData();
@@ -193,9 +200,12 @@ eXo.social.StatusUpdate.prototype.init = function() {
     	req.add(req.newFetchPeopleRequest(opensocial.DataRequest.Group.OWNER_FRIENDS, opts), 'ownerFriends');
 		req.send(handler);
 		function handler(response) {
+			var miniMessage = statusUpdate.miniMessage;
 			if (response.hadError()) {
-				debug.error('Can not get viewer, owner, ownerFriends!');
+				debug.warn('Can not get viewer, owner, ownerFriends!');
 				debug.info(response);
+				miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
+				gadgets.window.adjustHeight(); 
 				return;
 			}
 			statusUpdate.viewer = response.get('viewer').getData();
@@ -228,16 +238,19 @@ eXo.social.StatusUpdate.prototype.refresh = function() {
 	var config = StatusUpdate.config;
 	debug.info("Refresh!!!!");
 	var statusUpdate = this;
+	var miniMessage = statusUpdate.miniMessage;
 	//updates owner avatar
 	var imgOwnerAvatar = Util.getElementById(config.ui.IMG_OWNER_AVATAR);
 	if (!imgOwnerAvatar) {
 		debug.error('imgOwnerAvatar is null!');
+		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
 		return;
 	}
 	imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId());
 	var ownerActivityTitle = Util.getElementById('OwnerActivityTitle');
   	if (!ownerActivityTitle) {
   		debug.error('ownerActivityTitle is null!!!');
+  		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
   		return;
   	}
   	ownerActivityTitle.innerHTML = Locale.getMsg('activities_of_displayName', [statusUpdate.owner.getDisplayName()]);
@@ -279,7 +292,6 @@ eXo.social.StatusUpdate.prototype.getNewOwnerActivities = function() {
 		params[opensocial.DataRequest.ActivityRequestFields.MAX] = config.BATCH_SIZE + (config.BATCH_SIZE * times)
 		req.add(req.newFetchActivitiesRequest(statusUpdate.owner.getId(), params), 'ownerActivities');
 		req.send(ownerActivitiesHandler);
-		
 	}
 	
 	function ownerActivitiesHandler(res) {
@@ -340,14 +352,13 @@ eXo.social.StatusUpdate.prototype.updateFriendsActivities = function() {
  *                                StatusUpdate.DataMode_FRIENDS_ONLY
  */
 eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, dataMode) {
-	
 	var Locale = eXo.social.Locale;
 	var Util = eXo.social.Util;
 	var Like = eXo.social.Like;
 	var StatusUpdate = eXo.social.StatusUpdate;
 	var config = StatusUpdate.config;
 	var statusUpdate = this;
-	
+	var miniMessage = statusUpdate.miniMessage;
 	var dataMode = dataMode || StatusUpdate.DataMode_BOTH;
 	//private methods
 	/**
@@ -370,6 +381,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		if (!activity) {
   			debug.error('getNormalActivityBlock: activity is null.');
   			debug.info(activity);
+  			miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
   			return;
   		}
   		var userId = activity.getField(opensocial.Activity.Field.USER_ID);
@@ -419,6 +431,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  	  		debug.error('getLinkShareActivityBlock: activity or data is null.');
 	  	  		debug.info(activity);
 	  	  		debug.info(data);
+	  	  		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
 	  	  		return;
 	  	  	}
   	  
@@ -535,7 +548,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
  	if (dataResponse.hadError()) {
   		debug.error('dataResponse had error, please refresh!!!');
   		debug.info(dataResponse);
-  		//TODO informs user, use mini message
+  		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
   		return;
   	}
   	if (dataMode === StatusUpdate.DataMode_BOTH || dataMode === StatusUpdate.DataMode_OWNER_ONLY) {
@@ -602,7 +615,6 @@ eXo.social.StatusUpdate.prototype.hasViewerId = function(ids) {
 	return false;
 }
 
-
 /**
  * event handler for clicking on share
  * @param	el element triggered by this event
@@ -612,7 +624,7 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 	var config = eXo.social.StatusUpdate.config;
 	var currentView = this.currentView;
 	debug.info('Share!!!');
-	debug.info(this.shareable);
+	//debug.info(this.shareable);
 	if (!this.shareable) {
 		return;
 	}
@@ -674,4 +686,4 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 	restore();
 }
 
-gadgets.util.registerOnLoadHandler(eXo.social.StatusUpdate.main); 
+gadgets.util.registerOnLoadHandler(eXo.social.StatusUpdate.main);

@@ -58,4 +58,5 @@
 	<msg name="am">Sáng</msg>
 	<msg name="pm">Chiều</msg>
 	<msg name="day_date_month_year_at_hour_min_ap">Lúc {4} : {5} : {6}, {0} ngày {1} {2} năm {3}</msg>
+	<msg name="internal_error">Vừa có lỗi xảy ra. Phiền bạn refresh lại trình duyệt!</msg>
 </messageBundle>

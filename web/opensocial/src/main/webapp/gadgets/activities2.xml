@@ -29,6 +29,7 @@
     <Require feature="dynamic-height" />
     <Require feature="settitle" />
     <Require feature="views" />
+    <Require feature="minimessage" />
   </ModulePrefs>
   <Content type="html" view="default, home, profile">
   <![CDATA[
