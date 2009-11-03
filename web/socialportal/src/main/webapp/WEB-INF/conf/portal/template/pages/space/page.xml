@@ -21,7 +21,7 @@
   <owner-type></owner-type>
   <owner-id></owner-id>
   <name></name>
- 	<container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+ 	<container id="SpacePage" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
  		<container id="Menu" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 			<portlet-application>
         <portlet>
