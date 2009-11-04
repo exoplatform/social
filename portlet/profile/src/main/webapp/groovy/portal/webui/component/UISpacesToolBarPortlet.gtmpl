@@ -16,7 +16,7 @@
 	
  	def portalURI = Util.getPortalRequestContext().getPortalURI();
  
- 	def spacesLink = portalURI + "mySpace";
+ 	def spacesLink = portalURI + "spaces";
  	
 	void renderPageNode(PageNode node, boolean flag) {
 		boolean hasChild = (node.getChildren() != null && node.getChildren().size() > 0);

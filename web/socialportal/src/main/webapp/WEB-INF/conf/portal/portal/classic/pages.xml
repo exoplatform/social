@@ -304,8 +304,8 @@
   
   
   <page>
-    <name>mySpace</name>
-    <title>My Space</title>
+    <name>spaces</name>
+    <title>Spaces</title>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
