@@ -28,6 +28,7 @@
           <application-ref>space</application-ref>
           <portlet-ref>SpaceMenuPortlet</portlet-ref>
         </portlet>
+        <access-permissions>*:/platform/users</access-permissions>
 		    <show-info-bar>false</show-info-bar>
 		  </portlet-application>
   	</container>
