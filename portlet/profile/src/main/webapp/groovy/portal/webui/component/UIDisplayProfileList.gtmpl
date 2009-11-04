@@ -27,6 +27,7 @@
   def list = uicomponent.getList();
   def currIdentity = uicomponent.getCurrentIdentity();
   def iterator = uicomponent.getUIPageIterator();
+  def peopleIdx = 0
 %>
 <div class="UIProfileList" id="$uicomponent.id">
   <div class="ContainerSpace">
@@ -54,6 +55,8 @@
 	    def addAction = uicomponent.event("AddContact", identity.getId());
 	    def contactStatus = uicomponent.getContactStatus(identity);
 	    def position = identity.profile.getPropertyValue("position");
+	    peopleIdx += 1;
+	    
 	    if (!position) {  position = ""; }
 	    
 	    String imageSource = "/profile/skin/portal/webui/component/UIPeoplePortlet/background/BLAvatar.gif";
@@ -65,7 +68,11 @@
 				} catch (Exception e) {}
 			}
   %>
-    <div class="ContentSpace ClearFix">
+    <% if (peopleIdx % 2 == 0) { %>
+		 	<div class="ContentSpace ClearFix">
+		<% } else {%>
+		 	<div class="ContentSpaceGray ClearFix">
+		<% }%>
 	    <div class="AvartarPeopleBG">
 	       <img height="47px" width="47px" src="$imageSource"/>
 	    </div>
@@ -93,6 +100,7 @@
 		        </div>
 	        <%  } %>
 	    </div>
+	    <div style="clear: left;"><span></span></div>
     </div>
   <% } %>
   	<%
