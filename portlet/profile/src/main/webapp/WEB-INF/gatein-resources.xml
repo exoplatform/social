@@ -92,7 +92,7 @@
 	
 	<portlet-skin>
 		<application-name>profile</application-name>
-		<portlet-name>peopletoolbar</portlet-name>
+		<portlet-name>peopletoolbarportlet</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIPeopleToolbarPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
@@ -117,5 +117,13 @@
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIPeoplePortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>SpacesToolbarPortlet</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UISpacesToolbarPortlet/DefaultStylesheet.css</css-path>
+	</portlet-skin>
+	
 </gatein-resources>
 
