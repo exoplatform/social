@@ -16,10 +16,12 @@
  */
 package social.portal.webui.component;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
@@ -112,9 +114,24 @@ public class UIManagePendingSpaces extends UIContainer {
   }
   
   private List<Space> getSpaceList() throws Exception {
-    List<Space> spaces_ = getSpaces_();
-    if(spaces_ == null) spaces_ = getAllPendingSpaces();
-    return spaces_;
+    List<Space> spaceList = getSpaces_();
+    List<Space> allPendingSpace = getAllPendingSpaces();
+    if (allPendingSpace.size() == 0) return allPendingSpace;
+    if(spaceList != null) {
+      Iterator<Space> spaceItr = spaceList.iterator();
+      while(spaceItr.hasNext()) {
+        Space space = spaceItr.next();
+        for(Space pendingSpace : allPendingSpace) {
+          if(!space.getId().equals(pendingSpace.getId())){
+            spaceItr.remove();
+          }
+        }
+      }
+    
+      return spaceList;
+    }
+    
+    return allPendingSpace;
   }
   
   public List<Space> getPendingSpaces() throws Exception {

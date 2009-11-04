@@ -18,6 +18,7 @@ package social.portal.webui.component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -228,9 +229,24 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   private List<Space> getMySpace() throws Exception {
-    List<Space> spaces_ = getSpaces_();
-    if(spaces_ == null) spaces_ = getAllUserSpaces();
-    return spaces_;
+    List<Space> spaceList = getSpaces_();
+    List<Space> allUserSpace = getAllUserSpaces();
+    if (allUserSpace.size() == 0) return allUserSpace;
+    if(spaceList != null) {
+      Iterator<Space> spaceItr = spaceList.iterator();
+      while(spaceItr.hasNext()) {
+        Space space = spaceItr.next();
+        for(Space userSpace : allUserSpace) {
+          if(!space.getId().equals(userSpace.getId())){
+            spaceItr.remove();
+          }
+        }
+      }
+    
+      return spaceList;
+    }
+    
+    return allUserSpace;
   }
   
   @SuppressWarnings("unchecked")

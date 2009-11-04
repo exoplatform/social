@@ -16,6 +16,7 @@
  */
 package social.portal.webui.component;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -148,9 +149,24 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
   
   private List<Space> getSpaceList() throws Exception {
-    List<Space> spaces_ = getSpaces_();
-    if(spaces_ == null) spaces_ = getInvitationSpaces();
-    return spaces_;
+    List<Space> spaceList = getSpaces_();
+    List<Space> allInvitationSpace = getInvitationSpaces();
+    if (allInvitationSpace.size() == 0) return allInvitationSpace;
+    if(spaceList != null) {
+      Iterator<Space> spaceItr = spaceList.iterator();
+      while(spaceItr.hasNext()) {
+        Space space = spaceItr.next();
+        for(Space invitationSpace : allInvitationSpace) {
+          if(!space.getId().equals(invitationSpace.getId())){
+            spaceItr.remove();
+          }
+        }
+      }
+    
+      return spaceList;
+    }
+    
+    return allInvitationSpace;
   }
   
   @SuppressWarnings("unchecked")
