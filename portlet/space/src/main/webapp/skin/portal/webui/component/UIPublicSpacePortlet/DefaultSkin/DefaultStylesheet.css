@@ -166,3 +166,8 @@
 .UIPublicSpacePortlet .IconAdd {
 	background: url('background/IconAdd.gif') no-repeat left top;
 }
+
+.UIPublicSpacePortlet .NotYet {
+	color:#FF0000;
+	text-align:center;
+}

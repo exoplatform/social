@@ -273,3 +273,8 @@
 .UIMySpacePortlet .IconLeave {
 	background: url('background/door_out.png') no-repeat left top;
 }
+
+.UIMySpacePortlet .NotYet {
+	color:#FF0000;
+	text-align:center;
+}

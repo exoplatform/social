@@ -16,7 +16,11 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+<%
+	def uicomponentId = uicomponent.id;
+	def labelInviSpaceList = _ctx.appRes("${uicomponentId}.label.InviSpaceList")
+%>
   <div class="UIInvitationSpacePortlet" id="$uicomponent.id">
-		<div class="TitleBar">SPACE LIST</div>
+		<div class="TitleBar">$labelInviSpaceList</div>
 			<% uicomponent.renderChildren(); %>		  
 	</div>

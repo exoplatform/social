@@ -27,8 +27,9 @@
 	import social.portal.webui.component.UIManageMySpaces
 	
 	def uicomponentId = uicomponent.id
-  def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
-  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
+  def labelSpaceSetting = _ctx.appRes("${uicomponentId}.label.SpaceListing")
+  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.NoSpace")
+  def labelMember = _ctx.appRes("${uicomponentId}.label.Member")
   def iterator = uicomponent.getUIPageIterator()
   def pendingSpaces = uicomponent.getPendingSpaces()
   def mySpaceIdx = 0
@@ -40,12 +41,12 @@
 	<div class="BoxSpaceList">
 		<div class="CenterTitleBox">
 			<div class="LeftTitleBox">
-				<div class="RightTitleBox">Space Listing</div>
+				<div class="RightTitleBox">$labelSpaceSetting</div>
 			</div>
 		</div>
   <%if ((pendingSpaces.size() == 0)) {%>
 			<div class="GrayBox">
-				<div class="NotYet">No pending spaces yet to revoke.</div>
+				<div class="NotYet">$labelNoSpaces</div>
 			</div>
   <%}%>
 	  <%for (space in pendingSpaces) {
@@ -65,7 +66,7 @@
 					<div class="Text"><a href="#"><%= space.name %></a></div>
 					<div class="ClearBoth"><span></span></div>
 				</div>
-				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> members
+				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> $labelMember
 					<br/><%= space.description %>
 				</div>
 			</div>

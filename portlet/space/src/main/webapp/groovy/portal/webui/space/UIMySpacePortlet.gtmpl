@@ -16,7 +16,11 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+<%
+	def uicomponentId = uicomponent.id;
+	def labelMySpaceList = _ctx.appRes("${uicomponentId}.label.MySpaceList")
+%>
 <div class="UIMySpacePortlet" id="$uicomponent.id">
-	<div class="TitleBar">SPACE LIST</div>
+	<div class="TitleBar">$labelMySpaceList</div>
 <% uicomponent.renderChildren(); %>
 </div>

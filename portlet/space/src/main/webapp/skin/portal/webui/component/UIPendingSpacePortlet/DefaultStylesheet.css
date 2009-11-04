@@ -183,3 +183,8 @@
 .UIPendingSpacePortlet .IconAdd {
 	background: url('background/IconAdd.gif') no-repeat left top;
 }
+
+.UIPendingSpacePortlet .NotYet {
+	color:#FF0000;
+	text-align:center;
+}

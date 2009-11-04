@@ -22,46 +22,51 @@
 	
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
-
-	def mySpaceURL = portalURI + "mySpace";
+	def uicomponentId = uicomponent.id
+	def mySpaceURL = portalURI + "spaces";
   def invitationsURL = portalURI + "invitationSpace";
 	def pendingsURL = portalURI + "pendingSpace";
 	def publicsURL = portalURI + "publicSpace";
 	def selectedNode = uicomponent.getSelectedNode();
+	def labelSpace = _ctx.appRes("${uicomponentId}.label.Space")
+	def labelMySpace = _ctx.appRes("${uicomponentId}.label.MySpace")
+	def labelInvitation = _ctx.appRes("${uicomponentId}.label.Invitation")
+	def labelPending = _ctx.appRes("${uicomponentId}.label.Pending")
+	def labelPublic = _ctx.appRes("${uicomponentId}.label.Public")
 %>
   <div class="UISpaceNavigationPortlet" id="$uicomponent.id">
-    <div class="ProfTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Space")%></div>
+    <div class="ProfTitle">$labelSpace</div>
 	<a class="Avartar">
 		<img height="65px" width="65px" alt="" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif"/>
 	</a>
 	<div class="UIVerclTab">
-		<% if (selectedNode == "mySpace")  {%>
+		<% if (selectedNode == "spaces")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="$mySpaceURL" class="MySpaceIcon">My Space</a>
+        <a href="$mySpaceURL" class="MySpaceIcon">$labelMySpace</a>
 	  </div>
 	  <% if (selectedNode == "invitationSpace")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="$invitationsURL" class="InvitationIcon">Invitation</a>
+        <a href="$invitationsURL" class="InvitationIcon">$labelInvitation</a>
 	  </div>
 	  <% if (selectedNode == "pendingSpace")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="$pendingsURL" class="PendingIcon">Pending</a>
+        <a href="$pendingsURL" class="PendingIcon">$labelPending</a>
 	  </div>
 	  <% if (selectedNode == "publicSpace")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="$publicsURL" class="PublicIcon">Public</a>
+        <a href="$publicsURL" class="PublicIcon">$labelPublic</a>
 	  </div>
 	</div>
 </div>

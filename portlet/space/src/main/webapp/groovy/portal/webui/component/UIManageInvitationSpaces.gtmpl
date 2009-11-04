@@ -27,8 +27,8 @@
 	import social.portal.webui.component.UIManageMySpaces
 	
 	def uicomponentId = uicomponent.id
-  def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
-  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
+  def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
+  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.NoSpace")
   def iterator = uicomponent.getUIPageIterator()
   def invitedSpaces = uicomponent.getInvitedSpaces()
   def mySpaceIdx = 0
@@ -40,12 +40,12 @@
 	<div class="BoxSpaceList">
 		<div class="CenterTitleBox">
 			<div class="LeftTitleBox">
-				<div class="RightTitleBox">Space Listing</div>
+				<div class="RightTitleBox">$labelSpaceListing</div>
 			</div>
 		</div>
   <%if ((invitedSpaces.size() == 0)) {%>
 			<div class="GrayBox">
-				<div class="NotYet">No invited spaces yet to accept or deny.</div>
+				<div class="NotYet">$labelNoSpaces</div>
 			</div>
   <%}%>
 	  <%for (space in invitedSpaces) {

@@ -26,13 +26,9 @@
   import org.exoplatform.social.space.Space
   import org.exoplatform.social.space.SpaceUtils
   def uicomponentId = uicomponent.id
-  def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.space_listing")
+  def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
   def labelActionRequestToJoin = _ctx.appRes("${uicomponentId}.label.action_request_to_join")
-  def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
-  def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
-  def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
-  def fieldLabelStatus = _ctx.appRes("${uicomponentId}.fieldLabel.status")
   def visibleStatus = _ctx.appRes("${uicomponentId}.status.visible")
   def openStatus = _ctx.appRes("${uicomponentId}.status.open")
   def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
@@ -48,12 +44,12 @@
   <div class="BoxSpaceList">
   	<div class="CenterTitleBox">
   		<div class="LeftTitleBox">
-  			<div class="RightTitleBox">Space Listing</div>
+  			<div class="RightTitleBox">$labelSpaceListing</div>
   		</div>
   	</div>
   <%if (publicSpaces.size() == 0) {%>
 	<div class="GrayBox">
-	  <div class="NotYet">No public spaces yet to request to join.</div>
+	  <div class="NotYet">$labelNoPublic</div>
 	</div>
   <%}%>
       <%for (space in publicSpaces) {

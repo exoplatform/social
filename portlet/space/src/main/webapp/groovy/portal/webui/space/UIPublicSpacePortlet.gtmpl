@@ -18,11 +18,11 @@
 -->
 <%
 	def uicomponentId = uicomponent.id;
-	def labelSpaceList = _ctx.appRes("${uicomponentId}.label.space_list")
+	def labelPublicSpaceList = _ctx.appRes("${uicomponentId}.label.PublicSpaceList")
 
 %>
 <div class="UIPublicSpacePortlet" id="$uicomponentId">
-	<div class="TitleBar">PUBLIC SPACE LIST</div>
+	<div class="TitleBar">$labelPublicSpaceList</div>
 	<% uicomponent.renderChildren(); %>
 </div>
 

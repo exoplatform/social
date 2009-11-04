@@ -16,7 +16,11 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+<%
+	def uicomponentId = uicomponent.id;
+	def labelPendingSpaceList = _ctx.appRes("${uicomponentId}.label.PendingSpaceList")
+%>
   <div class="UIPendingSpacePortlet" id="$uicomponent.id">
-  	<div class="TitleBar">SPACE LIST</div>
+  	<div class="TitleBar">$labelPendingSpaceList</div>
 			<% uicomponent.renderChildren(); %>
 	</div>
