@@ -19,16 +19,6 @@
 <% import org.exoplatform.webui.core.UITabPane; %>
 <div class="UISpaceSetting" id="$uicomponent.id">
 <% if(uicomponent.isLeader()){ %>
-	<div class="SpaceName">
-		<div class="SpaceNameL">
-			<div class="SpaceNameR">
-				<div class="SpaceNameC">
-					<div class="Name"><%= uicomponent.getSpaceName() %></div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div style="clear: right;"><span></span></div>
 	<div><% uicomponent.renderChild(UITabPane.class);%></div>
 <% } %>
 </div>

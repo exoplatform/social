@@ -5,7 +5,7 @@
 }
 
 .UISpaceSettingPortlet .UISpaceSetting .UITabPane{
-	padding: 0px 4px 4px 4px;
+	padding: 10px 4px 4px 4px;
 	background: #f7f7f9;
 }
 
@@ -49,6 +49,7 @@
     font-weight:normal;
     line-height:27px;
     padding:0 8px;
+    font-weight: bold; 
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab {
@@ -78,7 +79,7 @@
 
 .UISpaceSettingPortlet .UITabPane .UITabContentContainer {
     background:white none repeat scroll 0 0;
-    border: 1px solid #5a83a1;
+    border: 1px solid #d6d6d6;
     border-top: none;
 }
 
@@ -483,5 +484,4 @@
   background: #deecf4 url('background/BGWorkingAreaWithHelp.gif') repeat-x left top;
   padding: 30px 35px;
 }
-
 
