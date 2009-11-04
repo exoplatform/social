@@ -87,7 +87,7 @@
 		  	<div class="GrayBox">
 		  <% } %>
 		  		<% if (isPublic) { %>
-		  		<a href="$spaceUrl" class="Image"><img alt="" title="$space.name" src="$imageSource" /></a>
+		  		<a href="$spaceUrl" class="AvatarSpace"><img alt="" title="$space.name" src="$imageSource" /></a>
 		  		<%} else { %>
 		  		<a href="#" class="Image"><img alt="" title="$space.name" src="$imageSource" /></a>
 		  		<%} %>

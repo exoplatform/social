@@ -58,7 +58,7 @@
 	  <% } else { %>
 	  <div class="GrayBox">
 	  <% } %>
-			<a href="#" class="Image"><img alt="#" src="$imageSource" /></a>
+			<a href="#" class="AvatarSpace"><img alt="#" src="$imageSource" /></a>
 			<div class="ContentBox">
 				<div class="TitleContent">
 					<a href="#" onclick="<%= revokeSpaceAction %>" title="Revoke" class="Icon IconEditSpace"><span></span></a>

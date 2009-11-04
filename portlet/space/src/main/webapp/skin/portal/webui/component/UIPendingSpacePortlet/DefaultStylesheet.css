@@ -122,6 +122,20 @@
 	height: 58px;
 }
 
+.UIPendingSpacePortlet .BoxSpaceList .AvatarSpace {
+	background:transparent url(/space/skin/portal/webui/component/UIPendingSpacePortlet/background/BgProfAvartar.gif) no-repeat scroll left top;
+	float:left;
+	height:51px;
+	padding-left:4px;
+	padding-top:4px;
+	width:51px;
+}
+
+.UIPendingSpacePortlet .BoxSpaceList .AvatarSpace img {
+	width: 48px;
+	height: 48px;
+}
+
 .UIPendingSpacePortlet .BoxSpaceList .ContentBox {
 	padding: 0px 0px 0px 80px;
 }

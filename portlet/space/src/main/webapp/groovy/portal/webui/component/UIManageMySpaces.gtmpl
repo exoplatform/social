@@ -99,7 +99,7 @@
 	  <% } %>
       <!-- Leader -->
       <% if (role == UIManageMySpaces.LEADER) {%>
-  			<a href="<%= spaceUrl %>" class="Image" height="65px" width="65px"><img alt="#" src="$imageSource" /></a>
+  			<a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px"><img alt="#" src="$imageSource" /></a>
 				<div class="ContentBox">
 					<div class="TitleContent">
 						<a href="#" onclick="<%= deleteSpaceAction %>" title="<%= labelActionDeleteSpace %>" class="Icon IconDel"><span></span></a>
@@ -118,7 +118,7 @@
       <% }%>
     <!-- Member -->
       <%if (role == UIManageMySpaces.MEMBER) {%>
-			<a href="<%= spaceUrl %>" class="Image"><img alt="#" src="$imageSource" /></a>
+			<a href="<%= spaceUrl %>" class="AvatarSpace"><img alt="#" src="$imageSource" /></a>
 			<div class="ContentBox">
 				<div class="TitleContent">
 					<a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeave"><span></span></a>
