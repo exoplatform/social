@@ -123,9 +123,13 @@ public class UIProfileUserSearch extends UIComponent {
       String charSearch = event.getRequestContext().getRequestParameter("charSearch");
       
       Boolean isSearchAlphaBet = Boolean.parseBoolean(event.getRequestContext().getRequestParameter("isSearchAlphaBet"));
+      Boolean isSearchAll = Boolean.parseBoolean(event.getRequestContext().getRequestParameter("isSearchAll"));
+      
       if (isSearchAlphaBet)  {
         userContact = charSearch;
         uiSearch.setSelectedChar(charSearch);
+      } else if (isSearchAll) {
+        uiSearch.setSelectedChar("All");
       } else {
         uiSearch.setSelectedChar(null);
       }

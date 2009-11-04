@@ -25,6 +25,7 @@ def uicomponentId = uicomponent.id;
 def spaceSearchLabel = _ctx.appRes("${uicomponentId}.label.SpaceSearch");
 def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
 def defaultSpaceName = _ctx.appRes("${uicomponentId}.label.SpaceName");
+def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def searchId = "Search" + uicomponentId;
 def selectedChar = uicomponent.getSelectedChar();
 def rcontext = _ctx.getRequestContext();
@@ -66,6 +67,11 @@ def portalURI = pcontext.getPortalURI();
 					 		 <%} else {%>
 					 					<a href="#" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
 					 			<% } %>
+					 		<% } %>
+					 		<%	if ((selectedChar != null) && (selectedChar == "AllSpace")) { %>
+					 					<a href="#" style="color: red;" id="searchAllSpace" onclick="eXo.social.space.UISpaceSearch.searchSpaceByName(this);">$searchAll</a>
+					 		 <%} else {%>
+					 					<a href="#" id="searchAllSpace" onclick="eXo.social.space.UISpaceSearch.searchSpaceByName(this);">$searchAll</a>
 					 		<% } %>
 				</div>
 			</div>

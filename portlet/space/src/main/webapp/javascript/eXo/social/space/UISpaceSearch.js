@@ -18,6 +18,7 @@
 function UISpaceSearch() {
    this.searchId = null;
    this.defaultSpaceName = "";
+   this.searchAllSpace = false;
 };
 
 /**
@@ -59,7 +60,12 @@ UISpaceSearch.prototype.searchSpaceByName = function(element) {
   var searchEl = DOMUtil.findAncestorByClass(element, 'UISpaceSearch');
   var spaceName="";
 
-  spaceName = element.value;
+  if (element.id != 'searchAllSpace') {
+	  spaceName = element.value;
+	  this.searchAllSpace = false;
+  } else {
+	  this.searchAllSpace = true;
+  }
   
   if(searchEl != null ) {
 	var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
@@ -69,6 +75,7 @@ UISpaceSearch.prototype.searchSpaceByName = function(element) {
 		href += "&portal:type=action&uicomponent=" + searchEl.id;
 		href += "&op=Search";
 		href += "&spaceName=" + spaceName.trim();
+		href += "&isSearchAllSpace=" + this.searchAllSpace;
 		href += "&isFirstCharOfSpaceName=false";
 		href += "&ajaxRequest=true";
 		ajaxGet(href,true);

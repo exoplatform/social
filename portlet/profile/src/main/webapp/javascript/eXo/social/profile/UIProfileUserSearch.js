@@ -25,6 +25,7 @@ function UIProfileUserSearch() {
    this.defaultPos = "";
    this.defaultComp = "";
    this.defaultGender = "";
+   this.searchAll = false;
 };
 
 /**
@@ -119,7 +120,13 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   var gender="";
   var company="";
   
-  userContact = element.value;
+  if (element.id != 'searchAll') {
+	  userContact = element.value;
+	  this.searchAll = false;
+  } else {
+	  this.searchAll = true;
+  }
+
   if (filterEl.style.display != 'none') {
 	  position = document.getElementById(this.positionId).value;
 	  company = document.getElementById(this.companyId).value;
@@ -141,6 +148,7 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
 		href += "&userContact=" + userContact.trim();
 		href += "&position=" + position.trim();
 	    href += "&company=" + company.trim();
+	    href += "&isSearchAll=" + this.searchAll;
 		href += "&gender=" + gender;
 		href += "&ajaxRequest=true";
 		ajaxGet(href,true);
@@ -169,6 +177,7 @@ UIProfileUserSearch.prototype.searchProfileUserByAlphaBet = function(element, ch
 		} 
 	  }
 };
+
 /**
  *	Call function when Enter Key is pressed in search text box.
  *	

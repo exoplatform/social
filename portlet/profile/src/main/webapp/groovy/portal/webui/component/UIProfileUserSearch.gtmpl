@@ -31,6 +31,7 @@ def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
 def companyDefaultVal = _ctx.appRes("${uicomponentId}.label.Company");
 def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
 def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
+def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def filterId = "Filter" + uicomponentId;
 def searchId = "Search" + uicomponentId;
 def moreSearchId = "MoreSearch" + uicomponentId;
@@ -63,6 +64,7 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 		<input id="defaultPos" type="hidden" value="$positionDefaultVal">
 		<input id="defaultComp" type="hidden" value="$companyDefaultVal">
 		<input id="defaultGender" type="hidden" value="$allGenderLabel">
+		<input id="searchAll" type="hidden" value="$searchAll">
 		<a id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</a>
 	  </div>
 	</div>
@@ -85,5 +87,10 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
  					<a href="#$ch" id="directoryId" style="color:black; margin-right: 3px;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
  			<% } %>
  		<% } %>
+ 		<% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
+ 					<a href="#$searchAll" id="searchAll" style="color:red; margin-right: 3px;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUser(this);">$searchAll</a>
+ 		 <%} else {%>
+ 					<a href="#$searchAll" id="searchAll" style="color:black; margin-right: 3px;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUser(this);">$searchAll</a>
+ 			<% } %>
  </div>
 </div>

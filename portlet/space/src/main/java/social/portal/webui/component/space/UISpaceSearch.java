@@ -91,8 +91,13 @@ public class UISpaceSearch extends UIComponent {
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
       String spaceName = event.getRequestContext().getRequestParameter("spaceName");
       String isFirstChar = event.getRequestContext().getRequestParameter("isFirstCharOfSpaceName");
-      if(Boolean.parseBoolean(isFirstChar)) uiSpaceSearch.setSelectedChar(spaceName);
-      else uiSpaceSearch.setSelectedChar(null);
+      Boolean isSearchAllSpace = Boolean.parseBoolean(event.getRequestContext().getRequestParameter("isSearchAllSpace"));
+      
+      if(Boolean.parseBoolean(isFirstChar)) {
+        uiSpaceSearch.setSelectedChar(spaceName);
+      } else if (isSearchAllSpace) {
+        uiSpaceSearch.setSelectedChar("AllSpace");
+      } else uiSpaceSearch.setSelectedChar(null);
       List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, Boolean.parseBoolean(isFirstChar));
       uiSpaceSearch.setSpaceList(spaceSearchResult);
       
