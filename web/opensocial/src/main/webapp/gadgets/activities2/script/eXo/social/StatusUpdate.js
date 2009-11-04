@@ -132,7 +132,13 @@ eXo.social.StatusUpdate.prototype.init = function() {
 		 * @return	username by url or null
 		 */
 		var getUsernameFromUrl = function() {
-			var address = window.top.location.href;
+			var address;
+			try {
+				address = window.top.location.href;
+			} catch(e) {
+				//cross-domain exception
+				miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
+			}
 			if (address !== null) {
 				var firstIndex = address.indexOf('/activities/');
 				if (firstIndex < 0) {
