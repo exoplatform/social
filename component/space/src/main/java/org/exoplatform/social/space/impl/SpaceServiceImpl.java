@@ -297,6 +297,12 @@ public class SpaceServiceImpl implements SpaceService {
   public void initApp(Space space) throws SpaceException {
     SpaceApplicationHandler spaceAppHandler = getSpaceApplicationHandler(space);
     spaceAppHandler.initApp(space, homeNodeApp, apps);
+    setApp(space, homeNodeApp, Space.ACTIVE_STATUS);
+    for (String app : apps) {
+      app = app.trim();
+      setApp(space, app, Space.INSTALL_STATUS);
+      setApp(space, app, Space.ACTIVE_STATUS);
+    }
   }
   
   /**
