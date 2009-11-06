@@ -29,6 +29,7 @@
 	def uicomponentId = uicomponent.id
   def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
   def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.NoSpace")
+  def labelMembers = _ctx.appRes("${uicomponentId}.label.Members")
   def iterator = uicomponent.getUIPageIterator()
   def invitedSpaces = uicomponent.getInvitedSpaces()
   def mySpaceIdx = 0
@@ -67,7 +68,7 @@
 					<div class="Text"><a href="#"><%= space.name %></a></div>
 					<div class="ClearBoth"><span></span></div>
 				</div>
-				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> members
+				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> $labelMembers
 					<br/><%= space.description %>
 				</div>
 			</div>

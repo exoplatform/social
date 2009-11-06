@@ -1,0 +1,350 @@
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */ /*
+  need to find a better way of doing than the import from another portlet
+*/
+.UIProfile {
+	padding: 8px;
+	font-family: tahoma;
+	font-size: 11px;
+	background: white;
+	zoom: 100%;
+}
+
+.UIProfile .AvatarSpace {
+	background: url('background/BLAvatarBG.gif') no-repeat left top;
+	width: 126px;
+	height: 126px;
+	padding: 7px 0px 0px 7px;
+	margin: 15px;
+	cursor: pointer;
+}
+
+.UIProfile .AvatarSpace {
+	background: url('background/BLAvatarBG.gif') no-repeat left top;
+	width: 126px;
+	height: 126px;
+	padding: 7px 0px 0px 7px;
+	margin: 15px;
+}
+
+.UIProfile .LeftColumn {
+	float: left;
+	width: 190px;
+}
+
+.UIProfile .AvatarSpace .Image {
+	width: 126px;
+	height: 126px;
+}
+
+.UIProfilePortlet .UIProfile .LeftColumn .UIAction {
+	padding: 8px 24px 0px 0px;
+	width: auto;
+}
+
+.UIProfile .ButtonChange .ButtonLeft {
+	background: url('background/ButtonChangeL.gif') no-repeat left top;
+	padding-left: 8px;
+}
+
+.UIProfile .ButtonChange .ButtonRight {
+	background: url('background/ButtonChangeR.gif') no-repeat right top;
+	padding-right: 18px;
+}
+
+.UIProfile .ButtonChange .ButtonMiddle {
+	background: url('background/ButtonChangeM.gif') repeat-x;
+	height: 18px;
+	padding: 0px 8px;
+	line-height: 14px;
+}
+
+.ProfileTitleBarM {
+	background: #ebebeb;
+	height: 22px;
+	color: #7d7d7d;
+	line-height: 22px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.UIProfile .ContainerSpace {
+	margin-left: 190px;
+}
+
+.UIProfile .AvatarSpace .HiddenAvatarChangeLink {
+	display: none;
+}
+
+.UIProfile .AvatarSpace .ShowedAvatarChangeLink {
+	display: inline;
+}
+
+.UIProfile .ContainerSpace .LeftContainer {
+	background: url(background/LeftContainerPortlet.gif) repeat-y left;
+	padding-left: 7px;
+}
+
+.UIProfile .ContainerSpace .RightContainer {
+	background: url(background/RightContainerPortlet.gif) repeat-y right;
+	padding-right: 7px;
+}
+
+.UIProfile .ContainerSpace .CenterContainer {
+	background: #f2f8fa;
+	padding: 10px;
+}
+
+.UIProfile .ContainerSpace .PortletContent {
+	background: #FBFBFB none repeat scroll 0 0;
+	padding: 8px;
+}
+
+.UIProfile .ContainerSpace .ActionBar .CenterButton .SaveIcon {
+	background: url('background/SaveIcon.gif') no-repeat left;
+	line-height: 18px;
+	width: auto;
+	padding-left: 20px;
+}
+
+.UITabPane .ContainerSpace .ActionBar .CenterButton .SaveIcon {
+	background: url('background/SaveIcon.gif') no-repeat left;
+	line-height: 18px;
+	width: auto;
+	padding-left: 20px;
+}
+
+.UIProfile .ContainerSpace .ActionBar .CenterButton .EditIcon {
+	background: url('background/EditIcon.gif') no-repeat left;
+	line-height: 18px;
+	padding-left: 20px;
+	height: auto;
+	width: auto;
+}
+
+.UIProfile .ContainerSpace .ActionBar .CenterButton .DeleteIcon {
+	background: url('background/DeleteIconButton.gif') no-repeat left;
+	line-height: 18px;
+	width: auto;
+	padding-left: 20px;
+}
+
+.UIProfile .ContainerSpace .PortletContent .DeleteIcon {
+	background: url(background/DeleteIcon.gif) no-repeat center;
+	padding: 5px 6px;
+	margin-left: 4px;
+}
+
+.UIProfile .ContainerSpace .PortletContent .AddIcon {
+	background: url(background/AddIcon.gif) no-repeat center;
+	width: 22px;
+	height: 22px;
+	padding: 5px 6px;
+}
+
+.UIProfile h2 {
+	color: #3A3A3A;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 4px 0px;
+}
+
+.UIProfile .ATitleBarL {
+	background: url('background/ATitleBarL.gif') no-repeat left top;
+	padding-left: 4px;
+	margin-top: 8px;
+}
+
+.UIProfile .ATitleBarR {
+	background: url('background/ATitleBarR.gif') no-repeat right top;
+	padding-right: 4px;
+}
+
+.UIProfile .ATitleBarM {
+	background: url('background/ATitleBarM.gif') repeat-x;
+	padding-left: 4px;
+}
+
+.UIProfile .ATitleBarC {
+	background: url('background/ATitleBarC.gif') no-repeat left top;
+	height: 25px;
+	color: white;
+	margin-left: 8px;
+	line-height: 20px;
+	font-weight: bold;
+}
+
+.UIProfile .EditIcon {
+	background: url('background/EditIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+}
+
+.UIProfile .CancelIcon {
+	background: url('background/CancelIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+	width: auto;
+	height: auto;
+}
+
+.UIProfile .SaveIcon {
+	background: url('background/SaveIcon.gif') no-repeat right top;
+	float: right;
+	padding: 0px 8px;
+	display: block;
+	margin-top: 3px;
+	width: auto;
+	height: auto;
+}
+
+.UIProfile h3 {
+	font-size: 11px;
+	font-weight: bold;
+	color: #8c8c8e;
+	margin-top: 0px;
+	margin-left: 5px;
+	height: 20px;
+}
+
+.UIProfile .SendPosition {
+	font-size: 11px;
+	font-weight: bold;
+	color: #8c8c8e;
+	margin-top: 0px;
+	margin-left: 5px;
+}
+
+.UIProfile .ATitleBarL .Title {
+	float: left;
+}
+
+.profileTemplate {
+	display: none;
+}
+
+/**
+       FORM
+ */
+.UIProfile .UIFormGrid {
+	padding: 8px 0px 0px 30px;
+	margin-bottom: 0;
+	margin-left: 30px;
+	margin-right: 0;
+	margin-top: 8px;
+}
+
+.UIProfile .ContainerSpace .FieldLabel {
+	text-align: right;
+	padding: 4px;
+	font-weight: bold;
+	width: 120px;
+}
+
+.UIProfile .ContainerSpace .FieldComponent {
+	padding: 4px;
+}
+
+.UIProfile .ContainerSpace .FieldError {
+	color: red;
+}
+
+.UIProfile .ContainerSpace .FieldComponent ul {
+	margin: 0px;
+	padding-left: 0;
+	list-style: none;
+}
+
+.UIProfile .ContainerSpace .FieldComponent .selectbox {
+	font-size: 11px;
+}
+
+.UIProfile .ContainerSpace .FieldComponent .LV_invalid_field {
+	border: 3px solid #CC0000;
+}
+
+.UIProfile .ContainerSpace .FieldComponent .LV_invalid {
+	margin-left: 4px;
+	color: #CC0000;
+}
+
+.ContainerSpace .ActionBar {
+	float: right;
+	margin: 3px 4px 0px 0px;
+	cursor: pointer;
+}
+
+.UIProfile .ContainerSpace .UIAction {
+	padding: 8px 0px;
+}
+
+.UIProfile .ContainerSpace .ButtonLeft {
+	background: url("background/LeftButton.gif") no-repeat left;
+	padding-left: 4px;
+	cursor: pointer;
+}
+
+.UIProfile .ContainerSpace .ButtonRight {
+	background: url( "background/RightButton.gif" ) no-repeat right;
+	padding-right: 4px;
+	cursor: pointer;
+}
+
+.UIProfile .ContainerSpace .ButtonMiddle {
+	background: url( "background/CenterButton.gif" ) repeat-x;
+	line-height: 29px;
+	padding: 0px 16px;
+	cursor: pointer;
+}
+
+.UIProfile .ContainerSpace .EditButtons {
+	float: right;
+}
+
+.UIProfile .LeftColumn .UserActivitiesLink {
+	padding-left: 50px;
+}
+
+.ContainerSpace .CommunityMane {
+	color: #0d6e8f;
+	height: 20px;
+	font-size: 11px;
+	font-family: tahoma;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+input.hint,textarea.hint {
+	color: #999999 !important;
+}
+
+.UITabPane .ContainerSpace .WaitingConfirmation {
+	padding-left: 5px;
+}
+
+.ContainerSpace .NotYet {
+	color: #FF0000;
+	text-align: center;
+}
+
+.ContainerSpace .NoneExperience {
+	text-align: center;
+}

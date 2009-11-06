@@ -331,12 +331,6 @@
 .UIProfileSpace .Title {
     display:inline;
 }
-
-
-
-
-
- 
  
 .UIUserListPortlet {
   padding:4px;
@@ -437,7 +431,7 @@
 	text-align: left;
 }
 
-UIProfileSpace .PortletContent .NotYet {
+.UIProfileSpace .ContainerSpace .PortletContent .NotYet {
 	color:#FF0000;
 	text-align:center;
 }

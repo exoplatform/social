@@ -38,7 +38,7 @@
 	    <% } else {
 		    		if (isEditable) { %>
 				      <%uicomponent.setValue();%>
-				      <% uiform.renderChild(UIFormStringInput.class) %> (<a style="color: #058ee6;" href="<%=uicomponent.event("Save") %>">Send</a>)
+				      <% uiform.renderChild(UIFormStringInput.class) %> (<a style="color: #058ee6;" href="<%=uicomponent.event("Save") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></a>)
 		      <%} else {%>
 		      	<%=position%>
 		      <%}%>

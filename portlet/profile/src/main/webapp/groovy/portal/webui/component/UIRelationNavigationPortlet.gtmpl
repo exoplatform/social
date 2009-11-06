@@ -35,7 +35,7 @@
   }
 %>
 <div class="UIRelationNavigationPortlet" id="$uicomponent.id">
-	<div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></div>
+	<div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Relation")%></div>
 	<div class="UIVerclTab">
 	  <% if (selectedNode == "yours")  {%>
 	  <div class="SelectedTab Tab">

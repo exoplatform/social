@@ -118,7 +118,7 @@
     <%if (exp != null) {%>
     <%if (currentExp.size() != 0) { %>
     <div class="CurrentExperience" style="background:#efefef none; padding-left: 8px;">
-    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b>Current</b></div>
+    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Current")%></b></div>
     <%  currentExp.each {
 		      def position = it.get("position");
 		      def company = it.get("company");
@@ -142,7 +142,7 @@
     <% } %>
     <%if (pastExp.size() != 0) { %>
     <div class="PassExperience" style="background:#d5d5d5 none; padding-left: 8px;">
-    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b>Past</b></div>
+    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Past")%></b></div>
     <%  pastExp.each {
 		      def position = it.get("position");
 		      def company = it.get("company");

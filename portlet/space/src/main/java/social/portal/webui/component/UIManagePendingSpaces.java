@@ -16,6 +16,7 @@
  */
 package social.portal.webui.component;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -117,18 +118,20 @@ public class UIManagePendingSpaces extends UIContainer {
     List<Space> spaceList = getSpaces_();
     List<Space> allPendingSpace = getAllPendingSpaces();
     if (allPendingSpace.size() == 0) return allPendingSpace;
+    List<Space> pendingSpaces = new ArrayList<Space>();
     if(spaceList != null) {
       Iterator<Space> spaceItr = spaceList.iterator();
       while(spaceItr.hasNext()) {
         Space space = spaceItr.next();
         for(Space pendingSpace : allPendingSpace) {
-          if(!space.getId().equals(pendingSpace.getId())){
-            spaceItr.remove();
+          if(space.getName().equals(pendingSpace.getName())){
+            pendingSpaces.add(space);
+            break;
           }
         }
       }
     
-      return spaceList;
+      return pendingSpaces;
     }
     
     return allPendingSpace;

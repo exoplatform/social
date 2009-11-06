@@ -114,6 +114,7 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   var DOMUtil = eXo.core.DOMUtil;
   var searchEl = DOMUtil.findAncestorByClass(element, 'UIProfileUserSearch');
   var componentId = searchEl.id;
+  this.createId(componentId);
   var filterEl = document.getElementById(this.filterId);
   var userContact="";
   var position="";
@@ -121,7 +122,7 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   var company="";
   
   if (element.id != 'searchAll') {
-	  userContact = element.value;
+	  userContact = document.getElementById(this.searchId).value;
 	  this.searchAll = false;
   } else {
 	  this.searchAll = true;
@@ -137,7 +138,7 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   if (position == this.defaultPos)  position = "";
   if (company == this.defaultComp)  company = "";
   if (gender == this.defaultGender) gender = "";
-
+  
   if(searchEl != null ) {
 	var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
 	if (portletFragment != null) {

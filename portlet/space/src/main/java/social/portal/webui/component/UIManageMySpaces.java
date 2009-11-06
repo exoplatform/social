@@ -231,19 +231,21 @@ public class UIManageMySpaces extends UIContainer {
   private List<Space> getMySpace() throws Exception {
     List<Space> spaceList = getSpaces_();
     List<Space> allUserSpace = getAllUserSpaces();
+    List<Space> mySpaces = new ArrayList<Space>();
     if (allUserSpace.size() == 0) return allUserSpace;
     if(spaceList != null) {
       Iterator<Space> spaceItr = spaceList.iterator();
       while(spaceItr.hasNext()) {
         Space space = spaceItr.next();
         for(Space userSpace : allUserSpace) {
-          if(!space.getId().equals(userSpace.getId())){
-            spaceItr.remove();
+          if(space.getName().equalsIgnoreCase(userSpace.getName())){
+            mySpaces.add(space);
+            break;
           }
         }
       }
     
-      return spaceList;
+      return mySpaces;
     }
     
     return allUserSpace;

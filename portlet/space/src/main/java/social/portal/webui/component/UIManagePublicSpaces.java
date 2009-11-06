@@ -98,22 +98,24 @@ public class UIManagePublicSpaces extends UIContainer {
     List<Space> spaceList = getSpaces_();
     List<Space> allPublicSpace = getAllPublicSpaces();
     if (allPublicSpace.size() == 0) return allPublicSpace;
+    List<Space> publicSpaces = new ArrayList<Space>();
     if(spaceList != null) {
       Iterator<Space> spaceItr = spaceList.iterator();
       while(spaceItr.hasNext()) {
         Space space = spaceItr.next();
         for(Space publicSpace : allPublicSpace) {
-          if(!space.getId().equals(publicSpace.getId())){
-            spaceItr.remove();
+          if(space.getName().equals(publicSpace.getName())){
+            publicSpaces.add(space);
+            break;
           }
         }
       }
     
-      return spaceList;
+      return publicSpaces;
     }
     
     return allPublicSpace;
-}
+ }
   
   /**
    * Get all public spaces of a user

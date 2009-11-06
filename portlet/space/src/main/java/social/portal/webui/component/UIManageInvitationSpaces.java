@@ -16,6 +16,7 @@
  */
 package social.portal.webui.component;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -151,19 +152,21 @@ public class UIManageInvitationSpaces extends UIContainer {
   private List<Space> getSpaceList() throws Exception {
     List<Space> spaceList = getSpaces_();
     List<Space> allInvitationSpace = getInvitationSpaces();
+    List<Space> invitedSpaces = new ArrayList<Space>();
     if (allInvitationSpace.size() == 0) return allInvitationSpace;
     if(spaceList != null) {
       Iterator<Space> spaceItr = spaceList.iterator();
       while(spaceItr.hasNext()) {
         Space space = spaceItr.next();
         for(Space invitationSpace : allInvitationSpace) {
-          if(!space.getId().equals(invitationSpace.getId())){
-            spaceItr.remove();
+          if(space.getName().equals(invitationSpace.getName())){
+            invitedSpaces.add(space);
+            break;
           }
         }
       }
     
-      return spaceList;
+      return invitedSpaces;
     }
     
     return allInvitationSpace;

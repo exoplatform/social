@@ -28,6 +28,7 @@
 	def adminLabel = _ctx.appRes("${uicomponentId}.label.Admin")
 	def administratorLabel = _ctx.appRes("${uicomponentId}.label.Administrator")
 	def spaceMemberLabel = _ctx.appRes("${uicomponentId}.label.SpaceMember")
+	def labelUserList = _ctx.appRes("${uicomponentId}.label.UserList")
 	def leaderList = uicomponent.getLeaderList()
 	def memberList = uicomponent.getMemberList()
 	def space = uicomponent.getSpace();
@@ -36,7 +37,7 @@
 	def position = "";
 %>
 
-<div class="ActivitiesTitleBarM">USER LIST</div>
+<div class="ActivitiesTitleBarM">$labelUserList</div>
 <div class="UIProfileSpace" >
 	<div class="LeftColumn">
 		<%
@@ -60,7 +61,6 @@
 				<h2>$spaceName</h2>
 				<span>$visibility</span>
 		</div>
-
 				<div id="" class="TitleBar">
 					<div class="ATitleBarL">
 						<div class="ATitleBarR">

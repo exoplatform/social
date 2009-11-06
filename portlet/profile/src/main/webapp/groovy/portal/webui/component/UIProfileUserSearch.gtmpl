@@ -19,7 +19,7 @@
 <%
 def uicomponentId = uicomponent.id;
 
-def contactSearchLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
+def findContactLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
 def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
 def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreLabel");
 def hideLabel = _ctx.appRes("${uicomponentId}.label.HideLabel");
@@ -47,7 +47,7 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 <div class="UIProfileUserSearch" id="$uicomponentId">
  <div class="SearchSpaces" name="SearchSpaces">
 	<div class="SearchSpacesR ClearFix">
-	  <div class="Lable">${contactSearchLabel}</div>
+	  <div class="Lable">${findContactLabel} :</div>
 	  <input type="text" id="$searchId" style="color: #C7C7C7" class="Search" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$nameDefaultVal')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$nameDefaultVal')" value="$nameDefaultVal"/>
 	  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
 	  <div style="clear: left;"><span></span></div>

@@ -17,7 +17,7 @@
 
 -->
 <div class="UIProfilePortlet" id="$uicomponent.id">
-	<div class="ActivitiesTitleBarM">
+	<div class="ProfileTitleBarM">
 		<%=_ctx.appRes(uicomponent.getId() + ".label.Public")%>
 	</div>
   <% uicomponent.renderChildren(); %>

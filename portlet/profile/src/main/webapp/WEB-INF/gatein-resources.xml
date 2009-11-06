@@ -31,7 +31,7 @@
 		<application-name>profile</application-name>
 		<portlet-name>profile</portlet-name>
 		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIRelationshipPortlet/DefaultStylesheet.css</css-path>
+		<css-path>/skin/portal/webui/component/UIProfilePortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
 	
 	<portlet-skin>

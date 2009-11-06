@@ -30,6 +30,7 @@
 	
 	def uicomponentId = uicomponent.id
 	def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
+	def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
 	def labelActionEditSpaceNavigation = _ctx.appRes("${uicomponentId}.label.action_edit_space_navigation")
 	def labelActionDeleteSpace = _ctx.appRes("${uicomponentId}.label.action_delete_space")
 	def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
@@ -56,7 +57,7 @@
 	<div class="BoxSpaceList">
 		<div class="CenterTitleBox">
 			<div class="LeftTitleBox">
-				<div class="RightTitleBox">Space Listing</div>
+				<div class="RightTitleBox">$labelSpaceListing</div>
 			</div>
 		</div>
   <%if ((userSpaces.size() == 0)) {%>
@@ -109,7 +110,7 @@
 						<div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
 						<div class="ClearBoth"><span></span></div>
 					</div>
-					<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> members
+					<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> $fieldLabelMembers
 						<br/><%= space.description %>
 					</div>
 				</div>
@@ -125,7 +126,7 @@
 					<div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
 					<div class="ClearBoth"><span></span></div>
 				</div>
-				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> members
+				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> $fieldLabelMembers
 					<br/><%= space.description %>
 				</div>
 			</div>
