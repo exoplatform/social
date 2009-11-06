@@ -152,7 +152,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
       activity.setUrl(exoActivity.getUrl());
       activity.setUserId(exoActivity.getUserId());
       activity.setUpdated(new Date(exoActivity.getUpdated()));
-      activity.setPostedTime(exoActivity.getUpdated());
+      activity.setPostedTime(exoActivity.getPostedTime());
       return activity;
     }
 

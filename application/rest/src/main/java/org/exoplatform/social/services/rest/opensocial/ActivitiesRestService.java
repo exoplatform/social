@@ -244,16 +244,16 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    */
   private List<LikeInfoModel> getLikeInfos(List<String> ids) throws Exception {
-    String thumbnail = null;
     String userName = null;
     String fullName = null;
     Profile profile = null;
-    ProfileAttachment att = null;
     Identity identity = null;
     LikeInfoModel likeInfo = null;
     IdentityManager im = getIdentityManager();
     List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
     for (String id : ids) {
+      String thumbnail = null;
+      ProfileAttachment att = null;
       identity = im.getIdentityById(id);
       profile = identity.getProfile();
       userName =(String) profile.getProperty("username");

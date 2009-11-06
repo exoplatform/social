@@ -359,34 +359,6 @@ eXo.social.Util.makeRequest = function(url, callback, opt_refreshInterval, opt_m
  */
 eXo.social.Util.toPrettyTime = function(date) {
 	var Locale = eXo.social.Locale;
-	if (isNaN(date)) {
-	    return Locale.getMsg('an_undetermined_amount_of_time_ago');
-	}
-	time = (new Date().getTime() - date) / 1000;
-	
-	if (time < 60) {
-	    return Locale.getMsg('less_than_a_minute_ago');
-	} else {
-	    if (time < 120) {
-	        return Locale.getMsg('about_a_minute_ago');
-	    } else {
-	        if (time < 3600) {
-	            var mins = Math.round(time / 60);
-	            return Locale.getMsg('about_0_minutes_ago', [mins]);
-	        } else {
-	            if (time < 7200) {
-	                return Locale.getMsg('about_an_hour_ago');
-	            } else {
-	                if (time < 86400) {
-	                    var hours = Math.round(time / 3600);
-	                    return Locale.getMsg('about_0_hours_ago', [hours]);
-	                } else {
-	                	return '' + getPostedDate(date);
-	                }
-	            }
-	        }
-	    }
-	}
 	var getPostedDate = function(date) {
 		var dayNames = ["sunday", "monday", "tuesday",
 		"wednesday", "thursday", "friday", "saturday"];
@@ -398,8 +370,8 @@ eXo.social.Util.toPrettyTime = function(date) {
 			dayNames[i] = Locale.getMsg(dayNames[i]);
 		}
 		
-		for (var i = 0, l = monthName.length; i < l; i++) {
-			monthNames = Locale.getMsg(monthNames[i]);
+		for (var i = 0, l = monthNames.length; i < l; i++) {
+			monthNames[i] = Locale.getMsg(monthNames[i]);
 		}
 	
 		var currentMonth = date.getMonth();
@@ -432,4 +404,35 @@ eXo.social.Util.toPrettyTime = function(date) {
 		return Locale.getMsg('day_date_month_year_at_hour_min_ap',
 							[dayNames[currentDay], currentDate, monthNames[currentMonth], currentYear, currentHour, currentMin, ap]);
 	}
+	
+	if (isNaN(date)) {
+	    return Locale.getMsg('an_undetermined_amount_of_time_ago');
+	}
+	
+	time = (new Date().getTime() - date.getTime()) / 1000;
+	
+	if (time < 60) {
+	    return Locale.getMsg('less_than_a_minute_ago');
+	} else {
+	    if (time < 120) {
+	        return Locale.getMsg('about_a_minute_ago');
+	    } else {
+	        if (time < 3600) {
+	            var mins = Math.round(time / 60);
+	            return Locale.getMsg('about_0_minutes_ago', [mins]);
+	        } else {
+	            if (time < 7200) {
+	                return Locale.getMsg('about_an_hour_ago');
+	            } else {
+	                if (time < 86400) {
+	                    var hours = Math.round(time / 3600);
+	                    return Locale.getMsg('about_0_hours_ago', [hours]);
+	                } else {
+	                	return '' + getPostedDate(date);
+	                }
+	            }
+	        }
+	    }
+	}
+
 }

@@ -171,9 +171,10 @@ eXo.social.Like.ref = {
 	}
 	var listPeople = Util.getElementById('ListPeople' + activityId);
 	var html = [];
-	var thumbnail = eXo.social.StatusUpdate.config.path.ROOT_PATH + '/style/images/AvatarPeople.gif';
+	
 	if (likeInfos !== null) {
 		for(var i = 0, length = likeInfos.length; i < length; i++) {
+			var thumbnail = eXo.social.StatusUpdate.config.path.ROOT_PATH + '/style/images/AvatarPeople.gif';
 			if (likeInfos[i].thumbnail !== null)	thumbnail = likeInfos[i].thumbnail;
 			html.push('<a href="#UserId"  class="AvatarPeopleBG">');
 				html.push('<img title="' + likeInfos[i].fullName + '" alt="" height="47px" width="47px" src="' + thumbnail + '" />');
