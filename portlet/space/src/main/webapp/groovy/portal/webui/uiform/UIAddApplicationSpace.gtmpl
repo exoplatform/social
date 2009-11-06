@@ -35,13 +35,13 @@
 					<div class="CommunityMane Line">
 						<div style="float: left;" class="CommunityName"><%= app.getDisplayName() %></div>
 						<div class="SpaceAction">
-              <div class="LeftButton">
+							<div class="LeftButton">
 						    <div class="RightButton">
 									<% String installAction = uicomponent.event("Install",app.getApplicationName()) + "; return false;"%>
-						      <div class="CenterButton" onclick="$installAction"> Install</div>
+						      <div class="InstallAppButton" onclick="$installAction"><span></span></div>
 						    </div>
 						  </div>
-            </div>
+						</div>
 						<div style="clear: both;"><span/></div>
 					</div>
 					<div class="Text"><%= app.getDescription() %></div>
