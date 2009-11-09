@@ -18,38 +18,75 @@
 
 -->
 <portal-config>
-  <portal-name>@owner@</portal-name>
+  <portal-name>classic</portal-name>
   <locale>en</locale>
   <!--<factory-id>office</factory-id>-->
   <access-permissions>Everyone</access-permissions>
   <edit-permission>*:/platform/administrators</edit-permission>
-  <creator>root</creator>
-    <properties>
+  <creator>root</creator>    
+  <properties>
     <entry key="sessionAlive">onDemand</entry>
   </properties>
+    
  	<portal-layout>
-		<application>
-	    <instance-id>portal#@owner@:/web/BannerPortlet/banner</instance-id>
+ 		<portlet-application>
+      <portlet>
+        <application-ref>space</application-ref>
+        <portlet-ref>BannerPortlet</portlet-ref>
+        <preferences>
+          <preference>
+            <name>template</name>
+            <value>par:/groovy/portal/webui/component/UIBannerPortlet.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>
+        </preferences>
+      </portlet>
+      <access-permissions>Everyone</access-permissions>
 	    <show-info-bar>false</show-info-bar>
-	  </application>
-
-	  <application>
-	  	<instance-id>portal#@owner@:/web/SocialNavigationPortlet/toolbar</instance-id>
-	    <show-info-bar>false</show-info-bar>
-	  </application>
-		
-	  <application>
-	    <instance-id>portal#@owner@:/web/BreadcumbsPortlet/breadcumbs</instance-id>
-	    <show-info-bar>false</show-info-bar>
-	  </application>
+	  </portlet-application> 		
 	  
-	
+	  <portlet-application>
+      <portlet>
+        <application-ref>space</application-ref>
+        <portlet-ref>SocialNavigationPortlet</portlet-ref>
+        <preferences>
+          <preference>
+            <name>useAJAX</name>
+			      <value>false</value>
+			      <read-only>false</read-only>
+          </preference>
+        </preferences>
+      </portlet>
+      <access-permissions>Everyone</access-permissions>
+	    <show-info-bar>false</show-info-bar>
+	  </portlet-application>
+		
+		<portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>BreadcumbsPortlet</portlet-ref>
+      </portlet>
+      <access-permissions>Everyone</access-permissions>
+	    <show-info-bar>false</show-info-bar>
+	  </portlet-application>
+	    
 	  <page-body> </page-body>
 	  
-	  <application>
-	    <instance-id>portal#@owner@:/web/FooterPortlet/footer</instance-id>
-	    <show-info-bar>false</show-info-bar>
-	  </application>
+	  <portlet-application>
+       <portlet>
+         <application-ref>web</application-ref>
+         <portlet-ref>FooterPortlet</portlet-ref>
+         <preferences>
+           <preference>
+             <name>template</name>
+             <value>par:/groovy/groovy/webui/component/UIFooterPortlet.gtmpl</value>
+             <read-only>false</read-only>
+           </preference>
+         </preferences>
+       </portlet>
+       <access-permissions>Everyone</access-permissions>
+       <show-info-bar>false</show-info-bar>
+     </portlet-application>
   </portal-layout>
   
 </portal-config>
