@@ -49,15 +49,16 @@
 }
 
 .UIPublicSpacePortlet .CenterContentInput input {
-	height: 18px;
 	background: #fff;
 	border: 1px solid #b8b8b8;
-	padding: 0px 3px;
 	color: #cbcbcb;
 }
 
 .UIPublicSpacePortlet .CenterContentInput .InputSearch {
 	background: #fff url('background/IconSearch.gif') no-repeat right top;
+	border:1px solid #B7B7B7;
+	float:left;
+	font-size:11px;
 }
 
 .UIPublicSpacePortlet .CenterContentInput select {
@@ -67,7 +68,6 @@
 	padding-left: 3px;
 	color: #cbcbcb;
 }
-
 
 .UIPublicSpacePortlet .BoxSpaceList {
 	margin-bottom: 8px;

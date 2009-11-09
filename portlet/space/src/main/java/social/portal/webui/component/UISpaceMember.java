@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -103,6 +104,7 @@ public class UISpaceMember extends UIForm {
   private final String iteratorPenddingID = "UIIteratorPendding";
   private final String iteratorInvitedID = "UIIteratorInvited";
   private final String iteratorExistingID = "UIIteratorExisting";
+  private final Integer ITEMS_PER_PAGE = 5;
   
   public UISpaceMember() throws Exception {
     addUIFormInput(new UIFormStringInput(user,null,null)
@@ -152,8 +154,17 @@ public class UISpaceMember extends UIForm {
     if(pendingUsers != null) {
       pendingUsersList.addAll(Arrays.asList(pendingUsers));
     }    
-    PageList pageList = new ObjectPageList(pendingUsersList,5);
+    
+    int currentPage = iteratorPenddingUsers.getCurrentPage();
+    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(pendingUsersList), ITEMS_PER_PAGE);
     iteratorPenddingUsers.setPageList(pageList);
+    int pageCount = iteratorPenddingUsers.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iteratorPenddingUsers.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iteratorPenddingUsers.setCurrentPage(currentPage - 1);
+    }
+    
     return iteratorPenddingUsers.getCurrentPageData();
   }
     
@@ -166,8 +177,17 @@ public class UISpaceMember extends UIForm {
     if(invitedUsers != null) {
       invitedUsersList.addAll(Arrays.asList(invitedUsers));
     }       
-    PageList pageList = new ObjectPageList(invitedUsersList,5);
+    
+    int currentPage = iteratorInvitedUsers.getCurrentPage();
+    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(invitedUsersList), ITEMS_PER_PAGE);
     iteratorInvitedUsers.setPageList(pageList);
+    int pageCount = iteratorInvitedUsers.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iteratorInvitedUsers.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iteratorInvitedUsers.setCurrentPage(currentPage - 1);
+    }
+    
     return iteratorInvitedUsers.getCurrentPageData();
   }
   
@@ -175,8 +195,17 @@ public class UISpaceMember extends UIForm {
   public List<String> getExistingUsers() throws Exception {    
     SpaceService spaceService = getSpaceService();
     Space space  = spaceService.getSpaceById(spaceId);
-    PageList pageList = new ObjectPageList(spaceService.getMembers(space),5);
+    
+    int currentPage = iteratorExistingUsers.getCurrentPage();
+    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(spaceService.getMembers(space)), ITEMS_PER_PAGE);
     iteratorExistingUsers.setPageList(pageList);
+    int pageCount = iteratorExistingUsers.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iteratorExistingUsers.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iteratorExistingUsers.setCurrentPage(currentPage - 1);
+    }
+    
     return iteratorExistingUsers.getCurrentPageData();
   }
 

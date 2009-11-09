@@ -23,7 +23,9 @@
 	import org.exoplatform.services.organization.User;
 	import org.exoplatform.social.space.Space;
 	
-	UIPageIterator iterator = uicomponent.getUIPageIterator()
+	UIPageIterator iteratorLeaders = uicomponent.getIteratorLeaders()
+	UIPageIterator iteratorMembers = uicomponent.getIteratorMembers() 
+	System.out.println("\n\n\n\n\n\n\n  ========== " + iteratorLeaders.getAvailablePage());
 	def uicomponentId = uicomponent.getId()
 	def adminLabel = _ctx.appRes("${uicomponentId}.label.Admin")
 	def administratorLabel = _ctx.appRes("${uicomponentId}.label.Administrator")
@@ -36,7 +38,7 @@
 	def spaceName = space.getName();
 	def position = "";
 %>
-
+<div class="UIUserListPortlet" id="$uicomponentId">
 <div class="ActivitiesTitleBarM">$labelUserList</div>
 <div class="UIProfileSpace" >
 	<div class="LeftColumn">
@@ -103,7 +105,12 @@
 					<div style="clear: left;"><span><span/></div>
 				</div>
 				<% } %>
-		
+				<%
+					if(iteratorLeaders.getAvailablePage() > 1) {
+						uicomponent.renderUIComponent(iteratorLeaders) ;
+					}
+				%>
+				
 				<div id="" class="TitleBar">
 					<div class="ATitleBarL">
 						<div class="ATitleBarR">
@@ -146,10 +153,16 @@
 					<div style="clear: left;"><span><span/></div>
 				</div>
 			<% } %>
+			<%
+				if(iteratorMembers.getAvailablePage() > 1) {
+					uicomponent.renderUIComponent(iteratorMembers) ;
+				}
+			%>
 			<%} else {%>
 			<div class="PortletContent">
 				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
 			</div>
 			<% } %>
 	</div>
+</div>
 </div>

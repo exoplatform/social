@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
@@ -49,7 +50,9 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
+import social.portal.webui.component.StringListAccess;
 import social.portal.webui.component.UISpaceUserSearch;
+import social.portal.webui.component.UserListAccess;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -72,13 +75,20 @@ public class UIUserListPortlet extends UIPortletApplication {
   private UIPageIterator iterator_;
   private List<User> memberList;
   private List<User> leaderList;
-  private final Integer ITEMS_PER_PAGE = 3;
+  private UIPageIterator iteratorLeaders;
+  private UIPageIterator iteratorMembers;
+  private final String iteratorLeaderID = "UIIteratorLeader";
+  private final String iteratorMemberID = "UIIteratorMember";
+  private final Integer ITEMS_PER_PAGE = 1;
   private IdentityManager identityManager_ = null;
   
   public UIUserListPortlet() throws Exception {
     iterator_ = createUIComponent(UIPageIterator.class, null, null);
     addChild(iterator_);
-    
+    iteratorLeaders = createUIComponent(UIPageIterator.class, null, iteratorLeaderID);
+    iteratorMembers = createUIComponent(UIPageIterator.class, null, iteratorMemberID);
+    addChild(iteratorLeaders);
+    addChild(iteratorMembers);
     addChild(UISpaceUserSearch.class,null , null);
     initMember();
     initLeader();
@@ -88,17 +98,42 @@ public class UIUserListPortlet extends UIPortletApplication {
     this.memberList = memberList;
   }
   
-  public List<User> getMemberList() {
-    return memberList;
+  public List<User> getMemberList() throws Exception {
+    int currentPage = iteratorMembers.getCurrentPage();
+    LazyPageList<User> pageList = new LazyPageList<User>(new UserListAccess(memberList), ITEMS_PER_PAGE);
+    iteratorMembers.setPageList(pageList);
+    int pageCount = iteratorMembers.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iteratorMembers.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iteratorMembers.setCurrentPage(currentPage - 1);
+    }
+    
+    return iteratorMembers.getCurrentPageData();
   }
   
   public void setLeaderList(List<User> leaderList) {
     this.leaderList = leaderList;
   }
   
-  public List<User> getLeaderList() {
-    return leaderList;
+  public List<User> getLeaderList() throws Exception {
+    int currentPage = iteratorLeaders.getCurrentPage();
+    LazyPageList<User> pageList = new LazyPageList<User>(new UserListAccess(leaderList), ITEMS_PER_PAGE);
+    iteratorLeaders.setPageList(pageList);
+    int pageCount = iteratorLeaders.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iteratorLeaders.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iteratorLeaders.setCurrentPage(currentPage - 1);
+    }
+    
+    return iteratorLeaders.getCurrentPageData();
   }
+
+  
+  public UIPageIterator getIteratorLeaders() { return iteratorLeaders; }
+
+  public UIPageIterator getIteratorMembers() { return iteratorMembers; }
 
   public String getUserAvatar(String userId) throws Exception {
     Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
@@ -134,6 +169,7 @@ public class UIUserListPortlet extends UIPortletApplication {
         itr.remove();
       }
     }
+    
     for (String name : userNames) {
       memberList.add(userHandler.findUserByName(name));
     }

@@ -92,6 +92,13 @@
 	
 	<portlet-skin>
 		<application-name>space</application-name>
+		<portlet-name>MySpacePortlet</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIMySpacePortlet/DefaultStylesheet.css</css-path>
+	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>space</application-name>
 		<portlet-name>PublicSpacePortlet</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIPublicSpacePortlet/DefaultSkin/DefaultStylesheet.css</css-path>
@@ -104,13 +111,11 @@
 		<css-path>/skin/portal/webui/component/UIInvitationSpacePortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
 	
-	
 	<portlet-skin>
 		<application-name>space</application-name>
 		<portlet-name>PendingSpacePortlet</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIPendingSpacePortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
-			
 </gatein-resources>
 
