@@ -35,7 +35,8 @@ function getProduct(version) {
   var portal = Module.GetModule("portal", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr});
 	var social = Module.GetModule("social", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr, portal:portal});
   
-	product.addDependencies(social.web.socialportal) ;
+	//product.addDependencies(social.web.socialportal) ;
+  product.addDependencies(social.extension.war) ;
   product.addDependencies(social.web.eXoResources) ;
   product.addDependencies(social.component.people) ;
   product.addDependencies(social.component.space) ;
@@ -52,14 +53,18 @@ function getProduct(version) {
   product.addDependencies(portal.eXoGadgetServer) ;
   product.addDependencies(portal.eXoGadgets) ;
   product.addDependencies(portal.webui.portal);
-  
+
   product.addDependencies(portal.web.eXoResources);
 
-  product.addDependencies(portal.web.portal) ;
-  product.addDependencies(portal.sample.extension) ;
+  product.addDependencies(portal.web.portal);
 
-  product.addServerPatch("tomcat", portal.server.tomcat.patch) ;
-  product.addServerPatch("jboss",  portal.server.jboss.patch) ;
+	// starter for social
+	portal.starter = new Project("org.exoplatform.portal", "exo.portal.starter.war", "war", portal.version);
+	portal.starter.deployName = "starter";
+	product.addDependencies(portal.starter);
+
+  product.addServerPatch("tomcat", portal.server.tomcat.patch);
+  product.addServerPatch("jboss",  portal.server.jboss.patch);
   product.addServerPatch("jbossear",  portal.server.jbossear.patch);
 
 	product.removeDependency(new Project("org.exoplatform.jcr", "exo.jcr.component.ftp", "jar", eXoJcr.version));

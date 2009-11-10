@@ -27,10 +27,10 @@ function getModule(params) {
 	new Project("org.exoplatform.social", "exo.social.component.opensocial","jar", module.version);
 
   module.web = {} ;
-  module.web.socialportal = 
+  /*module.web.socialportal = 
     new Project("org.exoplatform.social", "exo.social.web.portal", "exo-portal", module.version).
     addDependency(jcr.frameworks.command).
-    addDependency(jcr.frameworks.web);
+    addDependency(jcr.frameworks.web);*/
 	
   module.web.eXoResources = new Project("org.exoplatform.social", "exo.social.web.socialResources", "war", module.version);
   module.web.eXoResources.deployName = "eXoResourcesSocial" ;
@@ -58,6 +58,14 @@ function getModule(params) {
 
 
   module.web.opensocial.deployName = "social" ;
-	
+		
+	module.extension = {};
+	module.extension.jar = new Project("org.exoplatform.social", "exo.social.extension.jar","jar", module.version);
+	module.extension.config = new Project("org.exoplatform.social", "exo.social.extension.config","jar", module.version);
+	module.extension.war =
+   new Project("org.exoplatform.social", "exo.social.extension.war", "war", module.version).
+   addDependency(new Project("org.exoplatform.social", "exo.social.extension.jar", "jar", module.version)).
+   addDependency(new Project("org.exoplatform.social", "exo.social.extension.config", "jar", module.version));
+	module.extension.war.deployName = "social-ext";
   return module;
 }
