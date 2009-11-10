@@ -18,6 +18,7 @@ package org.exoplatform.social.space;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -125,6 +126,47 @@ public class SpaceUtils {
       }
     }
     return list;
+  }
+  
+  /**
+   * gets appStore of HashMap type with key = categoryName and value = list of applications
+   * @param space 
+   * @return appStore
+   * @throws Exception
+   */
+  static public HashMap<ApplicationCategory, List<Application>> getAppStore(Space space) throws Exception {
+    HashMap<ApplicationCategory, List<Application>> appStore = new HashMap<ApplicationCategory, List<Application>>();
+    ExoContainer exoContainer = ExoContainerContext.getCurrentContainer();
+    ApplicationRegistryService appRegistryService = (ApplicationRegistryService) exoContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+    String remoteUser = Util.getPortalRequestContext().getRemoteUser();
+    if (remoteUser == null || remoteUser.equals(""))
+       return appStore;
+    List<ApplicationCategory> categoryList = appRegistryService.getApplicationCategories(remoteUser);
+    Iterator<ApplicationCategory> cateItr = categoryList.iterator();
+//    String installedApps = space.getApp();
+    while(cateItr.hasNext()) {
+      ApplicationCategory appCategory = cateItr.next();
+//      if (!hasAccessPermission(appCategory, space.getGroupId())) {
+//        continue;
+//      }
+      List<Application> tempAppList = new ArrayList<Application>();
+      List<Application> appList = appRegistryService.getApplications(appCategory);
+      Iterator<Application> appItr = appList.iterator();
+      while (appItr.hasNext()) {
+        Application app = appItr.next();
+//        if (!hasAccessPermission(app, space.getGroupId())) {
+//          continue;
+//        } else if (installedApps.contains(app.getApplicationName())) {
+//          continue;
+//        }
+//        if (installedApps.contains(app.getApplicationName())) continue;
+        tempAppList.add(app);
+      }
+      if (tempAppList.size() > 0) {
+        appStore.put(appCategory, tempAppList);
+      }
+    }
+    return appStore;
   }
   
   /**
@@ -373,8 +415,8 @@ public class SpaceUtils {
   
   /**
    * Get PageNavigation from a space's groupId
-   * @param space
-   * @return
+   * @param groupId 
+   * @return pageNavigation
    * @throws Exception 
    */
   static public PageNavigation getGroupNavigation(String groupId) throws Exception {
@@ -417,7 +459,7 @@ public class SpaceUtils {
   /**
    * Utility for counting the number of members in a space
    * @param space
-   * @return
+   * @return the number of members
    * @throws SpaceException
    */
   static public int countMembers(Space space) throws SpaceException {
@@ -428,7 +470,7 @@ public class SpaceUtils {
   
   /**
    * Utility for getting absolute url
-   * @return
+   * @return absolute url
    * @throws SpaceException
    */
   static public String getAbsoluteUrl() throws SpaceException {

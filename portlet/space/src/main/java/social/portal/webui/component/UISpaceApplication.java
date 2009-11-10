@@ -17,9 +17,12 @@
 package social.portal.webui.component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.application.registry.Application;
+import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.social.space.Space;
@@ -67,19 +70,27 @@ public class UISpaceApplication extends UIForm {
     return iterator_.getCurrentPageData();
   }
   
+  /**
+   * sets space
+   * @param space
+   * @throws Exception
+   */
   public void setValue(Space space) throws Exception {
     space_ = space;
     List<Application> lists = new ArrayList<Application>();
-    List<Application> allApps = SpaceUtils.getApplications(space.getGroupId());
-    String spaceApps = space_.getApp();
-    if(spaceApps != null) {
-      String[] apps = spaceApps.split(",");
-      for(String obj : apps) {
-        String appId = obj.split(":")[0];
-        for(Application app : allApps) {
-          if(app.getApplicationName().equals(appId)) {
+    String installedApps = space.getApp();
+    if (installedApps != null) { 
+      HashMap<ApplicationCategory, List<Application>> appStore;
+      appStore = SpaceUtils.getAppStore(space);
+      Iterator<ApplicationCategory> appCategoryItr = appStore.keySet().iterator();
+      while (appCategoryItr.hasNext()) {
+        ApplicationCategory category = appCategoryItr.next();
+        List<Application> appList = appStore.get(category);
+        Iterator<Application> appListItr = appList.iterator();
+        while (appListItr.hasNext()) {
+          Application app = appListItr.next();
+          if (installedApps.contains(app.getApplicationName())) {
             lists.add(app);
-            break;
           }
         }
       }
@@ -94,8 +105,8 @@ public class UISpaceApplication extends UIForm {
     public void execute(Event<UISpaceApplication> event) throws Exception {
       UISpaceApplication uiSpaceApp = event.getSource();
       UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
-      UIAddApplicationSpace uiaddApplication = (UIAddApplicationSpace)uiPopup.activate(UIAddApplicationSpace.class, 600);
-      uiaddApplication.setSpaceId(uiSpaceApp.space_.getId());
+      UISpaceApplicationList uiSpaceAppList = (UISpaceApplicationList) uiPopup.activate(UISpaceApplicationList.class, 400);
+      uiSpaceAppList.setSpace(uiSpaceApp.space_);
       uiPopup.getChild(UIPopupWindow.class).setId("AddApplication");
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }

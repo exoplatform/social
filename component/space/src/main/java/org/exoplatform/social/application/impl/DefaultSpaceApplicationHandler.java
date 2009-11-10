@@ -17,9 +17,12 @@
 package org.exoplatform.social.application.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.application.registry.Application;
+import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserACL;
@@ -32,8 +35,11 @@ import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.TransientApplicationState;
+import org.exoplatform.portal.config.model.gadget.GadgetApplication;
+import org.exoplatform.portal.config.model.gadget.GadgetId;
 import org.exoplatform.portal.config.model.portlet.PortletApplication;
 import org.exoplatform.portal.config.model.portlet.PortletId;
+import org.exoplatform.portal.pom.spi.portlet.Preferences;
 import org.exoplatform.portal.webui.application.PortletState;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
@@ -239,6 +245,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * @param apps
    * @param appId
    * @return
+   * @deprecated
    */
   private Application getApplication(List<Application> apps, String appId) {
     for(Application app : apps) {
@@ -258,25 +265,41 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   @SuppressWarnings("unchecked")
   private PageNode createPageNodeFromApplication(Space space, String appId, boolean isRoot) throws SpaceException {
     //create application
-    List<Application> apps;
+    HashMap<ApplicationCategory, List<Application>> appStore;
+    Application app;
     try {
-      apps = SpaceUtils.getApplications(space.getGroupId());
+      appStore = SpaceUtils.getAppStore(space);
+      app = getApplication(appStore, appId);
+      if (app == null) {
+        throw new Exception("app is null!");
+      }
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
     }
-    Application app = getApplication(apps, appId);
+    String appType = app.getApplicationType();
+    ApplicationType<?, ?> applicationType = null;
+    if (appType.equals(org.exoplatform.web.application.Application.EXO_GADGET_TYPE)) {
+       applicationType = ApplicationType.GADGET;
+    } else if (appType.equals(org.exoplatform.web.application.Application.EXO_PORTLET_TYPE)) {
+       applicationType = ApplicationType.PORTLET;
+    }
+    Object applicationId = null;
+    org.exoplatform.portal.config.model.Application<?, ?> child = null;
+    if (applicationType == ApplicationType.PORTLET) {
+       applicationId = new PortletId(app.getApplicationGroup(), app.getApplicationName());
+       child = new PortletApplication(app.getApplicationGroup(), app.getApplicationName());
+    }  else if (applicationType == ApplicationType.GADGET) {
+       applicationId = new GadgetId(app.getApplicationName());
+       child = new GadgetApplication(app.getApplicationName());
+    }
     
-    PortletApplication child = new PortletApplication(app.getApplicationGroup(), app.getApplicationName());
     child.setShowInfoBar(false);
-    
     // create state
     org.exoplatform.portal.config.model.TransientApplicationState<?> applicationState = new TransientApplicationState();
     applicationState.setOwnerType(PortalConfig.GROUP_TYPE);
     applicationState.setOwnerId(space.getGroupId());
-    Object applicationId = new PortletId(app.getApplicationGroup(), app.getApplicationName());
-    PortletState portletState = new PortletState(applicationState, ApplicationType.PORTLET, applicationId);
+    PortletState portletState = new PortletState(applicationState, applicationType, applicationId);
     child.setState(portletState.getApplicationState());
-
     //create new Page
     Page page = null;
     try {
@@ -332,6 +355,27 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     return pageNode;
   }
   
+  /**
+   * gets application
+   * @param appStore
+   * @param appId
+   * @return app or null
+   */
+  private Application getApplication(HashMap<ApplicationCategory, List<Application>> appStore,
+                                     String appId) {
+    Iterator<ApplicationCategory> categoryItr = appStore.keySet().iterator();
+    while (categoryItr.hasNext()) {
+      ApplicationCategory category = categoryItr.next();
+      List<Application> appList = appStore.get(category);
+      Iterator<Application> appListItr = appList.iterator();
+      while(appListItr.hasNext()) {
+        Application app = appListItr.next();
+        if (app.getApplicationName().equals(appId)) return app;
+      }
+    }
+    return null;
+  }
+
   /**
    * Find container by Id
    * @param childs
