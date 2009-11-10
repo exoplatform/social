@@ -309,6 +309,12 @@
         </object-param>
       </init-params>
     </component-plugin>
-
+		
+		<component-plugin>
+      <name>MembershipUpdateListener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.services.organization.impl.MembershipUpdateListener</type>
+    </component-plugin>
+		
   </external-component-plugins>
 </configuration>
