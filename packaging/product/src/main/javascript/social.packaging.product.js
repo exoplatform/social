@@ -35,8 +35,8 @@ function getProduct(version) {
   var portal = Module.GetModule("portal", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr});
 	var social = Module.GetModule("social", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr, portal:portal});
   
-	product.addDependencies(social.web.socialportal) ;
-  //product.addDependencies(social.extension.war) ;
+	//product.addDependencies(social.web.socialportal) ;
+  product.addDependencies(social.extension.war) ;
   product.addDependencies(social.web.eXoResources) ;
   product.addDependencies(social.component.people) ;
   product.addDependencies(social.component.space) ;
