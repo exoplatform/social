@@ -288,14 +288,14 @@
 	padding: 10px 7px 8px 7px;
 }
 
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable {
 	float: left;
 	padding: 4px 4px 4px 16px;
 	width: 100px;
 	text-align: right;
 }
 
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Lable{
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Lable {
 	float: left;
 	padding: 4px 4px 4px 16px;
 	width: 100px;
@@ -303,8 +303,8 @@
 	color: black;
 }
 
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search{
-	width: 256px;
+.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search {
+	width: 343px;
 	float: left;
 	background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
 	border: 1px solid #b7b7b7;

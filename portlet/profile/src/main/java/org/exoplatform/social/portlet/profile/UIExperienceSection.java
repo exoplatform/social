@@ -43,6 +43,7 @@ import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.DateTimeValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
@@ -70,6 +71,8 @@ public class UIExperienceSection extends UIProfileSection {
   final public static String COMPANY = "company";
   /** POSITION. */
   final public static String POSITION = "position";
+  /** POSITION. */
+  final public static String PROFESSIONAL = "professional";
   /** START DATE OF EXPERIENCE. */
   final public static String START_DATE = "startDate";
   /** END DATE OF EXPERIENCE. */
@@ -179,6 +182,7 @@ public class UIExperienceSection extends UIProfileSection {
       int blockIdx = Integer.parseInt(block);
       String companyId = null;
       String positionId = null;
+      String professionalId = null;
       String startDateId = null;
       String isCurrentId = null;
       String endDateId = null;
@@ -187,13 +191,15 @@ public class UIExperienceSection extends UIProfileSection {
 
       companyId = listChild.get(blockIdx).getId();
       positionId = listChild.get(blockIdx+1).getId();
-      startDateId = listChild.get(blockIdx+2).getId();
-      isCurrentId = listChild.get(blockIdx+3).getId();
-      endDateId = listChild.get(blockIdx+4).getId();
-      descriptionId = listChild.get(blockIdx+5).getId();
+      professionalId = listChild.get(blockIdx+2).getId();
+      startDateId = listChild.get(blockIdx+3).getId();
+      isCurrentId = listChild.get(blockIdx+4).getId();
+      endDateId = listChild.get(blockIdx+5).getId();
+      descriptionId = listChild.get(blockIdx+6).getId();
 
       uiForm.removeChildById(companyId);
       uiForm.removeChildById(positionId);
+      uiForm.removeChildById(professionalId);
       uiForm.removeChildById(startDateId);
       uiForm.removeChildById(isCurrentId);
       uiForm.removeChildById(endDateId);
@@ -233,6 +239,7 @@ public class UIExperienceSection extends UIProfileSection {
       int childSize = listChild.size() - 1; // List of children include UITitleBar child.
       String companyId = null;
       String positionId = null;
+      String professionalId = null;
       String startDateId = null;
       String isCurrentId = null;
       String endDateId = null;
@@ -240,9 +247,10 @@ public class UIExperienceSection extends UIProfileSection {
       
       experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(EXPERIENCE);
       if (experiences == null) {
-        for (int idx = 1; idx <= childSize; idx += 6) {
+        for (int idx = 1; idx <= childSize; idx += 7) {
           sect.removeChild(UIFormStringInput.class);
           sect.removeChild(UIFormStringInput.class);
+          sect.removeChild(UIFormTextAreaInput.class);
           sect.removeChild(UIFormDateTimeInput.class);
           sect.removeChild(UIFormCheckBoxInput.class);
           sect.removeChild(UIFormDateTimeInput.class);
@@ -252,6 +260,7 @@ public class UIExperienceSection extends UIProfileSection {
         for (HashMap<String, Object> map : experiences) {
           listProfile.add(map.get(COMPANY));
           listProfile.add(map.get(POSITION));
+          listProfile.add(map.get(PROFESSIONAL));
           listProfile.add(map.get(START_DATE));
           listProfile.add(map.get(IS_CURRENT));
           listProfile.add(map.get(END_DATE));
@@ -264,13 +273,14 @@ public class UIExperienceSection extends UIProfileSection {
           numberOfChildren = childSize;
           while (totalProfiles > numberOfChildren) {
             uiExpSection.addUIFormInput();
-            numberOfChildren += 6;
+            numberOfChildren += 7;
           }
         } else if (totalProfiles < childSize) {
           numberOfChildren = childSize;
           while (totalProfiles < numberOfChildren) {
-            companyId = listChild.get(childSize-5).getName();
-            positionId = listChild.get(childSize-4).getName();
+            companyId = listChild.get(childSize-6).getName();
+            positionId = listChild.get(childSize-5).getName();
+            professionalId = listChild.get(childSize-4).getName();
             startDateId = listChild.get(childSize-3).getName();
             isCurrentId = listChild.get(childSize-2).getName();
             endDateId = listChild.get(childSize-1).getName();
@@ -278,24 +288,26 @@ public class UIExperienceSection extends UIProfileSection {
 
             sect.removeChildById(companyId);
             sect.removeChildById(positionId);
+            sect.removeChildById(professionalId);
             sect.removeChildById(startDateId);
             sect.removeChildById(isCurrentId);
             sect.removeChildById(endDateId);
             sect.removeChildById(descriptionId);
             
-            numberOfChildren -= 6;
+            numberOfChildren -= 7;
           }
         }
         
         List<UIComponent> listChildForSetValue = uiExpSection.getChilds();
-        for (int idx = 0; idx < totalProfiles; idx += 6) {
+        for (int idx = 0; idx < totalProfiles; idx += 7) {
           ((UIFormInput)listChildForSetValue.get(idx + 1)).setValue(listProfile.get(idx));
           ((UIFormInput)listChildForSetValue.get(idx + 2)).setValue(listProfile.get(idx+1));
           ((UIFormInput)listChildForSetValue.get(idx + 3)).setValue(listProfile.get(idx+2));
-          ((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 4)).setValue((Boolean)listProfile.get(idx+3));
-          ((UIFormDateTimeInput)listChildForSetValue.get(idx + 5)).setRendered(!((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 4)).getValue());
-          ((UIFormInput)listChildForSetValue.get(idx + 5)).setValue(listProfile.get(idx+4));
+          ((UIFormInput)listChildForSetValue.get(idx + 4)).setValue(listProfile.get(idx+3));
+          ((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 5)).setValue((Boolean)listProfile.get(idx+4));
+          ((UIFormDateTimeInput)listChildForSetValue.get(idx + 6)).setRendered(!((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 5)).getValue());
           ((UIFormInput)listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx+5));
+          ((UIFormInput)listChildForSetValue.get(idx + 7)).setValue(listProfile.get(idx+6));
         }
       }
       
@@ -377,10 +389,12 @@ public class UIExperienceSection extends UIProfileSection {
   private int saveProfileInfo() throws Exception {
     ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
     UIFormStringInput uiStringInput = null;
+    UIFormTextAreaInput uiFormTextAreaInput = null;
     UIFormCheckBoxInput<Boolean> uiCheckBox = null;
     UIFormDateTimeInput uiDateTimeInput = null;
-    String position = null;
     String company = null;
+    String position = null;
+    String professional = null;
     String startDate = null;
     String endDate = null;
     Boolean isCurrent = null;
@@ -405,7 +419,7 @@ public class UIExperienceSection extends UIProfileSection {
       return 0;
     }
     
-    for (int i = 1; i <= totalUIComponent; i+=6) {   
+    for (int i = 1; i <= totalUIComponent; i+=7) {   
       HashMap<String, Object> uiMap = new HashMap<String, Object>();
       
       uiStringInput = (UIFormStringInput)listUIComp.get(i);
@@ -414,13 +428,16 @@ public class UIExperienceSection extends UIProfileSection {
       uiStringInput = (UIFormStringInput)listUIComp.get(i + 1);
       position = uiStringInput.getValue();
       
-      uiDateTimeInput = (UIFormDateTimeInput)listUIComp.get(i + 2);
+      uiFormTextAreaInput = (UIFormTextAreaInput)listUIComp.get(i + 2);
+      professional = uiFormTextAreaInput.getValue();
+      
+      uiDateTimeInput = (UIFormDateTimeInput)listUIComp.get(i + 3);
       startDate = uiDateTimeInput.getValue();
       
-      uiCheckBox = (UIFormCheckBoxInput<Boolean>)listUIComp.get(i + 3);
+      uiCheckBox = (UIFormCheckBoxInput<Boolean>)listUIComp.get(i + 4);
       isCurrent = uiCheckBox.getValue();
       
-      uiDateTimeInput = (UIFormDateTimeInput)listUIComp.get(i + 4);
+      uiDateTimeInput = (UIFormDateTimeInput)listUIComp.get(i + 5);
       endDate = uiDateTimeInput.getValue();
       
       sDate = stringToDate(startDate);
@@ -442,11 +459,12 @@ public class UIExperienceSection extends UIProfileSection {
         endDate = null;
       }
       
-      uiStringInput = (UIFormStringInput)listUIComp.get(i + 5);
+      uiStringInput = (UIFormStringInput)listUIComp.get(i + 6);
       description = uiStringInput.getValue();
       
       uiMap.put(COMPANY, company);
       uiMap.put(POSITION,position); 
+      uiMap.put(PROFESSIONAL,professional); 
       uiMap.put(START_DATE, startDate);
       uiMap.put(END_DATE, endDate);
       uiMap.put(IS_CURRENT, isCurrent);
@@ -473,6 +491,7 @@ public class UIExperienceSection extends UIProfileSection {
                    .addValidator(StringLengthValidator.class, 3, 90));
     addUIFormInput(new UIFormStringInput(POSITION + expIdx, null, null).addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 90));
+    addUIFormInput(new UIFormTextAreaInput(PROFESSIONAL + expIdx, null, null));
     
     addUIFormInput(new UIFormDateTimeInput(START_DATE + expIdx, null, null, false).
                    addValidator(DateTimeValidator.class).addValidator(MandatoryValidator.class)) ;
@@ -486,11 +505,6 @@ public class UIExperienceSection extends UIProfileSection {
       .addValidator(DateTimeValidator.class)) ;
     
     addUIFormInput(new UIFormStringInput(DESCRIPTION + expIdx, null, null));
-  }
-  
-  private void removeExperience(String blockNum) {
-    // TODO Auto-generated method stub
-    System.out.println("\n\n\n\n=============== block: " + blockNum);
   }
   
   /**

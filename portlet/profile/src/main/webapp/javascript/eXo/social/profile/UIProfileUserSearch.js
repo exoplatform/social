@@ -19,11 +19,13 @@ function UIProfileUserSearch() {
    this.searchId = null;
    this.positionId = null;
    this.companyId = null;
+   this.professionalId = null;
    this.genderId = null;
    this.filterId = null;
    this.defaultUserContact = "";
    this.defaultPos = "";
    this.defaultComp = "";
+   this.defaultProf = "";
    this.defaultGender = "";
    this.searchAll = false;
 };
@@ -47,8 +49,10 @@ UIProfileUserSearch.prototype.activeFilterText = function(filter) {
 		defaultValue = this.defaultUserContact;
 	} else if (filter.id == this.positionId) {
 		defaultValue = this.defaultPos;
-	} else {
+	} else if (filter.id == this.companyId){
 		defaultValue = this.defaultComp;
+	} else {
+		defaultValue = this.defaultProf;
 	}
 	
 	if (filter.value == defaultValue) {
@@ -68,8 +72,10 @@ UIProfileUserSearch.prototype.onBlurFilterText = function(filter) {
 		defaultValue = this.defaultUserContact;
 	} else if (filter.id == this.positionId) {
 		defaultValue = this.defaultPos;
-	} else {
+	} else if (filter.id == this.companyId){
 		defaultValue = this.defaultComp;
+	} else {
+		defaultValue = this.defaultProf;
 	}
 	
 	if (filter.value.trim() == '') {
@@ -118,8 +124,9 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   var filterEl = document.getElementById(this.filterId);
   var userContact="";
   var position="";
-  var gender="";
   var company="";
+  var professional="";
+  var gender="";
   
   if (element.id != 'searchAll') {
 	  userContact = document.getElementById(this.searchId).value;
@@ -131,12 +138,14 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
   if (filterEl.style.display != 'none') {
 	  position = document.getElementById(this.positionId).value;
 	  company = document.getElementById(this.companyId).value;
+	  professional = document.getElementById(this.professionalId).value;
 	  gender = document.getElementById(this.genderId).value;
   } 
   
   if (userContact == this.defaultUserContact)  userContact = "";
   if (position == this.defaultPos)  position = "";
   if (company == this.defaultComp)  company = "";
+  if (professional == this.defaultProf)  professional = "";
   if (gender == this.defaultGender) gender = "";
   
   if(searchEl != null ) {
@@ -149,6 +158,7 @@ UIProfileUserSearch.prototype.searchProfileUser = function(element) {
 		href += "&userContact=" + userContact.trim();
 		href += "&position=" + position.trim();
 	    href += "&company=" + company.trim();
+	    href += "&professional=" + professional.trim();
 	    href += "&isSearchAll=" + this.searchAll;
 		href += "&gender=" + gender;
 		href += "&ajaxRequest=true";
@@ -198,6 +208,7 @@ UIProfileUserSearch.prototype.setDefaultValue = function() {
 	this.defaultUserContact = document.getElementById('defaultUserContact').value;
 	this.defaultPos = document.getElementById('defaultPos').value;
 	this.defaultComp = document.getElementById('defaultComp').value;
+	this.defaultProf = document.getElementById('defaultProf').value;
 	this.defaultGender = document.getElementById('defaultGender').value;
 }
 
@@ -211,6 +222,7 @@ UIProfileUserSearch.prototype.createId = function(componentId) {
 	this.searchId = 'Search' + componentId;
 	this.positionId = 'Position' + componentId;
 	this.companyId = 'Company' + componentId;
+	this.professionalId = 'Professional' + componentId; 
 	this.genderId = 'Gender' + componentId;
 	this.filterId = 'Filter' + componentId;
 };

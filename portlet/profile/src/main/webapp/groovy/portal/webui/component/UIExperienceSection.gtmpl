@@ -37,7 +37,7 @@
 	<div class="PortletContent">
   	<%if (isEdit && isEditable) {%>
     	<%if (childSize > 1) {%>
-   			<%for (int i=1; i < childSize; i +=6) { %>
+   			<%for (int i=1; i < childSize; i +=7) { %>
 			    <div class="Experience" style="background:#efefef none; margin:4px; padding: 8px;">
 				    <table class="UIFormGrid">
 				      <tbody>
@@ -48,14 +48,14 @@
 				          	uiform.renderField(childs.get(i));
 				          }%>
 			          </td>
-			          <% if ((i + 6) >= childSize) {%>
-			          	<td width="24%">&nbsp</td>
+			          <% if ((i + 7) >= childSize) {%>
+			          	<td width="15%">&nbsp</td>
 				          <td class="FieldComponent">
 				          	<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+i)%>">&nbsp</a>
 				           	<a class="AddIcon" href="#" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
 				          </td>
 			          <% } else {%>
-			          	<td width="27%">&nbsp</td>
+			          	<td width="19%">&nbsp</td>
 				          <td class="FieldComponent">
 				          	<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+i)%>">&nbsp</a>
 				          </td>
@@ -70,29 +70,37 @@
 			          </td>
 			        </tr>
 			        <tr>
-			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
+			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.professional")%></td>
 			          <td class="FieldComponent">
 			          <%if (childs.get(i + 2).isRendered()) {
-			          	uiform.renderField(childs.get(i + 2));
+			            uiform.renderField(childs.get(i + 2));
+			          }%>
+			          </td>
+			        </tr>
+			        <tr>
+			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
+			          <td class="FieldComponent">
+			          <%if (childs.get(i + 3).isRendered()) {
+			          	uiform.renderField(childs.get(i + 3));
 			          }%>
 			          </td>
 			        </tr>
 			        <tr>
 			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
 			          <td class="FieldComponent">
-			          <%if (childs.get(i + 3).isRendered()) {%>
-			            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%> <%uiform.renderField(childs.get(i + 3));%><br />
+			          <%if (childs.get(i + 4).isRendered()) {%>
+			            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%> <%uiform.renderField(childs.get(i + 4));%><br />
 			          <%}%>
-			            <%if (childs.get(i + 4).isRendered()) {
-			            	uiform.renderField(childs.get(i + 4));
+			            <%if (childs.get(i + 5).isRendered()) {
+			            	uiform.renderField(childs.get(i + 5));
 			            }%>
 			          </td>
 			        </tr>
 			        <tr>
 			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
 			          <td class="FieldComponent">
-			          <%if (childs.get(i + 5).isRendered()) {
-			            uiform.renderField(childs.get(i + 5));
+			          <%if (childs.get(i + 6).isRendered()) {
+			            uiform.renderField(childs.get(i + 6));
 			          }%>
 			          </td>
 			        </tr>
@@ -120,8 +128,9 @@
     <div class="CurrentExperience" style="background:#efefef none; padding-left: 8px;">
     <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Current")%></b></div>
     <%  currentExp.each {
-		      def position = it.get("position");
 		      def company = it.get("company");
+		      def position = it.get("position");
+		      def professional = it.get("professional");
 		      def startDate = it.get("startDate");
 		      def endDate = it.get("endDate");
 		      def isCurrent = it.get("isCurrent");
@@ -133,7 +142,7 @@
 		      def startDateDate = uicomponent.getDate(startDate);
 		      def endDateDate = uicomponent.getDate(endDate);
 	  %>  <div class="Experience">
-			    <b>${position} at ${company}</b><br />
+			    <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br />
 			    <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
 			    <%if(description != null) {%>${description} <%}%><br>
 			  </div>
@@ -144,8 +153,9 @@
     <div class="PassExperience" style="background:#d5d5d5 none; padding-left: 8px;">
     <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Past")%></b></div>
     <%  pastExp.each {
+    			def company = it.get("company");
 		      def position = it.get("position");
-		      def company = it.get("company");
+		      def professional = it.get("professional");
 		      def startDate = it.get("startDate");
 		      def endDate = it.get("endDate");
 		      def isCurrent = it.get("isCurrent");
@@ -158,7 +168,7 @@
 		      def endDateDate = uicomponent.getDate(endDate);
 	    %>
 	      <div class="Experience">
-			    <b>${position} at ${company}</b><br/>
+			    <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br/>
 			    <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
 			    <%if(description != null) {%>${description} <%}%>
 			  </div>

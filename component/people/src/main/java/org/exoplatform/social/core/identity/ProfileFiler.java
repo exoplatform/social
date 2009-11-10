@@ -34,6 +34,8 @@ public class ProfileFiler {
   private String position;
   /* filer by user profile company*/
   private String company;
+  /* filer by user profile professional*/
+  private String professional;
   /* filer by user profile gender*/
   private String gender;
   
@@ -41,6 +43,8 @@ public class ProfileFiler {
   public void setPosition(String position) { this.position = position; }
   public String getCompany() { return company; }
   public void setCompany(String company) { this.company = company; }
+  public String getProfessional() { return professional;}
+  public void setProfessional(String professional) { this.professional = professional;}
   public String getGender() { return gender; }
   public void setGender(String gender) { this.gender = gender; }
   public void setUserName(String userName) { this.userName = userName; }

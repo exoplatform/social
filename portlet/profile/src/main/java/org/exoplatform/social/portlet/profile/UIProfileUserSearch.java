@@ -17,8 +17,11 @@
 package org.exoplatform.social.portlet.profile;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -57,6 +60,8 @@ public class UIProfileUserSearch extends UIComponent {
   final public static String USER_CONTACT = "userContact";
   /** COMPANY. */
   final public static String COMPANY = "company";
+  /** PROFESSIONAL. */
+  final public static String PROFESSIONAL = "professional";
   /** POSITION. */
   final public static String POSITION = "position";
   /** GENDER. */
@@ -77,6 +82,7 @@ public class UIProfileUserSearch extends UIComponent {
   boolean                hasAdvanceSearch = false;
   /** Selected character when search by alphabet */
   String selectedChar = null;
+  ProfileFiler profileFiler = null;
   
   /**
    * Constructor to initialize form fields
@@ -102,6 +108,9 @@ public class UIProfileUserSearch extends UIComponent {
 
   public void setSelectedChar(String selectedChar) { this.selectedChar = selectedChar;}
 
+  public ProfileFiler getProfileFiler() { return profileFiler;} 
+  
+  public void setProfileFiler(ProfileFiler profileFiler) { this.profileFiler = profileFiler;}
 
   /**
    * SearchActionListener
@@ -116,14 +125,15 @@ public class UIProfileUserSearch extends UIComponent {
       List<Identity> identitiesSearchResult = new ArrayList<Identity>();
       List<Identity> identities = new ArrayList<Identity>();
       IdentityManager idm = uiSearch.getIdentityManager();
-      String userContact = event.getRequestContext().getRequestParameter(USER_CONTACT);
-      String position = event.getRequestContext().getRequestParameter(POSITION);
-      String company = event.getRequestContext().getRequestParameter(COMPANY);
-      String gender = event.getRequestContext().getRequestParameter(GENDER);
-      String charSearch = event.getRequestContext().getRequestParameter("charSearch");
+      String userContact = ctx.getRequestParameter(USER_CONTACT);
+      String position = ctx.getRequestParameter(POSITION);
+      String company = ctx.getRequestParameter(COMPANY);
+      String professional = ctx.getRequestParameter(PROFESSIONAL);
+      String gender = ctx.getRequestParameter(GENDER);
+      String charSearch = ctx.getRequestParameter("charSearch");
       
-      Boolean isSearchAlphaBet = Boolean.parseBoolean(event.getRequestContext().getRequestParameter("isSearchAlphaBet"));
-      Boolean isSearchAll = Boolean.parseBoolean(event.getRequestContext().getRequestParameter("isSearchAll"));
+      Boolean isSearchAlphaBet = Boolean.parseBoolean(ctx.getRequestParameter("isSearchAlphaBet"));
+      Boolean isSearchAll = Boolean.parseBoolean(ctx.getRequestParameter("isSearchAll"));
       
       if (isSearchAlphaBet)  {
         userContact = charSearch;
@@ -140,6 +150,8 @@ public class UIProfileUserSearch extends UIComponent {
       filter.setPosition(position);
       filter.setGender(gender);
       
+      uiSearch.setProfileFiler(filter);
+      
       if (!isSearchAlphaBet) {
         identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
         
@@ -151,6 +163,10 @@ public class UIProfileUserSearch extends UIComponent {
         
         if (company.length() > 0) {
           identities = uiSearch.getIdentitiesByCompany(company, identities);
+        }
+        
+        if (professional.length() > 0) {
+          identities = uiSearch.getIdentitiesByProfessional(professional, identities);
         }
         
         uiSearch.setIdentityList(identities);
@@ -195,7 +211,7 @@ public class UIProfileUserSearch extends UIComponent {
             for (HashMap<String, Object> exp : experiences) {
               comp = (String) exp.get(COMPANY);
               if (comp != null) {
-                if (comp.contains(company)) {
+                if (comp.toLowerCase().contains(company.toLowerCase())) {
                   identityLst.add(id);
                 }
               }
@@ -204,7 +220,40 @@ public class UIProfileUserSearch extends UIComponent {
         }
       }
       
-      return identityLst;
+      return GetUniqueIdentities(identityLst);
+  }
+  
+  /**
+   * Filter identity follow professional information.
+   * 
+   * @param professional
+   * @param identities
+   * @return List of identities that has professional information match.
+   */
+  @SuppressWarnings("unchecked")
+  private List<Identity> getIdentitiesByProfessional(String professional, List<Identity> identities) {
+      List<Identity> identityLst = new ArrayList<Identity>();
+      String prof = null;
+      ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
+      
+      if (identities.size() > 0) {
+        for (Identity id : identities) {
+          Profile profile = id.getProfile();
+          experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(EXPERIENCE);
+          if (experiences != null) {
+            for (HashMap<String, Object> exp : experiences) {
+              prof = (String) exp.get(PROFESSIONAL);
+              if (prof != null) {
+                if (prof.toLowerCase().contains(professional.toLowerCase())) {
+                  identityLst.add(id);
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      return GetUniqueIdentities(identityLst);
   }
   
   /**
@@ -254,4 +303,15 @@ public class UIProfileUserSearch extends UIComponent {
     return portalRequest.getRemoteUser();
   }
   
+  private static Collection<Identity> Union(Collection<Identity> identities1, Collection<Identity> identities2)
+  {
+      Set<Identity> identities = new HashSet<Identity>(identities1);
+      identities.addAll(new HashSet<Identity>(identities2));
+      return new ArrayList<Identity>(identities);
+  }
+  
+  private static ArrayList<Identity> GetUniqueIdentities(Collection<Identity> identities)
+  {
+      return (ArrayList<Identity>)Union(identities, identities);
+  }
 }
