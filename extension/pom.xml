@@ -38,6 +38,7 @@
       <module>config</module>
       <module>jar</module>
       <module>war</module>
+      <module>ear</module>
    </modules>
 
 </project>
