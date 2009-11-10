@@ -19,6 +19,15 @@
 <% import org.exoplatform.webui.core.UIPopupWindow
 	 import org.exoplatform.webui.core.UIPageIterator;
 	 
+	 def uicomponentId = uicomponent.id
+   def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction")
+   def labelInviteAction = _ctx.appRes("${uicomponentId}.label.InviteAction")
+   def labelValidateAction = _ctx.appRes("${uicomponentId}.label.ValidateAction")
+   def labelDeclineAction = _ctx.appRes("${uicomponentId}.label.DeclineAction")
+   def labelRevokeInvitedAction = _ctx.appRes("${uicomponentId}.label.RevokeInvitedAction")
+   def labelRemoveLeader = _ctx.appRes("${uicomponentId}.label.RemoveLeader")
+   def labelMakeLeader = _ctx.appRes("${uicomponentId}.label.MakeLeader")
+   def labelRemoveAction = _ctx.appRes("${uicomponentId}.label.RemoveAction")
 	 List<String> pendingUsers = uicomponent.getPenddingUsers();
 	 List<String> invitedUsers = uicomponent.getInvitedUsers();
 	 List<String> existingUsers = uicomponent.getExistingUsers();
@@ -41,14 +50,14 @@
 						<div class="SearchInviteForm">
 						  <div class="AddInvite"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%> :<% uiform.renderField("user") %></div>
 						  	<div class="SearchInviteButton">
-								<div class="IconButton" onclick="$searchUserAction"><span></span></div>
+								<div class="IconButton" onclick="$searchUserAction" title="$labelSearchUserAction"><span></span></div>
 							</div>
 						  <div style="clear: left;"><span></span></div>
 				  	</div>
 				  	<div class="SearchInviteButton">
 				  		<div class="UIActionContainer" style="padding: 5px 0px 8px; margin-left:0px">
 				  			<% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
-								<div class="InviteButton" onclick="$inviteAction"><span></span></div>
+								<div class="InviteButton" onclick="$inviteAction" title="$labelInviteAction"><span></span></div>
 							</div>
 						</div>
 					  
@@ -81,8 +90,8 @@
 					<% } %>
 								<td><%=pendingUser %></td>
 								<td width="40">
-									<div class="ValidateButton" onclick="$validateAction"><span></span></div>
-									<div class="DeclineButton" onclick="$declineAction"><span></span></div>
+									<div class="ValidateButton" onclick="$validateAction" title="$labelValidateAction"><span></span></div>
+									<div class="DeclineButton" onclick="$declineAction" title="$labelDeclineAction"><span></span></div>
 									<div style="clear: left;"><span></span></div>
 								</td>
 							</tr>
@@ -120,7 +129,7 @@
 					<% } %>
 								<td><%=invitedUser %></td>
 								<td width="60">
-									<div class="RevokeInvitedButton" onclick="$revokeAction"><span></span></div>
+									<div class="RevokeInvitedButton" onclick="$revokeAction" title="$labelRevokeInvitedAction"><span></span></div>
 									<div style="clear: left;"><span></span></div>
 								</td>
 							</tr>
@@ -162,12 +171,12 @@
 							<td class="text"><span class="label" id="label"><%= user %></span></td>
 							<td class="text"><span class="label" id="label"><%= _ctx.appRes(uicomponent.getId() + ".label.makeOffice")%></span></td>
 							<% if(isLeader) {%>  
-							<td class="text" style="text-align: center"><div class="ManageMemButtonSub" onclick="$removeLeader"><a class="label" id="label" href="$homeSpaceUrl"><span></span></a></div></td>  
+							<td class="text" style="text-align: center"><div class="ManageMemButtonSub" onclick="$removeLeader" title="$labelRemoveLeader"><a class="label" id="label" href="$homeSpaceUrl"><span></span></a></div></td>  
 							<% } else { %>
-							<td class="text" style="text-align: center"><div class="ManageMemButtonAdd" onclick="$makeLeader"><a class="label" id="label" href="#"></a></div></td>
+							<td class="text" style="text-align: center"><div class="ManageMemButtonAdd" onclick="$makeLeader" title="$labelMakeLeader"><a class="label" id="label" href="#"></a></div></td>
 							<% } %>
 							<td>
-								<div class="DeleteMemberButton" onclick="$removeAction">
+								<div class="DeleteMemberButton" onclick="$removeAction" title="$labelRemoveAction">
 									<a href="$manageSpacesUrl"><span></span></a>
 								</div>
 								<div style="clear: right;"><span></span></div>

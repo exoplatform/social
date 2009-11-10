@@ -25,7 +25,6 @@
 	
 	UIPageIterator iteratorLeaders = uicomponent.getIteratorLeaders()
 	UIPageIterator iteratorMembers = uicomponent.getIteratorMembers() 
-	System.out.println("\n\n\n\n\n\n\n  ========== " + iteratorLeaders.getAvailablePage());
 	def uicomponentId = uicomponent.getId()
 	def adminLabel = _ctx.appRes("${uicomponentId}.label.Admin")
 	def administratorLabel = _ctx.appRes("${uicomponentId}.label.Administrator")
