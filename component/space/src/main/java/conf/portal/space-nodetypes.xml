@@ -61,7 +61,15 @@
   		<propertyDefinition name="exo:priority" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
          <valueConstraints/>
       </propertyDefinition>
-  	</propertyDefinitions>			
+  	</propertyDefinitions>
+  	<childNodeDefinitions>
+      <childNodeDefinition name="*" defaultPrimaryType="nt:file" autoCreated="false" mandatory="false"
+        onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>nt:file</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions>			
   </nodeType>
 </nodeTypes>  
   

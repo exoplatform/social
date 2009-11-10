@@ -16,18 +16,24 @@
  */
 package org.exoplatform.social.space.impl;
 
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.social.space.Space;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
-import java.util.List;
-import java.util.ArrayList;
+import org.exoplatform.services.jcr.access.AccessControlEntry;
+import org.exoplatform.services.jcr.access.PermissionType;
+import org.exoplatform.services.jcr.access.SystemIdentity;
+import org.exoplatform.services.jcr.core.ExtendedNode;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceAttachment;
 
 
 public class JCRStorage {
@@ -159,6 +165,39 @@ public class JCRStorage {
     spaceNode.setProperty(SPACE_VISIBILITY, space.getVisibility());
     spaceNode.setProperty(SPACE_REGISTRATION, space.getRegistration());
     spaceNode.setProperty(SPACE_PRIORITY, space.getPriority());
+    //  save image to contact
+    SpaceAttachment attachment = space.getAttactment();
+    if (attachment != null) {
+    // fix load image on IE6 UI
+      ExtendedNode extNode = (ExtendedNode)spaceNode;
+      if (extNode.canAddMixin("exo:privilegeable")) extNode.addMixin("exo:privilegeable");
+      String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE} ;
+      extNode.setPermission(SystemIdentity.ANY, arrayPers) ;
+      List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;   
+      for(AccessControlEntry accessControlEntry : permsList) {
+        extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;      
+      } 
+      
+      if (attachment.getFileName() != null) {
+        Node nodeFile = null ;
+        try {
+          nodeFile = spaceNode.getNode("image") ;
+        } catch (PathNotFoundException ex) {
+          nodeFile = spaceNode.addNode("image", "nt:file");
+        }
+        Node nodeContent = null ;
+        try {
+          nodeContent = nodeFile.getNode("jcr:content") ;
+        } catch (PathNotFoundException ex) {
+          nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
+        }
+        nodeContent.setProperty("jcr:mimeType", attachment.getMimeType()) ;
+        nodeContent.setProperty("jcr:data", attachment.getInputStream());
+        nodeContent.setProperty("jcr:lastModified", Calendar.getInstance().getTimeInMillis());
+      }
+    } else {
+      if(spaceNode.hasNode("image")) spaceNode.getNode("image").remove() ;
+    }
   }
 
   private Space getSpace(Node spaceNode) throws Exception{
@@ -177,6 +216,17 @@ public class JCRStorage {
     if(spaceNode.hasProperty(SPACE_VISIBILITY)) space.setVisibility(spaceNode.getProperty(SPACE_VISIBILITY).getString());
     if(spaceNode.hasProperty(SPACE_REGISTRATION)) space.setRegistration(spaceNode.getProperty(SPACE_REGISTRATION).getString());
     if(spaceNode.hasProperty(SPACE_PRIORITY)) space.setPriority(spaceNode.getProperty(SPACE_PRIORITY).getString());
+    if(spaceNode.hasNode("image")){
+      Node image = spaceNode.getNode("image");
+      if (image.isNodeType("nt:file")) {
+        SpaceAttachment file = new SpaceAttachment() ;
+        file.setId(image.getPath()) ;
+        file.setMimeType(image.getNode("jcr:content").getProperty("jcr:mimeType").getString()) ;
+        file.setFileName(image.getName()) ;
+        file.setWorkspace(image.getSession().getWorkspace().getName()) ;
+        space.setAttactment(file) ;
+      }
+    }
     return space;
   }
   

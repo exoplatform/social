@@ -38,6 +38,7 @@ public class Space {
   private String visibility;
   private String registration;
   private String priority;
+  private SpaceAttachment attactment;
 
   public final static String ACTIVE_STATUS = "actived";
   public final static String DEACTIVE_STATUS = "deactived";
@@ -168,5 +169,13 @@ public class Space {
   
   public void setPriority(String priority) {
     this.priority = priority;
+  }
+
+  public void setAttactment(SpaceAttachment attactment) {
+    this.attactment = attactment;
+  }
+
+  public SpaceAttachment getAttactment() {
+    return attactment;
   }
 }

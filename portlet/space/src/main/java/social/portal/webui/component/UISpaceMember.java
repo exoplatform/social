@@ -21,8 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.commons.utils.ObjectPageList;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
