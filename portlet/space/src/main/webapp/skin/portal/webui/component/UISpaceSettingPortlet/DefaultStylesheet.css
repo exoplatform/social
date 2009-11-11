@@ -572,3 +572,58 @@
 	line-height:31px;
 	padding:0px 8px 5px 4px;
 }
+
+/* =============left column - space setting===============*/
+.UISpaceInfo .FormContainer .SpaceInfoLeft {
+	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/BGSettingAvatar.gif') no-repeat left top;
+	float: left;
+	height: 146px;
+	width: 131px;
+	margin: 15px 40px;
+	_margin: 15px 15px 15px 20px;
+}
+
+.UISpaceInfo .FormContainer table {
+	margin: 15px 0 0 225px;
+}
+
+.UISpaceInfo .FormContainer .SpaceInfoLeft .AvatarSpace {
+	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/InfoAvatarBG.gif') no-repeat left top;
+	height: 80px;
+	margin: 26px 27px 10px 26px;
+}
+
+.UISpaceInfo .FormContainer .SpaceInfoLeft .AvaBorder {
+	padding: 7px;
+}
+
+.UISpaceInfo .FormContainer .SpaceInfoLeft .ChangeAvaButton { 
+	margin: 0 10px;
+	cursor: pointer;
+}
+
+.UISpaceInfo .FormContainer .SpaceInfoLeft .LeftButton { 
+	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/ChangeAvaButton.png') no-repeat left top;
+	padding-left: 8px;
+}
+
+.UISpaceInfo .FormContainer .SpaceInfoLeft .RightButton { 
+	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/ChangeAvaButton.png') no-repeat right top;
+	padding-right: 8px;
+}
+
+.UISpaceInfo .FormContainer .SpaceInfoLeft .MiddleButton { 
+	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/ChangeAvaButton.png') repeat-x left -17px;
+	height: 17px;
+}
+
+.UISpaceInfo .FormContainer .SpaceInfoLeft .Arrow {
+	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/Arrow.gif') no-repeat right 5px;
+	line-height: 15px;
+	padding: 0px 12px 0px 5px;
+	font-size: 11px;
+}
+
+.UISpaceSettingPortlet .UISpaceInfo .UIAction {
+	padding: 5px 0px 20px 0px;
+}

@@ -2,68 +2,71 @@
 	<% uiform.begin() %>
 	<div class="HorizontalLayout">
 		<div class="FormContainer">
+			<div class="SpaceInfoLeft">
+				<div class="AvatarSpace">
+					<div class="AvaBorder">
+						<div class="Image">
+							<img height="64px" width="64" alt="" src="/space/skin/portal/webui/component/UISpaceSettingPortlet/background/SpaceAva.gif"/>
+						</div>
+					</div>
+				</div>
+				<div class="ChangeAvaButton">
+					<div class="LeftButton">
+						<div class="RightButton">
+							<div class="MiddleButton">
+								<span class="Arrow">Change Avatar</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<table class="UIFormGrid">
-				
-							<tbody><tr>
-								
-																				
-									<td class="FieldLabel">
-										 
-											Name:
-										
-									</td>
-									<td class="FieldComponent"><input type="text" value="ghgh" id="name" name="name"/> *</td>
-								
-							</tr>
-				
-							<tr>
-								
-																				
-									<td class="FieldLabel">
-										 
-											Description:
-										
-									</td>
-									<td class="FieldComponent"><textarea cols="30" rows="10" id="description" name="description" class="textarea">This space has not got any description yet. </textarea></td>
-								
-							</tr>
-				
-							<tr>
-								
-																				
-									<td class="FieldLabel">
-										 
-											Priority:
-										
-									</td>
-									<td class="FieldComponent"><select name="priority" class="selectbox">
-<option value="1">High</option>
-<option value="2" selected="selected">Intermediate</option>
-<option value="3">Low</option>
-</select>
-</td>
-								
-							</tr>
-				
-			</tbody></table>
+				<tbody>
+					<tr>
+						<td class="FieldLabel">
+								Name:
+						</td>
+						<td class="FieldComponent"><input type="text" value="ghgh" id="name" name="name"/> *</td>
+					</tr>
+					<tr>
+							<td class="FieldLabel">
+									Description:
+							</td>
+							<td class="FieldComponent"><textarea cols="30" rows="10" id="description" name="description" class="textarea">This space has not got any description yet. </textarea></td>
+					</tr>
+					<tr>
+							<td class="FieldLabel">
+									Priority:
+							</td>
+							<td class="FieldComponent">
+								<select name="priority" class="selectbox">
+									<option value="1">High</option>
+									<option value="2" selected="selected">Intermediate</option>
+									<option value="3">Low</option>
+								</select>
+							</td>
+					</tr>
+				</tbody>
+			</table>
+			<div style="clear: left;"><span></span></div>
 			<div class="UIAction"> 
 				<table class="ActionContainer">
-					<tbody><tr>
-						<td>
-							
-							<div onmouseout="this.style.color='black'" onmouseover="this.style.color = '#058ee6'" class="ActionButton LightBlueStyle" onclick="javascript:eXo.webui.UIForm.submitForm('f5a665a1-c01a-44e0-b41a-20c961f9e8a8#UISpaceInfo','Save',true)">
-								<div class="ButtonLeft">
-									<div class="ButtonRight">
-										<div class="ButtonMiddle">
-											<a href="javascript:void(0);">Save</a>
+					<tbody>
+						<tr>
+							<td>
+								<div onmouseout="this.style.color='black'" onmouseover="this.style.color = '#058ee6'" class="ActionButton LightBlueStyle" onclick="javascript:eXo.webui.UIForm.submitForm('f5a665a1-c01a-44e0-b41a-20c961f9e8a8#UISpaceInfo','Save',true)">
+									<div class="ButtonLeft">
+										<div class="ButtonRight">
+											<div class="ButtonMiddle">
+												<a href="javascript:void(0);">Save</a>
+											</div>
 										</div>
 									</div>
-								</div>
-					 		</div>
-											
-						</td>
-					</tr>	
-				</tbody></table>
+						 		</div>
+							</td>
+						</tr>	
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
