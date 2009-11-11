@@ -213,7 +213,7 @@
 						            <field name="description"><string>Dashboard</string></field>
 					              <field name="accessPermissions">
 									        <collection type="java.util.ArrayList" item-type="java.lang.String">													
-														<value><string>*:/platform/users, *:/spaces</string></value>													
+														<value><string>*:/platform/users</string></value>													
 									        </collection>
 							          </field>                 	             
 						            <field  name="applications">
@@ -228,7 +228,7 @@
 							                  <field name="applicationGroup"><string>dashboard</string></field>
 							                  <field name="accessPermissions">
 													        <collection type="java.util.ArrayList" item-type="java.lang.String">													
-																		<value><string>*:/platform/users, *:/spaces</string></value>													
+																		<value><string>*:/platform/users</string></value>													
 													        </collection>
 											          </field>                 
 							                </object>
@@ -243,7 +243,7 @@
 							                  <field name="applicationGroup"><string>dashboard</string></field>
 							                  <field name="accessPermissions">
 													        <collection type="java.util.ArrayList" item-type="java.lang.String">													
-																		<value><string>*:/platform/users, *:/spaces</string></value>													
+																		<value><string>*:/platform/users</string></value>													
 													        </collection>
 											          </field>                 
 							                </object>
@@ -672,7 +672,7 @@
                             <field name="accessPermissions">
                                 <collection type="java.util.ArrayList" item-type="java.lang.String">
                                     <value>
-                                        <string>*:/spaces</string>
+                                        <string>*:/platform/users</string>
                                     </value>
                                 </collection>
                             </field>
@@ -701,36 +701,7 @@
                                             <field name="accessPermissions">
                                                 <collection type="java.util.ArrayList" item-type="java.lang.String">
                                                     <value>
-                                                        <string>*:/spaces</string>
-                                                    </value>
-                                                </collection>
-                                            </field>
-                                        </object>
-                                    </value>
-                                    <value>
-                                        <object type="org.exoplatform.application.registry.Application">
-                                            <field name="applicationName">
-                                                <string>HomeSpacePortlet</string>
-                                            </field>
-                                            <field name="categoryName">
-                                                <string>space</string>
-                                            </field>
-                                            <field name="displayName">
-                                                <string>Home Space</string>
-                                            </field>
-                                            <field name="description">
-                                                <string>Home Space of space</string>
-                                            </field>
-                                            <field name="applicationType">
-                                                <string>portlet</string>
-                                            </field>
-                                            <field name="applicationGroup">
-                                                <string>space</string>
-                                            </field>
-                                            <field name="accessPermissions">
-                                                <collection type="java.util.ArrayList" item-type="java.lang.String">
-                                                    <value>
-                                                        <string>*:/spaces</string>
+                                                        <string>*:/platform/users</string>
                                                     </value>
                                                 </collection>
                                             </field>
@@ -759,7 +730,7 @@
                                             <field name="accessPermissions">
                                                 <collection type="java.util.ArrayList" item-type="java.lang.String">
                                                     <value>
-                                                        <string>*:/spaces</string>
+                                                        <string>*:/platform/users</string>
                                                     </value>
                                                 </collection>
                                             </field>

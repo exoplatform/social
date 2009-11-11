@@ -17,9 +17,9 @@
 package org.exoplatform.social.application.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
@@ -39,7 +39,6 @@ import org.exoplatform.portal.config.model.gadget.GadgetApplication;
 import org.exoplatform.portal.config.model.gadget.GadgetId;
 import org.exoplatform.portal.config.model.portlet.PortletApplication;
 import org.exoplatform.portal.config.model.portlet.PortletId;
-import org.exoplatform.portal.pom.spi.portlet.Preferences;
 import org.exoplatform.portal.webui.application.PortletState;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
@@ -247,6 +246,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * @return
    * @deprecated
    */
+  @SuppressWarnings("unused")
   private Application getApplication(List<Application> apps, String appId) {
     for(Application app : apps) {
       if(app.getApplicationName().equals(appId)) return app;
@@ -265,7 +265,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   @SuppressWarnings("unchecked")
   private PageNode createPageNodeFromApplication(Space space, String appId, boolean isRoot) throws SpaceException {
     //create application
-    HashMap<ApplicationCategory, List<Application>> appStore;
+    Map<ApplicationCategory, List<Application>> appStore;
     Application app;
     try {
       appStore = SpaceUtils.getAppStore(space);
@@ -361,7 +361,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * @param appId
    * @return app or null
    */
-  private Application getApplication(HashMap<ApplicationCategory, List<Application>> appStore,
+  private Application getApplication(Map<ApplicationCategory, List<Application>> appStore,
                                      String appId) {
     Iterator<ApplicationCategory> categoryItr = appStore.keySet().iterator();
     while (categoryItr.hasNext()) {

@@ -18,9 +18,12 @@ package org.exoplatform.social.space;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -129,46 +132,50 @@ public class SpaceUtils {
   }
   
   /**
-   * gets appStore of HashMap type with key = categoryName and value = list of applications
+   * gets appStore of HashMap type with key = ApplicationCategory and value = list of applications
    * @param space 
    * @return appStore
    * @throws Exception
    */
-  static public HashMap<ApplicationCategory, List<Application>> getAppStore(Space space) throws Exception {
-    HashMap<ApplicationCategory, List<Application>> appStore = new HashMap<ApplicationCategory, List<Application>>();
+  static public Map<ApplicationCategory, List<Application>> getAppStore(Space space) throws Exception {
+    Map<ApplicationCategory, List<Application>> appStore = new HashMap<ApplicationCategory, List<Application>>();
     ExoContainer exoContainer = ExoContainerContext.getCurrentContainer();
     ApplicationRegistryService appRegistryService = (ApplicationRegistryService) exoContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
     String remoteUser = Util.getPortalRequestContext().getRemoteUser();
     if (remoteUser == null || remoteUser.equals(""))
        return appStore;
     List<ApplicationCategory> categoryList = appRegistryService.getApplicationCategories(remoteUser);
+    Collections.sort(categoryList, new PortletCategoryComparator());
     Iterator<ApplicationCategory> cateItr = categoryList.iterator();
-//    String installedApps = space.getApp();
     while(cateItr.hasNext()) {
       ApplicationCategory appCategory = cateItr.next();
-//      if (!hasAccessPermission(appCategory, space.getGroupId())) {
-//        continue;
-//      }
-      List<Application> tempAppList = new ArrayList<Application>();
       List<Application> appList = appRegistryService.getApplications(appCategory);
-      Iterator<Application> appItr = appList.iterator();
-      while (appItr.hasNext()) {
-        Application app = appItr.next();
-//        if (!hasAccessPermission(app, space.getGroupId())) {
-//          continue;
-//        } else if (installedApps.contains(app.getApplicationName())) {
-//          continue;
-//        }
-//        if (installedApps.contains(app.getApplicationName())) continue;
-        tempAppList.add(app);
-      }
-      if (tempAppList.size() > 0) {
-        appStore.put(appCategory, tempAppList);
+      Collections.sort(appList, new PortletComparator());
+      if (appList.size() > 0) {
+        appStore.put(appCategory, appList);
       }
     }
     return appStore;
   }
-  
+  /**
+   * PortletCategoryComparator
+   *
+   */
+  static class PortletCategoryComparator implements Comparator<ApplicationCategory> {
+     public int compare(ApplicationCategory cat1, ApplicationCategory cat2) {
+        return cat1.getDisplayName().compareTo(cat2.getDisplayName());
+     }
+  }
+
+  /**
+   * PortletComparator
+   *
+   */
+  static class PortletComparator implements Comparator<Application> {
+     public int compare(Application p1, Application p2) {
+        return p1.getDisplayName().compareTo(p2.getDisplayName());
+     }
+  }
   /**
    * Utility for cleaning space name
    * @param str
@@ -469,6 +476,26 @@ public class SpaceUtils {
   }
   
   /**
+   * gets app status in a space
+   * @param space
+   * @param appId
+   * @return appStatus
+   */
+  static public String getAppStatus(Space space, String appId) {
+    String installedApps = space.getApp();
+    if (installedApps == null) installedApps = "";
+    if (installedApps.contains(appId)) {
+      String[] apps = installedApps.split(",");
+      for (String app: apps) {
+        if (app.contains(appId)) {
+          return app.split(":")[1];
+        }
+      }
+    }
+    return null;
+  }
+  
+  /**
    * Utility for getting absolute url
    * @return absolute url
    * @throws SpaceException
@@ -545,5 +572,4 @@ public class SpaceUtils {
     }
     return false;
   }
-
 }

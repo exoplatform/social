@@ -608,6 +608,10 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void installApplication(Space space, String appId) throws SpaceException {
+    String appStatus = SpaceUtils.getAppStatus(space, appId);
+    if (appStatus != null) {
+      if (appStatus.equals(Space.INSTALL_STATUS)) return;
+    }
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.installApplication(space, appId);
     setApp(space, appId, Space.INSTALL_STATUS);
@@ -617,6 +621,10 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void activateApplication(Space space, String appId) throws SpaceException {
+    String appStatus = SpaceUtils.getAppStatus(space, appId);
+    if (appStatus != null) {
+      if (appStatus.equals(Space.ACTIVE_STATUS)) return;
+    }
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.activateApplication(space, appId);
     setApp(space, appId, Space.ACTIVE_STATUS);

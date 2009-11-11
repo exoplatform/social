@@ -40,9 +40,9 @@ public class Space {
   private String priority;
   private SpaceAttachment attactment;
 
-  public final static String ACTIVE_STATUS = "actived";
-  public final static String DEACTIVE_STATUS = "deactived";
-  public final static String INSTALL_STATUS = "install";
+  public final static String ACTIVE_STATUS = "active";
+  public final static String DEACTIVE_STATUS = "deactive";
+  public final static String INSTALL_STATUS = "installed";
   public final static String PUBLIC = "public";
   public final static String PRIVATE = "private";
   public final static String HIDDEN = "hidden";

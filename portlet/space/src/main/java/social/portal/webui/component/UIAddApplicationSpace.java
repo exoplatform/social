@@ -48,7 +48,7 @@ import org.exoplatform.webui.form.UIForm;
         @EventConfig(listeners = UIAddApplicationSpace.InstallActionListener.class)
       }
 )
-public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
+public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
 
   private UIPageIterator iterator_;
   private String spaceId; 

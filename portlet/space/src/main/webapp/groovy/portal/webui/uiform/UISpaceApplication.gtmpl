@@ -32,7 +32,7 @@
 			<div class="ApplicationIcon"><span></span></div>
 			<div class="CommunityContainer">
 				<div class="CommunityMane Line">
-					<div style="float: left;" class="CommunityName"><%= app.getDisplayName() %></div>
+					<div style="float: left;" class="CommunityName"><%= app.getApplicationGroup() %>/<%= app.getDisplayName() %></div>
 					<div class="SpaceAction">
           <div class="LeftButton">
 					    <div class="RightButton">

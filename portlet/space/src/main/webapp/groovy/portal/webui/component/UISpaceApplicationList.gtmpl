@@ -43,7 +43,7 @@ def labelInstall = _ctx.appRes("${uicomponent.id}.label.install")
                                     def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"
                                     def installAction = uicomponent.event("InstallApplication", application.getApplicationName())
                                 %>
-                                    <div style="cursor: default;" class="UIVTab VTabStyle3" id="<%=application.getId();%>">
+                                    <div style="cursor: default;" class="UIVTab VTabStyle3" id="<%= application.getId() %>">
                                         <div class="VTabContentBG">
                                             <div class="OverflowContainer">
                                                 <img src="$srcBG" onError="src='$srcBGError'" alt=""/>

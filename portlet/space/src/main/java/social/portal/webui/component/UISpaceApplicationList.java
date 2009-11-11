@@ -16,9 +16,11 @@
  */
 package social.portal.webui.component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.exoplatform.application.registry.Application;
@@ -48,7 +50,7 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UISpaceApplicationList extends UIContainer implements UIPopupComponent {
-  private HashMap<ApplicationCategory, List<Application>> appStore;
+  private Map<ApplicationCategory, List<Application>> appStore;
   private ApplicationCategory selectedCategory;
   private Space space;
   
@@ -87,16 +89,34 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
    */
   public void setSpace(Space space) throws Exception {
     this.space = space;
-    appStore = SpaceUtils.getAppStore(space);
-    Set<ApplicationCategory> appCategories = appStore.keySet();
-    if (appCategories.size() > 0) {
-      Iterator<ApplicationCategory> appCategoryItr = appCategories.iterator();
-      if (appCategoryItr.hasNext()) {
-        setSelectedCategory(appCategoryItr.next().getName());
+    appStore = new HashMap<ApplicationCategory, List<Application>>();
+    Map<ApplicationCategory, List<Application>> gotAppStore = SpaceUtils.getAppStore(space);
+    Set<ApplicationCategory> appCategories = gotAppStore.keySet();
+    Iterator<ApplicationCategory> appCategoryItr = appCategories.iterator();
+    while(appCategoryItr.hasNext()) {
+      ApplicationCategory appCategory = appCategoryItr.next();
+      List<Application> appList = gotAppStore.get(appCategory);
+      Iterator<Application> appItr = appList.iterator();
+      List<Application> tempAppList = new ArrayList<Application>();
+      while (appItr.hasNext()) {
+        Application app = appItr.next();
+        String appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
+        if (appStatus != null) {
+          if (!appStatus.equals(Space.ACTIVE_STATUS)) {
+            tempAppList.add(app);
+          }
+        } else {
+          tempAppList.add(app);
+        }
+      }
+      if (tempAppList.size() > 0) {
+        appStore.put(appCategory, tempAppList);
+      }
+      if (appStore.keySet().size() > 0) {
+        setSelectedCategory(appStore.keySet().iterator().next().getName());
       }
     }
   }
-  
   /**
    * gets space
    * @return space
@@ -109,9 +129,10 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
    * 
    * @return appStore
    */
-  public HashMap<ApplicationCategory, List<Application>> getAppStore() {
+  public Map<ApplicationCategory, List<Application>> getAppStore() {
     return appStore;
   }
+ 
   /**
    * 
    * @author hoatle
@@ -140,13 +161,13 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
       SpaceService spaceService = uiSpaceAppList.getApplicationComponent(SpaceService.class);
       spaceService.installApplication(uiSpaceAppList.space, appId);
       spaceService.activateApplication(uiSpaceAppList.space, appId);
+      uiSpaceAppList.setSpace(uiSpaceAppList.space);
       UISpaceApplication uiSpaceApp = (UISpaceApplication) uiSpaceAppList.getAncestorOfType(UISpaceApplication.class);
       uiSpaceApp.setValue(uiSpaceAppList.space);
       SpaceUtils.updateWorkingWorkSpace();
     }
     
   }
-
   public void activate() throws Exception {
   }
 

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
@@ -78,9 +79,10 @@ public class UISpaceApplication extends UIForm {
   public void setValue(Space space) throws Exception {
     space_ = space;
     List<Application> lists = new ArrayList<Application>();
+    List<Application> apps = new ArrayList<Application>();
     String installedApps = space.getApp();
     if (installedApps != null) { 
-      HashMap<ApplicationCategory, List<Application>> appStore;
+      Map<ApplicationCategory, List<Application>> appStore;
       appStore = SpaceUtils.getAppStore(space);
       Iterator<ApplicationCategory> appCategoryItr = appStore.keySet().iterator();
       while (appCategoryItr.hasNext()) {
@@ -89,8 +91,14 @@ public class UISpaceApplication extends UIForm {
         Iterator<Application> appListItr = appList.iterator();
         while (appListItr.hasNext()) {
           Application app = appListItr.next();
-          if (installedApps.contains(app.getApplicationName())) {
-            lists.add(app);
+          if (!apps.contains(app)) {
+            apps.add(app);
+            String appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
+            if (appStatus != null) {
+              if (appStatus.equals(Space.ACTIVE_STATUS)) {
+                lists.add(app);
+              }
+            }
           }
         }
       }

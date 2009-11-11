@@ -322,7 +322,7 @@ public class JCRStorage {
       p.setId(profileNode.getUUID());
     } else {
       //System.out.println("saving the profileNode");
-      profileNode.save();
+      getSession().save();
     }
   }
 
