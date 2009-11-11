@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.UserACL;
@@ -31,7 +32,9 @@ import org.exoplatform.portal.webui.navigation.UINavigationManagement;
 import org.exoplatform.portal.webui.navigation.UINavigationNodeSelector;
 import org.exoplatform.portal.webui.page.UIPageNodeForm2;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
@@ -265,6 +268,25 @@ public class UIManageMySpaces extends UIContainer {
     return pageIterator_.getCurrentPageData();
   }
 
+  public String getImageSource(Space space) throws Exception {
+    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
+    if (spaceAtt != null) {
+      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
+              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+    }
+    return null;
+  }
+  
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
   /**
    * This action is triggered when user click on EditSpace
    * Currently, when user click on EditSpace, they will be redirected to /xxx/SpaceSettingPortlet

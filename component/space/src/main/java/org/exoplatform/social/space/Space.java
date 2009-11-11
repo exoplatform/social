@@ -38,7 +38,7 @@ public class Space {
   private String visibility;
   private String registration;
   private String priority;
-  private SpaceAttachment attactment;
+  private SpaceAttachment spaceAttachment;
 
   public final static String ACTIVE_STATUS = "active";
   public final static String DEACTIVE_STATUS = "deactive";
@@ -171,11 +171,11 @@ public class Space {
     this.priority = priority;
   }
 
-  public void setAttactment(SpaceAttachment attactment) {
-    this.attactment = attactment;
+  public void setSpaceAttachment(SpaceAttachment spaceAttachment) {
+    this.spaceAttachment = spaceAttachment;
   }
 
-  public SpaceAttachment getAttactment() {
-    return attactment;
+  public SpaceAttachment getSpaceAttachment() {
+    return spaceAttachment;
   }
 }

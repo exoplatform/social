@@ -166,7 +166,7 @@ public class JCRStorage {
     spaceNode.setProperty(SPACE_REGISTRATION, space.getRegistration());
     spaceNode.setProperty(SPACE_PRIORITY, space.getPriority());
     //  save image to contact
-    SpaceAttachment attachment = space.getAttactment();
+    SpaceAttachment attachment = space.getSpaceAttachment();
     if (attachment != null) {
     // fix load image on IE6 UI
       ExtendedNode extNode = (ExtendedNode)spaceNode;
@@ -224,7 +224,7 @@ public class JCRStorage {
         file.setMimeType(image.getNode("jcr:content").getProperty("jcr:mimeType").getString()) ;
         file.setFileName(image.getName()) ;
         file.setWorkspace(image.getSession().getWorkspace().getName()) ;
-        space.setAttactment(file) ;
+        space.setSpaceAttachment(file) ;
       }
     }
     return space;

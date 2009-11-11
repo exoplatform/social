@@ -33,7 +33,6 @@
   def iterator = uicomponent.getUIPageIterator()
   def pendingSpaces = uicomponent.getPendingSpaces()
   def mySpaceIdx = 0
-  def String imageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif"
   def style="display:none;"
 %>
 <div class="UIManageInvitationSpaces" id="$uicomponent.id">
@@ -51,6 +50,7 @@
   <%}%>
 	  <%for (space in pendingSpaces) {
 	      def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false"
+	      def imageSource = uicomponent.getImageSource(space);
 				mySpaceIdx += 1;
 	  %>
 	  
@@ -59,7 +59,13 @@
 	  <% } else { %>
 	  <div class="GrayBox">
 	  <% } %>
-			<a href="#" class="AvatarSpace"><img alt="#" src="$imageSource" /></a>
+			<a href="#" class="AvatarSpace">
+			<% if (imageSource == null) { %>
+  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+  		<% } else { %>
+  				<img alt="#" src="$imageSource" />
+  		<%}%>
+			</a>
 			<div class="ContentBox">
 				<div class="TitleContent">
 					<a href="#" onclick="<%= revokeSpaceAction %>" title="Revoke" class="Icon IconEditSpace"><span></span></a>

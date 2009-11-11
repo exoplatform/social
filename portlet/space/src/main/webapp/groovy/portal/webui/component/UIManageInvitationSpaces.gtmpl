@@ -33,7 +33,6 @@
   def iterator = uicomponent.getUIPageIterator()
   def invitedSpaces = uicomponent.getInvitedSpaces()
   def mySpaceIdx = 0
-  def String imageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif"
   def style="display:none;"
 %>
 <div class="UIManageInvitationSpaces" id="$uicomponent.id">
@@ -52,6 +51,7 @@
 	  <%for (space in invitedSpaces) {
 	      def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false"
 	      def denySpaceAction = uicomponent.event("Deny", space.id) + "; return false"
+	      def imageSource = uicomponent.getImageSource(space);
 				mySpaceIdx += 1;
 	  %>
 	  
@@ -60,7 +60,13 @@
 	  <% } else { %>
 	  <div class="GrayBox">
 	  <% } %>
-			<a href="#" class="AvatarSpace"><img alt="#" src="$imageSource" /></a>
+			<a href="#" class="AvatarSpace">
+			<% if (imageSource == null) { %>
+  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+  		<% } else { %>
+  				<img alt="#" src="$imageSource" />
+  		<%}%>
+			</a>
 			<div class="ContentBox">
 				<div class="TitleContent">
 					<a href="#" onclick="<%= denySpaceAction %>" title="Deny" class="Icon IconDeny"><span></span></a>

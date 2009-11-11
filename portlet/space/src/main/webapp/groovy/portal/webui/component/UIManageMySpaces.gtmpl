@@ -48,7 +48,6 @@
   def iterator = uicomponent.getMySpacesUIPageIterator()
   def userSpaces = uicomponent.getUserSpaces()
   def mySpaceIdx = 0
-  def String imageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif"
   def hasInvited = false
   def style="display:none;"
 %>
@@ -90,6 +89,8 @@
 	      } else {
 	       status = "${hiddenStatus}"
 	      }
+	      def imageSource = uicomponent.getImageSource(space);
+	      
 				mySpaceIdx += 1;
 	  %>
 	  
@@ -100,7 +101,13 @@
 	  <% } %>
       <!-- Leader -->
       <% if (role == UIManageMySpaces.LEADER) {%>
-  			<a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px"><img alt="#" src="$imageSource" /></a>
+  			<a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
+  			<% if (imageSource == null) { %>
+  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+  			<% } else { %>
+  				<img alt="#" src="$imageSource" />
+  			<%}%>
+  			</a>
 				<div class="ContentBox">
 					<div class="TitleContent">
 						<a href="#" onclick="<%= deleteSpaceAction %>" title="<%= labelActionDeleteSpace %>" class="Icon IconDel"><span></span></a>
@@ -119,7 +126,13 @@
       <% }%>
     <!-- Member -->
       <%if (role == UIManageMySpaces.MEMBER) {%>
-			<a href="<%= spaceUrl %>" class="AvatarSpace"><img alt="#" src="$imageSource" /></a>
+			<a href="<%= spaceUrl %>" class="AvatarSpace">
+			<% if (imageSource == null) { %>
+  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+  		<% } else { %>
+  				<img alt="#" src="$imageSource" />
+  		<%}%>
+			</a>
 			<div class="ContentBox">
 				<div class="TitleContent">
 					<a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeave"><span></span></a>

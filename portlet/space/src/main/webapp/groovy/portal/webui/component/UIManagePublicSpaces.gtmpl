@@ -37,7 +37,6 @@
   def iterator = uicomponent.getUIPageIterator()
   def publicSpaces = uicomponent.getPublicSpaces()
   def publicSpaceIdx = 0
-  def String imageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif"
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
   <% uicomponent.renderChild("UIPublicSpaceSearch"); %>
@@ -74,7 +73,7 @@
             } else {
                 status += closeStatus
             }
-            
+            def imageSource = uicomponent.getImageSource(space);
             publicSpaceIdx += 1;
       %>
       <% if (publicSpaceIdx % 2 == 0) { %>
@@ -83,9 +82,21 @@
 		  	<div class="GrayBox">
 		  <% } %>
 		  		<% if (isPublic) { %>
-		  		<a href="$spaceUrl" class="AvatarSpace"><img alt="" title="$space.name" src="$imageSource" /></a>
+		  		<a href="$spaceUrl" class="AvatarSpace">
+					<% if (imageSource == null) { %>
+		  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+		  		<% } else { %>
+		  				<img alt="#" src="$imageSource" />
+		  		<%}%>
+					</a>
 		  		<%} else { %>
-		  		<a href="#" class="AvatarSpace"><img alt="" title="$space.name" src="$imageSource" /></a>
+		  		<a href="#" class="AvatarSpace">
+					<% if (imageSource == null) { %>
+		  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+		  		<% } else { %>
+		  				<img alt="#" src="$imageSource" />
+		  		<%}%>
+					</a>
 		  		<%} %>
 		  		
 		 		<div class="ContentBox">

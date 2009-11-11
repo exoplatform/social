@@ -1,12 +1,25 @@
+<%
+	import org.exoplatform.webui.core.UIPopupWindow
+
+	def imageSource = uicomponent.getImageSource();
+	def changeAvatar = uicomponent.event('ChangeAvatar');
+	def saveAction = uicomponent.event('Save'); 
+	def childs = uicomponent.getChildren();
+	def clickChangeAvatar = _ctx.appRes("${uicomponent.getId()}.title.ClickChangeAvatar")
+%>
 <div class="UISpaceInfo">
 	<% uiform.begin() %>
 	<div class="HorizontalLayout">
-		<div class="FormContainer">
+		<div class="SpaceContainer">
 			<div class="SpaceInfoLeft">
 				<div class="AvatarSpace">
 					<div class="AvaBorder">
-						<div class="Image">
-							<img height="64px" width="64" alt="" src="/space/skin/portal/webui/component/UISpaceSettingPortlet/background/SpaceAva.gif"/>
+						<div class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
+							<% if(imageSource == null) { %>
+								<img height="64px" width="64px" alt="" src="/space/skin/portal/webui/component/UISpaceSettingPortlet/background/SpaceAva.gif"/>
+							<% } else { %>
+		  					<img src="$imageSource" height="64px" width="64px">
+		  				<% } %>
 						</div>
 					</div>
 				</div>
@@ -14,7 +27,7 @@
 					<div class="LeftButton">
 						<div class="RightButton">
 							<div class="MiddleButton">
-								<span class="Arrow">Change Avatar</span>
+								<a href="#" onclick="$changeAvatar"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
 							</div>
 						</div>
 					</div>
@@ -24,26 +37,22 @@
 				<tbody>
 					<tr>
 						<td class="FieldLabel">
-								Name:
+								<%=_ctx.appRes(uicomponent.getId() + ".label.name")%>
 						</td>
-						<td class="FieldComponent"><input type="text" value="ghgh" id="name" name="name"/> *</td>
+						<td class="FieldComponent"><% uiform.renderField(childs.get(1))%></td>
 					</tr>
 					<tr>
 							<td class="FieldLabel">
-									Description:
+									<%=_ctx.appRes(uicomponent.getId() + ".label.description")%>
 							</td>
-							<td class="FieldComponent"><textarea cols="30" rows="10" id="description" name="description" class="textarea">This space has not got any description yet. </textarea></td>
+							<td class="FieldComponent"><% uiform.renderField(childs.get(2))%></td>
 					</tr>
 					<tr>
 							<td class="FieldLabel">
-									Priority:
+									<%=_ctx.appRes(uicomponent.getId() + ".label.priority")%>
 							</td>
 							<td class="FieldComponent">
-								<select name="priority" class="selectbox">
-									<option value="1">High</option>
-									<option value="2" selected="selected">Intermediate</option>
-									<option value="3">Low</option>
-								</select>
+								<% uiform.renderField(childs.get(3))%>
 							</td>
 					</tr>
 				</tbody>
@@ -54,11 +63,11 @@
 					<tbody>
 						<tr>
 							<td>
-								<div onmouseout="this.style.color='black'" onmouseover="this.style.color = '#058ee6'" class="ActionButton LightBlueStyle" onclick="javascript:eXo.webui.UIForm.submitForm('f5a665a1-c01a-44e0-b41a-20c961f9e8a8#UISpaceInfo','Save',true)">
+								<div onmouseout="this.style.color='black'" onmouseover="this.style.color = '#058ee6'" class="ActionButton LightBlueStyle">
 									<div class="ButtonLeft">
 										<div class="ButtonRight">
 											<div class="ButtonMiddle">
-												<a href="javascript:void(0);">Save</a>
+												<a href="#" onclick="$saveAction"><%=_ctx.appRes(uicomponent.getId() + ".action.Save")%></a>
 											</div>
 										</div>
 									</div>
@@ -71,4 +80,5 @@
 		</div>
 	</div>
 	<% uiform.end() %>
+	<div class="UIAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

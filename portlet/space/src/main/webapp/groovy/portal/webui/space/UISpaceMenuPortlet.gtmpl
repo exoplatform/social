@@ -5,6 +5,7 @@
 	def apps = uicomponent.getApps();       
 	def spaceUrl = SpaceUtils.getSpaceUrl();
  	String appSelected = uicomponent.getAppSelected();
+ 	def imageSource = uicomponent.getImageSource();
 %>
 
 
@@ -13,7 +14,11 @@
 	<div class="SpaceMenuPortlet">
 		<div class="ProfTitle">Space <%= spaceUrl %></div>
 		<a class="Avartar">
-			<img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt=""/>
+			<% if(imageSource == null) { %>
+				<img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt=""/>
+			<% } else { %>
+  			<img src="$imageSource" height="65px" width="65px">
+  		<% } %>
 		</a>
 		<% if(spaceUrl.equals(appSelected)) { %>
   	<div class="Home"><a class="HomeSelect" href="$home"><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></a></div>

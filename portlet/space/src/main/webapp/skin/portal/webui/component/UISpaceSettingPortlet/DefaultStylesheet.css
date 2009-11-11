@@ -574,7 +574,7 @@
 }
 
 /* =============left column - space setting===============*/
-.UISpaceInfo .FormContainer .SpaceInfoLeft {
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft {
 	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/BGSettingAvatar.gif') no-repeat left top;
 	float: left;
 	height: 146px;
@@ -583,41 +583,46 @@
 	_margin: 15px 15px 15px 20px;
 }
 
-.UISpaceInfo .FormContainer table {
+.UISpaceInfo .SpaceContainer table {
 	margin: 15px 0 0 225px;
 }
 
-.UISpaceInfo .FormContainer .SpaceInfoLeft .AvatarSpace {
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .AvatarSpace {
 	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/InfoAvatarBG.gif') no-repeat left top;
 	height: 80px;
 	margin: 26px 27px 10px 26px;
 }
 
-.UISpaceInfo .FormContainer .SpaceInfoLeft .AvaBorder {
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .AvaBorder {
 	padding: 7px;
 }
 
-.UISpaceInfo .FormContainer .SpaceInfoLeft .ChangeAvaButton { 
-	margin: 0 10px;
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .AvaBorder .Image {
 	cursor: pointer;
 }
 
-.UISpaceInfo .FormContainer .SpaceInfoLeft .LeftButton { 
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .ChangeAvaButton { 
+	margin: 0 10px;
+	cursor: pointer;
+	text-align:center;
+}
+
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .LeftButton { 
 	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/ChangeAvaButton.png') no-repeat left top;
 	padding-left: 8px;
 }
 
-.UISpaceInfo .FormContainer .SpaceInfoLeft .RightButton { 
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .RightButton { 
 	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/ChangeAvaButton.png') no-repeat right top;
 	padding-right: 8px;
 }
 
-.UISpaceInfo .FormContainer .SpaceInfoLeft .MiddleButton { 
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .MiddleButton { 
 	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/ChangeAvaButton.png') repeat-x left -17px;
 	height: 17px;
 }
 
-.UISpaceInfo .FormContainer .SpaceInfoLeft .Arrow {
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .Arrow {
 	background: url('/space/skin/portal/webui/component/UISpaceSettingPortlet/background/Arrow.gif') no-repeat right 5px;
 	line-height: 15px;
 	padding: 0px 12px 0px 5px;

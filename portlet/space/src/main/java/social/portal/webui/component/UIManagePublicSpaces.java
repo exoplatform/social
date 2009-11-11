@@ -21,9 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
@@ -149,6 +152,26 @@ public class UIManagePublicSpaces extends UIContainer {
 	  List<Space> spaceList = getSpaceList();
 	  return getDisplayPublicSpaces(spaceList, iterator);
   }
+  
+  public String getImageSource(Space space) throws Exception {
+    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
+    if (spaceAtt != null) {
+      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
+              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+    }
+    return null;
+  }
+  
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
  /**
   * gets paginated public spaces so that the user can request to join
   * @param spaces

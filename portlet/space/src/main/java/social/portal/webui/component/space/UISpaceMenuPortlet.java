@@ -20,13 +20,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -46,6 +49,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 
 public class UISpaceMenuPortlet extends UIPortletApplication {
+  private SpaceService spaceService = null;
+  
   public UISpaceMenuPortlet() throws  Exception { 
   }
   
@@ -86,4 +91,35 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     return split[split.length - 1];
   }
   
+  protected String getImageSource() throws Exception {
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceByUrl(SpaceUtils.getSpaceUrl());
+    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
+    if (spaceAtt != null) {
+      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
+              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+    }
+    return null;
+  }
+  
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class);    
+    return rService.getCurrentRepository().getConfiguration().getName();
+  }
+  
+  /**
+   * get {@SpaceService}
+   * @return spaceService
+   */
+  private SpaceService getSpaceService() {
+    if (spaceService == null) {
+      spaceService = getApplicationComponent(SpaceService.class);
+    }
+    return spaceService;
+  }
 }
