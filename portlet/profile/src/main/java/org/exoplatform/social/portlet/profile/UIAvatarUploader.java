@@ -16,31 +16,26 @@
  */
 package org.exoplatform.social.portlet.profile;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.upload.UploadResource;
 import org.exoplatform.upload.UploadService;
-import org.exoplatform.web.application.ApplicationMessage;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormUploadInput;
 
 /**
+ * UIAvatarUploader.java
+ * Upload images to set user's avatar.
  * Created by The eXo Platform SAS
  * Author : hoatle
  *          hoatlevan@gmail.com
@@ -49,87 +44,106 @@ import org.exoplatform.webui.form.UIFormUploadInput;
 @ComponentConfigs ({
   @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
-    template = "system:/groovy/webui/form/UIForm.gtmpl",
+    template = "app:/groovy/portal/webui/component/UIAvatarUploader.gtmpl",
     events = {
-      @EventConfig(listeners = UIAvatarUploader.ChangeActionListener.class),
+      @EventConfig(listeners = UIAvatarUploader.ConfirmActionListener.class),
       @EventConfig(listeners = UIAvatarUploader.CancelActionListener.class)
     }
   )
 })
 public class UIAvatarUploader extends UIForm {
+  private String FIELD_NAME = "Name";
+  private String FIELD_Uploader = "Uploader";
   private UIFormUploadInput uiAvatarUploadInput;
-  final public static String AVARTAR = "avatar";
-  static final String MSG_IMG_NOT_UPLOADED = UIAvatarUploader.class.getSimpleName()+".msg.img_not_loaded";
+  private int uploadLimit = 2; //MB
+  private String errorMessage;
+  private String[] acceptedMimeTypes = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png"};
+  static final String MSG_IMG_NOT_UPLOADED = "UIAvatarUploader.msg.img_not_loaded";
+  static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
   /**
    * Constructor: Add UIFormUploadInput
    */
   public UIAvatarUploader() throws Exception {
-    uiAvatarUploadInput = new UIFormUploadInput("UIAvatarUploader", null);
+    addUIFormInput(new UIFormStringInput(FIELD_NAME, null));
+    uiAvatarUploadInput = new UIFormUploadInput(FIELD_Uploader, null, uploadLimit);
+    uiAvatarUploadInput.setAutoUpload(true);
     addUIFormInput(uiAvatarUploadInput);
-    setActions(new String[]{"Change", "Cancel"});
+    setActions(new String[]{"Confirm", "Cancel"});
   }
   
-  //TODO dang.tung - don't need now
-//  protected void setImageBytes(InputStream input) throws Exception {
-//    if (input != null) {
-//      imageBytes = new byte[input.available()];
-//      input.read(imageBytes);
-//    } else {
-//      imageBytes = null;
-//    }
-//  }
-//  
-//  protected byte[] getImageBytes() {
-//    return imageBytes;
-//  }
-//  
-//  protected String getImageSource() throws Exception {
-//    if (imageBytes == null || imageBytes.length == 0) return null;
-//    ByteArrayInputStream byteImage = new ByteArrayInputStream(imageBytes);
-//    DownloadService downloadService = getApplicationComponent(DownloadService.class);
-//    InputStreamDownloadResource downloadResource = new InputStreamDownloadResource(byteImage, "image");
-//    downloadResource.setDownloadName("image");
-//    return downloadService.getDownloadLink(downloadService.addDownloadResource(downloadResource));
-//  }
+  /**
+   * checks if the provided mimeType matches acceptedMimeTypes
+   * @param mimeType String
+   * @return boolean
+   */
+  private boolean isAcceptedMimeType(String mimeType) {
+    for (String acceptedMimeType : acceptedMimeTypes) {
+      if (mimeType.equals(acceptedMimeType)) return true;
+    }
+    return false;
+  }
   
+  /**
+   * gets mime extension from mimetype
+   * eg: image/gif => gif; image/jpg => jpg
+   * @param mimeType
+   * @return file extension
+   */
+  private String getMimeExtension(String mimeType) {
+	  int slashIndex = mimeType.lastIndexOf('/');
+	  return mimeType.substring(slashIndex + 1);
+  }
+  
+  /**
+   * gets errorMessage
+   * @return
+   */
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
   /**
    * This action will be triggered when user click on change avatar button.
    * If there is uploaded image, change and display avatar on the profile.
    * if no, inform user to upload image.
    * @author hoatle
    */
-  static public class ChangeActionListener extends EventListener<UIAvatarUploader> {
+  static public class ConfirmActionListener extends EventListener<UIAvatarUploader> {
 
     @Override
     public void execute(Event<UIAvatarUploader> event) throws Exception {
-      WebuiRequestContext ctx = event.getRequestContext();
-      UIApplication uiApp = ctx.getUIApplication();
       UIAvatarUploader uiAvatarUploader = event.getSource();
       UIFormUploadInput uiAvatarUploadInput = uiAvatarUploader.getChild(UIFormUploadInput.class);
+      UIFormStringInput uiName = uiAvatarUploader.getChild(UIFormStringInput.class);
+      String newName = uiName.getValue();
       UIPopupWindow uiPopup = uiAvatarUploader.getParent();
       InputStream input = uiAvatarUploadInput.getUploadDataAsStream();
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      UIProfile uiProfile = uiAvatarUploader.getAncestorOfType(UIProfile.class);
-      
       if (input == null) {
-        uiApp.addMessage(new ApplicationMessage(MSG_IMG_NOT_UPLOADED, null, ApplicationMessage.WARNING));
+        uiAvatarUploader.errorMessage = MSG_IMG_NOT_UPLOADED;
       } else {
-        uiPopup.setShow(false);
-        Profile p = uiProfile.getProfile();
-        ProfileAttachment profileAtt = new ProfileAttachment();
-        profileAtt.setInputStream(new ByteArrayInputStream(uiAvatarUploadInput.getUploadData()));
         UploadResource uploadResource = uiAvatarUploadInput.getUploadResource();
-        profileAtt.setMimeType(uploadResource.getMimeType());
-        profileAtt.setFileName(uploadResource.getFileName());
-        p.setProperty(AVARTAR, profileAtt);
-        im.saveProfile(p);
-        
-        UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
-        uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
+        if (!uiAvatarUploader.isAcceptedMimeType(uploadResource.getMimeType())) {
+          UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
+          uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
+          uiAvatarUploader.errorMessage = MSG_MIMETYPE_NOT_ACCEPTED;
+        } else {
+          ProfileAttachment profileAtt = new ProfileAttachment();
+          profileAtt.setInputStream(uiAvatarUploadInput.getUploadDataAsStream());
+          profileAtt.setMimeType(uploadResource.getMimeType());
+          if (newName == null) {
+            newName = uploadResource.getFileName();
+          } else {
+        	  newName = "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
+          }
+          profileAtt.setFileName(newName);
+          UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
+          uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
+          
+          UIAvatarUploadContent uiAvatarUploadContent = uiAvatarUploader.createUIComponent(UIAvatarUploadContent.class, null, null);
+          uiAvatarUploadContent.setProfileAttachment(profileAtt);
+          uiPopup.setUIComponent(uiAvatarUploadContent);
+        }
       }
-      
-      ctx.addUIComponentToUpdateByAjax(uiPopup.getParent());
     }
     
   }
@@ -144,7 +158,6 @@ public class UIAvatarUploader extends UIForm {
 
     @Override
     public void execute(Event<UIAvatarUploader> event) throws Exception {
-      WebuiRequestContext ctx = event.getRequestContext();
       UIAvatarUploader uiAvatarUploader = event.getSource();
       UIPopupWindow uiPopup = uiAvatarUploader.getParent();
       uiPopup.setShow(false);

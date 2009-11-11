@@ -67,6 +67,34 @@ public class ProfileAttachment {
   public String getMimeType() { return mimeType ; }
   public void setMimeType(String s) { mimeType = s ;}
   
+  /**
+   * get images size in MB/ KB/ Bytes
+   * @return image size string
+   */
+  public String getSize() {
+	int KB_SIZE = 1024;
+	int MB_SIZE = 1024 * KB_SIZE;
+	int length = imageBytes.length;
+	double size;
+	if (length >= MB_SIZE) {
+		size = length / MB_SIZE;
+		return size + " MB";
+	} else if (length >= KB_SIZE) {
+		size = length / KB_SIZE;
+		return size + " KB";
+	} else { //Bytes size
+		return  length + " Bytes";
+	}
+  }
+  
+  /**
+   * gets imageBytes
+   * @return
+   */
+  public byte[] getImageBytes() {
+    return imageBytes;
+  }
+  
   public void setInputStream(InputStream input) throws Exception {
     if (input != null) {
       imageBytes = new byte[input.available()] ; 
