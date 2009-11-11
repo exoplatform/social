@@ -27,7 +27,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>gatein-social-extension</artifactId>
+  <artifactId>exo.social.extension.ear</artifactId>
   <packaging>ear</packaging>
   <name>GateIn Portal Social Extension Ear</name>
   <url>http://www.exoplatform.org</url>
@@ -37,23 +37,66 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extension.config</artifactId>
-      <version>1.0-alpha3-SNAPSHOT</version>
+      <version>${org.exoplatform.social.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.application.rest</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.opensocial</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.people</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.space</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.portlet.profile</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.portlet.space</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.web.opensocial</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.web.socialResources</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.webui.social</artifactId>
+      <version>${org.exoplatform.social.version}</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extension.jar</artifactId>
-      <version>1.0-alpha3-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.web</artifactId>
-      <version>3.0.0-Beta02</version>
-      <scope>provided</scope>
+      <version>${org.exoplatform.social.version}</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extension.war</artifactId>
-      <version>1.0-alpha3-SNAPSHOT</version>
+      <version>${org.exoplatform.social.version}</version>
       <type>war</type>
     </dependency>
   </dependencies>
@@ -78,6 +121,55 @@
              <jarModule>
                <groupId>org.exoplatform.social</groupId>
                <artifactId>exo.social.extension.jar</artifactId>
+               <includeInApplicationXml>true</includeInApplicationXml>
+             </jarModule>
+             <jarModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.application.rest</artifactId>
+               <includeInApplicationXml>true</includeInApplicationXml>
+             </jarModule>
+             <jarModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.component.opensocial</artifactId>
+               <includeInApplicationXml>true</includeInApplicationXml>
+             </jarModule>
+             <jarModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.component.people</artifactId>
+               <includeInApplicationXml>true</includeInApplicationXml>
+             </jarModule>
+             <jarModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.component.space</artifactId>
+               <includeInApplicationXml>true</includeInApplicationXml>
+             </jarModule>
+             <webModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.portlet.profile</artifactId>
+               <contextRoot>profile</contextRoot>
+               <bundleFileName>profile.war</bundleFileName>
+             </webModule>
+             <webModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.portlet.space</artifactId>
+               <contextRoot>space</contextRoot>
+               <bundleFileName>space.war</bundleFileName>
+             </webModule>
+             <webModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.web.opensocial</artifactId>
+               <contextRoot>social</contextRoot>
+               <bundleFileName>social.war</bundleFileName>
+             </webModule>
+             <webModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.web.socialResources</artifactId>
+               <contextRoot>eXoResourcesSocial</contextRoot>
+               <bundleFileName>eXoResourcesSocial.war</bundleFileName>
+             </webModule>
+             <jarModule>
+               <groupId>org.exoplatform.social</groupId>
+               <artifactId>exo.social.webui.social</artifactId>
                <includeInApplicationXml>true</includeInApplicationXml>
              </jarModule>
           </modules>
