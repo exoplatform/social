@@ -492,7 +492,9 @@ public class UIExperienceSection extends UIProfileSection {
     addUIFormInput(new UIFormStringInput(POSITION + expIdx, null, null).addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 90));
     addUIFormInput(new UIFormTextAreaInput(PROFESSIONAL + expIdx, null, null));
-    
+    UIFormTextAreaInput uiFormTextAreaInput = getChildById(PROFESSIONAL + expIdx);
+    uiFormTextAreaInput.setColumns(23);
+    uiFormTextAreaInput.setRows(3);
     addUIFormInput(new UIFormDateTimeInput(START_DATE + expIdx, null, null, false).
                    addValidator(DateTimeValidator.class).addValidator(MandatoryValidator.class)) ;
     

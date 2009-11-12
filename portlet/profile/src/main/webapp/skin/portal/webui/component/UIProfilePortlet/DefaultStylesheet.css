@@ -348,3 +348,60 @@ input.hint,textarea.hint {
 .ContainerSpace .NoneExperience {
 	text-align: center;
 }
+
+.UIProfile .Experience {
+	padding: 5px;
+}
+
+.UIProfile .Experience input {
+	height: 14px;
+}
+
+.UIProfile .Experience .UIFormGrid td.FieldComponent {
+	padding: 2px;
+	font-size: 11px;
+}
+
+.UIProfile .Experience .UIFormGrid td.FieldLabel {
+	padding: 2px;
+  text-align: right;
+  vertical-align: top;
+  font-size: 11px;
+}
+
+.UIProfile .Experience .StillInPosition {
+	float: left;
+	margin-top: 2px;
+}
+
+.UIProfile .UIHeaderSection input {
+	height: 14px;
+}
+
+.UIProfile .UIContactSection input {
+	height: 14px;
+}
+
+.UIProfile .UIContactSection .UIForm td.FieldComponent {
+	padding: 2px;
+	font-size: 11px;
+}
+
+.UIProfile .UIContactSection .UIForm td.FieldLabel {
+	padding: 2px;
+  text-align: right;
+  vertical-align: top;
+  font-size: 11px;
+}
+
+.UIProfile .UIBasicInfoSection .UIForm td.FieldComponent {
+	padding: 2px;
+	font-size: 11px;
+}
+
+.UIProfile .UIBasicInfoSection .UIForm td.FieldLabel {
+	padding: 2px;
+  text-align: right;
+  vertical-align: top;
+  font-size: 11px;
+}

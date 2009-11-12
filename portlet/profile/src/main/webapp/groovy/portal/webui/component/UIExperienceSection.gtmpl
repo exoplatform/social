@@ -49,13 +49,13 @@
 				          }%>
 			          </td>
 			          <% if ((i + 7) >= childSize) {%>
-			          	<td width="15%">&nbsp</td>
+			          	<td width="24%">&nbsp</td>
 				          <td class="FieldComponent">
 				          	<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+i)%>">&nbsp</a>
 				           	<a class="AddIcon" href="#" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
 				          </td>
 			          <% } else {%>
-			          	<td width="19%">&nbsp</td>
+			          	<td width="27%">&nbsp</td>
 				          <td class="FieldComponent">
 				          	<a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+i)%>">&nbsp</a>
 				          </td>
@@ -89,7 +89,7 @@
 			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
 			          <td class="FieldComponent">
 			          <%if (childs.get(i + 4).isRendered()) {%>
-			            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%> <%uiform.renderField(childs.get(i + 4));%><br />
+			            <div class="StillInPosition"><%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></div><%uiform.renderField(childs.get(i + 4));%><br />
 			          <%}%>
 			            <%if (childs.get(i + 5).isRendered()) {
 			            	uiform.renderField(childs.get(i + 5));
