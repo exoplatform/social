@@ -24,9 +24,11 @@
   import org.exoplatform.social.core.identity.model.ProfileAttachment
   def profileAttachment = uicomponent.profileAttachment
   def uicomponentId = uicomponent.id
-  def labelInfo = "${uicomponentId}.label.info"
-  def labelSave = "${uicomponentId}.label.save"
-  def labelAbort = "${uicomponentId}.label.abort"
+  def lalbelFileName = _ctx.appRes("${uicomponentId}.label.file_name")
+  def labelFileType = _ctx.appRes("${uicomponentId}.label.file_type")
+  def labelImageSize = _ctx.appRes("${uicomponentId}.label.image_size")
+  def labelSave = _ctx.appRes("${uicomponentId}.label.save")
+  def labelAbort = _ctx.appRes("${uicomponentId}.label.abort")
   
   def saveAction = uicomponent.event("Save")
   def abortAction = uicomponent.event("Abort")
@@ -36,9 +38,9 @@
 <div id="$uicomponent.id" class="UIAvatarUploadContent">
 	<div class="AvatarInfo">
 		<a class="ImageAvatar"><img src="$imageSource" /></a>
-		<div><span>File Name:</span></span> <%= profileAttachment.fileName %></div>
-		<div><span>MimeType:</span> <%= profileAttachment.mimeType %></div>
-		<div><span>Image size:</span> <%= profileAttachment.size %></div>
+		<div><span>$lalbelFileName</span></span> <%= profileAttachment.fileName %></div>
+		<div><span>$labelFileType</span> <%= profileAttachment.mimeType %></div>
+		<div><span>$labelImageSize</span> <%= profileAttachment.size %></div>
 		<div class="ClearLeft"><span></span></div>
 	</div>
 	<div class="UIAction">
@@ -49,7 +51,7 @@
 						<div class="ButtonLeft">
 							<div class="ButtonRight">
 								<div class="ButtonMiddle">
-									<a href="#save">Save</a>
+									<a href="#save">$labelSave</a>
 								</div>
 							</div>
 						</div>
@@ -60,7 +62,7 @@
 						<div class="ButtonLeft">
 							<div class="ButtonRight">
 								<div class="ButtonMiddle">
-									<a href="#abort">Abort</a>
+									<a href="#abort">$labelAbort</a>
 								</div>
 							</div>
 						</div>

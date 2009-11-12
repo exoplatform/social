@@ -57,7 +57,7 @@ public class UIAvatarUploader extends UIForm {
   private UIFormUploadInput uiAvatarUploadInput;
   private int uploadLimit = 2; //MB
   private String errorMessage;
-  private String[] acceptedMimeTypes = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png"};
+  private String[] acceptedMimeTypes = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
   static final String MSG_IMG_NOT_UPLOADED = "UIAvatarUploader.msg.img_not_loaded";
   static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
   /**
@@ -133,7 +133,7 @@ public class UIAvatarUploader extends UIForm {
           if (newName == null) {
             newName = uploadResource.getFileName();
           } else {
-        	  newName = "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
+        	  newName = newName + "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
           }
           profileAtt.setFileName(newName);
           UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);

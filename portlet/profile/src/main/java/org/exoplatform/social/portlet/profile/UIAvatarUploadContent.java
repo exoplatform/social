@@ -99,7 +99,7 @@ public class UIAvatarUploadContent extends UIContainer {
   
   /**
    * gets imageSource link
-   * @return
+   * @return imageSource link
    */
   public String getImageSource() {
     return imageSource;
@@ -124,7 +124,11 @@ public class UIAvatarUploadContent extends UIContainer {
       UIPopupWindow uiPopup = uiAvatarUploadContent.getParent();
       uiPopup.setShow(false);
       if (uiPopup.getParent() != null) {
-        ctx.addUIComponentToUpdateByAjax(uiPopup.getParent());
+        if (uiPopup.getParent().getParent() != null) {
+          ctx.addUIComponentToUpdateByAjax(uiPopup.getParent().getParent());
+        } else {
+          ctx.addUIComponentToUpdateByAjax(uiPopup.getParent());
+        }
       }
     } 
   }
