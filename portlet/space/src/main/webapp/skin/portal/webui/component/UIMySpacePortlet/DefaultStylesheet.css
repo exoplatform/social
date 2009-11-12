@@ -96,6 +96,55 @@
 	margin-right: 3px;
 }
 
+.UIMySpacePortlet .DirectoryNormalBox {
+	background: #fbfbfb;
+	padding: 2px 6px;
+	color: #3a3a3a;
+	margin-bottom: 1px;
+}
+
+.UIMySpacePortlet .BoxSpaceList ul.LetterList {
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	margin: 0 0 10px;
+	overflow: hidden;
+	padding: 0;
+	width: 100%;
+}
+
+.UIMySpacePortlet .BoxSpaceList ul.LetterList li {
+	float: left;
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	margin: 0 3px 3px 0;
+	min-width: 15px;
+	padding: 0;
+	width: 3.2%;
+}
+
+.UIMySpacePortlet .BoxSpaceList ul.LetterList li a {
+	background: #EEEEEE none repeat scroll 0 0;
+	color: inherit;
+	display: block;
+	font-family: Georgia,Times,serif;
+	font-size: 12px;
+	padding: 3px 5px;
+	text-align: center;
+	text-decoration: none;
+}
+
+.UIMySpacePortlet .BoxSpaceList ul.LetterList li a:hover {
+	background: #FFF8DC none repeat scroll 0 0;
+	color: #F57A00;
+}
+
+.UIMySpacePortlet .BoxSpaceList ul.LetterList li a.selected {
+	background: #AAAAAA none repeat scroll 0 0;
+	color: #FFFFFF;
+}
+
 .UIMySpacePortlet .NormalBox {
 	background: #fbfbfb;
 	padding: 8px 15px;

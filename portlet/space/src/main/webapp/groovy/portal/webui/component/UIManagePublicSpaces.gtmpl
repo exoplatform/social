@@ -47,7 +47,7 @@
   		</div>
   	</div>
   <%if (publicSpaces.size() == 0) {%>
-	<div class="GrayBox">
+	<div class="NormalBox">
 	  <div class="NotYet">$labelNoPublic</div>
 	</div>
   <%}%>
@@ -77,9 +77,9 @@
             publicSpaceIdx += 1;
       %>
       <% if (publicSpaceIdx % 2 == 0) { %>
-		  	<div class="NormalBox">
-		  <% } else { %>
 		  	<div class="GrayBox">
+		  <% } else { %>
+		  	<div class="NormalBox">
 		  <% } %>
 		  		<% if (isPublic) { %>
 		  		<a href="$spaceUrl" class="AvatarSpace">

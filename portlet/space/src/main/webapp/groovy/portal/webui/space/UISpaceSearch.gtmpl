@@ -58,22 +58,26 @@ def portalURI = pcontext.getPortalURI();
 					<div class="RightTitleBox">$spaceDirectoryLabel</div>
 				</div>
 			</div>
-			<div class="NormalBox">
-				<div class="ABC">
-				 		<% for (ch in alphabets) {
-					 				if ((selectedChar != null) && (selectedChar == ch)) {
+			<div class="DirectoryNormalBox">
+				<ul class="LetterList">
+				 		<% for (ch in alphabets) { %>
+				 		<li>
+				 		<% if ((selectedChar != null) && (selectedChar == ch)) {
 					 		%>
-					 					<a href="#" style="color: red;" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
+					 					<a href="#" class="selected" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
 					 		 <%} else {%>
 					 					<a href="#" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
 					 			<% } %>
 					 		<% } %>
+					 </li>
+					 <li>
 					 		<%	if ((selectedChar != null) && (selectedChar == "AllSpace")) { %>
-					 					<a href="#" style="color: red;" id="searchAllSpace" onclick="eXo.social.space.UISpaceSearch.searchSpaceByName(this);">$searchAll</a>
+					 					<a href="#" class="selected" id="searchAllSpace" onclick="eXo.social.space.UISpaceSearch.searchSpaceByName(this);">$searchAll</a>
 					 		 <%} else {%>
 					 					<a href="#" id="searchAllSpace" onclick="eXo.social.space.UISpaceSearch.searchSpaceByName(this);">$searchAll</a>
 					 		<% } %>
-				</div>
+					 	</li>
+				</ul>
 			</div>
 		</div>
 </div>

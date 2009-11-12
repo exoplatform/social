@@ -70,9 +70,9 @@
 						}
 	 %>
 		<% if (invitationRelationIdx % 2 == 0) { %>
-		 	<div class="ContentSpace ClearFix">
-		<% } else {%>
 		 	<div class="ContentSpaceGray ClearFix">
+		<% } else {%>
+		 	<div class="ContentSpace ClearFix">
 		<% }%>
     	  <div class="AvartarPeopleBG">
 		   <img height="47px" width="47px" src="$imageSource"/>

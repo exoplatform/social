@@ -58,8 +58,6 @@ import org.exoplatform.social.portlet.URLUtils;
 public class UIProfileUserSearch extends UIComponent {
   /** USER CONTACT. */
   final public static String USER_CONTACT = "userContact";
-  /** COMPANY. */
-  final public static String COMPANY = "company";
   /** PROFESSIONAL. */
   final public static String PROFESSIONAL = "professional";
   /** POSITION. */
@@ -127,7 +125,6 @@ public class UIProfileUserSearch extends UIComponent {
       IdentityManager idm = uiSearch.getIdentityManager();
       String userContact = ctx.getRequestParameter(USER_CONTACT);
       String position = ctx.getRequestParameter(POSITION);
-      String company = ctx.getRequestParameter(COMPANY);
       String professional = ctx.getRequestParameter(PROFESSIONAL);
       String gender = ctx.getRequestParameter(GENDER);
       String charSearch = ctx.getRequestParameter("charSearch");
@@ -161,10 +158,6 @@ public class UIProfileUserSearch extends UIComponent {
             }
         }
         
-        if (company.length() > 0) {
-          identities = uiSearch.getIdentitiesByCompany(company, identities);
-        }
-        
         if (professional.length() > 0) {
           identities = uiSearch.getIdentitiesByProfessional(professional, identities);
         }
@@ -188,39 +181,6 @@ public class UIProfileUserSearch extends UIComponent {
       }
     }
     
-  }
-  
-  /**
-   * Filter identity follow company information.
-   * 
-   * @param company
-   * @param identities
-   * @return List of identities that has company information match.
-   */
-  @SuppressWarnings("unchecked")
-  private List<Identity> getIdentitiesByCompany(String company, List<Identity> identities) {
-      List<Identity> identityLst = new ArrayList<Identity>();
-      String comp = null;
-      ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
-      
-      if (identities.size() > 0) {
-        for (Identity id : identities) {
-          Profile profile = id.getProfile();
-          experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(EXPERIENCE);
-          if (experiences != null) {
-            for (HashMap<String, Object> exp : experiences) {
-              comp = (String) exp.get(COMPANY);
-              if (comp != null) {
-                if (comp.toLowerCase().contains(company.toLowerCase())) {
-                  identityLst.add(id);
-                }
-              }
-            }
-          }
-        }
-      }
-      
-      return GetUniqueIdentities(identityLst);
   }
   
   /**

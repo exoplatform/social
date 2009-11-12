@@ -28,7 +28,6 @@ def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
 def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
 def femaleLabel = _ctx.appRes("${uicomponentId}.label.FeMale");
 def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
-def companyDefaultVal = _ctx.appRes("${uicomponentId}.label.Company");
 def professionalDefaultVal = _ctx.appRes("${uicomponentId}.label.Professional");
 def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
 def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
@@ -38,7 +37,6 @@ def searchId = "Search" + uicomponentId;
 def moreSearchId = "MoreSearch" + uicomponentId;
 def hideMoreSearchId = "HideMoreSearch" + uicomponentId;
 def positionId = "Position" + uicomponentId;
-def companyId = "Company" + uicomponentId;
 def professionalId = "Professional" + uicomponentId;
 def genderId = "Gender" + uicomponentId;
 def selectedStartChar = uicomponent.getSelectedChar();
@@ -56,7 +54,6 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 	  <div class="Filter" id="$filterId" style="display:none">
 		<div class="Lable">${filterByLabel}:</div>
 		<input type="text" id="$positionId" class="Input" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$positionDefaultVal')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$positionDefaultVal')" value="$positionDefaultVal"/>
-		<input type="text" id="$companyId" class="Input" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$companyDefaultVal')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$companyDefaultVal')" value="$companyDefaultVal"/>
 		<input type="text" id="$professionalId" class="Input" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onfocus="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$professionalDefaultVal')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$professionalDefaultVal')" value="$professionalDefaultVal"/>
 		<select class="Select" id="$genderId" style="color: #C7C7C7" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event);" onMouseDown="eXo.social.profile.UIProfileUserSearch.activeFilterText(this, '$allGenderLabel')" onblur="eXo.social.profile.UIProfileUserSearch.onBlurFilterText(this, '$allGenderLabel')">
 			<option selected="selected" value="$allGenderLabel">${allGenderLabel}</option>
@@ -65,7 +62,6 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 		</select>
 		<input id="defaultUserContact" type="hidden" value="$nameDefaultVal">
 		<input id="defaultPos" type="hidden" value="$positionDefaultVal">
-		<input id="defaultComp" type="hidden" value="$companyDefaultVal">
 		<input id="defaultProf" type="hidden" value="$professionalDefaultVal">
 		<input id="defaultGender" type="hidden" value="$allGenderLabel">
 		<input id="searchAll" type="hidden" value="$searchAll">
@@ -83,18 +79,30 @@ def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 		</div>
 	</div>
  <div class="DirectorySpaces" id="DirectorySpaces">
- 		<% for (ch in alphabets) { 
+ 	<ul class="LetterList">
+	 
+ 		<% for (ch in alphabets) { %>
+ 	<li>
+ 		<% 
  				if ((selectedStartChar != null) && (selectedStartChar == ch)) {
  		%>
- 					<a href="#$ch" style="color:red; margin-right: 3px;" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
- 		 <%} else {%>
- 					<a href="#$ch" id="directoryId" style="color:black; margin-right: 3px;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
- 			<% } %>
+ 					<a href="#$ch" class="selected" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
+ 		<%} else {%>
+ 					<a href="#$ch" id="directoryId" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUserByAlphaBet(this,'$ch');">$ch</a>
  		<% } %>
+ 	 </li>
+ 		<% } %>
+ 		<% if (uicomponentId == "UIPeopleSearch") {%>
+ 	 		<li>
+ 	 <% } else {%>
+ 	 		<li  style="width: 25px">
+ 	 <% } %>
  		<% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
- 					<a href="#$searchAll" id="searchAll" style="color:red; margin-right: 3px;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUser(this);">$searchAll</a>
+ 					<a href="#$searchAll" id="searchAll" class="selected" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUser(this);">$searchAll</a>
  		 <%} else {%>
- 					<a href="#$searchAll" id="searchAll" style="color:black; margin-right: 3px;" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUser(this);">$searchAll</a>
- 			<% } %>
+ 					<a href="#$searchAll" id="searchAll" onclick="eXo.social.profile.UIProfileUserSearch.searchProfileUser(this);">$searchAll</a>
+ 		 <% } %>
+ 	 </li>
+ 	</ul>
  </div>
 </div>

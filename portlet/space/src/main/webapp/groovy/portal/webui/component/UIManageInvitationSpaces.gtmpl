@@ -44,7 +44,7 @@
 			</div>
 		</div>
   <%if ((invitedSpaces.size() == 0)) {%>
-			<div class="GrayBox">
+			<div class="NormalBox">
 				<div class="NotYet">$labelNoSpaces</div>
 			</div>
   <%}%>
@@ -56,9 +56,9 @@
 	  %>
 	  
 	  <% if (mySpaceIdx % 2 == 0) { %>
-	  <div class="NormalBox">
-	  <% } else { %>
 	  <div class="GrayBox">
+	  <% } else { %>
+	  <div class="NormalBox">
 	  <% } %>
 			<a href="#" class="AvatarSpace">
 			<% if (imageSource == null) { %>
