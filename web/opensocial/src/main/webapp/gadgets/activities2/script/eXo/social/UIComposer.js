@@ -28,6 +28,8 @@ eXo.social.UIComposer = function(el) {
  */
 eXo.social.UIComposer.prototype.focusInput = function(el) {
 	var statusUpdate = this.statusUpdate;
+	//BUG SOC-386
+  var el = this.inputEl || el; //ie fix, el = window not dom element
 	statusUpdate.shareable = true;
 	el.style.outlineStyle= 'none';
 	if (statusUpdate.currentView == 'home') {
@@ -50,6 +52,7 @@ eXo.social.UIComposer.prototype.focusInput = function(el) {
  */
 eXo.social.UIComposer.prototype.blurInput = function(el) {
 	var statusUpdate = this.statusUpdate;
+	var el = this.inputEl || el;
 	if (statusUpdate.currentView === 'home') {
 		var text = el.value;
 		if (text === '') {
