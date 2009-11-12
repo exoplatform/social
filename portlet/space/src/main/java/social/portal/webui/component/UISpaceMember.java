@@ -272,7 +272,11 @@ public class UISpaceMember extends UIForm {
     Space space = spaceService.getSpaceById(spaceId);
     for(String invitedUser : invitedUserList){
       try {
-        spaceService.inviteMember(space, invitedUser);
+        if (invitedUser.equals(getUserACL().getSuperUser())) {
+            spaceService.addMember(space, invitedUser);
+        } else {
+          spaceService.inviteMember(space, invitedUser);
+        }
       } catch (SpaceException e) {
         if(e.getCode() == SpaceException.Code.USER_NOT_EXIST) {
           if(usersNotExist == null) usersNotExist = invitedUser;

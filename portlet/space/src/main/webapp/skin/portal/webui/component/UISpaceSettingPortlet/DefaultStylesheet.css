@@ -414,7 +414,7 @@
 	font-size: 11px;
 }
 
-.UISpaceSettingPortlet .SpaceAction .InstallAppButton {
+.UISpaceSettingPortlet .InstallApplicationButton {
 	background: url('background/ManageMemButtonAdd.gif') no-repeat left top;
 	width: 15px;
 	height: 16px;
@@ -422,6 +422,7 @@
 	padding: 0px;
 	color: #7f7a77;
 	font-size: 11px;
+	cursor: pointer;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton {

@@ -28,7 +28,7 @@ def labelInstall = _ctx.appRes("${uicomponent.id}.label.install")
                                 }
                         %>                              
                             <div class="UIVTab VTabStyle4">
-                                <div style="cursor:hand;" class="$cTab" onclick="<%= uicomponent.event("SelectCategory", cName) %>">
+                                <div style="cursor:pointer;" class="$cTab" onclick="<%= uicomponent.event("SelectCategory", cName) %>">
                                     <a class="TabLabel" title="<%= displayName %>">
                                         <%= displayName %>
                                     </a>
@@ -50,7 +50,7 @@ def labelInstall = _ctx.appRes("${uicomponent.id}.label.install")
                                                 <div class="ContentInfo" title="<%= application.getDisplayName() %>">
                                                     <div class="LabelTab">$applicationLabel</div>
                                                     <div class="LabelText"><%= application.getDescription() %></div>
-                                                    <div style="float:right;" onclick="$installAction" class="LabelText"><a href="#install/$applicationLabel">$labelInstall</a></div>
+                                                    <div onclick="$installAction" class="AplicationButton InstallApplicationButton" title="$labelInstall"><span></span></div>
                                                 </div>
                                                 <div class="ClearLeft"><span></span></div>
                                             </div>
