@@ -34,16 +34,39 @@
 %>
 
 <div id="$uicomponent.id" class="UIAvatarUploadContent">
-  <div class="AvatarInfo">
-    <div>Info Title</div>
-    <div>Image: <img src="$imageSource" width="100px" /></div>
-    <div>File Name: <%= profileAttachment.fileName %></div>
-    <div>MimeType: <%= profileAttachment.mimeType %></div>
-    <div>Image size: <%= profileAttachment.size %></div>
-    <div>Link: $imageSource </div>
-  </div>
-  <div class="Action">
-    <div onclick="$saveAction"><a href="#save">Save</a></div>
-    <div onclick="$abortAction"><a href="#abort">Abort</a></div>
-  </div>
+	<div class="AvatarInfo">
+		<a class="ImageAvatar"><img src="$imageSource" /></a>
+		<div><span>File Name:</span></span> <%= profileAttachment.fileName %></div>
+		<div><span>MimeType:</span> <%= profileAttachment.mimeType %></div>
+		<div><span>Image size:</span> <%= profileAttachment.size %></div>
+		<div class="ClearLeft"><span></span></div>
+	</div>
+	<div class="UIAction">
+		<table class="ActionContainer">
+			<tr>
+				<td>
+					<div onclick="$saveAction" class="ActionButton LightBlueStyle">
+						<div class="ButtonLeft">
+							<div class="ButtonRight">
+								<div class="ButtonMiddle">
+									<a href="#save">Save</a>
+								</div>
+							</div>
+						</div>
+					</div>			
+				</td>
+				<td>
+					<div onclick="$abortAction" class="ActionButton LightBlueStyle">
+						<div class="ButtonLeft">
+							<div class="ButtonRight">
+								<div class="ButtonMiddle">
+									<a href="#abort">Abort</a>
+								</div>
+							</div>
+						</div>
+					</div>			
+				</td>
+			</tr>	
+		</table>
+	</div>
 </div>
