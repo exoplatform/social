@@ -633,3 +633,102 @@
 .UISpaceSettingPortlet .UISpaceInfo .UIAction {
 	padding: 5px 0px 20px 0px;
 }
+
+.UIAvatarUploader .HorizontalLayout {
+	border: none;
+	padding: 10px;
+}
+
+.UIAvatarUploader .InfoMessage {
+	padding: 5px 0px;
+	text-align: center;
+}
+
+.UIAvatarUploader .InfoMessage {
+	padding: 5px;
+	text-align: center;
+}
+
+.UIAvatarUploader .ErrorMessage {
+	padding: 5px;
+	text-align: center;
+	background: #ffe2e2;
+}
+
+.UIAvatarUploader .HorizontalLayout input {
+	border: 1px solid #e2e2e2;
+	height: 20px;
+}
+
+.UIAvatarUploader .UIFormGrid td.FieldLabel {
+	font-weight: normal;
+	color: gray;
+}
+
+.UIAvatarUploader .UIAction .ButtonLeft {
+	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
+	padding-left: 4px;
+}
+
+.UIAvatarUploader .UIAction .ButtonRight {
+	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
+	padding-right: 4px;
+}
+
+.UIAvatarUploader .UIAction .ButtonMiddle {
+	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
+	line-height: 21px;
+	padding: 0px 14px;
+}
+
+
+
+.UIAvatarUploadContent .InfoTitle {
+	background: #e2e2e2;
+	color: #878787;
+	line-height: 24px;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 0px 10px;
+}
+
+.UIAvatarUploadContent .AvatarInfo {
+	padding: 15px;
+}
+
+.UIAvatarUploadContent .AvatarInfo div {
+	margin-left: 135px;
+	line-height: 20px;
+}
+
+.UIAvatarUploadContent .AvatarInfo span {
+	color: gray;
+}
+
+.UIAvatarUploadContent .ImageAvatar {
+	float: left;
+	width: 110px;
+	background: #fff;
+	padding: 5px;
+	border: 1px solid #e5e5e5;
+}
+
+.UIAvatarUploadContent .ImageAvatar img {
+	width: 110px;
+}
+
+.UIAvatarUploadContent .UIAction .ButtonLeft {
+	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
+	padding-left: 4px;
+}
+
+.UIAvatarUploadContent .UIAction .ButtonRight {
+	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
+	padding-right: 4px;
+}
+
+.UIAvatarUploadContent .UIAction .ButtonMiddle {
+	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
+	line-height: 21px;
+	padding: 0px 14px;
+}
