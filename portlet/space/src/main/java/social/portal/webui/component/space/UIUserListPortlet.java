@@ -50,7 +50,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
-import social.portal.webui.component.StringListAccess;
 import social.portal.webui.component.UISpaceUserSearch;
 import social.portal.webui.component.UserListAccess;
 /**
@@ -79,7 +78,7 @@ public class UIUserListPortlet extends UIPortletApplication {
   private UIPageIterator iteratorMembers;
   private final String iteratorLeaderID = "UIIteratorLeader";
   private final String iteratorMemberID = "UIIteratorMember";
-  private final Integer ITEMS_PER_PAGE = 1;
+  private final Integer ITEMS_PER_PAGE = 5;
   private IdentityManager identityManager_ = null;
   
   public UIUserListPortlet() throws Exception {
@@ -94,29 +93,21 @@ public class UIUserListPortlet extends UIPortletApplication {
     initLeader();
   }
   
-  public void setMemberList(List<User> memberList) {
-    this.memberList = memberList;
+  public void setMemberList(List<User> memberList) { this.memberList = memberList;}
+  
+  public void setLeaderList(List<User> leaderList) { this.leaderList = leaderList;}
+  
+  public List<User> getLeaderList() throws Exception { 
+    initLeader();
+    return leaderList;
   }
   
-  public List<User> getMemberList() throws Exception {
-    int currentPage = iteratorMembers.getCurrentPage();
-    LazyPageList<User> pageList = new LazyPageList<User>(new UserListAccess(memberList), ITEMS_PER_PAGE);
-    iteratorMembers.setPageList(pageList);
-    int pageCount = iteratorMembers.getAvailablePage();
-    if (pageCount >= currentPage) {
-      iteratorMembers.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      iteratorMembers.setCurrentPage(currentPage - 1);
-    }
-    
-    return iteratorMembers.getCurrentPageData();
-  }
+  public UIPageIterator getIteratorLeaders() { return iteratorLeaders; }
+
+  public UIPageIterator getIteratorMembers() { return iteratorMembers; }
   
-  public void setLeaderList(List<User> leaderList) {
-    this.leaderList = leaderList;
-  }
-  
-  public List<User> getLeaderList() throws Exception {
+  public List<User> getLeaders() throws Exception {
+    initLeader();
     int currentPage = iteratorLeaders.getCurrentPage();
     LazyPageList<User> pageList = new LazyPageList<User>(new UserListAccess(leaderList), ITEMS_PER_PAGE);
     iteratorLeaders.setPageList(pageList);
@@ -130,11 +121,21 @@ public class UIUserListPortlet extends UIPortletApplication {
     return iteratorLeaders.getCurrentPageData();
   }
 
+  public List<User> getMembers() throws Exception {
+    initMember();
+    int currentPage = iteratorMembers.getCurrentPage();
+    LazyPageList<User> pageList = new LazyPageList<User>(new UserListAccess(memberList), ITEMS_PER_PAGE);
+    iteratorMembers.setPageList(pageList);
+    int pageCount = iteratorMembers.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iteratorMembers.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iteratorMembers.setCurrentPage(currentPage - 1);
+    }
+    
+    return iteratorMembers.getCurrentPageData();
+  }
   
-  public UIPageIterator getIteratorLeaders() { return iteratorLeaders; }
-
-  public UIPageIterator getIteratorMembers() { return iteratorMembers; }
-
   public String getUserAvatar(String userId) throws Exception {
     Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
     Profile profile = identity.getProfile();

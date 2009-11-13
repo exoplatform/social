@@ -30,26 +30,35 @@
 	def administratorLabel = _ctx.appRes("${uicomponentId}.label.Administrator")
 	def spaceMemberLabel = _ctx.appRes("${uicomponentId}.label.SpaceMember")
 	def labelUserList = _ctx.appRes("${uicomponentId}.label.UserList")
-	def leaderList = uicomponent.getLeaderList()
-	def memberList = uicomponent.getMemberList()
+	def leaderList = uicomponent.getLeaders()
+	def memberList = uicomponent.getMembers()
+	def leaders = uicomponent.getLeaderList()
 	def space = uicomponent.getSpace();
 	def visibility = space.getVisibility();
 	def spaceName = space.getName();
 	def position = "";
+	def adminProfileURL = "";
+	def imgSrcAdmin="";
+	def adminName = "";
 %>
 <div class="UIUserListPortlet" id="$uicomponentId">
 <div class="ActivitiesTitleBarM">$labelUserList</div>
 <div class="UIProfileSpace" >
 	<div class="LeftColumn">
+	<% if (leaders.size() > 0) { %>
 		<%
-			def imgSrcAdmin = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
-			def admin = leaderList.get(0);
-			def adminName = admin.getFirstName();
+			imgSrcAdmin = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+			def admin = leaders.get(0);
+			adminName = admin.getFirstName();
 			def adminImageSource = uicomponent.getUserAvatar(admin.getUserName());
 			def adminIdentity = uicomponent.getIdentity(admin.getUserName());
-			def adminProfileURL = uicomponent.getPath() + "/activities/" + adminIdentity.getRemoteId();
+			adminProfileURL = uicomponent.getPath() + "/activities/" + adminIdentity.getRemoteId();
 			if (adminImageSource != null) imgSrcAdmin = adminImageSource;
 		%>
+	<% } else { 
+			imgSrcAdmin = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+			adminProfileURL = "#";
+	   } %>
 		<div class="AvatarSpace">
 			<div class="Image" >
 			  	<img src="$imgSrcAdmin" height="119px" width="119px" alt="">
@@ -57,6 +66,7 @@
 			<div  style="text-align:center"><a href="${adminProfileURL}" style="color: #afafaf;">($adminLabel $adminName)</a></div>
 		</div>
 	</div>
+	
 	<div class="ContainerSpace" >
 		<div class="UIHeaderSection">
 				<h2>$spaceName</h2>
@@ -73,7 +83,7 @@
 						</div>
 					</div>
 				</div>
-				
+				<% if (leaderList.size() > 0) { %>
 					<% for(user in leaderList) {
 						def imgSrcLeader = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
 						def userName = user.getFullName();
@@ -109,7 +119,11 @@
 						uicomponent.renderUIComponent(iteratorLeaders) ;
 					}
 				%>
-				
+				<%} else {%>
+					<div class="PortletContent">
+						<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>
+					</div>
+				<% } %>
 				<div id="" class="TitleBar">
 					<div class="ATitleBarL">
 						<div class="ATitleBarR">
@@ -159,7 +173,7 @@
 			%>
 			<%} else {%>
 			<div class="PortletContent">
-				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>
 			</div>
 			<% } %>
 	</div>
