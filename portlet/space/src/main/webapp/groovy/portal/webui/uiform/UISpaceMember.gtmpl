@@ -38,6 +38,7 @@
 	 
 	 def pendingIdx = 0;
 	 def invitedIdx = 0;
+	 def existingIdx = 0;
 %>
 <div class="UISpaceMember">
 	<% uiform.begin() %>
@@ -166,8 +167,13 @@
 				  	 String removeLeader = uicomponent.event("RemoveLeader", user) + "; return false;"
 				  	 String makeLeader = uicomponent.event("MakeLeader", user) + "; return false;"
 				  	 String removeAction = uicomponent.event("RemoveUser", user) + "; return false;"
+				  	 existingIdx += 1;
 				  %>
-						<tr class="EvenRow">
+					<% if (existingIdx % 2 == 0) {%>
+							<tr class="EvenRow">
+					<% } else {%>
+							<tr class="OddRow">
+					<% } %>
 							<td class="text"><span class="label" id="label"><%= user %></span></td>
 							<td class="text"><span class="label" id="label"><%= _ctx.appRes(uicomponent.getId() + ".label.makeOffice")%></span></td>
 							<% if(isLeader) {%>  

@@ -49,15 +49,15 @@
 			<tbody>
 				
 			<tr>
-	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%></td>
+	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%> :</td>
 	      <td class="FieldComponent"><%=firstName %></td>
 	    </tr>
 	    <tr>
-	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%></td>
+	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%> :</td>
 	      <td class="FieldComponent"><%=lastName %></td>
 	    </tr>
 			<tr>
-		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%></td>
+		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%> :</td>
 		      <td class="FieldComponent"><%=email%></td>
 		  </tr>
 			</tbody>	

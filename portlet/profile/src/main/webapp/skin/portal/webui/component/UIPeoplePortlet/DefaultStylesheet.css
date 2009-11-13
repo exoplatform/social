@@ -408,13 +408,11 @@
 .UIPeoplePortlet .DirectorySpaces ul.LetterList li a:hover {
 	background: #FFF8DC none repeat scroll 0 0;
 	color: #F57A00;
-	font-weight: bold;
 }
 
 .UIPeoplePortlet .DirectorySpaces ul.LetterList li a.selected {
 	background: #AAAAAA none repeat scroll 0 0;
 	color: #FFFFFF;
-	font-weight: bold;
 }
 
 .UIPeoplePortlet .AvartarPeopleBG{

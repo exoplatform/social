@@ -52,7 +52,7 @@
 		<table class="UIFormGrid">
 		  <tbody>
 		  <tr>
-		  <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%></td>
+		  <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%> :</td>
 		  <td class="FieldComponent">
 		  <%
 		    if (isEdit && isEditable) { %>
@@ -71,7 +71,7 @@
 		   <!--              phones          -->
 		    
 		    <tr>
-		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%></td>
+		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%> :</td>
 		      <td class="FieldComponent">
 		        <%
 							if (isEdit && isEditable) { %>
@@ -112,7 +112,7 @@
 		    <!--              end of phones          -->
         <!--              ims          -->
 		    <tr>
-		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%></td>
+		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%> :</td>
 		      <td class="FieldComponent">
 		        <%
 		        	if (isEdit && isEditable) { %>
@@ -166,7 +166,7 @@
 		    <!--              end of ims          -->
 		    <!--              URL          -->
 		    <tr>
-		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%></td>
+		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%> :</td>
 		      <td class="FieldComponent">
 		        <%
               if (isEdit && isEditable) { %>

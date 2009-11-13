@@ -89,7 +89,7 @@
 			          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
 			          <td class="FieldComponent">
 			          <%if (childs.get(i + 4).isRendered()) {%>
-			            <div class="StillInPosition"><%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></div><%uiform.renderField(childs.get(i + 4));%><br />
+			            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%><%uiform.renderField(childs.get(i + 4));%><br />
 			          <%}%>
 			            <%if (childs.get(i + 5).isRendered()) {
 			            	uiform.renderField(childs.get(i + 5));

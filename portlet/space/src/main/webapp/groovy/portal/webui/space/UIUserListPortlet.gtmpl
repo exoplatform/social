@@ -40,6 +40,8 @@
 	def adminProfileURL = "";
 	def imgSrcAdmin="";
 	def adminName = "";
+	def leaderIdx = 0;
+	def memberIdx = 0;
 %>
 <div class="UIUserListPortlet" id="$uicomponentId">
 <div class="ActivitiesTitleBarM">$labelUserList</div>
@@ -93,8 +95,13 @@
 						def profileURL = uicomponent.getPath() + "/activities/" + leaderIdentity.getRemoteId();
 						if (!position) position = "";
 						if (leaderImageSource != null) imgSrcLeader = leaderImageSource;
+						leaderIdx += 1;
 					%>
+				<% if (leaderIdx % 2 != 0) {%>
 					<div class="PortletContent">
+				<% } else {%>
+					<div class="PortletContentGray">
+				<% } %>
 					<div class="AvartarPeopleBG">
 						<img height="47" width="47" src="$imgSrcLeader"/>
 					</div>
@@ -145,8 +152,13 @@
 					if (!position) position = "";
 					def profileURL = uicomponent.getPath() + "/activities/" + memberIdentity.getRemoteId();
 					if (memberImageSource != null) memberImgSrc = memberImageSource;
+					memberIdx += 1;
 				%>
-				<div class="PortletContent">
+				<% if (memberIdx % 2 != 0) {%>
+					<div class="PortletContent">
+				<% } else {%>
+					<div class="PortletContentGray">
+				<% } %>
 					<div class="AvartarPeopleBG">
 						<img height="47" width="47" src="$memberImgSrc"/>
 					</div>
