@@ -35,16 +35,7 @@ function getProduct(version) {
   var portal = Module.GetModule("portal", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr});
 	var social = Module.GetModule("social", {kernel : kernel, ws:ws, core : core, eXoJcr : eXoJcr, portal:portal});
   
-	//product.addDependencies(social.web.socialportal) ;
-  product.addDependencies(social.extension.war) ;
-  product.addDependencies(social.web.eXoResources) ;
-  product.addDependencies(social.component.people) ;
-  product.addDependencies(social.component.space) ;
-  product.addDependencies(social.portlet.space) ;
-  product.addDependencies(social.portlet.profile);
-  product.addDependencies(social.web.opensocial);
-  product.addDependencies(social.component.opensocial);
-  product.addDependencies(social.application.rest) ;
+
 
   product.addDependencies(portal.web.rest) ;
   product.addDependencies(portal.portlet.exoadmin) ;
@@ -62,6 +53,20 @@ function getProduct(version) {
 	portal.starter = new Project("org.exoplatform.portal", "exo.portal.starter.war", "war", portal.version);
 	portal.starter.deployName = "starter";
 	product.addDependencies(portal.starter);
+
+	product.addDependencies(social.web.socialportal) ;
+  product.addDependencies(social.extension.war) ;
+  product.addDependencies(social.web.eXoResources) ;
+  product.addDependencies(social.component.people) ;
+  product.addDependencies(social.component.space) ;
+  product.addDependencies(social.portlet.space) ;
+  product.addDependencies(social.portlet.profile);
+  product.addDependencies(social.web.opensocial);
+  product.addDependencies(social.component.opensocial);
+  product.addDependencies(social.application.rest) ;
+
+
+
 
   product.addServerPatch("tomcat", portal.server.tomcat.patch);
   product.addServerPatch("jboss",  portal.server.jboss.patch);

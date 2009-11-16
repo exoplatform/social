@@ -49,20 +49,8 @@
 									<string>eXoResources</string>
 								</value>
 								<value>
-									<string>eXoResourcesSocial</string>
-								</value>
-								<value>
 									<string>portal</string>
 								</value>
-								<value>
-									<string>social</string>
-								</value>
-								<value>
-									<string>space</string>
-								</value>
-								<value>
-									<string>profile</string>
-								</value>	
 								<value>
 									<string>dashboard</string>
 								</value>
@@ -81,6 +69,18 @@
 								<value>
 									<string>web</string>
 								</value>
+								<value>
+									<string>eXoResourcesSocial</string>
+								</value>
+								<value>
+									<string>social</string>
+								</value>
+								<value>
+									<string>space</string>
+								</value>
+								<value>
+									<string>profile</string>
+								</value>	
 								<value>
 									<string>social-ext</string>
 								</value>
