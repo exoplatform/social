@@ -17,6 +17,7 @@
 package social.portal.webui.component.space;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
@@ -24,8 +25,11 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * UIProfileUserSearch for search users in profile.
@@ -36,16 +40,19 @@ import org.exoplatform.webui.event.EventListener;
  * Oct 28, 2009  
  */
 @ComponentConfig(
+  lifecycle = UIFormLifecycle.class,
   template = "app:/groovy/portal/webui/space/UISpaceSearch.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceSearch.SearchActionListener.class) 
   }
 )
-public class UISpaceSearch extends UIComponent {
+public class UISpaceSearch extends UIForm {
   /** USER CONTACT. */
-  final public static String USER_CONTACT = "userContact";
+  final public static String SPACE_SEARCH = "SpaceSearch";
   /** SEARCH. */
   final public static String SEARCH = "Search";
+  /** DEFAULT SPACE NAME SEARCH. */
+  final public static String DEFAULT_SPACE_NAME_SEARCH = "Space name";
   SpaceService spaceService = null;
   private List<Space> spaceList = null;
   /** Selected character when search by alphabet */
@@ -55,7 +62,9 @@ public class UISpaceSearch extends UIComponent {
    * Constructor to initialize form fields
    * @throws Exception
    */
-  public UISpaceSearch() throws Exception { }
+  public UISpaceSearch() throws Exception { 
+    addUIFormInput(new UIFormStringInput(SPACE_SEARCH, null, DEFAULT_SPACE_NAME_SEARCH));
+  }
   
   /**
    * identityList setter
@@ -88,17 +97,17 @@ public class UISpaceSearch extends UIComponent {
     public void execute(Event<UISpaceSearch> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UISpaceSearch uiSpaceSearch = event.getSource();
+      String charSearch = ctx.getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
-      String spaceName = event.getRequestContext().getRequestParameter("spaceName");
-      String isFirstChar = event.getRequestContext().getRequestParameter("isFirstCharOfSpaceName");
-      Boolean isSearchAllSpace = Boolean.parseBoolean(event.getRequestContext().getRequestParameter("isSearchAllSpace"));
-      
-      if(Boolean.parseBoolean(isFirstChar)) {
-        uiSpaceSearch.setSelectedChar(spaceName);
-      } else if (isSearchAllSpace) {
-        uiSpaceSearch.setSelectedChar("AllSpace");
-      } else uiSpaceSearch.setSelectedChar(null);
-      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, Boolean.parseBoolean(isFirstChar));
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
+      String defaultSpaceName = resApp.getString(uiSpaceSearch.getId() + ".label.SpaceName");
+      String spaceName = ((UIFormStringInput)uiSpaceSearch.getChild(UIFormStringInput.class)).getValue();
+      spaceName = ((spaceName == null) || spaceName.equals(defaultSpaceName)) ? "" : spaceName;
+      spaceName = (charSearch != null) ? charSearch : spaceName;
+      spaceName = ((charSearch != null) && "All".equals(charSearch)) ? "" : spaceName;
+      if (charSearch != null) ((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(DEFAULT_SPACE_NAME_SEARCH);
+      uiSpaceSearch.setSelectedChar(charSearch);
+      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, (charSearch == null) ? false : true );
       uiSpaceSearch.setSpaceList(spaceSearchResult);
       
       Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);

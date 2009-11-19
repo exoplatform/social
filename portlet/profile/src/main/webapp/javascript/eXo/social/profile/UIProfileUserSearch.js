@@ -29,31 +29,57 @@ function UIProfileUserSearch() {
    this.searchAll = false;
 };
 
+UIProfileUserSearch.prototype.onLoad = function(uicomponentId) {
+	var DOMUtil = eXo.core.DOMUtil;
+	var profileSearch = document.getElementById(uicomponentId);
+	var searchEl = DOMUtil.findDescendantById(profileSearch, 'Search');
+	var posEl = DOMUtil.findDescendantById(profileSearch, 'position');
+	var profEl = DOMUtil.findDescendantById(profileSearch, 'professional');
+	var filterBlock = DOMUtil.findDescendantById(profileSearch, 'Filter');
+	var genderEl = DOMUtil.findDescendantsByTagName(profileSearch, 'select');
+	var defaultUserContact = document.getElementById('defaultUserContact').value;
+	var defaultPos = document.getElementById('defaultPos').value;
+	var defaultProf = document.getElementById('defaultProf').value;
+	var defaultGender = document.getElementById('defaultGender').value;
+	var defaultNameVal = "name";
+	var defaultPosVal = "position";
+	var defaultProfVal = "professional";
+	var defaultGenderVal = "Gender";
+	if (searchEl.value == defaultNameVal) searchEl.value = defaultUserContact;
+	(searchEl.value != defaultUserContact) ? (searchEl.style.color = '#000000') : (searchEl.style.color = '#C7C7C7');
+	
+	posEl.value = defaultPos;
+	profEl.value = defaultProf;
+	genderEl[0].value=defaultGender;
+};
+
 /**
  *	Change status some component when it is activated.
  *	
  *	@var filter {Object} Object is activated.
  *	@return void						
  */
-UIProfileUserSearch.prototype.activeFilterText = function(filter) {
+
+UIProfileUserSearch.prototype.activeFilterText = function(elementId, componentId) {
 	var DOMUtil = eXo.core.DOMUtil;
-	var searchEl = DOMUtil.findAncestorByClass(filter, 'UIProfileUserSearch');
-	var componentId = searchEl.id;
-	var defaultValue="";
+	var profileSearch = document.getElementById(componentId);
+	var filter = DOMUtil.findDescendantById(profileSearch, elementId);
+	//if (filter == null) filter = DOMUtil.findDescendantsByTagName(profileSearch, 'select');
 	this.createId(componentId);
 	this.setDefaultValue();
-	filter.style.color="#000000";
-	filter.focus();
-	if (filter.id == this.searchId) { 
-		defaultValue = this.defaultUserContact;
-	} else if (filter.id == this.positionId) {
-		defaultValue = this.defaultPos;
-	} else {
-		defaultValue = this.defaultProf;
-	}
-	
-	if (filter.value == defaultValue) {
-		filter.value='';
+	if (filter != null) {
+		filter.style.color="#000000";
+		if (elementId == this.searchId) { 
+			defaultValue = this.defaultUserContact;
+		} else if (elementId == this.positionId) {
+			defaultValue = this.defaultPos;
+		} else {
+			defaultValue = this.defaultProf;
+		}
+		
+		if (filter.value == defaultValue) {
+			filter.value='';
+		}
 	}
 }
 
@@ -63,22 +89,28 @@ UIProfileUserSearch.prototype.activeFilterText = function(filter) {
  *	@var filter {Object} Object is on blurred.
  *	@return void						
  */
-UIProfileUserSearch.prototype.onBlurFilterText = function(filter) {
-	var defaultValue="";
-	if (filter.id == this.searchId) { 
-		defaultValue = this.defaultUserContact;
-	} else if (filter.id == this.positionId) {
-		defaultValue = this.defaultPos;
-	} else {
-		defaultValue = this.defaultProf;
+UIProfileUserSearch.prototype.onBlurFilterText = function(elementId, componentId) {
+	var DOMUtil = eXo.core.DOMUtil;
+	var profileSearch = document.getElementById(componentId);
+	var filter = DOMUtil.findDescendantById(profileSearch, elementId);
+	this.createId(componentId);
+	this.setDefaultValue();
+	if (filter != null) {
+		if (filter.id == this.searchId) { 
+			defaultValue = this.defaultUserContact;
+		} else if (filter.id == this.positionId) {
+			defaultValue = this.defaultPos;
+		} else {
+			defaultValue = this.defaultProf;
+		}
+		
+		if (filter.value.trim() == '') {
+			filter.style.color="#C7C7C7";
+			filter.value=defaultValue;
+		}
+		
+		if (filter.value.trim() == this.defaultGender) filter.style.color="#C7C7C7";
 	}
-	
-	if (filter.value.trim() == '') {
-		filter.style.color="#C7C7C7";
-		filter.value=defaultValue;
-	}
-	
-	if (filter.value.trim() == this.defaultGender) filter.style.color="#C7C7C7";
 }
 
 /**
@@ -92,6 +124,7 @@ UIProfileUserSearch.prototype.onBlurFilterText = function(filter) {
  */
 UIProfileUserSearch.prototype.toggleFilter = function(newLabel, filterBlockId, elementId, currentEl) {
 	var filter = document.getElementById(filterBlockId);
+	
 	var element = document.getElementById(elementId);
 	
 	if (filter.style.display == 'none') {
@@ -106,93 +139,23 @@ UIProfileUserSearch.prototype.toggleFilter = function(newLabel, filterBlockId, e
 };
 
 /**
- *	Create and send action when search button is clicked.
- *	
- *	@var element {Object} Search text box.
- *	@return void						
- */
-UIProfileUserSearch.prototype.searchProfileUser = function(element) {
-  var DOMUtil = eXo.core.DOMUtil;
-  var searchEl = DOMUtil.findAncestorByClass(element, 'UIProfileUserSearch');
-  var componentId = searchEl.id;
-  this.createId(componentId);
-  var filterEl = document.getElementById(this.filterId);
-  var userContact="";
-  var position="";
-  var professional="";
-  var gender="";
-  
-  if (element.id != 'searchAll') {
-	  userContact = document.getElementById(this.searchId).value;
-	  this.searchAll = false;
-  } else {
-	  this.searchAll = true;
-  }
-
-  if (filterEl.style.display != 'none') {
-	  position = document.getElementById(this.positionId).value;
-	  professional = document.getElementById(this.professionalId).value;
-	  gender = document.getElementById(this.genderId).value;
-  } 
-  
-  if (userContact == this.defaultUserContact)  userContact = "";
-  if (position == this.defaultPos)  position = "";
-  if (professional == this.defaultProf)  professional = "";
-  if (gender == this.defaultGender) gender = "";
-  
-  if(searchEl != null ) {
-	var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
-	if (portletFragment != null) {
-		var compId = portletFragment.parentNode.id;
-		var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
-		href += "&portal:type=action&uicomponent=" + searchEl.id;
-		href += "&op=Search";
-		href += "&userContact=" + userContact.trim();
-		href += "&position=" + position.trim();
-	    href += "&professional=" + professional.trim();
-	    href += "&isSearchAll=" + this.searchAll;
-		href += "&gender=" + gender;
-		href += "&ajaxRequest=true";
-		ajaxGet(href,true);
-	} 
-  }
-};
-
-UIProfileUserSearch.prototype.searchProfileUserByAlphaBet = function(element, ch) {
-	  var DOMUtil = eXo.core.DOMUtil;
-	  var searchEl = DOMUtil.findAncestorByClass(element, 'UIProfileUserSearch');
-	  var componentId = searchEl.id;
-	  this.createId(componentId);
-	  var filterEl = document.getElementById(this.filterId);
-	  
-	  if(searchEl != null ) {
-		var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
-		if (portletFragment != null) {
-			var compId = portletFragment.parentNode.id;
-			var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
-			href += "&portal:type=action&uicomponent=" + searchEl.id;
-			href += "&op=Search";
-			href += "&charSearch=" + ch;
-			href += "&isSearchAlphaBet=true";
-			href += "&ajaxRequest=true";
-			ajaxGet(href,true);
-		} 
-	  }
-};
-
-/**
  *	Call function when Enter Key is pressed in search text box.
  *	
  *	@var event {Object} Event.
  *	@return void						
  */
-UIProfileUserSearch.prototype.setEnterKey = function(event) {
+UIProfileUserSearch.prototype.setEnterKey = function(event, elementInputId) {
 	var e = event || window.event;
 	var elementInput = e.srcElement || e.target;
 	var keynum = e.keyCode || e.which;  
+	var element = document.getElementById(elementInputId);
+	var DOMUtil = eXo.core.DOMUtil;
+	var UIForm = eXo.webui.UIForm;
+	var searchEl = DOMUtil.findAncestorByClass(element, 'UIForm');
+	  
 	if(keynum == 13) {
-		eXo.social.profile.UIProfileUserSearch.searchProfileUser(elementInput);
-	}						
+		if (searchEl != null ) UIForm.submitForm(searchEl.id, 'Search', true);
+	}							
 };
 
 UIProfileUserSearch.prototype.setDefaultValue = function() {
@@ -209,11 +172,11 @@ UIProfileUserSearch.prototype.setDefaultValue = function() {
  *	@return void						
  */
 UIProfileUserSearch.prototype.createId = function(componentId) {
-	this.searchId = 'Search' + componentId;
-	this.positionId = 'Position' + componentId;
-	this.professionalId = 'Professional' + componentId; 
-	this.genderId = 'Gender' + componentId;
-	this.filterId = 'Filter' + componentId;
+	this.searchId = 'Search';
+	this.positionId = 'position';
+	this.professionalId = 'professional';
+	this.genderId = 'gender';
+	this.filterId = 'Filter';
 };
 
 /*===================================================================*/

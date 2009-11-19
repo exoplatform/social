@@ -26,9 +26,8 @@
 <div class="ActivitiesTitleBarM">
 	<%=_ctx.appRes(uicomponent.getId() + ".label.MyInvitationsList")%>
 </div>
-<div class="UIInvitationRelation">
+<div class="UIInvitationRelation" id="$uicomponent.id">
 	<div class="UITabPane">
-	<% uiform.begin() %>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
 			<div class="ATitleBarL">
@@ -103,6 +102,5 @@
 		 		}
 	 	%>
 	  </div>
-	<% uiform.end() %>
 	</div>
 </div>

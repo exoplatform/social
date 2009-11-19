@@ -16,9 +16,16 @@
  */
 
 function UISpaceSearch() {
-   this.searchId = null;
-   this.defaultSpaceName = "";
-   this.searchAllSpace = false;
+};
+
+UISpaceSearch.prototype.onLoad = function(uicomponentId) {
+	var DOMUtil = eXo.core.DOMUtil;
+	var spaceSearch = document.getElementById(uicomponentId);
+	var spaceSearchEl = DOMUtil.findDescendantById(spaceSearch, 'SpaceSearch');
+	var defaultSpaceName = document.getElementById('defaultSpaceName').value;
+	var defaultUIVal = "Space name";
+	if (spaceSearchEl.value == defaultUIVal) spaceSearchEl.value = defaultSpaceName;
+	(spaceSearchEl.value != defaultSpaceName) ? (spaceSearchEl.style.color = '#000000') : (spaceSearchEl.style.color = '#C7C7C7');
 };
 
 /**
@@ -27,11 +34,14 @@ function UISpaceSearch() {
  *	@var filter {Object} Object is activated.
  *	@return void						
  */
-UISpaceSearch.prototype.activeSearchText = function(searchBox) {
-	this.setDefaultValue();
+UISpaceSearch.prototype.activeSearchText = function(elementId, componentId) {
+	var DOMUtil = eXo.core.DOMUtil;
+	var spaceSearch = document.getElementById(componentId);
+	var searchBox = DOMUtil.findDescendantById(spaceSearch, elementId);
+	var defaultValue = document.getElementById('defaultSpaceName').value;
 	searchBox.style.color="#000000";
 	searchBox.focus();
-	if (searchBox.value == this.defaultSpaceName) {
+	if (searchBox.value == defaultValue) {
 		searchBox.value='';
 	}
 };
@@ -42,70 +52,15 @@ UISpaceSearch.prototype.activeSearchText = function(searchBox) {
  *	@var filter {Object} Object is on blurred.
  *	@return void						
  */
-UISpaceSearch.prototype.onBlurSearchText = function(searchBox) {
-	if ((searchBox.value.trim() == '') || (searchBox.value.trim() == this.defaultSpaceName)) {
+UISpaceSearch.prototype.onBlurSearchText = function(elementId, componentId) {
+	var DOMUtil = eXo.core.DOMUtil;
+	var spaceSearch = document.getElementById(componentId);
+	var searchBox = DOMUtil.findDescendantById(spaceSearch, elementId);
+	var defaultValue = document.getElementById('defaultSpaceName').value;
+	if ((searchBox.value.trim() == '') || (searchBox.value.trim() == defaultValue)) {
 		searchBox.style.color="#C7C7C7";
-		searchBox.value=this.defaultSpaceName;
+		searchBox.value=defaultValue;
 	} 
-};
-
-/**
- *	Create and send action when search button is clicked.
- *	
- *	@var element {Object} Search text box.
- *	@return void						
- */
-UISpaceSearch.prototype.searchSpaceByName = function(element) {
-  var DOMUtil = eXo.core.DOMUtil;
-  var searchEl = DOMUtil.findAncestorByClass(element, 'UISpaceSearch');
-  var spaceName="";
-
-  if (element.id != 'searchAllSpace') {
-	  spaceName = element.value;
-	  this.searchAllSpace = false;
-  } else {
-	  this.searchAllSpace = true;
-  }
-  
-  if(searchEl != null ) {
-	var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
-	if (portletFragment != null) {
-		var compId = portletFragment.parentNode.id;
-		var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
-		href += "&portal:type=action&uicomponent=" + searchEl.id;
-		href += "&op=Search";
-		href += "&spaceName=" + spaceName.trim();
-		href += "&isSearchAllSpace=" + this.searchAllSpace;
-		href += "&isFirstCharOfSpaceName=false";
-		href += "&ajaxRequest=true";
-		ajaxGet(href,true);
-	} 
-  }
-};
-
-/**
- *	Create and send action when search button is clicked.
- *	
- *	@var element {Object} Search text box.
- *	@return void						
- */
-UISpaceSearch.prototype.searchSpaceByFirstCharOfName = function(element, ch) {
-  var DOMUtil = eXo.core.DOMUtil;
-  var searchEl = DOMUtil.findAncestorByClass(element, 'UISpaceSearch');
-  
-  if(searchEl != null ) {
-	var portletFragment = DOMUtil.findAncestorByClass(searchEl, "PORTLET-FRAGMENT");
-	if (portletFragment != null) {
-		var compId = portletFragment.parentNode.id;
-		var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
-		href += "&portal:type=action&uicomponent=" + searchEl.id;
-		href += "&op=Search";
-		href += "&spaceName=" + ch;
-		href += "&isFirstCharOfSpaceName=true";
-		href += "&ajaxRequest=true";
-		ajaxGet(href,true);
-	} 
-  }
 };
 
 /**
@@ -114,28 +69,20 @@ UISpaceSearch.prototype.searchSpaceByFirstCharOfName = function(element, ch) {
  *	@var event {Object} Event.
  *	@return void						
  */
-UISpaceSearch.prototype.setEnterKey = function(event) {
+UISpaceSearch.prototype.setEnterKey = function(event, elementInputId) {
 	var e = event || window.event;
 	var elementInput = e.srcElement || e.target;
 	var keynum = e.keyCode || e.which;  
+	var element = document.getElementById(elementInputId);
+	var DOMUtil = eXo.core.DOMUtil;
+	var UIForm = eXo.webui.UIForm;
+	var searchEl = DOMUtil.findAncestorByClass(element, 'UIForm');
+	  
 	if(keynum == 13) {
-		eXo.social.space.UISpaceSearch.searchSpaceByName(elementInput);
+		if (searchEl != null ) UIForm.submitForm(searchEl.id, 'Search', true);
 	}						
 };
 
-UISpaceSearch.prototype.setDefaultValue = function() {
-	this.defaultSpaceName = document.getElementById('defaultSpaceName').value;
-}
-
-/**
- *	Create id of elements with input component ID.
- *	
- *	@var componentId {String} Current component ID.
- *	@return void						
- */
-UISpaceSearch.prototype.createId = function(componentId) {
-	this.searchId = 'Search' + componentId;
-};
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
 if(!eXo.social.profile) eXo.social.space = {};

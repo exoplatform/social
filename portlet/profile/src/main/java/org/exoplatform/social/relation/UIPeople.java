@@ -329,7 +329,7 @@ public class UIPeople extends UIForm {
     public void execute(Event<UIPeople> event) throws Exception {
       UIPeople uiPub = event.getSource();
       UIProfileUserSearch uiProfileUserSearch = uiPub.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      List<Identity> identityList = uiProfileUserSearch.getIdentityList();
       uiPub.setIdentityList(identityList);
     }
   }

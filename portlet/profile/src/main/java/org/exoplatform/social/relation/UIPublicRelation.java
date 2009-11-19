@@ -193,7 +193,7 @@ public class UIPublicRelation extends UIForm {
     public void execute(Event<UIPublicRelation> event) throws Exception {
       UIPublicRelation uiPub = event.getSource();
       UIProfileUserSearch uiProfileUserSearch = uiPub.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      List<Identity> identityList = uiProfileUserSearch.getIdentityList();
       uiPub.setIdentityList(identityList);
     }
   }

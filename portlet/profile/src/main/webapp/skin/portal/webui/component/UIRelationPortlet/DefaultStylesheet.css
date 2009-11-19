@@ -303,16 +303,54 @@
 	color: black;
 }
 
-.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search{
-	width: 256px;
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search {
+	width: 270px;
 	float: left;
-	background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
 	border: 1px solid #b7b7b7;
 	font-size: 11px;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter {
 	padding-top: 4px;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search input {
+	width: 255px;
+	height: 14px;
+	font-size:11px;
+	float: left;
+	color: #C7C7C7;
+	border: none;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .SearchIcon {
+	width: 14px;
+	float: left;
+	background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
+	font-size: 11px;
+	cursor: pointer;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterInput {
+	float: left;
+	border: 1px solid #b7b7b7;
+	margin-right: 7px;
+}
+
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterInput input {
+	height: 14px;
+	width: 92px;
+	font-size:11px;
+	color: #C7C7C7;
+	border: none;
+}
+
+.UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterGender select{
+	height: 20px;
+	width: 72px;
+	font-size:11px;
+	float: left;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Input{

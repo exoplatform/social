@@ -35,6 +35,7 @@ import org.exoplatform.social.portlet.profile.Utils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -49,14 +50,13 @@ import org.exoplatform.webui.form.UIFormPageIterator;
  * Aug 25, 2009  
  */
 @ComponentConfig(
-    lifecycle = UIFormLifecycle.class,
     template =  "app:/groovy/portal/webui/component/UIPendingRelation.gtmpl",
     events = { 
         @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class),
         @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE)
       }
 )
-public class UIPendingRelation extends UIForm {
+public class UIPendingRelation extends UIContainer {
   /** UIFormPageIterator */
   UIFormPageIterator uiFormPageIterator_;
   /** UIFormPageIterator ID. */
@@ -194,7 +194,7 @@ public class UIPendingRelation extends UIForm {
     public void execute(Event<UIPendingRelation> event) throws Exception {
       UIPendingRelation uiPending = event.getSource();
       UIProfileUserSearch uiProfileUserSearch = uiPending.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      List<Identity> identityList = uiProfileUserSearch.getIdentityList();
       uiPending.setIdentityList(identityList);
     }
   }

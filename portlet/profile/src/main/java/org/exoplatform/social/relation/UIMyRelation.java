@@ -215,7 +215,7 @@ public class UIMyRelation extends UIForm {
     public void execute(Event<UIMyRelation> event) throws Exception {
       UIMyRelation uiMyRelation = event.getSource();
       UIProfileUserSearch uiProfileUserSearch = uiMyRelation.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      List<Identity> identityList = uiProfileUserSearch.getIdentityList();
       uiMyRelation.setIdentityList(identityList);
     }
   }

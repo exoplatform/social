@@ -60,7 +60,13 @@
 	font-size:11px;
 }
 
-.UIMySpacePortlet .CenterContentInput select {
+.UIMySpacePortlet .UISpaceSearch .CenterContentInput {
+	float: left;
+	width: 42%;
+	padding: 0px 5px;
+}
+
+.UIMySpacePortlet .UISpaceSearch .CenterContentInput select {
 	height: 18px;
 	background: #fff;
 	border: 1px solid #b8b8b8;
@@ -68,6 +74,29 @@
 	color: #cbcbcb;
 }
 
+.UIMySpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput {
+	width: 265px;
+	font-size:11px;
+	float: left;
+	border: 1px solid #b7b7b7;
+}
+
+.UIMySpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput input {
+	width: 250px;
+	height: 14px;
+	font-size:11px;
+	float: left;
+	color: #C7C7C7;
+	border: none;
+}
+
+.UIMySpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput .SearchIcon {
+	width: 14px;
+	float: left;
+	background: white url( "background/IconSearch.gif" ) no-repeat right center;
+	font-size: 11px;
+	cursor: pointer;
+}
 
 .UIMySpacePortlet .BoxSpaceList {
 	margin-bottom: 8px;

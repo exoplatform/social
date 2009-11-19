@@ -29,7 +29,7 @@ package org.exoplatform.social.core.identity;
  */
 public class ProfileFiler {
   /* filer by user profile name*/
-  private String userName;
+  private String name;
   /* filer by user profile position*/
   private String position;
   /* filer by user profile company*/
@@ -47,6 +47,6 @@ public class ProfileFiler {
   public void setProfessional(String professional) { this.professional = professional;}
   public String getGender() { return gender; }
   public void setGender(String gender) { this.gender = gender; }
-  public void setUserName(String userName) { this.userName = userName; }
-  public String getUserName() { return userName; }
+  public void setName(String name) { this.name = name; }
+  public String getName() { return name; }
 }

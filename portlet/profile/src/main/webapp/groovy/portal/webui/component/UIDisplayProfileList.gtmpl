@@ -29,7 +29,7 @@
   def iterator = uicomponent.getUIPageIterator();
   def peopleIdx = 0
 %>
-<div class="UIProfileList" id="$uicomponent.id">
+<div class="UIProfileList">
   <div class="ContainerSpace">
   <% uicomponent.renderChild(UIProfileUserSearch.class); %>
 	  <div class="ATitleBarL">

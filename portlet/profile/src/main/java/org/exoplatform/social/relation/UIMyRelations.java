@@ -36,11 +36,10 @@ import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
@@ -51,7 +50,6 @@ import org.exoplatform.webui.form.UIFormPageIterator;
  */
 @ComponentConfigs( {
     @ComponentConfig(
-        lifecycle = UIFormLifecycle.class,
         template =  "app:/groovy/portal/webui/component/UIMyRelations.gtmpl",
         events = {
             @EventConfig(listeners = UIMyRelations.RemoveActionListener.class),
@@ -62,7 +60,7 @@ import org.exoplatform.webui.form.UIFormPageIterator;
     )
   }
 )
-public class UIMyRelations extends UIForm {
+public class UIMyRelations extends UIContainer {
   /** UIFormPageIterator */
   UIFormPageIterator uiFormPageIteratorContact;
   /** UIFormPageIterator ID. */
@@ -196,7 +194,7 @@ public class UIMyRelations extends UIForm {
     public void execute(Event<UIMyRelations> event) throws Exception {
       UIMyRelations uiMyRelation = event.getSource();
       UIProfileUserSearch uiProfileUserSearch = uiMyRelation.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      List<Identity> identityList = uiProfileUserSearch.getIdentityList();
       uiMyRelation.setIdentityList(identityList);
     }
   }

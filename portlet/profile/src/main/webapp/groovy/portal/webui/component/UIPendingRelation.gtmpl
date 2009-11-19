@@ -16,9 +16,8 @@
 <div class="ActivitiesTitleBarM">
 	<%=_ctx.appRes(uicomponent.getId() + ".label.MyRequestsList")%>
 </div>
-<div class="UIPendingRelation">
+<div class="UIPendingRelation" id="$uicomponent.id">
 	<div class="UITabPane">
-	<% uiform.begin() %>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
 
@@ -92,6 +91,5 @@
 		 		}
 	 		%>
 		</div>
-	<% uiform.end() %>
 	</div>
 </div>

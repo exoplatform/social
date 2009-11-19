@@ -206,7 +206,7 @@ public class JCRStorage {
     QueryManager queryManager = session.getWorkspace().getQueryManager() ;
     StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
         .append("/").append(PROFILE_NODETYPE);
-    String userName = profileFilter.getUserName();
+    String userName = profileFilter.getName();
     String position = profileFilter.getPosition();
     String gender = profileFilter.getGender();
 
@@ -265,7 +265,7 @@ public class JCRStorage {
     QueryManager queryManager = session.getWorkspace().getQueryManager() ;
     StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
         .append("/").append(PROFILE_NODETYPE);
-    String userName = profileFilter.getUserName();
+    String userName = profileFilter.getName();
 
     if (userName.length() != 0) {
       queryString.append("[");

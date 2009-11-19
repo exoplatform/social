@@ -70,6 +70,44 @@
 	color: #cbcbcb;
 }
 
+.UIInvitationSpacePortlet .UISpaceSearch .CenterContentInput {
+	float: left;
+	width: 42%;
+	padding: 0px 5px;
+}
+
+.UIInvitationSpacePortlet .UISpaceSearch .CenterContentInput select {
+	height: 18px;
+	background: #fff;
+	border: 1px solid #b8b8b8;
+	padding-left: 3px;
+	color: #cbcbcb;
+}
+
+.UIInvitationSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput {
+	width: 265px;
+	font-size:11px;
+	float: left;
+	border: 1px solid #b7b7b7;
+}
+
+.UIInvitationSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput input {
+	width: 250px;
+	height: 14px;
+	font-size:11px;
+	float: left;
+	color: #C7C7C7;
+	border: none;
+}
+
+.UIInvitationSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput .SearchIcon {
+	width: 14px;
+	float: left;
+	background: white url( "background/IconSearch.gif" ) no-repeat right center;
+	font-size: 11px;
+	cursor: pointer;
+}
+
 .UIInvitationSpacePortlet .BoxSpaceList {
 	margin-bottom: 8px;
 }

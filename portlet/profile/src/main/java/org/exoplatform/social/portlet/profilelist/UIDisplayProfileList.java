@@ -34,10 +34,6 @@ import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.portlet.URLUtils;
 import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
 import org.exoplatform.social.relation.IdentityListAccess;
-import org.exoplatform.social.relation.RelationshipListAccess;
-import org.exoplatform.social.relation.UIInvitationRelation;
-import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -46,7 +42,6 @@ import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-import org.exoplatform.webui.form.UIFormPageIterator;
 
 @ComponentConfig(
     template = "app:/groovy/portal/webui/component/UIDisplayProfileList.gtmpl",
@@ -175,7 +170,7 @@ public class UIDisplayProfileList extends UIContainer {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList uiMyRelation = event.getSource();
       UIProfileUserSearch uiProfileUserSearch = uiMyRelation.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getidentityList();
+      List<Identity> identityList = uiProfileUserSearch.getIdentityList();
       uiMyRelation.setIdentityList(identityList);
     }
   }

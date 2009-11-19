@@ -19,22 +19,29 @@
 <%
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.web.application.JavascriptManager;
 
 def uicomponentId = uicomponent.id;
 
+def rcontext = _ctx.getRequestContext() ;
+JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.social.space.UISpaceSearch','/space/javascript');
+jsmanager.addCustomizedOnLoadScript('eXo.social.space.UISpaceSearch.onLoad("' + uicomponentId + '");');
+	
 def defaultSpaceName = _ctx.appRes("${uicomponentId}.label.SpaceName");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
 def spaceDirectoryLabel = _ctx.appRes("${uicomponentId}.label.SpaceDirectory");
-def searchId = "Search" + uicomponentId;
+def searchId = "SpaceSearch";
 def selectedChar = uicomponent.getSelectedChar();
-def rcontext = _ctx.getRequestContext();
-rcontext.getJavascriptManager().importJavascript('eXo.social.space.UISpaceSearch','/space/javascript');
 def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 PortalRequestContext pcontext = Util.getPortalRequestContext();
 def portalURI = pcontext.getPortalURI();
+def childs = uicomponent.getChildren();
+def searchAction = uicomponent.event('Search');
 %>
-<div class="UISpaceSearch" id="$uicomponentId">
+<div class="UISpaceSearch">
+<% uiform.begin() %>
 	<!--search by name-->	
 	<div class="LeftBoxInput">
 		<div class="RightBoxInput">
@@ -43,7 +50,10 @@ def portalURI = pcontext.getPortalURI();
 					$findSpaceLabel : 
 				</div>
 				<div class="CenterContentInput">
-					  <input type="text" id="$searchId" class="InputSearch" name="Search" value="$defaultSpaceName" style="width: 285px;" onfocus="eXo.social.space.UISpaceSearch.activeSearchText(this)" onblur="eXo.social.space.UISpaceSearch.onBlurSearchText(this)" onkeydown="eXo.social.space.UISpaceSearch.setEnterKey(event);"/>
+					  <div class="SpaceSearchInput" onclick="eXo.social.space.UISpaceSearch.activeSearchText('$searchId', '$uicomponentId')" onmouseout="eXo.social.space.UISpaceSearch.onBlurSearchText('$searchId', '$uicomponentId')" onkeydown="eXo.social.space.UISpaceSearch.setEnterKey(event, '$searchId');"><%uiform.renderField(childs.get(0)); %>
+					  <div class="SearchIcon" onclick="$searchAction"><span></span></div>
+					  </div>
+					  
 					  <input id="defaultSpaceName" type="hidden" value="$defaultSpaceName">
 				</div>
 				<div class="ClearBoth"><span/></div>
@@ -64,20 +74,21 @@ def portalURI = pcontext.getPortalURI();
 				 		<li>
 				 		<% if ((selectedChar != null) && (selectedChar == ch)) {
 					 		%>
-					 					<a href="#" class="selected" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
+					 					<a href="#" class="selected" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
 					 		 <%} else {%>
-					 					<a href="#" id="directoryId" onclick="eXo.social.space.UISpaceSearch.searchSpaceByFirstCharOfName(this,'$ch');">$ch</a>
+					 					<a href="#" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
 					 			<% } %>
 					 		<% } %>
 					 </li>
 					 <li>
-					 		<%	if ((selectedChar != null) && (selectedChar == "AllSpace")) { %>
-					 					<a href="#" class="selected" id="searchAllSpace" onclick="eXo.social.space.UISpaceSearch.searchSpaceByName(this);">$searchAll</a>
+					 		<%	if ((selectedChar != null) && (selectedChar == "All")) { %>
+					 					<a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
 					 		 <%} else {%>
-					 					<a href="#" id="searchAllSpace" onclick="eXo.social.space.UISpaceSearch.searchSpaceByName(this);">$searchAll</a>
+					 					<a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
 					 		<% } %>
 					 	</li>
 				</ul>
 			</div>
 		</div>
+		<% uiform.end() %>
 </div>

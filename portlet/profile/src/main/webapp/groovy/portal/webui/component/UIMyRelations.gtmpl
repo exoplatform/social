@@ -15,14 +15,13 @@
   def requestURI = pcontext.getRequestURI();
   def relationIdx = 0;
 %>
-<div class="UIMyRelations">
+<div class="UIMyRelations" id="$uicomponent.id">
 	<div class="UITabPane">
-	<% uiform.begin() %>
 		<div class="ActivitiesTitleBarM">
 			<%=_ctx.appRes(uicomponent.getId() + ".label.MyRelationsList")%>
 		</div>
 		<div class="ContainerSpace">
-			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+			<% uicomponent.renderChild("UIMyRelationsSearch"); %>
 			
 			 <div class="ATitleBarL">
 				<div class="ATitleBarR">
@@ -101,6 +100,5 @@
 		 		}
 	 	%>
 	  </div>
-	<% uiform.end() %>
 	</div>
 </div>

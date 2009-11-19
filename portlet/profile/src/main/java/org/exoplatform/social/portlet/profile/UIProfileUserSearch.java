@@ -21,15 +21,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 
-import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIComponent;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -40,6 +34,18 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.portlet.URLUtils;
+import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.core.model.SelectItemOption;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormSelectBox;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * UIProfileUserSearch for search users in profile.
@@ -50,14 +56,15 @@ import org.exoplatform.social.portlet.URLUtils;
  * Sep 25, 2009  
  */
 @ComponentConfig(
+  lifecycle = UIFormLifecycle.class,
   template = "app:/groovy/portal/webui/component/UIProfileUserSearch.gtmpl",
   events = {
     @EventConfig(listeners = UIProfileUserSearch.SearchActionListener.class) 
   }
 )
-public class UIProfileUserSearch extends UIComponent {
+public class UIProfileUserSearch extends UIForm {
   /** USER CONTACT. */
-  final public static String USER_CONTACT = "userContact";
+  final public static String USER_CONTACT = "name";
   /** PROFESSIONAL. */
   final public static String PROFESSIONAL = "professional";
   /** POSITION. */
@@ -70,6 +77,12 @@ public class UIProfileUserSearch extends UIComponent {
   final public static String EXPERIENCE = "experiences";
   /** ORGANIZATION. */
   final public static String ORGANIZATION = "organization";
+  /** DEFAULT GENDER. */
+  final public static String GENDER_DEFAULT = "Gender";
+  /** MALE. */
+  final public static String MALE = "male";
+  /** FEMALE. */
+  final public static String FEMALE = "female";
   /** IdentityManager */
   IdentityManager        im           = null;
   /** RelationshipManager */
@@ -77,7 +90,6 @@ public class UIProfileUserSearch extends UIComponent {
   /** Current identity. */
   Identity               currIdentity = null;
   private List<Identity> identityList = null;
-  boolean                hasAdvanceSearch = false;
   /** Selected character when search by alphabet */
   String selectedChar = null;
   ProfileFiler profileFiler = null;
@@ -86,7 +98,17 @@ public class UIProfileUserSearch extends UIComponent {
    * Constructor to initialize form fields
    * @throws Exception
    */
-  public UIProfileUserSearch() throws Exception { }
+  public UIProfileUserSearch() throws Exception { 
+    List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
+    options.add(new SelectItemOption<String>(GENDER_DEFAULT));
+    options.add(new SelectItemOption<String>(MALE));
+    options.add(new SelectItemOption<String>(FEMALE));
+    
+    addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, USER_CONTACT));
+    addUIFormInput(new UIFormStringInput(POSITION, POSITION, POSITION));
+    addUIFormInput(new UIFormStringInput(PROFESSIONAL, PROFESSIONAL, PROFESSIONAL));
+    addUIFormInput(new UIFormSelectBox(GENDER, GENDER, options));
+  }
   
   /**
    * identityList setter
@@ -99,7 +121,7 @@ public class UIProfileUserSearch extends UIComponent {
    * @return
    * @throws Exception 
    */
-  public List<Identity> getidentityList() throws Exception { return identityList;}
+  public List<Identity> getIdentityList() throws Exception { return identityList;}
 
   
   public String getSelectedChar() { return selectedChar;}
@@ -120,36 +142,36 @@ public class UIProfileUserSearch extends UIComponent {
     public void execute(Event<UIProfileUserSearch> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UIProfileUserSearch uiSearch = event.getSource();
+      String charSearch = ctx.getRequestParameter(OBJECTID);
       List<Identity> identitiesSearchResult = new ArrayList<Identity>();
       List<Identity> identities = new ArrayList<Identity>();
       IdentityManager idm = uiSearch.getIdentityManager();
-      String userContact = ctx.getRequestParameter(USER_CONTACT);
-      String position = ctx.getRequestParameter(POSITION);
-      String professional = ctx.getRequestParameter(PROFESSIONAL);
-      String gender = ctx.getRequestParameter(GENDER);
-      String charSearch = ctx.getRequestParameter("charSearch");
+      ProfileFiler filter = new ProfileFiler();
+      uiSearch.invokeSetBindingBean(filter);
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
       
-      Boolean isSearchAlphaBet = Boolean.parseBoolean(ctx.getRequestParameter("isSearchAlphaBet"));
-      Boolean isSearchAll = Boolean.parseBoolean(ctx.getRequestParameter("isSearchAll"));
-      
-      if (isSearchAlphaBet)  {
-        userContact = charSearch;
-        uiSearch.setSelectedChar(charSearch);
-      } else if (isSearchAll) {
-        uiSearch.setSelectedChar("All");
-      } else {
-        uiSearch.setSelectedChar(null);
+      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
+      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
+      String defaultProfVal = resApp.getString(uiSearch.getId() + ".label.Professional");
+      String defaultGenderVal = resApp.getString(uiSearch.getId() + ".label.AllGender");
+      if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
+        filter.setName("");
+      }
+      if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+        filter.setPosition("");
+      }
+      if ((filter.getProfessional() == null) || filter.getProfessional().equals(defaultProfVal)) {
+        filter.setProfessional("");
+      }
+      if (filter.getGender().equals(defaultGenderVal)) {
+        filter.setGender("");
       }
       
-      ProfileFiler filter = new ProfileFiler();
+      String professional = null;
       
-      filter.setUserName(userContact);
-      filter.setPosition(position);
-      filter.setGender(gender);
+      uiSearch.setSelectedChar(charSearch);
       
-      uiSearch.setProfileFiler(filter);
-      
-      if (!isSearchAlphaBet) {
+      if (charSearch == null) {
         identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
         
         if (identitiesSearchResult != null) {
@@ -158,12 +180,21 @@ public class UIProfileUserSearch extends UIComponent {
             }
         }
         
+        professional = filter.getProfessional();
         if (professional.length() > 0) {
           identities = uiSearch.getIdentitiesByProfessional(professional, identities);
         }
         
         uiSearch.setIdentityList(identities);
       } else {
+        ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
+        filter.setName(charSearch);
+        filter.setPosition("");
+        filter.setGender("");
+        if ("All".equals(charSearch)) {
+          filter.setName("");
+        }
+        
         identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(filter);
         
         if (identitiesSearchResult != null) {
@@ -180,7 +211,6 @@ public class UIProfileUserSearch extends UIComponent {
         searchEvent.broadcast();
       }
     }
-    
   }
   
   /**
