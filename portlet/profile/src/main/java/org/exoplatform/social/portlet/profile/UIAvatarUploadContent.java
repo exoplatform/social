@@ -22,11 +22,14 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.download.DownloadService;
 import org.exoplatform.download.InputStreamDownloadResource;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.container.UIContainer;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupWindow;
@@ -106,6 +109,17 @@ public class UIAvatarUploadContent extends UIContainer {
   }
   
   /**
+   * Update working work space
+   */
+  static public void updateWorkingWorkSpace() {
+    UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
+    UIWorkingWorkspace uiWorkingWS = uiPortalApplication.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+    PortalRequestContext pContext = Util.getPortalRequestContext();
+    pContext.addUIComponentToUpdateByAjax(uiWorkingWS);
+    pContext.setFullRender(true);
+  }
+  
+  /**
    * accepts and saves the uploaded image to profile
    * closes the popup window, refreshes UIProfile
    * @author hoatle
@@ -113,7 +127,6 @@ public class UIAvatarUploadContent extends UIContainer {
   static public class SaveActionListener extends EventListener<UIAvatarUploadContent> {
     @Override
     public void execute(Event<UIAvatarUploadContent> event) throws Exception {
-      WebuiRequestContext ctx = event.getRequestContext();
       UIAvatarUploadContent uiAvatarUploadContent = event.getSource();
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
@@ -123,13 +136,7 @@ public class UIAvatarUploadContent extends UIContainer {
       im.saveProfile(p);
       UIPopupWindow uiPopup = uiAvatarUploadContent.getParent();
       uiPopup.setShow(false);
-      if (uiPopup.getParent() != null) {
-        if (uiPopup.getParent().getParent() != null) {
-          ctx.addUIComponentToUpdateByAjax(uiPopup.getParent().getParent());
-        } else {
-          ctx.addUIComponentToUpdateByAjax(uiPopup.getParent());
-        }
-      }
+      updateWorkingWorkSpace();
     } 
   }
   

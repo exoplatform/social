@@ -145,11 +145,12 @@ public class JCRStorage {
 
   private void saveSpace(Node spaceHomeNode, Space space, boolean isNew) throws Exception {
     Node spaceNode;
+    Session session = spaceHomeNode.getSession();
     if(isNew) {
       spaceNode = spaceHomeNode.addNode(SPACE_NODETYPE,SPACE_NODETYPE);
       spaceNode.addMixin("mix:referenceable");
     } else {
-      spaceNode = spaceHomeNode.getSession().getNodeByUUID(space.getId());
+      spaceNode = session.getNodeByUUID(space.getId());
     }
     if(space.getId() == null) space.setId(spaceNode.getUUID());
     spaceNode.setProperty(SPACE_NAME, space.getName());
@@ -198,6 +199,7 @@ public class JCRStorage {
     } else {
       if(spaceNode.hasNode("image")) spaceNode.getNode("image").remove() ;
     }
+    session.save();
   }
 
   private Space getSpace(Node spaceNode) throws Exception{

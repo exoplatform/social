@@ -228,6 +228,7 @@ public class UIManageInvitationSpaces extends UIContainer {
        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_ACCEPT_INVITATION, null, ApplicationMessage.ERROR));
        return;
      }
+     event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
      SpaceUtils.updateWorkingWorkSpace();
    }
   }

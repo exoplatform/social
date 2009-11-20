@@ -359,7 +359,7 @@ public class UISpaceMember extends UIForm {
       if(!uiSpaceMember.isSuperUser()) {
         UIPortal uiPortal = Util.getUIPortal();
         UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
-        PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, uiPortal.getName());
+        PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, Util.getPortalRequestContext().getPortalOwner());
         String uri = nav.getId() + "::spaces"; 
         PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
             PageNodeEvent.CHANGE_PAGE_NODE,

@@ -68,6 +68,7 @@ public class SpaceServiceImpl implements SpaceService {
   private OrganizationService orgService = null;
   private UserACL userACL = null;
   private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
+  
   /**
    * SpaceServiceImpl constructor
    * Initialize <tt>org.exoplatform.social.space.impl.JCRStorage</tt>

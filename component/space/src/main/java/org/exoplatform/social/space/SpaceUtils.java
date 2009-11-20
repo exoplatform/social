@@ -38,7 +38,9 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -50,6 +52,7 @@ import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.webui.event.Event;
 
 import com.ibm.icu.text.Transliterator;
 
@@ -64,7 +67,9 @@ public class SpaceUtils {
   static public final String  MEMBER      = "member";
 
   static public final String  MANAGER     = "manager";
-  
+  static private ExoContainer exoContainer;
+  static private SpaceService spaceService;
+  static private UserPortalConfigService userPortalConfigService;
   
   /**
    * Create a new group from an existing group.
@@ -102,11 +107,14 @@ public class SpaceUtils {
    * @param groupId
    * @return  applications
    * @throws Exception
+   * @Deprecated
    */
   static public List<Application> getApplications(String groupId) throws Exception {
 
     List<Application> list = new CopyOnWriteArrayList<Application>();
-    ExoContainer exoContainer = ExoContainerContext.getCurrentContainer();
+    if (exoContainer == null) {
+      exoContainer = ExoContainerContext.getCurrentContainer();
+    }
     ApplicationRegistryService appRegistrySrc = (ApplicationRegistryService) exoContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
 
     List<ApplicationCategory> listCategory = appRegistrySrc.getApplicationCategories();
@@ -139,7 +147,9 @@ public class SpaceUtils {
    */
   static public Map<ApplicationCategory, List<Application>> getAppStore(Space space) throws Exception {
     Map<ApplicationCategory, List<Application>> appStore = new HashMap<ApplicationCategory, List<Application>>();
-    ExoContainer exoContainer = ExoContainerContext.getCurrentContainer();
+    if (exoContainer == null) {
+      exoContainer = ExoContainerContext.getCurrentContainer();
+    }
     ApplicationRegistryService appRegistryService = (ApplicationRegistryService) exoContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
     String remoteUser = Util.getPortalRequestContext().getRemoteUser();
     if (remoteUser == null || remoteUser.equals(""))
@@ -236,12 +246,160 @@ public class SpaceUtils {
   static public void setNavigation(PageNavigation nav) {
     UIPortal uiPortal = Util.getUIPortal();
     List<PageNavigation> navs = uiPortal.getNavigations();
+    boolean alreadyExisted = false;
     for (int i = 0; i < navs.size(); i++) {
       if (navs.get(i).getId() == nav.getId()) {
         navs.set(i, nav);
+        alreadyExisted = true;
         return;
       }
     }
+    if (!alreadyExisted) {
+      navs.add(nav);
+      PageNode selectedPageNode = uiPortal.getSelectedNode();
+      try {
+        uiPortal.setNavigation(navs);
+        uiPortal.setSelectedNode(selectedPageNode);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      
+    }
+  }
+  /**
+   * Utility for removing portal navigation
+   * @param nav
+   * @throws Exception 
+   */
+  static public void removeNavigation(PageNavigation nav) throws Exception {
+    UIPortal uiPortal = Util.getUIPortal();
+    if (exoContainer == null) {
+      exoContainer = ExoContainerContext.getCurrentContainer();
+    }
+    if (userPortalConfigService == null) {
+      userPortalConfigService = (UserPortalConfigService) exoContainer.getComponentInstanceOfType(UserPortalConfigService.class);
+    }
+    List<PageNavigation> navs = uiPortal.getNavigations();
+    
+    navs.remove(nav);
+    try {
+      uiPortal.setNavigation(navs);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    //broadcast to spaces home node
+    String portalOwner = Util.getPortalRequestContext().getPortalOwner();
+    PageNavigation portalNavigation = null;
+    for (PageNavigation pn: navs) {
+      if (pn.getOwnerId().equals(portalOwner)) {
+        portalNavigation = pn;
+        break;
+      }
+    }
+    List<PageNode> nodes = portalNavigation.getNodes();
+    PageNode selectedPageNode = null;
+    for (PageNode node: nodes) {
+      if (node.getUri().equals("spaces")) {
+        selectedPageNode = node;
+        break;
+      }
+    }
+    
+    uiPortal.setSelectedNavigation(portalNavigation);
+    uiPortal.setSelectedNode(selectedPageNode);
+    String uri = portalNavigation.getId() + "::spaces";
+    PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
+        PageNodeEvent.CHANGE_PAGE_NODE,
+        uri);
+    uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+  }
+  
+  /**
+   * Reload all portal navigations
+   * synchronizing navigations and stores in currentAccessibleSpaces
+   * BUG: SOC-406, SOC-134
+   * @throws Exception 
+   */
+  static void reloadNavigation() throws Exception {
+    System.out.println("\n>>>reloadNavigation");
+    if (exoContainer == null) {
+      exoContainer = ExoContainerContext.getCurrentContainer();
+    }
+    if (spaceService == null) {
+      spaceService = (SpaceService) exoContainer.getComponentInstanceOfType(SpaceService.class);
+    }
+    String userId = Util.getPortalRequestContext().getRemoteUser();
+    List<Space> spaces = spaceService.getAccessibleSpaces(userId);
+    System.out.println("\n>>>size: " + spaces.size());
+    List<PageNavigation> navs = Util.getUIPortal().getNavigations();
+    List<PageNavigation> spaceNavs = new ArrayList<PageNavigation>();
+    String ownerId;
+    for (PageNavigation nav: navs) {
+      ownerId = nav.getOwnerId();
+      try {
+        Space space = getSpaceByGroupId(ownerId);
+        if (space != null) {
+          spaceNavs.add(nav);
+        }
+      } catch (Exception e) {
+        //it does not exist, just ignore
+      }
+    }
+    String groupId;
+    //add new space navigation
+    for (Space space: spaces) {
+      groupId = space.getGroupId();
+      boolean spaceContained = false;
+      for (PageNavigation nav: spaceNavs) {
+        if (groupId.equals(nav.getOwnerId())) {
+          spaceContained = true;
+          break;
+        }
+      }
+      if (spaceContained == false) {
+        setNavigation(getGroupNavigation(groupId));
+      }
+    }
+    //remove deleted space navigation
+    if (spaces.size() == 0) {
+      //remove all navs
+      for (PageNavigation nav: spaceNavs) {
+        System.out.println(">>removeNavigation");
+        removeNavigation(nav);
+      }
+    } else {
+      for (PageNavigation nav: spaceNavs) {
+        boolean navContained = false;
+        for (Space space: spaces) {
+          groupId = space.getGroupId();
+          if (groupId.equals(nav.getOwnerId())) {
+            navContained = true;
+            break;
+          }
+        }
+        if (navContained == false) {
+          removeNavigation(nav);
+        }
+      }
+    }
+  }
+  
+  /**
+   * get space by groupId
+   * TODO: Move to SpaceService?
+   * @param groupId
+   * @return
+   * @throws SpaceException
+   */
+  private static Space getSpaceByGroupId(String groupId) throws SpaceException {
+    List<Space> spaces =  spaceService.getAllSpaces();
+    for (Space space: spaces) {
+      if (space.getGroupId().equals(groupId)) {
+        return space;
+      }
+    }
+    return null;
   }
   
   /**
@@ -424,6 +582,7 @@ public class SpaceUtils {
    * Get PageNavigation from a space's groupId
    * @param groupId 
    * @return pageNavigation
+   * @throws Exception 
    * @throws Exception 
    */
   static public PageNavigation getGroupNavigation(String groupId) throws Exception {

@@ -1,11 +1,12 @@
 <% 
-  import org.exoplatform.portal.config.model.PageNode;
- 	import org.exoplatform.portal.webui.util.Util;
- 	import org.exoplatform.social.space.SpaceUtils;
-	def apps = uicomponent.getApps();       
-	def spaceUrl = SpaceUtils.getSpaceUrl();
- 	String appSelected = uicomponent.getAppSelected();
- 	def imageSource = uicomponent.getImageSource();
+  import org.exoplatform.portal.config.model.PageNode
+ 	import org.exoplatform.portal.webui.util.Util
+ 	import org.exoplatform.social.space.SpaceUtils
+ 	SpaceUtils.reloadNavigation()
+	def apps = uicomponent.getApps()       
+	def spaceUrl = SpaceUtils.getSpaceUrl()
+ 	String appSelected = uicomponent.getAppSelected()
+ 	def imageSource = uicomponent.getImageSource()
 %>
 
 
