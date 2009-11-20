@@ -52,7 +52,7 @@
 			    pendingRelationIdx += 1;
 			    if (!position) position = "";
 			    
-			    String imageSource = "/profile/skin/portal/webui/component/UIRelationshipPortlet/background/BLAvatar.gif";
+			    String imageSource = "/profile/skin/portal/webui/component/UIRequestPortlet/background/BLAvatar.gif";
 			    ProfileAttachment att = identity.profile.getProperty("avatar");
 	    		if (att != null) {
 						try {

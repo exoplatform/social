@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.portlet;
+package social.portal.webui.component.space;
 
 
 import java.util.List;
 
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
@@ -35,11 +34,11 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
  */
 @ComponentConfig(
                  lifecycle = UIApplicationLifecycle.class,
-                 template = "app:/groovy/portal/webui/component/UISpacesToolBarPortlet.gtmpl"
+                 template = "app:/groovy/portal/webui/space/UISpaceToolBarPortlet.gtmpl"
 )
-public class UISpacesToolBarPortlet extends UIPortletApplication {
+public class UISpaceToolBarPortlet extends UIPortletApplication {
   
-  public UISpacesToolBarPortlet() throws Exception {  }
+  public UISpaceToolBarPortlet() throws Exception {  }
   
   private SpaceService spaceService = null;
   private String userId = null;

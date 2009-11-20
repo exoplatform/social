@@ -6,6 +6,7 @@
 	import org.exoplatform.web.application.JavascriptManager;
 	import org.exoplatform.portal.webui.util.Util ;
 	import org.exoplatform.webui.organization.OrganizationUtils;
+	import org.exoplatform.social.space.SpaceUtils;
 	
 	def rcontext = _ctx.getRequestContext() ;
 	JavascriptManager jsmanager = rcontext.getJavascriptManager();
@@ -15,7 +16,7 @@
 	
  	def portalURI = Util.getPortalRequestContext().getPortalURI();
  
- 	def profileLink = portalURI + "myprofile";
+ 	def spacesLink = portalURI + "spaces";
  	
 	void renderPageNode(PageNode node, boolean flag) {
 		boolean hasChild = (node.getChildren() != null && node.getChildren().size() > 0);
@@ -60,42 +61,45 @@
 		""" ;			
 	}	
 	
-	void renderMyProfileSubNodes() {
-			UIPortal uiPortal = Util.getUIPortal();
-	    int portalNav = (PortalConfig.PORTAL_TYPE + "::" + uiPortal.getName()).hashCode();
-	    PageNavigation navigation = uiPortal.getPageNavigation(portalNav);
-    
+	void renderUserSpaces() {
+		def portalURI = Util.getPortalRequestContext().getPortalURI();
+ 		def userSpaces = uicomponent.getAllUserSpaces();
+ 		String clazz = "";
+		if (userSpaces.size > 0) {
 			print """
-					<div style="position: absolute; display:none" class="MenuItemContainer">
-						<div class="SubBlock">
-			""";
-			nodes = navigation.getNodes();
-			
-			for(int i = 0; i < nodes.size(); i++) {
-				if (nodes.get(i).name == "myprofile") {		
-					node = nodes.get(i);
-					for(int j = 0; j < node.getChildren().size(); j++) {
-						renderPageNode(node.getChildren().get(j), j%2 == 0);
-					}
-				}
+						<div style="position: absolute; display:none" class="MenuItemContainer">
+							<div class="SubBlock">
+				""";
+			for (space in userSpaces) {
+				def spaceUrl = portalURI + space.getUrl();
+		    def spaceName = space.name;
+				def icon = "DefaultPageIcon";
+				print """
+						<div class="MenuItem">
+							<div class="$clazz">						
+								<a href="$spaceUrl" class="ItemIcon $icon">$spaceName</a>
+							</div>
+						</div>
+					""";
 			}
 			
 			print """
+						</div>
 					</div>
-				</div>
-			""";
+				""";
+		}
 	}
 %> 
-<div class="UIMyProfileToolBarPortlet" id="$uicomponent.id">
+<div class="UISpaceToolBarPortlet" id="$uicomponent.id">
 	<div class="UIHorizontalTabs">
 		<div class="TabsContainer" style="position: relative">
 			<div class="UITab NormalToolbarTab">
 				<div class="">
-							<a class="SocialMyProfileIcon TBIcon" href="<%= profileLink %>">
-									<%=_ctx.appRes("UIMyProfileToolBarPortlet.label.MyProfile")%>
+							<a class="SocialSpacesIcon TBIcon" href="<%= spacesLink %>">
+									<%=_ctx.appRes("UISpacesToolBarPortlet.label.Spaces")%>
 							</a>
 				</div>
-				<% renderMyProfileSubNodes() %>
+				<% renderUserSpaces() %>
 			</div>
 		</div>
 	</div>

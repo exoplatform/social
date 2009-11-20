@@ -24,36 +24,6 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
              
  <portlet>
-   <description xml:lang="EN">My Profile ToolBar Portlet</description>
-   <portlet-name>MyProfileToolbarPortlet</portlet-name>
-   <display-name xml:lang="EN">My Profile ToolBar Portlet</display-name>
-   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-   
-   <init-param>
-     <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/myprofiletoolbar/webui/configuration.xml</value>
-   </init-param>    
-
-   <expiration-cache>0</expiration-cache>
-   <supports>
-     <mime-type>text/html</mime-type>
-     <portlet-mode>help</portlet-mode>
-   </supports>
-   <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.web.MyProfileToolBarPortlet</resource-bundle>
-   <portlet-info>
-     <title>My Profile ToolBar Portlet</title>
-     <short-title>MyProfileToolBar</short-title>
-     <keywords>System</keywords>
-   </portlet-info>
-   
-   <security-role-ref>
-     <role-name>admin</role-name>
-     <role-link>admin</role-link>
-   </security-role-ref>
- </portlet>
-
- <portlet>
    <description xml:lang="EN">People ToolBar Portlet</description>
    <portlet-name>peopletoolbarportlet</portlet-name>
    <display-name xml:lang="EN">People ToolBar Portlet</display-name>
@@ -61,7 +31,7 @@
    
    <init-param>
      <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/peopletoolbar/webui/configuration.xml</value>
+     <value>/WEB-INF/conf/portlet/web/PeopleToolbarPortlet/webui/configuration.xml</value>
    </init-param>    
 
    <expiration-cache>0</expiration-cache>
@@ -73,8 +43,8 @@
    <resource-bundle>locale.portlet.web.PeopleToolBarPortlet</resource-bundle>
    <portlet-info>
      <title>People ToolBar Portlet</title>
-     <short-title>PeopleToolBar</short-title>
-     <keywords>System</keywords>
+     <short-title>People ToolBar</short-title>
+     <keywords>Profile</keywords>
    </portlet-info>
    
    <security-role-ref>
@@ -103,8 +73,8 @@
    <resource-bundle>locale.portlet.web.PeoplePortlet</resource-bundle>
    <portlet-info>
      <title>People Portlet</title>
-     <short-title>PeoplePortlet</short-title>
-     <keywords>System</keywords>
+     <short-title>People Portlet</short-title>
+     <keywords>Profile</keywords>
    </portlet-info>
    
    <security-role-ref>
@@ -121,7 +91,7 @@
    
    <init-param>
      <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/profilenavigationportlet/webui/configuration.xml</value>
+     <value>/WEB-INF/conf/portlet/web/ProfileNavigationPortlet/webui/configuration.xml</value>
    </init-param>    
 
    <expiration-cache>0</expiration-cache>
@@ -133,8 +103,8 @@
    <resource-bundle>locale.portlet.web.ProfileNavigationPortlet</resource-bundle>
    <portlet-info>
      <title>Profile Navigation Portlet</title>
-     <short-title>ProfileNavigationPortlet</short-title>
-     <keywords>profilenavigationportlet</keywords>
+     <short-title>Profile Navigation Portlet</short-title>
+     <keywords>Profile</keywords>
    </portlet-info>
    
    <security-role-ref>
@@ -150,7 +120,7 @@
    
    <init-param>
      <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/relationnavigationportlet/webui/configuration.xml</value>
+     <value>/WEB-INF/conf/portlet/web/RelationNavigationPortlet/webui/configuration.xml</value>
    </init-param>    
 
    <expiration-cache>0</expiration-cache>
@@ -162,8 +132,8 @@
    <resource-bundle>locale.portlet.web.RelationNavigationPortlet</resource-bundle>
    <portlet-info>
      <title>Navigation Portlet</title>
-     <short-title>RelationNavigationPortlet</short-title>
-     <keywords>relationnavigationportlet</keywords>
+     <short-title>Relation Navigation Portlet</short-title>
+     <keywords>Profile</keywords>
    </portlet-info>
    
    <security-role-ref>
@@ -172,104 +142,6 @@
    </security-role-ref>
  </portlet>
  
- <portlet>
-   <description xml:lang="EN">Spaces ToolBar Portlet</description>
-   <portlet-name>SpacesToolbarPortlet</portlet-name>
-   <display-name xml:lang="EN">Spaces ToolBar Portlet</display-name>
-   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-   
-   <init-param>
-     <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/spacestoolbar/webui/configuration.xml</value>
-   </init-param>    
-
-   <expiration-cache>0</expiration-cache>
-   <supports>
-     <mime-type>text/html</mime-type>
-     <portlet-mode>help</portlet-mode>
-   </supports>
-   <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.web.SpacesToolBarPortlet</resource-bundle>
-   <portlet-info>
-     <title>Spaces ToolBar Portlet</title>
-     <short-title>SpacesToolBar</short-title>
-     <keywords>System</keywords>
-   </portlet-info>
-   
-   <security-role-ref>
-     <role-name>admin</role-name>
-     <role-link>admin</role-link>
-   </security-role-ref>
- </portlet>
- 
- <portlet>
-    <description xml:lang="EN">Relationship Portlet</description>
-    <portlet-name>relationship</portlet-name>
-    <display-name xml:lang="EN">Relationship</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/relationship/webui/configuration.xml</value>
-    </init-param>    
-
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.RelationshipPortlet</resource-bundle>
-    
-    <portlet-info>
-      <title>Relationship Portlet</title>
-      <short-title>Relationship Portlet</short-title>
-      <keywords>relationship</keywords>
-    </portlet-info>     
-
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIRelationshipPortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-  </portlet>
- 
- <portlet>
-    <description xml:lang="EN">MyProfile Portlet</description>
-    <portlet-name>myprofile</portlet-name>
-    <display-name xml:lang="EN">MyProfile</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/myprofile/webui/configuration.xml</value>
-    </init-param>    
-
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.RelationshipPortlet</resource-bundle>
-    
-    <portlet-info>
-      <title>MyProfile Portlet</title>
-      <short-title>MyProfile Portlet</short-title>
-      <keywords>myprofile</keywords>
-    </portlet-info>     
-
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIMyProfilePortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-  </portlet>
-  
  <portlet>
     <description xml:lang="EN">Profile Portlet</description>
     <portlet-name>profile</portlet-name>
@@ -278,7 +150,7 @@
     
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/profile/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/web/ProfilePortlet/webui/configuration.xml</value>
     </init-param>    
 
     <expiration-cache>0</expiration-cache>
@@ -292,7 +164,7 @@
     <portlet-info>
       <title>Profile Portlet</title>
       <short-title>Profile Portlet</short-title>
-      <keywords>profile</keywords>
+      <keywords>Profile</keywords>
     </portlet-info>     
 
     <portlet-preferences>
@@ -312,7 +184,7 @@
     
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/relation/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/web/RelationPortlet/webui/configuration.xml</value>
     </init-param>    
 
     <expiration-cache>0</expiration-cache>
@@ -326,7 +198,7 @@
     <portlet-info>
       <title>Relation Portlet</title>
       <short-title>Relation Portlet</short-title>
-      <keywords>relation</keywords>
+      <keywords>Profile</keywords>
     </portlet-info>     
   </portlet>
   
@@ -338,7 +210,7 @@
     
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/invitation/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/web/InvitationPortlet/webui/configuration.xml</value>
     </init-param>    
 
     <expiration-cache>0</expiration-cache>
@@ -352,7 +224,7 @@
     <portlet-info>
       <title>Invitation Portlet</title>
       <short-title>Invitation Portlet</short-title>
-      <keywords>invitations</keywords>
+      <keywords>Profile</keywords>
     </portlet-info>     
   </portlet>
   
@@ -364,7 +236,7 @@
     
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/request/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/web/RequestPortlet/webui/configuration.xml</value>
     </init-param>    
 
     <expiration-cache>0</expiration-cache>
@@ -378,112 +250,10 @@
     <portlet-info>
       <title>Request Portlet</title>
       <short-title>Request Portlet</short-title>
-      <keywords>requests</keywords>
+      <keywords>Profile</keywords>
     </portlet-info>     
   </portlet>
 
-  <portlet>
-    <description xml:lang="EN">Profile List Portlet</description>
-    <portlet-name>profileList</portlet-name>
-    <display-name xml:lang="EN">Profile listing</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/profileList/webui/configuration.xml</value>
-    </init-param>
-
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.ProfileListPortlet</resource-bundle>
-
-    <portlet-info>
-      <title>Profile List Portlet</title>
-      <short-title>Profile List Portlet</short-title>
-      <keywords>profile,social</keywords>
-    </portlet-info>
-
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIProfileListPortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-  </portlet>
-
-  <portlet>
-    <description xml:lang="EN">Main Profile Portlet</description>
-    <portlet-name>mainProfile</portlet-name>
-    <display-name xml:lang="EN">Main Profile</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/mainProfile/webui/configuration.xml</value>
-    </init-param>
-
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.MainProfilePortlet</resource-bundle>
-
-    <portlet-info>
-      <title>Main Profile Portlet</title>
-      <short-title>Main Profile Portlet</short-title>
-      <keywords>profile,social</keywords>
-    </portlet-info>
-
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIMainProfilePortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-  </portlet>
-
-  <portlet>
-    <description xml:lang="EN">breadcrumb Portlet</description>
-    <portlet-name>breadcrumb</portlet-name>
-    <display-name xml:lang="EN">breadcrumb</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/breadcrumb/webui/configuration.xml</value>
-    </init-param>
-
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.BreadcrumbPortlet</resource-bundle>
-
-    <portlet-info>
-      <title>breadcrumb Portlet</title>
-      <short-title>breadcrumb Portlet</short-title>
-      <keywords>breadcrumb,social</keywords>
-    </portlet-info>
-
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIBreadcrumbPortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-  </portlet>
-  
   <portlet>
     <description xml:lang="EN">user profile portlet</description>
     <portlet-name>UserProfilePortlet</portlet-name>
@@ -504,7 +274,7 @@
     <portlet-info>
       <title>User Profile Portlet</title>
       <short-title>User Profile Portlet</short-title>
-      <keywords>profile,social</keywords>
+      <keywords>Profile</keywords>
     </portlet-info>
     
   </portlet>

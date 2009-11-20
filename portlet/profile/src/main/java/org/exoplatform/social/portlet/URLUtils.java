@@ -35,12 +35,6 @@ public class URLUtils {
     PortalRequestContext request = Util.getPortalRequestContext() ;
     String uri = request.getNodePath();
     String[] els = uri.split("/");
-    // check first if we are on the page of a user
-//    if (els.length > 3) {
-//      if ((els.length == 4) && els[3].equals("activities"))
-//         return els[2];
-//      return els[3];
-//    }
     if (els.length == 3) return els[2];
     
     if (els.length == 4) return els[3];

@@ -52,34 +52,6 @@
   </page>
   
   <page>
-  	<page-id>portal::@owner@::MyProfile</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>@owner@</owner-id>
-    <name>MyProfile</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>portal#@owner@:/profile/myprofile/myprofiles</instance-id>
-      <title>MyProfile</title>
-      <show-info-bar>false</show-info-bar>
-    </application>
-  </page>
-  
-  <page>
-  	<page-id>portal::@owner@::RelationShip</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>@owner@</owner-id>
-    <name>RelationShip</name>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>portal#@owner@:/profile/relationship/relationships</instance-id>
-      <title>RelationShip</title>
-      <show-info-bar>false</show-info-bar>
-    </application>
-  </page>
-
-  <page>
   	<page-id>portal::@owner@::manageSpaces</page-id>
   	<owner-type>portal</owner-type>
     <owner-id>@owner@</owner-id>

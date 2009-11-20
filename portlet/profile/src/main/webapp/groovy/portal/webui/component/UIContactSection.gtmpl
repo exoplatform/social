@@ -19,7 +19,6 @@
 <%
   import org.exoplatform.social.portlet.profile.Utils;
   import org.exoplatform.social.portlet.profile.UITitleBar;
-  import org.exoplatform.social.portlet.profile.UIAddButton;
 
   def profile = uicomponent.getProfile();
   def isEdit = uicomponent.isEditMode();

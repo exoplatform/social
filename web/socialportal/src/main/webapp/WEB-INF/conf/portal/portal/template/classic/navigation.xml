@@ -38,25 +38,6 @@
    </node>
 	 
    <node>
-	    <uri>myprofile</uri>
-	    <name>myprofile</name>
-	    <label>My Profile</label>
-	    <visible>false</visible>
-      <page-reference>portal::@owner@::MyProfile</page-reference>
-      <node>
-		    <uri>myprofile/relationship</uri>
-		    <name>relationship</name>
-		    <label>My Relations</label>
-	      <page-reference>portal::@owner@::RelationShip</page-reference>
-	  	</node>
-      <node>
-		    <uri>myprofile/activities</uri>
-		    <name>activities</name>
-		    <label>My Activities</label>
-		    <page-reference>portal::@owner@::activities</page-reference>
-	  	</node>
-	  </node>
-	  <node>
 	    <uri>spaces</uri>
 	    <name>spaces</name>
 	    <label>Spaces</label>

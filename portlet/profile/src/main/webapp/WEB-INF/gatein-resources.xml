@@ -54,42 +54,7 @@
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIRequestPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>relationship</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIRelationshipPortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>myprofile</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIRelationshipPortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>profileList</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIMainProfilePortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>mainProfile</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIMainProfilePortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>breadcrumb</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIBreadcrumbPortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
+
 	<portlet-skin>
 		<application-name>profile</application-name>
 		<portlet-name>peopletoolbarportlet</portlet-name>
@@ -116,13 +81,6 @@
 		<portlet-name>PeoplePortlet</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIPeoplePortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>SpacesToolbarPortlet</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UISpacesToolbarPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
 	
 </gatein-resources>

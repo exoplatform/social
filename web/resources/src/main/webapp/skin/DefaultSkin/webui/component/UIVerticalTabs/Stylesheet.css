@@ -118,11 +118,6 @@
 	background:#f1f3f5;
 }
 
-.UIVerticalTabContentContainer  .UIPublicRelation .ContainerSpace .SpaceContent {
-	padding:8px;
-	border-bottom: 1px solid #dadada;
-}
-
 .UIVerticalTabContentContainer .ContainerSpace .UIProfileUserSearch .SearchSpaces {
 	font-size: 11px;
 	margin-bottom: 5px;
