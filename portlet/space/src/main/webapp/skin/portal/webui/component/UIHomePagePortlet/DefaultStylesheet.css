@@ -36,7 +36,7 @@
 }
 
 .UISocialHomepage .HomeBackground  {
-	background: url('background/HomeBackground.jpg') no-repeat left top;
+	background: url('DefaultSkin/background/HomeBackground.jpg') no-repeat left top;
 	height: 254px;
 	width: 712px;
 	margin-bottom: 10px;
@@ -52,17 +52,17 @@
 }
 
 .UISocialHomepage .LeftBoxDecorator {
-	background: url('background/Decorator.gif') no-repeat left top;
+	background: url('DefaultSkin/background/Decorator.gif') no-repeat left top;
 	padding-left: 5px;
 }
 
 .UISocialHomepage .RightBoxDecorator {
-	background: url('background/Decorator.gif') no-repeat right top;
+	background: url('DefaultSkin/background/Decorator.gif') no-repeat right top;
 	padding-right: 5px;
 }
 
 .UISocialHomepage .CenterBoxDecorator {
-	background: url('background/Decorator.gif') repeat-x left -126px;
+	background: url('DefaultSkin/background/Decorator.gif') repeat-x left -126px;
 	height: 126px;
 }
 
@@ -72,7 +72,7 @@
 }
 
 .UISocialHomepage .CenterBoxDecorator .LineBoxLeft {
-	background: url('background/LineBoxLeft.gif') no-repeat left 1px;
+	background: url('DefaultSkin/background/LineBoxLeft.gif') no-repeat left 1px;
 }
 
 .UISocialHomepage .TitBoxLeft {
@@ -104,15 +104,15 @@
 }
 
 .UISocialHomepage .ContentBoxLeft  .PeopleIcon {
-	background: url('background/IconBoxLeft.png') no-repeat left top;
+	background: url('DefaultSkin/background/IconBoxLeft.png') no-repeat left top;
 }
 
 .UISocialHomepage .ContentBoxLeft .SpaceIcon {
-	background: url('background/IconBoxLeft.png') no-repeat left -130px;
+	background: url('DefaultSkin/background/IconBoxLeft.png') no-repeat left -130px;
 }
 
 .UISocialHomepage .ContentBoxLeft  .TxtBoxLeft {
-	background: url('background/LineLabel.gif') repeat-y left top;
+	background: url('DefaultSkin/background/LineLabel.gif') repeat-y left top;
 	padding: 0px 0px 0px 20px;
 	float: left;
 	color: #777777;
@@ -120,13 +120,13 @@
 
 
 .UISocialHomepage .BoxRight {
-	background: url('background/BGBoxRight.gif') repeat-x left top;
+	background: url('DefaultSkin/background/BGBoxRight.gif') repeat-x left top;
 	height: 128px;
 	text-align: center;
 }
 
 .UISocialHomepage .LineBoxRight {
-	background: url('background/LineBoxRight.gif') no-repeat center top;
+	background: url('DefaultSkin/background/LineBoxRight.gif') no-repeat center top;
 	height: 2px;
 	width: 220px;
 }
@@ -146,13 +146,13 @@
 }
 
 .UISocialHomepage .BoxRight .ImgDownload {
-	background: url('background/ImgRightBox.gif') no-repeat left top;
+	background: url('DefaultSkin/background/ImgRightBox.gif') no-repeat left top;
 }
 
 .UISocialHomepage .BoxRight .ImgFeedBack {
-	background: url('background/ImgRightBox.gif') no-repeat left -130px;
+	background: url('DefaultSkin/background/ImgRightBox.gif') no-repeat left -130px;
 }
 
 .UISocialHomepage .BoxRight .ImgContact {
-	background: url('background/ImgRightBox.gif') no-repeat left -264px;
+	background: url('DefaultSkin/background/ImgRightBox.gif') no-repeat left -264px;
 }

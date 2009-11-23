@@ -322,7 +322,6 @@ public class SpaceUtils {
    * @throws Exception 
    */
   static void reloadNavigation() throws Exception {
-    System.out.println("\n>>>reloadNavigation");
     if (exoContainer == null) {
       exoContainer = ExoContainerContext.getCurrentContainer();
     }
@@ -331,7 +330,6 @@ public class SpaceUtils {
     }
     String userId = Util.getPortalRequestContext().getRemoteUser();
     List<Space> spaces = spaceService.getAccessibleSpaces(userId);
-    System.out.println("\n>>>size: " + spaces.size());
     List<PageNavigation> navs = Util.getUIPortal().getNavigations();
     List<PageNavigation> spaceNavs = new ArrayList<PageNavigation>();
     String ownerId;

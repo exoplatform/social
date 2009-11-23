@@ -23,7 +23,7 @@
 }
 
 .UIProfileSpace .AvatarSpace{
-  background: url('background/BLAvatarBG.gif') no-repeat left top;
+  background: url('DefaultSkin/background/BLAvatarBG.gif') no-repeat left top;
 	width: 126px;
 	height: 126px;
 	padding: 7px 0px 0px 7px;
@@ -32,7 +32,7 @@
 
 
 .UIProfileSpace .AvartarPeopleBG{
-	background: url('background/AvartarPeopleBG.gif') no-repeat left top;
+	background: url('DefaultSkin/background/AvartarPeopleBG.gif') no-repeat left top;
 	width: 52px;
 	height: 52px;
 	padding: 6px 0px 0px 6px;
@@ -56,17 +56,17 @@
 }
 
 .UIProfileSpace .ButtonChange .ButtonLeft{
-	background: url('background/ButtonChangeL.gif') no-repeat left top;
+	background: url('DefaultSkin/background/ButtonChangeL.gif') no-repeat left top;
 	padding-left: 8px;
 }
 
 .UIProfileSpace .ButtonChange .ButtonRight{
-	background: url('background/ButtonChangeR.gif') no-repeat right top;
+	background: url('DefaultSkin/background/ButtonChangeR.gif') no-repeat right top;
 	padding-right: 18px;
 }
 
 .UIProfileSpace .ButtonChange .ButtonMiddle{
-	background: url('background/ButtonChangeM.gif') repeat-x;
+	background: url('DefaultSkin/background/ButtonChangeM.gif') repeat-x;
 	height: 18px;
 	padding: 0px 8px;
 	line-height: 14px;
@@ -94,12 +94,12 @@
 }
 
 .UIProfileSpace .ContainerSpace .LeftContainer{
-	background: url(background/LeftContainerPortlet.gif) repeat-y left;
+	background: url(DefaultSkin/background/LeftContainerPortlet.gif) repeat-y left;
 	padding-left: 7px;
 }
 
 .UIProfileSpace .ContainerSpace .RightContainer{
-	background: url(background/RightContainerPortlet.gif) repeat-y right;
+	background: url(DefaultSkin/background/RightContainerPortlet.gif) repeat-y right;
 	padding-right: 7px;
 }
 
@@ -123,37 +123,37 @@
 }
 
 .UIProfileSpace .ContainerSpace .ActionBar .CenterButton .SaveIcon{
-	background: url('background/SaveIcon.gif') no-repeat left;
+	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
 	line-height: 18px; width: auto;
 	padding-left: 20px;
 }
 
 .UIProfileSpace .ContainerSpace .ActionBar .CenterButton .SaveIcon{
-	background: url('background/SaveIcon.gif') no-repeat left;
+	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
 	line-height: 18px; width: auto;
 	padding-left: 20px;
 }
 
 .UIProfileSpace .ContainerSpace .ActionBar .CenterButton .EditIcon{
-	background: url('background/EditIcon.gif') no-repeat left;
+	background: url('DefaultSkin/background/EditIcon.gif') no-repeat left;
 	line-height: 18px;
 	padding-left: 20px;
 	height: auto; width: auto;
 }
 
 .UIProfileSpace .ContainerSpace .ActionBar .CenterButton .DeleteIcon{
-	background: url('background/DeleteIconButton.gif') no-repeat left;
+	background: url('DefaultSkin/background/DeleteIconButton.gif') no-repeat left;
 	line-height: 18px; width: auto;
 	padding-left: 20px;
 }
 
 .UIProfileSpace .ContainerSpace .PortletContent .DeleteIcon{
-	background: url(background/DeleteIcon.gif) no-repeat center;
+	background: url(DefaultSkin/background/DeleteIcon.gif) no-repeat center;
 	padding: 5px 11px;
 }
 
 .UIProfileSpace .ContainerSpace .PortletContent .AddIcon{
-	background: url(background/AddIcon.gif) no-repeat center;
+	background: url(DefaultSkin/background/AddIcon.gif) no-repeat center;
 	display: block;
 	width: 22px;
 	height: 22px;
@@ -167,23 +167,23 @@
 }
 
 .UIProfileSpace .ATitleBarL {
-	background: url('background/ATitleBarL.gif') no-repeat left top;
+	background: url('DefaultSkin/background/ATitleBarL.gif') no-repeat left top;
 	padding-left: 4px;
 	margin-top: 8px;
 }
 
 .UIProfileSpace .ATitleBarR {
-	background: url('background/ATitleBarR.gif') no-repeat right top;
+	background: url('DefaultSkin/background/ATitleBarR.gif') no-repeat right top;
 	padding-right: 4px;
 }
 
 .UIProfileSpace .ATitleBarM {
-	background: url('background/ATitleBarM.gif') repeat-x;
+	background: url('DefaultSkin/background/ATitleBarM.gif') repeat-x;
 	padding-left: 4px;
 }
 
 .UIProfileSpace .ATitleBarC {
-	background: url('background/ATitleBarC.gif') no-repeat left top;
+	background: url('DefaultSkin/background/ATitleBarC.gif') no-repeat left top;
 	height:25px;
 	color: white;
 	margin-left: 8px;
@@ -192,7 +192,7 @@
 }
 
 .UIProfileSpace .EditIcon {
-	background: url('background/EditIcon.gif') no-repeat right top;
+	background: url('DefaultSkin/background/EditIcon.gif') no-repeat right top;
 	float: right;
 	padding: 0px 8px;
 	display: block;
@@ -200,7 +200,7 @@
 }
 
 .UIProfileSpace .CancelIcon {
-	background: url('background/CancelIcon.gif') no-repeat right top;
+	background: url('DefaultSkin/background/CancelIcon.gif') no-repeat right top;
 	float: right;
 	padding: 0px 8px;
 	display: block;
@@ -210,7 +210,7 @@
 }
 
 .UIProfileSpace .SaveIcon {
-	background: url('background/SaveIcon.gif') no-repeat right top;
+	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat right top;
 	float: right;
 	padding: 0px 8px;
 	display: block;
@@ -293,7 +293,7 @@
 
 
 .UIProfileSpace .AvartarPeopleBG{
- background: url('background/AvartarPeopleBG.gif') no-repeat left top;
+ background: url('DefaultSkin/background/AvartarPeopleBG.gif') no-repeat left top;
  width: 52px;
  height: 52px;
  padding: 6px 0px 0px 6px;
@@ -346,17 +346,17 @@
 }
 
 .UIUserListPortlet .UISpaceUserSearchL{
-	background: url('background/UISpaceUserSearchL.gif') no-repeat left top ;
+	background: url('DefaultSkin/background/UISpaceUserSearchL.gif') no-repeat left top ;
   padding-left:8px;
 }
 
 .UIUserListPortlet .UISpaceUserSearchR{
-	background: url('background/UISpaceUserSearchR.gif') no-repeat right top ;
+	background: url('DefaultSkin/background/UISpaceUserSearchR.gif') no-repeat right top ;
   padding-right:8px;
 }
 
 .UIUserListPortlet .UISpaceUserSearchM{
-	background: url('background/UISpaceUserSearchM.gif') repeat-x ;
+	background: url('DefaultSkin/background/UISpaceUserSearchM.gif') repeat-x ;
   padding:8px 0px 4px 48px;
   color: #6d84b4;
 }
@@ -376,17 +376,17 @@
 
 
 .UIUserListPortlet .UserlistBottomL{
-	background: url('background/UserlistBottomL.gif') no-repeat left top ;
+	background: url('DefaultSkin/background/UserlistBottomL.gif') no-repeat left top ;
   padding-left:7px;
 }
 
 .UIUserListPortlet .UserlistBottomR{
-	background: url('background/UserlistBottomR.gif') no-repeat right top ;
+	background: url('DefaultSkin/background/UserlistBottomR.gif') no-repeat right top ;
   padding-right:7px;
 }
 
 .UIUserListPortlet .UserlistBottomM{
-	background: url('background/UserlistBottomM.gif') repeat-x ;
+	background: url('DefaultSkin/background/UserlistBottomM.gif') repeat-x ;
   height:7px;
 }
 
@@ -405,7 +405,7 @@
 
 
 .UIUserListPortlet .UserlistContainer .UserlistContent {
-	background: white url('background/UserlistContent.gif') repeat-x top;
+	background: white url('DefaultSkin/background/UserlistContent.gif') repeat-x top;
 	padding: 8px;
 	border: 1px solid #f1f1f1;
 }

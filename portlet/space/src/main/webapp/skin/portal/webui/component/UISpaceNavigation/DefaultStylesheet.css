@@ -20,7 +20,7 @@
 }
 
 .UISpaceNavigationPortlet .ProfTitle {
-	background: url(background/ProfTitle.gif) no-repeat center top;
+	background: url(DefaultSkin/background/ProfTitle.gif) no-repeat center top;
 	color: #2f2f2f;
 	font-weight:bold;
 	height: 26px;
@@ -29,7 +29,7 @@
 }
 
 .UISpaceNavigationPortlet .Avartar {
-	background: url(background/BgProfAvartar.gif) no-repeat left top;
+	background: url(DefaultSkin/background/BgProfAvartar.gif) no-repeat left top;
 	display: block;
 	height: 64px;
 	margin: 30px auto;
@@ -53,7 +53,7 @@
 }
 
 .UISpaceNavigationPortlet .UIVerclTab .SelectedTab {
-	background: url(background/SelectedTab.gif) no-repeat left top;
+	background: url(DefaultSkin/background/SelectedTab.gif) no-repeat left top;
 }
 
 .UISpaceNavigationPortlet .UIVerclTab .SelectedTab a {
@@ -67,19 +67,19 @@
 }
 
 .UISpaceNavigationPortlet .UIVerclTab .MySpaceIcon {
-	background: url('background/MySpaceIcon.gif') no-repeat right center;
+	background: url('DefaultSkin/background/MySpaceIcon.gif') no-repeat right center;
 }
 
 .UISpaceNavigationPortlet .UIVerclTab .InvitationIcon {
-	background: url('background/InvitationIcon.gif') no-repeat right center;
+	background: url('DefaultSkin/background/InvitationIcon.gif') no-repeat right center;
 }
 
 .UISpaceNavigationPortlet .UIVerclTab .PendingIcon {
-	background: url('background/PendingIcon.gif') no-repeat right center;
+	background: url('DefaultSkin/background/PendingIcon.gif') no-repeat right center;
 }
 
 .UISpaceNavigationPortlet .UIVerclTab .PublicIcon {
-	background: url('background/PublicIcon.gif') no-repeat right center;
+	background: url('DefaultSkin/background/PublicIcon.gif') no-repeat right center;
 }
 
 
@@ -99,14 +99,14 @@
 }
 
 .UIMySpacePortlet .LeftBoxInput {
-	background: #f3f3f3 url('background/BoxInput.gif') no-repeat left top;
+	background: #f3f3f3 url('DefaultSkin/background/BoxInput.gif') no-repeat left top;
 	padding-left: 6px;
 	margin-bottom: 8px;
 	margin-top: 3px;
 }
 
 .UIMySpacePortlet .RightBoxInput {
-	background: url('background/BoxInput.gif') no-repeat right top;
+	background: url('DefaultSkin/background/BoxInput.gif') no-repeat right top;
 	padding-right: 6px;
 }
 
@@ -142,7 +142,7 @@
 }
 
 .UIMySpacePortlet .CenterContentInput .InputSearch {
-	background: #fff url('background/IconSearch.gif') no-repeat right top;
+	background: #fff url('DefaultSkin/background/IconSearch.gif') no-repeat right top;
 	border:1px solid #B7B7B7;
 	float:left;
 	font-size:11px;
@@ -162,17 +162,17 @@
 }
 
 .UIMySpacePortlet .CenterTitleBox {
-	background: url('background/TitleBox.gif') repeat-x left -52px;
+	background: url('DefaultSkin/background/TitleBox.gif') repeat-x left -52px;
 	height: 26px;
 }
 
 .UIMySpacePortlet .LeftTitleBox {
-	background: url('background/TitleBox.gif') no-repeat left top;
+	background: url('DefaultSkin/background/TitleBox.gif') no-repeat left top;
 	padding-left: 15px;
 }
 
 .UIMySpacePortlet .RightTitleBox {
-	background: url('background/TitleBox.gif') no-repeat right -26px;
+	background: url('DefaultSkin/background/TitleBox.gif') no-repeat right -26px;
 	padding-right: 4px;
 	color: #fff;
 	line-height: 18px;
@@ -210,7 +210,7 @@
 }
 
 .UIMySpacePortlet .BoxSpaceList .AvatarSpace {
-	background:transparent url(/space/skin/portal/webui/component/UISpaceNavigation/background/BgProfAvartar.gif) no-repeat scroll left top;
+	background:transparent url('DefaultSkin/background/BgProfAvartar.gif') no-repeat scroll left top;
 	float:left;
 	height:51px;
 	padding-left:4px;
@@ -252,27 +252,27 @@
 }
 
 .UIMySpacePortlet .IconDel {
-	background: url('background/IconDel.gif') no-repeat left top;
+	background: url('DefaultSkin/background/IconDel.gif') no-repeat left top;
 }
 
 .UIMySpacePortlet .IconEditSpaceNavigation {
-	background: url('background/IconEditSpaceNavigation.gif') no-repeat left top;
+	background: url('DefaultSkin/background/IconEditSpaceNavigation.gif') no-repeat left top;
 }
 
 .UIMySpacePortlet .IconEditSpace {
-	background: url('background/IconEditSpace.gif') no-repeat left top;
+	background: url('DefaultSkin/background/IconEditSpace.gif') no-repeat left top;
 }
 
 .UIMySpacePortlet .IconAccept {
-	background: url('background/IconAccept.gif') no-repeat left top;
+	background: url('DefaultSkin/background/IconAccept.gif') no-repeat left top;
 }
 
 .UIMySpacePortlet .IconAdd {
-	background: url('background/IconAdd.gif') no-repeat left top;
+	background: url('DefaultSkin/background/IconAdd.gif') no-repeat left top;
 }
 
 .UIMySpacePortlet .IconLeave {
-	background: url('background/door_out.png') no-repeat left top;
+	background: url('DefaultSkin/background/door_out.png') no-repeat left top;
 }
 
 .UIMySpacePortlet .NotYet {

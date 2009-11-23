@@ -24,7 +24,6 @@ import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceException;

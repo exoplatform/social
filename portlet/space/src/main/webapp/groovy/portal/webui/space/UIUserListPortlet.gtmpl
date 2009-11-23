@@ -49,7 +49,7 @@
 	<div class="LeftColumn">
 	<% if (leaders.size() > 0) { %>
 		<%
-			imgSrcAdmin = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+			imgSrcAdmin = "/space/skin/portal/webui/component/UIUserListPortlet/DefaultSkin/background/BLAvatar.gif"
 			def admin = leaders.get(0);
 			adminName = admin.getFirstName();
 			def adminImageSource = uicomponent.getUserAvatar(admin.getUserName());
@@ -58,7 +58,7 @@
 			if (adminImageSource != null) imgSrcAdmin = adminImageSource;
 		%>
 	<% } else { 
-			imgSrcAdmin = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+			imgSrcAdmin = "/space/skin/portal/webui/component/UIUserListPortlet/DefaultSkin/background/BLAvatar.gif"
 			adminProfileURL = "#";
 	   } %>
 		<div class="AvatarSpace">
@@ -87,7 +87,7 @@
 				</div>
 				<% if (leaderList.size() > 0) { %>
 					<% for(user in leaderList) {
-						def imgSrcLeader = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+						def imgSrcLeader = "/space/skin/portal/webui/component/UIUserListPortlet/DefaultSkin/background/BLAvatar.gif"
 						def userName = user.getFullName();
 						def leaderIdentity = uicomponent.getIdentity(user.getUserName());
 						def leaderImageSource = uicomponent.getUserAvatar(user.getUserName());
@@ -144,7 +144,7 @@
 				</div>
 			<% if(memberList.size() > 0)  {%>
 				<% for(user in memberList) {
-					def memberImgSrc = "/space/skin/portal/webui/component/UIUserListPortlet/background/BLAvatar.gif"
+					def memberImgSrc = "/space/skin/portal/webui/component/UIUserListPortlet/DefaultSkin/background/BLAvatar.gif"
 					def memberUserName = user.getFullName();
 					def memberIdentity = uicomponent.getIdentity(user.getUserName());
 					def memberImageSource = uicomponent.getUserAvatar(user.getUserName());

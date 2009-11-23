@@ -25,7 +25,6 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupWindow;
@@ -112,7 +111,6 @@ public class UIAvatarUploadContent extends UIContainer {
   static public class SaveActionListener extends EventListener<UIAvatarUploadContent> {
     @Override
     public void execute(Event<UIAvatarUploadContent> event) throws Exception {
-      WebuiRequestContext ctx = event.getRequestContext();
       UIAvatarUploadContent uiAvatarUploadContent = event.getSource();
       UISpaceInfo uiSpaceInfo = uiAvatarUploadContent.getAncestorOfType(UISpaceInfo.class);
       SpaceService spaceService = uiSpaceInfo.getSpaceService();

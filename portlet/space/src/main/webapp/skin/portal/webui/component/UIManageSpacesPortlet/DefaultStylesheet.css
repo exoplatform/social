@@ -22,7 +22,7 @@
 .UIManageSpacesPortlet .UIManageSpaces .SpaceContent .AvatarSpace{
 	float: left;
 	height: 80px;
-	background: url('background/Avatar.gif') no-repeat left;
+	background: url('DefaultSkin/background/Avatar.gif') no-repeat left;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .SpaceContent .MySpacesContent{
@@ -74,35 +74,35 @@
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .AcceptSpace{
-    background: url('background/AcceptSpace.gif') no-repeat center;
+    background: url('DefaultSkin/background/AcceptSpace.gif') no-repeat center;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .DenySpace{
-    background: url('background/DenySpace.gif') no-repeat center;
+    background: url('DefaultSkin/background/DenySpace.gif') no-repeat center;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .LeaveSpace{
-    background: url('background/LeaveSpace.gif') no-repeat center;
+    background: url('DefaultSkin/background/LeaveSpace.gif') no-repeat center;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .EditSpace{
-	background: url('background/EditSpace.gif') no-repeat center;
+	background: url('DefaultSkin/background/EditSpace.gif') no-repeat center;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .EditSpaceNavigation{
-	background: url('background/EditSpaceNavigation.gif') no-repeat center;
+	background: url('DefaultSkin/background/EditSpaceNavigation.gif') no-repeat center;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .DeleteSpace{
-	background: url('background/DeleteSpace.gif') no-repeat center;
+	background: url('DefaultSkin/background/DeleteSpace.gif') no-repeat center;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .RequestJoin{
-    background: url('background/RequestJoin.gif') no-repeat center;
+    background: url('DefaultSkin/background/RequestJoin.gif') no-repeat center;
 }
 
 .UIManageSpacesPortlet .UIManageSpaces .MySpacesContent .RevokePending{
-    background: url('background/RevokePending.gif') no-repeat center;
+    background: url('DefaultSkin/background/RevokePending.gif') no-repeat center;
 }
 
 .UIManageSpacesPortlet .UISpaceForm {
@@ -110,13 +110,13 @@
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceBanner{
-    background: url('background/SpaceBanner.gif') no-repeat left;
+    background: url('DefaultSkin/background/SpaceBanner.gif') no-repeat left;
     width: 547px; 
     height: 120px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent {
-    background: #fff url('background/SpaceContent.gif') repeat-x;
+    background: #fff url('DefaultSkin/background/SpaceContent.gif') repeat-x;
     width: 547px;
     margin-top: 1px;
 }
@@ -128,7 +128,7 @@
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .RightContent{
     float: left;
-    background: url('background/CreateButton.gif') no-repeat left;
+    background: url('DefaultSkin/background/CreateButton.gif') no-repeat left;
     width: 79px; 
     height: 79px;
     margin: 31px 0px 0px 20px;
@@ -155,12 +155,12 @@
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .ButtonHide {
-    background: url('background/icon-close.png') left 50% no-repeat;
+    background: url('DefaultSkin/background/icon-close.png') left 50% no-repeat;
     padding: 4px 16px;
 }
 
 .UIManageSpacesPortlet .UISpaceForm .SpaceContent .FieldRadio .ButtonShow {
-    background: url('background/icon-open.png') left 50% no-repeat;
+    background: url('DefaultSkin/background/icon-open.png') left 50% no-repeat;
     padding: 4px 16px;
 }
 
@@ -212,7 +212,7 @@
 }
 
 .UIManageSpaces .UIHorizontalTabs .CenterHorizontalTabs {
-    background:transparent url('background/NormalTabStyle.gif') repeat-x scroll center top;
+    background:transparent url('DefaultSkin/background/NormalTabStyle.gif') repeat-x scroll center top;
     padding:0 6px;
 }
 
@@ -234,19 +234,19 @@
 }
 
 .UIManageSpaces .UIHorizontalTabs .NormalTabStyle .SelectedTab .LeftTab {
-    background:transparent url('background/SelectedLeftTab.gif') no-repeat scroll left;
+    background:transparent url('DefaultSkin/background/SelectedLeftTab.gif') no-repeat scroll left;
     line-height:27px;
     padding-left:6px;
 }
 
 .UIManageSpaces .UIHorizontalTabs .NormalTabStyle .SelectedTab .RightTab {
-    background:transparent url('background/SelectedRightTab.gif') no-repeat scroll right;
+    background:transparent url('DefaultSkin/background/SelectedRightTab.gif') no-repeat scroll right;
     line-height:27px;
     padding-right:6px;
 }
 
 .UIManageSpaces .UIHorizontalTabs .NormalTabStyle .SelectedTab .MiddleTab {
-    background:transparent url('background/SelectedMiddleTab.gif') repeat-x scroll center;
+    background:transparent url('DefaultSkin/background/SelectedMiddleTab.gif') repeat-x scroll center;
     cursor:pointer;
     font-weight:normal;
     line-height:27px;
@@ -268,19 +268,19 @@
 }
 
 .UIManageSpaces .UIHorizontalTabs .NormalTabStyle .NormalTab .LeftTab {
-    background:transparent url('background/NormalLeftTab.gif') no-repeat scroll left;
+    background:transparent url('DefaultSkin/background/NormalLeftTab.gif') no-repeat scroll left;
     line-height:27px;
     padding-left:5px;
 }
 
 .UIManageSpaces .UIHorizontalTabs .NormalTabStyle .NormalTab .RightTab {
-    background:transparent url('background/NormalRightTab.gif') no-repeat scroll right;
+    background:transparent url('DefaultSkin/background/NormalRightTab.gif') no-repeat scroll right;
     line-height:27px;
     padding-right:5px;
 }
 
 .UIManageSpaces .UIHorizontalTabs .NormalTabStyle .NormalTab .MiddleTab {
-    background:transparent url('background/NormalMiddleTab.gif') repeat-x scroll center;
+    background:transparent url('DefaultSkin/background/NormalMiddleTab.gif') repeat-x scroll center;
     cursor:pointer;
     line-height:27px;
     padding:0 8px;
@@ -346,19 +346,19 @@
 }
 
 .UIManageSpaces .UIAction .ButtonLeft {
-    background:transparent url('background/SimpleButtonLeft.gif') no-repeat left;
+    background:transparent url('DefaultSkin/background/SimpleButtonLeft.gif') no-repeat left;
     padding:0 0 0 2px;
     height: 23px;
 }
 
 .UIManageSpaces .UIAction .ButtonRight {
-    background:transparent url('background/SimpleButtonRight.gif') no-repeat right;
+    background:transparent url('DefaultSkin/background/SimpleButtonRight.gif') no-repeat right;
     padding:0 2px 0 0;
     height: 23px;
 }
 
 .UIManageSpaces .UIAction .ButtonMiddle {
-    background:transparent url('background/SimpleButtonMiddle.gif') repeat-x center bottom;
+    background:transparent url('DefaultSkin/background/SimpleButtonMiddle.gif') repeat-x center bottom;
     line-height:23px;
     padding:0 12px;
     text-align:center;
