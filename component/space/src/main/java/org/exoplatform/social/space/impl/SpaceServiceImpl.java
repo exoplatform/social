@@ -73,11 +73,10 @@ public class SpaceServiceImpl implements SpaceService {
    * SpaceServiceImpl constructor
    * Initialize <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
    * @param params
-   * @param nodeHierarchyCreator
    * @throws Exception
    */
-  public SpaceServiceImpl(InitParams params, NodeHierarchyCreator nodeHierarchyCreator) throws Exception {
-    storage = new JCRStorage(nodeHierarchyCreator);
+  public SpaceServiceImpl(InitParams params, SocialDataLocation dataLocation) throws Exception {
+    storage = new JCRStorage(dataLocation);
     PropertiesParam properties = params.getPropertiesParam(propertiesParamName);
     homeNodeApp = properties.getProperty(homeNodeAppProperty);
     apps = properties.getProperty(appsProperty).split(",");

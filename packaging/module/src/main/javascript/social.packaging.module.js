@@ -60,12 +60,25 @@ function getModule(params) {
   module.web.opensocial.deployName = "social" ;
 		
 	module.extension = {};
-	module.extension.jar = new Project("org.exoplatform.social", "exo.social.extension.jar","jar", module.version);
-	module.extension.config = new Project("org.exoplatform.social", "exo.social.extension.config","jar", module.version);
+	/*module.extension.jar = new Project("org.exoplatform.social", "exo.social.extension.jar","jar", module.version);
+	module.extension.config = new Project("org.exoplatform.social", "exo.social.extension.config","jar", module.version);*/
 	module.extension.war =
    new Project("org.exoplatform.social", "exo.social.extension.war", "war", module.version).
    addDependency(new Project("org.exoplatform.social", "exo.social.extension.jar", "jar", module.version)).
    addDependency(new Project("org.exoplatform.social", "exo.social.extension.config", "jar", module.version));
 	module.extension.war.deployName = "social-ext";
+
+   module.demo = {};
+   // demo portal
+   module.demo.portal = 
+	   new Project("org.exoplatform.social", "exo.social.demo.war", "war", module.version).
+	   addDependency(new Project("org.exoplatform.social", "exo.social.demo.config", "jar", module.version)).
+		addDependency(new Project("org.exoplatform.social", "exo.social.demo.jar", "jar", module.version));
+	   module.demo.portal.deployName = "socialdemo";  
+	   
+   // demo rest endpoint	   
+   module.demo.rest = 
+       new Project("org.exoplatform.social", "exo.social.demo.rest-war", "war", module.version);
+       module.demo.rest.deployName = "rest-socialdemo"; 
   return module;
 }

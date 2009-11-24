@@ -50,12 +50,11 @@ function getProduct(version) {
   product.addDependencies(portal.web.portal);
 
 	// starter for social
-	portal.starter = new Project("org.exoplatform.portal", "exo.portal.starter.war", "war", portal.version);
-	portal.starter.deployName = "starter";
-	product.addDependencies(portal.starter);
-
+	//portal.starter = new Project("org.exoplatform.portal", "exo.portal.starter.war", "war", portal.version);
+	//portal.starter.deployName = "starter";
+	//product.addDependencies(portal.starter);
 	//product.addDependencies(social.web.socialportal) ;
-  product.addDependencies(social.extension.war) ;
+  //product.addDependencies(social.extension.war) ;
   product.addDependencies(social.web.eXoResources) ;
   product.addDependencies(social.component.people) ;
   product.addDependencies(social.component.space) ;
@@ -66,7 +65,8 @@ function getProduct(version) {
   product.addDependencies(social.application.rest) ;
 
 
-
+  product.addDependencies(social.demo.portal);
+  product.addDependencies(social.demo.rest);
 
   product.addServerPatch("tomcat", portal.server.tomcat.patch);
   product.addServerPatch("jboss",  portal.server.jboss.patch);

@@ -31,15 +31,12 @@ import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.social.space.JCRSessionManager;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
 
 
 public class JCRStorage {
-  final static private String SOCIAL_SPACE = "Social_Space".intern();
-  final static private String SPACE = "Space".intern();
-  final static private String NT_UNSTRUCTURED = "nt:unstructured".intern();
   final static private String SPACE_NODETYPE = "exo:space".intern();
   final static private String SPACE_NAME = "exo:name".intern();
   final static private String SPACE_GROUPID = "exo:groupId".intern();
@@ -55,41 +52,28 @@ public class JCRStorage {
   final static private String SPACE_REGISTRATION = "exo:registration".intern();
   final static private String SPACE_PRIORITY = "exo:priority".intern();
 
-  private NodeHierarchyCreator nodeHierarchyCreator_ ;
+  //new change
+  private SocialDataLocation dataLocation;
+  private JCRSessionManager sessionManager;
+  private String repository;
+  private String workspace;
 
-  public JCRStorage(NodeHierarchyCreator nodeHierarchyCreator) {
-    this.nodeHierarchyCreator_ = nodeHierarchyCreator;
+  public JCRStorage(SocialDataLocation dataLocation) {
+    this.dataLocation = dataLocation;
+    this.sessionManager = dataLocation.getSessionManager();
+    this.repository = dataLocation.getRepository();
+    this.workspace = dataLocation.getWorkspace();
   }
 
-  private Node getSocialSpaceHome() throws Exception {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
-    Node appsNode = nodeHierarchyCreator_.getPublicApplicationNode(sProvider);
-
-    try {
-        return appsNode.getNode(SOCIAL_SPACE);
-    } catch (PathNotFoundException ex) {
-        Node appNode = appsNode.addNode(SOCIAL_SPACE, NT_UNSTRUCTURED);
-        appNode.addMixin("mix:referenceable");
-        appsNode.save();
-        return appNode;
-    }
-  }
-
-  private Node getSpaceHome() throws Exception {
-    Node appsNode = getSocialSpaceHome();
-
-    try {
-        return appsNode.getNode(SPACE);
-    } catch (PathNotFoundException ex) {
-        Node appNode = appsNode.addNode(SPACE, NT_UNSTRUCTURED);
-        appsNode.save();
-        return appNode;
-    }
+  private Node getSpaceHome(SessionProvider sProvider) throws Exception {
+    String path = dataLocation.getSocialSpaceHome();
+    return sessionManager.getSession(sProvider).getRootNode().getNode(path);  
   }
 
 
   public List<Space> getAllSpaces() throws Exception {
-    Node spaceHomeNode = getSpaceHome();
+    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    Node spaceHomeNode = getSpaceHome(sProvider);
     List<Space> spaces = new ArrayList<Space>();
     NodeIterator iter = spaceHomeNode.getNodes();
     Space space;
@@ -102,7 +86,8 @@ public class JCRStorage {
   }
 
   public Space getSpaceById(String id) throws Exception {
-    Node spaceHomeNode = getSpaceHome();
+    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    Node spaceHomeNode = getSpaceHome(sProvider);
     try {
       return getSpace(spaceHomeNode.getSession().getNodeByUUID(id));
     } catch (PathNotFoundException ex) {
@@ -112,7 +97,8 @@ public class JCRStorage {
   
   public Space getSpaceByUrl(String url) throws Exception {
     try {
-      Node spaceHomeNode = getSpaceHome();
+      SessionProvider sProvider = SessionProvider.createSystemProvider();
+      Node spaceHomeNode = getSpaceHome(sProvider);
       NodeIterator iter = spaceHomeNode.getNodes();
       Space space;
       while (iter.hasNext()) {
@@ -127,8 +113,9 @@ public class JCRStorage {
   }
   
   public void deleteSpace(String id) throws Exception {
+    SessionProvider sProvider = SessionProvider.createSystemProvider();
     Session session;
-    Node spaceHomeNode = getSpaceHome();
+    Node spaceHomeNode = getSpaceHome(sProvider);
     session = spaceHomeNode.getSession();
     Node spaceNode = session.getNodeByUUID(id);
     if(spaceNode != null) {
@@ -138,7 +125,8 @@ public class JCRStorage {
   }
 
   public void saveSpace(Space space, boolean isNew) throws Exception {
-    Node spaceHomeNode = getSpaceHome();
+    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    Node spaceHomeNode = getSpaceHome(sProvider);
     saveSpace(spaceHomeNode, space, isNew);
     spaceHomeNode.getSession().save();
   }
