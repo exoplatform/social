@@ -34,7 +34,7 @@
 	        	<field  name="repository"><string>repository</string></field>
 	        	<field name="workspaces">
 	          	<collection type="java.util.ArrayList">
-	          		<value><string>portal-system</string></value>
+	          		<value><string>social</string></value>
 	          	</collection>
 	          </field>
 	          <field  name="jcrPaths">

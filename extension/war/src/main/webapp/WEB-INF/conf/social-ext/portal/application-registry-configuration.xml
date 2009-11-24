@@ -514,7 +514,7 @@
                                                 <string>opensocial</string>
                                             </field>
                                             <field name="applicationName">
-                                                <string>statusUpdate</string>
+                                                <string>Status Update</string>
                                             </field>
                                             <field name="displayName">
                                                 <string>What are you doing?</string>

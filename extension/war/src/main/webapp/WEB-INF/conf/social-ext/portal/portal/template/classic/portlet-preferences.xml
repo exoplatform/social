@@ -87,6 +87,22 @@
   <portlet-preferences>
     <owner-type>portal</owner-type>
     <owner-id>@owner@</owner-id>
+    <window-id>portal#@owner@:/profile/relationship/relationships</window-id>
+		<preference>
+        <name>template</name>
+        <value>my-dashboard</value>
+        <read-only>false</read-only>
+    </preference>
+	    <preference>
+	        <name>rssFetchId</name>
+	        <value>rssFetch</value>
+	        <read-only>false</read-only>
+	    </preference>
+  </portlet-preferences>
+
+  <portlet-preferences>
+    <owner-type>portal</owner-type>
+    <owner-id>@owner@</owner-id>
     <window-id>portal#@owner@:/space/SpacePortlet/spaceportlet</window-id>
 	  <preference>
       <name>template</name>
