@@ -16,7 +16,7 @@
 					<div class="AvaBorder">
 						<div class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
 							<% if(imageSource == null) { %>
-								<img height="64px" width="64px" alt="" src="/space/skin/portal/webui/component/UISpaceSettingPortlet/background/SpaceAva.gif"/>
+								<img height="64px" width="64px" alt="" src="/space/skin/portal/webui/component/UISpaceSettingPortlet/DefaultSkin/background/SpaceAva.gif"/>
 							<% } else { %>
 		  					<img src="$imageSource" height="64px" width="64px">
 		  				<% } %>

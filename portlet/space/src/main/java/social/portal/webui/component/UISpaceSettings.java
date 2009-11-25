@@ -72,6 +72,7 @@ public class UISpaceSettings extends UIFormInputSet {
         
     UIFormSelectBox selectPriority = new UIFormSelectBox(SPACE_PRIORITY, SPACE_PRIORITY, priorityList);
     addUIFormInput(selectPriority);
-    addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null));
+    addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null)
+                  .addValidator(StringLengthValidator.class, 0, 255));
   }
 }
