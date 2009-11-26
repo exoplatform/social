@@ -133,9 +133,8 @@ public class JCRStorage {
   
   public void deleteSpace(String id) {
     SessionProvider sProvider = SessionProvider.createSystemProvider();
-    sessionManager.openSession();
+    Session session = sessionManager.openSession();
     try {
-      Session session = sessionManager.getSession(sProvider);
       Node spaceNode = session.getNodeByUUID(id);
       if(spaceNode != null) {
         spaceNode.remove();

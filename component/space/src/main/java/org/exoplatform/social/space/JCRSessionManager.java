@@ -105,8 +105,8 @@ public class JCRSessionManager {
         currentSession.set(session);
      }
      else
-     {
-        throw new IllegalStateException("A session is already opened.");
+     { 
+       //throw new IllegalStateException("A session is already opened.");
      }
      return session;
   }
