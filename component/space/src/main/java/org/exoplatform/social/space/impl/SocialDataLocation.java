@@ -58,6 +58,10 @@ public class SocialDataLocation {
 
   private String socialSpaceRoot;
   private String socialSpaceHome;
+  private String socialActivitiesHome;
+  private String socialIdentityHome;
+  private String socialProfileHome;
+  private String socialRelationshipHome;
   
   private NodeHierarchyCreator creator;
   private String repository;
@@ -84,6 +88,10 @@ public class SocialDataLocation {
   private void initPathes() {
      socialSpaceRoot = getPath(Locations.SOCIAL_SPACE_ROOT);
      socialSpaceHome = getPath(Locations.SOCIAL_SPACE_HOME);
+     socialActivitiesHome = getPath(Locations.SOCIAL_ACTIVITIES_HOME);
+     socialIdentityHome = getPath(Locations.SOCIAL_IDENTITY_HOME);
+     socialProfileHome = getPath(Locations.SOCIAL_PROFILE_HOME);
+     socialRelationshipHome = getPath(Locations.SOCIAL_RELATIONSHIP_HOME);
   }
   
   /**
@@ -157,7 +165,21 @@ public class SocialDataLocation {
     return socialSpaceHome;
   }
   
+  public String getSocialActivitiesHome() {
+    return socialActivitiesHome;
+  }
   
+  public String getSocialIdentityHome() {
+    return socialIdentityHome;
+  }
+  
+  public String getSocialProfileHome() {
+    return socialProfileHome;
+  }
+  
+  public String getSocialRelationshipHome() {
+    return socialRelationshipHome;
+  }
   
   /**
    * Location names for Social data storage
@@ -168,6 +190,10 @@ public class SocialDataLocation {
 
     public static final String SOCIAL_SPACE_ROOT = "socialSpaceRoot";
     public static final String SOCIAL_SPACE_HOME = "socialSpaceHome";
+    public static final String SOCIAL_ACTIVITIES_HOME = "socialActivitiesHome";
+    public static final String SOCIAL_IDENTITY_HOME = "socialIdentityHome";
+    public static final String SOCIAL_PROFILE_HOME = "socialProfileHome";
+    public static final String SOCIAL_RELATIONSHIP_HOME = "socialRelationshipHome";
     public static final String DEFAULT_APPS_LOCATION = "exo:applications";
   }
   

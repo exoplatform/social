@@ -90,7 +90,7 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
   }
 
   protected String getIdentityId(String remoteId){
-    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+    PortalContainer pc = PortalContainer.getInstance();
     IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
     Identity id = null;

@@ -18,7 +18,9 @@ package org.exoplatform.social.space;
 
 import javax.jcr.Session;
 
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
@@ -76,8 +78,9 @@ public class JCRSessionManager {
   public Session getSession(SessionProvider sessionProvider) {
     Session session = null;
     try {
-
-     RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+     PortalContainer currentContainer = PortalContainer.getInstance(); 
+     //RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+     RepositoryService repositoryService = (RepositoryService) currentContainer.getComponentInstanceOfType(RepositoryService.class);
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = sessionProvider.getSession(workspaceName, repository);
     } catch (Exception e) {
@@ -112,7 +115,9 @@ public class JCRSessionManager {
     Session session = null;
     try {
 
-     RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+     PortalContainer currentContainer = PortalContainer.getInstance();
+      
+     RepositoryService repositoryService = (RepositoryService) currentContainer.getComponentInstanceOfType(RepositoryService.class);
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = repository.getSystemSession(workspaceName);
     } catch (Exception e) {

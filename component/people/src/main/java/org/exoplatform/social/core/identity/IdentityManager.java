@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.space.impl.SocialDataLocation;
 
 
 public class IdentityManager {
@@ -31,8 +31,8 @@ public class IdentityManager {
   private Map<String, IdentityProvider> identityProviders = new HashMap<String, IdentityProvider>();
   private JCRStorage storage;
 
-  public IdentityManager(NodeHierarchyCreator nodeHierarchyCreator, IdentityProvider ip) throws Exception {
-    this.storage = new JCRStorage(nodeHierarchyCreator);
+  public IdentityManager(SocialDataLocation dataLocation, IdentityProvider ip) throws Exception {
+    this.storage = new JCRStorage(dataLocation);
 
     ip.setIdentityManager(this);
     this.addIdentityProvider(ip);

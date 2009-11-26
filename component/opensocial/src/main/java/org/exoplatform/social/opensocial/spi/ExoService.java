@@ -71,7 +71,8 @@ public class ExoService {
     }
 
     protected List<Identity> getFriendsList(Identity id) throws Exception {
-      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+      //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+      PortalContainer pc = PortalContainer.getInstance();
       RelationshipManager rm = (RelationshipManager) pc.getComponentInstanceOfType(RelationshipManager.class);
       List<Relationship> rels = rm.getContacts(id);
 
@@ -101,9 +102,11 @@ public class ExoService {
     }
 
     protected Identity getIdentity(String id) throws Exception {
-      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+      //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+      PortalContainer pc = PortalContainer.getInstance();
       IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
+      //TODO: tung.dang need to review again
       //Identity identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, id);
       Identity identity = im.getIdentityById(id);
 //      if (identity == null) {

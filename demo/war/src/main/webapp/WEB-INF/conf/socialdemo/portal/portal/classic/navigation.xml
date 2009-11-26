@@ -32,7 +32,6 @@
     <uri>register</uri>
     <name>register</name>
     <label>#{portal.classic.register}</label>
-    <visible>false</visible>
     <page-reference>portal::classic::register</page-reference>
    </node>
    
@@ -40,7 +39,6 @@
     <uri>activities</uri>
     <name>activities</name>
     <label>#{portal.classic.activities}</label>
-    <visible>false</visible>
     <page-reference>portal::classic::activities</page-reference>
    </node>
    
@@ -56,7 +54,6 @@
     <uri>relations</uri>
     <name>relations</name>
     <label>#{portal.classic.relations}</label>
-    <visible>false</visible>
 	  <node>
 	    <uri>relations/yours</uri>
 	    <name>yours</name>
@@ -76,20 +73,11 @@
 	    <page-reference>portal::classic::requests</page-reference>
 	   </node>
    </node>
-	  
-  <node>
-    <uri>spaces</uri>
-    <name>spaces</name>
-    <label>#{portal.classic.spaces}</label>
-    <visible>false</visible>
-    <page-reference>portal::classic::manageSpaces</page-reference>
-  </node>
-	 
+ 
 	 <node>
 	    <uri>people</uri>
 	    <name>people</name>
 	    <label>#{portal.classic.People}</label>
-	    <visible>false</visible>
 	    <page-reference>portal::classic::people</page-reference>
 	 </node>
 	 
@@ -97,7 +85,6 @@
     <uri>spaces</uri>
     <name>spaces</name>
     <label>#{portal.classic.spaces}</label>
-    <visible>false</visible>
     <page-reference>portal::classic::spaces</page-reference>
    </node>
    

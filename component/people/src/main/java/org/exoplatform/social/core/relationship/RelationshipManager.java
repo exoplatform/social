@@ -26,12 +26,13 @@ import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.storage.JCRStorage;
+import org.exoplatform.social.space.impl.SocialDataLocation;
 
 public class RelationshipManager {
   private JCRStorage storage;
 
-  public RelationshipManager(NodeHierarchyCreator nodeHierarchyCreator, IdentityManager im) throws Exception {
-    this.storage = new JCRStorage(nodeHierarchyCreator, im);
+  public RelationshipManager(SocialDataLocation dataLocation, IdentityManager im) throws Exception {
+    this.storage = new JCRStorage(dataLocation, im);
   }
 
   public Relationship getById(String id) throws Exception {

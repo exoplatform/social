@@ -24,15 +24,15 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Value;
 
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.space.JCRSessionManager;
+import org.exoplatform.social.space.impl.SocialDataLocation;
 
 import com.google.common.collect.Lists;
 
 
 public class JCRStorage {
-  final private static String ACTIVITY_APP = "Social_Activity".intern();
   final private static String PUBLISHED_NODE = "published".intern();
   final private static String NT_UNSTRUCTURED = "nt:unstructured".intern();
   private static final String ACTIVITY_NODETYPE =  "exo:activity".intern();
@@ -50,48 +50,56 @@ public class JCRStorage {
   private static final String HIDDEN =  "exo:hidden".intern();
   private static final String LIKE_IDENTITIES_ID = "exo:like".intern();
   
-  private NodeHierarchyCreator nodeHierarchyCreator;
+  //new change
+  private SocialDataLocation dataLocation;
+  private JCRSessionManager sessionManager;
+  
 
 
-  public JCRStorage(NodeHierarchyCreator nodeHierarchyCreator) {
-    this.nodeHierarchyCreator = nodeHierarchyCreator;
+  public JCRStorage(SocialDataLocation dataLocation) {
+    this.dataLocation = dataLocation;
+    this.sessionManager = dataLocation.getSessionManager();
   }
 
+  private Node getActivityServiceHome(SessionProvider sProvider) throws Exception {
+    String path = dataLocation.getSocialSpaceHome();
+    return sessionManager.getSession(sProvider).getRootNode().getNode(path); 
+  }
 
-  private Node getActivityServiceHome() throws Exception {
+  private Node getUserActivityServiceHome(String username) {
     SessionProvider sProvider = SessionProvider.createSystemProvider();
-
-    Node appsNode = nodeHierarchyCreator.getPublicApplicationNode(sProvider);
-
     try {
-      return appsNode.getNode(ACTIVITY_APP);
-    } catch (PathNotFoundException ex) {
-      Node appNode = appsNode.addNode(ACTIVITY_APP, NT_UNSTRUCTURED);
-      appsNode.save();
-      return appNode;
+      Node activityHomeNode = getActivityServiceHome(sProvider);
+      try {
+        return activityHomeNode.getNode(username);
+      } catch (PathNotFoundException ex) {
+        Node appNode = activityHomeNode.addNode(username, NT_UNSTRUCTURED);
+        activityHomeNode.save();
+        return appNode;
+      }
+    } catch (Exception e) {
+      return null;
+    } finally {
+      sProvider.close();
     }
+    
   }
 
-  private Node getUserActivityServiceHome(String username) throws Exception {
-    Node activityHomeNode = getActivityServiceHome();
+  private Node getPublishedActivityServiceHome(String username) {
     try {
-      return activityHomeNode.getNode(username);
-    } catch (PathNotFoundException ex) {
-      Node appNode = activityHomeNode.addNode(username, NT_UNSTRUCTURED);
-      activityHomeNode.save();
-      return appNode;
+      Node userActivityHomeNode = getUserActivityServiceHome(username);
+      try {
+        return userActivityHomeNode.getNode(PUBLISHED_NODE);
+      } catch (PathNotFoundException ex) {
+        Node appNode = userActivityHomeNode.addNode(PUBLISHED_NODE, NT_UNSTRUCTURED);
+        userActivityHomeNode.save();
+        return appNode;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
     }
-  }
-
-  private Node getPublishedActivityServiceHome(String username) throws Exception {
-    Node userActivityHomeNode = getUserActivityServiceHome(username);
-    try {
-      return userActivityHomeNode.getNode(PUBLISHED_NODE);
-    } catch (PathNotFoundException ex) {
-      Node appNode = userActivityHomeNode.addNode(PUBLISHED_NODE, NT_UNSTRUCTURED);
-      userActivityHomeNode.save();
-      return appNode;
-    }
+   
   }
 
 
@@ -141,11 +149,18 @@ public class JCRStorage {
     return activity;
   }
 
-  public Activity load(String id) throws Exception {
-    Node activityHomeNode = getActivityServiceHome();
-    Node activityNode = activityHomeNode.getSession().getNodeByUUID(id);
-    if (activityNode != null)
-      return load(activityNode);
+  public Activity load(String id) {
+    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    try {
+      Node activityHomeNode = getActivityServiceHome(sProvider);
+      Node activityNode = activityHomeNode.getSession().getNodeByUUID(id);
+      if (activityNode != null)
+        return load(activityNode);
+    } catch (Exception e) {
+      return null;
+    } finally {
+      sProvider.close();
+    }
     return null;
   }
 

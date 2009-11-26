@@ -47,7 +47,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
   public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, CollectionOptions options, SecurityToken token) throws SocialSpiException {
     List<Activity> result = Lists.newArrayList();
 
-    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+    //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+    PortalContainer pc = PortalContainer.getInstance();
     ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
 
     try {
@@ -76,7 +77,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
       String user = userId.getUserId(token);
       Identity id = getIdentity(user);
 
-      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+      //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");\
+      PortalContainer pc = PortalContainer.getInstance();
       ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
 
       List<org.exoplatform.social.core.activitystream.model.Activity> exoActivities = am.getActivities(id);
@@ -112,7 +114,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
     try {
       org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity, fields);
 
-      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+      //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+      PortalContainer pc = PortalContainer.getInstance();
       ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
 
       am.saveActivity(userId.getUserId(token), exoActivity);

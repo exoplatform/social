@@ -17,16 +17,16 @@
 
 import java.util.List;
 
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.space.impl.SocialDataLocation;
 
 
 public class ActivityManager {
   private JCRStorage storage;
 
-  public ActivityManager(NodeHierarchyCreator nodeHierarchyCreator) throws Exception {
-    this.storage = new JCRStorage(nodeHierarchyCreator);
+  public ActivityManager(SocialDataLocation dataLocation) throws Exception {
+    this.storage = new JCRStorage(dataLocation);
   }
 
   //TODO should also filter by appID
