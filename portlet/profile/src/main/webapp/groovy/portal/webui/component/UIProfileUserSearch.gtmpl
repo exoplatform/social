@@ -61,7 +61,7 @@ def searchAction = uicomponent.event('Search');
 	  </div>
 	  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
 	  
-	  <div style="clear: left;"><span></span></div> 
+	  <div style="clear: left; height: 0px;"><span></span></div> 
 	  <div class="Filter" id="$filterId" style="display:none">
 		<div class="Lable">${filterByLabel} :</div>
 		<div class="FilterInput" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event, '$positionId');" onclick="eXo.social.profile.UIProfileUserSearch.activeFilterText('$positionId', '$uicomponentId')" onmouseout="eXo.social.profile.UIProfileUserSearch.onBlurFilterText('$positionId', '$uicomponentId')"><% uiform.renderField(childs.get(1))%></div>

@@ -304,10 +304,11 @@
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search {
-	width: 270px;
+	width: 275px;
 	float: left;
 	border: 1px solid #b7b7b7;
 	font-size: 11px;
+	background: white;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter {
@@ -320,7 +321,7 @@
 	font-size:11px;
 	float: left;
 	color: #C7C7C7;
-	border: none;
+	border: 1px solid white;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .SearchIcon {
@@ -335,15 +336,19 @@
 	float: left;
 	border: 1px solid #b7b7b7;
 	margin-right: 7px;
+	background: white;
+	height: 18px;
+	width: 94px;
 }
 
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterInput input {
-	height: 14px;
-	width: 92px;
+	height: 12px;
+	width: 90px;
 	font-size:11px;
 	color: #C7C7C7;
-	border: none;
+	border: 1px solid white;
+	margin: 0px;
 }
 
 .UITabPane .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterGender select{
