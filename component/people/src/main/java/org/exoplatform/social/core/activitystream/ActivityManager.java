@@ -34,6 +34,15 @@ public class ActivityManager {
     return storage.load(activityId);
   }
   
+  /**
+   * delete activity by its id
+   * @param activityId
+   * @throws Exception
+   */
+  public void deleteActivity(String activityId) throws Exception {
+    storage.deleteActivity(activityId);
+  }
+  
 //TODO should also filter by appID
   public List<Activity> getActivities(Identity identity) throws Exception {
     return storage.getActivities(identity);

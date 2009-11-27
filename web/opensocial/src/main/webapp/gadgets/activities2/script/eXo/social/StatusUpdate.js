@@ -46,7 +46,7 @@ eXo.social.StatusUpdate.MessageType_WARN = 'MessageType_WARN';
  * static config object 
  */
 eXo.social.StatusUpdate.config = {
-	//hard-code gets gadget's owner (not really)
+	ACTIVITIES_REST_URL: "http://localhost:8080/rest/social/activities",
 	IDENTITY_REST_URL : "http://localhost:8080/rest/social/activities/identity",
 	path : {
 		ROOT_PATH : "http://localhost:8080/social/gadgets/activities2",
@@ -282,6 +282,36 @@ eXo.social.StatusUpdate.prototype.refresh = function() {
 }
 
 /**
+ * set onclick handler for deleting
+ */
+eXo.social.StatusUpdate.prototype.setDeleteActivity = function(activityId) {
+  var Util = eXo.social.Util;
+  var Locale = eXo.social.Locale;
+  var el = Util.getElementById('Delete'+activityId);
+  var statusUpdate = this;
+  el.onclick = function() {
+	if (confirm(Locale.getMsg('are_you_sure_to_delete_this_activity'))) {
+		statusUpdate.deleteActivity(activityId);
+	}
+  }
+}
+
+/**
+ * delete activity by id
+ */
+eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
+	var url = eXo.social.StatusUpdate.config.ACTIVITIES_REST_URL + '/delete/'+activityId;
+	eXo.social.Util.makeRequest(url, function(res) {
+	   if (res.data.id) {
+	       eXo.social.Util.removeElementById('Activity' + res.data.id);
+	   } else {
+	       //TODO: informs problem
+	   }
+	}, null, gadgets.io.MethodType.GET, gadgets.io.ContentType.JSON, null);
+}
+
+
+/**
  * gets new activities of owner's
  * informs user about new activities to display
  */
@@ -392,8 +422,8 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		}
   		var userId = activity.getField(opensocial.Activity.Field.USER_ID);
   		var url = activity.getField(opensocial.Activity.Field.URL);
-		var activityId =  activity.getField(opensocial.Activity.Field.ID);
-		var viewerId = statusUpdate.viewer.getId();
+		  var activityId =  activity.getField(opensocial.Activity.Field.ID);
+		  var viewerId = statusUpdate.viewer.getId();
   		var title = activity.getField(opensocial.Activity.Field.TITLE);
   		var body = activity.getField(opensocial.Activity.Field.BODY);
   		var userName = statusUpdate.getName(userId);
@@ -401,7 +431,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		var prettyTime = Util.toPrettyTime(new Date(activity.getField('postedTime')));
   		var html = [];
   		
-  		html.push('<div class="ActivitiesContent">');
+  		html.push('<div id="Activity' + activityId + '" class="ActivitiesContent">');
   			html.push('<a href="#" class="AvatarPeopleBG">');
   				html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
   			html.push('</a>');
@@ -411,6 +441,9 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   				html.push('<div class="NewsDate">' + prettyTime + '</div>');
   			if (statusUpdate.currentView === 'canvas') {
   				html.push('<a href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
+  				if (statusUpdate.owner.getId() === statusUpdate.viewer.getId()) {
+  	  			  html.push('<span>|</span><a id="Delete' + activityId + '" href="#delete" style="color: #058ee6;">' + Locale.getMsg('delete') + '</a>');
+  	  			}
   			}
   			html.push('</div>')
   			html.push('<div class="ClearLeft"><span></span></div>');
@@ -433,18 +466,18 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	 * @param	data json object from activity.body.data
   	 */
   	var getLinkShareActivityBlock = function(activity, data) {
-	  	  	if (!activity || !data) {
-	  	  		debug.error('getLinkShareActivityBlock: activity or data is null.');
-	  	  		debug.info(activity);
-	  	  		debug.info(data);
-	  	  		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
-	  	  		return;
-	  	  	}
+  	  	if (!activity || !data) {
+  	  		debug.error('getLinkShareActivityBlock: activity or data is null.');
+  	  		debug.info(activity);
+  	  		debug.info(data);
+  	  		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
+  	  		return;
+  	  	}
   	  
 	  		var userId = activity.getField(opensocial.Activity.Field.USER_ID);
 	  		var url = activity.getField(opensocial.Activity.Field.URL);
-			var activityId =  activity.getField(opensocial.Activity.Field.ID);
-			var viewerId = statusUpdate.viewer.getId();
+			  var activityId =  activity.getField(opensocial.Activity.Field.ID);
+			  var viewerId = statusUpdate.viewer.getId();
 	  		var title = activity.getField(opensocial.Activity.Field.TITLE);
 	  		var body = activity.getField(opensocial.Activity.Field.BODY);
 	  		var userName = statusUpdate.getName(userId);
@@ -547,6 +580,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  		newEl.setAttribute('class', aDecoratorContainerClass);
 	  		if (statusUpdate.currentView === 'canvas') {
 	  			Like.getLikeIds(activityId, Like.displayLike);
+	  			statusUpdate.setDeleteActivity(activityId);
 	  		}
 	  	}
 	 }

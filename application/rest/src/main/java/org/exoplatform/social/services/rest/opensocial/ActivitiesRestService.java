@@ -23,8 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServlet;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,8 +30,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
@@ -42,7 +38,6 @@ import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
-import org.exoplatform.web.application.RequestContext;
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -154,6 +149,16 @@ public class ActivitiesRestService implements ResourceContainer {
       return userId;
   }
   
+  @GET
+  @Path("delete/{id}")
+  @Produces({MediaType.APPLICATION_JSON})
+  public ActivityId delete(@PathParam("id") String id) throws Exception {
+    activityManager = getActivityManager();
+    activityManager.deleteActivity(id);
+    ActivityId activityId = new ActivityId(id);
+    return activityId;
+  }
+  
   /**
    * gets linkshare's data by JSON format after scanning the provided link
    * @param link
@@ -212,7 +217,23 @@ public class ActivitiesRestService implements ResourceContainer {
 		  return id;
 	  }
   }
-  
+
+  public class ActivityId {
+    private String id;
+    
+    public ActivityId() {
+      
+    }
+    public ActivityId(String id) {
+      this.id = id;
+    }
+    public void setId(String id) {
+      this.id = id;
+    }
+    public String getId() {
+      return id;
+    }
+  }
   /**
    * Model contain like detail information.
    *

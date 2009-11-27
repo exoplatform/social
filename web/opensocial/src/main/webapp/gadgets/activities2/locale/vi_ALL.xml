@@ -16,6 +16,8 @@
 	<msg name="comment">Bình luận</msg>
 	<msg name="like">Thích</msg>
 	<msg name="unlike">Không thích</msg>
+	<msg name="delete">Xoá</msg>
+  <msg name="are_you_sure_to_delete_this_activity">Bạn có chắc chắn muốn xoá hoạt động này không?</msg>
 	<msg name="link">Liên kết</msg>
 	<msg name="more">Xem thêm</msg>
 	<msg name="close">Đóng</msg>

@@ -131,7 +131,7 @@ eXo.social.Util.addElement = function(parentId, tagName, elementId, html) {
  * @param	elementId
  * @static
  */
-eXo.social.Util.removeElement = function(elementId) {
+eXo.social.Util.removeElementById = function(elementId) {
     var element = document.getElementById(elementId);
     if (element === null) {
     	return;
@@ -244,7 +244,6 @@ eXo.social.Util.getAttributeValue = function(element, attrName) {
 eXo.social.Util.getMimeType = function(link) {
 	if (!link) {
 		debug.warn("link param is required!");
-		debug.groupEnd();
 		return;
 	}
 	//currently gets mimeType from images
@@ -256,10 +255,7 @@ eXo.social.Util.getMimeType = function(link) {
 	if (imagesArr.indexOf(extension) > -1) type = 'image';
 	if (type == null) {
 		debug.warn("Can not detect the mime type");
-		debug.groupEnd();
-		return;
 	}
-	debug.groupEnd();
 	return type + '/' + extension;
 }
 
@@ -329,12 +325,18 @@ eXo.social.Util.removeEventListener = function(obj, evt, func) {
  * @param	opt_contentType
  * @static 
  */
-eXo.social.Util.makeRequest = function(url, callback, opt_refreshInterval, opt_method, opt_contentType) {
+eXo.social.Util.makeRequest = function(url, callback, opt_refreshInterval, opt_method, opt_contentType, opt_postData) {
 	//TODO handles method + contentType
 	var refreshInterval = opt_refreshInterval || 0;
 	var method = gadgets.io.MethodType.GET;
 	var contentType = gadgets.io.ContentType.JSON;
-	
+	var postData = null;
+  if (opt_method === gadgets.io.MethodType.POST) {
+    method = gadgets.io.MethodType.POST;
+    if (opt_postData) {
+        postData = gadgets.io.encodeValues(opt_postData);
+    }
+  }
 	var ts = new Date().getTime();
 	var sep = "?";
 	if (refreshInterval && refreshInterval > 0) {
@@ -348,6 +350,8 @@ eXo.social.Util.makeRequest = function(url, callback, opt_refreshInterval, opt_m
 	var params = {};
 	params[gadgets.io.RequestParameters.METHOD] = method;
 	params[gadgets.io.RequestParameters.CONTENT_TYPE] = contentType;
+	params[gadgets.io.RequestParameters.POST_DATA] = postData;
+	debug.info(postData);
 	gadgets.io.makeRequest(url, callback, params);
 }
 /**

@@ -21,6 +21,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
@@ -147,6 +148,29 @@ public class JCRStorage {
       activityNode.save();
     }
     return activity;
+  }
+  
+  /**
+   * delete activity by its id
+   * @param activityId
+   * @throws Exception
+   */
+  public void deleteActivity(String activityId) throws Exception {
+    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    Session session = getActivityServiceHome(sProvider).getSession();
+    Node activityNode = null;
+    try {
+      activityNode = session.getNodeByUUID(activityId);
+      if (activityNode != null) {
+        activityNode.remove();
+        session.save();
+      }
+    } catch(Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      sProvider.close();
+    }
+    
   }
 
   public Activity load(String id) {
