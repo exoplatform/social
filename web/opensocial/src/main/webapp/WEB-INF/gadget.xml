@@ -48,6 +48,9 @@
 	<gadget name="codeRunner">
 		<path>/gadgets/codeRunner.xml</path>
 	</gadget>
+	<gadget name="clock">
+		<path>/gadgets/clock.xml</path>
+	</gadget>
 	<gadget name="otwit">
 	    <path>/gadgets/otwit.xml</path>
 	</gadget>
