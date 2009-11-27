@@ -62,7 +62,7 @@ public class JCRStorage {
   }
 
   private Node getActivityServiceHome(SessionProvider sProvider) throws Exception {
-    String path = dataLocation.getSocialSpaceHome();
+    String path = dataLocation.getSocialActivitiesHome();
     return sessionManager.getSession(sProvider).getRootNode().getNode(path); 
   }
 

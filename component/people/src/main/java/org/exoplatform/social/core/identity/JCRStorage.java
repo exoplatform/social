@@ -47,17 +47,11 @@ import javax.jcr.version.VersionException;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
-import org.exoplatform.container.xml.PortalContainerInfo;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
-import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.jcr.impl.core.value.BooleanValue;
 import org.exoplatform.services.jcr.impl.core.value.DoubleValue;
 import org.exoplatform.services.jcr.impl.core.value.LongValue;
