@@ -44,6 +44,7 @@ import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceUtils;
+import org.hsqldb.lib.HashMap;
 
 /**
  * Created by The eXo Platform SARL
@@ -55,9 +56,10 @@ import org.exoplatform.social.space.SpaceUtils;
 public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   public static final String NAME = "classic";
   public static final String APPLICATION = "Application";
+  public static final String SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
   private ExoContainer container = ExoContainerContext.getCurrentContainer() ;
   private UserPortalConfigService configService = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
-  
+  private static List<Application> appCache = new ArrayList<Application>();
   /**
    * {@inheritDoc}
    */
@@ -244,9 +246,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * @param apps
    * @param appId
    * @return
-   * @deprecated
    */
-  @SuppressWarnings("unused")
   private Application getApplication(List<Application> apps, String appId) {
     for(Application app : apps) {
       if(app.getApplicationName().equals(appId)) return app;
@@ -265,16 +265,20 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   @SuppressWarnings("unchecked")
   private PageNode createPageNodeFromApplication(Space space, String appId, boolean isRoot) throws SpaceException {
     //create application
-    Map<ApplicationCategory, List<Application>> appStore;
     Application app;
-    try {
-      appStore = SpaceUtils.getAppStore(space);
-      app = getApplication(appStore, appId);
-      if (app == null) {
-        throw new Exception("app is null!");
+    Map<ApplicationCategory, List<Application>> appStore = null;
+    app = getApplication(appCache, appId);
+    if (app == null) {
+      try {
+        appStore = SpaceUtils.getAppStore(space);
+        app = getApplication(appStore, appId);
+        appCache.add(app);
+        if (app == null) {
+          throw new Exception("app is null!");
+        }
+      } catch (Exception e) {
+        throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
       }
-    } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
     }
     String appType = app.getApplicationType();
     ApplicationType<?, ?> applicationType = null;
@@ -302,29 +306,31 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     child.setState(portletState.getApplicationState());
     //create new Page
     Page page = null;
-    try {
-      page = configService.createPageTemplate("space", PortalConfig.GROUP_TYPE, space.getGroupId());
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
-    }
     String pageName;
     if(isRoot) 
       pageName = space.getUrl();
     else pageName = app.getApplicationName();
-    
+    try {
+      String newName = space.getName();
+      if (isRoot != true) {
+        newName += pageName;
+      }
+      page = configService.renewPage(SPACE_TEMPLATE_PAGE_ID, newName, PortalConfig.GROUP_TYPE, space.getGroupId());
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
+    }
+    page.setName(pageName);
+    page.setOwnerType(PortalConfig.GROUP_TYPE);
+    page.setOwnerId(space.getGroupId());
     String visibility = space.getVisibility();
     if(visibility.equals(Space.PUBLIC)) {
       page.setAccessPermissions(new String[]{UserACL.EVERYONE});
     } else {
       page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
     }
-    
-    page.setName(pageName);
     page.setEditPermission("manager:" + space.getGroupId());
     page.setModifiable(true);
-    
-    
     //add application to container
     ArrayList<ModelObject> pageChilds = page.getChildren();
     Container container = findContainerById(pageChilds, APPLICATION);
@@ -333,13 +339,11 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     container.setChildren(childs);
     pageChilds = setContainerById(pageChilds, container);
     page.setChildren(pageChilds);
-    
     try {
       configService.create(page);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
     }
-    
     // create new PageNode
     PageNode pageNode = new PageNode();
     String label = app.getDisplayName();

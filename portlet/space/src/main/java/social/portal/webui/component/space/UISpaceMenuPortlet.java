@@ -103,8 +103,8 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   }
   
   private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();
   }
   
   private String getRepository() throws Exception {

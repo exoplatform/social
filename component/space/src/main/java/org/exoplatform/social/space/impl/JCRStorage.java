@@ -218,6 +218,9 @@ public class JCRStorage {
       } else {
         if(spaceNode.hasNode("image")) spaceNode.getNode("image").remove() ;
       }
+      //TODO: dang.tung need review
+      if(isNew) spaceHomeNode.save();
+      else spaceNode.save();
     } catch (Exception e) {
       // TODO: handle exception
     } finally {
