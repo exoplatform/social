@@ -134,7 +134,7 @@ public class UIAvatarUploader extends UIForm {
           if (newName == null) {
             newName = uploadResource.getFileName();
           } else {
-            newName = "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
+            newName = newName + "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
           }
           spaceAtt.setFileName(newName);
           UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
