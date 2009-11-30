@@ -43,7 +43,6 @@ import org.exoplatform.portal.webui.application.PortletState;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
-import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 
 /**
@@ -59,6 +58,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   public static final String SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
   private ExoContainer container = ExoContainerContext.getCurrentContainer() ;
   private UserPortalConfigService configService = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
+  private static Map<ApplicationCategory, List<Application>> appStoreCache = null;
   private static List<Application> appCache = new ArrayList<Application>();
   /**
    * {@inheritDoc}
@@ -266,14 +266,20 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   private PageNode createPageNodeFromApplication(Space space, String appId, boolean isRoot) throws SpaceException {
     //create application
     Application app;
-    Map<ApplicationCategory, List<Application>> appStore = null;
     app = getApplication(appCache, appId);
     if (app == null) {
       try {
-        appStore = SpaceUtils.getAppStore(space);
-        app = getApplication(appStore, appId);
+        if (appStoreCache == null) {
+          appStoreCache = SpaceUtils.getAppStore(space);
+        }
+        app = getApplication(appStoreCache, appId);
         if (app == null) {
-          throw new Exception("app is null!");
+          //retry
+          appStoreCache = SpaceUtils.getAppStore(space);
+          app = getApplication(appStoreCache, appId);
+          if (app == null) {
+            throw new Exception("app is null!");
+          }
         }
         appCache.add(app);
       } catch (Exception e) {
