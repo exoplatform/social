@@ -24,14 +24,14 @@
 	 <node>
 	  <uri>home</uri>
 	  <name>home</name>
-	  <label>#{portal.classic.home}</label>
+	  <label>#{portal.socialdemo.home}</label>
 	  <page-reference>portal::classic::homepage</page-reference>	    
 	 </node>
 	 
    <node>
     <uri>register</uri>
     <name>register</name>
-    <label>#{portal.classic.register}</label>
+    <label>#{portal.socialdemo.register}</label>
     <visible>false</visible>
     <page-reference>portal::classic::register</page-reference>
    </node>
@@ -46,7 +46,7 @@
    <node>
     <uri>profile</uri>
     <name>profile</name>
-    <label>#{portal.classic.profile}</label>
+    <label>#{portal.socialdemo.profile}</label>
     <visible>false</visible>
     <page-reference>portal::classic::profile</page-reference>
    </node>
@@ -59,19 +59,19 @@
 	  <node>
 	    <uri>relations/yours</uri>
 	    <name>yours</name>
-	    <label>#{portal.classic.yours}</label>
+	    <label>#{portal.socialdemo.yours}</label>
 	    <page-reference>portal::classic::relations</page-reference>
 	   </node>
 	   <node>
 	    <uri>relations/invitations</uri>
 	    <name>invitations</name>
-	    <label>#{portal.classic.invitations}</label>
+	    <label>#{portal.socialdemo.invitations}</label>
 	    <page-reference>portal::classic::invitations</page-reference>
 	   </node>
 	   <node>
 	    <uri>relations/requests</uri>
 	    <name>requests</name>
-	    <label>#{portal.classic.requests}</label>
+	    <label>#{portal.socialdemo.requests}</label>
 	    <page-reference>portal::classic::requests</page-reference>
 	   </node>
    </node>
@@ -93,7 +93,7 @@
    <node>
     <uri>invitationSpace</uri>
     <name>invitationSpace</name>
-    <label>#{portal.classic.invitationSpace}</label>
+    <label>#{portal.socialdemo.invitationSpace}</label>
     <visible>false</visible>
     <page-reference>portal::classic::invitationSpace</page-reference>
    </node>
@@ -101,7 +101,7 @@
    <node>
     <uri>pendingSpace</uri>
     <name>pendingSpace</name>
-    <label>#{portal.classic.pendingSpace}</label>
+    <label>#{portal.socialdemo.pendingSpace}</label>
     <visible>false</visible>
     <page-reference>portal::classic::pendingSpace</page-reference>
    </node>
@@ -109,7 +109,7 @@
    <node>
     <uri>publicSpace</uri>
     <name>publicSpace</name>
-    <label>#{portal.classic.publicSpace}</label>
+    <label>#{portal.socialdemo.publicSpace}</label>
     <visible>false</visible>
     <page-reference>portal::classic::publicSpace</page-reference>
    </node>
@@ -117,14 +117,14 @@
 	  <node>
 	    <uri>groupnavigation</uri>
 	    <name>groupnavigation</name>
-	    <label>#{portal.classic.groupnavigation}</label>
+	    <label>#{portal.socialdemo.groupnavigation}</label>
 	    <visible>false</visible>
 	    <page-reference>portal::classic::groupnavigation</page-reference>	    
 	  </node>
 	  <node>
 	    <uri>portalnavigation</uri>
 	    <name>portalnavigation</name>
-	    <label>#{portal.classic.portalnavigation}</label>
+	    <label>#{portal.socialdemo.portalnavigation}</label>
 	    <visible>false</visible>
 	    <page-reference>portal::classic::portalnavigation</page-reference>	    
 	  </node>
