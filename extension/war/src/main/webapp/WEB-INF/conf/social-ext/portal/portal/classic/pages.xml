@@ -421,17 +421,17 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
- 				<portlet-application>
-		     <portlet>
-		       <application-ref>space</application-ref>
-		       <portlet-ref>PublicSpacePortlet</portlet-ref>
-		     </portlet>
-		     <title>PublicSpacePortlet</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
- 		</container>
+ 		     <portlet-application>
+		       <portlet>
+		         <application-ref>space</application-ref>
+		         <portlet-ref>PublicSpacePortlet</portlet-ref>
+		       </portlet>
+		       <title>PublicSpacePortlet</title>
+		       <access-permissions>*:/platform/users</access-permissions>
+		       <show-info-bar>false</show-info-bar>
+		       <show-application-state>true</show-application-state>      
+		     </portlet-application>
+ 		  </container>
 		</container>
   </page>
   
@@ -466,5 +466,26 @@
       <show-info-bar>false</show-info-bar>
     </portlet-application>
   </page>
-  
+  <page>
+    <name>spacetemplate</name>
+    <title>Space Template</title>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <container id="Menu" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+        <portlet-application>
+          <portlet>
+            <application-ref>space</application-ref>
+            <portlet-ref>SpaceMenuPortlet</portlet-ref>
+          </portlet>
+          <title>SpaceMenu</title>
+          <access-permissions>*:/platform/users</access-permissions>
+          <show-info-bar>false</show-info-bar>
+          <show-application-state>true</show-application-state>
+        </portlet-application>
+      </container>
+      <container id="Application" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      </container>
+    </container>
+  </page>
 </page-set>

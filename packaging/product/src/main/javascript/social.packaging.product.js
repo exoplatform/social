@@ -54,7 +54,7 @@ function getProduct(version) {
 	//portal.starter.deployName = "starter";
 	//product.addDependencies(portal.starter);
 	//product.addDependencies(social.web.socialportal) ;
-  //product.addDependencies(social.extension.war) ;
+  product.addDependencies(social.extension.war) ;
   product.addDependencies(social.web.eXoResources) ;
   product.addDependencies(social.component.people) ;
   product.addDependencies(social.component.space) ;
