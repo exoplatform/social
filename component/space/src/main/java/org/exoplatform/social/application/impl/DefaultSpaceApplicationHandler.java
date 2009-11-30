@@ -43,8 +43,8 @@ import org.exoplatform.portal.webui.application.PortletState;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
-import org.hsqldb.lib.HashMap;
 
 /**
  * Created by The eXo Platform SARL
@@ -272,10 +272,10 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       try {
         appStore = SpaceUtils.getAppStore(space);
         app = getApplication(appStore, appId);
-        appCache.add(app);
         if (app == null) {
           throw new Exception("app is null!");
         }
+        appCache.add(app);
       } catch (Exception e) {
         throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
       }
