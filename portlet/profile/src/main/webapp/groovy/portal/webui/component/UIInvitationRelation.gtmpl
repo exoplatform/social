@@ -1,7 +1,6 @@
 <%
 	import org.exoplatform.portal.webui.util.Util;
  	import org.exoplatform.social.core.relationship.Relationship;
- 	import org.exoplatform.social.relation.UIMyRelation;
  	import org.exoplatform.social.core.identity.model.ProfileAttachment;
  	import org.exoplatform.container.PortalContainer;
  	import org.exoplatform.services.jcr.RepositoryService;

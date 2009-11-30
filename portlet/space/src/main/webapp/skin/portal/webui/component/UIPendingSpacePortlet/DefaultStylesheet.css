@@ -85,10 +85,11 @@
 }
 
 .UIPendingSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput {
-	width: 265px;
+	width: 270px;
 	font-size:11px;
 	float: left;
 	border: 1px solid #b7b7b7;
+	background: white;
 }
 
 .UIPendingSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput input {
@@ -97,7 +98,7 @@
 	font-size:11px;
 	float: left;
 	color: #C7C7C7;
-	border: none;
+	border: 1px solid white;
 }
 
 .UIPendingSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput .SearchIcon {
