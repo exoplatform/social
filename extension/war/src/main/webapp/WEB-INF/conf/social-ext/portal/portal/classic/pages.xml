@@ -45,22 +45,6 @@
   </page>
 
   <page>
-    <name>register</name>
-    <title>Register</title>
-	  <access-permissions>Everyone</access-permissions>
-	  <edit-permission>*:/platform/administrators</edit-permission>    
-    <portlet-application>
-      <portlet>
-        <application-ref>exoadmin</application-ref>
-        <portlet-ref>AccountPortlet</portlet-ref>
-      </portlet>
-      <title>New Account</title>
-      <access-permissions>*:/platform/guests</access-permissions>
-      <show-info-bar>false</show-info-bar>      
-    </portlet-application>
-  </page>
-
-  <page>
     <name>manageSpaces</name>
     <title>Manage Spaces</title>
     <access-permissions>*:/platform/users</access-permissions>
@@ -435,7 +419,7 @@
 		</container>
   </page>
   
-  <page>
+  <!-- <page>
     <name>groupnavigation</name>
     <title>Group Navigation</title>
 	  <access-permissions>*:/platform/users</access-permissions>
@@ -465,7 +449,7 @@
       <access-permissions>Everyone</access-permissions>
       <show-info-bar>false</show-info-bar>
     </portlet-application>
-  </page>
+  </page>  -->
   <page>
     <name>spacetemplate</name>
     <title>Space Template</title>
