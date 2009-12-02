@@ -21,19 +21,29 @@
 -->
 
 <page-set>
-	<page>
-    <name>sitemap</name>
-    <title>Site Map</title>
-	  <access-permissions>*:/platform/users</access-permissions>
-	  <edit-permission>*:/platform/administrators</edit-permission>
-	  <portlet-application>
+    
+  <page>
+    <name>canvas</name>
+    <title>Canvas</title>
+    <access-permissions>*:/developer</access-permissions>
+    <edit-permission>*:/platform/administrators</edit-permission>
+     <portlet-application>
       <portlet>
-        <application-ref>web</application-ref>
-        <portlet-ref>SiteMapPortlet</portlet-ref>
+        <application-ref>dashboard</application-ref>
+        <portlet-ref>GadgetPortlet</portlet-ref>\
+        <preferences>
+          <preference>
+          	<name>url</name>
+        		<value>http://localhost:8080/rest-socialdemo/jcr/repository/gadgets/gadgets/codeRunner.xml</value>
+        		<read-only>false</read-only>
+          </preference>
+        </preferences>
       </portlet>
-      <title>SiteMap</title>
-      <access-permissions>*:/platform/users</access-permissions>
-      <show-info-bar>false</show-info-bar>      
-    </portlet-application>
+      <title>Canvas</title>
+      <access-permissions>*:/developer</access-permissions>
+		<show-info-bar>false</show-info-bar>
+		<show-application-state>false</show-application-state>
+		</portlet-application>  
   </page>
+  
 </page-set>

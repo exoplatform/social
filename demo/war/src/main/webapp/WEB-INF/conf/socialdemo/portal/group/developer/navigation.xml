@@ -20,4 +20,16 @@
 
 -->
 
-<portlet-preferences-set/>
+<node-navigation>
+  <priority>5</priority>
+  
+  <page-nodes>
+    <node>
+      <uri>canvas</uri>
+      <name>canvas</name>
+      <label>Canvas</label>
+			<page-reference>group::/developer::canvas</page-reference>	
+    </node>
+            
+  </page-nodes>    
+</node-navigation>

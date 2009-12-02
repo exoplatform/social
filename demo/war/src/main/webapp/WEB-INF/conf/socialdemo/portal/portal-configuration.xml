@@ -22,9 +22,9 @@
 
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
 	xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
-
+	
 	<external-component-plugins>
-		<!-- The full qualified name of the UserPortalConfigService -->	
+		<!-- The full qualified name of the UserPortalConfigService -->
 		<target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>
 		<component-plugin>
 			<!-- The name of the plugin -->
@@ -61,7 +61,7 @@
 						<field name="predefinedOwner">
 							<collection type="java.util.HashSet">
 								<value>
-									<string>platform/users</string>
+									<string>developer</string>
 								</value>
 							</collection>
 						</field>
@@ -92,18 +92,7 @@
 						</field>
 					</object>
 				</object-param>
-				<object-param>
-	        	<name>page.templates</name>
-	        	<description>List of page templates</description>
-	        	<object type="org.exoplatform.portal.config.PageTemplateConfig">
-	        		<field name="templates">
-	        			<collection type="java.util.ArrayList"></collection>
-	        		</field>
-	        		<field name="location"><string>war:/conf/socialdemo/portal/template/pages</string></field>
-	        	</object>
-	        </object-param>
 			</init-params>
 		</component-plugin>
 	</external-component-plugins>
-
 </configuration>

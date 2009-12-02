@@ -21,20 +21,5 @@
 -->
 
 <page-set>
-  <page>
-    <name>sales</name>
-    <title>Sales BI</title>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>*:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>dashboard</application-ref>
-        <portlet-ref>DashboardPortlet</portlet-ref>
-      </portlet>
-      <title>Dashboard</title>
-      <access-permissions>*:/platform/users</access-permissions>
-      <show-info-bar>false</show-info-bar>
-    </portlet-application>
-  </page>
 </page-set>
 
