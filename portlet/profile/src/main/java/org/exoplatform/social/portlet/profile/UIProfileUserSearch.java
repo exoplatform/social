@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -83,6 +84,9 @@ public class UIProfileUserSearch extends UIForm {
   final public static String MALE = "male";
   /** FEMALE. */
   final public static String FEMALE = "female";
+  /**REGEX FOR SPLIT STRING */
+  final public static String REG_FOR_SPLIT = "[^_A-Za-z0-9-.\\s[\\n]]";
+  
   /** IdentityManager */
   IdentityManager        im           = null;
   /** RelationshipManager */
@@ -170,40 +174,49 @@ public class UIProfileUserSearch extends UIForm {
       String professional = null;
       
       uiSearch.setSelectedChar(charSearch);
-      
-      if (charSearch == null) {
-        identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
-        
-        if (identitiesSearchResult != null) {
-            for (Identity id : identitiesSearchResult) {
-              if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id); 
-            }
+      try {
+        if (charSearch == null) {
+          identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
+          
+          if (identitiesSearchResult != null) {
+              for (Identity id : identitiesSearchResult) {
+                if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id);
+              }
+          }
+          
+          // Using regular expression for search
+          professional = filter.getProfessional();
+          if (professional.length() > 0) {
+            professional = (professional.charAt(0)!='*') ? "*" + professional : professional;
+            professional = (professional.charAt(professional.length()-1)!='*') ? professional += "*" : professional;
+            professional = (professional.indexOf("*") >= 0) ? professional.replace("*", ".*") : professional;
+            professional = (professional.indexOf("%") >= 0) ? professional.replace("%", ".*") : professional;
+            Pattern.compile(professional);
+            identities = uiSearch.getIdentitiesByProfessional(professional, identities);
+          }
+          
+          uiSearch.setIdentityList(identities);
+        } else {
+          ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
+          filter.setName(charSearch);
+          filter.setPosition("");
+          filter.setGender("");
+          if ("All".equals(charSearch)) {
+            filter.setName("");
+          }
+          
+          identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(filter);
+          
+          if (identitiesSearchResult != null) {
+              for (Identity id : identitiesSearchResult) {
+                if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id); 
+              }
+          }
+          
+          uiSearch.setIdentityList(identities);
         }
-        
-        professional = filter.getProfessional();
-        if (professional.length() > 0) {
-          identities = uiSearch.getIdentitiesByProfessional(professional, identities);
-        }
-        
-        uiSearch.setIdentityList(identities);
-      } else {
-        ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
-        filter.setName(charSearch);
-        filter.setPosition("");
-        filter.setGender("");
-        if ("All".equals(charSearch)) {
-          filter.setName("");
-        }
-        
-        identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(filter);
-        
-        if (identitiesSearchResult != null) {
-            for (Identity id : identitiesSearchResult) {
-              if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id); 
-            }
-        }
-        
-        uiSearch.setIdentityList(identities);
+      } catch (Exception e) {
+        uiSearch.setIdentityList(new ArrayList<Identity>());
       }
       
       Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
@@ -225,20 +238,24 @@ public class UIProfileUserSearch extends UIForm {
       List<Identity> identityLst = new ArrayList<Identity>();
       String prof = null;
       ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
+      String profes = professional.trim().toLowerCase();
       
-      if (identities.size() > 0) {
-        for (Identity id : identities) {
-          Profile profile = id.getProfile();
-          experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(EXPERIENCE);
-          if (experiences != null) {
-            for (HashMap<String, Object> exp : experiences) {
-              prof = (String) exp.get(PROFESSIONAL);
-              if (prof != null) {
-                if (prof.toLowerCase().contains(professional.toLowerCase())) {
-                  identityLst.add(id);
-                }
+      if (identities.size() == 0) return identityLst;
+    
+      for (Identity id : identities) {
+        Profile profile = id.getProfile();
+        experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(EXPERIENCE);
+        if (experiences == null) continue;
+        for (HashMap<String, Object> exp : experiences) {
+          prof = (String) exp.get(PROFESSIONAL);
+          if (prof == null) continue;
+          Pattern p = Pattern.compile(REG_FOR_SPLIT);
+          String[] items = p.split(prof);
+          for(String item : items) {
+              if (item.toLowerCase().matches(profes)) { 
+                identityLst.add(id);
+                break;
               }
-            }
           }
         }
       }

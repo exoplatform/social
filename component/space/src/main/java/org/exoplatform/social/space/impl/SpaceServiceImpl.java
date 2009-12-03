@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
@@ -102,6 +103,7 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public List<Space> getSpacesByName(String spaceName, boolean isFirstCharOfSpaceName) throws SpaceException {
     List<Space> spaces;
+    String nameForSearch = spaceName.trim();
     try {
       spaces = storage.getAllSpaces();
     } catch (Exception e) {
@@ -111,17 +113,13 @@ public class SpaceServiceImpl implements SpaceService {
     Iterator<Space> itr = spaces.iterator();
     if (!isFirstCharOfSpaceName) {
       while(itr.hasNext()) {
-        Space space = itr.next();
-        if(!space.getName().toLowerCase().contains(spaceName.toLowerCase())){
-          itr.remove();
-        }
+        Space space = itr.next(); 
+        if (!space.getName().toLowerCase().matches(nameForSearch.toLowerCase())) itr.remove();
       }
     } else {
       while(itr.hasNext()) {
         Space space = itr.next();
-        if(!space.getName().toLowerCase().startsWith(spaceName.toLowerCase())){
-          itr.remove();
-        }
+        if(!space.getName().toLowerCase().startsWith(nameForSearch.toLowerCase())) itr.remove();
       }
     }
     

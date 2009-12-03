@@ -39,6 +39,8 @@ import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormTabPane;
 import org.exoplatform.webui.organization.account.UIGroupSelector;
 
+import social.portal.webui.component.space.UISpaceSearch;
+
 /**
  * UIAddSpaceForm to create new space. By using this UIForm, user can create a
  * brand new space or a space from an existing group
@@ -123,6 +125,14 @@ public class UISpaceAddForm extends UIFormTabPane {
         spaceService.saveSpace(space, true);
         spaceService.initApp(space);
         
+        // Apply search condition into the new created space if has.
+        UIPopupWindow uiPopup = uiAddForm.getAncestorOfType(UIPopupWindow.class);
+        UIManageMySpaces uiMySpace = uiPopup.getParent();
+        UISpaceSearch uiSpaceSearch = uiMySpace.getChild(UISpaceSearch.class);
+        String spaceName = uiSpaceSearch.getSpaceNameSearch();
+        String selectedChar = uiSpaceSearch.getSelectedChar();
+        if (spaceName != null)
+          uiMySpace.setSpaces_(spaceService.getSpacesByName(spaceName, (selectedChar == null) ? false : true ));
       } catch (SpaceException se) {
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
           msg = MSG_ERROR_SPACE_ALREADY_EXIST;

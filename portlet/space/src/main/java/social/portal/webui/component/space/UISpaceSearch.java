@@ -16,8 +16,11 @@
  */
 package social.portal.webui.component.space;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
@@ -57,7 +60,12 @@ public class UISpaceSearch extends UIForm {
   private List<Space> spaceList = null;
   /** Selected character when search by alphabet */
   String selectedChar = null;
+  String spaceNameSearch = null;
   
+  public String getSpaceNameSearch() { return spaceNameSearch;}
+
+  public void setSpaceNameSearch(String spaceNameSearch) { this.spaceNameSearch = spaceNameSearch;}
+
   /**
    * Constructor to initialize form fields
    * @throws Exception
@@ -105,10 +113,28 @@ public class UISpaceSearch extends UIForm {
       spaceName = ((spaceName == null) || spaceName.equals(defaultSpaceName)) ? "" : spaceName;
       spaceName = (charSearch != null) ? charSearch : spaceName;
       spaceName = ((charSearch != null) && "All".equals(charSearch)) ? "" : spaceName;
+      
       if (charSearch != null) ((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(DEFAULT_SPACE_NAME_SEARCH);
       uiSpaceSearch.setSelectedChar(charSearch);
-      List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, (charSearch == null) ? false : true );
-      uiSpaceSearch.setSpaceList(spaceSearchResult);
+         
+      if (charSearch == null) {
+        spaceName = (spaceName.charAt(0)!='*') ? "*" + spaceName : spaceName;
+        spaceName = (spaceName.charAt(spaceName.length()-1)!='*') ? spaceName += "*" : spaceName;
+        spaceName = (spaceName.indexOf("*") >= 0) ? spaceName.replace("*", ".*") : spaceName;
+        spaceName = (spaceName.indexOf("%") >= 0) ? spaceName.replace("%", ".*") : spaceName;
+        try {
+          Pattern.compile(spaceName);
+          List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, false);
+          uiSpaceSearch.setSpaceList(spaceSearchResult);
+        } catch (PatternSyntaxException pse) {
+          uiSpaceSearch.setSpaceList(new ArrayList<Space>());
+        }
+      } else {
+        List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, true );
+        uiSpaceSearch.setSpaceList(spaceSearchResult);  
+      }
+      
+      uiSpaceSearch.setSpaceNameSearch(spaceName);
       
       Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
