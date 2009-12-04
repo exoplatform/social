@@ -25,18 +25,18 @@
 
   <modules>
 	<module>component/people</module>
-  <module>component/opensocial</module>
-  <module>extension</module>
+    <module>component/opensocial</module>
+    <module>extension</module>
 	<module>web/socialportal</module>
 	<module>web/resources</module>
-  <module>web/opensocial</module>
+    <module>web/opensocial</module>
 	<module>portlet/space</module>
-  <module>portlet/profile</module>
-  <module>component/space</module>
+    <module>portlet/profile</module>
+    <module>component/space</module>
 	<module>webui/social</module>
 	<module>application/rest</module>
-	<module>packaging</module>
 	<module>demo</module>
+	<module>packaging</module>
   </modules>
 
   <build>
