@@ -437,6 +437,8 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   			html.push('</a>');
   			html.push('<div class="Content">');
   				html.push('<div class="TitleItem" href="#">' + title + '</div>');
+				html.push('<div class="ActionContenButton" href="#"><span></span></div>');
+				html.push('<div style="clear: both; height: 0px;"><span></span></div>');
   				html.push('<div class="Content">' + body + '</div>');
   				html.push('<div class="NewsDate">' + prettyTime + '</div>');
   			if (statusUpdate.currentView === 'canvas') {

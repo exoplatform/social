@@ -237,6 +237,16 @@ img {border: none}
 	font-weight: bold;
 	color:#424242;
 	line-height: 24px;
+	float: left;
+}
+
+.ActivitiesContainer .ActionContenButton{
+	float: right;
+	height: 16px;
+	weight: 16px;
+	margin: 4px 4px 0px 0px;
+	cursor: pointer;
+	background: url('images/BlackBorderDownArrow.gif') no-repeat right top;
 }
 
 .ActivitiesContainer .Content{
