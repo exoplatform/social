@@ -242,8 +242,8 @@ img {border: none}
 
 .ActivitiesContainer .ActionContenButton{
 	float: right;
-	height: 16px;
-	weight: 16px;
+	height: 15px;
+	weight: 15px;
 	margin: 4px 4px 0px 0px;
 	cursor: pointer;
 	background: url('images/BlackBorderDownArrow.gif') no-repeat right top;
