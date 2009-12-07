@@ -80,18 +80,11 @@ img {border: none}
 	/*height: 550px;*/
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusComponentL{
-	background: url('images/MyStatusComponentL.gif') no-repeat left top;
-	padding-left:5px;
-}
-
-.ActivitiesComponent .ActivitiesContainer .MyStatusComponentR{
-	background: url('images/MyStatusComponentR.gif') no-repeat right top;
-	padding-right:5px;
-}
-.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM{
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponent{
 	background: #f0f0f0;
-	height: 65px;
+	padding: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusAvatarBG{
@@ -109,20 +102,58 @@ img {border: none}
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputL{
 	background: url('images/MyStatusInputL.gif') no-repeat left top;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputML{
+	background: url('images/MyStatusInputML.gif') no-repeat left 6px;
 	padding-left: 8px;
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputR{
-	background: url('images/MyStatusInputR.gif') no-repeat Right top;
-	padding-right: 2px;
+	border-right:1px solid #d7d7d7;
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputM{
 	background: white;
 	height: 25px;
+}
+
+
+
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputTL{
+	background: url('images/MyStatusInputTL.gif') no-repeat left top;
+	padding-left: 8px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputTR{
+	background: url('images/MyStatusInputTR.gif') no-repeat Right top;
+	padding-right: 2px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputTM{
+	background: white;
+	height: 2px;
 	border-top:1px solid #d7d7d7;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputBL{
+	background: url('images/MyStatusInputBL.gif') no-repeat left bottom;
+	padding-left: 8px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputBR{
+	background: url('images/MyStatusInputBR.gif') no-repeat Right bottom;
+	padding-right: 2px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .MyStatusInputBM{
+	background: white;
+	height: 2px;
 	border-bottom:1px solid #d7d7d7;
 }
+
+
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .Textbox{
 	border: none;
@@ -243,7 +274,7 @@ img {border: none}
 .ActivitiesContainer .ActionContenButton{
 	float: right;
 	height: 15px;
-	weight: 15px;
+	width: 15px;
 	margin: 4px 4px 0px 0px;
 	cursor: pointer;
 	background: url('images/BlackBorderDownArrow.gif') no-repeat right top;

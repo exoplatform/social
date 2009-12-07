@@ -438,7 +438,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   			html.push('<div class="Content">');
   				html.push('<div class="TitleItem" href="#">' + title + '</div>');
 				html.push('<div class="ActionContenButton" href="#"><span></span></div>');
-				html.push('<div style="position: absolute; display: block; min-width: 98px; top: 30px; right: 40px; width: 129px; visibility: hidden;" class="MenuItemContainer" id="#">');
+				html.push('<div style="position: absolute; display: block; min-width: 98px; top: 150px; right: -80px; width: 129px; visibility: hidden;" class="MenuItemContainer" id="#">');
 					html.push('<div class="SubBlock">');
 						html.push('<div class="MenuItem">');
 							html.push('<a class="ItemIcon DeleteIcon GroupIcon" title="" href="">Delete</a>');
