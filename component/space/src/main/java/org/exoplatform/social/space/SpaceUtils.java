@@ -16,6 +16,13 @@
  */
 package org.exoplatform.social.space;
 
+import org.gatein.common.util.Tools;
+import org.gatein.pc.api.Portlet;
+import org.gatein.pc.api.PortletInvoker;
+import org.gatein.pc.api.info.MetaInfo;
+import org.gatein.pc.api.info.PortletInfo;
+import org.gatein.common.i18n.LocalizedString;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +78,7 @@ public class SpaceUtils {
   static private ExoContainer exoContainer;
   static private SpaceService spaceService;
   static private UserPortalConfigService userPortalConfigService;
-  
+  private static final String REMOTE_CATEGORY_NAME = "remote";
   /**
    * Create a new group from an existing group.
    * This new group will get all data from existing group except for group name
@@ -167,6 +175,95 @@ public class SpaceUtils {
     }
     return appStore;
   }
+  
+  /**
+   * Get application from portal container.
+   * 
+   * @param appId
+   * @return An application has name match input appId.
+   * @throws Exception
+   */
+  static public Application getAppFromPortalContainer(String appId) throws Exception {
+    if (exoContainer == null) {
+      exoContainer = ExoContainerContext.getCurrentContainer();
+    }
+    
+    PortletInvoker portletInvoker = (PortletInvoker)exoContainer.getComponentInstance(PortletInvoker.class);
+    Set<Portlet> portlets = portletInvoker.getPortlets();
+    
+    ApplicationRegistryService appRegistryService = (ApplicationRegistryService) exoContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+    String remoteUser = Util.getPortalRequestContext().getRemoteUser();
+    if (remoteUser == null || remoteUser.equals("")) return null;
+    
+    for (Portlet portlet : portlets) {
+       PortletInfo info = portlet.getInfo();
+       String portletApplicationName = info.getApplicationName();
+       String portletName = info.getName();
+
+       portletApplicationName = portletApplicationName.replace('/', '_');
+       portletName = portletName.replace('/', '_');
+       
+       if (portletName.equals(appId)) {
+         LocalizedString keywordsLS = info.getMeta().getMetaValue(MetaInfo.KEYWORDS);
+  
+         String[] categoryNames = null;
+         if (keywordsLS != null) {
+            String keywords = keywordsLS.getDefaultString();
+            if (keywords != null && keywords.length() != 0) {
+               categoryNames = keywords.split(",");
+            }
+         }
+  
+         if (categoryNames == null || categoryNames.length == 0) {
+            categoryNames = new String[]{portletApplicationName};
+         }
+  
+         if (portlet.isRemote()) {
+            categoryNames = Tools.appendTo(categoryNames, REMOTE_CATEGORY_NAME);
+         }
+  
+         for (String categoryName : categoryNames) {
+            ApplicationCategory category;
+  
+            categoryName = categoryName.trim();
+  
+            category = appRegistryService.getApplicationCategory(categoryName);
+            if (category == null) {
+               category = new ApplicationCategory();
+               category.setName(categoryName);
+               category.setDisplayName(categoryName);
+            }
+  
+            Application app = appRegistryService.getApplication(categoryName + "/" + portletName);
+            if (app != null) return app;
+            LocalizedString descriptionLS = portlet.getInfo().getMeta().getMetaValue(MetaInfo.DESCRIPTION);
+            LocalizedString displayNameLS = portlet.getInfo().getMeta().getMetaValue(MetaInfo.DISPLAY_NAME);
+  
+            getLocalizedStringValue(descriptionLS, portletName);
+  
+            app = new Application();
+            app.setApplicationName(portletName);
+            app.setApplicationGroup(portletApplicationName);
+            app.setCategoryName(categoryName);
+  
+            String applicationType = org.exoplatform.web.application.Application.EXO_PORTLET_TYPE;
+            if (portlet.isRemote()) {
+               applicationType = org.exoplatform.web.application.Application.WSRP_TYPE;
+            }
+            app.setApplicationType(applicationType);
+  
+            app.setDisplayName(getLocalizedStringValue(displayNameLS, portletName));
+            app.setDescription(getLocalizedStringValue(descriptionLS, portletName));
+            app.setUri(portlet.getContext().getId());
+            
+            return app;
+         }
+       }
+    }
+    
+    return null;
+  }
+
   /**
    * PortletCategoryComparator
    *
@@ -728,5 +825,17 @@ public class SpaceUtils {
       return true;
     }
     return false;
+  }
+  
+  private static String getLocalizedStringValue(LocalizedString localizedString, String portletName)
+  {
+     if (localizedString == null || localizedString.getDefaultString() == null)
+     {
+        return portletName;
+     }
+     else
+     {
+        return localizedString.getDefaultString();
+     }
   }
 }

@@ -278,7 +278,10 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
           appStoreCache = SpaceUtils.getAppStore(space);
           app = getApplication(appStoreCache, appId);
           if (app == null) {
-            throw new Exception("app is null!");
+            app = SpaceUtils.getAppFromPortalContainer(appId);
+            if (app == null) {
+              throw new Exception("app is null!");
+            }
           }
         }
         appCache.add(app);
