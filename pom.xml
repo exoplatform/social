@@ -237,7 +237,7 @@
       <org.exoplatform.ws.version>2.1.0-Beta02</org.exoplatform.ws.version>
       <org.exoplatform.jcr.version>1.12.0-Beta02</org.exoplatform.jcr.version>
       <org.jibx.version>1.2.1</org.jibx.version>
-      <org.shindig.version>r790473-p1</org.shindig.version>
+      <org.shindig.version>SNAPSHOT-r790473</org.shindig.version>
       <org.gatein.common.version>2.0.0-Beta03</org.gatein.common.version>
       <org.gatein.wci.version>2.0.0-Beta02</org.gatein.wci.version>
       <org.gatein.pc.version>2.1.0-Beta02</org.gatein.pc.version>
