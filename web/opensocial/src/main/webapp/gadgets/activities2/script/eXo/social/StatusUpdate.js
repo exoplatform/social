@@ -312,6 +312,34 @@ eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
 
 
 /**
+ * set onclick handler for deleting
+ */
+eXo.social.StatusUpdate.prototype.setCommentActivity = function(activityId) {
+  var Util = eXo.social.Util;
+  var Locale = eXo.social.Locale;
+  var el = Util.getElementById('Comment'+activityId);
+  var statusUpdate = this;
+  el.onclick = function() {
+	statusUpdate.commentActivity(activityId);
+  }
+}
+
+/**
+ * delete activity by id
+ */
+eXo.social.StatusUpdate.prototype.commentActivity = function(activityId) {
+	//alert("tungcnw");
+	/*var activity = opensocial.newActivity({ 'title' : this.viewer.getDisplayName(), 'body' : 'reply to this activity', "EXTERNAL_ID" : activityId});
+	var statusUpdate = this;
+	opensocial.requestCreateActivity(activity, "HIGH", function() {
+		statusUpdate.refresh();}
+	);
+	restore();
+	return;*/
+	
+}
+
+/**
  * gets new activities of owner's
  * informs user about new activities to display
  */
@@ -452,7 +480,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   				html.push('<div class="Content">' + body + '</div>');
   				html.push('<div class="NewsDate">' + prettyTime + '</div>');
   			if (statusUpdate.currentView === 'canvas') {
-  				html.push('<a href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
+  				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
   				if (statusUpdate.owner.getId() === statusUpdate.viewer.getId()) {
   	  			  html.push('<span>|</span><a id="Delete' + activityId + '" href="#delete" style="color: #058ee6;">' + Locale.getMsg('delete') + '</a>');
   	  			}
@@ -593,6 +621,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  		if (statusUpdate.currentView === 'canvas') {
 	  			Like.getLikeIds(activityId, Like.displayLike);
 	  			statusUpdate.setDeleteActivity(activityId);
+				statusUpdate.setCommentActivity(activityId);
 	  		}
 	  	}
 	 }
