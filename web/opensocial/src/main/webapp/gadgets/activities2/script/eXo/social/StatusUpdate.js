@@ -83,7 +83,7 @@ eXo.social.StatusUpdate.main = function() {
 	//set ref
 	statusUpdate.linkShare = linkShare;
 	eXo.social.Like.ref.statusUpdate = statusUpdate;
-	//linkShare.init();
+	linkShare.init();
 }
 
 /**
@@ -464,6 +464,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   				html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
   			html.push('</a>');
   			html.push('<div class="Content">');
+  			html.push('<div class="Titlecontent">');
   				html.push('<div class="TitleItem" href="#">' + title + '</div>');
 				html.push('<div class="ActionContenButton" href="#"><span></span></div>');
 				html.push('<div style="position: absolute; display: block; min-width: 98px; top: 150px; right: -80px; width: 129px; visibility: hidden;" class="MenuItemContainer" id="#">');
@@ -477,6 +478,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 					html.push('</div>');
 				html.push('</div>');
 				html.push('<div style="clear: both; height: 0px;"><span></span></div>');
+				html.push('</div>');
   				html.push('<div class="Content">' + body + '</div>');
   				html.push('<div class="NewsDate">' + prettyTime + '</div>');
   			if (statusUpdate.currentView === 'canvas') {
