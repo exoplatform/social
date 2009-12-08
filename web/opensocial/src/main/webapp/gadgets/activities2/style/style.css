@@ -285,6 +285,29 @@ img {border: none}
 	background: url('images/BlackBorderDownArrow.gif') no-repeat right top;
 }
 
+.ActivitiesContainer .MenuItemContainer {
+	border:1px solid #9E9FA3;
+}
+
+.ActivitiesContainer .MenuItem {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:#F5F9FA none repeat scroll 0 0;
+	height:28px;
+	line-height:28px;
+	opacity:0.9;
+	width:100%;
+}
+
+.ActivitiesContainer .MenuItem a {
+	padding-right:15px;
+}
+
+.ActivitiesContainer .MenuItem .DefaultPageIcon {
+	background-position:10px center;
+}
+
 .ActivitiesContainer .Content{
 	color:#424242;
 	line-height: 18px;
