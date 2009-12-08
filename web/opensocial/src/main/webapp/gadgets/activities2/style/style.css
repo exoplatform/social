@@ -98,6 +98,7 @@ img {border: none}
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusInput{
 	float: left;
+	width: 640px;
 }
 
 
