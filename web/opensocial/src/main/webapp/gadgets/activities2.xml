@@ -49,12 +49,10 @@
   				<div id="AppTitle" class="ActivitiesTitleBarM">__MSG_title__</div>
   			</div>
   			<div class="ActivitiesContainer">
-
   				<div class="MyStatusComponent">
 						<a href="#OwnerAvatar" class="MyStatusAvatarBG">
 							<img id="ImgOwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
 						</a>
-						<div style="height: 8px"><span></span></div>
 						<div id="UIComposer" class="MyStatusInput">
 							<div class="MyStatusInputTL">
 								<div class="MyStatusInputTR">
@@ -65,23 +63,23 @@
 								<div class="MyStatusInputML">
 									<div class="MyStatusInputR">
 										<div class="MyStatusInputM">
-											<div style="height: 2px;"><span></span></div>
-											<input type="text" id="UIComposerTextArea" class="TextBox" value="__MSG_what_are_you_doing__" />
-											<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
-										</div>
+  											<div style="height: 2px;"><span></span></div>
+  											<div contenteditable="true" id="UIComposerTextArea" class="TextBox">__MSG_what_are_you_doing__</div>
+  									</div>
 	 									<div id="UIComposerExtension" class="ExtensionInput">
 	 										<!-- dynamic loading -->
 		 								</div>
 		 							</div>
 								</div>
-							</div>
+							</div>	
 							<div class="MyStatusInputBL">
 								<div class="MyStatusInputBR">
 									<div class="MyStatusInputBM"><span></span></div>
 								</div>
 							</div>
-						</div>
-  					
+						</div>	
+						<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
+  					<div style="clear: both;height: 0px;"><span>&nbsp</span></div>
   				</div>
   				<div class="ATitleBarL">
   					<div class="ATitleBarR">
@@ -132,29 +130,37 @@
   				<div id="AppTitle" class="ActivitiesTitleBarM">__MSG_title__</div>
   			</div>
   			<div class="ActivitiesContainer">
-  				<div class="MyStatusComponentL">
-  					<div class="MyStatusComponentR">
-  						<div id="UIMyStatusInput" class="MyStatusComponentM">
-  							<a href="#OwnerAvatar" class="MyStatusAvatarBG">
-  								<img id="ImgOwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
-  							</a>
-  							<div style="height: 8px"><span></span></div>
-  							<div id="UIComposer" class="MyStatusInput">
-  								<div class="MyStatusInputL">
-  									<div class="MyStatusInputR">
-  										<div class="MyStatusInputM">
+  				<div class="MyStatusComponent">
+						<a href="#OwnerAvatar" class="MyStatusAvatarBG">
+							<img id="ImgOwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+						</a>
+						<div id="UIComposer" class="MyStatusInput">
+							<div class="MyStatusInputTL">
+								<div class="MyStatusInputTR">
+									<div class="MyStatusInputTM"><span></span></div>
+								</div>
+							</div>
+							<div class="MyStatusInputL">
+								<div class="MyStatusInputML">
+									<div class="MyStatusInputR">
+										<div class="MyStatusInputM">
   											<div style="height: 2px;"><span></span></div>
   											<div contenteditable="true" id="UIComposerTextArea" class="TextBox">__MSG_what_are_you_doing__</div>
-  											<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
-  										</div>
-	  									<div id="UIComposerExtension" class="ExtensionInput">
-	  										<!-- dynamic loading -->
-	  									</div>
-	  								</div>
-  								</div>
-  							</div>
-  						</div>
-  					</div>
+  									</div>
+	 									<div id="UIComposerExtension" class="ExtensionInput">
+	 										<!-- dynamic loading -->
+		 								</div>
+		 							</div>
+								</div>
+							</div>	
+							<div class="MyStatusInputBL">
+								<div class="MyStatusInputBR">
+									<div class="MyStatusInputBM"><span></span></div>
+								</div>
+							</div>
+						</div>	
+						<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
+  					<div style="clear: both;height: 0px;"><span>&nbsp</span></div>
   				</div>
   				<div class="ATitleBarL">
   					<div class="ATitleBarR">
@@ -167,7 +173,7 @@
   					<!-- the root to append owner activities block -->
   				</div>
   				<div id="UIOwnerMore" class="DisplayNone FloatRight"><a href="#ownerMore">__MSG_more__</a></div>
-  				<div class="ClearRight"><span>&nbsp</span></div>
+  				
   				<div id="UIFriendsActivities">
 	  				<div class="ATitleBarL">
 	  					<div class="ATitleBarR">

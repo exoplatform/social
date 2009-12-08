@@ -4,11 +4,18 @@
  * Overiding some styles from style.css
  */
  
- .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .Textbox{
-	width: 190px;
-	height: 20px;
+ .ActivitiesComponent .ActivitiesContainer .Textbox{
+	width: 160px;
+	min-height: 20px;
+	max-height: 50px;
+	overflow-x: hidden;
+	overflow-y: auto;  
 }
  
- .ActivitiesComponent .ActivitiesContainer .MyStatusComponentM .IconAdd{
-	padding: 10px 15px;
+ .ActivitiesComponent .ActivitiesContainer .IconAdd{
+	background: url('images/IconAdd.gif') no-repeat Right center;
+	float: right;
+	width: 30px;
+	height: 22px;
+	display: block;
 }
