@@ -83,7 +83,7 @@ eXo.social.StatusUpdate.main = function() {
 	//set ref
 	statusUpdate.linkShare = linkShare;
 	eXo.social.Like.ref.statusUpdate = statusUpdate;
-	linkShare.init();
+	//linkShare.init();
 }
 
 /**
