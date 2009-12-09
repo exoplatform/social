@@ -278,12 +278,17 @@ img {border: none}
 }
 
 .ActivitiesContainer .ActionContenButton{
-	float: right;
 	height: 15px;
 	width: 15px;
 	margin: 4px 4px 0px 0px;
 	cursor: pointer;
 	background: url('images/BlackBorderDownArrow.gif') no-repeat right top;
+}
+
+.ActivitiesContainer .ActionContent{
+	float: right;
+  position: relative;
+  width: 20px;
 }
 
 .ActivitiesContainer .MenuItemContainer {
@@ -302,7 +307,12 @@ img {border: none}
 }
 
 .ActivitiesContainer .MenuItem a {
-	padding-right:15px;
+	padding:0px 20px;
+  color: black;
+}
+
+.ActivitiesContainer .MenuItem a:hover {
+  color: #058ee6;
 }
 
 .ActivitiesContainer .MenuItem .DefaultPageIcon {

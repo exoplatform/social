@@ -63,7 +63,6 @@ eXo.social.Util.require = function(clazz) {
  	var parent = parent || document;
  	var els = parent.getElementsByTagName(tagName);
  	if (!els) debug.info("can not find elements with tagName: " + tagName);
- 	debug.groupEnd();
  	return els;
  }
  
