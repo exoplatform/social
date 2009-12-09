@@ -82,7 +82,7 @@ img {border: none}
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusComponent{
 	background: #f0f0f0;
-	padding: 5px;
+	padding: 5px 15px 5px 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 }
@@ -91,14 +91,12 @@ img {border: none}
 	background: url('images/MyStatusAvatarBG.gif') no-repeat left top;
 	width: 27px; height: 27px;
 	padding: 2px;
-	margin: 8px;
-	float: left;
+	margin: 5px 0 5px 12px;
 	display: block;
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusInput{
-	float: left;
-	width: 640px;
+	width: 100%;
 }
 
 
@@ -107,7 +105,7 @@ img {border: none}
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusInputML{
-	background: url('images/MyStatusInputML.gif') no-repeat left 10px;
+	background: url('images/MyStatusInputML.gif') no-repeat left 2px;
 	padding-left: 8px;
 }
 
@@ -117,7 +115,9 @@ img {border: none}
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusInputM{
 	background: white;
-	min-height: 25px;
+	min-height: 20px;
+	height: auto !important;
+	height: 20px;
 }
 
 
@@ -160,17 +160,16 @@ img {border: none}
 .ActivitiesComponent .ActivitiesContainer .Textbox{
 	border: none;
 	border-width: 0px;
-	width: 634px;
-	min-height: 18px;
+	min-height: 20px;
 	color: #777777;
 	max-height:100px;
 	overflow-x:hidden;
 	overflow-y:auto;
+	font-size: 11px;
 }
 
 .ActivitiesComponent .ActivitiesContainer .IconAdd{
 	background: url('images/IconAdd.gif') no-repeat Right center;
-	float: right;
 	width: 30px;
 	height: 22px;
 	display: block;

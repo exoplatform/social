@@ -41,7 +41,7 @@ eXo.social.UIComposer.prototype.focusInput = function(el) {
 	}
 	if(el.innerHTML === this.DEFAULT_INPUT) {
 		el.style.color="#000000";
-		el.style.minHeight="35px";
+		el.style.minHeight="25px";
 		el.innerHTML = "";
 		el.appendChild(document.createElement('br'));
 	}
@@ -81,6 +81,23 @@ eXo.social.UIComposer.prototype.blurInput = function(el) {
 	}
 }
 
+/**
+ * When element is pressed. If keyCode is Enter, Delete or Back Space then adjust height of gadget.
+ */
+eXo.social.UIComposer.prototype.onKeyPress = function(evt) {
+	var keyNum;
+	var ENTER_KEY_NUM = 13;
+	var BACK_SPACE_KEY_NUM = 8;
+	var DELETE_KEY_NUM = 46;
+	if(window.event) {// IE
+  		keyNum = evt.keyCode;
+  	} else if (evt.which) { // Netscape/Firefox/Opera
+  		keyNum = evt.which;
+  	}
+  	if ((ENTER_KEY_NUM == keyNum) || (BACK_SPACE_KEY_NUM == keyNum) || (DELETE_KEY_NUM == keyNum)){
+  		gadgets.window.adjustHeight();
+  	}
+}
 /**
  *  
  */

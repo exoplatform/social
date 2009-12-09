@@ -113,6 +113,9 @@ eXo.social.StatusUpdate.prototype.init = function() {
 	Util.addEventListener(uiComposerTextArea, 'blur', function() {
 		uiComposer.blurInput(this);
 	}, false);
+	Util.addEventListener(uiComposerTextArea, 'keypress', function(evt) {
+		uiComposer.onKeyPress(evt);
+	}, false);
 	var uiComposerShareButton = Util.getElementById(config.ui.UI_COMPOSER_SHARE_BUTTON);
 	if (!uiComposerShareButton) {
 		debug.error('uiComposerShareButton is null');
@@ -816,6 +819,29 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 		statusUpdate.updateOwnerActivities();}
 	);
 	restore();
+}
+
+eXo.social.StatusUpdate.sendPrivateMessage = function(userId) {
+//	var sendMsg = this.sendPrivateMsg;
+	var messageTitle = 'msg title';
+	var messageBody = 'msg body';
+	var id = opensocial.DataRequest.PersonId.OWNER;
+	var recipient = [];
+	recipient[0] = userId;
+	var params = [];
+	params[opensocial.Message.Field.TITLE] = messageTitle;
+	params[opensocial.Message.Field.TYPE] = opensocial.Message.Type.EMAIL;
+	var message = opensocial.newMessage(messageBody, params);
+	
+	opensocial.requestSendMessage(recipient, message);
+
+//	function callback(data) {
+//	  if (data.hadError()) {
+//	    alert("There was a problem:" + data.getErrorCode());
+//	  } else {
+//	    output("Ok");
+//	  }
+//	};
 }
 
 gadgets.util.registerOnLoadHandler(eXo.social.StatusUpdate.main);
