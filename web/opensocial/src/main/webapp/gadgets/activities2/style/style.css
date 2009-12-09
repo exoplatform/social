@@ -87,6 +87,15 @@ img {border: none}
 	-webkit-border-radius: 5px;
 }
 
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponent table {
+	table-layout: fixed;
+	border: 0px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponent table td {
+	vertical-align: top;
+}
+
 .ActivitiesComponent .ActivitiesContainer .MyStatusAvatarBG{
 	background: url('images/MyStatusAvatarBG.gif') no-repeat left top;
 	width: 27px; height: 27px;

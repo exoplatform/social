@@ -50,15 +50,15 @@
   			</div>
   			<div class="ActivitiesContainer">
   				<div class="MyStatusComponent">
-  					<table style="table-layout: fixed;" border='0'>
+  					<table>
   						<body>
   							<tr>
-  								<td width='45' style="vertical-align: top;">
+  								<td width='45'>
   									<a href="#OwnerAvatar" class="MyStatusAvatarBG">
 											<img id="ImgOwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
 										</a>
 								</td>
-  								<td width='100%' style="vertical-align: top;">
+  								<td width='100%'>
   									<div id="UIComposer" class="MyStatusInput">
 											<div class="MyStatusInputTL">
 												<div class="MyStatusInputTR">
@@ -85,7 +85,7 @@
 											</div>
 										</div>	
   								</td>
-  								<td width='30' style="vertical-align: top;">
+  								<td width='30'>
   									<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
   								</td>
   							</tr>
@@ -127,9 +127,6 @@
   <Content type="html" view="canvas">
   <![CDATA[
   	<link rel="stylesheet" type="text/css" href="activities2/style/style.css" />
-  	<!--[if gt IE 5]>
-		<link rel="stylesheet" type="text/css" href="activities2/style/style-ie.css" />
-		<![endif]-->
   	<link rel="stylesheet" type="text/css" href="activities2/style/canvas.css" />
   	<script type="text/javascript" src="activities2/script/debug.js"></script>
   	<script type="text/javascript" src="activities2/script/ie-patch.js"></script>
@@ -146,15 +143,15 @@
   			</div>
   			<div class="ActivitiesContainer">
   				<div class="MyStatusComponent">
-  					<table style="table-layout: fixed;" border='0'>
+  					<table>
   						<body>
   							<tr>
-  								<td width='45' style="vertical-align: top;">
+  								<td width='45'>
   									<a href="#OwnerAvatar" class="MyStatusAvatarBG">
 											<img id="ImgOwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
 										</a>
-								</td>
-  								<td width='100%' style="vertical-align: top;">
+								  </td>
+  								<td width='100%'>
   									<div id="UIComposer" class="MyStatusInput">
 											<div class="MyStatusInputTL">
 												<div class="MyStatusInputTR">
@@ -181,7 +178,7 @@
 											</div>
 										</div>	
   								</td>
-  								<td width='30' style="vertical-align: top;">
+  								<td width='30'>
   									<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
   								</td>
   							</tr>
