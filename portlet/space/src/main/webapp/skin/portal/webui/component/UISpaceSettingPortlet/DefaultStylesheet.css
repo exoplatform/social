@@ -668,11 +668,13 @@
 .UIAvatarUploader .UIAction .ButtonLeft {
 	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
 	padding-left: 4px;
+	height: 21px;
 }
 
 .UIAvatarUploader .UIAction .ButtonRight {
 	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
 	padding-right: 4px;
+	height: 21px;
 }
 
 .UIAvatarUploader .UIAction .ButtonMiddle {
