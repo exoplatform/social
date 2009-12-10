@@ -37,6 +37,10 @@ a:link, a:hover, a:active, a:visited  {
 	display: none;
 }
 
+.DisplayNone a:link, a:hover, a:active, a:visited {
+	float: right;
+}
+
 body {
 	font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
 	font-size:11px;
