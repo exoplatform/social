@@ -17,7 +17,6 @@
 package social.portal.webui.component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +101,12 @@ public class UISpaceApplication extends UIForm {
           }
         }
       }
+      // 
+      if (lists.size() == 0) {
+        lists.addAll(SpaceUtils.getAppList());
+      }
     }
+    
     PageList pageList = new ObjectPageList(lists,3);
     iterator_.setPageList(pageList);
   }

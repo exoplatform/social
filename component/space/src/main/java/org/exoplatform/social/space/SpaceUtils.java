@@ -77,6 +77,7 @@ public class SpaceUtils {
   static public final String  MANAGER     = "manager";
   static private ExoContainer exoContainer;
   static private SpaceService spaceService;
+  static private List<Application> appList = new ArrayList<Application>();
   static private UserPortalConfigService userPortalConfigService;
   private static final String REMOTE_CATEGORY_NAME = "remote";
   /**
@@ -255,7 +256,7 @@ public class SpaceUtils {
             app.setDisplayName(getLocalizedStringValue(displayNameLS, portletName));
             app.setDescription(getLocalizedStringValue(descriptionLS, portletName));
             app.setUri(portlet.getContext().getId());
-            
+            appList.add(app);
             return app;
          }
        }
@@ -264,6 +265,12 @@ public class SpaceUtils {
     return null;
   }
 
+  /**
+   * Get list of application get from portal container.
+   */
+  static public List<Application> getAppList() {
+    return appList;
+  }
   /**
    * PortletCategoryComparator
    *
