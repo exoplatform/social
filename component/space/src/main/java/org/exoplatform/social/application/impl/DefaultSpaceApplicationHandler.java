@@ -324,7 +324,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       if (isRoot != true) {
         newName += pageName;
       }
-      page = configService.renewPage(SPACE_TEMPLATE_PAGE_ID, newName, PortalConfig.GROUP_TYPE, space.getGroupId());
+      page = configService.renewPage(SPACE_TEMPLATE_PAGE_ID, newName.trim(), PortalConfig.GROUP_TYPE, space.getGroupId());
     } catch (Exception e) {
       e.printStackTrace();
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
