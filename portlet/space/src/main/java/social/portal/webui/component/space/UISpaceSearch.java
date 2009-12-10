@@ -110,7 +110,7 @@ public class UISpaceSearch extends UIForm {
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceName = resApp.getString(uiSpaceSearch.getId() + ".label.SpaceName");
       String spaceName = ((UIFormStringInput)uiSpaceSearch.getChild(UIFormStringInput.class)).getValue();
-      spaceName = ((spaceName == null) || spaceName.equals(defaultSpaceName)) ? "" : spaceName;
+      spaceName = ((spaceName == null) || spaceName.equals(defaultSpaceName)) ? "*" : spaceName;
       spaceName = (charSearch != null) ? charSearch : spaceName;
       spaceName = ((charSearch != null) && "All".equals(charSearch)) ? "" : spaceName;
       
