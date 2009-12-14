@@ -23,7 +23,6 @@ def uicomponentId = uicomponent.id;
 
 def rcontext = _ctx.getRequestContext() ;
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
-jsmanager.importJavascript('eXo.social.space.AutoSuggestControl','/space/javascript');
 jsmanager.importJavascript('eXo.social.profile.UIProfileUserSearch', '/profile/javascript');
 jsmanager.addCustomizedOnLoadScript('eXo.social.profile.UIProfileUserSearch.onLoad("' + uicomponentId + '");');
 	
