@@ -16,17 +16,11 @@
  */
 
 function UIProfileUserSearch() {
-   this.searchId = null;
-   this.positionId = null;
-   this.professionalId = null;
-   this.genderId = null;
-   this.filterId = null;
-   this.defaultUserContact = "";
-   this.defaultPos = "";
-   this.defaultComp = "";
-   this.defaultProf = "";
-   this.defaultGender = "";
    this.searchAll = false;
+   this.nameTextObj = null;
+   this.posTextObj = null;
+   this.profTextObj = null;
+   this.genderSelObj = null;
 };
 
 UIProfileUserSearch.prototype.onLoad = function(uicomponentId) {
@@ -37,79 +31,101 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId) {
 	var profEl = DOMUtil.findDescendantById(profileSearch, 'professional');
 	var filterBlock = DOMUtil.findDescendantById(profileSearch, 'Filter');
 	var genderEl = DOMUtil.findDescendantsByTagName(profileSearch, 'select');
+	// Get default value
 	var defaultUserContact = document.getElementById('defaultUserContact').value;
 	var defaultPos = document.getElementById('defaultPos').value;
 	var defaultProf = document.getElementById('defaultProf').value;
 	var defaultGender = document.getElementById('defaultGender').value;
+	// Default value set in component
 	var defaultNameVal = "name";
 	var defaultPosVal = "position";
 	var defaultProfVal = "professional";
 	var defaultGenderVal = "Gender";
+	
+	this.nameTextObj = searchEl;
+	this.posTextObj = posEl;
+	this.profTextObj = profEl;
+	this.genderSelObj = genderEl;
 	if (searchEl.value == defaultNameVal) searchEl.value = defaultUserContact;
 	(searchEl.value != defaultUserContact) ? (searchEl.style.color = '#000000') : (searchEl.style.color = '#C7C7C7');
 	
 	posEl.value = defaultPos;
 	profEl.value = defaultProf;
-	genderEl[0].value=defaultGender;
+	genderEl[0].value= defaultGender;
+	
+	this.initTextBox();
 };
 
-/**
- *	Change status some component when it is activated.
- *	
- *	@var filter {Object} Object is activated.
- *	@return void						
- */
-
-UIProfileUserSearch.prototype.activeFilterText = function(elementId, componentId) {
+UIProfileUserSearch.prototype.initTextBox = function() {
+	var nameEl = this.nameTextObj;
+	var posEl = this.posTextObj;
+	var profEl = this.profTextObj;
+	var genderEl = this.genderSelObj;
 	var DOMUtil = eXo.core.DOMUtil;
-	var profileSearch = document.getElementById(componentId);
-	var filter = DOMUtil.findDescendantById(profileSearch, elementId);
-	//if (filter == null) filter = DOMUtil.findDescendantsByTagName(profileSearch, 'select');
-	this.createId(componentId);
-	this.setDefaultValue();
-	if (filter != null) {
-		filter.style.color="#000000";
-		if (elementId == this.searchId) { 
-			defaultValue = this.defaultUserContact;
-		} else if (elementId == this.positionId) {
-			defaultValue = this.defaultPos;
-		} else {
-			defaultValue = this.defaultProf;
-		}
-		
-		if (filter.value == defaultValue) {
-			filter.value='';
+	var UIForm = eXo.webui.UIForm;
+	var searchId = 'Search';
+	var positionId = 'position';
+	var professionalId = 'professional';
+	var genderId = 'gender';
+	var filterId = 'Filter';
+	var defaultUserContact = document.getElementById('defaultUserContact').value;
+	var defaultPos = document.getElementById('defaultPos').value;
+	var defaultProf = document.getElementById('defaultProf').value;
+	var defaultGender = document.getElementById('defaultGender').value;
+	
+	nameEl.onfocus = posEl.onfocus = profEl.onfocus = function(event) {
+		var e = event || window.event;
+		var filter = e.srcElement || e.target;
+		var elementId = filter.id;
+		var defaultValue = '';
+		if (filter != null) {
+			filter.style.color="#000000";
+			if (elementId === searchId) { 
+				defaultValue = defaultUserContact;
+			} else if (elementId === positionId) {
+				defaultValue = defaultPos;
+			} else {
+				defaultValue = defaultProf;
+			}
+			if (filter.value == defaultValue) {
+				filter.value='';
+			}
 		}
 	}
-}
-
-/**
- *	Change status some component when it is blurred.
- *	
- *	@var filter {Object} Object is on blurred.
- *	@return void						
- */
-UIProfileUserSearch.prototype.onBlurFilterText = function(elementId, componentId) {
-	var DOMUtil = eXo.core.DOMUtil;
-	var profileSearch = document.getElementById(componentId);
-	var filter = DOMUtil.findDescendantById(profileSearch, elementId);
-	this.createId(componentId);
-	this.setDefaultValue();
-	if (filter != null) {
-		if (filter.id == this.searchId) { 
-			defaultValue = this.defaultUserContact;
-		} else if (filter.id == this.positionId) {
-			defaultValue = this.defaultPos;
-		} else {
-			defaultValue = this.defaultProf;
-		}
+	
+	nameEl.onblur = posEl.onblur = profEl.onblur = function(event) {
+		var e = event || window.event;
+		var filter = e.srcElement || e.target;
+		var elementId = filter.id;
 		
-		if (filter.value.trim() == '') {
-			filter.style.color="#C7C7C7";
-			filter.value=defaultValue;
+		if (filter != null) {
+			if (filter.id == searchId) { 
+				defaultValue = defaultUserContact;
+			} else if (filter.id == positionId) {
+				defaultValue = defaultPos;
+			} else {
+				defaultValue = defaultProf;
+			}
+			
+			if (filter.value.trim() == '') {
+				filter.style.color="#C7C7C7";
+				filter.value=defaultValue;
+			}
+			
+			if (filter.value.trim() == defaultGender) filter.style.color="#C7C7C7";
 		}
-		
-		if (filter.value.trim() == this.defaultGender) filter.style.color="#C7C7C7";
+	}
+	
+	// Event when enter is pressed.
+	nameEl.onkeydown = posEl.onkeydown = profEl.onkeydown = genderEl.onkeydown = function(event) {
+		var e = event || window.event;
+		var textBox = e.srcElement || e.target;
+		var keynum = e.keyCode || e.which;  
+		var searchForm = DOMUtil.findAncestorByClass(textBox, 'UIForm');
+		  
+		if(keynum == 13) {
+			if (searchForm != null ) UIForm.submitForm(searchForm.id, 'Search', true);
+		}	
 	}
 }
 
@@ -128,55 +144,14 @@ UIProfileUserSearch.prototype.toggleFilter = function(newLabel, filterBlockId, e
 	var element = document.getElementById(elementId);
 	
 	if (filter.style.display == 'none') {
-		currentEl.innerHTML="";
-		element.innerHTML=newLabel;
+		currentEl.innerHTML = "";
+		element.innerHTML = newLabel;
 		filter.style.display = 'block';
     } else {
-    	currentEl.innerHTML="";
-    	element.innerHTML=newLabel;
+    	currentEl.innerHTML = "";
+    	element.innerHTML = newLabel;
     	filter.style.display = 'none';
     }
-};
-
-/**
- *	Call function when Enter Key is pressed in search text box.
- *	
- *	@var event {Object} Event.
- *	@return void						
- */
-UIProfileUserSearch.prototype.setEnterKey = function(event, elementInputId) {
-	var e = event || window.event;
-	var elementInput = e.srcElement || e.target;
-	var keynum = e.keyCode || e.which;  
-	var element = document.getElementById(elementInputId);
-	var DOMUtil = eXo.core.DOMUtil;
-	var UIForm = eXo.webui.UIForm;
-	var searchEl = DOMUtil.findAncestorByClass(element, 'UIForm');
-	  
-	if(keynum == 13) {
-		if (searchEl != null ) UIForm.submitForm(searchEl.id, 'Search', true);
-	}							
-};
-
-UIProfileUserSearch.prototype.setDefaultValue = function() {
-	this.defaultUserContact = document.getElementById('defaultUserContact').value;
-	this.defaultPos = document.getElementById('defaultPos').value;
-	this.defaultProf = document.getElementById('defaultProf').value;
-	this.defaultGender = document.getElementById('defaultGender').value;
-}
-
-/**
- *	Create id of elements with input component ID.
- *	
- *	@var componentId {String} Current component ID.
- *	@return void						
- */
-UIProfileUserSearch.prototype.createId = function(componentId) {
-	this.searchId = 'Search';
-	this.positionId = 'position';
-	this.professionalId = 'professional';
-	this.genderId = 'gender';
-	this.filterId = 'Filter';
 };
 
 /*===================================================================*/

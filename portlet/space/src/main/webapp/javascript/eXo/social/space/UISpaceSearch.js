@@ -16,6 +16,7 @@
  */
 
 function UISpaceSearch() {
+	this.inputTextBoxObj = null;
 };
 
 UISpaceSearch.prototype.onLoad = function(uicomponentId) {
@@ -26,64 +27,44 @@ UISpaceSearch.prototype.onLoad = function(uicomponentId) {
 	var defaultUIVal = "Space name";
 	if (spaceSearchEl.value == defaultUIVal) spaceSearchEl.value = defaultSpaceName;
 	(spaceSearchEl.value != defaultSpaceName) ? (spaceSearchEl.style.color = '#000000') : (spaceSearchEl.style.color = '#C7C7C7');
+	this.inputTextBoxObj = spaceSearchEl;
+	this.initTextBox();
 };
 
-/**
- *	Change status some component when it is activated.
- *	
- *	@var filter {Object} Object is activated.
- *	@return void						
- */
-UISpaceSearch.prototype.activeSearchText = function(elementId, componentId) {
-	var DOMUtil = eXo.core.DOMUtil;
-	var spaceSearch = document.getElementById(componentId);
-	var searchBox = DOMUtil.findDescendantById(spaceSearch, elementId);
-	var defaultValue = document.getElementById('defaultSpaceName').value;
-	searchBox.style.color="#000000";
-	searchBox.focus();
-	if (searchBox.value == defaultValue) {
-		searchBox.value='';
-	}
-};
-
-/**
- *	Change status some component when it is blurred.
- *	
- *	@var filter {Object} Object is on blurred.
- *	@return void						
- */
-UISpaceSearch.prototype.onBlurSearchText = function(elementId, componentId) {
-	var DOMUtil = eXo.core.DOMUtil;
-	var spaceSearch = document.getElementById(componentId);
-	var searchBox = DOMUtil.findDescendantById(spaceSearch, elementId);
-	var defaultValue = document.getElementById('defaultSpaceName').value;
-	if ((searchBox.value.trim() == '') || (searchBox.value.trim() == defaultValue)) {
-		searchBox.style.color="#C7C7C7";
-		searchBox.value=defaultValue;
-	} 
-};
-
-/**
- *	Call function when Enter Key is pressed in search text box.
- *	
- *	@var event {Object} Event.
- *	@return void						
- */
-UISpaceSearch.prototype.setEnterKey = function(event, elementInputId) {
-	var e = event || window.event;
-	var elementInput = e.srcElement || e.target;
-	var keynum = e.keyCode || e.which;  
-	var element = document.getElementById(elementInputId);
+UISpaceSearch.prototype.initTextBox = function() {
+	var searchEl = this.inputTextBoxObj;
 	var DOMUtil = eXo.core.DOMUtil;
 	var UIForm = eXo.webui.UIForm;
-	var searchEl = DOMUtil.findAncestorByClass(element, 'UIForm');
-	  
-	if(keynum == 13) {
-		if (searchEl != null ) UIForm.submitForm(searchEl.id, 'Search', true);
-	}						
-};
+	
+	searchEl.onfocus = function() {
+		var defaultValue = document.getElementById('defaultSpaceName').value;
+		searchEl.style.color="#000000";
+		searchEl.focus();
+		if (searchEl.value == defaultValue) {
+			searchEl.value='';
+		}
+	}
+	
+	searchEl.onblur = function() {
+		var defaultValue = document.getElementById('defaultSpaceName').value;
+		if ((searchEl.value.trim() == '') || (searchEl.value.trim() == defaultValue)) {
+			searchEl.style.color="#C7C7C7";
+			searchEl.value=defaultValue;
+		} 
+	}
+	
+	searchEl.onkeydown = function(event) {
+		var e = event || window.event;
+		var keynum = e.keyCode || e.which;  
+		var searchForm = DOMUtil.findAncestorByClass(searchEl, 'UIForm');
+		  
+		if(keynum == 13) {
+			if (searchForm != null ) UIForm.submitForm(searchForm.id, 'Search', true);
+		}	
+	}
+}
 
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
-if(!eXo.social.profile) eXo.social.space = {};
+if(!eXo.social.space) eXo.social.space = {};
 eXo.social.space.UISpaceSearch = new UISpaceSearch();

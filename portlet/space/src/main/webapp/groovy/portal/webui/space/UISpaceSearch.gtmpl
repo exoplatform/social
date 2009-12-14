@@ -50,7 +50,7 @@ def searchAction = uicomponent.event('Search');
 					$findSpaceLabel : 
 				</div>
 				<div class="CenterContentInput">
-					  <div class="SpaceSearchInput" onclick="eXo.social.space.UISpaceSearch.activeSearchText('$searchId', '$uicomponentId')" onmouseout="eXo.social.space.UISpaceSearch.onBlurSearchText('$searchId', '$uicomponentId')" onkeydown="eXo.social.space.UISpaceSearch.setEnterKey(event, '$searchId');"><%uiform.renderField(childs.get(0)); %>
+					  <div class="SpaceSearchInput"><%uiform.renderField(childs.get(0)); %>
 					  <div class="SearchIcon" onclick="$searchAction"><span></span></div>
 					  </div>
 					  

@@ -23,6 +23,7 @@ def uicomponentId = uicomponent.id;
 
 def rcontext = _ctx.getRequestContext() ;
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.social.space.AutoSuggestControl','/space/javascript');
 jsmanager.importJavascript('eXo.social.profile.UIProfileUserSearch', '/profile/javascript');
 jsmanager.addCustomizedOnLoadScript('eXo.social.profile.UIProfileUserSearch.onLoad("' + uicomponentId + '");');
 	
@@ -56,7 +57,7 @@ def searchAction = uicomponent.event('Search');
  <div class="SearchSpaces" name="SearchSpaces">
 	<div class="SearchSpacesR ClearFix">
 	  <div class="Lable">${findContactLabel} :</div>
-	  <div class="Search" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event, '$searchId')" onclick="eXo.social.profile.UIProfileUserSearch.activeFilterText('$searchId', '$uicomponentId')" onmouseout="eXo.social.profile.UIProfileUserSearch.onBlurFilterText('$searchId', '$uicomponentId')"><% uiform.renderField(childs.get(0))%>
+	  <div class="Search"><% uiform.renderField(childs.get(0))%>
 	  <div class="SearchIcon" onclick="$searchAction"></div>
 	  </div>
 	  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
@@ -64,9 +65,9 @@ def searchAction = uicomponent.event('Search');
 	  <div style="clear: left; height: 0px;"><span></span></div> 
 	  <div class="Filter" id="$filterId" style="display:none">
 		<div class="Lable">${filterByLabel} :</div>
-		<div class="FilterInput" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event, '$positionId');" onclick="eXo.social.profile.UIProfileUserSearch.activeFilterText('$positionId', '$uicomponentId')" onmouseout="eXo.social.profile.UIProfileUserSearch.onBlurFilterText('$positionId', '$uicomponentId')"><% uiform.renderField(childs.get(1))%></div>
-		<div class="FilterInput" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event, '$professionalId');" onclick="eXo.social.profile.UIProfileUserSearch.activeFilterText('$professionalId', '$uicomponentId')" onmouseout="eXo.social.profile.UIProfileUserSearch.onBlurFilterText('$professionalId', '$uicomponentId')"><% uiform.renderField(childs.get(2))%></div>
-		<div class="FilterGender" onkeydown="eXo.social.profile.UIProfileUserSearch.setEnterKey(event, '$genderId');" onclick="eXo.social.profile.UIProfileUserSearch.activeFilterText('$genderId', '$uicomponentId')" onmouseout="eXo.social.profile.UIProfileUserSearch.onBlurFilterText('$genderId', '$uicomponentId')"><% uiform.renderField(childs.get(3))%></div>
+		<div class="FilterInput"><% uiform.renderField(childs.get(1))%></div>
+		<div class="FilterInput"><% uiform.renderField(childs.get(2))%></div>
+		<div class="FilterGender"><% uiform.renderField(childs.get(3))%></div>
 			
 		<input id="defaultUserContact" type="hidden" value="$nameDefaultVal">
 		<input id="defaultPos" type="hidden" value="$positionDefaultVal">
