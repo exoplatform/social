@@ -49,7 +49,7 @@
   				<div id="AppTitle" class="ActivitiesTitleBarM">__MSG_title__</div>
   			</div>
   			<div class="ActivitiesContainer">
-  				<div class="MyStatusComponent">
+  				<div id="UIMyStatusInput" class="MyStatusComponent">
   					<table>
   						<body>
   							<tr>
@@ -145,7 +145,7 @@
   				<div id="AppTitle" class="ActivitiesTitleBarM">__MSG_title__</div>
   			</div>
   			<div class="ActivitiesContainer">
-  				<div class="MyStatusComponent">
+  				<div id="UIMyStatusInput" class="MyStatusComponent">
   					<table>
   						<body>
   							<tr>
