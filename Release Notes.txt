@@ -1,0 +1,6 @@
+Release Notes will start from Social 1.0 beta02.
+
+
+- Other resources and links
+     Community JIRA      http://jira.exoplatform.org/browse/SOC
+     Community Forum     http://www.exoplatform.com/portal/public/website/community/forum
