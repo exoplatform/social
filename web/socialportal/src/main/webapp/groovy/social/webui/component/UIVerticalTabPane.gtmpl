@@ -1,0 +1,69 @@
+<!--
+
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+
+<%
+	import org.exoplatform.web.application.JavascriptManager;
+	def rcontext = _ctx.getRequestContext();
+	JavascriptManager jsmanager = rcontext.getJavascriptManager();
+	jsmanager.importJavascript('eXo.social.webui.UIVerticalTabs','/eXoResourcesSocial/javascript');
+	
+  //jsmanager.importJavascript('eXo.social.webui.UIVerticalTabs');
+  //rcontext.getJavascriptManager().addCustomizedOnLoadScript('eXo.social.webui.UIVerticalTabs.init();');
+%>
+<div class="UIVerticalTabPane" id="$uicomponent.id">
+    <div class="VerticalTabPaneContent">
+        <div class="UIVerticalTabs">
+            <div class="VerticalTabsContainer">
+            <%
+                String selTabId = uicomponent.getSelectedTabId() ;
+                for(uiChild in uicomponent.getChildren()) {
+                  if(!uiChild.isRendered()) continue ; 
+                  String style = "NormalTab" ;
+                  String tabId = uiChild.getId();
+                  if(tabId.equals(selTabId)) style="SelectedTab" ;
+                %>
+                    <div class="UIVerticalTab NormalTabStyle">
+                      <div class="$style">
+                        <div class="LeftTab">
+                          <div class="RightTab">			         	   	                                
+                            <% String actionLink = "ajaxAsyncGetRequest('" + uicomponent.url("SelectTab",tabId) + "', true)" %>                
+                            <div class="MiddleTab" onclick="eXo.social.webui.UIVerticalTabs.displayTabContent(this); $actionLink"><%=_ctx.appRes("UITabPane.title." + uiChild.getId());%></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>              
+                <%}%>
+            </div>
+        </div>
+        <div class="UIVerticalTabContentContainer">
+            <%
+		          for(uiChild in uicomponent.getChildren()) {
+		            if(!uiChild.isRendered()) continue ; 
+		            String display = "none" ;
+		            if(uiChild.getId().equals(selTabId)) display="block" ;
+		            println "<div class=\"UIVerticalTabContent\" style=\"display: $display;overflow:auto;\">" ;
+		            uicomponent.renderUIComponent(uiChild) ;
+		            println "</div>" ;
+		          }
+		        %>
+        </div>
+        <div style="clear:left;"><span></span></div> 
+    </div>
+</div>
+

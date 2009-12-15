@@ -1,0 +1,86 @@
+<% 
+  import org.exoplatform.portal.config.model.PageNode
+ 	import org.exoplatform.portal.webui.util.Util
+ 	import org.exoplatform.social.space.SpaceUtils
+ 	SpaceUtils.reloadNavigation()
+	def apps = uicomponent.getApps()       
+	def spaceUrl = SpaceUtils.getSpaceUrl()
+ 	String appSelected = uicomponent.getAppSelected()
+ 	def imageSource = uicomponent.getImageSource()
+%>
+
+
+<div id="$uicomponent.id" class="UISpaceMenuPortlet">
+<% String home = Util.getPortalRequestContext().getPortalURI() + spaceUrl %>
+	<div class="SpaceMenuPortlet">
+		<div class="ProfTitle">Space <%= spaceUrl %></div>
+		<a class="Avartar">
+			<% if(imageSource == null) { %>
+				<img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt=""/>
+			<% } else { %>
+  			<img src="$imageSource" height="65px" width="65px">
+  		<% } %>
+		</a>
+		<% if(spaceUrl.equals(appSelected)) { %>
+  	<div class="Home"><a class="HomeSelect" href="$home"><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></a></div>
+		<% } else { %>
+		<div class="Home"><a class="HomeSpace" href="$home"><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></a></div>
+		<% } %>
+  	<% if(apps.size() != 0) { 
+	  		for(PageNode node in apps) {
+		  		def SpaceClass = "";
+		  		def labelStr = "";
+					def labelStrPrev = "";
+					def appendLabel = " ...";
+		  		def nodeLabel = node.getResolvedLabel();
+		  		def nodeTitle = node.getResolvedLabel();
+					String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + node.getName();
+					
+					if (nodeLabel.length() > 15) {
+						def labels = nodeLabel.split(" ");
+						for (i in 0..(labels.size()-1)) {
+							labelStr += " ";
+							labelStr += labels[i];
+							if (labelStr.length() > 15) {
+								break;
+							} else {
+								labelStrPrev = labelStr;
+							}
+						}
+						
+						if (labelStrPrev.length() == 0) { 
+							nodeLabel = nodeLabel.substring(0, 13) + appendLabel;
+						} else {
+							nodeLabel = labelStrPrev + appendLabel;
+						}
+		  		}
+		%>
+		<%
+			if (node.getName().equals("UserListPortlet")) { %>
+					<div class="UserListApp">
+					<% if(node.getName().equals(appSelected)) { %>
+			  			<a class="UserListAppSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  	<% } else { %>
+			  			<a class="UserListAppBG" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  	<% } 
+			} else if (node.getName().equals("SpaceSettingPortlet")) { %>
+					<div class="SpaceSetting">
+					<% if(node.getName().equals(appSelected)) {	%>
+			  			<a class="SpaceSettingSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  	<% } else { %>
+			  			<a class="SpaceSettingBG" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  	<% }
+			} else { %>
+					<div class="ApplicationAdd">
+				  <% if(node.getName().equals(appSelected)) { %>
+			  			<a class="ApplicationAddSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  	<% } else { %>
+			  			<a class="ApplicationAddBG" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  	<% } %>
+					<%}%>
+			  	</div>
+		  <% } %>
+	  <% } %>
+
+	</div>
+</div>

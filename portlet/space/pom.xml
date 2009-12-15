@@ -1,0 +1,52 @@
+<project>
+  <parent>
+    <groupId>org.exoplatform.social</groupId>
+    <artifactId>sc</artifactId>
+    <version>1.0-Beta01</version>
+  </parent> 
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>exo.social.portlet.space</artifactId>
+  <packaging>war</packaging>
+  <version>${org.exoplatform.social.version}</version>
+  <name>eXo Social Portlet Space</name>
+  <url>http://www.exoplatform.org</url>
+  <description>social project, portlet web category</description>
+
+  <build>
+    <finalName>space</finalName>
+  </build>
+
+  <dependencies>
+  	<dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.people</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.space</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.dashboard</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <scope>provided</scope>
+    </dependency>   
+  </dependencies> 
+</project>

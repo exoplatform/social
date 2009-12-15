@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<!--portlet-app version="1.0" xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"--> 
+	
+	<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
+	
+	<portlet>
+    <description xml:lang="EN">Banner Portlet</description>
+    <portlet-name>BannerPortlet</portlet-name>
+    <display-name xml:lang="EN">Banner Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/GroovyPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.BannerPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Banner Portlet</title>
+      <short-title>Banner Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/portal/webui/component/UIBannerPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Warning Portlet</description>
+    <portlet-name>WarningPortlet</portlet-name>
+    <display-name xml:lang="EN">Warning Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/GroovyPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.WarningPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Warning Portlet</title>
+      <short-title>Warning Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/portal/webui/component/UIWarningPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">HomePage Portlet</description>
+    <portlet-name>HomePagePortlet</portlet-name>
+    <display-name xml:lang="EN">Home Page Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/GroovyPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.HomePagePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>HomePage Portlet</title>
+      <short-title>HomePage Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/portal/webui/component/UIHomePagePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Manage Spaces Portlet</description>
+    <portlet-name>ManageSpacesPortlet</portlet-name>
+    <display-name xml:lang="EN">Manage Spaces</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/ManageSpaces/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.ManageSpacesPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Manage Spaces Portlet</title>
+      <short-title>Manage Spaces Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <!--portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIManageSpacesPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences-->
+  </portlet> 
+  
+  <portlet>
+    <description xml:lang="EN">Social Navigation Portlet</description>
+    <portlet-name>SocialNavigationPortlet</portlet-name>
+    <display-name xml:lang="EN">Social Navigation</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/SocialNavigation/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.GroovyPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Social Navigation Portlet</title>
+      <short-title>Social Navigation Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <!-- portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/navigation/UISocialNavigationPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences-->
+  </portlet>
+  <portlet>
+    <description xml:lang="EN">Home Space Portlet</description>
+    <portlet-name>HomeSpacePortlet</portlet-name>
+    <display-name xml:lang="EN">Home Space</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/HomeSpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.HomeSpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Home Space Portlet</title>
+      <short-title>Home Space Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/portal/webui/space/UIHomeSpacePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">User List Portlet</description>
+    <portlet-name>UserListPortlet</portlet-name>
+    <display-name xml:lang="EN">List users</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/UserListPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.UserListPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>User List Portlet</title>
+      <short-title>User List Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <!-- portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/space/UIUserListPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences-->
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Space Menu Portlet</description>
+    <portlet-name>SpaceMenuPortlet</portlet-name>
+    <display-name xml:lang="EN">Space Menu</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/SpaceMenuPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.SpaceMenuPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Space Menu</title>
+      <short-title>Space Menu</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <!-- portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/space/UISpaceMenuPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences-->
+  </portlet>
+  <portlet>
+    <description xml:lang="EN">Space Setting Portlet</description>
+    <portlet-name>SpaceSettingPortlet</portlet-name>
+    <display-name xml:lang="EN">Space settings</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/SpaceSettingPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.SpaceSettingPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Space Setting</title>
+      <short-title>Space Setting</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+
+    <!-- portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/space/UISpaceSettingPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences-->
+  </portlet> 
+  
+  <portlet>
+    <description xml:lang="EN">Space Navigation Portlet</description>
+    <portlet-name>spacenavigationportlet</portlet-name>
+    <display-name xml:lang="EN">Space Navigation Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/SpaceNavigationPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.SpaceNavigationPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Space Navigation Portlet</title>
+      <short-title>Space Navigation Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">My Space Portlet</description>
+    <portlet-name>MySpacePortlet</portlet-name>
+    <display-name xml:lang="EN">My Space Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/MySpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.MySpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>My Space Portlet</title>
+      <short-title>My Space Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Invitation Space Portlet</description>
+    <portlet-name>InvitationSpacePortlet</portlet-name>
+    <display-name xml:lang="EN">Invitation Space Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/InvitationSpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.InvitationSpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Invitation Space Portlet</title>
+      <short-title>Invitation Space Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Pending Space Portlet</description>
+    <portlet-name>PendingSpacePortlet</portlet-name>
+    <display-name xml:lang="EN">Space Navigation Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/PendingSpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.PendingSpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Pending Space Portlet</title>
+      <short-title>Pending Space Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Public Space Portlet</description>
+    <portlet-name>PublicSpacePortlet</portlet-name>
+    <display-name xml:lang="EN">Public Space Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/PublicSpacePortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.PublicSpacePortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Public Space Portlet</title>
+      <short-title>Public Space Portlet</short-title>
+      <keywords>Space</keywords>
+    </portlet-info>     
+  </portlet>
+  
+  <portlet>
+   <description xml:lang="EN">Spaces ToolBar Portlet</description>
+   <portlet-name>SpacesToolbarPortlet</portlet-name>
+   <display-name xml:lang="EN">Spaces ToolBar Portlet</display-name>
+   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   
+   <init-param>
+     <name>webui.configuration</name>
+     <value>/WEB-INF/conf/portlet/web/SpaceToolbarPortlet/webui/configuration.xml</value>
+   </init-param>    
+
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+     <portlet-mode>help</portlet-mode>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.web.SpaceToolBarPortlet</resource-bundle>
+   <portlet-info>
+     <title>Spaces ToolBar Portlet</title>
+     <short-title>SpacesToolBar</short-title>
+     <keywords>Space</keywords>
+   </portlet-info>
+   
+   <security-role-ref>
+     <role-name>admin</role-name>
+     <role-link>admin</role-link>
+   </security-role-ref>
+ 	</portlet>
+ 
+</portlet-app>

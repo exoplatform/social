@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<node-navigation>
+  <priority>1</priority>
+
+  <page-nodes>
+	 <node>
+	  <uri>home</uri>
+	  <name>home</name>
+	  <label>#{portal.classic.home}</label>
+	  <page-reference>portal::classic::homepage</page-reference>	    
+	 </node>
+	 
+   <node>
+    <uri>register</uri>
+    <name>register</name>
+    <label>#{portal.classic.register}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::register</page-reference>
+   </node>
+   
+   <node>
+    <uri>activities</uri>
+    <name>activities</name>
+    <label>#{portal.classic.activities}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::activities</page-reference>
+   </node>
+   
+   <node>
+    <uri>profile</uri>
+    <name>profile</name>
+    <label>#{portal.classic.profile}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::profile</page-reference>
+   </node>
+   
+   <node>
+    <uri>relations</uri>
+    <name>relations</name>
+    <label>#{portal.classic.relations}</label>
+    <visible>false</visible>
+	  <node>
+	    <uri>relations/yours</uri>
+	    <name>yours</name>
+	    <label>#{portal.classic.yours}</label>
+	    <page-reference>portal::classic::relations</page-reference>
+	   </node>
+	   <node>
+	    <uri>relations/invitations</uri>
+	    <name>invitations</name>
+	    <label>#{portal.classic.invitations}</label>
+	    <page-reference>portal::classic::invitations</page-reference>
+	   </node>
+	   <node>
+	    <uri>relations/requests</uri>
+	    <name>requests</name>
+	    <label>#{portal.classic.requests}</label>
+	    <page-reference>portal::classic::requests</page-reference>
+	   </node>
+   </node>
+	  
+  <node>
+    <uri>spaces</uri>
+    <name>spaces</name>
+    <label>#{portal.classic.spaces}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::manageSpaces</page-reference>
+  </node>
+	 
+	 <node>
+	    <uri>people</uri>
+	    <name>people</name>
+	    <label>#{portal.classic.People}</label>
+	    <visible>false</visible>
+	    <page-reference>portal::classic::people</page-reference>
+	 </node>
+	 
+	 <node>
+    <uri>spaces</uri>
+    <name>spaces</name>
+    <label>#{portal.classic.spaces}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::spaces</page-reference>
+   </node>
+   
+   <node>
+    <uri>invitationSpace</uri>
+    <name>invitationSpace</name>
+    <label>#{portal.classic.invitationSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::invitationSpace</page-reference>
+   </node>
+   
+   <node>
+    <uri>pendingSpace</uri>
+    <name>pendingSpace</name>
+    <label>#{portal.classic.pendingSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::pendingSpace</page-reference>
+   </node>
+   
+   <node>
+    <uri>publicSpace</uri>
+    <name>publicSpace</name>
+    <label>#{portal.classic.publicSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::classic::publicSpace</page-reference>
+   </node>
+   
+	  <node>
+	    <uri>groupnavigation</uri>
+	    <name>groupnavigation</name>
+	    <label>#{portal.classic.groupnavigation}</label>
+	    <visible>false</visible>
+	    <page-reference>portal::classic::groupnavigation</page-reference>	    
+	  </node>
+	  <node>
+	    <uri>portalnavigation</uri>
+	    <name>portalnavigation</name>
+	    <label>#{portal.classic.portalnavigation}</label>
+	    <visible>false</visible>
+	    <page-reference>portal::classic::portalnavigation</page-reference>	    
+	  </node>
+  </page-nodes>
+</node-navigation>

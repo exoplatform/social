@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<node-navigation>
+	<owner-type>portal</owner-type>
+  <owner-id>webos</owner-id>
+  <priority>1</priority>
+
+  <page-nodes>
+    <node>
+      <uri>home</uri>
+      <name>home</name>
+      <label>#{portal.webos.home}</label>
+      <page-reference>portal::webos::home</page-reference>                           
+    </node>
+    
+    <node>
+      <uri>livedesktop</uri>
+      <name>livedesktop</name>
+      <label>#{portal.webos.livedesktop}</label>
+      <page-reference>portal::webos::livedesktop</page-reference>
+   </node>
+    	        
+  </page-nodes>
+</node-navigation>
