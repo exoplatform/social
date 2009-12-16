@@ -11,7 +11,7 @@ function getModule(params) {
 
   var module = new Module();
 
-  module.version = "1.0-alpha3-SNAPSHOT" ;
+  module.version = "1.0-Beta02-SNAPSHOT" ;
   module.relativeMavenRepo =  "org/exoplatform/social" ;
   module.relativeSRCRepo =  "social/trunk" ;
   module.name = "social" ;  

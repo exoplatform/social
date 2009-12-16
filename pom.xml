@@ -9,7 +9,7 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>sc</artifactId>
   <name>eXo Social</name>
-  <version>1.0-alpha3-SNAPSHOT</version>
+  <version>1.0-Beta02-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!--scm>
@@ -247,7 +247,7 @@
       <version.chromattic>1.0.0-beta5</version.chromattic>
       <version.reflect>1.0.0-beta3</version.reflect>
       <org.exoplatform.portal.version>3.0.0-Beta02</org.exoplatform.portal.version>
-	    <org.exoplatform.social.version>1.0-alpha3-SNAPSHOT</org.exoplatform.social.version>
+	    <org.exoplatform.social.version>1.0-Beta02-SNAPSHOT</org.exoplatform.social.version>
       <test.classes>Test</test.classes>
       <test.skip>true</test.skip>
     </properties>

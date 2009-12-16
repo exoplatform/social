@@ -2,7 +2,7 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>sc</artifactId>
-    <version>1.0-alpha3-SNAPSHOT</version>
+    <version>1.0-Beta02-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <modelVersion>4.0.0</modelVersion>
