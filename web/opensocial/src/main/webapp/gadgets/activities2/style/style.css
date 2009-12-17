@@ -350,3 +350,70 @@ img {border: none}
 	line-height: 16px;
 	font-size: 10px;
 }
+
+.ActivitiesContent .AddLinkContent {
+	margin: 5px 0px;
+}
+
+.ActivitiesContent .AddLinkContent .InputLink {
+	width: 684px; height: 24px;
+	float: left;
+}
+
+.ActivitiesContent .AddLinkContent .IconAdd {
+	float: right;
+}
+
+.ActivitiesContent .ActionAdd {
+	float: right;
+}
+
+.ActivitiesContent .ActionAdd a{
+	color: #0b4da3;
+}
+
+.ActivitiesContent .AvartarLeft{
+	width: 75px;
+	float: left;
+}
+
+.ActivitiesContent .AvartarLeft .AvatarAction .BackIcon{
+	width: 9px; height: 16px;
+	float: left;
+	cursor: pointer;
+	background: url('images/BackIcon.gif') no-repeat left center;
+	margin-left: 10px;
+}
+
+.ActivitiesContent .AvartarLeft .AvatarAction .NextIcon{
+	width: 9px; height: 16px;
+	float: right;
+	cursor: pointer;
+	background: url('images/NextIcon.gif') no-repeat right center;
+	margin-right: 10px;
+}
+
+.ActivitiesContent .ContentRight{
+	margin-left: 80px;
+}
+
+.ActivitiesContent .ContentRight .Label{
+	color: #0032ea;
+	width: 630px;
+}
+
+.ActivitiesContent .ContentRight .Content{
+	color: #999999;
+	font-size: 10px;
+	margin: 3px 0px;
+	width: 630px;
+}
+
+.ActivitiesContent .ContentRight .Source{
+	color: #000000;
+	width: 630px;
+}
+
+.ActivitiesContent .ContentRight .Source a{
+	color: #999999;
+}

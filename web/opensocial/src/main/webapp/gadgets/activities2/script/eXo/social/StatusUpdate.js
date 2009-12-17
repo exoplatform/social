@@ -514,7 +514,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   				html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
   			html.push('</a>');
   			html.push('<div class="Content">');
-  			html.push('<div class="Titlecontent">');
+  			html.push('<div class="Titlecontent" style="height: 24px;">');
   				html.push('<div class="TitleItem" href="#">' + title + '</div>');
         if ((statusUpdate.currentView === 'canvas') && (viewerId === ownerId)) {
           html.push('<div class="ActionContent">');
