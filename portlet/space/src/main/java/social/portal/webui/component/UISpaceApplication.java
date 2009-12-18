@@ -103,7 +103,15 @@ public class UISpaceApplication extends UIForm {
       }
       // 
       if (lists.size() == 0) {
-        lists.addAll(SpaceUtils.getAppList());
+        List<Application> appLst = SpaceUtils.getAppList();
+        for (Application app : appLst) {
+          String appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
+          if (appStatus != null) {
+            if (appStatus.equals(Space.ACTIVE_STATUS)) {
+              lists.add(app);
+            }
+          }
+        }
       }
     }
     
