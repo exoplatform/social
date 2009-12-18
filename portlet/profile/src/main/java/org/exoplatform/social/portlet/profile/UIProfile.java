@@ -50,7 +50,8 @@ import org.exoplatform.webui.event.EventListener;
 public class UIProfile extends UIContainer {
   
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
-  
+  private Profile profile;
+  private static IdentityManager im;
   /**
    * Constructor to initialize UIAvatarUploader popup and info sections
    * @throws Exception
@@ -73,6 +74,7 @@ public class UIProfile extends UIContainer {
    *
    * @return the list of sections ordered by display order
    */
+  @SuppressWarnings("unchecked")
   private List getSections() {
     List sects = new ArrayList();
     sects.add(UIHeaderSection.class);
@@ -91,16 +93,28 @@ public class UIProfile extends UIContainer {
       uriObj = uriObj.split("/")[0] + "/" + uriObj.split("/")[1];
     return uriObj;
   }
-
-  public Profile getProfile() throws Exception {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Identity id = im.getIdentityByRemoteId("organization", getCurrentProfileID());
-
-    if(id == null)
-      return null;
-    else
-      return id.getProfile();
+  
+  
+  private Identity getIdentity() throws Exception {
+    if (im == null) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return im.getIdentityByRemoteId("organization", getCurrentProfileID());
+  }
+ 
+  /**
+   * gets profile with forceReload.
+   * @param forceReload
+   * @return
+   * @throws Exception
+   */
+  public Profile getProfile(boolean forceReload) throws Exception {
+    if (forceReload == true || profile == null) {
+      Identity id = getIdentity();
+      profile = id.getProfile();
+    }
+    return profile;
   }
 
   public boolean isEditable() {
@@ -114,7 +128,7 @@ public class UIProfile extends UIContainer {
   }
   
   protected String getImageSource() throws Exception {
-    Profile p = getProfile();
+    Profile p = getProfile(true);
     ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
     if (att != null) {
       return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()

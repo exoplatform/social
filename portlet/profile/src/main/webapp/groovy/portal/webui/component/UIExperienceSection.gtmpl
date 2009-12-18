@@ -20,7 +20,7 @@
   import org.exoplatform.social.portlet.profile.Utils;
   import org.exoplatform.social.portlet.profile.UITitleBar;
   
-  def profile = uicomponent.getProfile();
+  def profile = uicomponent.getProfile(false);
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
   def childs = uicomponent.getChilds();

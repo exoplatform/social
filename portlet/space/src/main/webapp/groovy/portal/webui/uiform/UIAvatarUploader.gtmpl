@@ -1,16 +1,10 @@
 <% 
-def errorMessage = uicomponent.errorMessage
 def labelInfo = _ctx.appRes("${uicomponent.id}.label.info")
 def fieldName
 %>
 <div class="UIForm $uicomponent.id">
 	<div class="HorizontalLayout">
 		<div class="FormContainer">
-		<% if (errorMessage) {
-			errorMessage = _ctx.appRes(errorMessage)
-		%>
-		<div class="ErrorMessage">$errorMessage</div>
-		<%}%>
 		<div class="InfoMessage">$labelInfo</div>
 	<%uiform.begin()%>
 			<table class="UIFormGrid">
@@ -55,7 +49,7 @@ def fieldName
 									</div>
 								</div>
 					 		</div>
-							<%}%>				
+							<%}%>
 						</td>
 					</tr>	
 				</table>

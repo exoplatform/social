@@ -22,9 +22,12 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.upload.UploadResource;
 import org.exoplatform.upload.UploadService;
+import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -56,7 +59,6 @@ public class UIAvatarUploader extends UIForm {
   private String FIELD_Uploader = "Uploader";
   private UIFormUploadInput uiAvatarUploadInput;
   private int uploadLimit = 2; //MB
-  private String errorMessage;
   private String[] acceptedMimeTypes = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
   static final String MSG_IMG_NOT_UPLOADED = "UIAvatarUploader.msg.img_not_loaded";
   static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
@@ -94,13 +96,6 @@ public class UIAvatarUploader extends UIForm {
     return mimeType.substring(slashIndex + 1);
   }
   
-  /**
-   * gets errorMessage
-   * @return
-   */
-  public String getErrorMessage() {
-    return errorMessage;
-  }
 
   /**
    * This action will be triggered when user click on change avatar button.
@@ -113,40 +108,44 @@ public class UIAvatarUploader extends UIForm {
     @Override
     public void execute(Event<UIAvatarUploader> event) throws Exception {
       UIAvatarUploader uiAvatarUploader = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIApplication uiApplication = ctx.getUIApplication();
       UIFormUploadInput uiAvatarUploadInput = uiAvatarUploader.getChild(UIFormUploadInput.class);
       UIFormStringInput uiName = uiAvatarUploader.getChild(UIFormStringInput.class);
       String newName = uiName.getValue();
       UIPopupWindow uiPopup = uiAvatarUploader.getParent();
       InputStream input = uiAvatarUploadInput.getUploadDataAsStream();
       if (input == null) {
-        uiAvatarUploader.errorMessage = MSG_IMG_NOT_UPLOADED;
-      } else {
-        UploadResource uploadResource = uiAvatarUploadInput.getUploadResource();
-        if (!uiAvatarUploader.isAcceptedMimeType(uploadResource.getMimeType())) {
-          UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
-          uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
-          uiAvatarUploader.errorMessage = MSG_MIMETYPE_NOT_ACCEPTED;
-        } else {
-          SpaceAttachment spaceAtt = new SpaceAttachment();
-          
-          spaceAtt.setInputStream(uiAvatarUploadInput.getUploadDataAsStream());
-          spaceAtt.setMimeType(uploadResource.getMimeType());
-          if (newName == null) {
-            newName = uploadResource.getFileName();
-          } else {
-            newName = newName + "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
-          }
-          spaceAtt.setFileName(newName);
-          UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
-          uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
-          
-          UIAvatarUploadContent uiAvatarUploadContent = uiAvatarUploader.createUIComponent(UIAvatarUploadContent.class, null, null);
-          uiAvatarUploadContent.setSpaceAttachment(spaceAtt);
-          uiPopup.setUIComponent(uiAvatarUploadContent);
-        }
+        uiApplication.addMessage(new ApplicationMessage(MSG_IMG_NOT_UPLOADED, null, ApplicationMessage.ERROR));
+        ctx.addUIComponentToUpdateByAjax(uiAvatarUploader);
+        return;
       }
-    }
-    
+      UploadResource uploadResource = uiAvatarUploadInput.getUploadResource();
+      if (!uiAvatarUploader.isAcceptedMimeType(uploadResource.getMimeType())) {
+        UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
+        uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
+        uiApplication.addMessage(new ApplicationMessage(MSG_MIMETYPE_NOT_ACCEPTED, null, ApplicationMessage.ERROR));
+        ctx.addUIComponentToUpdateByAjax(uiAvatarUploader);
+      } else {
+        SpaceAttachment spaceAtt = new SpaceAttachment();
+        
+        spaceAtt.setInputStream(uiAvatarUploadInput.getUploadDataAsStream());
+        spaceAtt.setMimeType(uploadResource.getMimeType());
+        if (newName == null) {
+          newName = uploadResource.getFileName();
+        } else {
+          newName = newName + "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
+        }
+        spaceAtt.setFileName(newName);
+        UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
+        uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
+        
+        UIAvatarUploadContent uiAvatarUploadContent = uiAvatarUploader.createUIComponent(UIAvatarUploadContent.class, null, null);
+        uiAvatarUploadContent.setSpaceAttachment(spaceAtt);
+        uiPopup.setUIComponent(uiAvatarUploadContent);
+        ctx.addUIComponentToUpdateByAjax(uiAvatarUploader.getParent());
+      }
+      }
   }
   
   /**

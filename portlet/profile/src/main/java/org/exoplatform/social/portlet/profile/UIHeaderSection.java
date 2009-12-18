@@ -85,7 +85,7 @@ public class UIHeaderSection extends UIProfileSection {
       
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      Profile p = uiHeaderSect.getProfile();
+      Profile p = uiHeaderSect.getProfile(true);
       p.setProperty(POSITION, position);
       
       im.saveProfile(p);      
@@ -99,7 +99,7 @@ public class UIHeaderSection extends UIProfileSection {
    */
   public void setValue() throws Exception {
     UIFormStringInput uiPosition = getChildById(POSITION);
-    Profile profile = getProfile();
+    Profile profile = getProfile(false);
     String position = (String) profile.getProperty(POSITION);
     position = (position == null ? "": position);
     uiPosition.setValue(position);

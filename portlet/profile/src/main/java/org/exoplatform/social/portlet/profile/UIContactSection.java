@@ -316,7 +316,7 @@ public class UIContactSection extends UIProfileSection {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     
-    Profile p = getProfile();     
+    Profile p = getProfile(true);     
     
 //    p.setProperty(EMAILS, emails);
     p.setProperty(PHONES, phones);
@@ -416,7 +416,7 @@ public class UIContactSection extends UIProfileSection {
    */
   @SuppressWarnings("unchecked")
   private void setValueByType(List<UIComponent> listChilds, String uiType) throws Exception {
-    Profile profile = getProfile();  
+    Profile profile = getProfile(false);
     ArrayList<HashMap<String, String>> profiles = (ArrayList<HashMap<String, String>>) profile.getProperty(uiType);
     List<String> listProfile = new ArrayList<String>();    
     int listChildSize = listChilds.size();

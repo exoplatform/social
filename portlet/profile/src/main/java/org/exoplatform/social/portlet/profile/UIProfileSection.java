@@ -37,10 +37,10 @@ public abstract class UIProfileSection extends UIForm {
   private boolean isMultipart = false;
   private String currentProperty;
   private ProfileMapper profilemapper;
-
-  public Profile getProfile() throws Exception {
+  
+  public Profile getProfile(boolean forceReload) throws Exception {
     UIProfile uiProfile = this.getAncestorOfType(UIProfile.class);
-    return uiProfile.getProfile();
+    return uiProfile.getProfile(forceReload);
   }
 
   public boolean isEditMode() {

@@ -233,7 +233,7 @@ public class UIExperienceSection extends UIProfileSection {
       UIProfileSection sect = event.getSource();
       UIExperienceSection uiExpSection = (UIExperienceSection)sect;
       ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
-      Profile p = sect.getProfile(); 
+      Profile p = sect.getProfile(false); 
       List<UIComponent> listChild = uiExpSection.getChilds();
       List<Object> listProfile = new ArrayList<Object>();
       int childSize = listChild.size() - 1; // List of children include UITitleBar child.
@@ -342,7 +342,7 @@ public class UIExperienceSection extends UIProfileSection {
   public List<HashMap<String, Object>> getPastExperience() throws Exception {
     ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
     ArrayList<HashMap<String, Object>> pastExperiences = new ArrayList<HashMap<String, Object>>();
-    Profile p = getProfile();
+    Profile p = getProfile(false);
     experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(EXPERIENCE);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
@@ -365,7 +365,7 @@ public class UIExperienceSection extends UIProfileSection {
   public List<HashMap<String, Object>> getCurrentExperience() throws Exception {
     ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
     ArrayList<HashMap<String, Object>> currentExperiences = new ArrayList<HashMap<String, Object>>();
-    Profile p = getProfile();
+    Profile p = getProfile(false);
     experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(EXPERIENCE);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
@@ -406,7 +406,7 @@ public class UIExperienceSection extends UIProfileSection {
     UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Profile p = getProfile(); 
+    Profile p = getProfile(true);
     List<UIComponent> listUIComp = getChilds();
     int totalUIComponent = listUIComp.size() - 1; // List of children not include UITitleBar child.
     

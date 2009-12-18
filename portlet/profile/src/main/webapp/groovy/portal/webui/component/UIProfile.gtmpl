@@ -62,5 +62,4 @@
 			
 	</div>
 	<div style="clear: left;"><span></span></div>
-	<div class="UIAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>
