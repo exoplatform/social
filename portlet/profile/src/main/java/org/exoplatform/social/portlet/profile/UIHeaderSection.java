@@ -37,6 +37,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
     template =  "app:/groovy/portal/webui/component/UIHeaderSection.gtmpl",
     events = {
         @EventConfig(listeners = UIProfileSection.EditActionListener.class, phase=Phase.DECODE),
+        @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE),
         @EventConfig(listeners = UIHeaderSection.SaveActionListener.class)
     }
 )
@@ -64,6 +65,18 @@ public class UIHeaderSection extends UIProfileSection {
     public void execute(Event<UIHeaderSection> event) throws Exception {
       UIHeaderSection uiHeader = event.getSource();
       uiHeader.setEditMode(true);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiHeader);
+    }
+  }  
+  
+  /**
+   * Change form into edit mode when edit button is clicked.
+   *
+   */
+  public static class CancelActionListener extends EventListener<UIHeaderSection> {
+    public void execute(Event<UIHeaderSection> event) throws Exception {
+      UIHeaderSection uiHeader = event.getSource();
+      uiHeader.setEditMode(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiHeader);
     }
   }  
