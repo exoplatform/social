@@ -207,7 +207,13 @@ public class UIDisplayProfileList extends UIContainer {
     
     return portalRequest.getRemoteUser();
   }
-  private List<Identity> loadAllProfiles() throws Exception {
+  
+  /**
+   * Load all existing user profile.
+   * @return
+   * @throws Exception
+   */
+  public List<Identity> loadAllProfiles() throws Exception {
     IdentityManager im = getIdentityManager();
     List<Identity> ids = im.getIdentities("organization");
     Iterator<Identity> itr = ids.iterator();

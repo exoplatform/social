@@ -208,6 +208,26 @@ public class UIPendingRelation extends UIContainer {
   }
   
   /**
+   * Get all pending identities for searching suggestion.
+   * 
+   * @return Relationship list.
+   * @throws Exception
+   */
+  public List<Identity> getAllPendingIdentities() throws Exception {
+    RelationshipManager relm = getRelationshipManager();
+    Identity currentIdentity = getCurrentViewerIdentity();
+    List<Identity> allPendingIdentities = new ArrayList<Identity>();
+    List<Relationship> allPendings = relm.getPending(currentIdentity, true);
+    Identity id = null;
+    Identity currIdentity = getCurrentIdentity();
+    for(Relationship rel : allPendings) {
+      id = (currIdentity.getId() == (rel.getIdentity1()).getId()) ? rel.getIdentity2() : rel.getIdentity1();
+      allPendingIdentities.add(id);
+    }
+    return allPendingIdentities;
+  }
+  
+  /**
    * Get pending relationships from searched result identities. 
    * 
    * @return Relationship list.

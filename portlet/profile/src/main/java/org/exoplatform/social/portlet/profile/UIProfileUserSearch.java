@@ -35,6 +35,10 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.portlet.URLUtils;
+import org.exoplatform.social.portlet.profilelist.UIDisplayProfileList;
+import org.exoplatform.social.relation.UIInvitationRelation;
+import org.exoplatform.social.relation.UIMyRelations;
+import org.exoplatform.social.relation.UIPendingRelation;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -136,6 +140,29 @@ public class UIProfileUserSearch extends UIForm {
   
   public void setProfileFiler(ProfileFiler profileFiler) { this.profileFiler = profileFiler;}
 
+  /**
+   * Get all users for searching suggestion.
+   * 
+   * @return all contact name of each relation
+   * @throws Exception 
+   */
+  public List<String> getAllContactName() throws Exception {
+    List<String> allUserContactName = new ArrayList<String>();
+    List<Identity> allIdentities = new ArrayList<Identity>();
+    
+    UIComponent parent = getParent();
+    if (parent instanceof UIDisplayProfileList) allIdentities = ((UIDisplayProfileList)parent).loadAllProfiles();
+    if (parent instanceof UIMyRelations) allIdentities = ((UIMyRelations)parent).getAllMyRelationIdentities();
+    if (parent instanceof UIInvitationRelation) allIdentities = ((UIInvitationRelation)parent).getAllInvitedIdentities();
+    if (parent instanceof UIPendingRelation) allIdentities = ((UIPendingRelation)parent).getAllPendingIdentities();
+    
+    for (Identity id : allIdentities) {
+      allUserContactName.add((id.getProfile()).getFullName());
+    }
+    
+    return allUserContactName;
+  }
+  
   /**
    * SearchActionListener
    * Get the keyword and filter from the form.

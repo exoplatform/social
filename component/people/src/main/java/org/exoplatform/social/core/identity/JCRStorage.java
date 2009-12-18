@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -197,62 +198,80 @@ public class JCRStorage {
     SessionProvider sProvider = SessionProvider.createSystemProvider();
     Node profileHomeNode = getProfileServiceHome(sProvider);
     Session session = sessionManager.openSession();
+    List<Identity> listIdentity = new ArrayList<Identity>();
     
-    QueryManager queryManager = session.getWorkspace().getQueryManager() ;
-    StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
-        .append("/").append(PROFILE_NODETYPE);
-    String userName = profileFilter.getName();
-    String position = profileFilter.getPosition();
-    String gender = profileFilter.getGender();
-
-    if ((userName.length() != 0) || (position.length() != 0) || (gender.length() != 0)) {
-      queryString.append("[");
-    }
-    
-    if (userName.length() != 0) {
-      if(userName.indexOf("*")<0){
-        if(userName.charAt(0)!='*') userName = "*"+userName ;
-        if(userName.charAt(userName.length()-1)!='*') userName += "*" ;
+    try {
+      QueryManager queryManager = session.getWorkspace().getQueryManager() ;
+      StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
+          .append("/").append(PROFILE_NODETYPE);
+      String userName = profileFilter.getName().trim();
+      String position = profileFilter.getPosition().trim();
+      String gender = profileFilter.getGender().trim();
+      
+      if (userName.length() > 0) {
+        userName = (userName.charAt(0) != '*') ? "*" + userName : userName;
+        userName = (userName.charAt(userName.length()-1) != '*') ? userName += "*" : userName;
+        userName = (userName.indexOf("*") >= 0) ? userName.replace("*", ".*") : userName;
+        userName = (userName.indexOf("%") >= 0) ? userName.replace("%", ".*") : userName;
+        Pattern.compile(userName);
       }
-      queryString.append("(jcr:contains(@firstName, ").append("'").append(userName).append("')");
-      queryString.append(" or jcr:contains(@lastName, ").append("'").append(userName).append("'))");
-    }
-    
-    if (position.length() != 0) {
-      if(position.indexOf("*")<0){
-        if(position.charAt(0)!='*') position = "*"+position ;
-        if(position.charAt(position.length()-1)!='*') position += "*" ;
+      
+      if ((position.length() != 0) || (gender.length() != 0)) {
+        queryString.append("[");
       }
-      if (userName.length() != 0) {
-        queryString.append(" and jcr:contains(@position, ").append("'").append(position).append("')");
-      } else {
+  
+      if (position.length() != 0) {
+        if(position.indexOf("*")<0){
+          if(position.charAt(0) != '*') position = "*" + position;
+          if(position.charAt(position.length()-1) != '*') position += "*";
+        }
         queryString.append("jcr:contains(@position, ").append("'").append(position).append("')");
       }
-    }
-
-    if (gender.length() != 0) {
-      if ((userName.length() != 0) || (position.length() != 0)) {
-        queryString.append(" and (@gender ").append("= '").append(gender).append("')");
-      } else {
-        queryString.append(" @gender ").append("= '").append(gender).append("'");
+  
+      if (gender.length() != 0) {
+        if (position.length() != 0) {
+          queryString.append(" and (@gender ").append("= '").append(gender).append("')");
+        } else {
+          queryString.append(" @gender ").append("= '").append(gender).append("'");
+        }
       }
+      
+      if ((position.length() != 0) || (gender.length() != 0)) {
+        queryString.append("]");
+      }
+      
+      Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
+      QueryResult queryResult = query1.execute();
+      NodeIterator nodeIterator = queryResult.getNodes();
+      Node profileNode = null;
+      Node identityNode = null;
+      Identity identity = null;
+      String fullUserName = null;
+      String fullNameLC = null;
+      String userNameLC = null;
+      
+      while (nodeIterator.hasNext()) {
+        profileNode = (Node) nodeIterator.next();
+        identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
+        identity = getIdentity(identityNode);
+        if (userName.length() != 0) {
+          fullUserName = identity.getProfile().getFullName();
+          fullNameLC = fullUserName.toLowerCase();
+          userNameLC = userName.toLowerCase();
+          if ((userNameLC.length() != 0) && fullNameLC.matches(userNameLC)) {
+            listIdentity.add(identity);
+          }
+        } else {
+          listIdentity.add(identity);
+        }
+      }
+    } catch (Exception e) {
+      return (new ArrayList<Identity>());
+    } finally { 
+      sProvider.close();
+      sessionManager.closeSession();
     }
     
-    if ((userName.length() != 0) || (position.length() != 0) || (gender.length() != 0)) {
-      queryString.append("]");
-    }
-    
-    Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
-    QueryResult queryResult = query1.execute();
-    NodeIterator nodeIterator = queryResult.getNodes();
-    List<Identity> listIdentity = new ArrayList<Identity>();
-    while (nodeIterator.hasNext()) {
-      Node profileNode = (Node) nodeIterator.next();
-      Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
-      listIdentity.add(getIdentity(identityNode));
-    }
-    sProvider.close();
-    sessionManager.closeSession();
     return listIdentity;
   }
 

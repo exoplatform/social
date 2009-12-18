@@ -34,6 +34,11 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 
+import social.portal.webui.component.UIManageInvitationSpaces;
+import social.portal.webui.component.UIManageMySpaces;
+import social.portal.webui.component.UIManagePendingSpaces;
+import social.portal.webui.component.UIManagePublicSpaces;
+
 /**
  * UIProfileUserSearch for search users in profile.
  * The search event should broadcast for the parent one to catch and
@@ -63,7 +68,7 @@ public class UISpaceSearch extends UIForm {
   String spaceNameSearch = null;
   
   public String getSpaceNameSearch() { return spaceNameSearch;}
-
+  
   public void setSpaceNameSearch(String spaceNameSearch) { this.spaceNameSearch = spaceNameSearch;}
 
   /**
@@ -72,6 +77,30 @@ public class UISpaceSearch extends UIForm {
    */
   public UISpaceSearch() throws Exception { 
     addUIFormInput(new UIFormStringInput(SPACE_SEARCH, null, DEFAULT_SPACE_NAME_SEARCH));
+  }
+  
+  /**
+   * Get all space for searching suggestion.
+   * 
+   * @return all space
+   * @throws Exception 
+   */
+  public List<String> getAllSpaceName() throws Exception {
+    List<String> allSpaceName = new ArrayList<String>();
+//    SpaceService spaceService = getSpaceService();
+//    List<Space> allSpace = spaceService.getAllSpaces();
+    List<Space> allSpace = new ArrayList<Space>();
+    UIComponent parent = getParent();
+    if (parent instanceof UIManageMySpaces) allSpace = ((UIManageMySpaces)parent).getAllUserSpaces();
+    if (parent instanceof UIManageInvitationSpaces) allSpace = ((UIManageInvitationSpaces)parent).getInvitationSpaces();
+    if (parent instanceof UIManagePendingSpaces) allSpace = ((UIManagePendingSpaces)parent).getAllPendingSpaces();
+    if (parent instanceof UIManagePublicSpaces) allSpace = ((UIManagePublicSpaces)parent).getAllPublicSpaces();
+    
+    for (Space space : allSpace) {
+      allSpaceName.add(space.getName());
+    }
+    
+    return allSpaceName;
   }
   
   /**
@@ -109,7 +138,7 @@ public class UISpaceSearch extends UIForm {
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceName = resApp.getString(uiSpaceSearch.getId() + ".label.SpaceName");
-      String spaceName = ((UIFormStringInput)uiSpaceSearch.getChild(UIFormStringInput.class)).getValue();
+      String spaceName = (((UIFormStringInput)uiSpaceSearch.getChild(UIFormStringInput.class)).getValue()).trim();
       spaceName = ((spaceName == null) || spaceName.equals(defaultSpaceName)) ? "*" : spaceName;
       spaceName = (charSearch != null) ? charSearch : spaceName;
       spaceName = ((charSearch != null) && "All".equals(charSearch)) ? "" : spaceName;

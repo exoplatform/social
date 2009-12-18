@@ -110,7 +110,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @return
    * @throws Exception
    */
-  private List<Space> getInvitationSpaces() throws Exception {
+  public List<Space> getInvitationSpaces() throws Exception {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
     List<Space> userSpaces = spaceService.getInvitedSpaces(userId);

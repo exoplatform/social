@@ -125,7 +125,7 @@ public class UIManagePublicSpaces extends UIContainer {
    * @return
    * @throws Exception 
    */
-  private List<Space> getAllPublicSpaces() throws Exception {
+  public List<Space> getAllPublicSpaces() throws Exception {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
     UserACL userACL = getApplicationComponent(UserACL.class);

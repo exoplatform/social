@@ -23,11 +23,13 @@ import org.exoplatform.web.application.JavascriptManager;
 
 def uicomponentId = uicomponent.id;
 
+def allSpaceName = uicomponent.getAllSpaceName().toString();
 def rcontext = _ctx.getRequestContext() ;
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/eXoResourcesSocial/javascript');
 jsmanager.importJavascript('eXo.social.space.UISpaceSearch','/space/javascript');
-jsmanager.addCustomizedOnLoadScript('eXo.social.space.UISpaceSearch.onLoad("' + uicomponentId + '");');
-	
+jsmanager.addCustomizedOnLoadScript('eXo.social.space.UISpaceSearch.onLoad("' + uicomponentId + '","' + allSpaceName + '");');
+    
 def defaultSpaceName = _ctx.appRes("${uicomponentId}.label.SpaceName");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
@@ -42,53 +44,53 @@ def searchAction = uicomponent.event('Search');
 %>
 <div class="UISpaceSearch">
 <% uiform.begin() %>
-	<!--search by name-->	
-	<div class="LeftBoxInput">
-		<div class="RightBoxInput">
-			<div class="CenterBoxInput">
-				<div class="LeftContentInput">
-					$findSpaceLabel : 
-				</div>
-				<div class="CenterContentInput">
-					  <div class="SpaceSearchInput"><%uiform.renderField(childs.get(0)); %>
-					  <div class="SearchIcon" onclick="$searchAction"><span></span></div>
-					  </div>
-					  
-					  <input id="defaultSpaceName" type="hidden" value="$defaultSpaceName">
-				</div>
-				<div class="ClearBoth"><span/></div>
-			</div>
-		</div>
-	</div>
-	
-	<!--search by directory-->
-	<div class="BoxSpaceList">
-			<div class="CenterTitleBox">
-				<div class="LeftTitleBox">
-					<div class="RightTitleBox">$spaceDirectoryLabel</div>
-				</div>
-			</div>
-			<div class="DirectoryNormalBox">
-				<ul class="LetterList">
-				 		<% for (ch in alphabets) { %>
-				 		<li>
-				 		<% if ((selectedChar != null) && (selectedChar == ch)) {
-					 		%>
-					 					<a href="#" class="selected" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-					 		 <%} else {%>
-					 					<a href="#" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-					 			<% } %>
-					 		<% } %>
-					 </li>
-					 <li>
-					 		<%	if ((selectedChar != null) && (selectedChar == "All")) { %>
-					 					<a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-					 		 <%} else {%>
-					 					<a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-					 		<% } %>
-					 	</li>
-				</ul>
-			</div>
-		</div>
-		<% uiform.end() %>
+    <!--search by name-->   
+    <div class="LeftBoxInput">
+        <div class="RightBoxInput">
+            <div class="CenterBoxInput">
+                <div class="LeftContentInput">
+                    $findSpaceLabel : 
+                </div>
+                <div class="CenterContentInput">
+                      <div class="SpaceSearchInput"><%uiform.renderField(childs.get(0)); %>
+                      <div class="SearchIcon" onclick="$searchAction"><span></span></div>
+                      </div>
+                      
+                      <input id="defaultSpaceName" type="hidden" value="$defaultSpaceName">
+                </div>
+                <div class="ClearBoth"><span/></div>
+            </div>
+        </div>
+    </div>
+    
+    <!--search by directory-->
+    <div class="BoxSpaceList">
+            <div class="CenterTitleBox">
+                <div class="LeftTitleBox">
+                    <div class="RightTitleBox">$spaceDirectoryLabel</div>
+                </div>
+            </div>
+            <div class="DirectoryNormalBox">
+                <ul class="LetterList">
+                        <% for (ch in alphabets) { %>
+                        <li>
+                        <% if ((selectedChar != null) && (selectedChar == ch)) {
+                            %>
+                                        <a href="#" class="selected" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+                             <%} else {%>
+                                        <a href="#" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+                                <% } %>
+                            <% } %>
+                     </li>
+                     <li>
+                            <%  if ((selectedChar != null) && (selectedChar == "All")) { %>
+                                        <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+                             <%} else {%>
+                                        <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+                            <% } %>
+                        </li>
+                </ul>
+            </div>
+        </div>
+        <% uiform.end() %>
 </div>

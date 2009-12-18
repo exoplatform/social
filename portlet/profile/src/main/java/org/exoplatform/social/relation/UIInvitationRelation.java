@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.relation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -207,6 +208,26 @@ public class UIInvitationRelation extends UIContainer {
     String currentViewer = URLUtils.getCurrentUser();
     
     return currentUserName.equals(currentViewer);
+  }
+  
+  /**
+   * Get all invited  identities for searching suggestion.
+   * 
+   * @return Relationship list.
+   * @throws Exception
+   */
+  public List<Identity> getAllInvitedIdentities() throws Exception {
+    RelationshipManager relm = getRelationshipManager();
+    Identity currentIdentity = getCurrentViewerIdentity();
+    List<Identity> allInvitedIdentities = new ArrayList<Identity>();
+    List<Relationship> allInviteds = relm.getPending(currentIdentity, false);
+    Identity id = null;
+    Identity currIdentity = getCurrentIdentity();
+    for(Relationship rel : allInviteds) {
+      id = (currIdentity.getId() == (rel.getIdentity1()).getId()) ? rel.getIdentity2() : rel.getIdentity1();
+      allInvitedIdentities.add(id);
+    }
+    return allInvitedIdentities;
   }
   
   /**

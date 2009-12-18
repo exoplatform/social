@@ -109,7 +109,7 @@ public class UIManagePendingSpaces extends UIContainer {
    * @return
    * @throws SpaceException
    */
-  private List<Space> getAllPendingSpaces() throws SpaceException {
+  public List<Space> getAllPendingSpaces() throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
     List<Space> userSpaces = spaceService.getPendingSpaces(userId);
