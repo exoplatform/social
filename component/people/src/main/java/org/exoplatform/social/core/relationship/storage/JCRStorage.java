@@ -174,12 +174,6 @@ public class JCRStorage {
       sProvider.close();
     }
 
-    ExoContainer container =  ExoContainerContext.getCurrentContainer();
-    //container.getc
-    IdentityManager identityManager =
-        (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-
-
     Relationship relationship = new Relationship(relationshipNode.getUUID());
 
     Node idNode = relationshipNode.getProperty(RELATION_IDENTITY1).getNode();
