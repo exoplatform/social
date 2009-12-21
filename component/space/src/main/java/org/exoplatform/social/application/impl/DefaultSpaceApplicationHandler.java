@@ -63,12 +63,12 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   /**
    * {@inheritDoc}
    */
-  public void initApp(Space space, String homeNodeApp, String[] apps) throws SpaceException {
+  public void initApp(Space space, String homeNodeApp, List<String> apps) throws SpaceException {
     try {
       PageNavigation spaceNav = SpaceUtils.createGroupNavigation(space.getGroupId());
       PageNode homeNode = createPageNodeFromApplication(space, homeNodeApp, true);
       for (String app : apps) {
-        app = app.trim();
+        app = (app.trim()).split(":")[0];
         PageNode appNode = createPageNodeFromApplication(space, app, false);
         List<PageNode> childNodes = homeNode.getChildren();
         if(childNodes == null) childNodes = new ArrayList<PageNode>();

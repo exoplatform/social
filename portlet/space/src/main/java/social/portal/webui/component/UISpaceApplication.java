@@ -92,22 +92,26 @@ public class UISpaceApplication extends UIForm {
           Application app = appListItr.next();
           if (!apps.contains(app)) {
             apps.add(app);
-            String appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
-            if (appStatus != null) {
-              if (appStatus.equals(Space.ACTIVE_STATUS)) {
-                lists.add(app);
-              }
-            }
           }
         }
       }
-      // 
-      if (lists.size() == 0) {
-        List<Application> appLst = SpaceUtils.getAppList();
-        for (Application app : appLst) {
+      // Get more application
+      List<Application> appLst = SpaceUtils.getAppList();
+      Iterator<Application> appListItr = appLst.iterator();
+      while (appListItr.hasNext()) {
+        Application app = appListItr.next();
+        if (isExisted(apps,app)) {
+          appListItr.remove();
+        }
+      }
+      
+      if (appLst.size() > 0) apps.addAll(appLst);
+      
+      if (apps.size() != 0) {
+        for (Application app : apps) {
           String appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
           if (appStatus != null) {
-            if (appStatus.equals(Space.ACTIVE_STATUS)) {
+            if (appStatus.equals(Space.ACTIVE_STATUS) && (!isExisted(lists, app))) {
               lists.add(app);
             }
           }
@@ -120,6 +124,10 @@ public class UISpaceApplication extends UIForm {
   }
   
   public UIPageIterator getUIPageIterator() { return iterator_;}
+  
+  public boolean isRemovable(String appId) {
+    return SpaceUtils.isRemovableApp(space_, appId);
+  }
   
   static public class AddApplicationActionListener extends EventListener<UISpaceApplication> {
     public void execute(Event<UISpaceApplication> event) throws Exception {
@@ -143,5 +151,23 @@ public class UISpaceApplication extends UIForm {
       
       SpaceUtils.updateWorkingWorkSpace();
     }
+  }
+  
+  /**
+   * Check one application is existed in list or not.
+   * 
+   * @param appLst List of application
+   * @param app Application for checking
+   * @return boolean
+   */
+  private boolean isExisted(List<Application> appLst, Application app) {
+    String appName = app.getApplicationName();
+    String existedAppName = null;
+    
+    for (Application application : appLst) {
+      existedAppName = application.getApplicationName();
+      if (existedAppName.equals(appName)) return true; 
+    }
+    return false;
   }
 }

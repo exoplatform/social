@@ -744,16 +744,47 @@ public class SpaceUtils {
    */
   static public String getAppStatus(Space space, String appId) {
     String installedApps = space.getApp();
+    String[] appSplit = null;
     if (installedApps == null) installedApps = "";
     if (installedApps.contains(appId)) {
       String[] apps = installedApps.split(",");
       for (String app: apps) {
         if (app.contains(appId)) {
-          return app.split(":")[1];
+          appSplit = app.split(":");
+          return appSplit[appSplit.length - 1];
         }
       }
     }
     return null;
+  }
+  
+  /**
+   * Check application is removable or not.
+   * 
+   * @param space
+   * @param appId
+   * @return Boolean value show one application is removable or not.
+   */
+  static public boolean isRemovableApp(Space space, String appId) {
+    String installedApps = space.getApp();
+    boolean removable = false;
+    String remove = null;
+    appId = appId.split("/")[1];
+    String[] appSplit = null;
+    
+    if (installedApps == null) installedApps = "";
+    if (installedApps.contains(appId)) {
+      String[] apps = installedApps.split(",");
+      for (String app: apps) {
+        if (app.contains(appId)) {
+           appSplit = app.split(":");
+           // Hard-code one application is removable if it is not set in setting
+           remove = (appSplit.length >= 3) ? appSplit[1] : "true";
+           return Boolean.parseBoolean(remove);
+        }
+      }
+    }
+    return removable;
   }
   
   /**

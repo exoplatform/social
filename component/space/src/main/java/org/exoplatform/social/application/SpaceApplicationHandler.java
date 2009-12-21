@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.application;
 
+import java.util.List;
+
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 
@@ -33,7 +35,7 @@ public interface SpaceApplicationHandler {
    * @param space
    * @throws SpaceException
    */
-  public void initApp(Space space, String homeNodeApp, String[] apps) throws SpaceException;
+  public void initApp(Space space, String homeNodeApp, List<String> apps) throws SpaceException;
   
   /**
    * De-initialize 

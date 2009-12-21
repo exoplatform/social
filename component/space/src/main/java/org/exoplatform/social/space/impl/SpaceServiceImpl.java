@@ -25,15 +25,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.container.xml.PropertiesParam;
+import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -60,11 +58,8 @@ public class SpaceServiceImpl implements SpaceService {
   final static public String MEMBER = "member";
   final static public String MANAGER = "manager";
   
-  private final String propertiesParamName = "space";
-  private final String homeNodeAppProperty = "homeNodeApp";
-  private final String appsProperty = "apps";
   private String homeNodeApp;
-  private String[] apps;
+  private List<String> apps = null;
   private JCRStorage storage;
   private OrganizationService orgService = null;
   private UserACL userACL = null;
@@ -78,10 +73,19 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public SpaceServiceImpl(InitParams params, SocialDataLocation dataLocation) throws Exception {
     storage = new JCRStorage(dataLocation);
-    PropertiesParam properties = params.getPropertiesParam(propertiesParamName);
-    homeNodeApp = properties.getProperty(homeNodeAppProperty);
-    apps = properties.getProperty(appsProperty).split(",");
-    if(properties == null) throw new Exception("the 'space' properties parameter is expected.");
+    
+    Iterator it = params.getValuesParamIterator();
+    apps = new ArrayList<String>();
+    while(it.hasNext()) {
+      ValuesParam param = (ValuesParam) it.next();
+      String name = param.getName();
+      if(name.endsWith("homeNodeApp")) {
+        homeNodeApp = param.getValue();
+      }
+      if(name.endsWith("apps")) {
+        apps = param.getValues();
+      }
+    }
   }
   
   /**

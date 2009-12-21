@@ -23,12 +23,17 @@
     <key>org.exoplatform.social.space.SpaceService</key>
     <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
     <init-params>
-  		<properties-param>
-  		<name>space</name>
-  		<description>Configure the applications to install in a space</description>
-  		<property name="homeNodeApp" value="DashboardPortlet"></property>
-  		<property name="apps" value="UserListPortlet, SpaceSettingPortlet"></property>
-  		</properties-param>
+      <!-- Configure the applications to install in a space -->
+      <values-param>
+        <name>space.homeNodeApp</name>
+        <value>DashboardPortlet</value>
+      </values-param>
+      <!-- Configure removable application or not <value>Application:removable</value> -->
+      <values-param>
+        <name>space.apps</name>
+        <value>SpaceSettingPortlet:false</value>
+        <value>UserListPortlet:true</value>
+      </values-param>
   	</init-params>	
   </component>
   

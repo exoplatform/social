@@ -28,11 +28,13 @@
 	<% uiform.begin() %>
   <div class="ContainerSpace">
 		<% for(app in applications)  {%>
+		<%    def isRemovable = uicomponent.isRemovable(app.getId());%>
 		<div class="ContentSpace">
 			<div class="ApplicationIcon"><span></span></div>
 			<div class="CommunityContainer">
 				<div class="CommunityMane Line">
 					<div style="float: left;" class="CommunityName"><%= app.getDisplayName() %></div>
+					<% if (isRemovable) { %>
 					<div class="SpaceAction">
           <div class="LeftButton">
 					    <div class="RightButton">
@@ -41,6 +43,7 @@
 					    </div>
 					  </div>
         </div>
+        <% } %>
 					<div style="clear: both;"><span></span></div>
 				</div>
 				<div class="Text"><%= app.getDescription() %></div>
