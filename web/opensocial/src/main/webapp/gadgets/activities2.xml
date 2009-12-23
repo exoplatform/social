@@ -168,9 +168,6 @@
 				  											<div style="height: 2px;"><span></span></div>
 				  											<div contenteditable="true" id="UIComposerTextArea" class="Textbox">__MSG_what_are_you_doing__</div>
 				  									</div>
-					 									<div id="UIComposerExtension" class="ExtensionInput">
-					 										<!-- dynamic loading -->
-						 								</div>
 						 							</div>
 												</div>
 											</div>	
@@ -185,38 +182,16 @@
   									<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
   								</td>
   							</tr>
+  						  <tr>
+  						    <td>&nbsp;</td>
+  						    <td colspan="2">
+  						      <div id="UIComposerExtension" class="ExtensionInput">
+                      <!-- dynamic loading -->
+                    </div>
+  						    </td>
+  						  </tr>
   						</body>
   					</table>	
-  				</div>
-  				
-  				<div class="ActivitiesContent" style="margin: 4px 0px 1px 0px;">
-  					<div class="Addlink">Add Link</div>
-  					<div class="AddLinkContent">
-  						<input class="InputLink" type="textbox"/>
-  						<a title="Add Link" id="#" href="#" class="IconAdd"> </a>
-  						<div style="clear: both; height: 0px;"><span></span></div>
-  					</div>
-  					<div class="ActionAdd"><a href="#">Puplish</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">Cancel</a></div>
-  					<div style="clear: both; height: 0px;"><span></span></div>
-  				</div>
-  				
-  				<div class="ActivitiesContent" style="border-top: 1px solid #f7f7f7;">
-  					<div class="AvartarLeft">
-  						<a class="AvatarPeopleBG" href="#">
-  							<img height="47px" width="47px" src="http://localhost:8080/social/gadgets/activities2/style/images/AvatarPeople.gif"/>
-  						</a>
-  						<div class="AvatarAction">
-  							<div class="BackIcon"><span></span></div>
-  							<div class="NextIcon"><span></span></div>
-  							<div style="clear: both; height: 0px;"><span></span></div>
-  						</div>
-  					</div>
-  					<div class="ContentRight">
-  						<div class="Label">Lorem ipsum dolor sit amet</div>
-  						<div class="Content">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.</div>
-  						<div class="Source">Source: <a href="#">http:// localhost:8080/portal</a></div>
-  					</div>
-  					<div style="clear: left; height: 0px;"><span></span></div>
   				</div>
   				
   				<div class="ATitleBarL">
