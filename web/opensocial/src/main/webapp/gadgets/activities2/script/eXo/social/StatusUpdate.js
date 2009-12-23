@@ -32,7 +32,7 @@ eXo.social.StatusUpdate = function() {
 }
 
 /**
- * static varialbes
+ * static variables
  */
 eXo.social.StatusUpdate.DataMode_BOTH = 'DataMode_BOTH';
 eXo.social.StatusUpdate.DataMode_OWNER_ONLY = 'DataMode_OWNER_ONLY';
@@ -83,7 +83,7 @@ eXo.social.StatusUpdate.main = function() {
 	//set ref
 	statusUpdate.linkShare = linkShare;
 	eXo.social.Like.ref.statusUpdate = statusUpdate;
-	//linkShare.init();
+	linkShare.init();
 }
 
 /**
@@ -515,7 +515,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   			html.push('</a>');
   			html.push('<div class="Content">');
   			html.push('<div class="Titlecontent" style="height: 24px;">');
-  				html.push('<div class="TitleItem" href="#">' + title + '</div>');
+  				html.push('<div class="TitleItem">' + title + '</div>');
         if ((statusUpdate.currentView === 'canvas') && (viewerId === ownerId)) {
           html.push('<div class="ActionContent">');
           html.push('<div id="ActionContentButton' + activityId + '" class="ActionContenButton" href="#action"><span></span></div>');
@@ -528,7 +528,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
             }
             html.push('</div>');
           html.push('</div>');
-          html.push('</div>');
+        html.push('</div>');
         }
 				html.push('<div style="clear: both; height: 0px;"><span></span></div>');
 				html.push('</div>');
@@ -555,26 +555,26 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	/**
   	 * get html block of link share activity
   	 * @param	activity
-  	 * @param	data json object from activity.body.data
+  	 * @param	data json body object from activity.body
   	 */
-  	var getLinkShareActivityBlock = function(activity, data) {
-  	  	if (!activity || !data) {
+  	var getLinkShareActivityBlock = function(activity, jsonBody) {
+  	  	if (!activity || !jsonBody) {
   	  		debug.error('getLinkShareActivityBlock: activity or data is null.');
   	  		debug.info(activity);
-  	  		debug.info(data);
+  	  		debug.info(jsonBody);
   	  		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
   	  		return '';
   	  	}
 
 	  		var userId = activity.getField(opensocial.Activity.Field.USER_ID);
 	  		var url = activity.getField(opensocial.Activity.Field.URL);
-			  var activityId =  activity.getField(opensocial.Activity.Field.ID);
-			  var viewerId = statusUpdate.viewer.getId();
+			var activityId =  activity.getField(opensocial.Activity.Field.ID);
+			var viewerId = statusUpdate.viewer.getId(),
+			ownerId = statusUpdate.owner.getId();
 	  		var title = activity.getField(opensocial.Activity.Field.TITLE);
-	  		var body = activity.getField(opensocial.Activity.Field.BODY);
 	  		var userName = statusUpdate.getName(userId);
 	  		var avatarUrl = statusUpdate.getAvatar(userId);
-	  		var prettyTime = Util.toPrettyTime(new Date(this.activities[i].getField('postedTime')));
+	  		var prettyTime = Util.toPrettyTime(new Date(activity.getField('postedTime')));
 	  		var html = [];
 	  		html.push('<div class="ActivitiesContent"');
 	  			html.push('<div class="MiniAvatarSpaceBG">');
@@ -584,18 +584,50 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	    			html.push('<a href="#">' + userName + '</a>');
 	    		html.push('</div>');
 	    		html.push('<div class="UserStatus">');
-  				if (data.comment) {
-  					html.push(data.comment);
+  				if (jsonBody.comment) {
+  					html.push(jsonBody.comment);
   				}
   				html.push('</div>');
   				html.push('<div class="Thumbnail">');
-  				if (data.noThumbnail === false) {
-  					html.push('<img width="70px" src="' + data.images[data.selectedImageIndex] + '" title="' + data.title + '" />');
+  				if (jsonBody.data.noThumbnail === false) {
+  					html.push('<img width="50px" src="' + jsonBody.data.images[jsonBody.data.selectedImageIndex] + '" title="' + jsonBody.data.title + '" />');
   				}
   				html.push('</div>');
-  				html.push('<div class="Title">' + data.title + '</div>');
-  				html.push('<div class="Description">' + data.description + '</div>');
-  				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + data.link + '</div>');
+  				html.push('<div class="Title">' + jsonBody.data.title + '</div>');
+  				html.push('<div class="Description">' + jsonBody.data.description + '</div>');
+  				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonBody.data.link + '</div>');
+  		        if ((statusUpdate.currentView === 'canvas') && (viewerId === ownerId)) {
+  		        html.push('<div class="ActionContent">');
+  		          html.push('<div id="ActionContentButton' + activityId + '" class="ActionContenButton" href="#action"><span></span></div>');
+  		          html.push('<div id="MenuItemContainer' + activityId + '" style="position: absolute; display: block; min-width: 98px; top: 19px; right: 5px; visibility: hidden;" class="MenuItemContainer">');
+  		            html.push('<div class="SubBlock">');
+  		            if (ownerId === userId) {
+  		              html.push('<div class="MenuItem">');
+  		                html.push('<a id="Delete'+ activityId +'" class="ItemIcon DeleteIcon DefaultPageIcon" title="'+ Locale.getMsg('delete') +'" href="#delete">' + Locale.getMsg('delete') + '</a>');
+  		              html.push('</div>');
+  		            }
+  		            html.push('</div>');
+  		          html.push('</div>');
+  		        html.push('</div>');
+  		        }
+  						html.push('<div style="clear: both; height: 0px;"><span></span></div>');
+  						html.push('</div>');
+  		  				html.push('<div class="NewsDate">' + prettyTime + '</div>');
+  		  			if (statusUpdate.currentView === 'canvas') {
+  		  				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
+  		  			}
+  		  			html.push('</div>')
+  		  			html.push('<div class="ClearLeft"><span></span></div>');
+  		  		html.push('</div>');
+  		  		html.push('<div class="ListPeopleLikeBG">');
+  		  			html.push('<div id="ListPeopleLike' + activityId + '" class="ListPeopleLike DisplayNone">');
+  		  				html.push('<div class="ListPeopleContent"');
+  		  					html.push('<div id="TitleLike' + activityId + '" class="Title"></div>');
+  		  					html.push('<div style="display:none;" id="ListPeople' + activityId + '"></div>');
+  		  					html.push('<div class="ClearLeft"><span></span></div>');
+  		  				html.push('</div>');
+  		  			html.push('</div>');
+  		  		html.push('</div>');
   			html.push('</div>');
   			return html.join('');
   	}
@@ -659,8 +691,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  		jsonBody = jsonBody.replace(/&#92;/g, "\\");
 	  		jsonBody = gadgets.json.parse(jsonBody);
 	  		if (jsonBody.data) { //process with json body, link display
-	  			var data = jsonBody.data;
-				html = getLinkShareActivityBlock(activities[i], data);
+				html = getLinkShareActivityBlock(activities[i], jsonBody);
 	  		} else {//normal display
 				html = getNormalActivityBlock(activities[i]);
 			}
