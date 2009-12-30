@@ -127,7 +127,7 @@ public class UIProfile extends UIContainer {
     return getCurrentProfileID().equals(rUser);
   }
   
-  protected String getImageSource() throws Exception {
+  public String getImageSource() throws Exception {
     Profile p = getProfile(true);
     ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
     if (att != null) {

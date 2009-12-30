@@ -93,8 +93,8 @@ public class UIAvatarUploader extends UIForm {
    * @return file extension
    */
   private String getMimeExtension(String mimeType) {
-	  int slashIndex = mimeType.lastIndexOf('/');
-	  return mimeType.substring(slashIndex + 1);
+    int slashIndex = mimeType.lastIndexOf('/');
+    return mimeType.substring(slashIndex + 1);
   }
   
 
@@ -134,9 +134,11 @@ public class UIAvatarUploader extends UIForm {
         if (newName == null) {
           newName = uploadResource.getFileName();
         } else {
-      	  newName = newName + "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
+          newName = newName + "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
         }
         profileAtt.setFileName(newName);
+        profileAtt.setLastModified(System.currentTimeMillis());
+        
         UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
         uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
         

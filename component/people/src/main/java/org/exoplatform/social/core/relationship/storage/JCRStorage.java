@@ -16,10 +16,6 @@
  */
 package org.exoplatform.social.core.relationship.storage;
 
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.*;
@@ -27,7 +23,6 @@ import org.exoplatform.social.space.JCRSessionManager;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
 import javax.jcr.*;
-import javax.jcr.Property;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -57,33 +52,28 @@ public class JCRStorage {
     this.sessionManager = dataLocation.getSessionManager();
   }
 
-  private Node getRelationshipServiceHome(SessionProvider sProvider) throws Exception {
-    String path = dataLocation.getSocialRelationshipHome();
-    return sessionManager.getSession(sProvider).getRootNode().getNode(path);
-  }
-
-  public void saveRelationship(Relationship relationship) {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
+  public void saveRelationship(Relationship relationship) throws Exception {
+    Session session = sessionManager.openSession();
+    Node relationshipNode = null;
     try {
-      Node relationshipNode;
-      Node relationshipHomeNode = getRelationshipServiceHome(sProvider);
+      Node relationshipHomeNode = getRelationshipServiceHome(session);
 
       if (relationship.getId() == null) {
         relationshipNode = relationshipHomeNode.addNode(RELATION_NODETYPE, RELATION_NODETYPE);
         relationshipNode.addMixin("mix:referenceable");
         //relationshipHomeNode.save();
       } else {
-        relationshipNode = relationshipHomeNode.getSession().getNodeByUUID(relationship.getId());
+        relationshipNode = session.getNodeByUUID(relationship.getId());
       }
-      Node id1Node = relationshipHomeNode.getSession().getNodeByUUID(relationship.getIdentity1().getId());
-      Node id2Node = relationshipHomeNode.getSession().getNodeByUUID(relationship.getIdentity2().getId());
+      Node id1Node = session.getNodeByUUID(relationship.getIdentity1().getId());
+      Node id2Node = session.getNodeByUUID(relationship.getIdentity2().getId());
 
 
       relationshipNode.setProperty(RELATION_IDENTITY1, id1Node);
       relationshipNode.setProperty(RELATION_IDENTITY2, id2Node);
       relationshipNode.setProperty(PROPERTY_STATUS, relationship.getStatus().toString());
 
-      updateProperties(relationship, relationshipNode);
+      updateProperties(relationship, relationshipNode, session);
 
       if (relationship.getId() == null) {
         relationshipHomeNode.save();
@@ -92,86 +82,38 @@ public class JCRStorage {
       else {
         relationshipNode.save();
       }
-      loadProperties(relationship, relationshipNode);  
     } catch (Exception e) {
     } finally {
-      sProvider.close();
+      sessionManager.closeSession();
     }
-    
+      loadProperties(relationship, relationshipNode);  
   }
   
   public void removeRelationship(Relationship relationship) {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    Session session = sessionManager.openSession();
     try {
-      Node relationshipHomeNode = getRelationshipServiceHome(sProvider);
-      Node relationshipNode = relationshipHomeNode.getSession().getNodeByUUID(relationship.getId());
+      Node relationshipHomeNode = getRelationshipServiceHome(session);
+      Node relationshipNode = session.getNodeByUUID(relationship.getId());
       relationshipNode.remove();
       relationshipHomeNode.save();
     } catch (Exception e) {
       // TODO: handle exception
     } finally {
-      sProvider.close();
-    }
-  }
-
-  private void updateProperties(Relationship relationship, Node relationshipNode) throws Exception {
-    List<org.exoplatform.social.core.relationship.Property> properties = relationship.getProperties();
-
-    NodeIterator oldNodes = relationshipNode.getNodes(PROPERTY_NODETYPE);
-
-    //remove the nodes that need to be removed
-    while (oldNodes.hasNext()) {
-      Node node = (Node) oldNodes.next();
-      String uuid = node.getUUID();
-      Boolean toRemove = true;
-      for (org.exoplatform.social.core.relationship.Property property : properties) {
-        if (uuid.equals(property.getId())) {
-          toRemove = false;
-          break;
-        }
-      }
-      if (toRemove) {
-        node.remove();
-      }
-    }
-
-    //add the new properties and update the exisiting one
-    for (org.exoplatform.social.core.relationship.Property property : properties) {
-      Node propertyNode;
-      if (property.getId() == null) {
-        propertyNode = relationshipNode.addNode(PROPERTY_NODETYPE, PROPERTY_NODETYPE);
-        propertyNode.addMixin("mix:referenceable");
-        //relationshipNode.save();
-        //property.setId(propertyNode.getUUID());
-      } else {
-        propertyNode = relationshipNode.getSession().getNodeByUUID(relationship.getId());
-      }
-      propertyNode.setProperty(PROPERTY_NAME, property.getName());
-      propertyNode.setProperty(PROPERTY_ISSYMETRIC, property.isSymetric());
-      propertyNode.setProperty(PROPERTY_STATUS, property.getStatus().toString());
-
-      if (property.getInitiator() != null) {
-        SessionProvider sProvider = SessionProvider.createSystemProvider();
-        Node relationshipHomeNode = getRelationshipServiceHome(sProvider);
-        Node initiatorNode = relationshipHomeNode.getSession().getNodeByUUID(property.getInitiator().getId());
-        propertyNode.setProperty(PROPERTY_INITIATOR, initiatorNode);
-        sProvider.close();
-      }
+      sessionManager.closeSession();
     }
   }
 
   public Relationship getRelationship(String uuid) throws Exception {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
-    Node relationshipHomeNode = getRelationshipServiceHome(sProvider);
+    Session session = sessionManager.openSession();
 
     Node relationshipNode;
     try {
-      relationshipNode = relationshipHomeNode.getSession().getNodeByUUID(uuid);
+      relationshipNode = session.getNodeByUUID(uuid);
     }
     catch (ItemNotFoundException e) {
       return null;
     } finally {
-      sProvider.close();
+      sessionManager.closeSession();
     }
 
     Relationship relationship = new Relationship(relationshipNode.getUUID());
@@ -191,6 +133,94 @@ public class JCRStorage {
     return relationship;
   }
 
+  public List<Relationship> getRelationshipByIdentity(Identity identity) throws Exception {
+    if (identity.getId() == null)
+      return null;
+
+    return getRelationshipByIdentityId(identity.getId());
+  }
+
+  public List<Relationship> getRelationshipByIdentityId(String identityId) throws Exception {
+    Session session = sessionManager.openSession();
+    List<Relationship> results = new ArrayList<Relationship>();
+    PropertyIterator refNodes = null;
+    try {
+      if (identityId == null) {
+        return null;
+      }
+
+      Node identityNode = session.getNodeByUUID(identityId);
+      refNodes = identityNode.getReferences();
+    } catch (Exception e) {
+      // TODO: handle exception
+      return null;
+    } finally {
+      sessionManager.closeSession();
+    }
+    
+    while (refNodes.hasNext()) {
+      javax.jcr.Property property = (javax.jcr.Property) refNodes.next();
+      Node node = property.getParent();
+      if (node.isNodeType(RELATION_NODETYPE)) {
+        results.add(getRelationship(node.getUUID()));
+      }
+    }
+    
+    return results;
+  }
+
+  public List<Identity> getRelationshipIdentitiesByIdentity(Identity identity) throws Exception {
+    Session session = sessionManager.openSession();
+    List<Identity> results = new ArrayList<Identity>();
+    PropertyIterator refNodes = null;
+    try {
+      if (identity.getId() == null) {
+        return null;
+      }
+
+      Node identityNode = session.getNodeByUUID(identity.getId());
+      refNodes = identityNode.getReferences();
+    } catch (Exception e) {
+      // TODO: handle exception
+      return null;
+    } finally {
+      sessionManager.closeSession();
+    }
+    
+    while (refNodes.hasNext()) {
+        javax.jcr.Property property = (javax.jcr.Property) refNodes.next();
+        Node node = property.getParent();
+        if (node.isNodeType(RELATION_NODETYPE)) {
+            Node relationshipNode;
+            try {
+              relationshipNode = session.getNodeByUUID(node.getUUID());
+            }
+            catch (ItemNotFoundException e) {
+                continue;
+            }
+
+            Node idNode = relationshipNode.getProperty(RELATION_IDENTITY1).getNode();
+            String sId = idNode.getUUID();
+
+            if (!sId.equals(identity.getId()))
+                results.add(identityManager.getIdentityById(idNode.getUUID()));
+            else {
+
+                idNode = relationshipNode.getProperty(RELATION_IDENTITY2).getNode();
+                results.add(identityManager.getIdentityById(idNode.getUUID()));
+            }
+
+        }
+    }
+      
+    return results;
+  }
+
+  private Node getRelationshipServiceHome(Session session) throws Exception {
+    String path = dataLocation.getSocialRelationshipHome();
+    return session.getRootNode().getNode(path);
+  }
+  
   /**
    * Load all the properties and add them to the relationship
    *
@@ -224,78 +254,46 @@ public class JCRStorage {
     relationship.setProperties(props);
   }
 
-  public List<Relationship> getRelationshipByIdentity(Identity identity) throws Exception {
-    if (identity.getId() == null)
-      return null;
+  private void updateProperties(Relationship relationship, Node relationshipNode, Session session) throws Exception {
+    List<org.exoplatform.social.core.relationship.Property> properties = relationship.getProperties();
 
-    return getRelationshipByIdentityId(identity.getId());
-  }
+    NodeIterator oldNodes = relationshipNode.getNodes(PROPERTY_NODETYPE);
 
-
-    public List<Relationship> getRelationshipByIdentityId(String identityId) throws Exception {
-      SessionProvider sProvider = SessionProvider.createSystemProvider();
-      Node relationshipHomeNode = getRelationshipServiceHome(sProvider);
-      List<Relationship> results = new ArrayList<Relationship>();
-
-      if (identityId == null)
-        return null;
-
-      Node identityNode = relationshipHomeNode.getSession().getNodeByUUID(identityId);
-      PropertyIterator refNodes = identityNode.getReferences();
-
-      while (refNodes.hasNext()) {
-        javax.jcr.Property property = (javax.jcr.Property) refNodes.next();
-        Node node = property.getParent();
-        if (node.isNodeType(RELATION_NODETYPE)) {
-          results.add(getRelationship(node.getUUID()));
+    //remove the nodes that need to be removed
+    while (oldNodes.hasNext()) {
+      Node node = (Node) oldNodes.next();
+      String uuid = node.getUUID();
+      Boolean toRemove = true;
+      for (org.exoplatform.social.core.relationship.Property property : properties) {
+        if (uuid.equals(property.getId())) {
+          toRemove = false;
+          break;
         }
       }
-      sProvider.close();
-      return results;
+      if (toRemove) {
+        node.remove();
+      }
     }
 
+    //add the new properties and update the exisiting one
+    for (org.exoplatform.social.core.relationship.Property property : properties) {
+      Node propertyNode;
+      if (property.getId() == null) {
+        propertyNode = relationshipNode.addNode(PROPERTY_NODETYPE, PROPERTY_NODETYPE);
+        propertyNode.addMixin("mix:referenceable");
+        //relationshipNode.save();
+        //property.setId(propertyNode.getUUID());
+      } else {
+        propertyNode = session.getNodeByUUID(relationship.getId());
+      }
+      propertyNode.setProperty(PROPERTY_NAME, property.getName());
+      propertyNode.setProperty(PROPERTY_ISSYMETRIC, property.isSymetric());
+      propertyNode.setProperty(PROPERTY_STATUS, property.getStatus().toString());
 
-    public List<Identity> getRelationshipIdentitiesByIdentity(Identity identity) throws Exception {
-        SessionProvider sProvider = SessionProvider.createSystemProvider();
-        Node relationshipHomeNode = getRelationshipServiceHome(sProvider);
-        List<Identity> results = new ArrayList<Identity>();
-
-        if (identity.getId() == null) {
-          sProvider.close();
-          return null;
-        }
-
-        Node identityNode = relationshipHomeNode.getSession().getNodeByUUID(identity.getId());
-        PropertyIterator refNodes = identityNode.getReferences();
-
-        while (refNodes.hasNext()) {
-            javax.jcr.Property property = (javax.jcr.Property) refNodes.next();
-            Node node = property.getParent();
-            if (node.isNodeType(RELATION_NODETYPE)) {
-                Node relationshipNode;
-                try {
-                    relationshipNode = relationshipHomeNode.getSession().getNodeByUUID(node.getUUID());
-                }
-                catch (ItemNotFoundException e) {
-                    continue;
-                }
-
-                Node idNode = relationshipNode.getProperty(RELATION_IDENTITY1).getNode();
-                String sId = idNode.getUUID();
-
-                if (!sId.equals(identity.getId()))
-                    results.add(identityManager.getIdentityById(idNode.getUUID()));
-                else {
-
-                    idNode = relationshipNode.getProperty(RELATION_IDENTITY2).getNode();
-                    results.add(identityManager.getIdentityById(idNode.getUUID()));
-                }
-
-            }
-        }
-        sProvider.close();
-        return results;
+      if (property.getInitiator() != null) {
+        Node initiatorNode = session.getNodeByUUID(property.getInitiator().getId());
+        propertyNode.setProperty(PROPERTY_INITIATOR, initiatorNode);
+      }
     }
-
-
+  }
 }

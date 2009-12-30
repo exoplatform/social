@@ -122,12 +122,12 @@ public class UISpaceInfo extends UIForm {
   static public class SaveActionListener extends EventListener<UISpaceInfo> {
     public void execute(Event<UISpaceInfo> event) throws Exception {
       UISpaceInfo uiSpaceInfo = event.getSource();
-      SpaceService spaceSrc = uiSpaceInfo.getApplicationComponent(SpaceService.class);
+      SpaceService spaceService = uiSpaceInfo.getSpaceService();
       WebuiRequestContext requestContext = event.getRequestContext();
       String id = uiSpaceInfo.getUIStringInput("id").getValue();
-      Space space = spaceSrc.getSpaceById(id);
+      Space space = spaceService.getSpaceById(id);
       uiSpaceInfo.invokeSetBindingBean(space);
-      spaceSrc.saveSpace(space, false);
+      spaceService.saveSpace(space, false);
       UIApplication uiApp = requestContext.getUIApplication();
       uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));
       SpaceUtils.updateWorkingWorkSpace();

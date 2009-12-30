@@ -72,7 +72,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     loadIdentity(user, identity);
     
     //TODO dang.tung need to save profile in database if node doesn't exist
-    saveProfile(identity.getProfile());
+    //saveProfile(identity.getProfile());
     return identity;
   }
 
@@ -95,7 +95,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
         emails.add(email);
         profile.setProperty("emails", emails);
       }
-
+      
     return identity;
   }
 
@@ -127,4 +127,4 @@ public class OrganizationIdentityProvider extends IdentityProvider {
   private void refreshCache() {
     userCache.clear();
   }
-}
+}   

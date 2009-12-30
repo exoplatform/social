@@ -24,7 +24,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.JCRSessionManager;
@@ -54,26 +53,24 @@ public class JCRStorage {
   //new change
   private SocialDataLocation dataLocation;
   private JCRSessionManager sessionManager;
-  
-
 
   public JCRStorage(SocialDataLocation dataLocation) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
   }
 
-  private Node getActivityServiceHome(SessionProvider sProvider) throws Exception {
+  private Node getActivityServiceHome(Session session) throws Exception {
     String path = dataLocation.getSocialActivitiesHome();
-    return sessionManager.getSession(sProvider).getRootNode().getNode(path); 
+    return session.getRootNode().getNode(path);
   }
 
   private Node getUserActivityServiceHome(String username) {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    Session session = sessionManager.openSession();
     try {
-      Node activityHomeNode = getActivityServiceHome(sProvider);
-      try {
+      Node activityHomeNode = getActivityServiceHome(session);
+      if (activityHomeNode.hasNode(username)){
         return activityHomeNode.getNode(username);
-      } catch (PathNotFoundException ex) {
+      } else {
         Node appNode = activityHomeNode.addNode(username, NT_UNSTRUCTURED);
         activityHomeNode.save();
         return appNode;
@@ -81,7 +78,7 @@ public class JCRStorage {
     } catch (Exception e) {
       return null;
     } finally {
-      sProvider.close();
+      sessionManager.closeSession();
     }
     
   }
@@ -103,50 +100,56 @@ public class JCRStorage {
    
   }
 
-
   public Activity save(String user, Activity activity) throws Exception {
     Node activityNode;
     Node activityHomeNode = getPublishedActivityServiceHome(user);
-
-    if (activity.getId() == null) {
-      activityNode = activityHomeNode.addNode(ACTIVITY_NODETYPE, ACTIVITY_NODETYPE);
-      activityNode.addMixin("mix:referenceable");
-    } else {
-      activityNode = activityHomeNode.getSession().getNodeByUUID(activity.getId());
+    try {
+      Session session = sessionManager.openSession();
+      if (activity.getId() == null) {
+        activityNode = activityHomeNode.addNode(ACTIVITY_NODETYPE, ACTIVITY_NODETYPE);
+        activityNode.addMixin("mix:referenceable");
+      } else {
+        activityNode = session.getNodeByUUID(activity.getId());
+      }
+      
+      if(activity.getBody() != null)
+        activityNode.setProperty(BODY, activity.getBody());
+      if(activity.getExternalId() != null)
+        activityNode.setProperty(EXTERNAL_ID, activity.getExternalId());
+      if(activity.getUpdated() != null)
+        activityNode.setProperty(UPDATED, activity.getUpdated());
+      if(activity.getPostedTime() != null)
+        activityNode.setProperty(POSTED_TIME, activity.getPostedTime());
+      if(activity.getPriority() != null)
+        activityNode.setProperty(PRIORITY, activity.getPriority());
+      if(activity.getTitle() != null)
+        activityNode.setProperty(TITLE, activity.getTitle());
+      if(activity.getUpdated() != null)
+        activityNode.setProperty(UPDATED, activity.getUpdated());
+      if(activity.getUserId() != null)
+        activityNode.setProperty(USER_ID, activity.getUserId());
+      if(activity.getType() != null)
+        activityNode.setProperty(TYPE, activity.getType());
+      if(activity.getUrl() != null) {
+        activityNode.setProperty(URL, activity.getUrl());  
+      }
+      //if(activity.getLikeIdentitiesId() != null) {
+        activityNode.setProperty(LIKE_IDENTITIES_ID, activity.getLikeIdentitiesId());  
+      //}
+      activityNode.setProperty(HIDDEN, activity.isHidden());
+      
+      if (activity.getId() == null) {
+        activityHomeNode.save();
+        activity.setId(activityNode.getUUID());
+      } else {
+        activityNode.save();
+      }
+    } catch (Exception e) {
+      // TODO: handle exception
+    } finally {
+      sessionManager.closeSession();
     }
-
-    if(activity.getBody() != null)
-      activityNode.setProperty(BODY, activity.getBody());
-    if(activity.getExternalId() != null)
-      activityNode.setProperty(EXTERNAL_ID, activity.getExternalId());
-    if(activity.getUpdated() != null)
-      activityNode.setProperty(UPDATED, activity.getUpdated());
-    if(activity.getPostedTime() != null)
-      activityNode.setProperty(POSTED_TIME, activity.getPostedTime());
-    if(activity.getPriority() != null)
-      activityNode.setProperty(PRIORITY, activity.getPriority());
-    if(activity.getTitle() != null)
-      activityNode.setProperty(TITLE, activity.getTitle());
-    if(activity.getUpdated() != null)
-      activityNode.setProperty(UPDATED, activity.getUpdated());
-    if(activity.getUserId() != null)
-      activityNode.setProperty(USER_ID, activity.getUserId());
-    if(activity.getType() != null)
-      activityNode.setProperty(TYPE, activity.getType());
-    if(activity.getUrl() != null) {
-      activityNode.setProperty(URL, activity.getUrl());  
-    }
-    //if(activity.getLikeIdentitiesId() != null) {
-      activityNode.setProperty(LIKE_IDENTITIES_ID, activity.getLikeIdentitiesId());  
-    //}
-    activityNode.setProperty(HIDDEN, activity.isHidden());
     
-    if (activity.getId() == null) {
-      activityHomeNode.save();
-      activity.setId(activityNode.getUUID());
-    } else {
-      activityNode.save();
-    }
     return activity;
   }
   
@@ -156,8 +159,7 @@ public class JCRStorage {
    * @throws Exception
    */
   public void deleteActivity(String activityId) throws Exception {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
-    Session session = getActivityServiceHome(sProvider).getSession();
+    Session session = sessionManager.openSession();
     Node activityNode = null;
     try {
       activityNode = session.getNodeByUUID(activityId);
@@ -168,22 +170,21 @@ public class JCRStorage {
     } catch(Exception ex) {
       ex.printStackTrace();
     } finally {
-      sProvider.close();
+      sessionManager.closeSession();
     }
     
   }
 
   public Activity load(String id) {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
+    Session session = sessionManager.openSession();
     try {
-      Node activityHomeNode = getActivityServiceHome(sProvider);
-      Node activityNode = activityHomeNode.getSession().getNodeByUUID(id);
+      Node activityNode = session.getNodeByUUID(id);
       if (activityNode != null)
         return load(activityNode);
     } catch (Exception e) {
       return null;
     } finally {
-      sProvider.close();
+      sessionManager.closeSession();
     }
     return null;
   }

@@ -17,7 +17,6 @@
 package org.exoplatform.social.space.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -30,7 +29,6 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.social.space.JCRSessionManager;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
@@ -65,9 +63,9 @@ public class JCRStorage {
     this.workspace = dataLocation.getWorkspace();
   }
 
-  private Node getSpaceHome(SessionProvider sProvider) throws Exception {
+  private Node getSpaceHome(Session session) throws Exception {
     String path = dataLocation.getSocialSpaceHome();
-    return sessionManager.getSession(sProvider).getRootNode().getNode(path);  
+    return session.getRootNode().getNode(path);
   }
 
   public String getRepository() throws Exception {
@@ -79,92 +77,90 @@ public class JCRStorage {
   }
   
   public List<Space> getAllSpaces() {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
     List<Space> spaces = new ArrayList<Space>();
     try {
-      Node spaceHomeNode = getSpaceHome(sProvider);
+      Session session = sessionManager.openSession();
+      Node spaceHomeNode = getSpaceHome(session);
       NodeIterator iter = spaceHomeNode.getNodes();
       Space space;
       while (iter.hasNext()) {
         Node spaceNode = iter.nextNode();
-        space = getSpace(spaceNode);
+        space = getSpace(spaceNode, session);
         spaces.add(space);
       }
       return spaces;
     } catch (Exception e) {
+//      System.out.println("\n\n\n\n\n\n ===>>>>> ====getAllSpaces err. return null \n");
       e.printStackTrace();
       return null;
     } finally {
-      sProvider.close();
+      sessionManager.closeSession();
     }
   }
 
   public Space getSpaceById(String id) {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
     try {
-      Node spaceHomeNode = getSpaceHome(sProvider);
-      return getSpace(spaceHomeNode.getSession().getNodeByUUID(id));
+      Session session = sessionManager.openSession();
+      
+      return getSpace(session.getNodeByUUID(id), session);
     } catch (Exception e) {
       e.printStackTrace();
       return null;
     } finally {
-      sProvider.close();
+      sessionManager.closeSession();
     }
   }
   
   public Space getSpaceByUrl(String url) {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
     try {
-      Node spaceHomeNode = getSpaceHome(sProvider);
+      Session session = sessionManager.openSession();
+      
+      Node spaceHomeNode = getSpaceHome(session);
       NodeIterator iter = spaceHomeNode.getNodes();
       Space space;
       while (iter.hasNext()) {
         Node spaceNode = iter.nextNode();
-        space = getSpace(spaceNode);
+        space = getSpace(spaceNode, session);
         if(space.getUrl().equals(url)) return space;
       }
     }catch (Exception e) {
       return null;
     } finally {
-      sProvider.close();
+      sessionManager.closeSession();
     }
     return null;
   }
   
   public void deleteSpace(String id) {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
     Session session = sessionManager.openSession();
     try {
       Node spaceNode = session.getNodeByUUID(id);
       if(spaceNode != null) {
         spaceNode.remove();
+        session.save();
       }
     } catch (Exception e) {
       // TODO: handle exception
     } finally {
-      sProvider.close();
-      sessionManager.closeSession(true);
+      sessionManager.closeSession();
     }
   }
 
   public void saveSpace(Space space, boolean isNew) {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
     try {
-      Node spaceHomeNode = getSpaceHome(sProvider);
-      saveSpace(spaceHomeNode, space, isNew);
+      Session session = sessionManager.openSession();
+      
+      Node spaceHomeNode = getSpaceHome(session);
+      saveSpace(spaceHomeNode, space, isNew, session);
     } catch (Exception e) {
       // TODO: handle exception
     } finally {
-      sProvider.close();
-    }
+      sessionManager.closeSession();}
   }
 
-  private void saveSpace(Node spaceHomeNode, Space space, boolean isNew) {
+  private void saveSpace(Node spaceHomeNode, Space space, boolean isNew, Session session) {
     Node spaceNode;
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
-    sessionManager.openSession();
     try {
-      Session session = sessionManager.getSession(sProvider);
       if(isNew) {
         spaceNode = spaceHomeNode.addNode(SPACE_NODETYPE,SPACE_NODETYPE);
         spaceNode.addMixin("mix:referenceable");
@@ -211,12 +207,22 @@ public class JCRStorage {
           } catch (PathNotFoundException ex) {
             nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
           }
-          nodeContent.setProperty("jcr:mimeType", attachment.getMimeType()) ;
-          nodeContent.setProperty("jcr:data", attachment.getInputStream());
-          nodeContent.setProperty("jcr:lastModified", Calendar.getInstance().getTimeInMillis());
+          long lastModified = attachment.getLastModified();
+          long lastSaveTime = 0;
+          if (nodeContent.hasProperty("jcr:lastModified")) 
+            lastSaveTime = nodeContent.getProperty("jcr:lastModified").getLong();
+          if ((lastModified != 0) && (lastModified != lastSaveTime)) {
+            nodeContent.setProperty("jcr:mimeType", attachment.getMimeType()) ;
+            nodeContent.setProperty("jcr:data", attachment.getInputStream(session));
+            nodeContent.setProperty("jcr:lastModified", attachment.getLastModified());
+          }
         }
       } else {
-        if(spaceNode.hasNode("image")) spaceNode.getNode("image").remove() ;
+        if(spaceNode.hasNode("image")) {
+          spaceNode.getNode("image").remove() ;
+          // add 12DEC
+          session.save();
+        }
       }
       //TODO: dang.tung need review
       if(isNew) spaceHomeNode.save();
@@ -224,12 +230,10 @@ public class JCRStorage {
     } catch (Exception e) {
       // TODO: handle exception
     } finally {
-      sProvider.close();
-      sessionManager.closeSession(true);
     }
   }
 
-  private Space getSpace(Node spaceNode) throws Exception{
+  private Space getSpace(Node spaceNode, Session session) throws Exception{
     Space space = new Space();
     space.setId(spaceNode.getUUID());
     if(spaceNode.hasProperty(SPACE_NAME)) space.setName(spaceNode.getProperty(SPACE_NAME).getString());
@@ -251,8 +255,16 @@ public class JCRStorage {
         SpaceAttachment file = new SpaceAttachment() ;
         file.setId(image.getPath()) ;
         file.setMimeType(image.getNode("jcr:content").getProperty("jcr:mimeType").getString()) ;
+        try {
+          file.setInputStream(image.getNode("jcr:content").getProperty("jcr:data").getValue().getStream());
+        } catch (Exception ex) {
+          // TODO: handle exception
+//          System.out.println("\n\n\n\n====>>>>>> getSpace err at getValue().getStream\n");
+          ex.getStackTrace();
+        }
         file.setFileName(image.getName()) ;
-        file.setWorkspace(image.getSession().getWorkspace().getName()) ;
+        file.setLastModified(image.getNode("jcr:content").getProperty("jcr:lastModified").getLong());
+        file.setWorkspace(session.getWorkspace().getName()) ;
         space.setSpaceAttachment(file) ;
       }
     }

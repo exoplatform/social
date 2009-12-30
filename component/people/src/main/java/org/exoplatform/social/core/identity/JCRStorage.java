@@ -19,7 +19,6 @@ package org.exoplatform.social.core.identity;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -46,13 +45,11 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionException;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.impl.core.value.BooleanValue;
 import org.exoplatform.services.jcr.impl.core.value.DoubleValue;
 import org.exoplatform.services.jcr.impl.core.value.LongValue;
@@ -89,30 +86,29 @@ public class JCRStorage {
   }
 
 
-  private Node getIdentityServiceHome(SessionProvider sProvider) throws Exception {
+  private Node getIdentityServiceHome(Session session) throws Exception {
     String path = dataLocation.getSocialIdentityHome();
-    return sessionManager.getSession(sProvider).getRootNode().getNode(path);
+    return session.getRootNode().getNode(path);
   }
 
   private ProfileConfig getConfig() {
     if (config == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      PortalContainer container = PortalContainer.getInstance();
       config = (ProfileConfig) container.getComponentInstanceOfType(ProfileConfig.class);
     }
     return config;
   }
 
-  private Node getProfileServiceHome(SessionProvider sProvider) throws Exception {
+  private Node getProfileServiceHome(Session session) throws Exception {
     String path = dataLocation.getSocialProfileHome();
-    return sessionManager.getSession(sProvider).getRootNode().getNode(path);
+    return session.getRootNode().getNode(path);
   }
 
   public void saveIdentity(Identity identity) {
     Session session =  sessionManager.openSession();
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
     try {
       Node identityNode;
-      Node identityHomeNode = getIdentityServiceHome(sProvider);
+      Node identityHomeNode = getIdentityServiceHome(session);
 
       if (identity.getId() == null) {
         identityNode = identityHomeNode.addNode(IDENTITY_NODETYPE, IDENTITY_NODETYPE);
@@ -130,10 +126,11 @@ public class JCRStorage {
         identityNode.save();
       }  
     } catch (Exception e) {
+      e.printStackTrace();
+//      System.out.println("\n\n\n\n\n===>>>>> saveIdentity err");
       // TODO: handle exception
     } finally {
-      sProvider.close();
-      sessionManager.closeSession(true);
+      sessionManager.closeSession();
     }
   }
 
@@ -144,6 +141,7 @@ public class JCRStorage {
       identityNode = session.getNodeByUUID(id);
     }
     catch (ItemNotFoundException e) {
+//      System.out.println("\n\n\n\n\n===>>>>> getIdentity err. return null");
       return null;
     } finally {
       sessionManager.closeSession();
@@ -156,30 +154,35 @@ public class JCRStorage {
   }
 
   public Identity getIdentityByRemoteId(String identityProvider, String id) throws Exception {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
     Session session = sessionManager.openSession();
-    Node identityHomeNode = getIdentityServiceHome(sProvider);
-
-    StringBuffer queryString = new StringBuffer("/").append(identityHomeNode.getPath())
-        .append("/").append(IDENTITY_NODETYPE).append("[(@")
-        .append(IDENTITY_PROVIDERID).append("='").append(identityProvider).append("' and @")
-        .append(IDENTITY_REMOTEID).append("='").append(id.replaceAll("'", "''")).append("')]");
-    
-    QueryManager queryManager = session.getWorkspace().getQueryManager();
-    Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
-    QueryResult queryResult = query.execute();
-    NodeIterator nodeIterator = queryResult.getNodes();
-
     Identity identity = null;
-    if (nodeIterator.getSize() == 1) {
-
-      Node identityNode = (Node) nodeIterator.next();
-      identity = new Identity(identityNode.getUUID());
-      identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
-      identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
+    try {
+      Node identityHomeNode = getIdentityServiceHome(session);
+  
+      StringBuffer queryString = new StringBuffer("/").append(identityHomeNode.getPath())
+          .append("/").append(IDENTITY_NODETYPE).append("[(@")
+          .append(IDENTITY_PROVIDERID).append("='").append(identityProvider).append("' and @")
+          .append(IDENTITY_REMOTEID).append("='").append(id.replaceAll("'", "''")).append("')]");
+      
+      QueryManager queryManager = session.getWorkspace().getQueryManager();
+      Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
+      QueryResult queryResult = query.execute();
+      NodeIterator nodeIterator = queryResult.getNodes();
+  
+      if (nodeIterator.getSize() == 1) {
+  
+        Node identityNode = (Node) nodeIterator.next();
+        identity = new Identity(identityNode.getUUID());
+        identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
+        identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
+      }
+    } catch (Exception e) {
+//      System.out.println("\n\n\n\n\n===>>>>> getIdentityByRemoteId err");
+      e.printStackTrace();
+      // TODO: handle exception
+    } finally {
+      sessionManager.closeSession();
     }
-    sessionManager.closeSession();
-    sProvider.close();
     return identity;
   }
   
@@ -195,16 +198,16 @@ public class JCRStorage {
   }
   
   public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFiler profileFilter) throws Exception {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
-    Node profileHomeNode = getProfileServiceHome(sProvider);
     Session session = sessionManager.openSession();
+    Node profileHomeNode = getProfileServiceHome(session);
     List<Identity> listIdentity = new ArrayList<Identity>();
-    
+    NodeIterator nodeIterator = null;
+    String userName = null;
     try {
       QueryManager queryManager = session.getWorkspace().getQueryManager() ;
       StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
           .append("/").append(PROFILE_NODETYPE);
-      String userName = profileFilter.getName().trim();
+      userName = profileFilter.getName().trim();
       String position = profileFilter.getPosition().trim();
       String gender = profileFilter.getGender().trim();
       
@@ -242,124 +245,132 @@ public class JCRStorage {
       
       Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
       QueryResult queryResult = query1.execute();
-      NodeIterator nodeIterator = queryResult.getNodes();
-      Node profileNode = null;
-      Node identityNode = null;
-      Identity identity = null;
-      String fullUserName = null;
-      String fullNameLC = null;
-      String userNameLC = null;
-      
-      while (nodeIterator.hasNext()) {
-        profileNode = (Node) nodeIterator.next();
-        identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
-        identity = getIdentity(identityNode);
-        if (userName.length() != 0) {
-          fullUserName = identity.getProfile().getFullName();
-          fullNameLC = fullUserName.toLowerCase();
-          userNameLC = userName.toLowerCase();
-          if ((userNameLC.length() != 0) && fullNameLC.matches(userNameLC)) {
-            listIdentity.add(identity);
-          }
-        } else {
-          listIdentity.add(identity);
-        }
-      }
+      nodeIterator = queryResult.getNodes();
     } catch (Exception e) {
       return (new ArrayList<Identity>());
     } finally { 
-      sProvider.close();
       sessionManager.closeSession();
+    }
+    
+    Node profileNode = null;
+    Node identityNode = null;
+    Identity identity = null;
+    String fullUserName = null;
+    String fullNameLC = null;
+    String userNameLC = null;
+    
+    while (nodeIterator.hasNext()) {
+      profileNode = (Node) nodeIterator.next();
+      identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
+      identity = getIdentity(identityNode);
+      if (userName.length() != 0) {
+        fullUserName = identity.getProfile().getFullName();
+        fullNameLC = fullUserName.toLowerCase();
+        userNameLC = userName.toLowerCase();
+        if ((userNameLC.length() != 0) && fullNameLC.matches(userNameLC)) {
+          listIdentity.add(identity);
+        }
+      } else {
+        listIdentity.add(identity);
+      }
     }
     
     return listIdentity;
   }
 
   public List<Identity> getIdentitiesFilterByAlphaBet(String identityProvider, ProfileFiler profileFilter) throws Exception {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
-    Node profileHomeNode = getProfileServiceHome(sProvider);
     Session session = sessionManager.openSession();
-    QueryManager queryManager = session.getWorkspace().getQueryManager() ;
-    StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
-        .append("/").append(PROFILE_NODETYPE);
-    String userName = profileFilter.getName();
-
-    if (userName.length() != 0) {
-      queryString.append("[");
-    }
-    
-    if (userName.length() != 0) {
-      userName += "*" ;
-        
-      queryString.append("(jcr:contains(@firstName, ").append("'").append(userName).append("'))");
-    }
-    
-    if (userName.length() != 0) {
-      queryString.append("]");
-    }
-    
-    Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
-    QueryResult queryResult = query1.execute();
-    NodeIterator nodeIterator = queryResult.getNodes();
+    Node profileHomeNode = getProfileServiceHome(session);
     List<Identity> listIdentity = new ArrayList<Identity>();
+    NodeIterator nodeIterator = null;
+    try {
+      QueryManager queryManager = session.getWorkspace().getQueryManager() ;
+      StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
+          .append("/").append(PROFILE_NODETYPE);
+      String userName = profileFilter.getName();
+  
+      if (userName.length() != 0) {
+        queryString.append("[");
+      }
+      
+      if (userName.length() != 0) {
+        userName += "*" ;
+          
+        queryString.append("(jcr:contains(@firstName, ").append("'").append(userName).append("'))");
+      }
+      
+      if (userName.length() != 0) {
+        queryString.append("]");
+      }
+      
+      Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
+      QueryResult queryResult = query1.execute();
+      nodeIterator = queryResult.getNodes();
+    } catch (Exception e) {
+      // TODO: handle exception
+//      System.out.println("\n\n\n\n\n===>>>>>>==== loadPrgetIdentitiesFilterByAlphaBet err core/identity");
+      return null;
+    } finally {
+      sessionManager.closeSession();
+    }
+    
     while (nodeIterator.hasNext()) {
       Node profileNode = (Node) nodeIterator.next();
       Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
       listIdentity.add(getIdentity(identityNode));
     }
-    sessionManager.closeSession();
-    sProvider.close();
+    
     return listIdentity;
   }
   
   public void saveProfile(Profile p) throws Exception {
-    SessionProvider sProvider = SessionProvider.createSystemProvider();
-    Node profileHomeNode = getProfileServiceHome(sProvider);
-    Session session = sessionManager.openSession();
-
-    if (p.getIdentity().getId() == null) {
+    try {
+      Session session = sessionManager.openSession();
+      Node profileHomeNode = getProfileServiceHome(session);
+      if (p.getIdentity().getId() == null) {
+        throw new Exception("the identity has to be saved before saving the profile");
+      }
+  
+      Node profileNode;
+      if(p.getId() == null) {
+        profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
+        profileNode.addMixin("mix:referenceable");
+  
+        Node identityNode = session.getNodeByUUID(p.getIdentity().getId());
+  
+        profileNode.setProperty(PROFILE_IDENTITY, identityNode);
+      }
+      else {
+        profileNode = session.getNodeByUUID(p.getId());
+      }
+  
+      saveProfile(p, profileNode, session);
+  
+  
+      if (p.getId() == null) {
+        //System.out.println("saving all the profileHomeNode");
+        profileHomeNode.save();
+        p.setId(profileNode.getUUID());
+      } else {
+        profileNode.save();
+        //System.out.println("saving the profileNode");
+        //getSession().save();
+      }
+    } catch (Exception e) {
+      // TODO: handle exception
+//      System.out.println("\n\n\n\n\n===>>>>>>==== saveProfile err core/identity");
+      e.printStackTrace();
+    } finally {
       sessionManager.closeSession();
-      sProvider.close();
-      throw new Exception("the identity has to be saved before saving the profile");
     }
-
-    Node profileNode;
-    if(p.getId() == null) {
-      profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
-      profileNode.addMixin("mix:referenceable");
-
-      Node identityNode = session.getNodeByUUID(p.getIdentity().getId());
-
-      profileNode.setProperty(PROFILE_IDENTITY, identityNode);
-    }
-    else {
-      profileNode = session.getNodeByUUID(p.getId());
-    }
-
-    saveProfile(p, profileNode);
-
-
-    if (p.getId() == null) {
-      //System.out.println("saving all the profileHomeNode");
-      profileHomeNode.save();
-      p.setId(profileNode.getUUID());
-    } else {
-      profileNode.save();
-      //System.out.println("saving the profileNode");
-      //getSession().save();
-    }
-    sProvider.close();
-    sessionManager.closeSession(true);
   }
 
-  protected void saveProfile(Profile p, Node n) throws Exception, IOException {
+  protected void saveProfile(Profile p, Node n, Session session) throws Exception, IOException {
     Map props = p.getProperties();
 
     Iterator it = props.keySet().iterator();
 
     //first we remove the nodes that have to be removed
-
-
 
     it = props.keySet().iterator();
     while(it.hasNext()) {
@@ -432,12 +443,22 @@ public class JCRStorage {
           } catch (PathNotFoundException ex) {
             nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
           }
-          nodeContent.setProperty("jcr:mimeType", profileAtt.getMimeType()) ;
-          nodeContent.setProperty("jcr:data", profileAtt.getInputStream());
-          nodeContent.setProperty("jcr:lastModified", Calendar.getInstance().getTimeInMillis());
+          long lastModified = profileAtt.getLastModified();
+          long lastSaveTime = 0;
+          if (nodeContent.hasProperty("jcr:lastModified"))
+            lastSaveTime = nodeContent.getProperty("jcr:lastModified").getLong();
+          if ((lastModified != 0) && (lastModified != lastSaveTime)) {
+            nodeContent.setProperty("jcr:mimeType", profileAtt.getMimeType()) ;
+            nodeContent.setProperty("jcr:data", profileAtt.getInputStream(session));
+            nodeContent.setProperty("jcr:lastModified", profileAtt.getLastModified());
+          }
         }
         else {
-          if(n.hasNode(name)) n.getNode(name).remove() ;
+          if(n.hasNode(name)) {
+            n.getNode(name).remove() ;
+            // Add 29DEC. need review
+            session.save();
+          }
         }
       }
     }
@@ -504,25 +525,57 @@ public class JCRStorage {
     if (p.getIdentity().getId() == null) {
       throw new Exception("the identity has to be saved before loading the profile");
     }
-
-    Session session = sessionManager.openSession();
-    
-    Node idNode = session.getNodeByUUID(p.getIdentity().getId());
-    PropertyIterator it = idNode.getReferences();
-
-    while (it.hasNext()) {
-      Property prop = (Property) it.next();
-//      System.out.println("is the profile NT? " + prop.getParent().getPrimaryNodeType().getName()
-//          + " " + prop.getParent().getUUID());
-      if (prop.getParent().isNodeType(PROFILE_NODETYPE)) {
-        //System.out.println("found the profile");
-        Node n = prop.getParent();
-        p.setId(n.getUUID());
-        loadProfile(p, n);
-        return;
+    try {
+      Session session = sessionManager.openSession();
+      
+      Node idNode = session.getNodeByUUID(p.getIdentity().getId());
+      PropertyIterator it = idNode.getReferences();
+  
+      while (it.hasNext()) {
+        Property prop = (Property) it.next();
+  //      System.out.println("is the profile NT? " + prop.getParent().getPrimaryNodeType().getName()
+  //          + " " + prop.getParent().getUUID());
+        if (prop.getParent().isNodeType(PROFILE_NODETYPE)) {
+          //System.out.println("found the profile");
+          Node n = prop.getParent();
+          p.setId(n.getUUID());
+          loadProfile(p, n, session);
+          return;
+        }
       }
+      if(it.getSize() < 1) {
+        //TODO: save profile if have not existed.
+//        System.out.println("\n\n\n\n====>>> save profile L567===>>>>\n\n");
+        Node profileHomeNode = getProfileServiceHome(session);
+          Node profileNode;
+          if(p.getId() == null) {
+            profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
+            profileNode.addMixin("mix:referenceable");
+      
+            Node identityNode = session.getNodeByUUID(p.getIdentity().getId());
+      
+            profileNode.setProperty(PROFILE_IDENTITY, identityNode);
+          }
+          else {
+            profileNode = session.getNodeByUUID(p.getId());
+          }
+      
+          saveProfile(p, profileNode, session);
+          
+          if (p.getId() == null) {
+            //System.out.println("saving all the profileHomeNode");
+            profileHomeNode.save();
+            p.setId(profileNode.getUUID());
+          } else {
+            profileNode.save();
+          }
+      }
+    } catch (Exception e) {
+      // TODO: handle exception
+//      System.out.println("\n\n\n\n\n===>>>>>>==== loadProfile err core/identity");
+    } finally {
+      sessionManager.closeSession();
     }
-    sessionManager.closeSession();
     //System.out.println("did not find the profile");
   }
 
@@ -534,7 +587,7 @@ public class JCRStorage {
     return getConfig().getNodeType(nodeName);
   }
 
-  protected void loadProfile(Profile p, Node n) throws RepositoryException {
+  protected void loadProfile(Profile p, Node n, Session session) throws RepositoryException {
     //System.out.println("Loading the profile");
     PropertyIterator props = n.getProperties();
 
@@ -550,8 +603,16 @@ public class JCRStorage {
           ProfileAttachment file = new ProfileAttachment();
           file.setId(node.getPath());
           file.setMimeType(node.getNode("jcr:content").getProperty("jcr:mimeType").getString());
+          try {
+            file.setInputStream(node.getNode("jcr:content").getProperty("jcr:data").getValue().getStream());
+          } catch (Exception e) {
+            // TODO Auto-generated catch block
+//            System.out.println("\n\n\n\n\n===>>>>>>==== loadProfile err at getValue().getStream");
+            e.printStackTrace();
+          }
+          file.setLastModified(node.getNode("jcr:content").getProperty("jcr:lastModified").getLong());
           file.setFileName(node.getName());
-          file.setWorkspace(node.getSession().getWorkspace().getName());
+          file.setWorkspace(session.getWorkspace().getName());
           p.setProperty(node.getName(), file);
         }
       } else {
@@ -604,20 +665,25 @@ public class JCRStorage {
 
   public String getType(String nodetype, String property) throws Exception {
     //System.out.println("getType(" + nodetype + ", " + property + ")");
-    Session session = sessionManager.openSession();
-    
-    NodeTypeManager ntManager = session.getWorkspace().getNodeTypeManager();
-    NodeType nt = ntManager.getNodeType(nodetype);
-    PropertyDefinition[] pDefs = nt.getDeclaredPropertyDefinitions();
-
-    for(PropertyDefinition pDef : pDefs) {
-      if(pDef.getName().equals(property)) {
-        sessionManager.closeSession();
-        //System.out.println("getType(" + nodetype + ", " + property + ") ==" + pDef.getRequiredType());
-        return PropertyType.nameFromValue(pDef.getRequiredType());
+    try {
+      Session session = sessionManager.openSession();
+      
+      NodeTypeManager ntManager = session.getWorkspace().getNodeTypeManager();
+      NodeType nt = ntManager.getNodeType(nodetype);
+      PropertyDefinition[] pDefs = nt.getDeclaredPropertyDefinitions();
+  
+      for(PropertyDefinition pDef : pDefs) {
+        if(pDef.getName().equals(property)) {
+          //System.out.println("getType(" + nodetype + ", " + property + ") ==" + pDef.getRequiredType());
+          return PropertyType.nameFromValue(pDef.getRequiredType());
+        }
       }
+    } catch (Exception e) {
+      // TODO: handle exception
+      return null;
+    } finally {
+      sessionManager.closeSession();
     }
-    sessionManager.closeSession();
     return null;
   }
 }

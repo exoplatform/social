@@ -273,7 +273,7 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
-  
+ 
   /**
    * {@inheritDoc}
    */

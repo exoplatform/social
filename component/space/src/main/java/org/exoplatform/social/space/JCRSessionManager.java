@@ -18,8 +18,6 @@ package org.exoplatform.social.space;
 
 import javax.jcr.Session;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
@@ -79,7 +77,6 @@ public class JCRSessionManager {
     Session session = null;
     try {
      PortalContainer currentContainer = PortalContainer.getInstance(); 
-     //RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
      RepositoryService repositoryService = (RepositoryService) currentContainer.getComponentInstanceOfType(RepositoryService.class);
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = sessionProvider.getSession(workspaceName, repository);
@@ -102,11 +99,11 @@ public class JCRSessionManager {
      {
         //session = new POMSession(this);
        session = createSession();
-        currentSession.set(session);
+       currentSession.set(session);
      }
      else
      { 
-       //throw new IllegalStateException("A session is already opened.");
+       throw new IllegalStateException("A session is already opened.");
      }
      return session;
   }

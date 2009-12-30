@@ -22,6 +22,7 @@ import java.io.InputStream;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
 import javax.jcr.Session;
 
 import org.exoplatform.container.PortalContainer;
@@ -44,13 +45,14 @@ public class SpaceAttachment {
   private String mimeType;
   private String workspace;
   private byte[] imageBytes;
+  private long lastModified;
   private static final int KB_SIZE = 1024;
   private static final int MB_SIZE = 1024 * KB_SIZE;
   
   public String getDataPath() throws Exception {
     Node attachmentData;
     try{
-      attachmentData = (Node)getSesison().getItem(getId());      
+      attachmentData = (Node)getSession().getItem(getId());      
     }catch (ItemNotFoundException e) {
       e.printStackTrace();
       return null;
@@ -69,8 +71,9 @@ public class SpaceAttachment {
   public String getMimeType() { return mimeType; }
   public void setMimeType(String s) { mimeType = s;}
   public byte[] getImageBytes() { return imageBytes;}
-  
-  /**
+  public long getLastModified() { return lastModified;}
+  public void setLastModified(long lastModified) { this.lastModified = lastModified;}
+/**
    * get images size in MB/ KB/ Bytes
    * @return image size string
    */
@@ -95,23 +98,24 @@ public class SpaceAttachment {
     }
     else imageBytes = null;
   }
-  public InputStream getInputStream() throws Exception { 
+  public InputStream getInputStream(Session session) throws Exception { 
     if(imageBytes != null) return new ByteArrayInputStream(imageBytes);  
     Node attachment;
     try{
-      attachment = (Node)getSesison().getItem(getId());      
+      attachment = (Node)session.getItem(getId());  
     }catch (ItemNotFoundException e) {  
       return null;
     } catch (PathNotFoundException ex) {
       return  null;
     }
-    return attachment.getNode("jcr:content").getProperty("jcr:data").getStream();
+    Property property = attachment.getNode("jcr:content").getProperty("jcr:data");
+    InputStream inputStream = property.getValue().getStream();
+    return inputStream ;
   }
   
-  private Session getSesison()throws Exception {
+  private Session getSession()throws Exception {
     RepositoryService repoService = (RepositoryService)PortalContainer
       .getInstance().getComponentInstanceOfType(RepositoryService.class);
     return repoService.getDefaultRepository().getSystemSession(workspace);
   }
-  
 }
