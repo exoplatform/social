@@ -30,7 +30,7 @@ public class ActivityManager {
   }
 
   //TODO should also filter by appID
-  public Activity getActivity(String activityId) throws Exception {
+  public Activity getActivity(String activityId) {
     return storage.load(activityId);
   }
   

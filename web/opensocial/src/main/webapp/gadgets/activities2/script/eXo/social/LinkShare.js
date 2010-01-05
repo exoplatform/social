@@ -24,11 +24,14 @@ eXo.social.LinkShare = function(link, lang) {
     this.content = null;
     //privileged methods
     this.makeRequest = function() {
-        //encode link
-        var link = escape(encodeURIComponent(LinkShare.data.link));
-        var url = [LinkShare.config.LINKSHARE_REST_URL, "/", link, "/", LinkShare.data.lang].join("");
-        var linkShare = this;
-        Util.makeRequest(url, function(res) {linkShare.callbackHandler(res);});
+        var linkShareRequest = {
+            link: LinkShare.data.link,
+            lang: LinkShare.data.lang
+          },
+          url = LinkShare.config.LINKSHARE_REST_URL + '.json',
+          linkShare = this;
+        Util.makeRequest(url, function(res) {linkShare.callbackHandler(res);}, null,
+        		         gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, linkShareRequest);
     }
     /**
      * callback handler 
@@ -65,7 +68,7 @@ eXo.social.LinkShare = function(link, lang) {
  */
 eXo.social.LinkShare.config = {
     //change to the right url
-    LINKSHARE_REST_URL : "http://localhost:8080/rest/social/activities/linkshare",
+    LINKSHARE_REST_URL : "http://localhost:8080/rest/social/linkshare",
     //the div's id in gadget to work on in this div tag
     WORKSPACE_ID : "UIComposerExtension",
     LINKSHARE_OPTION_ID: "UILinkShareOption",

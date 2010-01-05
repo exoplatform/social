@@ -28,9 +28,7 @@ eXo.social.Like.ref = {
  * @static
  */
  eXo.social.Like.config = {
- 	URL_GET_LIKE_IDS: 'http://localhost:8080/rest/social/activities/getLikeIds',
- 	URL_SET_LIKE_ID: 'http://localhost:8080/rest/social/activities/setLikeId',
- 	URL_REMOVE_LIKE_ID: 'http://localhost:8080/rest/social/activities/removeLikeId'
+ 	REST_LIKE: 'http://localhost:8080/rest/social/activities/{activityId}/likes'
  };
  
  /**
@@ -44,7 +42,7 @@ eXo.social.Like.ref = {
  		debug.warn("activityId is null");
  		return;
  	}
- 	var url = eXo.social.Like.config.URL_GET_LIKE_IDS + "/" + activityId;
+ 	var url = eXo.social.Like.config.REST_LIKE.replace('{activityId}', activityId) + '/show.json';
  	eXo.social.Util.makeRequest(url, callback);
  }
  
@@ -61,8 +59,11 @@ eXo.social.Like.ref = {
  		debug.warn("activityId or userId is null! activityId: " + activityId + "; userId: " + userId);
  		return;
  	}
- 	var url = eXo.social.Like.config.URL_SET_LIKE_ID + '/' + activityId + '/' + userId;
- 	eXo.social.Util.makeRequest(url, callback);
+ 	var url = eXo.social.Like.config.REST_LIKE.replace('{activityId}', activityId) + '/update.json';
+ 	var like = {
+ 	  identityId: userId
+ 	}
+ 	eXo.social.Util.makeRequest(url, callback, null, gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, like);
  }
  
  /**
@@ -73,17 +74,16 @@ eXo.social.Like.ref = {
   * @static 
   */
  eXo.social.Like.removeLikeId = function(activityId, userId, callback) {
- 	debug.info('aId: ' + activityId + '; userId: ' + userId);
  	if (!activityId || !userId) {
  		debug.warn("activityId or userId is null! activityId: " + activityId + "; userId: " + userId);
  		return;
  	}
- 	var url = eXo.social.Like.config.URL_REMOVE_LIKE_ID + '/' + activityId + '/' + userId;
- 	eXo.social.Util.makeRequest(url, callback);
+ 	var url = eXo.social.Like.config.REST_LIKE.replace('{activityId}', activityId) + '/destroy/' + userId + '.json';
+ 	eXo.social.Util.makeRequest(url, callback, null, gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, null);
  }
  
 /**
- * callback hanlder for displaying likes of an activity
+ * callback handler for displaying likes of an activity
  * @static
  */
  eXo.social.Like.displayLike = function(response) {
@@ -101,20 +101,22 @@ eXo.social.Like.ref = {
 		return;
 	}
 	var activityId = response.data.activityId;
-	var ids = response.data.ids;
-	var likeInfos = response.data.likeInfos;
+	var likes = response.data.likes;
 	var viewerId = statusUpdate.viewer.getId();
 	var html = [];
 	var like = Util.getElementById('Like' + activityId);
 	var listPeopleLike = Util.getElementById('ListPeopleLike' + activityId);
 	var titleLike = Util.getElementById('TitleLike' + activityId);
-	
-	if (ids.length === 0) {
+	var ids = [];
+	if (likes.length === 0) {
 		like.innerHTML = Locale.getMsg('like');
 		like.onclick = function() { Like.setLikeId(activityId, viewerId, Like.displayLike); };
 		listPeopleLike.style.display = 'none';
 		gadgets.window.adjustHeight();
 		return;
+	}
+	for (var i = 0, l = likes.length; i < l; i++) {
+		ids.push(likes[i].identityId);
 	}
 	if(statusUpdate.hasViewerId(ids)) {
 		like.innerHTML = Locale.getMsg('unlike');
@@ -157,14 +159,15 @@ eXo.social.Like.ref = {
 			Like.toggleDisplayListPeople(activityId);
 		};
 	}
-	Like.renderListPeople(activityId, likeInfos);
+	Like.renderListPeople(activityId, likes);
  }
  
  /**
   * render like details 
   */
- eXo.social.Like.renderListPeople = function(activityId, likeInfos) {
- 	var Util = eXo.social.Util;
+ eXo.social.Like.renderListPeople = function(activityId, likes) {
+ 	var Util = eXo.social.Util,
+ 		Like = eXo.social.Like;
 	if(!activityId) {
 		debug.warn('activityId is null from Like.renderLikeDetail()');
 		return;
@@ -172,12 +175,13 @@ eXo.social.Like.ref = {
 	var listPeople = Util.getElementById('ListPeople' + activityId);
 	var html = [];
 	
-	if (likeInfos !== null) {
-		for(var i = 0, length = likeInfos.length; i < length; i++) {
+	if (likes !== null) {
+		for(var i = 0, length = likes.length; i < length; i++) {
+			if (likes[i].identityId === Like.ref.statusUpdate.viewer.getId()) continue;
 			var thumbnail = eXo.social.StatusUpdate.config.path.ROOT_PATH + '/style/images/AvatarPeople.gif';
-			if (likeInfos[i].thumbnail !== null)	thumbnail = likeInfos[i].thumbnail;
+			if (likes[i].thumbnail !== null)	thumbnail = likes[i].thumbnail;
 			html.push('<a href="#UserId"  class="AvatarPeopleBG">');
-				html.push('<img title="' + likeInfos[i].fullName + '" alt="" height="47px" width="47px" src="' + thumbnail + '" />');
+				html.push('<img title="' + likes[i].fullName + '" alt="" height="47px" width="47px" src="' + thumbnail + '" />');
 			html.push('</a>');
 		}
 	}

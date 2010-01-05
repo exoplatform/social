@@ -5,5 +5,8 @@
   </component>
   <component>                                                                                                                                           
     <type>org.exoplatform.social.services.rest.opensocial.ActivitiesRestService</type>                                                                             
-  </component>                                                                                                                                                                                                                                                                                                      
+  </component>   
+  <component>
+    <type>org.exoplatform.social.services.rest.opensocial.LinkShareRestService</type>
+  </component>                                                                                                                                                                                                                                                                                                
 </configuration>

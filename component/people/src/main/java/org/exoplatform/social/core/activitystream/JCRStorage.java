@@ -48,7 +48,7 @@ public class JCRStorage {
   private static final String USER_ID =  "exo:userId".intern();
   private static final String TYPE =  "exo:type".intern();
   private static final String HIDDEN =  "exo:hidden".intern();
-  private static final String LIKE_IDENTITIES_ID = "exo:like".intern();
+  private static final String LIKE_IDENTITY_IDS = "exo:like".intern();
   
   //new change
   private SocialDataLocation dataLocation;
@@ -116,8 +116,6 @@ public class JCRStorage {
         activityNode.setProperty(BODY, activity.getBody());
       if(activity.getExternalId() != null)
         activityNode.setProperty(EXTERNAL_ID, activity.getExternalId());
-      if(activity.getUpdated() != null)
-        activityNode.setProperty(UPDATED, activity.getUpdated());
       if(activity.getPostedTime() != null)
         activityNode.setProperty(POSTED_TIME, activity.getPostedTime());
       if(activity.getPriority() != null)
@@ -134,7 +132,7 @@ public class JCRStorage {
         activityNode.setProperty(URL, activity.getUrl());  
       }
       //if(activity.getLikeIdentitiesId() != null) {
-        activityNode.setProperty(LIKE_IDENTITIES_ID, activity.getLikeIdentitiesId());  
+        activityNode.setProperty(LIKE_IDENTITY_IDS, activity.getLikeIdentityIds());  
       //}
       activityNode.setProperty(HIDDEN, activity.isHidden());
       
@@ -143,13 +141,12 @@ public class JCRStorage {
         activity.setId(activityNode.getUUID());
       } else {
         activityNode.save();
-      }
+      } 
     } catch (Exception e) {
       // TODO: handle exception
     } finally {
       sessionManager.closeSession();
     }
-    
     return activity;
   }
   
@@ -214,8 +211,8 @@ public class JCRStorage {
     //TODO: replace by a reference to the identity node
     if (n.hasProperty(USER_ID))
       activity.setUserId(n.getProperty(USER_ID).getString());
-    if (n.hasProperty(LIKE_IDENTITIES_ID))
-      activity.setLikeIdentitiesId(ValuesToStrings(n.getProperty(LIKE_IDENTITIES_ID).getValues()));
+    if (n.hasProperty(LIKE_IDENTITY_IDS))
+      activity.setLikeIdentityIds(ValuesToStrings(n.getProperty(LIKE_IDENTITY_IDS).getValues()));
     return activity;
   }
 
@@ -223,9 +220,17 @@ public class JCRStorage {
     List<Activity> activities = Lists.newArrayList();
     Node n = getPublishedActivityServiceHome(identity.getId());
     NodeIterator nodes = n.getNodes();
+    String externalId;
     while (nodes.hasNext()) {
       Node node = nodes.nextNode();
-      activities.add(load(node));
+      if (node.hasProperty(EXTERNAL_ID)) {
+        externalId = node.getProperty(EXTERNAL_ID).toString();
+        if (!externalId.equals(Activity.IS_COMMENT)) {
+          activities.add(load(node));
+        }
+      } else {
+        activities.add(load(node));
+      }
     }
     return activities;
   }

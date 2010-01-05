@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Activity {
+  static public String IS_COMMENT = "IS_COMMENT";
   private String body = null;
   private String externalId = null;
   private String id = null;
@@ -35,7 +36,7 @@ public class Activity {
   private String type = null;
   private String replytoId = null;
   private boolean hidden = false;
-  private String[] likeIdentitiesId = null;
+  private String[] likeIdentityIds = null;
   
   public Activity(String userId, String type, String title, String body) {
     this.userId = userId;
@@ -175,11 +176,11 @@ public class Activity {
       this.hidden = hidden;
   }
   
-  public void setLikeIdentitiesId(String[] likeIdentitiesId) {
-   this.likeIdentitiesId = likeIdentitiesId;
+  public void setLikeIdentityIds(String[] likeIdentityIds) {
+   this.likeIdentityIds = likeIdentityIds;
   }
   
-  public String[] getLikeIdentitiesId() {
-    return likeIdentitiesId;
+  public String[] getLikeIdentityIds() {
+    return likeIdentityIds;
   }
 }

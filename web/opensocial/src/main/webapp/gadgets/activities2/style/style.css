@@ -36,10 +36,6 @@ a:link, a:hover, a:active, a:visited  {
 .DisplayNone {
 	display: none;
 }
-/*
-.DisplayNone a:link, a:hover, a:active, a:visited {
-	float: right;
-}*/
 
 body {
 	font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
@@ -129,9 +125,6 @@ img {border: none}
 	height: auto !important;
 	height: 20px;
 }
-
-
-
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusInputTL{
 	background: url('images/MyStatusInputTL.gif') no-repeat left top;
@@ -263,7 +256,7 @@ img {border: none}
 
 .ListPeopleLikeBG{
 	background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
-	margin-left: 80px;
+	margin-left: 50px;
 	margin-bottom: 7px;
 }
 

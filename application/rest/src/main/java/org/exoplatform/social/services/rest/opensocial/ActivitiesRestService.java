@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2003-2008 eXo Platform SAS.
+/*
+ * Copyright (C) 2003-2009 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -14,20 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-
 package org.exoplatform.social.services.rest.opensocial;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -38,317 +40,657 @@ import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
+
 /**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Oct 01, 2009          
+ * ActivitiesRestService.java
+ *
+ * @author     hoatle <hoatlevan at gmail dot com>
+ * @since      Dec 29, 2009
+ * @copyright  eXo Platform SEA
  */
-@Path("/social/activities/")
-public class ActivitiesRestService implements ResourceContainer { 
-  
-  private ActivityManager activityManager = null;
-  private IdentityManager identityManager = null;
+@Path("social/activities")
+public class ActivitiesRestService implements ResourceContainer {
+  private ActivityManager _activityManager;
+  private IdentityManager _identityManager;
   
   /**
-   * Return request with JSON body which represent identities id.<br>
-   * 
-   * @return identities id.
-   * @throws Exception
+   * constructor
    */
-  @GET
-  @Path("/getLikeIds/{activityId}")
-  @Produces({MediaType.APPLICATION_JSON})
-  public ListIdentitiesId getIdentitiesId(@PathParam("activityId") String activityId) throws Exception {
-    ListIdentitiesId identitiesId = new ListIdentitiesId();
-    List<String> ids = new ArrayList<String>();
-    ActivityManager activityManager = getActivityManager();
-    List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
-    Activity activity = activityManager.getActivity(activityId);
-    String[] likeIdentitiesId = activity.getLikeIdentitiesId();
-    if(likeIdentitiesId != null) Collections.addAll(ids, likeIdentitiesId);
-    likeInfos = getLikeInfos(ids);
+  public ActivitiesRestService() {}
+  
+  /**
+   * destroys activity by activityId
+   * if detects any comments of that activity, destroys these comments, too.
+   * @param activityId
+   * @return activity
+   */
+  private Activity destroyActivity(String activityId) {
+    _activityManager = getActivityManager();
+    Activity activity = _activityManager.getActivity(activityId);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
     
-    identitiesId.setActivityId(activityId);
-    identitiesId.setIds(ids);
-    identitiesId.setLikeInfos(likeInfos);
-    
-    return identitiesId;
-  }
-
-  /**
-   * Return request with JSON body which represent identities id<br>
-   * 
-   * @return identities id.
-   * @throws Exception
-   */
-  @GET
-  @Path("/setLikeId/{activityId}/{identityId}")
-  @Produces({MediaType.APPLICATION_JSON})
-  public ListIdentitiesId setIdentitiesId(@PathParam("activityId") String activityId, 
-                                          @PathParam("identityId") String identityId) throws Exception {
-    ListIdentitiesId identitiesId = new ListIdentitiesId();
-    List<String> ids = new ArrayList<String>();
-    ActivityManager activityManager = getActivityManager();
-    Activity activity = activityManager.getActivity(activityId);
-    String[] likeIdentitiesId = activity.getLikeIdentitiesId();
-    likeIdentitiesId = addItemToArray(likeIdentitiesId, identityId);
-    activity.setLikeIdentitiesId(likeIdentitiesId);
-    activityManager.saveActivity(activity);
-    Collections.addAll(ids, likeIdentitiesId);
-    identitiesId.setIds(ids);
-    List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
-    likeInfos = getLikeInfos(ids);
-    identitiesId.setActivityId(activityId);
-    identitiesId.setIds(ids);
-    identitiesId.setLikeInfos(likeInfos);
-    return identitiesId;
+    String rawCommentIds = activity.getExternalId();
+    //rawCommentIds can be: null || ,a,b,c,d
+    if (rawCommentIds != null) {
+      String[] commentIds = rawCommentIds.split(",");
+      for (String commentId : commentIds) {
+        try {
+          _activityManager.deleteActivity(commentId);
+        } catch(Exception ex) {
+          //TODO hoatle LOG
+          //TODO hoatle handles or ignores?
+        }
+      }
+    }
+    try {
+      _activityManager.deleteActivity(activityId);
+    } catch(Exception ex) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return activity;
   }
   
   /**
-   * Return request with JSON body which represent identities id<br>
-   * 
-   * @return identities id.
-   * @throws Exception
-   */
-  @GET
-  @Path("/removeLikeId/{activityId}/{identityId}")
-  @Produces({MediaType.APPLICATION_JSON})
-  public ListIdentitiesId removeIdentitiesId(@PathParam("activityId") String activityId, 
-                                          @PathParam("identityId") String identityId) throws Exception {
-    ListIdentitiesId identitiesId = new ListIdentitiesId();
-    List<String> ids = new ArrayList<String>();
-    ActivityManager activityManager = getActivityManager();
-    Activity activity = activityManager.getActivity(activityId);
-    String[] likeIdentitiesId = activity.getLikeIdentitiesId();
-    likeIdentitiesId = removeItemFromArray(likeIdentitiesId, identityId);
-    activity.setLikeIdentitiesId(likeIdentitiesId);
-    activityManager.saveActivity(activity);
-    if(likeIdentitiesId != null) Collections.addAll(ids, likeIdentitiesId);
-    List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
-    likeInfos = getLikeInfos(ids);
-    identitiesId.setIds(ids);
-    identitiesId.setActivityId(activityId);
-    identitiesId.setLikeInfos(likeInfos);
-    return identitiesId;
-  }
-  
-  /**
-   * gets identity by username
-   * @param username
+   * destroys activity and gets json return format
+   * @param uriInfo
+   * @param activityId
    * @return
    * @throws Exception
    */
-  @GET
-  @Path("identity/{username}/id")
-  @Produces({MediaType.APPLICATION_JSON})
-  public UserId getId(@PathParam("username") String username) throws Exception {
-      IdentityManager identityManager = getIdentityManager();
-      String id = identityManager.getIdentityByRemoteId("organization", username).getId();
-      UserId userId = new UserId(id);
-      return userId;
-  }
-  
-  @GET
-  @Path("delete/{id}")
-  @Produces({MediaType.APPLICATION_JSON})
-  public ActivityId delete(@PathParam("id") String id) throws Exception {
-    activityManager = getActivityManager();
-    activityManager.deleteActivity(id);
-    ActivityId activityId = new ActivityId(id);
-    return activityId;
+  @POST
+  @Path("destroy/{activityId}.json")
+  public Response jsonDestroyActivity(@Context UriInfo uriInfo,
+                                      @PathParam("activityId") String activityId) throws Exception {    
+    Activity activity = destroyActivity(activityId);
+    return Util.getResponse(activity, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
   }
   
   /**
-   * gets linkshare's data by JSON format after scanning the provided link
-   * @param link
-   * @param lang
+   * destroys activity and gets xml return format
+   * @param uriInfo
+   * @param activityId
    * @return
    * @throws Exception
    */
-  @GET
-  @Path("/linkshare/{link}/{lang}")
-  @Produces({MediaType.APPLICATION_JSON})
-  public LinkShare getLinkShare(@PathParam("link") String link, @PathParam("lang") String lang) throws Exception {
-    link = URLDecoder.decode(link, "utf-8");
-    LinkShare ls;
-    if (lang != null) {
-      ls = LinkShare.getInstance(link, lang);
+  @POST
+  @Path("destroy/{activityId}.xml")
+  public Response xmlDestroyActivity(@Context UriInfo uriInfo,
+                                     @PathParam("activityId") String activityId) throws Exception {
+    Activity activity = destroyActivity(activityId);
+    return Util.getResponse(activity, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * show list of like by activityId
+   * @param activityId  
+   * @return
+   * @throws Exception
+   */
+  private LikeList showLikes(String activityId) {
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
+    _activityManager = getActivityManager();
+    Activity activity = _activityManager.getActivity(activityId);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    String[] identityIds = activity.getLikeIdentityIds();
+    if (identityIds == null) {
+      likeList.setLikes(new ArrayList<Like>());
     } else {
-      ls = LinkShare.getInstance(link);
+      likeList.setLikes(getLikes(identityIds));
     }
-    return ls;
+    return likeList;
   }
   
   /**
-   * List IdentititesId like an activities
+   * updates like of an activity
+   * @param activityId
+   * @param like
+   * @throws Exception
    */
-  public class ListIdentitiesId {
-    /** ids list variable */
-    private List<String> ids_;
-    /** like information model */
-    private List<LikeInfoModel> likeInfos_;
-    /** activityId */
-    private String activityId_;
-    
-    public void setActivityId(String activityId) { activityId_ = activityId;}
-    public String getActivityId() {return activityId_;}
-
-    public void setIds(List<String> ids) { ids_ = ids; }
-    public List<String> getIds() { return ids_; }
-    public List<LikeInfoModel> getLikeInfos() { return likeInfos_;}
-    public void setLikeInfos(List<LikeInfoModel> likeInfos) { likeInfos_ = likeInfos; }
+  private LikeList updateLike(String activityId, Like like) throws Exception {
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
+    _activityManager = getActivityManager();
+    Activity activity = _activityManager.getActivity(activityId);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    String[] identityIds = activity.getLikeIdentityIds();
+    String identityId = like.getIdentityId();
+    boolean alreadyLiked = false;
+    if (identityId == null) {
+      throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE);
+    }
+    if (identityIds != null) {
+      for (String id : identityIds) {
+        if (id.equals(identityId)) {
+          alreadyLiked = true;
+        }
+      }
+    }
+    if (!alreadyLiked) {
+      identityIds = addItemToArray(identityIds, identityId);
+      activity.setLikeIdentityIds(identityIds);
+      try {
+        _activityManager.saveActivity(activity);
+      } catch (Exception ex) {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    } else {
+      //TODO hoatle let's it run smoothly or informs that user already liked the activity?
+    }
+    likeList.setLikes(getLikes(identityIds));
+    return likeList;
   }
   
-  
-  public class UserId {
-	  private String id;
-	  
-	  public UserId() {
-		  
-	  }
-	  public UserId(String id) {
-		  this.id = id;
-	  }
-	  public void setId(String id) {
-		  this.id = id;
-	  }
-	  public String getId() {
-		  return id;
-	  }
-  }
-
-  public class ActivityId {
-    private String id;
-    
-    public ActivityId() {
-      
-    }
-    public ActivityId(String id) {
-      this.id = id;
-    }
-    public void setId(String id) {
-      this.id = id;
-    }
-    public String getId() {
-      return id;
-    }
-  }
   /**
-   * Model contain like detail information.
+   * destroys like from an activity 
+   * @param activityId
+   * @param identityId
+   */
+  private LikeList destroyLike(String activityId, String identityId) {
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
+    _activityManager = getActivityManager();
+    Activity activity = _activityManager.getActivity(activityId);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    String[] identityIds = activity.getLikeIdentityIds();
+    if (identityIds == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    boolean alreadyLiked = true;
+    for (String id : identityIds) {
+      if (id.equals(identityId)) {
+        identityIds = removeItemFromArray(identityIds, identityId);
+        activity.setLikeIdentityIds(identityIds);
+        try {
+          _activityManager.saveActivity(activity);
+        } catch(Exception ex) {
+          throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+        alreadyLiked = false;
+      }
+    }
+    if (alreadyLiked) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    if (identityIds == null) {
+      likeList.setLikes(new ArrayList<Like>());
+    } else {
+      likeList.setLikes(getLikes(identityIds));
+    }
+    return likeList;
+  }
+  
+  /**
+   * shows list of like by activityId and returns json format
+   * @param uriInfo
+   * @param activityId
+   * @return
+   * @throws Exception
+   */
+  @GET
+  @Path("{activityId}/likes/show.json")
+  public Response jsonShowLikes(@Context UriInfo uriInfo,
+                                @PathParam("activityId") String activityId) throws Exception {
+    LikeList likeList = null;
+    likeList = showLikes(activityId);
+    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * shows list of like by activityId and return xml format
+   * @param uriInfo
+   * @param activityId
+   * @return
+   * @throws Exception
+   */
+  @GET
+  @Path("{activityId}/likes/show.xml")
+  public Response xmlShowLikes(@Context UriInfo uriInfo,
+                               @PathParam("activityId") String activityId) throws Exception {
+    LikeList likeList = null;
+    likeList = showLikes(activityId);
+    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * updates like by json format
+   * @param uriInfo
+   * @param activityId
+   * @param like
+   * @throws Exception 
+   */
+  @POST
+  @Path("{activityId}/likes/update.json")
+  @Consumes({MediaType.APPLICATION_JSON})
+  public Response jsonUpdateLike(@Context UriInfo uriInfo,
+                                  @PathParam("activityId") String activityId,
+                                  Like like) throws Exception {
+    LikeList likeList = null;
+    likeList = updateLike(activityId, like);
+    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * updates like by xml format
+   * @param uriInfo
+   * @param activityId
+   * @param like
+   * @return
+   * @throws Exception
+   */
+  @POST
+  @Path("{activityId}/likes/update.xml")
+  @Consumes({MediaType.APPLICATION_XML})
+  public Response xmlUpdateLike(@Context UriInfo uriInfo,
+                                 @PathParam("activityId") String activityId,
+                                 Like like) throws Exception{
+    LikeList likeList = null;
+    likeList =  updateLike(activityId, like);
+    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+  }
+ 
+  
+  /**
+   * destroys like by identityId and gets json return format
+   * @param uriInfo
+   * @param activityId
+   * @param identityId
+   * @return
+   * @throws Exception
+   */
+  @POST
+  @Path("{activityId}/likes/destroy/{identityId}.json")
+  public Response jsonDestroyLike(@Context UriInfo uriInfo,
+                                   @PathParam("activityId") String activityId,
+                                   @PathParam("identityId") String identityId) throws Exception{
+    LikeList likeList =  null;
+    likeList = destroyLike(activityId, identityId);
+    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * destroys like by identityId and gets xml return format
+   * @param uriInfo
+   * @param activityId
+   * @param identityId
+   * @return
+   * @throws Exception
+   */
+  @POST
+  @Path("{activityId}/likes/destroy/{identityId}.xml")
+  public Response xmlDestroyLike(@Context UriInfo uriInfo,
+                                 @PathParam("activityId") String activityId,
+                                 @PathParam("identityId") String identityId) throws Exception {
+    LikeList likeList = null;
+    likeList = destroyLike(activityId, identityId);
+    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+  }
+  
+  
+  /**
+   * shows comment list by activityId
+   * @param activityId
+   * @return
+   */
+  private CommentList showComments(String activityId) {
+    CommentList commentList = new CommentList();
+    commentList.setActivityId(activityId);
+    _activityManager = getActivityManager();
+    Activity activity = _activityManager.getActivity(activityId);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    String rawCommentIds = activity.getExternalId();
+    //rawCommentIds can be: null || ,a,b,c,d
+    if (rawCommentIds == null) {
+      commentList.setComments(new ArrayList<Activity>());
+    } else {
+      String[] commentIds = rawCommentIds.split(",");
+      for (String commentId: commentIds) {
+        if (commentId != null) {
+          commentList.addComment(_activityManager.getActivity(commentId));
+        }
+      }
+    }
+    return commentList;
+  }
+  
+  /**
+   * updates comment by activityId
+   * @param activityId
+   * @param comment
+   * @return
+   */
+  private CommentList updateComment(String activityId, Activity comment) {
+    CommentList commentList = new CommentList();
+    commentList.setActivityId(activityId);
+    _activityManager = getActivityManager();
+    //TODO hoatle set current userId from authentication context instead of getting userId from comment
+    if (comment.getUserId() == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    comment.setPostedTime(System.currentTimeMillis());
+    comment.setExternalId(Activity.IS_COMMENT);
+    try {
+      comment = _activityManager.saveActivity(comment);
+      Activity activity = _activityManager.getActivity(activityId);
+      String rawCommentIds = activity.getExternalId();
+      rawCommentIds += "," + comment.getId();
+      activity.setExternalId(rawCommentIds);
+      _activityManager.saveActivity(activity);
+    } catch(Exception ex) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return commentList;
+  }
+  
+  /**
+   * destroys comment by activityId and commentId
+   * @param activityId
+   * @param commentId
+   * @return
+   */
+  private CommentList destroyComment(String activityId, String commentId) {
+    CommentList commentList = new CommentList();
+    commentList.setActivityId(activityId);
+    _activityManager = getActivityManager();
+    Activity activity = _activityManager.getActivity(activityId);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    String rawCommentIds = activity.getExternalId();
+    try {
+      _activityManager.deleteActivity(commentId);
+      commentId = "," + commentId;
+      if (rawCommentIds.contains(commentId)) {
+        rawCommentIds = rawCommentIds.replace(commentId, "");
+        activity.setExternalId(rawCommentIds);
+        _activityManager.saveActivity(activity);
+      } else {
+        throw new WebApplicationException(Response.Status.BAD_REQUEST);
+      }
+    } catch(Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return commentList;
+  }
+  
+
+  /**
+   * shows comment list by json format
+   * @param uriInfo
+   * @param activityId
+   * @return
+   * @throws Exception
+   */
+  @GET
+  @Path("{activityId}/comments/show.json")
+  public Response jsonShowComments(@Context UriInfo uriInfo,
+                                   @PathParam("activityId") String activityId) throws Exception {
+    CommentList commentList = null;
+    commentList = showComments(activityId);
+    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * shows comment list by xml format
+   * @param uriInfo
+   * @param activityId
+   * @return
+   * @throws Exception
+   */
+  @GET
+  @Path("{activityId}/comments/show.xml")
+  public Response xmlShowComments(@Context UriInfo uriInfo,
+                                  @PathParam("activityId") String activityId) throws Exception {
+    CommentList commentList = null;
+    commentList = showComments(activityId);
+    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * updates comment by json format
+   * @param uriInfo
+   * @param activityId
+   * @param comment
+   * @return
+   * @throws Exception
+   */
+  @POST
+  @Path("{activityId}/comments/update.json")
+  @Consumes({MediaType.APPLICATION_JSON})
+  public Response jsonUpdateComment(@Context UriInfo uriInfo,
+                                    @PathParam("activityId") String activityId,
+                                    Activity comment) throws Exception {
+    CommentList commentList = null;
+    commentList = updateComment(activityId, comment);
+    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * updates comment by xml format
+   * @param uriInfo
+   * @param activityId
+   * @param comment
+   * @return
+   * @throws Exception
+   */
+  @POST
+  @Path("{activityId}/comments/update.xml")
+  @Consumes({MediaType.APPLICATION_XML})
+  public Response xmlUpdateComment(@Context UriInfo uriInfo,
+                                   @PathParam("activityId") String activityId,
+                                   Activity comment) throws Exception {
+    CommentList commentList = null;
+    commentList = updateComment(activityId, comment);
+    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * destroys comments and returns json format
+   * @param uriInfo
+   * @param activityId
+   * @param commentId
+   * @return
+   * @throws Exception
+   */
+  @POST
+  @Path("{activityId}/comments/destroy/{commentId}.json")
+  public Response jsonDestroyComment(@Context UriInfo uriInfo,
+                                     @PathParam("activityId") String activityId,
+                                     @PathParam("commentId") String commentId) throws Exception {
+    CommentList commentList = null;
+    commentList = destroyComment(activityId, commentId);
+    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * destroys comments and returns xml format
+   * @param uriInfo
+   * @param activityId
+   * @param commentId
+   * @return
+   * @throws Exception
+   */
+  @POST
+  @Path("{activityId}/comments/destroy/{commentId}.xml")
+  public Response xmlDestroyComment(@Context UriInfo uriInfo,
+                                    @PathParam("activityId") String activityId,
+                                    @PathParam("commentId") String commentId) throws Exception {
+    CommentList commentList = null;
+    commentList = destroyComment(activityId, commentId);
+    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+  }
+  
+  /**
+   * LikeList model
+   * @author hoatle
+   */
+  public class LikeList {
+    private String _activityId;
+    private List<Like> _likes;
+    
+    public void setActivityId(String activityId) {
+      _activityId = activityId;
+    }
+    public String getActivityId() {
+      return _activityId;
+    }
+    public void setLikes(List<Like> likes) {
+      _likes = likes;
+    }
+    
+    public List<Like> getLikes() {
+      return _likes;
+    }
+    
+    public void addLike(Like like) {
+      _likes.add(like);
+    }
+  }
+  
+  /**
+   * CommentList model
+   * @author hoatle
    *
    */
-  public class LikeInfoModel {
-    /** thumbnail list variable */
-    private String thumbnail_;
-    /** user name list variable */
-    private String userName_;
-    /** full name */
-    private String fullName_;
-    /** activityId */
-    private String likeIdentityId_;
-    
-    public void setLikeIdentityId(String likeIdentityId) { likeIdentityId_ = likeIdentityId;}
-    public String getLikeIdentityId() {return likeIdentityId_;}
-    public String getThumbnail() { return thumbnail_;}
-    public void setThumbnail(String thumbnail) { thumbnail_ = thumbnail;}
-    public String getUserName() { return userName_;}
-    public void setUserName(String userName) { userName_ = userName;}
-    public String getFullName() { return fullName_;}
-    public void setFullName(String fullName) { fullName_ = fullName;}
-  }
-  
-  /**
-   * Get all like information and add to list of model.
-   * @param ids
-   * @return List of like information model.
-   * @throws Exception
-   */
-  private List<LikeInfoModel> getLikeInfos(List<String> ids) throws Exception {
-    String userName = null;
-    String fullName = null;
-    Profile profile = null;
-    Identity identity = null;
-    LikeInfoModel likeInfo = null;
-    IdentityManager im = getIdentityManager();
-    List<LikeInfoModel> likeInfos = new ArrayList<LikeInfoModel>();
-    for (String id : ids) {
-      String thumbnail = null;
-      ProfileAttachment att = null;
-      identity = im.getIdentityById(id);
-      profile = identity.getProfile();
-      userName =(String) profile.getProperty("username");
-      fullName = profile.getFullName();
-      att = (ProfileAttachment)profile.getProperty("avatar");
-      if (att != null) {
-        thumbnail = "/" + getPortalName()+"/rest/jcr/" + getRepository() + "/" + att.getWorkspace();
-        thumbnail = thumbnail + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-      }
-      
-      likeInfo = new LikeInfoModel();
-      likeInfo.setLikeIdentityId(id);
-      likeInfo.setUserName(userName);
-      likeInfo.setFullName(fullName);
-      likeInfo.setThumbnail(thumbnail);
-      likeInfos.add(likeInfo);
+  public class CommentList {
+    private String _activityId;
+    private List<Activity> _comments;
+    public void setActivityId(String activityId) {
+      _activityId = activityId;
+    }
+    public String getActivityId() {
+      return _activityId;
+    }
+    public void setComments(List<Activity> comments) {
+      _comments = comments;
+    }
+    public List<Activity> getComments() {
+      return _comments;
     }
     
-    return likeInfos;
+    public void addComment(Activity activity) {
+      _comments.add(activity);
+    }
   }
   
   /**
-   * Remove an item from an array
+   * gets activityManager
+   * @return
+   */
+  private ActivityManager getActivityManager() {
+    if (_activityManager == null) {
+      PortalContainer portalContainer = PortalContainer.getInstance();
+      _activityManager = (ActivityManager) portalContainer.getComponentInstanceOfType(ActivityManager.class);
+    }
+    return _activityManager;
+  }
+  
+  /**
+   * gets identityManger
+   * @return
+   */
+  private IdentityManager getIdentityManager() {
+    if (_identityManager == null) {
+      PortalContainer portalContainer = PortalContainer.getInstance();
+      _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return _identityManager;
+  }
+  
+  /**
+   * gets repository
+   * @return
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    RepositoryService repositoryService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
+    return repositoryService.getCurrentRepository().getConfiguration().getName();
+  }
+  
+  /**
+   * gets portalName
+   * @return
+   */
+  private String getPortalName() {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    return portalContainer.getPortalContainerInfo().getContainerName();
+  }
+  
+  /**
+   * gets like list
+   * @param identityIds
+   * @return
+   */
+  private List<Like> getLikes(String[] identityIds) {
+    String username, fullName, thumbnail;
+    Profile profile;
+    Identity identity;
+    ProfileAttachment profileAttachment;
+    Like like;
+    List<Like> likes = new ArrayList<Like>();
+    _identityManager = getIdentityManager();
+    try {
+      for (String identityId : identityIds) {
+        identity = _identityManager.getIdentityById(identityId);
+        profile = identity.getProfile();
+        username = (String) profile.getProperty("username");
+        fullName = profile.getFullName();
+        profileAttachment = (ProfileAttachment)profile.getProperty("avatar");
+        thumbnail = null;
+        if (profileAttachment != null) {
+          thumbnail = "/" + getPortalName() + "/rest/jcr/" + getRepository() + "/" + profileAttachment.getWorkspace() +
+                      profileAttachment.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+        }
+        like = new Like();
+        like.setIdentityId(identityId);
+        like.setUsername(username);
+        like.setFullName(fullName);
+        like.setThumbnail(thumbnail);
+        likes.add(like);
+      }
+    } catch (Exception ex) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    return likes;
+  }
+  
+  /**
+   * removes an item from an array
    * @param arrays
    * @param str
    * @return new array
    */
-  private String[] removeItemFromArray(String[] arrays, String str) {
+  private String[] removeItemFromArray(String[] array, String str) {
     List<String> list = new ArrayList<String>();
-    list.addAll(Arrays.asList(arrays));
+    list.addAll(Arrays.asList(array));
     list.remove(str);
     if(list.size() > 0) return list.toArray(new String[list.size()]);
     else return null;
   }
   
   /**
-   * Add an item to an array
-   * @param arrays
+   * adds an item to an array
+   * @param array
    * @param str
    * @return new array
    */
-  private String[] addItemToArray(String[] arrays, String str) {
+  private String[] addItemToArray(String[] array, String str) {
     List<String> list = new ArrayList<String>();
-    if(arrays != null && arrays.length > 0) {
-      list.addAll(Arrays.asList(arrays));
+    if(array != null && array.length > 0) {
+      list.addAll(Arrays.asList(array));
       list.add(str);
       return list.toArray(new String[list.size()]);
     } else return new String[] {str};
-  }
-  
-  private ActivityManager getActivityManager() {
-    if(activityManager == null) {
-      PortalContainer portalContainer = PortalContainer.getInstance();
-      activityManager = (ActivityManager) portalContainer.getComponentInstanceOfType(ActivityManager.class);
-    }
-    return activityManager;
-  }
-  
-  private IdentityManager getIdentityManager () {
-    if(identityManager == null) {
-      PortalContainer portalContainer = PortalContainer.getInstance();
-      identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
-    }
-    return identityManager;
-  }
-  
-  private String getRepository() throws Exception {
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-  
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();  
   }
 }

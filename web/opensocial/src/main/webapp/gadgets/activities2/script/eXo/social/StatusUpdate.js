@@ -47,7 +47,7 @@ eXo.social.StatusUpdate.MessageType_WARN = 'MessageType_WARN';
  */
 eXo.social.StatusUpdate.config = {
 	ACTIVITIES_REST_URL: "http://localhost:8080/rest/social/activities",
-	IDENTITY_REST_URL : "http://localhost:8080/rest/social/activities/identity",
+	IDENTITY_REST_URL : "http://localhost:8080/rest/social/identity",
 	path : {
 		ROOT_PATH : "http://localhost:8080/social/gadgets/activities2",
 		SCRIPT_PATH : "http://localhost:8080/social/gadgets/activities2/script"
@@ -184,7 +184,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
 							return;
 						}
 						statusUpdate.owner = res.get('owner').getData();
-						//hides text input + friends's activitites
+						//hides text input + friends's activities
 						var uiMyStatusInput = Util.getElementById(config.ui.UI_MY_STATUS_INPUT);
 						var uiFriendsActivities = Util.getElementById(config.ui.UI_FRIENDS_ACTIVITIES);
 						uiMyStatusInput.style.display = 'none';
@@ -342,8 +342,8 @@ eXo.social.StatusUpdate.prototype.setActionContentButton = function(activityId) 
  */
 eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
 	var Util = eXo.social.Util,
-      url = eXo.social.StatusUpdate.config.ACTIVITIES_REST_URL + '/delete/'+activityId,
-      statusUpdate = this;
+        url = eXo.social.StatusUpdate.config.ACTIVITIES_REST_URL + '/destroy/' + activityId + '.json',
+        statusUpdate = this;
 	eXo.social.Util.makeRequest(url, function(res) {
 	   if (res.data.id) {
          Util.removeElementById('Activity' + res.data.id);
@@ -353,9 +353,10 @@ eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
            statusUpdate.refresh();
          }
 	   } else {
-	       //TODO: informs problem
+		   //TODO informs about the error
+	       alert('Problem when deleting the activity!');
 	   }
-	}, null, gadgets.io.MethodType.GET, gadgets.io.ContentType.JSON, null);
+	}, null, gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, null);
 }
 
 
@@ -735,7 +736,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  				statusUpdate.setActionContentButton(activityId);
 	  				statusUpdate.setDeleteActivity(activityId);
 	  			}
-	  			statusUpdate.setCommentActivity(activityId);
+	  			//statusUpdate.setCommentActivity(activityId);
 	  		}
 	  	}
 	 }

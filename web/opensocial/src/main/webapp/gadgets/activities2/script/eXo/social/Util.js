@@ -325,17 +325,65 @@ eXo.social.Util.removeEventListener = function(obj, evt, func) {
  * @static 
  */
 eXo.social.Util.makeRequest = function(url, callback, opt_refreshInterval, opt_method, opt_contentType, opt_postData) {
-	//TODO handles method + contentType
-	var refreshInterval = opt_refreshInterval || 0;
-	var method = gadgets.io.MethodType.GET;
-	var contentType = gadgets.io.ContentType.JSON;
-	var postData = null;
-  if (opt_method === gadgets.io.MethodType.POST) {
-    method = gadgets.io.MethodType.POST;
-    if (opt_postData) {
-        postData = gadgets.io.encodeValues(opt_postData);
-    }
+  //TODO handles method + contentType
+  var refreshInterval = opt_refreshInterval || 0;
+  var method = gadgets.io.MethodType.GET;
+  var contentType = gadgets.io.ContentType.JSON;
+  var postData = null,
+  headers = {};
+  switch(opt_method) {
+  	case gadgets.io.MethodType.POST:
+  		method = gadgets.io.MethodType.POST;
+  		break;
+  	case gadgets.io.MethodType.PUT:
+  		method = gadgets.io.MethodType.PUT;
+  		break;
+  	case gadgets.io.MethodType.HEAD:
+  		method = gadgets.io.MethodType.HEAD;
+  		break;
+  	case gadgets.io.MethodType.DELETE:
+  		method = gadgets.io.MethodType.DELETE;
+  		break;
+  	default:
+  		method = gadgets.io.MethodType.GET;
+  		break;
   }
+  
+  switch (opt_contentType) {
+  	case gadgets.io.ContentType.TEXT:
+  		contentType = gadgets.io.ContentType.TEXT;
+  		break;
+  	case gadgets.io.ContentType.DOM:
+  		contentType = gadgets.io.ContentType.DOM;
+  		break;
+  	case gadgets.io.ContentType.JSON:
+  		contentType = gadgets.io.ContentType.JSON;
+  		break;
+  	case gadgets.io.ContentType.FEED:
+  		contentType = gadgets.io.ContentType.FEED;
+  		break;
+  	default:
+  		contentType = gadgets.io.ContentType.JSON;
+  		break;
+  }
+   
+  //TODO fined-check
+  if (opt_postData) {
+	  switch(contentType) {
+	    case gadgets.io.ContentType.TEXT:
+	    	postData = gadgets.io.encodeValues(opt_postData);
+	    	break;
+	    case gadgets.io.ContentType.JSON:
+	    	postData = gadgets.json.stringify(opt_postData);
+	    	headers = {"Content-Type":"application/json"};
+	    	break;
+	     //TODO handles more
+	    default:
+	    	postData = gadgets.io.encodeValues(opt_postData);
+	    	break;
+	  }
+  }
+
 	var ts = new Date().getTime();
 	var sep = "?";
 	if (refreshInterval && refreshInterval > 0) {
@@ -349,8 +397,10 @@ eXo.social.Util.makeRequest = function(url, callback, opt_refreshInterval, opt_m
 	var params = {};
 	params[gadgets.io.RequestParameters.METHOD] = method;
 	params[gadgets.io.RequestParameters.CONTENT_TYPE] = contentType;
-	params[gadgets.io.RequestParameters.POST_DATA] = postData;
-	debug.info(postData);
+	if (postData) {
+		params[gadgets.io.RequestParameters.POST_DATA] = postData;
+	}
+	params[gadgets.io.RequestParameters.HEADERS] = headers;
 	gadgets.io.makeRequest(url, callback, params);
 }
 /**
