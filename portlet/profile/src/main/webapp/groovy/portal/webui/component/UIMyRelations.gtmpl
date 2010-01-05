@@ -12,7 +12,7 @@
 	def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
 	UIFormPageIterator iteratorContact = uicomponent.getUiFormPageIteratorContact();
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
-  def requestURI = pcontext.getRequestURI();
+  def portalURI = pcontext.getPortalURI();
   def relationIdx = 0;
 %>
 <div class="UIMyRelations" id="$uicomponent.id">
@@ -48,7 +48,7 @@
 			  } else {
 		  	  id = relation.identity1;
 			  }
-			  profileURL = requestURI + "/" + id.getRemoteId();
+			  profileURL = portalURI + "activities/" + id.getRemoteId();
 		    fullName = id.profile.fullName;
 		    position = id.profile.getPropertyValue("position");
 		    def actionLink = uicomponent.event("Remove",id.getId());

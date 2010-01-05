@@ -19,7 +19,7 @@
 	def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
 	UIFormPageIterator iteratorInvitation = uicomponent.getUiFormPageIteratorInvitation();
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
-  def requestURI = pcontext.getRequestURI();
+  def portalURI = pcontext.getPortalURI();
   def invitationRelationIdx = 0
 %>
 <div class="ActivitiesTitleBarM">
@@ -48,7 +48,7 @@
 		<%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>  
 			<% for(invitation in myInvitations) {
 						def identity = invitation.identity1;
-					  profileURL = requestURI + "/" + identity.getRemoteId();
+					  profileURL = portalURI + "activities/" + identity.getRemoteId();
 				    fullName = identity.profile.fullName;
 				    position = identity.profile.getPropertyValue("position");
 				    actionAccept = uicomponent.event("Accept",identity.getId());
