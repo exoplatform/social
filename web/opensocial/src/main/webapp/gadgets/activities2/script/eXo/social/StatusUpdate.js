@@ -732,7 +732,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  		newEl.setAttribute('id', 'Activity' + activityId);
 	  		if (statusUpdate.currentView === 'canvas') {
 	  			Like.getLikeIds(activityId, Like.displayLike);
-	  			if (isOwner) {
+	  			if (isOwner && (viewerId === ownerId)) {
 	  				statusUpdate.setActionContentButton(activityId);
 	  				statusUpdate.setDeleteActivity(activityId);
 	  			}
