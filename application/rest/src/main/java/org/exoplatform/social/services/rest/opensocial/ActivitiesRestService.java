@@ -40,6 +40,7 @@ import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
+import org.exoplatform.social.services.rest.Util;
 
 /**
  * ActivitiesRestService.java
@@ -553,6 +554,9 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     
     public void addLike(Like like) {
+      if (_likes == null) {
+        _likes = new ArrayList<Like>();
+      }
       _likes.add(like);
     }
   }
@@ -579,6 +583,9 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     
     public void addComment(Activity activity) {
+      if (_comments == null) {
+        _comments = new ArrayList<Activity>();
+      }
       _comments.add(activity);
     }
   }

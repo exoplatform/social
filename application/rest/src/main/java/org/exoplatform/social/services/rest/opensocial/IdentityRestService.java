@@ -47,6 +47,7 @@ public class IdentityRestService implements ResourceContainer {
    * @throws Exception
    */
   @GET
+  @Path("show.json")
   @Produces({MediaType.APPLICATION_JSON})
   public UserId getId(@PathParam("username") String username) throws Exception {
       _identityManager = getIdentityManager();

@@ -72,9 +72,9 @@
 						var profile_url =  this.viewer.getField(opensocial.Person.Field.PROFILE_URL);
 						var userId = profile_url.substr(profile_url.lastIndexOf('/') + 1);
 						if (tabId == 'myspace_id') {
-							var siteUrl = 'http://localhost:8080/rest/social/space/getMySpace/' + userId;
+							var siteUrl = 'http://localhost:8080/rest/social/spaces/' + userId + '/mySpaces/show.json';
 						} else {
-							var siteUrl = 'http://localhost:8080/rest/social/space/getPendingSpace/' + userId;					
+							var siteUrl = 'http://localhost:8080/rest/social/spaces/' + userId + '/pendingSpaces/show.json';					
 						}
 								
 						spaceList.makeRequest(siteUrl,spaceList.displayValue);

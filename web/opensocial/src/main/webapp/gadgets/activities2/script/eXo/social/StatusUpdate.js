@@ -223,7 +223,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
 			var username = getUsernameFromUrl();
 			debug.info('username: ' + username);
 			if (username !== null) {
-				var url = config.IDENTITY_REST_URL + "/" + username + "/id";
+				var url = config.IDENTITY_REST_URL + "/" + username + "/id/show.json";
 				debug.info(url);
 				Util.makeRequest(url, fixOwnerHandler);
 			} else {

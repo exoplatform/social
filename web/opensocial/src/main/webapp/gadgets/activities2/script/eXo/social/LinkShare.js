@@ -28,7 +28,7 @@ eXo.social.LinkShare = function(link, lang) {
             link: LinkShare.data.link,
             lang: LinkShare.data.lang
           },
-          url = LinkShare.config.LINKSHARE_REST_URL + '.json',
+          url = LinkShare.config.LINKSHARE_REST_URL + '/show.json',
           linkShare = this;
         Util.makeRequest(url, function(res) {linkShare.callbackHandler(res);}, null,
         		         gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, linkShareRequest);

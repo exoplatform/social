@@ -32,7 +32,7 @@
 			}
 			
 			ApplicationReg.prototype.init = function() {
-				var siteUrl = 'http://localhost:8080/rest/social/json/application';
+				var siteUrl = 'http://localhost:8080/rest/social/apps/show.json';
 				applicationReg.makeRequest(siteUrl,applicationReg.displayValue)
 			}
 			
@@ -79,7 +79,7 @@
 			}
 			
 			ApplicationReg.prototype.init = function() {
-				var siteUrl = 'http://localhost:8080/rest/social/json/application';
+				var siteUrl = 'http://localhost:8080/rest/social/apps/show.json';
 				applicationReg.makeRequest(siteUrl,applicationReg.displayValue)
 			}
 			

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.services.rest.opensocial;
+package org.exoplatform.social.services.rest;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -26,7 +26,7 @@ import javax.ws.rs.core.UriInfo;
  * @author hoatle <hoatlevan at gmail dot com>
  * @since  Jan 5, 2009
  */
-class Util {
+public class Util {
   
   /**
    * gets response constructed from provided params.

@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.social.services.rest.Util;
 
 /**
  * LinkShareRestService: gets information from a provided link.
@@ -34,7 +35,7 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  * @author hoatle <hoatlevan at gmail dot com>
  * @since  Dec 29, 2009
  */
-@Path("social")
+@Path("social/linkshare")
 public class LinkShareRestService implements ResourceContainer {
   /**
    * constructor
@@ -60,7 +61,7 @@ public class LinkShareRestService implements ResourceContainer {
   }
   
   @POST
-  @Path("linkshare.json")
+  @Path("show.json")
   @Consumes({MediaType.APPLICATION_JSON})
   public Response jsonGetLink(@Context UriInfo uriInfo,
                               LinkShareRequest linkShareRequest) throws Exception {
@@ -73,7 +74,7 @@ public class LinkShareRestService implements ResourceContainer {
   }
   
   @POST
-  @Path("linkshare.xml")
+  @Path("show.xml")
   @Consumes({MediaType.APPLICATION_XML})
   public Response xmlGetLink(@Context UriInfo uriInfo,
                              LinkShareRequest linkShareRequest) throws Exception {

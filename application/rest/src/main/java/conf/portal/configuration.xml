@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>                                                                                                                                         
   <component>                                                                                                                                           
-    <type>org.exoplatform.social.services.rest.GadgetRestService</type>                                                                             
+    <type>org.exoplatform.social.services.rest.AppsRestService</type>                                                                             
+  </component>
+  <component>                                                                                                                                           
+    <type>org.exoplatform.social.services.rest.SpacesRestService</type>                                                                             
   </component>
   <component>                                                                                                                                           
     <type>org.exoplatform.social.services.rest.opensocial.ActivitiesRestService</type>                                                                             
-  </component>   
+  </component>
+  <component>                                                                                                                                           
+    <type>org.exoplatform.social.services.rest.opensocial.IdentityRestService</type>                                                                             
+  </component> 
   <component>
     <type>org.exoplatform.social.services.rest.opensocial.LinkShareRestService</type>
   </component>                                                                                                                                                                                                                                                                                                
