@@ -52,10 +52,14 @@ public class LinkShareRestService implements ResourceContainer {
    */
   private LinkShare getLinkShare(String link, String lang) {
     LinkShare ls;
-    if (lang != null) {
-      ls = LinkShare.getInstance(link, lang);
-    } else {
-      ls = LinkShare.getInstance(link);
+    try {
+      if (lang != null) {
+        ls = LinkShare.getInstance(link, lang);
+      } else {
+        ls = LinkShare.getInstance(link);
+      }
+    } catch(Exception ex) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
     return ls;
   }

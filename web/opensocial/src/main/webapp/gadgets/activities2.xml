@@ -188,6 +188,7 @@
   						      <div id="UIComposerExtension" class="ExtensionInput">
                       <!-- dynamic loading -->
                     </div>
+                    <div id="UIComposerExtensionMessage" class="ExtensionMessage"></div>
   						    </td>
   						  </tr>
   						</body>

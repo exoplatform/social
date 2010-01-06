@@ -8,6 +8,10 @@
 	<msg name="what_are_you_doing">Bạn đang làm gì?</msg>
 	<msg name="share">Chia sẻ</msg>
 	<msg name="attach">Gửi kèm</msg>
+	<msg name="please_provide_link">Bạn hãy nhập đường dẫn.</msg>
+	<msg name="getting_link_info_please_wait">Đang lấy thông tin của liên kết! Bạn hãy đợi chút...</msg>
+	<msg name="not_valid_link">Có thể liên kết sai định dạng, bạn hãy kiểm tra lại.</msg>
+	<msg name="problem_happens_to_fix_soon">Đã có lỗi xảy ra! Hiện lỗi này đang được khắc phục.</msg>
 	<msg name="owner_friends">Bạn của bạn</msg>
 	<msg name="activities_of_displayName">Hoạt động của {0}</msg>
 	<msg name="friends_activities">Hoạt động của bạn bè</msg>

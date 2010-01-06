@@ -83,7 +83,9 @@ eXo.social.StatusUpdate.main = function() {
 	//set ref
 	statusUpdate.linkShare = linkShare;
 	eXo.social.Like.ref.statusUpdate = statusUpdate;
-	linkShare.init();
+	if (statusUpdate.currentView === 'canvas') {
+		linkShare.init();
+	}
 }
 
 /**
@@ -819,7 +821,9 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 	var Util = eXo.social.Util;
 	var config = eXo.social.StatusUpdate.config;
 	var currentView = this.currentView;
-	debug.info('Share!!!');
+	if (this.linkShare.content) {
+		this.shareable = true;
+	}
 	//debug.info(this.shareable);
 	if (!this.shareable) {
 		return;

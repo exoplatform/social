@@ -193,6 +193,12 @@ eXo.social.Util.insertAfter = function(newNode, refNode) {
  * @static
  */
 eXo.social.Util.isUrl = function(url) {
+	function hasWhiteSpace(s) {
+		return /\s/g.test(s);
+	}
+	if (hasWhiteSpace(url)) {
+		return false;
+	}
 	var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 	return regexp.test(url);
 }

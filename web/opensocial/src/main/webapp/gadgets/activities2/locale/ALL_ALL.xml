@@ -8,6 +8,10 @@
 	<msg name="what_are_you_doing">What are you doing?</msg>
 	<msg name="share">Share</msg>
 	<msg name="attach">Attach</msg>
+	<msg name="please_provide_link">Please provide link.</msg>
+	<msg name="getting_link_info_please_wait">Getting link information! Please wait...</msg>
+	<msg name="not_valid_link">Please make sure that your provided link is correct.</msg>
+	<msg name="problem_happens_to_fix_soon">Sorry that problem happens. We will fix this soon.</msg>
 	<msg name="activities_of_displayName">Activities of {0}'s</msg>
 	<msg name="friends_activities">Friends' activities</msg>
 	<msg name="owner_friends">Owner's friends</msg>

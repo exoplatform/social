@@ -21,9 +21,6 @@
 	<gadget name="SocialHelloWorld">
 		<path>/gadgets/SocialHelloWorld.xml</path>
 	</gadget>
-  <gadget name="statusUpdate">
-		<path>/gadgets/activities.xml</path>
-	</gadget>
 	<gadget name="statusUpdate2">
 		<path>/gadgets/activities2.xml</path>
 	</gadget>

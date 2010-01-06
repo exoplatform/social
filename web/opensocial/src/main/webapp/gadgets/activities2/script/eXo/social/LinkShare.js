@@ -16,8 +16,9 @@ eXo.social = eXo.social || {};
  */
 eXo.social.LinkShare = function(link, lang) {
 	//alias imports
-	var LinkShare = eXo.social.LinkShare;
-	var Util = eXo.social.Util;
+	var LinkShare = eXo.social.LinkShare,
+		Locale = eXo.social.Locale,
+		Util = eXo.social.Util;
 	if (link != null) LinkShare.data.link = link;
 	if (lang != null) LinkShare.data.lang = lang;
     //content constructed from eXo.social.LinkShare.data
@@ -30,30 +31,39 @@ eXo.social.LinkShare = function(link, lang) {
           },
           url = LinkShare.config.LINKSHARE_REST_URL + '/show.json',
           linkShare = this;
-        Util.makeRequest(url, function(res) {linkShare.callbackHandler(res);}, null,
+          Util.makeRequest(url, function(res) {linkShare.callbackHandler(res);}, null,
         		         gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, linkShareRequest);
     }
     /**
      * callback handler 
      */
     this.callbackHandler = function(res) {
-        if (res === null || res.data === null) {
-       		//TODO: alert more friendly, use mini message
-       		debug.warn("no data response");
+        //when can not get any info
+    	function fallback(data) {
+        	LinkShare.data.title = data.link; //TODO gets domain name only
+        	LinkShare.data.link = data.link;
+        	LinkShare.data.description = "";
+        }
+    	if (!res || !res.data) {
+    		alert(eXo.social.Locale.getMsg('problem_happens_to_fix_soon'));
+    		this.displayAttach(eXo.social.LinkShare.config.LINKSHARE_OPTION_ID);
        		return;
         }
+    	
         var data = res.data;
-        //binds data
-        for (var key in LinkShare.data) {
-          if (data[key] === null || data[key] === "" || data[key] === undefined) continue;
-          LinkShare.data[key] = data[key];
+        if (!data.title && !data.description) {
+        	fallback(data);
+        } else {
+        	//binds data
+        	for (var key in LinkShare.data) {
+        		if (data[key] === null || data[key] === "" || data[key] === undefined) continue;
+        		LinkShare.data[key] = data[key];
+        	}
         }
         if (data.images.length == 0) {
         	LinkShare.data.images = data.images;
         	LinkShare.data.noThumbnail = true;
-        }
-        //sets selectedImage
-        if (LinkShare.data.images.length > 0) {
+        } else if (LinkShare.data.images.length > 0) {//sets selectedImage
         	LinkShare.data.selectedImageIndex = 0;
         	LinkShare.data.noThumbnail = false;
         }
@@ -75,7 +85,8 @@ eXo.social.LinkShare.config = {
     LINKSHARE_ACTION_ID: "UILinkShareAction",
     LINKSHARE_DISPLAY_ID: "UILinkShareDisplay",
     THUMBNAIL_DISPLAY_ID : "UIThumbnailDisplay",
-    EDITABLE_TEXT_ID : "UIEditableText"
+    EDITABLE_TEXT_ID : "UIEditableText",
+    EXTENSION_MESSAGE_ID: "UIComposerExtensionMessage"
 };
 
 //static object for holding data
@@ -98,6 +109,24 @@ eXo.social.LinkShare.data = {
     noThumbnail : true
 };
 
+eXo.social.LinkShare.createMsg = function(msg) {
+	var el = eXo.social.Util.getElementById(eXo.social.LinkShare.config.EXTENSION_MESSAGE_ID);
+	if (el == null) {
+		debug.warn('extension message id not found!');
+		return;
+	}
+	el.innerHTML = msg;
+}
+
+eXo.social.LinkShare.clearMsg = function() {
+	var el = eXo.social.Util.getElementById(eXo.social.LinkShare.config.EXTENSION_MESSAGE_ID);
+	if (el == null) {
+		debug.warn('extension message id not found!');
+		return;
+	}
+	el.innerHTML = '';
+}
+
 /**
  * init function to create user interface 
  */
@@ -116,8 +145,10 @@ eXo.social.LinkShare.prototype.displayAttach = function(id) {
 	//alias 
 	var Util = eXo.social.Util,
       LinkShare = eXo.social.LinkShare;
+	  LinkShare.clearMsg();
+	  Util.showElement(LinkShare.config.WORKSPACE_ID);
 	//removes all attachs
-	//TODO: Should hide for faster performance instead of remmoving
+	//TODO: Should hide for faster performance instead of removing
 	Util.removeElementById(LinkShare.config.LINKSHARE_OPTION_ID);
 	Util.removeElementById(LinkShare.config.LINKSHARE_ACTION_ID);
 	Util.removeElementById(LinkShare.config.LINKSHARE_DISPLAY_ID);
@@ -149,7 +180,6 @@ eXo.social.LinkShare.prototype.addAttachOption = function() {
 		eXo.social.LinkShare.data[key] = null;
 	}
 	this.content = null;
-	
 	//creates a div elemenet with id = attachOption for users to click on to share
 	var lsOptionTagName = 'div';
 	var lsOptionId = config.LINKSHARE_OPTION_ID;
@@ -209,6 +239,7 @@ eXo.social.LinkShare.prototype.addAttachAction = function() {
 	//event attach
 	var spanCloseElement = Util.getElementsByClass(newElement, 'span', 'Close')[0];
 	var linkShare = this;
+	
 	Util.addEventListener(spanCloseElement, 'click', function() {
 		linkShare.displayAttach(config.LINKSHARE_OPTION_ID);
 	}, false);
@@ -300,6 +331,7 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
 			lsDisplayHtml.push('<div class="Content Editable">' + LinkShare.data.description + '</div>');
 			lsDisplayHtml.push('<div class="Source">' + LinkShare.data.link + '</div>');
 		lsDisplayHtml.push('</div>');
+	Util.showElement(config.WORKSPACE_ID);
 	var newElement = Util.addElement(config.WORKSPACE_ID, lsDisplayTagName, lsDisplayId, lsDisplayHtml.join(''));
 	//attach event
 	var spanCloseEl = Util.getElementsByClass(newElement, 'span', 'Close')[0];
@@ -440,20 +472,38 @@ eXo.social.LinkShare.prototype.addEditableText = function(oldEl, tagName) {
  */
 eXo.social.LinkShare.prototype.getInfo = function() {
 	var Util = eXo.social.Util,
-      config = eXo.social.LinkShare.config;
-      lsActionEl = Util.getElementById(config.LINKSHARE_ACTION_ID);
+		Locale = eXo.social.Locale,
+		LinkShare = eXo.social.LinkShare,
+        config = eXo.social.LinkShare.config;
+       lsActionEl = Util.getElementById(config.LINKSHARE_ACTION_ID);
 	if (!lsActionEl) {
     debug.warn('lsActionEl is null!');
     return;
-  }
+    }
 	var inputEl = Util.getElementById('InputLink');
 	if (!inputEl) {
 		debug.warn('err: no input element in attachAction');
 		return;
 	}
-	if (inputEl.value === null) return;
-	if (!Util.isUrl(inputEl.value)) return; 
+	LinkShare.clearMsg();
+	/**
+	 * hides UIExtensionInput
+	 * displays wait message
+	 */
+	function wait() {
+		Util.hideElement(config.WORKSPACE_ID);
+		LinkShare.createMsg(Locale.getMsg('getting_link_info_please_wait'));
+	}
+	if (inputEl.value === 'http://') {
+		LinkShare.createMsg(Locale.getMsg('please_provide_link'));
+		return;
+	}
+	if (!Util.isUrl(inputEl.value)) {
+		LinkShare.createMsg(Locale.getMsg('not_valid_link'));
+		return;
+	}
 	eXo.social.LinkShare.data.link = inputEl.value;
+	wait();
     this.makeRequest();
 }
 

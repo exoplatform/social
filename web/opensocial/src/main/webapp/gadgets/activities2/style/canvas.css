@@ -15,3 +15,8 @@
 	margin-bottom: 5px;
 	width: 70px;
 }
+
+.ExtensionMessage {
+  font-size: 10px;
+  color: gray;
+}
