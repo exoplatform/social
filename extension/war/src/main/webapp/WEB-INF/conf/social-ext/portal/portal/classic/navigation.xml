@@ -31,7 +31,7 @@
    <node>
     <uri>activities</uri>
     <name>activities</name>
-    <label>#{portal.socialdemo.myprofile}</label>
+    <label>#{portal.classic.myprofile}</label>
     <page-reference>portal::classic::activities</page-reference>
    </node>
    
@@ -46,7 +46,7 @@
    <node>
     <uri>relations</uri>
     <name>relations</name>
-    <label>#{portal.socialdemo.relations}</label>
+    <label>#{portal.classic.relations}</label>
     <visible>false</visible>
 	  <node>
 	    <uri>relations/yours</uri>
@@ -71,14 +71,14 @@
 	 <node>
     <uri>people</uri>
     <name>people</name>
-    <label>#{portal.socialdemo.people}</label>
+    <label>#{portal.classic.people}</label>
     <page-reference>portal::classic::people</page-reference>
 	 </node>
 	 
 	 <node>
     <uri>spaces</uri>
     <name>spaces</name>
-    <label>#{portal.socialdemo.spaces}</label>
+    <label>#{portal.classic.spaces}</label>
     <page-reference>portal::classic::spaces</page-reference>
    </node>
    
