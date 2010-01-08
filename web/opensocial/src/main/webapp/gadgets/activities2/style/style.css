@@ -37,16 +37,10 @@ a:link, a:hover, a:active, a:visited  {
 	display: none;
 }
 
-.DisplayNone a:link, a:hover, a:active, a:visited {
-	float: right;
-}
-
 body {
 	font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
 	font-size:11px;
-	/*height:100%;*/
 	margin:0px;
-	/*overflow-x:hidden;*/
 	padding:0px;
 }
 
@@ -81,7 +75,6 @@ img {border: none}
 	border-left: 1px solid #d6d6d6;
 	padding: 5px 20px 10px;
 	border-bottom: 1px solid #d6d6d6;
-	/*height: 550px;*/
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusComponent{
@@ -133,9 +126,6 @@ img {border: none}
 	height: 20px;
 }
 
-
-
-
 .ActivitiesComponent .ActivitiesContainer .MyStatusInputTL{
 	background: url('images/MyStatusInputTL.gif') no-repeat left top;
 	padding-left: 8px;
@@ -158,7 +148,7 @@ img {border: none}
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusInputBR{
-	background: url('images/MyStatusInputBR.gif') no-repeat Right bottom;
+	background: url('images/MyStatusInputBR.gif') no-repeat right bottom;
 	padding-right: 2px;
 }
 
@@ -182,21 +172,21 @@ img {border: none}
 }
 
 .ActivitiesComponent .ActivitiesContainer .IconAdd{
-	background: url('images/IconAdd.gif') no-repeat Right center;
+	background: url('images/IconAdd.gif') no-repeat right center;
 	width: 30px;
 	height: 22px;
-	display: block;
+  float: right;
 }
 
-.ActivitiesComponent .ActivitiesContainer .InputExtension{
-	padding: 4px 0px 0px 33px;
+.ExtensionInput{
 }
 
-.ActivitiesComponent .ActivitiesContainer .InputExtension .Label{
+.ExtensionInput .Label{
 	float: left;
+  font-size: 12px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .InputExtension .AttachIcon{
+.ExtensionInput .AttachIcon{
 	float: left;
 	width: 16px;
 	height: 16px;
@@ -204,16 +194,17 @@ img {border: none}
 	cursor: pointer;
 }
 
-.ActivitiesComponent .ActivitiesContainer .InputExtension .ImageAttach{
+.ExtensionInput .ImageAttach{
 	background: url('images/ImageAttach.gif') no-repeat left center;
 }
 
-.ActivitiesComponent .ActivitiesContainer .InputExtension .VideoAttach{
+.ExtensionInput .VideoAttach{
 	background: url('images/VideoAttach.gif') no-repeat left center;
 }
 
-.ActivitiesComponent .ActivitiesContainer .InputExtension .LinkAttach{
+.ExtensionInput .LinkAttach{
 	background: url('images/LinkAttach.gif') no-repeat left center;
+	cursor: pointer;
 }
 
 .ATitleBarL {
@@ -253,7 +244,7 @@ img {border: none}
 }
 
 .ListPeopleLike{
-	background: url('images/ListPeopleLike.gif') no-repeat 70px top;
+	background: url('images/ListPeopleLike.gif') no-repeat 50px top;
 	padding-top: 6px;
 }
 
@@ -265,7 +256,7 @@ img {border: none}
 
 .ListPeopleLikeBG{
 	background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
-	margin-left: 80px;
+	margin-left: 50px;
 	margin-bottom: 7px;
 }
 
@@ -280,7 +271,7 @@ img {border: none}
 }
 
 .CommentListContent{
-	background: url('images/ListPeopleLike.gif') no-repeat 20px top;
+	background: url('images/ListPeopleLike.gif') no-repeat 40px top;
 	padding-top: 6px;
 }
 
@@ -289,6 +280,7 @@ img {border: none}
 	border-top: none;
 	padding: 8px;
 }
+
 
 .AvatarPeopleBG{
 	background: url('images/AvatarPeopleBG.gif') no-repeat left top;
@@ -345,7 +337,7 @@ img {border: none}
 }
 
 .ActivitiesContainer .MenuItem .DefaultPageIcon {
-	background-position:10px center;
+	background-position: 10px center;
 }
 
 .ActivitiesContainer .Content{
@@ -368,69 +360,104 @@ img {border: none}
 	font-size: 10px;
 }
 
-.ActivitiesContent .AddLinkContent {
+.ExtensionInput .AddLink {
+  font-size: 12px;
+}
+
+.ExtensionInput .AddLinkContent {
 	margin: 5px 0px;
 }
 
-.ActivitiesContent .AddLinkContent .InputLink {
-	width: 684px; height: 24px;
+.ExtensionInput .AddLinkContent .InputLink {
+	width: 635px;
+  height: 24px;
 	float: left;
 }
 
-.ActivitiesContent .AddLinkContent .IconAdd {
+.ExtensionInput .AddLinkContent .IconAdd {
 	float: right;
 }
 
-.ActivitiesContent .ActionAdd {
+.ExtensionInput .ActionAdd {
 	float: right;
 }
 
-.ActivitiesContent .ActionAdd a{
+.ExtensionInput .ActionAdd a{
 	color: #0b4da3;
 }
 
-.ActivitiesContent .AvartarLeft{
+.ExtensionInput .ThumbnailLeft{
 	width: 75px;
 	float: left;
 }
 
-.ActivitiesContent .AvartarLeft .AvatarAction .BackIcon{
-	width: 9px; height: 16px;
+.ExtensionInput .ThumbnailLeft .ThumbnailBG {
+  background: url('images/AvatarPeopleBG.gif') no-repeat left top;
+  width: 52px;
+  height: 52px;
+  padding: 6px 0px 0px 6px;
+  float: left;
+  margin: 0px;
+}
+
+.ExtensionInput .ThumbnailLeft .Thumbnail{
+  width: 47px;
+  height: 47px;
+}
+
+.ExtensionInput .ThumbnailLeft .ThumbnailAction .BackIcon{
+	width: 9px; 
+	height: 16px;
 	float: left;
 	cursor: pointer;
 	background: url('images/BackIcon.gif') no-repeat left center;
-	margin-left: 10px;
+	margin-left: 9px;
 }
 
-.ActivitiesContent .AvartarLeft .AvatarAction .NextIcon{
-	width: 9px; height: 16px;
+.ExtensionInput .ThumbnailLeft .ThumbnailAction .Stats {
+  float: left;
+  font-size: 8px;
+  margin-left: 5px;
+}
+
+.ExtensionInput .ThumbnailLeft .ThumbnailAction .NextIcon{
+	width: 9px; 
+	height: 16px;
 	float: right;
 	cursor: pointer;
 	background: url('images/NextIcon.gif') no-repeat right center;
-	margin-right: 10px;
+	margin-right: 25px;
 }
 
-.ActivitiesContent .ContentRight{
-	margin-left: 80px;
+.ExtensionInput .ThumbnailOption {
+  font-size: 9px;
+  float:left;
+  height: 20px;
 }
 
-.ActivitiesContent .ContentRight .Label{
-	color: #0032ea;
-	width: 630px;
+.ExtensionInput .ContentRight{
 }
 
-.ActivitiesContent .ContentRight .Content{
-	color: #999999;
+.ExtensionInput .ContentRight .Title{
+	color: #000000;
+	width: 550px;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.ExtensionInput .ContentRight .Content{
+	color: #000000;
 	font-size: 10px;
 	margin: 3px 0px;
-	width: 630px;
+	width: 600px;
 }
 
-.ActivitiesContent .ContentRight .Source{
+.ExtensionInput .ContentRight .Source{
 	color: #000000;
 	width: 630px;
+	font-size: 9px;
 }
 
-.ActivitiesContent .ContentRight .Source a{
+.ExtensionInput .ContentRight .Source a{
 	color: #999999;
 }
