@@ -39,6 +39,7 @@ import org.exoplatform.social.portlet.profilelist.UIDisplayProfileList;
 import org.exoplatform.social.relation.UIInvitationRelation;
 import org.exoplatform.social.relation.UIMyRelations;
 import org.exoplatform.social.relation.UIPendingRelation;
+import org.exoplatform.social.space.Space;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -90,6 +91,12 @@ public class UIProfileUserSearch extends UIForm {
   final public static String FEMALE = "female";
   /**REGEX FOR SPLIT STRING */
   final public static String REG_FOR_SPLIT = "[^_A-Za-z0-9-.\\s[\\n]]";
+  /** PATTERN FOR CHECK RIGHT INPUT VALUE */
+  final static String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
+  /** REGEX EXPRESSION OF POSITION FIELD. */
+  final public static String POSITION_REGEX_EXPRESSION = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
+  /** ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING */
+  final static String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
   
   /** IdentityManager */
   IdentityManager        im           = null;
@@ -185,71 +192,112 @@ public class UIProfileUserSearch extends UIForm {
       String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
       String defaultProfVal = resApp.getString(uiSearch.getId() + ".label.Professional");
       String defaultGenderVal = resApp.getString(uiSearch.getId() + ".label.AllGender");
-      if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
-        filter.setName("");
-      }
-      if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
-        filter.setPosition("");
-      }
-      if ((filter.getProfessional() == null) || filter.getProfessional().equals(defaultProfVal)) {
-        filter.setProfessional("");
-      }
-      if (filter.getGender().equals(defaultGenderVal)) {
-        filter.setGender("");
-      }
       
-      String professional = null;
       
-      uiSearch.setSelectedChar(charSearch);
-      try {
-        if (charSearch == null) {
-          identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
-          
-          if (identitiesSearchResult != null) {
-              for (Identity id : identitiesSearchResult) {
-                if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id);
-              }
-          }
-          
-          // Using regular expression for search
-          professional = filter.getProfessional();
-          if (professional.length() > 0) {
-            professional = (professional.charAt(0)!='*') ? "*" + professional : professional;
-            professional = (professional.charAt(professional.length()-1)!='*') ? professional += "*" : professional;
-            professional = (professional.indexOf("*") >= 0) ? professional.replace("*", ".*") : professional;
-            professional = (professional.indexOf("%") >= 0) ? professional.replace("%", ".*") : professional;
-            Pattern.compile(professional);
-            identities = uiSearch.getIdentitiesByProfessional(professional, identities);
-          }
-          
-          uiSearch.setIdentityList(identities);
-        } else {
-          ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
-          filter.setName(charSearch);
-          filter.setPosition("");
-          filter.setGender("");
-          if ("All".equals(charSearch)) {
-            filter.setName("");
-          }
-          
-          identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(filter);
-          
-          if (identitiesSearchResult != null) {
-              for (Identity id : identitiesSearchResult) {
-                if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id); 
-              }
-          }
-          
-          uiSearch.setIdentityList(identities);
-        }
-      } catch (Exception e) {
+      if (!isValidInput(filter)) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
+      } else {
+      
+        if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
+          filter.setName("");
+        }
+        if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+          filter.setPosition("");
+        }
+        if ((filter.getProfessional() == null) || filter.getProfessional().equals(defaultProfVal)) {
+          filter.setProfessional("");
+        }
+        if (filter.getGender().equals(defaultGenderVal)) {
+          filter.setGender("");
+        }
+        
+        String professional = null;
+        
+        uiSearch.setSelectedChar(charSearch);
+        try {
+          if (charSearch == null) {
+            identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
+            
+            if (identitiesSearchResult != null) {
+                for (Identity id : identitiesSearchResult) {
+                  if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id);
+                }
+            }
+            
+            // Using regular expression for search
+            professional = filter.getProfessional();
+            if (professional.length() > 0) {
+              professional = ((professional == "") || (professional.length() == 0)) ? "*" : professional;
+              professional = (professional.charAt(0)!='*') ? "*" + professional : professional;
+              professional = (professional.charAt(professional.length()-1)!='*') ? professional += "*" : professional;
+              professional = (professional.indexOf("*") >= 0) ? professional.replace("*", ".*") : professional;
+              professional = (professional.indexOf("%") >= 0) ? professional.replace("%", ".*") : professional;
+              Pattern.compile(professional);
+              identities = uiSearch.getIdentitiesByProfessional(professional, identities);
+            }
+            
+            uiSearch.setIdentityList(identities);
+          } else {
+            ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
+            filter.setName(charSearch);
+            filter.setPosition("");
+            filter.setGender("");
+            if ("All".equals(charSearch)) {
+              filter.setName("");
+            }
+            
+            identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(filter);
+            
+            if (identitiesSearchResult != null) {
+                for (Identity id : identitiesSearchResult) {
+                  if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id); 
+                }
+            }
+            
+            uiSearch.setIdentityList(identities);
+          }
+        } catch (Exception e) {
+          uiSearch.setIdentityList(new ArrayList<Identity>());
+        }
       }
       
       Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();
       }
+    }
+
+    /**
+     * Check input values is right or not follow regular expression.
+     * @param input
+     * @return
+     */
+    private boolean isValidInput(ProfileFiler input) {
+      //Check contact name
+      String contactName = input.getName();
+      // Eliminate '*' and '%' character in string for checking
+      String contactNameForCheck = null;
+      if (contactName != null) {
+        contactNameForCheck = contactName.trim().replace("*", "");
+        contactNameForCheck = contactNameForCheck.replace("%", "");
+        // Make sure string for checking is started by alphabet character
+        contactNameForCheck =  PREFIX_ADDED_FOR_CHECK + contactNameForCheck;
+        if (!contactNameForCheck.matches(RIGHT_INPUT_PATTERN)) return false;
+      }
+      
+      // Check position
+      String position = input.getPosition();
+      // Eliminate '*' and '%' character in string for checking
+      String positionForCheck = null;
+      if (position != null) { 
+        positionForCheck = position.trim().replace("*", "");
+        positionForCheck = positionForCheck.replace("%", "");
+        // Make sure string for checking is started by alphabet character
+        positionForCheck =  PREFIX_ADDED_FOR_CHECK + positionForCheck;
+        if (!positionForCheck.matches(POSITION_REGEX_EXPRESSION)) return false;
+      }
+      
+      return true;
     }
   }
   

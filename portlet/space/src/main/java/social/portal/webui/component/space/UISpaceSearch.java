@@ -19,9 +19,8 @@ package social.portal.webui.component.space;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
+import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -59,8 +58,15 @@ public class UISpaceSearch extends UIForm {
   final public static String SPACE_SEARCH = "SpaceSearch";
   /** SEARCH. */
   final public static String SEARCH = "Search";
+  
+  final static String ALL = "All";
+  
   /** DEFAULT SPACE NAME SEARCH. */
   final public static String DEFAULT_SPACE_NAME_SEARCH = "Space name";
+  final static String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
+  /** ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING */
+  final static String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
+  
   SpaceService spaceService = null;
   private List<Space> spaceList = null;
   /** Selected character when search by alphabet */
@@ -138,25 +144,26 @@ public class UISpaceSearch extends UIForm {
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceName = resApp.getString(uiSpaceSearch.getId() + ".label.SpaceName");
-      String spaceName = (((UIFormStringInput)uiSpaceSearch.getChild(UIFormStringInput.class)).getValue()).trim();
-      spaceName = ((spaceName == null) || spaceName.equals(defaultSpaceName)) ? "*" : spaceName;
+      String spaceName = (((UIFormStringInput)uiSpaceSearch.getChild(UIFormStringInput.class)).getValue());
+      if (spaceName != null) spaceName = spaceName.trim();
+      
+      spaceName = ((spaceName == null) || (spaceName.length() == 0) || spaceName.equals(defaultSpaceName)) ? "*" : spaceName;
       spaceName = (charSearch != null) ? charSearch : spaceName;
-      spaceName = ((charSearch != null) && "All".equals(charSearch)) ? "" : spaceName;
+      spaceName = ((charSearch != null) && ALL.equals(charSearch)) ? "" : spaceName;
       
       if (charSearch != null) ((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(DEFAULT_SPACE_NAME_SEARCH);
       uiSpaceSearch.setSelectedChar(charSearch);
          
-      if (charSearch == null) {
-        spaceName = (spaceName.charAt(0)!='*') ? "*" + spaceName : spaceName;
-        spaceName = (spaceName.charAt(spaceName.length()-1)!='*') ? spaceName += "*" : spaceName;
-        spaceName = (spaceName.indexOf("*") >= 0) ? spaceName.replace("*", ".*") : spaceName;
-        spaceName = (spaceName.indexOf("%") >= 0) ? spaceName.replace("%", ".*") : spaceName;
-        try {
-          Pattern.compile(spaceName);
+      if (charSearch == null) { // is not search by first character
+        if (!isValidInput(spaceName)) {
+          uiSpaceSearch.setSpaceList(new ArrayList<Space>());
+        } else {
+          spaceName = (spaceName.charAt(0) != '*') ? "*" + spaceName : spaceName;
+          spaceName = (spaceName.charAt(spaceName.length()-1) != '*') ? spaceName += "*" : spaceName;
+          spaceName = (spaceName.indexOf("*") >= 0) ? spaceName.replace("*", ".*") : spaceName;
+          spaceName = (spaceName.indexOf("%") >= 0) ? spaceName.replace("%", ".*") : spaceName;
           List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, false);
           uiSpaceSearch.setSpaceList(spaceSearchResult);
-        } catch (PatternSyntaxException pse) {
-          uiSpaceSearch.setSpaceList(new ArrayList<Space>());
         }
       } else {
         List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, true );
@@ -169,6 +176,22 @@ public class UISpaceSearch extends UIForm {
       if (searchEvent != null) {
         searchEvent.broadcast();
       }
+    }
+    
+    /**
+     * Check input values is right or not follow regular expression.
+     * @param input
+     * @return
+     */
+    private boolean isValidInput(String input) {
+      // Eliminate '*' and '%' character in string for checking
+      String spacenameForCheck = input.replace("*", "");
+      spacenameForCheck = spacenameForCheck.replace("%", "");
+      // Make sure string for checking is started by alphabet character
+      spacenameForCheck =  PREFIX_ADDED_FOR_CHECK + spacenameForCheck;
+      if (!spacenameForCheck.matches(RIGHT_INPUT_PATTERN)) return false;
+    
+      return true;
     }
   }
   

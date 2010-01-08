@@ -77,7 +77,7 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 	this.posTextObj = posEl;
 	this.profTextObj = profEl;
 	this.genderSelObj = genderEl;
-	if (searchEl.value == defaultNameVal) searchEl.value = defaultUserContact;
+	if ((searchEl.value == defaultNameVal) || (searchEl.value.trim().length == 0)) searchEl.value = defaultUserContact;
 	(searchEl.value != defaultUserContact) ? (searchEl.style.color = '#000000') : (searchEl.style.color = '#C7C7C7');
 	
 	posEl.value = defaultPos;

@@ -36,7 +36,7 @@ UISpaceSearch.prototype.onLoad = function(uicomponentId, spaceNames) {
 	var spaceSearchEl = DOMUtil.findDescendantById(spaceSearch, 'SpaceSearch');
 	var defaultSpaceName = document.getElementById('defaultSpaceName').value;
 	var defaultUIVal = "Space name";
-	if (spaceSearchEl.value == defaultUIVal) spaceSearchEl.value = defaultSpaceName;
+	if ((spaceSearchEl.value == defaultUIVal) || (spaceSearchEl.value.trim().length == 0)) spaceSearchEl.value = defaultSpaceName;
 	(spaceSearchEl.value != defaultSpaceName) ? (spaceSearchEl.style.color = '#000000') : (spaceSearchEl.style.color = '#C7C7C7');
 	this.inputTextBoxObj = spaceSearchEl;
 	this.setAllSpaceName(spaceNames);

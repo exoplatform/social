@@ -41,10 +41,12 @@ UIAutoSuggestControl.prototype.load = function(oTextbox /*:HTMLInputElement*/,
     this.textbox /*:HTMLInputElement*/ = oTextbox;
     
     /**
-     * Store the current text-box value
+     * Store the time out return value form setTimeout function.
      * @scope private
      */
-    this.currentTextBoxValue = null;
+    this.timeout = null;
+    
+    this.storeText = null;
     
     //initialize the control
     this.init();
@@ -59,7 +61,6 @@ UIAutoSuggestControl.prototype.load = function(oTextbox /*:HTMLInputElement*/,
  * @param bTypeAhead If the control should provide a type ahead suggestion.
  */
 UIAutoSuggestControl.prototype.autosuggest = function (aSuggestions /*:Array*/, currTextBoxValue) {
-	this.currentTextBoxValue = currTextBoxValue;
     //make sure there's at least one suggestion
     if (aSuggestions.length > 0) {
         this.showSuggestions(aSuggestions);
@@ -167,15 +168,22 @@ UIAutoSuggestControl.prototype.handleKeyDown = function (oEvent /*:Event*/) {
  */
 UIAutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
     var iKeyCode = oEvent.keyCode || oEvent.which;
-
+    var el = oEvent.target || oEvent.srcElement;
+	
     //for backspace (8) and delete (46), shows suggestions without typeahead
     if (iKeyCode == 8 || iKeyCode == 46) {
+    	if (el.tagName == 'INPUT') {
+    		this.storeText = el.value;
+    	}
         this.provider.requestSuggestions(this);
         
     //make sure not to interfere with non-character keys
     } else if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode < 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
         //ignore
     } else {
+    	if (el.tagName == 'INPUT') {
+    		this.storeText = el.value;
+    	}
     	this.provider.requestSuggestions(this);
     }
 };
@@ -239,17 +247,22 @@ UIAutoSuggestControl.prototype.init = function () {
  */
 UIAutoSuggestControl.prototype.nextSuggestion = function () {
     var cSuggestionNodes = this.layer.childNodes;
-
-    if (cSuggestionNodes.length > 0 && this.cur < cSuggestionNodes.length-1) {
-        var oNode = cSuggestionNodes[++this.cur];
+    if (this.cur == cSuggestionNodes.length) this.cur = -1;
+    ++this.cur;
+    if (cSuggestionNodes.length > 0 && this.cur < cSuggestionNodes.length) {
+        var oNode = cSuggestionNodes[this.cur];
         this.highlightSuggestion(oNode);
         this.textbox.value = oNode.firstChild.nodeValue; 
-//        if (this.cur >= cSuggestionNodes.length) {
-//        	(cSuggestionNodes[cSuggestionNodes.length - 1]).className = "";
-//        	this.textbox.focus();
-//        	this.cur = 0;
-//        }
     } 
+    
+    // If press next at the last element then return the start input value
+    if (this.cur > cSuggestionNodes.length - 1) {
+    	(cSuggestionNodes[cSuggestionNodes.length - 1]).className = "";
+    	this.textbox.value = this.storeText;
+    	this.textbox.focus();
+    	this.cur = -1;
+    }
+    
 };
 
 /**
@@ -259,16 +272,19 @@ UIAutoSuggestControl.prototype.nextSuggestion = function () {
  */
 UIAutoSuggestControl.prototype.previousSuggestion = function () {
     var cSuggestionNodes = this.layer.childNodes;
-
-    if (cSuggestionNodes.length > 0 && this.cur > 0) {
-        var oNode = cSuggestionNodes[--this.cur];
+    if (this.cur < 0) this.cur = cSuggestionNodes.length;
+    --this.cur;
+    if (cSuggestionNodes.length > 0 && this.cur >= 0) {
+        var oNode = cSuggestionNodes[this.cur];
         this.highlightSuggestion(oNode);
         this.textbox.value = oNode.firstChild.nodeValue;   
-//        if (this.cur == 0) {
-//        	(cSuggestionNodes[cSuggestionNodes.length - 1]).className = "";
-//        	this.textbox.focus();
-//        	this.cur = cSuggestionNodes.length;
-//        }
+    }
+    
+    if (this.cur < 0) {
+    	(cSuggestionNodes[0]).className = "";
+    	this.textbox.value = this.storeText;
+    	this.textbox.focus();
+    	this.cur = cSuggestionNodes.length;
     }
 };
 
@@ -292,7 +308,9 @@ UIAutoSuggestControl.prototype.showSuggestions = function (aSuggestions /*:Array
     
     this.layer.style.left = this.getLeft() + "px";
     this.layer.style.top = (this.getTop()+this.textbox.offsetHeight) + "px";
-    this.layer.style.visibility = "visible";
+    var thisLayer = this.layer;
+    if (this.timeout) clearTimeout(this.timeout);
+    this.timeout = setTimeout(function(){thisLayer.style.visibility = "visible";}, 500);
 };
 
 /*===================================================================*/

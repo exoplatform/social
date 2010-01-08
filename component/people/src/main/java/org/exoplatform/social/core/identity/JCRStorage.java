@@ -212,6 +212,7 @@ public class JCRStorage {
       String gender = profileFilter.getGender().trim();
       
       if (userName.length() > 0) {
+        userName = ((userName == "") || (userName.length() == 0)) ? "*" : userName;
         userName = (userName.charAt(0) != '*') ? "*" + userName : userName;
         userName = (userName.charAt(userName.length()-1) != '*') ? userName += "*" : userName;
         userName = (userName.indexOf("*") >= 0) ? userName.replace("*", ".*") : userName;
