@@ -169,10 +169,11 @@ UIAutoSuggestControl.prototype.handleKeyDown = function (oEvent /*:Event*/) {
 UIAutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
     var iKeyCode = oEvent.keyCode || oEvent.which;
     var el = oEvent.target || oEvent.srcElement;
+	var isInputTag = (el.tagName.toLowerCase() == 'input');
 	
     //for backspace (8) and delete (46), shows suggestions without typeahead
     if (iKeyCode == 8 || iKeyCode == 46) {
-    	if (el.tagName == 'INPUT') {
+    	if (isInputTag) {
     		this.storeText = el.value;
     	}
         this.provider.requestSuggestions(this);
@@ -181,7 +182,7 @@ UIAutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
     } else if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode < 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
         //ignore
     } else {
-    	if (el.tagName == 'INPUT') {
+    	if (isInputTag) {
     		this.storeText = el.value;
     	}
     	this.provider.requestSuggestions(this);
@@ -310,7 +311,8 @@ UIAutoSuggestControl.prototype.showSuggestions = function (aSuggestions /*:Array
     this.layer.style.top = (this.getTop()+this.textbox.offsetHeight) + "px";
     var thisLayer = this.layer;
     if (this.timeout) clearTimeout(this.timeout);
-    this.timeout = setTimeout(function(){thisLayer.style.visibility = "visible";}, 500);
+    // haven't support delay, maybe later
+    this.timeout = setTimeout(function(){thisLayer.style.visibility = "visible";}, 0);
 };
 
 /*===================================================================*/
