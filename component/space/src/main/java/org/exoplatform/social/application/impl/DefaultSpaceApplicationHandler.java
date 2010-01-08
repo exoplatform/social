@@ -350,6 +350,9 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     page.setChildren(pageChilds);
     try {
       configService.create(page);
+      //TODO tung.dang because when renew we have new page in storage -> need to remove it.
+      Page tmpPage = configService.getPage(page.getId());
+      configService.remove(tmpPage);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
     }
