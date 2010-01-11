@@ -366,12 +366,15 @@ img {border: none}
 
 .ExtensionInput .AddLinkContent {
 	margin: 5px 0px;
+	background: white;
+	border: 1px solid #d7d7d7;
 }
 
 .ExtensionInput .AddLinkContent .InputLink {
 	width: 635px;
   height: 24px;
 	float: left;
+	border: 1px solid white;
 }
 
 .ExtensionInput .AddLinkContent .IconAdd {
