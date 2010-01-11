@@ -35,6 +35,7 @@
     <module>component/space</module>
 	<module>webui/social</module>
 	<module>application/rest</module>
+	<module>server</module>
 	<module>demo</module>
 	<module>packaging</module>
   </modules>

@@ -45,23 +45,17 @@ function getModule(params) {
   module.application = {}
   module.application.rest = new Project("org.exoplatform.social", "exo.social.application.rest","jar", module.version).
 	addDependency(ws.frameworks.json);  	
-//addDependency(new Project("org.exoplatform.ws", "exo.ws.frameworks.json", "jar", "2.0.2")).
-//addDependency(new Project("org.exoplatform.core", "exo.core.component.script.groovy", "jar", "2.2.2"));
 
   module.web.opensocial =new Project("org.exoplatform.social", "exo.social.web.opensocial", "war", module.version).
 		addDependency(new Project("commons-betwixt", "commons-betwixt", "jar", "0.8")).
 		addDependency(new Project("net.sf.json-lib", "json-lib", "jar", "2.2")).
 		addDependency(new Project("org.apache.shindig", "shindig-social-api", "jar", "SNAPSHOT-r790473")).
-		//addDependency(new Project("com.thoughtworks.xstream", "xstream", "jar", "1.2")).
-		//addDependency(new Project("jdom", "jdom", "jar", "1.0")).
 		addDependency(new Project("org.apache.geronimo.specs", "geronimo-stax-api_1.0_spec", "jar", "1.0.1"));
 
 
   module.web.opensocial.deployName = "social" ;
 		
 	module.extension = {};
-	/*module.extension.jar = new Project("org.exoplatform.social", "exo.social.extension.jar","jar", module.version);
-	module.extension.config = new Project("org.exoplatform.social", "exo.social.extension.config","jar", module.version);*/
 	module.extension.war =
    new Project("org.exoplatform.social", "exo.social.extension.war", "war", module.version).
    addDependency(new Project("org.exoplatform.social", "exo.social.extension.jar", "jar", module.version)).
@@ -80,5 +74,12 @@ function getModule(params) {
    module.demo.rest = 
        new Project("org.exoplatform.social", "exo.social.demo.rest-war", "war", module.version);
        module.demo.rest.deployName = "rest-socialdemo"; 
+
+   module.server = {}
+
+   module.server.tomcat = {}
+   module.server.tomcat.patch =
+   new Project("org.exoplatform.social", "exo.social.server.tomcat.patch", "jar", module.version);
+
   return module;
 }
