@@ -561,9 +561,10 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  	prettyTime = Util.toPrettyTime(new Date(activity.getField('postedTime')));
 	  	var html = [];
 	  	html.push('<div class="ActivitiesContent"');
-	  		html.push('<div class="MiniAvatarSpaceBG">');
-	    		html.push('<img src="' + avatarUrl + '" width="60" height="60" />');
-	   		html.push('</div>');
+	  	html.push('<a href="#" class="AvatarPeopleBG">');
+	  	html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
+	   		html.push('</a>');
+	   	html.push('<div class="Content">');
 	    	html.push('<div class="UserName">');
 	    		html.push('<a href="#">' + userName + '</a>');
 	    	html.push('</div>');
@@ -589,6 +590,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		if (statusUpdate.currentView === 'canvas') {
   			html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
   		}
+  		html.push('</div>')
   		html.push('</div>')
   		html.push('<div class="ClearLeft"><span></span></div>');
   		html.push(getPeopleLikeBlock());

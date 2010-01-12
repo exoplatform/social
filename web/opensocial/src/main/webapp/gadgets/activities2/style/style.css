@@ -257,28 +257,47 @@ img {border: none}
 .ListPeopleLikeBG{
 	background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
 	margin-left: 50px;
-	margin-bottom: 7px;
+	margin-bottom: 3px;
 }
 
 .ListPeopleLikeBG .ListPeopleLike .Title a{
 	color: #006cc6;
 }
 
-.CommentListBlock{
+.CommentBlock{
 	background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
-	margin-left: 80px;
-	margin-bottom: 7px;
+	margin-left: 50px;
+	margin-bottom: 3px;
 }
 
-.CommentListContent{
+.CommentContent{
 	background: url('images/ListPeopleLike.gif') no-repeat 40px top;
 	padding-top: 6px;
 }
 
-.CommentListBlock .CommentListContent .Title{
+
+
+.CommentBorder{
 	border: 1px solid #e5e1e2;
 	border-top: none;
-	padding: 8px;
+	padding: 2px;
+	background: #EEEEFF;
+}
+
+
+
+.CommentTextarea {
+  border: 1px solid #D7D7D7;
+  width: 100%;
+  height: 20px;
+  color: gray;
+}
+
+.CommentButton {
+  border: 1px solid gray;
+  float: right;
+  margin-top: 3px;
+  width: 80px;
 }
 
 
@@ -371,7 +390,7 @@ img {border: none}
 }
 
 .ExtensionInput .AddLinkContent .InputLink {
-	width: 635px;
+	width: 630px;
   height: 24px;
 	float: left;
 	border: 1px solid white;
@@ -390,7 +409,7 @@ img {border: none}
 }
 
 .ExtensionInput .ThumbnailLeft{
-	width: 75px;
+	width: 85px;
 	float: left;
 }
 
@@ -408,19 +427,23 @@ img {border: none}
   height: 47px;
 }
 
+.ExtensionInput .ThumbnailLeft .ThumbnailAction{
+  width: 75px; 
+}
+
 .ExtensionInput .ThumbnailLeft .ThumbnailAction .BackIcon{
 	width: 9px; 
 	height: 16px;
 	float: left;
 	cursor: pointer;
 	background: url('images/BackIcon.gif') no-repeat left center;
-	margin-left: 9px;
+	margin-left:4px;
 }
 
 .ExtensionInput .ThumbnailLeft .ThumbnailAction .Stats {
   float: left;
   font-size: 8px;
-  margin-left: 5px;
+  margin-left: 9px;
 }
 
 .ExtensionInput .ThumbnailLeft .ThumbnailAction .NextIcon{
@@ -434,8 +457,8 @@ img {border: none}
 
 .ExtensionInput .ThumbnailOption {
   font-size: 9px;
-  float:left;
   height: 20px;
+  white-space: nowrap;
 }
 
 .ExtensionInput .ContentRight{
