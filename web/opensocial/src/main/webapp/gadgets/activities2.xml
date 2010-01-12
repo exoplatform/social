@@ -138,6 +138,7 @@
   	<script type="text/javascript" src="activities2/script/eXo/social/UIComposer.js"></script>
   	<script type="text/javascript" src="activities2/script/eXo/social/LinkShare.js"></script>
   	<script type="text/javascript" src="activities2/script/eXo/social/Like.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/Comment.js"></script>
   	<script type="text/javascript" src="activities2/script/eXo/social/StatusUpdate.js"></script>
   	<div id="StatusUpdate" class="ActivitiesComponent">
   		<div class="ActivitiesComponentBT">

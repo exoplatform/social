@@ -18,6 +18,10 @@
 	<msg name="displayName_does_not_have_update">{0} chưa có cập nhật nào</msg>
 	<msg name="displayName_do_not_have_update">{0} chưa có cập nhật nào</msg>
 	<msg name="comment">Bình luận</msg>
+	<msg name="write_a_comment">Viết bình luận...</msg>
+	<msg name="show_all_num_comments">Hiển thị tất cả {0} bình luận.</msg>
+	<msg name="hide_all_comments">Ẩn các bình luận.</msg>
+	<msg name="user_commented_on_an_activity">{0} bình luận ở một hoạt động.</msg>
 	<msg name="like">Thích</msg>
 	<msg name="unlike">Không thích</msg>
 	<msg name="delete">Xoá</msg>

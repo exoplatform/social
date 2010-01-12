@@ -83,6 +83,7 @@ eXo.social.StatusUpdate.main = function() {
 	//set ref
 	statusUpdate.linkShare = linkShare;
 	eXo.social.Like.ref.statusUpdate = statusUpdate;
+	eXo.social.Comment.ref.statusUpdate = statusUpdate;
 	if (statusUpdate.currentView === 'canvas') {
 		linkShare.init();
 	}
@@ -363,34 +364,6 @@ eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
 
 
 /**
- * set onclick handler for deleting
- */
-eXo.social.StatusUpdate.prototype.setCommentActivity = function(activityId) {
-  var Util = eXo.social.Util;
-  var Locale = eXo.social.Locale;
-  var el = Util.getElementById('Comment'+activityId);
-  var statusUpdate = this;
-  el.onclick = function() {
-	statusUpdate.commentActivity(activityId);
-  }
-}
-
-/**
- * delete activity by id
- */
-eXo.social.StatusUpdate.prototype.commentActivity = function(activityId) {
-	//alert("tungcnw");
-	/*var activity = opensocial.newActivity({ 'title' : this.viewer.getDisplayName(), 'body' : 'reply to this activity', "EXTERNAL_ID" : activityId});
-	var statusUpdate = this;
-	opensocial.requestCreateActivity(activity, "HIGH", function() {
-		statusUpdate.refresh();}
-	);
-	restore();
-	return;*/
-
-}
-
-/**
  * gets new activities of owner's
  * informs user about new activities to display
  */
@@ -470,6 +443,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	var Locale = eXo.social.Locale;
 	var Util = eXo.social.Util;
 	var Like = eXo.social.Like;
+	var Comment = eXo.social.Comment;
 	var StatusUpdate = eXo.social.StatusUpdate;
 	var config = StatusUpdate.config;
 	var statusUpdate = this;
@@ -619,7 +593,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	var getCommentLikeBlock = function() {
   		var html = [];
 		if (statusUpdate.currentView === 'canvas') {
-			html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
+			html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>| </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
 		}
 		return html.join('');
   	}
@@ -642,24 +616,24 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	
   	var getCommentListBlock = function() {
   		var html = [];
-  		if (statusUpdate.currentView === 'canvas') {
-	  		html.push('<div class="CommentListBlock">');
-	  			html.push('<div class="CommentListContent">');
-	  				html.push('<div id="TitleComment' + activityId + '" class="Title"></div>');
-	  				html.push('<div style="display:none;" id="ListComment' + activityId + '"></div>');
-	  			html.push('</div>');
-	  		html.push('</div>');
-  		}
+  		html.push('<div id="CommentListInfo' + activityId + '"></div>');
+  		html.push('<div id="CommentListBlock' + activityId + '"></div>');
   		return html.join('');
   	}
+  	
   	
   	var getCommentFormBlock = function() {
   		var html = [];
   		if (statusUpdate.currentView === 'canvas') {
-  			html.push('<div id="CommentForm' + activityId + '" class="CommentForm DisplayNone">');
-  				html.push('<textarea id="CommentTextarea' + activityId + '"></textarea>');
-  				html.push('<input id="CommentButton' + activityId + '" type="button" value="Comment" />')
+  			html.push('<div id="CommentForm' + activityId + '" class="CommentBlock DisplayNone">')
+  				html.push('<div class="CommentContent"');
+  					html.push('<div class="CommentBorder"');
+  						html.push('<textarea id="CommentTextarea' + activityId + '" class="CommentTextarea">' + Locale.getMsg('write_a_comment') + '</textarea>');
+  						html.push('<input id="CommentButton' + activityId + '" class="CommentButton DisplayNone" type="button" value="' + Locale.getMsg('comment') + '" />');
+  						html.push('<div class="ClearBoth"></div>');
+  					html.push('</div>');
   				html.push('</div>');
+  			html.push('</div>');
   		}
   		return html.join('');
   	}
@@ -740,7 +714,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  				statusUpdate.setActionContentButton(activityId);
 	  				statusUpdate.setDeleteActivity(activityId);
 	  			}
-	  			//statusUpdate.setCommentActivity(activityId);
+	  			Comment.setComment(activityId);
 	  		}
 	  	}
 	 }

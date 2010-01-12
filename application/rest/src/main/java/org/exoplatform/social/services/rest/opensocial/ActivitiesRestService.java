@@ -356,7 +356,7 @@ public class ActivitiesRestService implements ResourceContainer {
     } else {
       String[] commentIds = rawCommentIds.split(",");
       for (String commentId: commentIds) {
-        if (commentId != null) {
+        if (commentId.length() > 0) {
           commentList.addComment(_activityManager.getActivity(commentId));
         }
       }
@@ -384,12 +384,14 @@ public class ActivitiesRestService implements ResourceContainer {
       comment = _activityManager.saveActivity(comment);
       Activity activity = _activityManager.getActivity(activityId);
       String rawCommentIds = activity.getExternalId();
+      if (rawCommentIds == null) rawCommentIds = "";
       rawCommentIds += "," + comment.getId();
       activity.setExternalId(rawCommentIds);
       _activityManager.saveActivity(activity);
     } catch(Exception ex) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
+    commentList.addComment(comment);
     return commentList;
   }
   

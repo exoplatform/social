@@ -224,7 +224,7 @@ public class JCRStorage {
     while (nodes.hasNext()) {
       Node node = nodes.nextNode();
       if (node.hasProperty(EXTERNAL_ID)) {
-        externalId = node.getProperty(EXTERNAL_ID).toString();
+        externalId = node.getProperty(EXTERNAL_ID).getString();
         if (!externalId.equals(Activity.IS_COMMENT)) {
           activities.add(load(node));
         }

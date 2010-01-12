@@ -284,7 +284,11 @@ img {border: none}
 	background: #EEEEFF;
 }
 
-
+.CommentActivitiesContent{
+  background: #EEEEFF;
+  padding: 8px 8px 0px;
+  margin: 2px 0px;
+}
 
 .CommentTextarea {
   border: 1px solid #D7D7D7;
@@ -309,6 +313,7 @@ img {border: none}
 	float: left;
 	margin: 8px;
 }
+
 
 .ActivitiesContainer .TitleItem{
 	font-weight: bold;

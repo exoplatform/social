@@ -18,6 +18,10 @@
 	<msg name="displayName_does_not_have_update">{0} does not have any updates yet</msg>
 	<msg name="displayName_do_not_have_update">{0} do not have any updates yet</msg>
 	<msg name="comment">Comment</msg>
+	<msg name="write_a_comment">Write a comment...</msg>
+	<msg name="show_all_num_comments">Show all {0} comments.</msg>
+	<msg name="hide_all_comments">Hide all comments.</msg>
+	<msg name="user_commented_on_an_activity">{0} commented on an activity.</msg>
 	<msg name="like">Like</msg>
 	<msg name="unlike">Unlike</msg>
 	<msg name="delete">Delete</msg>

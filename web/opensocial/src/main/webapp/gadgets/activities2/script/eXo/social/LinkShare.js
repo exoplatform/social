@@ -207,7 +207,7 @@ eXo.social.LinkShare.prototype.addAttachOption = function() {
  * <div class="Addlink">Attach link:</div>
  * <div class="AddLinkContent">
  *   <input class="InputLink" type="textbox" />
- *   <a title="Add Link" id="#" href="#" class="IconAdd"> </a>
+ *   <a title="Add Link" id="#" href="#" class="IconAdd">ï¿½</a>
  *   <div style="clear: both; height: 0px;"><span></span></div>
  * </div>
  * <div style="clear: both; height: 0px;"><span></span></div>
@@ -325,7 +325,7 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
   			lsDisplayHtml.push("</div>");
   			
   			} //end if
-  			lsDisplayHtml.push('</div>');
+	  	lsDisplayHtml.push('</div>');
 		lsDisplayHtml.push('<div class="ContentRight">');
 			lsDisplayHtml.push('<div class="Title Editable">' + LinkShare.data.title + '</div>');
 			lsDisplayHtml.push('<div class="Content Editable">' + LinkShare.data.description + '</div>');
@@ -381,15 +381,16 @@ eXo.social.LinkShare.prototype.getThumbnailDisplay = function() {
 		config = LinkShare.config;
 	if (LinkShare.data.selectedImageIndex === null) return;
 	var thumbnailDisplay = [];
-	thumbnailDisplay.push('<div>');
-		thumbnailDisplay.push('<img class="Thumbnail" src="' + LinkShare.data.images[LinkShare.data.selectedImageIndex] + '" />');
+		thumbnailDisplay.push('<div>');
+			thumbnailDisplay.push('<img class="Thumbnail" src="' + LinkShare.data.images[LinkShare.data.selectedImageIndex] + '" />');
 		thumbnailDisplay.push('</div>');
 		thumbnailDisplay.push('<div class="ThumbnailAction">');
-		thumbnailDisplay.push('<div id="BackThumbnail" class="BackIcon"><span></span></div>');
-		thumbnailDisplay.push('<div class="Stats">' + (LinkShare.data.selectedImageIndex + 1) + '/' + LinkShare.data.images.length + '</div>');
-		thumbnailDisplay.push('<div id="NextThumbnail" class="NextIcon"><span></span></div>');
-		thumbnailDisplay.push('<div style="clear: both"><span></span></div>');
-	thumbnailDisplay.push('</div>');
+			thumbnailDisplay.push('<div id="BackThumbnail" class="BackIcon"><span></span></div>');
+			thumbnailDisplay.push('<div class="Stats">' + (LinkShare.data.selectedImageIndex + 1) + '/' + LinkShare.data.images.length + '</div>');
+			thumbnailDisplay.push('<div id="NextThumbnail" class="NextIcon"><span></span></div>');
+			thumbnailDisplay.push('<div style="clear: both"><span></span></div>');
+		thumbnailDisplay.push('</div>');
+		
 	return thumbnailDisplay.join('');
 }
 

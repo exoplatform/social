@@ -313,9 +313,10 @@ eXo.social.Util.addEventListener = function(obj, evt, fnc, useCapture) {
  * @static
  * //TODO make sure method cross-browsered
  */
-eXo.social.Util.removeEventListener = function(obj, evt, func) {
+eXo.social.Util.removeEventListener = function(obj, evt, func, useCapture) {
+	if (!useCapture) useCapture = false;
 	if (obj.removeEventListener) {
-		obj.removeEventListener(evt, func, false);
+		obj.removeEventListener(evt, func, useCapture);
 	} else if (obj.detachEvent) {//IE
 		obj.detachEvent('on'+evt, func)
 	}
