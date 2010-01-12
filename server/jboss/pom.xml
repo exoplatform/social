@@ -29,14 +29,13 @@
 		  <version>1.0-Beta02-SNAPSHOT</version>
 		</parent>
 
-   <artifactId>exo.social.server</artifactId>
+   <artifactId>exo.social.server.jboss</artifactId>
    <packaging>pom</packaging>
 
-   <name>GateIn Social Server</name>
+   <name>GateIn Social Server JBoss</name>
 
    <modules>
-      <module>tomcat</module>
-			<module>jboss</module>
+      <module>patch-ear</module>
    </modules>
 
 </project>

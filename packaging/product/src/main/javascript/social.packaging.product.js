@@ -70,7 +70,7 @@ function getProduct(version) {
 
   product.addServerPatch("tomcat", social.server.tomcat.patch);
   product.addServerPatch("jboss",  portal.server.jboss.patch);
-  product.addServerPatch("jbossear",  portal.server.jbossear.patch);
+  product.addServerPatch("jbossear",  social.server.jbossear.patch);
 
 	product.removeDependency(new Project("org.exoplatform.jcr", "exo.jcr.component.ftp", "jar", eXoJcr.version));
 

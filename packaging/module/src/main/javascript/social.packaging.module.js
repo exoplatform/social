@@ -81,5 +81,9 @@ function getModule(params) {
    module.server.tomcat.patch =
    new Project("org.exoplatform.social", "exo.social.server.tomcat.patch", "jar", module.version);
 
+   module.server.jbossear = {}
+   module.server.jbossear.patch =
+   new Project("org.exoplatform.social", "exo.social.server.jboss.patch-ear", "jar", module.version);
+
   return module;
 }
