@@ -74,7 +74,7 @@ eXo.social.Comment.setComment = function(activityId) {
 	var Util = eXo.social.Util,
 		Locale = eXo.social.Locale,
 		statusUpdate = eXo.social.Comment.ref.statusUpdate,
-		comments, comment,
+		comment,
 		commentListBlockId = 'CommentListBlock' + activityId,
 		commentListBlockEl = Util.getElementById(commentListBlockId),
 		commentListInfoId = 'CommentListInfo' + activityId,
@@ -87,19 +87,62 @@ eXo.social.Comment.setComment = function(activityId) {
 			if (comment) {
 				var newEl = Util.addElement(commentListBlockId, 'div', 'CommentBlock' + comment.id, getCommentBlock());
 				newEl.setAttribute('class', 'CommentBlock');
+				//ie + firefox
+				newEl.setAttribute('className', 'CommentBlock');
 			}
 		}	
 	}
 	
-	function renderCommentList() {
-		display(comments);
+	function renderCommentList(comments, shortDisplay) {
+		if (comments.length > 2) {
+			if (shortDisplay) {
+				var html = [];
+				html.push('<div class="CommentBlock">');
+					html.push('<div class="CommentContent">');
+						html.push('<div class="CommentBorder">');
+							html.push('<a href="#">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
+						html.push('</div>');
+					html.push('</div>');
+				html.push('</div>');
+				commentListInfoEl.innerHTML = html.join('');
+				commentListInfoEl.onclick = function() {
+					eXo.social.Comment.get(activityId, function(res) {
+						if (res.data !== null) {
+							comments = res.data.comments;
+							renderCommentList(comments, false);
+							gadgets.window.adjustHeight();
+						}
+					})
+				}
+				display(comments.slice(-2));
+			} else {
+				var html = [];
+				html.push('<div class="CommentBlock">');
+					html.push('<div class="CommentContent">');
+						html.push('<div class="CommentBorder">');
+							html.push('<a href="#">' + Locale.getMsg('hide_all_comments') + '</a>');
+						html.push('</div>');
+					html.push('</div>');
+				html.push('</div>');
+				commentListInfoEl.innerHTML = html.join('');
+				commentListInfoEl.onclick = function() {
+					commentListBlockEl.style.display = 'none';
+					renderCommentList(comments, true);
+				}
+				commentListBlockEl.style.display = 'block';
+				display(comments);
+			}
+		} else {
+			display(comments);
+		}
+		
 	}
 	
 	(function() {
 		eXo.social.Comment.get(activityId, function(res) {
 			if (res.data !== null) {
 				comments = res.data.comments;
-				renderCommentList();
+				renderCommentList(comments, true);
 				gadgets.window.adjustHeight();
 			}
 		})
@@ -156,9 +199,11 @@ eXo.social.Comment.setComment = function(activityId) {
 		}
 	}, false);
 	
+	
 	Util.addEventListener(commentTextareaEl, 'focus', function(evt) {
 		this.style.height = '50px';
 		this.style.color = '#000000';
+		this.style['margin-left'] = '50px';
 		if (this.value === Locale.getMsg('write_a_comment')) {
 			this.value = '';
 		}
@@ -168,10 +213,10 @@ eXo.social.Comment.setComment = function(activityId) {
 	
 	Util.addEventListener(commentTextareaEl, 'blur', function(evt) {
 		if (this.value === '') {
+			Util.hideElement(commentButtonId);
 			this.value = Locale.getMsg('write_a_comment');
 			this.style.height = '20px';
 			this.style.color = 'gray';
-			Util.hideElement(commentButtonId);
 		}
 	}, false);
 	
@@ -183,6 +228,7 @@ eXo.social.Comment.setComment = function(activityId) {
 		var userId = statusUpdate.viewer.getId(),
 		    title = Locale.getMsg('user_commented_on_an_activity', [userName]),
 		    body = commentTextareaEl.value;
+		if (body === '' || body === Locale.getMsg('write_a_comment')) return;
 		var activity = {
 			'userId': userId,
 			'title': title,
@@ -197,8 +243,10 @@ eXo.social.Comment.setComment = function(activityId) {
 				commentTextareaEl.focus();
 				activityId = res.data.activityId;
 				comment = res.data.comments[0];
+				commentListBlockEl.style.display = 'block';
 				var newEl = Util.addElement(commentListBlockId, 'div', 'CommentBlock' + comment.id, getCommentBlock());
 				newEl.setAttribute('class', 'CommentBlock');
+				newEl.setAttribute('className', 'CommentBlock');
 				gadgets.window.adjustHeight();
 			} else { //failed
 				//TODO hoatle informs users

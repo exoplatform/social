@@ -283,7 +283,9 @@ eXo.social.Util.addEventListener = function(obj, evt, fnc, useCapture) {
 	if (obj.addEventListener){
 		obj.addEventListener(evt, fnc, useCapture);
 	} else if (obj.attachEvent) {
-		obj.attachEvent('on'+evt, fnc);
+		obj.attachEvent('on'+evt, function(evt) {
+			fnc.call(obj, evt);
+		});
 	} else{
 		myAttachEvent(obj, evt, fnc);
 		obj['on'+evt] = function() { myFireEvent(obj,evt) };

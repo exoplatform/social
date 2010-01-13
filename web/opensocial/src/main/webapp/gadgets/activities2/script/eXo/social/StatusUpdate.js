@@ -491,7 +491,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   				html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
   			html.push('</a>');
   			html.push('<div class="Content">');
-  			html.push('<div class="Titlecontent" style="height: 24px;">');
+  			html.push('<div class="TitleContent" style="height: 24px;">');
   				html.push('<div class="TitleItem">' + title + '</div>');
   			if (isOwnerActivity) {
   				html.push(getActionContentBlock());
@@ -534,40 +534,41 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  	avatarUrl = statusUpdate.getAvatar(userId);
 	  	prettyTime = Util.toPrettyTime(new Date(activity.getField('postedTime')));
 	  	var html = [];
-	  	html.push('<div class="ActivitiesContent"');
-	  	html.push('<a href="#" class="AvatarPeopleBG">');
-	  	html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
+	  	html.push('<div class="ActivitiesContent">');
+	  		html.push('<a href="#" class="AvatarPeopleBG">');
+	  			html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
 	   		html.push('</a>');
-	   	html.push('<div class="Content">');
-	    	html.push('<div class="UserName">');
-	    		html.push('<a href="#">' + userName + '</a>');
-	    	html.push('</div>');
-	    	html.push('<div class="UserStatus">');
-  			if (jsonBody.comment) {
-  				html.push(jsonBody.comment);
-  			}
-  			html.push('</div>');
-  			html.push('<div class="Thumbnail">');
-  			if (jsonBody.data.noThumbnail === false) {
-  				html.push('<img width="50px" src="' + jsonBody.data.images[jsonBody.data.selectedImageIndex] + '" title="' + jsonBody.data.title + '" />');
-  			}
-  			html.push('</div>');
-  			html.push('<div class="Title">' + jsonBody.data.title + '</div>');
-  		if (isOwnerActivity) {
-  			html.push(getActionContentBlock());
-  		}
-  			html.push('<div class="Description">' + jsonBody.data.description + '</div>');
-  			html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonBody.data.link + '</div>');
-  			html.push('<div style="clear: both; height: 0px;"><span></span></div>');
-  		html.push('</div>');
-  		html.push('<div class="NewsDate">' + prettyTime + '</div>');
-  		if (statusUpdate.currentView === 'canvas') {
-  			html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>|</span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
-  		}
-  		html.push('</div>')
-  		html.push('</div>')
-  		html.push('<div class="ClearLeft"><span></span></div>');
+	   		html.push('<div class="Content">');
+	   			html.push('<div class="UserName">');
+	   				html.push('<a href="#">' + userName + '</a>');
+	   			html.push('</div>');
+	   		if (isOwnerActivity) {
+	   			html.push(getActionContentBlock());
+	   		}
+	   			html.push('<div class="UserStatus">');
+	   			if (jsonBody.comment) {
+	   				html.push(jsonBody.comment);
+	   			}
+	   			html.push('</div>');
+	   			html.push('<div class="LinkShare">')
+	   				html.push('<div class="Thumbnail">');
+	   				if (jsonBody.data.noThumbnail === false) {
+	   					html.push('<img width="50px" src="' + jsonBody.data.images[jsonBody.data.selectedImageIndex] + '" title="' + jsonBody.data.title + '" />');
+	   				}
+	   				html.push('</div>');
+	   				html.push('<div class="Title">' + jsonBody.data.title + '</div>');
+	   				html.push('<div class="Description">' + jsonBody.data.description + '</div>');
+	   				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonBody.data.link + '</div>');
+	   				html.push('<div style="clear: both; height: 0px;"><span></span></div>');
+	   			html.push('</div>');
+	   			html.push('<div class="NewsDate">' + prettyTime + '</div>');
+	   			html.push(getCommentLikeBlock());
+	   		html.push('</div>')
+	   		html.push('<div class="ClearLeft"><span></span></div>');
+	   	html.push('</div>');
   		html.push(getPeopleLikeBlock());
+  		html.push(getCommentListBlock());
+		html.push(getCommentFormBlock());
   		return html.join('');
   	}
   	
@@ -603,7 +604,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		if (statusUpdate.currentView === 'canvas') {
 	  		html.push('<div class="ListPeopleLikeBG">');
 	  			html.push('<div id="ListPeopleLike' + activityId + '" class="ListPeopleLike DisplayNone">');
-	  				html.push('<div class="ListPeopleContent"');
+	  				html.push('<div class="ListPeopleContent">');
 	  					html.push('<div id="TitleLike' + activityId + '" class="Title"></div>');
 	  					html.push('<div style="display:none;" id="ListPeople' + activityId + '"></div>');
 	  					html.push('<div class="ClearLeft"><span></span></div>');
@@ -616,7 +617,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	
   	var getCommentListBlock = function() {
   		var html = [];
-  		html.push('<div id="CommentListInfo' + activityId + '"></div>');
+  		html.push('<div id="CommentListInfo' + activityId + '" class="CommentListInfo"></div>');
   		html.push('<div id="CommentListBlock' + activityId + '"></div>');
   		return html.join('');
   	}
@@ -626,8 +627,8 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		var html = [];
   		if (statusUpdate.currentView === 'canvas') {
   			html.push('<div id="CommentForm' + activityId + '" class="CommentBlock DisplayNone">')
-  				html.push('<div class="CommentContent"');
-  					html.push('<div class="CommentBorder"');
+  				html.push('<div class="CommentContent">');
+  					html.push('<div class="CommentBorder">');
   						html.push('<textarea id="CommentTextarea' + activityId + '" class="CommentTextarea">' + Locale.getMsg('write_a_comment') + '</textarea>');
   						html.push('<input id="CommentButton' + activityId + '" class="CommentButton DisplayNone" type="button" value="' + Locale.getMsg('comment') + '" />');
   						html.push('<div class="ClearBoth"></div>');
@@ -707,6 +708,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 			}
 			var newEl = Util.addElement(appendableRootId, 'div', null, html);
 	  		newEl.setAttribute('class', aDecoratorContainerClass);
+	  		newEl.setAttribute('className', aDecoratorContainerClass);
 	  		newEl.setAttribute('id', 'Activity' + activityId);
 	  		if (statusUpdate.currentView === 'canvas') {
 	  			Like.getLikeIds(activityId, Like.displayLike);

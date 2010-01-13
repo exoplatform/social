@@ -316,7 +316,7 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
       lsDisplayHtml = [];
 	  lsDisplayHtml.push('<div class="AddLink"><a class="LinkAttach AttachIcon">&nbsp;</a> ' + Locale.getMsg('content_to_display') + '(<span class="Close"><a href="#linkShare.displayAttachOption">' + Locale.getMsg('close') + '</a></span>)</div>');
 		lsDisplayHtml.push('<div class="ThumbnailLeft">');
-	  		lsDisplayHtml.push('<div id="' + config.THUMBNAIL_DISPLAY_ID +'"');
+	  		lsDisplayHtml.push('<div id="' + config.THUMBNAIL_DISPLAY_ID +'">');
 	  			lsDisplayHtml.push(this.getThumbnailDisplay());
 	  		lsDisplayHtml.push('</div>');
   			if (LinkShare.data.images.length > 0) {
