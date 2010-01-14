@@ -229,7 +229,8 @@ public class UIManageInvitationSpaces extends UIContainer {
        return;
      }
      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
-     SpaceUtils.updateWorkingWorkSpace();
+     SpaceUtils.reloadNavigation();
+     //SpaceUtils.updateWorkingWorkSpace();
    }
   }
 

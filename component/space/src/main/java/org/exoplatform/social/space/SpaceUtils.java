@@ -425,7 +425,7 @@ public class SpaceUtils {
    * BUG: SOC-406, SOC-134
    * @throws Exception 
    */
-  static void reloadNavigation() throws Exception {
+  public static void reloadNavigation() throws Exception {
     if (exoContainer == null) {
       exoContainer = ExoContainerContext.getCurrentContainer();
     }
@@ -513,6 +513,13 @@ public class SpaceUtils {
     PortalRequestContext pContext = Util.getPortalRequestContext();
     pContext.addUIComponentToUpdateByAjax(uiWorkingWS);
     pContext.setFullRender(true);
+//    UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+//    UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);
+//    try {
+//      uiWorkingWS.updatePortletsByName("UserToolbarGroupPortlet");
+//    } catch (Exception e) {
+//      // TODO: handle exception
+//    }
   }
 
   /**

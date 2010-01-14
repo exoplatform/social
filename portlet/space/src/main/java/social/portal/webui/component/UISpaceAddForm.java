@@ -18,6 +18,9 @@ package social.portal.webui.component;
 
 import java.util.ResourceBundle;
 
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -152,7 +155,13 @@ public class UISpaceAddForm extends UIFormTabPane {
       }
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
-      SpaceUtils.updateWorkingWorkSpace();
+      
+      //TODO: don't need to update working workspace
+      //      just group tool bar portlet.
+      UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+      UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);
+      uiWorkingWS.updatePortletsByName("UserToolbarGroupPortlet");
+      //SpaceUtils.updateWorkingWorkSpace();
     }
   }
 
