@@ -22,15 +22,15 @@ eXo.social.LinkShare = function(link, lang) {
 	if (link != null) LinkShare.data.link = link;
 	if (lang != null) LinkShare.data.lang = lang;
     //content constructed from eXo.social.LinkShare.data
-    this.content = null;
+    this.content = null,
+    linkShare = this;
     //privileged methods
     this.makeRequest = function() {
         var linkShareRequest = {
             link: LinkShare.data.link,
             lang: LinkShare.data.lang
           },
-          url = LinkShare.config.LINKSHARE_REST_URL + '/show.json',
-          linkShare = this;
+          url = LinkShare.config.LINKSHARE_REST_URL + '/show.json';
           Util.makeRequest(url, function(res) {linkShare.callbackHandler(res);}, null,
         		         gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, linkShareRequest);
     }
@@ -43,11 +43,22 @@ eXo.social.LinkShare = function(link, lang) {
         	LinkShare.data.title = data.link; //TODO gets domain name only
         	LinkShare.data.link = data.link;
         	LinkShare.data.description = "";
+            linkShare.displayAttach(LinkShare.config.LINKSHARE_DISPLAY_ID);
         }
-    	if (!res || !res.data) {
-    		alert(eXo.social.Locale.getMsg('problem_happens_to_fix_soon'));
-    		this.displayAttach(eXo.social.LinkShare.config.LINKSHARE_OPTION_ID);
-       		return;
+    	if (!res.data) {
+    		if (eXo.social.LinkShare.tryTime) {
+    			if (eXo.social.LinkShare.tryTime === 3) {
+    				fallback({link:LinkShare.data.link});
+    			} else {
+    				debug.info('tryTime: ' + eXo.social.LinkShare.tryTime);
+    				eXo.social.LinkShare.tryTime++;
+    				linkShare.makeRequest();
+    			}
+    		} else {
+    			eXo.social.LinkShare.tryTime = 1;
+				linkShare.makeRequest();
+    		}
+    		return;
         }
     	
         var data = res.data;

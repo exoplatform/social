@@ -556,10 +556,12 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   					html.push('<img width="50px" src="' + jsonBody.data.images[jsonBody.data.selectedImageIndex] + '" title="' + jsonBody.data.title + '" />');
 	   				}
 	   				html.push('</div>');
-	   				html.push('<div class="Title">' + jsonBody.data.title + '</div>');
-	   				html.push('<div class="Description">' + jsonBody.data.description + '</div>');
-	   				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonBody.data.link + '</div>');
-	   				html.push('<div style="clear: both; height: 0px;"><span></span></div>');
+		   			html.push('<div class="Content">');
+		   				html.push('<div class="Title"><a href="'+ jsonBody.data.link +'" target="_blank">' + jsonBody.data.title + '</a></div>');
+		   				html.push('<div class="Description">' + jsonBody.data.description + '</div>');
+		   				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonBody.data.link + '</div>');
+	   				html.push('</div>');
+		   			html.push('<div style="clear: both; height: 0px;"><span></span></div>');
 	   			html.push('</div>');
 	   			html.push('<div class="NewsDate">' + prettyTime + '</div>');
 	   			html.push(getCommentLikeBlock());
@@ -626,7 +628,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	var getCommentFormBlock = function() {
   		var html = [];
   		if (statusUpdate.currentView === 'canvas') {
-  			html.push('<div id="CommentForm' + activityId + '" class="CommentBlock DisplayNone">')
+  			html.push('<div id="CommentForm' + activityId + '" class="CommentFormBlock DisplayNone">')
   				html.push('<div class="CommentContent">');
   					html.push('<div class="CommentBorder">');
   						html.push('<textarea id="CommentTextarea' + activityId + '" class="CommentTextarea">' + Locale.getMsg('write_a_comment') + '</textarea>');

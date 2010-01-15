@@ -78,7 +78,8 @@ eXo.social.Comment.setComment = function(activityId) {
 		commentListBlockId = 'CommentListBlock' + activityId,
 		commentListBlockEl = Util.getElementById(commentListBlockId),
 		commentListInfoId = 'CommentListInfo' + activityId,
-		commentListInfoEl = Util.getElementById(commentListInfoId);
+		commentListInfoEl = Util.getElementById(commentListInfoId),
+		updateNumComment = false;
 	
 	function display(cms) {
 		commentListBlockEl.innerHTML = ''; //resets
@@ -89,6 +90,7 @@ eXo.social.Comment.setComment = function(activityId) {
 				newEl.setAttribute('class', 'CommentBlock');
 				//ie + firefox
 				newEl.setAttribute('className', 'CommentBlock');
+				newEl.className = 'CommentBlock';
 			}
 		}	
 	}
@@ -96,11 +98,12 @@ eXo.social.Comment.setComment = function(activityId) {
 	function renderCommentList(comments, shortDisplay) {
 		if (comments.length > 2) {
 			if (shortDisplay) {
+				updateNumComment = true;
 				var html = [];
 				html.push('<div class="CommentBlock">');
 					html.push('<div class="CommentContent">');
 						html.push('<div class="CommentBorder">');
-							html.push('<a href="#">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
+							html.push('<a href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
 						html.push('</div>');
 					html.push('</div>');
 				html.push('</div>');
@@ -108,6 +111,7 @@ eXo.social.Comment.setComment = function(activityId) {
 				commentListInfoEl.onclick = function() {
 					eXo.social.Comment.get(activityId, function(res) {
 						if (res.data !== null) {
+							updateNumComment = false;
 							comments = res.data.comments;
 							renderCommentList(comments, false);
 							gadgets.window.adjustHeight();
@@ -116,18 +120,21 @@ eXo.social.Comment.setComment = function(activityId) {
 				}
 				display(comments.slice(-2));
 			} else {
+				updateNumComment = false;
 				var html = [];
 				html.push('<div class="CommentBlock">');
 					html.push('<div class="CommentContent">');
 						html.push('<div class="CommentBorder">');
-							html.push('<a href="#">' + Locale.getMsg('hide_all_comments') + '</a>');
+							html.push('<a href="#hide-all-comments">' + Locale.getMsg('hide_all_comments') + '</a>');
 						html.push('</div>');
 					html.push('</div>');
 				html.push('</div>');
 				commentListInfoEl.innerHTML = html.join('');
 				commentListInfoEl.onclick = function() {
+					hideAll = true;
 					commentListBlockEl.style.display = 'none';
 					renderCommentList(comments, true);
+					gadgets.window.adjustHeight();
 				}
 				commentListBlockEl.style.display = 'block';
 				display(comments);
@@ -203,7 +210,6 @@ eXo.social.Comment.setComment = function(activityId) {
 	Util.addEventListener(commentTextareaEl, 'focus', function(evt) {
 		this.style.height = '50px';
 		this.style.color = '#000000';
-		this.style['margin-left'] = '50px';
 		if (this.value === Locale.getMsg('write_a_comment')) {
 			this.value = '';
 		}
@@ -243,10 +249,33 @@ eXo.social.Comment.setComment = function(activityId) {
 				commentTextareaEl.focus();
 				activityId = res.data.activityId;
 				comment = res.data.comments[0];
+				comments.push(comment);
 				commentListBlockEl.style.display = 'block';
 				var newEl = Util.addElement(commentListBlockId, 'div', 'CommentBlock' + comment.id, getCommentBlock());
+				if (updateNumComment) {
+					var html = [];
+					html.push('<div class="CommentBlock">');
+						html.push('<div class="CommentContent">');
+							html.push('<div class="CommentBorder">');
+								html.push('<a href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
+							html.push('</div>');
+						html.push('</div>');
+					html.push('</div>');
+					commentListInfoEl.innerHTML = html.join('');
+					commentListInfoEl.onclick = function() {
+						eXo.social.Comment.get(activityId, function(res) {
+							if (res.data !== null) {
+								hideAll = false;
+								comments = res.data.comments;
+								renderCommentList(comments, false);
+								gadgets.window.adjustHeight();
+							}
+						})
+					}
+				}
 				newEl.setAttribute('class', 'CommentBlock');
 				newEl.setAttribute('className', 'CommentBlock');
+				newEl.className = 'CommentBlock';
 				gadgets.window.adjustHeight();
 			} else { //failed
 				//TODO hoatle informs users
