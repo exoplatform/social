@@ -108,7 +108,7 @@ public class UIManagePublicSpaces extends UIContainer {
         Space space = spaceItr.next();
         for(Space publicSpace : allPublicSpace) {
           if(space.getName().equals(publicSpace.getName())){
-            publicSpaces.add(space);
+            publicSpaces.add(publicSpace);
             break;
           }
         }

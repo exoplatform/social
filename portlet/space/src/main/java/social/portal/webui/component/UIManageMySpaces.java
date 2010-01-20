@@ -242,7 +242,7 @@ public class UIManageMySpaces extends UIContainer {
         Space space = spaceItr.next();
         for(Space userSpace : allUserSpace) {
           if(space.getName().equalsIgnoreCase(userSpace.getName())){
-            mySpaces.add(space);
+            mySpaces.add(userSpace);
             break;
           }
         }

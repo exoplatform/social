@@ -182,7 +182,7 @@ public class UIManageInvitationSpaces extends UIContainer {
         Space space = spaceItr.next();
         for(Space invitationSpace : allInvitationSpace) {
           if(space.getName().equals(invitationSpace.getName())){
-            invitedSpaces.add(space);
+            invitedSpaces.add(invitationSpace);
             break;
           }
         }

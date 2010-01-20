@@ -90,7 +90,6 @@
 	       status = "${hiddenStatus}"
 	      }
 	      def imageSource = uicomponent.getImageSource(space);
-	      
 				mySpaceIdx += 1;
 	  %>
 	  

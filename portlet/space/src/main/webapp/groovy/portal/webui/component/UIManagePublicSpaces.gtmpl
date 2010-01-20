@@ -90,13 +90,13 @@
 		  		<%}%>
 					</a>
 		  		<%} else { %>
-		  		<a href="#" class="AvatarSpace">
+		  		<div class="AvatarSpace">
 					<% if (imageSource == null) { %>
 		  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
 		  		<% } else { %>
 		  				<img alt="#" src="$imageSource" />
 		  		<%}%>
-					</a>
+					</div>
 		  		<%} %>
 		  		
 		 		<div class="ContentBox">
@@ -105,7 +105,7 @@
 		 				<% if (uicomponent.hasEditPermission(space)) {%>
 		 				<div class="Text"><a href="$spaceUrl">$space.name</a></div>
 		 				<% } else { %>
-		 				<div class="Text"><a href="#">$space.name</a></div>
+		 				<div class="Text"><span>$space.name</span></div>
 		 				<% } %>
 		 				<div class="ClearBoth"><span></span></div>
 		 			</div>

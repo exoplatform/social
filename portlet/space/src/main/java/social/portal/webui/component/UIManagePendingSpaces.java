@@ -127,7 +127,7 @@ public class UIManagePendingSpaces extends UIContainer {
         Space space = spaceItr.next();
         for(Space pendingSpace : allPendingSpace) {
           if(space.getName().equals(pendingSpace.getName())){
-            pendingSpaces.add(space);
+            pendingSpaces.add(pendingSpace);
             break;
           }
         }
