@@ -104,9 +104,11 @@
   				<div id="UIOwnerAppendableRoot"> 
   					<!-- the root to append owner activities block -->
   				</div>
-  				<div id="UIOwnerMore" class="DisplayNone FloatRight">
+  				<div id="UIOwnerMore" class="DisplayNone">
+  				 <div  class="FloatRight">
   					<a href="#ownerMore">__MSG_more__</a>
-  					<div class="ClearRight"><span /></div>
+  				 </div>
+  				 <div class="ClearRight"><span /></div>
   				</div>
   				<div class="ClearRight"><span>&nbsp</span></div>
   				
@@ -207,9 +209,11 @@
   				<div id="UIOwnerAppendableRoot"> 
   					<!-- the root to append owner activities block -->
   				</div>
-				<div id="UIOwnerMore" class="DisplayNone FloatRight">
-  					<a href="#ownerMore">__MSG_more__</a>
-  					<div class="ClearRight"><span /></div>
+				  <div id="UIOwnerMore" class="DisplayNone">
+				   <div  class="FloatRight">  
+  					<a href="#ownerMore">__MSG_more__</a> 
+  				 </div>
+  				 <div class="ClearRight"><span /></div>
   				</div>  				
   				<div id="UIFriendsActivities">
 	  				<div class="ATitleBarL">
