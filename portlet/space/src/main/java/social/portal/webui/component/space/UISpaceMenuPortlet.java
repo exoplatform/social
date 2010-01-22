@@ -78,6 +78,19 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     return list;
   }
   
+  /**
+   * Get space name from space url.
+   * 
+   * @return space's name.
+   * @throws Exception
+   */
+  public String getSpaceName() throws Exception {
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
+    Space space = spaceSrc.getSpaceByUrl(spaceUrl);
+    return space.getName();
+  }
+  
   private class ApplicationComparator implements Comparator<PageNode> {
     public int compare(PageNode pageNode1, PageNode pageNode2) {
       return pageNode1.getResolvedLabel().compareToIgnoreCase(pageNode2.getResolvedLabel());

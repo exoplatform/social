@@ -6,14 +6,44 @@
 	def apps = uicomponent.getApps()       
 	def spaceUrl = SpaceUtils.getSpaceUrl()
  	String appSelected = uicomponent.getAppSelected()
+ 	
  	def imageSource = uicomponent.getImageSource()
+ 	
+ 	public String getFitString(String nodeLabel, int maxLen) {
+ 	  def labelStr = ""; 
+    def labelStrPrev = "";
+    def appendLabel = " ...";
+ 	  def fitStr = nodeLabel;
+ 	  if (fitStr.length() > maxLen) {
+	    def labels = fitStr.split(" ");
+	    for (i in 0..(labels.size()-1)) {
+	        labelStr += " ";
+	        labelStr += labels[i];
+	        if (labelStr.length() > maxLen) {
+	            break;
+	        } else {
+	            labelStrPrev = labelStr;
+	        }
+	    }
+	    
+	    if (labelStrPrev.length() == 0) { 
+	        fitStr = fitStr.substring(0, maxLen - 2) + appendLabel;
+	    } else {
+	        fitStr = labelStrPrev + appendLabel;
+	    }
+		}
+ 	  return fitStr;
+ 	}
+ 	
+ 	String spaceName = uicomponent.getSpaceName();
+ 	String spaceNameDisplay = getFitString(spaceName, 25)
 %>
 
 
 <div id="$uicomponent.id" class="UISpaceMenuPortlet">
 <% String home = Util.getPortalRequestContext().getPortalURI() + spaceUrl %>
 	<div class="SpaceMenuPortlet">
-		<div class="ProfTitle">Space <%= spaceUrl %></div>
+		<div class="ProfTitle" title="$spaceName"><%= spaceNameDisplay %></div>
 		<a class="Avartar">
 			<% if(imageSource == null) { %>
 				<img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt=""/>
@@ -29,31 +59,9 @@
   	<% if(apps.size() != 0) { 
 	  		for(PageNode node in apps) {
 		  		def SpaceClass = "";
-		  		def labelStr = "";
-					def labelStrPrev = "";
-					def appendLabel = " ...";
-		  		def nodeLabel = node.getResolvedLabel();
 		  		def nodeTitle = node.getResolvedLabel();
+		  		def nodeLabel = getFitString(nodeTitle, 15);
 					String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + node.getName();
-					
-					if (nodeLabel.length() > 15) {
-						def labels = nodeLabel.split(" ");
-						for (i in 0..(labels.size()-1)) {
-							labelStr += " ";
-							labelStr += labels[i];
-							if (labelStr.length() > 15) {
-								break;
-							} else {
-								labelStrPrev = labelStr;
-							}
-						}
-						
-						if (labelStrPrev.length() == 0) { 
-							nodeLabel = nodeLabel.substring(0, 13) + appendLabel;
-						} else {
-							nodeLabel = labelStrPrev + appendLabel;
-						}
-		  		}
 		%>
 		<%
 			if (node.getName().equals("UserListPortlet")) { %>
