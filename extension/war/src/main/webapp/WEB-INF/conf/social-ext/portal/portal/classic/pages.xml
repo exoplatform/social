@@ -102,7 +102,7 @@
 			       <preferences>
 		          <preference>
 		            <name>url</name>
-				        <value>http://localhost:8080/rest/jcr/repository/gadgets/gadgets/activities2.xml</value>
+				        <value>http://localhost:8080/rest/jcr/repository/portal-system/gadgets/statusUpdate2/data/resources/activities2.xml</value>
 				        <read-only>false</read-only>
 		          </preference>
 		        </preferences>

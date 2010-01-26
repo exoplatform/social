@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -18,12 +18,10 @@
 
 -->
 <node-navigation>
-  <owner-type>portal</owner-type>
-  <owner-id>@owner@</owner-id>
   <priority>1</priority>
 
   <page-nodes>
-  	<node>
+	 <node>
 	  <uri>home</uri>
 	  <name>home</name>
 	  <label>Home</label>
@@ -31,51 +29,82 @@
 	 </node>
    
    <node>
-      <uri>register</uri>
-      <name>register</name>
-      <label>Register</label>
-      <page-reference>portal::@owner@::register</page-reference>
+    <uri>activities</uri>
+    <name>activities</name>
+    <label>MyProfile</label>
+    <page-reference>portal::@owner@::activities</page-reference>
    </node>
-	 
+   
    <node>
-	    <uri>myprofile</uri>
-	    <name>myprofile</name>
-	    <label>My Profile</label>
-	    <visible>false</visible>
-      <page-reference>portal::@owner@::MyProfile</page-reference>
-      <node>
-		    <uri>myprofile/relationship</uri>
-		    <name>relationship</name>
-		    <label>My Relations</label>
-	      <page-reference>portal::@owner@::RelationShip</page-reference>
-	  	</node>
-      <node>
-		    <uri>myprofile/activities</uri>
-		    <name>activities</name>
-		    <label>My Activities</label>
-		    <page-reference>portal::@owner@::activities</page-reference>
-	  	</node>
-	  </node>
+    <uri>profile</uri>
+    <name>profile</name>
+    <label>#{portal.@owner@.profile}</label>
+    <visible>false</visible>
+    <page-reference>portal::@owner@::profile</page-reference>
+   </node>
+   
+   <node>
+    <uri>relations</uri>
+    <name>relations</name>
+    <label>#{portal.@owner@.relations}</label>
+    <visible>false</visible>
 	  <node>
-	    <uri>spaces</uri>
-	    <name>spaces</name>
-	    <label>Spaces</label>
-	    <visible>false</visible>
-	    <page-reference>portal::@owner@::manageSpaces</page-reference>
-	  </node>
-	  <node>
-	    <uri>groupnavigation</uri>
-	    <name>groupnavigation</name>
-	    <label>Groupnavigation</label>
-	    <visible>false</visible>
-	    <page-reference>portal::@owner@::groupnavigation</page-reference>	    
-	  </node>
-	  <node>
-	    <uri>portalnavigation</uri>
-	    <name>portalnavigation</name>
-	    <label>Portalnavigation</label>
-	    <visible>false</visible>
-	    <page-reference>portal::@owner@::portalnavigation</page-reference>	    
-	  </node>
+	    <uri>relations/yours</uri>
+	    <name>yours</name>
+	    <label>#{portal.@owner@.yours}</label>
+	    <page-reference>portal::@owner@::relations</page-reference>
+	   </node>
+	   <node>
+	    <uri>relations/invitations</uri>
+	    <name>invitations</name>
+	    <label>#{portal.@owner@.invitations}</label>
+	    <page-reference>portal::@owner@::invitations</page-reference>
+	   </node>
+	   <node>
+	    <uri>relations/requests</uri>
+	    <name>requests</name>
+	    <label>#{portal.@owner@.requests}</label>
+	    <page-reference>portal::@owner@::requests</page-reference>
+	   </node>
+   </node>
+ 
+	 <node>
+    <uri>people</uri>
+    <name>people</name>
+    <label>People</label>
+    <page-reference>portal::@owner@::people</page-reference>
+	 </node>
+	 
+	 <node>
+    <uri>spaces</uri>
+    <name>spaces</name>
+    <label>Spaces</label>
+    <page-reference>portal::@owner@::spaces</page-reference>
+   </node>
+   
+   <node>
+    <uri>invitationSpace</uri>
+    <name>invitationSpace</name>
+    <label>#{portal.@owner@.invitationSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::@owner@::invitationSpace</page-reference>
+   </node>
+   
+   <node>
+    <uri>pendingSpace</uri>
+    <name>pendingSpace</name>
+    <label>#{portal.@owner@.pendingSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::@owner@::pendingSpace</page-reference>
+   </node>
+   
+   <node>
+    <uri>publicSpace</uri>
+    <name>publicSpace</name>
+    <label>#{portal.@owner@.publicSpace}</label>
+    <visible>false</visible>
+    <page-reference>portal::@owner@::publicSpace</page-reference>
+   </node>
+   
   </page-nodes>
 </node-navigation>

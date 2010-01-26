@@ -137,6 +137,7 @@ public class UISpaceAddForm extends UIFormTabPane {
         if (spaceName != null)
           uiMySpace.setSpaces_(spaceService.getSpacesByName(spaceName, (selectedChar == null) ? false : true ));
       } catch (SpaceException se) {
+        se.printStackTrace();
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
           msg = MSG_ERROR_SPACE_ALREADY_EXIST;
         } else if (se.getCode() == SpaceException.Code.UNABLE_TO_ADD_CREATOR) {

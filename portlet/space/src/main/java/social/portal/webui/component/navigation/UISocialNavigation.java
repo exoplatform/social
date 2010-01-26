@@ -64,17 +64,31 @@ public class UISocialNavigation extends UIComponent {
   }
   
   public PageNavigation getSelectedNavigation() {
-    PageNavigation nav = Util.getUIPortal().getSelectedNavigation();
-    if(nav != null) return nav;
-    if(Util.getUIPortal().getNavigations().size() < 1) return null;
-    return Util.getUIPortal().getNavigations().get(0);
+    PageNavigation nav = null;
+    try {
+      nav = Util.getUIPortal().getSelectedNavigation();
+      if(nav != null) return nav;
+      if(Util.getUIPortal().getNavigations().size() < 1) return null;
+      return Util.getUIPortal().getNavigations().get(0);
+    } catch (Exception e) {
+      // TODO: handle exception
+      e.printStackTrace();
+    }
+    return null;
   }
 
   public Object getSelectedParent() { return selectedParent_ ; }
   public PageNode getSelectedPageNode() {
-    if(selectedNode_ != null)  return selectedNode_;
-    selectedNode_ = Util.getUIPortal().getSelectedNode();    
-    return selectedNode_ ; 
+    try {
+      if(selectedNode_ != null)  return selectedNode_;
+      selectedNode_ = Util.getUIPortal().getSelectedNode();    
+      return selectedNode_ ; 
+      
+    } catch (Exception e) {
+      // TODO: handle exception
+      e.printStackTrace();
+    }
+    return null;
   }  
   
   public boolean isSelectedNode(PageNode node){

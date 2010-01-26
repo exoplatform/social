@@ -46,7 +46,7 @@
     <portlet-info>
       <title>Banner Portlet</title>
       <short-title>Banner Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <portlet-preferences>
@@ -80,7 +80,7 @@
     <portlet-info>
       <title>Warning Portlet</title>
       <short-title>Warning Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <portlet-preferences>
@@ -114,7 +114,7 @@
     <portlet-info>
       <title>HomePage Portlet</title>
       <short-title>HomePage Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <portlet-preferences>
@@ -148,7 +148,7 @@
     <portlet-info>
       <title>Manage Spaces Portlet</title>
       <short-title>Manage Spaces Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <!--portlet-preferences>
@@ -182,7 +182,7 @@
     <portlet-info>
       <title>Social Navigation Portlet</title>
       <short-title>Social Navigation Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <!-- portlet-preferences>
@@ -215,7 +215,7 @@
     <portlet-info>
       <title>Home Space Portlet</title>
       <short-title>Home Space Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <portlet-preferences>
@@ -249,7 +249,7 @@
     <portlet-info>
       <title>User List Portlet</title>
       <short-title>User List Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <!-- portlet-preferences>
@@ -283,7 +283,7 @@
     <portlet-info>
       <title>Space Menu</title>
       <short-title>Space Menu</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <!-- portlet-preferences>
@@ -316,7 +316,7 @@
     <portlet-info>
       <title>Space Setting</title>
       <short-title>Space Setting</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
 
     <!-- portlet-preferences>
@@ -350,7 +350,7 @@
     <portlet-info>
       <title>Space Navigation Portlet</title>
       <short-title>Space Navigation Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
   </portlet>
   
@@ -376,7 +376,7 @@
     <portlet-info>
       <title>My Space Portlet</title>
       <short-title>My Space Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
   </portlet>
   
@@ -402,7 +402,7 @@
     <portlet-info>
       <title>Invitation Space Portlet</title>
       <short-title>Invitation Space Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
   </portlet>
   
@@ -428,7 +428,7 @@
     <portlet-info>
       <title>Pending Space Portlet</title>
       <short-title>Pending Space Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
   </portlet>
   
@@ -454,7 +454,7 @@
     <portlet-info>
       <title>Public Space Portlet</title>
       <short-title>Public Space Portlet</short-title>
-      <keywords>Space</keywords>
+      <keywords>space</keywords>
     </portlet-info>     
   </portlet>
   

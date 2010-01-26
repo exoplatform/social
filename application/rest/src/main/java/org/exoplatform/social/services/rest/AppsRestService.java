@@ -33,6 +33,7 @@ import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
 
@@ -57,15 +58,16 @@ public class AppsRestService implements ResourceContainer {
    */
   private AppList showApps() {
     AppList appList = new AppList();
-    _applicationRegistryService = getApplicationRegistryService();
+    ApplicationRegistryService applicationRegistryService = getApplicationRegistryService();
     String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
     try {
-      List<ApplicationCategory> applicationCategoryList = _applicationRegistryService.getApplicationCategories();
+      List<ApplicationCategory> applicationCategoryList = applicationRegistryService.getApplicationCategories();
       Iterator<ApplicationCategory> applicationCategoryItr = applicationCategoryList.iterator();
       ApplicationCategory applicationCategory;
       while (applicationCategoryItr.hasNext()) {
         applicationCategory = applicationCategoryItr.next();
-        List<Application> applications = _applicationRegistryService.getApplications(applicationCategory, applicationTypes);
+        ApplicationType<org.exoplatform.portal.pom.spi.portlet.Portlet> portletType = ApplicationType.PORTLET;
+        List<Application> applications = applicationRegistryService.getApplications(applicationCategory, portletType);
         Iterator<Application> applicationItr = applications.iterator();
         Application application;
         while (applicationItr.hasNext()) {

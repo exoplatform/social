@@ -38,10 +38,7 @@
       org.exoplatform.portal.gadget.core.ExoModule
     </param-value>
   </context-param>
-	<context-param>
-    <param-name>portalContainerName</param-name>
-    <param-value>portal</param-value>
-  </context-param>
+  
   <filter>
     <filter-name>authFilter</filter-name>
     <filter-class>org.apache.shindig.auth.AuthenticationServletFilter</filter-class>
@@ -54,10 +51,6 @@
 
   <listener>
     <listener-class>org.apache.shindig.common.servlet.GuiceServletContextListener</listener-class>
-  </listener>
-
-	<listener>
-    <listener-class>org.exoplatform.application.gadget.GadgetRegister</listener-class>
   </listener>
   
   <!-- Serve social REST api -->

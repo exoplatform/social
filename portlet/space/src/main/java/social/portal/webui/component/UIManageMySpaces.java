@@ -93,7 +93,7 @@ public class UIManageMySpaces extends UIContainer {
   static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
   static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
   static private final String MSG_ERROR_DELETE_SPACE = "UIManageMySpaces.msg.error_delete_space";
-  static public final Integer LEADER = 1, MEMBER = 2;
+  static private final Integer LEADER = 1, MEMBER = 2;
   
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
   private UIPageIterator iterator;

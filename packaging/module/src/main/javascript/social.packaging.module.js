@@ -11,10 +11,12 @@ function getModule(params) {
 
   var module = new Module();
 
-  module.version = "1.0-Beta02-SNAPSHOT" ;
+  module.version = "${project.version}" ;
   module.relativeMavenRepo =  "org/exoplatform/social" ;
-  module.relativeSRCRepo =  "social/trunk" ;
-  module.name = "social" ;  
+  module.relativeSRCRepo =  "social" ;
+  module.name = "social" ;
+
+	var shindigVersion = "${org.shindig.version}";  
 	
   module.component = {} ;
   module.component.people = 
@@ -26,11 +28,7 @@ function getModule(params) {
   module.component.opensocial = 
 	new Project("org.exoplatform.social", "exo.social.component.opensocial","jar", module.version);
 
-  module.web = {} ;
-  /*module.web.socialportal = 
-    new Project("org.exoplatform.social", "exo.social.web.portal", "exo-portal", module.version).
-    addDependency(jcr.frameworks.command).
-    addDependency(jcr.frameworks.web);*/
+  module.web = {};
 	
   module.web.eXoResources = new Project("org.exoplatform.social", "exo.social.web.socialResources", "war", module.version);
   module.web.eXoResources.deployName = "eXoResourcesSocial" ;
@@ -52,7 +50,7 @@ function getModule(params) {
   module.web.opensocial =new Project("org.exoplatform.social", "exo.social.web.opensocial", "war", module.version).
 		addDependency(new Project("commons-betwixt", "commons-betwixt", "jar", "0.8")).
 		addDependency(new Project("net.sf.json-lib", "json-lib", "jar", "2.2")).
-		addDependency(new Project("org.apache.shindig", "shindig-social-api", "jar", "SNAPSHOT-r790473")).
+		addDependency(new Project("org.apache.shindig", "shindig-social-api", "jar", shindigVersion)).
 		addDependency(new Project("org.apache.geronimo.specs", "geronimo-stax-api_1.0_spec", "jar", "1.0.1"));
 
 

@@ -45,6 +45,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -79,6 +80,8 @@ public class SpaceUtils {
   static private SpaceService spaceService;
   static private List<Application> appList = new ArrayList<Application>();
   static private UserPortalConfigService userPortalConfigService;
+  static private ApplicationRegistryService appService = null;
+  
   private static final String REMOTE_CATEGORY_NAME = "remote";
   /**
    * Create a new group from an existing group.
@@ -121,21 +124,18 @@ public class SpaceUtils {
   static public List<Application> getApplications(String groupId) throws Exception {
 
     List<Application> list = new CopyOnWriteArrayList<Application>();
-    if (exoContainer == null) {
-      exoContainer = ExoContainerContext.getCurrentContainer();
-    }
-    ApplicationRegistryService appRegistrySrc = (ApplicationRegistryService) exoContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+    ApplicationRegistryService appRegistrySrc = getApplicationRegistryService();
 
     List<ApplicationCategory> listCategory = appRegistrySrc.getApplicationCategories();
     Iterator<ApplicationCategory> cateItr = listCategory.iterator();
-    String[] applicationTypes = { org.exoplatform.web.application.Application.EXO_PORTLET_TYPE };
     while (cateItr.hasNext()) {
       ApplicationCategory cate = cateItr.next();
       if (!hasAccessPermission(cate, groupId)) {
         cateItr.remove();
         continue;
       }
-      List<Application> applications = appRegistrySrc.getApplications(cate, applicationTypes);
+      ApplicationType<org.exoplatform.portal.pom.spi.portlet.Portlet> portletType = ApplicationType.PORTLET;
+      List<Application> applications = appRegistrySrc.getApplications(cate, portletType);
       Iterator<Application> appIterator = applications.iterator();
       while (appIterator.hasNext()) {
         Application app = appIterator.next();
@@ -156,10 +156,9 @@ public class SpaceUtils {
    */
   static public Map<ApplicationCategory, List<Application>> getAppStore(Space space) throws Exception {
     Map<ApplicationCategory, List<Application>> appStore = new HashMap<ApplicationCategory, List<Application>>();
-    if (exoContainer == null) {
-      exoContainer = ExoContainerContext.getCurrentContainer();
-    }
-    ApplicationRegistryService appRegistryService = (ApplicationRegistryService) exoContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+    
+    ApplicationRegistryService appRegistryService = getApplicationRegistryService();
+    
     String remoteUser = Util.getPortalRequestContext().getRemoteUser();
     if (remoteUser == null || remoteUser.equals(""))
        return appStore;
@@ -192,7 +191,7 @@ public class SpaceUtils {
     PortletInvoker portletInvoker = (PortletInvoker)exoContainer.getComponentInstance(PortletInvoker.class);
     Set<Portlet> portlets = portletInvoker.getPortlets();
     
-    ApplicationRegistryService appRegistryService = (ApplicationRegistryService) exoContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+    ApplicationRegistryService appRegistryService = getApplicationRegistryService();
     String remoteUser = Util.getPortalRequestContext().getRemoteUser();
     if (remoteUser == null || remoteUser.equals("")) return null;
     
@@ -244,18 +243,10 @@ public class SpaceUtils {
   
             app = new Application();
             app.setApplicationName(portletName);
-            app.setApplicationGroup(portletApplicationName);
             app.setCategoryName(categoryName);
-  
-            String applicationType = org.exoplatform.web.application.Application.EXO_PORTLET_TYPE;
-            if (portlet.isRemote()) {
-               applicationType = org.exoplatform.web.application.Application.WSRP_TYPE;
-            }
-            app.setApplicationType(applicationType);
   
             app.setDisplayName(getLocalizedStringValue(displayNameLS, portletName));
             app.setDescription(getLocalizedStringValue(descriptionLS, portletName));
-            app.setUri(portlet.getContext().getId());
             appList.add(app);
             return app;
          }
@@ -349,26 +340,27 @@ public class SpaceUtils {
    */
   static public void setNavigation(PageNavigation nav) {
     UIPortal uiPortal = Util.getUIPortal();
-    List<PageNavigation> navs = uiPortal.getNavigations();
-    boolean alreadyExisted = false;
-    for (int i = 0; i < navs.size(); i++) {
-      if (navs.get(i).getId() == nav.getId()) {
-        navs.set(i, nav);
-        alreadyExisted = true;
-        return;
+    try {
+      List<PageNavigation> navs = null;
+      navs = uiPortal.getNavigations();
+      boolean alreadyExisted = false;
+      for (int i = 0; i < navs.size(); i++) {
+        if (navs.get(i).getId() == nav.getId()) {
+          navs.set(i, nav);
+          alreadyExisted = true;
+          return;
+        }
       }
-    }
-    if (!alreadyExisted) {
-      navs.add(nav);
-      PageNode selectedPageNode = uiPortal.getSelectedNode();
-      try {
+      if (!alreadyExisted) {
+        navs.add(nav);
+        PageNode selectedPageNode = null;
+        selectedPageNode = uiPortal.getSelectedNode();
         uiPortal.setNavigation(navs);
         uiPortal.setSelectedNode(selectedPageNode);
-      } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
       }
-      
+    } catch (Exception e) {
+      // TODO: handle exception
+      e.printStackTrace();
     }
   }
   /**
@@ -882,5 +874,13 @@ public class SpaceUtils {
      {
         return localizedString.getDefaultString();
      }
+  }
+  
+  private static ApplicationRegistryService getApplicationRegistryService() {
+    if(appService == null) {
+      PortalContainer portalContainer = PortalContainer.getInstance();
+      appService = (ApplicationRegistryService) portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+    }
+    return appService;
   }
 }

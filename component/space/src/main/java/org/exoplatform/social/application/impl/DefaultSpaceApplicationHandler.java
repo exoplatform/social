@@ -16,11 +16,14 @@
  */
 package org.exoplatform.social.application.impl;
 
+import static org.exoplatform.portal.pom.config.Utils.split;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.container.ExoContainer;
@@ -35,10 +38,7 @@ import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.TransientApplicationState;
-import org.exoplatform.portal.config.model.gadget.GadgetApplication;
-import org.exoplatform.portal.config.model.gadget.GadgetId;
-import org.exoplatform.portal.config.model.portlet.PortletApplication;
-import org.exoplatform.portal.config.model.portlet.PortletId;
+import org.exoplatform.portal.pom.spi.portlet.Portlet;
 import org.exoplatform.portal.webui.application.PortletState;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
@@ -289,30 +289,11 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
         throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
       }
     }
-    String appType = app.getApplicationType();
-    ApplicationType<?, ?> applicationType = null;
-    if (appType.equals(org.exoplatform.web.application.Application.EXO_GADGET_TYPE)) {
-       applicationType = ApplicationType.GADGET;
-    } else if (appType.equals(org.exoplatform.web.application.Application.EXO_PORTLET_TYPE)) {
-       applicationType = ApplicationType.PORTLET;
-    }
-    Object applicationId = null;
-    org.exoplatform.portal.config.model.Application<?, ?> child = null;
-    if (applicationType == ApplicationType.PORTLET) {
-       applicationId = new PortletId(app.getApplicationGroup(), app.getApplicationName());
-       child = new PortletApplication(app.getApplicationGroup(), app.getApplicationName());
-    }  else if (applicationType == ApplicationType.GADGET) {
-       applicationId = new GadgetId(app.getApplicationName());
-       child = new GadgetApplication(app.getApplicationName());
-    }
-    
-    child.setShowInfoBar(false);
-    // create state
-    org.exoplatform.portal.config.model.TransientApplicationState<?> applicationState = new TransientApplicationState();
-    applicationState.setOwnerType(PortalConfig.GROUP_TYPE);
-    applicationState.setOwnerId(space.getGroupId());
-    PortletState portletState = new PortletState(applicationState, applicationType, applicationId);
-    child.setState(portletState.getApplicationState());
+    ApplicationType appType = app.getType();
+    String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + app.getCategoryName() + "/" 
+                            + app.getApplicationName() + "/" + app.getApplicationName() + app.hashCode();
+                                                                
+    org.exoplatform.portal.config.model.Application<Portlet> portetApp = createPortletApplication(appInstanceId);
     //create new Page
     Page page = null;
     String pageName;
@@ -340,19 +321,16 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     }
     page.setEditPermission("manager:" + space.getGroupId());
     page.setModifiable(true);
-    //add application to container
+//    //add application to container
     ArrayList<ModelObject> pageChilds = page.getChildren();
     Container container = findContainerById(pageChilds, APPLICATION);
     ArrayList<ModelObject> childs = container.getChildren();
-    childs.add(child);
+    childs.add(portetApp);
     container.setChildren(childs);
     pageChilds = setContainerById(pageChilds, container);
     page.setChildren(pageChilds);
     try {
       configService.create(page);
-      //TODO tung.dang because when renew we have new page in storage -> need to remove it.
-      Page tmpPage = configService.getPage(page.getId());
-      configService.remove(tmpPage);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
     }
@@ -436,6 +414,25 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       }
     }
     return result;
+  }
+  
+  private org.exoplatform.portal.config.model.Application<Portlet> createPortletApplication(String instanceId)
+  {
+     int i0 = instanceId.indexOf("#");
+     int i1 = instanceId.indexOf(":/", i0 + 1);
+     String ownerType = instanceId.substring(0, i0);
+     String ownerId = instanceId.substring(i0 + 1, i1);
+     String persistenceid = instanceId.substring(i1 + 2);
+     String[] persistenceChunks = split("/", persistenceid);
+     TransientApplicationState<Portlet> state = new TransientApplicationState<Portlet>(
+        persistenceChunks[0] + "/" + persistenceChunks[1],
+        null,
+        ownerType,
+        ownerId,
+        persistenceChunks[2]);
+     org.exoplatform.portal.config.model.Application<Portlet> portletApp = org.exoplatform.portal.config.model.Application.createPortletApplication();
+     portletApp.setState(state);
+     return portletApp;
   }
   
 }

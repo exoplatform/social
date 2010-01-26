@@ -99,7 +99,7 @@
 	  <div class="NormalBox">
 	  <% } %>
       <!-- Leader -->
-      <% if (role == UIManageMySpaces.LEADER) {%>
+      <% if (role == 1) {%>
   			<a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
   			<% if (imageSource == null) { %>
   				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
@@ -124,7 +124,7 @@
 			</div>
       <% }%>
     <!-- Member -->
-      <%if (role == UIManageMySpaces.MEMBER) {%>
+      <%if (role == 2) {%>
 			<a href="<%= spaceUrl %>" class="AvatarSpace">
 			<% if (imageSource == null) { %>
   				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
