@@ -28,7 +28,12 @@
 	<% uiform.begin() %>
   <div class="ContainerSpace">
 		<% for(app in applications)  {%>
-		<%    def isRemovable = uicomponent.isRemovable(app.getId());%>
+		<%    
+		String appId = app.getCategoryName() + "/" + app.getApplicationName() 
+		def isRemovable = uicomponent.isRemovable(appId);
+		
+		%>
+		
 		<div class="ContentSpace">
 			<div class="ApplicationIcon"><span></span></div>
 			<div class="CommunityContainer">

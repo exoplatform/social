@@ -294,6 +294,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
                             + app.getApplicationName() + "/" + app.getApplicationName() + app.hashCode();
                                                                 
     org.exoplatform.portal.config.model.Application<Portlet> portetApp = createPortletApplication(appInstanceId);
+    portetApp.setShowInfoBar(false);
     //create new Page
     Page page = null;
     String pageName;
