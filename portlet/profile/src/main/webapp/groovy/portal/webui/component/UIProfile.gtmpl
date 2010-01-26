@@ -21,11 +21,16 @@
 
 	def imageSource = uicomponent.getImageSource();
 	def changeAvatar = "return false;";
-	if(uicomponent.isEditable()) changeAvatar = uicomponent.event('ChangeAvatar'); 
+	def isEditable = uicomponent.isEditable();
+	if(isEditable) changeAvatar = uicomponent.event('ChangeAvatar'); 
 %>
   <div class="UIProfile" id="$uicomponent.id">
     <div class="LeftColumn">
-	  <div class="AvatarSpace">
+    <% if (isEditable) { %>
+	   <div class="AvatarSpace" style="cursor: pointer;">
+	  <% } else { %>
+	   <div class="AvatarSpace">
+	  <% } %>
 		  <div class="Image" onclick="$changeAvatar" title="Click to chage avatar">
 		  	<% if(imageSource == null) { %>
 		  		<img src="/profile/skin/portal/webui/component/UIProfilePortlet/background/BLAvatar.gif" height="119px" width="119px" alt="">
@@ -33,7 +38,7 @@
 		  		<img src="$imageSource" height="119px" width="119px">
 		  	<% } %>
 		  </div>
-	  </div>
+	   </div>
 	  <% if(uicomponent.isEditable()) { %>
 	  	  <div class="UIAction">
 					<table class="ActionContainer">

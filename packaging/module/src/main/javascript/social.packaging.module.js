@@ -42,6 +42,9 @@ function getModule(params) {
   module.portlet.profile = new Project("org.exoplatform.social", "exo.social.portlet.profile", "exo-portlet", module.version);
   module.portlet.profile.deployName = "profile" ;
 
+  module.webui = {};
+  module.webui.social = new Project("org.exoplatform.social", "exo.social.webui.social", "jar", module.version);
+
   module.application = {}
   module.application.rest = new Project("org.exoplatform.social", "exo.social.application.rest","jar", module.version).
 	addDependency(ws.frameworks.json);  	

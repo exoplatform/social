@@ -31,8 +31,8 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
-import org.exoplatform.social.portlet.URLUtils;
-import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
+import org.exoplatform.social.webui.UIProfileUserSearch;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -92,6 +92,7 @@ public class UIMyRelations extends UIContainer {
     uiFormPageIteratorContact = createUIComponent(UIFormPageIterator.class, null, iteratorIDContact);
     addChild(uiFormPageIteratorContact);
     uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIMyRelationsSearch");
+    uiProfileUserSearchRelation.setAllUserContactName(getAllMyRelationUserNames());
     addChild(uiProfileUserSearchRelation);
   }
   
@@ -214,7 +215,7 @@ public class UIMyRelations extends UIContainer {
    * @return Relationship list.
    * @throws Exception
    */
-  public List<Identity> getAllMyRelationIdentities() throws Exception {
+  private List<String> getAllMyRelationUserNames() throws Exception {
     RelationshipManager relm = getRelationshipManager();
     Identity currentIdentity = getCurrentViewerIdentity();
     List<Identity> allRelationIdentities = new ArrayList<Identity>();
@@ -225,7 +226,14 @@ public class UIMyRelations extends UIContainer {
       id = (currIdentity.getId() == (rel.getIdentity1()).getId()) ? rel.getIdentity2() : rel.getIdentity1();
       allRelationIdentities.add(id);
     }
-    return allRelationIdentities;
+    
+    List<String> allUserContactName = new ArrayList<String>();
+    
+    for (Identity identity : allRelationIdentities) {
+      allUserContactName.add((identity.getProfile()).getFullName());
+    }
+    
+    return allUserContactName;
   }
   
   /**

@@ -15,75 +15,75 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
  .UIProfileSpace {
-	padding: 8px;
-	font-family: tahoma;
-	font-size: 11px;
-	background: white;
-	zoom: 100%;
+  padding: 8px;
+  font-family: tahoma;
+  font-size: 11px;
+  background: white;
+  zoom: 100%;
 }
 
 .UIProfileSpace .AvatarSpace{
   background: url('DefaultSkin/background/BLAvatarBG.gif') no-repeat left top;
-	width: 126px;
-	height: 126px;
-	padding: 7px 0px 0px 7px;
-	margin: 15px;
+  width: 126px;
+  height: 126px;
+  padding: 7px 0px 0px 7px;
+  margin: 15px;
 }
 
 
 .UIProfileSpace .AvartarPeopleBG{
-	background: url('DefaultSkin/background/AvartarPeopleBG.gif') no-repeat left top;
-	width: 52px;
-	height: 52px;
-	padding: 6px 0px 0px 6px;
-	float: left;
-	margin: 8px;
+  background: url('DefaultSkin/background/AvartarPeopleBG.gif') no-repeat left top;
+  width: 52px;
+  height: 52px;
+  padding: 6px 0px 0px 6px;
+  float: left;
+  margin: 8px;
 }
 
 .UIProfileSpace .LeftColumn {
   float: left;
-	width:190px;
+  width:190px;
 }
 
 .UIProfileSpace .AvatarSpace .Image {
   width: 126px;
-	height: 126px;
+  height: 126px;
 }
 
 .UIProfilePortlet .UIProfile .LeftColumn .UIAction {
-	padding:8px 24px 0px 0px;
-	width:auto;
+  padding:8px 24px 0px 0px;
+  width:auto;
 }
 
 .UIProfileSpace .ButtonChange .ButtonLeft{
-	background: url('DefaultSkin/background/ButtonChangeL.gif') no-repeat left top;
-	padding-left: 8px;
+  background: url('DefaultSkin/background/ButtonChangeL.gif') no-repeat left top;
+  padding-left: 8px;
 }
 
 .UIProfileSpace .ButtonChange .ButtonRight{
-	background: url('DefaultSkin/background/ButtonChangeR.gif') no-repeat right top;
-	padding-right: 18px;
+  background: url('DefaultSkin/background/ButtonChangeR.gif') no-repeat right top;
+  padding-right: 18px;
 }
 
 .UIProfileSpace .ButtonChange .ButtonMiddle{
-	background: url('DefaultSkin/background/ButtonChangeM.gif') repeat-x;
-	height: 18px;
-	padding: 0px 8px;
-	line-height: 14px;
+  background: url('DefaultSkin/background/ButtonChangeM.gif') repeat-x;
+  height: 18px;
+  padding: 0px 8px;
+  line-height: 14px;
 }
 
 
 .ActivitiesTitleBarM{
-	background: #ebebeb;
-	height: 22px;
-	color: #7d7d7d;
-	line-height: 22px;
-	text-align: center;
-	font-weight: bold;
+  background: #ebebeb;
+  height: 22px;
+  color: #7d7d7d;
+  line-height: 22px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .UIProfileSpace .ContainerSpace {
-	margin-left:190px;
+  margin-left:190px;
 }
 .UIProfileSpace .AvatarSpace .HiddenAvatarChangeLink {
   display: none;
@@ -94,151 +94,151 @@
 }
 
 .UIProfileSpace .ContainerSpace .LeftContainer{
-	background: url(DefaultSkin/background/LeftContainerPortlet.gif) repeat-y left;
-	padding-left: 7px;
+  background: url(DefaultSkin/background/LeftContainerPortlet.gif) repeat-y left;
+  padding-left: 7px;
 }
 
 .UIProfileSpace .ContainerSpace .RightContainer{
-	background: url(DefaultSkin/background/RightContainerPortlet.gif) repeat-y right;
-	padding-right: 7px;
+  background: url(DefaultSkin/background/RightContainerPortlet.gif) repeat-y right;
+  padding-right: 7px;
 }
 
 .UIProfileSpace .ContainerSpace .CenterContainer{
-	background: #f2f8fa;
-	padding: 10px;
+  background: #f2f8fa;
+  padding: 10px;
 }
 
 .UIProfileSpace .ContainerSpace .PortletContent {
-	background:#FBFBFB none repeat scroll 0 0;
-	color:#3A3A3A;
-	margin-bottom:1px;
-	padding:8px 15px;
+  background:#FBFBFB none repeat scroll 0 0;
+  color:#3A3A3A;
+  margin-bottom:1px;
+  padding:8px 15px;
 }
 
 .UIProfileSpace .ContainerSpace .PortletContentGray {
-	background:#f2f2f2 none repeat scroll 0 0;
-	color:#3A3A3A;
-	margin-bottom:1px;
-	padding:8px 15px;
+  background:#f2f2f2 none repeat scroll 0 0;
+  color:#3A3A3A;
+  margin-bottom:1px;
+  padding:8px 15px;
 }
 
 .UIProfileSpace .ContainerSpace .ActionBar .CenterButton .SaveIcon{
-	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
-	line-height: 18px; width: auto;
-	padding-left: 20px;
+  background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
+  line-height: 18px; width: auto;
+  padding-left: 20px;
 }
 
 .UIProfileSpace .ContainerSpace .ActionBar .CenterButton .SaveIcon{
-	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
-	line-height: 18px; width: auto;
-	padding-left: 20px;
+  background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
+  line-height: 18px; width: auto;
+  padding-left: 20px;
 }
 
 .UIProfileSpace .ContainerSpace .ActionBar .CenterButton .EditIcon{
-	background: url('DefaultSkin/background/EditIcon.gif') no-repeat left;
-	line-height: 18px;
-	padding-left: 20px;
-	height: auto; width: auto;
+  background: url('DefaultSkin/background/EditIcon.gif') no-repeat left;
+  line-height: 18px;
+  padding-left: 20px;
+  height: auto; width: auto;
 }
 
 .UIProfileSpace .ContainerSpace .ActionBar .CenterButton .DeleteIcon{
-	background: url('DefaultSkin/background/DeleteIconButton.gif') no-repeat left;
-	line-height: 18px; width: auto;
-	padding-left: 20px;
+  background: url('DefaultSkin/background/DeleteIconButton.gif') no-repeat left;
+  line-height: 18px; width: auto;
+  padding-left: 20px;
 }
 
 .UIProfileSpace .ContainerSpace .PortletContent .DeleteIcon{
-	background: url(DefaultSkin/background/DeleteIcon.gif) no-repeat center;
-	padding: 5px 11px;
+  background: url(DefaultSkin/background/DeleteIcon.gif) no-repeat center;
+  padding: 5px 11px;
 }
 
 .UIProfileSpace .ContainerSpace .PortletContent .AddIcon{
-	background: url(DefaultSkin/background/AddIcon.gif) no-repeat center;
-	display: block;
-	width: 22px;
-	height: 22px;
+  background: url(DefaultSkin/background/AddIcon.gif) no-repeat center;
+  display: block;
+  width: 22px;
+  height: 22px;
 }
 
 .UIProfileSpace h2{
-	color:#3A3A3A;
-	font-size:14px;
-	font-weight:bold;
-	margin: 4px 0px;
+  color:#3A3A3A;
+  font-size:14px;
+  font-weight:bold;
+  margin: 4px 0px;
 }
 
 .UIProfileSpace .ATitleBarL {
-	background: url('DefaultSkin/background/ATitleBarL.gif') no-repeat left top;
-	padding-left: 4px;
-	margin-top: 8px;
+  background: url('DefaultSkin/background/ATitleBarL.gif') no-repeat left top;
+  padding-left: 4px;
+  margin-top: 8px;
 }
 
 .UIProfileSpace .ATitleBarR {
-	background: url('DefaultSkin/background/ATitleBarR.gif') no-repeat right top;
-	padding-right: 4px;
+  background: url('DefaultSkin/background/ATitleBarR.gif') no-repeat right top;
+  padding-right: 4px;
 }
 
 .UIProfileSpace .ATitleBarM {
-	background: url('DefaultSkin/background/ATitleBarM.gif') repeat-x;
-	padding-left: 4px;
+  background: url('DefaultSkin/background/ATitleBarM.gif') repeat-x;
+  padding-left: 4px;
 }
 
 .UIProfileSpace .ATitleBarC {
-	background: url('DefaultSkin/background/ATitleBarC.gif') no-repeat left top;
-	height:25px;
-	color: white;
-	margin-left: 8px;
-	line-height: 20px;
-	font-weight: bold;
+  background: url('DefaultSkin/background/ATitleBarC.gif') no-repeat left top;
+  height:25px;
+  color: white;
+  margin-left: 8px;
+  line-height: 20px;
+  font-weight: bold;
 }
 
 .UIProfileSpace .EditIcon {
-	background: url('DefaultSkin/background/EditIcon.gif') no-repeat right top;
-	float: right;
-	padding: 0px 8px;
-	display: block;
-	margin-top: 3px;
+  background: url('DefaultSkin/background/EditIcon.gif') no-repeat right top;
+  float: right;
+  padding: 0px 8px;
+  display: block;
+  margin-top: 3px;
 }
 
 .UIProfileSpace .CancelIcon {
-	background: url('DefaultSkin/background/CancelIcon.gif') no-repeat right top;
-	float: right;
-	padding: 0px 8px;
-	display: block;
-	margin-top: 3px;
-	width: auto;
-	height: auto;
+  background: url('DefaultSkin/background/CancelIcon.gif') no-repeat right top;
+  float: right;
+  padding: 0px 8px;
+  display: block;
+  margin-top: 3px;
+  width: auto;
+  height: auto;
 }
 
 .UIProfileSpace .SaveIcon {
-	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat right top;
-	float: right;
-	padding: 0px 8px;
-	display: block;
-	margin-top: 3px;
-	width: auto;
-	height: auto;
+  background: url('DefaultSkin/background/SaveIcon.gif') no-repeat right top;
+  float: right;
+  padding: 0px 8px;
+  display: block;
+  margin-top: 3px;
+  width: auto;
+  height: auto;
 }
 
 
 .UIProfileSpace h3{
-	font-size: 11px;
-	font-weight: bold;
-	color: #8c8c8e;
+  font-size: 11px;
+  font-weight: bold;
+  color: #8c8c8e;
   margin-top:0px;
   margin-left:5px;
   height: 20px;
 }
 
 .UIProfileSpace .SendPosition {
-	font-size: 11px;
-	font-weight: bold;
-	color: #8c8c8e;
-	margin-top:0px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #8c8c8e;
+  margin-top:0px;
   margin-left:5px;
 }
 
 .UIProfileSpace .ATitleBarL .Title {
-	float: left;
+  float: left;
 }
 
 .profileTemplate {
@@ -258,28 +258,28 @@
 }
 
 .UIProfileSpace .ContainerSpace .FieldLabel {
-	text-align: right;
-	padding: 4px;
-	font-weight: bold;
-	width: 120px;
+  text-align: right;
+  padding: 4px;
+  font-weight: bold;
+  width: 120px;
 }
 
 .UIProfileSpace .ContainerSpace .FieldComponent {
-	padding: 4px;
+  padding: 4px;
 }
 
 .UIProfileSpace .ContainerSpace .FieldError{
-	color: red;
+  color: red;
 }
 
 .UIProfileSpace .ContainerSpace .FieldComponent ul{
-	margin: 0px;
+  margin: 0px;
   padding-left:0;
   list-style:none;
 }
 
 .UIProfileSpace .ContainerSpace .FieldComponent .selectbox{
-	font-size: 11px;
+  font-size: 11px;
 }
 
 .UIProfileSpace .ContainerSpace .FieldComponent .LV_invalid_field {
@@ -302,39 +302,39 @@
 }
  
 .UIProfileSpace .CommunityContainer {
-	padding-left: 16px;
-	margin-left: 76px;
+  padding-left: 16px;
+  margin-left: 76px;
 }
 
 .UIProfileSpace .Line {
-	border-bottom:1px solid #B7B7B7;
+  border-bottom:1px solid #B7B7B7;
 }
 
 .UIProfileSpace .Text {
-	line-height: 16px;
+  line-height: 16px;
 }
 
 .UIProfileSpace .TagsName {
-	color: #b7b7b7;
-	line-height: 16px;
+  color: #b7b7b7;
+  line-height: 16px;
 }
 
 .UIProfileSpace .CommunityMane {
-	color: #0d6e8f;
-	height: 20px;
-	font-size: 11px;
-	font-family: tahoma;
-	font-weight: bold;
-	margin-bottom: 5px;
+  color: #0d6e8f;
+  height: 20px;
+  font-size: 11px;
+  font-family: tahoma;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .UIProfileSpace .CommunityMane {
-	color: #0d6e8f;
-	height: 20px;
-	font-size: 11px;
-	font-family: tahoma;
-	font-weight: bold;
-	margin-bottom: 5px;
+  color: #0d6e8f;
+  height: 20px;
+  font-size: 11px;
+  font-family: tahoma;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .UIProfileSpace .Title {
@@ -346,101 +346,283 @@
 }
 
 .UIUserListPortlet .UISpaceUserSearchL{
-	background: url('DefaultSkin/background/UISpaceUserSearchL.gif') no-repeat left top ;
+  background: url('DefaultSkin/background/UISpaceUserSearchL.gif') no-repeat left top ;
   padding-left:8px;
 }
 
 .UIUserListPortlet .UISpaceUserSearchR{
-	background: url('DefaultSkin/background/UISpaceUserSearchR.gif') no-repeat right top ;
+  background: url('DefaultSkin/background/UISpaceUserSearchR.gif') no-repeat right top ;
   padding-right:8px;
 }
 
 .UIUserListPortlet .UISpaceUserSearchM{
-	background: url('DefaultSkin/background/UISpaceUserSearchM.gif') repeat-x ;
+  background: url('DefaultSkin/background/UISpaceUserSearchM.gif') repeat-x ;
   padding:8px 0px 4px 48px;
   color: #6d84b4;
 }
 
 .UIUserListPortlet .UISpaceUserSearchM input {
-	height: 14px;
-	font-size: 11px;
+  height: 14px;
+  font-size: 11px;
 }
 
 .UIUserListPortlet .UISpaceUserSearchM .selectbox {
-	font-size: 11px;
+  font-size: 11px;
 }
 
 .UIUserListPortlet .UISpaceUserSearchM a{
-	color:#6D84B4;
+  color:#6D84B4;
 }
 
 
 .UIUserListPortlet .UserlistBottomL{
-	background: url('DefaultSkin/background/UserlistBottomL.gif') no-repeat left top ;
+  background: url('DefaultSkin/background/UserlistBottomL.gif') no-repeat left top ;
   padding-left:7px;
 }
 
 .UIUserListPortlet .UserlistBottomR{
-	background: url('DefaultSkin/background/UserlistBottomR.gif') no-repeat right top ;
+  background: url('DefaultSkin/background/UserlistBottomR.gif') no-repeat right top ;
   padding-right:7px;
 }
 
 .UIUserListPortlet .UserlistBottomM{
-	background: url('DefaultSkin/background/UserlistBottomM.gif') repeat-x ;
+  background: url('DefaultSkin/background/UserlistBottomM.gif') repeat-x ;
   height:7px;
 }
 
 .UIUserListPortlet .UserlistContainer{
-	border-left: 1px solid #e1e1e1;
-	border-right: 1px solid #e1e1e1;
-	padding: 8px;
+  border-left: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
+  padding: 8px;
 }
 
 
 .UIUserListPortlet .EmptyData {
-	color:#FF5604;
-	font-style:italic;
-	text-align:center;
+  color:#FF5604;
+  font-style:italic;
+  text-align:center;
 }
 
 
 .UIUserListPortlet .UserlistContainer .UserlistContent {
-	background: white url('DefaultSkin/background/UserlistContent.gif') repeat-x top;
-	padding: 8px;
-	border: 1px solid #f1f1f1;
+  background: white url('DefaultSkin/background/UserlistContent.gif') repeat-x top;
+  padding: 8px;
+  border: 1px solid #f1f1f1;
 }
 
 
 .UIUserListPortlet .UserlistContainer .UserlistContent .UIFormGrid {
-	margin: 0px;
+  margin: 0px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer {
-	margin-left: 82px;
+  margin-left: 82px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserBarTitleName {
-	color: #6D84B4;
-	font-size: 12px;
-	font-weight: bold;
-	line-height: 24px;
-	padding-left: 12px;
+  color: #6D84B4;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 24px;
+  padding-left: 12px;
 }
 
 .UIUserListPortlet .UserlistContainer .Line {
-	border-bottom: 1px dotted #c1c1c1;
-	margin-left: 12px;
+  border-bottom: 1px dotted #c1c1c1;
+  margin-left: 12px;
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer .FieldComponent {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .UIUserListPortlet .UserlistContainer .UserContainer td.FieldLabel {
-	text-align: left;
+  text-align: left;
 }
 
 .UIProfileSpace .ContainerSpace .PortletContent .NotYet {
-	color:#FF0000;
-	text-align:center;
+  color:#FF0000;
+  text-align:center;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch {
+  padding:8px 0px 8px 0px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces {
+  background: url( "DefaultSkin/background/SearchSpaces.gif" ) no-repeat left top;
+  padding-left: 7px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpacesR {
+  background: #f3f3f3 url( "DefaultSkin/background/SearchSpacesR.gif" ) no-repeat right top;
+  padding: 10px 7px 8px 7px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable {
+  float: left;
+  padding: 4px 4px 4px 16px;
+  width: 100px;
+  text-align: right;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Lable {
+  float: left;
+  padding: 4px 4px 4px 16px;
+  width: 100px;
+  text-align: right;
+  color: black;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search {
+  width: 275px;
+  float: left;
+  border: 1px solid #b7b7b7;
+  font-size: 11px;
+  background: white;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter {
+  padding-top: 4px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search input {
+  width: 255px;
+  height: 14px;
+  font-size:11px;
+  float: left;
+  color: #C7C7C7;
+  border: 1px solid white;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .SearchIcon {
+  width: 14px;
+  float: left;
+  background: white url( "DefaultSkin/background/SearchIcon.gif" ) no-repeat right center;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterInput {
+  float: left;
+  border: 1px solid #b7b7b7;
+  margin-right: 7px;
+  background: white;
+  height: 18px;
+  width: 94px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterInput input {
+  height: 12px;
+  width: 90px;
+  font-size:11px;
+  color: #C7C7C7;
+  border: 1px solid white;
+  margin: 0px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterGender select{
+  height: 20px;
+  width: 72px;
+  font-size:11px;
+  float: left;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Input {
+  width: 82px;
+  float: left;
+  border: 1px solid #b7b7b7;
+  margin-right: 4px;
+  font-size: 11px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .AdvanceSearchLable {
+  float: left;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .Select {
+  float: left;
+  width: 82px;
+  border: 1px solid #b7b7b7;
+  font-size: 11px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable {
+  line-height: 18px;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .DirectorySpaces {
+  background: #fbfbfb;
+  padding: 2px 0px 3px 6px;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .DirectorySpaces ul.LetterList {
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  margin: 0 0 10px;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .DirectorySpaces ul.LetterList li {
+  float: left;
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  margin: 0 2px 3px 0;
+  min-width: 15px;
+  padding: 0;
+  width: 3.2%;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .DirectorySpaces ul.LetterList li a {
+  background: #EEEEEE none repeat scroll 0 0;
+  color: inherit;
+  display: block;
+  font-family: Georgia,Times,serif;
+  font-size: 12px;
+  padding: 3px 5px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .DirectorySpaces ul.LetterList li a:hover {
+  background: #FFF8DC none repeat scroll 0 0;
+  color: #F57A00;
+}
+
+.UIProfileSpace .ContainerSpace .UIProfileUserSearch .DirectorySpaces ul.LetterList li a.selected {
+  background: #AAAAAA none repeat scroll 0 0;
+  color: #FFFFFF;
+}
+
+div.suggestions {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid #cdcdc1;
+    border-top: 1px solid #b7b7b7;
+    position: absolute;   
+    min-width: 276px;
+    *width: 280px;
+    background: white; 
+    color: #3A3A3A;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-y: hidden;
+}
+
+div.suggestions div {
+    cursor: default;
+    padding: 0px 3px;
+}
+
+div.suggestions div.current {
+    background-color: #4169e1;
+    color: white;
 }

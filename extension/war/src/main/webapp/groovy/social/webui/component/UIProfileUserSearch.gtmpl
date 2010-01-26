@@ -24,9 +24,9 @@ def uicomponentId = uicomponent.id;
 def rcontext = _ctx.getRequestContext() ;
 def allContactName = uicomponent.getAllContactName().toString();
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', '/eXoResourcesSocial/javascript');
 jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/eXoResourcesSocial/javascript');
-jsmanager.importJavascript('eXo.social.profile.UIProfileUserSearch', '/profile/javascript');
-jsmanager.addCustomizedOnLoadScript('eXo.social.profile.UIProfileUserSearch.onLoad("' + uicomponentId + '","' + allContactName + '");');
+jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UIProfileUserSearch.onLoad("' + uicomponentId + '","' + allContactName + '");');
 	
 def findContactLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
 def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
@@ -61,7 +61,7 @@ def searchAction = uicomponent.event('Search');
 	  <div class="Search"><% uiform.renderField(childs.get(0))%>
 	  <div class="SearchIcon" onclick="$searchAction"></div>
 	  </div>
-	  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
+	  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
 	  
 	  <div style="clear: left; height: 0px;"><span></span></div> 
 	  <div class="Filter" id="$filterId" style="display:none">
@@ -75,7 +75,7 @@ def searchAction = uicomponent.event('Search');
 		<input id="defaultProf" type="hidden" value="$professionalDefaultVal">
 		<input id="defaultGender" type="hidden" value="$allGenderLabel">
 		<input id="searchAll" type="hidden" value="$searchAll">
-		<a id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.profile.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</a>
+		<a id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</a>
 	  </div>
 	</div>
  </div>

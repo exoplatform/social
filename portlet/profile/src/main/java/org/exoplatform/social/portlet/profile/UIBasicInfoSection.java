@@ -27,7 +27,7 @@ import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.portlet.URLUtils;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;

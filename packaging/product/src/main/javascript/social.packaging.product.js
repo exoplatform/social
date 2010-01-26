@@ -62,8 +62,8 @@ function getProduct(version) {
   product.addDependencies(social.portlet.profile);
   product.addDependencies(social.web.opensocial);
   product.addDependencies(social.component.opensocial);
-  product.addDependencies(social.application.rest) ;
-
+  product.addDependencies(social.application.rest);
+  product.addDependencies(social.webui.social);
 
   product.addDependencies(social.demo.portal);
   product.addDependencies(social.demo.rest);

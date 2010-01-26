@@ -22,7 +22,7 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.portlet.URLUtils;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 
 public class Utils {

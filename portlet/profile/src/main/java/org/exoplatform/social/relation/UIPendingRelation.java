@@ -29,18 +29,15 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
-import org.exoplatform.social.portlet.URLUtils;
-import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
-import org.exoplatform.social.portlet.profile.Utils;
+import org.exoplatform.social.webui.UIProfileUserSearch;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
@@ -94,6 +91,7 @@ public class UIPendingRelation extends UIContainer {
     uiFormPageIterator_ = createUIComponent(UIFormPageIterator.class, null, iteratorID_);
     addChild(uiFormPageIterator_);
     uiProfileUserSearchPending = createUIComponent(UIProfileUserSearch.class, null, "UIPendingRelationSearch");
+    uiProfileUserSearchPending.setAllUserContactName(getAllPendingUserNames());
     addChild(uiProfileUserSearchPending);
   }
   
@@ -213,7 +211,7 @@ public class UIPendingRelation extends UIContainer {
    * @return Relationship list.
    * @throws Exception
    */
-  public List<Identity> getAllPendingIdentities() throws Exception {
+  private List<String> getAllPendingUserNames() throws Exception {
     RelationshipManager relm = getRelationshipManager();
     Identity currentIdentity = getCurrentViewerIdentity();
     List<Identity> allPendingIdentities = new ArrayList<Identity>();
@@ -224,7 +222,14 @@ public class UIPendingRelation extends UIContainer {
       id = (currIdentity.getId() == (rel.getIdentity1()).getId()) ? rel.getIdentity2() : rel.getIdentity1();
       allPendingIdentities.add(id);
     }
-    return allPendingIdentities;
+    
+    List<String> allUserContactName = new ArrayList<String>();
+    
+    for (Identity identity : allPendingIdentities) {
+      allUserContactName.add((identity.getProfile()).getFullName());
+    }
+    
+    return allUserContactName;
   }
   
   /**

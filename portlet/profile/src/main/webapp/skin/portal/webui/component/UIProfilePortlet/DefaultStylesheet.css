@@ -30,15 +30,6 @@
 	height: 126px;
 	padding: 7px 0px 0px 7px;
 	margin: 15px;
-	cursor: pointer;
-}
-
-.UIProfile .AvatarSpace {
-	background: url('background/BLAvatarBG.gif') no-repeat left top;
-	width: 126px;
-	height: 126px;
-	padding: 7px 0px 0px 7px;
-	margin: 15px;
 }
 
 .UIProfile .LeftColumn {

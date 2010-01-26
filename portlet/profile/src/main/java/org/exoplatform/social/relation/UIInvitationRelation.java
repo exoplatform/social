@@ -31,18 +31,16 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
-import org.exoplatform.social.portlet.URLUtils;
-import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
+import org.exoplatform.social.webui.UIProfileUserSearch;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
@@ -94,6 +92,7 @@ public class UIInvitationRelation extends UIContainer {
     uiFormPageIteratorInvitation = createUIComponent(UIFormPageIterator.class, null, iteratorIDInvitation);
     addChild(uiFormPageIteratorInvitation);
     uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIInvitationRelationSearch");
+    uiProfileUserSearchRelation.setAllUserContactName(getAllInvitedUserNames()); // set identitites for suggestion
     addChild(uiProfileUserSearchRelation);
   }
   
@@ -216,7 +215,7 @@ public class UIInvitationRelation extends UIContainer {
    * @return Relationship list.
    * @throws Exception
    */
-  public List<Identity> getAllInvitedIdentities() throws Exception {
+  private List<String> getAllInvitedUserNames() throws Exception {
     RelationshipManager relm = getRelationshipManager();
     Identity currentIdentity = getCurrentViewerIdentity();
     List<Identity> allInvitedIdentities = new ArrayList<Identity>();
@@ -227,7 +226,14 @@ public class UIInvitationRelation extends UIContainer {
       id = (currIdentity.getId() == (rel.getIdentity1()).getId()) ? rel.getIdentity2() : rel.getIdentity1();
       allInvitedIdentities.add(id);
     }
-    return allInvitedIdentities;
+    
+    List<String> allUserContactName = new ArrayList<String>();
+    
+    for (Identity identity : allInvitedIdentities) {
+      allUserContactName.add((identity.getProfile()).getFullName());
+    }
+    
+    return allUserContactName;
   }
   
   /**

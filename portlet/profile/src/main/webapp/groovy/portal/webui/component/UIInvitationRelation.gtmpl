@@ -6,7 +6,7 @@
  	import org.exoplatform.services.jcr.RepositoryService;
  	import org.exoplatform.portal.application.PortalRequestContext;
  	import org.exoplatform.webui.form.UIFormPageIterator;
- 	import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
+ 	import org.exoplatform.social.webui.UIProfileUserSearch;
  
  	PortalContainer portalContainer = PortalContainer.getInstance();
  	String portalName = portalContainer.getPortalContainerInfo().getContainerName();

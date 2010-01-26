@@ -451,6 +451,10 @@
 	color: #F57A00;
 }
 
+.UITabPane .DirectorySpaces ul.LetterList li a:active {
+  outline: none;
+}
+
 .UITabPane .DirectorySpaces ul.LetterList li a.selected {
 	background: #AAAAAA none repeat scroll 0 0;
 	color: #FFFFFF;

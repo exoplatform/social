@@ -111,7 +111,7 @@
 		    <!--              end of phones          -->
         <!--              ims          -->
 		    <tr>
-		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%> :</td>
+		      <td class="FieldLabel" style="width: 33%;"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%> :</td>
 		      <td class="FieldComponent">
 		        <%
 		        	if (isEdit && isEditable) { %>

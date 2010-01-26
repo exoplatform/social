@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.portlet.profile;
+package org.exoplatform.social.webui;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,12 +34,6 @@ import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.RelationshipManager;
-import org.exoplatform.social.portlet.URLUtils;
-import org.exoplatform.social.portlet.profilelist.UIDisplayProfileList;
-import org.exoplatform.social.relation.UIInvitationRelation;
-import org.exoplatform.social.relation.UIMyRelations;
-import org.exoplatform.social.relation.UIPendingRelation;
-import org.exoplatform.social.space.Space;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -63,7 +57,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "app:/groovy/portal/webui/component/UIProfileUserSearch.gtmpl",
+  template = "system:/groovy/social/webui/component/UIProfileUserSearch.gtmpl",
   events = {
     @EventConfig(listeners = UIProfileUserSearch.SearchActionListener.class) 
   }
@@ -108,6 +102,7 @@ public class UIProfileUserSearch extends UIForm {
   /** Selected character when search by alphabet */
   String selectedChar = null;
   ProfileFiler profileFiler = null;
+  List<String> allUserContactName = null;
   
   /**
    * Constructor to initialize form fields
@@ -154,22 +149,20 @@ public class UIProfileUserSearch extends UIForm {
    * @throws Exception 
    */
   public List<String> getAllContactName() throws Exception {
-    List<String> allUserContactName = new ArrayList<String>();
-    List<Identity> allIdentities = new ArrayList<Identity>();
-    
-    UIComponent parent = getParent();
-    if (parent instanceof UIDisplayProfileList) allIdentities = ((UIDisplayProfileList)parent).loadAllProfiles();
-    if (parent instanceof UIMyRelations) allIdentities = ((UIMyRelations)parent).getAllMyRelationIdentities();
-    if (parent instanceof UIInvitationRelation) allIdentities = ((UIInvitationRelation)parent).getAllInvitedIdentities();
-    if (parent instanceof UIPendingRelation) allIdentities = ((UIPendingRelation)parent).getAllPendingIdentities();
-    
-    for (Identity id : allIdentities) {
-      allUserContactName.add((id.getProfile()).getFullName());
-    }
-    
     return allUserContactName;
   }
-  
+
+  /**
+   * Set all user contact name for auto-suggestion from parent which add this component.
+   * 
+   * @param allUserContactName
+   */
+  public void setAllUserContactName(List<String> allUserContactName) {
+    this.allUserContactName = allUserContactName;
+  }
+
+
+
   /**
    * SearchActionListener
    * Get the keyword and filter from the form.
@@ -192,7 +185,6 @@ public class UIProfileUserSearch extends UIForm {
       String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
       String defaultProfVal = resApp.getString(uiSearch.getId() + ".label.Professional");
       String defaultGenderVal = resApp.getString(uiSearch.getId() + ".label.AllGender");
-      
       
       if (!isValidInput(filter)) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
@@ -217,12 +209,7 @@ public class UIProfileUserSearch extends UIForm {
         try {
           if (charSearch == null) {
             identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
-            
-            if (identitiesSearchResult != null) {
-                for (Identity id : identitiesSearchResult) {
-                  if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id);
-                }
-            }
+            uiSearch.setIdentityList(identitiesSearchResult);
             
             // Using regular expression for search
             professional = filter.getProfessional();
@@ -233,10 +220,10 @@ public class UIProfileUserSearch extends UIForm {
               professional = (professional.indexOf("*") >= 0) ? professional.replace("*", ".*") : professional;
               professional = (professional.indexOf("%") >= 0) ? professional.replace("%", ".*") : professional;
               Pattern.compile(professional);
-              identities = uiSearch.getIdentitiesByProfessional(professional, identities);
+              identities = uiSearch.getIdentitiesByProfessional(professional, identitiesSearchResult);
+              uiSearch.setIdentityList(identities);
             }
             
-            uiSearch.setIdentityList(identities);
           } else {
             ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
             filter.setName(charSearch);
@@ -247,14 +234,7 @@ public class UIProfileUserSearch extends UIForm {
             }
             
             identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(filter);
-            
-            if (identitiesSearchResult != null) {
-                for (Identity id : identitiesSearchResult) {
-                  if (!id.getRemoteId().equals(uiSearch.getCurrentViewerIdentity().getRemoteId())) identities.add(id); 
-                }
-            }
-            
-            uiSearch.setIdentityList(identities);
+            uiSearch.setIdentityList(identitiesSearchResult);
           }
         } catch (Exception e) {
           uiSearch.setIdentityList(new ArrayList<Identity>());
@@ -364,7 +344,13 @@ public class UIProfileUserSearch extends UIForm {
   
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    return im.getIdentityByRemoteId(ORGANIZATION, getCurrentViewerUserName());
+    Identity identity = null;
+    identity = im.getIdentityByRemoteId(ORGANIZATION, getCurrentViewerUserName());
+    if (identity == null) {
+      return im.getIdentityByRemoteId(ORGANIZATION, getCurrentUserName());
+    }
+      
+    return identity;
   }
   /**
    * Get current user name.

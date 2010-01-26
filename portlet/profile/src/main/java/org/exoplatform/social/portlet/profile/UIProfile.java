@@ -29,7 +29,7 @@ import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
-import org.exoplatform.social.portlet.URLUtils;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;

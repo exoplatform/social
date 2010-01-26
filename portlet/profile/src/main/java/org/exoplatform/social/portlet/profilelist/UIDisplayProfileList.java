@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.portlet.profilelist;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,9 +32,9 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
-import org.exoplatform.social.portlet.URLUtils;
-import org.exoplatform.social.portlet.profile.UIProfileUserSearch;
 import org.exoplatform.social.relation.IdentityListAccess;
+import org.exoplatform.social.webui.UIProfileUserSearch;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -77,6 +78,7 @@ public class UIDisplayProfileList extends UIContainer {
   public UIDisplayProfileList() throws Exception {
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
     uiProfileUserSearchPeople = createUIComponent(UIProfileUserSearch.class, null, "UIPeopleSearch");
+    uiProfileUserSearchPeople.setAllUserContactName(loadAllUserNames());
     addChild(uiProfileUserSearchPeople);
   }
   
@@ -190,6 +192,14 @@ public class UIDisplayProfileList extends UIContainer {
       return loadAllProfiles();
     }
     
+    Iterator<Identity> itr = matchIdentities.iterator();
+    while(itr.hasNext()) {
+      Identity id = itr.next();
+      if(id.getId() == getCurrentIdentity().getId()){
+        itr.remove();
+      }
+    }
+    
     return matchIdentities;
   }
   
@@ -213,7 +223,7 @@ public class UIDisplayProfileList extends UIContainer {
    * @return
    * @throws Exception
    */
-  public List<Identity> loadAllProfiles() throws Exception {
+  private List<Identity> loadAllProfiles() throws Exception {
     IdentityManager im = getIdentityManager();
     List<Identity> ids = im.getIdentities("organization");
     Iterator<Identity> itr = ids.iterator();
@@ -223,7 +233,23 @@ public class UIDisplayProfileList extends UIContainer {
         itr.remove();
       }
     }
+    
     return ids;
+  }
+  
+  /**
+   * All user names for suggestion.
+   * @return
+   * @throws Exception
+   */
+  private List<String> loadAllUserNames() throws Exception {
+    List<String> allUserContactName = new ArrayList<String>();
+    List<Identity> allIds = loadAllProfiles();
+    for (Identity identity : allIds) {
+      allUserContactName.add((identity.getProfile()).getFullName());
+    }
+    
+    return allUserContactName;
   }
   
   public Relationship.Type getContactStatus(Identity identity) throws Exception {

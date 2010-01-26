@@ -108,8 +108,7 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 	var defaultPos = document.getElementById('defaultPos').value;
 	var defaultProf = document.getElementById('defaultProf').value;
 	var defaultGender = document.getElementById('defaultGender').value;
-	var uiProfileUserSearchObj = eXo.social.profile.UIProfileUserSearch;
-//	var suggestControlObj = eXo.social.space.AutoSuggestControl;
+	var uiProfileUserSearchObj = eXo.social.webui.UIProfileUserSearch;
 	var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
 	
 	// Turn off auto-complete attribute of text-box control
@@ -145,6 +144,7 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 		var elementId = filter.id;
 		
 		if (filter != null) {
+			
 			if (elementId == searchId) { 
 				defaultValue = defaultUserContact;
 				// If current text-box is contact name apply suggestion 
@@ -278,5 +278,5 @@ UIProfileUserSearch.prototype.requestSuggestions = function (oAutoSuggestControl
 };
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
-if(!eXo.social.profile) eXo.social.profile = {};
-eXo.social.profile.UIProfileUserSearch = new UIProfileUserSearch();
+if(!eXo.social.webui) eXo.social.webui = {};
+eXo.social.webui.UIProfileUserSearch = new UIProfileUserSearch();

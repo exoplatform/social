@@ -195,7 +195,6 @@ UIAutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
  */
 UIAutoSuggestControl.prototype.hideSuggestions = function () {
     this.layer.style.visibility = "hidden";
-    this.textbox.focus();
 };
 
 /**
@@ -289,7 +288,7 @@ UIAutoSuggestControl.prototype.previousSuggestion = function () {
     }
 };
 
-/**
+/** 
  * Builds the suggestion layer contents, moves it into position,
  * and displays the layer.
  * @scope private

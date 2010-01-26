@@ -40,6 +40,7 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.social.webui.UIProfileUserSearch;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -50,8 +51,8 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
-import social.portal.webui.component.UISpaceUserSearch;
 import social.portal.webui.component.UserListAccess;
+
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -80,17 +81,26 @@ public class UIUserListPortlet extends UIPortletApplication {
   private final String iteratorMemberID = "UIIteratorMember";
   private final Integer ITEMS_PER_PAGE = 5;
   private IdentityManager identityManager_ = null;
+  private UIProfileUserSearch uiSearchMemberOfSpace = null;
+  private List<Identity> identityList;
+  
+  
+  public List<Identity> getIdentityList() { return identityList; }
+
+  public void setIdentityList(List<Identity> identityList) { this.identityList = identityList; }
   
   public UIUserListPortlet() throws Exception {
+    initMember();
+    initLeader();
     iterator_ = createUIComponent(UIPageIterator.class, null, null);
     addChild(iterator_);
     iteratorLeaders = createUIComponent(UIPageIterator.class, null, iteratorLeaderID);
     iteratorMembers = createUIComponent(UIPageIterator.class, null, iteratorMemberID);
     addChild(iteratorLeaders);
     addChild(iteratorMembers);
-    addChild(UISpaceUserSearch.class,null , null);
-    initMember();
-    initLeader();
+    uiSearchMemberOfSpace = createUIComponent(UIProfileUserSearch.class, null, "UIMemberUserSpaceSearch");
+    addChild(uiSearchMemberOfSpace);
+//    addChild(UISpaceUserSearch.class,null , null);
   }
   
   public void setMemberList(List<User> memberList) { this.memberList = memberList;}
@@ -123,6 +133,9 @@ public class UIUserListPortlet extends UIPortletApplication {
 
   public List<User> getMembers() throws Exception {
     initMember();
+    UIProfileUserSearch uiSearchMemberOfSpace1 = getChild(UIProfileUserSearch.class);
+    uiSearchMemberOfSpace1.setAllUserContactName(getAllMemberNames()); // set identitites for suggestion
+    
     int currentPage = iteratorMembers.getCurrentPage();
     LazyPageList<User> pageList = new LazyPageList<User>(new UserListAccess(memberList), ITEMS_PER_PAGE);
     iteratorMembers.setPageList(pageList);
@@ -169,6 +182,17 @@ public class UIUserListPortlet extends UIPortletApplication {
       if(spaceService.isLeader(space, userName)){
         itr.remove();
       }
+    }
+    
+    List<Identity> matchIdentities = getIdentityList();
+    if (matchIdentities != null) {
+      List<String> searchResultUserNames = new ArrayList<String>();
+      String userName = null;
+      for (Identity id : matchIdentities) {
+        userName = id.getRemoteId();
+        if (userNames.contains(userName)) searchResultUserNames.add(userName);
+      }
+      userNames = searchResultUserNames;
     }
     
     for (String name : userNames) {
@@ -250,16 +274,40 @@ public class UIUserListPortlet extends UIPortletApplication {
    * Get the userList from UISpaceUserSearch
    * and then update UIUserListPortlet
    */
-  static public class SearchActionListener extends EventListener<UIUserListPortlet> {
+//  static public class SearchActionListener extends EventListener<UIUserListPortlet> {
+//    @Override
+//    public void execute(Event<UIUserListPortlet> event) throws Exception {
+//      UIUserListPortlet uiUserListPortlet = event.getSource();
+//      UISpaceUserSearch uiUserSearch = uiUserListPortlet.getChild(UISpaceUserSearch.class);
+//      uiUserListPortlet.setMemberList(uiUserSearch.getUserList());
+//      /////// Check .....
+//      uiUserListPortlet.setLeaderList(uiUserSearch.getUserList());
+//    }
+//    
+//  }
+  
+  public static class SearchActionListener extends EventListener<UIUserListPortlet> {
     @Override
     public void execute(Event<UIUserListPortlet> event) throws Exception {
       UIUserListPortlet uiUserListPortlet = event.getSource();
-      UISpaceUserSearch uiUserSearch = uiUserListPortlet.getChild(UISpaceUserSearch.class);
-      uiUserListPortlet.setMemberList(uiUserSearch.getUserList());
-      /////// Check .....
-      uiUserListPortlet.setLeaderList(uiUserSearch.getUserList());
+      UIProfileUserSearch uiProfileUserSearch = uiUserListPortlet.getChild(UIProfileUserSearch.class);
+      List<Identity> identityList = uiProfileUserSearch.getIdentityList();
+      uiUserListPortlet.setIdentityList(identityList);
     }
-    
+  }
+  
+  /**
+   * Get all member names for suggesting.
+   * 
+   * @return
+   * @throws   
+   */
+  private List<String> getAllMemberNames() throws Exception {
+    List<String> allMemberNames = new ArrayList<String>();
+    for (User user : memberList) {
+      allMemberNames.add(user.getFirstName() + " " + user.getLastName());
+    }
+    return allMemberNames;
   }
   
   private IdentityManager getIdentityManager() {

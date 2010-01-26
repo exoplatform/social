@@ -22,6 +22,7 @@
 	import social.portal.webui.component.UISpaceUserSearch
 	import org.exoplatform.services.organization.User;
 	import org.exoplatform.social.space.Space;
+	import org.exoplatform.social.webui.UIProfileUserSearch;
 	
 	UIPageIterator iteratorLeaders = uicomponent.getIteratorLeaders()
 	UIPageIterator iteratorMembers = uicomponent.getIteratorMembers() 
@@ -142,6 +143,7 @@
 						</div>
 					</div>
 				</div>
+			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
 			<% if(memberList.size() > 0)  {%>
 				<% for(user in memberList) {
 					def memberImgSrc = "/space/skin/portal/webui/component/UIUserListPortlet/DefaultSkin/background/BLAvatar.gif"

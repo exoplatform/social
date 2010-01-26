@@ -456,6 +456,10 @@
 	color: #FFFFFF;
 }
 
+.UITabPane .DirectorySpaces ul.LetterList li a:active {
+  outline: none;
+}
+
 .UITabPane .AvartarPeopleBG{
  background: url('background/AvartarPeopleBG.gif') no-repeat left top;
  width: 52px;
