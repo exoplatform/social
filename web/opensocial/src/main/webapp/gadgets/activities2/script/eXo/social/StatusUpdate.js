@@ -207,7 +207,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
     	opts[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
     	opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40; //why 40?
     	opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
-    		[opensocial.Person.Field.NAME,
+    		[opensocial.Person.Field.NAME, opensocial.Person.Field.ID,
              opensocial.Person.Field.THUMBNAIL_URL];
     	req.add(req.newFetchPeopleRequest(opensocial.DataRequest.Group.OWNER_FRIENDS, opts), 'ownerFriends');
 		req.send(handler);
@@ -223,6 +223,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
 			statusUpdate.viewer = response.get('viewer').getData();
 			statusUpdate.owner = response.get('owner').getData();
 			statusUpdate.ownerFriends = response.get('ownerFriends').getData();
+
 			var username = getUsernameFromUrl();
 			debug.info('username: ' + username);
 			if (username !== null) {
@@ -462,6 +463,28 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 		return 0;
   	}
     var userId, url, activityId, viewerId, ownerId, title, body, userName, avatarUrl, prettyTime;
+    
+    /**
+     * Check if the current viewer and the owner of activity is friend or not.
+     * Using this result for allowing one person comment or like the activity.
+     *  - If is friend then can comment or like;
+     *  - If is not friend can view activity only.
+     *  
+     * @param viewerId
+     * @return
+     */
+    var isFriend = function(viewerId) {
+    	if (viewerId === statusUpdate.owner.getId()) return true;
+    	
+  		var ownerId = statusUpdate.owner.getId();
+  		var ownerFriends = statusUpdate.ownerFriends;
+  		var friendship = false;
+		ownerFriends.each(function(person) {
+	          if (person.getId() === ownerId) friendship = true;
+	        });
+  		return friendship;
+  	}
+    
   	/**
   	 * gets html block of normal activity
   	 * @param	activity object
@@ -596,7 +619,11 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	var getCommentLikeBlock = function() {
   		var html = [];
 		if (statusUpdate.currentView === 'canvas') {
-			html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6;">' + Locale.getMsg('comment') + '</a><span>| </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6;">' + Locale.getMsg('like') + '</a>');
+			if (isFriend(viewerId)) {
+				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('comment') + '</a><span>| </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('like') + '</a>');
+			} else {
+				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('comment') + '</a><span> </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('like') + '</a>');
+			}
 		}
 		return html.join('');
   	}
