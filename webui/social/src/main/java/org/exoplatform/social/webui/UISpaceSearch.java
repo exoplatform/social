@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package social.portal.webui.component.space;
+package org.exoplatform.social.webui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +33,6 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-import social.portal.webui.component.UIManageInvitationSpaces;
-import social.portal.webui.component.UIManageMySpaces;
-import social.portal.webui.component.UIManagePendingSpaces;
-import social.portal.webui.component.UIManagePublicSpaces;
-
 /**
  * UIProfileUserSearch for search users in profile.
  * The search event should broadcast for the parent one to catch and
@@ -48,7 +43,7 @@ import social.portal.webui.component.UIManagePublicSpaces;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "app:/groovy/portal/webui/space/UISpaceSearch.gtmpl",
+  template = "system:/groovy/social/webui/component/UISpaceSearch.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceSearch.SearchActionListener.class) 
   }
@@ -72,10 +67,15 @@ public class UISpaceSearch extends UIForm {
   /** Selected character when search by alphabet */
   String selectedChar = null;
   String spaceNameSearch = null;
+  List<String> spaceNameForAutoSuggest = null;
   
   public String getSpaceNameSearch() { return spaceNameSearch;}
   
   public void setSpaceNameSearch(String spaceNameSearch) { this.spaceNameSearch = spaceNameSearch;}
+  
+  public List<String> getSpaceNameForAutoSuggest() { return spaceNameForAutoSuggest;}
+
+  public void setSpaceNameForAutoSuggest(List<String> spaceNameForAutoSuggest) { this.spaceNameForAutoSuggest = spaceNameForAutoSuggest;}
 
   /**
    * Constructor to initialize form fields
@@ -83,30 +83,6 @@ public class UISpaceSearch extends UIForm {
    */
   public UISpaceSearch() throws Exception { 
     addUIFormInput(new UIFormStringInput(SPACE_SEARCH, null, DEFAULT_SPACE_NAME_SEARCH));
-  }
-  
-  /**
-   * Get all space for searching suggestion.
-   * 
-   * @return all space
-   * @throws Exception 
-   */
-  public List<String> getAllSpaceName() throws Exception {
-    List<String> allSpaceName = new ArrayList<String>();
-//    SpaceService spaceService = getSpaceService();
-//    List<Space> allSpace = spaceService.getAllSpaces();
-    List<Space> allSpace = new ArrayList<Space>();
-    UIComponent parent = getParent();
-    if (parent instanceof UIManageMySpaces) allSpace = ((UIManageMySpaces)parent).getAllUserSpaces();
-    if (parent instanceof UIManageInvitationSpaces) allSpace = ((UIManageInvitationSpaces)parent).getInvitationSpaces();
-    if (parent instanceof UIManagePendingSpaces) allSpace = ((UIManagePendingSpaces)parent).getAllPendingSpaces();
-    if (parent instanceof UIManagePublicSpaces) allSpace = ((UIManagePublicSpaces)parent).getAllPublicSpaces();
-    
-    for (Space space : allSpace) {
-      allSpaceName.add(space.getName());
-    }
-    
-    return allSpaceName;
   }
   
   /**

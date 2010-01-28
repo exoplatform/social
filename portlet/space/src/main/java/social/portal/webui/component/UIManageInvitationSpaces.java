@@ -30,6 +30,7 @@ import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.social.webui.UISpaceSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -41,7 +42,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
-import social.portal.webui.component.space.UISpaceSearch;
 /**
  * Created by The eXo Platform SAS
  * Author : tung.dang
@@ -68,13 +68,15 @@ public class UIManageInvitationSpaces extends UIContainer {
   private SpaceService spaceService = null;
   private String userId = null;
   private List<Space> spaces_; // for search result
+  private UISpaceSearch uiSpaceSearch = null;
   
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
    * @throws Exception
    */
   public UIManageInvitationSpaces() throws Exception {
-    addChild(UISpaceSearch.class, null, "UIInvitationSpaceSearch");
+    uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
+    addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }
   /**
@@ -125,6 +127,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    */
   public List<Space> getInvitedSpaces() throws Exception {
     List<Space> listSpace = getSpaceList();
+    uiSpaceSearch.setSpaceNameForAutoSuggest(getInvitedSpaceNames());
     return getDisplayInvitedSpace(listSpace, iterator);
   }
   
@@ -159,6 +162,16 @@ public class UIManageInvitationSpaces extends UIContainer {
               + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
+  }
+  
+  private List<String> getInvitedSpaceNames() throws Exception {
+    List<Space> invitedSpaces = getInvitationSpaces();
+    List<String> invitedSpaceNames = new ArrayList<String>();
+    for (Space space: invitedSpaces) {
+      invitedSpaceNames.add(space.getName());
+    }
+    
+    return invitedSpaceNames;
   }
   
   private String getPortalName() {

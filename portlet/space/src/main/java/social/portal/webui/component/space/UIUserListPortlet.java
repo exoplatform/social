@@ -98,7 +98,7 @@ public class UIUserListPortlet extends UIPortletApplication {
     iteratorMembers = createUIComponent(UIPageIterator.class, null, iteratorMemberID);
     addChild(iteratorLeaders);
     addChild(iteratorMembers);
-    uiSearchMemberOfSpace = createUIComponent(UIProfileUserSearch.class, null, "UIMemberUserSpaceSearch");
+    uiSearchMemberOfSpace = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     addChild(uiSearchMemberOfSpace);
 //    addChild(UISpaceUserSearch.class,null , null);
   }

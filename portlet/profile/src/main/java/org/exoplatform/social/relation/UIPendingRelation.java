@@ -90,8 +90,7 @@ public class UIPendingRelation extends UIContainer {
   public UIPendingRelation() throws Exception {
     uiFormPageIterator_ = createUIComponent(UIFormPageIterator.class, null, iteratorID_);
     addChild(uiFormPageIterator_);
-    uiProfileUserSearchPending = createUIComponent(UIProfileUserSearch.class, null, "UIPendingRelationSearch");
-    uiProfileUserSearchPending.setAllUserContactName(getAllPendingUserNames());
+    uiProfileUserSearchPending = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     addChild(uiProfileUserSearchPending);
   }
   
@@ -106,6 +105,8 @@ public class UIPendingRelation extends UIContainer {
     List<Relationship> listRelationShip = getPendingRelationships();
     int currentPage = uiFormPageIterator_.getCurrentPage();
     LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
+    
+    uiProfileUserSearchPending.setAllUserContactName(getAllPendingUserNames()); // set identitite names for suggestion
     uiFormPageIterator_.setPageList(pageList) ;  
     int pageCount = uiFormPageIterator_.getAvailablePage();
     if(pageCount >= currentPage){

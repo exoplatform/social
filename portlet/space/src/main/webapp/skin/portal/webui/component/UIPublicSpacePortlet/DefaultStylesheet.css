@@ -69,45 +69,6 @@
 	color: #cbcbcb;
 }
 
-.UIPublicSpacePortlet .UISpaceSearch .CenterContentInput {
-	float: left;
-	width: 42%;
-	padding: 0px 5px;
-}
-
-.UIPublicSpacePortlet .UISpaceSearch .CenterContentInput select {
-	height: 18px;
-	background: #fff;
-	border: 1px solid #b8b8b8;
-	padding-left: 3px;
-	color: #cbcbcb;
-}
-
-.UIPublicSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput {
-	width: 270px;
-	font-size:11px;
-	float: left;
-	border: 1px solid #b7b7b7;
-	background: white;
-}
-
-.UIPublicSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput input {
-	width: 250px;
-	height: 14px;
-	font-size:11px;
-	float: left;
-	color: #C7C7C7;
-	border: 1px solid white;
-}
-
-.UIPublicSpacePortlet .UISpaceSearch .CenterContentInput .SpaceSearchInput .SearchIcon {
-	width: 14px;
-	float: left;
-	background: white url( "DefaultSkin/background/IconSearch.gif" ) no-repeat right center;
-	font-size: 11px;
-	cursor: pointer;
-}
-
 .UIPublicSpacePortlet .BoxSpaceList {
 	margin-bottom: 8px;
 }
@@ -258,29 +219,4 @@
 .UIPublicSpacePortlet .NotYet {
 	color:#FF0000;
 	text-align:center;
-}
-
-div.suggestions {
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    border: 1px solid #cdcdc1;
-    border-top: 1px solid #b7b7b7;
-    position: absolute;   
-    min-width: 271px;
-    *width: 274px;
-    background: white; 
-    color: #3A3A3A;
-    max-height: 150px;
-    overflow-y: auto;
-    overflow-y: hidden;
-}
-
-div.suggestions div {
-    cursor: default;
-    padding: 0px 3px;
-}
-
-div.suggestions div.current {
-    background-color: #4169e1;
-    color: white;
 }

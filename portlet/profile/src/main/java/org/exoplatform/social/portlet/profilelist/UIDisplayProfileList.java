@@ -77,7 +77,7 @@ public class UIDisplayProfileList extends UIContainer {
   
   public UIDisplayProfileList() throws Exception {
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
-    uiProfileUserSearchPeople = createUIComponent(UIProfileUserSearch.class, null, "UIPeopleSearch");
+    uiProfileUserSearchPeople = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearchPeople.setAllUserContactName(loadAllUserNames());
     addChild(uiProfileUserSearchPeople);
   }

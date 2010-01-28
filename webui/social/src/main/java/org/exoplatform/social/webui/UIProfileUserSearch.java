@@ -161,8 +161,6 @@ public class UIProfileUserSearch extends UIForm {
     this.allUserContactName = allUserContactName;
   }
 
-
-
   /**
    * SearchActionListener
    * Get the keyword and filter from the form.

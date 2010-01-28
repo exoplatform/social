@@ -1,0 +1,177 @@
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+
+a:ACTIVE {
+	outline: none;
+}
+
+.UIProfileUserSearch .SearchSpaces {
+  background: url( "/eXoResourcesSocial/skin/DefaultSkin/webui/component/UIProfileUserSearch/background/SearchSpaces.gif" ) no-repeat left top;
+  padding-left: 7px;
+}
+
+.UIProfileUserSearch .SearchSpacesR {
+  background: #f3f3f3 url( "/eXoResourcesSocial/skin/DefaultSkin/webui/component/UIProfileUserSearch/background/SearchSpacesR.gif" ) no-repeat right top;
+  padding: 10px 7px 8px 7px;
+}
+
+.UIProfileUserSearch .SearchSpaces .Lable {
+  float: left;
+  padding: 4px 4px 4px 16px;
+  width: 100px;
+  text-align: right;
+}
+
+.UIProfileUserSearch .SearchSpaces .Filter .Lable {
+  float: left;
+  padding: 4px 4px 4px 16px;
+  width: 100px;
+  text-align: right;
+  color: black;
+}
+
+.UIProfileUserSearch .SearchSpaces .Search {
+  width: 275px;
+  float: left;
+  border: 1px solid #b7b7b7;
+  font-size: 11px;
+  background: white;
+}
+
+.UIProfileUserSearch .SearchSpaces .Filter {
+  padding-top: 4px;
+}
+
+.UIProfileUserSearch .SearchSpaces .Search input {
+  width: 255px;
+  height: 14px;
+  font-size:11px;
+  float: left;
+  color: #C7C7C7;
+  border: 1px solid white;
+}
+
+.UIProfileUserSearch .SearchSpaces .SearchIcon {
+  width: 14px;
+  float: left;
+  background: white url( "/eXoResourcesSocial/skin/DefaultSkin/webui/component/UIProfileUserSearch/background/SearchIcon.gif" ) no-repeat right center;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.UIProfileUserSearch .SearchSpaces .FilterInput {
+  float: left;
+  border: 1px solid #b7b7b7;
+  margin-right: 7px;
+  background: white;
+  height: 18px;
+  width: 94px;
+}
+
+.UIProfileUserSearch .SearchSpaces .FilterInput input {
+  height: 12px;
+  width: 90px;
+  font-size:11px;
+  color: #C7C7C7;
+  border: 1px solid white;
+  margin: 0px;
+}
+
+.UIProfileUserSearch .SearchSpaces .FilterGender select{
+  height: 20px;
+  width: 72px;
+  font-size:11px;
+  float: left;
+}
+
+.UIProfileUserSearch .SearchSpaces .Filter .Input{
+  width: 82px;
+  float: left;
+  border: 1px solid #b7b7b7;
+  margin-right: 4px;
+  font-size: 11px;
+}
+
+.UIProfileUserSearch .SearchSpaces .AdvanceSearchLable{
+  float: left;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.UIProfileUserSearch .SearchSpaces .Select{
+  float: left;
+  width: 82px;
+  border: 1px solid #b7b7b7;
+  font-size: 11px;
+}
+
+.UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
+  line-height: 18px;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.DirectorySpaces {
+  background: #fbfbfb;
+  padding: 2px 0px 3px 6px;
+}
+
+.DirectorySpaces ul.LetterList {
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  margin: 0 0 10px;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+.DirectorySpaces ul.LetterList li {
+  float: left;
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  margin: 0 2px 3px 0;
+  min-width: 15px;
+  padding: 0;
+  width: 3.2%;
+}
+
+.DirectorySpaces ul.LetterList li a {
+  background: #EEEEEE none repeat scroll 0 0;
+  color: inherit;
+  display: block;
+  font-family: Georgia,Times,serif;
+  font-size: 12px;
+  padding: 3px 5px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.DirectorySpaces ul.LetterList li a:hover {
+  background: #FFF8DC none repeat scroll 0 0;
+  color: #F57A00;
+}
+
+.DirectorySpaces ul.LetterList li a.selected {
+  background: #AAAAAA none repeat scroll 0 0;
+  color: #FFFFFF;
+}
+
+.DirectorySpaces ul.LetterList li a:active {
+  outline: none;
+}

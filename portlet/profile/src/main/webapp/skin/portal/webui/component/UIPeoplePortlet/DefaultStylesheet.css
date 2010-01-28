@@ -282,112 +282,6 @@ a:VISITED {
   padding:8px 24px 8px 28px;
 }
 
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces {
-  background: url( "background/SearchSpaces.gif" ) no-repeat left top;
-  padding-left: 7px;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpacesR {
-  background: #f3f3f3 url( "background/SearchSpacesR.gif" ) no-repeat right top;
-  padding: 10px 7px 8px 7px;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Lable {
-  float: left;
-  padding: 4px 4px 4px 16px;
-  width: 100px;
-  text-align: right;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Lable {
-  float: left;
-  padding: 4px 4px 4px 16px;
-  width: 100px;
-  text-align: right;
-  color: black;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search {
-  width: 275px;
-  float: left;
-  border: 1px solid #b7b7b7;
-  font-size: 11px;
-  background: white;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter {
-  padding-top: 4px;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Search input {
-  width: 255px;
-  height: 14px;
-  font-size:11px;
-  float: left;
-  color: #C7C7C7;
-  border: 1px solid white;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .SearchIcon {
-  width: 14px;
-  float: left;
-  background: white url( "background/SearchUIMyRelationsSearch.gif" ) no-repeat right center;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterInput {
-  float: left;
-  border: 1px solid #b7b7b7;
-  margin-right: 7px;
-  background: white;
-  height: 18px;
-  width: 94px;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterInput input {
-  height: 12px;
-  width: 90px;
-  font-size:11px;
-  color: #C7C7C7;
-  border: 1px solid white;
-  margin: 0px;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .FilterGender select{
-  height: 20px;
-  width: 72px;
-  font-size:11px;
-  float: left;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Filter .Input{
-  width: 82px;
-  float: left;
-  border: 1px solid #b7b7b7;
-  margin-right: 4px;
-  font-size: 11px;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .AdvanceSearchLable{
-  float: left;
-  padding: 4px;
-  cursor: pointer;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .Select{
-  float: left;
-  width: 82px;
-  border: 1px solid #b7b7b7;
-  font-size: 11px;
-}
-
-.UIPeoplePortlet .ContainerSpace .UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
-  line-height: 18px;
-  margin-left: 4px;
-  cursor: pointer;
-}
-
 .UIPeoplePortlet .ATitleBarL {
   background: url('background/ATitleBarL.gif') no-repeat left top;
   padding-left: 4px;
@@ -413,54 +307,6 @@ a:VISITED {
   font-weight: bold;
 }
 
-.UIPeoplePortlet .DirectorySpaces {
-  background: #fbfbfb;
-  padding: 2px 0px 3px 6px;
-  
-}
-  
-.UIPeoplePortlet .DirectorySpaces ul.LetterList {
-  list-style-image: none;
-  list-style-position: outside;
-  list-style-type: none;
-  margin: 0 0 10px;
-  overflow: hidden;
-  padding: 0;
-  width: 100%;
-}
-
-.UIPeoplePortlet .DirectorySpaces ul.LetterList li {
-  float: left;
-  list-style-image: none;
-  list-style-position: outside;
-  list-style-type: none;
-  margin: 0 4px 3px 0;
-  min-width: 15px;
-  padding: 0;
-  width: 3.2%;
-}
-
-.UIPeoplePortlet .DirectorySpaces ul.LetterList li a {
-  background: #EEEEEE none repeat scroll 0 0;
-  color: inherit;
-  display: block;
-  font-family: Georgia,Times,serif;
-  font-size: 12px;
-  padding: 3px 5px;
-  text-align: center;
-  text-decoration: none;
-}
-
-.UIPeoplePortlet .DirectorySpaces ul.LetterList li a:hover {
-  background: #FFF8DC none repeat scroll 0 0;
-  color: #F57A00;
-}
-
-.UIPeoplePortlet .DirectorySpaces ul.LetterList li a.selected {
-  background: #AAAAAA none repeat scroll 0 0;
-  color: #FFFFFF;
-}
-
 .UIPeoplePortlet .AvartarPeopleBG{
  background: url('background/AvartarPeopleBG.gif') no-repeat left top;
  width: 52px;
@@ -478,8 +324,6 @@ a:VISITED {
   text-align: center;
   font-weight: bold;
 }
-
-
 
 .UIPeoplePortlet .ContainerSpace .ContentSpace {
   background: white;
@@ -667,29 +511,4 @@ input.hint, textarea.hint {
   float: right;
   padding: 5px 6px;
   margin-left: 4px;
-}
-
-div.suggestions {
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    border: 1px solid #cdcdc1;
-    border-top: 1px solid #b7b7b7;
-    position: absolute;   
-    min-width: 276px;
-    *width: 278px;
-    background: white; 
-    color: #3A3A3A;
-    max-height: 150px;
-    overflow-y: auto;
-    overflow-y: hidden;
-}
-
-div.suggestions div {
-    cursor: default;
-    padding: 0px 3px;
-}
-
-div.suggestions div.current {
-    background-color: #4169e1;
-    color: white;
 }

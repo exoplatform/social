@@ -39,6 +39,7 @@ import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.social.webui.UISpaceSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -53,7 +54,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
-import social.portal.webui.component.space.UISpaceSearch;
 /**
  * UIManageMySpaces
  * Manage all user's spaces, user can edit, delete, leave space.
@@ -104,19 +104,22 @@ public class UIManageMySpaces extends UIContainer {
   private List<PageNavigation> navigations;
   private PageNavigation selectedNavigation;
   private List<Space> spaces_; // for search result
+  private UISpaceSearch uiSpaceSearch = null;
   
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
    * @throws Exception
    */
   public UIManageMySpaces() throws Exception {
-    addChild(UISpaceSearch.class, null, "UIMySpaceSearch");
+    uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
+    addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);
     uiPopup.setWindowSize(400, 0);
     addChild(uiPopup);
   }
+  
   /**
    * Get UIPageIterator
    * @return
@@ -204,6 +207,7 @@ public class UIManageMySpaces extends UIContainer {
    */
   public List<Space> getUserSpaces() throws Exception {
     List<Space> listSpace = getMySpace();
+    uiSpaceSearch.setSpaceNameForAutoSuggest(getAllMySpaceNames());
     return getDisplayMySpace(listSpace, iterator);
   }
   
@@ -276,6 +280,16 @@ public class UIManageMySpaces extends UIContainer {
     }
     return null;
   }
+  
+  private List<String> getAllMySpaceNames() throws Exception {
+    List<Space> allSpaces = getAllUserSpaces();
+    List<String> allSpacesNames = new ArrayList<String>();
+    for (Space space : allSpaces){
+      allSpacesNames.add(space.getName());
+    }
+    
+    return allSpacesNames;
+  } 
   
   private String getPortalName() {
     PortalContainer pcontainer =  PortalContainer.getInstance() ;

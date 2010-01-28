@@ -30,6 +30,7 @@ import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.webui.UISpaceSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -40,8 +41,6 @@ import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-
-import social.portal.webui.component.space.UISpaceSearch;
 
 /**
  * UIManagePublicSpaces: list all spaces where user can request to join. 
@@ -66,12 +65,15 @@ public class UIManagePublicSpaces extends UIContainer {
   private final String ITERATOR_ID = "UIIteratorPublicSpaces";
   private final Integer SPACES_PER_PAGE = 4;
   private List<Space> spaces_; // for search result
+  private UISpaceSearch uiSpaceSearch = null;
+  
   /**
    * Constructor to initialize iterator
    * @throws Exception
    */
   public UIManagePublicSpaces() throws Exception {
-	addChild(UISpaceSearch.class, null, "UIPublicSpaceSearch");
+    uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
+    addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }
   
@@ -150,6 +152,7 @@ public class UIManagePublicSpaces extends UIContainer {
    */
   public List<Space> getPublicSpaces() throws Exception {
 	  List<Space> spaceList = getSpaceList();
+	  uiSpaceSearch.setSpaceNameForAutoSuggest(getPublicSpaceNames());
 	  return getDisplayPublicSpaces(spaceList, iterator);
   }
   
@@ -160,6 +163,16 @@ public class UIManagePublicSpaces extends UIContainer {
               + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
+  }
+  
+  private List<String> getPublicSpaceNames() throws Exception {
+    List<Space> publicSpaces = getAllPublicSpaces();
+    List<String> publicSpaceNames = new ArrayList<String>();
+    for (Space space : publicSpaces) {
+      publicSpaceNames.add(space.getName());
+    }
+    
+    return publicSpaceNames;
   }
   
   private String getPortalName() {

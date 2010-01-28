@@ -30,6 +30,7 @@ import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.social.webui.UISpaceSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -40,8 +41,6 @@ import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-
-import social.portal.webui.component.space.UISpaceSearch;
 
 /**
  * UIManagePendingSpaces: list all pending spaces which user can revoke pending.
@@ -65,12 +64,15 @@ public class UIManagePendingSpaces extends UIContainer {
   private final String ITERATOR_ID = "UIIteratorPendingSpaces";
   private final Integer SPACES_PER_PAGE = 4;
   private List<Space> spaces_; // for search result
+  private UISpaceSearch uiSpaceSearch = null;
+  
   /**
    * Constructor to initialize iterator
    * @throws Exception
    */
   public UIManagePendingSpaces() throws Exception {
-    addChild(UISpaceSearch.class, null, "UIPendingSpaceSearch");
+    uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
+    addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }
   
@@ -141,6 +143,7 @@ public class UIManagePendingSpaces extends UIContainer {
   
   public List<Space> getPendingSpaces() throws Exception {
     List<Space> listSpace = getSpaceList();
+    uiSpaceSearch.setSpaceNameForAutoSuggest(getPendingSpaceNames());
     return getDisplayPendingSpaces(listSpace, iterator);
   }
   
@@ -151,6 +154,16 @@ public class UIManagePendingSpaces extends UIContainer {
               + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
+  }
+  
+  private List<String> getPendingSpaceNames() throws SpaceException {
+    List<Space> pendingSpaces = getAllPendingSpaces();
+    List<String> pendingSpaceNames = new ArrayList<String>();
+    for (Space space : pendingSpaces) {
+      pendingSpaceNames.add(space.getName());
+    }
+    
+    return pendingSpaceNames;
   }
   
   private String getPortalName() {

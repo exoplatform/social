@@ -91,14 +91,14 @@ public class UIMyRelations extends UIContainer {
   public UIMyRelations() throws Exception {
     uiFormPageIteratorContact = createUIComponent(UIFormPageIterator.class, null, iteratorIDContact);
     addChild(uiFormPageIteratorContact);
-    uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIMyRelationsSearch");
-    uiProfileUserSearchRelation.setAllUserContactName(getAllMyRelationUserNames());
+    uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     addChild(uiProfileUserSearchRelation);
   }
   
   public List<Relationship> getMyRelation() throws Exception {
     List<Relationship> listContacts = getMyContacts();
     List<Relationship> contactLists = getDisplayRelationList(listContacts, uiFormPageIteratorContact);
+    uiProfileUserSearchRelation.setAllUserContactName(getAllMyRelationUserNames()); // set identitite names for suggestion
     return contactLists;
   }
 

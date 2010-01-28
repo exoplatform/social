@@ -91,14 +91,14 @@ public class UIInvitationRelation extends UIContainer {
   public UIInvitationRelation() throws Exception {
     uiFormPageIteratorInvitation = createUIComponent(UIFormPageIterator.class, null, iteratorIDInvitation);
     addChild(uiFormPageIteratorInvitation);
-    uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIInvitationRelationSearch");
-    uiProfileUserSearchRelation.setAllUserContactName(getAllInvitedUserNames()); // set identitites for suggestion
+    uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     addChild(uiProfileUserSearchRelation);
   }
   
   public List<Relationship> getInvitation() throws Exception {
     List<Relationship> invitationList = getInvitedRelations();
     List<Relationship> contactLists = getDisplayRelationList(invitationList, uiFormPageIteratorInvitation);
+    uiProfileUserSearchRelation.setAllUserContactName(getAllInvitedUserNames()); // set identitite names for suggestion
     return contactLists;
   }
 

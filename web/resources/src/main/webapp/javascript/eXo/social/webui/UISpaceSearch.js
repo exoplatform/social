@@ -51,8 +51,7 @@ UISpaceSearch.prototype.onLoad = function(uicomponentId, spaceNames) {
 UISpaceSearch.prototype.initTextBox = function() {
 	var searchEl = this.inputTextBoxObj;
 	var defaultValue = document.getElementById('defaultSpaceName').value;
-	var uiSpaceSearchObj = eXo.social.space.UISpaceSearch;
-//	var suggestControlObj = eXo.social.space.AutoSuggestControl;
+	var uiSpaceSearchObj = eXo.social.webui.UISpaceSearch;
 	var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
 	// Turn off auto-complete attribute of text-box control
 	searchEl.setAttribute('autocomplete','off');
@@ -158,5 +157,5 @@ UISpaceSearch.prototype.requestSuggestions = function (oAutoSuggestControl /*:Au
 
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
-if(!eXo.social.space) eXo.social.space = {};
-eXo.social.space.UISpaceSearch = new UISpaceSearch();
+if(!eXo.social.webui) eXo.social.webui = {};
+eXo.social.webui.UISpaceSearch = new UISpaceSearch();

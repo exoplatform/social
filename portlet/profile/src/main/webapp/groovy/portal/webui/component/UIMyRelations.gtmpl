@@ -21,7 +21,7 @@
 			<%=_ctx.appRes(uicomponent.getId() + ".label.MyRelationsList")%>
 		</div>
 		<div class="ContainerSpace">
-			<% uicomponent.renderChild("UIMyRelationsSearch"); %>
+			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
 			
 			 <div class="ATitleBarL">
 				<div class="ATitleBarR">

@@ -25,6 +25,7 @@
 	import org.exoplatform.webui.core.UIPageIterator
 	import org.exoplatform.social.space.SpaceUtils
 	import social.portal.webui.component.UIManageMySpaces
+	import org.exoplatform.social.webui.UISpaceSearch;
 	
 	def uicomponentId = uicomponent.id
   def labelSpaceSetting = _ctx.appRes("${uicomponentId}.label.SpaceListing")
@@ -36,7 +37,7 @@
   def style="display:none;"
 %>
 <div class="UIManageInvitationSpaces" id="$uicomponent.id">
-<% uicomponent.renderChild("UIPendingSpaceSearch"); %>
+  <% uicomponent.renderChild(UISpaceSearch.class); %>
 	<div class="BoxSpaceList">
 		<div class="CenterTitleBox">
 			<div class="LeftTitleBox">

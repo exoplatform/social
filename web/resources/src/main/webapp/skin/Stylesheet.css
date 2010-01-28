@@ -14,11 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
+/*
 @import url(DefaultSkin/portal/SpaceApplication.css) ;
 @import url(DefaultSkin/webui/component/UIVerticalTabs/Stylesheet.css);
 @import url(DefaultSkin/webui/component/UIToolbarContainer/Stylesheet.css);
+*/
 
-.ClearFix:after {
+@import url(DefaultSkin/webui/component/UIProfileUserSearch/Stylesheet.css);
+@import url(DefaultSkin/webui/component/UISpaceSearch/Stylesheet.css);
+@import url(DefaultSkin/webui/component/UIAutoSuggestControl/Stylesheet.css);
+
+/*.ClearFix:after {
   content: ".";
   display: block;
   height: 0;
@@ -47,4 +53,4 @@
 	-moz-border-radius-topright: 3px;
 	-moz-border-radius-bottomright: 3px;
 	background: white;
-}
+} */

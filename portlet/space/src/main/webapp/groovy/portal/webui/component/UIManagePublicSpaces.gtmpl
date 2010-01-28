@@ -25,6 +25,8 @@
   import org.exoplatform.webui.core.UIPageIterator
   import org.exoplatform.social.space.Space
   import org.exoplatform.social.space.SpaceUtils
+  import org.exoplatform.social.webui.UISpaceSearch;
+  
   def uicomponentId = uicomponent.id
   def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
   def labelActionRequestToJoin = _ctx.appRes("${uicomponentId}.label.action_request_to_join")
@@ -39,7 +41,7 @@
   def publicSpaceIdx = 0
 %>
 <div class="UIManageSpaces" id="$uicomponent.id">
-  <% uicomponent.renderChild("UIPublicSpaceSearch"); %>
+  <% uicomponent.renderChild(UISpaceSearch.class); %>
   <div class="BoxSpaceList">
   	<div class="CenterTitleBox">
   		<div class="LeftTitleBox">

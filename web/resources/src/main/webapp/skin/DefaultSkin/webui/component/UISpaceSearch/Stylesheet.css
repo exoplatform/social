@@ -1,0 +1,59 @@
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+
+a:ACTIVE {
+	outline: none;
+}
+
+.UISpaceSearch .CenterContentInput {
+  float: left;
+  width: 42%;
+  padding: 0px 5px;
+}
+
+.UISpaceSearch .CenterContentInput select {
+  height: 18px;
+  background: #fff;
+  border: 1px solid #b8b8b8;
+  padding-left: 3px;
+  color: #cbcbcb;
+}
+
+.UISpaceSearch .CenterContentInput .SpaceSearchInput {
+  width: 275px;
+  font-size:11px;
+  float: left;
+  border: 1px solid #b7b7b7;
+  background: white;
+}
+
+.UISpaceSearch .CenterContentInput .SpaceSearchInput input {
+  width: 255px;
+  height: 14px;
+  font-size:11px;
+  float: left;
+  color: #C7C7C7;
+  border: 1px solid white;
+}
+
+.UISpaceSearch .CenterContentInput .SpaceSearchInput .SearchIcon {
+  width: 14px;
+  float: left;
+  background: white url( "/eXoResourcesSocial/skin/DefaultSkin/webui/component/UISpaceSearch//background/IconSearch.gif" ) no-repeat right center;
+  font-size: 11px;
+  cursor: pointer;
+}

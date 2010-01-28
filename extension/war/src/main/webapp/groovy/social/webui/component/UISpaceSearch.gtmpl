@@ -23,12 +23,12 @@ import org.exoplatform.web.application.JavascriptManager;
 
 def uicomponentId = uicomponent.id;
 
-def allSpaceName = uicomponent.getAllSpaceName().toString();
+def allSpaceName = uicomponent.getSpaceNameForAutoSuggest().toString();
 def rcontext = _ctx.getRequestContext() ;
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
 jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/eXoResourcesSocial/javascript');
-jsmanager.importJavascript('eXo.social.space.UISpaceSearch','/space/javascript');
-jsmanager.addCustomizedOnLoadScript('eXo.social.space.UISpaceSearch.onLoad("' + uicomponentId + '","' + allSpaceName + '");');
+jsmanager.importJavascript('eXo.social.webui.UISpaceSearch','/eXoResourcesSocial/javascript');
+jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceSearch.onLoad("' + uicomponentId + '","' + allSpaceName + '");');
     
 def defaultSpaceName = _ctx.appRes("${uicomponentId}.label.SpaceName");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
