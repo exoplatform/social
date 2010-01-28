@@ -71,6 +71,7 @@
 	      def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
 	      def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
 	      def role = uicomponent.getRole(space.id)
+	      def hasMembership = uicomponent.hasMembership(space.id)
 	      def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
 	      def editSpaceLink = spaceUrl + "/SpaceSettingPortlet";
 	      def visibility = space.visibility
@@ -111,7 +112,11 @@
 				<div class="ContentBox">
 					<div class="TitleContent">
 						<a href="#" onclick="<%= deleteSpaceAction %>" title="<%= labelActionDeleteSpace %>" class="Icon IconDel"><span></span></a>
-						<a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeave"><span></span></a>
+						<% if (hasMembership) { %>
+						<a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeave" style="display:block;"><span></span></a>
+						<% } else { %>
+						<a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeave" style="display:none;"><span></span></a>
+						<% } %>
 						<a href="#" onclick="<%= editSpaceNavigationAction %>"  title="<%= labelActionEditSpaceNavigation %>" class="Icon IconEditSpaceNavigation"><span></span></a>
 						<a href="$editSpaceLink" title="<%= labelActionEditSpace %>" class="Icon IconEditSpace"><span></span></a>
 						<div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a></div>

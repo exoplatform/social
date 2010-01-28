@@ -228,6 +228,24 @@ public class UIManageMySpaces extends UIContainer {
     return MEMBER;
   }
   
+  /**
+   * Check in case root has membership with current space.
+   * 
+   * @param spaceId
+   * @return
+   * @throws SpaceException
+   */
+  public boolean hasMembership(String spaceId) throws SpaceException {
+    SpaceService spaceService = getSpaceService();
+    String userId = getUserId();
+    if(spaceService.isMember(spaceId, userId)) {
+      return true;
+    }
+    
+    return false;
+    
+  }
+  
   public void setSpaces_(List<Space> spaces_) {
     this.spaces_ = spaces_;
   }
