@@ -351,12 +351,15 @@ public class UISpaceMember extends UIForm {
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceMember.getSpaceService();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      String currentUser = requestContext.getRemoteUser();
+      
       try {
         spaceService.removeMember(space, userName);      
       } catch(SpaceException se) {
           uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_MEMBER, null, ApplicationMessage.WARNING));
       }
-      if(!uiSpaceMember.isSuperUser()) {
+      
+      if(userName.equals(currentUser)) {
         UIPortal uiPortal = Util.getUIPortal();
         UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
         PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, Util.getPortalRequestContext().getPortalOwner());
