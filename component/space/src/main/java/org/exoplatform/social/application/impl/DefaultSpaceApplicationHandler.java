@@ -232,7 +232,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       configService.update(nav);
       
       // remove page
-      Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + appId);
+      Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + space.getShortName() + appId);
       configService.remove(page);
       
     } catch (Exception e) {
