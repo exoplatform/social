@@ -40,6 +40,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.TransientApplicationState;
 import org.exoplatform.portal.pom.spi.portlet.Portlet;
 import org.exoplatform.portal.webui.application.PortletState;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -289,15 +290,15 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
         throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
       }
     }
-    ApplicationType appType = app.getType();
-    String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + app.getCategoryName() + "/" 
-                            + app.getApplicationName() + "/" + app.getApplicationName() + app.hashCode();
+    String contentId = app.getContentId();
+    if(contentId == null) contentId = app.getCategoryName() + "/" + app.getApplicationName();
+    String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + contentId + "/" + app.getApplicationName() + app.hashCode();
                                                                 
     org.exoplatform.portal.config.model.Application<Portlet> portetApp = createPortletApplication(appInstanceId);
     portetApp.setShowInfoBar(false);
     //create new Page
     Page page = null;
-    String pageName;
+    String pageName = null;
     if(isRoot) 
       pageName = space.getUrl();
     else pageName = app.getApplicationName();
@@ -307,6 +308,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
         newName += pageName;
       }
       page = configService.renewPage(SPACE_TEMPLATE_PAGE_ID, newName.trim(), PortalConfig.GROUP_TYPE, space.getGroupId());
+      pageName = page.getName();
     } catch (Exception e) {
       e.printStackTrace();
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
@@ -332,6 +334,9 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     page.setChildren(pageChilds);
     try {
       configService.create(page);
+      String portalName = Util.getPortalRequestContext().getPortalOwner();
+      Page tmpPage = configService.getPage(PortalConfig.PORTAL_TYPE + "::" + portalName + "::" + pageName);
+      configService.remove(tmpPage);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
     }

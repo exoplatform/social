@@ -39,7 +39,7 @@ def labelInstall = _ctx.appRes("${uicomponent.id}.label.install")
                                 for(application in appStore.get(category)) {
                                     def applicationLabel = application.getDisplayName()
                                     if(applicationLabel.length() > 30) applicationLabel = applicationLabel.substring(0, 27) + "..."
-                                    def srcBG = "/" + application.getApplicationGroup() + "/skin/DefaultSkin/portletIcons/" + application.getApplicationName() + ".png"
+                                    def srcBG = "/" + application.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + application.getApplicationName() + ".png"
                                     def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"
                                     def installAction = uicomponent.event("InstallApplication", application.getApplicationName())
                                 %>
