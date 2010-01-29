@@ -27,7 +27,7 @@
     <portlet-application>
       <portlet>
         <application-ref>space</application-ref>
-        <portlet-ref>HomePagePortlet</portlet-ref>
+        <portlet-ref>SpaceHomePagePortlet</portlet-ref>
         <preferences>
           <preference>
             <name>template</name>

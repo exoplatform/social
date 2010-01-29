@@ -27,7 +27,7 @@
 
 	<portlet-skin>
 		<application-name>web</application-name>
-		<portlet-name>HomePagePortlet</portlet-name>
+		<portlet-name>SpaceHomePagePortlet</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/templates/skin/webui/component/UIHomePagePortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>

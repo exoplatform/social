@@ -26,7 +26,7 @@
 	
 	<portlet>
     <description xml:lang="EN">Banner Portlet</description>
-    <portlet-name>BannerPortlet</portlet-name>
+    <portlet-name>SpaceBannerPortlet</portlet-name>
     <display-name xml:lang="EN">Banner Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
@@ -94,7 +94,7 @@
   
   <portlet>
     <description xml:lang="EN">HomePage Portlet</description>
-    <portlet-name>HomePagePortlet</portlet-name>
+    <portlet-name>SpaceHomePagePortlet</portlet-name>
     <display-name xml:lang="EN">Home Page Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     

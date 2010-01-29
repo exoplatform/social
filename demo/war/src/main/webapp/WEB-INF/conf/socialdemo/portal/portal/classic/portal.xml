@@ -32,7 +32,7 @@
  		<portlet-application>
       <portlet>
         <application-ref>space</application-ref>
-        <portlet-ref>BannerPortlet</portlet-ref>
+        <portlet-ref>SpaceBannerPortlet</portlet-ref>
         <preferences>
           <preference>
             <name>template</name>
