@@ -36,7 +36,7 @@
 	
 	<portlet-skin>
 		<application-name>space</application-name>
-		<portlet-name>BannerPortlet</portlet-name>
+		<portlet-name>SpaceBannerPortlet</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIBannerPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
