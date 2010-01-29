@@ -79,6 +79,7 @@ eXo.social.Comment.setComment = function(activityId) {
 		commentListBlockEl = Util.getElementById(commentListBlockId),
 		commentListInfoId = 'CommentListInfo' + activityId,
 		commentListInfoEl = Util.getElementById(commentListInfoId),
+		commentLinkId = 'CommentLink' + activityId,
 		updateNumComment = false;
 	
 	function display(cms) {
@@ -103,12 +104,13 @@ eXo.social.Comment.setComment = function(activityId) {
 				html.push('<div class="CommentBlock">');
 					html.push('<div class="CommentContent">');
 						html.push('<div class="CommentBorder">');
-							html.push('<a href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
+							html.push('<a id="'+ commentLinkId +'" href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
 						html.push('</div>');
 					html.push('</div>');
 				html.push('</div>');
 				commentListInfoEl.innerHTML = html.join('');
-				commentListInfoEl.onclick = function() {
+				var commentLinkEl = Util.getElementById(commentLinkId);
+				commentLinkEl.onclick = function() {
 					eXo.social.Comment.get(activityId, function(res) {
 						if (res.data !== null) {
 							updateNumComment = false;
@@ -125,12 +127,13 @@ eXo.social.Comment.setComment = function(activityId) {
 				html.push('<div class="CommentBlock">');
 					html.push('<div class="CommentContent">');
 						html.push('<div class="CommentBorder">');
-							html.push('<a href="#hide-all-comments">' + Locale.getMsg('hide_all_comments') + '</a>');
+							html.push('<a id="' + commentLinkId + '" href="#hide-all-comments">' + Locale.getMsg('hide_all_comments') + '</a>');
 						html.push('</div>');
 					html.push('</div>');
 				html.push('</div>');
 				commentListInfoEl.innerHTML = html.join('');
-				commentListInfoEl.onclick = function() {
+				var commentLinkEl = Util.getElementById(commentLinkId);
+				commentLinkEl.onclick = function() {
 					hideAll = true;
 					commentListBlockEl.style.display = 'none';
 					renderCommentList(comments, true);
@@ -257,12 +260,13 @@ eXo.social.Comment.setComment = function(activityId) {
 					html.push('<div class="CommentBlock">');
 						html.push('<div class="CommentContent">');
 							html.push('<div class="CommentBorder">');
-								html.push('<a href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
+								html.push('<a id="' + commentLinkId + '" href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
 							html.push('</div>');
 						html.push('</div>');
 					html.push('</div>');
 					commentListInfoEl.innerHTML = html.join('');
-					commentListInfoEl.onclick = function() {
+					var commentLinkEl = Util.getElementById(commentLinkId);
+					commentLinkEl.onclick = function() {
 						eXo.social.Comment.get(activityId, function(res) {
 							if (res.data !== null) {
 								hideAll = false;

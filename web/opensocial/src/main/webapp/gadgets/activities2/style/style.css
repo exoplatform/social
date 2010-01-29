@@ -395,6 +395,12 @@ img {border: none}
 	line-height: 18px;
 }
 
+.ActivitiesContainer .LinkShareContent {
+  color:#424242;
+  line-height: 18px;
+  margin-left: 80px;
+}
+
 .ActivitiesContainer .Content span {
 	margin: 0 5px;
 }
@@ -524,5 +530,5 @@ img {border: none}
 }
 
 .LinkShare .Content {
-  margin-left: 130px;
+  margin-left: 110px;
 }

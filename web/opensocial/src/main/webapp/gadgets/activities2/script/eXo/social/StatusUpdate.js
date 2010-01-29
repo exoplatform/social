@@ -82,6 +82,7 @@ eXo.social.StatusUpdate.main = function() {
 	var linkShare = eXo.social.linkShare = new eXo.social.LinkShare();
 	//set ref
 	statusUpdate.linkShare = linkShare;
+	eXo.social.LinkShare.ref.statusUpdate = statusUpdate;
 	eXo.social.Like.ref.statusUpdate = statusUpdate;
 	eXo.social.Comment.ref.statusUpdate = statusUpdate;
 	if (statusUpdate.currentView === 'canvas') {
@@ -561,7 +562,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  		html.push('<a href="#" class="AvatarPeopleBG">');
 	  			html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
 	   		html.push('</a>');
-	   		html.push('<div class="Content">');
+	   		html.push('<div class="LinkShareContent">');
 	   			html.push('<div class="UserName">');
 	   				html.push('<a href="#">' + userName + '</a>');
 	   			html.push('</div>');
@@ -572,11 +573,14 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   			if (jsonBody.comment) {
 	   				html.push(jsonBody.comment);
 	   			}
+	   			if (jsonBody.data.title.length === 0) {
+	   				jsonBody.data.title = jsonBody.data.link;
+	   			} 
 	   			html.push('</div>');
 	   			html.push('<div class="LinkShare">')
 	   				html.push('<div class="Thumbnail">');
 	   				if (jsonBody.data.noThumbnail === false) {
-	   					html.push('<img width="50px" src="' + jsonBody.data.images[jsonBody.data.selectedImageIndex] + '" title="' + jsonBody.data.title + '" />');
+	   					html.push('<img width="100px" src="' + jsonBody.data.images[jsonBody.data.selectedImageIndex] + '" title="' + jsonBody.data.title + '" />');
 	   				}
 	   				html.push('</div>');
 		   			html.push('<div class="Content">');
@@ -620,9 +624,9 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		var html = [];
 		if (statusUpdate.currentView === 'canvas') {
 			if (isFriend(viewerId)) {
-				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('comment') + '</a><span>| </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('like') + '</a>');
+				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('comment') + '</a><span>  |  </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('like') + '</a>');
 			} else {
-				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('comment') + '</a><span> </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('like') + '</a>');
+				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('comment') + '</a><span>  |  </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('like') + '</a>');
 			}
 		}
 		return html.join('');

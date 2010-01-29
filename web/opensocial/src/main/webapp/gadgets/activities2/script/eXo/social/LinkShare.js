@@ -100,6 +100,10 @@ eXo.social.LinkShare.config = {
     EXTENSION_MESSAGE_ID: "UIComposerExtensionMessage"
 };
 
+eXo.social.LinkShare.ref = {
+    statusUpdate:null
+}
+
 //static object for holding data
 eXo.social.LinkShare.data = {
 	link : null,
@@ -231,7 +235,7 @@ eXo.social.LinkShare.prototype.addAttachAction = function() {
       lsActionTagName = 'div',
       lsActionId = config.LINKSHARE_ACTION_ID,
       lsActionHtml = [];
-  lsActionHtml.push('<div class="AddLink"><a class="LinkAttach AttachIcon">&nbsp;</a> ' + Locale.getMsg('attach_link') + '(<span class="Close"><a href="#linkShare.displayAttachOption">' + Locale.getMsg('close') + '</a></span>)</div>');
+  lsActionHtml.push('<div class="AddLink"><a class="LinkAttach AttachIcon">&nbsp;</a> ' + Locale.getMsg('attach_link') + ' (<span class="Close"><a href="#linkShare.displayAttachOption">' + Locale.getMsg('close') + '</a></span>)</div>');
   lsActionHtml.push('<div class="AddLinkContent">');
     lsActionHtml.push('<input id="InputLink" class="InputLink" type="textbox" />');
     lsActionHtml.push('<a id="AddLinkButton" title="' + Locale.getMsg('attach_link') + '" href="#attach_link" class="IconAdd"> </a>');
@@ -325,7 +329,7 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
       lsDisplayTagName = "div",
       lsDisplayId = config.LINKSHARE_DISPLAY_ID,
       lsDisplayHtml = [];
-	  lsDisplayHtml.push('<div class="AddLink"><a class="LinkAttach AttachIcon">&nbsp;</a> ' + Locale.getMsg('content_to_display') + '(<span class="Close"><a href="#linkShare.displayAttachOption">' + Locale.getMsg('close') + '</a></span>)</div>');
+	  lsDisplayHtml.push('<div class="AddLink"><a class="LinkAttach AttachIcon">&nbsp;</a> ' + Locale.getMsg('content_to_display') + ' (<span class="Close"><a href="#linkShare.displayAttachOption">' + Locale.getMsg('close') + '</a></span>)</div>');
 		lsDisplayHtml.push('<div class="ThumbnailLeft">');
 	  		lsDisplayHtml.push('<div id="' + config.THUMBNAIL_DISPLAY_ID +'">');
 	  			lsDisplayHtml.push(this.getThumbnailDisplay());
@@ -549,7 +553,7 @@ eXo.social.LinkShare.prototype.nextImage = function() {
 }
 
 /**
- * updates thumbnailDislay fragment 
+ * updates thumbnailDisplay fragment 
  */
 eXo.social.LinkShare.prototype.updateThumbnailDisplay = function() {
 	var thumbnailDisplayEl = eXo.social.Util.getElementById(eXo.social.LinkShare.config.THUMBNAIL_DISPLAY_ID);
@@ -623,22 +627,19 @@ eXo.social.LinkShare.prototype.constructContent = function() {
 
 eXo.social.LinkShare.prototype.save = function(status, callback) {
 	var LinkShare = eXo.social.LinkShare,
+	    Locale = eXo.social.Locale,
 	//create activity params
-		params = {};
+		params = {},
+		viewerName = eXo.social.LinkShare.ref.statusUpdate.viewer.getDisplayName();
 	//params[opensocial.Activity.Field.TITLE] = eXo.social.LinkShare.data.title;
 	//params[opensocial.Activity.Field.URL] = eXo.social.LinkShare.data.link;
 	//add owner's comment to description
 	//save all info to body tag
-	/**
-	 * body = {
-	 * 	data : LinkShare.data
-	 * } 
-	 */
 	var body = {};
 	body.data = LinkShare.data;
 	body.comment = status;
 	//body.comment = status;
-	params[opensocial.Activity.Field.TITLE] = body.data.title;
+	params[opensocial.Activity.Field.TITLE] = Locale.getMsg('user_shared_a_link', [viewerName]);
 	params[opensocial.Activity.Field.BODY] = gadgets.json.stringify(body);
 	//debug.info(params[opensocial.Activity.Field.BODY]);
 	//thumbnail
