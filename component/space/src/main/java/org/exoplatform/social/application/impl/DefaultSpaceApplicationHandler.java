@@ -38,6 +38,7 @@ import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.TransientApplicationState;
+import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.pom.spi.portlet.Portlet;
 import org.exoplatform.portal.webui.application.PortletState;
 import org.exoplatform.portal.webui.util.Util;
@@ -293,10 +294,20 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     String contentId = app.getContentId();
     if(contentId == null) contentId = app.getCategoryName() + "/" + app.getApplicationName();
     String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + contentId + "/" + app.getApplicationName() + app.hashCode();
-                                                                
-    org.exoplatform.portal.config.model.Application<Portlet> portetApp = createPortletApplication(appInstanceId);
-    portetApp.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
-    portetApp.setShowInfoBar(false);
+    org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication = null;
+    org.exoplatform.portal.config.model.Application<Portlet> portletApplication = null;
+    if (app.getType() == ApplicationType.GADGET) {
+      TransientApplicationState<Gadget> state = new TransientApplicationState<Gadget>(app.getApplicationName());
+      gadgetApplication = 
+        org.exoplatform.portal.config.model.Application.createGadgetApplication();
+      gadgetApplication.setState(state);
+      gadgetApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+      gadgetApplication.setShowInfoBar(false);
+    } else {
+      portletApplication = createPortletApplication(appInstanceId);
+      portletApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+      portletApplication.setShowInfoBar(false);
+    }
     //create new Page
     Page page = null;
     String pageName = null;
@@ -329,7 +340,8 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     ArrayList<ModelObject> pageChilds = page.getChildren();
     Container container = findContainerById(pageChilds, APPLICATION);
     ArrayList<ModelObject> childs = container.getChildren();
-    childs.add(portetApp);
+    if(app.getType() == ApplicationType.GADGET) childs.add(gadgetApplication);
+    else childs.add(portletApplication);
     container.setChildren(childs);
     pageChilds = setContainerById(pageChilds, container);
     page.setChildren(pageChilds);
