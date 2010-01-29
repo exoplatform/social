@@ -26,6 +26,7 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.space.Space;
@@ -50,8 +51,10 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 public class UISpaceMenuPortlet extends UIPortletApplication {
   private SpaceService spaceService = null;
+  private UIPortal uiPortal = null;
   
   public UISpaceMenuPortlet() throws  Exception { 
+    uiPortal = Util.getUIPortal();
   }
   
   public List<PageNode> getApps() throws Exception {
@@ -97,11 +100,11 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     }
   }
   
-  public String getAppSelected() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String requestUrl = pcontext.getRequestURI();
-    String[] split = requestUrl.split("/");
+  public String getAppSelected() throws Exception {
+    PageNode selectedNode = uiPortal.getSelectedNode();
+    String[] split = selectedNode.getUri().split("/");
     return split[split.length - 1];
+    
   }
   
   protected String getImageSource() throws Exception {

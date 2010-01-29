@@ -73,7 +73,7 @@
 	      def role = uicomponent.getRole(space.id)
 	      def hasMembership = uicomponent.hasMembership(space.id)
 	      def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
-	      def editSpaceLink = spaceUrl + "/SpaceSettingPortlet";
+	      def editSpaceLink = spaceUrl + "/" + space.getUrl() + "SpaceSettingPortlet";
 	      def visibility = space.visibility
 	      if (visibility.equals("private")) visibility = "visible"
 	      def status
