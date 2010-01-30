@@ -69,8 +69,11 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     String userId = Util.getPortalRequestContext().getRemoteUser();       
     List<PageNode> list = homeNode.getChildren();
     PageNode pageNode = null;
+    StringBuffer sb = new StringBuffer("SpaceSettingPortlet");
+    String spaceSettingAppName = sb.insert(0, SpaceUtils.getSpaceUrl()).toString();
+    
     for(PageNode node:list){
-      if(node.getName().equals("SpaceSettingPortlet")){
+      if(node.getName().equals(spaceSettingAppName)){
         pageNode = node;
         break;
       }
@@ -104,7 +107,6 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     PageNode selectedNode = uiPortal.getSelectedNode();
     String[] split = selectedNode.getUri().split("/");
     return split[split.length - 1];
-    
   }
   
   protected String getImageSource() throws Exception {
