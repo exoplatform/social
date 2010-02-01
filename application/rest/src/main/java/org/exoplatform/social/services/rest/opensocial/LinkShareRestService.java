@@ -19,6 +19,7 @@ package org.exoplatform.social.services.rest.opensocial;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -50,7 +51,7 @@ public class LinkShareRestService implements ResourceContainer {
    * @param lang
    * @return
    */
-  private LinkShare getLinkShare(String link, String lang) {
+  private LinkShare getLinkShare(String link, String lang) throws Exception {
     LinkShare ls;
     try {
       if (lang != null) {
@@ -65,28 +66,17 @@ public class LinkShareRestService implements ResourceContainer {
   }
   
   @POST
-  @Path("show.json")
-  @Consumes({MediaType.APPLICATION_JSON})
-  public Response jsonGetLink(@Context UriInfo uriInfo,
-                              LinkShareRequest linkShareRequest) throws Exception {
+  @Path("show.{format}")
+  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public Response getLink(@Context UriInfo uriInfo,
+                          @PathParam("format") String format,
+                          LinkShareRequest linkShareRequest) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     if (!linkShareRequest.verify()) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     LinkShare linkShare = null;
     linkShare = getLinkShare(linkShareRequest.getLink(), linkShareRequest.getLang());
-    return Util.getResponse(linkShare, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
-  }
-  
-  @POST
-  @Path("show.xml")
-  @Consumes({MediaType.APPLICATION_XML})
-  public Response xmlGetLink(@Context UriInfo uriInfo,
-                             LinkShareRequest linkShareRequest) throws Exception {
-    if (!linkShareRequest.verify()) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
-    LinkShare linkShare = null;
-    linkShare = getLinkShare(linkShareRequest.getLink(), linkShareRequest.getLang());
-    return Util.getResponse(linkShare, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+    return Util.getResponse(linkShare, uriInfo, mediaType, Response.Status.OK);
   }
 }

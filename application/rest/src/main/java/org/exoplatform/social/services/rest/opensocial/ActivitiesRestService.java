@@ -30,6 +30,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -58,6 +59,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * constructor
    */
   public ActivitiesRestService() {}
+  
   
   /**
    * destroys activity by activityId
@@ -230,77 +232,45 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * shows list of like by activityId and returns json format
+   * shows list of like by activityId and returns json/xml format
    * @param uriInfo
    * @param activityId
    * @return
    * @throws Exception
    */
   @GET
-  @Path("{activityId}/likes/show.json")
-  public Response jsonShowLikes(@Context UriInfo uriInfo,
-                                @PathParam("activityId") String activityId) throws Exception {
+  @Path("{activityId}/likes/show.{format}")
+  public Response showLikes(@Context UriInfo uriInfo,
+                                @PathParam("activityId") String activityId,
+                                @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     LikeList likeList = null;
     likeList = showLikes(activityId);
-    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
-   * shows list of like by activityId and return xml format
-   * @param uriInfo
-   * @param activityId
-   * @return
-   * @throws Exception
-   */
-  @GET
-  @Path("{activityId}/likes/show.xml")
-  public Response xmlShowLikes(@Context UriInfo uriInfo,
-                               @PathParam("activityId") String activityId) throws Exception {
-    LikeList likeList = null;
-    likeList = showLikes(activityId);
-    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
-  }
-  
-  /**
-   * updates like by json format
+   * updates like by json/ xml format
    * @param uriInfo
    * @param activityId
    * @param like
    * @throws Exception 
    */
   @POST
-  @Path("{activityId}/likes/update.json")
-  @Consumes({MediaType.APPLICATION_JSON})
-  public Response jsonUpdateLike(@Context UriInfo uriInfo,
-                                  @PathParam("activityId") String activityId,
-                                  Like like) throws Exception {
+  @Path("{activityId}/likes/update.{format}")
+  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public Response updateLike(@Context UriInfo uriInfo,
+                             @PathParam("activityId") String activityId,
+                             @PathParam("format") String format,
+                             Like like) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     LikeList likeList = null;
     likeList = updateLike(activityId, like);
-    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
-   * updates like by xml format
-   * @param uriInfo
-   * @param activityId
-   * @param like
-   * @return
-   * @throws Exception
-   */
-  @POST
-  @Path("{activityId}/likes/update.xml")
-  @Consumes({MediaType.APPLICATION_XML})
-  public Response xmlUpdateLike(@Context UriInfo uriInfo,
-                                 @PathParam("activityId") String activityId,
-                                 Like like) throws Exception{
-    LikeList likeList = null;
-    likeList =  updateLike(activityId, like);
-    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
-  }
- 
-  
-  /**
-   * destroys like by identityId and gets json return format
+   * destroys like by identityId and gets json/xml return format
    * @param uriInfo
    * @param activityId
    * @param identityId
@@ -308,31 +278,15 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    */
   @POST
-  @Path("{activityId}/likes/destroy/{identityId}.json")
+  @Path("{activityId}/likes/destroy/{identityId}.{format}")
   public Response jsonDestroyLike(@Context UriInfo uriInfo,
                                    @PathParam("activityId") String activityId,
-                                   @PathParam("identityId") String identityId) throws Exception{
+                                   @PathParam("identityId") String identityId,
+                                   @PathParam("format") String format) throws Exception{
+    MediaType mediaType = Util.getMediaType(format);
     LikeList likeList =  null;
     likeList = destroyLike(activityId, identityId);
-    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
-  }
-  
-  /**
-   * destroys like by identityId and gets xml return format
-   * @param uriInfo
-   * @param activityId
-   * @param identityId
-   * @return
-   * @throws Exception
-   */
-  @POST
-  @Path("{activityId}/likes/destroy/{identityId}.xml")
-  public Response xmlDestroyLike(@Context UriInfo uriInfo,
-                                 @PathParam("activityId") String activityId,
-                                 @PathParam("identityId") String identityId) throws Exception {
-    LikeList likeList = null;
-    likeList = destroyLike(activityId, identityId);
-    return Util.getResponse(likeList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
   
   
@@ -428,39 +382,26 @@ public class ActivitiesRestService implements ResourceContainer {
   
 
   /**
-   * shows comment list by json format
+   * shows comment list by json/xml format
    * @param uriInfo
    * @param activityId
    * @return
    * @throws Exception
    */
   @GET
-  @Path("{activityId}/comments/show.json")
-  public Response jsonShowComments(@Context UriInfo uriInfo,
-                                   @PathParam("activityId") String activityId) throws Exception {
+  @Path("{activityId}/comments/show.{format}")
+  public Response showComments(@Context UriInfo uriInfo,
+                               @PathParam("activityId") String activityId,
+                               @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     CommentList commentList = null;
     commentList = showComments(activityId);
-    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
   
-  /**
-   * shows comment list by xml format
-   * @param uriInfo
-   * @param activityId
-   * @return
-   * @throws Exception
-   */
-  @GET
-  @Path("{activityId}/comments/show.xml")
-  public Response xmlShowComments(@Context UriInfo uriInfo,
-                                  @PathParam("activityId") String activityId) throws Exception {
-    CommentList commentList = null;
-    commentList = showComments(activityId);
-    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
-  }
   
   /**
-   * updates comment by json format
+   * updates comment by json/xml format
    * @param uriInfo
    * @param activityId
    * @param comment
@@ -468,37 +409,20 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    */
   @POST
-  @Path("{activityId}/comments/update.json")
-  @Consumes({MediaType.APPLICATION_JSON})
-  public Response jsonUpdateComment(@Context UriInfo uriInfo,
-                                    @PathParam("activityId") String activityId,
-                                    Activity comment) throws Exception {
+  @Path("{activityId}/comments/update.{format}")
+  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public Response updateComment(@Context UriInfo uriInfo,
+                                @PathParam("activityId") String activityId,
+                                @PathParam("format") String format,
+                                Activity comment) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     CommentList commentList = null;
     commentList = updateComment(activityId, comment);
-    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
-   * updates comment by xml format
-   * @param uriInfo
-   * @param activityId
-   * @param comment
-   * @return
-   * @throws Exception
-   */
-  @POST
-  @Path("{activityId}/comments/update.xml")
-  @Consumes({MediaType.APPLICATION_XML})
-  public Response xmlUpdateComment(@Context UriInfo uriInfo,
-                                   @PathParam("activityId") String activityId,
-                                   Activity comment) throws Exception {
-    CommentList commentList = null;
-    commentList = updateComment(activityId, comment);
-    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
-  }
-  
-  /**
-   * destroys comments and returns json format
+   * destroys comments and returns json/xml format
    * @param uriInfo
    * @param activityId
    * @param commentId
@@ -506,38 +430,23 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    */
   @POST
-  @Path("{activityId}/comments/destroy/{commentId}.json")
-  public Response jsonDestroyComment(@Context UriInfo uriInfo,
-                                     @PathParam("activityId") String activityId,
-                                     @PathParam("commentId") String commentId) throws Exception {
+  @Path("{activityId}/comments/destroy/{commentId}.{format}")
+  public Response destroyComment(@Context UriInfo uriInfo,
+                                 @PathParam("activityId") String activityId,
+                                 @PathParam("commentId") String commentId,
+                                 @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     CommentList commentList = null;
     commentList = destroyComment(activityId, commentId);
-    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
-  }
-  
-  /**
-   * destroys comments and returns xml format
-   * @param uriInfo
-   * @param activityId
-   * @param commentId
-   * @return
-   * @throws Exception
-   */
-  @POST
-  @Path("{activityId}/comments/destroy/{commentId}.xml")
-  public Response xmlDestroyComment(@Context UriInfo uriInfo,
-                                    @PathParam("activityId") String activityId,
-                                    @PathParam("commentId") String commentId) throws Exception {
-    CommentList commentList = null;
-    commentList = destroyComment(activityId, commentId);
-    return Util.getResponse(commentList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
    * LikeList model
    * @author hoatle
    */
-  public class LikeList {
+  @XmlRootElement
+  static public class LikeList {
     private String _activityId;
     private List<Like> _likes;
     
@@ -568,7 +477,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * @author hoatle
    *
    */
-  public class CommentList {
+  @XmlRootElement
+  static public class CommentList {
     private String _activityId;
     private List<Activity> _comments;
     public void setActivityId(String activityId) {
@@ -632,8 +542,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @return
    */
   private String getPortalName() {
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    return portalContainer.getPortalContainerInfo().getContainerName();
+    return PortalContainer.getCurrentPortalContainerName();
   }
   
   /**

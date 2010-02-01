@@ -17,6 +17,7 @@
 
 import java.util.List;
 
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.impl.SocialDataLocation;

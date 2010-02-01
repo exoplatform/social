@@ -341,11 +341,10 @@ img {border: none}
 }
 
 
-.ActivitiesContainer .TitleItem {
+.ActivitiesContainer .UserName {
 	font-weight: bold;
 	color:#424242;
 	line-height: 24px;
-	float: left;
 }
 
 .ActivitiesContainer .ActionContenButton {

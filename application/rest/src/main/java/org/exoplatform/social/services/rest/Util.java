@@ -16,10 +16,12 @@
  */
 package org.exoplatform.social.services.rest;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.ResponseBuilder;
 /**
  * Util.java: utility class
  * Created by The eXo Platform SEA
@@ -37,10 +39,28 @@ public class Util {
    * @return
    */
   static public Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
-    return Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
-                   .entity(entity)
-                   .type(mediaType)
-                   .status(status)
-                   .build();
+    ResponseBuilder responseBuilder =  Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
+                                 .entity(entity)
+                                 .type(mediaType)
+                                 .status(status);
+    if (mediaType == MediaType.APPLICATION_XML_TYPE) {
+      responseBuilder.tag("test");
+    }
+    return responseBuilder.build();
+  }
+  
+  /**
+   * gets mediaType from string format
+   * Currently supports json and xml only
+   * @param format
+   * @return mediaType of matched or throw BAD_REQUEST exception
+   */
+  static public MediaType getMediaType(String format) throws Exception {
+    if (format.equals("json")) {
+      return MediaType.APPLICATION_JSON_TYPE;
+    } else if(format.equals("xml")) {
+      return MediaType.APPLICATION_XML_TYPE;
+    }
+    throw new WebApplicationException(Response.Status.BAD_REQUEST);
   }
 }

@@ -43,6 +43,8 @@ eXo.social.LinkShare = function(link, lang) {
         	LinkShare.data.title = data.link; //TODO gets domain name only
         	LinkShare.data.link = data.link;
         	LinkShare.data.description = "";
+        	LinkShare.data.images = [];
+        	LinkShare.data.noThumbnail = true;
             linkShare.displayAttach(LinkShare.config.LINKSHARE_DISPLAY_ID);
         }
     	if (!res.data) {
@@ -315,7 +317,7 @@ eXo.social.LinkShare.prototype.addAttachAction = function() {
         <div class="ContentRight">
           <div class="Title">Titlele oghet</div>
           <div class="Content">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.</div>
-          <div class="Source">Source: <a href="#">http:// localhost:8080/portal</a></div>
+          <div class="Source">Source: <a href="#">http://localhost:8080/portal</a></div>
         </div>
         <div style="clear: left; height: 0px;"><span></span></div>
       </div>
@@ -338,7 +340,6 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
   			lsDisplayHtml.push('<div class="ThumbnailOption" id="ThumbnailOption">');
   				lsDisplayHtml.push('<input type="checkbox" />' + Locale.getMsg('no_thumbnail'));
   			lsDisplayHtml.push("</div>");
-  			
   			} //end if
 	  	lsDisplayHtml.push('</div>');
 		lsDisplayHtml.push('<div class="ContentRight">');

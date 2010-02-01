@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.services.rest.opensocial;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,11 +25,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.xerces.xni.Augmentations;
 import org.apache.xerces.xni.QName;
 import org.apache.xerces.xni.XMLAttributes;
 import org.apache.xerces.xni.XMLString;
-import org.apache.xerces.xni.XNIException;
 import org.apache.xerces.xni.parser.XMLDocumentFilter;
 import org.apache.xerces.xni.parser.XMLInputSource;
 import org.apache.xerces.xni.parser.XMLParserConfiguration;
@@ -82,6 +82,7 @@ import org.cyberneko.html.filters.ElementRemover;
  * @see http://activitystrea.ms/
  * @see http://www.facebook.com/share_partners.php
  */
+@XmlRootElement
 public class LinkShare extends DefaultFilter {
   
   private final String MEDIUM_TYPE_NEWS = "news";
@@ -279,7 +280,7 @@ public class LinkShare extends DefaultFilter {
    * Gets information of the provided link by using remover filter,
    * using call back filter methods to get desired information.
    */
-  private void get() {
+  private void get() throws Exception {
     if (link == null)
       return;
     if (!isURL(link))
@@ -307,14 +308,7 @@ public class LinkShare extends DefaultFilter {
     parser.setProperty("http://cyberneko.org/html/properties/filters", filter);
     parser.setDocumentHandler(this);
     XMLInputSource source = new XMLInputSource(null, link, null);
-    try {
-      parser.parse(source);
-    } catch (XNIException e) {
-      //TODO hoatle enhances exception
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    parser.parse(source);
   }
   
   /**
@@ -322,7 +316,7 @@ public class LinkShare extends DefaultFilter {
    * @param link
    * @return LinkShare instance
    */
-  public static LinkShare getInstance(String link) {
+  public static LinkShare getInstance(String link) throws Exception {
     return getInstance(link, lang);
   }
   
@@ -332,7 +326,7 @@ public class LinkShare extends DefaultFilter {
    * @param lang
    * @return LinkShare instance
    */
-  public static LinkShare getInstance(String link, String lang) {
+  public static LinkShare getInstance(String link, String lang) throws Exception {
     if (!link.startsWith("http://")) link = "http://" + link;
     LinkShare linkShare = new LinkShare();
     linkShare.link = link;

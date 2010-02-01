@@ -27,6 +27,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -84,27 +85,39 @@ public class SpacesRestService implements ResourceContainer {
     spaceList.setSpaces(pendingSpaces);
     return spaceList;
   }
-  
+  /**
+   * shows mySpaceList by json/xml format
+   * @param uriInfo
+   * @param userId
+   * @param format
+   * @return
+   * @throws Exception
+   */
   @GET
-  @Path("{userId}/mySpaces/show.json")
-  public Response jsonShowMySpaceList(@Context UriInfo uriInfo,
-                                      @PathParam("userId") String userId) throws Exception {
+  @Path("{userId}/mySpaces/show.{format}")
+  public Response showMySpaceList(@Context UriInfo uriInfo,
+                                  @PathParam("userId") String userId,
+                                  @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     SpaceList mySpaceList = showMySpaceList(userId);
-    return Util.getResponse(mySpaceList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+    return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
   
   @GET
-  @Path("{userId}/pendingSpaces/show.json")
-  public Response jsonShowPendingSpaceList(@Context UriInfo uriInfo,
-                                           @PathParam("userId") String userId) throws Exception {
+  @Path("{userId}/pendingSpaces/show.{format}")
+  public Response showPendingSpaceList(@Context UriInfo uriInfo,
+                                           @PathParam("userId") String userId,
+                                           @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     SpaceList pendingSpaceList = showPendingSpaceList(userId);
-    return Util.getResponse(pendingSpaceList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
+    return Util.getResponse(pendingSpaceList, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
    * List that contains space from space service.<br>
    * Need this class for converter from rest service.
    */
+  @XmlRootElement
   public class SpaceList {
     private List<Space> _spaces;
     public void setSpaces(List<Space> spaces) { _spaces = spaces; }

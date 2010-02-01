@@ -516,7 +516,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   			html.push('</a>');
   			html.push('<div class="Content">');
   			html.push('<div class="TitleContent" style="height: 24px;">');
-  				html.push('<div class="TitleItem">' + title + '</div>');
+  				html.push('<div class="UserName">' + userName + '</div>');
   			if (isOwnerActivity) {
   				html.push(getActionContentBlock());
   			}
@@ -564,7 +564,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   		html.push('</a>');
 	   		html.push('<div class="LinkShareContent">');
 	   			html.push('<div class="UserName">');
-	   				html.push('<a href="#">' + userName + '</a>');
+	   				html.push(userName);
 	   			html.push('</div>');
 	   		if (isOwnerActivity) {
 	   			html.push(getActionContentBlock());
@@ -583,7 +583,11 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   					html.push('<img width="100px" src="' + jsonBody.data.images[jsonBody.data.selectedImageIndex] + '" title="' + jsonBody.data.title + '" />');
 	   				}
 	   				html.push('</div>');
-		   			html.push('<div class="Content">');
+	   				if (jsonBody.data.noThumbnail === false) {
+		   			html.push('<div class="Content">'); //margin-left is set
+	   				} else {
+	   				html.push('<div>'); //no margin-left is set
+	   				}
 		   				html.push('<div class="Title"><a href="'+ jsonBody.data.link +'" target="_blank">' + jsonBody.data.title + '</a></div>');
 		   				html.push('<div class="Description">' + jsonBody.data.description + '</div>');
 		   				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonBody.data.link + '</div>');

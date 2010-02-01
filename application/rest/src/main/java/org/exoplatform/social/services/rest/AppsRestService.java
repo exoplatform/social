@@ -23,11 +23,13 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
@@ -59,7 +61,7 @@ public class AppsRestService implements ResourceContainer {
   private AppList showApps() {
     AppList appList = new AppList();
     ApplicationRegistryService applicationRegistryService = getApplicationRegistryService();
-    String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
+    //String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
     try {
       List<ApplicationCategory> applicationCategoryList = applicationRegistryService.getApplicationCategories();
       Iterator<ApplicationCategory> applicationCategoryItr = applicationCategoryList.iterator();
@@ -85,30 +87,19 @@ public class AppsRestService implements ResourceContainer {
   }
   
   /**
-   * shows apps by json format
+   * shows apps by json/xml format
    * @param uriInfo
+   * @param format
    * @return
    * @throws Exception
    */
   @GET
-  @Path("show.json")
-  public Response jsonShowApps(@Context UriInfo uriInfo) throws Exception {
+  @Path("show.{format}")
+  public Response showApps(@Context UriInfo uriInfo, @PathParam("format") String format) throws Exception {
     //TODO hoatle gets currentUser for filter
+    MediaType mediaType = Util.getMediaType(format);
     AppList appList = showApps();
-    return Util.getResponse(appList, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
-  }
-  
-  /**
-   * shows apps by xml format
-   * @param uriInfo
-   * @return
-   * @throws Exception
-   */
-  @GET
-  @Path("show.xml")
-  public Response xmlShowApps(@Context UriInfo uriInfo) throws Exception {
-    AppList appList = showApps();
-    return Util.getResponse(appList, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+    return Util.getResponse(appList, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
@@ -129,7 +120,8 @@ public class AppsRestService implements ResourceContainer {
    * List that contains applications from application registry service of portal<br>
    * Need this class for converter from rest service.
    */
-  public class AppList {
+  @XmlRootElement
+  static public class AppList {
     private List<App> _apps;
     public void setApps(List<App> apps) { _apps = apps; }
     public List<App> getApps() { return _apps; }
