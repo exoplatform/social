@@ -106,8 +106,8 @@ public class SpacesRestService implements ResourceContainer {
   @GET
   @Path("{userId}/pendingSpaces/show.{format}")
   public Response showPendingSpaceList(@Context UriInfo uriInfo,
-                                           @PathParam("userId") String userId,
-                                           @PathParam("format") String format) throws Exception {
+                                       @PathParam("userId") String userId,
+                                       @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     SpaceList pendingSpaceList = showPendingSpaceList(userId);
     return Util.getResponse(pendingSpaceList, uriInfo, mediaType, Response.Status.OK);
@@ -118,7 +118,7 @@ public class SpacesRestService implements ResourceContainer {
    * Need this class for converter from rest service.
    */
   @XmlRootElement
-  public class SpaceList {
+  static public class SpaceList {
     private List<Space> _spaces;
     public void setSpaces(List<Space> spaces) { _spaces = spaces; }
     public List<Space> getSpaces() { return _spaces; }

@@ -21,7 +21,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.Response.ResponseBuilder;
 /**
  * Util.java: utility class
  * Created by The eXo Platform SEA
@@ -39,14 +38,11 @@ public class Util {
    * @return
    */
   static public Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
-    ResponseBuilder responseBuilder =  Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
-                                 .entity(entity)
-                                 .type(mediaType)
-                                 .status(status);
-    if (mediaType == MediaType.APPLICATION_XML_TYPE) {
-      responseBuilder.tag("test");
-    }
-    return responseBuilder.build();
+    return Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
+                   .entity(entity)
+                   .type(mediaType)
+                   .status(status)
+                   .build();
   }
   
   /**

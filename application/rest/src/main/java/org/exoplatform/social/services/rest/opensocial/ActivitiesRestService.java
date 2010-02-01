@@ -96,33 +96,20 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * destroys activity and gets json return format
+   * destroys activity and gets json/xml return format
    * @param uriInfo
    * @param activityId
    * @return
    * @throws Exception
    */
   @POST
-  @Path("destroy/{activityId}.json")
-  public Response jsonDestroyActivity(@Context UriInfo uriInfo,
-                                      @PathParam("activityId") String activityId) throws Exception {    
+  @Path("destroy/{activityId}.{format}")
+  public Response destroyActivity(@Context UriInfo uriInfo,
+                                  @PathParam("activityId") String activityId,
+                                  @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
     Activity activity = destroyActivity(activityId);
-    return Util.getResponse(activity, uriInfo, MediaType.APPLICATION_JSON_TYPE, Response.Status.OK);
-  }
-  
-  /**
-   * destroys activity and gets xml return format
-   * @param uriInfo
-   * @param activityId
-   * @return
-   * @throws Exception
-   */
-  @POST
-  @Path("destroy/{activityId}.xml")
-  public Response xmlDestroyActivity(@Context UriInfo uriInfo,
-                                     @PathParam("activityId") String activityId) throws Exception {
-    Activity activity = destroyActivity(activityId);
-    return Util.getResponse(activity, uriInfo, MediaType.APPLICATION_XML_TYPE, Response.Status.OK);
+    return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
@@ -241,8 +228,8 @@ public class ActivitiesRestService implements ResourceContainer {
   @GET
   @Path("{activityId}/likes/show.{format}")
   public Response showLikes(@Context UriInfo uriInfo,
-                                @PathParam("activityId") String activityId,
-                                @PathParam("format") String format) throws Exception {
+                            @PathParam("activityId") String activityId,
+                            @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     LikeList likeList = null;
     likeList = showLikes(activityId);
@@ -250,7 +237,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * updates like by json/ xml format
+   * updates like by json/xml format
    * @param uriInfo
    * @param activityId
    * @param like
