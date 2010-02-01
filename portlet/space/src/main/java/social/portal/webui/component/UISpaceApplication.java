@@ -148,6 +148,14 @@ public class UISpaceApplication extends UIForm {
       SpaceService spaceService = uiSpaceApp.getApplicationComponent(SpaceService.class);
       spaceService.removeApplication(uiSpaceApp.space_.getId(), appId);
       uiSpaceApp.setValue(spaceService.getSpaceById(uiSpaceApp.space_.getId()));
+      UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
+      
+      // hanhvq. add removed application into uipopup container if it is displayed 
+      if (uiPopup.getChild(UIPopupWindow.class).isShow()) {
+        UISpaceApplicationList uiSpaceAppList = (UISpaceApplicationList) uiPopup.activate(UISpaceApplicationList.class, 400);
+        uiSpaceAppList.setSpace(uiSpaceApp.space_);
+        context.addUIComponentToUpdateByAjax(uiPopup);
+      }
       
       SpaceUtils.updateWorkingWorkSpace();
     }

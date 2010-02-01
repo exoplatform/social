@@ -3,15 +3,20 @@ def appStore = uicomponent.getAppStore()
 def selectedCategory = uicomponent.getSelectedCategory()
 def categories = appStore.keySet().toArray()
 def labelInstall = _ctx.appRes("${uicomponent.id}.label.install")
+def noneApp = _ctx.appRes("${uicomponent.id}.label.noneApp")
 %>
 <div class="UIOrganizerManagement" id="$uicomponent.id">
     <div class="AppRegistryContainer">
         <div class="AppRegistryControl">
             <div class="ControlArea">
                 <div class="CategoryContent">
-
-                    <div class="ListContent">   
-                        <div class="UIVerticalSlideTabs">
+                  <% if (appStore.keySet().size() == 0) { %>
+                     <div style="height: 70px; color: red; text-align: center; line-height: 70px">
+                        <span><%=noneApp %></span>
+                     </div>
+                  <% } else { %>
+                  <div class="ListContent">   
+                 <div class="UIVerticalSlideTabs">
                         <% 
                             def cTab, cName, description, displayName;
                             def isSelected = false;
@@ -64,7 +69,7 @@ def labelInstall = _ctx.appRes("${uicomponent.id}.label.install")
                         </div>  
                                             
                     </div>
-
+                  <% } %>
                 </div>
             </div>
         </div>
