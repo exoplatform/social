@@ -20,7 +20,6 @@
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.space.SpaceUtils
-  /*SpaceUtils.reloadNavigation()*/
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
 	def uicomponentId = uicomponent.id

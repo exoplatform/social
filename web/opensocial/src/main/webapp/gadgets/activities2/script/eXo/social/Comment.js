@@ -175,7 +175,7 @@ eXo.social.Comment.setComment = function(activityId) {
   					html.push('</a>');
   					html.push('<div class="Content">');
   						html.push('<div class="Titlecontent" style="height: 24px;">');
-  							html.push('<div class="TitleItem">' + statusUpdate.getName(comment.userId) + '</div>');
+  							html.push('<div class="UserName">' + statusUpdate.getName(comment.userId) + '</div>');
   							html.push('<div style="clear: both; height: 0px;"><span></span></div>');
   						html.push('</div>');
   						html.push('<div class="Content">' + comment.body + '</div>');

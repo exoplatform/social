@@ -459,7 +459,6 @@ public class SpaceUtils {
     if (spaces.size() == 0) {
       //remove all navs
       for (PageNavigation nav: spaceNavs) {
-        System.out.println(">>removeNavigation");
         removeNavigation(nav);
       }
     } else {

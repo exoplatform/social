@@ -79,7 +79,7 @@ import org.exoplatform.webui.event.Event.Phase;
   @ComponentConfig(  
     type = UIPageNodeForm2.class,
     lifecycle = UIFormLifecycle.class,
-    template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",    
+    template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",
     events = {
       @EventConfig(listeners = UIPageNodeForm2.SaveActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.BackActionListener.class, phase = Phase.DECODE),
@@ -180,6 +180,8 @@ public class UIManageMySpaces extends UIContainer {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
     List<Space> userSpaces = spaceService.getAccessibleSpaces(userId);
+    //reload navigation BUG #SOC-555
+    SpaceUtils.reloadNavigation();
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
   
