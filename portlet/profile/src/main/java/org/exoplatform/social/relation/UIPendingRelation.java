@@ -31,9 +31,11 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.webui.UIProfileUserSearch;
 import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -58,6 +60,7 @@ public class UIPendingRelation extends UIContainer {
   UIFormPageIterator uiFormPageIterator_;
   /** UIFormPageIterator ID. */
   private final String iteratorID_ = "UIFormPageIteratorPendingRelation";
+  private static final String INVITATION_REVOKED_INFO = "UIPendingRelation.label.RevokedInfo";
   /** Current identity. */
   Identity            currIdentity = null;
   /** RelationshipManager */
@@ -182,8 +185,15 @@ public class UIPendingRelation extends UIContainer {
   
       Identity requestedIdentity = im.getIdentityById(userId);
   
+      // TODO Check if relation is deleted by another user
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
+      if (relationStatus == Relationship.Type.ALIEN) {
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       RelationshipManager rm = portlet.getRelationshipManager();
-  
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       if (rel != null)
         rm.remove(rel);
@@ -279,4 +289,11 @@ public class UIPendingRelation extends UIContainer {
     return im;
   }
   
+  private Relationship.Type getContactStatus(Identity identity) throws Exception {
+    if (identity.getId().equals(getCurrentIdentity().getId()))
+      return Relationship.Type.SELF;
+    RelationshipManager rm = getRelationshipManager();
+    Relationship rl = rm.getRelationship(identity, getCurrentIdentity());
+    return rm.getRelationshipStatus(rl, getCurrentIdentity());
+  }
 }

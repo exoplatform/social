@@ -33,10 +33,12 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.webui.UIProfileUserSearch;
 import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -53,7 +55,6 @@ import org.exoplatform.webui.form.UIFormPageIterator;
     @ComponentConfig(
         template =  "app:/groovy/portal/webui/component/UIInvitationRelation.gtmpl",
         events = {
-            @EventConfig(listeners = UIInvitationRelation.RemoveActionListener.class),
             @EventConfig(listeners = UIInvitationRelation.AcceptActionListener.class),
             @EventConfig(listeners = UIInvitationRelation.DenyActionListener.class),
             @EventConfig(listeners = UIInvitationRelation.SearchActionListener.class, phase = Phase.DECODE)
@@ -66,6 +67,7 @@ public class UIInvitationRelation extends UIContainer {
   UIFormPageIterator uiFormPageIteratorInvitation;
   /** UIFormPageIterator ID. */
   private final String iteratorIDInvitation = "UIFormPageIteratorInvitation";
+  private static final String INVITATION_REVOKED_INFO = "UIInvitationRelation.label.RevokedInfo";
   private RelationshipManager relationshipManager;
   private IdentityManager identityManager = null;
   UIProfileUserSearch uiProfileUserSearchRelation = null;
@@ -134,27 +136,6 @@ public class UIInvitationRelation extends UIContainer {
     return identity;
   }
   
-  static public class RemoveActionListener extends EventListener<UIInvitationRelation> {
-    @Override
-    public void execute(Event<UIInvitationRelation> event) throws Exception {
-      UIInvitationRelation uiMyRelation = event.getSource();
-      String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = uiMyRelation.getCurrentUserName();
-
-      IdentityManager im = uiMyRelation.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
-
-      Identity requestedIdentity = im.getIdentityById(identityId);
-
-      RelationshipManager rm = uiMyRelation.getRelationshipManager();
-
-      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-      if (rel != null)
-        rm.remove(rel);
-    }
-  }
-  
   static public class AcceptActionListener extends EventListener<UIInvitationRelation> {
     @Override
     public void execute(Event<UIInvitationRelation> event) throws Exception {
@@ -168,9 +149,16 @@ public class UIInvitationRelation extends UIContainer {
       Identity requestedIdentity = im.getIdentityById(identityId);
 
       RelationshipManager rm = uiMyRelation.getRelationshipManager();
-
+      
+      // TODO Check if invitation is revoked or deleted by another user
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      Relationship.Type relationStatus = uiMyRelation.getContactStatus(requestedIdentity);
+      if (relationStatus == Relationship.Type.ALIEN) {
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-
       rel.setStatus(Relationship.Type.CONFIRM);
       rm.save(rel);  
     }
@@ -188,9 +176,16 @@ public class UIInvitationRelation extends UIContainer {
                                                        currUserId);
 
       Identity requestedIdentity = im.getIdentityById(identityId);
-
+      
+      // TODO Check if invitation is revoked or deleted by another user
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      Relationship.Type relationStatus = uiMyRelation.getContactStatus(requestedIdentity);
+      if (relationStatus == Relationship.Type.ALIEN) {
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       RelationshipManager rm = uiMyRelation.getRelationshipManager();
-
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       if (rel != null)
         rm.remove(rel);
@@ -299,5 +294,13 @@ public class UIInvitationRelation extends UIContainer {
       relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
     }
     return relationshipManager;
+  }
+  
+  private Relationship.Type getContactStatus(Identity identity) throws Exception {
+    if (identity.getId().equals(getCurrentIdentity().getId()))
+      return Relationship.Type.SELF;
+    RelationshipManager rm = getRelationshipManager();
+    Relationship rl = rm.getRelationship(identity, getCurrentIdentity());
+    return rm.getRelationshipStatus(rl, getCurrentIdentity());
   }
 }

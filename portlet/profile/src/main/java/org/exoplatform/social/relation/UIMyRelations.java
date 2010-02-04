@@ -33,10 +33,12 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.webui.UIProfileUserSearch;
 import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -54,8 +56,6 @@ import org.exoplatform.webui.form.UIFormPageIterator;
         template =  "app:/groovy/portal/webui/component/UIMyRelations.gtmpl",
         events = {
             @EventConfig(listeners = UIMyRelations.RemoveActionListener.class),
-            @EventConfig(listeners = UIMyRelations.AcceptActionListener.class),
-            @EventConfig(listeners = UIMyRelations.DenyActionListener.class),
             @EventConfig(listeners = UIMyRelations.SearchActionListener.class, phase = Phase.DECODE)
         }
     )
@@ -66,6 +66,8 @@ public class UIMyRelations extends UIContainer {
   UIFormPageIterator uiFormPageIteratorContact;
   /** UIFormPageIterator ID. */
   private final String iteratorIDContact = "UIFormPageIteratorContact";
+  private static final String RELATION_DELETED_INFO = "UIMyRelations.label.DeletedInfo";
+  
   private RelationshipManager relationshipManager;
   private IdentityManager identityManager = null;
   UIProfileUserSearch uiProfileUserSearchRelation = null;
@@ -144,49 +146,14 @@ public class UIMyRelations extends UIContainer {
       Identity requestedIdentity = im.getIdentityById(identityId);
 
       RelationshipManager rm = uiMyRelation.getRelationshipManager();
-
-      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-      if (rel != null)
-        rm.remove(rel);
-    }
-  }
-  
-  static public class AcceptActionListener extends EventListener<UIMyRelations> {
-    @Override
-    public void execute(Event<UIMyRelations> event) throws Exception {
-      UIMyRelations uiMyRelation = event.getSource();
-      String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = uiMyRelation.getCurrentUserName();
-      IdentityManager im = uiMyRelation.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
-
-      Identity requestedIdentity = im.getIdentityById(identityId);
-
-      RelationshipManager rm = uiMyRelation.getRelationshipManager();
-
-      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-
-      rel.setStatus(Relationship.Type.CONFIRM);
-      rm.save(rel);  
-    }
-  }
-  
-  static public class DenyActionListener extends EventListener<UIMyRelations> {
-    @Override
-    public void execute(Event<UIMyRelations> event) throws Exception {
-      UIMyRelations uiMyRelation = event.getSource();
-      String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = uiMyRelation.getCurrentUserName();
-
-      IdentityManager im = uiMyRelation.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
-
-      Identity requestedIdentity = im.getIdentityById(identityId);
-
-      RelationshipManager rm = uiMyRelation.getRelationshipManager();
-
+      
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      Relationship.Type relationStatus = uiMyRelation.getContactStatus(requestedIdentity);
+      if (relationStatus != Relationship.Type.CONFIRM) {
+        uiApplication.addMessage(new ApplicationMessage(RELATION_DELETED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       if (rel != null)
         rm.remove(rel);
@@ -295,5 +262,13 @@ public class UIMyRelations extends UIContainer {
       relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
     }
     return relationshipManager;
+  }
+  
+  private Relationship.Type getContactStatus(Identity identity) throws Exception {
+    if (identity.getId().equals(getCurrentIdentity().getId()))
+      return Relationship.Type.SELF;
+    RelationshipManager rm = getRelationshipManager();
+    Relationship rl = rm.getRelationship(identity, getCurrentIdentity());
+    return rm.getRelationshipStatus(rl, getCurrentIdentity());
   }
 }

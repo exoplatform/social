@@ -35,9 +35,11 @@ import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.relation.IdentityListAccess;
 import org.exoplatform.social.webui.UIProfileUserSearch;
 import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
@@ -55,6 +57,9 @@ import org.exoplatform.webui.event.Event.Phase;
 )
             
 public class UIDisplayProfileList extends UIContainer {
+  private static final String INVITATION_REVOKED_INFO = "UIDisplayProfileList.label.RevokedInfo";
+  private static final String INVITATION_ESTABLISHED_INFO = "UIDisplayProfileList.label.InvitationEstablishedInfo";
+  
   private IdentityManager     identityManager_ = null;
   UIProfileUserSearch uiProfileUserSearchPeople = null;
   private UIPageIterator iterator;
@@ -112,7 +117,15 @@ public class UIDisplayProfileList extends UIContainer {
       RelationshipManager rm = portlet.getRelationshipManager();
 
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-
+      
+      // TODO Check if invitation is established by another user
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
+      if (relationStatus != Relationship.Type.ALIEN) {
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       if (rel == null) {
         rel = rm.create(currIdentity, requestedIdentity);
         rel.setStatus(Relationship.Type.PENDING);
@@ -127,7 +140,8 @@ public class UIDisplayProfileList extends UIContainer {
   public static class AcceptContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList portlet = event.getSource();
-
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
       String currUserId = portlet.getCurrentUserName();
 
@@ -139,8 +153,13 @@ public class UIDisplayProfileList extends UIContainer {
 
       RelationshipManager rm = portlet.getRelationshipManager();
 
+      // TODO Check if invitation is revoked or deleted by another user
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-
+      Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
+      if (relationStatus == Relationship.Type.ALIEN) {
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
       rel.setStatus(Relationship.Type.CONFIRM);
       rm.save(rel);
     }
@@ -161,6 +180,14 @@ public class UIDisplayProfileList extends UIContainer {
 
       RelationshipManager rm = portlet.getRelationshipManager();
 
+      // TODO Check if invitation is revoked or deleted by another user
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
+      if (relationStatus == Relationship.Type.ALIEN) {
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       if (rel != null)
         rm.remove(rel);
