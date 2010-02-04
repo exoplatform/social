@@ -34,7 +34,7 @@
         <preferences>
           <preference>
           	<name>url</name>
-        		<value>http://localhost:8080/rest/jcr/repository/gadgets/gadgets/codeRunner.xml</value>
+        		<value>http://localhost:8080/rest/jcr/repository/portal-system/gadgets/codeSharer/data/resources/codeRunner.xml</value>
         		<read-only>false</read-only>
           </preference>
         </preferences>
