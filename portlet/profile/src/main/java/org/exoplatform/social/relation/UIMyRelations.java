@@ -125,7 +125,9 @@ public class UIMyRelations extends UIContainer {
   
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    return im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
+    Identity identity = im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
+    if (identity == null) identity = im.getIdentityByRemoteId("organization", getCurrentUserName());
+    return identity;
   }
   
   static public class RemoveActionListener extends EventListener<UIMyRelations> {
