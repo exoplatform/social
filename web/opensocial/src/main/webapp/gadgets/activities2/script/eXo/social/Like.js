@@ -178,7 +178,7 @@ eXo.social.Like.ref = {
 	if (likes !== null) {
 		for(var i = 0, length = likes.length; i < length; i++) {
 			if (likes[i].identityId === Like.ref.statusUpdate.viewer.getId()) continue;
-			var thumbnail = eXo.social.StatusUpdate.config.path.ROOT_PATH + '/style/images/AvatarPeople.gif';
+			var thumbnail = '/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif';
 			if (likes[i].thumbnail !== null)	thumbnail = likes[i].thumbnail;
 			html.push('<a href="#UserId"  class="AvatarPeopleBG">');
 				html.push('<img title="' + likes[i].fullName + '" alt="" height="47px" width="47px" src="' + thumbnail + '" />');

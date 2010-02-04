@@ -56,7 +56,7 @@
   							<tr>
   								<td width='45'>
   									<a href="#OwnerAvatar" class="MyStatusAvatarBG">
-											<img id="ImgOwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+											<img id="ImgOwnerAvatar" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
 										</a>
 								</td>
   								<td width='100%'>
@@ -155,7 +155,7 @@
   							<tr>
   								<td width='45'>
   									<a href="#OwnerAvatar" class="MyStatusAvatarBG">
-											<img id="ImgOwnerAvatar" src="http://localhost:8080/social/gadgets/activities2/style/images/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+											<img id="ImgOwnerAvatar" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
 										</a>
 								  </td>
   								<td width='100%'>

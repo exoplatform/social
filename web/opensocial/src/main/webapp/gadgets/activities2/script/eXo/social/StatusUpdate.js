@@ -260,7 +260,7 @@ eXo.social.StatusUpdate.prototype.refresh = function() {
 		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
 		return;
 	}
-	imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId());
+	imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId(), true);
 	var ownerActivityTitle = Util.getElementById('OwnerActivityTitle');
   	if (!ownerActivityTitle) {
   		debug.error('ownerActivityTitle is null!!!');
@@ -802,8 +802,9 @@ eXo.social.StatusUpdate.prototype.getName = function(userId) {
  * if not found, return default avatar url
  * @param	userId
  */
-eXo.social.StatusUpdate.prototype.getAvatar = function(userId) {
-	var avatarUrl = avatarUrl = eXo.social.StatusUpdate.config.path.ROOT_PATH + '/' + 'style/images/AvatarPeople.gif';
+eXo.social.StatusUpdate.prototype.getAvatar = function(userId, isMyAvartar) {
+	var avatarUrl = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+	if (isMyAvartar) avatarUrl = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif";
   	var person = null;
   	if (userId === this.owner.getId()) {
 		person = this.owner;
@@ -816,6 +817,7 @@ eXo.social.StatusUpdate.prototype.getAvatar = function(userId) {
   	}
   	return avatarUrl;
 }
+
 /**
  * checks if in a id list has viewerId
  * @param	id list
