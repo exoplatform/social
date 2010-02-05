@@ -26,9 +26,10 @@
 	<msg name="like">Like</msg>
 	<msg name="unlike">Unlike</msg>
 	<msg name="delete">Delete</msg>
-  <msg name="are_you_sure_to_delete_this_activity">Are you sure to delete this activity?</msg>
+	<msg name="are_you_sure_to_delete_this_activity">Are you sure to delete this activity?</msg>
+	<msg name="are_you_sure_to_delete_this_comment">Are you sure to delete this comment?</msg>
 	<msg name="link">Link</msg>
-  <msg name="attach_link">Attach link</msg>
+	<msg name="attach_link">Attach link</msg>
 	<msg name="more">More</msg>
 	<msg name="close">Close</msg>
 	<msg name="content_to_display">Content to display</msg>

@@ -206,7 +206,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
 		req.add(req.newFetchPersonRequest(opensocial.DataRequest.PersonId.OWNER), 'owner');
 		var opts = {};
     	opts[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
-    	opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40; //why 40?
+    	//opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40; //why 40?
     	opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
     		[opensocial.Person.Field.NAME, opensocial.Person.Field.ID,
              opensocial.Person.Field.THUMBNAIL_URL];
@@ -563,12 +563,15 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  			html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
 	   		html.push('</a>');
 	   		html.push('<div class="LinkShareContent">');
-	   			html.push('<div class="UserName">');
-	   				html.push(userName);
+	   			html.push('<div class="TitleContent" style="height: 24px;">');
+	   				html.push('<div class="UserName">');
+	   					html.push(userName);
+	   					html.push('</div>');
+	   				if (isOwnerActivity) {
+	   						html.push(getActionContentBlock());
+	   				}
+	   				html.push('<div style="clear: both; height: 0px;"><span></span></div>');
 	   			html.push('</div>');
-	   		if (isOwnerActivity) {
-	   			html.push(getActionContentBlock());
-	   		}
 	   			html.push('<div class="UserStatus">');
 	   			if (jsonBody.comment) {
 	   				html.push(jsonBody.comment);
@@ -630,7 +633,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 			if (isFriend(viewerId)) {
 				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('comment') + '</a><span>  |  </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('like') + '</a>');
 			} else {
-				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('comment') + '</a><span>  |  </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('like') + '</a>');
+				//html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('comment') + '</a><span></span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('like') + '</a>');
 			}
 		}
 		return html.join('');
@@ -753,7 +756,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  				statusUpdate.setActionContentButton(activityId);
 	  				statusUpdate.setDeleteActivity(activityId);
 	  			}
-	  			Comment.setComment(activityId);
+	  			Comment.setComment(activityId, userId);
 	  		}
 	  	}
 	 }
@@ -788,6 +791,8 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 eXo.social.StatusUpdate.prototype.getName = function(userId) {
   	if (userId === this.owner.getId()) {
   		return this.owner.getDisplayName();
+  	} else if (userId === this.viewer.getId()) {
+  		return this.viewer.getDisplayName();
   	}
     var person = this.ownerFriends.getById(userId);
   	if (person !== null) {

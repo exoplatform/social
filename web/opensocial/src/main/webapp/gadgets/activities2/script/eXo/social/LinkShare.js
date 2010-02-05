@@ -261,14 +261,17 @@ eXo.social.LinkShare.prototype.addAttachAction = function() {
 		linkShare.displayAttach(config.LINKSHARE_OPTION_ID);
 	}, false);
 	var inputElement = Util.getElementById('InputLink');
+	inputElement.style.color = '#777777';
 	Util.addEventListener(inputElement, 'focus', function() {
 		if (this.value === 'http://') {
 			this.value = '';
+			this.style.color = '#000000';
 		}
 	}, false);
 	Util.addEventListener(inputElement, 'blur', function() {
 		if (this.value === '') {
-			this.value = 'http://'
+			this.style.color = '#777777';
+			this.value = 'http://';
 		}
 	}, false);
 	Util.addEventListener(inputElement, 'keypress', function(e) {
@@ -495,8 +498,8 @@ eXo.social.LinkShare.prototype.getInfo = function() {
         config = eXo.social.LinkShare.config;
        lsActionEl = Util.getElementById(config.LINKSHARE_ACTION_ID);
 	if (!lsActionEl) {
-    debug.warn('lsActionEl is null!');
-    return;
+		debug.warn('lsActionEl is null!');
+		return;
     }
 	var inputEl = Util.getElementById('InputLink');
 	if (!inputEl) {
@@ -512,6 +515,8 @@ eXo.social.LinkShare.prototype.getInfo = function() {
 		Util.hideElement(config.WORKSPACE_ID);
 		LinkShare.createMsg(Locale.getMsg('getting_link_info_please_wait'));
 	}
+	//trim
+	inputEl.value = inputEl.value.replace(/^\s*/, '').replace(/\s*$/, '');
 	if (inputEl.value === 'http://') {
 		LinkShare.createMsg(Locale.getMsg('please_provide_link'));
 		return;

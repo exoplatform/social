@@ -70,7 +70,7 @@ eXo.social.Comment.del = function(activityId, commentId, callback) {
 	eXo.social.Util.makeRequest(url, callback, null, gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, null);
 }
 
-eXo.social.Comment.setComment = function(activityId) {
+eXo.social.Comment.setComment = function(activityId, activityUserId) {
 	var Util = eXo.social.Util,
 		Locale = eXo.social.Locale,
 		statusUpdate = eXo.social.Comment.ref.statusUpdate,
@@ -80,31 +80,97 @@ eXo.social.Comment.setComment = function(activityId) {
 		commentListInfoId = 'CommentListInfo' + activityId,
 		commentListInfoEl = Util.getElementById(commentListInfoId),
 		commentLinkId = 'CommentLink' + activityId,
-		updateNumComment = false;
+		deleteCommentButtonId = null,
+		updateNumComment = false,
+		activityUserId = activityUserId,
+		commentId = null;
+		commentUserId = null,
+		comments = {};
+		comments[activityId] = [];
 	
 	function display(cms) {
 		commentListBlockEl.innerHTML = ''; //resets
 		for (var i = 0, l = cms.length; i < l; i++) {
 			comment = cms[i];
+			commentId = comment.id;
+			commentUserId = comment.userId;
 			if (comment) {
-				var newEl = Util.addElement(commentListBlockId, 'div', 'CommentBlock' + comment.id, getCommentBlock());
+				var newEl = Util.addElement(commentListBlockId, 'div', 'CommentBlock' + commentId, getCommentBlock());
 				newEl.setAttribute('class', 'CommentBlock');
 				//ie + firefox
 				newEl.setAttribute('className', 'CommentBlock');
 				newEl.className = 'CommentBlock';
 			}
+			setDeleteComment(commentId);
 		}	
 	}
 	
-	function renderCommentList(comments, shortDisplay) {
-		if (comments.length > 2) {
+	function setDeleteComment(cmId) {
+		var commentId = cmId,
+		deleteCommentButtonId = 'DeleteCommentButton' + commentId,
+		deleteCommentButton = Util.getElementById(deleteCommentButtonId);
+		if (deleteCommentButton) {
+			Util.addEventListener(deleteCommentButton, 'click', function(evt) {
+				if (confirm(Locale.getMsg('are_you_sure_to_delete_this_comment'))) {
+					eXo.social.Comment.del(activityId, commentId, function(res) {
+						if (res.rc === 200) {
+							//remove commentBlock
+							comment = res.data.comments[0];
+							comments[activityId].splice(comments[activityId].indexOf(comment), 1);
+							var commentBlockId = 'CommentBlock' + commentId;
+							Util.removeElementById(commentBlockId);
+							if (updateNumComment) {
+								if (comments[activityId].length > 2) {
+									var html = [];
+									html.push('<div class="CommentBlock">');
+										html.push('<div class="CommentContent">');
+											html.push('<div class="CommentBorder">');
+												html.push('<a id="' + commentLinkId + '" href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments[activityId].length]) + '</a>');
+											html.push('</div>');
+										html.push('</div>');
+									html.push('</div>');
+									commentListInfoEl.innerHTML = html.join('');
+									var commentLinkEl = Util.getElementById(commentLinkId);
+									commentLinkEl.onclick = function() {
+										eXo.social.Comment.get(activityId, function(res) {
+											if (res.data !== null) {
+												hideAll = false;
+												comments[activityId] = res.data.comments;
+												renderCommentList(comments[activityId], false);
+												gadgets.window.adjustHeight();
+											}
+										})
+									}
+								} else {
+									Util.removeElementById(commentListInfoId);
+									display(comments[activityId]);
+								}
+								gadgets.window.adjustHeight();
+							} else if (comments[activityId].length < 3) {
+								Util.removeElementById(commentListInfoId);
+							}
+						} else {
+							alert('Problem: can not delete comment. Please try again!');
+							debug.warn('problem deleting comment');
+						}
+					})
+				}
+			}, false);
+		} else {
+			debug.warn('deleteCommentButton is null!');
+		}
+	}
+	
+	function renderCommentList(cms, shortDisplay) {
+		comments[activityId] = cms || [];
+		if (comments[activityId].length > 2) {
 			if (shortDisplay) {
 				updateNumComment = true;
 				var html = [];
 				html.push('<div class="CommentBlock">');
 					html.push('<div class="CommentContent">');
 						html.push('<div class="CommentBorder">');
-							html.push('<a id="'+ commentLinkId +'" href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
+							html.push('<a id="'+ commentLinkId +'" href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments[activityId].length]) + '</a>');
 						html.push('</div>');
 					html.push('</div>');
 				html.push('</div>');
@@ -114,13 +180,13 @@ eXo.social.Comment.setComment = function(activityId) {
 					eXo.social.Comment.get(activityId, function(res) {
 						if (res.data !== null) {
 							updateNumComment = false;
-							comments = res.data.comments;
-							renderCommentList(comments, false);
+							comments[activityId] = res.data.comments;
+							renderCommentList(comments[activityId], false);
 							gadgets.window.adjustHeight();
 						}
 					})
 				}
-				display(comments.slice(-2));
+				display(comments[activityId].slice(-2));
 			} else {
 				updateNumComment = false;
 				var html = [];
@@ -136,14 +202,14 @@ eXo.social.Comment.setComment = function(activityId) {
 				commentLinkEl.onclick = function() {
 					hideAll = true;
 					commentListBlockEl.style.display = 'none';
-					renderCommentList(comments, true);
+					renderCommentList(comments[activityId], true);
 					gadgets.window.adjustHeight();
 				}
 				commentListBlockEl.style.display = 'block';
-				display(comments);
+				display(comments[activityId]);
 			}
 		} else {
-			display(comments);
+			display(comments[activityId]);
 		}
 		
 	}
@@ -151,12 +217,20 @@ eXo.social.Comment.setComment = function(activityId) {
 	(function() {
 		eXo.social.Comment.get(activityId, function(res) {
 			if (res.data !== null) {
-				comments = res.data.comments;
-				renderCommentList(comments, true);
+				comments[activityId] = res.data.comments;
+				renderCommentList(comments[activityId], true);
 				gadgets.window.adjustHeight();
 			}
 		})
 	})();
+	
+  	var getDeleteContentBlock = function() {
+  		var html = [];
+		html.push('<div class="ActionContent">');
+			html.push('<a id="DeleteCommentButton' + commentId + '" class="ActionDeleteButton" href="#action-delete">&nbsp;</a>');
+		html.push('</div>');
+  		return html.join('');
+  	}
 	
   	var getCommentBlock = function() {
   		var html = [],
@@ -166,8 +240,8 @@ eXo.social.Comment.setComment = function(activityId) {
   			inlineStyle = '';
   		}
 		html.push('<div class="CommentContent"');
-									html.push(inlineStyle);
-										html.push('>');
+			html.push(inlineStyle);
+		html.push('>');
 			html.push('<div class="CommentBorder">')
   				html.push('<div class="CommentActivitiesContent">');
   					html.push('<a href="#" class="AvatarPeopleBG">');
@@ -176,6 +250,10 @@ eXo.social.Comment.setComment = function(activityId) {
   					html.push('<div class="Content">');
   						html.push('<div class="Titlecontent" style="height: 24px;">');
   							html.push('<div class="UserName">' + statusUpdate.getName(comment.userId) + '</div>');
+  						var viewerId = statusUpdate.viewer.getId();
+  						if ((viewerId === activityUserId) || (viewerId === commentUserId)) {
+  							html.push(getDeleteContentBlock());
+  						}
   							html.push('<div style="clear: both; height: 0px;"><span></span></div>');
   						html.push('</div>');
   						html.push('<div class="Content">' + comment.body + '</div>');
@@ -252,15 +330,17 @@ eXo.social.Comment.setComment = function(activityId) {
 				commentTextareaEl.focus();
 				activityId = res.data.activityId;
 				comment = res.data.comments[0];
-				comments.push(comment);
+				commentId = comment.id;
+				commentUserId = comment.userId;
+				comments[activityId].push(comment);
 				commentListBlockEl.style.display = 'block';
-				var newEl = Util.addElement(commentListBlockId, 'div', 'CommentBlock' + comment.id, getCommentBlock());
+				var newEl = Util.addElement(commentListBlockId, 'div', 'CommentBlock' + commentId, getCommentBlock());
 				if (updateNumComment) {
 					var html = [];
 					html.push('<div class="CommentBlock">');
 						html.push('<div class="CommentContent">');
 							html.push('<div class="CommentBorder">');
-								html.push('<a id="' + commentLinkId + '" href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments.length]) + '</a>');
+								html.push('<a id="' + commentLinkId + '" href="#show-all-comments">' + Locale.getMsg('show_all_num_comments', [comments[activityId].length]) + '</a>');
 							html.push('</div>');
 						html.push('</div>');
 					html.push('</div>');
@@ -270,8 +350,8 @@ eXo.social.Comment.setComment = function(activityId) {
 						eXo.social.Comment.get(activityId, function(res) {
 							if (res.data !== null) {
 								hideAll = false;
-								comments = res.data.comments;
-								renderCommentList(comments, false);
+								comments[activityId] = res.data.comments;
+								renderCommentList(comments[activityId], false);
 								gadgets.window.adjustHeight();
 							}
 						})
@@ -280,6 +360,7 @@ eXo.social.Comment.setComment = function(activityId) {
 				newEl.setAttribute('class', 'CommentBlock');
 				newEl.setAttribute('className', 'CommentBlock');
 				newEl.className = 'CommentBlock';
+				setDeleteComment(commentId);
 				gadgets.window.adjustHeight();
 			} else { //failed
 				//TODO hoatle informs users

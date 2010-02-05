@@ -266,10 +266,10 @@ public class ActivitiesRestService implements ResourceContainer {
    */
   @POST
   @Path("{activityId}/likes/destroy/{identityId}.{format}")
-  public Response jsonDestroyLike(@Context UriInfo uriInfo,
-                                   @PathParam("activityId") String activityId,
-                                   @PathParam("identityId") String identityId,
-                                   @PathParam("format") String format) throws Exception{
+  public Response destroyLike(@Context UriInfo uriInfo,
+                              @PathParam("activityId") String activityId,
+                              @PathParam("identityId") String identityId,
+                              @PathParam("format") String format) throws Exception{
     MediaType mediaType = Util.getMediaType(format);
     LikeList likeList =  null;
     likeList = destroyLike(activityId, identityId);
@@ -352,9 +352,14 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     String rawCommentIds = activity.getExternalId();
     try {
-      _activityManager.deleteActivity(commentId);
-      commentId = "," + commentId;
       if (rawCommentIds.contains(commentId)) {
+        Activity comment = _activityManager.getActivity(commentId);
+        if (activity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        commentList.addComment(comment);
+        _activityManager.deleteActivity(commentId);
+        commentId = "," + commentId;
         rawCommentIds = rawCommentIds.replace(commentId, "");
         activity.setExternalId(rawCommentIds);
         _activityManager.saveActivity(activity);
@@ -385,7 +390,6 @@ public class ActivitiesRestService implements ResourceContainer {
     commentList = showComments(activityId);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
-  
   
   /**
    * updates comment by json/xml format
