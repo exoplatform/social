@@ -74,7 +74,7 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
        @EventConfig(listeners = UISpaceMember.MakeLeaderActionListener.class, phase=Phase.DECODE)
        }
  ),
- @ComponentConfig(
+  @ComponentConfig(
     type = UIPopupWindow.class,
     id = "SearchUser",
     template =  "system:/groovy/webui/core/UIPopupWindow.gtmpl",
@@ -95,7 +95,7 @@ public class UISpaceMember extends UIForm {
   
   private String spaceId;
   private SpaceService spaceService = null;
-  private final static String user = "user";
+  private final static String USER = "user";
   private UIPageIterator iteratorPenddingUsers;
   private UIPageIterator iteratorInvitedUsers;
   private UIPageIterator iteratorExistingUsers;
@@ -105,7 +105,7 @@ public class UISpaceMember extends UIForm {
   private final Integer ITEMS_PER_PAGE = 5;
   
   public UISpaceMember() throws Exception {
-    addUIFormInput(new UIFormStringInput(user,null,null)
+    addUIFormInput(new UIFormStringInput(USER,null,null)
                     .addValidator(MandatoryValidator.class)
                     .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d._,]+\\p{L}$", "UISpaceMember.msg.Invalid-char"));
     UIPopupWindow searchUserPopup = addChild(UIPopupWindow.class, "SearchUser", "SearchUser");
@@ -208,11 +208,11 @@ public class UISpaceMember extends UIForm {
   }
 
   public void setUsersName(String userName) {
-    getUIStringInput(user).setValue(userName); 
+    getUIStringInput(USER).setValue(userName); 
   }
   
   public String getUsersName() {
-    return getUIStringInput(user).getValue(); 
+    return getUIStringInput(USER).getValue(); 
   }
   
   /**
@@ -264,7 +264,7 @@ public class UISpaceMember extends UIForm {
   private void validateInvitedUser() throws Exception {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     UIApplication uiApp = requestContext.getUIApplication();
-    String[] invitedUserList = getUsersName().split(",");      
+    String[] invitedUserList = getUsersName().split(",");
     String usersNotExist = null;
     String usersIsInvited = null;
     String usersIsMember = null;
@@ -273,7 +273,12 @@ public class UISpaceMember extends UIForm {
     for(String invitedUser : invitedUserList){
       try {
         if (invitedUser.equals(getUserACL().getSuperUser())) {
+          //BUG #SOC-539
+          if (spaceService.isMember(space, invitedUser)) {
+            throw new SpaceException(SpaceException.Code.USER_ALREADY_MEMBER);
+          } else {
             spaceService.addMember(space, invitedUser);
+          }
         } else {
           spaceService.inviteMember(space, invitedUser);
         }
@@ -451,5 +456,4 @@ public class UISpaceMember extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
-  
 }
