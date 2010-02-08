@@ -24,29 +24,21 @@
 	 <node>
 	  <uri>home</uri>
 	  <name>home</name>
-	  <label>#{portal.socialdemo.home}</label>
+	  <label>#{portal.classic.home}</label>
 	  <page-reference>portal::classic::homepage</page-reference>	    
 	 </node>
-	 
-   <node>
-    <uri>register</uri>
-    <name>register</name>
-    <label>#{portal.socialdemo.register}</label>
-    <visible>false</visible>
-    <page-reference>portal::classic::register</page-reference>
-   </node>
    
    <node>
     <uri>activities</uri>
     <name>activities</name>
-    <label>#{portal.socialdemo.myprofile}</label>
+    <label>#{portal.classic.myprofile}</label>
     <page-reference>portal::classic::activities</page-reference>
    </node>
    
    <node>
     <uri>profile</uri>
     <name>profile</name>
-    <label>#{portal.socialdemo.profile}</label>
+    <label>#{portal.classic.profile}</label>
     <visible>false</visible>
     <page-reference>portal::classic::profile</page-reference>
    </node>
@@ -54,46 +46,46 @@
    <node>
     <uri>relations</uri>
     <name>relations</name>
-    <label>#{portal.socialdemo.relations}</label>
+    <label>#{portal.classic.relations}</label>
     <visible>false</visible>
 	  <node>
 	    <uri>relations/yours</uri>
 	    <name>yours</name>
-	    <label>#{portal.socialdemo.yours}</label>
+	    <label>#{portal.classic.yours}</label>
 	    <page-reference>portal::classic::relations</page-reference>
 	   </node>
 	   <node>
 	    <uri>relations/invitations</uri>
 	    <name>invitations</name>
-	    <label>#{portal.socialdemo.invitations}</label>
+	    <label>#{portal.classic.invitations}</label>
 	    <page-reference>portal::classic::invitations</page-reference>
 	   </node>
 	   <node>
 	    <uri>relations/requests</uri>
 	    <name>requests</name>
-	    <label>#{portal.socialdemo.requests}</label>
+	    <label>#{portal.classic.requests}</label>
 	    <page-reference>portal::classic::requests</page-reference>
 	   </node>
    </node>
  
 	 <node>
-	    <uri>people</uri>
-	    <name>people</name>
-	    <label>#{portal.socialdemo.people}</label>
-	    <page-reference>portal::classic::people</page-reference>
+    <uri>people</uri>
+    <name>people</name>
+    <label>#{portal.classic.people}</label>
+    <page-reference>portal::classic::people</page-reference>
 	 </node>
 	 
 	 <node>
     <uri>spaces</uri>
     <name>spaces</name>
-    <label>#{portal.socialdemo.spaces}</label>
+    <label>#{portal.classic.spaces}</label>
     <page-reference>portal::classic::spaces</page-reference>
    </node>
    
    <node>
     <uri>invitationSpace</uri>
     <name>invitationSpace</name>
-    <label>#{portal.socialdemo.invitationSpace}</label>
+    <label>#{portal.classic.invitationSpace}</label>
     <visible>false</visible>
     <page-reference>portal::classic::invitationSpace</page-reference>
    </node>
@@ -101,7 +93,7 @@
    <node>
     <uri>pendingSpace</uri>
     <name>pendingSpace</name>
-    <label>#{portal.socialdemo.pendingSpace}</label>
+    <label>#{portal.classic.pendingSpace}</label>
     <visible>false</visible>
     <page-reference>portal::classic::pendingSpace</page-reference>
    </node>
@@ -109,24 +101,10 @@
    <node>
     <uri>publicSpace</uri>
     <name>publicSpace</name>
-    <label>#{portal.socialdemo.publicSpace}</label>
+    <label>#{portal.classic.publicSpace}</label>
     <visible>false</visible>
     <page-reference>portal::classic::publicSpace</page-reference>
    </node>
    
-	  <node>
-	    <uri>groupnavigation</uri>
-	    <name>groupnavigation</name>
-	    <label>#{portal.socialdemo.groupnavigation}</label>
-	    <visible>false</visible>
-	    <page-reference>portal::classic::groupnavigation</page-reference>	    
-	  </node>
-	  <node>
-	    <uri>portalnavigation</uri>
-	    <name>portalnavigation</name>
-	    <label>#{portal.socialdemo.portalnavigation}</label>
-	    <visible>false</visible>
-	    <page-reference>portal::classic::portalnavigation</page-reference>	    
-	  </node>
   </page-nodes>
 </node-navigation>

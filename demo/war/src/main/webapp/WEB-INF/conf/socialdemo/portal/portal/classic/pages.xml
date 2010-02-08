@@ -45,22 +45,6 @@
   </page>
 
   <page>
-    <name>register</name>
-    <title>Register</title>
-	  <access-permissions>Everyone</access-permissions>
-	  <edit-permission>*:/platform/administrators</edit-permission>    
-    <portlet-application>
-      <portlet>
-        <application-ref>exoadmin</application-ref>
-        <portlet-ref>AccountPortlet</portlet-ref>
-      </portlet>
-      <title>New Account</title>
-      <access-permissions>*:/platform/guests</access-permissions>
-      <show-info-bar>false</show-info-bar>      
-    </portlet-application>
-  </page>
-
-  <page>
     <name>manageSpaces</name>
     <title>Manage Spaces</title>
     <access-permissions>*:/platform/users</access-permissions>
@@ -98,7 +82,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	  		<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -111,6 +97,7 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="ProfileActivity" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		   <access-permissions>*:/platform/users</access-permissions>
 	 				<portlet-application>
 			     <portlet>
 			       <application-ref>dashboard</application-ref>
@@ -118,7 +105,7 @@
 			       <preferences>
 		          <preference>
 		            <name>url</name>
-				        <value>http://localhost:8080/rest/jcr/repository/gadgets/gadgets/activities2.xml</value>
+				        <value>http://localhost:8080/rest/jcr/repository/portal-system/gadgets/statusUpdate2/data/resources/activities2.xml</value>
 				        <read-only>false</read-only>
 		          </preference>
 		        </preferences>
@@ -138,7 +125,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
  			<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+ 			  <access-permissions>*:/platform/users</access-permissions>
  				<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -151,6 +140,7 @@
 		   </portlet-application>
 	  	</container>
  			<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+ 			  <access-permissions>*:/platform/users</access-permissions>
  				<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -171,7 +161,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	  		<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -184,6 +176,7 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 				<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -196,6 +189,7 @@
 		   </portlet-application>
 	 		</container>
 	 		<container id="ProfileRelations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	 			<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -216,7 +210,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout"  template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	  		<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -229,6 +225,7 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 				<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -241,6 +238,7 @@
 		   </portlet-application>
 	 		</container>
 	 		<container id="Invitations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	 			<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -263,7 +261,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	  		<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -276,6 +276,7 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 				<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -288,6 +289,7 @@
 		   </portlet-application>
 	 		</container>
 	 		<container id="Requests" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	 			<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
@@ -309,7 +311,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	  		<portlet-application>
 		     <portlet>
 		       <application-ref>space</application-ref>
@@ -322,6 +326,7 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
  				<portlet-application>
 		     <portlet>
 		       <application-ref>space</application-ref>
@@ -342,7 +347,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	  		<portlet-application>
 		     <portlet>
 		       <application-ref>space</application-ref>
@@ -355,6 +362,7 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
  				<portlet-application>
 		     <portlet>
 		       <application-ref>space</application-ref>
@@ -375,7 +383,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	  		<portlet-application>
 		     <portlet>
 		       <application-ref>space</application-ref>
@@ -388,6 +398,7 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
  				<portlet-application>
 		     <portlet>
 		       <application-ref>space</application-ref>
@@ -408,7 +419,9 @@
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
 	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
 	  		<portlet-application>
 		     <portlet>
 		       <application-ref>space</application-ref>
@@ -421,6 +434,7 @@
 		   </portlet-application>
 	  	</container>
 	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+	 		  <access-permissions>*:/platform/users</access-permissions>
  		     <portlet-application>
 		       <portlet>
 		         <application-ref>space</application-ref>
@@ -435,7 +449,7 @@
 		</container>
   </page>
   
-  <page>
+  <!-- <page>
     <name>groupnavigation</name>
     <title>Group Navigation</title>
 	  <access-permissions>*:/platform/users</access-permissions>
@@ -465,14 +479,16 @@
       <access-permissions>Everyone</access-permissions>
       <show-info-bar>false</show-info-bar>
     </portlet-application>
-  </page>
+  </page>  -->
   <page>
     <name>spacetemplate</name>
     <title>Space Template</title>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
       <container id="Menu" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+        <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
             <application-ref>space</application-ref>
@@ -485,6 +501,7 @@
         </portlet-application>
       </container>
       <container id="Application" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+        <access-permissions>*:/platform/users</access-permissions>
       </container>
     </container>
   </page>
