@@ -24,6 +24,7 @@
 	xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
 	<import>war:/conf/socialdemo/common/common-configuration.xml</import>
 	<import>war:/conf/socialdemo/organization/organization-configuration.xml</import>
+	<import>war:/conf/socialdemo/organization/idm-configuration.xml</import>
 	<import>war:/conf/socialdemo/jcr/jcr-configuration.xml</import>
 	<import>war:/conf/socialdemo/social/component-plugins-configuration.xml</import>
 	<import>war:/conf/socialdemo/portal/portal-configuration.xml</import>

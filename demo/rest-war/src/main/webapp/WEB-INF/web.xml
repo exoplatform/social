@@ -89,7 +89,7 @@
 
 	<login-config>
 		<auth-method>BASIC</auth-method>
-		<realm-name>exo-domain-socialdemo</realm-name>
+		<realm-name>gatein-domain-socialdemo</realm-name>
 	</login-config>
 
 	<security-role>

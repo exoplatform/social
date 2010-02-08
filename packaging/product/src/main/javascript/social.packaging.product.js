@@ -63,14 +63,12 @@ function getProduct(version) {
   product.addDependencies(social.application.rest);
   product.addDependencies(social.webui.social);
 
-  /*product.addDependencies(social.demo.portal);
-  product.addDependencies(social.demo.rest);*/
+  product.addDependencies(social.demo.portal);
+  product.addDependencies(social.demo.rest);
 
-  /*product.addServerPatch("tomcat", social.server.tomcat.patch);*/
+  product.addServerPatch("tomcat", social.server.tomcat.patch);
   product.addServerPatch("jboss",  portal.server.jboss.patch);
-	product.addServerPatch("tomcat", portal.server.tomcat.patch);
-	product.addServerPatch("jbossear",  portal.server.jbossear.patch);
-  /*product.addServerPatch("jbossear",  social.server.jbossear.patch);*/
+  product.addServerPatch("jbossear",  social.server.jbossear.patch);
 
 	product.removeDependency(new Project("org.exoplatform.jcr", "exo.jcr.component.ftp", "jar", eXoJcr.version));
 

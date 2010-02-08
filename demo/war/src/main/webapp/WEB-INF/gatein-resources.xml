@@ -25,12 +25,12 @@
    	xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_0.xsd"
    	xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_0.xsd">  
 
-	<portlet-skin>
+	<!--portlet-skin>
 		<application-name>web</application-name>
 		<portlet-name>SpaceHomePagePortlet</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/templates/skin/webui/component/UIHomePagePortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
+	</portlet-skin-->
 	
 </gatein-resources>
 
