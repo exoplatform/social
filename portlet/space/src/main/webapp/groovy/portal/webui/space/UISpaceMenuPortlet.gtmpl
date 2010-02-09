@@ -7,6 +7,8 @@
 	def spaceUrl = SpaceUtils.getSpaceUrl()
  	String appSelected = uicomponent.getAppSelected()
  	def imageSource = uicomponent.getImageSource()
+ 	def spaceUserListName = spaceUrl + "UserListPortlet";
+ 	def spaceSettingName = spaceUrl + "SpaceSettingPortlet";
  	
  	public String getFitString(String nodeLabel, int maxLen) {
  	  def labelStr = ""; 
@@ -35,7 +37,7 @@
  	}
  	
  	String spaceName = uicomponent.getSpaceName();
- 	String spaceNameDisplay = getFitString(spaceName, 25)
+ 	String spaceNameDisplay = getFitString(spaceName, 20)
 %>
 
 
@@ -63,14 +65,14 @@
 					String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + node.getName();
 		%>
 		<%
-			if (node.getName().equals(appSelected)) { %>
+			if (node.getName().equals(spaceUserListName)) { %>
 					<div class="UserListApp">
 					<% if(node.getName().equals(appSelected)) { %>
 			  			<a class="UserListAppSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
 			  	<% } else { %>
 			  			<a class="UserListAppBG" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
 			  	<% } 
-			} else if (node.getName().equals(appSelected)) { %>
+			} else if (node.getName().equals(spaceSettingName)) { %>
 					<div class="SpaceSetting">
 					<% if(node.getName().equals(appSelected)) {	%>
 			  			<a class="SpaceSettingSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
