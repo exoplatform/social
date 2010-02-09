@@ -17,6 +17,7 @@
 package org.exoplatform.social.space;
 
 import org.gatein.common.util.Tools;
+import org.gatein.mop.api.content.ContentType;
 import org.gatein.pc.api.Portlet;
 import org.gatein.pc.api.PortletInvoker;
 import org.gatein.pc.api.info.MetaInfo;
@@ -49,6 +50,7 @@ import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.pom.spi.wsrp.WSRP;
 import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -236,12 +238,28 @@ public class SpaceUtils {
   
             Application app = appRegistryService.getApplication(categoryName + "/" + portletName);
             if (app != null) return app;
+            
+            ContentType<?> contentType;
+            String contentId;
+            
             LocalizedString descriptionLS = portlet.getInfo().getMeta().getMetaValue(MetaInfo.DESCRIPTION);
             LocalizedString displayNameLS = portlet.getInfo().getMeta().getMetaValue(MetaInfo.DISPLAY_NAME);
   
             getLocalizedStringValue(descriptionLS, portletName);
   
             app = new Application();
+            
+            if (portlet.isRemote())
+            {
+               contentType = WSRP.CONTENT_TYPE;
+               contentId = portlet.getContext().getId();
+            }
+            else
+            {
+               contentId = info.getApplicationName() + "/" + info.getName();
+            }
+
+            app.setContentId(contentId);
             app.setApplicationName(portletName);
             app.setCategoryName(categoryName);
   
