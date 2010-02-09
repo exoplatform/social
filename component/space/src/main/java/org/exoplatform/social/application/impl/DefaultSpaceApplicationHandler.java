@@ -222,18 +222,20 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * @throws SpaceException
    */
   private void removeApplicationClassic(Space space, String appId) throws SpaceException {
+    StringBuffer sb = new StringBuffer(space.getShortName());
+    String applicationId =  sb.append(appId).toString();
     try {
       String spaceNav = space.getGroupId();
       PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
       PageNode homeNode = nav.getNode(space.getShortName());
       List<PageNode> childNodes = homeNode.getChildren();
-      childNodes.remove(homeNode.getChild(appId));
+      childNodes.remove(homeNode.getChild(applicationId));
       homeNode.setChildren((ArrayList<PageNode>) childNodes);
       
       configService.update(nav);
       
       // remove page
-      Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + space.getShortName() + appId);
+      Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + applicationId);
       configService.remove(page);
       
     } catch (Exception e) {
