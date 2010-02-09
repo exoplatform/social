@@ -39,10 +39,10 @@ eXo.social.UIComposer.prototype.focusInput = function(el) {
 		}
 		return;
 	}
-	if(el.innerHTML === this.DEFAULT_INPUT) {
+	if(el.value === this.DEFAULT_INPUT) {
 		el.style.color="#000000";
-		el.style.minHeight="25px";
-		el.innerHTML = "";
+		el.style.height="50px";
+		el.value = "";
 		el.appendChild(document.createElement('br'));
 	}
 }
@@ -73,8 +73,8 @@ eXo.social.UIComposer.prototype.blurInput = function(el) {
 	if((text === null) || (content === "")) {
 		this.statusUpdate.shareable = false;
 		el.style.color="#777777";
-		el.innerHTML = this.DEFAULT_INPUT;
-		el.style.minHeight="20px";
+		el.value = this.DEFAULT_INPUT;
+		el.style.height="20px";
 	} else {
 		this.inputTextContent = content;
 		statusUpdate.shareable = true;
@@ -107,7 +107,7 @@ eXo.social.UIComposer.prototype.getInputContent = function() {
 		return null;
 	}
 	var inputEl = this.inputEl;
-	var textContent = inputEl.innerText;
+	var textContent = inputEl.value;
 	if (textContent === undefined) {
 		textContent = inputEl.textContent;
 	}

@@ -522,7 +522,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   			}
 				html.push('<div style="clear: both; height: 0px;"><span></span></div>');
 				html.push('</div>');
-  				html.push('<div class="Content">' + body + '</div>');
+  				html.push('<div class="ContentArea">' + body + '</div>');
   				html.push('<div class="NewsDate">' + prettyTime + '</div>');
   				html.push(getCommentLikeBlock());
   			html.push('</div>')
@@ -858,9 +858,9 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 			activityElement.style.minHeight="12px";
 			activityElement.value = statusUpdate.uiComposer.DEFAULT_INPUT;
 		} else if (currentView === 'canvas') {
-			activityElement.style.minHeight="20px";
+			activityElement.style.height="20px";
 			activityElement.style.color="#777777";
-			activityElement.innerHTML = statusUpdate.uiComposer.DEFAULT_INPUT;
+			activityElement.value = statusUpdate.uiComposer.DEFAULT_INPUT;
 		}
 	}
 
@@ -875,7 +875,7 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 	}
 	// replace tag
 	var reWhiteSpace = new RegExp(/^\s+$/);
-	var text = activityElement.innerHTML;
+	var text = activityElement.value;
 	var content = text.replace(/<p>/gi, "<br>").replace(/<\/\p>/gi, "<br>");
 	var activityContent = content.replace(/<br>/gi, " ");
 	//for linkShare
@@ -892,10 +892,10 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 	  	linkShare.displayAttach(eXo.social.LinkShare.config.ATTACH_OPTION_ID);
 	  	return;
 	} else {
-		if (activityContent  === "" || reWhiteSpace.test(activityElement.innerHTML)) {
+		if (activityContent  === "" || reWhiteSpace.test(activityElement.value)) {
 			return false;
 		}
-		if ((activityContent === this.uiComposer.DEFAULT_INPUT) && (activityElement.style.minHeight === "20px" || activityElement.style.minHeight === "12px")) return;
+		if ((activityContent === this.uiComposer.DEFAULT_INPUT) && (activityElement.style.height === "20px" || activityElement.style.minHeight === "12px")) return;
 	}
 
 	if ((currentView === 'canvas') && (this.shareable === false)) return;

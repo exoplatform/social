@@ -103,6 +103,7 @@ img {border: none}
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusInput {
+	padding: 0 0 10px;
 	width: 100%;
 }
 
@@ -162,12 +163,13 @@ img {border: none}
 .ActivitiesComponent .ActivitiesContainer .Textbox {
 	border: none;
 	border-width: 0px;
-	min-height: 20px;
+	height: 20px;
 	color: #777777;
-	max-height:100px;
+	max-height:50px;
 	overflow-x:hidden;
 	overflow-y:auto;
 	font-size: 11px;
+	width: 100%;
 }
 
 .ActivitiesComponent .ActivitiesContainer .IconAdd {
@@ -406,6 +408,13 @@ img {border: none}
 .ActivitiesContainer .Content {
 	color:#424242;
 	line-height: 18px;
+}
+
+.ActivitiesContainer .ContentArea {
+  color:#424242;
+  line-height: 18px;
+  overflow-x: hidden;
+  width: 640px;
 }
 
 .ActivitiesContainer .LinkShareContent {
