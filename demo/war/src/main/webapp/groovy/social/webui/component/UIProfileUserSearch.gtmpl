@@ -59,7 +59,7 @@ def searchAction = uicomponent.event('Search');
 	<div class="SearchSpacesR ClearFix">
 	  <div class="Lable">${findContactLabel} :</div>
 	  <div class="Search"><% uiform.renderField(childs.get(0))%>
-	  <div class="SearchIcon" onclick="$searchAction"></div>
+	  <div class="SearchIcon" title="Search" onclick="$searchAction"></div>
 	  </div>
 	  <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
 	  

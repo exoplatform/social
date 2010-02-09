@@ -79,8 +79,8 @@
 			<div class="CommunityMane Line">
 	            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
 	  				<% if (isEditable) {%>
-					<a href="#" class="StopIcon" onclick="$actionDeny" >&nbsp;</a>
-					<a href="#" class="SelectIcon" onclick="$actionAccept" >&nbsp;</a>
+					<a href="#" class="StopIcon" title="Deny" onclick="$actionDeny" >&nbsp;</a>
+					<a href="#" class="SelectIcon" title="Accept" onclick="$actionAccept" >&nbsp;</a>
 			    		
 	  				<% } %>
 	            <div style="clear: both;"><span/></div>

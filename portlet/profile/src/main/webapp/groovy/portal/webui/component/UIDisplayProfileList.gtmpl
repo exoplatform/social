@@ -83,15 +83,15 @@
 	            	<a href="${profileURL}" style="color: #afafaf;">${fullName}</a>
 	            </div>
 	  <% if (contactStatus == Relationship.Type.REQUIRE_VALIDATION) { %>
-			    		<a href="#" class="StopIcon" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
-			   			<a href="#" class="SelectIcon" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
+			    		<a href="#" class="StopIcon" title="Deny" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+			   			<a href="#" class="SelectIcon" title="Accept" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
 	  <% } else if (contactStatus == Relationship.Type.ALIEN) { %>
-	  					<a href="#" class="AddIcon" onclick="$addAction" >&nbsp;</a>
+	  					<a href="#" class="AddIcon" title="Invite" onclick="$addAction" >&nbsp;</a>
 	  <%  } else if (contactStatus == Relationship.Type.PENDING) { %>
-	            <a href="#" class="RemoveIcon" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a> 
+	            <a href="#" class="RemoveIcon" title="Revoke" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a> 
 	            <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>    
 	  <%  } else if (contactStatus == Relationship.Type.CONFIRM) { %>
-	  					<a href="#" class="RemoveIcon" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+	  					<a href="#" class="RemoveIcon" title="Remove" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
 	  <% } %>
 	        </div>
 	        <% if(position.length() > 0) { %>

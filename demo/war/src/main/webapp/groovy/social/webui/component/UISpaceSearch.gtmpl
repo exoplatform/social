@@ -53,7 +53,7 @@ def searchAction = uicomponent.event('Search');
                 </div>
                 <div class="CenterContentInput">
                       <div class="SpaceSearchInput"><%uiform.renderField(childs.get(0)); %>
-                      <div class="SearchIcon" onclick="$searchAction"><span></span></div>
+                      <div class="SearchIcon" title="Search" onclick="$searchAction"><span></span></div>
                       </div>
                       
                       <input id="defaultSpaceName" type="hidden" value="$defaultSpaceName">
