@@ -25,7 +25,6 @@ import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
-import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.social.webui.UISpaceSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -136,7 +135,7 @@ public class UISpaceAddForm extends UIFormTabPane {
         if (spaceName != null)
           uiMySpace.setSpaces_(spaceService.getSpacesByName(spaceName, (selectedChar == null) ? false : true ));
       } catch (SpaceException se) {
-        se.printStackTrace();
+        //se.printStackTrace();
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
           msg = MSG_ERROR_SPACE_ALREADY_EXIST;
         } else if (se.getCode() == SpaceException.Code.UNABLE_TO_ADD_CREATOR) {
@@ -161,7 +160,6 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);
       uiWorkingWS.updatePortletsByName("UserToolbarGroupPortlet");
-      //SpaceUtils.updateWorkingWorkSpace();
     }
   }
 
