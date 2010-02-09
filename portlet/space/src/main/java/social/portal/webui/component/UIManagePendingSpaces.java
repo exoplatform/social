@@ -58,6 +58,8 @@ import org.exoplatform.webui.event.Event.Phase;
 )
 public class UIManagePendingSpaces extends UIContainer {
   static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error_revoke_pending";
+  private static final String SPACE_DELETED_INFO = "UIManagePendingSpaces.msg.DeletedInfo";
+  
   SpaceService spaceService = null;
   String userId = null;
   private UIPageIterator iterator;
@@ -207,6 +209,14 @@ public class UIManagePendingSpaces extends UIContainer {
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = uiPendingSpaces.getUserId();
+      
+      Space space = spaceService.getSpaceById(spaceId);
+      
+      if (space == null) {
+        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       try {
         spaceService.revokeRequestJoin(spaceId, userId);
       } catch(SpaceException se) {

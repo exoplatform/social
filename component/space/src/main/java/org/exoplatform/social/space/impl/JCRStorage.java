@@ -104,7 +104,6 @@ public class JCRStorage {
       
       return getSpace(session.getNodeByUUID(id), session);
     } catch (Exception e) {
-      e.printStackTrace();
       return null;
     } finally {
       sessionManager.closeSession();

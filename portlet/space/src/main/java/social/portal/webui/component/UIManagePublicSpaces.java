@@ -58,6 +58,7 @@ import org.exoplatform.webui.event.Event.Phase;
   }
 )
 public class UIManagePublicSpaces extends UIContainer {
+  private static final String SPACE_DELETED_INFO = "UIPublicSpacePortlet.msg.DeletedInfo";
   static private final String MSG_ERROR_REQUEST_JOIN = "UIManagePublicSpaces.msg.error_request_join"; 
   private SpaceService spaceService = null;
   private String userId = null;
@@ -218,6 +219,12 @@ public class UIManagePublicSpaces extends UIContainer {
      String spaceId = ctx.getRequestParameter(OBJECTID);
      String userId = uiPublicSpaces.getUserId();
      Space space = spaceService.getSpaceById(spaceId);
+     
+     if (space == null) {
+       uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+       return;
+     }
+     
      try {
        spaceService.requestJoin(space, userId);
      } catch(SpaceException se) {

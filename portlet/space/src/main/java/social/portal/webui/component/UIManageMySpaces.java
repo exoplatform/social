@@ -94,6 +94,8 @@ public class UIManageMySpaces extends UIContainer {
   static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
   static private final String MSG_ERROR_DELETE_SPACE = "UIManageMySpaces.msg.error_delete_space";
   static private final Integer LEADER = 1, MEMBER = 2;
+  private static final String SPACE_DELETED_INFO = "UIManageMySpaces.msg.DeletedInfo";
+  private static final String MEMBERSHIP_REMOVED_INFO = "UIManageMySpaces.msg.MemberShipRemovedInfo";
   
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
   private UIPageIterator iterator;
@@ -348,7 +350,20 @@ public class UIManageMySpaces extends UIContainer {
       uiMySpaces.loadNavigations();
       SpaceService spaceService = uiMySpaces.getSpaceService();
       WebuiRequestContext ctx = event.getRequestContext();
+      UIApplication uiApp = ctx.getUIApplication();
       Space space = spaceService.getSpaceById(ctx.getRequestParameter(OBJECTID));
+      String userId = uiMySpaces.getUserId();
+      
+      if (space == null) {
+        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
+      if (!spaceService.isMember(space, userId) && !spaceService.hasEditPermission(space, userId)) {
+        uiApp.addMessage(new ApplicationMessage(MEMBERSHIP_REMOVED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
       uiMySpaces.setSelectedNavigation(groupNav);
       UIPopupWindow uiPopup = uiMySpaces.getChild(UIPopupWindow.class);
@@ -412,6 +427,19 @@ public class UIManageMySpaces extends UIContainer {
       WebuiRequestContext ctx = event.getRequestContext();
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
+      Space space = spaceService.getSpaceById(spaceId);
+      String userId = uiMySpaces.getUserId();
+      
+      if (space == null) {
+        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
+      if (!spaceService.isMember(space, userId) && !spaceService.hasEditPermission(space, userId)) {
+        uiApp.addMessage(new ApplicationMessage(MEMBERSHIP_REMOVED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       try {
         spaceService.deleteSpace(spaceId);
       } catch(SpaceException se) {
@@ -435,10 +463,23 @@ public class UIManageMySpaces extends UIContainer {
       UIApplication uiApp = ctx.getUIApplication();
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = uiMySpaces.getUserId();
+      Space space = spaceService.getSpaceById(spaceId);
+      
+      if (space == null) {
+        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
+      if (!spaceService.isMember(space, userId) && !spaceService.hasEditPermission(space, userId)) {
+        uiApp.addMessage(new ApplicationMessage(MEMBERSHIP_REMOVED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       if (spaceService.isOnlyLeader(spaceId, userId)) {
         uiApp.addMessage(new ApplicationMessage(MSG_WARNING_LEAVE_SPACE, null, ApplicationMessage.WARNING));
         return;
       }
+      
       try {
         spaceService.removeMember(spaceId, userId);
       } catch(SpaceException se) {

@@ -58,8 +58,11 @@ import org.exoplatform.webui.event.Event.Phase;
   }
 )
 public class UIManageInvitationSpaces extends UIContainer {
-  static private final String MSG_ERROR_ACCEPT_INVITATION = "UIManageMySpaces.msg.error_accept_invitation";
-  static private final String MSG_ERROR_DENY_INVITATION = "UIManageMySpaces.msg.error_deny_invitation";
+  static private final String MSG_ERROR_ACCEPT_INVITATION = "UIManageInvitationSpaces.msg.error_accept_invitation";
+  static private final String MSG_ERROR_DENY_INVITATION = "UIManageInvitationSpaces.msg.error_deny_invitation";
+  private static final String SPACE_DELETED_INFO = "UIManageInvitationSpaces.msg.DeletedInfo";
+  private static final String INVITATION_REVOKED_INFO = "UIManageInvitationSpaces.msg.RevokedInfo";
+  
   static public final Integer LEADER = 1, MEMBER = 2;
   
   private UIPageIterator iterator;
@@ -235,6 +238,19 @@ public class UIManageInvitationSpaces extends UIContainer {
      UIApplication uiApp = ctx.getUIApplication();
      String spaceId = ctx.getRequestParameter(OBJECTID);
      String userId = uiForm.getUserId();
+     
+     Space space = spaceService.getSpaceById(spaceId);
+     
+     if (space == null) {
+       uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+       return;
+     }
+     
+     if (!spaceService.isInvited(space, userId)) {
+       uiApp.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+       return;
+     }
+     
      try {
        spaceService.acceptInvitation(spaceId, userId);
      } catch(SpaceException se) {
@@ -259,6 +275,18 @@ public class UIManageInvitationSpaces extends UIContainer {
      UIApplication uiApp = ctx.getUIApplication();
      String spaceId = ctx.getRequestParameter(OBJECTID);
      String userId = uiForm.getUserId();
+     Space space = spaceService.getSpaceById(spaceId);
+     
+     if (space == null) {
+       uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+       return;
+     }
+     
+     if (!spaceService.isInvited(space, userId)) {
+       uiApp.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+       return;
+     }
+     
      try {
        spaceService.denyInvitation(spaceId, userId);
      } catch(SpaceException se) {
