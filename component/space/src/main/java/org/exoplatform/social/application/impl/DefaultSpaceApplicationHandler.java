@@ -317,7 +317,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       pageName = space.getUrl();
     else pageName = app.getApplicationName();
     try {
-      String newName = space.getName();
+      String newName = space.getUrl();
       if (isRoot != true) {
         newName += pageName;
       }
@@ -359,7 +359,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     PageNode pageNode = new PageNode();
     String label = app.getDisplayName();
     if(isRoot) {
-      label = pageName;
+      label = space.getName();
       pageNode.setUri(pageName);
     } else {
       pageNode.setUri(space.getUrl() + "/" + pageName);
