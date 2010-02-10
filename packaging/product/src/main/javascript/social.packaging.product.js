@@ -48,9 +48,9 @@ function getProduct(version) {
   product.addDependencies(portal.web.portal);
 
 	// starter for social
-	//portal.starter = new Project("org.exoplatform.portal", "exo.portal.starter.war", "war", portal.version);
-	//portal.starter.deployName = "starter";
-	//product.addDependencies(portal.starter);
+	portal.starter = new Project("org.exoplatform.portal", "exo.portal.starter.war", "war", portal.version);
+	portal.starter.deployName = "starter";
+	product.addDependencies(portal.starter);
 	//product.addDependencies(social.web.socialportal) ;
   product.addDependencies(social.extension.war) ;
   product.addDependencies(social.web.eXoResources) ;
