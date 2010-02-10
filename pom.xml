@@ -54,19 +54,19 @@
    </scm>
 
   <modules>
-		<module>component/people</module>
-    <module>component/opensocial</module>
-    <module>extension</module>
-		<module>web/resources</module>
-    <module>web/opensocial</module>
-		<module>portlet/space</module>
-    <module>portlet/profile</module>
-    <module>component/space</module>
-		<module>webui/social</module>
-		<module>application/rest</module>
-		<module>server</module>
-		<module>demo</module>
-		<module>packaging</module>
+	<module>component/people</module>
+    	<module>component/opensocial</module>
+    	<module>extension</module>
+	<module>web/resources</module>
+    	<module>web/opensocial</module>
+	<module>portlet/space</module>
+    	<module>portlet/profile</module>
+    	<module>component/space</module>
+	<module>webui/social</module>
+	<module>application/rest</module>
+	<module>server</module>
+	<module>demo</module>
+	<module>packaging</module>
   </modules>
 
    <dependencyManagement>
@@ -467,7 +467,6 @@
    </dependencies>
 
    <build>
-	<finalName>${artifactId}-${version}</finalName>
       <resources>
          <resource>
             <directory>src/main/java</directory>
