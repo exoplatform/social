@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>sc</artifactId>
-    <version>1.0.0-Beta02</version>
+    <version>1.0.0-Beta03-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -37,72 +37,72 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.config</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.jar</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.application.rest</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.opensocial</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.portlet.profile</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.portlet.space</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.web.opensocial</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.web.socialResources</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.webui.social</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.rest-war</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.war</artifactId>
-      <version>1.0.0-Beta02</version>
+      <version>1.0.0-Beta03-SNAPSHOT</version>
       <type>war</type>
     </dependency>
   </dependencies>
