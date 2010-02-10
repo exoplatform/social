@@ -23,14 +23,15 @@
 <% 
 	import org.exoplatform.portal.webui.util.Util
 	import org.exoplatform.webui.core.UIPageIterator
+	import org.exoplatform.social.space.Space
 	import org.exoplatform.social.space.SpaceUtils
 	import social.portal.webui.component.UIManageMySpaces
-	import org.exoplatform.social.webui.UISpaceSearch;
+	import org.exoplatform.social.webui.UISpaceSearch
 	
 	def uicomponentId = uicomponent.id
   def labelSpaceSetting = _ctx.appRes("${uicomponentId}.label.SpaceListing")
   def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.NoSpace")
-  def labelMember = _ctx.appRes("${uicomponentId}.label.Member")
+  def labelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
   def iterator = uicomponent.getUIPageIterator()
   def pendingSpaces = uicomponent.getPendingSpaces()
   def mySpaceIdx = 0
@@ -51,6 +52,9 @@
   <%}%>
 	  <%for (space in pendingSpaces) {
 	      def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false"
+	      def visibility = space.visibility
+	      //hack, temporary use private as visible
+        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
 	      def imageSource = uicomponent.getImageSource(space);
 				mySpaceIdx += 1;
 	  %>
@@ -73,8 +77,8 @@
 					<div class="Text"><span><%= space.name %></span></div>
 					<div class="ClearBoth"><span></span></div>
 				</div>
-				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> $labelMember
-					<br/><%= space.description %>
+				<div class="Content">$visibility / $labelMembers <%= SpaceUtils.countMembers(space)%>
+					<br/>$space.description
 				</div>
 			</div>
 			<div class="ClearBoth"><span></span></div>

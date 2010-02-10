@@ -23,6 +23,7 @@
 <% 
 	import org.exoplatform.portal.webui.util.Util
 	import org.exoplatform.webui.core.UIPageIterator
+	import org.exoplatform.social.space.Space
 	import org.exoplatform.social.space.SpaceUtils
 	import social.portal.webui.component.UIManageMySpaces
 	import org.exoplatform.social.webui.UISpaceSearch;
@@ -53,6 +54,9 @@
 	      def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false"
 	      def denySpaceAction = uicomponent.event("Deny", space.id) + "; return false"
 	      def imageSource = uicomponent.getImageSource(space);
+	      def visibility = space.visibility
+        //hack, temporary use private as visible
+        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
 				mySpaceIdx += 1;
 	  %>
 	  
@@ -75,8 +79,8 @@
 					<div class="Text"><span><%= space.name %></span></div>
 					<div class="ClearBoth"><span></span></div>
 				</div>
-				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> $labelMembers
-					<br/><%= space.description %>
+				<div class="Content">$visibility / <%= SpaceUtils.countMembers(space) %> $labelMembers
+					<br/> $space.description
 				</div>
 			</div>
 			<div class="ClearBoth"><span></span></div>

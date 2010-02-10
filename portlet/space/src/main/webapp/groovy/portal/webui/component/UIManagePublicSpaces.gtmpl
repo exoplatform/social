@@ -103,7 +103,9 @@
 		  		
 		 		<div class="ContentBox">
 		 			<div class="TitleContent">
+		 			  <% if (!isClose) {%>
 		 				<a href="#" onclick="$requestJoinAction" title="$labelActionRequestToJoin" class="Icon IconAdd"><span></span></a>
+		 				<%}%>
 		 				<% if (uicomponent.hasEditPermission(space)) {%>
 		 				<div class="Text"><a href="$spaceUrl">$space.name</a></div>
 		 				<% } else { %>
@@ -111,8 +113,8 @@
 		 				<% } %>
 		 				<div class="ClearBoth"><span></span></div>
 		 			</div>
-		 			<div class="Content">$space.visibility / <%= SpaceUtils.countMembers(space) %> $fieldLabelMembers <br />
-						$space.description		 				
+		 			<div class="Content">$status / $fieldLabelMembers <%= SpaceUtils.countMembers(space) %><br />
+						$space.description
 		 			</div>
 		 		</div>
 		 		<div class="ClearBoth"><span></span></div>

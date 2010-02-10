@@ -122,8 +122,8 @@
 						<div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
 						<div class="ClearBoth"><span></span></div>
 					</div>
-					<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> $fieldLabelMembers
-						<br/><%= space.description %>
+					<div class="Content">$status / $fieldLabelMembers <%= SpaceUtils.countMembers(space) %>
+						<br/> $space.description
 					</div>
 				</div>
 				<div class="ClearBoth"><span></span></div>
@@ -141,11 +141,11 @@
 			<div class="ContentBox">
 				<div class="TitleContent">
 					<a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeave"><span></span></a>
-					<div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
+					<div class="Text"><a href="<%= spaceUrl %>">$space.name</a></div>
 					<div class="ClearBoth"><span></span></div>
 				</div>
-				<div class="Content"><%= space.getVisibility()%> / <%= SpaceUtils.countMembers(space) %> $fieldLabelMembers
-					<br/><%= space.description %>
+				<div class="Content">$status / $fieldLabelMembers <%= SpaceUtils.countMembers(space) %>
+					<br/>$space.description
 				</div>
 			</div>
 			<div class="ClearBoth"><span></span></div>

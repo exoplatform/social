@@ -359,12 +359,12 @@ public class UISpaceMember extends UIForm {
       String currentUser = requestContext.getRemoteUser();
       
       try {
-        spaceService.removeMember(space, userName);      
+        spaceService.removeMember(space, userName);
       } catch(SpaceException se) {
           uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_MEMBER, null, ApplicationMessage.WARNING));
       }
       
-      if(userName.equals(currentUser)) {
+      if(!uiSpaceMember.isSuperUser() && userName.equals(currentUser)) {
         UIPortal uiPortal = Util.getUIPortal();
         UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
         PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, Util.getPortalRequestContext().getPortalOwner());
@@ -373,9 +373,8 @@ public class UISpaceMember extends UIForm {
             PageNodeEvent.CHANGE_PAGE_NODE,
             uri);
         uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
-        PortalRequestContext pcontext = Util.getPortalRequestContext();
-        pcontext.setResponseComplete(false);
-        SpaceUtils.updateWorkingWorkSpace();
+      } else {
+        requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
       }
     }
   }
@@ -406,7 +405,7 @@ public class UISpaceMember extends UIForm {
       } catch(SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_LEADER, null, ApplicationMessage.WARNING));
       }
-      if(!uiSpaceMember.isSuperUser()) {
+      if(!uiSpaceMember.isSuperUser() && userName.equals(requestContext.getRemoteUser())) {
         UIPortal uiPortal = Util.getUIPortal();
         PageNavigation nav = uiPortal.getSelectedNavigation();
         PageNode homeNode = nav.getNode(space.getUrl());
@@ -415,6 +414,8 @@ public class UISpaceMember extends UIForm {
             PageNodeEvent.CHANGE_PAGE_NODE,
             uri);
         uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+      } else {
+        requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
       }
     }
   }
