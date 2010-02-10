@@ -7,7 +7,7 @@
     <groupId>org.exoplatform.social</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>exo.social.component.people</artifactId>
-    <version>${org.exoplatform.social.version}</version>
+    <version>1.0-Beta02-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>eXo Social People Service</name>
     <url>http://www.exoplatform.org</url>
@@ -53,7 +53,7 @@
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.component.space</artifactId>
-        <version>${org.exoplatform.social.version}</version>
+        <version>1.0-Beta02-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
     </dependencies>

@@ -2,13 +2,13 @@
 
   <parent>
       <groupId>org.exoplatform</groupId>
-      <artifactId>parent</artifactId>
-      <version>1.1.1</version>
+      <artifactId>exo.parent</artifactId>
+      <version>7</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>sc</artifactId>
+  <artifactId>social-root</artifactId>
   <version>1.0-Beta02-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -34,7 +34,6 @@
       <version.chromattic>1.0.0-beta13</version.chromattic>
       <version.reflect>1.0.0-beta5</version.reflect>
       <org.exoplatform.portal.version>3.0.0-Beta05</org.exoplatform.portal.version>
-	    <org.exoplatform.social.version>1.0-Beta02-SNAPSHOT</org.exoplatform.social.version>
 
       <!-- ************** -->
       <!-- Build settings -->
@@ -468,6 +467,7 @@
    </dependencies>
 
    <build>
+	<finalName>${artifactId}-${version}</finalName>
       <resources>
          <resource>
             <directory>src/main/java</directory>
@@ -558,61 +558,4 @@
          </plugin>
       </plugins>
    </build>
-
-   <!-- To be removed and replaced by settings in user config -->
-   <repositories>
-      <repository>
-         <id>repository.jboss.org</id>
-         <url>http://repository.jboss.org/maven2</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
-      <repository>
-         <id>exo-int</id>
-         <url>http://maven2.exoplatform.org/rest/maven2</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
-      <repository>
-         <id>caja</id>
-         <url>http://google-caja.googlecode.com/svn/maven</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
-      <repository>
-         <id>oauth</id>
-         <url>http://oauth.googlecode.com/svn/code/maven</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
-   </repositories>
-   <pluginRepositories>
-      <pluginRepository>
-         <id>exo-int</id>
-         <url>http://maven2.exoplatform.org/rest/maven2</url>
-         <releases>
-            <enabled>true</enabled>
-         </releases>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </pluginRepository>
-   </pluginRepositories>
-
 </project>

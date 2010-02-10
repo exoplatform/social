@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>exo.social.web.socialResources</artifactId>
   <packaging>war</packaging> 
-  <version>${org.exoplatform.social.version}</version>
+  <version>1.0-Beta02-SNAPSHOT</version>
   <name>Social Resources</name>
 
   <build>

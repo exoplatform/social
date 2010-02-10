@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>exo.social.portlet.profile</artifactId>
   <packaging>war</packaging>
-  <version>${org.exoplatform.social.version}</version>
+  <version>1.0-Beta02-SNAPSHOT</version>
   <name>eXo Social Portlet Profile</name>
   <url>http://www.exoplatform.org</url>
   <description>social project, portlet web category</description>
@@ -29,19 +29,19 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.webui.social</artifactId>
-      <version>${org.exoplatform.social.version}</version>
+      <version>1.0-Beta02-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>${org.exoplatform.social.version}</version>
+      <version>1.0-Beta02-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>${org.exoplatform.social.version}</version>
+      <version>1.0-Beta02-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
