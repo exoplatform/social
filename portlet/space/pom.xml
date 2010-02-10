@@ -1,14 +1,14 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>sc</artifactId>
-    <version>1.0-Beta02-SNAPSHOT</version>
+    <version>1.0.0-Beta02</version>
   </parent> 
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>exo.social.portlet.space</artifactId>
   <packaging>war</packaging>
-  <version>1.0-Beta02-SNAPSHOT</version>
+  <version>1.0.0-Beta02</version>
   <name>eXo Social Portlet Space</name>
   <url>http://www.exoplatform.org</url>
   <description>social project, portlet web category</description>
@@ -21,7 +21,7 @@
   	<dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>1.0-Beta02-SNAPSHOT</version>
+      <version>1.0.0-Beta02</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -39,13 +39,13 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.webui.social</artifactId>
-      <version>1.0-Beta02-SNAPSHOT</version>
+      <version>1.0.0-Beta02</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>1.0-Beta02-SNAPSHOT</version>
+      <version>1.0.0-Beta02</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>sc</artifactId>
-    <version>1.0-Beta02-SNAPSHOT</version>
+    <version>1.0.0-Beta02</version>
   </parent>
 
    <modelVersion>4.0.0</modelVersion>
@@ -67,13 +67,13 @@
        <dependency>
          <groupId>org.exoplatform.social</groupId>
          <artifactId>social.packaging.module</artifactId>
-         <version>1.0-Beta02-SNAPSHOT</version>
+         <version>1.0.0-Beta02</version>
          <type>js</type>
        </dependency> 
        <dependency>
          <groupId>org.exoplatform.social</groupId>
          <artifactId>social.packaging.product</artifactId>
-         <version>1.0-Beta02-SNAPSHOT</version>
+         <version>1.0.0-Beta02</version>
          <type>js</type>
        </dependency> 
        <dependency>
