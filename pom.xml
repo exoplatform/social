@@ -8,7 +8,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>social-root</artifactId>
+  <artifactId>sc</artifactId>
   <version>1.0-Beta02-SNAPSHOT</version>
   <packaging>pom</packaging>
 
