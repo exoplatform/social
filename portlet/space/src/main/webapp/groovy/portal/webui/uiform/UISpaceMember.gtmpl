@@ -28,11 +28,11 @@
    def labelRemoveLeader = _ctx.appRes("${uicomponentId}.label.RemoveLeader")
    def labelMakeLeader = _ctx.appRes("${uicomponentId}.label.MakeLeader")
    def labelRemoveAction = _ctx.appRes("${uicomponentId}.label.RemoveAction")
-	 List<String> pendingUsers = uicomponent.getPenddingUsers();
+	 List<String> pendingUsers = uicomponent.getPendingUsers();
 	 List<String> invitedUsers = uicomponent.getInvitedUsers();
 	 List<String> existingUsers = uicomponent.getExistingUsers();
 	 
-	 UIPageIterator iteratorPenddingUsers = uicomponent.getUIPageIteratorPenddingUsers() 
+	 UIPageIterator iteratorPendingUsers = uicomponent.getUIPageIteratorPendingUsers() 
 	 UIPageIterator iteratorInvitedUsers = uicomponent.getUIPageIteratorInvitedUsers();
 	 UIPageIterator iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
 	 
@@ -101,8 +101,8 @@
 	  </table>
   	<div>
 			<%
-				if(iteratorPenddingUsers.getAvailablePage() > 1) {
-					uicomponent.renderUIComponent(iteratorPenddingUsers) ;
+				if(iteratorPendingUsers.getAvailablePage() > 1) {
+					uicomponent.renderUIComponent(iteratorPendingUsers) ;
 				}
 			%>	
 		</div>  

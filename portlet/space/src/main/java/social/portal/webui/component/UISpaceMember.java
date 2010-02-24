@@ -51,9 +51,13 @@ import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.organization.account.UIUserSelector;
 
 /**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
+ * {@link UISpaceMember} is used for managing space member: inviting, validating or declining user's 
+ * request to join; set leader... <br />
+ * 
+ * Created by The eXo Platform SARL <br />
+ * 
+ * Author : dang.tung <br />
+ *          tungcnw@gmail.com <br />
  * Sep 12, 2008          
  */
 
@@ -84,65 +88,78 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
  )
 })
 
-
-
 public class UISpaceMember extends UIForm {
 
-  static private final String MSG_ERROR_REMOVE_MEMBER = "UISpaceMember.msg.error_remove_member";
-  static private final String MSG_ERROR_REMOVE_LEADER = "UISpaceMember.msg.error_remove_leader";
+  static private final String MSG_ERROR_REMOVE_MEMBER  = "UISpaceMember.msg.error_remove_member";
+  static private final String MSG_ERROR_REMOVE_LEADER  = "UISpaceMember.msg.error_remove_leader";
+  static private final String MSG_ERROR_REVOKE_INVITED = "UISpaceMember.msg.error_revoke_invited";
+  static private final String MSG_ERROR_DECLINE_USER   = "UISpaceMember.msg.error_decline_user";
+  static private final String MSG_ERROR_VALIDATE_USER  = "UISpaceMember.msg.error_validate_user";
+  static private final String MSG_ERROR_MAKE_LEADER    = "UISpaceMember.msg.error_make_leader";
   
   private String spaceId;
   private SpaceService spaceService = null;
   private final static String USER = "user";
-  private UIPageIterator iteratorPenddingUsers;
+  private UIPageIterator iteratorPendingUsers;
   private UIPageIterator iteratorInvitedUsers;
   private UIPageIterator iteratorExistingUsers;
-  private final String iteratorPenddingID = "UIIteratorPendding";
+  private final String iteratorPendingID = "UIIteratorPendding";
   private final String iteratorInvitedID = "UIIteratorInvited";
   private final String iteratorExistingID = "UIIteratorExisting";
   private final Integer ITEMS_PER_PAGE = 5;
   
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpaceMember() throws Exception {
     addUIFormInput(new UIFormStringInput(USER,null,null)
                     .addValidator(MandatoryValidator.class)
                     .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d._,]+\\p{L}$", "UISpaceMember.msg.Invalid-char"));
     UIPopupWindow searchUserPopup = addChild(UIPopupWindow.class, "SearchUser", "SearchUser");
     searchUserPopup.setWindowSize(640, 0); 
-    iteratorPenddingUsers = createUIComponent(UIPageIterator.class, null, iteratorPenddingID);
+    iteratorPendingUsers = createUIComponent(UIPageIterator.class, null, iteratorPendingID);
     iteratorInvitedUsers = createUIComponent(UIPageIterator.class, null, iteratorInvitedID);
     iteratorExistingUsers = createUIComponent(UIPageIterator.class, null, iteratorExistingID);
-    addChild(iteratorPenddingUsers);
+    addChild(iteratorPendingUsers);
     addChild(iteratorInvitedUsers);
     addChild(iteratorExistingUsers);
   }
   
-  private SpaceService getSpaceService() {
-    if(spaceService == null) {
-      spaceService = getApplicationComponent(SpaceService.class);
-    }
-    return spaceService; 
-  }
+  /**
+   * gets uiPageIteratorPendingUsers
+   * @return uiPageIterator
+   */
+  public UIPageIterator getUIPageIteratorPendingUsers() { return iteratorPendingUsers;}
   
-  private UserACL getUserACL() throws Exception {
-    return getApplicationComponent(UserACL.class);
-  }
-  
-  private String getRemoteUser() throws Exception {
-    return Util.getPortalRequestContext().getRemoteUser();
-  }
-  
-  public UIPageIterator getUIPageIteratorPenddingUsers() { return iteratorPenddingUsers;}
-  
+  /**
+   * gets uiPageIteratorInvitedUsers to display; revoke
+   * @return uiPageIteraatorInvitedUsers
+   */
   public UIPageIterator getUIPageIteratorInvitedUsers() { return iteratorInvitedUsers;}
   
+  /**
+   * gets uiPageIteratorExistingUsers to display; remove or set/remove leader.
+   * @return uiPageiteratorExistingUsers
+   */
   public UIPageIterator getUIPageIteratorExistingUsers() { return iteratorExistingUsers;}
   
+  /**
+   * sets spaceId to this for getting current space
+   * @param spaceId
+   * @throws Exception
+   */
   public void setValue(String spaceId) throws Exception {
     this.spaceId = spaceId;
   }
   
+  /**
+   * gets list of pending users in a space
+   * @return list of pending users
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
-  public List<String> getPenddingUsers() throws Exception {
+  public List<String> getPendingUsers() throws Exception {
     List<String> pendingUsersList = new ArrayList<String>();
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);    
@@ -151,19 +168,24 @@ public class UISpaceMember extends UIForm {
       pendingUsersList.addAll(Arrays.asList(pendingUsers));
     }    
     
-    int currentPage = iteratorPenddingUsers.getCurrentPage();
+    int currentPage = iteratorPendingUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(pendingUsersList), ITEMS_PER_PAGE);
-    iteratorPenddingUsers.setPageList(pageList);
-    int pageCount = iteratorPenddingUsers.getAvailablePage();
+    iteratorPendingUsers.setPageList(pageList);
+    int pageCount = iteratorPendingUsers.getAvailablePage();
     if (pageCount >= currentPage) {
-      iteratorPenddingUsers.setCurrentPage(currentPage);
+      iteratorPendingUsers.setCurrentPage(currentPage);
     } else if (pageCount < currentPage) {
-      iteratorPenddingUsers.setCurrentPage(currentPage - 1);
+      iteratorPendingUsers.setCurrentPage(currentPage - 1);
     }
     
-    return iteratorPenddingUsers.getCurrentPageData();
+    return iteratorPendingUsers.getCurrentPageData();
   }
     
+  /**
+   * gets list of invited users in a space
+   * @return lists of invited users
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public List<String> getInvitedUsers() throws Exception {
     List<String> invitedUsersList = new ArrayList<String>(); 
@@ -187,6 +209,11 @@ public class UISpaceMember extends UIForm {
     return iteratorInvitedUsers.getCurrentPageData();
   }
   
+  /**
+   * gets list of existing users in a space
+   * @return list of existing users
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public List<String> getExistingUsers() throws Exception {    
     SpaceService spaceService = getSpaceService();
@@ -205,17 +232,25 @@ public class UISpaceMember extends UIForm {
     return iteratorExistingUsers.getCurrentPageData();
   }
 
+  /**
+   * sets users name to the input string
+   * @param userName string of users name
+   */
   public void setUsersName(String userName) {
     getUIStringInput(USER).setValue(userName); 
   }
   
+  /**
+   * gets string of user names input: a, b, c
+   * @return string of user names input
+   */
   public String getUsersName() {
     return getUIStringInput(USER).getValue(); 
   }
   
   /**
    * Checking whether the remote user is super user
-   * @return
+   * @return true or false
    * @throws Exception 
    */
   public boolean isSuperUser() throws Exception {
@@ -224,7 +259,7 @@ public class UISpaceMember extends UIForm {
   
   /**
    * Get spaceUrl
-   * @return
+   * @return string homespace url
    * @throws Exception
    */
   public String getHomeSpaceUrl() throws Exception {
@@ -234,7 +269,7 @@ public class UISpaceMember extends UIForm {
   
   /**
    * Get Manage Spaces Url (UIManageMySpaces)
-   * @return
+   * @return string managespaced url
    * @throws Exception
    */
   public String getManageSpacesUrl() throws Exception {
@@ -242,12 +277,23 @@ public class UISpaceMember extends UIForm {
     return Util.getPortalRequestContext().getPortalURI() + "spaces";
   }
   
+  /**
+   * Checks if a user is a leader of a space.
+   * @param userName logged-in user
+   * @return true or false
+   * @throws Exception
+   */
   public boolean isLeader(String userName) throws Exception {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     return spaceService.isLeader(space, userName);
   }
   
+  /**
+   * triggers this action when user click on "invite" button.
+   * @author hoatle
+   *
+   */
   static public class InviteActionListener extends EventListener<UISpaceMember> {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
@@ -259,6 +305,221 @@ public class UISpaceMember extends UIForm {
     }
   }
   
+  
+  /**
+   * triggers this action when user clicks on "search users" button.
+   * @author hoatle
+   *
+   */
+  static public class SearchUserActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      UIPopupWindow searchUserPopup = uiSpaceMember.getChild(UIPopupWindow.class);
+      UIUserSelector userSelector = uiSpaceMember.createUIComponent(UIUserSelector.class, null, null);
+      userSelector.setShowSearchGroup(false);
+      searchUserPopup.setUIComponent(userSelector);
+      searchUserPopup.setShow(true);
+    }
+  }
+  
+  /**
+   * triggers this action when user clicks on "revoke invited" button.
+   * @author hoatle
+   *
+   */
+  static public class RevokeInvitedUserActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      try {
+        spaceService.revokeInvitation(uiSpaceMember.spaceId, userName);
+      } catch (SpaceException se) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REVOKE_INVITED, null, ApplicationMessage.WARNING));
+      }
+      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
+  /**
+   * triggers this action when user clicks on "decline user's request" button.
+   * @author hoatle
+   *
+   */
+  static public class DeclineUserActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+      
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      try {
+        spaceService.declineRequest(uiSpaceMember.spaceId, userName);
+      } catch (SpaceException se) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DECLINE_USER, null, ApplicationMessage.WARNING));
+      }
+      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
+  /**
+   * triggers this action when user clicks on "remove user" button.
+   * @author hoatle
+   *
+   */
+  static public class RemoveUserActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      String currentUser = requestContext.getRemoteUser();
+      
+      try {
+        spaceService.removeMember(space, userName);
+      } catch(SpaceException se) {
+          uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_MEMBER, null, ApplicationMessage.WARNING));
+          return;
+      }
+      
+      if(!uiSpaceMember.isSuperUser() && userName.equals(currentUser)) {
+        UIPortal uiPortal = Util.getUIPortal();
+        UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
+        PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, Util.getPortalRequestContext().getPortalOwner());
+        String uri = nav.getId() + "::spaces"; 
+        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
+            PageNodeEvent.CHANGE_PAGE_NODE,
+            uri);
+        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+      } else {
+        requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+      }
+    }
+  }
+  
+  /**
+   * triggers this action when user click on "validate user's request" button
+   * @author hoatle
+   *
+   */
+  static public class ValidateUserActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      try {
+        spaceService.validateRequest(uiSpaceMember.spaceId, userName);
+      } catch (SpaceException se) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_VALIDATE_USER, null, ApplicationMessage.WARNING));
+      }
+      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
+  /**
+   * triggers this action when user click on "remove leader" button
+   * @author hoatle
+   *
+   */
+  static public class RemoveLeaderActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      try {
+        spaceService.setLeader(space, userName, false);
+      } catch(SpaceException se) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_LEADER, null, ApplicationMessage.WARNING));
+      }
+      if(!uiSpaceMember.isSuperUser() && userName.equals(requestContext.getRemoteUser())) {
+        UIPortal uiPortal = Util.getUIPortal();
+        PageNavigation nav = uiPortal.getSelectedNavigation();
+        PageNode homeNode = nav.getNode(space.getUrl());
+        String uri = nav.getId() + "::" + homeNode.getUri();
+        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
+            PageNodeEvent.CHANGE_PAGE_NODE,
+            uri);
+        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+      } else {
+        requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+      }
+    }
+  }
+  
+  /**
+   * triggers this action when user clicks on "set leader" button
+   * @author hoatle
+   *
+   */
+  static public class MakeLeaderActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      try {
+        spaceService.setLeader(space, userName, true);
+      } catch (SpaceException se) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_MAKE_LEADER, null, ApplicationMessage.WARNING));
+      }
+      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
+  /**
+   * triggers this action when user click on "add" button.
+   * @author hoatle
+   *
+   */
+  static public class AddActionListener extends EventListener<UIUserSelector> {
+    public void execute(Event<UIUserSelector> event) throws Exception {
+      UIUserSelector uiForm = event.getSource();
+      UISpaceMember uiSpaceMember = uiForm.getAncestorOfType(UISpaceMember.class);
+      uiSpaceMember.setUsersName(uiForm.getSelectedUsers());
+      UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
+      uiPopup.setUIComponent(null);
+      uiPopup.setShow(false);
+      uiSpaceMember.validateInvitedUser();
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
+  /**
+   * triggers this action when user clicks on popup's close button.
+   * @author hoatle
+   *
+   */
+  static public class CloseActionListener extends EventListener<UIUserSelector> {
+    public void execute(Event<UIUserSelector> event) throws Exception {
+      UIUserSelector uiForm = event.getSource();
+      UISpaceMember uiSpaceMember = uiForm.getAncestorOfType(UISpaceMember.class);
+      UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
+      uiPopup.setUIComponent(null);
+      uiPopup.setShow(false);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
+  /**
+   * validates invited users for checking if any error happens. 
+   * @throws Exception
+   */
   private void validateInvitedUser() throws Exception {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     UIApplication uiApp = requestContext.getUIApplication();
@@ -311,149 +572,33 @@ public class UISpaceMember extends UIForm {
     setUsersName(remainUsers);   
   }
   
-  static public class SearchUserActionListener extends EventListener<UISpaceMember> {
-    public void execute(Event<UISpaceMember> event) throws Exception {
-      UISpaceMember uiSpaceMember = event.getSource();
-      UIPopupWindow searchUserPopup = uiSpaceMember.getChild(UIPopupWindow.class);
-      UIUserSelector userSelector = uiSpaceMember.createUIComponent(UIUserSelector.class, null, null);
-      userSelector.setShowSearchGroup(false);
-      searchUserPopup.setUIComponent(userSelector);
-      searchUserPopup.setShow(true);
+  /**
+   * gets spaceService
+   * @return spaceService
+   * @see SpaceService
+   */
+  private SpaceService getSpaceService() {
+    if(spaceService == null) {
+      spaceService = getApplicationComponent(SpaceService.class);
     }
+    return spaceService; 
   }
   
-  static public class RevokeInvitedUserActionListener extends EventListener<UISpaceMember> {
-    public void execute(Event<UISpaceMember> event) throws Exception {
-      UISpaceMember uiSpaceMember = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-
-      SpaceService spaceService = uiSpaceMember.getSpaceService();
-      spaceService.revokeInvitation(uiSpaceMember.spaceId, userName); 
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-    }
+  /**
+   * gets userACL
+   * @return userACL
+   * @throws Exception
+   */
+  private UserACL getUserACL() throws Exception {
+    return getApplicationComponent(UserACL.class);
   }
   
-  static public class DeclineUserActionListener extends EventListener<UISpaceMember> {
-    public void execute(Event<UISpaceMember> event) throws Exception {
-      UISpaceMember uiSpaceMember = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      
-      SpaceService spaceService = uiSpaceMember.getSpaceService();
-      spaceService.declineRequest(uiSpaceMember.spaceId, userName);      
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-    }
-  }
-  
-  static public class RemoveUserActionListener extends EventListener<UISpaceMember> {
-    public void execute(Event<UISpaceMember> event) throws Exception {
-      UISpaceMember uiSpaceMember = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
-      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-      SpaceService spaceService = uiSpaceMember.getSpaceService();
-      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-      String currentUser = requestContext.getRemoteUser();
-      
-      try {
-        spaceService.removeMember(space, userName);
-      } catch(SpaceException se) {
-          uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_MEMBER, null, ApplicationMessage.WARNING));
-          return;
-      }
-      
-      if(!uiSpaceMember.isSuperUser() && userName.equals(currentUser)) {
-        UIPortal uiPortal = Util.getUIPortal();
-        UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
-        PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, Util.getPortalRequestContext().getPortalOwner());
-        String uri = nav.getId() + "::spaces"; 
-        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
-            PageNodeEvent.CHANGE_PAGE_NODE,
-            uri);
-        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
-      } else {
-        requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-      }
-    }
-  }
-  
-  static public class ValidateUserActionListener extends EventListener<UISpaceMember> {
-    public void execute(Event<UISpaceMember> event) throws Exception {
-      UISpaceMember uiSpaceMember = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-
-      SpaceService spaceService = uiSpaceMember.getSpaceService();
-      spaceService.validateRequest(uiSpaceMember.spaceId, userName);
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-    }
-  }
-  
-  static public class RemoveLeaderActionListener extends EventListener<UISpaceMember> {
-    public void execute(Event<UISpaceMember> event) throws Exception {
-      UISpaceMember uiSpaceMember = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
-      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-
-      SpaceService spaceService = uiSpaceMember.getSpaceService();
-      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-      try {
-        spaceService.setLeader(space, userName, false);
-      } catch(SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_LEADER, null, ApplicationMessage.WARNING));
-      }
-      if(!uiSpaceMember.isSuperUser() && userName.equals(requestContext.getRemoteUser())) {
-        UIPortal uiPortal = Util.getUIPortal();
-        PageNavigation nav = uiPortal.getSelectedNavigation();
-        PageNode homeNode = nav.getNode(space.getUrl());
-        String uri = nav.getId() + "::" + homeNode.getUri();
-        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
-            PageNodeEvent.CHANGE_PAGE_NODE,
-            uri);
-        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
-      } else {
-        requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-      }
-    }
-  }
-  
-  static public class MakeLeaderActionListener extends EventListener<UISpaceMember> {
-    public void execute(Event<UISpaceMember> event) throws Exception {
-      UISpaceMember uiSpaceMember = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-
-      SpaceService spaceService = uiSpaceMember.getSpaceService();
-      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-      spaceService.setLeader(space, userName, true);
-      
-      requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-    }
-  }
-  
-  static public class AddActionListener extends EventListener<UIUserSelector> {
-    public void execute(Event<UIUserSelector> event) throws Exception {
-      UIUserSelector uiForm = event.getSource();
-      UISpaceMember uiSpaceMember = uiForm.getAncestorOfType(UISpaceMember.class);
-      uiSpaceMember.setUsersName(uiForm.getSelectedUsers());
-      UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
-      uiPopup.setUIComponent(null);
-      uiPopup.setShow(false);
-      uiSpaceMember.validateInvitedUser();
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
-    }
-  }
-  
-  static public class CloseActionListener extends EventListener<UIUserSelector> {
-    public void execute(Event<UIUserSelector> event) throws Exception {            
-      UIUserSelector uiForm = event.getSource();
-      UISpaceMember uiSpaceMember = uiForm.getAncestorOfType(UISpaceMember.class);
-      UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
-      uiPopup.setUIComponent(null);
-      uiPopup.setShow(false);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
-    }
+  /**
+   * gets remoteUser ~ currently logged-in user
+   * @return remoteUser
+   * @throws Exception
+   */
+  private String getRemoteUser() throws Exception {
+    return Util.getPortalRequestContext().getRemoteUser();
   }
 }
