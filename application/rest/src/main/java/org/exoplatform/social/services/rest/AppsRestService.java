@@ -41,6 +41,12 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
 
 /**
  * AppsRestService.java
+ * <br/>
+ * Provides rest services for application registry gadget: shows application list.
+ * <br />
+ * GET: /{restContextName}/social/apps/show.{format}
+ * <br />
+ * ex: GET: http://localhost:8080/rest/social/apps/show.json
  *
  * @author     hoatle <hoatlevan at gmail dot com>
  * @since      Jan 6, 2010
@@ -56,7 +62,8 @@ public class AppsRestService implements ResourceContainer {
 
   /**
    * shows appList
-   * @return
+   * @return appList application list entity
+   * @see AppList
    */
   private AppList showApps() {
     AppList appList = new AppList();
@@ -87,10 +94,11 @@ public class AppsRestService implements ResourceContainer {
   }
   
   /**
-   * shows apps by json/xml format
-   * @param uriInfo
-   * @param format
-   * @return
+   * shows apps by json/xml format: <br />
+   * GET: /{restContextName}/social/apps/show.{format}
+   * @param uriInfo provided as {@link Context}
+   * @param format can be json or xml
+   * @return response
    * @throws Exception
    */
   @GET
@@ -103,28 +111,56 @@ public class AppsRestService implements ResourceContainer {
   }
   
   /**
-   * Describe an Application entity from application registry service of portal.<br>
-   * We have to need it for model of converter from rest service.
+   * Describes an Application entity from application registry service of portal.<br />
+   * This class is needed as a model for converter of the rest service.
    */
   public class App {
     private String _appId;
     private String _appName;
+    /**
+     * sets appId
+     * @param appId application id
+     */
     public void setAppId(String appId) { _appId = appId; }
+    /**
+     * gets appId
+     * @return appId application id
+     */
     public String getAppId() { return _appId; }
-    
+    /**
+     * sets application name
+     * @param appName application name
+     */
     public void setAppName(String appName) { _appName = appName; }
+    /**
+     * gets application name
+     * @return application name
+     */
     public String getAppName() {return _appName ;}
   }
   
   /**
    * List that contains applications from application registry service of portal<br>
-   * Need this class for converter from rest service.
+   * This class is needed as a model for converter of the rest service.
    */
   @XmlRootElement
   static public class AppList {
     private List<App> _apps;
+    /**
+     * sets application list
+     * @param apps application list
+     */
     public void setApps(List<App> apps) { _apps = apps; }
+    /**
+     * gets application list
+     * @return application list
+     */
     public List<App> getApps() { return _apps; }
+    /**
+     * adds application to application list
+     * @param app application
+     * @see App
+     */
     public void addApp(App app) {
       if (_apps == null) {
         _apps = new ArrayList<App>();
@@ -135,7 +171,8 @@ public class AppsRestService implements ResourceContainer {
   
   /**
    * gets applicationRegistryService
-   * @return
+   * @return applicationRegistryService
+   * @see ApplicationRegistryService
    */
   private ApplicationRegistryService getApplicationRegistryService() {
     if (_applicationRegistryService == null) {

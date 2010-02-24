@@ -30,16 +30,15 @@ import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
- * This UI is used in UIAddSpaceForm.
- * Setting variables:
- *        - Name
- *        - Priority
- *        - Description
+ * This UI is used in UIAddSpaceForm. <br />
+ * Setting variables: <br />
+ *        - Name <br />
+ *        - Priority <br />
+ *        - Description <br />
  *        
  * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- * Jul 1, 2009  
+ * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
+ * @since Jul 1, 2009
  */
 
 public class UISpaceSettings extends UIFormInputSet {
@@ -54,9 +53,13 @@ public class UISpaceSettings extends UIFormInputSet {
   
   //Message
   private final String MSG_INVALID_SPACE_NAME = "UISpaceSettings.msg.invalid_space_name";
+  /**
+   * constructor
+   * @param name
+   * @throws Exception
+   */
   public UISpaceSettings(String name) throws Exception {
     super(name);
-    
     addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null)
        .addValidator(MandatoryValidator.class)
        .addValidator(StringLengthValidator.class, 3, 30)

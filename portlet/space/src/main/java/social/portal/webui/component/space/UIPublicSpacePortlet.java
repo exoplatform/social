@@ -23,7 +23,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import social.portal.webui.component.UIManagePublicSpaces;
 
 /**
- * UIPublicSpacePorlet
+ * {@link UIPublicSpacePortlet} used as a portlet containing {@link UIManagePublicSpaces}. 
  * @author hoatle
  */
 @ComponentConfig(
@@ -31,7 +31,10 @@ import social.portal.webui.component.UIManagePublicSpaces;
   template = "app:/groovy/portal/webui/space/UIPublicSpacePortlet.gtmpl"
 )
 public class UIPublicSpacePortlet extends UIPortletApplication {
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UIPublicSpacePortlet() throws Exception {
 	 addChild(UIManagePublicSpaces.class, null, null);
   }

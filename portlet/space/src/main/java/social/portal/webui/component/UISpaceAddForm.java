@@ -133,7 +133,7 @@ public class UISpaceAddForm extends UIFormTabPane {
         String spaceName = uiSpaceSearch.getSpaceNameSearch();
         String selectedChar = uiSpaceSearch.getSelectedChar();
         if (spaceName != null)
-          uiMySpace.setSpaces_(spaceService.getSpacesByName(spaceName, (selectedChar == null) ? false : true ));
+          uiMySpace.setSpaces(spaceService.getSpacesByName(spaceName, (selectedChar == null) ? false : true ));
       } catch (SpaceException se) {
         //se.printStackTrace();
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {

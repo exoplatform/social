@@ -54,10 +54,11 @@ import org.exoplatform.webui.event.Event.Phase;
 import social.portal.webui.component.UserListAccess;
 
 /**
+ * {@link UIUserListPortlet} used as a portlet displaying space members.<br />
+ * 
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Nov 07, 2008          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Nov 07, 200
  */
 
 @ComponentConfigs ({
@@ -71,7 +72,6 @@ import social.portal.webui.component.UserListAccess;
   )
 })
 public class UIUserListPortlet extends UIPortletApplication {
-  
   private UIPageIterator iterator_;
   private List<User> memberList;
   private List<User> leaderList;
@@ -84,11 +84,22 @@ public class UIUserListPortlet extends UIPortletApplication {
   private UIProfileUserSearch uiSearchMemberOfSpace = null;
   private List<Identity> identityList;
   
-  
+  /**
+   * gets identity list
+   * @return identity list
+   */
   public List<Identity> getIdentityList() { return identityList; }
 
+  /**
+   * set identity list
+   * @param identityList
+   */
   public void setIdentityList(List<Identity> identityList) { this.identityList = identityList; }
   
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UIUserListPortlet() throws Exception {
     initMember();
     initLeader();
@@ -102,20 +113,46 @@ public class UIUserListPortlet extends UIPortletApplication {
     addChild(uiSearchMemberOfSpace);
 //    addChild(UISpaceUserSearch.class,null , null);
   }
-  
+  /**
+   * sets member list
+   * @param memberList
+   */
   public void setMemberList(List<User> memberList) { this.memberList = memberList;}
   
+  /**
+   * sets leader list
+   * @param leaderList
+   */
   public void setLeaderList(List<User> leaderList) { this.leaderList = leaderList;}
   
+  /**
+   * gets leader list
+   * @return leader list
+   * @throws Exception
+   */
   public List<User> getLeaderList() throws Exception { 
     initLeader();
     return leaderList;
   }
   
+  /**
+   * gets leader page iterator
+   * @return leader page iterator
+   */
   public UIPageIterator getIteratorLeaders() { return iteratorLeaders; }
 
+  /**
+   * gets member page iterator
+   * @return member page iterator
+   */
   public UIPageIterator getIteratorMembers() { return iteratorMembers; }
   
+  /**
+   * gets leader list
+   * @return leader list
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
   public List<User> getLeaders() throws Exception {
     initLeader();
     int currentPage = iteratorLeaders.getCurrentPage();
@@ -131,6 +168,12 @@ public class UIUserListPortlet extends UIPortletApplication {
     return iteratorLeaders.getCurrentPageData();
   }
 
+  /**
+   * gets member list
+   * @return member list
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
   public List<User> getMembers() throws Exception {
     initMember();
     UIProfileUserSearch uiSearchMemberOfSpace1 = getChild(UIProfileUserSearch.class);
@@ -149,6 +192,12 @@ public class UIUserListPortlet extends UIPortletApplication {
     return iteratorMembers.getCurrentPageData();
   }
   
+  /**
+   * gets user avatar url
+   * @param userId
+   * @return user avatar url
+   * @throws Exception
+   */
   public String getUserAvatar(String userId) throws Exception {
     Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
     Profile profile = identity.getProfile();
@@ -160,6 +209,12 @@ public class UIUserListPortlet extends UIPortletApplication {
     return null;
   }
   
+  /**
+   * gets identity by userId
+   * @param userId
+   * @return user identity
+   * @throws Exception
+   */
   public Identity getIdentity(String userId) throws Exception {
     Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
     if (identity != null) {
@@ -168,6 +223,10 @@ public class UIUserListPortlet extends UIPortletApplication {
     return null;
   }
   
+  /**
+   * initialize members, called from {@link #getMembers()}
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public void initMember() throws Exception {
     Space space = getSpace();
@@ -201,6 +260,10 @@ public class UIUserListPortlet extends UIPortletApplication {
 
   }
   
+  /**
+   * initialize leaders, called from {@link #getLeaderList()}
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public void initLeader() throws Exception {
     Space space = getSpace();
@@ -228,35 +291,59 @@ public class UIUserListPortlet extends UIPortletApplication {
    */
   private void update() throws Exception {
     int n = iterator_.getCurrentPage();
-    //// Check
     PageList pageList = new ObjectPageList(memberList, ITEMS_PER_PAGE);
     iterator_.setPageList(pageList);
     if (n <= pageList.getAvailablePage()) iterator_.setCurrentPage(n);
   }
   
 
+  /**
+   * get uiPageIterator
+   * @return uiPageIterator
+   * @throws Exception
+   */
   public UIPageIterator getUIPageIterator() throws Exception { 
     return iterator_;
   }
   
+  /**
+   * gets space, space identified by the url.
+   * @return space
+   * @throws SpaceException
+   */
   public Space getSpace() throws SpaceException {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     return spaceService.getSpaceByUrl(spaceUrl);
   }
   
+  /**
+   * gets user list in a space
+   * @return user list
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public List<User> getUsersInSpace() throws Exception{
     update();
     return iterator_.getCurrentPageData();
   }
   
+  /**
+   * gets current path
+   * @return current path
+   */
   public String getPath() {
     String nodePath = Util.getPortalRequestContext().getNodePath();
     String uriPath = Util.getPortalRequestContext().getRequestURI();
     return uriPath.replaceAll(nodePath, "");
   }
   
+  /**
+   * gets memberships of a user in a space.
+   * @param userName
+   * @return string of membership name
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public String getMemberships(String userName) throws Exception {
     String memberShip = null;
@@ -286,6 +373,9 @@ public class UIUserListPortlet extends UIPortletApplication {
 //    
 //  }
   
+  /**
+   * triggers this action when user clicks on search button
+   */
   public static class SearchActionListener extends EventListener<UIUserListPortlet> {
     @Override
     public void execute(Event<UIUserListPortlet> event) throws Exception {
@@ -297,10 +387,9 @@ public class UIUserListPortlet extends UIPortletApplication {
   }
   
   /**
-   * Get all member names for suggesting.
-   * 
-   * @return
-   * @throws   
+   * gets all member names for suggesting.
+   * @return member name list
+   * @throws Exception
    */
   private List<String> getAllMemberNames() throws Exception {
     List<String> allMemberNames = new ArrayList<String>();
@@ -310,6 +399,11 @@ public class UIUserListPortlet extends UIPortletApplication {
     return allMemberNames;
   }
   
+  /**
+   * get identityManager
+   * @return identityManager
+   * @see IdentityManager
+   */
   private IdentityManager getIdentityManager() {
     if(identityManager_ == null) {
       PortalContainer pcontainer =  PortalContainer.getInstance();
@@ -318,10 +412,19 @@ public class UIUserListPortlet extends UIPortletApplication {
     return identityManager_;
   }
   
+  /**
+   * get current portal name
+   * @return current portal name
+   */
   private String getPortalName() {
     PortalContainer pcontainer =  PortalContainer.getInstance();
     return pcontainer.getPortalContainerInfo().getContainerName();  
   }
+  /**
+   * gets current repository name
+   * @return current repository name
+   * @throws Exception
+   */
   private String getRepository() throws Exception {
     RepositoryService rService = getApplicationComponent(RepositoryService.class);    
     return rService.getCurrentRepository().getConfiguration().getName();

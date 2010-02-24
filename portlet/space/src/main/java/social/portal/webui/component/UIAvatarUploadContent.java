@@ -32,11 +32,10 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
 /**
- * Displays uploaded content from UIAvatarUploader
+ * Displays uploaded content from UIAvatarUploader <br />
  * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Nov 4, 2009  
+ * @author eXoPlatform <exo at exoplatform dot com>
+ * @since Nov 4, 2009
  */
 @ComponentConfig(
   template = "app:/groovy/portal/webui/uiform/UIAvatarUploadContent.gtmpl",
@@ -46,6 +45,9 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIAvatarUploadContent extends UIContainer {
+  /**
+   * avatar_property
+   */
   static public final String AVARTAR_PROPERTY = "avatar";
   private SpaceAttachment spaceAttachment;
   private String imageSource;
@@ -59,7 +61,7 @@ public class UIAvatarUploadContent extends UIContainer {
   
   /**
    * constructor
-   * @param SpaceAttachment
+   * @param spaceAttachment 
    * @throws Exception 
    */
   public UIAvatarUploadContent(SpaceAttachment spaceAttachment) throws Exception {
@@ -69,16 +71,16 @@ public class UIAvatarUploadContent extends UIContainer {
   
   
   /**
-   * gets SpaceAttachment
-   * @return SpaceAttachment
+   * gets spaceAttachment
+   * @return spaceAttachment
    */
   public SpaceAttachment getSpaceAttachment() {
     return spaceAttachment;
   }
   
   /**
-   * sets SpaceAttachment
-   * @param SpaceAttachment
+   * sets spaceAttachment
+   * @param spaceAttachment 
    * @throws Exception 
    */
   public void setSpaceAttachment(SpaceAttachment spaceAttachment) throws Exception {
@@ -97,14 +99,14 @@ public class UIAvatarUploadContent extends UIContainer {
   
   /**
    * gets imageSource link
-   * @return
+   * @return imageSource link
    */
   public String getImageSource() {
     return imageSource;
   }
   
   /**
-   * accepts and saves the uploaded image to Space
+   * accepts and saves the uploaded image to Space; 
    * closes the popup window, refreshes UISpace
    * @author hoatle
    */
@@ -137,7 +139,6 @@ public class UIAvatarUploadContent extends UIContainer {
       UIPopupWindow uiPopup = uiAvatarUploadContent.getParent();
       uiPopup.setShow(false);
     }
-    
   }
 
 }

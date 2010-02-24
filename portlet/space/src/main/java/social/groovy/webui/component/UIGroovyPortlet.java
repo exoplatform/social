@@ -24,6 +24,11 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIPortletApplication;
 
+/**
+ * UIGroovyPortlet
+ * @author dang.tung
+ *
+ */
 @ComponentConfig()
 public class UIGroovyPortlet extends UIPortletApplication {
   
@@ -31,6 +36,10 @@ public class UIGroovyPortlet extends UIPortletApplication {
   private String template_ ;
   private String windowId ;
   
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UIGroovyPortlet() throws Exception {
     PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance() ;
     PortletRequest prequest = context.getRequest() ;
@@ -41,6 +50,10 @@ public class UIGroovyPortlet extends UIPortletApplication {
   public String getId() { return windowId + "-portlet" ; }
   public String getTemplate() {  return template_ ;  }
   
+  /**
+   * gets viewModeUIComponent
+   * @return viewModeUIComponent
+   */
   public UIComponent getViewModeUIComponent() { return null; }
 
 }

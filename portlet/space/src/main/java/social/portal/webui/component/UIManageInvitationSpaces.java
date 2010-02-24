@@ -43,10 +43,10 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
 /**
+ * UIManageInvitationSpaces.java used for managing invitation spaces. <br />
  * Created by The eXo Platform SAS
- * Author : tung.dang
- *          tungcnw@gmail.com
- * Nov 02, 2009  
+ * @author tung.dang <tungcnw at gmail dot com>
+ * @since Nov 02, 2009 
  */
 
 @ComponentConfig(
@@ -70,7 +70,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   private final String ITERATOR_ID = "UIIteratorInvitationSpaces";
   private SpaceService spaceService = null;
   private String userId = null;
-  private List<Space> spaces_; // for search result
+  private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
   
   /**
@@ -83,15 +83,15 @@ public class UIManageInvitationSpaces extends UIContainer {
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }
   /**
-   * Get UIPageIterator
-   * @return
+   * gets uiPageIterator
+   * @return uiPageIterator
    */
   public UIPageIterator getUIPageIterator() {
     return iterator;
   }
   
   /**
-   * Get SpaceService
+   * gets spaceService
    * @return spaceService
    */
   private SpaceService getSpaceService() {
@@ -101,7 +101,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
   
   /**
-   * Get remote user Id
+   * gets remote user Id
    * @return userId
    */
   private String getUserId() {
@@ -111,8 +111,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
   
   /**
-   * Get all user's spaces
-   * @return
+   * gets all user's spaces
+   * @return space list
    * @throws Exception
    */
   public List<Space> getInvitationSpaces() throws Exception {
@@ -123,7 +123,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
   
   /**
-   * Get paginated spaces in which user is member or leader
+   * gets paginated spaces in which user is member or leader
    * 
    * @return paginated spaces list
    * @throws Exception
@@ -138,7 +138,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * Get role of the user in a specific space for displaying in template
    * 
    * @param spaceId
-   * @return UIManageMySpaces.LEADER if the remote user is the space's leader
+   * @return UIManageMySpaces.LEADER if the remote user is the space's leader <br />
    *         UIManageMySpaces.MEMBER if the remote user is the space's member
    * @throws SpaceException 
    */
@@ -151,77 +151,19 @@ public class UIManageInvitationSpaces extends UIContainer {
     return MEMBER;
   }
   
-  public void setSpaces_(List<Space> spaces_) {
-    this.spaces_ = spaces_;
+  /**
+   * sets space list
+   * @param spaces
+   */
+  public void setSpaces(List<Space> spaces) {
+    this.spaces = spaces;
   }
-  public List<Space> getSpaces_() {
-    return spaces_;
-  }
-  
-  public String getImageSource(Space space) throws Exception {
-    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
-    if (spaceAtt != null) {
-      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
-              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
-  }
-  
-  private List<String> getInvitedSpaceNames() throws Exception {
-    List<Space> invitedSpaces = getInvitationSpaces();
-    List<String> invitedSpaceNames = new ArrayList<String>();
-    for (Space space: invitedSpaces) {
-      invitedSpaceNames.add(space.getName());
-    }
-    
-    return invitedSpaceNames;
-  }
-  
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
-  }
-  
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-  
-  private List<Space> getSpaceList() throws Exception {
-    List<Space> spaceList = getSpaces_();
-    List<Space> allInvitationSpace = getInvitationSpaces();
-    List<Space> invitedSpaces = new ArrayList<Space>();
-    if (allInvitationSpace.size() == 0) return allInvitationSpace;
-    if(spaceList != null) {
-      Iterator<Space> spaceItr = spaceList.iterator();
-      while(spaceItr.hasNext()) {
-        Space space = spaceItr.next();
-        for(Space invitationSpace : allInvitationSpace) {
-          if(space.getName().equals(invitationSpace.getName())){
-            invitedSpaces.add(invitationSpace);
-            break;
-          }
-        }
-      }
-    
-      return invitedSpaces;
-    }
-    
-    return allInvitationSpace;
-  }
-  
-  @SuppressWarnings("unchecked")
-  private List<Space> getDisplayInvitedSpace(List<Space> spaces_, UIPageIterator pageIterator_) throws Exception {
-    int currentPage = pageIterator_.getCurrentPage();
-    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces_), SPACES_PER_PAGE);
-    pageIterator_.setPageList(pageList);
-    int pageCount = pageIterator_.getAvailablePage();
-    if (pageCount >= currentPage) {
-      pageIterator_.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      pageIterator_.setCurrentPage(currentPage - 1);
-    }
-    return pageIterator_.getCurrentPageData();
+  /**
+   * gets space list
+   * @return space list
+   */
+  public List<Space> getSpaces() {
+    return spaces;
   }
 
   /**
@@ -263,7 +205,7 @@ public class UIManageInvitationSpaces extends UIContainer {
 
   /**
   * This action is triggered when user clicks on Deny Space Invitation
-  * When denying, that space will remove the user from pending
+  * When denying, that space will remove the user from pending list
   */
   static public class DenyActionListener extends EventListener<UIManageInvitationSpaces> {
   
@@ -295,14 +237,116 @@ public class UIManageInvitationSpaces extends UIContainer {
    }    
   }
   
+  /**
+   * triggers this action when user clicks on search button
+   * @author hoatle
+   *
+   */
   public static class SearchActionListener extends EventListener<UIManageInvitationSpaces> {
     @Override
     public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
       UIManageInvitationSpaces uiForm = event.getSource();
       UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
       List<Space> spaceList = uiSpaceSearch.getSpaceList();
-      uiForm.setSpaces_(spaceList);
+      uiForm.setSpaces(spaceList);
     }
   }
+
+  /**
+   * gets image source url
+   * @param space
+   * @return image source url
+   * @throws Exception
+   */
+  public String getImageSource(Space space) throws Exception {
+    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
+    if (spaceAtt != null) {
+      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
+              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+    }
+    return null;
+  }
   
+  /**
+   * gets invited space name list
+   * @return invited space name list
+   * @throws Exception
+   */
+  private List<String> getInvitedSpaceNames() throws Exception {
+    List<Space> invitedSpaces = getInvitationSpaces();
+    List<String> invitedSpaceNames = new ArrayList<String>();
+    for (Space space: invitedSpaces) {
+      invitedSpaceNames.add(space.getName());
+    }
+    
+    return invitedSpaceNames;
+  }
+  
+  /**
+   * gets portal name
+   * @return portal name
+   */
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  
+  /**
+   * gets repository name
+   * @return repository name
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
+  /**
+   * gets space list
+   * @return space list
+   * @throws Exception
+   */
+  private List<Space> getSpaceList() throws Exception {
+    List<Space> spaceList = getSpaces();
+    List<Space> allInvitationSpace = getInvitationSpaces();
+    List<Space> invitedSpaces = new ArrayList<Space>();
+    if (allInvitationSpace.size() == 0) return allInvitationSpace;
+    if(spaceList != null) {
+      Iterator<Space> spaceItr = spaceList.iterator();
+      while(spaceItr.hasNext()) {
+        Space space = spaceItr.next();
+        for(Space invitationSpace : allInvitationSpace) {
+          if(space.getName().equals(invitationSpace.getName())){
+            invitedSpaces.add(invitationSpace);
+            break;
+          }
+        }
+      }
+    
+      return invitedSpaces;
+    }
+    
+    return allInvitationSpace;
+  }
+  
+  /**
+   * gets displayed invited space list
+   * @param spaces_
+   * @param pageIterator_
+   * @return invited space list
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  private List<Space> getDisplayInvitedSpace(List<Space> spaces, UIPageIterator pageIterator_) throws Exception {
+    int currentPage = pageIterator_.getCurrentPage();
+    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
+    pageIterator_.setPageList(pageList);
+    int pageCount = pageIterator_.getAvailablePage();
+    if (pageCount >= currentPage) {
+      pageIterator_.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      pageIterator_.setCurrentPage(currentPage - 1);
+    }
+    return pageIterator_.getCurrentPageData();
+  }
 }

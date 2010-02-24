@@ -28,9 +28,9 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * Created by The eXo Platform SAS
- * Author : hanhvq@gmail.com
- * Oct 7, 2009  
+ * {@link UISpaceToolBarPortlet} used as a portlet displaying spaces.<br />
+ * @author <a href="mailto:hanhvq@gmail.com">hanhvq</a>
+ * @since Oct 7, 2009
  */
 @ComponentConfig(
                  lifecycle = UIApplicationLifecycle.class,
@@ -38,12 +38,20 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UISpaceToolBarPortlet extends UIPortletApplication {
   
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpaceToolBarPortlet() throws Exception {  }
   
   private SpaceService spaceService = null;
   private String userId = null;
   
-  
+  /**
+   * gets all user spaces
+   * @return
+   * @throws Exception
+   */
   @SuppressWarnings("unused")
   private List<Space> getAllUserSpaces() throws Exception {
     SpaceService spaceService = getSpaceService();
@@ -52,6 +60,11 @@ public class UISpaceToolBarPortlet extends UIPortletApplication {
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
   
+  /**
+   * gets spaceService
+   * @return spaceService
+   * @see SpaceService
+   */
   private SpaceService getSpaceService() {
     if(spaceService == null) {
       spaceService = getApplicationComponent(SpaceService.class);
@@ -60,7 +73,7 @@ public class UISpaceToolBarPortlet extends UIPortletApplication {
   }
   
   /**
-   * Get remote user Id
+   * gets remote user Id
    * @return userId
    */
   private String getUserId() {

@@ -23,6 +23,8 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
+ * {@link UISpaceNavigationPortlet} used as a portlet displaying space navigation links:
+ * my spaces, invitation spaces, public spaces, pending spaces
  * Created by The eXo Platform SAS
  */
 
@@ -32,9 +34,17 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UISpaceNavigationPortlet extends UIPortletApplication {
 
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpaceNavigationPortlet() throws Exception {
   }
   
+  /**
+   * gets selected node name
+   * @return
+   */
   public String getSelectedNode() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     String requestUrl = pcontext.getRequestURI();

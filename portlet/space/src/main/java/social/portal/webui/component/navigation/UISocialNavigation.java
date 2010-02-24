@@ -35,21 +35,36 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 /**
+ * {@link UISocialNavigation} used as child of UISocialNavigationPortlet.
  * Created by The eXo Platform SARL
- * Author : Dang Van Minh 
- *          minhdv81@yahoo.com
- * Jul 12, 2006  
  */
 public class UISocialNavigation extends UIComponent {
   private boolean useAJAX = true ;
   protected PageNode selectedNode_ ;
   protected Object selectedParent_ ; 
 
+  /**
+   * gets viewModeUIComponent
+   * @return viewModeUIComponent
+   */
   public UIComponent getViewModeUIComponent() { return null; }
   
+  /**
+   * sets useAjax
+   * @param bl true or false
+   */
   public void setUseAjax(boolean bl) { useAJAX = bl ; }
+  /**
+   * checks if use ajax or not
+   * @return true or false
+   */
   public boolean isUseAjax() { return useAJAX ; }
   
+  /**
+   * gets navigation page list
+   * @return navigation page list
+   * @throws Exception
+   */
   public List<PageNavigation> getNavigations() throws Exception {
     List<PageNavigation> result = new ArrayList<PageNavigation>();
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
@@ -63,6 +78,10 @@ public class UISocialNavigation extends UIComponent {
     return result;
   }
   
+  /**
+   * gets selected navigation page
+   * @return selected navigation page
+   */
   public PageNavigation getSelectedNavigation() {
     PageNavigation nav = null;
     try {
@@ -77,7 +96,15 @@ public class UISocialNavigation extends UIComponent {
     return null;
   }
 
+  /**
+   * gets selected parent
+   * @return selected parent
+   */
   public Object getSelectedParent() { return selectedParent_ ; }
+  /**
+   * gets selected page node
+   * @return selected page node
+   */
   public PageNode getSelectedPageNode() {
     try {
       if(selectedNode_ != null)  return selectedNode_;
@@ -91,6 +118,11 @@ public class UISocialNavigation extends UIComponent {
     return null;
   }  
   
+  /**
+   * checks if a node is a selected node
+   * @param node
+   * @return true or false
+   */
   public boolean isSelectedNode(PageNode node){
     if(selectedNode_ != null && node.getUri().equals(selectedNode_.getUri())) return true;
     if(selectedParent_ == null || selectedParent_ instanceof PageNavigation) return false; 
@@ -101,11 +133,16 @@ public class UISocialNavigation extends UIComponent {
   public void processRender(WebuiRequestContext context) throws Exception {
     UIPortal uiPortal = Util.getUIPortal(); 
     if(uiPortal.getSelectedNode() != selectedNode_){
-      setSelectedPageNode(uiPortal.getSelectedNode()) ;      
+      setSelectedPageNode(uiPortal.getSelectedNode());
     }
     super.processRender(context);
   }
   
+  /**
+   * sets selected page node
+   * @param selectedNode
+   * @throws Exception
+   */
   private void setSelectedPageNode(PageNode selectedNode) throws Exception {
     selectedNode_ = selectedNode;
     selectedParent_ = null;
@@ -123,7 +160,13 @@ public class UISocialNavigation extends UIComponent {
     } 
   }
 
+  /**
+   * triggers this action when user click on select node event link
+   * @author hoatle
+   *
+   */
   static  public class SelectNodeActionListener extends EventListener<UISocialNavigation> {
+    @SuppressWarnings("unchecked")
     public void execute(Event<UISocialNavigation> event) throws Exception {      
       UISocialNavigation uiNavigation = event.getSource();
       UIPortal uiPortal = Util.getUIPortal();
@@ -152,7 +195,7 @@ public class UISocialNavigation extends UIComponent {
         }
       }
       PageNodeEvent<UIPortal> pnevent ;
-      pnevent = new PageNodeEvent<UIPortal>(uiPortal, PageNodeEvent.CHANGE_PAGE_NODE, uri) ;      
+      pnevent = new PageNodeEvent<UIPortal>(uiPortal, PageNodeEvent.CHANGE_PAGE_NODE, uri);
       uiPortal.broadcast(pnevent, Event.Phase.PROCESS) ;
     }
   }

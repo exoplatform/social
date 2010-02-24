@@ -22,13 +22,21 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 import social.portal.webui.component.UIManageMySpaces;
 
+/**
+ * {@link UIMySpacePortlet} used as a portlet containing {@link UIManageMySpaces}.
+ * @author hoatle
+ *
+ */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/portal/webui/space/UIMySpacePortlet.gtmpl"
 )
 
 public class UIMySpacePortlet extends UIPortletApplication {
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UIMySpacePortlet() throws Exception {
     addChild(UIManageMySpaces.class, null, null);
   }

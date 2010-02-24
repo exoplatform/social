@@ -34,10 +34,11 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 /**
+ * UIAddApplicationSpace used for installing application to space <br />
+ * 
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Sep 12, 2008          
+ * @author dang.tung <tungcnw at gmail dot com>
+ * @since Sep 12, 2008
  */
 
 @ComponentConfig(
@@ -54,12 +55,20 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
   private String spaceId; 
   private final String iteratorID = "UIIteratorAddSpaceApplication";
   private final String HOME_APPLICATION = "HomeSpacePortlet";
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UIAddApplicationSpace() throws Exception {
     iterator_ = createUIComponent(UIPageIterator.class, null, iteratorID);
     addChild(iterator_);
   }
   
+  /**
+   * sets spaceId for current space
+   * @param spaceId
+   * @throws Exception
+   */
   public void setSpaceId(String spaceId) throws Exception {
     this.spaceId = spaceId;
     List<Application> list;
@@ -80,6 +89,11 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
     iterator_.setPageList(pageList);
   }
   
+  /**
+   * gets application list
+   * @return application list
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public List<Application> getApplications() throws Exception {
     List<Application> lists;
@@ -87,8 +101,17 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
     return lists;
   }
  
+  /**
+   * gets uiPageIterator
+   * @return uiPageIterator
+   */
   public UIPageIterator getUIPageIterator() { return iterator_;}
 
+  /**
+   * triggers this action when user clicks on close button.
+   * @author hoatle
+   *
+   */
   static public class CloseActionListener extends EventListener<UIAddApplicationSpace> {
     public void execute(Event<UIAddApplicationSpace> event) throws Exception {
       UIAddApplicationSpace uiSpaceApp = event.getSource();
@@ -98,6 +121,11 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
     }
   }
   
+  /**
+   * triggers this action when user clicks on install button.
+   * @author hoatle
+   *
+   */
   static public class InstallActionListener extends EventListener<UIAddApplicationSpace> {
     public void execute(Event<UIAddApplicationSpace> event) throws Exception {
       UIAddApplicationSpace uiform = event.getSource();

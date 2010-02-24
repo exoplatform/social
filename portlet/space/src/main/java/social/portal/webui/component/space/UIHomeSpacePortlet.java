@@ -29,10 +29,10 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 /**
+ * {@link UIHomeSpacePortlet} used for default space's home page.
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Oct 23, 2008          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Oct 23, 2008
  */
 
 @ComponentConfig(
@@ -43,6 +43,10 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
 
   private String DEFAULT_TEMPLATE = "home-spaces";
   private String DEFAULT_RSSFETCH_ID = "rssFetch";
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UIHomeSpacePortlet() throws Exception {
     UIDashboard uiDashboard = addChild(UIDashboard.class, null, null);
     PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance() ;

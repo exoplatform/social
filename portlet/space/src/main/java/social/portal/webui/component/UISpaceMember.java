@@ -55,10 +55,8 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
  * request to join; set leader... <br />
  * 
  * Created by The eXo Platform SARL <br />
- * 
- * Author : dang.tung <br />
- *          tungcnw@gmail.com <br />
- * Sep 12, 2008          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Sep 12, 2008
  */
 
 @ComponentConfigs ( {
@@ -249,7 +247,7 @@ public class UISpaceMember extends UIForm {
   }
   
   /**
-   * Checking whether the remote user is super user
+   * checks whether the remote user is super user
    * @return true or false
    * @throws Exception 
    */
@@ -258,7 +256,7 @@ public class UISpaceMember extends UIForm {
   }
   
   /**
-   * Get spaceUrl
+   * gets spaceUrl
    * @return string homespace url
    * @throws Exception
    */
@@ -268,8 +266,8 @@ public class UISpaceMember extends UIForm {
   }
   
   /**
-   * Get Manage Spaces Url (UIManageMySpaces)
-   * @return string managespaced url
+   * gets Manage Spaces Url (UIManageMySpaces)
+   * @return manage spaces url
    * @throws Exception
    */
   public String getManageSpacesUrl() throws Exception {
@@ -278,7 +276,7 @@ public class UISpaceMember extends UIForm {
   }
   
   /**
-   * Checks if a user is a leader of a space.
+   * checks if a user is a leader of a space.
    * @param userName logged-in user
    * @return true or false
    * @throws Exception

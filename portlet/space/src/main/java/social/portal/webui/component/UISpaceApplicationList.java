@@ -37,11 +37,11 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
 
-/** Customized from UIApplicationList
+/** 
+ * customized from UIApplicationList <br />
  * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- * Nov 9, 2009  
+ * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
+ * @since Nov 09, 2009
  */
 @ComponentConfig(
   template = "app:/groovy/portal/webui/component/UISpaceApplicationList.gtmpl",
@@ -71,6 +71,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
   
   /**
+   * sets selected category
    * @param categoryName
    */
   public void setSelectedCategory(String categoryName) {
@@ -84,7 +85,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
   
   /**
-   * 
+   * sets space
    * @param space
    * @throws Exception
    */
@@ -127,7 +128,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
   
   /**
-   * 
+   * gets appStore
    * @return appStore
    */
   public Map<ApplicationCategory, List<Application>> getAppStore() {
@@ -135,7 +136,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
  
   /**
-   * 
+   * triggers this action when user selects on category
    * @author hoatle
    *
    */
@@ -150,11 +151,11 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
     
   }
   
-  /** 
+  /**
+   * triggers this action when user clicks on install button
    * @author hoatle
    */
   static public class InstallApplicationActionListener extends EventListener<UISpaceApplicationList> {
-
     @Override
     public void execute(Event<UISpaceApplicationList> event) throws Exception {
       String appId = event.getRequestContext().getRequestParameter(OBJECTID);

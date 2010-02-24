@@ -22,13 +22,21 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 import social.portal.webui.component.UIManagePendingSpaces;
 
+/**
+ * {@link UIPendingSpacePortlet} used as a portlet containing {@link UIManagePendingSpaces}.
+ * @author hoatle
+ *
+ */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/portal/webui/space/UIPendingSpacePortlet.gtmpl"
 )
 
 public class UIPendingSpacePortlet extends UIPortletApplication {
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UIPendingSpacePortlet() throws Exception {
     addChild(UIManagePendingSpaces.class, null, null);
   }

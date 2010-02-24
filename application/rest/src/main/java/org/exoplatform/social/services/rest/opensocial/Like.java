@@ -32,27 +32,59 @@ public class Like {
                  _username,
                  _fullName;
   
+  /**
+   * sets identityId who likes
+   * @param identityId
+   */
   public void setIdentityId(String identityId) { 
     _identityId = identityId;
   }
+  /**
+   * gets identityId who likes
+   * @return identityId
+   */
   public String getIdentityId() {
     return _identityId;
   }
+  /**
+   * gets thumbnail
+   * @return thumbnail url
+   */
   public String getThumbnail() { 
     return _thumbnail;
   }
+  /**
+   * sets thumbnail url
+   * @param thumbnail url
+   */
   public void setThumbnail(String thumbnail) { 
     _thumbnail = thumbnail;
   }
+  /**
+   * gets userName
+   * @return userName
+   */
   public String getUsername() { 
     return _username;
   }
+  /**
+   * sets userName
+   * @param username
+   */
   public void setUsername(String username) { 
     _username = username;
   }
+  /**
+   * gets user full name
+   * @return user full name
+   */
   public String getFullName() { 
     return _fullName;
   }
+  /**
+   * sets user full name
+   * @param fullName
+   */
   public void setFullName(String fullName) { 
     _fullName = fullName;
   }

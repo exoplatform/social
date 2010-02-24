@@ -37,12 +37,11 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
+ * {@link UISpaceMenuPortlet} used as a portlet displaying space menu. <br />
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Dec 15, 2008          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Dec 15, 2008
  */
-
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/portal/webui/space/UISpaceMenuPortlet.gtmpl"
@@ -51,11 +50,19 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UISpaceMenuPortlet extends UIPortletApplication {
   private SpaceService spaceService = null;
   private UIPortal uiPortal = null;
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpaceMenuPortlet() throws  Exception { 
     uiPortal = Util.getUIPortal();
   }
   
+  /**
+   * gets page node list
+   * @return page node list
+   * @throws Exception
+   */
   public List<PageNode> getApps() throws Exception {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
@@ -84,7 +91,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   }
   
   /**
-   * Get space name from space url.
+   * gets space name from space url.
    * 
    * @return space's name.
    * @throws Exception
@@ -96,18 +103,22 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     return space.getName();
   }
   
-  private class ApplicationComparator implements Comparator<PageNode> {
-    public int compare(PageNode pageNode1, PageNode pageNode2) {
-      return pageNode1.getResolvedLabel().compareToIgnoreCase(pageNode2.getResolvedLabel());
-    }
-  }
-  
+  /**
+   * gets selected application page node
+   * @return selected application page node
+   * @throws Exception
+   */
   public String getAppSelected() throws Exception {
     PageNode selectedNode = uiPortal.getSelectedNode();
     String[] split = selectedNode.getUri().split("/");
     return split[split.length - 1];
   }
   
+  /**
+   * gets image source url
+   * @return image source url
+   * @throws Exception
+   */
   protected String getImageSource() throws Exception {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceByUrl(SpaceUtils.getSpaceUrl());
@@ -118,20 +129,39 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     }
     return null;
   }
-  
+
+  /**
+   * application comparator
+   * @author hoatle
+   *
+   */
+  private class ApplicationComparator implements Comparator<PageNode> {
+    public int compare(PageNode pageNode1, PageNode pageNode2) {
+      return pageNode1.getResolvedLabel().compareToIgnoreCase(pageNode2.getResolvedLabel());
+    }
+  }
+  /**
+   * gets current portal name
+   * @return current portal name
+   */
   private String getPortalName() {
     PortalContainer pcontainer =  PortalContainer.getInstance();
     return pcontainer.getPortalContainerInfo().getContainerName();
   }
-  
+  /**
+   * gets current repository name
+   * @return
+   * @throws Exception
+   */
   private String getRepository() throws Exception {
     RepositoryService rService = getApplicationComponent(RepositoryService.class);    
     return rService.getCurrentRepository().getConfiguration().getName();
   }
   
   /**
-   * get {@SpaceService}
+   * get spaceService
    * @return spaceService
+   * @see SpaceService
    */
   private SpaceService getSpaceService() {
     if (spaceService == null) {

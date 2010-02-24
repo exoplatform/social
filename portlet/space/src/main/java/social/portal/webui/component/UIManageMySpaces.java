@@ -55,14 +55,13 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
 /**
- * UIManageMySpaces
+ * UIManageMySpaces.java <br />
  * Manage all user's spaces, user can edit, delete, leave space.
- * User can create new space here.
+ * User can create new space here. <br />
  * 
  * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- * Jun 29, 2009  
+ * @author hoatle <hoatlevan at gmail dot com>
+ * @since Jun 29, 2009
  */
 @ComponentConfigs({
   @ComponentConfig(
@@ -105,7 +104,7 @@ public class UIManageMySpaces extends UIContainer {
   private String userId = null;
   private List<PageNavigation> navigations;
   private PageNavigation selectedNavigation;
-  private List<Space> spaces_; // for search result
+  private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
   
   /**
@@ -123,59 +122,16 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   /**
-   * Get UIPageIterator
-   * @return
+   * gets uiPageIterator
+   * @return uiPageIterator
    */
   public UIPageIterator getMySpacesUIPageIterator() {
     return iterator;
   }
   
   /**
-   * Get SpaceService
-   * @return spaceService
-   */
-  private SpaceService getSpaceService() {
-    if(spaceService == null)
-      spaceService = getApplicationComponent(SpaceService.class);
-    return spaceService;
-  }
-  
-  /**
-   * Get remote user Id
-   * @return userId
-   */
-  private String getUserId() {
-    if(userId == null) 
-      userId = Util.getPortalRequestContext().getRemoteUser();
-    return userId;
-  }
-  /**
-   * Load Navigations
-   * @throws Exception
-   */
-  private void loadNavigations() throws Exception {
-    navigations = new ArrayList<PageNavigation>();
-    UserACL userACL = getApplicationComponent(UserACL.class);
-    DataStorage dataStorage = getApplicationComponent(DataStorage.class);
-    // load all navigation that user has edit permission
-    Query<PageNavigation> query = new Query<PageNavigation>(PortalConfig.GROUP_TYPE,
-                                                            null,
-                                                            PageNavigation.class);
-    List<PageNavigation> navis = dataStorage.find(query, new Comparator<PageNavigation>(){
-      public int compare(PageNavigation pconfig1, PageNavigation pconfig2) {
-        return pconfig1.getOwnerId().compareTo(pconfig2.getOwnerId());
-      }
-    }).getAll();
-    for (PageNavigation ele : navis) {
-      if (userACL.hasEditPermission(ele)) {
-        navigations.add(ele);
-      }
-    }
-  }
-  
-  /**
-   * Get all user's spaces
-   * @return
+   * gets all user's spaces
+   * @return user spaces
    * @throws Exception
    */
   public List<Space> getAllUserSpaces() throws Exception {
@@ -188,15 +144,15 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   /**
-   * Get selected navigation
-   * @return
+   * gets selected navigation
+   * @return page navigation
    */
   public PageNavigation getSelectedNavigation() {
     return selectedNavigation;
   }
   
   /**
-   * Set selected navigation
+   * sets selected navigation
    * @param navigation
    */
   public void setSelectedNavigation(PageNavigation navigation) {
@@ -204,7 +160,7 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   /**
-   * Get paginated spaces in which user is member or leader
+   * gets paginated spaces in which user is member or leader
    * 
    * @return paginated spaces list
    * @throws Exception
@@ -216,10 +172,10 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   /**
-   * Get role of the user in a specific space for displaying in template
+   * gets role of the user in a specific space for displaying in template
    * 
    * @param spaceId
-   * @return UIManageMySpaces.LEADER if the remote user is the space's leader
+   * @return UIManageMySpaces.LEADER if the remote user is the space's leader <br />
    *         UIManageMySpaces.MEMBER if the remote user is the space's member
    * @throws SpaceException 
    */
@@ -233,10 +189,10 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   /**
-   * Check in case root has membership with current space.
+   * checks in case root has membership with current space.
    * 
    * @param spaceId
-   * @return
+   * @return true or false
    * @throws SpaceException
    */
   public boolean hasMembership(String spaceId) throws SpaceException {
@@ -250,50 +206,27 @@ public class UIManageMySpaces extends UIContainer {
     
   }
   
-  public void setSpaces_(List<Space> spaces_) {
-    this.spaces_ = spaces_;
+  /**
+   * sets space list
+   * @param spaces
+   */
+  public void setSpaces(List<Space> spaces) {
+    this.spaces = spaces;
   }
-  public List<Space> getSpaces_() {
-    return spaces_;
-  }
-  
-  private List<Space> getMySpace() throws Exception {
-    List<Space> spaceList = getSpaces_();
-    List<Space> allUserSpace = getAllUserSpaces();
-    List<Space> mySpaces = new ArrayList<Space>();
-    if (allUserSpace.size() == 0) return allUserSpace;
-    if(spaceList != null) {
-      Iterator<Space> spaceItr = spaceList.iterator();
-      while(spaceItr.hasNext()) {
-        Space space = spaceItr.next();
-        for(Space userSpace : allUserSpace) {
-          if(space.getName().equalsIgnoreCase(userSpace.getName())){
-            mySpaces.add(userSpace);
-            break;
-          }
-        }
-      }
-    
-      return mySpaces;
-    }
-    
-    return allUserSpace;
-  }
-  
-  @SuppressWarnings("unchecked")
-  private List<Space> getDisplayMySpace(List<Space> spaces_, UIPageIterator pageIterator_) throws Exception {
-    int currentPage = pageIterator_.getCurrentPage();
-    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces_), SPACES_PER_PAGE);
-    pageIterator_.setPageList(pageList);
-    int pageCount = pageIterator_.getAvailablePage();
-    if (pageCount >= currentPage) {
-      pageIterator_.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      pageIterator_.setCurrentPage(currentPage - 1);
-    }
-    return pageIterator_.getCurrentPageData();
+  /**
+   * gets space list
+   * @return space list
+   */
+  public List<Space> getSpaces() {
+    return spaces;
   }
 
+  /**
+   * gets image source url
+   * @param space
+   * @return image source url
+   * @throws Exception
+   */
   public String getImageSource(Space space) throws Exception {
     SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
     if (spaceAtt != null) {
@@ -303,26 +236,7 @@ public class UIManageMySpaces extends UIContainer {
     return null;
   }
   
-  private List<String> getAllMySpaceNames() throws Exception {
-    List<Space> allSpaces = getAllUserSpaces();
-    List<String> allSpacesNames = new ArrayList<String>();
-    for (Space space : allSpaces){
-      allSpacesNames.add(space.getName());
-    }
-    
-    return allSpacesNames;
-  } 
-  
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
-  }
-  
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-  
+
   /**
    * This action is triggered when user click on EditSpace
    * Currently, when user click on EditSpace, they will be redirected to /xxx/SpaceSettingPortlet
@@ -338,7 +252,7 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   /**
-   * This action is triggered when user click on EditSpaceNavigation
+   * This action is triggered when user click on EditSpaceNavigation <br />
    * 
    * A Navigation popup for user to edit space navigation.
    *
@@ -451,9 +365,9 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   /**
-   * This action is triggered when user click on LeaveSpace
-   * The leaving space will remove that user in the space.
-   * If that user is the only leader -> can't not leave that space
+   * This action is triggered when user click on LeaveSpace <br />
+   * The leaving space will remove that user in the space. <br />
+   * If that user is the only leader -> can't not leave that space <br />
    */
   static public class LeaveSpaceActionListener extends EventListener<UIManageMySpaces> {
     public void execute(Event<UIManageMySpaces> event) throws Exception {
@@ -491,7 +405,7 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   /**
-   * This action is triggered when user clicks on AddSpace
+   * This action is triggered when user clicks on AddSpace <br />
    * 
    * UIAddSpaceForm will be displayed in a popup window
    */
@@ -508,18 +422,150 @@ public class UIManageMySpaces extends UIContainer {
       uiPopup.setWindowSize(500, 0);
       uiPopup.setShow(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
-      //event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
     
   }
   
+  /**
+   * triggers this action when user clicks on the search button
+   * @author hoatle
+   *
+   */
   public static class SearchActionListener extends EventListener<UIManageMySpaces> {
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
       UIManageMySpaces uiForm = event.getSource();
       UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
       List<Space> spaceList = uiSpaceSearch.getSpaceList();
-      uiForm.setSpaces_(spaceList);
+      uiForm.setSpaces(spaceList);
     }
   }
+  
+  /**
+   * gets spaceService
+   * @return spaceService
+   * @see SpaceService
+   */
+  private SpaceService getSpaceService() {
+    if(spaceService == null)
+      spaceService = getApplicationComponent(SpaceService.class);
+    return spaceService;
+  }
+  
+  /**
+   * gets remote user Id
+   * @return remote userId
+   */
+  private String getUserId() {
+    if(userId == null) 
+      userId = Util.getPortalRequestContext().getRemoteUser();
+    return userId;
+  }
+  /**
+   * loads navigations
+   * @throws Exception
+   */
+  private void loadNavigations() throws Exception {
+    navigations = new ArrayList<PageNavigation>();
+    UserACL userACL = getApplicationComponent(UserACL.class);
+    DataStorage dataStorage = getApplicationComponent(DataStorage.class);
+    // load all navigation that user has edit permission
+    Query<PageNavigation> query = new Query<PageNavigation>(PortalConfig.GROUP_TYPE,
+                                                            null,
+                                                            PageNavigation.class);
+    List<PageNavigation> navis = dataStorage.find(query, new Comparator<PageNavigation>(){
+      public int compare(PageNavigation pconfig1, PageNavigation pconfig2) {
+        return pconfig1.getOwnerId().compareTo(pconfig2.getOwnerId());
+      }
+    }).getAll();
+    for (PageNavigation ele : navis) {
+      if (userACL.hasEditPermission(ele)) {
+        navigations.add(ele);
+      }
+    }
+  }
+  
+  /**
+   * gets my space list
+   * @return my space list
+   * @throws Exception
+   */
+  private List<Space> getMySpace() throws Exception {
+    List<Space> spaceList = getSpaces();
+    List<Space> allUserSpace = getAllUserSpaces();
+    List<Space> mySpaces = new ArrayList<Space>();
+    if (allUserSpace.size() == 0) return allUserSpace;
+    if(spaceList != null) {
+      Iterator<Space> spaceItr = spaceList.iterator();
+      while(spaceItr.hasNext()) {
+        Space space = spaceItr.next();
+        for(Space userSpace : allUserSpace) {
+          if(space.getName().equalsIgnoreCase(userSpace.getName())){
+            mySpaces.add(userSpace);
+            break;
+          }
+        }
+      }
+    
+      return mySpaces;
+    }
+    
+    return allUserSpace;
+  }
+  
+  /**
+   * gets display my space list
+   * @param spaces_
+   * @param pageIterator_
+   * @return display my space list
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  private List<Space> getDisplayMySpace(List<Space> spaces_, UIPageIterator pageIterator_) throws Exception {
+    int currentPage = pageIterator_.getCurrentPage();
+    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces_), SPACES_PER_PAGE);
+    pageIterator_.setPageList(pageList);
+    int pageCount = pageIterator_.getAvailablePage();
+    if (pageCount >= currentPage) {
+      pageIterator_.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      pageIterator_.setCurrentPage(currentPage - 1);
+    }
+    return pageIterator_.getCurrentPageData();
+  }
+  
+  /**
+   * gets all my space names
+   * @return my space names
+   * @throws Exception
+   */
+  private List<String> getAllMySpaceNames() throws Exception {
+    List<Space> allSpaces = getAllUserSpaces();
+    List<String> allSpacesNames = new ArrayList<String>();
+    for (Space space : allSpaces){
+      allSpacesNames.add(space.getName());
+    }
+    
+    return allSpacesNames;
+  } 
+  
+  /**
+   * gets current portal name
+   * @return current portal name
+   */
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  
+  /**
+   * gets current repository name
+   * @return repository name
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
 }
+

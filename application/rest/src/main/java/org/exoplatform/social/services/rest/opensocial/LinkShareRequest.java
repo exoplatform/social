@@ -25,18 +25,38 @@ package org.exoplatform.social.services.rest.opensocial;
  */
 public class LinkShareRequest {
   private String _link, _lang;
+  /**
+   * sets link
+   * @param link
+   */
   public void setLink(String link) {
     _link = link;
   }
+  /**
+   * gets link
+   * @return link
+   */
   public String getLink() {
     return _link;
   }
+  /**
+   * sets language
+   * @param lang
+   */
   public void setLang(String lang) {
     _lang = lang;
   }
+  /**
+   * gets language
+   * @return language
+   */
   public String getLang() {
     return _lang;
   }
+  /**
+   * verifies if this request is valid
+   * @return true or false
+   */
   public boolean verify() {
     if (_link != null) {
       return true;

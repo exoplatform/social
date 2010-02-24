@@ -43,10 +43,10 @@ import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 /**
+ * UISpaceInfo.java used for managing space's name, description, priority...<br />
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Sep 12, 2008          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Sep 12, 2008
  */
 
 @ComponentConfig(
@@ -65,7 +65,10 @@ public class UISpaceInfo extends UIForm {
   private final String PRIORITY_LOW = "low";
   private SpaceService spaceService = null;
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpaceInfo() throws Exception {
     addUIFormInput((UIFormStringInput)new UIFormStringInput("id","id",null).setRendered(false)).
     addUIFormInput(new UIFormStringInput("name","name",null).
@@ -91,12 +94,22 @@ public class UISpaceInfo extends UIForm {
     addChild(uiPopup);
   }
   
+  /**
+   * sets space to work with
+   * @param space
+   * @throws Exception
+   */
   public void setValue(Space space) throws Exception {
     invokeGetBindingBean(space);
     //TODO: have to find the way to don't need the line code below. 
     getUIStringInput("tag").setValue(space.getTag());
   }
 
+  /**
+   * gets image source url
+   * @return image source url
+   * @throws Exception
+   */
   protected String getImageSource() throws Exception {
     SpaceService spaceService = getSpaceService();
     String id = getUIStringInput("id").getValue();
@@ -109,16 +122,11 @@ public class UISpaceInfo extends UIForm {
     return null;
   }
   
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
-  }
-  
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-  
+  /**
+   * triggers this action when user click on Save button
+   * @author hoatle
+   *
+   */
   static public class SaveActionListener extends EventListener<UISpaceInfo> {
     public void execute(Event<UISpaceInfo> event) throws Exception {
       UISpaceInfo uiSpaceInfo = event.getSource();
@@ -135,7 +143,7 @@ public class UISpaceInfo extends UIForm {
   }
   
   /**
-   * Action trigger for editting avatar. An UIAvatarUploader popup should be displayed.
+   * Action trigger for editing avatar. An UIAvatarUploader popup should be displayed.
    * @author hoatle
    *
    */
@@ -152,13 +160,33 @@ public class UISpaceInfo extends UIForm {
   }
   
   /**
-   * get {@SpaceService}
+   * gets spaceService
    * @return spaceService
+   * @see SpaceService
    */
   public SpaceService getSpaceService() {
     if (spaceService == null) {
       spaceService = getApplicationComponent(SpaceService.class);
     }
     return spaceService;
+  }
+  
+  /**
+   * gets current portal name
+   * @return current portal name
+   */
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  
+  /**
+   * gets current repository name
+   * @return current repository name
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
   }
 }

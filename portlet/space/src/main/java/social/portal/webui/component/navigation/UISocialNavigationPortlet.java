@@ -27,26 +27,33 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+/**
+ * {@link UISocialNavigationPortlet} used to manage social navigation link.
+ *
+ */
 @ComponentConfigs({
   @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class
   ),
   @ComponentConfig(
     type = UISocialNavigation.class,
-    id = "UIHorizontalNavigation",    
+    id = "UIHorizontalNavigation",
     events = @EventConfig(listeners = UISocialNavigation.SelectNodeActionListener.class)
   )
 })
 
 public class UISocialNavigationPortlet extends UIPortletApplication {
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISocialNavigationPortlet() throws  Exception { 
-    PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance() ;
-    PortletRequest prequest = context.getRequest() ;
+    PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance();
+    PortletRequest prequest = context.getRequest();
     PortletPreferences prefers = prequest.getPreferences() ;
-    String template =  prefers.getValue("template", "app:/groovy/portal/webui/navigation/UISocialNavigationPortlet.gtmpl") ;
-    
+    String template =  prefers.getValue("template", "app:/groovy/portal/webui/navigation/UISocialNavigationPortlet.gtmpl");
     UISocialNavigation portalNavigation = addChild(UISocialNavigation.class, "UIHorizontalNavigation", null);
-    portalNavigation.setUseAjax(Boolean.valueOf(prefers.getValue("useAJAX", "true"))) ;
-    portalNavigation.getComponentConfig().setTemplate(template) ;
+    portalNavigation.setUseAjax(Boolean.valueOf(prefers.getValue("useAJAX", "true")));
+    portalNavigation.getComponentConfig().setTemplate(template);
   }
 }

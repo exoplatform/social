@@ -30,8 +30,8 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.services.rest.Util;
 
 /**
- * LinkShareRestService: gets information from a provided link.
- * POST: /rest/social/linkshare
+ * LinkShareRestService: gets information from a provided link.<br />
+ * POST: /rest/social/linkshare <br />
  * Created by The eXo Platform SAS
  * @author hoatle <hoatlevan at gmail dot com>
  * @since  Dec 29, 2009
@@ -49,7 +49,7 @@ public class LinkShareRestService implements ResourceContainer {
    * gets linkShare
    * @param link
    * @param lang
-   * @return
+   * @return linkShare
    */
   private LinkShare getLinkShare(String link, String lang) throws Exception {
     LinkShare ls;
@@ -65,6 +65,14 @@ public class LinkShareRestService implements ResourceContainer {
     return ls;
   }
   
+  /**
+   * gets link content by posting with linkShare request as post data.
+   * @param uriInfo
+   * @param format
+   * @param linkShareRequest
+   * @return response
+   * @throws Exception
+   */
   @POST
   @Path("show.{format}")
   @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

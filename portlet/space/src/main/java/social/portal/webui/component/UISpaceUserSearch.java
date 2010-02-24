@@ -40,12 +40,11 @@ import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 
 /**
- * UISpaceUserSearch for search users in a space.
+ * {@link UISpaceUserSearch} used for searching users in a space. <br />
  * The search event should broadcast for the parent one to catch and
- * get searched userList from UISpaceUserSearch
- * Author : hoatle
- *          hoatlevan@gmail.com
- * Sep 18, 2009  
+ * get searched userList from UISpaceUserSearch <br />
+ * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
+ * @since Sep 18, 2009
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -55,7 +54,6 @@ import org.exoplatform.social.space.SpaceUtils;
   }
 )
 public class UISpaceUserSearch extends UIForm {
-
   private List<User> userList;
   private String groupId;
   static private final String FIELD_KEYWORD = "fieldKeyword";
@@ -85,15 +83,15 @@ public class UISpaceUserSearch extends UIForm {
   
   /**
    * userList getter
-   * @return
+   * @return userList
    */
   public List<User> getUserList() {
     return userList;
   }
   
   /**
-   * Get groupId from current space
-   * @return
+   * gets groupId from current space
+   * @return groupId
    */
   private String getGroupId() throws Exception {
     if (groupId == null) {
@@ -105,8 +103,8 @@ public class UISpaceUserSearch extends UIForm {
   }
   
   /**
-   * Get list of filter options
-   * @return
+   * gets list of filter options
+   * @return list of filter options
    * @throws Exception
    */
   private List<SelectItemOption<String>> getFilters() throws Exception {
@@ -123,10 +121,10 @@ public class UISpaceUserSearch extends UIForm {
    * @param keyword
    * @param filter
    * @param groupId
-   * @return
+   * @return user list
    * @throws Exception
    */
-  @SuppressWarnings({ "unchecked"})
+  @SuppressWarnings({"unchecked", "deprecation"})
   protected List<User> search(String keyword, String filter, String groupId) throws Exception {
     OrganizationService service = getApplicationComponent(OrganizationService.class);
     Query q = new Query();
@@ -153,7 +151,6 @@ public class UISpaceUserSearch extends UIForm {
     results.addAll(service.getUserHandler().findUsers(q).getAll());
     // remove if user doesn't exist in selected group
     MembershipHandler memberShipHandler = service.getMembershipHandler();
-    
     if(groupId != null && groupId.trim().length() != 0) {
       for(Object user : results) {
         if(memberShipHandler.findMembershipsByUserAndGroup(((User)user).getUserName(), groupId).size() == 0) {
@@ -165,9 +162,8 @@ public class UISpaceUserSearch extends UIForm {
   }
   
   /**
-   * SearchActionListener
-   * Get the keyword and filter from the form.
-   * Search user and set userList
+   * triggers this action when user clicks on search button. <br />
+   * gets the keyword and filter from the form and search by this criteria.
    * @author hoatle
    */
   static public class SearchActionListener extends EventListener<UISpaceUserSearch> {
@@ -180,6 +176,5 @@ public class UISpaceUserSearch extends UIForm {
       uiSearch.setUserList(uiSearch.search(keyword, filter, uiSearch.getGroupId()));
       uiSearch.<UIComponent>getParent().createEvent("Search", Phase.DECODE, ctx).broadcast();
     }
-    
   }
 }

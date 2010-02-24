@@ -22,13 +22,20 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 import social.portal.webui.component.UIManageInvitationSpaces;
 
+/**
+ * {@link UIInvitationSpacePortlet} used as a porltet for containing {@link UIManageInvitationSpaces}. 
+ * @author hoatle
+ *
+ */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/portal/webui/space/UIInvitationSpacePortlet.gtmpl"
 )
-
 public class UIInvitationSpacePortlet extends UIPortletApplication {
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UIInvitationSpacePortlet() throws Exception {
     addChild(UIManageInvitationSpaces.class, null, null);
   }

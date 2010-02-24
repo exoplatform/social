@@ -36,7 +36,14 @@ import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 
 /**
- * SpacesRestService.java
+ * SpacesRestService.java <br />
+ * 
+ * Provides rest services for space gadget to display user's spaces and pending spaces. <br />
+ * 
+ * GET: /restContextName/social/spaces/{userId}/mySpaces/show.{format} <br />
+ * GET: /restContextName/social/spaces/{userId}/pendingSpaces/show.{format} <br />
+ * Example:<br />
+ * GET: http://localhost:8080/rest/social/spaces/root/mySpaces/show.json
  *
  * @author     hoatle <hoatlevan at gmail dot com>
  * @since      Jan 6, 2010
@@ -53,7 +60,8 @@ public class SpacesRestService implements ResourceContainer {
   /**
    * shows my spaceList by userId
    * @param userId
-   * @return
+   * @return spaceList
+   * @see SpaceList
    */
   private SpaceList showMySpaceList(String userId) {
     SpaceList spaceList = new SpaceList();
@@ -71,7 +79,8 @@ public class SpacesRestService implements ResourceContainer {
   /**
    * shows pending spaceList by userId
    * @param userId
-   * @return
+   * @return spaceList
+   * @see SpaceList
    */
   private SpaceList showPendingSpaceList(String userId) {
     SpaceList spaceList = new SpaceList();
@@ -87,10 +96,10 @@ public class SpacesRestService implements ResourceContainer {
   }
   /**
    * shows mySpaceList by json/xml format
-   * @param uriInfo
+   * @param uriInfo provided as {@link Context}
    * @param userId
    * @param format
-   * @return
+   * @return response
    * @throws Exception
    */
   @GET
@@ -103,6 +112,14 @@ public class SpacesRestService implements ResourceContainer {
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
   
+  /**
+   * shows pendingSpaceList by json/xml format
+   * @param uriInfo
+   * @param userId
+   * @param format
+   * @return response
+   * @throws Exception
+   */
   @GET
   @Path("{userId}/pendingSpaces/show.{format}")
   public Response showPendingSpaceList(@Context UriInfo uriInfo,
@@ -120,8 +137,21 @@ public class SpacesRestService implements ResourceContainer {
   @XmlRootElement
   static public class SpaceList {
     private List<Space> _spaces;
+    /**
+     * sets space list
+     * @param spaces space list
+     */
     public void setSpaces(List<Space> spaces) { _spaces = spaces; }
+    /**
+     * gets space list
+     * @return space list
+     */
     public List<Space> getSpaces() { return _spaces; }
+    /**
+     * adds space to space list
+     * @param space
+     * @see Space
+     */
     public void addSpace(Space space) {
       if (_spaces == null) {
         _spaces = new ArrayList<Space>();
@@ -132,7 +162,8 @@ public class SpacesRestService implements ResourceContainer {
   
   /**
    * gets spaceService
-   * @return
+   * @return spaceService
+   * @see SpaceService
    */
   private SpaceService getSpaceService() {
     if (_spaceService == null) {

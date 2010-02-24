@@ -24,10 +24,10 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UITabPane;
 /**
+ * {@link UISpaceSetting} used to manage space info, permission and members. <br />
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Sep 12, 2008          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Sep 12, 2008
  */
 
 @ComponentConfig(
@@ -36,7 +36,10 @@ import org.exoplatform.webui.core.UITabPane;
 public class UISpaceSetting extends UIContainer {
 
   private Space space;
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpaceSetting() throws Exception {
     UITabPane uiTabPane = addChild(UITabPane.class, null, null);
     uiTabPane.addChild(UISpaceInfo.class, null, null);
@@ -46,6 +49,11 @@ public class UISpaceSetting extends UIContainer {
     uiTabPane.setSelectedTab(1);
   }
   
+  /**
+   * sets space to work with
+   * @param space
+   * @throws Exception
+   */
   public void setValues(Space space) throws Exception {
     UISpaceInfo uiSpaceInfo = getChild(UITabPane.class).getChild(UISpaceInfo.class);
     uiSpaceInfo.setValue(space);
@@ -58,17 +66,24 @@ public class UISpaceSetting extends UIContainer {
     this.space = space;
   }
   
+  /**
+   * gets space name
+   * @return space name
+   */
   public String getSpaceName() {
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     try {
       return spaceSrc.getSpaceById(space.getId()).getName();
     } catch (SpaceException e) {
-      e.printStackTrace();
       return null;
     }
   }
   
-  
+  /**
+   * checks if the remote user is leader.
+   * @return true or false
+   * @throws Exception
+   */
   public boolean isLeader() throws Exception{    
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);    
     String userId = Util.getPortalRequestContext().getRemoteUser(); 

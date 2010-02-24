@@ -22,14 +22,18 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.organization.User;
 
 /**
+ * {@link UserListAccess} used for LazyPageList <br />
  * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Aug 28, 2009  
+ * @author <a href="mailto:exo@exoplatform.com">eXoPlatform</a>
+ * @since Aug 28, 2009
  */
 public class UserListAccess implements ListAccess<User> {
   private final List<User> list;
 
+  /**
+   * constructor
+   * @param list
+   */
   public UserListAccess(List<User> list) {
     this.list = list;
   }

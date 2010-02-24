@@ -33,10 +33,11 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormRadioBoxInput;
 /**
+ * {@link UISpacePermission} used to manages space's visibility and registration.<br />
+ * 
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Feb 19, 2009          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Feb 19, 2009
  */
 
 @ComponentConfig(
@@ -51,7 +52,10 @@ public class UISpacePermission extends UIForm {
   final static private String SPACE_VISIBILITY = "Visibility";
   final static private String SPACE_REGISTRATION = "Registration";
   private String spaceId;
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpacePermission() throws Exception {
     List<SelectItemOption<String>> spaceVisibility = new ArrayList<SelectItemOption<String>>(2);
     //spaceVisibility.add(new SelectItemOption<String>(Space.PUBLIC));
@@ -68,6 +72,11 @@ public class UISpacePermission extends UIForm {
     addUIFormInput(uiRadioRegistration);
   }
   
+  /**
+   * sets space to work with
+   * @param space
+   * @throws Exception
+   */
   public void setValue(Space space) throws Exception {
     String visibility = space.getVisibility();
     ((UIFormRadioBoxInput)getChildById(SPACE_VISIBILITY)).setValue(visibility);
@@ -76,6 +85,11 @@ public class UISpacePermission extends UIForm {
     spaceId = space.getId();
   }
   
+  /**
+   * triggers this action when user clicks on save button
+   * @author hoatle
+   *
+   */
   static public class SaveActionListener extends EventListener<UISpacePermission> {
     public void execute(Event<UISpacePermission> event) throws Exception {
       UISpacePermission uiSpacePermission = event.getSource();

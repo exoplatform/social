@@ -38,11 +38,10 @@ import org.exoplatform.webui.form.UIFormUploadInput;
 
 /**
  * UIAvatarUploader.java
- * Upload images to set space's avatar.
+ * Upload images to set space's avatar.<br />
  * Created by The eXo Platform SAS
- * Author : hanhvq
- *          hanhvq@gmail.com
- * Nov 10, 2009  
+ * @author hanhvq <hanhvq at gmail dot com>
+ * @since Nov 10, 2009 
  */
 @ComponentConfigs ({
   @ComponentConfig(
@@ -64,6 +63,7 @@ public class UIAvatarUploader extends UIForm {
   static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
   /**
    * Constructor: Add UIFormUploadInput
+   * @throws Exception 
    */
   public UIAvatarUploader() throws Exception {
     addUIFormInput(new UIFormStringInput(FIELD_NAME, null));
@@ -157,7 +157,6 @@ public class UIAvatarUploader extends UIForm {
    * @author hoatle
    */
   static public class CancelActionListener extends EventListener<UIAvatarUploader> {
-
     @Override
     public void execute(Event<UIAvatarUploader> event) throws Exception {
       UIAvatarUploader uiAvatarUploader = event.getSource();

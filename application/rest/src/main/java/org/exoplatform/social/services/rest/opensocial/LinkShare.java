@@ -79,8 +79,8 @@ import org.cyberneko.html.filters.ElementRemover;
  * 
  * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since Oct 8, 2009
- * @see http://activitystrea.ms/
- * @see http://www.facebook.com/share_partners.php
+ * @see "http://activitystrea.ms/"
+ * @see "http://www.facebook.com/share_partners.php"
  */
 @XmlRootElement
 public class LinkShare extends DefaultFilter {
@@ -315,6 +315,7 @@ public class LinkShare extends DefaultFilter {
    * Gets LinkShare instance with specified link. The default lang = "en"
    * @param link
    * @return LinkShare instance
+   * @throws Exception 
    */
   public static LinkShare getInstance(String link) throws Exception {
     return getInstance(link, lang);
@@ -325,6 +326,7 @@ public class LinkShare extends DefaultFilter {
    * @param link
    * @param lang
    * @return LinkShare instance
+   * @throws Exception 
    */
   public static LinkShare getInstance(String link, String lang) throws Exception {
     if (!link.startsWith("http://")) link = "http://" + link;

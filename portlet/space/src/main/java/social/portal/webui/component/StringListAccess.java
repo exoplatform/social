@@ -21,14 +21,18 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 
 /**
+ * StringListAcess.java used for LazyPageList <br />
  * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Aug 28, 2009  
+ * @author eXoPlatform <exo at exoplatform dot com>
+ * @since Aug 28, 2009
  */
 public class StringListAccess implements ListAccess<String> {
   private final List<String> list;
 
+  /**
+   * constructor
+   * @param list string list
+   */
   public StringListAccess(List<String> list) {
     this.list = list;
   }

@@ -28,10 +28,10 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import social.portal.webui.component.UISpaceSetting;
 
 /**
+ * {@link UISpaceSettingPortlet} used as a portlet containing {@link UISpaceSetting}.
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Jan 6, 2009          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Jan 6, 2009
  */
 
 @ComponentConfig(
@@ -43,18 +43,28 @@ public class UISpaceSettingPortlet extends UIPortletApplication {
   
   final private UISpaceSetting uiSpaceSetting;
   final private SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-  
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpaceSettingPortlet() throws Exception {
     uiSpaceSetting = createUIComponent(UISpaceSetting.class, null, null);
     addChild(uiSpaceSetting);
   }
-  
+  /**
+   * data initialization; set space by spaceUrl to work with
+   * @throws Exception
+   */
   public void initData() throws Exception {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     Space space  = spaceSrc.getSpaceByUrl(spaceUrl);
     uiSpaceSetting.setValues(space);
   }
   
+  /**
+   * render popop message, this method is called from template file.
+   * @throws Exception
+   */
   public void renderPopupMessages() throws Exception {
     UIPopupMessages uiPopupMsg = getUIPopupMessages();
     if(uiPopupMsg == null)  return ;

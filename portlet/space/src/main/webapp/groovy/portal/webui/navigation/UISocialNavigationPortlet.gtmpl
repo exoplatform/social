@@ -1,13 +1,13 @@
 <% 
-  import org.exoplatform.portal.config.model.PageNode ;
-  import org.exoplatform.portal.config.model.PageNavigation ;
+  import org.exoplatform.portal.config.model.PageNode;
+  import org.exoplatform.portal.config.model.PageNavigation;
   import org.exoplatform.web.application.JavascriptManager;
-  import org.exoplatform.portal.webui.util.Util ;
+  import org.exoplatform.portal.webui.util.Util;
   
-  def rcontext = _ctx.getRequestContext() ;
+  def rcontext = _ctx.getRequestContext();
 	JavascriptManager jsmanager = rcontext.getJavascriptManager();
 	jsmanager.importJavascript('eXo.webui.UIHorizontalTabs');
-	jsmanager.importJavascript('eXo.portal.UIPortalNavigation') ;
+	jsmanager.importJavascript('eXo.portal.UIPortalNavigation');
 	jsmanager.addOnLoadJavascript('eXo.portal.UIPortalNavigation.onLoad');
 	
 	jsmanager.addOnLoadJavascript('eXo.portal.UIPortalNavigation.loadScroll');

@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 /**
- * Util.java: utility class
+ * Util.java: utility class for rest <br />
  * Created by The eXo Platform SEA
  * @author hoatle <hoatlevan at gmail dot com>
  * @since  Jan 5, 2009
@@ -35,7 +35,7 @@ public class Util {
    * @param uriInfo
    * @param mediaType
    * @param status
-   * @return
+   * @return response
    */
   static public Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
     return Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
@@ -50,6 +50,7 @@ public class Util {
    * Currently supports json and xml only
    * @param format
    * @return mediaType of matched or throw BAD_REQUEST exception
+   * @throws Exception
    */
   static public MediaType getMediaType(String format) throws Exception {
     if (format.equals("json")) {

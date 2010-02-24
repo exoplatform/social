@@ -30,7 +30,7 @@ import org.exoplatform.social.core.identity.IdentityManager;
 
 /**
  * IdentityRestService.java
- * gets identityId from username
+ * gets identityId by username
  * @author     hoatle <hoatlevan at gmail dot com>
  * @since      Dec 29, 2009
  * @copyright  eXo Platform SAS 
@@ -38,12 +38,15 @@ import org.exoplatform.social.core.identity.IdentityManager;
 @Path("social/identity/{username}/id")
 public class IdentityRestService implements ResourceContainer {
   private IdentityManager _identityManager;
+  /**
+   * constructor
+   */
   public IdentityRestService() {}
   
   /**
-   * gets identity by username
+   * gets identity by username and return by json format
    * @param username
-   * @return
+   * @return UserId
    * @throws Exception
    */
   @GET
@@ -81,15 +84,30 @@ public class IdentityRestService implements ResourceContainer {
   public class UserId {
     private String _id;
     
+    /**
+     * constructor
+     */
     public UserId() {
       
     }
+    /**
+     * constructor
+     * @param id
+     */
     public UserId(String id) {
       _id = id;
     }
+    /**
+     * sets id
+     * @param id userId
+     */
     public void setId(String id) {
       _id = id;
     }
+    /**
+     * gets id
+     * @return userId
+     */
     public String getId() {
       return _id;
     }

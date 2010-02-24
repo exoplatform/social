@@ -43,12 +43,10 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
 /**
- * UIManagePublicSpaces: list all spaces where user can request to join. 
+ * UIManagePublicSpaces: list all spaces where user can request to join. <br />
  * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- *          hoat.le@exoplatform.com
- * Jun 23, 2009  
+ * @author hoatle <hoatlevan at gmail dot com>
+ * @since Jun 23, 2009
  */
 @ComponentConfig(
   template = "app:/groovy/portal/webui/component/UIManagePublicSpaces.gtmpl",
@@ -65,11 +63,11 @@ public class UIManagePublicSpaces extends UIContainer {
   private UIPageIterator iterator;
   private final String ITERATOR_ID = "UIIteratorPublicSpaces";
   private final Integer SPACES_PER_PAGE = 4;
-  private List<Space> spaces_; // for search result
+  private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
   
   /**
-   * Constructor to initialize iterator
+   * constructor to initialize iterator
    * @throws Exception
    */
   public UIManagePublicSpaces() throws Exception {
@@ -78,54 +76,18 @@ public class UIManagePublicSpaces extends UIContainer {
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }
   
-  private String getUserId() {
-    if(userId == null) userId = Util.getPortalRequestContext().getRemoteUser();
-    return userId;
-  }
-  
-  private SpaceService getSpaceService() {
-    if(spaceService == null) spaceService = getApplicationComponent(SpaceService.class);
-    return spaceService;
-  }
+
   /**
-   * Get UIPageIterator
-   * @return
+   * gets uiPageIterator
+   * @return uiPageIterator
    */
   public UIPageIterator getUIPageIterator() {
     return iterator;
   }
   
   /**
-   * gets spaceList
-   * @return
-   * @throws Exception 
-   */
-  private List<Space> getSpaceList() throws Exception {
-    List<Space> spaceList = getSpaces_();
-    List<Space> allPublicSpace = getAllPublicSpaces();
-    if (allPublicSpace.size() == 0) return allPublicSpace;
-    List<Space> publicSpaces = new ArrayList<Space>();
-    if(spaceList != null) {
-      Iterator<Space> spaceItr = spaceList.iterator();
-      while(spaceItr.hasNext()) {
-        Space space = spaceItr.next();
-        for(Space publicSpace : allPublicSpace) {
-          if(space.getName().equals(publicSpace.getName())){
-            publicSpaces.add(publicSpace);
-            break;
-          }
-        }
-      }
-    
-      return publicSpaces;
-    }
-    
-    return allPublicSpace;
- }
-  
-  /**
-   * Get all public spaces of a user
-   * @return
+   * gets all public spaces of a user
+   * @return public spaces list
    * @throws Exception 
    */
   public List<Space> getAllPublicSpaces() throws Exception {
@@ -137,9 +99,10 @@ public class UIManagePublicSpaces extends UIContainer {
   }
   
   /**
-   * Checking if remote user has edit permission  of a space
+   * checks if the remote user has edit permission  of a space
    * @param space
-   * @return
+   * @return true or false
+   * @throws Exception 
    */
   public boolean hasEditPermission(Space space) throws Exception {
     SpaceService spaceService = getSpaceService();
@@ -147,8 +110,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
   
   /**
-   * Get paginated public spaces so that user can request to join
-   * @return
+   * gets paginated public spaces so that user can request to join
+   * @return paginated public spaces list
    * @throws Exception 
    */
   public List<Space> getPublicSpaces() throws Exception {
@@ -157,6 +120,12 @@ public class UIManagePublicSpaces extends UIContainer {
 	  return getDisplayPublicSpaces(spaceList, iterator);
   }
   
+  /**
+   * gets image source url
+   * @param space
+   * @return image source url
+   * @throws Exception
+   */
   public String getImageSource(Space space) throws Exception {
     SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
     if (spaceAtt != null) {
@@ -165,50 +134,8 @@ public class UIManagePublicSpaces extends UIContainer {
     }
     return null;
   }
-  
-  private List<String> getPublicSpaceNames() throws Exception {
-    List<Space> publicSpaces = getAllPublicSpaces();
-    List<String> publicSpaceNames = new ArrayList<String>();
-    for (Space space : publicSpaces) {
-      publicSpaceNames.add(space.getName());
-    }
-    
-    return publicSpaceNames;
-  }
-  
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
-  }
-  
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-  
- /**
-  * gets paginated public spaces so that the user can request to join
-  * @param spaces
-  * @param iterator
-  * @return
-  * @throws Exception
-  */
- @SuppressWarnings("unchecked")
- private List<Space> getDisplayPublicSpaces(List<Space> spaces, UIPageIterator iterator) throws Exception {
-	 int currentPage = iterator.getCurrentPage();
-	 LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
-	 iterator.setPageList(pageList);
-	 int pageCount = iterator.getAvailablePage();
-	 if (pageCount >= currentPage) {
-	   iterator.setCurrentPage(currentPage);
-	 } else if (pageCount < currentPage) {
-	   iterator.setCurrentPage(currentPage - 1);
-	 }
-	 return iterator.getCurrentPageData();
- }
-  
   /**
-   * Class listener for request to join space action
+   * listener for request to join space action
    */
   static public class RequestJoinActionListener extends EventListener<UIManagePublicSpaces> {
     public void execute(Event<UIManagePublicSpaces> event) throws Exception {
@@ -245,15 +172,121 @@ public class UIManagePublicSpaces extends UIContainer {
       UIManagePublicSpaces uiForm = event.getSource();
       UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
       List<Space> spaceList = uiSpaceSearch.getSpaceList();
-      uiForm.setSpaces_(spaceList);
+      uiForm.setSpaces(spaceList);
 	}
 	  
   }
-  
-  public void setSpaces_(List<Space> spaces_) {
-	    this.spaces_ = spaces_;
-	  }
-  public List<Space> getSpaces_() {
-    return spaces_;
+  /**
+   * sets space lists
+   * @param spaces
+   */
+  public void setSpaces(List<Space> spaces) {
+    this.spaces = spaces;
   }
+  /**
+   * gets space list
+   * @return space list
+   */
+  public List<Space> getSpaces() {
+    return spaces;
+  }
+  /**
+   * gets current remote user
+   * @return remote user
+   */
+  private String getUserId() {
+    if(userId == null) userId = Util.getPortalRequestContext().getRemoteUser();
+    return userId;
+  }
+  
+  /**
+   * gets spaceService
+   * @return spaceService
+   * @see SpaceService
+   */
+  private SpaceService getSpaceService() {
+    if(spaceService == null) spaceService = getApplicationComponent(SpaceService.class);
+    return spaceService;
+  }
+  
+  /**
+   * gets spaceList
+   * @return
+   * @throws Exception 
+   */
+  private List<Space> getSpaceList() throws Exception {
+    List<Space> spaceList = getSpaces();
+    List<Space> allPublicSpace = getAllPublicSpaces();
+    if (allPublicSpace.size() == 0) return allPublicSpace;
+    List<Space> publicSpaces = new ArrayList<Space>();
+    if(spaceList != null) {
+      Iterator<Space> spaceItr = spaceList.iterator();
+      while(spaceItr.hasNext()) {
+        Space space = spaceItr.next();
+        for(Space publicSpace : allPublicSpace) {
+          if(space.getName().equals(publicSpace.getName())){
+            publicSpaces.add(publicSpace);
+            break;
+          }
+        }
+      }
+      return publicSpaces;
+    }
+    return allPublicSpace;
+ }
+  
+  /**
+   * gets public space names
+   * @return public space names
+   * @throws Exception
+   */
+  private List<String> getPublicSpaceNames() throws Exception {
+    List<Space> publicSpaces = getAllPublicSpaces();
+    List<String> publicSpaceNames = new ArrayList<String>();
+    for (Space space : publicSpaces) {
+      publicSpaceNames.add(space.getName());
+    }
+    
+    return publicSpaceNames;
+  }
+  
+  /**
+   * gets current portal name
+   * @return current portal name
+   */
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  
+  /**
+   * gets current repository name
+   * @return current repository name
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
+ /**
+  * gets paginated public spaces so that the user can request to join
+  * @param spaces
+  * @param iterator
+  * @return
+  * @throws Exception
+  */
+ @SuppressWarnings("unchecked")
+ private List<Space> getDisplayPublicSpaces(List<Space> spaces, UIPageIterator iterator) throws Exception {
+   int currentPage = iterator.getCurrentPage();
+   LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
+   iterator.setPageList(pageList);
+   int pageCount = iterator.getAvailablePage();
+   if (pageCount >= currentPage) {
+     iterator.setCurrentPage(currentPage);
+   } else if (pageCount < currentPage) {
+     iterator.setCurrentPage(currentPage - 1);
+   }
+   return iterator.getCurrentPageData();
+ }
 }  

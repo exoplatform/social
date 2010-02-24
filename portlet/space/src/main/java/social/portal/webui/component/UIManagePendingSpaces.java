@@ -43,11 +43,10 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 
 /**
- * UIManagePendingSpaces: list all pending spaces which user can revoke pending.
+ * UIManagePendingSpaces: list all pending spaces which user can revoke pending. <br />
  * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- * Jun 23, 2009  
+ * @author hoatle <hoatlevan at gmail dot com>
+ * @since Jun 23, 2009
  */
 @ComponentConfig(
   template = "app:/groovy/portal/webui/component/UIManagePendingSpaces.gtmpl",
@@ -58,18 +57,18 @@ import org.exoplatform.webui.event.Event.Phase;
 )
 public class UIManagePendingSpaces extends UIContainer {
   static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error_revoke_pending";
-  private static final String SPACE_DELETED_INFO = "UIManagePendingSpaces.msg.DeletedInfo";
+  static private final String SPACE_DELETED_INFO = "UIManagePendingSpaces.msg.DeletedInfo";
   
   SpaceService spaceService = null;
   String userId = null;
   private UIPageIterator iterator;
   private final String ITERATOR_ID = "UIIteratorPendingSpaces";
   private final Integer SPACES_PER_PAGE = 4;
-  private List<Space> spaces_; // for search result
+  private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
   
   /**
-   * Constructor to initialize iterator
+   * constructor to initialize iterator
    * @throws Exception
    */
   public UIManagePendingSpaces() throws Exception {
@@ -79,38 +78,16 @@ public class UIManagePendingSpaces extends UIContainer {
   }
   
   /**
-   * get {@SpaceService}
-   * @return spaceService
-   */
-  private SpaceService getSpaceService() {
-    if (spaceService == null) {
-      spaceService = getApplicationComponent(SpaceService.class);
-    }
-    return spaceService;
-  }
-  
-  /**
-   * Get remote user
-   * @return userId
-   */
-  private String getUserId() {
-    if (userId == null) {
-      userId = Util.getPortalRequestContext().getRemoteUser();
-    }
-    return userId;
-  }
-  
-  /**
-   * Get UIPageIterator
-   * @return
+   * gets uiPageIterator
+   * @return uiPageIterator
    */
   public UIPageIterator getUIPageIterator() {
     return iterator;
   }
   
   /**
-   * Get all pending spaces of a user
-   * @return
+   * gets all pending spaces of a user
+   * @return all pending spaces
    * @throws SpaceException
    */
   public List<Space> getAllPendingSpaces() throws SpaceException {
@@ -120,35 +97,24 @@ public class UIManagePendingSpaces extends UIContainer {
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
   
-  private List<Space> getSpaceList() throws Exception {
-    List<Space> spaceList = getSpaces_();
-    List<Space> allPendingSpace = getAllPendingSpaces();
-    if (allPendingSpace.size() == 0) return allPendingSpace;
-    List<Space> pendingSpaces = new ArrayList<Space>();
-    if(spaceList != null) {
-      Iterator<Space> spaceItr = spaceList.iterator();
-      while(spaceItr.hasNext()) {
-        Space space = spaceItr.next();
-        for(Space pendingSpace : allPendingSpace) {
-          if(space.getName().equals(pendingSpace.getName())){
-            pendingSpaces.add(pendingSpace);
-            break;
-          }
-        }
-      }
-    
-      return pendingSpaces;
-    }
-    
-    return allPendingSpace;
-  }
-  
+
+  /**
+   * gets pending spaces by page iterator
+   * @return pending spaces
+   * @throws Exception
+   */
   public List<Space> getPendingSpaces() throws Exception {
     List<Space> listSpace = getSpaceList();
     uiSpaceSearch.setSpaceNameForAutoSuggest(getPendingSpaceNames());
     return getDisplayPendingSpaces(listSpace, iterator);
   }
   
+  /**
+   * gets image source url
+   * @param space
+   * @return image source url
+   * @throws Exception
+   */
   public String getImageSource(Space space) throws Exception {
     SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
     if (spaceAtt != null) {
@@ -156,45 +122,6 @@ public class UIManagePendingSpaces extends UIContainer {
               + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
-  }
-  
-  private List<String> getPendingSpaceNames() throws SpaceException {
-    List<Space> pendingSpaces = getAllPendingSpaces();
-    List<String> pendingSpaceNames = new ArrayList<String>();
-    for (Space space : pendingSpaces) {
-      pendingSpaceNames.add(space.getName());
-    }
-    
-    return pendingSpaceNames;
-  }
-  
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
-  }
-  
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-  
-  /**
-   * Get paginated pending spaces so that the user can revoke pending
-   * @return
-   * @throws Exception 
-   */
-  @SuppressWarnings("unchecked")
-  private List<Space> getDisplayPendingSpaces(List<Space> spaces, UIPageIterator iterator) throws Exception {
-    int currentPage = iterator.getCurrentPage();
-    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
-    iterator.setPageList(pageList);
-    int pageCount = iterator.getAvailablePage();
-    if (pageCount >= currentPage) {
-      iterator.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      iterator.setCurrentPage(currentPage - 1);
-    }
-    return iterator.getCurrentPageData();
   }
   
   /**
@@ -225,20 +152,136 @@ public class UIManagePendingSpaces extends UIContainer {
       }
     }
   }
+  
+  /**
+   * triggers this action when user click on search button
+   * @author hoatle
+   *
+   */
   public static class SearchActionListener extends EventListener<UIManagePendingSpaces> {
     @Override
     public void execute(Event<UIManagePendingSpaces> event) throws Exception {
       UIManagePendingSpaces uiForm = event.getSource();
       UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
       List<Space> spaceList = uiSpaceSearch.getSpaceList();
-      uiForm.setSpaces_(spaceList);
+      uiForm.setSpaces(spaceList);
     }
   }
   
-  public void setSpaces_(List<Space> spaces_) {
-    this.spaces_ = spaces_;
+  /**
+   * sets space list
+   * @param spaces
+   */
+  public void setSpaces(List<Space> spaces) {
+    this.spaces = spaces;
   }
-  public List<Space> getSpaces_() {
-    return spaces_;
+  /**
+   * gets space list
+   * @return space list
+   */
+  public List<Space> getSpaces() {
+    return spaces;
+  }
+  
+  /**
+   * gets spaceService
+   * @return spaceService
+   * @see SpaceService
+   */
+  private SpaceService getSpaceService() {
+    if (spaceService == null) {
+      spaceService = getApplicationComponent(SpaceService.class);
+    }
+    return spaceService;
+  }
+  
+  /**
+   * gets remote user
+   * @return userId
+   */
+  private String getUserId() {
+    if (userId == null) {
+      userId = Util.getPortalRequestContext().getRemoteUser();
+    }
+    return userId;
+  }
+  /**
+   * gets space list
+   * @return space list
+   * @throws Exception
+   */
+  private List<Space> getSpaceList() throws Exception {
+    List<Space> spaceList = getSpaces();
+    List<Space> allPendingSpace = getAllPendingSpaces();
+    if (allPendingSpace.size() == 0) return allPendingSpace;
+    List<Space> pendingSpaces = new ArrayList<Space>();
+    if(spaceList != null) {
+      Iterator<Space> spaceItr = spaceList.iterator();
+      while(spaceItr.hasNext()) {
+        Space space = spaceItr.next();
+        for(Space pendingSpace : allPendingSpace) {
+          if(space.getName().equals(pendingSpace.getName())){
+            pendingSpaces.add(pendingSpace);
+            break;
+          }
+        }
+      }
+    
+      return pendingSpaces;
+    }
+    return allPendingSpace;
+  }
+  
+  /**
+   * gets pending space names
+   * @return pending space names
+   * @throws SpaceException
+   */
+  private List<String> getPendingSpaceNames() throws SpaceException {
+    List<Space> pendingSpaces = getAllPendingSpaces();
+    List<String> pendingSpaceNames = new ArrayList<String>();
+    for (Space space : pendingSpaces) {
+      pendingSpaceNames.add(space.getName());
+    }
+    
+    return pendingSpaceNames;
+  }
+  
+  /**
+   * gets current portal name
+   * @return current portal name
+   */
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();
+  }
+  
+  /**
+   * gets repository name
+   * @return repository name
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName();
+  }
+  
+  /**
+   * gets paginated pending spaces so that the user can revoke pending
+   * @return paginated pending spaces
+   * @throws Exception 
+   */
+  @SuppressWarnings("unchecked")
+  private List<Space> getDisplayPendingSpaces(List<Space> spaces, UIPageIterator iterator) throws Exception {
+    int currentPage = iterator.getCurrentPage();
+    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
+    iterator.setPageList(pageList);
+    int pageCount = iterator.getAvailablePage();
+    if (pageCount >= currentPage) {
+      iterator.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      iterator.setCurrentPage(currentPage - 1);
+    }
+    return iterator.getCurrentPageData();
   }
 }

@@ -23,9 +23,11 @@ import java.util.Map;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -39,10 +41,10 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 /**
+ * UISpaceApplication.java used for adding/ removing applications<br />
  * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Sep 12, 2008          
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Sep 12, 2008
  */
 
 @ComponentConfig(
@@ -55,28 +57,36 @@ import org.exoplatform.webui.form.UIForm;
 )
 public class UISpaceApplication extends UIForm {
 
-  private Space space_;
-  private UIPageIterator iterator_;
+  private Space space;
+  private UIPageIterator iterator;
   private final String iteratorID = "UIIteratorSpaceApplication";
   
+  /**
+   * constructor
+   * @throws Exception
+   */
   public UISpaceApplication() throws Exception {
     addChild(UIPopupContainer.class, null, "UIPopupAddApp");
-    iterator_ = createUIComponent(UIPageIterator.class, null, iteratorID);
-    addChild(iterator_);
+    iterator = createUIComponent(UIPageIterator.class, null, iteratorID);
+    addChild(iterator);
   }
-  
+  /**
+   * gets application list
+   * @return application list
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public List<Application> getApplications() throws Exception {
-    return iterator_.getCurrentPageData();
+    return iterator.getCurrentPageData();
   }
   
   /**
-   * sets space
+   * sets space to work with
    * @param space
    * @throws Exception
    */
   public void setValue(Space space) throws Exception {
-    space_ = space;
+    this.space = space;
     List<Application> lists = new ArrayList<Application>();
     List<Application> apps = new ArrayList<Application>();
     String installedApps = space.getApp();
@@ -120,40 +130,59 @@ public class UISpaceApplication extends UIForm {
     }
     
     PageList pageList = new ObjectPageList(lists,3);
-    iterator_.setPageList(pageList);
+    iterator.setPageList(pageList);
   }
   
-  public UIPageIterator getUIPageIterator() { return iterator_;}
+  /**
+   * gets uiPageIterator
+   * @return uiPageIterator
+   */
+  public UIPageIterator getUIPageIterator() { return iterator;}
   
+  /**
+   * checking if an application is removable.
+   * @param appId
+   * @return true or false
+   */
   public boolean isRemovable(String appId) {
-    return SpaceUtils.isRemovableApp(space_, appId);
+    return SpaceUtils.isRemovableApp(space, appId);
   }
   
+  /**
+   * triggers this action when usesr clicks on add button
+   * @author hoatle
+   *
+   */
   static public class AddApplicationActionListener extends EventListener<UISpaceApplication> {
     public void execute(Event<UISpaceApplication> event) throws Exception {
       UISpaceApplication uiSpaceApp = event.getSource();
       UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
       UISpaceApplicationList uiSpaceAppList = (UISpaceApplicationList) uiPopup.activate(UISpaceApplicationList.class, 400);
-      uiSpaceAppList.setSpace(uiSpaceApp.space_);
+      uiSpaceAppList.setSpace(uiSpaceApp.space);
       uiPopup.getChild(UIPopupWindow.class).setId("AddApplication");
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
   
+  /**
+   * triggers this action when user clicks on remove button
+   * @author hoatle
+   *
+   */
   static public class RemoveApplicationActionListener extends EventListener<UISpaceApplication> {
     public void execute(Event<UISpaceApplication> event) throws Exception {
       UISpaceApplication uiSpaceApp = event.getSource();
       WebuiRequestContext context = event.getRequestContext();
       String appId = context.getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceApp.getApplicationComponent(SpaceService.class);
-      spaceService.removeApplication(uiSpaceApp.space_.getId(), appId);
-      uiSpaceApp.setValue(spaceService.getSpaceById(uiSpaceApp.space_.getId()));
+      spaceService.removeApplication(uiSpaceApp.space.getId(), appId);
+      uiSpaceApp.setValue(spaceService.getSpaceById(uiSpaceApp.space.getId()));
       UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
       
       // hanhvq. add removed application into uipopup container if it is displayed 
       if (uiPopup.getChild(UIPopupWindow.class).isShow()) {
         UISpaceApplicationList uiSpaceAppList = (UISpaceApplicationList) uiPopup.activate(UISpaceApplicationList.class, 400);
-        uiSpaceAppList.setSpace(uiSpaceApp.space_);
+        uiSpaceAppList.setSpace(uiSpaceApp.space);
         context.addUIComponentToUpdateByAjax(uiPopup);
       }
       
@@ -162,16 +191,15 @@ public class UISpaceApplication extends UIForm {
   }
   
   /**
-   * Check one application is existed in list or not.
+   * checks one application is existed in list or not.
    * 
    * @param appLst List of application
    * @param app Application for checking
-   * @return boolean
+   * @return true or false
    */
   private boolean isExisted(List<Application> appLst, Application app) {
     String appName = app.getApplicationName();
     String existedAppName = null;
-    
     for (Application application : appLst) {
       existedAppName = application.getApplicationName();
       if (existedAppName.equals(appName)) return true; 

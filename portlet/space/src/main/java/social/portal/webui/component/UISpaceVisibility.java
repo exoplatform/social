@@ -25,18 +25,16 @@ import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
 /**
- * This class is used to build UI for setting space's visibility Setting
- * variables: 
- * - Visibility: Private or Hidden 
- * - Registration: Open, Validation or Close 
+ * This class is used to build UI for setting space's visibility Setting <br />
+ * variables: <br />
+ * - Visibility: Private or Hidden <br />
+ * - Registration: Open, Validation or Close <br /> 
  * 
  * Created by The eXo Platform SAS 
  * 
- * @author hoatle
- * @author hoatlevan@gmail.com
+ * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since  Jul 1, 2009
  */
-
 public class UISpaceVisibility extends UIFormInputSet {
   private final String UI_SPACE_VISIBILITY   = "UIVisibility";
   private final String UI_SPACE_REGISTRATION = "UIRegistration";

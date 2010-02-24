@@ -44,7 +44,16 @@ import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.services.rest.Util;
 
 /**
- * ActivitiesRestService.java
+ * ActivitiesRestService.java <br />
+ * 
+ * Provides rest services for activity gadget: like/unlike; comment; delete activity. <br />
+ * apis: <br />
+ * GET:  /restContextName/social/activities/{activityId}/likes/show.{format} <br />
+ * POST: /restContextName/social/activities/{activityId}/likes/update.{format} <br />
+ * POST: /restContextName/social/activities/{activityId}/likes/destroy/{identity}.{format} <br />
+ * ... <br />
+ * See methods for more api details.
+ * 
  *
  * @author     hoatle <hoatlevan at gmail dot com>
  * @since      Dec 29, 2009
@@ -99,7 +108,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * destroys activity and gets json/xml return format
    * @param uriInfo
    * @param activityId
-   * @return
+   * @param format 
+   * @return response
    * @throws Exception
    */
   @POST
@@ -171,7 +181,7 @@ public class ActivitiesRestService implements ResourceContainer {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
     } else {
-      //TODO hoatle let's it run smoothly or informs that user already liked the activity?
+      //TODO hoatle let it run smoothly or informs that user already liked the activity?
     }
     likeList.setLikes(getLikes(identityIds));
     return likeList;
@@ -222,7 +232,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * shows list of like by activityId and returns json/xml format
    * @param uriInfo
    * @param activityId
-   * @return
+   * @param format 
+   * @return response
    * @throws Exception
    */
   @GET
@@ -240,7 +251,9 @@ public class ActivitiesRestService implements ResourceContainer {
    * updates like by json/xml format
    * @param uriInfo
    * @param activityId
+   * @param format 
    * @param like
+   * @return response
    * @throws Exception 
    */
   @POST
@@ -261,7 +274,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param uriInfo
    * @param activityId
    * @param identityId
-   * @return
+   * @param format 
+   * @return response
    * @throws Exception
    */
   @POST
@@ -280,7 +294,8 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * shows comment list by activityId
    * @param activityId
-   * @return
+   * @return commentList
+   * @see CommentList
    */
   private CommentList showComments(String activityId) {
     CommentList commentList = new CommentList();
@@ -309,7 +324,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * updates comment by activityId
    * @param activityId
    * @param comment
-   * @return
+   * @return commentList
+   * @see CommentList
    */
   private CommentList updateComment(String activityId, Activity comment) {
     CommentList commentList = new CommentList();
@@ -340,7 +356,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * destroys comment by activityId and commentId
    * @param activityId
    * @param commentId
-   * @return
+   * @return commentList
+   * @see CommentList
    */
   private CommentList destroyComment(String activityId, String commentId) {
     CommentList commentList = new CommentList();
@@ -377,7 +394,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * shows comment list by json/xml format
    * @param uriInfo
    * @param activityId
-   * @return
+   * @param format 
+   * @return response
    * @throws Exception
    */
   @GET
@@ -395,8 +413,9 @@ public class ActivitiesRestService implements ResourceContainer {
    * updates comment by json/xml format
    * @param uriInfo
    * @param activityId
+   * @param format 
    * @param comment
-   * @return
+   * @return response
    * @throws Exception
    */
   @POST
@@ -417,7 +436,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param uriInfo
    * @param activityId
    * @param commentId
-   * @return
+   * @param format 
+   * @return response
    * @throws Exception
    */
   @POST
@@ -440,21 +460,40 @@ public class ActivitiesRestService implements ResourceContainer {
   static public class LikeList {
     private String _activityId;
     private List<Like> _likes;
-    
+    /**
+     * sets activityId
+     * @param activityId
+     */
     public void setActivityId(String activityId) {
       _activityId = activityId;
     }
+    /**
+     * gets activityId
+     * @return
+     */
     public String getActivityId() {
       return _activityId;
     }
+    /**
+     * sets like list
+     * @param likes like list
+     */
     public void setLikes(List<Like> likes) {
       _likes = likes;
     }
     
+    /**
+     * gets like list
+     * @return like list
+     */
     public List<Like> getLikes() {
       return _likes;
     }
     
+    /**
+     * adds like to like list
+     * @param like
+     */
     public void addLike(Like like) {
       if (_likes == null) {
         _likes = new ArrayList<Like>();
@@ -472,19 +511,38 @@ public class ActivitiesRestService implements ResourceContainer {
   static public class CommentList {
     private String _activityId;
     private List<Activity> _comments;
+    /**
+     * sets activityId
+     * @param activityId
+     */
     public void setActivityId(String activityId) {
       _activityId = activityId;
     }
+    /**
+     * gets activityId
+     * @return activityId
+     */
     public String getActivityId() {
       return _activityId;
     }
+    /**
+     * sets comment list
+     * @param comments comment list
+     */
     public void setComments(List<Activity> comments) {
       _comments = comments;
     }
+    /**
+     * gets comment list
+     * @return comments
+     */
     public List<Activity> getComments() {
       return _comments;
     }
-    
+    /**
+     * add comment to comment List
+     * @param activity comment
+     */
     public void addComment(Activity activity) {
       if (_comments == null) {
         _comments = new ArrayList<Activity>();
@@ -495,7 +553,8 @@ public class ActivitiesRestService implements ResourceContainer {
   
   /**
    * gets activityManager
-   * @return
+   * @return activityManager
+   * @see ActivityManager
    */
   private ActivityManager getActivityManager() {
     if (_activityManager == null) {
@@ -508,6 +567,7 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * gets identityManger
    * @return
+   * @see IdentityManager
    */
   private IdentityManager getIdentityManager() {
     if (_identityManager == null) {
@@ -519,7 +579,7 @@ public class ActivitiesRestService implements ResourceContainer {
   
   /**
    * gets repository
-   * @return
+   * @return repository name
    * @throws Exception
    */
   private String getRepository() throws Exception {
@@ -530,7 +590,7 @@ public class ActivitiesRestService implements ResourceContainer {
   
   /**
    * gets portalName
-   * @return
+   * @return portal name
    */
   private String getPortalName() {
     return PortalContainer.getCurrentPortalContainerName();
