@@ -23,6 +23,30 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
 	xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
 	
+	<component>
+    <key>org.exoplatform.portal.config.UserACL</key>
+    <type>org.exoplatform.portal.config.UserACL</type>   
+    <init-params>      
+      <values-param>
+        <name>mandatory.groups</name>
+        <description>Groups that can not be deleted.</description>
+        <value>/platform/administrators</value>
+        <value>/platform/users</value>
+        <value>/platform/guests</value>
+        <value>/customers</value>
+        <value>/partners</value>
+        <value>/organization/management/executive-board</value>
+        <value>/organization/management/human-resources</value>
+        <value>/organization/communication/marketing</value>
+        <value>/organization/communication/press-and-media</value>
+        <value>/organization/operations/sales</value>
+        <value>/organization/operations/finances</value>
+        <value>/developer</value>
+        <value>/spaces</value>
+      </values-param> 
+    </init-params>   
+  </component>
+  
 	<external-component-plugins>
 		<!-- The full qualified name of the UserPortalConfigService -->
 		<target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>

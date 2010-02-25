@@ -283,7 +283,18 @@ public class SpaceServiceImpl implements SpaceService {
       appHander.removeApplications(space);
       appHander.deInitApp(space);
       storage.deleteSpace(space.getId());
-      SpaceUtils.removeGroup(space);
+
+      OrganizationService orgService = getOrgService();
+      UserACL acl = getUserACL();
+      GroupHandler groupHandler= orgService.getGroupHandler();
+      Group deletedGroup = groupHandler.findGroupById(space.getGroupId());
+      
+      List<String> mandatories = acl.getMandatoryGroups();
+      if (!isMandatory(groupHandler, deletedGroup, mandatories))
+      {
+        SpaceUtils.removeGroup(space);
+      }
+      
     } catch(Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_DELETE_SPACE, e);
     }
@@ -999,6 +1010,19 @@ public class SpaceServiceImpl implements SpaceService {
     public int compare(Space space1, Space space2) {
       return space1.getName().compareToIgnoreCase(space2.getName());
     }
+  }
+  
+  private boolean isMandatory(GroupHandler groupHandler, Group group, List<String> mandatories) throws Exception
+  {
+     if (mandatories.contains(group.getId()))
+        return true;
+     Collection<Group> children = groupHandler.findGroups(group);
+     for (Group g : children)
+     {
+        if (isMandatory(groupHandler, g, mandatories))
+           return true;
+     }
+     return false;
   }
   
 }
