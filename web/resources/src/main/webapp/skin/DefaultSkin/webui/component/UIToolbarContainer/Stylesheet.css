@@ -2,11 +2,11 @@
 	padding: 0px;
 	height: auto;
 }
-
-.UIToolbarContainer .AdminToolBarPortletTDContainer {
-	float: right; /* orientation=lt */
-	float: left; /* orientation=rt */
-}
+/** BUG SOC-562 **/
+/*.UIToolbarContainer .AdminToolBarPortletTDContainer {*/
+	/*float: right; */ /* orientation=lt */
+	/* float: left; */ /* orientation=rt */
+/*}*/
 
 .UIToolbarContainer .LAYOUT-CONTAINER {
 	overflow: hidden;
