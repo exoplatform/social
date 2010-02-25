@@ -23,7 +23,10 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 
 /**
- * Created by The eXo Platform SAS
+ * Manages information about all existing users. Manages actions 
+ * such as request make relation, invoke request, accept or deny invitation 
+ * and delete relation.
+ * 
  * Author : hanhvq@gmail.com
  * Oct 24, 2009  
  */
@@ -33,6 +36,11 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UIPeoplePortlet extends UIPortletApplication {
   
+  /**
+   * Default Constructor.<br>
+   * 
+   * @throws Exception
+   */
   public UIPeoplePortlet() throws Exception {  
     addChild(UIDisplayProfileList.class, null, null);
   }

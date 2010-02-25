@@ -19,18 +19,17 @@ package org.exoplatform.social.webui;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 
-import java.util.Map;
-
-import com.google.common.collect.Maps;
-
 /**
- * TODO should become a service
+ * Processes url and returns the some type of result base on url.
+ * 
  */
 public class URLUtils {
-  public static final String MODULE = "m";
-  public static final String USERNAME = "u";
-  public static final String APPLICATION = "a";
 
+  /**
+   * Gets current user name base on analytic the current url.<br>
+   * 
+   * @return current user name.
+   */
   public static String getCurrentUser() {
     PortalRequestContext request = Util.getPortalRequestContext() ;
     String uri = request.getNodePath();
@@ -40,46 +39,5 @@ public class URLUtils {
     if (els.length == 4) return els[3];
     
     return null;
-  }
-
-  public static String getCurrentApplication() {
-    PortalRequestContext request = Util.getPortalRequestContext() ;
-    String uri = request.getNodePath();
-    String[] els = uri.split("/");
-
-    // check first if we are on the page of a user
-    if (els.length >= 4) {
-      if (els[els.length - 1].equals("activities"))
-        return els[els.length - 1];
-    }
-    return null;
-  }
-
-  public static Map<String, String> decodeURL() {
-    Map<String, String> res = Maps.newHashMap();
-    PortalRequestContext request = Util.getPortalRequestContext() ;
-    String uri = request.getNodePath();
-    String[] els = uri.split("/");
-    if (els.length >= 2)
-      res.put(MODULE, els[1]);
-    if (els.length >= 3)
-      res.put(USERNAME, els[2]);
-    if (els.length >= 4)
-      res.put(APPLICATION, els[3]);
-    return res;
-  }
-
-  public static String generateURL(String module, String username, String application) {
-    StringBuffer res = new StringBuffer();
-    res.append(Util.getPortalRequestContext().getPortalURI());
-    if(module != null) {
-      res.append(module);
-      if(username != null) {
-        res.append("/").append(username);
-        if(application != null)
-          res.append("/").append(application);
-      }
-    }
-    return res.toString();
   }
 }

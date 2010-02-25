@@ -16,9 +16,6 @@
  */
 package org.exoplatform.social.portlet.profile;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.social.core.identity.ProfileMapper;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.event.Event;
@@ -26,94 +23,105 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 
 /**
- * Created by The eXo Platform SARL
+ * Manages profile informations and actions relate to manage profile.<br>
+ *
  * Modified : dang.tung
  *          tungcnw@gmail.com
  * Aug 11, 2009          
  */
 
 public abstract class UIProfileSection extends UIForm {
+  /** The isEditMode is used for check the view mode. */
   private boolean isEditMode;
-  private boolean isMultipart = false;
-  private String currentProperty;
-  private ProfileMapper profilemapper;
   
+  /** Checks is multi part or not. */
+  private boolean isMultipart = false;
+  
+  /** Store current property.*/
+  private String currentProperty;
+  
+  /**
+   * Gets profile.<br>
+   * 
+   * @param forceReload
+   * 
+   * @return profile.
+   * 
+   * @throws Exception
+   */
   public Profile getProfile(boolean forceReload) throws Exception {
     UIProfile uiProfile = this.getAncestorOfType(UIProfile.class);
     return uiProfile.getProfile(forceReload);
   }
 
+  /**
+   * Checks the current display of title bar is can be edit.<br>
+   * 
+   * @return true if title bar is in edit mode.
+   */
   public boolean isEditMode() {
     return this.isEditMode;
   }
 
+  /**
+   * Sets the edit mode for form.<br>
+   * 
+   * @param editMode
+   */
   public void setEditMode(boolean editMode) {
     this.isEditMode = editMode;
   }
 
+  /**
+   * Checks the current user is right edit permission.<br>
+   * 
+   * @return true if current user has permission.
+   */
   public boolean isEditable() {
     UIProfile pp = this.getAncestorOfType(UIProfile.class);
     return pp.isEditable();
   }
 
+  /**
+   * Checks is multiple parts or not.<br>
+   * 
+   * @return true if is multiple part.
+   */
   public boolean isMultipart() {
     return isMultipart;
   }
 
+  /**
+   * Sets multiple part.<br>
+   * 
+   * @param multipart
+   */
   public void setMultipart(boolean multipart) {
     isMultipart = multipart;
   }
 
+  /**
+   * Gets current property.<br>
+   * 
+   * @return currentProperty
+   */
   public String getCurrentProperty() {
     return currentProperty;
   }
 
+  /**
+   * Sets current property.<br>
+   * 
+   * @param currentProperty
+   */
   public void setCurrentProperty(String currentProperty) {
     this.currentProperty = currentProperty;
   }
 
-//  public void processDecode(WebuiRequestContext context) throws Exception {
-//
-//    Map params = ((PortletRequest) context.getRequest()).getParameterMap();
-//
-//    Iterator it1 = params.keySet().iterator();
-//      while (it1.hasNext()) {
-//        String paramkey = (String) it1.next();
-//        String[] values = ((PortletRequest) context.getRequest()).getParameterValues(paramkey);
-//        for(String value : values) {
-//          System.out.println("profile: " + paramkey + "=" + value);
-//        }
-//      }
-//
-//    //if we are going to save, we need to read the parameters
-//    if (params.get("op") != null && "Save".equals(((String[])params.get("op"))[0])) {
-//      System.out.println("going to save");
-//      Map profileInfo = new HashMap();
-//
-//      //need to be done only on save
-//      Profile p = getProfile();
-//
-//      Iterator it = params.keySet().iterator();
-//      while (it.hasNext()) {
-//        String paramkey = (String) it.next();
-//
-//        if (paramkey.startsWith("profile.")) {
-//          String name = paramkey.substring(8);
-//          String[] values = ((PortletRequest) context.getRequest()).getParameterValues(paramkey);
-//          profileInfo.put(name, values);
-//          System.out.println("profile: " + name + "=" + profileInfo.get(name));
-//        }
-//      }
-//      getProfileMapper().copy(profileInfo, p);
-//
-//      ExoContainer container = ExoContainerContext.getCurrentContainer();
-//      IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-//
-//      im.saveProfile(p);
-//    }
-//    super.processDecode(context);
-//  }
-
+  /**
+   * Listens to edit event and changes the form to edit mode.<br>
+   *
+   */
   public static class EditActionListener extends EventListener<UIProfileSection> {
 
     public void execute(Event<UIProfileSection> event) throws Exception {
@@ -123,6 +131,10 @@ public abstract class UIProfileSection extends UIForm {
     }
   }
 
+  /**
+   * Listens to save event and change form to non edit mode.<br> 
+   *
+   */
   public static class SaveActionListener extends EventListener<UIProfileSection> {
 
     public void execute(Event<UIProfileSection> event) throws Exception {
@@ -133,6 +145,10 @@ public abstract class UIProfileSection extends UIForm {
     }
   }
 
+  /**
+   * Listens to cancel event and change the form to non edit mode.<br>
+   *
+   */
   public static class CancelActionListener extends EventListener<UIProfileSection> {
 
     public void execute(Event<UIProfileSection> event) throws Exception {
@@ -143,70 +159,4 @@ public abstract class UIProfileSection extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
     }
   }
-
-//  protected void beginEditMode(Writer writer) throws Exception {
-//    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-//    String b = context.getURLBuilder().createURL(this, null, null);
-//
-//    writer.
-//        append("<form class=\"UIForm\" name=\"form_").append(getId()).
-//        append("\" id=\"form_").append(getId()).append("\" action=\"").
-//        append(b).append("\" onSubmit=\"").append(eventSubmit("Save")).
-//        append(";return false;\"");
-//    if (isMultipart) {
-//      writer.append(" enctype=\"multipart/form-data\"");
-//    }
-//    writer.append(" method=\"post\">");
-//    writer.append("<input type=\"hidden\" name=\"op\" value=\"\"/>");
-//
-//  }
-//
-//  protected void endEditMode(Writer writer) throws IOException {
-//    writer.write("</form>");
-//    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-//    context.getJavascriptManager().addOnLoadJavascript("eXo.social.profile.UIProfileSection.initForm(\"" + getId() + "\")");
-//  }
-//
-//  protected void begin(Writer writer) throws IOException {
-//    writer.append("<div id=\"").append(getId()).append("\" class=\"UIProfileSection\">");
-//  }
-//
-//  protected void end(Writer writer) throws IOException {
-//    writer.write("</div>");
-//  }
-
-//  @Override
-//  public void processRender(WebuiRequestContext context) throws Exception {
-//
-//    Writer writer = context.getWriter();
-//
-//    begin(writer);
-//
-//    if (isEditMode())
-//      beginEditMode(writer);
-//
-//    super.processRender(context);
-//
-//    if (isEditMode())
-//      endEditMode(writer);
-//
-//    end(writer);
-//  }
-
-//  public String eventSubmit(String name) throws Exception {
-//
-//    StringBuilder b = new StringBuilder();
-//    b.append("javascript:eXo.social.profile.UIProfileSection.submitForm('")
-//        .append(getId()).append("', '").append(name).append("')");
-//    return b.toString();
-//  }
-
-  private ProfileMapper getProfileMapper() {
-    if (this.profilemapper == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      this.profilemapper = (ProfileMapper) container.getComponentInstanceOfType(ProfileMapper.class);
-    }
-    return profilemapper;  
-  }
-
 }

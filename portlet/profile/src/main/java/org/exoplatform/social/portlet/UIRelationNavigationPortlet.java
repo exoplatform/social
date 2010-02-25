@@ -23,7 +23,9 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * Created by The eXo Platform SAS
+ * Manages the navigation of relation.<br>
+ *   - Decides which node is current selected.<br>
+ *   - Gets the current viewer name.<br>
  */
 
 @ComponentConfig(
@@ -32,17 +34,30 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UIRelationNavigationPortlet extends UIPortletApplication {
 
-  public UIRelationNavigationPortlet() throws Exception {
-  }
+  /**
+   * Default Constructor.<br>
+   * @throws Exception
+   */
+  public UIRelationNavigationPortlet() throws Exception { }
   
+  /**
+   * Returns the current selected node.<br>
+   * 
+   * @return selected node.
+   */
   public String getSelectedNode() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     String requestUrl = pcontext.getRequestURI();
-   String[] split = requestUrl.split("/");
+    String[] split = requestUrl.split("/");
    
     return split[split.length-2];
   }
   
+  /**
+   * Gets current user name is viewed.<br>
+   * 
+   * @return name of current viewer user.
+   */
   public String getViewerId() {
 	  PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
 	  return portalRequestContext.getRemoteUser();

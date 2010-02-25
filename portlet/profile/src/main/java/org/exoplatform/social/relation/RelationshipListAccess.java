@@ -28,12 +28,22 @@ import org.exoplatform.social.core.relationship.Relationship;
  * Aug 28, 2009  
  */
 public class RelationshipListAccess implements ListAccess<Relationship> {
+  /** The list is used for relation storage. */
   private final List<Relationship> list;
 
-  RelationshipListAccess(List<Relationship> list) {
-    this.list = list;
-  }
+  /**
+   * Initializes the access list.<br>
+   * 
+   * @param list
+   *        List is used for initialize.
+   */
+  RelationshipListAccess(List<Relationship> list) { this.list = list;}
 
+  /**
+   * Implements load method of ListAccess interfaces for load all initial variables.<br>
+   * @return result
+   *         Array of relationship using in access list.
+   */
   public Relationship[] load(int index, int length) throws Exception, IllegalArgumentException {
     if (index < 0)
       throw new IllegalArgumentException("Illegal index: index must be a positive number");
@@ -50,8 +60,12 @@ public class RelationshipListAccess implements ListAccess<Relationship> {
 
     return result;
   }
-
-  public int getSize() throws Exception {
-    return list.size();
-  }
+  
+  /**
+   * Gets the number of element in accessing list.<br>
+   * 
+   * @return size
+   *         Number of element in list. 
+   */
+  public int getSize() throws Exception { return list.size();}
 }

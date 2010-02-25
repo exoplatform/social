@@ -24,13 +24,26 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIPortletApplication;
 
+/**
+ * Renders groovy templates by introduce template and windowId only.
+ *
+ */
 @ComponentConfig()
 public class UIGroovyPortlet extends UIPortletApplication {
-  
+  /** DEFAULT TEMPLATE. */
   private String DEFAULT_TEMPLATE = "app:/groovy/groovy/webui/component/UIGroovyPortlet.gtmpl" ;  
+  
+  /** Stores template information. */
   private String template_ ;
+  
+  /** Store window information. */
   private String windowId ;
   
+  /**
+   * Gets and initialize variable.<br>
+   * 
+   * @throws Exception
+   */
   public UIGroovyPortlet() throws Exception {
     PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance() ;
     PortletRequest prequest = context.getRequest() ;
@@ -38,9 +51,27 @@ public class UIGroovyPortlet extends UIPortletApplication {
     windowId = prequest.getWindowID() ;
   }
   
+  /**
+   * Gets window id.
+   * 
+   * @return id
+   *         The id of window.
+   */
   public String getId() { return windowId + "-portlet" ; }
+  
+  /**
+   * Gets template.
+   * 
+   * @return template
+   *         The template to be rendered.
+   */
   public String getTemplate() {  return template_ ;  }
   
+  /**
+   * Gets view mode.<br>
+   * 
+   * @return view mode.
+   */
   public UIComponent getViewModeUIComponent() { return null; }
 
 }

@@ -25,8 +25,25 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 
+/**
+ * Contains some common methods for using as utility.<br> 
+ * 
+ */
 public class Utils {
 
+  /**
+   * Sorts list by key.<br>
+   * 
+   * @param l
+   *        List for sorting.
+   * @param key1
+   *        First condition for sort.
+   * @param key2
+   *        Second condition for sort.
+   * @param reverse
+   *        Revert list or not.
+   * @return sorted list.
+   */
   static public List sort(List l, String key1, String key2, boolean reverse) {
     if (l == null)
       return null;
@@ -36,15 +53,50 @@ public class Utils {
     return l;
   }
 
+  /**
+   * Sorts list by key.<br>
+   * 
+   * @param l
+   *        List for sorting.
+   * @param key1
+   *        First condition for sort.
+   * @param key2
+   *        Second condition for sort.
+   *        
+   * @return sorted list.
+   */
   static public List sort(List l, String key1, String key2) {
     return sort(l, key1, key2, false);
   }
 
+  /**
+   * Sorts list by key.<br>
+   * 
+   * @param l
+   *        List for sorting.
+   * @param key
+   *        Condition for sort.
+   *        
+   * @return sorted list.
+   */
   static public List sort(List l, String key) {
     return sort(l, key, null, false);
   }
 
-
+  /**
+   * Selects an object from list.<br>
+   * 
+   * @param l
+   *        List for selecting.
+   * @param key
+   *        Key for selecting.
+   * @param value
+   *        Value as second condition for selecting.
+   * @param onlyFirst
+   *        If select the first element.
+   *        
+   * @return object that match the key.
+   */
   static private Object select(List<Map> l, String key, String value, boolean onlyFirst) {
     List res = new ArrayList<Map>();
 
@@ -59,14 +111,46 @@ public class Utils {
     return res;
   }
 
+  /**
+   * Selects an object from list.<br>
+   * 
+   * @param l
+   *        List for selecting.
+   * @param key
+   *        Key for selecting.
+   * @param value
+   *        Value as second condition for selecting.
+   *        
+   * @return object that match the key.
+   */
   static public List select(List<Map> l, String key, String value) {
     return (List) select(l, key, value, false);
   }
 
+  /**
+   * Selects the first element of the list.<br>
+   * 
+   * @param l
+   *        List for selecting.
+   * @param key
+   *        Key for selecting.
+   * @param value
+   *        Value as second condition for selecting.
+   *        
+   * @return object that match the key.
+   */
   static public Map selectFirst(List<Map> l, String key, String value) {
     return (Map) select(l, key, value, true);
   }
 
+  /**
+   * Gets current identity of login user.<br>
+   * 
+   * @return identity
+   *         Current identity of login user.
+   *         
+   * @throws Exception
+   */
   static public Identity getCurrentIdentity() throws Exception {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       IdentityManager identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
@@ -77,15 +161,38 @@ public class Utils {
       return identityManager.getIdentityByRemoteId("organization", currentUserName);
   }
   
+  /**
+   * Sorts the map depend on key.<br> 
+   *
+   */
   protected static class MapSorter implements Comparator {
     private String key1;
     private String key2;
 
+    /**
+     * Default Constructor.<br>
+     * 
+     * @param key1
+     *        First condition.
+     * @param key2
+     *        Second condition.
+     */
     public MapSorter(String key1, String key2) {
       this.key1 = key1;
       this.key2 = key2;
     }
 
+    /**
+     * Compares two objects.<br>
+     * 
+     * @param o1
+     *        First object.
+     *        
+     * @param o2
+     *        Second object.
+     * 
+     * @return int 
+     */
     public int compare(Object o1, Object o2) {
       int res = compare(o1, o2, key1);
       if(res == 0 && key2 != null)
@@ -93,6 +200,20 @@ public class Utils {
       return res;
     }
 
+    /**
+     * Compares two objects with key.<br>
+     * 
+     * @param o1
+     *        First object.
+     *        
+     * @param o2
+     *        Second object.
+     *        
+     * @param key
+     *        Compare condition.
+     *        
+     * @return int
+     */
     public int compare(Object o1, Object o2, String key) {
       HashMap h1 = null, h2 = null;
 

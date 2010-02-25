@@ -39,6 +39,11 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
+/**
+ * Component is used for profile managing, it is the 
+ * place put all other profile management components.<br> 
+ *
+ */
 
 @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class,
@@ -69,21 +74,11 @@ public class UIProfile extends UIContainer {
     addChild(uiPopup);
   }
 
-
   /**
-   *
-   * @return the list of sections ordered by display order
+   * Gets current uri base on url of current page.<br>
+   * 
+   * @return uri of current page.
    */
-  @SuppressWarnings("unchecked")
-  private List getSections() {
-    List sects = new ArrayList();
-    sects.add(UIHeaderSection.class);
-    sects.add(UIBasicInfoSection.class);
-    sects.add(UIContactSection.class);
-    sects.add(UIExperienceSection.class);
-    return sects;
-  }
-
   public String getCurrentUriObj() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     String requestUrl = pcontext.getRequestURI();
@@ -95,14 +90,6 @@ public class UIProfile extends UIContainer {
   }
   
   
-  private Identity getIdentity() throws Exception {
-    if (im == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    }
-    return im.getIdentityByRemoteId("organization", getCurrentProfileID());
-  }
- 
   /**
    * gets profile with forceReload.
    * @param forceReload
@@ -117,6 +104,11 @@ public class UIProfile extends UIContainer {
     return profile;
   }
 
+  /**
+   * Checks the current user is right edit permission.<br>
+   * 
+   * @return true if current user has permission.
+   */
   public boolean isEditable() {
     RequestContext context = RequestContext.getCurrentInstance();
     String rUser = context.getRemoteUser();
@@ -127,6 +119,11 @@ public class UIProfile extends UIContainer {
     return getCurrentProfileID().equals(rUser);
   }
   
+  /**
+   * Gets the source of image.
+   * 
+   * @return imageSource link
+   */
   public String getImageSource() throws Exception {
     Profile p = getProfile(true);
     ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
@@ -135,15 +132,6 @@ public class UIProfile extends UIContainer {
               + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
-  }
-  
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
-  }
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
   }
   
   /**
@@ -164,6 +152,34 @@ public class UIProfile extends UIContainer {
     
   }
   
+  /**
+   * Gets the current portal name.<br>
+   * 
+   * @return name of current portal.
+   * 
+   */
+  private String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+  }
+  
+  /**
+   * Gets the current repository.<br>
+   * 
+   * @return current repository through repository service.
+   * 
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
+  /**
+   * Gets current profile Id.<br>
+   * 
+   * @return id of current profile.
+   */
   private String getCurrentProfileID() {
     String username = URLUtils.getCurrentUser();
     if(username != null)
@@ -173,4 +189,34 @@ public class UIProfile extends UIContainer {
     RequestContext context = RequestContext.getCurrentInstance();
     return context.getRemoteUser();
   }
+  
+  /**
+   * Gets current identity of login user.<br>
+   * 
+   * @return current identity.
+   * 
+   * @throws Exception
+   */
+  private Identity getIdentity() throws Exception {
+    if (im == null) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return im.getIdentityByRemoteId("organization", getCurrentProfileID());
+  }
+  
+  /**
+  *
+  * @return the list of sections ordered by display order
+  */
+ @SuppressWarnings("unchecked")
+ private List getSections() {
+   List sects = new ArrayList();
+   sects.add(UIHeaderSection.class);
+   sects.add(UIBasicInfoSection.class);
+   sects.add(UIContactSection.class);
+   sects.add(UIExperienceSection.class);
+   return sects;
+ }
+
 }

@@ -194,9 +194,9 @@
   </portlet>
   
   <portlet>
-    <description xml:lang="EN">User List Portlet</description>
+    <description xml:lang="EN">Members Portlet</description>
     <portlet-name>UserListPortlet</portlet-name>
-    <display-name xml:lang="EN">List users</display-name>
+    <display-name xml:lang="EN">Members</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
     <init-param>
@@ -213,8 +213,8 @@
     <resource-bundle>locale.portlet.web.UserListPortlet</resource-bundle>
     
     <portlet-info>
-      <title>User List Portlet</title>
-      <short-title>User List Portlet</short-title>
+      <title>Members Portlet</title>
+      <short-title>Members Portlet</short-title>
       <keywords>space</keywords>
     </portlet-info>     
 

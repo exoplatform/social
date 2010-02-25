@@ -42,7 +42,10 @@ import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
- * Created by The eXo Platform SARL
+ * Component is used for contact information managing.<br>
+ * Some contact information such as: email, phone, ims, website ...
+ * This is one part of profile management beside basic information and experience.<br>
+ *  
  * Modified : hanh.vi
  *          hanhvq@gmail.com
  * Aug 18, 2009          
@@ -61,81 +64,118 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 public class UIContactSection extends UIProfileSection {
   /** EMAILS. */
   final public static String EMAILS = "emails";
+  
   /** PHONES. */
   final public static String PHONES = "phones";
+  
   /** IMS. */
   final public static String IMS = "ims";
+  
   /** URLS. */
   final public static String URLS = "urls";
+  
   /** URL. */
   final public static String URL = "url";
+  
   /** EMAIL. */
   final public static String EMAIL = "email";
+  
   /** PHONE. */
   final public static String PHONE = "phone";
+  
   /** FONE. */
   final public static String FONE = "fone";
+  
   /** RLU. */
   final public static String RLU = "rlu";
+  
   /** WORK. */
   final public static String WORK = "Work";
+  
   /** HOME. */
   final public static String HOME = "Home";
+  
   /** OTHER. */
   final public static String OTHER = "Other";
+  
   /** GTALK. */
   final public static String GTALK = "Gtalk";
+  
   /** MSN. */
   final public static String MSN = "Msn";
+  
   /** SKYPE. */
   final public static String SKYPE = "Skype";
+  
   /** YAHOO. */
   final public static String YAHOO = "Yahoo";
+  
   /** WEBSITE TITLE. */
   final public static String WEBSITE_TITLE = "Website Title";
+  
   /** URL EXAMPLE. */
   final public static String URL_EXAMPLE = "URL (ex: http://www.site.com)";
+  
   /** KEY. */
   final public static String KEY = "key";
+  
   /** VALUE. */
   final public static String VALUE = "value";
+  
   /** EMAIL REGEX EXPRESSION. */
   final public static String EMAIL_REGEX_EXPRESSION = "^([^@\\s]+)@((?:[-a-z0-9]+\\.)+[a-z]{2,})$";
+  
   /** INVALID EMAIl. */
   final public static String INVALID_EMAIl = "UIContactSect.msg.Invalid-email";
+  
   /** PHONE REGEX EXPRESSION. */
   final public static String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().-]+$";
+  
   /** INVALID PHONE. */
   final public static String INVALID_PHONE = "UIContactSect.msg.Invalid-phone";
+  
   /** URL REGEX EXPRESSION. */
   final public static String URL_REGEX_EXPRESSION = "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
+  
   /** INVALID URL. */
   final public static String INVALID_URL = "UIContactSect.msg.Invalid-url";
+  
   /** GENDER Child. */
   final public static String GENDER_CHILD = "UITgender";
+  
   /** GENDER. */
   final public static String GENDER = "gender";
+  
   /** DEFAULT GENDER. */
   final public static String GENDER_DEFAULT = "Gender";
+  
   /** MALE. */
   final public static String MALE = "male";
+  
   /** FEMALE. */
   final public static String FEMALE = "female";
   
   /** Number of email. */
   private int emailCount = 0;
+  
   /** Number of phone. */
   private int phoneCount = 0;
+  
   /** Number of ims. */
   private int imsCount = 0;
+  
   /** Number of url. */
   private int urlCount = 0;
+  
   /** Index of email. */
   private int emailIdx = 0;
+  
   /** Index of phone. */
   private int phoneIdx = 0;
+  
   /** Index of ims. */
   private int imsIdx = 0;
+  
   /** Index of url. */
   private int urlIdx = 0;
   
@@ -160,7 +200,7 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
-   * Constructor.<br>
+   * Initializes contact form.<br>
    * 
    * @throws Exception
    */
@@ -175,7 +215,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Get and sort all uicomponents.<br>
+   * Gets and sort all uicomponents.<br>
    *  
    * @return All children in order.
    */
@@ -185,7 +225,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Get all children of email.<br>
+   * Gets all children of email.<br>
    * 
    * @return All email children in order.
    */
@@ -194,7 +234,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Get all children of Phone.<br>
+   * Gets all children of Phone.<br>
    * 
    * @return All Phone children in order.
    */
@@ -203,7 +243,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Get all children of ims.<br>
+   * Gets all children of ims.<br>
    * 
    * @return All ims children in order.
    */
@@ -212,7 +252,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Get all children of URL.<br>
+   * Gets all children of URL.<br>
    * 
    * @return All URL children in order.
    */
@@ -221,7 +261,7 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
-   * Get gender child<br>
+   * Gets gender child<br>
    * 
    * @return  gender child.
    */
@@ -230,7 +270,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   *  Store profile information into database when form is submitted.<br>
+   *  Stores profile information into database when form is submitted.<br>
    *
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
@@ -246,7 +286,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Add component when user click add button.<br>
+   * Adds component when user click add button.<br>
    *
    */
   public static class AddActionListener extends EventListener<UIContactSection> {
@@ -259,7 +299,7 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
-   * Remove the component that user selected for removing.<br>
+   * Removes the component that user selected for removing.<br>
    *
    */
   public static class RemoveActionListener extends EventListener<UIContactSection> {
@@ -274,7 +314,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Change form into edit mode when user click eddit button.<br>
+   * Changes form into edit mode when user click eddit button.<br>
    *
    */
   public static class EditActionListener extends UIProfileSection.EditActionListener {
@@ -289,7 +329,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Get profile information from components and save into Profile.<br>
+   * Gets profile information from components and save into Profile.<br>
    * 
    * @throws Exception
    */
@@ -328,10 +368,12 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
-   * Get information input by user for saving profile.<br>
+   * Gets information input by user for saving profile.<br>
    * 
    * @param count Number of children.
+   * 
    * @param listUIComp Contains children of each input type (email, phone,...).
+   * 
    * @param uiStringType Type of component.
    * 
    * @return All profile information.
@@ -378,9 +420,10 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Get children of each type (email, phone, ...) from the all children list.<br>
+   * Gets children of each type (email, phone, ...) from the all children list.<br>
    * 
    * @param startIdx Start index of sublist.
+   * 
    * @param endIdx End index of sublist.
    * 
    * @return A list contains children of each type.
@@ -395,7 +438,7 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Set value for components.<br>
+   * Sets value for components.<br>
    * 
    * @throws Exception
    */
@@ -407,9 +450,10 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Set value for components with each type.<br>
+   * Sets value for components with each type.<br>
    * 
    * @param listChilds List children for setting.
+   * 
    * @param uiType Type for setting.
    * 
    * @throws Exception
@@ -501,9 +545,10 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
-   * Remove components by input id.<br>
+   * Removes components by input id.<br>
    * 
    * @param id1 The id of first component.
+   * 
    * @param id2 The id of next component.
    */
   private void removeFormInput(String id1, String id2) {
@@ -524,7 +569,7 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
-   * Add component with the input type.<br>
+   * Adds component with the input type.<br>
    * 
    * @param type Type of component is added (email, phone, ...).
    * 
@@ -559,9 +604,10 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
-   * Create UISelectBox with name and values.
+   * Creates UISelectBox with name and values.
    * 
    * @param values Array of value for setting.
+   * 
    * @param uiName Name of component.
    */
   private void createUISelectBox(String[] values, String uiName) {
@@ -581,9 +627,10 @@ public class UIContactSection extends UIProfileSection {
   }
   
   /**
-   * Sort a list in increase order of alphabet.<br>
+   * Sorts a list in increase order of alphabet.<br>
    * 
    * @param lstComps List for sorting.
+   * 
    * @return A sorted array in increase order.
    */
   private List<UIComponent> sort(List<UIComponent> lstComps) {    

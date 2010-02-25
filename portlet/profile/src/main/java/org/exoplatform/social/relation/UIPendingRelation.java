@@ -43,7 +43,12 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
- * Created by The eXo Platform SAS
+ * Manages pending relation of all existing users. Manages actions 
+ * such as accept or deny invitation and search action.<br>
+ *   - Get all users that have pending relation.<br>
+ *   - Check the status of each user with current user then display the list.<br>
+ *   - Listens to event: deny contact and search action.<br>
+ *   
  * Author : dang.tung
  *          tungcnw@gmail.com
  * Aug 25, 2009  
@@ -53,41 +58,64 @@ import org.exoplatform.webui.form.UIFormPageIterator;
     events = { 
         @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class),
         @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE)
-      }
+    }
 )
 public class UIPendingRelation extends UIContainer {
-  /** UIFormPageIterator */
-  UIFormPageIterator uiFormPageIterator_;
   /** UIFormPageIterator ID. */
   private final String iteratorID_ = "UIFormPageIteratorPendingRelation";
+  
+  /** Label for display invitation is revoked information */
   private static final String INVITATION_REVOKED_INFO = "UIPendingRelation.label.RevokedInfo";
-  /** Current identity. */
+  
+  /** Stores UIFormPageIterator instance. */
+  UIFormPageIterator uiFormPageIterator_;
+  
+  /** Stores current identity. */
   Identity            currIdentity = null;
+  
   /** RelationshipManager */
   RelationshipManager rm           = null;
-  /** IdentityManager */
+  
+  /** Stores IdentityManager instance. */
   IdentityManager     im           = null;
+  
+  /** Stores UIProfileUserSearch instance. */
   UIProfileUserSearch uiProfileUserSearchPending = null;
+  
+  /** Stores identities. */
   private List<Identity> identityList;
   
+  /**
+   * Gets identities.
+   * 
+   * @return one list of identity.
+   */
   public List<Identity> getIdentityList() {
     return identityList;
   }
 
+  /**
+   * Sets list identity.
+   * 
+   * @param identityList
+   *        Identities for setting to list.
+   */
   public void setIdentityList(List<Identity> identityList) {
     this.identityList = identityList;
   }
 
   /**
-   * Get UIFormPageIterator.
-   * @return
+   * Gets iterator for display.
+   * 
+   * @return an iterator contains information for display.
    */
   public UIFormPageIterator getUiFormPageIterator() {
     return uiFormPageIterator_;
   }
 
   /**
-   * Constructor.
+   * Initializes components and add as child of form.<br>
+   * 
    * @throws Exception 
    */
   public UIPendingRelation() throws Exception {
@@ -123,20 +151,34 @@ public class UIPendingRelation extends UIContainer {
     return lists;
   }
     
+  /**
+   * Gets the current portal name.<br>
+   * 
+   * @return name of current portal.
+   * 
+   */
   public String getPortalName() {
     PortalContainer pcontainer =  PortalContainer.getInstance();
     return pcontainer.getPortalContainerInfo().getContainerName();  
   }
   
+  /**
+   * Gets the current repository.<br>
+   * 
+   * @return current repository through repository service.
+   * 
+   * @throws Exception
+   */
   public String getRepository() throws Exception {
     RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
     return rService.getCurrentRepository().getConfiguration().getName() ;
   }
   
   /**
-   * Get current identity.
+   * Gets current identity.<br>
    * 
-   * @return
+   * @return identity of current login user.
+   * 
    * @throws Exception
    */
   public Identity getCurrentIdentity() throws Exception {
@@ -144,6 +186,13 @@ public class UIPendingRelation extends UIContainer {
       return im.getIdentityByRemoteId("organization", getCurrentUserName());
   }
   
+  /**
+   * Gets the identity of current user is viewed by another.<br>
+   * 
+   * @return identity of current user who is viewed.
+   * 
+   * @throws Exception
+   */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
     Identity identity = im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
@@ -152,15 +201,20 @@ public class UIPendingRelation extends UIContainer {
   }
   
   /**
-   * Get current user name.
+   * Gets name of current login user.
    * 
-   * @return
+   * @return name of current login user.
    */
   public String getCurrentUserName() {
     RequestContext context = RequestContext.getCurrentInstance();
     return context.getRemoteUser();
   }
 
+  /**
+   * Gets currents name of user that is viewed by another.<br>
+   * 
+   * @return name of user who is viewed.
+   */
   public String getCurrentViewerUserName() {
     String username = URLUtils.getCurrentUser();
     if(username != null)
@@ -169,8 +223,13 @@ public class UIPendingRelation extends UIContainer {
     RequestContext context = RequestContext.getCurrentInstance();
     return context.getRemoteUser();
   }
+  
   /**
-   *  Revoke the request with relation that has status is PENDING. 
+   * Listens to deny action then delete the invitation.<br>
+   *   - Gets information of user is invited or made request.<br>
+   *   - Checks the relation to confirm that have got pending relation.<br>
+   *   - Removes the current pending relation and save the new relation.<br> 
+   *
    */
   public static class DenyContactActionListener extends EventListener<UIPendingRelation> {
     public void execute(Event<UIPendingRelation> event) throws Exception {
@@ -200,6 +259,11 @@ public class UIPendingRelation extends UIContainer {
     }
   }
   
+  /**
+   * Listens to search action that broadcasted from search form then set to current form.<br>
+   *   - Gets search result from search form.<br>
+   *   - Sets the search result to the current form that added search form as child.<br>
+   */
   public static class SearchActionListener extends EventListener<UIPendingRelation> {
     @Override
     public void execute(Event<UIPendingRelation> event) throws Exception {
@@ -210,6 +274,11 @@ public class UIPendingRelation extends UIContainer {
     }
   }
   
+  /**
+   * Return true to accept user is viewing can edit.
+   * 
+   * @return true if current user is current login user.
+   */
   public boolean isEditable () {
     RequestContext context = RequestContext.getCurrentInstance();
     String currentUserName = context.getRemoteUser();
@@ -246,7 +315,7 @@ public class UIPendingRelation extends UIContainer {
   }
   
   /**
-   * Get pending relationships from searched result identities. 
+   * Gets pending relationships from searched result identities. 
    * 
    * @return Relationship list.
    * @throws Exception
@@ -264,9 +333,9 @@ public class UIPendingRelation extends UIContainer {
   }
   
   /**
-   * Get Relationship manager.
+   * Gets relationship manager object.<br>
    * 
-   * @return
+   * @return an object that is instance of relationship manager.
    */
   private RelationshipManager getRelationshipManager() {
     if (rm == null) {
@@ -277,9 +346,9 @@ public class UIPendingRelation extends UIContainer {
   }
   
   /**
-   * Get identity manager.
+   * Gets identity manager object.<br>
    * 
-   * @return
+   * @return identity manager object.
    */
   private IdentityManager getIdentityManager() {
     if (im == null) {
@@ -289,6 +358,16 @@ public class UIPendingRelation extends UIContainer {
     return im;
   }
   
+  /**
+   * Gets contact status between current user and identity that is checked.<br>
+   * 
+   * @param identity
+   *        Object is checked status with current user.
+   *        
+   * @return type of relation status that equivalent the relation.
+   * 
+   * @throws Exception
+   */
   private Relationship.Type getContactStatus(Identity identity) throws Exception {
     if (identity.getId().equals(getCurrentIdentity().getId()))
       return Relationship.Type.SELF;

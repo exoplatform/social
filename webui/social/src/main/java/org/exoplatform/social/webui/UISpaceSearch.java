@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -34,9 +33,11 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
- * UIProfileUserSearch for search users in profile.
- * The search event should broadcast for the parent one to catch and
- * get searched Identity List from UIProfileUserSearch
+ * Searches space by space name that input by user.<br>
+ *   - Search action is listened and information for search space is processed.<br> 
+ *   - After spaces is requested is returned, the search process is completed,
+ *   - Search event is broadcasted to the form that added search form as child.<br>
+ * 
  * Author : hanhvi
  *          hanhvq@gmail.com
  * Oct 28, 2009  
@@ -49,36 +50,107 @@ import org.exoplatform.webui.form.UIFormStringInput;
   }
 )
 public class UISpaceSearch extends UIForm {
-  /** USER CONTACT. */
+  /** SPACE SEARCH. */
   final public static String SPACE_SEARCH = "SpaceSearch";
+  
   /** SEARCH. */
   final public static String SEARCH = "Search";
   
+  /** SEARCH ALL. */
   final static String ALL = "All";
   
   /** DEFAULT SPACE NAME SEARCH. */
   final public static String DEFAULT_SPACE_NAME_SEARCH = "Space name";
+  
+  /** INPUT PATTERN FOR CHECKING. */
   final static String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
+  
   /** ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING */
   final static String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
   
+  /** The spaceService is used for SpaceService instance storage. */ 
   SpaceService spaceService = null;
+  
+  /** The spaceList is used for search result storage. */
   private List<Space> spaceList = null;
-  /** Selected character when search by alphabet */
+  
+  /** The selectedChar is used for selected character storage when search by alphabet. */
   String selectedChar = null;
+  
+  /** The spaceNameSearch is used for input space name storage. */
   String spaceNameSearch = null;
+  
+  /** Contains all space name in individual context for auto suggesting. */
   List<String> spaceNameForAutoSuggest = null;
   
+  /**
+   * Gets input space name search input.
+   * 
+   * @return Name of space.
+   */
   public String getSpaceNameSearch() { return spaceNameSearch;}
   
-  public void setSpaceNameSearch(String spaceNameSearch) { this.spaceNameSearch = spaceNameSearch;}
+  /**
+   * Sets input space name search.
+   * 
+   * @param spaceNameSearch
+   *        A {@code String}
+   */
+  public void setSpaceNameSearch(String spaceNameSearch) { 
+    this.spaceNameSearch = spaceNameSearch;
+  }
   
+  /**
+   * Gets space name for auto suggesting.
+   * 
+   * @return List of space name.
+   */
   public List<String> getSpaceNameForAutoSuggest() { return spaceNameForAutoSuggest;}
 
-  public void setSpaceNameForAutoSuggest(List<String> spaceNameForAutoSuggest) { this.spaceNameForAutoSuggest = spaceNameForAutoSuggest;}
+  /**
+   * Sets space name for auto suggesting.
+   * 
+   * @param spaceNameForAutoSuggest The list of space name.
+   *        A {@code List}
+   */
+  public void setSpaceNameForAutoSuggest(List<String> spaceNameForAutoSuggest) { 
+    this.spaceNameForAutoSuggest = spaceNameForAutoSuggest;
+  }
 
   /**
-   * Constructor to initialize form fields
+   * Sets result of searching to list.
+   * 
+   * @param spaceList The list of space.
+   *        A {@code List}
+   */
+  public void setSpaceList(List<Space> spaceList) { this.spaceList = spaceList;}
+  
+  /**
+   * Gets list of searching.
+   * 
+   * @return List of space.
+   * @throws Exception 
+   */
+  public List<Space> getSpaceList() throws Exception { return spaceList;}
+  
+  /**
+   * Gets selected character.
+   * 
+   * @return Character is selected.
+   */
+  public String getSelectedChar() { return selectedChar;}
+
+  /**
+   * Sets selected character.
+   * 
+   * @param selectedChar
+   *        A {@code String}
+   */
+  public void setSelectedChar(String selectedChar) { this.selectedChar = selectedChar;}
+  
+  /**
+   * Initializes search form fields.
+   * 
    * @throws Exception
    */
   public UISpaceSearch() throws Exception { 
@@ -86,30 +158,11 @@ public class UISpaceSearch extends UIForm {
   }
   
   /**
-   * identityList setter
-   * @param identityList
-   */
-  public void setSpaceList(List<Space> spaceList) {
-    this.spaceList = spaceList;
-  }
-  
-  /**
-   * identityList getter
-   * @return
-   * @throws Exception 
-   */
-  public List<Space> getSpaceList() throws Exception {
-    return spaceList;
-  }
-
-  public String getSelectedChar() { return selectedChar;}
-
-  public void setSelectedChar(String selectedChar) { this.selectedChar = selectedChar;}
-  
-  /**
-   * SearchActionListener
-   * Get the space name from request and search spaces that have name like input space name.
-   * Search space and set result into spaceList. 
+   * Listens to search event is broadcasted from search form, then processes search condition
+   * and set search result to the result variable.<br>
+   *    - Gets space name from request.<br>
+   *    - Searches spaces that have name like input space name.<br>
+   *    - Sets matched space into result list.<br> 
    */
   static public class SearchActionListener extends EventListener<UISpaceSearch> {
     @Override
@@ -130,7 +183,7 @@ public class UISpaceSearch extends UIForm {
       if (charSearch != null) ((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(DEFAULT_SPACE_NAME_SEARCH);
       uiSpaceSearch.setSelectedChar(charSearch);
          
-      if (charSearch == null) { // is not search by first character
+      if (charSearch == null) { // is not searching by first character
         if (!isValidInput(spaceName)) {
           uiSpaceSearch.setSpaceList(new ArrayList<Space>());
         } else {
@@ -141,7 +194,7 @@ public class UISpaceSearch extends UIForm {
           List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, false);
           uiSpaceSearch.setSpaceList(spaceSearchResult);
         }
-      } else {
+      } else { // is searching by alphabet
         List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, true );
         uiSpaceSearch.setSpaceList(spaceSearchResult);  
       }
@@ -155,9 +208,12 @@ public class UISpaceSearch extends UIForm {
     }
     
     /**
-     * Check input values is right or not follow regular expression.
+     * Checks input values follow regular expression.
+     * 
      * @param input
-     * @return
+     *        A {@code String}
+     *        
+     * @return true if user input a right string for space searching else return false.
      */
     private boolean isValidInput(String input) {
       // Eliminate '*' and '%' character in string for checking
@@ -172,8 +228,10 @@ public class UISpaceSearch extends UIForm {
   }
   
   /**
-   * get {@SpaceService}
-   * @return spaceService
+   * Gets an instance of SpaceService. If the instance is still existed then return
+   * else it is get from container.
+   * 
+   * @return an instance of SpaceService.
    */
   private SpaceService getSpaceService() {
     if (spaceService == null) {

@@ -38,9 +38,8 @@ import org.exoplatform.webui.form.UIFormUploadInput;
 
 
 /**
- * UIAvatarUploader.java
- * Upload images to set user's avatar.
- * Created by The eXo Platform SAS
+ * Uploads image to set user's avatar.<br>
+ * 
  * Author : hoatle
  *          hoatlevan@gmail.com
  * Sep 8, 2009  
@@ -55,16 +54,32 @@ import org.exoplatform.webui.form.UIFormUploadInput;
     }
   )
 })
+
 public class UIAvatarUploader extends UIForm {
-  private String FIELD_NAME = "Name";
-  private String FIELD_Uploader = "Uploader";
-  private UIFormUploadInput uiAvatarUploadInput;
-  private int uploadLimit = 2; //MB
-  private String[] acceptedMimeTypes = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
+  /** Message alert that image is not uploaded successfully. */
   static final String MSG_IMG_NOT_UPLOADED = "UIAvatarUploader.msg.img_not_loaded";
+  
+  /** Message alert that mimetype is not accepted. */
   static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
+  
+  /** FIELD NAME. */
+  private String FIELD_NAME = "Name";
+  
+  /** FIELD Uploader. */
+  private String FIELD_Uploader = "Uploader";
+  
+  /** The limit size for upload image. */
+  private int uploadLimit = 2; //MB
+  
+  /** List of accepted mimetype. */
+  private String[] acceptedMimeTypes = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
+  
+  /** Stores UIFormUploadInput instance. */
+  private UIFormUploadInput uiAvatarUploadInput;
+  
   /**
-   * Constructor: Add UIFormUploadInput
+   * Initializes upload form.<br>\
+   * 
    */
   public UIAvatarUploader() throws Exception {
     addUIFormInput(new UIFormStringInput(FIELD_NAME, null));
@@ -75,8 +90,10 @@ public class UIAvatarUploader extends UIForm {
   }
   
   /**
-   * checks if the provided mimeType matches acceptedMimeTypes
+   * Checks if the provided mimeType matches acceptedMimeTypes.<br>
+   * 
    * @param mimeType String
+   * 
    * @return boolean
    */
   private boolean isAcceptedMimeType(String mimeType) {
@@ -87,9 +104,11 @@ public class UIAvatarUploader extends UIForm {
   }
   
   /**
-   * gets mime extension from mimetype
+   * Gets mime extension from mimetype.<br>
    * eg: image/gif => gif; image/jpg => jpg
-   * @param mimeType
+   *  
+   * @param mimeType String
+   * 
    * @return file extension
    */
   private String getMimeExtension(String mimeType) {
@@ -99,10 +118,9 @@ public class UIAvatarUploader extends UIForm {
   
 
   /**
-   * This action will be triggered when user click on change avatar button.
-   * If there is uploaded image, change and display avatar on the profile.
-   * if no, inform user to upload image.
-   * @author hoatle
+   * Changes and displays avatar on the profile if upload successful,
+   * else inform user to upload image.
+   * 
    */
   static public class ConfirmActionListener extends EventListener<UIAvatarUploader> {
 
@@ -151,10 +169,8 @@ public class UIAvatarUploader extends UIForm {
   }
   
   /**
-   * This action will be triggered when user click on cancel button.
-   * This action is something like Close button in the parent popup window.
-   * Clean perform can be done in this action.
-   * @author hoatle
+   * Cancels the upload image.<br>
+   * 
    */
   static public class CancelActionListener extends EventListener<UIAvatarUploader> {
 

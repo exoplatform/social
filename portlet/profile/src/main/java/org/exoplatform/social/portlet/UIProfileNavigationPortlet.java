@@ -31,7 +31,9 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * Created by The eXo Platform SAS
+ * Manages the navigation of relation.<br>
+ *   - Decides which node is current selected.<br>
+ *   - Checked is view by current user or by another.<br>
  */
 
 @ComponentConfig(
@@ -40,9 +42,18 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UIProfileNavigationPortlet extends UIPortletApplication {
 
-  public UIProfileNavigationPortlet() throws Exception {
-  }
+  /**
+   * Default Constructor.<br>
+   * 
+   * @throws Exception
+   */
+  public UIProfileNavigationPortlet() throws Exception { }
   
+  /**
+   * Returns the current selected node.<br>
+   * 
+   * @return selected node.
+   */
   public String getSelectedNode() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     String requestUrl = pcontext.getRequestURI();
@@ -55,6 +66,11 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     return split[split.length-1];
   }
   
+  /**
+   * Checked is view by current user or by another.<br>
+   * 
+   * @return true if it is viewed by current login user.
+   */
   public boolean isMe () {
     RequestContext context = RequestContext.getCurrentInstance();
     String currentUserName = context.getRemoteUser();
@@ -67,6 +83,13 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     return currentUserName.equals(currentViewer);
   }
   
+  /**
+   * Gets information about source that avatar image is stored.<br>
+   *  
+   * @return image source address.
+   * 
+   * @throws Exception
+   */
   protected String getImageSource() throws Exception {
     Identity currIdentity = Utils.getCurrentIdentity();
     Profile p = currIdentity.getProfile();
@@ -78,11 +101,24 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     return null;
   }
   
+  /**
+   * Gets the current portal name.<br>
+   * 
+   * @return name of current portal.
+   * 
+   */
   private String getPortalName() {
     PortalContainer pcontainer =  PortalContainer.getInstance() ;
     return pcontainer.getPortalContainerInfo().getContainerName() ;  
   }
   
+  /**
+   * Gets the current repository.<br>
+   * 
+   * @return current repository through repository service.
+   * 
+   * @throws Exception
+   */
   private String getRepository() throws Exception {
     RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
     return rService.getCurrentRepository().getConfiguration().getName() ;

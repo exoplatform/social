@@ -37,8 +37,8 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
 /**
- * Displays uploaded content from UIAvatarUploader
- * Created by The eXo Platform SAS
+ * Displays uploaded content from UIAvatarUploader.<br>
+ * 
  * Author : eXoPlatform
  *          exo@exoplatform.com
  * Nov 4, 2009  
@@ -51,20 +51,29 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIAvatarUploadContent extends UIContainer {
+  /** AVARTAR PROPERTY. */
   static public final String AVARTAR_PROPERTY = "avatar";
+  
+  /** ProfileAttachment instance. */
   private ProfileAttachment profileAttachment;
+  
+  /** Stores information of image storage. */
   private String imageSource;
   
   /**
-   * constructor
+   * Default constructor.<br>
+   * 
    */
   public UIAvatarUploadContent() {
   
   }
   
   /**
-   * constructor
+   * Initializes object at the first run time.<br>
+   * 
    * @param profileAttachment
+   *        Information about attachment.
+   *        
    * @throws Exception 
    */
   public UIAvatarUploadContent(ProfileAttachment profileAttachment) throws Exception {
@@ -74,7 +83,8 @@ public class UIAvatarUploadContent extends UIContainer {
   
   
   /**
-   * gets profileAttachment
+   * Gets information of profileAttachment.<br>
+   * 
    * @return profileAttachment
    */
   public ProfileAttachment getProfileAttachment() {
@@ -82,8 +92,10 @@ public class UIAvatarUploadContent extends UIContainer {
   }
   
   /**
-   * sets profileAttachment
+   * Sets information of profileAttachment.<br>
+   * 
    * @param profileAttachment
+   * 
    * @throws Exception 
    */
   public void setProfileAttachment(ProfileAttachment profileAttachment) throws Exception {
@@ -91,17 +103,9 @@ public class UIAvatarUploadContent extends UIContainer {
     setImageSource(profileAttachment.getImageBytes());
   }
   
-  private void setImageSource(byte[] imageBytes) throws Exception {
-    if (imageBytes == null || imageBytes.length == 0) return;
-    ByteArrayInputStream byteImage = new ByteArrayInputStream(imageBytes);
-    DownloadService downloadService = getApplicationComponent(DownloadService.class);
-    InputStreamDownloadResource downloadResource = new InputStreamDownloadResource(byteImage, "image");
-    downloadResource.setDownloadName(profileAttachment.getFileName());
-    imageSource = downloadService.getDownloadLink(downloadService.addDownloadResource(downloadResource));
-  }
-  
   /**
-   * gets imageSource link
+   * Gets the source of image.
+   * 
    * @return imageSource link
    */
   public String getImageSource() {
@@ -109,7 +113,8 @@ public class UIAvatarUploadContent extends UIContainer {
   }
   
   /**
-   * Update working work space
+   * Updates working work space.<br>
+   * 
    */
   static public void updateWorkingWorkSpace() {
     UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
@@ -120,9 +125,9 @@ public class UIAvatarUploadContent extends UIContainer {
   }
   
   /**
-   * accepts and saves the uploaded image to profile
-   * closes the popup window, refreshes UIProfile
-   * @author hoatle
+   * Accepts and saves the uploaded image to profile.
+   * Closes the popup window, refreshes UIProfile.
+   * 
    */
   static public class SaveActionListener extends EventListener<UIAvatarUploadContent> {
     @Override
@@ -141,8 +146,8 @@ public class UIAvatarUploadContent extends UIContainer {
   }
   
   /**
-   * aborts, close the popup window
-   * @author hoatle
+   * Aborts, close the popup window.
+   * 
    */
   static public class AbortActionListener extends EventListener<UIAvatarUploadContent> {
     @Override
@@ -153,5 +158,20 @@ public class UIAvatarUploadContent extends UIContainer {
     }
     
   }
-
+  
+  /**
+   * Sets information of image storage.<br>
+   * 
+   * @param imageBytes
+   *        Image information in byte type for storing.
+   * @throws Exception
+   */
+  private void setImageSource(byte[] imageBytes) throws Exception {
+    if (imageBytes == null || imageBytes.length == 0) return;
+    ByteArrayInputStream byteImage = new ByteArrayInputStream(imageBytes);
+    DownloadService downloadService = getApplicationComponent(DownloadService.class);
+    InputStreamDownloadResource downloadResource = new InputStreamDownloadResource(byteImage, "image");
+    downloadResource.setDownloadName(profileAttachment.getFileName());
+    imageSource = downloadService.getDownloadLink(downloadService.addDownloadResource(downloadResource));
+  }
 }

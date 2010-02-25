@@ -30,7 +30,10 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
-
+/**
+ * Component is used for short user information (name, position) managing.<br> 
+ *
+ */
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
@@ -45,11 +48,16 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 public class UIHeaderSection extends UIProfileSection {
   /** POSITION. */
   final public static String POSITION = "position";
+  
   /** REGEX EXPRESSION. */
   final public static String REGEX_EXPRESSION = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
+  
   /** INVALID CHARACTER MESSAGE. */
   final public static String INVALID_CHAR_MESSAGE = "UIHeaderSection.msg.Invalid-char";
   
+  /** 
+   * Initializes components for header form.<br>
+   */
   public UIHeaderSection() throws Exception { 
     addUIFormInput(new UIFormStringInput(POSITION, POSITION, null)
                    .addValidator(MandatoryValidator.class)
@@ -58,7 +66,7 @@ public class UIHeaderSection extends UIProfileSection {
   }
   
   /**
-   * Change form into edit mode when edit button is clicked.
+   * Changes form into edit mode when edit button is clicked.<br>
    *
    */
   public static class EditActionListener extends EventListener<UIHeaderSection> {
@@ -70,7 +78,7 @@ public class UIHeaderSection extends UIProfileSection {
   }  
   
   /**
-   * Change form into edit mode when edit button is clicked.
+   * Changes form into edit mode when edit button is clicked.<br>
    *
    */
   public static class CancelActionListener extends EventListener<UIHeaderSection> {
@@ -82,7 +90,7 @@ public class UIHeaderSection extends UIProfileSection {
   }  
   
   /**
-   * Store profile information into database when form is submited.
+   * Stores profile information into database when form is submited.<br>
    *
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
@@ -106,7 +114,7 @@ public class UIHeaderSection extends UIProfileSection {
   }
   
   /**
-   * Get position information from profile and set value into uicomponent.
+   * Gets position information from profile and set value into uicomponent.<br>
    * 
    * @throws Exception
    */

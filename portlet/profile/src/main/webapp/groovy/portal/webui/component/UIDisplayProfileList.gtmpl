@@ -55,6 +55,11 @@
 	    def addAction = uicomponent.event("AddContact", identity.getId());
 	    def contactStatus = uicomponent.getContactStatus(identity);
 	    def position = identity.profile.getPropertyValue("position");
+	    def inviteTitle = "Invite " + fullName;
+	    def denyTitle = "Deny " + fullName + "'s invitation";
+	    def acceptTitle = "Accept " + fullName + "'s invitation";
+	    def revokeTitle = "Revoke invitation";
+	    def removeTitle = "Remove relation";
 	    peopleIdx += 1;
 	    
 	    if (!position) {  position = ""; }
@@ -83,15 +88,15 @@
 	            	<a href="${profileURL}" style="color: #afafaf;">${fullName}</a>
 	            </div>
 	  <% if (contactStatus == Relationship.Type.REQUIRE_VALIDATION) { %>
-			    		<a href="#" class="StopIcon" title="Deny" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
-			   			<a href="#" class="SelectIcon" title="Accept" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
+			    		<a href="#" class="StopIcon" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+			   			<a href="#" class="SelectIcon" title="$acceptTitle" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
 	  <% } else if (contactStatus == Relationship.Type.ALIEN) { %>
-	  					<a href="#" class="AddIcon" title="Invite" onclick="$addAction" >&nbsp;</a>
+	  					<a href="#" class="AddIcon" title="$inviteTitle" onclick="$addAction" >&nbsp;</a>
 	  <%  } else if (contactStatus == Relationship.Type.PENDING) { %>
-	            <a href="#" class="RemoveIcon" title="Revoke" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a> 
+	            <a href="#" class="RemoveIcon" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a> 
 	            <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>    
 	  <%  } else if (contactStatus == Relationship.Type.CONFIRM) { %>
-	  					<a href="#" class="RemoveIcon" title="Remove" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+	  					<a href="#" class="RemoveIcon" title="$removeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
 	  <% } %>
 	        </div>
 	        <% if(position.length() > 0) { %>

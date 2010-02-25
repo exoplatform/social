@@ -28,12 +28,22 @@ import org.exoplatform.social.core.identity.model.Identity;
  * Aug 28, 2009  
  */
 public class IdentityListAccess implements ListAccess<Identity> {
+  /** The list used for identity storage. */
   private final List<Identity> list;
 
-  public IdentityListAccess(List<Identity> list) {
-    this.list = list;
-  }
+  /**
+   * Initializes IdentityListAccess object.<br>
+   * 
+   * @param list
+   *        List using for accessing.
+   */
+  public IdentityListAccess(List<Identity> list) { this.list = list;}
 
+  /**
+   * Implements load method of ListAccess interfaces for load all initial variables.<br>
+   * @return result
+   *         Array of identity using in access list.
+   */
   public Identity[] load(int index, int length) throws Exception, IllegalArgumentException {
     if (index < 0)
       throw new IllegalArgumentException("Illegal index: index must be a positive number");
@@ -51,7 +61,11 @@ public class IdentityListAccess implements ListAccess<Identity> {
     return result;
   }
 
-  public int getSize() throws Exception {
-    return list.size();
-  }
+  /**
+   * Gets the number of element in accessing list.<br>
+   * 
+   * @return size
+   *         Number of element in list. 
+   */
+  public int getSize() throws Exception { return list.size();}
 }

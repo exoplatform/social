@@ -42,7 +42,7 @@
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${myfriendsURL}" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
+        <a href="${myfriendsURL}" title="Persons who are connected to" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
 	  </div>
   <%if (isOwner == true) {%>
 	  <% if (selectedNode == "invitations")  {%>
@@ -50,14 +50,14 @@
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${invitationsURL}" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
+        <a href="${invitationsURL}" title="Persons who wanting to be connected to you" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
 	  </div>
 	  <% if (selectedNode == "requests")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${requestsURL}" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
+        <a href="${requestsURL}" title="Persons you would like to connect to" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
 	  </div>
   <%}%> 
 	</div>

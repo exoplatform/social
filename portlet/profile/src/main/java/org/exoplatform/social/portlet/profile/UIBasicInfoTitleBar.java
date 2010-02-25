@@ -19,27 +19,52 @@ package org.exoplatform.social.portlet.profile;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIComponent;
 
+/**
+ * Component is used for managing title bar of profile management section.<br>
+ * 
+ */
 
 @ComponentConfig(
     template =  "app:/groovy/portal/webui/component/UIBasicInfoTitleBar.gtmpl"
 )
 public class UIBasicInfoTitleBar extends UIComponent {
 
+  /**
+   * Overrides event method of UIComponent.<br>
+   * 
+   * @return event of title bar component.
+   */
+  @Override
   public String event(String name, String beanId) throws Exception {
     UIProfileSection pf = getParent();
     return pf.event(name, beanId);
   }
 
+  /**
+   * Gets the name of parent component.<br>
+   * 
+   * @return name of parent component.
+   */
   public String getTranlationKey() {
     UIProfileSection pf = getParent();
     return pf.getName();
   }
 
+  /**
+   * Checks the current user is right edit permission.<br>
+   * 
+   * @return true if current user has permission.
+   */
   public boolean isEditable() {
     UIProfileSection pf = getParent();
     return pf.isEditable();
   }
 
+  /**
+   * Checks the current display of title bar is can be edit.<br>
+   * 
+   * @return true if title bar is in edit mode.
+   */
   public boolean isEditMode() {
     UIProfileSection pf = getParent();
     return pf.isEditMode();

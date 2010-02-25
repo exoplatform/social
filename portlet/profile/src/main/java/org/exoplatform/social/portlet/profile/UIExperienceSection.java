@@ -48,6 +48,13 @@ import org.exoplatform.webui.form.validator.DateTimeValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
+/**
+ * Component manages all experience informations 
+ * (ex: company, position, professional...) of profile user.
+ * This is one part of profile management beside contact, basic information.<br> 
+ *
+ */
+
 @ComponentConfigs ({ 
   @ComponentConfig (
       lifecycle = UIFormLifecycle.class,
@@ -69,24 +76,34 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 public class UIExperienceSection extends UIProfileSection {
   /** COMPANY. */
   final public static String COMPANY = "company";
+  
   /** POSITION. */
   final public static String POSITION = "position";
+  
   /** POSITION. */
   final public static String PROFESSIONAL = "professional";
+  
   /** START DATE OF EXPERIENCE. */
   final public static String START_DATE = "startDate";
+  
   /** END DATE OF EXPERIENCE. */
   final public static String END_DATE = "endDate";
+  
   /** CURRENT OR PAST EXPERIENCE. */
   final public static String IS_CURRENT = "isCurrent";
+  
   /** DESCRIPTION OF EXPERIENCE. */
   final public static String DESCRIPTION = "description";
+  
   /** EXPERIENCE. */
   final public static String EXPERIENCE = "experiences";
+  
   /** DATE AFTER TODAY. */
   final public static String DATE_AFTER_TODAY = "UIExperienceSection.msg.DateAfterToday";
+  
   /** START DATE BEFORE END DATE. */
   final public static String STARTDATE_BEFORE_ENDDATE = "UIExperienceSection.msg.startDateBeforeEndDate";
+  
   /** DATE FORMAT. */
   final public static String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
   
@@ -94,7 +111,7 @@ public class UIExperienceSection extends UIProfileSection {
   int expIdx = 0;
   
   /**
-   * Get number of component.
+   * Gets number of component.<br>
    * 
    * @return Number of components.
    */
@@ -103,14 +120,14 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Get all the children.
+   * Gets all the children.<br>
    */
   public List<UIComponent> getChilds() {
     return getChildren();
   }
   
   /**
-   * Constructor.
+   * Constructor.<br>
    * 
    * @throws Exception
    */
@@ -119,10 +136,12 @@ public class UIExperienceSection extends UIProfileSection {
   }
 
   /**
-   * Get month of date time.
+   * Gets month of date time.<br>
    * 
    * @param inDate Input date
+   * 
    * @return Month of input date.
+   * 
    * @throws ParseException
    */
   public int getMonth(String inDate) throws ParseException {
@@ -133,10 +152,12 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Get date of date time.
+   * Gets date of date time.<br>
    * 
    * @param inDate Input date
+   * 
    * @return Date of input date.
+   * 
    * @throws ParseException
    */
   public int getDate(String inDate) throws ParseException {
@@ -147,10 +168,12 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Get year of date time.
+   * Gets year of date time.<br>
    * 
    * @param inDate Input date
+   * 
    * @return Year of input date.
+   * 
    * @throws ParseException
    */
   public int getYear(String inDate) throws ParseException {
@@ -161,7 +184,7 @@ public class UIExperienceSection extends UIProfileSection {
   }
 
   /**
-   *  Add component when Add button is clicked. 
+   *  Adds component when Add button is clicked. <br>
    *
    */
   public static class AddActionListener extends EventListener<UIExperienceSection> {
@@ -172,7 +195,7 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   *  Add component when Add button is clicked. 
+   *  Adds component when Add button is clicked. <br>
    *
    */
   public static class RemoveActionListener extends EventListener<UIExperienceSection> {
@@ -208,7 +231,7 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   *  Save experience informations to profile. 
+   *  Saves experience informations to profile.<br> 
    *
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
@@ -223,7 +246,7 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Change to edit mode when Edit button is clicked.
+   * Changes to edit mode when Edit button is clicked.<br>
    *
    */
   public static class EditActionListener extends UIProfileSection.EditActionListener {
@@ -316,7 +339,7 @@ public class UIExperienceSection extends UIProfileSection {
   }
 
   /**
-   * Show and hide end date component depending on isCurrent variable.
+   * Shows and hides end date component depending on isCurrent variable.<br>
    *
    */
   static public class ShowHideEndDateActionListener extends EventListener<UIFormCheckBoxInput<Boolean>> {
@@ -333,9 +356,10 @@ public class UIExperienceSection extends UIProfileSection {
   }
 
   /**
-   * Get all the past experience.
+   * Gets all the past experience.<br>
    * 
    * @return all the experience that has isCurrent is false.
+   * 
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
@@ -356,9 +380,10 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Get all the current experience.
+   * Gets all the current experience.<br>
    * 
    * @return all the experience that has isCurrent is true.
+   * 
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
@@ -379,7 +404,7 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Save input information into profile.
+   * Saves input information into profile.<br>
    * 
    * @return Integer value (0: save complete; 1,2: an error has occurs)
    * 
@@ -481,7 +506,7 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Add component when add buttons clicked.
+   * Adds component when add buttons clicked.<br>
    * 
    * @throws Exception
    */
@@ -510,10 +535,12 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Format String type to Date type.
+   * Formats String type to Date type.<br>
    * 
    * @param dateStr Input String
+   * 
    * @return Converted date.
+   * 
    * @throws ParseException
    */
   private Date stringToDate(String dateStr) throws ParseException {
@@ -523,10 +550,12 @@ public class UIExperienceSection extends UIProfileSection {
   }
   
   /**
-   * Get calendar with string date input.
+   * Gets calendar with string date input.<br>
    * 
    * @param inDate Date input.
-   * @return
+   * 
+   * @return calendar.
+   * 
    * @throws ParseException
    */
   private Calendar getCalendar(String inDate) throws ParseException {

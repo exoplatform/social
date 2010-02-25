@@ -46,7 +46,12 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
- * Created by The eXo Platform SAS
+ * Manages invitation relation of all existing users. Manages actions 
+ * such as accept or deny invitation and search action.<br>
+ *   - Get all users that have invited relation.<br>
+ *   - Check the status of each user with current user then display the list.<br>
+ *   - Listens to event: accept, deny contact and search action.<br>
+ *   
  * Author : dang.tung
  *          tungcnw@gmail.com
  * Aug 25, 2009  
@@ -63,31 +68,49 @@ import org.exoplatform.webui.form.UIFormPageIterator;
   }
 )
 public class UIInvitationRelation extends UIContainer {
-  /** UIFormPageIterator */
-  UIFormPageIterator uiFormPageIteratorInvitation;
   /** UIFormPageIterator ID. */
   private final String iteratorIDInvitation = "UIFormPageIteratorInvitation";
+  
+  /** Label displays revoked information. */
   private static final String INVITATION_REVOKED_INFO = "UIInvitationRelation.label.RevokedInfo";
+  
+  /** Stores UIFormPageIterator object. */
+  UIFormPageIterator uiFormPageIteratorInvitation;
+  
+  /** Stores relationship manager object. */
   private RelationshipManager relationshipManager;
+  
+  /** Stores IdentityManager object. */
   private IdentityManager identityManager = null;
+  
+  /** Stores UIProfileUserSearch object. */
   UIProfileUserSearch uiProfileUserSearchRelation = null;
+  
+  /** Stores identities. */
   private List<Identity> identityList;
   
-  
+  /**
+   * Gets identities.<br>
+   * 
+   * @return list of identity.
+   */
   public List<Identity> getIdentityList() { return identityList; }
 
+ /** Sets to identity list. */
   public void setIdentityList(List<Identity> identityList) { this.identityList = identityList; }
 
   /**
-   * Get UIFormPageIterator.
-   * @return
+   * Gets page iterator.<br>
+   * 
+   * @return an iterator.
    */
   public UIFormPageIterator getUiFormPageIteratorInvitation() {
     return uiFormPageIteratorInvitation;
   }
   
   /**
-   * Constructor.
+   * Initializes components and add as child of form.<br>
+   * 
    * @throws Exception 
    */
   public UIInvitationRelation() throws Exception {
@@ -97,6 +120,13 @@ public class UIInvitationRelation extends UIContainer {
     addChild(uiProfileUserSearchRelation);
   }
   
+  /**
+   * Gets all relation that has invited relation.<br>
+   * 
+   * @return all invited relation.
+   * 
+   * @throws Exception
+   */
   public List<Relationship> getInvitation() throws Exception {
     List<Relationship> invitationList = getInvitedRelations();
     List<Relationship> contactLists = getDisplayRelationList(invitationList, uiFormPageIteratorInvitation);
@@ -104,27 +134,26 @@ public class UIInvitationRelation extends UIContainer {
     return contactLists;
   }
 
-  @SuppressWarnings("unchecked")
-  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts, UIFormPageIterator uiFormPageIterator) throws Exception {
-    int curPage = uiFormPageIterator.getCurrentPage();
-    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
-    uiFormPageIterator.setPageList(pageListContact) ;  
-    int availablePageCount = uiFormPageIterator.getAvailablePage();
-    if(availablePageCount >= curPage){
-      uiFormPageIterator.setCurrentPage(curPage);
-    }else if(availablePageCount < curPage){
-      uiFormPageIterator.setCurrentPage(curPage-1);
-    }
-    List<Relationship> contactLists;
-    contactLists = uiFormPageIterator.getCurrentPageData();
-    return contactLists;
-  }
-  
+  /**
+   * Gets current identity.<br>
+   * 
+   * @return identity of current login user.
+   * 
+   * @throws Exception
+   */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
       return im.getIdentityByRemoteId("organization", getCurrentUserName());
   }
   
+  
+  /**
+   * Gets current identity of user who is viewed.<br>
+   * 
+   * @return identity of current user that is viewed.
+   * 
+   * @throws Exception
+   */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
     Identity identity = im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
@@ -136,6 +165,12 @@ public class UIInvitationRelation extends UIContainer {
     return identity;
   }
   
+  /**
+   * Listens to accept actions then make relation to accepted person.<br>
+   *   - Gets information of user who made request.<br>
+   *   - Checks the relation to confirm that there still got invited relation.<br>
+   *   - Makes and Save the new relation.<br>
+   */
   static public class AcceptActionListener extends EventListener<UIInvitationRelation> {
     @Override
     public void execute(Event<UIInvitationRelation> event) throws Exception {
@@ -164,6 +199,13 @@ public class UIInvitationRelation extends UIContainer {
     }
   }
   
+  /**
+   * Listens to deny action then delete the invitation.<br>
+   *   - Gets information of user is invited or made request.<br>
+   *   - Checks the relation to confirm that there have not got relation yet.<br>
+   *   - Removes the current relation and save the new relation.<br> 
+   *
+   */
   static public class DenyActionListener extends EventListener<UIInvitationRelation> {
     @Override
     public void execute(Event<UIInvitationRelation> event) throws Exception {
@@ -192,6 +234,11 @@ public class UIInvitationRelation extends UIContainer {
     }
   }
   
+  /**
+   * Listens to search action that broadcasted from search form then set to current form.<br>
+   *   - Gets search result from search form.<br>
+   *   - Sets the search result to the current form that added search form as child.<br>
+   */
   public static class SearchActionListener extends EventListener<UIInvitationRelation> {
     @Override
     public void execute(Event<UIInvitationRelation> event) throws Exception {
@@ -202,6 +249,11 @@ public class UIInvitationRelation extends UIContainer {
     }
   }
   
+  /**
+   * Return true to accept user is viewing can edit.
+   * 
+   * @return true if current user is current login user.
+   */
   public boolean isEditable () {
     RequestContext context = RequestContext.getCurrentInstance();
     String currentUserName = context.getRemoteUser();
@@ -211,9 +263,62 @@ public class UIInvitationRelation extends UIContainer {
   }
   
   /**
-   * Get all invited  identities for searching suggestion.
+   * Gets the current portal name.<br>
+   * 
+   * @return name of current portal.
+   * 
+   */
+  public String getPortalName() {
+    PortalContainer pcontainer =  PortalContainer.getInstance();
+    return pcontainer.getPortalContainerInfo().getContainerName();  
+  }
+  
+  /**
+   * Gets the current repository.<br>
+   * 
+   * @return current repository through repository service.
+   * 
+   * @throws Exception
+   */
+  public String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
+    return rService.getCurrentRepository().getConfiguration().getName() ;
+  }
+  
+  /**
+   * Returns list of relation of current page in iterator.<br>
+   * 
+   * @param listContacts
+   *        All invited contact.
+   *        
+   * @param uiFormPageIterator
+   *        Page iterator for paging.
+   *        
+   * @return list of relation in current page.
+   * 
+   * @throws Exception
+   */
+  @SuppressWarnings("unchecked")
+  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts, UIFormPageIterator uiFormPageIterator) throws Exception {
+    int curPage = uiFormPageIterator.getCurrentPage();
+    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
+    uiFormPageIterator.setPageList(pageListContact) ;  
+    int availablePageCount = uiFormPageIterator.getAvailablePage();
+    if(availablePageCount >= curPage){
+      uiFormPageIterator.setCurrentPage(curPage);
+    }else if(availablePageCount < curPage){
+      uiFormPageIterator.setCurrentPage(curPage-1);
+    }
+    List<Relationship> contactLists;
+    contactLists = uiFormPageIterator.getCurrentPageData();
+    return contactLists;
+  }
+  
+  /**
+   * Gets all invited  identities for searching suggestion.
    * 
    * @return Relationship list.
+   * 
    * @throws Exception
    */
   private List<String> getAllInvitedUserNames() throws Exception {
@@ -238,9 +343,10 @@ public class UIInvitationRelation extends UIContainer {
   }
   
   /**
-   * Get contact relationships from searched result identities. 
+   * Gets contact relationships from searched result identities. 
    * 
    * @return Relationship list.
+   * 
    * @throws Exception
    */
   private List<Relationship> getInvitedRelations() throws Exception {
@@ -256,6 +362,11 @@ public class UIInvitationRelation extends UIContainer {
     return relm.getPending(currentIdentity, matchIdentities, false);
   }
   
+  /**
+   * Gets identity manager object.<br>
+   * 
+   * @return identity manager object.
+   */
   private IdentityManager getIdentityManager() {
     if(identityManager == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
@@ -264,6 +375,11 @@ public class UIInvitationRelation extends UIContainer {
     return identityManager;
   }
   
+  /**
+   * Gets currents name of user that is viewed by another.<br>
+   * 
+   * @return name of user who is viewed.
+   */
   private String getCurrentViewerUserName() {
     String username = URLUtils.getCurrentUser();
     if(username != null)
@@ -273,21 +389,21 @@ public class UIInvitationRelation extends UIContainer {
     return portalRequest.getRemoteUser();
   }
   
+  /**
+   * Gets name of current login user.
+   * 
+   * @return name of current login user.
+   */
   private String getCurrentUserName() {
     PortalRequestContext portalRequest = Util.getPortalRequestContext();
     return portalRequest.getRemoteUser();
   }
  
-  public String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();  
-  }
-  
-  public String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-  
+  /**
+   * Gets relationship manager object.<br>
+   * 
+   * @return an object that is instance of relationship manager.
+   */
   private RelationshipManager getRelationshipManager() {
     if(relationshipManager == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
@@ -296,6 +412,16 @@ public class UIInvitationRelation extends UIContainer {
     return relationshipManager;
   }
   
+  /**
+   * Gets contact status between current user and identity that is checked.<br>
+   * 
+   * @param identity
+   *        Object is checked status with current user.
+   *        
+   * @return type of relation status that equivalent the relation.
+   * 
+   * @throws Exception
+   */
   private Relationship.Type getContactStatus(Identity identity) throws Exception {
     if (identity.getId().equals(getCurrentIdentity().getId()))
       return Relationship.Type.SELF;

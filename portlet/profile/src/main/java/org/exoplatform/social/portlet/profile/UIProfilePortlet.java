@@ -20,6 +20,10 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+/**
+ * Portlet manages profile.<br> 
+ *
+ */
 @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class, 
     template = "app:/groovy/portal/webui/component/UIProfilePortlet.gtmpl"
