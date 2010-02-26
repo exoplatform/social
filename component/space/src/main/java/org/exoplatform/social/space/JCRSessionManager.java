@@ -1,5 +1,4 @@
-/*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+/** Copyright (C) 2003-2009 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -18,6 +17,7 @@ package org.exoplatform.social.space;
 
 import javax.jcr.Session;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
@@ -76,8 +76,8 @@ public class JCRSessionManager {
   public Session getSession(SessionProvider sessionProvider) {
     Session session = null;
     try {
-     PortalContainer currentContainer = PortalContainer.getInstance(); 
-     RepositoryService repositoryService = (RepositoryService) currentContainer.getComponentInstanceOfType(RepositoryService.class);
+     //PortalContainer currentContainer = PortalContainer.getInstance(); 
+     RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = sessionProvider.getSession(workspaceName, repository);
     } catch (Exception e) {
@@ -111,10 +111,9 @@ public class JCRSessionManager {
   private Session createSession() {
     Session session = null;
     try {
-
-     PortalContainer currentContainer = PortalContainer.getInstance();
+     //PortalContainer currentContainer = PortalContainer.getInstance();
       
-     RepositoryService repositoryService = (RepositoryService) currentContainer.getComponentInstanceOfType(RepositoryService.class);
+     RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = repository.getSystemSession(workspaceName);
     } catch (Exception e) {

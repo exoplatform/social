@@ -23,6 +23,7 @@ import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.social.space.test.SpaceServiceTestCase;
 import org.exoplatform.test.BasicTestCase;
 
 /**
@@ -32,46 +33,36 @@ import org.exoplatform.test.BasicTestCase;
  * September 3, 2008          
  */
 
-public class TestSpaceService extends BasicTestCase {
+public class TestSpaceService extends SpaceServiceTestCase {  
+
   private SpaceService spaceService;
-  protected Session session;
-  protected ManageableRepository repository;
-  protected RepositoryService repositoryService;
-  protected StandaloneContainer container;
   
-  
+  public TestSpaceService() throws Exception {	  
+	super();
+	// TODO Auto-generated constructor stub
+  }
   
   public void setUp() throws Exception {
-    /*StandaloneContainer.addConfigurationPath("src/test/java/conf/portal/test-configuration.xml");
-
-    container = StandaloneContainer.getInstance();
-    if (System.getProperty("java.security.auth.login.config") == null)
-      System.setProperty("java.security.auth.login.config", "src/test/java/conf/portal/login.conf");
-    repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-    repository = repositoryService.getDefaultRepository();
-
-    SessionProviderService spService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class);
-    SessionProvider sessionProvider = spService.getSystemSessionProvider(null);
-    session = sessionProvider.getSession("social", repository);
-    
-    spaceService = (SpaceService)container.getComponentInstanceOfType(SpaceService.class);*/
+	spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
+	SessionProviderService sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class) ;
+	sProvider = sessionProviderService.getSystemSessionProvider(null) ;
   }
   
   public void testGetAllSpaces() throws Exception{
-    //assertNotNull(spaceService) ;
+    assertNotNull(spaceService) ;
   }
   
   public void testAddSpace() throws Exception {
-    /*Space space1 = new Space();
-    space1.setId("Space1");
+    Space space1 = new Space();
     space1.setApp("Calendar;FileSharing");
     space1.setGroupId("Group1");
+    space1.setName("Space1");
     
     Space space2 = new Space();
-    space2.setId("Space2");
     space2.setApp("Contact,Forum");
     space2.setGroupId("Group2");
     space2.setParent(space1.getId());
+    space2.setName("Space2");
     
     spaceService.saveSpace(space1, true);
     spaceService.saveSpace(space2, true);
@@ -80,57 +71,23 @@ public class TestSpaceService extends BasicTestCase {
     
     Space space3 = spaceService.getSpaceById(space1.getId());
     assertNotNull(space3);
-    assertEquals("Space1", space3.getId());
+    assertEquals(space1.getId(), space3.getId());
     assertNotSame("Calendar", space3.getApp());
     assertEquals("Group1",space3.getGroupId());
-    
-    Space space4 = spaceService.getSpaceById(space2.getId());
-    assertNotNull(space4);
-    assertEquals(space1.getId(),space4.getParent());*/
-    
   }
   
   public void testGetSpace() throws Exception {
-    /*Space space = new Space();
+    Space space = new Space();
     space.setApp("Calendar");
     space.setGroupId("Group1");
+    space.setName("calendar");
     spaceService.saveSpace(space, true);
     
     Space s = spaceService.getSpaceById(space.getId());
     assertNotNull(s);
     assertEquals(3,spaceService.getAllSpaces().size());
     assertEquals("Calendar", s.getApp());
-    assertEquals("Group1", s.getGroupId());*/
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-//    if (session != null) {
-//      Node node = null;
-//      try {
-//        session.refresh(false);
-//
-//        Node rootNode = session.getRootNode();
-//
-//        if (rootNode.getNode("exo:applications").hasNode("Social_Space")) {
-//          NodeIterator children = rootNode.getNode("exo:applications").getNode("Social_Space").getNode("Space").getNodes();
-//          while (children.hasNext()) {
-//            node = children.nextNode();
-//            System.out.println("DELETing Social_Space ------------- " + node.getPath());
-//            node.remove();
-//          }
-//        }
-//
-//        session.save();
-//        session.refresh(false);
-//
-//      } catch (Exception e) {
-//          e.printStackTrace();
-//      } finally {
-//        session.logout();
-//      }
-//    }
-    super.tearDown();
+    assertEquals("Group1", s.getGroupId());
   }
   
 }
