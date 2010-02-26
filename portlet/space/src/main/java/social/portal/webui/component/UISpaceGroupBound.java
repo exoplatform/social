@@ -67,7 +67,7 @@ public class UISpaceGroupBound extends UIContainer {
     UIFormInputInfo uiFormInputInfo = new UIFormInputInfo(SELECTED_GROUP, null, null);
     addChild(uiFormInputInfo);
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "SelectGroup", POPUP_GROUP_BOUND);
-    uiPopup.setWindowSize(500, 0);
+    uiPopup.setWindowSize(550, 0);
     addChild(uiPopup);
   }
   
