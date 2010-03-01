@@ -24,6 +24,7 @@ import org.gatein.pc.api.info.MetaInfo;
 import org.gatein.pc.api.info.PortletInfo;
 import org.gatein.common.i18n.LocalizedString;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -402,7 +403,7 @@ public class SpaceUtils {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    //broadcast to spaces home node
+    //current page not existed, broadcast to default home node
     String portalOwner = Util.getPortalRequestContext().getPortalOwner();
     PageNavigation portalNavigation = null;
     for (PageNavigation pn: navs) {
@@ -412,21 +413,11 @@ public class SpaceUtils {
       }
     }
     List<PageNode> nodes = portalNavigation.getNodes();
-    PageNode selectedPageNode = null;
-    for (PageNode node: nodes) {
-      if (node.getUri().equals("spaces")) {
-        selectedPageNode = node;
-        break;
-      }
-    }
-    
-    uiPortal.setSelectedNavigation(portalNavigation);
-    uiPortal.setSelectedNode(selectedPageNode);
-    String uri = portalNavigation.getId() + "::spaces";
-    PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
-        PageNodeEvent.CHANGE_PAGE_NODE,
-        uri);
-    uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+    PageNode selectedPageNode = nodes.get(0);
+    PortalRequestContext prContext = Util.getPortalRequestContext();
+    String redirect = prContext.getPortalURI() + selectedPageNode.getUri();
+    prContext.getResponse().sendRedirect(redirect);
+    prContext.setResponseComplete(true);
   }
   
   /**
