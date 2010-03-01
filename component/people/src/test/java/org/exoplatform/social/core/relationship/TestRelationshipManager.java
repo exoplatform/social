@@ -16,28 +16,9 @@
  */
 package org.exoplatform.social.core.relationship;
 
-import junit.framework.TestCase;
-
-import javax.jcr.Node;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.Session;
-import javax.jcr.NodeIterator;
-
-import org.exoplatform.services.jcr.core.CredentialsImpl;
-import org.exoplatform.services.jcr.core.ManageableRepository;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
-//import org.exoplatform.services.security.impl.CredentialsImpl;
-
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.StandaloneContainer;
 import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.test.PeopleServiceTestCase;
-
-import java.util.List;
 
 
 public class TestRelationshipManager extends PeopleServiceTestCase {
