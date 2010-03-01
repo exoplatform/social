@@ -35,46 +35,30 @@ import org.exoplatform.container.StandaloneContainer;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.test.PeopleServiceTestCase;
 
 import java.util.List;
 
 
-public class TestRelationshipManager extends TestCase {
-  protected Node rootNode_;
-  protected Node mailHomeNode_;
-  protected Node systemNode_;
-  protected SimpleCredentials credentials_;
-  protected PortalContainer manager_;
-  protected Session session_;
-
-  Relationship relationship;
-  Relationship relationship2;
-
-
-  protected Session session;
-
-  protected ManageableRepository repository;
-
-  protected CredentialsImpl adminCredentials;
-
-  protected RepositoryService repositoryService;
-
-  protected StandaloneContainer container;
+public class TestRelationshipManager extends PeopleServiceTestCase {
+  
+  RelationshipManager relationshipManager;
+  IdentityManager identityManager;
+  	
+  public TestRelationshipManager() throws Exception {
+	super();
+	// TODO Auto-generated constructor stub
+  }
 
   public void setUp() throws Exception {
-    /*StandaloneContainer.addConfigurationPath("src/test/java/conf/standalone/test-configuration.xml");
-
-    container = StandaloneContainer.getInstance();
-    if (System.getProperty("java.security.auth.login.config") == null)
-      System.setProperty("java.security.auth.login.config", "src/test/java/conf/standalone/login.conf");
-    adminCredentials = new CredentialsImpl("root", "exo".toCharArray());
-    repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-    repository = repositoryService.getDefaultRepository();
-
-    SessionProviderService spService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class);
-    SessionProvider sessionProvider = spService.getSystemSessionProvider(null);
-    session = sessionProvider.getSession("social", repository);
-    session.refresh(false);*/
+	identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+	relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+	SessionProviderService sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class) ;		
+	sProvider = sessionProviderService.getSystemSessionProvider(null) ;
+  }
+  
+  public void testRelationshipService() {
+	  assertNotNull(relationshipManager);
   }
 
   private void init() throws Exception {
@@ -168,41 +152,5 @@ public class TestRelationshipManager extends TestCase {
 
     assertEquals("the relationship id should be the same as the previous since it's about the same relation",
         idRel, rels.get(0).getId());*/
-  }
-
-
-  @Override
-  protected void tearDown() throws Exception {
-    /*if (session != null) {
-      try {
-        session.refresh(false);
-
-        Node rootNode = session.getRootNode();
-
-        NodeIterator children = rootNode.getNode("exo:applications").getNode("Social_Relationship").getNodes();
-        while (children.hasNext()) {
-          Node node = children.nextNode();
-          //System.out.println("DELETing ------------- "+node.getPath());
-          node.remove();
-        }
-
-        session.save();
-        session.refresh(false);
-
-        children = rootNode.getNode("exo:applications").getNode("Social_Identity").getNodes();
-        while (children.hasNext()) {
-          Node node = children.nextNode();
-          //System.out.println("DELETing ------------- "+node.getPath());
-          node.remove();
-        }
-
-        session.save();
-      } catch (Exception e) {
-        e.printStackTrace();
-      } finally {
-        session.logout();
-      }
-    }
-    super.tearDown();*/
   }
 }

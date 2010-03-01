@@ -32,6 +32,11 @@
   </component>
   
   <component>
+    <key>org.exoplatform.social.core.relationship.RelationshipManager</key>
+    <type>org.exoplatform.social.core.relationship.RelationshipManager</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.services.organization.OrganizationService</key>
     <type>org.exoplatform.services.organization.idm.PicketLinkIDMOrganizationServiceImpl</type>
   </component>

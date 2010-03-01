@@ -21,9 +21,9 @@ import org.exoplatform.social.core.test.PeopleServiceTestCase;
 
 public class TestIdentityManager extends PeopleServiceTestCase {
   public TestIdentityManager() throws Exception {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	super();
+	// TODO Auto-generated constructor stub
+  }
 
   private IdentityManager identityManager;
 
@@ -36,44 +36,6 @@ public class TestIdentityManager extends PeopleServiceTestCase {
   public void testIdentityManager() {
 	  assertNotNull(identityManager);
   }
-
-//  @Override
-//  protected void tearDown() throws Exception {
-    /*if (session != null) {
-      Node node = null;
-      try {
-        session.refresh(false);
-
-        Node rootNode = session.getRootNode();
-
-        if (rootNode.getNode("exo:applications").hasNode("Social_Relationship")) {
-          NodeIterator children = rootNode.getNode("exo:applications").getNode("Social_Relationship").getNodes();
-          while (children.hasNext()) {
-            node = children.nextNode();
-            //System.out.println("DELETing Social_Relationship ------------- " + node.getPath());
-            node.remove();
-          }
-        }
-
-        session.save();
-        session.refresh(false);
-
-        NodeIterator children = rootNode.getNode("exo:applications").getNode("Social_Identity").getNodes();
-        while (children.hasNext()) {
-          node = children.nextNode();
-          //System.out.println("DELETing ------------- "+node.getPath());
-          node.remove();
-        }
-
-        session.save();
-      } catch (Exception e) {
-          e.printStackTrace();
-      } finally {
-        session.logout();
-      }
-    }
-    super.tearDown();*/
-//  }
 
   public void testGetIdentityByRemoteId() throws Exception {
     /*IdentityManager iManager = (IdentityManager) StandaloneContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
