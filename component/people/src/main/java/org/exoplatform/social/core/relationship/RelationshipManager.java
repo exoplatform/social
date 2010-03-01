@@ -19,10 +19,8 @@ package org.exoplatform.social.core.relationship;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.chromattic.api.RelationshipType;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.storage.JCRStorage;

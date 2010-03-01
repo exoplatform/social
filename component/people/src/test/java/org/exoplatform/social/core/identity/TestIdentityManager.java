@@ -16,53 +16,29 @@
  */
 package org.exoplatform.social.core.identity;
 
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.StandaloneContainer;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
+import org.exoplatform.social.core.test.PeopleServiceTestCase;
 
-import javax.jcr.*;
+public class TestIdentityManager extends PeopleServiceTestCase {
+  public TestIdentityManager() throws Exception {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-import junit.framework.TestCase;
-
-
-public class TestIdentityManager extends TestCase {
-  protected Node rootNode_;
-  protected Node mailHomeNode_;
-  protected Node systemNode_;
-  protected SimpleCredentials credentials_;
-  protected PortalContainer manager_;
-  protected Session session_;
-
-
-  protected Session session;
-
-  protected ManageableRepository repository;
-
-  protected RepositoryService repositoryService;
-
-  protected StandaloneContainer container;
+  private IdentityManager identityManager;
 
   public void setUp() throws Exception {
-    /*StandaloneContainer.addConfigurationPath("src/test/java/conf/standalone/test-configuration.xml");
-
-    container = StandaloneContainer.getInstance();
-    if (System.getProperty("java.security.auth.login.config") == null)
-      System.setProperty("java.security.auth.login.config", "src/test/java/conf/standalone/login.conf");
-    repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-    repository = repositoryService.getDefaultRepository();
-
-    SessionProviderService spService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class);
-    SessionProvider sessionProvider = spService.getSystemSessionProvider(null);
-    session = sessionProvider.getSession("social", repository);*/
+		identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+		SessionProviderService sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class) ;
+		sProvider = sessionProviderService.getSystemSessionProvider(null) ;
+  }
+  
+  public void testIdentityManager() {
+	  assertNotNull(identityManager);
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+//  @Override
+//  protected void tearDown() throws Exception {
     /*if (session != null) {
       Node node = null;
       try {
@@ -97,7 +73,7 @@ public class TestIdentityManager extends TestCase {
       }
     }
     super.tearDown();*/
-  }
+//  }
 
   public void testGetIdentityByRemoteId() throws Exception {
     /*IdentityManager iManager = (IdentityManager) StandaloneContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);

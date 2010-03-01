@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.core.relationship.properties;
 
-import org.exoplatform.social.core.relationship.Property;
-import org.hibernate.InstantiationException;
-
-
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
@@ -40,8 +41,9 @@ public class OrganizationIdentityProvider extends IdentityProvider {
 
   public OrganizationIdentityProvider(JCRStorage storage, OrganizationService organizationService) {
     this.storage = storage;
-    PortalContainer container = PortalContainer.getInstance();
-    this.organizationService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    
+    //PortalContainer container = PortalContainer.getInstance();
+    this.organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
   }
 
   public String getName() {
