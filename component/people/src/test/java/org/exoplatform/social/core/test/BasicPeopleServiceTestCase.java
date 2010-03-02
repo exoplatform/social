@@ -5,7 +5,12 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.Session;
 
-import org.exoplatform.container.StandaloneContainer;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.component.test.AbstractGateInTest;
+import org.exoplatform.component.test.ConfigurationUnit;
+import org.exoplatform.component.test.ConfiguredBy;
+import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
@@ -13,7 +18,6 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
-import org.exoplatform.test.BasicTestCase;
 
 
 /**
@@ -22,44 +26,52 @@ import org.exoplatform.test.BasicTestCase;
  *          tungcnw@gmail.com 					
  * Mar 01, 2010  
  */
-public abstract class PeopleServiceTestCase extends BasicTestCase {
-  
-	protected static Log          log = ExoLogger.getLogger("sample.services.test");  
+@ConfiguredBy({
+	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
+	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml"),
+	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.test-configuration.xml"),
+	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.portal-configuration.xml"),
+	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration1.xml")
+	})
+public abstract class BasicPeopleServiceTestCase extends AbstractGateInTest {
+ 
+  protected static Log          log = ExoLogger.getLogger("sample.services.test");
 
   protected static RepositoryService   repositoryService;
-  protected static StandaloneContainer container;
+  protected static PortalContainer container;
   
   protected final static String REPO_NAME = "repository".intern();
   protected final static String SYSTEM_WS = "system".intern();
-  protected final static String SOCIAL_WS = "social".intern();
+  protected final static String SOCIAL_WS = "portal-test".intern();
   protected static Node root_ = null;
-  protected SessionProvider sProvider;
+  protected SessionProvider sessionProvider;
   private static SessionProviderService sessionProviderService = null;
   
-  static {
-    initContainer();
-    initJCR();
-  }
-
+  protected static ChromatticManager chromatticManager;
 
   
-  public PeopleServiceTestCase() throws Exception {    
+  public BasicPeopleServiceTestCase() throws Exception {
   }
   
   public void setUp() throws Exception {
+    initContainer();
+    initJCR();
     startSystemSession();
+    begin();
   }
   
   public void tearDown() throws Exception {
+    chromatticManager.getSynchronization().setSaveOnClose(false);
+    end();
   }
   protected void startSystemSession() {
-  	sProvider = sessionProviderService.getSystemSessionProvider(null) ;
+    sessionProvider = sessionProviderService.getSystemSessionProvider(null) ;
   }
   protected void startSessionAs(String user) {
     Identity identity = new Identity(user);
     ConversationState state = new ConversationState(identity);
     sessionProviderService.setSessionProvider(null, new SessionProvider(state));
-    sProvider = sessionProviderService.getSessionProvider(null);
+    sessionProvider = sessionProviderService.getSessionProvider(null);
   }
   protected void endSession() {
     sessionProviderService.removeSessionProvider(null);
@@ -92,25 +104,25 @@ public abstract class PeopleServiceTestCase extends BasicTestCase {
   }
   private static void initContainer() {
     try {
-      String containerConf = PeopleServiceTestCase.class.getResource("/conf/standalone/test-configuration.xml").toString();
-      StandaloneContainer.addConfigurationURL(containerConf);
-      container = StandaloneContainer.getInstance();
-      
+      container = PortalContainer.getInstance();
+      chromatticManager = (ChromatticManager)container.getComponentInstanceOfType(ChromatticManager.class);
       if (System.getProperty("java.security.auth.login.config") == null)
-        System.setProperty("java.security.auth.login.config", "src/test/java/conf/standalone/login.conf");
-    }
+          System.setProperty("java.security.auth.login.config", "src/test/java/conf/standalone/login.conf");
+      }
     catch (Exception e) {
-    	e.printStackTrace();
       throw new RuntimeException("Failed to initialize standalone container: " + e.getMessage(),e);
     }
   }
 
   private static void initJCR() {
     try {
-      repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-      Session session = repositoryService.getRepository(REPO_NAME).getSystemSession(SOCIAL_WS);
-      root_ = session.getRootNode();   
-      sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class) ;   
+    repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
+    
+    // Initialize datas
+    Session session = repositoryService.getRepository(REPO_NAME).getSystemSession(SOCIAL_WS);
+    root_ = session.getRootNode();   
+    
+    sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class) ;   
     }
     catch (Exception e) {
       throw new RuntimeException("Failed to initialize JCR: " + e.getMessage(),e);

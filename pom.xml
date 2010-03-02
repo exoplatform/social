@@ -20,6 +20,7 @@
       <org.exoplatform.ws.version>2.1.0-Beta05</org.exoplatform.ws.version>
       <org.exoplatform.jcr.version>1.12.0-Beta05</org.exoplatform.jcr.version>
       <org.jibx.version>1.2.1</org.jibx.version>
+      <javax.jcr.api.version>1.0</javax.jcr.api.version>
       <org.shindig.version>SNAPSHOT-r790473</org.shindig.version>
       <org.gatein.common.version>2.0.0-CR03</org.gatein.common.version>
       <org.gatein.wci.version>2.0.0-CR02</org.gatein.wci.version>
@@ -34,7 +35,7 @@
       <version.chromattic>1.0.0-beta13</version.chromattic>
       <version.reflect>1.0.0-beta5</version.reflect>
       <org.exoplatform.portal.version>3.0.0-Beta05</org.exoplatform.portal.version>
-
+      <org.exoplatform.portal.cp.version>3.0.0-Beta05-CP01</org.exoplatform.portal.cp.version>	
       <!-- ************** -->
       <!-- Build settings -->
       <!-- ************** -->

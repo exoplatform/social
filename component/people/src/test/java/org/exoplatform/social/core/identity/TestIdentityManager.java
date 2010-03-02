@@ -16,10 +16,10 @@
  */
 package org.exoplatform.social.core.identity;
 
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
-import org.exoplatform.social.core.test.PeopleServiceTestCase;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.test.BasicPeopleServiceTestCase;
 
-public class TestIdentityManager extends PeopleServiceTestCase {
+public class TestIdentityManager extends  BasicPeopleServiceTestCase{
   public TestIdentityManager() throws Exception {
 	super();
 	// TODO Auto-generated constructor stub
@@ -28,64 +28,56 @@ public class TestIdentityManager extends PeopleServiceTestCase {
   private IdentityManager identityManager;
 
   public void setUp() throws Exception {
-		identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-		SessionProviderService sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class) ;
-		sProvider = sessionProviderService.getSystemSessionProvider(null) ;
+	super.setUp();	
+	identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
   }
   
   public void testIdentityManager() {
-	  assertNotNull(identityManager);
+	assertNotNull(identityManager);
   }
 
   public void testGetIdentityByRemoteId() throws Exception {
-    /*IdentityManager iManager = (IdentityManager) StandaloneContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
-    assertNotNull(iManager);
-    //iManager.addIdentityProvider(new OrganizationIdentityProvider());
-
-    Identity identity = iManager.getIdentityByRemoteId("organization", "john");
+    Identity identity = identityManager.getIdentityByRemoteId("organization", "john");
     assertNotNull(identity);
     //assertEquals("john", identity.getProfile().getNickname());
-    assertEquals("john", identity.getDisplayName());
+    //assertEquals("john", identity.getDisplayName());
 
-    iManager.saveIdentity(identity);
+    identityManager.saveIdentity(identity);
     assertNotNull(identity.getId());
 
     //check if we load it a second time if we get the ID
-    identity = iManager.getIdentityByRemoteId("organization", "john");
+    identity = identityManager.getIdentityByRemoteId("organization", "john");
     assertNotNull(identity);
     assertNotNull("This object should have an id since it has been saved", identity.getId());
 
     String id = identity.getId();
-    iManager.saveIdentity(identity);
-    assertEquals("The id should not change after having been saved", id, identity.getId());*/
+    identityManager.saveIdentity(identity);
+    assertEquals("The id should not change after having been saved", id, identity.getId());
   }
 
   public void testGetIdentityById() throws Exception {
-    /*IdentityManager iManager = (IdentityManager) StandaloneContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
+    //IdentityManager iManager = (IdentityManager) StandaloneContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
     //iManager.addIdentityProvider(new OrganizationIdentityProvider());
 
-    Identity identity = iManager.getIdentityByRemoteId("organization", "james");
+    Identity identity = identityManager.getIdentityByRemoteId("organization", "mary");
     assertNotNull(identity);
 
-    assertNull(identity.getId());
-    iManager.saveIdentity(identity);
+    assertNotNull(identity.getId());
+    identityManager.saveIdentity(identity);
     assertNotNull(identity.getId());
 
     String oldId = identity.getId();
-    identity = iManager.getIdentityById(identity.getId());
+    identity = identityManager.getIdentityById(identity.getId());
     assertNotNull(identity);
-    assertEquals("this id should still be the same", oldId, identity.getId());*/
+    assertEquals("this id should still be the same", oldId, identity.getId());
   }
 
   public void testGetWrongId() throws Exception {
-    /*IdentityManager iManager = (IdentityManager) StandaloneContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
-    //iManager.addIdentityProvider(new OrganizationIdentityProvider());
-
-    Identity identity = iManager.getIdentityByRemoteId("organization", "jack");
+    Identity identity = identityManager.getIdentityByRemoteId("organization", "jack");
     assertNull(identity);
 
-    identity = iManager.getIdentityById("wrongID");
-    assertNull(identity);*/
+    identity = identityManager.getIdentityById("wrongID");
+    assertNull(identity);
   }
 
 }
