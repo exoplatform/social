@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.relationship;
 
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.test.BasicPeopleServiceTestCase;
 
 
@@ -32,50 +33,40 @@ public class TestRelationshipManager extends BasicPeopleServiceTestCase {
 
   public void setUp() throws Exception {
 	super.setUp();
-//	identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-//	relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
-//	SessionProviderService sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class) ;		
-//	sProvider = sessionProviderService.getSystemSessionProvider(null) ;
+	identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+	relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
   }
   
   public void testRelationshipService() {
-//	  assertNotNull(relationshipManager);
+	assertNotNull(relationshipManager);
   }
 
   private void init() throws Exception {
-    /*IdentityManager iManager = (IdentityManager) StandaloneContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
-    assertNotNull(iManager);
-    //iManager.addIdentityProvider(new OrganizationIdentityProvider());
 
-    RelationshipManager relationshipManager = (RelationshipManager) StandaloneContainer.getInstance().getComponentInstanceOfType(RelationshipManager.class);
-    assertNotNull(relationshipManager);
-
-
-    Identity identity1 = iManager.getIdentityByRemoteId("organization", "john");
-    iManager.saveIdentity(identity1);
+    Identity identity1 = identityManager.getIdentityByRemoteId("organization", "john");
+    identityManager.saveIdentity(identity1);
     assertNotNull(identity1.getId());
 
-    Identity identity2 = iManager.getIdentityByRemoteId("organization", "james");
-    iManager.saveIdentity(identity2);
+    Identity identity2 = identityManager.getIdentityByRemoteId("organization", "james");
+    identityManager.saveIdentity(identity2);
     assertNotNull(identity2.getId());
 
-    Identity identity3 = iManager.getIdentityByRemoteId("organization", "root");
-    iManager.saveIdentity(identity3);
+    Identity identity3 = identityManager.getIdentityByRemoteId("organization", "root");
+    identityManager.saveIdentity(identity3);
     assertNotNull(identity3.getId());
-
-
-    relationship = relationshipManager.create(identity1, identity2);
+    
+    Relationship relationship = relationshipManager.create(identity1, identity2);
     relationship.addProperty(new Property("friend", true, Relationship.Type.PENDING));
     relationship.addProperty(new Property("co-worker", true));
     relationshipManager.save(relationship);
     assertNotNull(relationship.getId());
 
 
-    relationship2 = relationshipManager.create(identity1, identity3);
+    Relationship relationship2 = relationshipManager.create(identity1, identity3);
     relationship2.addProperty(new Property("friend", true, Relationship.Type.PENDING));
     relationship2.addProperty(new Property("relative", true));
     relationshipManager.save(relationship2);
-    assertNotNull(relationship2.getId());*/
+    assertNotNull(relationship2.getId());
   }
 
   public void testSave() throws Exception {
