@@ -76,18 +76,6 @@
                 <value>
                   <string>platform/users</string>
                 </value>
-                <value>
-                  <string>platform/guests</string>
-                </value>
-                <value>
-                  <string>platform/test/legacy</string>
-                </value>
-                <value>
-                  <string>platform/test/normalized</string>
-                </value>
-                <value>
-                  <string>organization/management/executive-board</string>
-                </value>
               </collection>
             </field>
             <field name="ownerType">
@@ -115,9 +103,6 @@
                 </value>
                 <value>
                   <string>demo</string>
-                </value>
-                <value>
-                  <string>overwritelayout</string>
                 </value>
               </collection>
             </field>
@@ -216,110 +201,6 @@
                     <field  name="label"><string>Users</string></field>
                   </object>
                 </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>guests</string></field>
-                    <field  name="parentId"><string>/platform</string></field>
-                    <field  name="description"><string>the /platform/guests group</string></field>
-                    <field  name="label"><string>Guests</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>organization</string></field>
-                    <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the organization group</string></field>
-                    <field  name="label"><string>Organization</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>management</string></field>
-                    <field  name="parentId"><string>/organization</string></field>
-                    <field  name="description"><string>the /organization/management group</string></field>
-                    <field  name="label"><string>Management</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>executive-board</string></field>
-                    <field  name="parentId"><string>/organization/management</string></field>
-                    <field  name="description"><string>the /organization/management/executive-board group</string></field>
-                    <field  name="label"><string>Executive Board</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>human-resources</string></field>
-                    <field  name="parentId"><string>/organization/management</string></field>
-                    <field  name="description"><string>the /organization/management/human-resource group</string></field>
-                    <field  name="label"><string>Human Resources</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>communication</string></field>
-                    <field  name="parentId"><string>/organization</string></field>
-                    <field  name="description"><string>the /organization/communication group</string></field>
-                    <field  name="label"><string>Communication</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>marketing</string></field>
-                    <field  name="parentId"><string>/organization/communication</string></field>
-                    <field  name="description"><string>the /organization/communication/marketing group</string></field>
-                    <field  name="label"><string>Marketing</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>press-and-media</string></field>
-                    <field  name="parentId"><string>/organization/communication</string></field>
-                    <field  name="description"><string>the /organization/communication/press-and-media group</string></field>
-                    <field  name="label"><string>Press and Media</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>operations</string></field>
-                    <field  name="parentId"><string>/organization</string></field>
-                    <field  name="description"><string>the /organization/operations and media group</string></field>
-                    <field  name="label"><string>Operations</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>sales</string></field>
-                    <field  name="parentId"><string>/organization/operations</string></field>
-                    <field  name="description"><string>the /organization/operations/sales group</string></field>
-                    <field  name="label"><string>Sales</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>finances</string></field>
-                    <field  name="parentId"><string>/organization/operations</string></field>
-                    <field  name="description"><string>the /organization/operations/finances group</string></field>
-                    <field  name="label"><string>Finances</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>customers</string></field>
-                    <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the /customers group</string></field>
-                    <field  name="label"><string>Customers</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>partners</string></field>
-                    <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the /partners group</string></field>
-                    <field  name="label"><string>Partners</string></field>
-                  </object>
-                </value>
               </collection>
             </field>
             
@@ -334,8 +215,7 @@
                     <field  name="email"><string>root@localhost</string></field>
                     <field  name="groups">
                       <string>
-                      	manager:/platform/administrators,member:/platform/users,
-                      	member:/organization/management/executive-board
+                      	manager:/platform/administrators,member:/platform/users
                       </string>
                     </field>
                   </object>
@@ -350,8 +230,7 @@
                     <field  name="email"><string>john@localhost</string></field>
                     <field  name="groups">
                       <string>
-                      	member:/platform/administrators,member:/platform/users,
-                      	manager:/organization/management/executive-board
+                      	member:/platform/administrators,member:/platform/users
                       </string>
                     </field>
                   </object>
@@ -376,7 +255,7 @@
                     <field  name="lastName"><string>gtn</string></field>
                     <field  name="email"><string>demo@localhost</string></field>
                     <field  name="groups">
-                      <string>member:/platform/guests,member:/platform/users</string>
+                      <string>member:/platform/users</string>
                     </field>
                   </object>
                 </value>                       
