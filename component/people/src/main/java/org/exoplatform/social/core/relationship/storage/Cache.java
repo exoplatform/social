@@ -20,12 +20,26 @@ import org.exoplatform.social.core.relationship.Relationship;
 
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Cache.
+ */
 public class Cache {
 
+  /**
+   * Gets the all relationship.
+   * 
+   * @return the all relationship
+   */
   public List<Relationship> getAllRelationship() {
     return null;
   }
 
+  /**
+   * Gets the relationship.
+   * 
+   * @return the relationship
+   */
   public Relationship getRelationship(){
     return null;
   }

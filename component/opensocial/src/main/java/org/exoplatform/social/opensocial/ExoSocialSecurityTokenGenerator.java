@@ -35,9 +35,6 @@ import org.exoplatform.container.RootContainer;
 import java.io.File;
 import java.io.IOException;
 
-
-
-
 public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
     private String containerKey;
     private final TimeSource timeSource;

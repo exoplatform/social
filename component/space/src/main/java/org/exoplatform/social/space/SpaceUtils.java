@@ -16,15 +16,6 @@
  */
 package org.exoplatform.social.space;
 
-import org.gatein.common.util.Tools;
-import org.gatein.mop.api.content.ContentType;
-import org.gatein.pc.api.Portlet;
-import org.gatein.pc.api.PortletInvoker;
-import org.gatein.pc.api.info.MetaInfo;
-import org.gatein.pc.api.info.PortletInfo;
-import org.gatein.common.i18n.LocalizedString;
-
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,7 +43,6 @@ import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.pom.spi.wsrp.WSRP;
-import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -64,7 +54,13 @@ import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.exoplatform.webui.event.Event;
+import org.gatein.common.i18n.LocalizedString;
+import org.gatein.common.util.Tools;
+import org.gatein.mop.api.content.ContentType;
+import org.gatein.pc.api.Portlet;
+import org.gatein.pc.api.PortletInvoker;
+import org.gatein.pc.api.info.MetaInfo;
+import org.gatein.pc.api.info.PortletInfo;
 
 import com.ibm.icu.text.Transliterator;
 

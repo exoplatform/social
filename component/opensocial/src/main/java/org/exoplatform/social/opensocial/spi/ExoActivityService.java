@@ -40,10 +40,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.Lists;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ExoActivityService.
+ */
 public class ExoActivityService extends ExoService implements ActivityService {
+  
+  /** The Constant OPENSOCIAL_PREFIX. */
   public final static String OPENSOCIAL_PREFIX = "opensocial:";
+  
+  /** The Constant OPENSOCIAL_PREFIX_LENGTH. */
   public final static int OPENSOCIAL_PREFIX_LENGTH = OPENSOCIAL_PREFIX.length();
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.ActivityService#getActivities(java.util.Set, org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String, java.util.Set, org.apache.shindig.social.opensocial.spi.CollectionOptions, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, CollectionOptions options, SecurityToken token) throws SocialSpiException {
     List<Activity> result = Lists.newArrayList();
 
@@ -71,6 +82,9 @@ public class ExoActivityService extends ExoService implements ActivityService {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.ActivityService#getActivities(org.apache.shindig.social.opensocial.spi.UserId, org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String, java.util.Set, org.apache.shindig.social.opensocial.spi.CollectionOptions, java.util.Set, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<RestfulCollection<Activity>> getActivities(UserId userId, GroupId groupId, String appId, Set<String> fields, CollectionOptions options, Set<String> activityIds, SecurityToken token) throws SocialSpiException {
     List<Activity> result = Lists.newArrayList();
     try {
@@ -102,14 +116,23 @@ public class ExoActivityService extends ExoService implements ActivityService {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.ActivityService#getActivity(org.apache.shindig.social.opensocial.spi.UserId, org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String, java.util.Set, java.lang.String, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<Activity> getActivity(UserId userId, GroupId groupId, String appId, Set<String> fields, String activityId, SecurityToken token) throws SocialSpiException {
     throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, null);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.ActivityService#deleteActivities(org.apache.shindig.social.opensocial.spi.UserId, org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String, java.util.Set, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<Void> deleteActivities(UserId userId, GroupId groupId, String appId, Set<String> activityIds, SecurityToken token) throws SocialSpiException {
     throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, null);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.ActivityService#createActivity(org.apache.shindig.social.opensocial.spi.UserId, org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String, java.util.Set, org.apache.shindig.social.opensocial.model.Activity, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<Void> createActivity(UserId userId, GroupId groupId, String appId, Set<String> fields, Activity activity, SecurityToken token) throws SocialSpiException {
     try {
       org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity, fields);
@@ -126,6 +149,13 @@ public class ExoActivityService extends ExoService implements ActivityService {
     }
   }
 
+    /**
+     * Convert from os activity.
+     * 
+     * @param activity the activity
+     * @param fields the fields
+     * @return the org.exoplatform.social.core.activitystream.model. activity
+     */
     private org.exoplatform.social.core.activitystream.model.Activity convertFromOSActivity(Activity activity, Set<String> fields) {
       org.exoplatform.social.core.activitystream.model.Activity exoActivity = new org.exoplatform.social.core.activitystream.model.Activity();
       //TODO filter the fields
@@ -141,6 +171,13 @@ public class ExoActivityService extends ExoService implements ActivityService {
       return exoActivity;
     }
     
+    /**
+     * Convert to os activity.
+     * 
+     * @param exoActivity the exo activity
+     * @param fields the fields
+     * @return the activity
+     */
     private Activity convertToOSActivity(org.exoplatform.social.core.activitystream.model.Activity exoActivity, Set<String> fields) {
       Activity activity = new ActivityImpl();
       //TODO filter the fields
@@ -159,6 +196,13 @@ public class ExoActivityService extends ExoService implements ActivityService {
       return activity;
     }
 
+  /**
+   * Convert to os activities.
+   * 
+   * @param activities the activities
+   * @param fields the fields
+   * @return the list
+   */
   private List<Activity> convertToOSActivities(List<org.exoplatform.social.core.activitystream.model.Activity> activities, Set<String> fields) {
     List<Activity> res = Lists.newArrayList();
     for (org.exoplatform.social.core.activitystream.model.Activity activity : activities) {
@@ -183,8 +227,13 @@ public class ExoActivityService extends ExoService implements ActivityService {
    *
    */
   private class ActivityComparator implements Comparator<Activity> {
+    
     /**
-     * Compare 2 activity by posted time
+     * Compare 2 activity by posted time.
+     * 
+     * @param act1 the act1
+     * @param act2 the act2
+     * @return the int
      */
     public int compare(Activity act1, Activity act2) {
       return (int) (act2.getPostedTime() - act1.getPostedTime());

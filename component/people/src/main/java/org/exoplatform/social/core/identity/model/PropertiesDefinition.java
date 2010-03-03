@@ -20,11 +20,20 @@ import java.util.Map;
 import java.util.HashMap;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PropertiesDefinition.
+ */
 public class PropertiesDefinition {
+  
+  /** The properties def. */
   private Map<String, String> propertiesDef = new HashMap<String, String>();
 
   // this will be replaced by an xml configuration file that will define all
   // the properties
+  /**
+   * Instantiates a new properties definition.
+   */
   public PropertiesDefinition(){
     propertiesDef.put("firstName", "firstName");
     propertiesDef.put("lastName", "lastName");
@@ -36,6 +45,12 @@ public class PropertiesDefinition {
 
   }
 
+  /**
+   * Gets the.
+   * 
+   * @param name the name
+   * @return the string
+   */
   public String get(String name){
     return propertiesDef.get(name);
   }

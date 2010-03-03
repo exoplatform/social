@@ -19,25 +19,71 @@ package org.exoplatform.social.core.activitystream.model;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Activity.
+ */
 public class Activity {
-  static public String IS_COMMENT = "IS_COMMENT";
+  
+  /** The  Constant label comment. */
+  static final public String IS_COMMENT = "IS_COMMENT";
+  
+  /** The body. */
   private String body = null;
+  
+  /** The external id. */
   private String externalId = null;
+  
+  /** The id. */
   private String id = null;
+  
+  /** The updated. */
   private Long updated = null;
+  
+  /** The media items. */
   private List<MediaItem> mediaItems = null;
+  
+  /** The posted time. */
   private Long postedTime = null;
+  
+  /** The priority. */
   private Integer priority = null;
+  
+  /** The stream. */
   private Stream stream = null;
+  
+  /** The template params. */
   private Map<String, String> templateParams = null;
+  
+  /** The title. */
   private String title = null;
+  
+  /** The url. */
   private String url = null;
+  
+  /** The user id. */
   private String userId = null;
+  
+  /** The type. */
   private String type = null;
+  
+  /** The replyto id. */
   private String replytoId = null;
+  
+  /** The hidden. */
   private boolean hidden = false;
+  
+  /** The like identity ids. */
   private String[] likeIdentityIds = null;
   
+  /**
+   * Instantiates a new activity based on userId, type, title and his body.
+   * 
+   * @param userId the user id
+   * @param type the type
+   * @param title the title
+   * @param body the body
+   */
   public Activity(String userId, String type, String title, String body) {
     this.userId = userId;
     this.type = type;
@@ -45,65 +91,136 @@ public class Activity {
     this.body = body;
   }
 
+  /**
+   * Instantiates a new activity.
+   */
   public Activity() {
     
   }
 
 
+  /**
+   * Gets the body.
+   * 
+   * @return the body
+   */
   public String getBody() {
     return body;
   }
 
+  /**
+   * Sets the body.
+   * 
+   * @param body the new body
+   */
   public void setBody(String body) {
     this.body = body;
   }
 
+  /**
+   * Gets the external id.
+   * 
+   * @return the external id
+   */
   public String getExternalId() {
     return externalId;
   }
 
+  /**
+   * Sets the external id.
+   * 
+   * @param externalId the new external id
+   */
   public void setExternalId(String externalId) {
     this.externalId = externalId;
   }
 
+  /**
+   * Gets the id.
+   * 
+   * @return the id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Sets the id.
+   * 
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the updated.
+   * 
+   * @return the updated
+   */
   public Long getUpdated() {
     return updated;
   }
 
+  /**
+   * Sets the updated.
+   * 
+   * @param updated the new updated
+   */
   public void setUpdated(Long updated) {
     this.updated = updated;
   }
 
+  /**
+   * Gets the media items.
+   * 
+   * @return the media items
+   * @see org.exoplatform.social.core.activitystream.model.MediaItem
+   */
   public List<MediaItem> getMediaItems() {
     return mediaItems;
   }
 
+  /**
+   * Sets the media items.
+   * 
+   * @param mediaItems the new media items
+   * @see org.exoplatform.social.core.activitystream.model.MediaItem
+   */
   public void setMediaItems(List<MediaItem> mediaItems) {
     this.mediaItems = mediaItems;
   }
 
+  /**
+   * Gets the posted time.
+   * 
+   * @return the posted time
+   */
   public Long getPostedTime() {
     return postedTime;
   }
 
+  /**
+   * Sets the posted time.
+   * 
+   * @param postedTime the new posted time
+   */
   public void setPostedTime(Long postedTime) {
     this.postedTime = postedTime;
   }
 
+  /**
+   * Gets the priority.
+   * 
+   * @return the priority
+   */
   public Integer getPriority() {
     return priority;
   }
 
     /**
-     *
+     * Sets the priority.
+     * 
      * @param priority a number between 0 and 100
      */
   public void setPriority(Integer priority) {
@@ -112,74 +229,164 @@ public class Activity {
     this.priority = priority;
   }
 
+  /**
+   * Gets the stream.
+   * 
+   * @return the stream
+   */
   public Stream getStream() {
     return stream;
   }
 
+  /**
+   * Sets the stream.
+   * 
+   * @param stream the new stream
+   */
   public void setStream(Stream stream) {
     this.stream = stream;
   }
 
+  /**
+   * Gets the template params.
+   * 
+   * @return the template params
+   */
   public Map<String, String> getTemplateParams() {
     return templateParams;
   }
 
+  /**
+   * Sets the template params.
+   * 
+   * @param templateParams the template params
+   */
   public void setTemplateParams(Map<String, String> templateParams) {
     this.templateParams = templateParams;
   }
 
+  /**
+   * Gets the title.
+   * 
+   * @return the title
+   */
   public String getTitle() {
     return title;
   }
 
+  /**
+   * Sets the title.
+   * 
+   * @param title the new title
+   */
   public void setTitle(String title) {
     this.title = title;
   }
 
+  /**
+   * Gets the url.
+   * 
+   * @return the url
+   */
   public String getUrl() {
     return url;
   }
 
+  /**
+   * Sets the url.
+   * 
+   * @param url the new url
+   */
   public void setUrl(String url) {
     this.url = url;
   }
 
+  /**
+   * Gets the user id.
+   * 
+   * @return the user id
+   */
   public String getUserId() {
     return userId;
   }
 
+  /**
+   * Sets the user id.
+   * 
+   * @param userId the new user id
+   */
   public void setUserId(String userId) {
     this.userId = userId;
   }
 
+  /**
+   * Gets the replyto id.
+   * 
+   * @return the replyto id
+   */
   public String getReplytoId() {
       return replytoId;
   }
 
+  /**
+   * Sets the replyto id.
+   * 
+   * @param replytoId the new replyto id
+   */
   public void setReplytoId(String replytoId) {
       this.replytoId = replytoId;
   }
 
+  /**
+   * Gets the type.
+   * 
+   * @return the type
+   */
   public String getType() {
       return type;
   }
 
+  /**
+   * Sets the type.
+   * 
+   * @param type the new type
+   */
   public void setType(String type) {
       this.type = type;
   }
 
+  /**
+   * Checks if is hidden.
+   * 
+   * @return true, if is hidden
+   */
   public boolean isHidden() {
       return hidden;
   }
 
+  /**
+   * Sets the hidden.
+   * 
+   * @param hidden the new hidden
+   */
   public void setHidden(boolean hidden) {
       this.hidden = hidden;
   }
   
+  /**
+   * Sets the like identity ids.
+   * 
+   * @param likeIdentityIds the new like identity ids
+   */
   public void setLikeIdentityIds(String[] likeIdentityIds) {
    this.likeIdentityIds = likeIdentityIds;
   }
   
+  /**
+   * Gets the like identity ids.
+   * 
+   * @return the like identity ids
+   */
   public String[] getLikeIdentityIds() {
     return likeIdentityIds;
   }

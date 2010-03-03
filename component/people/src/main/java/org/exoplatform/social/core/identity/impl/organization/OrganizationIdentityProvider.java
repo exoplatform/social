@@ -32,13 +32,30 @@ import org.exoplatform.social.core.identity.JCRStorage;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OrganizationIdentityProvider.
+ */
 public class OrganizationIdentityProvider extends IdentityProvider {
+  
+  /** The storage. */
   private JCRStorage storage;
+  
+  /** The organization service. */
   private OrganizationService organizationService;
+  
+  /** The Constant NAME. */
   public final static String NAME = "organization";
   //TODO: dang.tung: maybe we don't need it but it will fix the problem from portal - get user
+  /** The user cache. */
   private Map<String, User> userCache = new HashMap<String, User>();
 
+  /**
+   * Instantiates a new organization identity provider.
+   * 
+   * @param storage the storage
+   * @param organizationService the organization service
+   */
   public OrganizationIdentityProvider(JCRStorage storage, OrganizationService organizationService) {
     this.storage = storage;
     
@@ -46,12 +63,18 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     this.organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
   }
 
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.core.identity.IdentityProvider#getName()
+   */
   public String getName() {
     return NAME;
   }
 
 
 
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.core.identity.IdentityProvider#getIdentityByRemoteId(org.exoplatform.social.core.identity.model.Identity)
+   */
   public Identity getIdentityByRemoteId(Identity identity) throws Exception {
     //TODO: tung.dang need to review again.
     User user = null;
@@ -78,6 +101,14 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     return identity;
   }
 
+  /**
+   * Load identity.
+   * 
+   * @param user the user
+   * @param identity the identity
+   * @return the identity
+   * @throws Exception the exception
+   */
   private Identity loadIdentity(User user, Identity identity) throws Exception {
       Profile profile = identity.getProfile();
 
@@ -101,10 +132,16 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     return identity;
   }
 
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.core.identity.IdentityProvider#saveProfile(org.exoplatform.social.core.identity.model.Profile)
+   */
   public void saveProfile(Profile p) throws Exception {
     this.storage.saveProfile(p); 
   }
 
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.core.identity.IdentityProvider#getAllUserId()
+   */
   public List<String> getAllUserId() throws Exception {
     //TODO: dang tung - need to review again.
     PageList pl = organizationService.getUserHandler().getUserPageList(20);
@@ -117,15 +154,29 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     return userIds;
   }
   
+  /**
+   * Gets the user from cache.
+   * 
+   * @param userName the user name
+   * @return the user from cache
+   */
   private User getUserFromCache(String userName) {
     return userCache.get(userName);
   }
   
+  /**
+   * Adds the user to cache.
+   * 
+   * @param user the user
+   */
   private void addUserToCache(User user) {
     if(getUserFromCache(user.getUserName()) == null)
       userCache.put(user.getUserName(), user);
   }
   
+  /**
+   * Refresh cache.
+   */
   private void refreshCache() {
     userCache.clear();
   }

@@ -32,38 +32,94 @@ import org.exoplatform.social.space.impl.SocialDataLocation;
 import com.google.common.collect.Lists;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JCRStorage represents storage for activity manager
+ * @see org.exoplatform.social.core.activitystream.ActivityManager
+ */
 public class JCRStorage {
+  
+  /** The Constant PUBLISHED_NODE. */
   final private static String PUBLISHED_NODE = "published".intern();
+  
+  /** The Constant NT_UNSTRUCTURED. */
   final private static String NT_UNSTRUCTURED = "nt:unstructured".intern();
+  
+  /** The Constant ACTIVITY_NODETYPE. */
   private static final String ACTIVITY_NODETYPE =  "exo:activity".intern();
 
+  /** The Constant BODY. */
   private static final String BODY =  "exo:body".intern();
+  
+  /** The Constant EXTERNAL_ID. */
   private static final String EXTERNAL_ID =  "exo:externalId".intern();
+  
+  /** The Constant ID. */
   private static final String ID =  "exo:id".intern();
+  
+  /** The Constant UPDATED. */
   private static final String UPDATED =  "exo:updated".intern();
+  
+  /** The Constant POSTED_TIME. */
   private static final String POSTED_TIME =  "exo:postedTime".intern();
+  
+  /** The Constant PRIORITY. */
   private static final String PRIORITY =  "exo:priority".intern();
+  
+  /** The Constant TITLE. */
   private static final String TITLE =  "exo:title".intern();
+  
+  /** The Constant URL. */
   private static final String URL =  "exo:url".intern();
+  
+  /** The Constant USER_ID. */
   private static final String USER_ID =  "exo:userId".intern();
+  
+  /** The Constant TYPE. */
   private static final String TYPE =  "exo:type".intern();
+  
+  /** The Constant HIDDEN. */
   private static final String HIDDEN =  "exo:hidden".intern();
+  
+  /** The Constant LIKE_IDENTITY_IDS. */
   private static final String LIKE_IDENTITY_IDS = "exo:like".intern();
   
   //new change
+  /** The data location. */
   private SocialDataLocation dataLocation;
+  
+  /** The session manager. */
   private JCRSessionManager sessionManager;
 
+  /**
+   * Instantiates a new JCR storage base on SocialDataLocation
+   * 
+   * @param dataLocation the data location.
+   * @see 	org.exoplatform.social.space.impl.SoscialDataLocation.
+   */
   public JCRStorage(SocialDataLocation dataLocation) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
   }
 
+  /**
+   * Gets the activity service home node.
+   * 
+   * @param session the session
+   * @return the activity service home
+   * @throws Exception the exception
+   */
   private Node getActivityServiceHome(Session session) throws Exception {
     String path = dataLocation.getSocialActivitiesHome();
     return session.getRootNode().getNode(path);
   }
 
+  /**
+   * Gets the user activity service home node.
+   * 
+   * @param username the username
+   * @return the user activity service home
+   */
   private Node getUserActivityServiceHome(String username) {
     Session session = sessionManager.openSession();
     try {
@@ -83,6 +139,12 @@ public class JCRStorage {
     
   }
 
+  /**
+   * Gets the published activity service home node.
+   * 
+   * @param username the username
+   * @return the published activity service home
+   */
   private Node getPublishedActivityServiceHome(String username) {
     try {
       Node userActivityHomeNode = getUserActivityServiceHome(username);
@@ -100,6 +162,14 @@ public class JCRStorage {
    
   }
 
+  /**
+   * Save activity base on user id and activity
+   * 
+   * @param user the user id
+   * @param activity the activity
+   * @return the activity
+   * @throws Exception the exception
+   */
   public Activity save(String user, Activity activity) throws Exception {
     Node activityNode;
     Node activityHomeNode = getPublishedActivityServiceHome(user);
@@ -151,9 +221,10 @@ public class JCRStorage {
   }
   
   /**
-   * delete activity by its id
-   * @param activityId
-   * @throws Exception
+   * delete activity by its id.
+   * 
+   * @param activityId the activity id
+   * @throws Exception the exception
    */
   public void deleteActivity(String activityId) throws Exception {
     Session session = sessionManager.openSession();
@@ -172,6 +243,12 @@ public class JCRStorage {
     
   }
 
+  /**
+   * load activity by its id
+   * 
+   * @param id the id
+   * @return the activity
+   */
   public Activity load(String id) {
     Session session = sessionManager.openSession();
     try {
@@ -186,6 +263,13 @@ public class JCRStorage {
     return null;
   }
 
+  /**
+   * Load activity by node from jcr.
+   * 
+   * @param n the node
+   * @return the activity
+   * @throws Exception the exception
+   */
   private Activity load(Node n) throws Exception {
     Activity activity = new Activity();
     activity.setId(n.getUUID());
@@ -216,6 +300,13 @@ public class JCRStorage {
     return activity;
   }
 
+  /**
+   * Gets the activities by identity.
+   * 
+   * @param identity the identity
+   * @return the activities
+   * @throws Exception the exception
+   */
   public List<Activity> getActivities(Identity identity) throws Exception {
     List<Activity> activities = Lists.newArrayList();
     Node n = getPublishedActivityServiceHome(identity.getId());
@@ -235,6 +326,13 @@ public class JCRStorage {
     return activities;
   }
   
+  /**
+   * Values to strings.
+   * 
+   * @param Val the jcr value
+   * @return the string[]
+   * @throws Exception the exception
+   */
   private String [] ValuesToStrings(Value[] Val) throws Exception {
     if(Val.length == 1) return new String[]{Val[0].getString()};
     String[] Str = new String[Val.length];

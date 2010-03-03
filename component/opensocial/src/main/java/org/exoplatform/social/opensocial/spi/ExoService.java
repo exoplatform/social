@@ -35,6 +35,7 @@ import org.exoplatform.social.core.relationship.RelationshipManager;
 
 import com.google.common.collect.Sets;
 
+// TODO: Auto-generated Javadoc
 /**
  * Created by IntelliJ IDEA.
  * User: jeremi
@@ -43,9 +44,16 @@ import com.google.common.collect.Sets;
  * To change this template use File | Settings | File Templates.
  */
 public class ExoService {
+        
         /**
-     * Get the set of user id's from a user and group
-     */
+         * Get the set of user id's from a user and group.
+         * 
+         * @param user the user
+         * @param group the group
+         * @param token the token
+         * @return the id set
+         * @throws Exception the exception
+         */
     protected Set<Identity> getIdSet(UserId user, GroupId group, SecurityToken token) throws Exception {
       String userId = user.getUserId(token);
 
@@ -70,6 +78,13 @@ public class ExoService {
       return returnVal;
     }
 
+    /**
+     * Gets the friends list.
+     * 
+     * @param id the id
+     * @return the friends list
+     * @throws Exception the exception
+     */
     protected List<Identity> getFriendsList(Identity id) throws Exception {
       //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
       PortalContainer pc = PortalContainer.getInstance();
@@ -90,7 +105,13 @@ public class ExoService {
     }
 
     /**
-     * Get the set of user id's for a set of users and a group
+     * Get the set of user id's for a set of users and a group.
+     * 
+     * @param users the users
+     * @param group the group
+     * @param token the token
+     * @return the id set
+     * @throws Exception the exception
      */
     protected Set<Identity> getIdSet(Set<UserId> users, GroupId group, SecurityToken token)
             throws Exception {
@@ -101,6 +122,13 @@ public class ExoService {
       return ids;
     }
 
+    /**
+     * Gets the identity.
+     * 
+     * @param id the id
+     * @return the identity
+     * @throws Exception the exception
+     */
     protected Identity getIdentity(String id) throws Exception {
       //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
       PortalContainer pc = PortalContainer.getInstance();

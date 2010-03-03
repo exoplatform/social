@@ -21,56 +21,122 @@ import java.util.Map;
 import java.util.HashMap;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Profile.
+ */
 public class Profile {
+  
+  /** The properties. */
   private Map<String, Object> properties = new HashMap<String, Object>();
+  
+  /** The identity. */
   private Identity identity;
+  
+  /** The id. */
   private String id;
 
+  /**
+   * Instantiates a new profile.
+   * 
+   * @param id the id
+   */
   public Profile(Identity id) {
     this.identity = id;
   }
 
+  /**
+   * Gets the identity.
+   * 
+   * @return the identity
+   */
   public Identity getIdentity() {
     return identity;
   }
 
+  /**
+   * Gets the id.
+   * 
+   * @return the id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Sets the id.
+   * 
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the property.
+   * 
+   * @param name the name
+   * @return the property
+   */
   public Object getProperty(String name) {
     return properties.get(name);
   }
 
+  /**
+   * Sets the property.
+   * 
+   * @param name the name
+   * @param value the value
+   */
   public void setProperty(String name, Object value) {
     properties.put(name, value);
   }
 
+  /**
+   * Contains.
+   * 
+   * @param name the name
+   * @return true, if successful
+   */
   public boolean contains(String name) {
     return properties.containsKey(name);  
   }
 
+  /**
+   * Gets the properties.
+   * 
+   * @return the properties
+   */
   public Map<String, Object> getProperties() {
     return properties;
   }
 
+  /**
+   * Removes the property.
+   * 
+   * @param name the name
+   */
   public void removeProperty(String name) {
     properties.remove(name);
   }
 
   /**
-   * @deprecated 
-   * @param name
+   * Gets the property value.
+   * 
+   * @param name the name
+   * @return the property value
+   * @deprecated
    * @return
    */
   public Object getPropertyValue(String name) {
     return getProperty(name);
   }
 
+  /**
+   * Gets the full name.
+   * 
+   * @return the full name
+   */
   public String getFullName() {
     return getProperty("firstName") + " " + getProperty("lastName");
   }

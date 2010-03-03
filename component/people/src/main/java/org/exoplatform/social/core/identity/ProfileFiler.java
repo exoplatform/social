@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.identity;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -29,24 +30,88 @@ package org.exoplatform.social.core.identity;
  */
 public class ProfileFiler {
   /* filer by user profile name*/
+  /** The name. */
   private String name;
   /* filer by user profile position*/
+  /** The position. */
   private String position;
   /* filer by user profile company*/
+  /** The company. */
   private String company;
   /* filer by user profile professional*/
+  /** The professional. */
   private String professional;
   /* filer by user profile gender*/
+  /** The gender. */
   private String gender;
   
+  /**
+   * Gets the position.
+   * 
+   * @return the position
+   */
   public String getPosition() { return position; }
+  
+  /**
+   * Sets the position.
+   * 
+   * @param position the new position
+   */
   public void setPosition(String position) { this.position = position; }
+  
+  /**
+   * Gets the company.
+   * 
+   * @return the company
+   */
   public String getCompany() { return company; }
+  
+  /**
+   * Sets the company.
+   * 
+   * @param company the new company
+   */
   public void setCompany(String company) { this.company = company; }
+  
+  /**
+   * Gets the professional.
+   * 
+   * @return the professional
+   */
   public String getProfessional() { return professional;}
+  
+  /**
+   * Sets the professional.
+   * 
+   * @param professional the new professional
+   */
   public void setProfessional(String professional) { this.professional = professional;}
+  
+  /**
+   * Gets the gender.
+   * 
+   * @return the gender
+   */
   public String getGender() { return gender; }
+  
+  /**
+   * Sets the gender.
+   * 
+   * @param gender the new gender
+   */
   public void setGender(String gender) { this.gender = gender; }
+  
+  /**
+   * Sets the name.
+   * 
+   * @param name the new name
+   */
   public void setName(String name) { this.name = name; }
+  
+  /**
+   * Gets the name.
+   * 
+   * @return the name
+   */
   public String getName() { return name; }
 }

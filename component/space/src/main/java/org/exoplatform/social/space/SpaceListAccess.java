@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
 
+// TODO: Auto-generated Javadoc
 /**
  * SpaceListAccess for LazyPageList usage
  * 
@@ -29,16 +30,29 @@ import org.exoplatform.commons.utils.ListAccess;
  * Aug 28, 2009  
  */
 public class SpaceListAccess implements ListAccess<Space> {
+  
+  /** The list. */
   private final List<Space> list;
   
+  /**
+   * Instantiates a new space list access.
+   * 
+   * @param list the list
+   */
   public SpaceListAccess(List<Space> list) {
     this.list = list;
   }
   
+  /* (non-Javadoc)
+   * @see org.exoplatform.commons.utils.ListAccess#getSize()
+   */
   public int getSize() throws Exception {
     return list.size();
   }
 
+  /* (non-Javadoc)
+   * @see org.exoplatform.commons.utils.ListAccess#load(int, int)
+   */
   public Space[] load(int index, int length) throws Exception, IllegalArgumentException {
     if (index < 0)
       throw new IllegalArgumentException("Illegal index: index must be a positive number");

@@ -61,36 +61,70 @@ import org.exoplatform.social.space.JCRSessionManager;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JCRStorage for identity and profile.
+ */
 public class JCRStorage {
 
 
+  /** The Constant IDENTITY_NODETYPE. */
   final private static String IDENTITY_NODETYPE = "exo:identity".intern();
+  
+  /** The Constant PROFILE_NODETYPE. */
   final private static String PROFILE_NODETYPE = "exo:profile".intern();
 
+  /** The Constant IDENTITY_REMOTEID. */
   final private static String IDENTITY_REMOTEID = "exo:remoteId".intern();
+  
+  /** The Constant IDENTITY_PROVIDERID. */
   final private static String IDENTITY_PROVIDERID = "exo:providerId".intern();
 
+  /** The Constant PROFILE_IDENTITY. */
   final private static String PROFILE_IDENTITY = "exo:identity".intern();
+  
+  /** The Constant PROFILE_AVATAR. */
   final private static String PROFILE_AVATAR = "avatar".intern();
   
+  /** The config. */
   private ProfileConfig config = null;
   //new change
+  /** The data location. */
   private SocialDataLocation dataLocation;
+  
+  /** The session manager. */
   private JCRSessionManager sessionManager;
   
 
 
+  /**
+   * Instantiates a new jCR storage.
+   * 
+   * @param dataLocation the data location
+   */
   public JCRStorage(SocialDataLocation dataLocation) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
   }
 
 
+  /**
+   * Gets the identity service home.
+   * 
+   * @param session the session
+   * @return the identity service home
+   * @throws Exception the exception
+   */
   private Node getIdentityServiceHome(Session session) throws Exception {
     String path = dataLocation.getSocialIdentityHome();
     return session.getRootNode().getNode(path);
   }
 
+  /**
+   * Gets the profile config.
+   * 
+   * @return the config
+   */
   private ProfileConfig getConfig() {
     if (config == null) {
       PortalContainer container = PortalContainer.getInstance();
@@ -99,11 +133,23 @@ public class JCRStorage {
     return config;
   }
 
+  /**
+   * Gets the profile service home.
+   * 
+   * @param session the session
+   * @return the profile service home
+   * @throws Exception the exception
+   */
   private Node getProfileServiceHome(Session session) throws Exception {
     String path = dataLocation.getSocialProfileHome();
     return session.getRootNode().getNode(path);
   }
 
+  /**
+   * Save identity.
+   * 
+   * @param identity the identity
+   */
   public void saveIdentity(Identity identity) {
     Session session =  sessionManager.openSession();
     try {
@@ -134,6 +180,13 @@ public class JCRStorage {
     }
   }
 
+  /**
+   * Gets the identity by his id.
+   * 
+   * @param id the id of identity
+   * @return the identity
+   * @throws Exception the exception
+   */
   public Identity getIdentity(String id) throws Exception {
     Session session = sessionManager.openSession();
     Node identityNode;
@@ -153,6 +206,14 @@ public class JCRStorage {
     return identity;
   }
 
+  /**
+   * Gets the identity by remote id.
+   * 
+   * @param identityProvider the identity provider
+   * @param id the id
+   * @return the identity by remote id
+   * @throws Exception the exception
+   */
   public Identity getIdentityByRemoteId(String identityProvider, String id) throws Exception {
     Session session = sessionManager.openSession();
     Identity identity = null;
@@ -186,6 +247,13 @@ public class JCRStorage {
     return identity;
   }
   
+  /**
+   * Gets the identity.
+   * 
+   * @param identityNode the identity node
+   * @return the identity
+   * @throws Exception the exception
+   */
   public Identity getIdentity(Node identityNode) throws Exception {
     Identity identity = null;
     identity = new Identity(identityNode.getUUID());
@@ -197,6 +265,14 @@ public class JCRStorage {
     return identity;
   }
   
+  /**
+   * Gets the identities by profile filter.
+   * 
+   * @param identityProvider the identity provider
+   * @param profileFilter the profile filter
+   * @return the identities by profile filter
+   * @throws Exception the exception
+   */
   public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFiler profileFilter) throws Exception {
     Session session = sessionManager.openSession();
     Node profileHomeNode = getProfileServiceHome(session);
@@ -279,6 +355,14 @@ public class JCRStorage {
     return listIdentity;
   }
 
+  /**
+   * Gets the identities filter by alpha bet.
+   * 
+   * @param identityProvider the identity provider
+   * @param profileFilter the profile filter
+   * @return the identities filter by alpha bet
+   * @throws Exception the exception
+   */
   public List<Identity> getIdentitiesFilterByAlphaBet(String identityProvider, ProfileFiler profileFilter) throws Exception {
     Session session = sessionManager.openSession();
     Node profileHomeNode = getProfileServiceHome(session);
@@ -324,6 +408,12 @@ public class JCRStorage {
     return listIdentity;
   }
   
+  /**
+   * Save profile.
+   * 
+   * @param p the profile
+   * @throws Exception the exception
+   */
   public void saveProfile(Profile p) throws Exception {
     try {
       Session session = sessionManager.openSession();
@@ -366,6 +456,15 @@ public class JCRStorage {
     }
   }
 
+  /**
+   * Save profile.
+   * 
+   * @param p the profile
+   * @param n the node
+   * @param session the session
+   * @throws Exception the exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   protected void saveProfile(Profile p, Node n, Session session) throws Exception, IOException {
     Map props = p.getProperties();
 
@@ -465,6 +564,16 @@ public class JCRStorage {
     }
   }
 
+  /**
+   * Sets the property.
+   * 
+   * @param name the name
+   * @param props the props
+   * @param n the node
+   * @throws Exception the exception
+   * @throws ConstraintViolationException the constraint violation exception
+   * @throws VersionException the version exception
+   */
   private void setProperty(String name, List<Map> props, Node n) throws Exception, ConstraintViolationException, VersionException {
     //System.out.println("setting the List prop " + name + " = " + props);
 
@@ -511,6 +620,17 @@ public class JCRStorage {
     }
   }
 
+  /**
+   * Sets the property.
+   * 
+   * @param name the name
+   * @param propValue the prop value
+   * @param n the node
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws RepositoryException the repository exception
+   * @throws ConstraintViolationException the constraint violation exception
+   * @throws VersionException the version exception
+   */
   private void setProperty(String name, String[] propValue, Node n) throws IOException, RepositoryException, ConstraintViolationException, VersionException {
     ArrayList<Value> values = new ArrayList<Value>();
     for (String value : propValue) {
@@ -522,6 +642,12 @@ public class JCRStorage {
     n.setProperty(name, values.toArray(new Value[values.size()]));
   }
 
+  /**
+   * Load profile.
+   * 
+   * @param p the profile
+   * @throws Exception the exception
+   */
   public void loadProfile(Profile p) throws Exception {
     if (p.getIdentity().getId() == null) {
       throw new Exception("the identity has to be saved before loading the profile");
@@ -580,14 +706,34 @@ public class JCRStorage {
     //System.out.println("did not find the profile");
   }
 
+  /**
+   * Checks if is forced multi value.
+   * 
+   * @param key the key
+   * @return true, if is forced multi value
+   */
   protected boolean isForcedMultiValue(String key) {
     return getConfig().isForcedMultiValue(key);
   }
 
+  /**
+   * Gets the node type name.
+   * 
+   * @param nodeName the node name
+   * @return the node type name
+   */
   protected String getNodeTypeName(String nodeName) {
     return getConfig().getNodeType(nodeName);
   }
 
+  /**
+   * Load profile.
+   * 
+   * @param p the p
+   * @param n the n
+   * @param session the session
+   * @throws RepositoryException the repository exception
+   */
   protected void loadProfile(Profile p, Node n, Session session) throws RepositoryException {
     //System.out.println("Loading the profile");
     PropertyIterator props = n.getProperties();
@@ -629,6 +775,14 @@ public class JCRStorage {
     //System.out.println("nodetype: " + n.getPrimaryNodeType().getName());
   }
 
+  /**
+   * Copy properties to map.
+   * 
+   * @param props the props
+   * @param map the map
+   * @return the map
+   * @throws RepositoryException the repository exception
+   */
   private Map copyPropertiesToMap(PropertyIterator props, Map map) throws RepositoryException {
     while(props.hasNext()) {
       Property prop = (Property) props.next();
@@ -664,6 +818,14 @@ public class JCRStorage {
     return map;
   }
 
+  /**
+   * Gets the type.
+   * 
+   * @param nodetype the nodetype
+   * @param property the property
+   * @return the type
+   * @throws Exception the exception
+   */
   public String getType(String nodetype, String property) throws Exception {
     //System.out.println("getType(" + nodetype + ", " + property + ")");
     try {

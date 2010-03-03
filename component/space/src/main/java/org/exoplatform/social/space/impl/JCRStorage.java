@@ -76,6 +76,11 @@ public class JCRStorage {
      return workspace;
   }
   
+  /**
+   * Gets the all spaces.
+   * 
+   * @return the all spaces
+   */
   public List<Space> getAllSpaces() {
     List<Space> spaces = new ArrayList<Space>();
     try {

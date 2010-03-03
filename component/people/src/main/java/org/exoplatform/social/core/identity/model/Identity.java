@@ -16,64 +16,143 @@
  */
 package org.exoplatform.social.core.identity.model;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Identity.
+ */
 public class Identity {
+    
+    /** The id. */
     String  id;
+    
+    /** The remote id. */
     String  remoteId;
+    
+    /** The provider id. */
     String  providerId;
+    
+    /** The display name. */
     String  displayName;
+    
+    /** The profile. */
     Profile profile;
 
+    /**
+     * Instantiates a new identity.
+     */
     public Identity() {
     }
 
+    /**
+     * Instantiates a new identity.
+     * 
+     * @param id the id
+     */
     public Identity(String id) {
         this.id = id;
     }
 
+    /**
+     * Instantiates a new identity.
+     * 
+     * @param id the id
+     * @param displayName the display name
+     * @param profile the profile
+     */
     public Identity(String id, String displayName, Profile profile) {
         this.id = id;
         this.displayName = displayName;
         this.profile = profile;
     }
 
+    /**
+     * Gets the id.
+     * 
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the id.
+     * 
+     * @param id the new id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets the display name.
+     * 
+     * @return the display name
+     */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Sets the display name.
+     * 
+     * @param displayName the new display name
+     */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
+    /**
+     * Gets the profile.
+     * 
+     * @return the profile
+     */
     public Profile getProfile() {
         if (profile == null)
             profile = new Profile(this);
         return profile;
     }
 
+    /**
+     * Sets the profile.
+     * 
+     * @param profile the new profile
+     */
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
 
+    /**
+     * Gets the remote id.
+     * 
+     * @return the remote id
+     */
     public String getRemoteId() {
         return remoteId;
     }
 
+    /**
+     * Sets the remote id.
+     * 
+     * @param remoteId the new remote id
+     */
     public void setRemoteId(String remoteId) {
         this.remoteId = remoteId;
     }
 
+    /**
+     * Gets the provider id.
+     * 
+     * @return the provider id
+     */
     public String getProviderId() {
         return providerId;
     }
 
+    /**
+     * Sets the provider id.
+     * 
+     * @param providerId the new provider id
+     */
     public void setProviderId(String providerId) {
         this.providerId = providerId;
     }

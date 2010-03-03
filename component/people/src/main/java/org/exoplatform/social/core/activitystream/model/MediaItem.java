@@ -16,44 +16,87 @@
  */
 package org.exoplatform.social.core.activitystream.model;
 
+// TODO: Auto-generated Javadoc
+
 /**
- * Created by IntelliJ IDEA.
- * User: jeremi
- * Date: May 23, 2008
- * Time: 11:45:17 AM
- * To change this template use File | Settings | File Templates.
+ * The Class MediaItem represent MediaItem in opensocial.
  */
 public class MediaItem {
+  
+  /** The mime type. */
   private String mimeType;
+  
+  /** The type. */
   private Type type;
+  
+  /** The url. */
   private String url;
 
+  /**
+   * The Enum Type.
+   */
   public enum Type {
+    
+    /** The AUDIO. */
     AUDIO,
+    
+    /** The IMAGE. */
     IMAGE,
+    
+    /** The VIDEO. */
     VIDEO
   }
 
+  /**
+   * Gets the mime type.
+   * 
+   * @return the mime type
+   */
   public String getMimeType() {
     return mimeType;
   }
 
+  /**
+   * Sets the mime type.
+   * 
+   * @param mimeType the new mime type
+   */
   public void setMimeType(String mimeType) {
     this.mimeType = mimeType;
   }
 
+  /**
+   * Gets the type.
+   * 
+   * @return the type
+   */
   public Type getType() {
     return type;
   }
 
+  /**
+   * Sets the type.
+   * 
+   * @param type the new type
+   */
   public void setType(Type type) {
     this.type = type;
   }
 
+  /**
+   * Gets the url.
+   * 
+   * @return the url
+   */
   public String getUrl() {
     return url;
   }
 
+  /**
+   * Sets the url.
+   * 
+   * @param url the new url
+   */
   public void setUrl(String url) {
     this.url = url;
   }

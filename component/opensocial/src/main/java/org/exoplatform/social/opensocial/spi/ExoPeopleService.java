@@ -61,15 +61,26 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ExoPeopleService.
+ */
 public class ExoPeopleService extends ExoService implements PersonService, AppDataService {
 
+  /** The injector. */
   private Injector injector;
   
+  /**
+   * Instantiates a new exo people service.
+   * 
+   * @param injector the injector
+   */
   @Inject
   public ExoPeopleService(Injector injector) {
     this.injector = injector;
   }
   
+  /** The Constant NAME_COMPARATOR. */
   private static final Comparator<Person> NAME_COMPARATOR = new Comparator<Person>() {
     public int compare(Person person, Person person1) {
       String name = person.getName().getFormatted();
@@ -79,6 +90,9 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   };
 
     
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.PersonService#getPeople(java.util.Set, org.apache.shindig.social.opensocial.spi.GroupId, org.apache.shindig.social.opensocial.spi.CollectionOptions, java.util.Set, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds, GroupId groupId, CollectionOptions collectionOptions, Set<String> fields, SecurityToken token) throws ProtocolException {
     List<Person> result = Lists.newArrayList();
     try {
@@ -121,6 +135,9 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 
 
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.PersonService#getPerson(org.apache.shindig.social.opensocial.spi.UserId, java.util.Set, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<Person> getPerson(UserId id, Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
 
@@ -133,6 +150,13 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }
   }
 
+  /**
+   * Convert to person.
+   * 
+   * @param identity the identity
+   * @param fields the fields
+   * @return the person
+   */
   private Person convertToPerson(Identity identity, Set<String> fields) {
     Person p = injector.getInstance(Person.class);
     Profile pro = identity.getProfile();
@@ -205,6 +229,12 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     return p;
   }
 
+  /**
+   * Convert to list fields.
+   * 
+   * @param fields the fields
+   * @return the list
+   */
   private List<ListField> convertToListFields(List<Map> fields) {
     List<ListField> l = new ArrayList<ListField>();
     if(fields == null)
@@ -215,6 +245,12 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     return l;
   }
 
+  /**
+   * Convert to url list fields.
+   * 
+   * @param fields the fields
+   * @return the list
+   */
   private List<Url> convertToURLListFields(List<Map> fields) {
     List<Url> l = new ArrayList<Url>();
     if(fields == null)
@@ -225,6 +261,9 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     return l;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.AppDataService#getPersonData(java.util.Set, org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String, java.util.Set, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<DataCollection> getPersonData(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
@@ -243,12 +282,28 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     }
   }
 
+  /**
+   * Clean.
+   * 
+   * @param url the url
+   * @return the string
+   */
   private String clean(String url) {
     url = URLEncoder.encode(url);
     url = url.replaceAll(":", "");
     return url;
   }
 
+  /**
+   * Gets the preferences.
+   * 
+   * @param userID the user id
+   * @param gadgetId the gadget id
+   * @param instanceID the instance id
+   * @param fields the fields
+   * @return the preferences
+   * @throws Exception the exception
+   */
   private Map<String, String> getPreferences(String userID, String gadgetId, String instanceID, Set<String> fields) throws Exception {
 //      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
 //      UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
@@ -258,6 +313,15 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       return values;
   }
 
+  /**
+   * Save preferences.
+   * 
+   * @param userID the user id
+   * @param gadgetId the gadget id
+   * @param instanceID the instance id
+   * @param values the values
+   * @throws Exception the exception
+   */
   private void savePreferences(String userID, String gadgetId, String instanceID, Map<String, String> values) throws Exception {
 //    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
 //    UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
@@ -265,6 +329,15 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 //    userGadgetStorage.save(userID, gadgetId, instanceID, values);
   }
 
+  /**
+   * Delete preferences.
+   * 
+   * @param userID the user id
+   * @param gadgetId the gadget id
+   * @param instanceID the instance id
+   * @param keys the keys
+   * @throws Exception the exception
+   */
   private void deletePreferences(String userID, String gadgetId, String instanceID, Set<String> keys) throws Exception {
 //    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
 //    UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
@@ -272,6 +345,9 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 //    userGadgetStorage.delete(userID, gadgetId, instanceID, keys);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.AppDataService#deletePersonData(org.apache.shindig.social.opensocial.spi.UserId, org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String, java.util.Set, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<Void> deletePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
       String userId = user.getUserId(token);
@@ -287,6 +363,9 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     return ImmediateFuture.newInstance(null);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.shindig.social.opensocial.spi.AppDataService#updatePersonData(org.apache.shindig.social.opensocial.spi.UserId, org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String, java.util.Set, java.util.Map, org.apache.shindig.auth.SecurityToken)
+   */
   public Future<Void> updatePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, Map<String, String> values, SecurityToken token) throws ProtocolException {
     //TODO: remove the fields that are in the fields list and not in the values map
     try {
@@ -303,10 +382,22 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     return ImmediateFuture.newInstance(null);
   }
   
+  /**
+   * Gets the portal name.
+   * 
+   * @return the portal name
+   */
   private String getPortalName() {
     PortalContainer pcontainer =  PortalContainer.getInstance();
     return pcontainer.getPortalContainerInfo().getContainerName();  
   }
+  
+  /**
+   * Gets the repository.
+   * 
+   * @return the repository
+   * @throws Exception the exception
+   */
   private String getRepository() throws Exception {
     PortalContainer pContainer = PortalContainer.getInstance();
     RepositoryService rService = (RepositoryService) pContainer.getComponentInstanceOfType(RepositoryService.class);

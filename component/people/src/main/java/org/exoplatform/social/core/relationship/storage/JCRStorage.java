@@ -27,31 +27,65 @@ import java.util.List;
 import java.util.ArrayList;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JCRStorage.
+ */
 public class JCRStorage {
 
+  /** The identity manager. */
   private IdentityManager identityManager;
+  
+  /** The data location. */
   private SocialDataLocation dataLocation;
+  
+  /** The session manager. */
   private JCRSessionManager sessionManager;
 
+  /** The Constant RELATION_NODETYPE. */
   final private static String RELATION_NODETYPE = "exo:relationship".intern();
 
   //final private static String IDENTITY_ID = "exo:id".intern();
+  /** The Constant PROPERTY_ISSYMETRIC. */
   final private static String PROPERTY_ISSYMETRIC = "exo:isSymetric".intern();
+  
+  /** The Constant PROPERTY_STATUS. */
   final private static String PROPERTY_STATUS = "exo:status".intern();
+  
+  /** The Constant PROPERTY_NAME. */
   final private static String PROPERTY_NAME = "exo:name".intern();
+  
+  /** The Constant PROPERTY_INITIATOR. */
   final private static String PROPERTY_INITIATOR = "exo:initiator".intern();
+  
+  /** The Constant PROPERTY_NODETYPE. */
   final private static String PROPERTY_NODETYPE = "exo:relationshipProperty".intern();
 
 
+  /** The Constant RELATION_IDENTITY1. */
   final private static String RELATION_IDENTITY1 = "exo:identity1Id".intern();
+  
+  /** The Constant RELATION_IDENTITY2. */
   final private static String RELATION_IDENTITY2 = "exo:identity2Id".intern();
 
+  /**
+   * Instantiates a new jCR storage.
+   * 
+   * @param dataLocation the data location
+   * @param identityManager the identity manager
+   */
   public JCRStorage(SocialDataLocation dataLocation, IdentityManager identityManager) {
     this.dataLocation = dataLocation;
     this.identityManager = identityManager;
     this.sessionManager = dataLocation.getSessionManager();
   }
 
+  /**
+   * Save relationship.
+   * 
+   * @param relationship the relationship
+   * @throws Exception the exception
+   */
   public void saveRelationship(Relationship relationship) throws Exception {
     Session session = sessionManager.openSession();
     Node relationshipNode = null;
@@ -89,6 +123,11 @@ public class JCRStorage {
       loadProperties(relationship, relationshipNode);  
   }
   
+  /**
+   * Removes the relationship.
+   * 
+   * @param relationship the relationship
+   */
   public void removeRelationship(Relationship relationship) {
     Session session = sessionManager.openSession();
     try {
@@ -103,6 +142,13 @@ public class JCRStorage {
     }
   }
 
+  /**
+   * Gets the relationship.
+   * 
+   * @param uuid the uuid
+   * @return the relationship
+   * @throws Exception the exception
+   */
   public Relationship getRelationship(String uuid) throws Exception {
     Session session = sessionManager.openSession();
 
@@ -133,6 +179,13 @@ public class JCRStorage {
     return relationship;
   }
 
+  /**
+   * Gets the relationship by identity.
+   * 
+   * @param identity the identity
+   * @return the relationship by identity
+   * @throws Exception the exception
+   */
   public List<Relationship> getRelationshipByIdentity(Identity identity) throws Exception {
     if (identity.getId() == null)
       return null;
@@ -140,6 +193,13 @@ public class JCRStorage {
     return getRelationshipByIdentityId(identity.getId());
   }
 
+  /**
+   * Gets the relationship by identity id.
+   * 
+   * @param identityId the identity id
+   * @return the relationship by identity id
+   * @throws Exception the exception
+   */
   public List<Relationship> getRelationshipByIdentityId(String identityId) throws Exception {
     Session session = sessionManager.openSession();
     List<Relationship> results = new ArrayList<Relationship>();
@@ -169,6 +229,13 @@ public class JCRStorage {
     return results;
   }
 
+  /**
+   * Gets the relationship identities by identity.
+   * 
+   * @param identity the identity
+   * @return the relationship identities by identity
+   * @throws Exception the exception
+   */
   public List<Identity> getRelationshipIdentitiesByIdentity(Identity identity) throws Exception {
     Session session = sessionManager.openSession();
     List<Identity> results = new ArrayList<Identity>();
@@ -216,17 +283,24 @@ public class JCRStorage {
     return results;
   }
 
+  /**
+   * Gets the relationship service home.
+   * 
+   * @param session the session
+   * @return the relationship service home
+   * @throws Exception the exception
+   */
   private Node getRelationshipServiceHome(Session session) throws Exception {
     String path = dataLocation.getSocialRelationshipHome();
     return session.getRootNode().getNode(path);
   }
   
   /**
-   * Load all the properties and add them to the relationship
-   *
-   * @param relationship
-   * @param relationshipNode
-   * @throws Exception
+   * Load all the properties and add them to the relationship.
+   * 
+   * @param relationship the relationship
+   * @param relationshipNode the relationship node
+   * @throws Exception the exception
    */
   private void loadProperties(Relationship relationship, Node relationshipNode) throws Exception {
     NodeIterator nodes = relationshipNode.getNodes(PROPERTY_NODETYPE);
@@ -254,6 +328,14 @@ public class JCRStorage {
     relationship.setProperties(props);
   }
 
+  /**
+   * Update properties.
+   * 
+   * @param relationship the relationship
+   * @param relationshipNode the relationship node
+   * @param session the session
+   * @throws Exception the exception
+   */
   private void updateProperties(Relationship relationship, Node relationshipNode, Session session) throws Exception {
     List<org.exoplatform.social.core.relationship.Property> properties = relationship.getProperties();
 

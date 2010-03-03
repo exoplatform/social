@@ -16,22 +16,38 @@
  */
 package org.exoplatform.social.core.identity;
 
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.container.xml.ValuesParam;
-import org.exoplatform.container.xml.Parameter;
-import org.exoplatform.container.xml.ValueParam;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValuesParam;
 
-import javax.jcr.RepositoryException;
-import java.util.*;
 
-
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ProfileConfig.
+ */
 public class ProfileConfig {
+  
+  /** The force multi value. */
   private List forceMultiValue = new ArrayList<String>();
+  
+  /** The node types. */
   private Map<String, String> nodeTypes = new HashMap<String, String>();
+  
+  /** The storage. */
   private JCRStorage storage = null;
 
+  /**
+   * Instantiates a new profile config.
+   * 
+   * @param params the params
+   */
   public ProfileConfig(InitParams params) {
     Iterator it = params.getValuesParamIterator();
     while(it.hasNext()) {
@@ -47,30 +63,69 @@ public class ProfileConfig {
     }
   }
 
+  /**
+   * Gets the force multi value.
+   * 
+   * @return the force multi value
+   */
   public List getForceMultiValue() {
     return forceMultiValue;
   }
 
+  /**
+   * Sets the force multi value.
+   * 
+   * @param forceMultiValue the new force multi value
+   */
   public void setForceMultiValue(List forceMultiValue) {
     this.forceMultiValue = forceMultiValue;
   }
 
+  /**
+   * Checks if is forced multi value.
+   * 
+   * @param fieldName the field name
+   * @return true, if is forced multi value
+   */
   public boolean isForcedMultiValue(String fieldName) {
     return this.forceMultiValue.contains(fieldName);
   }
 
+  /**
+   * Gets the node types.
+   * 
+   * @return the node types
+   */
   public Map<String, String> getNodeTypes() {
     return nodeTypes;
   }
 
+  /**
+   * Gets the node type.
+   * 
+   * @param fieldName the field name
+   * @return the node type
+   */
   public String getNodeType(String fieldName) {
     return nodeTypes.get(fieldName);
   }
 
+  /**
+   * Sets the node types.
+   * 
+   * @param nodeTypes the node types
+   */
   public void setNodeTypes(Map<String, String> nodeTypes) {
     this.nodeTypes = nodeTypes;
   }
 
+  /**
+   * Gets the type.
+   * 
+   * @param fieldName the field name
+   * @param propertyName the property name
+   * @return the type
+   */
   public String getType(String fieldName, String propertyName) {
     if (this.storage == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();

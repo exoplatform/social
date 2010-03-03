@@ -16,47 +16,93 @@
  */
 package org.exoplatform.social.core.activitystream.model;
 
+
+// TODO: Auto-generated Javadoc
 /**
- * Created by IntelliJ IDEA.
- * User: jeremi
- * Date: May 23, 2008
- * Time: 11:55:38 AM
- * To change this template use File | Settings | File Templates.
+ * The Class Stream.
  */
 public class Stream {
+  
+  /** The favicon url. */
   private String faviconUrl;
+  
+  /** The source url. */
   private String sourceUrl;
+  
+  /** The title. */
   private String title;
+  
+  /** The url. */
   private String url;
 
+  /**
+   * Gets the favicon url.
+   * 
+   * @return the favicon url
+   */
   public String getFaviconUrl() {
     return faviconUrl;
   }
 
+  /**
+   * Sets the favicon url.
+   * 
+   * @param faviconUrl the new favicon url
+   */
   public void setFaviconUrl(String faviconUrl) {
     this.faviconUrl = faviconUrl;
   }
 
+  /**
+   * Gets the source url.
+   * 
+   * @return the source url
+   */
   public String getSourceUrl() {
     return sourceUrl;
   }
 
+  /**
+   * Sets the source url.
+   * 
+   * @param sourceUrl the new source url
+   */
   public void setSourceUrl(String sourceUrl) {
     this.sourceUrl = sourceUrl;
   }
 
+  /**
+   * Gets the title.
+   * 
+   * @return the title
+   */
   public String getTitle() {
     return title;
   }
 
+  /**
+   * Sets the title.
+   * 
+   * @param title the new title
+   */
   public void setTitle(String title) {
     this.title = title;
   }
 
+  /**
+   * Gets the url.
+   * 
+   * @return the url
+   */
   public String getUrl() {
     return url;
   }
 
+  /**
+   * Sets the url.
+   * 
+   * @param url the new url
+   */
   public void setUrl(String url) {
     this.url = url;
   }

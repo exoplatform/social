@@ -26,11 +26,25 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class IdentityManager.
+ */
 public class IdentityManager {
 
+  /** The identity providers. */
   private Map<String, IdentityProvider> identityProviders = new HashMap<String, IdentityProvider>();
+  
+  /** The storage. */
   private JCRStorage storage;
 
+  /**
+   * Instantiates a new identity manager.
+   * 
+   * @param dataLocation the data location
+   * @param ip the indentity provider such as organization service from portal
+   * @throws Exception the exception
+   */
   public IdentityManager(SocialDataLocation dataLocation, IdentityProvider ip) throws Exception {
     this.storage = new JCRStorage(dataLocation);
 
@@ -39,13 +53,24 @@ public class IdentityManager {
   }
 
 
+  /**
+   * Gets the identity by id.
+   * 
+   * @param id the id
+   * @return the identity by id
+   * @throws Exception the exception
+   */
   public Identity getIdentityById(String id) throws Exception {
     return getIdentityById(id, true);
   }
 
   /**
-   * @param Id the id of the identity
+   * Gets the identity by id also load his profile
+   * 
+   * @param id the id
+   * @param loadProfile the load profile true if load and false if doesn't
    * @return null if nothing is found, or the Identity object
+   * @throws Exception the exception
    */
   public Identity getIdentityById(String id, boolean loadProfile) throws Exception {
     Identity identity = storage.getIdentity(id);
@@ -59,28 +84,71 @@ public class IdentityManager {
   }
 
 
+  /**
+   * Adds the identity provider.
+   * 
+   * @param idProvider the id provider
+   */
   public void addIdentityProvider(IdentityProvider idProvider) {
     identityProviders.put(idProvider.getName(), idProvider);
   }
 
 
 
+  /**
+   * Gets the identity by remote id.
+   * 
+   * @param providerId the provider id
+   * @param remoteId the remote id
+   * @return the identity
+   * @throws Exception the exception
+   */
   public Identity getIdentityByRemoteId(String providerId, String remoteId) throws Exception {
     return getIdentityByRemoteId(providerId, remoteId, true);  
   }
   
+  /**
+   * Gets the identities by profile filter.
+   * 
+   * @param providerId the provider id
+   * @param profileFilter the profile filter
+   * @return the identities by profile filter
+   * @throws Exception the exception
+   */
   public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFiler profileFilter) throws Exception {
     return storage.getIdentitiesByProfileFilter(providerId, profileFilter);
   }
   
+  /**
+   * Gets the identities by profile filter.
+   * 
+   * @param profileFilter the profile filter
+   * @return the identities by profile filter
+   * @throws Exception the exception
+   */
   public List<Identity> getIdentitiesByProfileFilter(ProfileFiler profileFilter) throws Exception {
     return getIdentitiesByProfileFilter(null, profileFilter);  
   }
 
+  /**
+   * Gets the identities filter by alpha bet.
+   * 
+   * @param providerId the provider id
+   * @param profileFilter the profile filter
+   * @return the identities filter by alpha bet
+   * @throws Exception the exception
+   */
   public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFiler profileFilter) throws Exception {
     return storage.getIdentitiesFilterByAlphaBet(providerId, profileFilter);
   }
   
+  /**
+   * Gets the identities filter by alpha bet.
+   * 
+   * @param profileFilter the profile filter
+   * @return the identities filter by alpha bet
+   * @throws Exception the exception
+   */
   public List<Identity> getIdentitiesFilterByAlphaBet(ProfileFiler profileFilter) throws Exception {
     return getIdentitiesFilterByAlphaBet(null, profileFilter);  
   }
@@ -90,11 +158,13 @@ public class IdentityManager {
    * a special type.
    * For example if the type is Linked'In, the identifier will be the URL of the profile
    * or if it's a CS contact manager contact, it will be the UID of the contact
-   *
+   * 
    * @param providerId refering to the name of the Identity provider
    * @param remoteId   the identifier that identify the identity in the specific identity provider
+   * @param loadProfile the load profile
    * @return null if nothing is found, or the Identity object
    * TODO improve the performance by specifying what needs to be loaded
+   * @throws Exception the exception
    */
   public Identity getIdentityByRemoteId(String providerId, String remoteId, boolean loadProfile) throws Exception {
     //System.out.println("getting the identity for " + providerId + " and remoteid:" + remoteId);
@@ -112,9 +182,12 @@ public class IdentityManager {
   }
 
     /**
-     * create a new identity object and assign him a uniq identity ID
-     * @param providerId
-     * @param remoteId
+     * create a new identity object and assign him a uniq identity ID.
+     * 
+     * @param providerId the provider id
+     * @param remoteId the remote id
+     * @return the new identity
+     * @throws Exception the exception
      * @return
      */
   public Identity getNewIdentity(String providerId, String remoteId) throws Exception {
@@ -126,20 +199,47 @@ public class IdentityManager {
     return identity;
   }
 
+  /**
+   * Save identity.
+   * 
+   * @param identity the identity
+   * @throws Exception the exception
+   */
   public void saveIdentity(Identity identity) throws Exception {
     storage.saveIdentity(identity);
     identityProviders.get(identity.getProviderId()).onSaveIdentity(identity);
   }
 
+  /**
+   * Save profile.
+   * 
+   * @param p the profile based on some identity.
+   * @throws Exception the exception
+   */
   public void saveProfile(Profile p) throws Exception {
     IdentityProvider prov = identityProviders.get(p.getIdentity().getProviderId());
     prov.saveProfile(p);
   }
 
+  /**
+   * Gets the identities.
+   * 
+   * @param providerId the provider id
+   * @return the identities
+   * @throws Exception the exception
+   */
   public List<Identity> getIdentities(String providerId) throws Exception {
     return getIdentities(providerId, true);
   }
 
+  /**
+   * Gets the identities.
+   * 
+   * @param providerId the provider id
+   * @param loadProfile the load profile
+   * @return the identities
+   * @throws Exception the exception
+   */
   public List<Identity> getIdentities(String providerId, boolean loadProfile) throws Exception {
     IdentityProvider ip = identityProviders.get(providerId);
     List<String> userids = ip.getAllUserId();
@@ -151,6 +251,11 @@ public class IdentityManager {
     return ids;
   }
 
+  /**
+   * Gets the storage.
+   * 
+   * @return the storage
+   */
   protected JCRStorage getStorage() {
     return this.storage;
   }

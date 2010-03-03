@@ -28,6 +28,7 @@ import javax.jcr.Session;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 
+// TODO: Auto-generated Javadoc
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -40,13 +41,31 @@ import org.exoplatform.services.jcr.RepositoryService;
  * This class using for attachment profile of identity, such as image.
  */
 public class ProfileAttachment {
+  
+  /** The id. */
   private String id ;
+  
+  /** The file name. */
   private String fileName ;
+  
+  /** The mime type. */
   private String mimeType ;
+  
+  /** The workspace. */
   private String workspace ;
+  
+  /** The image bytes. */
   private byte[] imageBytes ;
+  
+  /** The last modified. */
   private long lastModified;
   
+  /**
+   * Gets the data path.
+   * 
+   * @return the data path
+   * @throws Exception the exception
+   */
   public String getDataPath() throws Exception {
     Node attachmentData ;
     try{
@@ -57,25 +76,82 @@ public class ProfileAttachment {
     }
     return attachmentData.getPath() ;
   }
+  
+  /**
+   * Gets the id.
+   * 
+   * @return the id
+   */
   public String getId() { return id ; }
+  
+  /**
+   * Sets the id.
+   * 
+   * @param s the new id
+   */
   public void   setId(String s) { id = s ; }
   
+  /**
+   * Gets the workspace.
+   * 
+   * @return the workspace
+   */
   public String getWorkspace() { return workspace ; }
+  
+  /**
+   * Sets the workspace.
+   * 
+   * @param ws the new workspace
+   */
   public void setWorkspace(String ws) { workspace = ws ; }
   
+  /**
+   * Gets the file name.
+   * 
+   * @return the file name
+   */
   public String getFileName()  { return fileName ; }
+  
+  /**
+   * Sets the file name.
+   * 
+   * @param s the new file name
+   */
   public void   setFileName(String s) { fileName = s ; }
   
+  /**
+   * Gets the mime type.
+   * 
+   * @return the mime type
+   */
   public String getMimeType() { return mimeType ; }
+  
+  /**
+   * Sets the mime type.
+   * 
+   * @param s the new mime type
+   */
   public void setMimeType(String s) { mimeType = s ;}
   
+  /**
+   * Gets the last modified.
+   * 
+   * @return the last modified
+   */
   public long getLastModified() { return lastModified;}
+  
+  /**
+   * Sets the last modified.
+   * 
+   * @param lastModified the new last modified
+   */
   public void setLastModified(long lastModified) { this.lastModified = lastModified;}
   
 /**
-   * get images size in MB/ KB/ Bytes
-   * @return image size string
-   */
+ * get images size in MB/ KB/ Bytes.
+ * 
+ * @return image size string
+ */
   public String getSize() {
   int KB_SIZE = 1024;
   int MB_SIZE = 1024 * KB_SIZE;
@@ -93,13 +169,21 @@ public class ProfileAttachment {
   }
   
   /**
-   * gets imageBytes
+   * gets imageBytes.
+   * 
+   * @return the image bytes
    * @return
    */
   public byte[] getImageBytes() {
     return imageBytes;
   }
   
+  /**
+   * Sets the input stream.
+   * 
+   * @param input the new input stream
+   * @throws Exception the exception
+   */
   public void setInputStream(InputStream input) throws Exception {
     if (input != null) {
       imageBytes = new byte[input.available()] ; 
@@ -107,6 +191,14 @@ public class ProfileAttachment {
     }
     else imageBytes = null ;
   }
+  
+  /**
+   * Gets the input stream.
+   * 
+   * @param session the session
+   * @return the input stream
+   * @throws Exception the exception
+   */
   public InputStream getInputStream(Session session) throws Exception { 
     if(imageBytes != null) return new ByteArrayInputStream(imageBytes) ;  
     Node attachment ;
@@ -122,6 +214,12 @@ public class ProfileAttachment {
     return inputStream;
   }
   
+  /**
+   * Gets the sesison.
+   * 
+   * @return the sesison
+   * @throws Exception the exception
+   */
   private Session getSesison()throws Exception {
     RepositoryService repoService = (RepositoryService)PortalContainer
       .getInstance().getComponentInstanceOfType(RepositoryService.class) ;

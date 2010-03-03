@@ -26,21 +26,42 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.storage.JCRStorage;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RelationshipManager.
+ */
 public class RelationshipManager {
+  
+  /** The storage. */
   private JCRStorage storage;
 
+  /**
+   * Instantiates a new relationship manager.
+   * 
+   * @param dataLocation the data location
+   * @param im the im
+   * @throws Exception the exception
+   */
   public RelationshipManager(SocialDataLocation dataLocation, IdentityManager im) throws Exception {
     this.storage = new JCRStorage(dataLocation, im);
   }
 
+  /**
+   * Gets the by id.
+   * 
+   * @param id the id
+   * @return the by id
+   * @throws Exception the exception
+   */
   public Relationship getById(String id) throws Exception {
     return this.storage.getRelationship(id);
   }
 
   /**
-   * mark a relationship as confirmed
+   * mark a relationship as confirmed.
    * 
-   * @param relationship
+   * @param relationship the relationship
+   * @throws Exception the exception
    */
   public void confirm(Relationship relationship) throws Exception {
     relationship.setStatus(Relationship.Type.CONFIRM);
@@ -52,18 +73,20 @@ public class RelationshipManager {
   }
 
   /**
-   * remove a relationship
+   * remove a relationship.
    * 
-   * @param relationship
+   * @param relationship the relationship
+   * @throws Exception the exception
    */
   public void remove(Relationship relationship) throws Exception {
     storage.removeRelationship(relationship);
   }
 
   /**
-   * mark a relationship as ignored
+   * mark a relationship as ignored.
    * 
-   * @param relationship
+   * @param relationship the relationship
+   * @throws Exception the exception
    */
   public void ignore(Relationship relationship) throws Exception {
     relationship.setStatus(Relationship.Type.IGNORE);
@@ -74,9 +97,11 @@ public class RelationshipManager {
   }
 
   /**
-   * return all the public relationship
+   * return all the public relationship.
    * 
-   * @param identity
+   * @param identity the identity
+   * @return the public relation
+   * @throws Exception the exception
    * @return
    */
   public List<Identity> getPublicRelation(Identity identity) throws Exception {
@@ -94,9 +119,11 @@ public class RelationshipManager {
   }
   
   /**
-   * return all the pending relationship: sent and received
+   * return all the pending relationship: sent and received.
    * 
-   * @param identity
+   * @param identity the identity
+   * @return the pending
+   * @throws Exception the exception
    * @return
    */
   public List<Relationship> getPending(Identity identity) throws Exception {
@@ -116,10 +143,12 @@ public class RelationshipManager {
   /**
    * if toConfirm is true, it return list of pending relationship received not
    * confirmed if toConfirm is false, it return list of relationship sent not
-   * confirmed yet
+   * confirmed yet.
    * 
-   * @param identity
-   * @param toConfirm
+   * @param identity the identity
+   * @param toConfirm the to confirm
+   * @return the pending
+   * @throws Exception the exception
    * @return
    */
   public List<Relationship> getPending(Identity identity, boolean toConfirm) throws Exception {
@@ -160,14 +189,15 @@ public class RelationshipManager {
 
   /**
    * Get pending relations in 2 case:
-   *  - if toConfirm is true, it return list of pending relationship received not confirmed 
-   *  - if toConfirm is false, it return list of relationship sent not confirmed yet
-   *  
-   * @param currIdentity
-   * @param identities
-   * @param toConfirm
+   * - if toConfirm is true, it return list of pending relationship received not confirmed
+   * - if toConfirm is false, it return list of relationship sent not confirmed yet.
+   * 
+   * @param currIdentity the curr identity
+   * @param identities the identities
+   * @param toConfirm the to confirm
+   * @return the pending
+   * @throws Exception the exception
    * @return
-   * @throws Exception
    */
   public List<Relationship> getPending(Identity currIdentity, List<Identity> identities, boolean toConfirm) throws Exception {
     List<Relationship> pendingRels = getPending(currIdentity, true);
@@ -201,10 +231,11 @@ public class RelationshipManager {
   /**
    * Get contacts that match the search result.
    * 
-   * @param currIdentity
-   * @param identities
+   * @param currIdentity the curr identity
+   * @param identities the identities
+   * @return the contacts
+   * @throws Exception the exception
    * @return
-   * @throws Exception
    */
   public List<Relationship> getContacts(Identity currIdentity, List<Identity> identities) throws Exception {
     List<Relationship> contacts = getContacts(currIdentity);
@@ -223,6 +254,13 @@ public class RelationshipManager {
     return relations;
   }
   
+  /**
+   * Gets the contacts.
+   * 
+   * @param identity the identity
+   * @return the contacts
+   * @throws Exception the exception
+   */
   public List<Relationship> getContacts(Identity identity) throws Exception {
     List<Relationship> rels = get(identity);
     List<Relationship> contacts = new ArrayList<Relationship>();
@@ -235,22 +273,24 @@ public class RelationshipManager {
   }
 
   /**
-   * return all the relationship associated with a given identity
+   * return all the relationship associated with a given identity.
    * 
-   * @param id
+   * @param id the id
+   * @return the list
+   * @throws Exception the exception
    * @return
-   * @throws Exception
    */
   public List<Relationship> get(Identity id) throws Exception {
     return this.storage.getRelationshipByIdentity(id);
   }
 
   /**
-   * return all the relationship associated with a given identityId
+   * return all the relationship associated with a given identityId.
    * 
-   * @param id
+   * @param id the id
+   * @return the by identity id
+   * @throws Exception the exception
    * @return
-   * @throws Exception
    */
   public List<Relationship> getByIdentityId(String id) throws Exception {
     return this.storage.getRelationshipByIdentityId(id);
@@ -258,20 +298,34 @@ public class RelationshipManager {
 
   /**
    * return all the identity associated with a given identity TODO check if the
-   * relation has been validated
+   * relation has been validated.
    * 
-   * @param id
+   * @param id the id
+   * @return the identities
+   * @throws Exception the exception
    * @return
-   * @throws Exception
    */
   public List<Identity> getIdentities(Identity id) throws Exception {
     return this.storage.getRelationshipIdentitiesByIdentity(id);
   }
 
+  /**
+   * Creates the.
+   * 
+   * @param id1 the id1
+   * @param id2 the id2
+   * @return the relationship
+   */
   public Relationship create(Identity id1, Identity id2) {
     return new Relationship(id1, id2);
   }
 
+  /**
+   * Save.
+   * 
+   * @param rel the rel
+   * @throws Exception the exception
+   */
   public void save(Relationship rel) throws Exception {
     if (rel.getIdentity1().getId().equals(rel.getIdentity2().getId()))
       throw new Exception("the two identity are the same");
@@ -290,10 +344,25 @@ public class RelationshipManager {
     this.storage.saveRelationship(rel);
   }
 
+  /**
+   * Find route.
+   * 
+   * @param id1 the id1
+   * @param id2 the id2
+   * @return the list
+   */
   public List findRoute(Identity id1, Identity id2) {
     return null;
   }
 
+  /**
+   * Gets the relationship.
+   * 
+   * @param id1 the id1
+   * @param id2 the id2
+   * @return the relationship
+   * @throws Exception the exception
+   */
   public Relationship getRelationship(Identity id1, Identity id2) throws Exception {
     List<Relationship> rels = get(id1);
     String sId2 = id2.getId();
@@ -307,6 +376,13 @@ public class RelationshipManager {
 
   // TODO: dang.tung - get relation ship status of one identity in one relation
   // ship.
+  /**
+   * Gets the relationship status.
+   * 
+   * @param rel the rel
+   * @param id the id
+   * @return the relationship status
+   */
   public Relationship.Type getRelationshipStatus(Relationship rel, Identity id) {
     if (rel == null)
       return Relationship.Type.ALIEN;

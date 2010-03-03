@@ -26,28 +26,29 @@ import java.util.List;
  * it can be eXo CS contact manager or a CRM tool for example.
  */
 public abstract class IdentityProvider {
-    protected IdentityManager identityManager;
-
-    public abstract String getName();
-
-    /**
-     * The identifier can be the URL of the profile
-     * or if it's a CS contact manager contact, it will be the UID of the contact
-     *
-     * @param identity
-     * @return null if nothing is found, or the Identity object
-     */
-    public abstract Identity getIdentityByRemoteId(Identity identity) throws Exception;
-
-
-    /**
-     * this method is called after the IdentityManager has saved the
-     * identity object.
-     * @param identity
-     */
-    public void onSaveIdentity(Identity identity) {
-        return;
-    }
+	protected IdentityManager identityManager;
+	
+	public abstract String getName();
+	
+	/**
+	 * The identifier can be the URL of the profile
+	 * or if it's a CS contact manager contact, it will be the UID of the contact
+	 *
+	 * @param identity
+	 * @return null if nothing is found, or the Identity object
+	 */
+	public abstract Identity getIdentityByRemoteId(Identity identity) throws Exception;
+	
+	
+	/**
+	 * this method is called after the IdentityManager has saved the
+	 * identity object.
+	 * 
+	 * @param identity the identity
+	 */
+	public void onSaveIdentity(Identity identity) {
+	    return;
+	}
 
   public abstract void saveProfile(Profile p) throws Exception;
 

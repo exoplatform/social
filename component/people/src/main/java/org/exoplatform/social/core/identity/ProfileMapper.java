@@ -23,17 +23,23 @@ import org.exoplatform.container.ExoContainerContext;
 import java.util.*;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * there should be a configuration file to define the
  * mapping.
  * it might need to create objects other than string
  */
 public class ProfileMapper {
+  
+  /** The config. */
   private ProfileConfig config;
 
   /**
-   * @param infos
-   * @param profile
+   * Copy.
+   * 
+   * @param infos the infos
+   * @param profile the profile
+   * @throws Exception the exception
    */
   public void copy(Map infos, Profile profile) throws Exception {
     Iterator it = infos.keySet().iterator();
@@ -135,6 +141,11 @@ public class ProfileMapper {
 
   }
 
+    /**
+     * Gets the config.
+     * 
+     * @return the config
+     */
     private ProfileConfig getConfig() {
     if (config == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();

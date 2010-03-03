@@ -62,7 +62,14 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   private UserPortalConfigService configService = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
   private static Map<ApplicationCategory, List<Application>> appStoreCache = null;
   private static List<Application> appCache = new ArrayList<Application>();
+  
   /**
+   * Inits the app.
+   * 
+   * @param space the space
+   * @param homeNodeApp the home node app
+   * @param apps the apps
+   * @throws SpaceException the space exception
    * {@inheritDoc}
    */
   public void initApp(Space space, String homeNodeApp, List<String> apps) throws SpaceException {
