@@ -26,7 +26,14 @@ import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.portal.UIPortal;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -60,6 +67,7 @@ public class UISpaceApplication extends UIForm {
   private Space space;
   private UIPageIterator iterator;
   private final String iteratorID = "UIIteratorSpaceApplication";
+  private UIPortal uiPortal = null;
   
   /**
    * constructor
@@ -69,6 +77,7 @@ public class UISpaceApplication extends UIForm {
     addChild(UIPopupContainer.class, null, "UIPopupAddApp");
     iterator = createUIComponent(UIPageIterator.class, null, iteratorID);
     addChild(iterator);
+    uiPortal = Util.getUIPortal();
   }
   /**
    * gets application list
@@ -146,6 +155,47 @@ public class UISpaceApplication extends UIForm {
    */
   public boolean isRemovable(String appId) {
     return SpaceUtils.isRemovableApp(space, appId);
+  }
+  
+  /**
+   * Get application name of space application when the display name of application is changed.<br>
+   * - If the label of application is changed then return new label.<br>
+   * - Else return display name of application.<br> 
+   * 
+   * @param application
+   * 
+   * @return application name depend on the display name is changed or not.
+   * 
+   * @throws SpaceException
+   */
+  public String getAppName(Application application) throws SpaceException {
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    Space space = spaceService.getSpaceByUrl(spaceUrl);
+    
+    UserPortalConfigService dataService = getApplicationComponent(UserPortalConfigService.class);
+    PageNavigation pageNav = null;
+    try {
+      pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    
+    PageNode homeNode = pageNav.getNode(spaceUrl);
+    List<PageNode> nodes = homeNode.getChildren();
+    
+    String installedApp = space.getApp();
+    String[] apps = installedApp.split(",");
+    for (String app : apps) {
+      String[] appParts = app.split(":");
+      if (appParts[0].equals(application.getApplicationName()) && (appParts.length == 3)) {
+        for (PageNode node : nodes) {
+          if (node.getName().equals(appParts[1])) return node.getResolvedLabel();
+        }
+      }
+    }
+    
+    return application.getDisplayName();
   }
   
   /**

@@ -31,14 +31,14 @@
 		<%    
 		String appId = app.getCategoryName() + "/" + app.getApplicationName() 
 		def isRemovable = uicomponent.isRemovable(appId);
-		
+		def appName = uicomponent.getAppName(app);
 		%>
 		
 		<div class="ContentSpace">
 			<div class="ApplicationIcon"><span></span></div>
 			<div class="CommunityContainer">
 				<div class="CommunityMane Line">
-					<div style="float: left;" class="CommunityName"><%= app.getDisplayName() %></div>
+					<div style="float: left;" class="CommunityName"><%= appName %></div>
 					<% if (isRemovable) { %>
 					<div class="SpaceAction">
           <div class="LeftButton">

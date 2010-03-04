@@ -943,13 +943,16 @@ public class SpaceServiceImpl implements SpaceService {
    */
   private void setApp(Space space, String appId, String status) throws SpaceException {
     String apps = space.getApp();
-    if(apps == null) apps = appId + ":" + status;
+
+    // Application is composed in form: id : displayName : status
+    String app = appId + ":" + appId + ":" + status; 
+    if(apps == null) apps = app;
     else {
-      if(status.equals(Space.INSTALL_STATUS)) apps = apps + "," + appId + ":" + status;
+      if(status.equals(Space.INSTALL_STATUS)) apps = apps + "," + app;
       else {
         String oldStatus = apps.substring(apps.indexOf(appId));
-        if(oldStatus.indexOf(",") != -1) oldStatus = oldStatus.substring(0, oldStatus.indexOf(",")-1);
-        apps = apps.replaceFirst(oldStatus, appId + ":" + status);
+        if(oldStatus.indexOf(",") != -1) oldStatus = oldStatus.substring(0, oldStatus.indexOf(",") - 1);
+        apps = apps.replaceFirst(oldStatus, app);
       }
     }
     space.setApp(apps);

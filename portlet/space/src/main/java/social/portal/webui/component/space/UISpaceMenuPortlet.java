@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
@@ -32,9 +33,14 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * {@link UISpaceMenuPortlet} used as a portlet displaying space menu. <br />
@@ -44,12 +50,24 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
  */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/portal/webui/space/UISpaceMenuPortlet.gtmpl"
+  template = "app:/groovy/portal/webui/space/UISpaceMenuPortlet.gtmpl",
+  events = { @EventConfig(name = "RenameSpaceAppName",
+                          listeners = UISpaceMenuPortlet.RenameSpaceAppNameActionListener.class)}
 )
 
 public class UISpaceMenuPortlet extends UIPortletApplication {
+  /** NEW SPACE APPLICATION NAME. */
+  private static final String NEW_SPACE_APPLICATION_NAME = "newSpaceAppName";
+  
+  /** INVALID APPLICATION NAME MESSAGE. */
+  private static final String INVALID_APPLICATION_NAME_MSG = "UISpaceMenuPortlet.msg.invalidAppName";
+  
+  /** Stores SpaceService object. */
   private SpaceService spaceService = null;
+  
+  /** Stores UIPortal object. */
   private UIPortal uiPortal = null;
+  
   /**
    * constructor
    * @throws Exception
@@ -74,6 +92,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     PageNode homeNode = pageNav.getNode(spaceUrl);
     String userId = Util.getPortalRequestContext().getRemoteUser();       
     List<PageNode> list = homeNode.getChildren();
+
     PageNode pageNode = null;
     StringBuffer sb = new StringBuffer("SpaceSettingPortlet");
     String spaceSettingAppName = sb.insert(0, SpaceUtils.getSpaceUrl()).toString();
@@ -88,6 +107,82 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     Collections.sort(list, new ApplicationComparator());
     if(spaceSrc.hasEditPermission(space, userId) && pageNode != null) list.add(pageNode);
     return list;
+  }
+  
+  /**
+   * Rename space application name.<br>
+   * - Get selected node and selected page navigation.<br>
+   * - Change selected node information.<br>
+   * - Update new information for selected page navigation.<br> 
+   *
+   */
+  static public class RenameSpaceAppNameActionListener extends EventListener<UISpaceMenuPortlet> {
+    public void execute(Event<UISpaceMenuPortlet> event) throws Exception
+    {
+      UISpaceMenuPortlet spaceMenu = event.getSource();
+      WebuiRequestContext context = event.getRequestContext();
+      String newSpaceAppName = context.getRequestParameter(NEW_SPACE_APPLICATION_NAME);
+      UIPortal uiPortal = spaceMenu.getUIPortal();
+      UserPortalConfigService dataService = spaceMenu.getApplicationComponent(UserPortalConfigService.class);
+      SpaceService spaceService = spaceMenu.getApplicationComponent(SpaceService.class);
+      String spaceUrl = SpaceUtils.getSpaceUrl();
+      Space space = spaceService.getSpaceByUrl(spaceUrl);
+      
+      PageNode selectedNode = uiPortal.getSelectedNode();
+      PageNavigation selectedNavigation = uiPortal.getSelectedNavigation();
+      
+      if (!spaceMenu.isValidAppName(newSpaceAppName))
+      {
+        context.getUIApplication().addMessage(new ApplicationMessage(INVALID_APPLICATION_NAME_MSG, null, ApplicationMessage.ERROR));
+        return;
+      }
+      
+      selectedNode.setLabel(newSpaceAppName);
+      
+      String newNodeName = newSpaceAppName.replace(' ', '_');
+      
+      PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+      if (spaceMenu.isAppNameExisted(pageNav, newNodeName))
+      {
+         newNodeName = newNodeName + "_" + System.currentTimeMillis();
+      }
+      
+      String oldName = selectedNode.getName();
+      
+      selectedNode.setName(newNodeName);
+      
+      String oldUri = selectedNode.getUri();
+      String newUri = oldUri.substring(0, oldUri.lastIndexOf("/") + 1) + newNodeName;
+      
+      selectedNode.setUri(newUri);
+      
+      String installedApps = space.getApp();
+      
+      String[] apps = installedApps.split(",");
+      String[] appParts = null;
+      String editedApp = null;
+      String newInstalledApps =null;
+      
+      // Check and update new application name.
+      for (String app : apps) {
+        appParts = app.split(":");
+        if (appParts[1].equals(oldName)) {
+          editedApp = appParts[0] + ":" + newNodeName + ":" + appParts[2];
+          newInstalledApps = installedApps.replaceAll(app, editedApp);
+          space.setApp(newInstalledApps);
+          spaceService.saveSpace(space, false);
+          break;
+        }
+      }
+      
+      dataService.update(selectedNavigation);
+
+      if (newUri != null)
+      {
+         PortalRequestContext prContext = Util.getPortalRequestContext();
+         prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);
+      }
+    }
   }
   
   /**
@@ -130,6 +225,10 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     return null;
   }
 
+  private UIPortal getUIPortal() {
+    return uiPortal;
+  }
+  
   /**
    * application comparator
    * @author hoatle
@@ -168,5 +267,69 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       spaceService = getApplicationComponent(SpaceService.class);
     }
     return spaceService;
+  }
+  
+  /**
+   * Check the input name is existed or not.<br>
+   * 
+   * @param pageNavigation
+   * 
+   * @param nodeName
+   * 
+   * @return true if input name is existed. false if it not.
+   * @throws Exception 
+   */
+  private boolean isAppNameExisted(PageNavigation pageNav, String nodeName) throws Exception
+  {
+    PageNode homeNode = pageNav.getNode(SpaceUtils.getSpaceUrl());
+    List<PageNode> nodes = homeNode.getChildren();
+
+    // Check in case new name is duplicate with space name
+     for (PageNode node : pageNav.getNodes())
+     {
+        if (node.getName().equals(nodeName))
+        {
+           return true;
+        }
+     }
+     
+     //Check in case new name is existed
+     for (PageNode node : nodes)
+     {
+        if (node.getName().equals(nodeName))
+        {
+           return true;
+        }
+     }
+     return false;
+  }
+  
+  /**
+   * Check the input new space application name is valid or not.<br>
+   * 
+   * @param appName
+   * 
+   * @return true if input name is valid. false if not.
+   */
+  private boolean isValidAppName(String appName) {
+    if (appName == null || appName.length() < 3)
+    {
+       return false;
+    }
+    appName = appName.trim();
+    if (Character.isDigit(appName.charAt(0)) || appName.charAt(0) == '-')
+    {
+       return false;
+    }
+    for (int i = 0; i < appName.length(); i++)
+    {
+       char c = appName.charAt(i);
+       if (Character.isLetter(c) || Character.isDigit(c) || c == '_' || c == '-' || Character.isSpaceChar(c))
+       {
+          continue;
+       }
+       return false;
+    }
+    return true;
   }
 }

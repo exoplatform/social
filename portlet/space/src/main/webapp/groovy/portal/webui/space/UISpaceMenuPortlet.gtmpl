@@ -2,6 +2,9 @@
   import org.exoplatform.portal.config.model.PageNode
  	import org.exoplatform.portal.webui.util.Util
  	import org.exoplatform.social.space.SpaceUtils
+ 	import org.exoplatform.web.application.JavascriptManager
+ 	import org.exoplatform.portal.application.PortalRequestContext
+ 	
  	SpaceUtils.reloadNavigation()
 	def apps = uicomponent.getApps()       
 	def spaceUrl = SpaceUtils.getSpaceUrl()
@@ -38,6 +41,11 @@
  	
  	String spaceName = uicomponent.getSpaceName();
  	String spaceNameDisplay = getFitString(spaceName, 20)
+ 	
+ 	PortalRequestContext pcontext = Util.getPortalRequestContext();   
+ 	JavascriptManager jsManager = pcontext.getJavascriptManager();
+  jsManager.importJavascript("eXo.social.webui.UISpaceNameEdition",'/eXoResourcesSocial/javascript');
+  def idx=1;
 %>
 
 
@@ -62,7 +70,9 @@
 		  		def SpaceClass = "";
 		  		def nodeTitle = node.getResolvedLabel();
 		  		def nodeLabel = getFitString(nodeTitle, 15);
-					String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + node.getName();
+		  		def nodeName = node.getName();
+		  		idx++;
+					String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + nodeName;
 		%>
 		<%
 			if (node.getName().equals(spaceUserListName)) { %>
@@ -75,16 +85,27 @@
 			} else if (node.getName().equals(spaceSettingName)) { %>
 					<div class="SpaceSetting">
 					<% if(node.getName().equals(appSelected)) {	%>
-			  			<a class="SpaceSettingSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  			<a class="SpaceSettingSelect" href='$pageURI' title="$nodeTitle">
+			  			    <span>$nodeLabel</span>
+			  			</a>
 			  	<% } else { %>
-			  			<a class="SpaceSettingBG" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  			<a class="SpaceSettingBG" href='$pageURI' title="$nodeTitle">
+			  			    <span>$nodeLabel</span>
+			  			</a>
 			  	<% }
 			} else { %>
 					<div class="ApplicationAdd">
-				  <% if(node.getName().equals(appSelected)) { %>
-			  			<a class="ApplicationAddSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+					<%
+            String ondblclick = "eXo.social.webui.UISpaceNameEdition.showEditLabelInput(this," + idx + ",\"" + node.getResolvedLabel() + "\")"; 
+          %>
+				  <% if(nodeName.equals(appSelected)) { %>
+			  			<div class="ApplicationAddSelect" title="$nodeTitle">
+			  			    <span id='$nodeName' ondblclick='$ondblclick'>$nodeLabel</span>
+			  			</div>
 			  	<% } else { %>
-			  			<a class="ApplicationAddBG" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+			  			<a class="ApplicationAddBG" href="$pageURI" title="$nodeTitle">
+			  			    <span>$nodeLabel</span>
+			  			</a>
 			  	<% } %>
 					<%}%>
 			  	</div>

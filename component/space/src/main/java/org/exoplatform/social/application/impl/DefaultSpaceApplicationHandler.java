@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.container.ExoContainer;
@@ -40,7 +39,6 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.TransientApplicationState;
 import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.pom.spi.portlet.Portlet;
-import org.exoplatform.portal.webui.application.PortletState;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
@@ -229,20 +227,30 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * @throws SpaceException
    */
   private void removeApplicationClassic(Space space, String appId) throws SpaceException {
-    StringBuffer sb = new StringBuffer(space.getShortName());
-    String applicationId =  sb.append(appId).toString();
     try {
       String spaceNav = space.getGroupId();
       PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
       PageNode homeNode = nav.getNode(space.getShortName());
       List<PageNode> childNodes = homeNode.getChildren();
-      childNodes.remove(homeNode.getChild(applicationId));
+      String nodeName = null;
+      String[] apps = space.getApp().split(",");
+      for (String app : apps) {
+        String[] appParts = app.split(":");
+        if (appParts[0].equals(appId)) {
+          if (appParts.length > 3) {
+            nodeName = appParts[2];
+          } else {
+            nodeName = appParts[1];
+          }
+        }
+      }
+      childNodes.remove(homeNode.getChild(nodeName));
       homeNode.setChildren((ArrayList<PageNode>) childNodes);
       
       configService.update(nav);
       
       // remove page
-      Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + applicationId);
+      Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + appId);
       configService.remove(page);
       
     } catch (Exception e) {
@@ -326,7 +334,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       String newName = space.getUrl();
       if (isRoot != true) {
-        newName += pageName;
+        newName = pageName;
       }
       page = configService.renewPage(SPACE_TEMPLATE_PAGE_ID, newName.trim(), PortalConfig.GROUP_TYPE, space.getGroupId());
       pageName = page.getName();
@@ -374,6 +382,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     pageNode.setName(pageName);
     pageNode.setLabel(label);
     pageNode.setPageReference(page.getPageId());
+    pageNode.setModifiable(true);
     return pageNode;
   }
   

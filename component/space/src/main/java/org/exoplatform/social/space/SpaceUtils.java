@@ -782,7 +782,7 @@ public class SpaceUtils {
         if (app.contains(appId)) {
            appSplit = app.split(":");
            // Hard-code one application is removable if it is not set in setting
-           remove = (appSplit.length >= 3) ? appSplit[1] : "true";
+           remove = (appSplit.length > 3) ? appSplit[1] : "true";
            return Boolean.parseBoolean(remove);
         }
       }
