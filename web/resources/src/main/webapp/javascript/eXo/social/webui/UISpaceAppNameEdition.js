@@ -16,13 +16,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-function UISpaceNameEdition() {};
+function UISpaceAppNameEdition() {};
 
 /**
  * Rename space application label.
  */
-UISpaceNameEdition.prototype.renameAppLabel = function(e) {
-	
+UISpaceAppNameEdition.prototype.renameAppLabel = function(e) {
+		var backupElement = eXo.social.webui.UISpaceAppNameEdition.backupElement;
+		var isValidInput = true;
 		if(!e){
 			e = window.event;
 		}
@@ -32,13 +33,10 @@ UISpaceNameEdition.prototype.renameAppLabel = function(e) {
 		if(keyNum == 13){
 			var inputElement = eXo.core.Browser.getEventSource(e);
 			var newSpaceAppName = inputElement.value;
-			if(!newSpaceAppName || newSpaceAppName.length < 1){
-				return;
-			}
+						
 			var DOMUtil = eXo.core.DOMUtil;
 			var portletFrag = DOMUtil.findAncestorByClass(inputElement, "PORTLET-FRAGMENT");
 			var compId = portletFrag.parentNode.id;
-			var editedNodeName = inputElement.name;
 			
 			//Change the space application name label
 			var spanElement = document.createElement("span");
@@ -51,16 +49,15 @@ UISpaceNameEdition.prototype.renameAppLabel = function(e) {
 			href += "&portal:isSecure=false";
 			href += "&uicomponent=UISpaceMenuPortlet";
 			href += "&op=RenameSpaceAppName";
-			href += "&objectId=" + editedNodeName;
 			href += "&newSpaceAppName=" + encodeURIComponent(newSpaceAppName);
 			window.location = href;
 		}
 		//If user presses on the ESCAPE key reset the original space application name.
 		else if(keyNum == 27){
 			var inputElement = eXo.core.Browser.getEventSource(e);
-			if(eXo.social.webui.UISpaceNameEdition.backupElement) {
- 				inputElement.parentNode.replaceChild(eXo.social.webui.UISpaceNameEdition.backupElement, inputElement);
- 				eXo.social.webui.UISpaceNameEdition.backupElement = null;
+			if(eXo.social.webui.UISpaceAppNameEdition.backupElement) {
+ 				inputElement.parentNode.replaceChild(eXo.social.webui.UISpaceAppNameEdition.backupElement, inputElement);
+ 				eXo.social.webui.UISpaceAppNameEdition.backupElement = null;
 			}
 		}
 };
@@ -71,22 +68,22 @@ UISpaceNameEdition.prototype.renameAppLabel = function(e) {
  * @param nodeIndex 
  * @param currentContent
  */
-UISpaceNameEdition.prototype.showEditLabelInput = function(selectedElement, nodeIndex, currentContent){
-		eXo.social.webui.UISpaceNameEdition.backupElement = selectedElement;
+UISpaceAppNameEdition.prototype.showEditLabelInput = function(selectedElement, currentContent){
+		eXo.social.webui.UISpaceAppNameEdition.backupElement = selectedElement;
 		var prNode = selectedElement.parentNode;
 		var selectedElementId = selectedElement.id;
 		
 		var inputElement = document.createElement("input");
 		inputElement.type = "text";
-		inputElement.id = nodeIndex;
+		inputElement.id = selectedElementId;
 		inputElement.name = selectedElementId; // To store old value
 		inputElement.value = currentContent;
 		inputElement.style.border = "1px solid #b7b7b7";
 		inputElement.style.width = "95px";
-		inputElement.onkeypress = eXo.social.webui.UISpaceNameEdition.renameAppLabel;
+		inputElement.onkeypress = eXo.social.webui.UISpaceAppNameEdition.renameAppLabel;
 		inputElement.setAttribute('maxLength', 50);
 		inputElement.onblur = function() {
-			prNode.replaceChild(eXo.social.webui.UISpaceNameEdition.backupElement, inputElement);
+			prNode.replaceChild(eXo.social.webui.UISpaceAppNameEdition.backupElement, inputElement);
 		};
 		
 		prNode.replaceChild(inputElement, selectedElement);
@@ -95,4 +92,4 @@ UISpaceNameEdition.prototype.showEditLabelInput = function(selectedElement, node
 
 if(!eXo.social) eXo.social = {};
 if(!eXo.social.webui) eXo.social.webui = {};
-eXo.social.webui.UISpaceNameEdition = new UISpaceNameEdition();
+eXo.social.webui.UISpaceAppNameEdition = new UISpaceAppNameEdition();

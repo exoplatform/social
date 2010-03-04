@@ -10,8 +10,8 @@
 	def spaceUrl = SpaceUtils.getSpaceUrl()
  	String appSelected = uicomponent.getAppSelected()
  	def imageSource = uicomponent.getImageSource()
- 	def spaceUserListName = spaceUrl + "UserListPortlet";
- 	def spaceSettingName = spaceUrl + "SpaceSettingPortlet";
+ 	def spaceUserListName = "UserListPortlet";
+ 	def spaceSettingName = "SpaceSettingPortlet";
  	
  	public String getFitString(String nodeLabel, int maxLen) {
  	  def labelStr = ""; 
@@ -44,8 +44,7 @@
  	
  	PortalRequestContext pcontext = Util.getPortalRequestContext();   
  	JavascriptManager jsManager = pcontext.getJavascriptManager();
-  jsManager.importJavascript("eXo.social.webui.UISpaceNameEdition",'/eXoResourcesSocial/javascript');
-  def idx=1;
+  jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition",'/eXoResourcesSocial/javascript');
 %>
 
 
@@ -71,7 +70,6 @@
 		  		def nodeTitle = node.getResolvedLabel();
 		  		def nodeLabel = getFitString(nodeTitle, 15);
 		  		def nodeName = node.getName();
-		  		idx++;
 					String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + nodeName;
 		%>
 		<%
@@ -96,7 +94,7 @@
 			} else { %>
 					<div class="ApplicationAdd">
 					<%
-            String ondblclick = "eXo.social.webui.UISpaceNameEdition.showEditLabelInput(this," + idx + ",\"" + node.getResolvedLabel() + "\")"; 
+            String ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + node.getResolvedLabel() + "\")"; 
           %>
 				  <% if(nodeName.equals(appSelected)) { %>
 			  			<div class="ApplicationAddSelect" title="$nodeTitle">

@@ -37,6 +37,7 @@ import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -123,6 +124,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       WebuiRequestContext context = event.getRequestContext();
       String newSpaceAppName = context.getRequestParameter(NEW_SPACE_APPLICATION_NAME);
       UIPortal uiPortal = spaceMenu.getUIPortal();
+      PortalRequestContext prContext = Util.getPortalRequestContext();
       UserPortalConfigService dataService = spaceMenu.getApplicationComponent(UserPortalConfigService.class);
       SpaceService spaceService = spaceMenu.getApplicationComponent(SpaceService.class);
       String spaceUrl = SpaceUtils.getSpaceUrl();
@@ -131,9 +133,18 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       PageNode selectedNode = uiPortal.getSelectedNode();
       PageNavigation selectedNavigation = uiPortal.getSelectedNavigation();
       
+      String oldName = selectedNode.getName();
+      String oldUri = selectedNode.getUri();
+      
+      if (selectedNode.getResolvedLabel().equals(newSpaceAppName)) {
+        prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
+        return;
+      }
+      UIApplication uiApp = context.getUIApplication();
       if (!spaceMenu.isValidAppName(newSpaceAppName))
       {
-        context.getUIApplication().addMessage(new ApplicationMessage(INVALID_APPLICATION_NAME_MSG, null, ApplicationMessage.ERROR));
+        uiApp.addMessage(new ApplicationMessage(INVALID_APPLICATION_NAME_MSG, null, ApplicationMessage.ERROR));
+        prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
         return;
       }
       
@@ -147,11 +158,8 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
          newNodeName = newNodeName + "_" + System.currentTimeMillis();
       }
       
-      String oldName = selectedNode.getName();
-      
       selectedNode.setName(newNodeName);
       
-      String oldUri = selectedNode.getUri();
       String newUri = oldUri.substring(0, oldUri.lastIndexOf("/") + 1) + newNodeName;
       
       selectedNode.setUri(newUri);
@@ -179,7 +187,6 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
 
       if (newUri != null)
       {
-         PortalRequestContext prContext = Util.getPortalRequestContext();
          prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);
       }
     }
