@@ -32,7 +32,7 @@ public class GlobalId {
     if (!isValid(id)) {
       throw new IllegalArgumentException(id + " is not a valid GlobalId. " 
                                          + "According to Opensocial specification, it should be of the form: "
-                                         + " Global-Id   = Domain-Name \":\" Local-Id ");
+                                         + "Global-Id   = Domain-Name \":\" Local-Id ");
     }
     String[] globalId = id.split(SEPARATOR);
     domain = globalId[0];
@@ -52,7 +52,7 @@ public class GlobalId {
   }
   
   public String toString() {
-    return domain + SEPARATOR + "localId";
+    return domain + SEPARATOR + localId;
   }
 
 }
