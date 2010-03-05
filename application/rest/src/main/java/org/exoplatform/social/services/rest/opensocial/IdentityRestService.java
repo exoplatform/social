@@ -111,5 +111,9 @@ public class IdentityRestService implements ResourceContainer {
     public String getId() {
       return _id;
     }
+    
+    public String toString() {
+      return _id;
+    }
   }
 }

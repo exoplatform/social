@@ -36,6 +36,8 @@ import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.ApplicationType;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
 
@@ -54,6 +56,7 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  */
 @Path("social/apps")
 public class AppsRestService implements ResourceContainer {
+  
   private ApplicationRegistryService _applicationRegistryService;
   /**
    * constructor
@@ -70,7 +73,7 @@ public class AppsRestService implements ResourceContainer {
     ApplicationRegistryService applicationRegistryService = getApplicationRegistryService();
     //String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
     try {
-      List<ApplicationCategory> applicationCategoryList = applicationRegistryService.getApplicationCategories();
+      List<ApplicationCategory> applicationCategoryList = applicationRegistryService.getApplicationCategories("root");
       Iterator<ApplicationCategory> applicationCategoryItr = applicationCategoryList.iterator();
       ApplicationCategory applicationCategory;
       while (applicationCategoryItr.hasNext()) {
@@ -114,7 +117,7 @@ public class AppsRestService implements ResourceContainer {
    * Describes an Application entity from application registry service of portal.<br />
    * This class is needed as a model for converter of the rest service.
    */
-  public class App {
+  static public class App {
     private String _appId;
     private String _appName;
     /**

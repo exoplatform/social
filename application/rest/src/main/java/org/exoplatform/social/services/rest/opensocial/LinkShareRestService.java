@@ -52,6 +52,9 @@ public class LinkShareRestService implements ResourceContainer {
    * @return linkShare
    */
   private LinkShare getLinkShare(String link, String lang) throws Exception {
+    if (link == null || link.length() == 0) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
     LinkShare ls;
     try {
       if (lang != null) {
@@ -80,7 +83,7 @@ public class LinkShareRestService implements ResourceContainer {
                           @PathParam("format") String format,
                           LinkShareRequest linkShareRequest) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    if (!linkShareRequest.verify()) {
+    if (linkShareRequest == null || !linkShareRequest.verify()) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     LinkShare linkShare = null;

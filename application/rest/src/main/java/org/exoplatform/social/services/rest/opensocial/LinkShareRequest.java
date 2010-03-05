@@ -58,7 +58,7 @@ public class LinkShareRequest {
    * @return true or false
    */
   public boolean verify() {
-    if (_link != null) {
+    if (_link != null && _link.length() > 0) {
       return true;
     }
     return false;

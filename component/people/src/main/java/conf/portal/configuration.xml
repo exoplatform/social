@@ -17,7 +17,8 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<configuration>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
 
   <component>
     <key>org.exoplatform.social.core.identity.IdentityManager</key>
@@ -28,9 +29,7 @@
     <key>org.exoplatform.social.core.activitystream.ActivityManager</key>
     <type>org.exoplatform.social.core.activitystream.ActivityManager</type>
   </component>
-
-
-
+  
   <component>
     <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
     <type>org.exoplatform.social.core.identity.model.PropertiesDefinition</type>
