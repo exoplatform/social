@@ -70,6 +70,22 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
     identity = identityManager.getIdentityById(identity.getId());
     assertNotNull(identity);
     assertEquals("this id should still be the same", oldId, identity.getId());
+    
+  }
+  
+  public void testGetIdentityByIdWithGlobalId() throws Exception {
+    Identity demo = identityManager.getIdentityByRemoteId("organization", "demo");
+    identityManager.saveIdentity(demo);
+    String demoId = demo.getId();
+
+    Identity identity = identityManager.getIdentityById("organization:demo"); 
+    assertNotNull(identity);
+    String id = identity.getId();
+    assertNotNull(id);
+    assertEquals("ids should be identical", demoId, id);
+
+    identity = identityManager.getIdentityById(identity.getId());
+
   }
 
   public void testGetWrongId() throws Exception {

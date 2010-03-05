@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.space.impl.SocialDataLocation;
@@ -73,7 +74,22 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public Identity getIdentityById(String id, boolean loadProfile) throws Exception {
-    Identity identity = storage.getIdentity(id);
+    Identity identity = null;
+    
+    // attempts to match a global id in the form "providerId:remoteId"
+    if (GlobalId.isValid(id)) {
+      GlobalId globalId = new GlobalId(id);
+      String providerId = globalId.getDomain();
+      String remoteId = globalId.getLocalId();
+      identity = storage.getIdentityByRemoteId(providerId, remoteId);
+    }
+
+    // attempts to find a raw id
+    if (identity == null) {
+      identity = storage.getIdentity(id);
+    }
+    
+
     if (identity == null)
       return null;
 
@@ -156,9 +172,11 @@ public class IdentityManager {
   /**
    * This function return an Identity object that specific to
    * a special type.
+   * <p>
    * For example if the type is Linked'In, the identifier will be the URL of the profile
-   * or if it's a CS contact manager contact, it will be the UID of the contact
-   * 
+   * or if it's a CS contact manager contact, it will be the UID of the contact.</p>
+   *  A new identity is created if it does not exist.
+   *  
    * @param providerId refering to the name of the Identity provider
    * @param remoteId   the identifier that identify the identity in the specific identity provider
    * @param loadProfile the load profile
