@@ -22,6 +22,7 @@ import java.util.List;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.storage.JCRStorage;
 import org.exoplatform.social.space.impl.SocialDataLocation;
@@ -108,7 +109,7 @@ public class RelationshipManager {
     List<Identity> ids = new ArrayList<Identity>();
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    List<Identity> allIds = im.getIdentities("organization");
+    List<Identity> allIds = im.getIdentities(OrganizationIdentityProvider.NAME);
     for (Identity id : allIds) {
       if (!(id.getId().equals(identity.getId())) && (getRelationship(identity, id) == null)) {
         ids.add(id);

@@ -165,7 +165,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
       if(activity.getPriority() != null)
         exoActivity.setPriority((new Float((activity.getPriority() * 100))).intValue());
       exoActivity.setTitle(activity.getTitle());
-      exoActivity.setType("opensocial:" + activity.getAppId());
+      exoActivity.setType(OPENSOCIAL_PREFIX + ":" + activity.getAppId());
       exoActivity.setUrl(activity.getUrl());
       exoActivity.setUserId(activity.getUserId());
       return exoActivity;

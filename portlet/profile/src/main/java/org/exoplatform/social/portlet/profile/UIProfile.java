@@ -26,6 +26,7 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
@@ -202,7 +203,7 @@ public class UIProfile extends UIContainer {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     }
-    return im.getIdentityByRemoteId("organization", getCurrentProfileID());
+    return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentProfileID());
   }
   
   /**

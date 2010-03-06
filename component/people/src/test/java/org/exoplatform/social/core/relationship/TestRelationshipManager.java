@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.relationship;
 
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.test.BasicPeopleServiceTestCase;
 
@@ -43,15 +44,15 @@ public class TestRelationshipManager extends BasicPeopleServiceTestCase {
 
   private void init() throws Exception {
 
-    Identity identity1 = identityManager.getIdentityByRemoteId("organization", "john");
+    Identity identity1 = identityManager.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, "john");
     identityManager.saveIdentity(identity1);
     assertNotNull(identity1.getId());
 
-    Identity identity2 = identityManager.getIdentityByRemoteId("organization", "james");
+    Identity identity2 = identityManager.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, "james");
     identityManager.saveIdentity(identity2);
     assertNotNull(identity2.getId());
 
-    Identity identity3 = identityManager.getIdentityByRemoteId("organization", "root");
+    Identity identity3 = identityManager.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, "root");
     identityManager.saveIdentity(identity3);
     assertNotNull(identity3.getId());
     

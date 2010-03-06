@@ -21,6 +21,7 @@ import java.util.*;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
@@ -158,7 +159,7 @@ public class Utils {
       String currentUserName = context.getRemoteUser();
       if (URLUtils.getCurrentUser() != null) currentUserName = URLUtils.getCurrentUser() ;
       
-      return identityManager.getIdentityByRemoteId("organization", currentUserName);
+      return identityManager.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, currentUserName);
   }
   
   /**

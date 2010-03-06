@@ -281,7 +281,7 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    return im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
+    return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
   }
   
   /**
@@ -355,7 +355,7 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getIdentityByRemoteId("organization", getCurrentUserName());
+      return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentUserName());
   }
   
   /**

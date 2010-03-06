@@ -143,7 +143,7 @@ public class UIInvitationRelation extends UIContainer {
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getIdentityByRemoteId("organization", getCurrentUserName());
+      return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentUserName());
   }
   
   
@@ -156,11 +156,11 @@ public class UIInvitationRelation extends UIContainer {
    */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    Identity identity = im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
+    Identity identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
     
     // portlet is added into space application
     if (identity == null) 
-      identity = im.getIdentityByRemoteId("organization", getCurrentUserName());
+      identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentUserName());
     
     return identity;
   }

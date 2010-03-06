@@ -19,6 +19,8 @@ package org.exoplatform.social.space;
 import java.util.List;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.spi.SpaceApplicationLifeCycleListener;
+import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
 /**
  * <pre>
  * SpaceService provides methods for working with Space 
@@ -567,4 +569,28 @@ public interface SpaceService {
    * @throws SpaceException
    */
   void declineRequest(String spaceId, String userId) throws SpaceException;
+  
+  /**
+   * Registers a new application lifecycle listener
+   * @param listener
+   */
+  public void registerApplicationLifeCycleListener(SpaceApplicationLifeCycleListener listener);
+  
+  /**
+   * Unregisters an application lifecycle listener
+   * @param listener
+   */
+  public void unregisterApplicationLifeCycleListener(SpaceApplicationLifeCycleListener listener);
+  
+  /**
+   * Registers a space lifecycle listener
+   * @param listener
+   */
+  public void registerSpaceLifeCycleListener(SpaceLifeCycleListener listener);
+  
+  /**
+   * Unregisters a space lifecycle listener
+   * @param listener
+   */
+  public void unregisterSpaceLifeCycleListener(SpaceLifeCycleListener listener);
 }
