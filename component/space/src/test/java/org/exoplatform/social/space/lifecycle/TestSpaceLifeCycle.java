@@ -9,7 +9,7 @@ import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
 
 import junit.framework.TestCase;
 
-public class TestAbstractLifeCycle extends TestCase {
+public class TestSpaceLifeCycle extends TestCase {
 
   
   public void testSimpleBroadcast() {

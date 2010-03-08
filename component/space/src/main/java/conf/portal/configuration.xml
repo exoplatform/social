@@ -27,17 +27,7 @@
     <key>org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler</key>
     <type>org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler</type>
   </component>     
-  
-  
-   	<external-component-plugins>
-   	 <target-component>org.exoplatform.social.space.SpaceService</target-component>  
-  	  <component-plugin> 
-  	    <name>SpaceActivityPublisher</name>
-  	    <set-method>addSpaceListener</set-method>
-  	    <type>org.exoplatform.social.space.lifecycle.SpaceActivityPublisher</type> 
-  	  </component-plugin>
-  	</external-component-plugins>
-  
+    
   <external-component-plugins>
 	  <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>      
 	  <component-plugin> 

@@ -17,8 +17,10 @@ package org.exoplatform.social.space;
 
 import javax.jcr.Session;
 
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.RootContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
@@ -76,8 +78,7 @@ public class JCRSessionManager {
   public Session getSession(SessionProvider sessionProvider) {
     Session session = null;
     try {
-     //PortalContainer currentContainer = PortalContainer.getInstance(); 
-     RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+     RepositoryService repositoryService = getRepositoryService();
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = sessionProvider.getSession(workspaceName, repository);
     } catch (Exception e) {
@@ -97,7 +98,6 @@ public class JCRSessionManager {
      Session session = currentSession.get();
      if (session == null)
      {
-        //session = new POMSession(this);
        session = createSession();
        currentSession.set(session);
      }
@@ -111,15 +111,21 @@ public class JCRSessionManager {
   private Session createSession() {
     Session session = null;
     try {
-     //PortalContainer currentContainer = PortalContainer.getInstance();
-      
-     RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+     RepositoryService repositoryService = getRepositoryService();
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = repository.getSystemSession(workspaceName);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
     return session;
+  }
+
+  private RepositoryService getRepositoryService() {
+    ExoContainer currentContainer = ExoContainerContext.getCurrentContainer();
+    if (currentContainer instanceof RootContainer) {
+      currentContainer = PortalContainer.getInstance();
+    }
+    return (RepositoryService) currentContainer.getComponentInstanceOfType(RepositoryService.class);
   }
 
   /**

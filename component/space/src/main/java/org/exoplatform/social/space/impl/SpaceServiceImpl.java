@@ -265,7 +265,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     space.setGroupId(groupId);
     space.setUrl(SpaceUtils.cleanString(space.getName()));
-    spaceLifeCycle.spaceCreated(space);
+    spaceLifeCycle.spaceCreated(space, creator);
     return space;
   }
   
@@ -304,7 +304,7 @@ public class SpaceServiceImpl implements SpaceService {
     } catch(Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_DELETE_SPACE, e);
     }
-    spaceLifeCycle.spaceRemoved(space);
+    spaceLifeCycle.spaceRemoved(space, null);
   }
   
   public void deleteSpace(String spaceId) throws SpaceException {

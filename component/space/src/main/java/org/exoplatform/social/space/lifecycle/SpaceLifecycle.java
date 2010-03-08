@@ -7,6 +7,9 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
@@ -53,6 +56,7 @@ public class SpaceLifecycle {
     if (ecs == null) {
       ecs = new ExecutorCompletionService<SpaceLifeCycleEvent>(executor);
     }
+   
     for (final SpaceLifeCycleListener listener : listeners) {
       ecs.submit(new Callable<SpaceLifeCycleEvent>() {
         public SpaceLifeCycleEvent call() throws Exception {
@@ -102,12 +106,12 @@ public class SpaceLifecycle {
     }
   }
 
-  public void spaceCreated(Space space) {
-    broadcast(new SpaceLifeCycleEvent(space, null, Type.SPACE_CREATED));
+  public void spaceCreated(Space space, String creator) {
+    broadcast(new SpaceLifeCycleEvent(space, creator, Type.SPACE_CREATED));
   }
 
-  public void spaceRemoved(Space space) {
-    broadcast(new SpaceLifeCycleEvent(space, null, Type.SPACE_REMOVED));
+  public void spaceRemoved(Space space, String remover) {
+    broadcast(new SpaceLifeCycleEvent(space, remover, Type.SPACE_REMOVED));
   }
 
   public void addApplication(Space space, String appId) {
