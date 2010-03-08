@@ -21,17 +21,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.impl.organization.GroupIdentityProvider;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class IdentityManager.
  */
 public class IdentityManager {
+  
+  private static final Log LOG = ExoLogger.getExoLogger(IdentityManager.class);
 
   /** The identity providers. */
   private Map<String, IdentityProvider> identityProviders = new HashMap<String, IdentityProvider>();
@@ -51,6 +57,25 @@ public class IdentityManager {
 
     ip.setIdentityManager(this);
     this.addIdentityProvider(ip);
+    
+    
+    initProviders();
+  }
+
+
+  private void initProviders() {
+    try {
+    // group identity provider used to identify spaces
+    GroupIdentityProvider groupProvider =  (GroupIdentityProvider) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(GroupIdentityProvider.class);
+    if (groupProvider != null) {
+      this.addIdentityProvider(groupProvider);
+    } else {
+      LOG.warn("group provider component not found " +GroupIdentityProvider.class + ". Check config");
+    }
+    }
+    catch (Exception e) {
+      LOG.warn("Failed to initialize group provider " +GroupIdentityProvider.class + ": " + e.getMessage());
+    }
   }
 
 

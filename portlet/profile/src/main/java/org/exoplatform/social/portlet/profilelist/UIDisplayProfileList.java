@@ -420,7 +420,7 @@ public class UIDisplayProfileList extends UIContainer {
    */
   private List<Identity> loadAllProfiles() throws Exception {
     IdentityManager im = getIdentityManager();
-    List<Identity> ids = im.getIdentities("organization");
+    List<Identity> ids = im.getIdentities(OrganizationIdentityProvider.NAME);
     Iterator<Identity> itr = ids.iterator();
     while(itr.hasNext()) {
       Identity id = itr.next();

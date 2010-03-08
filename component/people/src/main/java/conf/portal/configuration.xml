@@ -44,6 +44,11 @@
     <key>org.exoplatform.social.core.identity.IdentityProvider</key>
     <type>org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.identity.impl.organization.GroupIdentityProvider</key>
+    <type>org.exoplatform.social.core.identity.impl.organization.GroupIdentityProvider</type>
+  </component>  
 
    <component>
       <key>org.exoplatform.social.core.identity.JCRStorage</key>
