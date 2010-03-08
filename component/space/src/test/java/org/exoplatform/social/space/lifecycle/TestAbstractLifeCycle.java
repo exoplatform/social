@@ -2,11 +2,10 @@ package org.exoplatform.social.space.lifecycle;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.exoplatform.social.space.lifecycle.AbstractLifeCycle;
+import org.exoplatform.social.space.spi.SpaceLifeCycleEvent;
+import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
 
 import junit.framework.TestCase;
 
@@ -15,15 +14,15 @@ public class TestAbstractLifeCycle extends TestCase {
   
   public void testSimpleBroadcast() {
     
-    SampleLifeCycle lifecycle = new SampleLifeCycle();
+    AwaitingLifeCycle lifecycle = new AwaitingLifeCycle();
     
-    SampleListener capture = new SampleListener();
+    MockListener capture = new MockListener();
     lifecycle.addListener(capture);
-    SampleListener capture2 = new SampleListener();
+    MockListener capture2 = new MockListener();
     lifecycle.addListener(capture2);
     
-    lifecycle.eventOccured("foo");
-    lifecycle.eventOccured("bar");
+    lifecycle.activateApplication(null, "foo");
+    lifecycle.activateApplication(null, "bar");
     
     lifecycle.await(100);  // wait for the executor to finish
     
@@ -37,16 +36,16 @@ public class TestAbstractLifeCycle extends TestCase {
   
   public void testBroadcastWithFailingListener() {
     
-    SampleLifeCycle lifecycle = new SampleLifeCycle();
-    SampleListener capture = new SampleListener();
+    AwaitingLifeCycle lifecycle = new AwaitingLifeCycle();
+    MockListener capture = new MockListener();
     lifecycle.addListener(capture);
-    FailingListener failing = new FailingListener();
+    MockFailingListener failing = new MockFailingListener();
     lifecycle.addListener(failing);
-    SampleListener capture2 = new SampleListener();
+    MockListener capture2 = new MockListener();
     lifecycle.addListener(capture2);
     
-    lifecycle.eventOccured("foo");
-    lifecycle.eventOccured("bar");
+    lifecycle.activateApplication(null, "foo");
+    lifecycle.activateApplication(null, "bar");
     
     lifecycle.await(100); // wait for the executor to finish
     
@@ -60,27 +59,80 @@ public class TestAbstractLifeCycle extends TestCase {
     
   }
   
+
   
-  class SampleListener {
+  class MockListener implements SpaceLifeCycleListener {
     public Collection<String> events = new ArrayList<String>();
     
     public boolean hasEvent(String event) {
       return events.contains(event);
     }
     
-    public void onEvent(String event) {
-      events.add(event);
+    protected void recordEvent(SpaceLifeCycleEvent event) {
+      events.add(event.getTarget());
+    }
+
+    public void applicationActivated(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void applicationAdded(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void applicationDeactivated(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void applicationRemoved(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void grantedLead(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void joined(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void left(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void revokedLead(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void spaceCreated(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void spaceRemoved(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+  }
+  
+  class MockFailingListener extends MockListener {
+    protected void recordEvent(SpaceLifeCycleEvent event) {
+      throw new RuntimeException("fake runtime exception thrown on purpose");
     }
   }
   
-  class FailingListener extends SampleListener {
-    public void onEvent(String event) {
-      throw new RuntimeException();
-    }
-  }
   
-  class SampleLifeCycle extends AbstractLifeCycle<SampleListener, String> {
+  /**
+   * Custom SpaceLifeCycle for testing purpose, that can wait until all events are dispatched.
+   * Necessary to avoid test failures when the internal executor has not finished executing all listeners.
+   * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
+   * @version $Revision$
+   */
+  class AwaitingLifeCycle extends SpaceLifecycle {
   
+    /**
+     * Awaits until all events are dispatched
+     * @param milisconds
+     */
     public void await(long milisconds) {
 
         try {
@@ -91,14 +143,6 @@ public class TestAbstractLifeCycle extends TestCase {
       
     }
     
-    public void eventOccured(String event) {
-      broadcast(event);
-    }
-    
-    @Override
-    protected void dispatchEvent(SampleListener listener, String event) {
-      listener.onEvent(event);
-    }
     
   }
   

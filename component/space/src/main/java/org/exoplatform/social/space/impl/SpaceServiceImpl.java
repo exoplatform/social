@@ -22,11 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
@@ -48,10 +46,8 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
-import org.exoplatform.social.space.lifecycle.AbstractSpaceListenerPlugin;
-import org.exoplatform.social.space.lifecycle.SpaceApplicationLifeCycle;
 import org.exoplatform.social.space.lifecycle.SpaceLifecycle;
-import org.exoplatform.social.space.spi.SpaceApplicationLifeCycleListener;
+import org.exoplatform.social.space.lifecycle.SpaceListenerPlugin;
 import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
 
 /**
@@ -71,8 +67,8 @@ public class SpaceServiceImpl implements SpaceService {
   private OrganizationService orgService = null;
   private UserACL userACL = null;
   private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
-  private SpaceLifecycle spaceLifecycle = new SpaceLifecycle();
-  private SpaceApplicationLifeCycle applicationLifecycle = new SpaceApplicationLifeCycle();
+  private SpaceLifecycle spaceLifeCycle = new SpaceLifecycle();
+
   
   /**
    * SpaceServiceImpl constructor
@@ -269,7 +265,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     space.setGroupId(groupId);
     space.setUrl(SpaceUtils.cleanString(space.getName()));
-    spaceLifecycle.spaceCreated(space);
+    spaceLifeCycle.spaceCreated(space);
     return space;
   }
   
@@ -308,7 +304,7 @@ public class SpaceServiceImpl implements SpaceService {
     } catch(Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_DELETE_SPACE, e);
     }
-    spaceLifecycle.spaceRemoved(space);
+    spaceLifeCycle.spaceRemoved(space);
   }
   
   public void deleteSpace(String spaceId) throws SpaceException {
@@ -343,6 +339,7 @@ public class SpaceServiceImpl implements SpaceService {
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_USER, e);
     }
+    spaceLifeCycle.memberJoigned(space, userId);
   }
   
   /**
@@ -377,6 +374,7 @@ public class SpaceServiceImpl implements SpaceService {
         throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_USER, e);
       }
     }
+    spaceLifeCycle.memberLeft(space, userId);
   }
   
   /**
@@ -469,6 +467,10 @@ public class SpaceServiceImpl implements SpaceService {
     } catch (Exception e) {
         throw new SpaceException(SpaceException.Code.ERROR_SETTING_LEADER_STATUS, e);
     }
+    if (isLeader) 
+      spaceLifeCycle.grantedLead(space, userId);
+    else
+      spaceLifeCycle.revokedLead(space, userId);
   }
   
   /**
@@ -639,7 +641,7 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.installApplication(space, appId);
     setApp(space, appId, Space.INSTALL_STATUS);
-    applicationLifecycle.addApplication(space, appId);
+    spaceLifeCycle.addApplication(space, appId);
   }
   
   /**
@@ -653,7 +655,7 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.activateApplication(space, appId);
     setApp(space, appId, Space.ACTIVE_STATUS);
-    applicationLifecycle.activateApplication(space, appId);
+    spaceLifeCycle.activateApplication(space, appId);
   }
   
   /**
@@ -670,7 +672,7 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.deactiveApplication(space, appId);
     setApp(space, appId, Space.DEACTIVE_STATUS);
-    applicationLifecycle.deactivateApplication(space, appId);
+    spaceLifeCycle.deactivateApplication(space, appId);
   }
   
   /**
@@ -687,7 +689,7 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.removeApplication(space, appId);
     removeApp(space, appId);
-    applicationLifecycle.removeApplication(space, appId);
+    spaceLifeCycle.removeApplication(space, appId);
   }
   
   /**
@@ -894,36 +896,22 @@ public class SpaceServiceImpl implements SpaceService {
     declineRequest(getSpaceById(spaceId), userId);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public void registerApplicationLifeCycleListener(SpaceApplicationLifeCycleListener listener) {
-    applicationLifecycle.addListener(listener);
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public void unregisterApplicationLifeCycleListener(SpaceApplicationLifeCycleListener listener) {
-    applicationLifecycle.removeListener(listener);
-  }  
 
   /**
    * {@inheritDoc}
    */
   public void registerSpaceLifeCycleListener(SpaceLifeCycleListener listener) {
-    spaceLifecycle.addListener(listener);
+    spaceLifeCycle.addListener(listener);
   }
 
   /**
    * {@inheritDoc}
    */
   public void unregisterSpaceLifeCycleListener(SpaceLifeCycleListener listener) {
-    spaceLifecycle.removeListener(listener);
+    spaceLifeCycle.removeListener(listener);
   }  
   
-  
-  public void addSpaceListener(AbstractSpaceListenerPlugin plugin) {
+  public void addSpaceListener(SpaceListenerPlugin plugin) {
     registerSpaceLifeCycleListener(plugin);
   }
   

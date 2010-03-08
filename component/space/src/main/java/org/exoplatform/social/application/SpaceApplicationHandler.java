@@ -20,8 +20,6 @@ import java.util.List;
 
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
-import org.exoplatform.social.space.spi.SpaceApplicationLifeCycleListener;
-import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
 
 /**
  * Created by The eXo Platform SARL
