@@ -230,17 +230,19 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       String spaceNav = space.getGroupId();
       PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
-      PageNode homeNode = nav.getNode(space.getShortName());
+      PageNode homeNode = nav.getNode(space.getUrl());
       List<PageNode> childNodes = homeNode.getChildren();
       String nodeName = null;
       String[] apps = space.getApp().split(",");
       for (String app : apps) {
-        String[] appParts = app.split(":");
-        if (appParts[0].equals(appId)) {
-          if (appParts.length > 3) {
-            nodeName = appParts[2];
-          } else {
-            nodeName = appParts[1];
+        if (app.length() != 0) {
+          String[] appParts = app.split(":");
+          if (appParts[0].equals(appId)) {
+            if (appParts.length > 3) {
+              nodeName = appParts[2];
+            } else {
+              nodeName = appParts[1];
+            }
           }
         }
       }

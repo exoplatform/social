@@ -187,10 +187,12 @@ public class UISpaceApplication extends UIForm {
     String installedApp = space.getApp();
     String[] apps = installedApp.split(",");
     for (String app : apps) {
-      String[] appParts = app.split(":");
-      if (appParts[0].equals(application.getApplicationName()) && (appParts.length == 3)) {
-        for (PageNode node : nodes) {
-          if (node.getName().equals(appParts[1])) return node.getResolvedLabel();
+      if (app.length() != 0) {
+        String[] appParts = app.split(":");
+        if (appParts[0].equals(application.getApplicationName()) && (appParts.length == 3)) {
+          for (PageNode node : nodes) {
+            if (node.getName().equals(appParts[1])) return node.getResolvedLabel();
+          }
         }
       }
     }

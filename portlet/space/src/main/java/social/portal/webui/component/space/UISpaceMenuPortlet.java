@@ -31,6 +31,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
+import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -63,11 +64,15 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   /** INVALID APPLICATION NAME MESSAGE. */
   private static final String INVALID_APPLICATION_NAME_MSG = "UISpaceMenuPortlet.msg.invalidAppName";
   
+  private static final String SPACE_SETTING_PORTLET = "SpaceSettingPortlet";
   /** Stores SpaceService object. */
   private SpaceService spaceService = null;
   
   /** Stores UIPortal object. */
   private UIPortal uiPortal = null;
+  
+  /** Stores Space object. */
+  private Space space = null;
   
   /**
    * constructor
@@ -91,22 +96,18 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
     
     PageNode homeNode = pageNav.getNode(spaceUrl);
-    String userId = Util.getPortalRequestContext().getRemoteUser();       
     List<PageNode> list = homeNode.getChildren();
 
     PageNode pageNode = null;
-    StringBuffer sb = new StringBuffer("SpaceSettingPortlet");
-    String spaceSettingAppName = sb.insert(0, SpaceUtils.getSpaceUrl()).toString();
     
     for(PageNode node:list){
-      if(node.getName().equals(spaceSettingAppName)){
+      if(node.getName().equals(SPACE_SETTING_PORTLET)){
         pageNode = node;
         break;
       }
     }
-    if(pageNode != null) list.remove(pageNode); 
+    if(!isLeader() && (pageNode != null)) list.remove(pageNode); 
     Collections.sort(list, new ApplicationComparator());
-    if(spaceSrc.hasEditPermission(space, userId) && pageNode != null) list.add(pageNode);
     return list;
   }
   
@@ -173,13 +174,15 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       
       // Check and update new application name.
       for (String app : apps) {
-        appParts = app.split(":");
-        if (appParts[1].equals(oldName)) {
-          editedApp = appParts[0] + ":" + newNodeName + ":" + appParts[2];
-          newInstalledApps = installedApps.replaceAll(app, editedApp);
-          space.setApp(newInstalledApps);
-          spaceService.saveSpace(space, false);
-          break;
+        if (app.length() != 0) {
+          appParts = app.split(":");
+          if (appParts[1].equals(oldName)) {
+            editedApp = appParts[0] + ":" + newNodeName + ":" + appParts[2];
+            newInstalledApps = installedApps.replaceAll(app, editedApp);
+            space.setApp(newInstalledApps);
+            spaceService.saveSpace(space, false);
+            break;
+          }
         }
       }
       
@@ -199,9 +202,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public String getSpaceName() throws Exception {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space = spaceSrc.getSpaceByUrl(spaceUrl);
+    Space space = getSpace();
     return space.getName();
   }
   
@@ -222,8 +223,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    * @throws Exception
    */
   protected String getImageSource() throws Exception {
-    SpaceService spaceService = getSpaceService();
-    Space space = spaceService.getSpaceByUrl(SpaceUtils.getSpaceUrl());
+    Space space = getSpace();
     SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
     if (spaceAtt != null) {
       return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
@@ -232,6 +232,24 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     return null;
   }
 
+  /**
+   * Checks if current user is leader or not.<br>
+   * 
+   * @return true if current login user is leader.
+   * 
+   * @throws SpaceException
+   */
+  private boolean isLeader() throws SpaceException {
+    SpaceService spaceService = getSpaceService();
+    String userId = Util.getPortalRequestContext().getRemoteUser();
+    Space space = getSpace();
+    if(spaceService.hasEditPermission(space.getId(), userId)) {
+      return true;
+    }
+    
+    return false;
+  }
+  
   private UIPortal getUIPortal() {
     return uiPortal;
   }
@@ -277,6 +295,26 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   }
   
   /**
+   * Returns space object if it is null then initialize before return.<br>
+   * 
+   * @return space object.
+   */
+  private Space getSpace() {
+    SpaceService spaceService = getSpaceService();
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    
+    if (space == null) {
+      try {
+        space = spaceService.getSpaceByUrl(spaceUrl);
+      } catch (SpaceException e) {
+        e.printStackTrace();
+      }
+    }
+    
+    return space;
+  }
+  
+  /**
    * Check the input name is existed or not.<br>
    * 
    * @param pageNavigation
@@ -319,7 +357,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    * @return true if input name is valid. false if not.
    */
   private boolean isValidAppName(String appName) {
-    if (appName == null || appName.length() < 3)
+    if (appName == null || appName.length() < 1)
     {
        return false;
     }
