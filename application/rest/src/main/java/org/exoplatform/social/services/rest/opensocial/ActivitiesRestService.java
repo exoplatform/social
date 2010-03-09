@@ -87,6 +87,8 @@ public class ActivitiesRestService implements ResourceContainer {
     //rawCommentIds can be: null || ,a,b,c,d
     if (rawCommentIds != null) {
       String[] commentIds = rawCommentIds.split(",");
+      //remove the first empty element
+      commentIds = removeItemFromArray(commentIds, "");
       for (String commentId : commentIds) {
         try {
           _activityManager.deleteActivity(commentId);
