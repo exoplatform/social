@@ -94,10 +94,13 @@ eXo.social.Like.ref = {
  	
  	if(!response.data) {
 		debug.warn('response data is null!!!');
+		alert(Locale.getMsg('internal_error'));
+		statusUpdate.refresh();
 		return;
 	}
 	if (!statusUpdate) {
-		debug.warn('statusUpdate ref is not set!');
+		debug.error('statusUpdate ref is not set!');
+		alert(Locale.getMsg('internal_error'));
 		return;
 	}
 	var activityId = response.data.activityId;
