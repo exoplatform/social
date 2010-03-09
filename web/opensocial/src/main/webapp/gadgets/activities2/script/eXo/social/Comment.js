@@ -219,8 +219,8 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 			if (res.data !== null) {
 				comments[activityId] = res.data.comments;
 				renderCommentList(comments[activityId], true);
-				gadgets.window.adjustHeight();
 			}
+			gadgets.window.adjustHeight();
 		})
 	})();
 	
@@ -239,17 +239,24 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
   		if (!commentListBlockEl.hasChildNodes()) {
   			inlineStyle = '';
   		}
+  		var activityOwner = statusUpdate.getPerson(comment.userId);
+  		if (activityOwner) {
+  			var userName = activityOwner.getDisplayName();
+  			var profileUrl = activityOwner.getField(opensocial.Person.Field.PROFILE_URL);
+  		} else {
+  			debug.warn('activityOwner is null!');
+  		}
 		html.push('<div class="CommentContent"');
 			html.push(inlineStyle);
 		html.push('>');
 			html.push('<div class="CommentBorder">')
   				html.push('<div class="CommentActivitiesContent">');
-  					html.push('<a href="#" class="AvatarPeopleBG">');
+  					html.push('<a href="' + profileUrl + '" target="_parent" title="' + userName + '" class="AvatarPeopleBG">');
   						html.push('<img height="47px" width="47px" src="' + statusUpdate.getAvatar(comment.userId) + '" />');
   					html.push('</a>');
   					html.push('<div class="Content">');
   						html.push('<div class="Titlecontent" style="height: 24px;">');
-  							html.push('<div class="UserName">' + statusUpdate.getName(comment.userId) + '</div>');
+  							html.push('<div class="UserName"><a href="' + profileUrl + '" target="_parent">' + userName + '</a></div>');
   						var viewerId = statusUpdate.viewer.getId();
   						if ((viewerId === activityUserId) || (viewerId === commentUserId)) {
   							html.push(getDeleteContentBlock());
@@ -274,7 +281,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 		commentButtonEl = Util.getElementById(commentButtonId);
 	
 	if (!commentEl) {
-		debug.warn('commentEl is null!');
+		debug.error('commentEl is null!');
 		return;
 	}
 	Util.addEventListener(commentEl, 'click', function(evt) {
@@ -332,6 +339,9 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 				comment = res.data.comments[0];
 				commentId = comment.id;
 				commentUserId = comment.userId;
+				if (!comments[activityId]) {
+					comments[activityId] = [];
+				}
 				comments[activityId].push(comment);
 				commentListBlockEl.style.display = 'block';
 				var newEl = Util.addElement(commentListBlockId, 'div', 'CommentBlock' + commentId, getCommentBlock());

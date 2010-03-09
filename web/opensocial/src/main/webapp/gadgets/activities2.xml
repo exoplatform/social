@@ -25,7 +25,7 @@
   	<Locale messages="activities2/locale/ALL_ALL.xml" />
   	<Locale lang="en" messages="activities2/locale/en_ALL.xml" />
   	<Locale lang="vi" messages="activities2/locale/vi_ALL.xml" />
-    <Require feature="opensocial-0.7" />
+    <Require feature="opensocial-0.8" />
     <Require feature="dynamic-height" />
     <Require feature="settitle" />
     <Require feature="views" />
@@ -55,7 +55,7 @@
   						<body>
   							<tr>
   								<td width='45'>
-  									<a href="#OwnerAvatar" class="MyStatusAvatarBG">
+  									<a id="UIOwnerAvatar" href="#OwnerAvatar" target="_parent" class="MyStatusAvatarBG">
 											<img id="ImgOwnerAvatar" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
 										</a>
 								</td>
@@ -154,7 +154,7 @@
   						<body>
   							<tr>
   								<td width='45'>
-  									<a href="#OwnerAvatar" class="MyStatusAvatarBG">
+  									<a id="UIOwnerAvatar" href="#OwnerAvatar" target="_parent" class="MyStatusAvatarBG">
 											<img id="ImgOwnerAvatar" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
 										</a>
 								  </td>

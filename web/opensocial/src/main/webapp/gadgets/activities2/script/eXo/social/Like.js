@@ -178,10 +178,16 @@ eXo.social.Like.ref = {
 	if (likes !== null) {
 		for(var i = 0, length = likes.length; i < length; i++) {
 			if (likes[i].identityId === Like.ref.statusUpdate.viewer.getId()) continue;
+			var likePerson = Like.ref.statusUpdate.getPerson(likes[i].identityId);
+			if (!likePerson) {
+				debug.warn('likePerson is null');
+			}
+			var userName = likePerson.getDisplayName();
+			var profileUrl = likePerson.getField(opensocial.Person.Field.PROFILE_URL);
 			var thumbnail = '/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif';
 			if (likes[i].thumbnail !== null)	thumbnail = likes[i].thumbnail;
-			html.push('<a href="#UserId"  class="AvatarPeopleBG">');
-				html.push('<img title="' + likes[i].fullName + '" alt="" height="47px" width="47px" src="' + thumbnail + '" />');
+			html.push('<a href="' + profileUrl + '" target="_parent" title="' + profileUrl + '"  class="AvatarPeopleBG">');
+				html.push('<img title="' + userName + '" alt="" height="47px" width="47px" src="' + thumbnail + '" />');
 			html.push('</a>');
 		}
 	}
