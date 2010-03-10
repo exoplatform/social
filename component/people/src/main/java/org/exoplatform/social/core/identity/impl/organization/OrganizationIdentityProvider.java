@@ -24,6 +24,7 @@ import java.util.Map;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.IdentityProvider;
@@ -76,7 +77,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
    */
   public Identity getIdentityByRemoteId(Identity identity) throws Exception {
     //TODO: tung.dang need to review again.
-    User user = null;
+	User user = null;
     String remote = identity.getRemoteId();
     user = getUserFromCache(remote);
     if(user == null) {
@@ -84,7 +85,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
         UserHandler userHandler = organizationService.getUserHandler();
         user = userHandler.findUserByName(remote);
       } catch (Exception e) {
-        e.printStackTrace();
+        //e.printStackTrace();
         return null;
       }
     }
@@ -116,7 +117,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
 
       profile.setProperty("username", user.getUserName());
 
-      storage.loadProfile(profile);
+      //storage.loadProfile(profile);
 
       if (user.getEmail() != null && !profile.contains("emails")) {
         List emails = new ArrayList();
@@ -143,7 +144,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
    */
   public List<String> getAllUserId() throws Exception {
     //TODO: dang tung - need to review again.
-    PageList pl = organizationService.getUserHandler().getUserPageList(20);
+    PageList pl = organizationService.getUserHandler().findUsers(new Query());
     List<User> userList = pl.getAll();
     List<String> userIds = new ArrayList<String>();
 

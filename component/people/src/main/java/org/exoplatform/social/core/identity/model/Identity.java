@@ -51,6 +51,17 @@ public class Identity {
     public Identity(String id) {
         this.id = id;
     }
+    
+    /**
+     * Instantiates a new identity
+     * 
+     * @param remoteId the remote id of identity
+     * @param providerId the provider id of identity
+     */
+    public Identity(String remoteId, String providerId) {
+    	this.remoteId = remoteId;
+    	this.providerId = providerId;
+    }
 
     /**
      * Instantiates a new identity.

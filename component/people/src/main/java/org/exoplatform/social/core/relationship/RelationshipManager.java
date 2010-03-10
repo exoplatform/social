@@ -264,6 +264,7 @@ public class RelationshipManager {
    */
   public List<Relationship> getContacts(Identity identity) throws Exception {
     List<Relationship> rels = get(identity);
+    if(rels == null) return null;
     List<Relationship> contacts = new ArrayList<Relationship>();
     for (Relationship rel : rels) {
       if (rel.getStatus() == Relationship.Type.CONFIRM) {

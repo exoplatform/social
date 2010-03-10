@@ -17,23 +17,20 @@
 package org.exoplatform.social.opensocial;
 
 
-import org.apache.shindig.auth.BlobCrypterSecurityToken;
-import org.apache.shindig.common.crypto.BlobCrypterException;
-import org.apache.shindig.common.crypto.BlobCrypter;
-import org.apache.shindig.common.crypto.BasicBlobCrypter;
-import org.apache.shindig.common.util.TimeSource;
-import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.portal.gadget.core.SecurityTokenGenerator;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
-
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.shindig.auth.BlobCrypterSecurityToken;
+import org.apache.shindig.common.crypto.BasicBlobCrypter;
+import org.apache.shindig.common.crypto.BlobCrypter;
+import org.apache.shindig.common.crypto.BlobCrypterException;
+import org.apache.shindig.common.util.TimeSource;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.gadget.core.SecurityTokenGenerator;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.web.application.RequestContext;
 
 public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
     private String containerKey;
@@ -70,15 +67,15 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
     RequestContext context = RequestContext.getCurrentInstance();
     String rUserId = getIdentityId(context.getRemoteUser());
 
-    PortalRequestContext request = Util.getPortalRequestContext() ;
-    String uri = request.getNodePath();
+    //PortalRequestContext request = Util.getPortalRequestContext() ;
+    //String uri = request.getNodePath();
 
 
-    String[] els = uri.split("/");
+    //String[] els = uri.split("/");
     String ownerId = rUserId;
-    if (els.length >= 3 && els[1].equals("people")) {
-      ownerId = getIdentityId(els[2]);
-    }
+//    if (els.length >= 3 && els[1].equals("people")) {
+//      ownerId = getIdentityId(els[2]);
+//    }
     /*else if(els.length == 2 && els[1].equals("mydashboard")) {
       owner = rUser;
     }*/

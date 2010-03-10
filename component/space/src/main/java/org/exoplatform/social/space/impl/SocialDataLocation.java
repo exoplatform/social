@@ -17,6 +17,7 @@
 package org.exoplatform.social.space.impl;
 
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -24,8 +25,8 @@ import org.exoplatform.social.space.DataLocationPlugin;
 import org.exoplatform.social.space.JCRSessionManager;
 
 /**
- * This class is meant to be the starting for any data storage access in KS.<br/>
- * Provides all JCR pathes usable in KS JCR data storage. <br/>
+ * This class is meant to be the starting for any data storage access in Social.<br/>
+ * Provides all JCR pathes usable in Social JCR data storage. <br/>
  * A {@link JCRSessionManager} accessible by {@link #getSessionManager()} is configured on the appropriate repository and workspace.<br/> 
  * Relies on {@link NodeHierarchyCreator} to initialize the structure and provide pathes aliases.
  * 
@@ -67,18 +68,19 @@ public class SocialDataLocation {
   private String repository;
   private String workspace;
   private JCRSessionManager sessionManager;
-
+  private RepositoryService repositoryService;
   
   /**
    * Creates a new {@link SocialDataLocation} and initializes pathes.
    * @param params {@link #REPOSITORY_PARAM} and {@link #WORKSPACE_PARAM} are expected as value-param 
    * @param creator used to resolve path names. It is also declared here to ensure that the data structure has been initalized before.
    */
-  public SocialDataLocation(InitParams params, NodeHierarchyCreator creator) {
+  public SocialDataLocation(InitParams params, NodeHierarchyCreator creator, RepositoryService repositoryService) {
     this.creator = creator;
     this.repository = getParam(params, REPOSITORY_PARAM, DEFAULT_REPOSITORY_NAME);
     this.workspace = getParam(params, WORKSPACE_PARAM, DEFAULT_WORKSPACE_NAME);
-    this.sessionManager = new JCRSessionManager(repository, workspace);
+    this.repositoryService = repositoryService;
+    this.sessionManager = new JCRSessionManager(repository, workspace, repositoryService);
     initPathes();
   }
 
@@ -101,7 +103,7 @@ public class SocialDataLocation {
   public void setLocation(DataLocationPlugin plugin) {
     this.repository = plugin.getRepository();
     this.workspace = plugin.getWorkspace();
-    this.sessionManager = new JCRSessionManager(repository, workspace);
+    this.sessionManager = new JCRSessionManager(repository, workspace, repositoryService);
   } 
   
   /**

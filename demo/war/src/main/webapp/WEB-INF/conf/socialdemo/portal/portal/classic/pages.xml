@@ -254,10 +254,8 @@
   </page>
   
   <page>
-  	<page-id>portal::classic::requests</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
     <name>requests</name>
+    <title>Request</title>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">

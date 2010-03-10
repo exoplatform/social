@@ -26,10 +26,16 @@ import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
+import org.exoplatform.container.definition.PortalContainerConfig;
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.JCRStorage;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 
@@ -90,7 +96,11 @@ public class ExoService {
       PortalContainer pc = PortalContainer.getInstance();
       RelationshipManager rm = (RelationshipManager) pc.getComponentInstanceOfType(RelationshipManager.class);
       List<Relationship> rels = rm.getContacts(id);
-
+      if(rels == null) {
+    	  pc = (PortalContainer) ExoContainerContext.getContainerByName("socialdemo");
+    	  rm = (RelationshipManager) pc.getComponentInstanceOfType(RelationshipManager.class);
+    	  rels = rm.getContacts(id);
+      }
       List<Identity> ids = new ArrayList<Identity>();
 
       for(Relationship rel : rels) {
@@ -130,21 +140,25 @@ public class ExoService {
      * @throws Exception the exception
      */
     protected Identity getIdentity(String id) throws Exception {
-      //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
+      
+      Identity identity	= null;
       PortalContainer pc = PortalContainer.getInstance();
       IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
-
-      //TODO: tung.dang need to review again
-      //Identity identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, id);
-      Identity identity = im.getIdentityById(id);
-//      if (identity == null) {
-//        identity = im.getIdentityById(id);
-//      }
+      
+      identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, id);
+      
+      if (identity == null) {
+    	  identity = im.getIdentityById(id);
+      }
 
       if(identity == null) {
-          throw  new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "this user does not exist");
+    	  pc = (PortalContainer) ExoContainerContext.getContainerByName("socialdemo");
+    	  im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
+    	  identity = im.getIdentityById(id);
       }
-      return identity;
+      
+      if(identity == null) throw new Exception("\n\n\n can't find identity \n\n\n");
+      
+      return identity; 
     }
-
 }

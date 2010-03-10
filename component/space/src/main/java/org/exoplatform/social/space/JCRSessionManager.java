@@ -40,12 +40,13 @@ public class JCRSessionManager {
   
   String workspaceName = "portal-system";
   String repositoryName = "repository";
-  
+  RepositoryService repositoryService;
  
   
-  public JCRSessionManager(String repository, String workspace) {
+  public JCRSessionManager(String repository, String workspace, RepositoryService repositoryService) {
     this.workspaceName = workspace;
     this.repositoryName = repository;
+    this.repositoryService = repositoryService;
   }
   
   public String getWorkspaceName() {
@@ -78,7 +79,6 @@ public class JCRSessionManager {
   public Session getSession(SessionProvider sessionProvider) {
     Session session = null;
     try {
-     RepositoryService repositoryService = getRepositoryService();
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = sessionProvider.getSession(workspaceName, repository);
     } catch (Exception e) {
@@ -111,7 +111,6 @@ public class JCRSessionManager {
   private Session createSession() {
     Session session = null;
     try {
-     RepositoryService repositoryService = getRepositoryService();
      ManageableRepository repository = repositoryService.getRepository(repositoryName);
      session = repository.getSystemSession(workspaceName);
     } catch (Exception e) {
@@ -120,13 +119,13 @@ public class JCRSessionManager {
     return session;
   }
 
-  private RepositoryService getRepositoryService() {
-    ExoContainer currentContainer = ExoContainerContext.getCurrentContainer();
-    if (currentContainer instanceof RootContainer) {
-      currentContainer = PortalContainer.getInstance();
-    }
-    return (RepositoryService) currentContainer.getComponentInstanceOfType(RepositoryService.class);
-  }
+//  private RepositoryService getRepositoryService() {
+//    ExoContainer currentContainer = ExoContainerContext.getCurrentContainer();
+//    if (currentContainer instanceof RootContainer) {
+//      currentContainer = PortalContainer.getInstance();
+//    }
+//    return (RepositoryService) currentContainer.getComponentInstanceOfType(RepositoryService.class);
+//  }
 
   /**
    * <p>Closes the current session and discard the changes done during the session.</p>

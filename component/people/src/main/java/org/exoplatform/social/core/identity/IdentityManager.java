@@ -210,17 +210,22 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public Identity getIdentityByRemoteId(String providerId, String remoteId, boolean loadProfile) throws Exception {
-    //System.out.println("getting the identity for " + providerId + " and remoteid:" + remoteId);
+    
     Identity identity = storage.getIdentityByRemoteId(providerId, remoteId);
-    if (identity == null) {
-      //System.out.println("create the identity for " + providerId + " and remoteid:" + remoteId);
-      identity = getNewIdentity(providerId, remoteId);
+    IdentityProvider identityProvider = identityProviders.get(providerId);
+    
+    Identity identity1 = new Identity(remoteId, providerId);
+    identity1 = identityProvider.getIdentityByRemoteId(identity1);
+    
+    if(identity == null && identity1 != null) {
+    	saveIdentity(identity1);
+    	//TODO: need to save profile 
     }
-    //System.out.println("identityProviders = " + identityProviders);
-    if(loadProfile) {
-      IdentityProvider identityProvider = identityProviders.get(identity.getProviderId());
-      identity = identityProvider.getIdentityByRemoteId(identity);
-    }
+    
+    if(identity == null) 
+    	identity = storage.getIdentityByRemoteId(providerId, remoteId);
+    else if(loadProfile) identity = identityProvider.getIdentityByRemoteId(identity);
+    
     return identity;
   }
 

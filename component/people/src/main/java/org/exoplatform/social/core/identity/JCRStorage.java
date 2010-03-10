@@ -58,6 +58,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.space.JCRSessionManager;
+import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
 
@@ -85,6 +86,9 @@ public class JCRStorage {
   
   /** The Constant PROFILE_AVATAR. */
   final private static String PROFILE_AVATAR = "avatar".intern();
+  
+  /** The Constant JCR_UUID. */
+  final private static String JCR_UUID = "jcr:uuid".intern();
   
   /** The config. */
   private ProfileConfig config = null;
@@ -189,23 +193,48 @@ public class JCRStorage {
    */
   public Identity getIdentity(String id) throws Exception {
     Session session = sessionManager.openSession();
-    Node identityNode;
+    Node identityNode = null;
     try {
-      identityNode = session.getNodeByUUID(id);
+		identityNode = session.getNodeByUUID(id);
+        return getIdentity(identityNode);
     }
     catch (ItemNotFoundException e) {
+      //e.printStackTrace();	
 //      System.out.println("\n\n\n\n\n===>>>>> getIdentity err. return null");
       return null;
     } finally {
       sessionManager.closeSession();
     }
-    Identity identity = new Identity(identityNode.getUUID());
-    identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
-    identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
-
-    return identity;
   }
 
+  /**
+   * Gets the all identity.
+   * 
+   * @return the all iendtity
+   */
+  public List<Identity> getAllIdentities() {
+    List<Identity> identities = new ArrayList<Identity>();
+    try {
+      Session session = sessionManager.openSession();
+      Node identityHomeNode = getIdentityServiceHome(session);
+      NodeIterator iter = identityHomeNode.getNodes();
+      Identity identity;
+      while (iter.hasNext()) {
+        Node identityNode = iter.nextNode();
+        identity = getIdentity(identityNode);
+        identities.add(identity);
+      }
+      return identities;
+    } catch (Exception e) {
+//      System.out.println("\n\n\n\n\n\n ===>>>>> ====getAllSpaces err. return null \n");
+      e.printStackTrace();
+      return null;
+    } finally {
+      sessionManager.closeSession();
+    }
+  }
+  
+  
   /**
    * Gets the identity by remote id.
    * 
