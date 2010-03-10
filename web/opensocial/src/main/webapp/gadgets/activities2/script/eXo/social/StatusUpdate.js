@@ -222,11 +222,11 @@ eXo.social.StatusUpdate.prototype.init = function() {
     		[opensocial.Person.Field.ID,
     		 opensocial.Person.Field.NAME,
     		 opensocial.Person.Field.PROFILE_URL,
-             opensocial.Person.Field.THUMBNAIL_URL];
+         opensocial.Person.Field.THUMBNAIL_URL];
 		req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER, opts), 'viewer');
 		req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.OWNER, opts), 'owner');
 		var ownerFriendsSpec = opensocial.newIdSpec({"userId":"OWNER", "groupId":"FRIENDS"});
-    	req.add(req.newFetchPeopleRequest(ownerFriendsSpec, opts), 'ownerFriends');
+    req.add(req.newFetchPeopleRequest(ownerFriendsSpec, opts), 'ownerFriends');
 		req.send(handler);
 		function handler(response) {
 			var miniMessage = statusUpdate.miniMessage;
@@ -306,8 +306,6 @@ eXo.social.StatusUpdate.prototype.refresh = function() {
   			statusUpdate.handleActivities(res, StatusUpdate.DataMode_OWNER_ONLY);
   		});
   	}
-
-
 }
 
 /**
@@ -368,19 +366,20 @@ eXo.social.StatusUpdate.prototype.setActionContentButton = function(activityId) 
  */
 eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
 	var Util = eXo.social.Util,
-        url = eXo.social.StatusUpdate.config.ACTIVITIES_REST_URL + '/destroy/' + activityId + '.json',
-        statusUpdate = this;
+	    Locale = eXo.social.Locale;
+      url = eXo.social.StatusUpdate.config.ACTIVITIES_REST_URL + '/destroy/' + activityId + '.json',
+      statusUpdate = this;
 	eXo.social.Util.makeRequest(url, function(res) {
 	   if (res.data.id) {
          Util.removeElementById('Activity' + res.data.id);
-         //check if delete all => refresh
-         var rootEl = Util.getElementById('UIOwnerAppendableRoot');
+         //check if delete all => displays empty message
+         var rootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_OWNER_APPENDABLE_ROOT);
          if (!rootEl.hasChildNodes()) {
-           statusUpdate.refresh();
+           rootEl.innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [statusUpdate.owner.getDisplayName()]) + '</div>';
          }
 	   } else {
 		   //TODO informs about the error
-	       alert('Problem when deleting the activity!');
+	     alert('Problem when deleting the activity!');
 	   }
 	}, null, gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, null);
 }
@@ -707,7 +706,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	
   	var displayActivities = function(appendableRootId, moreId, activities, isOwnerActivity, displayName) {
   		if (!activities || activities.length === 0) {
-  			if (isOwner) {
+  			if (isOwnerActivity) {
   				displayActivitiesNext = true;
     			Util.getElementById(appendableRootId).innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [displayName]) + '</div>';
     		} else {
@@ -770,8 +769,6 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 			var activityId =  activity.getField(opensocial.Activity.Field.ID);
 			userId = activity.getField(opensocial.Activity.Field.USER_ID);
 			var activityOwner = statusUpdate.getPerson(userId);
-			debug.info('activityOwner:');
-			debug.info(activityOwner);
 			index++;
 			//if not found, fetching
 			if (!activityOwner) {
@@ -848,7 +845,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
   		return;
   	}
-  	//should be synchronized when displayActivities is called because inside displayAcvitities
+  //should be synchronized when displayActivities is called because inside displayAcvitities
  	// contains AJAX code runs asynchronizedly
  	if (dataMode === StatusUpdate.DataMode_BOTH || dataMode === StatusUpdate.DataMode_OWNER_ONLY) {
   		this.ownerActivities = dataResponse.get('ownerActivities').getData().asArray();

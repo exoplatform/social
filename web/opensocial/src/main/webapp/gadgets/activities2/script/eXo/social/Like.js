@@ -59,6 +59,7 @@ eXo.social.Like.ref = {
  		debug.warn("activityId or userId is null! activityId: " + activityId + "; userId: " + userId);
  		return;
  	}
+ 	eXo.social.Like.currentActivityId = activityId;
  	var url = eXo.social.Like.config.REST_LIKE.replace('{activityId}', activityId) + '/update.json';
  	var like = {
  	  identityId: userId
@@ -78,6 +79,7 @@ eXo.social.Like.ref = {
  		debug.warn("activityId or userId is null! activityId: " + activityId + "; userId: " + userId);
  		return;
  	}
+ 	eXo.social.Like.currentActivityId = activityId;
  	var url = eXo.social.Like.config.REST_LIKE.replace('{activityId}', activityId) + '/destroy/' + userId + '.json';
  	eXo.social.Util.makeRequest(url, callback, null, gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, null);
  }
@@ -92,15 +94,27 @@ eXo.social.Like.ref = {
  	var Like = eXo.social.Like;
  	var statusUpdate = Like.ref.statusUpdate;
  	
- 	if(!response.data) {
-		debug.warn('response data is null!!!');
+ 	if (response.rc === 404) { //not found
+ 	  alert(Locale.getMsg('error_activity_not_found'));
+ 	  //delete that activity block
+ 	  Util.removeElementById('Activity' + Like.currentActivityId);
+   //check if delete all => displays empty message
+   var ownerRootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_OWNER_APPENDABLE_ROOT);
+   var friendsRootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_FRIENDS_APPENDABLE_ROOT);
+   if (!ownerRootEl.hasChildNodes()) {
+     ownerRootEl.innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [statusUpdate.owner.getDisplayName()]) + '</div>';
+   }
+   if (!friendsRootEl.hasChildNodes()) {
+     friendsRootEl.innerHTML = '<div class="Empty">' + Locale.getMsg('displayName_do_not_have_update', [Locale.getMsg('owner_friends')]) + '</div>';
+   } 
+ 	 return;
+ 	} else if (!response.data) {
+		debug.warn('Like.displayLike: response data is null!!!');
 		alert(Locale.getMsg('internal_error'));
-		statusUpdate.refresh();
 		return;
 	}
 	if (!statusUpdate) {
 		debug.error('statusUpdate ref is not set!');
-		alert(Locale.getMsg('internal_error'));
 		return;
 	}
 	var activityId = response.data.activityId;

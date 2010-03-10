@@ -71,5 +71,6 @@
 	<msg name="am">AM</msg>
 	<msg name="pm">PM</msg>
 	<msg name="day_date_month_year_at_hour_min_ap">{0} {1} {2} {3} at {4} : {5} : {6}.</msg>
+	<msg name="error_activity_not_found">Error: This activity has just been deleted by its owner!</msg>
 	<msg name="internal_error">An internal error just occurred. Please refresh!</msg>
 </messageBundle>

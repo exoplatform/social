@@ -332,6 +332,10 @@ public class ActivitiesRestService implements ResourceContainer {
   private CommentList updateComment(String activityId, Activity comment) {
     CommentList commentList = new CommentList();
     commentList.setActivityId(activityId);
+    Activity activity = _activityManager.getActivity(activityId);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
     _activityManager = getActivityManager();
     //TODO hoatle set current userId from authentication context instead of getting userId from comment
     if (comment.getUserId() == null) {
@@ -341,7 +345,6 @@ public class ActivitiesRestService implements ResourceContainer {
     comment.setExternalId(Activity.IS_COMMENT);
     try {
       comment = _activityManager.saveActivity(comment);
-      Activity activity = _activityManager.getActivity(activityId);
       String rawCommentIds = activity.getExternalId();
       if (rawCommentIds == null) rawCommentIds = "";
       rawCommentIds += "," + comment.getId();
