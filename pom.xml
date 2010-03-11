@@ -14,7 +14,7 @@
   <scm>
     <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</connection>
     <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/3Modules/social/trunk</url>
+    <url>http://fisheye.exoplatform.org/browse/projects/social/trunk</url>
   </scm>
   <properties>
     <org.exoplatform.kernel.version>2.2.0-Beta05</org.exoplatform.kernel.version>
