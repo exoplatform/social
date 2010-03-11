@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.GroupId;
@@ -61,6 +62,10 @@ public class ExoService {
          * @throws Exception the exception
          */
     protected Set<Identity> getIdSet(UserId user, GroupId group, SecurityToken token) throws Exception {
+      
+      if(token instanceof AnonymousSecurityToken) {
+  		throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));  
+  	  }	
       String userId = user.getUserId(token);
 
       Identity id = getIdentity(userId);
@@ -125,6 +130,10 @@ public class ExoService {
      */
     protected Set<Identity> getIdSet(Set<UserId> users, GroupId group, SecurityToken token)
             throws Exception {
+    	
+	  if(token instanceof AnonymousSecurityToken) {
+		  throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));  
+	  }	
       Set<Identity> ids = Sets.newLinkedHashSet();
       for (UserId user : users) {
         ids.addAll(getIdSet(user, group, token));

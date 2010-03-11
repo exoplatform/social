@@ -29,6 +29,7 @@ import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.DataCollection;
@@ -140,9 +141,11 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    */
   public Future<Person> getPerson(UserId id, Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
-
+    	
+    	if(token instanceof AnonymousSecurityToken) {
+    		throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
+    	}
         Identity identity = getIdentity(id.getUserId(token));
-
 
         return ImmediateFuture.newInstance(convertToPerson(identity, fields));
     } catch (Exception e) {
@@ -350,6 +353,9 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    */
   public Future<Void> deletePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
+	  if(token instanceof AnonymousSecurityToken) {
+  		throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));  
+  	  }	
       String userId = user.getUserId(token);
 
       Identity id = getIdentity(userId);
@@ -369,6 +375,9 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   public Future<Void> updatePersonData(UserId user, GroupId groupId, String appId, Set<String> fields, Map<String, String> values, SecurityToken token) throws ProtocolException {
     //TODO: remove the fields that are in the fields list and not in the values map
     try {
+	  if(token instanceof AnonymousSecurityToken) {
+		  throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN)); 
+      }	
       String userId = user.getUserId(token);
 
       Identity id = getIdentity(userId);

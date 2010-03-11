@@ -21,6 +21,7 @@ import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.*;
 import org.apache.shindig.social.opensocial.model.Activity;
 import org.apache.shindig.social.core.model.ActivityImpl;
+import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.exoplatform.container.PortalContainer;
@@ -88,6 +89,9 @@ public class ExoActivityService extends ExoService implements ActivityService {
   public Future<RestfulCollection<Activity>> getActivities(UserId userId, GroupId groupId, String appId, Set<String> fields, CollectionOptions options, Set<String> activityIds, SecurityToken token) throws SocialSpiException {
     List<Activity> result = Lists.newArrayList();
     try {
+      if(token instanceof AnonymousSecurityToken) {
+   		  throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));  
+   	  }		
       String user = userId.getUserId(token);
       Identity id = getIdentity(user);
 
@@ -136,7 +140,9 @@ public class ExoActivityService extends ExoService implements ActivityService {
   public Future<Void> createActivity(UserId userId, GroupId groupId, String appId, Set<String> fields, Activity activity, SecurityToken token) throws SocialSpiException {
     try {
       org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity, fields);
-
+      if(token instanceof AnonymousSecurityToken) {
+		  throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));  
+	  }	
       //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
       PortalContainer pc = PortalContainer.getInstance();
       ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
