@@ -1,24 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
     <version>1.0.0-Beta03-SNAPSHOT</version>
-  </parent> 
-
-  <modelVersion>4.0.0</modelVersion>
+  </parent>
   <artifactId>exo.social.portlet.space</artifactId>
-  <packaging>war</packaging>
   <version>1.0.0-Beta03-SNAPSHOT</version>
+  <packaging>war</packaging>
   <name>eXo Social Portlet Space</name>
-  <url>http://www.exoplatform.org</url>
   <description>social project, portlet web category</description>
-
-  <build>
-    <finalName>space</finalName>
-  </build>
-
+  <url>http://www.exoplatform.org</url>
   <dependencies>
-  	<dependency>
+    <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
       <version>1.0.0-Beta03-SNAPSHOT</version>
@@ -53,6 +48,9 @@
       <artifactId>exo.portal.component.dashboard</artifactId>
       <version>${org.exoplatform.portal.version}</version>
       <scope>provided</scope>
-    </dependency>   
-  </dependencies> 
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>space</finalName>
+  </build>
 </project>

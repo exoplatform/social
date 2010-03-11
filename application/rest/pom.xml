@@ -1,17 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social</artifactId>
-      <version>1.0.0-Beta03-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>exo.social.application.rest</artifactId>
+    <groupId>org.exoplatform.social</groupId>
+    <artifactId>social</artifactId>
     <version>1.0.0-Beta03-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>eXo Social Application Rest Service</name>
-    <url>http://www.exoplatform.org</url>
-    <description>eXo Social Application Rest Service</description>
-  
+  </parent>
+  <artifactId>exo.social.application.rest</artifactId>
+  <version>1.0.0-Beta03-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>eXo Social Application Rest Service</name>
+  <description>eXo Social Application Rest Service</description>
+  <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>
       <groupId>net.sourceforge.nekohtml</groupId>
@@ -52,7 +52,7 @@
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.application-registry</artifactId>
       <version>${org.exoplatform.portal.version}</version>
-			<scope>provided</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
@@ -73,41 +73,41 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.test.core</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.test.jcr</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.test.organization</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.portal</artifactId>
-        <version>${org.exoplatform.portal.cp.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.core</artifactId>
-        <version>${version.chromattic}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>javax.jcr</groupId>
-        <artifactId>jcr</artifactId>
-        <version>${javax.jcr.api.version}</version>
-      </dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.test.core</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.test.jcr</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.test.organization</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.portal</artifactId>
+      <version>${org.exoplatform.portal.cp.version}</version>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.core</artifactId>
+      <version>${version.chromattic}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <version>${javax.jcr.api.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>

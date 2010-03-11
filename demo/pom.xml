@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2009 eXo Platform SAS.
@@ -18,25 +19,22 @@
     02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>sc</artifactId>
     <version>1.0.0-Beta03-SNAPSHOT</version>
   </parent>
-
   <artifactId>exo.social.demo.root</artifactId>
-  <name>GateIn Social Sample Portal</name>
   <packaging>pom</packaging>
+  <name>GateIn Social Sample Portal</name>
   <description>GateIn Social Sample Portal Root Pom</description>
-
   <modules>
-	<module>config</module>
-	<module>jar</module>
-	<module>war</module>
-	<module>rest-war</module>
-	<module>ear</module>
+    <module>config</module>
+    <module>jar</module>
+    <module>war</module>
+    <module>rest-war</module>
+    <module>ear</module>
   </modules>
 </project>

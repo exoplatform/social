@@ -17,28 +17,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
     <version>1.0.0-Beta03-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
+  <artifactId>exo.social.web.opensocial</artifactId>
+  <packaging>war</packaging>
+  <name>eXo OpenSocial Server</name>
+  <description>eXo server war containing social api code.</description>
+  <dependencies/>
   <build>
     <finalName>social</finalName>
   </build>
-
-
-  <artifactId>exo.social.web.opensocial</artifactId>
-  <packaging>war</packaging>
-
-  <name>eXo OpenSocial Server</name>
-  <description>eXo server war containing social api code.</description>
-
-  <dependencies>
-    <!-- project dependencies -->
-
-  </dependencies>
 </project>
