@@ -121,8 +121,9 @@ a:ACTIVE {
 
 .UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
   line-height: 18px;
-  margin-left: 4px;
   cursor: pointer;
+  float: left;
+  padding: 4px;
 }
 
 .DirectorySpaces {

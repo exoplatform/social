@@ -45,6 +45,11 @@ function UIProfileUserSearch() {
    this.genderSelObj = null;
    
    /**
+    * 
+    */
+   this.filterBlock = null;
+   
+   /**
     * All Contact name for suggesting.
     * @scope private.
     */
@@ -62,6 +67,8 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 	var profEl = DOMUtil.findDescendantById(profileSearch, 'professional');
 	var filterBlock = DOMUtil.findDescendantById(profileSearch, 'Filter');
 	var genderEl = DOMUtil.findDescendantsByTagName(profileSearch, 'select');
+	var moreSearchEl = DOMUtil.findDescendantById(profileSearch, 'MoreSearch');
+	var hideMoreSearchEl = DOMUtil.findDescendantById(profileSearch,'HideMoreSearch');
 	// Get default value
 	var defaultUserContact = document.getElementById('defaultUserContact').value;
 	var defaultPos = document.getElementById('defaultPos').value;
@@ -72,17 +79,40 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 	var defaultPosVal = "position";
 	var defaultProfVal = "professional";
 	var defaultGenderVal = "Gender";
+	// filter has input value or not
+	var hasFilter = false;
 	
 	this.nameTextObj = searchEl;
 	this.posTextObj = posEl;
 	this.profTextObj = profEl;
 	this.genderSelObj = genderEl;
-	if ((searchEl.value == defaultNameVal) || (searchEl.value.trim().length == 0)) searchEl.value = defaultUserContact;
-	(searchEl.value != defaultUserContact) ? (searchEl.style.color = '#000000') : (searchEl.style.color = '#C7C7C7');
+	this.filterBlock = filterBlock;
 	
-	posEl.value = defaultPos;
-	profEl.value = defaultProf;
-	genderEl[0].value= defaultGender;
+	if ((posEl.value != defaultPos) || (profEl.value != defaultProf) || (genderEl[0].value != defaultGender)) {
+		hasFilter = true;
+	}
+	
+	// Need for the first run time or component is empty then initialize the component value.
+	if ((searchEl.value == defaultNameVal) || (searchEl.value.trim().length == 0)) searchEl.value = defaultUserContact;
+	if ((posEl.value == defaultPosVal) || (posEl.value.trim().length == 0)) posEl.value = defaultPos;
+	if ((profEl.value == defaultProfVal) || (profEl.value.trim().length == 0)) profEl.value = defaultProf;
+	
+	(searchEl.value != defaultUserContact) ? (searchEl.style.color = '#000000') : (searchEl.style.color = '#C7C7C7');
+	(posEl.value != defaultPos) ? (posEl.style.color = '#000000') : (posEl.style.color = '#C7C7C7');
+	(profEl.value != defaultProf) ? (profEl.style.color = '#000000') : (profEl.style.color = '#C7C7C7');
+	
+	if (hasFilter) {
+		moreSearchEl.style.display='none';
+		hideMoreSearchEl.style.display='block';
+		filterBlock.style.display='block';
+	} else {
+		posEl.value = defaultPos;
+		profEl.value = defaultProf;
+		genderEl[0].value= defaultGender;
+		moreSearchEl.style.display='block';
+		hideMoreSearchEl.style.display='none';
+		filterBlock.style.display='none';
+	}
 	
 	this.setAllContactName(allContactNames);
 	this.initTextBox();
@@ -165,12 +195,34 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 	}
 	
 	// Add keydown event for control
-	nameEl.onkeydown = posEl.onkeydown = profEl.onkeydown = genderEl.onkeydown = function(event) {
+	nameEl.onkeydown = function(event) {
 		var e = event || window.event;
 		var textBox = e.srcElement || e.target;
 		var keynum = e.keyCode || e.which;  
 		var searchForm = DOMUtil.findAncestorByClass(textBox, 'UIForm');
-		  
+		
+		if(keynum == 13) {
+			posEl.value = defaultPos;
+			profEl.value = defaultProf;
+			genderEl[0].value= defaultGender;
+			
+			suggestControlObj.hideSuggestions();
+			uiProfileUserSearchObj.submitSearchForm(textBox);
+		} else if (textBox.id == searchId) {
+			// Other keys (up and down key)
+			suggestControlObj.handleKeyDown(e);
+		} else {
+			// ignore
+		}
+	}
+	
+	// Add keydown event for control
+	posEl.onkeydown = profEl.onkeydown = genderEl.onkeydown = function(event) {
+		var e = event || window.event;
+		var textBox = e.srcElement || e.target;
+		var keynum = e.keyCode || e.which;  
+		var searchForm = DOMUtil.findAncestorByClass(textBox, 'UIForm');
+		
 		if(keynum == 13) {
 			suggestControlObj.hideSuggestions();
 			uiProfileUserSearchObj.submitSearchForm(textBox);
@@ -184,6 +236,33 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 	
 	// Add suggestion capability for user contact name search text-box.
 	suggestControlObj.load(nameEl, uiProfileUserSearchObj);
+}
+
+/**
+ * Set default values for filter block component if it not display.<br>
+ */
+UIProfileUserSearch.prototype.clickSearch = function(uicomponentId) {
+	var posEl = this.posTextObj;
+	var profEl = this.profTextObj;
+	var genderEl = this.genderSelObj;
+	var filterBlock = this.filterBlock;
+	var defaultPos = document.getElementById('defaultPos').value;
+	var defaultProf = document.getElementById('defaultProf').value;
+	var defaultGender = document.getElementById('defaultGender').value;
+	var DOMUtil = eXo.core.DOMUtil;
+	var UIForm = eXo.webui.UIForm;
+	var profileSearch = document.getElementById(uicomponentId);
+	var searchEl = DOMUtil.findDescendantById(profileSearch, 'Search');
+	
+	var searchForm = DOMUtil.findAncestorByClass(searchEl, 'UIForm');
+
+	if (filterBlock.style.display == 'none') {
+		posEl.value = defaultPos;
+		profEl.value = defaultProf;
+		genderEl[0].value= defaultGender;
+	}
+	
+	if (searchForm != null ) UIForm.submitForm(searchForm.id, 'Search', true);
 }
 
 /**
@@ -212,13 +291,15 @@ UIProfileUserSearch.prototype.toggleFilter = function(newLabel, filterBlockId, e
 	
 	var element = document.getElementById(elementId);
 	
-	if (filter.style.display == 'none') {
-		currentEl.innerHTML = "";
+	if (filter.style.display == 'none') { // Click More
+		currentEl.style.display = 'none';
 		element.innerHTML = newLabel;
+		element.style.display = 'block';
 		filter.style.display = 'block';
-    } else {
-    	currentEl.innerHTML = "";
+    } else { // Click Hide
+    	currentEl.style.display = 'none';
     	element.innerHTML = newLabel;
+    	element.style.display = 'block';
     	filter.style.display = 'none';
     }
 };
