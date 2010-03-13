@@ -10,7 +10,7 @@
   <artifactId>social</artifactId>
   <version>1.0.0-Beta03-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>GateIn - Social</name>
+  <name>eXo - Social</name>
   <scm>
     <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</connection>
     <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</developerConnection>
