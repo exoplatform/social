@@ -32,7 +32,7 @@
     	org.apache.shindig.common.PropertiesModule:
     	org.exoplatform.social.opensocial.ExoSocialApiGuiceModule:
       org.apache.shindig.gadgets.DefaultGuiceModule:
-      org.apache.shindig.gadgets.servlet.AuthenticationModule:
+      <!-- org.apache.shindig.gadgets.servlet.AuthenticationModule: -->
       org.exoplatform.portal.gadget.core.ExoOAuthModule:
       org.apache.shindig.common.cache.ehcache.EhCacheModule:
       org.exoplatform.portal.gadget.core.ExoModule

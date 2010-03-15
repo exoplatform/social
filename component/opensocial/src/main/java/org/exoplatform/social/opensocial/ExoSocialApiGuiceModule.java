@@ -16,14 +16,17 @@
  */
 package org.exoplatform.social.opensocial;
 
+import java.util.List;
 import java.util.Set;
 
+import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
 import org.apache.shindig.protocol.DataServiceServletFetcher;
 import org.apache.shindig.protocol.conversion.BeanConverter;
 import org.apache.shindig.protocol.conversion.BeanJsonConverter;
 import org.apache.shindig.protocol.conversion.BeanXStreamConverter;
 import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
+import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.model.Person;
@@ -86,8 +89,8 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
     bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
         BeanXStreamAtomConverter.class);
     
-//    bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(
-//        AuthenticationHandlerProvider.class);
+    bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(
+        AuthenticationHandlerProvider.class);
     
     bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.social.handlers"))
         .toInstance(getHandlers());
