@@ -70,6 +70,8 @@ eXo.social.StatusUpdate.config = {
 	MAX_ACTIVITIES : 5, //default displays 5 item only
 	REFRESH_TIME : 3 * 60 * 1000 //in miliseconds; should improve by detecting user's activity on app. Can be changed by user's pref
 };
+//see SOC-654
+eXo.social.StatusUpdate.allowedTags = ['b', 'i', 'a', 'span', 'em', 'strong', 'p', 'ol', 'ul', 'li', 'br'];
 
 /**
  * main entry point for app
@@ -222,11 +224,11 @@ eXo.social.StatusUpdate.prototype.init = function() {
     		[opensocial.Person.Field.ID,
     		 opensocial.Person.Field.NAME,
     		 opensocial.Person.Field.PROFILE_URL,
-         opensocial.Person.Field.THUMBNAIL_URL];
+    		 opensocial.Person.Field.THUMBNAIL_URL];
 		req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER, opts), 'viewer');
 		req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.OWNER, opts), 'owner');
 		var ownerFriendsSpec = opensocial.newIdSpec({"userId":"OWNER", "groupId":"FRIENDS"});
-    req.add(req.newFetchPeopleRequest(ownerFriendsSpec, opts), 'ownerFriends');
+		req.add(req.newFetchPeopleRequest(ownerFriendsSpec, opts), 'ownerFriends');
 		req.send(handler);
 		function handler(response) {
 			var miniMessage = statusUpdate.miniMessage;
@@ -534,6 +536,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         ownerId = statusUpdate.owner.getId();
         title = activity.getField(opensocial.Activity.Field.TITLE);
         body = activity.getField(opensocial.Activity.Field.BODY);
+        body = Util.stripHtml(StatusUpdate.allowedTags, body);
         avatarUrl = statusUpdate.getAvatar(userId);
         prettyTime = Util.toPrettyTime(new Date(activity.getField('postedTime')));
         var html = [];
@@ -599,6 +602,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   			html.push('</div>');
 	   			html.push('<div class="UserStatus">');
 	   			if (jsonBody.comment) {
+	   				jsonBody.comment = Util.stripHtml(StatusUpdate.allowedTags, jsonBody.comment);
 	   				html.push(jsonBody.comment);
 	   			}
 	   			if (jsonBody.data.title.length === 0) {
@@ -971,9 +975,7 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 	}
 	// replace tag
 	var reWhiteSpace = new RegExp(/^\s+$/);
-	var text = activityElement.value;
-	var content = text.replace(/<p>/gi, "<br>").replace(/<\/\p>/gi, "<br>");
-	var activityContent = content.replace(/<br>/gi, " ");
+	var activityContent = activityElement.value;
 	//for linkShare
 	var linkShare = this.linkShare;
 	var statusUpdate = this;

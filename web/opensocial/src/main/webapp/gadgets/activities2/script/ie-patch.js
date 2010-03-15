@@ -33,3 +33,15 @@ if (!Array.prototype.lastIndexOf) {
     return -1;
   };
 }
+
+//Array.indexOf()
+if (!Array.prototype.indexOf) {
+  Array.prototype.indexOf = function(obj){
+    for(var i = 0, l = this.length; i < l; i++){
+      if(this[i] === obj){
+        return i;
+      }
+    }
+    return -1;
+  }
+}

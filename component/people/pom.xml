@@ -82,6 +82,12 @@
       <type>test-jar</type>
     </dependency>
     <dependency>
+      <groupId>org.apache.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+      <version>${org.shindig.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
       <version>${version.chromattic}</version>

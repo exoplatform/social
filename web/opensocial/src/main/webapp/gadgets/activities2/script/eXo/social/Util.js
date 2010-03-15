@@ -412,6 +412,63 @@ eXo.social.Util.makeRequest = function(url, callback, opt_refreshInterval, opt_m
 	params[gadgets.io.RequestParameters.HEADERS] = headers;
 	gadgets.io.makeRequest(url, callback, params);
 }
+
+/**
+ * strips htmlString, keeps allowedTags
+ * @param	allowedTags Array
+ * @param	escapedHtmlString String
+ * @return	stripedHtml	String
+ * @static
+ */
+eXo.social.Util.stripHtml = function(/*Array*/ allowedTags, /*String*/ escapedHtmlString) {
+	if (!allowedTags) {
+		return escapedHtmlString;
+	}
+	escapedHtmlString = escapedHtmlString.replace(/&#60;/g, '<').replace(/&#62;/g, '>').replace(/&#34;/g, '"');
+	if (allowedTags.length === 0) {
+		return escapedHtmlString;
+	}
+	//lowercased allowedTags
+	var lowerCasedTags = [];
+	var l = allowedTags.length;
+	while (l--) {
+		lowerCasedTags.push(allowedTags[l].toLowerCase());
+	}
+	var result = [];
+	var handler = {
+		getText: false,
+		start: function(tag, attrs, unary) {
+			if (lowerCasedTags.indexOf(tag) > -1) {
+				result.push('<' + tag);
+				for (var i = 0, l = attrs.length; i < l; i++) {
+					result.push(' ' + attrs[i].name + '="' + attrs[i].escaped + '"');
+				}
+				result.push((unary ? "/" : "") + ">");
+				this.getText = true;
+			} else {
+				this.getText = false;
+			}
+			
+		},
+		end: function(tag) {
+			if (lowerCasedTags.indexOf(tag) > -1) {
+				result.push('</' + tag + '>');
+			}
+		},
+		chars: function(text) {
+			if (this.getText) {
+				result.push(text);
+			}
+		},
+		comment: function(text) {
+			//ignore this?
+			//result.push('<!--' + text + '-->');
+		}
+	};
+	HTMLParser(escapedHtmlString, handler);
+	return result.join('');
+}
+
 /**
  * converts timestamp to pretty time
  * Use resource bundle

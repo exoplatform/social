@@ -139,6 +139,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
    */
   public Future<Void> createActivity(UserId userId, GroupId groupId, String appId, Set<String> fields, Activity activity, SecurityToken token) throws SocialSpiException {
     try {
+      activity.setAppId(appId);
       org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity, fields);
       if(token instanceof AnonymousSecurityToken) {
 		  throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));  
