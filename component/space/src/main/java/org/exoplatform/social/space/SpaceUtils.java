@@ -803,6 +803,27 @@ public class SpaceUtils {
   }
   
   /**
+   * Checks user is removed or not.<br>
+   * 
+   * @param userName User name for checking.
+   * 
+   * @throws SpaceEception if user is removed.
+   */
+  static public void checkUserExisting(String userName) throws SpaceException {
+    OrganizationService orgService = getOrganizationService();
+    User user = null;
+    try {
+      user = orgService.getUserHandler().findUserByName(userName);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_USER, e);
+    }
+    
+    if (user == null) {
+      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_USER);
+    }
+  }
+  
+  /**
    * Checking whether a group can have access to an application
    * @param app
    * @param groupId
@@ -824,7 +845,7 @@ public class SpaceUtils {
    * Get Organization Service
    * @return
    */
-  static private OrganizationService getOrganizationService(){
+  static public OrganizationService getOrganizationService(){
     PortalContainer portalContainer = PortalContainer.getInstance();
     return (OrganizationService) portalContainer.getComponentInstanceOfType(OrganizationService.class);
   }

@@ -25,6 +25,7 @@ import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.social.webui.UISpaceSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -66,6 +67,7 @@ public class UISpaceAddForm extends UIFormTabPane {
   static private final String MSG_ERROR_UNABLE_TO_INIT_APP        = "UISpaceAddForm.msg.error_unable_to_init_app";
   static private final String MSG_ERROR_UNABLE_TO_ADD_CREATOR     = "UISpaceAddForm.msg.error_unable_to_add_creator";
   static private final String MSG_ERROR_UNABLE_TO_ADD_APPLICATION = "UISpaceAddForm.msg.error_unable_to_add_application";
+  static private final String MSG_ERROR_RETRIEVING_USER           = "UISpaceAddForm.msg.error_unable_to_retrieve_user";
   static private final String MSG_SPACE_CREATION_SUCCESS          = "UISpaceAddForm.msg.space_creation_success";
   static private final String MSG_ERROR_SPACE_ALREADY_EXIST       = "UISpaceAddForm.msg.error_space_already_exist";
   private final String        SPACE_SETTINGS                      = "UISpaceSettings";
@@ -117,6 +119,9 @@ public class UISpaceAddForm extends UIFormTabPane {
       }
       String msg = MSG_SPACE_CREATION_SUCCESS;
       try {
+        // Checks user is still existing or not.
+        SpaceUtils.checkUserExisting(ctx.getRemoteUser());
+        
         if (selectedGroup != null) {// create space from an existing group
           space = spaceService.createSpace(space, creator, selectedGroup);
         } else { // Create new space
@@ -146,6 +151,8 @@ public class UISpaceAddForm extends UIFormTabPane {
           msg = MSG_ERROR_UNABLE_TO_INIT_APP;
         } else if (se.getCode() == SpaceException.Code.UNABLE_TO_ADD_APPLICATION) {
           msg = MSG_ERROR_UNABLE_TO_ADD_APPLICATION;
+        } else if (se.getCode() == SpaceException.Code.ERROR_RETRIEVING_USER) {
+          msg = MSG_ERROR_RETRIEVING_USER;
         } else {
           msg = MSG_ERROR_SPACE_CREATION;
         }
