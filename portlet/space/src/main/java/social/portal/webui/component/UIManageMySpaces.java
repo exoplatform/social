@@ -21,8 +21,11 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.UserACL;
@@ -33,6 +36,8 @@ import org.exoplatform.portal.webui.navigation.UINavigationNodeSelector;
 import org.exoplatform.portal.webui.page.UIPageNodeForm2;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceException;
@@ -247,7 +252,23 @@ public class UIManageMySpaces extends UIContainer {
 
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
-      // Currently, not used yet
+      UIManageMySpaces uiMySpaces = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIApplication uiApp = ctx.getUIApplication();
+      SpaceService spaceService = uiMySpaces.getSpaceService();
+      Space space = spaceService.getSpaceById(ctx.getRequestParameter(OBJECTID));
+      OrganizationService organizationService = SpaceUtils.getOrganizationService();
+      Group group = organizationService.getGroupHandler().findGroupById(space.getGroupId());
+      if (group == null) {
+        uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.group_unable_to_retrieve", null, ApplicationMessage.ERROR));
+        return;
+      } else {
+        String spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl();
+        String spaceSettingUrl = spaceUrl + "/" + "SpaceSettingPortlet";
+        PortalRequestContext prContext = Util.getPortalRequestContext();
+        prContext.setResponseComplete(true);
+        prContext.getResponse().sendRedirect(spaceSettingUrl);
+      }
     }
   }
   
