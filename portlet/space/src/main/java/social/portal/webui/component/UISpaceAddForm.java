@@ -128,9 +128,7 @@ public class UISpaceAddForm extends UIFormTabPane {
           space = spaceService.createSpace(space, creator);
         }
         space.setType(DefaultSpaceApplicationHandler.NAME);
-        spaceService.saveSpace(space, true);
         spaceService.initApp(space);
-        
         // Apply search condition into the new created space if has.
         UIPopupWindow uiPopup = uiAddForm.getAncestorOfType(UIPopupWindow.class);
         UIManageMySpaces uiMySpace = uiPopup.getParent();

@@ -90,16 +90,17 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   public List<PageNode> getApps() throws Exception {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space = spaceSrc.getSpaceByUrl(spaceUrl);
-    
-    UserPortalConfigService dataService = getApplicationComponent(UserPortalConfigService.class);
-    PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
-    
-    PageNode homeNode = pageNav.getNode(spaceUrl);
-    List<PageNode> list = homeNode.getChildren();
+    space = spaceSrc.getSpaceByUrl(spaceUrl);
+    UserPortalConfigService userPortalConfigService = getApplicationComponent(UserPortalConfigService.class);
+    PageNavigation pageNav = userPortalConfigService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
 
+    PageNode homeNode = pageNav.getNode(spaceUrl);
+    if (homeNode == null) {
+      pageNav = getUIPortal().getSelectedNavigation(); 
+      homeNode = pageNav.getNodes().get(0);
+    }
+    List<PageNode> list = homeNode.getChildren();
     PageNode pageNode = null;
-    
     for(PageNode node:list){
       if(node.getName().equals(SPACE_SETTING_PORTLET)){
         pageNode = node;
@@ -202,7 +203,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public String getSpaceName() throws Exception {
-    Space space = getSpace();
+    space = getSpace();
     return space.getName();
   }
   
@@ -240,7 +241,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    * @throws SpaceException
    */
   private boolean isLeader() throws SpaceException {
-    SpaceService spaceService = getSpaceService();
+    spaceService = getSpaceService();
     String userId = Util.getPortalRequestContext().getRemoteUser();
     Space space = getSpace();
     if(spaceService.hasEditPermission(space.getId(), userId)) {
@@ -300,11 +301,11 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    * @return space object.
    */
   private Space getSpace() {
-    SpaceService spaceService = getSpaceService();
-    String spaceUrl = SpaceUtils.getSpaceUrl();
     
     if (space == null) {
       try {
+        spaceService = getSpaceService();
+        String spaceUrl = SpaceUtils.getSpaceUrl();
         space = spaceService.getSpaceByUrl(spaceUrl);
       } catch (SpaceException e) {
         e.printStackTrace();

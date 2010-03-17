@@ -265,6 +265,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     space.setGroupId(groupId);
     space.setUrl(SpaceUtils.cleanString(space.getName()));
+    saveSpace(space, true);
     spaceLifeCycle.spaceCreated(space, creator);
     return space;
   }

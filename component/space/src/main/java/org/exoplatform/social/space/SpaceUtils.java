@@ -47,6 +47,8 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -69,8 +71,8 @@ import com.ibm.icu.text.Transliterator;
  * Utility for working with space
  */
 public class SpaceUtils {
-
-  static private final String SPACE_GROUP = "/spaces";
+  static public final Log logger = ExoLogger.getLogger(SpaceUtils.class);
+  static public final String SPACE_GROUP = "/spaces";
 
   static public final String  MEMBER      = "member";
 
@@ -259,7 +261,6 @@ public class SpaceUtils {
             app.setContentId(contentId);
             app.setApplicationName(portletName);
             app.setCategoryName(categoryName);
-  
             app.setDisplayName(getLocalizedStringValue(displayNameLS, portletName));
             app.setDescription(getLocalizedStringValue(descriptionLS, portletName));
             appList.add(app);
@@ -337,15 +338,19 @@ public class SpaceUtils {
   
   /**
    * Utility for getting space url based on url address 
-   * @return spaceUrl
    */
   static public String getSpaceUrl() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String requestUrl = pcontext.getRequestURI();
-    String portalUrl = pcontext.getPortalURI();
-    String spaceUrl = requestUrl.replace(portalUrl, "");
-    if (spaceUrl.contains("/"))
+    PageNode selectedNode = null;
+    try {
+      selectedNode = Util.getUIPortal().getSelectedNode();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    String spaceUrl = selectedNode.getUri();
+    if (spaceUrl.contains("/")) {
       spaceUrl = spaceUrl.split("/")[0];
+    }
     return spaceUrl;
   }
   
@@ -356,8 +361,7 @@ public class SpaceUtils {
   static public void setNavigation(PageNavigation nav) {
     UIPortal uiPortal = Util.getUIPortal();
     try {
-      List<PageNavigation> navs = null;
-      navs = uiPortal.getNavigations();
+      List<PageNavigation> navs = uiPortal.getNavigations();
       boolean alreadyExisted = false;
       for (int i = 0; i < navs.size(); i++) {
         if (navs.get(i).getId() == nav.getId()) {
@@ -368,8 +372,7 @@ public class SpaceUtils {
       }
       if (!alreadyExisted) {
         navs.add(nav);
-        PageNode selectedPageNode = null;
-        selectedPageNode = uiPortal.getSelectedNode();
+        PageNode selectedPageNode = uiPortal.getSelectedNode();
         uiPortal.setNavigation(navs);
         uiPortal.setSelectedNode(selectedPageNode);
       }

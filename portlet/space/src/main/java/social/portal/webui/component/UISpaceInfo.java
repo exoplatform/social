@@ -20,7 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.portal.UIPortal;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceService;
@@ -64,6 +72,8 @@ public class UISpaceInfo extends UIForm {
   private final String PRIORITY_IMMEDIATE = "immediate";
   private final String PRIORITY_LOW = "low";
   private SpaceService spaceService = null;
+  private OrganizationService organizationService = null;
+  private UserPortalConfigService userPortalConfigService = null;
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
   /**
    * constructor
@@ -75,8 +85,8 @@ public class UISpaceInfo extends UIForm {
                    addValidator(MandatoryValidator.class).
                    addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}]+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30)).
-    addUIFormInput(new UIFormTextAreaInput("description","description",null)
-        .addValidator(StringLengthValidator.class, 0, 255));
+    addUIFormInput(new UIFormTextAreaInput("description","description",null).
+                   addValidator(StringLengthValidator.class, 0, 255));
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
     SelectItemOption<String> pHigh = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
     SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_IMMEDIATE, Space.INTERMEDIATE_PRIORITY);
@@ -131,14 +141,56 @@ public class UISpaceInfo extends UIForm {
     public void execute(Event<UISpaceInfo> event) throws Exception {
       UISpaceInfo uiSpaceInfo = event.getSource();
       SpaceService spaceService = uiSpaceInfo.getSpaceService();
+      UIPortal uiPortal = Util.getUIPortal();
+      PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
       WebuiRequestContext requestContext = event.getRequestContext();
       String id = uiSpaceInfo.getUIStringInput("id").getValue();
+      String name = uiSpaceInfo.getUIStringInput("name").getValue();
       Space space = spaceService.getSpaceById(id);
+      PageNode selectedNode = uiPortal.getSelectedNode();
+      PageNode homeNode = null;
+      boolean nameChanged = (space.getName() != name);
+      if (nameChanged) {
+        UserPortalConfigService userPortalConfigService = uiSpaceInfo.getUserPortalConfigService();
+        String cleanedString = SpaceUtils.cleanString(name);
+        space.setUrl(cleanedString);
+        PageNavigation spaceNavigation = userPortalConfigService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+        homeNode = spaceNavigation.getNodes().get(0);
+        homeNode.setUri(cleanedString);
+        homeNode.setName(cleanedString);
+        homeNode.setLabel(name);
+        List<PageNode> childNodes = homeNode.getNodes();
+        PageNode childNode;
+        String oldUri;
+        String newUri;
+        for (int i = 0; i < childNodes.size(); i++) {
+          childNode = childNodes.get(i);
+          oldUri = childNode.getUri();
+          newUri = oldUri.replace(oldUri.substring(0, oldUri.lastIndexOf("/")), name);
+          childNode.setUri(newUri);
+          childNode.setName(oldUri.substring(oldUri.lastIndexOf("/") + 1, oldUri.length()));
+          if (selectedNode.getName().equals(childNode.getName())) {
+            selectedNode = childNode;
+          }
+          childNodes.set(i, childNode);
+        }
+        homeNode.setChildren((ArrayList<PageNode>) childNodes);
+        spaceNavigation.getNodes().set(0, homeNode);
+        userPortalConfigService.update(spaceNavigation);
+        uiPortal.setSelectedNode(selectedNode);
+        uiPortal.setSelectedNavigation(spaceNavigation);
+        SpaceUtils.setNavigation(spaceNavigation);
+      }
+      
       uiSpaceInfo.invokeSetBindingBean(space);
       spaceService.saveSpace(space, false);
-      UIApplication uiApp = requestContext.getUIApplication();
-      uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));
-      SpaceUtils.updateWorkingWorkSpace();
+      if (nameChanged) {
+        portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + selectedNode.getUri());
+      } else {
+        UIApplication uiApp = requestContext.getUIApplication();
+        uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));
+        SpaceUtils.updateWorkingWorkSpace();
+      }
     }
   }
   
@@ -171,6 +223,23 @@ public class UISpaceInfo extends UIForm {
     return spaceService;
   }
   
+  /**
+   * gets organizationService
+   * @return organizationService
+   */
+  public OrganizationService getOrganizationService() {
+    if (organizationService == null) {
+      organizationService = getApplicationComponent(OrganizationService.class);
+    }
+    return organizationService;
+  }
+  
+  public UserPortalConfigService getUserPortalConfigService() {
+    if (userPortalConfigService == null) {
+      userPortalConfigService = getApplicationComponent(UserPortalConfigService.class);
+    }
+    return userPortalConfigService;
+  }
   /**
    * gets current portal name
    * @return current portal name

@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
-import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -34,7 +33,6 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
-import org.exoplatform.social.space.SpaceListAccess;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -182,6 +180,15 @@ public class UISpaceApplication extends UIForm {
     }
     
     PageNode homeNode = pageNav.getNode(spaceUrl);
+    if (homeNode == null) {
+      try {
+        pageNav = Util.getUIPortal().getSelectedNavigation();
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      homeNode = pageNav.getNodes().get(0);
+    }
     List<PageNode> nodes = homeNode.getChildren();
     
     String installedApp = space.getApp();

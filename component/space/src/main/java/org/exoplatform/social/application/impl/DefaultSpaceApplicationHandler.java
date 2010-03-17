@@ -197,6 +197,10 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     PageNode pageNode = createPageNodeFromApplication(space, appId, false);
     try {
       PageNode homeNode = nav.getNode(space.getUrl());
+      if (homeNode == null) {
+        nav = Util.getUIPortal().getSelectedNavigation();
+        homeNode = nav.getNode(space.getUrl());
+      }
       List<PageNode> childNodes = homeNode.getChildren();
       if(childNodes == null) childNodes = new ArrayList<PageNode>();
       childNodes.add(pageNode);
@@ -230,7 +234,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       String spaceNav = space.getGroupId();
       PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
-      PageNode homeNode = nav.getNode(space.getUrl());
+      PageNode homeNode = nav.getNodes().get(0);
       List<PageNode> childNodes = homeNode.getChildren();
       String nodeName = null;
       String[] apps = space.getApp().split(",");
@@ -342,7 +346,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       pageName = page.getName();
     } catch (Exception e) {
       e.printStackTrace();
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE, e);
     }
     page.setName(pageName);
     page.setOwnerType(PortalConfig.GROUP_TYPE);

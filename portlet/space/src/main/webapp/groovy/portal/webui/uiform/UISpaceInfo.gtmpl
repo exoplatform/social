@@ -3,7 +3,7 @@
 
 	def imageSource = uicomponent.getImageSource();
 	def changeAvatar = uicomponent.event('ChangeAvatar');
-	def saveAction = uicomponent.event('Save'); 
+	def saveAction = uicomponent.url('Save'); 
 	def childs = uicomponent.getChildren();
 	def clickChangeAvatar = _ctx.appRes("${uicomponent.getId()}.title.ClickChangeAvatar")
 %>
