@@ -373,7 +373,9 @@ public class SpaceUtils {
       if (!alreadyExisted) {
         navs.add(nav);
         PageNode selectedPageNode = uiPortal.getSelectedNode();
-        uiPortal.setNavigation(navs);
+        //TODO dang.tung 3.0
+        //uiPortal.setNavigation(navs);
+        //TODO dang.tung
         uiPortal.setSelectedNode(selectedPageNode);
       }
     } catch (Exception e) {
@@ -398,7 +400,9 @@ public class SpaceUtils {
     
     navs.remove(nav);
     try {
-      uiPortal.setNavigation(navs);
+      //TODO dang.tung 3.0	
+      //uiPortal.setNavigation(navs);
+      //TODO dang.tung	
     } catch (Exception e) {
       e.printStackTrace();
     }

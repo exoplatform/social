@@ -90,9 +90,13 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   public List<PageNode> getApps() throws Exception {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    space = spaceSrc.getSpaceByUrl(spaceUrl);
-    UserPortalConfigService userPortalConfigService = getApplicationComponent(UserPortalConfigService.class);
-    PageNavigation pageNav = userPortalConfigService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+    Space space = spaceSrc.getSpaceByUrl(spaceUrl);
+    
+    UserPortalConfigService dataService = getApplicationComponent(UserPortalConfigService.class);
+    //TODO dang.tung 3.0
+    //PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+    PageNavigation pageNav = null;
+    //TODO dang.tung
 
     PageNode homeNode = pageNav.getNode(spaceUrl);
     if (homeNode == null) {
@@ -153,8 +157,10 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       selectedNode.setLabel(newSpaceAppName);
       
       String newNodeName = newSpaceAppName.replace(' ', '_');
-      
-      PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+      //TODO dang.tung 3.0
+      //PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+      PageNavigation pageNav = null;
+      //TODO dang.tung
       if (spaceMenu.isAppNameExisted(pageNav, newNodeName))
       {
          newNodeName = newNodeName + "_" + System.currentTimeMillis();
@@ -186,9 +192,9 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
           }
         }
       }
-      
-      dataService.update(selectedNavigation);
-
+      //TODO dang.tung 3.0
+      //dataService.update(selectedNavigation);
+      //TODO dang.tung
       if (newUri != null)
       {
          prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);

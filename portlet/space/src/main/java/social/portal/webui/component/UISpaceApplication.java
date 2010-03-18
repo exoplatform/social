@@ -23,12 +23,9 @@ import java.util.Map;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
-import org.exoplatform.commons.utils.ObjectPageList;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
@@ -135,9 +132,10 @@ public class UISpaceApplication extends UIForm {
         }
       }
     }
-    
-    PageList pageList = new ObjectPageList(lists,3);
-    iterator.setPageList(pageList);
+    //TODO dang.tung 3.0
+    //PageList pageList = new ObjectPageList(lists,3);
+    //iterator.setPageList(pageList);
+    //TODO dang.tung 3.0
   }
   
   /**
@@ -174,7 +172,9 @@ public class UISpaceApplication extends UIForm {
     UserPortalConfigService dataService = getApplicationComponent(UserPortalConfigService.class);
     PageNavigation pageNav = null;
     try {
-      pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+      //TODO dang.tung 3.0
+      //pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+      //TODO dang.tung 3.0
     } catch (Exception e) {
       e.printStackTrace();
     }

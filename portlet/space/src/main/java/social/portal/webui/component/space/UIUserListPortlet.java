@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.commons.utils.ObjectPageList;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -291,9 +289,11 @@ public class UIUserListPortlet extends UIPortletApplication {
    */
   private void update() throws Exception {
     int n = iterator_.getCurrentPage();
-    PageList pageList = new ObjectPageList(memberList, ITEMS_PER_PAGE);
-    iterator_.setPageList(pageList);
-    if (n <= pageList.getAvailablePage()) iterator_.setCurrentPage(n);
+    //TODO dang.tung 3.0
+    //PageList pageList = new ObjectPageList(memberList, ITEMS_PER_PAGE);
+    //iterator_.setPageList(pageList);
+    //if (n <= pageList.getAvailablePage()) iterator_.setCurrentPage(n);
+    //TODO dang.tung 3.0
   }
   
 

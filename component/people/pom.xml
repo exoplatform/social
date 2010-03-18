@@ -75,14 +75,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.portal</artifactId>
-      <version>${org.exoplatform.portal.cp.version}</version>
-      <scope>test</scope>
-      <type>test-jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.shindig</groupId>
+      <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
       <version>${org.shindig.version}</version>
       <scope>provided</scope>
@@ -93,10 +86,10 @@
       <version>${version.chromattic}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
       <version>${javax.jcr.api.version}</version>
     </dependency>
-  </dependencies>
+  --></dependencies>
 </project>

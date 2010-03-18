@@ -19,8 +19,6 @@ package social.portal.webui.component;
 import java.util.List;
 
 import org.exoplatform.application.registry.Application;
-import org.exoplatform.commons.utils.ObjectPageList;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -85,8 +83,10 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
         }
       }
     }
-    PageList pageList = new ObjectPageList(list,3);
-    iterator_.setPageList(pageList);
+    //TODO dang.tung 3.0
+    //PageList pageList = new ObjectPageList(list,3);
+    //iterator_.setPageList(pageList);
+    //TODO dang.tung 3.0
   }
   
   /**

@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -420,17 +421,25 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  @SuppressWarnings("unchecked")
-  public List<String> getMembers(Space space) throws SpaceException {
+  @SuppressWarnings("deprecation")
+public List<String> getMembers(Space space) throws SpaceException {
     try {
       OrganizationService orgService = getOrgService();
-      PageList usersPageList = orgService.getUserHandler().findUsersByGroup(space.getGroupId());
-      List<User> users = usersPageList.getAll();
+      UserHandler userHandler = orgService.getUserHandler();
+      PageList<User> userPageList = userHandler.findUsersByGroup(space.getGroupId());
       ArrayList<String> userNames = new ArrayList<String>();
-      for (User user : users) {
-          userNames.add(user.getUserName());
+      List<User> all = userPageList.getAll();
+      for (User user : all) {
+		userNames.add(user.getUserName());
       }
       return userNames;
+//      ListAccess<User> usersPageList = userHandler.findUsersByGroupId(space.getGroupId());
+//      User[] users = usersPageList.load(0, usersPageList.getSize());
+//      ArrayList<String> userNames = new ArrayList<String>();
+//      for (User user : users) {
+//          userNames.add(user.getUserName());
+//      }
+//      return userNames;
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
     }

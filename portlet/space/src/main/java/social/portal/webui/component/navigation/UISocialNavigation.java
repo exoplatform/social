@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.portlet.WindowState;
 
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -30,6 +31,7 @@ import org.exoplatform.portal.webui.page.UIPageBody;
 import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
@@ -68,13 +70,15 @@ public class UISocialNavigation extends UIComponent {
   public List<PageNavigation> getNavigations() throws Exception {
     List<PageNavigation> result = new ArrayList<PageNavigation>();
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-    UIPortal uiPortal = Util.getUIPortal();
-    int portalNav = (PortalConfig.PORTAL_TYPE + "::" + uiPortal.getName()).hashCode();
-    PageNavigation portalNavigation = uiPortal.getPageNavigation(portalNav);
-    portalNavigation = PageNavigationUtils.filter(portalNavigation, context.getRemoteUser());
-
-    result.add(portalNavigation);
+    UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+    List<PageNavigation> navigations = uiPortalApp.getNavigations();
     
+    PortalRequestContext portalRequest = Util.getPortalRequestContext();
+	for (PageNavigation pageNavigation : navigations) {
+		if(pageNavigation.getOwner().equals(portalRequest.getPortalOwner())
+				&& pageNavigation.getOwnerType().equals("portal"))
+			result.add(pageNavigation);
+	  }
     return result;
   }
   
@@ -177,7 +181,9 @@ public class UISocialNavigation extends UIComponent {
       if(index <= 0) {selectNav = uiPortal.getSelectedNavigation();}
       else {
         String navId = uri.substring(0, index);
-        selectNav = uiPortal.getPageNavigation(Integer.parseInt(navId));
+        //TODO dang.tung 3.0
+        //selectNav = uiPortal.getPageNavigation(Integer.parseInt(navId));
+        //TODO dang.tung
       }
       PageNode selectNode = PageNavigationUtils.searchPageNodeByUri(selectNav, id);
       uiNavigation.selectedNode_ = selectNode;
@@ -199,4 +205,5 @@ public class UISocialNavigation extends UIComponent {
       uiPortal.broadcast(pnevent, Event.Phase.PROCESS) ;
     }
   }
+  
 }
