@@ -7,6 +7,7 @@ import javax.jcr.Session;
 
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.component.test.AbstractGateInTest;
+import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
@@ -29,11 +30,11 @@ import org.exoplatform.services.security.Identity;
 @ConfiguredBy({
 	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
 	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml"),
+	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration1.xml"),
 	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.test-configuration.xml"),
-	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.portal-configuration.xml"),
-	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration1.xml")
+	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.portal-configuration.xml")
 	})
-public abstract class BasicPeopleServiceTestCase extends AbstractGateInTest {
+public abstract class BasicPeopleServiceTestCase extends AbstractKernelTest {
  
   protected static Log          log = ExoLogger.getLogger("sample.services.test");
 
@@ -58,6 +59,14 @@ public abstract class BasicPeopleServiceTestCase extends AbstractGateInTest {
     initJCR();
     startSystemSession();
     begin();
+  }
+  
+  protected void begin() {
+    super.begin();
+  }
+  
+  protected void end() {
+    super.end();
   }
   
   public void tearDown() throws Exception {
@@ -105,7 +114,9 @@ public abstract class BasicPeopleServiceTestCase extends AbstractGateInTest {
   private static void initContainer() {
     try {
       container = PortalContainer.getInstance();
+      
       chromatticManager = (ChromatticManager)container.getComponentInstanceOfType(ChromatticManager.class);
+      
       if (System.getProperty("java.security.auth.login.config") == null)
           System.setProperty("java.security.auth.login.config", "src/test/java/conf/standalone/login.conf");
       }

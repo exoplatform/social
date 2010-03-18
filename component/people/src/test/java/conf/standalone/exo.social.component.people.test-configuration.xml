@@ -19,6 +19,14 @@
 -->
 <configuration>
 
+  <component>
+    <key>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</key>
+    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NodeHierarchyCreatorImpl</type>
+  </component>  
+  <component>
+    <key>org.exoplatform.commons.chromattic.ChromatticManager</key>
+    <type>org.exoplatform.commons.chromattic.ChromatticManager</type>
+  </component>
 	<component>
     <type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
   </component>
@@ -412,7 +420,7 @@
 	    </init-params>            
 	  </component-plugin>
   </external-component-plugins>
-  <external-component-plugins>
+  <!--<external-component-plugins>
   	<target-component>org.exoplatform.services.organization.OrganizationService</target-component>  	
 	  <component-plugin>
 	    <name>ecm.new.group.event.listener</name>
@@ -504,6 +512,6 @@
 	  </component-plugin>	  	  	  	  
 	</external-component-plugins>
 
-  <remove-configuration>org.exoplatform.services.resources.LocaleConfigService</remove-configuration>
+  --><remove-configuration>org.exoplatform.services.resources.LocaleConfigService</remove-configuration>
 	<remove-configuration>org.exoplatform.services.resources.ResourceBundleService</remove-configuration>
 </configuration>

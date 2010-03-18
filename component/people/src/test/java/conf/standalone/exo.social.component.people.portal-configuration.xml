@@ -114,7 +114,7 @@
             </field>
           </object>
         </object-param>
-        <object-param>
+        <!--<object-param>
           <name>page.templates</name>
           <description>List of page templates</description>
           <object type="org.exoplatform.portal.config.PageTemplateConfig">
@@ -126,7 +126,7 @@
             </field>
           </object>
         </object-param>
-      </init-params>
+      --></init-params>
     </component-plugin>
   </external-component-plugins>
 
