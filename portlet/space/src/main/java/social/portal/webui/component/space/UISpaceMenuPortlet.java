@@ -87,21 +87,15 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    * @return page node list
    * @throws Exception
    */
-  public List<PageNode> getApps() throws Exception {
+  public List<PageNode> getApps() throws Exception {  
     String spaceUrl = SpaceUtils.getSpaceUrl();
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space = spaceSrc.getSpaceByUrl(spaceUrl);
     
-    UserPortalConfigService dataService = getApplicationComponent(UserPortalConfigService.class);
-    //TODO dang.tung 3.0
-    //PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
-    PageNavigation pageNav = null;
-    //TODO dang.tung
-
-    PageNode homeNode = pageNav.getNode(spaceUrl);
+    PageNavigation selectedNavigation = Util.getUIPortal().getSelectedNavigation();
+    
+    PageNode homeNode = selectedNavigation.getNode(spaceUrl);
     if (homeNode == null) {
-      pageNav = getUIPortal().getSelectedNavigation(); 
-      homeNode = pageNav.getNodes().get(0);
+      selectedNavigation = getUIPortal().getSelectedNavigation(); 
+      homeNode = selectedNavigation.getNodes().get(0);
     }
     List<PageNode> list = homeNode.getChildren();
     PageNode pageNode = null;
