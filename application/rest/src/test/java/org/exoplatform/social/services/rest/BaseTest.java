@@ -22,7 +22,7 @@ import javax.jcr.Node;
 import javax.jcr.Session;
 
 import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.component.test.AbstractGateInTest;
+import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
@@ -42,148 +42,157 @@ import org.exoplatform.services.security.Identity;
 /**
  * BaseTest.java <br />
  * Setting up repository; container...
+ * 
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since Mar 3, 2010
  */
-@ConfiguredBy({
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.test-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.application.rest.test-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.space.test-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration1.xml")
-})
-public abstract class BaseTest extends AbstractGateInTest
-{
-   protected static Log log = ExoLogger.getLogger(BaseTest.class.getName());
-   
-   protected static RepositoryService   repositoryService;
-   
-   protected static PortalContainer container;
-   
-   protected final static String REPO_NAME = "repository".intern();
-   protected final static String SYSTEM_WS = "system".intern();
-   protected final static String SOCIAL_WS = "portal-test".intern();
-   protected static Node root_ = null;
-   protected SessionProvider sessionProvider;
-   private static SessionProviderService sessionProviderService = null;
-   
-   protected static ChromatticManager chromatticManager;
-   
-   protected ProviderBinder providers;
+@ConfiguredBy( {
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration1.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.test-configuration.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.portal-configuration.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.application.rest.test-configuration.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.space.test-configuration.xml") })
+public abstract class BaseTest extends AbstractKernelTest {
+  protected static Log                  log                    = ExoLogger.getLogger(BaseTest.class.getName());
 
-   protected ResourceBinder binder;
+  protected static RepositoryService    repositoryService;
 
-   protected RequestHandlerImpl requestHandler;
+  protected static PortalContainer      container;
 
-   /**
-    * setting up: initContainer; initJCR; init binder, request handler...
-    */
-   public void setUp() throws Exception
-   {
-      initContainer();
-      initJCR();
-      startSystemSession();
-      begin();
+  protected final static String         REPO_NAME              = "repository".intern();
+
+  protected final static String         SYSTEM_WS              = "system".intern();
+
+  protected final static String         SOCIAL_WS              = "portal-test".intern();
+
+  protected static Node                 root_                  = null;
+
+  protected SessionProvider             sessionProvider;
+
+  private static SessionProviderService sessionProviderService = null;
+
+  protected static ChromatticManager    chromatticManager;
+
+  protected ProviderBinder              providers;
+
+  protected ResourceBinder              binder;
+
+  protected RequestHandlerImpl          requestHandler;
+
+  /**
+   * setting up: initContainer; initJCR; init binder, request handler...
+   */
+  public void setUp() throws Exception {
+    initContainer();
+    initJCR();
+    startSystemSession();
+    begin();
+    container = PortalContainer.getInstance();
+    binder = (ResourceBinder) container.getComponentInstanceOfType(ResourceBinder.class);
+    requestHandler = (RequestHandlerImpl) container.getComponentInstanceOfType(RequestHandlerImpl.class);
+    // reset providers to be sure it is clean
+    ProviderBinder.setInstance(new ProviderBinder());
+    providers = ProviderBinder.getInstance();
+    // System.out.println("##########################"+providers);
+    ApplicationContextImpl.setCurrent(new ApplicationContextImpl(null, null, providers));
+    binder.clear();
+  }
+
+  public void tearDown() throws Exception {
+    chromatticManager.getSynchronization().setSaveOnClose(false);
+    end();
+  }
+
+  /**
+   * registry resource object
+   * 
+   * @param resource
+   * @return
+   * @throws Exception
+   */
+  public boolean registry(Object resource) throws Exception {
+    // container.registerComponentInstance(resource);
+    return binder.bind(resource);
+  }
+
+  /**
+   * registry resource class
+   * 
+   * @param resourceClass
+   * @return
+   * @throws Exception
+   */
+  public boolean registry(Class<?> resourceClass) throws Exception {
+    // container.registerComponentImplementation(resourceClass.getName(),
+    // resourceClass);
+    return binder.bind(resourceClass);
+  }
+
+  /**
+   * unregistry resource object
+   * 
+   * @param resource
+   * @return
+   */
+  public boolean unregistry(Object resource) {
+    // container.unregisterComponentByInstance(resource);
+    return binder.unbind(resource.getClass());
+  }
+
+  /**
+   * unregistry resource class
+   * 
+   * @param resourceClass
+   * @return
+   */
+  public boolean unregistry(Class<?> resourceClass) {
+    // container.unregisterComponent(resourceClass.getName());
+    return binder.unbind(resourceClass);
+  }
+
+  protected void startSystemSession() {
+    sessionProvider = sessionProviderService.getSystemSessionProvider(null);
+  }
+
+  protected void startSessionAs(String user) {
+    Identity identity = new Identity(user);
+    ConversationState state = new ConversationState(identity);
+    sessionProviderService.setSessionProvider(null, new SessionProvider(state));
+    sessionProvider = sessionProviderService.getSessionProvider(null);
+  }
+
+  protected void endSession() {
+    sessionProviderService.removeSessionProvider(null);
+    startSystemSession();
+  }
+
+  private void initContainer() {
+    try {
       container = PortalContainer.getInstance();
-      binder = (ResourceBinder)container.getComponentInstanceOfType(ResourceBinder.class);
-      requestHandler = (RequestHandlerImpl)container.getComponentInstanceOfType(RequestHandlerImpl.class);
-      // reset providers to be sure it is clean
-      ProviderBinder.setInstance(new ProviderBinder());
-      providers = ProviderBinder.getInstance();
-      //    System.out.println("##########################"+providers);
-      ApplicationContextImpl.setCurrent(new ApplicationContextImpl(null, null, providers));
-      binder.clear();
-   }
-   
-   public void tearDown() throws Exception
-   {
-     chromatticManager.getSynchronization().setSaveOnClose(false);
-     end();
-   }
+      chromatticManager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+      if (System.getProperty("java.security.auth.login.config") == null)
+        System.setProperty("java.security.auth.login.config",
+                           "src/test/java/conf/standalone/login.conf");
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize standalone container: " + e.getMessage(), e);
+    }
+  }
 
-   /**
-    * registry resource object
-    * @param resource
-    * @return
-    * @throws Exception
-    */
-   public boolean registry(Object resource) throws Exception
-   {
-      //    container.registerComponentInstance(resource);
-      return binder.bind(resource);
-   }
+  private void initJCR() {
+    try {
+      repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
+      log.info("repositoryService: " + repositoryService);
+      // Initialize data
+      Session session = repositoryService.getRepository(REPO_NAME).getSystemSession(SOCIAL_WS);
+      log.info("session: " + session);
+      root_ = session.getRootNode();
+      sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class);
+      log.info("sessionProviderService: " + sessionProviderService);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize JCR: " + e.getMessage(), e);
+    }
+  }
 
-   /**
-    * registry resource class
-    * @param resourceClass
-    * @return
-    * @throws Exception
-    */
-   public boolean registry(Class<?> resourceClass) throws Exception
-   {
-      //container.registerComponentImplementation(resourceClass.getName(), resourceClass);
-      return binder.bind(resourceClass);
-   }
-
-   /**
-    * unregistry resource object
-    * @param resource
-    * @return
-    */
-   public boolean unregistry(Object resource)
-   {
-      //container.unregisterComponentByInstance(resource);
-      return binder.unbind(resource.getClass());
-   }
-   
-   /**
-    * unregistry resource class
-    * @param resourceClass
-    * @return
-    */
-   public boolean unregistry(Class<?> resourceClass)
-   {
-      //container.unregisterComponent(resourceClass.getName());
-      return binder.unbind(resourceClass);
-   }
-   
-   protected void startSystemSession() {
-     sessionProvider = sessionProviderService.getSystemSessionProvider(null) ;
-   }
-   protected void startSessionAs(String user) {
-     Identity identity = new Identity(user);
-     ConversationState state = new ConversationState(identity);
-     sessionProviderService.setSessionProvider(null, new SessionProvider(state));
-     sessionProvider = sessionProviderService.getSessionProvider(null);
-   }
-   protected void endSession() {
-     sessionProviderService.removeSessionProvider(null);
-     startSystemSession();
-   }
-
-   private void initContainer() {
-     try {
-       container = PortalContainer.getInstance();
-       chromatticManager = (ChromatticManager)container.getComponentInstanceOfType(ChromatticManager.class);
-       if (System.getProperty("java.security.auth.login.config") == null)
-           System.setProperty("java.security.auth.login.config", "src/test/java/conf/standalone/login.conf");
-     } catch (Exception e) {
-       throw new RuntimeException("Failed to initialize standalone container: " + e.getMessage(),e);
-     }
-   }
-   
-   private void initJCR() {
-     try {
-       repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-       // Initialize data
-       Session session = repositoryService.getRepository(REPO_NAME).getSystemSession(SOCIAL_WS);
-       root_ = session.getRootNode();
-       sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class);
-     } catch (Exception e) {
-       throw new RuntimeException("Failed to initialize JCR: " + e.getMessage(),e);
-     }
-   }
-   
 }

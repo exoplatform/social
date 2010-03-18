@@ -114,18 +114,6 @@
             </field>
           </object>
         </object-param>
-        <object-param>
-          <name>page.templates</name>
-          <description>List of page templates</description>
-          <object type="org.exoplatform.portal.config.PageTemplateConfig">
-            <field name="templates">
-              <collection type="java.util.ArrayList"></collection>
-            </field>
-            <field name="location">
-              <string>classpath:/portal/template/pages</string>
-            </field>
-          </object>
-        </object-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>
