@@ -24,6 +24,21 @@
     <type>org.exoplatform.social.opensocial.spi.ExoActivityService</type>
   </component>
 
+	<component>
+		<key>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</key>
+		<type>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</type>
+		<!-- 
+		<init-params>
+			<properties-param>
+				<name>sample-provider</name>
+				<description>sample service provider. </description>
+				<property name="consumerKey" value="key" />
+				<property name="sharedSecret" value="secret" />
+			</properties-param>
+		</init-params>
+		-->
+	</component>
+
   <component>
     <key>org.exoplatform.social.opensocial.spi.ExoPeopleService</key>
     <type>org.exoplatform.social.opensocial.spi.ExoPeopleService</type>

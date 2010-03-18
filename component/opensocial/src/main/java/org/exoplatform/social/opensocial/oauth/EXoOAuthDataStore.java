@@ -30,6 +30,9 @@ import org.apache.shindig.common.crypto.Crypto;
 import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.opensocial.spi.ExoActivityService;
 import org.exoplatform.social.opensocial.spi.ExoPeopleService;
 
@@ -57,6 +60,9 @@ public class EXoOAuthDataStore implements OAuthDataStore {
   private final ExoPeopleService peopleService;
   private final ExoActivityService activityService;
   private final OAuthServiceProvider SERVICE_PROVIDER;
+  private ServiceProviderStore providerStore;
+  
+  private static final Log LOG = ExoLogger.getExoLogger(EXoOAuthDataStore.class);
 
   @Inject
   public EXoOAuthDataStore(ExoPeopleService peopleService, ExoActivityService activityService, @Named("shindig.oauth.base-url") String baseUrl) {
@@ -76,21 +82,20 @@ public class EXoOAuthDataStore implements OAuthDataStore {
 
   public OAuthConsumer getConsumer(String consumerKey) {
     try {
-      //TODO: dang.tung - need implement in future
-      //JSONObject app = service.getDb().getJSONObject("apps").getJSONObject(Preconditions.checkNotNull(consumerKey));
-      //String consumerSecret = app.getString("consumerSecret");
-      String consumerSecret = "secret";
-      if (consumerSecret == null)
+
+      ServiceProviderData data = getProviderStore().getServiceProvider(consumerKey);
+      if (data == null) {
+        LOG.warn("No provider was found for consumer key: " + consumerKey);
+        return null;
+      }
+      
+      String consumerSecret = data.getSharedSecret();
+      if (consumerSecret == null) {
           return null;
+      }
 
       // null below is for the callbackUrl, which we don't have in the db
       OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, SERVICE_PROVIDER);
-
-      // Set some properties loosely based on the ModulePrefs of a gadget
-//      for (String key : ImmutableList.of("title", "summary", "description", "thumbnail", "icon")) {
-//        if (app.has(key))
-//          consumer.setProperty(key, app.getString(key));
-//      }
 
       return consumer;
 
@@ -178,5 +183,16 @@ public class EXoOAuthDataStore implements OAuthDataStore {
     return new OAuthSecurityToken(userId, null, consumerKey, domain, container,
         AuthenticationMode.OAUTH_CONSUMER_REQUEST.name());
     
+  }
+
+  public ServiceProviderStore getProviderStore() {
+    if (providerStore == null) {
+      providerStore = (ServiceProviderStore) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ServiceProviderStore.class);
+    }
+    return providerStore;
+  }
+
+  public void setProviderStore(ServiceProviderStore secretProvider) {
+    this.providerStore = secretProvider;
   }
 }
