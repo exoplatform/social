@@ -257,6 +257,9 @@ public class UIManageMySpaces extends UIContainer {
       UIApplication uiApp = ctx.getUIApplication();
       SpaceService spaceService = uiMySpaces.getSpaceService();
       Space space = spaceService.getSpaceById(ctx.getRequestParameter(OBJECTID));
+      if (space == null) {
+        uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.warning_space_not_available", null, ApplicationMessage.WARNING));
+      }
       OrganizationService organizationService = SpaceUtils.getOrganizationService();
       Group group = organizationService.getGroupHandler().findGroupById(space.getGroupId());
       if (group == null) {

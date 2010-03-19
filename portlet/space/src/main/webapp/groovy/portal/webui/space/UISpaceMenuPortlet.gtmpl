@@ -18,6 +18,9 @@
     def labelStrPrev = "";
     def appendLabel = " ...";
  	  def fitStr = nodeLabel;
+ 	  if (fitStr == null) {
+ 	    return "";
+ 	  }
  	  if (fitStr.length() > maxLen) {
 	    def labels = fitStr.split(" ");
 	    for (i in 0..(labels.size()-1)) {

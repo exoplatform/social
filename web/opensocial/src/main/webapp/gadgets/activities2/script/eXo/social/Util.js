@@ -436,7 +436,7 @@ eXo.social.Util.stripHtml = function(/*Array*/ allowedTags, /*String*/ escapedHt
 	}
 	var result = [];
 	var handler = {
-		getText: false,
+		getText: true,
 		start: function(tag, attrs, unary) {
 			if (lowerCasedTags.indexOf(tag) > -1) {
 				result.push('<' + tag);

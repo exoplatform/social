@@ -16,6 +16,7 @@
  */
 package social.portal.webui.component.space;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -89,12 +90,17 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    */
   public List<PageNode> getApps() throws Exception {  
     String spaceUrl = SpaceUtils.getSpaceUrl();
-    
-    PageNavigation selectedNavigation = Util.getUIPortal().getSelectedNavigation();
-    
-    PageNode homeNode = selectedNavigation.getNode(spaceUrl);
+    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
+    space = spaceSrc.getSpaceByUrl(spaceUrl);
+    if (space == null) {
+      return new ArrayList<PageNode>(0);
+    }
+    UserPortalConfigService userPortalConfigService = getApplicationComponent(UserPortalConfigService.class);
+    PageNavigation pageNav = userPortalConfigService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+
+    PageNode homeNode = pageNav.getNode(spaceUrl);
     if (homeNode == null) {
-      selectedNavigation = getUIPortal().getSelectedNavigation(); 
+      PageNavigation selectedNavigation = getUIPortal().getSelectedNavigation(); 
       homeNode = selectedNavigation.getNodes().get(0);
     }
     List<PageNode> list = homeNode.getChildren();
@@ -204,6 +210,9 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    */
   public String getSpaceName() throws Exception {
     space = getSpace();
+    if (space == null) {
+      return null;
+    }
     return space.getName();
   }
   
@@ -225,6 +234,9 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    */
   protected String getImageSource() throws Exception {
     Space space = getSpace();
+    if (space == null) {
+      return null;
+    }
     SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
     if (spaceAtt != null) {
       return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()

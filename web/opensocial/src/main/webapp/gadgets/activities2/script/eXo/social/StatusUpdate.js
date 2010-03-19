@@ -536,7 +536,10 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         ownerId = statusUpdate.owner.getId();
         title = activity.getField(opensocial.Activity.Field.TITLE);
         body = activity.getField(opensocial.Activity.Field.BODY);
-        body = Util.stripHtml(StatusUpdate.allowedTags, body);
+        var stripedBody = Util.stripHtml(StatusUpdate.allowedTags, body);
+        if (stripedBody !== '') {
+          body = stripedBody;
+        }
         avatarUrl = statusUpdate.getAvatar(userId);
         prettyTime = Util.toPrettyTime(new Date(activity.getField('postedTime')));
         var html = [];
@@ -602,7 +605,10 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   			html.push('</div>');
 	   			html.push('<div class="UserStatus">');
 	   			if (jsonBody.comment) {
-	   				jsonBody.comment = Util.stripHtml(StatusUpdate.allowedTags, jsonBody.comment);
+	   				var comment = Util.stripHtml(StatusUpdate.allowedTags, jsonBody.comment);
+	   				if (comment !== '') {
+	   					jsonBody.comment = comment;
+	   				}
 	   				html.push(jsonBody.comment);
 	   			}
 	   			if (jsonBody.data.title.length === 0) {

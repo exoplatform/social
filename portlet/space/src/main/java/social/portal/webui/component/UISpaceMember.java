@@ -160,7 +160,10 @@ public class UISpaceMember extends UIForm {
   public List<String> getPendingUsers() throws Exception {
     List<String> pendingUsersList = new ArrayList<String>();
     SpaceService spaceService = getSpaceService();
-    Space space = spaceService.getSpaceById(spaceId);    
+    Space space = spaceService.getSpaceById(spaceId);
+    if (space == null) {
+      return new ArrayList<String>(0);
+    }
     String[] pendingUsers = space.getPendingUsers();
     if(pendingUsers != null) {
       pendingUsersList.addAll(Arrays.asList(pendingUsers));
@@ -189,6 +192,9 @@ public class UISpaceMember extends UIForm {
     List<String> invitedUsersList = new ArrayList<String>(); 
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
+    if (space == null) {
+      return new ArrayList<String>(0);
+    }
     String[] invitedUsers = space.getInvitedUsers();    
     if(invitedUsers != null) {
       invitedUsersList.addAll(Arrays.asList(invitedUsers));
@@ -216,7 +222,9 @@ public class UISpaceMember extends UIForm {
   public List<String> getExistingUsers() throws Exception {    
     SpaceService spaceService = getSpaceService();
     Space space  = spaceService.getSpaceById(spaceId);
-    
+    if (space == null) {
+      return new ArrayList<String>(0);
+    }
     int currentPage = iteratorExistingUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(spaceService.getMembers(space)), ITEMS_PER_PAGE);
     iteratorExistingUsers.setPageList(pageList);

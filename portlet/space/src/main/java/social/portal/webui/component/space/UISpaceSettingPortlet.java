@@ -16,6 +16,8 @@
  */
 package social.portal.webui.component.space;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -40,7 +42,7 @@ import social.portal.webui.component.UISpaceSetting;
 )
 
 public class UISpaceSettingPortlet extends UIPortletApplication {
-  
+  private static final Log logger = ExoLogger.getLogger(UISpaceSettingPortlet.class);
   final private UISpaceSetting uiSpaceSetting;
   final private SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
   /**
@@ -58,7 +60,9 @@ public class UISpaceSettingPortlet extends UIPortletApplication {
   public void initData() throws Exception {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     Space space  = spaceSrc.getSpaceByUrl(spaceUrl);
-    uiSpaceSetting.setValues(space);
+    if (space != null) {
+      uiSpaceSetting.setValues(space);
+    }
   }
   
   /**

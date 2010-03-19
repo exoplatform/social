@@ -234,7 +234,10 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 	(function() {
 		eXo.social.Comment.get(activityId, function(res) {
 			if (res.data !== null) {
-				comments[activityId] = res.data.comments;
+				comments[activityId] = [];
+				if (res.data.comments) {
+					comments[activityId] = res.data.comments;
+				}
 				renderCommentList(comments[activityId], true);
 			} else {
 			  debug.warn('Comment.get: res.data is null!!!');
@@ -342,6 +345,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 		    title = Locale.getMsg('user_commented_on_an_activity', [userName]),
 		    body = commentTextareaEl.value;
 		if (body === '' || body === Locale.getMsg('write_a_comment')) return;
+		body = body.replace(/</g, '&#60;').replace(/>/g, '&#62;').replace(/"/g, '&#34;');
 		var activity = {
 			'userId': userId,
 			'title': title,
@@ -363,7 +367,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 			   if (!friendsRootEl.hasChildNodes()) {
 			     friendsRootEl.innerHTML = '<div class="Empty">' + Locale.getMsg('displayName_do_not_have_update', [Locale.getMsg('owner_friends')]) + '</div>';
 			   } 
-         return;
+			   return;
 			}
 			if (res.data != null) { //succeeded
 				commentTextareaEl.value = '';
@@ -374,6 +378,10 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 				commentUserId = comment.userId;
 				if (!comments[activityId]) {
 					comments[activityId] = [];
+				}
+				var stripedCommentBody = Util.stripHtml(eXo.social.StatusUpdate.allowedTags, comment.body);
+				if (stripedCommentBody !== '') {
+					comment.body = stripedCommentBody;
 				}
 				comments[activityId].push(comment);
 				commentListBlockEl.style.display = 'block';

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
@@ -43,6 +44,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
@@ -61,7 +63,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
     lifecycle = UIFormLifecycle.class,
     template =  "app:/groovy/portal/webui/uiform/UISpaceInfo.gtmpl",
     events = {
-        @EventConfig(listeners = UISpaceInfo.SaveActionListener.class),
+        @EventConfig(listeners = UISpaceInfo.SaveActionListener.class, phase = Phase.PROCESS),
         @EventConfig(listeners = UISpaceInfo.ChangeAvatarActionListener.class)
       }
 )
@@ -124,6 +126,9 @@ public class UISpaceInfo extends UIForm {
     SpaceService spaceService = getSpaceService();
     String id = getUIStringInput("id").getValue();
     Space space = spaceService.getSpaceById(id);
+    if (space == null) {
+      return null;
+    }
     SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
     if (spaceAtt != null) {
       return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
@@ -144,17 +149,23 @@ public class UISpaceInfo extends UIForm {
       UIPortal uiPortal = Util.getUIPortal();
       PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
       WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApp = requestContext.getUIApplication();
       String id = uiSpaceInfo.getUIStringInput("id").getValue();
       String name = uiSpaceInfo.getUIStringInput("name").getValue();
       Space space = spaceService.getSpaceById(id);
+      if (space == null) {
+        //redirect to spaces
+        portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + "spaces");
+        return;
+      }
       PageNode selectedNode = uiPortal.getSelectedNode();
       PageNode homeNode = null;
       boolean nameChanged = (space.getName() != name);
       if (nameChanged) {
-        UserPortalConfigService userPortalConfigService = uiSpaceInfo.getUserPortalConfigService();
+        DataStorage dataStorage = uiSpaceInfo.getApplicationComponent(DataStorage.class);
         String cleanedString = SpaceUtils.cleanString(name);
         space.setUrl(cleanedString);
-        PageNavigation spaceNavigation = userPortalConfigService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+        PageNavigation spaceNavigation = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
         homeNode = spaceNavigation.getNodes().get(0);
         homeNode.setUri(cleanedString);
         homeNode.setName(cleanedString);
@@ -176,7 +187,7 @@ public class UISpaceInfo extends UIForm {
         }
         homeNode.setChildren((ArrayList<PageNode>) childNodes);
         spaceNavigation.getNodes().set(0, homeNode);
-        userPortalConfigService.update(spaceNavigation);
+        dataStorage.save(spaceNavigation);
         uiPortal.setSelectedNode(selectedNode);
         uiPortal.setSelectedNavigation(spaceNavigation);
         SpaceUtils.setNavigation(spaceNavigation);
@@ -186,8 +197,8 @@ public class UISpaceInfo extends UIForm {
       spaceService.saveSpace(space, false);
       if (nameChanged) {
         portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + selectedNode.getUri());
+        return;
       } else {
-        UIApplication uiApp = requestContext.getUIApplication();
         uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));
         SpaceUtils.updateWorkingWorkSpace();
       }
@@ -255,7 +266,7 @@ public class UISpaceInfo extends UIForm {
    * @throws Exception
    */
   private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
+    RepositoryService rService = getApplicationComponent(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName();
   }
 }

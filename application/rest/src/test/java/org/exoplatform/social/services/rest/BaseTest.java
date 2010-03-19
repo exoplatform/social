@@ -183,13 +183,10 @@ public abstract class BaseTest extends AbstractKernelTest {
   private void initJCR() {
     try {
       repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-      log.info("repositoryService: " + repositoryService);
       // Initialize data
       Session session = repositoryService.getRepository(REPO_NAME).getSystemSession(SOCIAL_WS);
-      log.info("session: " + session);
       root_ = session.getRootNode();
       sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class);
-      log.info("sessionProviderService: " + sessionProviderService);
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialize JCR: " + e.getMessage(), e);
     }

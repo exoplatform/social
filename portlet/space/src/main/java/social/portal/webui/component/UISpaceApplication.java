@@ -168,14 +168,16 @@ public class UISpaceApplication extends UIForm {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     Space space = spaceService.getSpaceByUrl(spaceUrl);
-    
+    if (space == null) {
+      return null;
+    }
     PageNavigation pageNav = null;
-	try {
-		pageNav = Util.getUIPortal().getSelectedNavigation();
-	} catch (Exception e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
+    try {
+      pageNav = Util.getUIPortal().getSelectedNavigation();
+    } catch (Exception e1) {
+    // TODO Auto-generated catch block
+     e1.printStackTrace();
+    }
     
     PageNode homeNode = pageNav.getNode(spaceUrl);
     if (homeNode == null) {
