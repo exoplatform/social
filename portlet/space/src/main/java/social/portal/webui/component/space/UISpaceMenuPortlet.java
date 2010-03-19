@@ -21,8 +21,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
@@ -131,13 +134,13 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       String newSpaceAppName = context.getRequestParameter(NEW_SPACE_APPLICATION_NAME);
       UIPortal uiPortal = spaceMenu.getUIPortal();
       PortalRequestContext prContext = Util.getPortalRequestContext();
-      UserPortalConfigService dataService = spaceMenu.getApplicationComponent(UserPortalConfigService.class);
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
       SpaceService spaceService = spaceMenu.getApplicationComponent(SpaceService.class);
       String spaceUrl = SpaceUtils.getSpaceUrl();
       Space space = spaceService.getSpaceByUrl(spaceUrl);
-      
+      PageNavigation pageNav = uiPortal.getSelectedNavigation();
       PageNode selectedNode = uiPortal.getSelectedNode();
-      PageNavigation selectedNavigation = uiPortal.getSelectedNavigation();
       
       String oldName = selectedNode.getName();
       String oldUri = selectedNode.getUri();
@@ -157,10 +160,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       selectedNode.setLabel(newSpaceAppName);
       
       String newNodeName = newSpaceAppName.replace(' ', '_');
-      //TODO dang.tung 3.0
-      //PageNavigation pageNav = dataService.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
-      PageNavigation pageNav = null;
-      //TODO dang.tung
+      
       if (spaceMenu.isAppNameExisted(pageNav, newNodeName))
       {
          newNodeName = newNodeName + "_" + System.currentTimeMillis();
@@ -192,9 +192,9 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
           }
         }
       }
-      //TODO dang.tung 3.0
-      //dataService.update(selectedNavigation);
-      //TODO dang.tung
+      
+      dataStorage.save(pageNav);
+      
       if (newUri != null)
       {
          prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);
