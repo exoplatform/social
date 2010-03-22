@@ -107,13 +107,11 @@
 .UISpaceSettingPortlet .UIAction .ButtonLeft {
     background:transparent url('DefaultSkin/background/SimpleButtonLeft.gif') no-repeat left;
     padding:0 0 0 2px;
-    height: 23px;
 }
 
 .UISpaceSettingPortlet .UIAction .ButtonRight {
     background:transparent url('DefaultSkin/background/SimpleButtonRight.gif') no-repeat right;
     padding:0 2px 0 0;
-    height: 23px;
 }
 
 .UISpaceSettingPortlet .UIAction .ButtonMiddle {
