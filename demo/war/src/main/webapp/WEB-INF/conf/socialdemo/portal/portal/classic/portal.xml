@@ -45,17 +45,10 @@
 	    <show-info-bar>false</show-info-bar>
 	  </portlet-application> 		
 	  
-	  <portlet-application>
+		<portlet-application>
       <portlet>
-        <application-ref>space</application-ref>
-        <portlet-ref>SocialNavigationPortlet</portlet-ref>
-        <preferences>
-          <preference>
-            <name>useAJAX</name>
-			      <value>false</value>
-			      <read-only>false</read-only>
-          </preference>
-        </preferences>
+        <application-ref>web</application-ref>
+        <portlet-ref>NavigationPortlet</portlet-ref>
       </portlet>
       <access-permissions>Everyone</access-permissions>
 	    <show-info-bar>false</show-info-bar>
