@@ -43,11 +43,14 @@
  	}
  	
  	String spaceName = uicomponent.getSpaceName();
- 	String spaceNameDisplay = getFitString(spaceName, 20)
+ 	String spaceNameDisplay = getFitString(spaceName, 20);
  	
- 	PortalRequestContext pcontext = Util.getPortalRequestContext();   
+ 	PortalRequestContext pcontext = Util.getPortalRequestContext();
  	JavascriptManager jsManager = pcontext.getJavascriptManager();
-  jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition",'/eXoResourcesSocial/javascript');
+ 	jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
+ 	jsManager.importJavascript("eXo.social.webui.UISpaceMenuPortlet", "/eXoResourcesSocial/javascript");
+ 	jsManager.addOnLoadJavascript("eXo.social.webui.UISpaceMenuPortlet.init");
+ 	jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition","/eXoResourcesSocial/javascript");
 %>
 
 
