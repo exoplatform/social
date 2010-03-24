@@ -150,7 +150,6 @@
 				  <thead>
 				    <tr>
 					    <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
-					    <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".title.office")%></th>
 					    <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".title.leader")%></th>
 					    <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
 				    </tr>
@@ -175,7 +174,6 @@
 							<tr class="OddRow">
 					<% } %>
 							<td class="text"><span class="label" id="label"><%= user %></span></td>
-							<td class="text"><span class="label" id="label"><%= _ctx.appRes(uicomponent.getId() + ".label.makeOffice")%></span></td>
 							<% if(isLeader) {%>  
 							<td class="text" style="text-align: center"><div class="ManageMemButtonSub" onclick="$removeLeader" title="$labelRemoveLeader"><a class="label" id="label" href="$homeSpaceUrl"><span></span></a></div></td>  
 							<% } else { %>

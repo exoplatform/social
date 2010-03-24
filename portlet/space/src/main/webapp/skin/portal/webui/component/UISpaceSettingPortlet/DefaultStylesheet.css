@@ -216,14 +216,14 @@
 	background: url('DefaultSkin/background/ManageMemButtonSub.gif') no-repeat left top;
 	width: 14px;
 	height: 14px;
-	margin: 4px 82px;
+	margin: 4px 120px;
 	cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .ManageMemButtonAdd {
 	background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat left top;
 	height: 14px;
-	margin: 0 82px;
+	margin: 0 120px;
 	width: 14px;
 	cursor: pointer;
 }
@@ -233,7 +233,7 @@
 	width: 15px; 
 	height: 16px;
 	cursor: pointer;
-	margin: 0px 82px;
+	margin: 0px 120px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .RevokeInvitedButton {
