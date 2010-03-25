@@ -36,8 +36,8 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
@@ -80,7 +80,9 @@ public class SpaceUtils {
   static private ExoContainer exoContainer;
   static private SpaceService spaceService;
   static private List<Application> appList = new ArrayList<Application>();
-  static private UserPortalConfigService userPortalConfigService;
+//  static private UserPortalConfigService userPortalConfigService;
+  static ExoContainer container = ExoContainerContext.getCurrentContainer() ;
+  static DataStorage userPortalConfigService = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
   static private ApplicationRegistryService appService = null;
   
   private static final String REMOTE_CATEGORY_NAME = "remote";
@@ -394,7 +396,7 @@ public class SpaceUtils {
       exoContainer = ExoContainerContext.getCurrentContainer();
     }
     if (userPortalConfigService == null) {
-      userPortalConfigService = (UserPortalConfigService) exoContainer.getComponentInstanceOfType(UserPortalConfigService.class);
+      userPortalConfigService = (DataStorage) exoContainer.getComponentInstanceOfType(DataStorage.class);
     }
     List<PageNavigation> navs = uiPortal.getNavigations();
     
@@ -463,9 +465,11 @@ public class SpaceUtils {
           break;
         }
       }
-      if (spaceContained == false) {
-        setNavigation(getGroupNavigation(groupId));
-      }
+//      TODO GA 3.0.0
+//      if (spaceContained == false) {
+//        setNavigation(getGroupNavigation(groupId));
+//      }
+//      TODO
     }
     //remove deleted space navigation
     if (spaces.size() == 0) {
@@ -641,7 +645,8 @@ public class SpaceUtils {
    */
   static public PageNavigation createGroupNavigation(String groupId) throws SpaceException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+//    UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+    DataStorage configService = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
     //groupId = groupId.substring(1);
     PageNavigation spaceNav;
     try {
@@ -672,7 +677,7 @@ public class SpaceUtils {
    */
   static public void removeGroupNavigation(String groupId) throws SpaceException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+    DataStorage configService = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
     PageNavigation spaceNav;
     try {
       spaceNav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
@@ -699,7 +704,7 @@ public class SpaceUtils {
    */
   static public PageNavigation getGroupNavigation(String groupId) throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+    DataStorage configService = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
     return (PageNavigation) configService.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
   }
   

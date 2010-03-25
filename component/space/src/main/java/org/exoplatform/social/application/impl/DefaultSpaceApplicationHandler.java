@@ -85,7 +85,9 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       }
       spaceNav.addNode(homeNode);
       configService.save(spaceNav);
-      SpaceUtils.setNavigation(spaceNav);
+//      TODO GA 3.0.0
+//      SpaceUtils.setNavigation(spaceNav);
+//      TODO
     } catch(Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);
     }
