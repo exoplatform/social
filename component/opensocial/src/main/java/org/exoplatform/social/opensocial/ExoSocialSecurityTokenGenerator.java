@@ -26,6 +26,7 @@ import org.apache.shindig.common.crypto.BlobCrypter;
 import org.apache.shindig.common.crypto.BlobCrypterException;
 import org.apache.shindig.common.util.TimeSource;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.monitor.jvm.J2EEServerInfo;
 import org.exoplatform.portal.gadget.core.SecurityTokenGenerator;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
@@ -39,7 +40,7 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
 
   public ExoSocialSecurityTokenGenerator() {
     //TODO should be moved to config
-    this.containerKey = "key.txt";
+	this.containerKey =  getKeyFilePath();
     this.timeSource = new TimeSource();
   }
 
@@ -102,6 +103,29 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
     BasicBlobCrypter c = new BasicBlobCrypter(new File(fileName));
     c.timeSource = timeSource;
     return c;
+  }
+  
+  
+  /**
+   * Method returns a path to the file containing the encryption key
+   */
+  private String getKeyFilePath(){
+      J2EEServerInfo info = new J2EEServerInfo();
+      String confPath = info.getExoConfigurationDirectory();
+      File keyFile = null;
+      
+      if (confPath != null) {
+         File confDir = new File(confPath);
+         if (confDir != null && confDir.exists() && confDir.isDirectory()) {
+            keyFile = new File(confDir, "gadgets/key.txt");
+         }
+      }
+
+      if (keyFile == null) {
+         keyFile = new File("key.txt");
+      }
+      
+      return keyFile.getAbsolutePath();
   }
 
 }
