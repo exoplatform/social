@@ -39,7 +39,7 @@
     <uri>profile</uri>
     <name>profile</name>
     <label>#{portal.classic.profile}</label>
-    <visible>false</visible>
+    <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::profile</page-reference>
    </node>
    
@@ -47,7 +47,7 @@
     <uri>relations</uri>
     <name>relations</name>
     <label>#{portal.classic.relations}</label>
-    <visible>false</visible>
+    <visibility>SYSTEM</visibility>
 	  <node>
 	    <uri>relations/yours</uri>
 	    <name>yours</name>
@@ -86,7 +86,7 @@
     <uri>invitationSpace</uri>
     <name>invitationSpace</name>
     <label>#{portal.classic.invitationSpace}</label>
-    <visible>false</visible>
+    <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::invitationSpace</page-reference>
    </node>
    
@@ -94,7 +94,7 @@
     <uri>pendingSpace</uri>
     <name>pendingSpace</name>
     <label>#{portal.classic.pendingSpace}</label>
-    <visible>false</visible>
+    <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::pendingSpace</page-reference>
    </node>
    
@@ -102,7 +102,7 @@
     <uri>publicSpace</uri>
     <name>publicSpace</name>
     <label>#{portal.classic.publicSpace}</label>
-    <visible>false</visible>
+    <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::publicSpace</page-reference>
    </node>
    
