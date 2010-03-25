@@ -21,7 +21,7 @@
   <component>
    <key>org.exoplatform.portal.gadget.core.SecurityTokenGenerator</key>
    <type>org.exoplatform.social.opensocial.ExoSocialSecurityTokenGenerator</type>
-  </component><!--
+  </component>
   <component>
       <key>org.exoplatform.social.space.impl.SocialDataLocation</key>
       <type>org.exoplatform.social.space.impl.SocialDataLocation</type>
@@ -34,11 +34,11 @@
         <value-param>
           <name>workspace</name>
           <description>workspace for Social data</description>
-          <value>system</value>
+          <value>social</value>
         </value-param>      
       </init-params>
   </component>
-  --><!--component>                                                                                                                                                                                                  
+  <!--component>                                                                                                                                                                                                  
     <key>org.exoplatform.services.jcr.ext.backup.BackupManager</key>                                                                                                                                           
     <type>org.exoplatform.services.jcr.ext.backup.impl.BackupManagerImpl</type>                                                                                                                                
     <init-params>                                                                                                                                                                                              

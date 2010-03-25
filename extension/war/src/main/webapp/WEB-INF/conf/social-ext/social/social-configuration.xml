@@ -34,7 +34,7 @@
         <value-param>
           <name>workspace</name>
           <description>workspace for Social data</description>
-          <value>system</value>
+          <value>social</value>
         </value-param>      
       </init-params>
   </component>
