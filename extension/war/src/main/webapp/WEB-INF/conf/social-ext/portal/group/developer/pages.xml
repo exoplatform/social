@@ -34,7 +34,7 @@
         <preferences>
           <preference>
           	<name>url</name>
-        		<value>http://localhost:8080/rest-socialdemo/jcr/repository/portal-system/production/app:gadgets/app:statusUpdate2/app:data/app:resources/codeRunner.xml</value>
+        		<value>http://localhost:8080/rest/jcr/repository/portal-system/production/app:gadgets/app:codeRunner/app:data/app:resources/codeRunner.xml</value>
         		<read-only>false</read-only>
           </preference>
         </preferences>
