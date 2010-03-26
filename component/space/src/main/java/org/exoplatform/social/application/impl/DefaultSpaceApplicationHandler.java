@@ -368,6 +368,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     pageChilds = setContainerById(pageChilds, container);
     page.setChildren(pageChilds);
     try {
+      setPermissionForPage(page.getChildren(), space.getGroupId());	
       configService.create(page);
       String portalName = Util.getPortalRequestContext().getPortalOwner();
       Page tmpPage = configService.getPage(PortalConfig.PORTAL_TYPE + "::" + portalName + "::" + pageName);
@@ -433,6 +434,25 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       }
     }
     return found;
+  }
+  
+  /**
+   * Set permission for page
+   * @param childs
+   * @param id
+   * @return
+   */
+  private void setPermissionForPage(ArrayList<ModelObject> childrens, String perm) {
+	  for (ModelObject modelObject : childrens) {
+		if(modelObject instanceof org.exoplatform.portal.config.model.Application<?>) {
+		  ((org.exoplatform.portal.config.model.Application) modelObject)
+		.setAccessPermissions(new String[] {perm});
+		}
+		else if (modelObject instanceof Container) {
+			((Container) modelObject).setAccessPermissions(new String[] {perm});
+			setPermissionForPage(((Container) modelObject).getChildren(), perm);
+		}
+	}
   }
   
   /**
