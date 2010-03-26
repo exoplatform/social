@@ -35,6 +35,7 @@ import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalApplication;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
@@ -361,7 +362,7 @@ public class SpaceUtils {
    * @param nav
    */
   static public void setNavigation(PageNavigation nav) {
-    UIPortal uiPortal = Util.getUIPortal();
+/*    UIPortal uiPortal = Util.getUIPortal();
     try {
       List<PageNavigation> navs = uiPortal.getNavigations();
       boolean alreadyExisted = false;
@@ -383,8 +384,39 @@ public class SpaceUtils {
     } catch (Exception e) {
       // TODO: handle exception
       e.printStackTrace();
-    }
+    }*/
+	  PageNavigation pageNav = null;
+	  try {
+		pageNav = userPortalConfigService.getPageNavigation(nav.getOwnerType(), nav.getOwnerId());
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+	setNavigation(uiPortalApp.getNavigations(), pageNav);
   }
+  
+  static private void setNavigation(List<PageNavigation> navs, PageNavigation nav)
+  {
+	 boolean isExisted = false;
+     for (int i = 0; i < navs.size(); i++)
+     {
+        if (navs.get(i).getId() == nav.getId())
+        {
+           navs.set(i, nav);
+           isExisted = true;
+           break;
+        }
+     }
+     
+     if (!isExisted) {
+    	 navs.add(nav);
+     }
+     
+     UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+     uiPortalApp.setNavigations(navs);
+  }
+  
   /**
    * Utility for removing portal navigation
    * @param nav
