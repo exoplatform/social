@@ -18,8 +18,15 @@ package org.exoplatform.social.portlet.profile;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.web.CacheUserProfileFilter;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
@@ -63,6 +70,26 @@ public class UIHeaderSection extends UIProfileSection {
                    .addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 30)
                    .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
+  }
+  
+  /**
+   * Get user
+   * @return
+   * @throws Exception
+   */
+  public User getViewUser() throws Exception {
+	    RequestContext context = RequestContext.getCurrentInstance();
+	    String currentUserName = context.getRemoteUser();
+	    String currentViewer = URLUtils.getCurrentUser();
+	    
+	    if((currentViewer != null) && (currentViewer != currentUserName)) {
+	      OrganizationService orgSer = getApplicationComponent(OrganizationService.class);
+	      UserHandler userHandler = orgSer.getUserHandler();
+	      return userHandler.findUserByName(currentViewer);      
+	    }
+	    
+	    ConversationState state = ConversationState.getCurrent();
+	    return (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
   }
   
   /**

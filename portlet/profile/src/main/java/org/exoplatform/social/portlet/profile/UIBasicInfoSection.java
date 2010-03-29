@@ -16,18 +16,29 @@
  */
 package org.exoplatform.social.portlet.profile;
 
+import java.util.List;
+
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.CacheUserProfileFilter;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
+import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
@@ -45,7 +56,9 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
     lifecycle = UIFormLifecycle.class,
     template =  "app:/groovy/portal/webui/component/UIBasicInfoSection.gtmpl",
     events = {
-        @EventConfig(listeners = UIProfileSection.EditActionListener.class, phase=Phase.DECODE)
+    	@EventConfig(listeners = UIBasicInfoSection.EditActionListener.class, phase=Phase.DECODE),
+        @EventConfig(listeners = UIBasicInfoSection.SaveActionListener.class),
+        @EventConfig(listeners = UIBasicInfoSection.CancelActionListener.class, phase=Phase.DECODE)        
     }
 )
 
@@ -68,17 +81,25 @@ public class UIBasicInfoSection extends UIProfileSection {
   final public static String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
   
   public UIBasicInfoSection() throws Exception {
-    addChild(UIBasicInfoTitleBar.class, null, null);
+    String username = Util.getPortalRequestContext().getRemoteUser();
+    OrganizationService service = this.getApplicationComponent(OrganizationService.class);
+    User useraccount = service.getUserHandler().findUserByName(username);
     
-    addUIFormInput(new UIFormStringInput(FIRST_NAME, FIRST_NAME, null)
+    addChild(UITitleBar.class, null, null);
+    
+    UIFormStringInput userName = new UIFormStringInput("userName", "userName", username);
+    userName.setEditable(false);
+    addUIFormInput(userName);
+    addUIFormInput(new UIFormStringInput(FIRST_NAME, FIRST_NAME, useraccount.getFirstName())
                    .addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 30)
                    .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
-    addUIFormInput(new UIFormStringInput(LAST_NAME, LAST_NAME, null)
+    addUIFormInput(new UIFormStringInput(LAST_NAME, LAST_NAME, useraccount.getLastName())
                    .addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 30)
                    .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
-    addUIFormInput(new UIFormStringInput("Email", "Email", null));
+    addUIFormInput(new UIFormStringInput("email", "email", useraccount.getEmail()).addValidator(
+            MandatoryValidator.class).addValidator(EmailAddressValidator.class));
   }
   
   public User getViewUser() throws Exception {
@@ -97,12 +118,84 @@ public class UIBasicInfoSection extends UIProfileSection {
   }
   
   /**
-   * Get information from profile and set value into components.
-   * 
-   * @throws Exception
+   * Gets and sort all uicomponents.<br>
+   *  
+   * @return All children in order.
    */
-  public void setValue() throws Exception {
-    ConversationState state = ConversationState.getCurrent();
-    User user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+  public List<UIComponent> getChilds() {
+    return getChildren();
+  }
+  
+  /**
+   * Changes form into edit mode when user click eddit button.<br>
+   *
+   */
+  public static class EditActionListener extends UIProfileSection.EditActionListener {
+
+    public void execute(Event<UIProfileSection> event) throws Exception {
+      super.execute(event);
+      UIProfileSection sect = event.getSource();
+      UIBasicInfoSection uiForm = (UIBasicInfoSection)sect;
+      String username = Util.getPortalRequestContext().getRemoteUser();
+	  OrganizationService service = uiForm.getApplicationComponent(OrganizationService.class);
+	  User user = service.getUserHandler().findUserByName(username);
+      	  
+	  uiForm.getUIStringInput("firstName").setValue(user.getFirstName());
+      uiForm.getUIStringInput("lastName").setValue(user.getLastName());
+      uiForm.getUIStringInput("email").setValue(user.getEmail());
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
+      event.getRequestContext().addUIComponentToUpdateByAjax(sect);
+    }
+  }
+  
+  /**
+   *  Stores profile information into database when form is submitted.<br>
+   *
+   */
+  public static class SaveActionListener extends UIProfileSection.SaveActionListener {
+
+    public void execute(Event<UIProfileSection> event) throws Exception {
+      super.execute(event);
+      
+      UIProfileSection sect = event.getSource();
+      UIBasicInfoSection uiForm = (UIBasicInfoSection)sect;
+      
+      OrganizationService service = uiForm.getApplicationComponent(OrganizationService.class);
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      UIApplication uiApp = context.getUIApplication();
+
+      String userName = uiForm.getUIStringInput("userName").getValue();
+      User user = service.getUserHandler().findUserByName(userName);
+      String oldEmail = user.getEmail();
+      String newEmail = uiForm.getUIStringInput("email").getValue();
+
+      // Check if mail address is already used
+      Query query = new Query();
+      query.setEmail(newEmail);
+      if (service.getUserHandler().findUsers(query).getAll().size() > 0 && !oldEmail.equals(newEmail))
+      {
+         //Be sure it keep old value
+         user.setEmail(oldEmail);
+         Object[] args = {userName};
+         uiApp.addMessage(new ApplicationMessage("UIAccountInputSet.msg.email-exist", args));
+         return;
+      }
+      user.setFirstName(uiForm.getUIStringInput("firstName").getValue());
+      user.setLastName(uiForm.getUIStringInput("lastName").getValue());
+      user.setEmail(newEmail);
+      uiApp.addMessage(new ApplicationMessage("UIAccountProfiles.msg.update.success", null));
+      service.getUserHandler().saveUser(user, true);
+
+      UIProfile uiProfile = uiForm.getParent();
+      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIHeaderSection.class));
+      UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication().getChild(UIWorkingWorkspace.class);
+      uiWorkingWS.updatePortletsByName("profile");
+      ConversationState state = ConversationState.getCurrent();
+      if (userName.equals(((User)state.getAttribute(CacheUserProfileFilter.USER_PROFILE)).getUserName()))
+      {
+         state.setAttribute(CacheUserProfileFilter.USER_PROFILE, user);
+         uiWorkingWS.updatePortletsByName("UserInfoPortlet");
+      }
+    }
   }
 }

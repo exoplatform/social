@@ -18,6 +18,8 @@ package org.exoplatform.social.portlet.profile;
 
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
@@ -30,6 +32,9 @@ import org.exoplatform.webui.form.UIForm;
  * Aug 11, 2009          
  */
 
+@ComponentConfig(
+	    lifecycle = UIFormLifecycle.class
+	    )
 public abstract class UIProfileSection extends UIForm {
   /** The isEditMode is used for check the view mode. */
   private boolean isEditMode;
