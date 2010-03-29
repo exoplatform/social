@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.o	rg/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform</groupId>
@@ -46,6 +46,8 @@
 	
 	  <!-- maven-enforcer-plugin -->
 	  <jdk.min.version>1.6</jdk.min.version>
+      <!-- maven-release-plugin -->
+      <arguments>-Prelease,java-api-compat,pkg-tomcat,arc-tomcat,pkg-jbossas,arc-jbossas,run-its -Dgatein.working.dir=target</arguments>	  
   </properties>
   
   <modules>
