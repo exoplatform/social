@@ -17,11 +17,11 @@
 package social.portal.webui.component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
@@ -32,7 +32,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupComponent;
-import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -63,7 +62,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
   
   /**
-   * gets selected category
+   * Gets selected category
    * @return selected category
    */
   public ApplicationCategory getSelectedCategory() {
@@ -71,7 +70,19 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
   
   /**
-   * sets selected category
+   * Gets default selected category in case no category is selected for template.
+   * The default selected category is the first key element in the appStore map.
+   * @return default selected category
+   */
+  public ApplicationCategory getDefaultSelectedCategory() {
+    if (appStore.keySet().size() > 0) {
+      return appStore.keySet().iterator().next();
+    }
+    return null;
+  }
+  
+  /**
+   * Sets selected category
    * @param categoryName
    */
   public void setSelectedCategory(String categoryName) {
@@ -85,19 +96,21 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
   
   /**
-   * sets space
+   * Sets space
    * @param space
    * @throws Exception
    */
   public void setSpace(Space space) throws Exception {
     this.space = space;
-    appStore = new HashMap<ApplicationCategory, List<Application>>();
+    appStore = new LinkedHashMap<ApplicationCategory, List<Application>>();
     Map<ApplicationCategory, List<Application>> gotAppStore = SpaceUtils.getAppStore(space);
-    Set<ApplicationCategory> appCategories = gotAppStore.keySet();
-    Iterator<ApplicationCategory> appCategoryItr = appCategories.iterator();
-    while(appCategoryItr.hasNext()) {
-      ApplicationCategory appCategory = appCategoryItr.next();
-      List<Application> appList = gotAppStore.get(appCategory);
+    Iterator<Entry<ApplicationCategory, List<Application>>> entrySetItr = gotAppStore.entrySet().iterator();
+    ApplicationCategory appCategory;
+    List<Application> appList;
+    while(entrySetItr.hasNext()) {
+      Entry<ApplicationCategory, List<Application>> entrySet = entrySetItr.next();
+      appCategory = entrySet.getKey();
+      appList = entrySet.getValue();
       Iterator<Application> appItr = appList.iterator();
       List<Application> tempAppList = new ArrayList<Application>();
       while (appItr.hasNext()) {
@@ -114,13 +127,10 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
       if (tempAppList.size() > 0) {
         appStore.put(appCategory, tempAppList);
       }
-      if (appStore.keySet().size() > 0) {
-        setSelectedCategory(appStore.keySet().iterator().next().getName());
-      }
     }
   }
   /**
-   * gets space
+   * Gets space
    * @return space
    */
   public Space getSpace() {
@@ -128,7 +138,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
   
   /**
-   * gets appStore
+   * Gets appStore
    * @return appStore
    */
   public Map<ApplicationCategory, List<Application>> getAppStore() {
@@ -136,7 +146,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
  
   /**
-   * triggers this action when user selects on category
+   * Triggers this action when user selects on category
    * @author hoatle
    *
    */
@@ -152,7 +162,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
   }
   
   /**
-   * triggers this action when user clicks on install button
+   * Triggers this action when user clicks on install button
    * @author hoatle
    */
   static public class InstallApplicationActionListener extends EventListener<UISpaceApplicationList> {

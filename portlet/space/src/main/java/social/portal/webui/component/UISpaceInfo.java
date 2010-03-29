@@ -22,7 +22,6 @@ import java.util.List;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -65,17 +64,14 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
     events = {
         @EventConfig(listeners = UISpaceInfo.SaveActionListener.class, phase = Phase.PROCESS),
         @EventConfig(listeners = UISpaceInfo.ChangeAvatarActionListener.class)
-      }
+    }
 )
 public class UISpaceInfo extends UIForm {
   private final String SPACE_PRIORITY = "priority";
-  //These priority variables should be set in Space.java model
   private final String PRIORITY_HIGH = "high";
   private final String PRIORITY_IMMEDIATE = "immediate";
   private final String PRIORITY_LOW = "low";
   private SpaceService spaceService = null;
-  private OrganizationService organizationService = null;
-  private UserPortalConfigService userPortalConfigService = null;
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
   /**
    * constructor
@@ -107,7 +103,7 @@ public class UISpaceInfo extends UIForm {
   }
   
   /**
-   * sets space to work with
+   * Sets space for this ui component to work with.
    * @param space
    * @throws Exception
    */
@@ -118,7 +114,7 @@ public class UISpaceInfo extends UIForm {
   }
 
   /**
-   * gets image source url
+   * Gets image source url
    * @return image source url
    * @throws Exception
    */
@@ -138,7 +134,9 @@ public class UISpaceInfo extends UIForm {
   }
   
   /**
-   * triggers this action when user click on Save button
+   * Triggers this action when user click on the Save button.
+   * Creating a space from existing group or creating new group for this space.
+   * Initialize some default applications in space component configuration.xml file.
    * @author hoatle
    *
    */
@@ -177,16 +175,13 @@ public class UISpaceInfo extends UIForm {
         for (int i = 0; i < childNodes.size(); i++) {
           childNode = childNodes.get(i);
           oldUri = childNode.getUri();
-          newUri = oldUri.replace(oldUri.substring(0, oldUri.lastIndexOf("/")), name);
+          newUri = oldUri.replace(oldUri.substring(0, oldUri.lastIndexOf("/")), cleanedString);
           childNode.setUri(newUri);
-          childNode.setName(oldUri.substring(oldUri.lastIndexOf("/") + 1, oldUri.length()));
+          childNode.setName(newUri.substring(newUri.lastIndexOf("/") + 1, newUri.length()));
           if (selectedNode.getName().equals(childNode.getName())) {
             selectedNode = childNode;
           }
-          childNodes.set(i, childNode);
         }
-        homeNode.setChildren((ArrayList<PageNode>) childNodes);
-        spaceNavigation.getNodes().set(0, homeNode);
         dataStorage.save(spaceNavigation);
         uiPortal.setSelectedNode(selectedNode);
         uiPortal.setSelectedNavigation(spaceNavigation);
@@ -206,7 +201,7 @@ public class UISpaceInfo extends UIForm {
   }
   
   /**
-   * Action trigger for editing avatar. An UIAvatarUploader popup should be displayed.
+   * Triggers this action for editing avatar. An UIAvatarUploader popup should be displayed.
    * @author hoatle
    *
    */
@@ -223,7 +218,7 @@ public class UISpaceInfo extends UIForm {
   }
   
   /**
-   * gets spaceService
+   * Gets spaceService
    * @return spaceService
    * @see SpaceService
    */
@@ -235,33 +230,30 @@ public class UISpaceInfo extends UIForm {
   }
   
   /**
-   * gets organizationService
+   * Gets organizationService
    * @return organizationService
    */
   public OrganizationService getOrganizationService() {
-    if (organizationService == null) {
-      organizationService = getApplicationComponent(OrganizationService.class);
-    }
-    return organizationService;
+     return getApplicationComponent(OrganizationService.class);
   }
   
-  public UserPortalConfigService getUserPortalConfigService() {
-    if (userPortalConfigService == null) {
-      userPortalConfigService = getApplicationComponent(UserPortalConfigService.class);
-    }
-    return userPortalConfigService;
+  /**
+   * Gets dataSource
+   * @return
+   */
+  public DataStorage getDataSource() {
+      return getApplicationComponent(DataStorage.class);
   }
   /**
-   * gets current portal name
+   * Gets current portal name
    * @return current portal name
    */
   private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+    return PortalContainer.getCurrentPortalContainerName();
   }
   
   /**
-   * gets current repository name
+   * Gets current repository name
    * @return current repository name
    * @throws Exception
    */

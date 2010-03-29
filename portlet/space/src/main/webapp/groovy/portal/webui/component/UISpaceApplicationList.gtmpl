@@ -1,9 +1,14 @@
 <%
+
 def appStore = uicomponent.getAppStore()
 def selectedCategory = uicomponent.getSelectedCategory()
 def categories = appStore.keySet().toArray()
 def labelInstall = _ctx.appRes("${uicomponent.id}.label.install")
 def noneApp = _ctx.appRes("${uicomponent.id}.label.noneApp")
+//for default selected category
+if (!selectedCategory) {
+  selectedCategory = uicomponent.getDefaultSelectedCategory()
+}
 %>
 <div class="UIOrganizerManagement" id="$uicomponent.id">
     <div class="AppRegistryContainer">

@@ -29,7 +29,6 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
@@ -58,7 +57,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   public static final String APPLICATION = "Application";
   public static final String SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
   private ExoContainer container = ExoContainerContext.getCurrentContainer() ;
-  private DataStorage configService = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
+  private DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
   private static Map<ApplicationCategory, List<Application>> appStoreCache = null;
   private static List<Application> appCache = new ArrayList<Application>();
   
@@ -75,19 +74,17 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       PageNavigation spaceNav = SpaceUtils.createGroupNavigation(space.getGroupId());
       PageNode homeNode = createPageNodeFromApplication(space, homeNodeApp, true);
+      List<PageNode> childNodes = homeNode.getChildren();
+      if(childNodes == null) childNodes = new ArrayList<PageNode>();
       for (String app : apps) {
         app = (app.trim()).split(":")[0];
         PageNode appNode = createPageNodeFromApplication(space, app, false);
-        List<PageNode> childNodes = homeNode.getChildren();
-        if(childNodes == null) childNodes = new ArrayList<PageNode>();
         childNodes.add(appNode);
-        homeNode.setChildren((ArrayList<PageNode>) childNodes);
       }
+      homeNode.setChildren((ArrayList<PageNode>) childNodes);
       spaceNav.addNode(homeNode);
-      configService.save(spaceNav);
-//      TODO GA 3.0.0
+      dataStorage.save(spaceNav);
       SpaceUtils.setNavigation(spaceNav);
-//      TODO
     } catch(Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);
     }
@@ -104,8 +101,8 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       ArrayList<PageNode> spaceNodes = spaceNav.getNodes();
       for (PageNode spaceNode : spaceNodes) {
         String pageId = spaceNode.getPageReference();
-        Page page = configService.getPage(pageId);
-        configService.remove(page);
+        Page page = dataStorage.getPage(pageId);
+        dataStorage.remove(page);
       }
       SpaceUtils.removeGroupNavigation(groupId);
     } catch(Exception e) {
@@ -118,7 +115,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * {@inheritDoc}
    */
   public void activateApplication(Space space, String appId) throws SpaceException {
-    activeApplicationClassic(space,appId);
+    activateApplicationClassic(space,appId);
   }
   
   /**
@@ -158,7 +155,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
   
   /**
-   * Get all applications installed in a space
+   * Gets all applications installed in a space
    * @param space
    * @return
    * @throws Exception
@@ -189,26 +186,28 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     return NAME;
   }
   
+  
   /**
-   * Activate classic application type in a space
+   * Activates classic application type in a space
+   * 
    * @param space
    * @param appId
    * @throws SpaceException
    */
-  private void activeApplicationClassic(Space space, String appId) throws SpaceException {
+  private void activateApplicationClassic(Space space, String appId) throws SpaceException {
     PageNavigation nav = SpaceUtils.createGroupNavigation(space.getGroupId());
     PageNode pageNode = createPageNodeFromApplication(space, appId, false);
     try {
       PageNode homeNode = nav.getNode(space.getUrl());
       if (homeNode == null) {
         nav = Util.getUIPortal().getSelectedNavigation();
-        homeNode = nav.getNode(space.getUrl());
+        homeNode = nav.getNodes().get(0);
       }
       List<PageNode> childNodes = homeNode.getChildren();
       if(childNodes == null) childNodes = new ArrayList<PageNode>();
       childNodes.add(pageNode);
       homeNode.setChildren((ArrayList<PageNode>) childNodes);
-      configService.save(nav);
+      dataStorage.save(nav);
       SpaceUtils.setNavigation(nav);
     } catch (Exception e) {
       try {
@@ -219,7 +218,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
 
   /**
-   * Deactivate an application in a space
+   * Deactivates an application in a space
    * @param space
    * @param appId
    */
@@ -228,37 +227,40 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
   
   /**
-   * Remove an classic-type application from a space
+   * Removes an classic-type application from a space
    * @param space
    * @param appId
    * @throws SpaceException
    */
   private void removeApplicationClassic(Space space, String appId) throws SpaceException {
     try {
-      String spaceNav = space.getGroupId();
-      PageNavigation nav = configService.getPageNavigation(PortalConfig.GROUP_TYPE, spaceNav);
+      String groupId = space.getGroupId();
+      PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
       PageNode homeNode = nav.getNodes().get(0);
       List<PageNode> childNodes = homeNode.getChildren();
-      String nodeName = null;
-      String[] apps = space.getApp().split(",");
-      for (String app : apps) {
-        if (app.length() != 0) {
-          String[] appParts = app.split(":");
-          if (appParts[0].equals(appId)) {
-            if (appParts.length > 3) {
-              nodeName = appParts[2];
-            } else {
-              nodeName = appParts[1];
-            }
-          }
-        }
+/*      String nodeName = null;
+      String installedApps = space.getApp();
+      String[] apps;
+      if (installedApps.contains(",")) {
+        apps = installedApps.split(",");
+      } else {
+        apps = new String[1];
+        apps[0] = installedApps;
       }
-      childNodes.remove(homeNode.getChild(nodeName));
-      homeNode.setChildren((ArrayList<PageNode>) childNodes);
-      configService.save(nav);
+      for (String app : apps) {
+        String[] splited = app.split(":");
+        nodeName = splited[0];
+      }*/
+      PageNode childNode = homeNode.getChild(appId);
+      if (childNode == null) {
+        throw new Exception("childNode is null!");
+      }
+      childNodes.remove(childNode);
+      dataStorage.save(nav);
       // remove page
-      Page page = configService.getPage(PortalConfig.GROUP_TYPE + "::" + spaceNav + "::" + appId);
-      configService.remove(page);
+      String pageId = childNode.getPageReference();
+      Page page = dataStorage.getPage(pageId);
+      dataStorage.remove(page);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
     }
@@ -267,7 +269,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   
   
   /**
-   * Get an application from a list
+   * Gets an application from a list
    * @param apps
    * @param appId
    * @return
@@ -280,7 +282,11 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
   
   /**
-   * Create page node from application
+   * Creates page node from application.
+   * - Creates Application instance from appId. <br />
+   * - Creates Page instance and set the newly-created application for that page; 
+   * adds application to container. <br />
+   * - Creates PageNode instance and returns that pageNode.
    * @param space
    * @param appId
    * @param isRoot
@@ -288,9 +294,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * @throws SpaceException
    */
   private PageNode createPageNodeFromApplication(Space space, String appId, boolean isRoot) throws SpaceException {
-    //create application
-    Application app;
-    app = getApplication(appCache, appId);
+    Application app = getApplication(appCache, appId);
     if (app == null) {
       try {
         if (appStoreCache == null) {
@@ -330,7 +334,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       portletApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
       portletApplication.setShowInfoBar(false);
     }
-    //create new Page
+
     Page page = null;
     String pageName = null;
     if(isRoot) 
@@ -341,15 +345,12 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       if (isRoot != true) {
         newName = pageName;
       }
-      page = configService.clonePage(SPACE_TEMPLATE_PAGE_ID, PortalConfig.GROUP_TYPE, space.getGroupId(), newName.trim());
-      pageName = page.getName();
+      String clonedName = SpaceUtils.cleanString(space.getName()) + "_" + newName.trim();
+      page = dataStorage.clonePage(SPACE_TEMPLATE_PAGE_ID, PortalConfig.GROUP_TYPE, space.getGroupId(), clonedName);
     } catch (Exception e) {
-      e.printStackTrace();
+      //e.printStackTrace();
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE, e);
     }
-    page.setName(pageName);
-    page.setOwnerType(PortalConfig.GROUP_TYPE);
-    page.setOwnerId(space.getGroupId());
     String visibility = space.getVisibility();
     if(visibility.equals(Space.PUBLIC)) {
       page.setAccessPermissions(new String[]{UserACL.EVERYONE});
@@ -358,7 +359,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     }
     page.setEditPermission("manager:" + space.getGroupId());
     page.setModifiable(true);
-//    //add application to container
+    
     ArrayList<ModelObject> pageChilds = page.getChildren();
     Container container = findContainerById(pageChilds, APPLICATION);
     ArrayList<ModelObject> childs = container.getChildren();
@@ -369,14 +370,11 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     page.setChildren(pageChilds);
     try {
       setPermissionForPage(page.getChildren(), space.getGroupId());	
-      configService.create(page);
-      String portalName = Util.getPortalRequestContext().getPortalOwner();
-      Page tmpPage = configService.getPage(PortalConfig.PORTAL_TYPE + "::" + portalName + "::" + pageName);
-      configService.remove(tmpPage);
+      dataStorage.save(page);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
     }
-    // create new PageNode
+    
     PageNode pageNode = new PageNode();
     String label = app.getDisplayName();
     if(isRoot) {
@@ -393,7 +391,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
   
   /**
-   * gets application
+   * Gets application from appStore by appId
    * @param appStore
    * @param appId
    * @return app or null
@@ -403,7 +401,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     Iterator<ApplicationCategory> categoryItr = appStore.keySet().iterator();
     while (categoryItr.hasNext()) {
       ApplicationCategory category = categoryItr.next();
-      List<Application> appList = appStore.get(category);
+      List<Application> appList = category.getApplications();
       Iterator<Application> appListItr = appList.iterator();
       while(appListItr.hasNext()) {
         Application app = appListItr.next();
@@ -414,7 +412,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
 
   /**
-   * Find container by Id
+   * Finds container by id
    * @param childs
    * @param id
    * @return
@@ -437,7 +435,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
   
   /**
-   * Set permission for page
+   * Sets permission for page
    * @param childs
    * @param id
    * @return
@@ -456,7 +454,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
   }
   
   /**
-   * Set container by Id
+   * Sets container by Id
    * @param childs
    * @param container
    * @return
@@ -478,6 +476,11 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     return result;
   }
   
+  /**
+   * Creates portlet application from instanceId
+   * @param instanceId
+   * @return
+   */
   private org.exoplatform.portal.config.model.Application<Portlet> createPortletApplication(String instanceId)
   {
      int i0 = instanceId.indexOf("#");

@@ -17,10 +17,6 @@ package org.exoplatform.social.space;
 
 import javax.jcr.Session;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
@@ -42,25 +38,46 @@ public class JCRSessionManager {
   String repositoryName = "repository";
   RepositoryService repositoryService;
  
-  
+  /**
+   * Constructor
+   * @param repository
+   * @param workspace
+   * @param repositoryService
+   */
   public JCRSessionManager(String repository, String workspace, RepositoryService repositoryService) {
     this.workspaceName = workspace;
     this.repositoryName = repository;
     this.repositoryService = repositoryService;
   }
   
+  /**
+   * Gets workSpaceName
+   * @return
+   */
   public String getWorkspaceName() {
     return workspaceName;
   }
 
+  /**
+   * Sets workspaceName
+   * @param workspaceName
+   */
   public void setWorkspaceName(String workspaceName) {
     this.workspaceName = workspaceName;
   }
 
+  /**
+   * Gets repositoryName
+   * @return
+   */
   public String getRepositoryName() {
     return repositoryName;
   }
 
+  /**
+   * Sets repositoryName
+   * @param repositoryName
+   */
   public void setRepositoryName(String repositoryName) {
     this.repositoryName = repositoryName;
   }
@@ -76,6 +93,11 @@ public class JCRSessionManager {
      return currentSession.get();
   }
   
+  /**
+   * Gets session
+   * @param sessionProvider
+   * @return
+   */
   public Session getSession(SessionProvider sessionProvider) {
     Session session = null;
     try {
@@ -93,21 +115,22 @@ public class JCRSessionManager {
    *
    * @return a session to the model.
    */
-  public Session openSession()
-  {
+  public Session openSession() {
      Session session = currentSession.get();
-     if (session == null)
-     {
+     if (session == null) {
        session = createSession();
        currentSession.set(session);
      }
-     else
-     { 
+     else { 
        throw new IllegalStateException("A session is already opened.");
      }
      return session;
   }
 
+  /**
+   * Creates session
+   * @return
+   */
   private Session createSession() {
     Session session = null;
     try {
@@ -133,8 +156,7 @@ public class JCRSessionManager {
    * @return a boolean indicating if the session was closed
    * @see #closeSession(boolean)
    */
-  public boolean closeSession()
-  {
+  public boolean closeSession() {
      return closeSession(false);
   }
 
@@ -145,34 +167,23 @@ public class JCRSessionManager {
    * @param save if the session must be saved
    * @return a boolean indicating if the session was closed
    */
-  public boolean closeSession(boolean save)
-  {
+  public boolean closeSession(boolean save) {
      Session session = currentSession.get();
-     if (session == null)
-     {
+     if (session == null) {
         // Should warn
         return false;
-     }
-     else
-     {
+     } else {
        currentSession.set(null);
-        try
-        {
-           if (save)
-           {
+        try {
+           if (save) {
               session.save();
            }
-        }
-        catch(Exception e)
-        {
-        return false;
-        }
-        finally
-        {
+        } catch(Exception e) {
+          return false;
+        } finally {
            session.logout();
         }
         return true;
      }
   }
-  
 }

@@ -20,15 +20,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -64,7 +63,7 @@ public class UISpaceApplication extends UIForm {
   private Space space;
   private UIPageIterator iterator;
   private final String iteratorID = "UIIteratorSpaceApplication";
-  private UIPortal uiPortal = null;
+
   
   /**
    * constructor
@@ -74,10 +73,9 @@ public class UISpaceApplication extends UIForm {
     addChild(UIPopupContainer.class, null, "UIPopupAddApp");
     iterator = createUIComponent(UIPageIterator.class, null, iteratorID);
     addChild(iterator);
-    uiPortal = Util.getUIPortal();
   }
   /**
-   * gets application list
+   * Gets application list
    * @return application list
    * @throws Exception
    */
@@ -87,54 +85,40 @@ public class UISpaceApplication extends UIForm {
   }
   
   /**
-   * sets space to work with
+   * Sets space to work with
    * @param space
    * @throws Exception
    */
   public void setValue(Space space) throws Exception {
     this.space = space;
-    List<Application> lists = new ArrayList<Application>();
-    List<Application> apps = new ArrayList<Application>();
-    String installedApps = space.getApp();
-    if (installedApps != null) { 
-      Map<ApplicationCategory, List<Application>> appStore;
-      appStore = SpaceUtils.getAppStore(space);
-      Iterator<ApplicationCategory> appCategoryItr = appStore.keySet().iterator();
-      while (appCategoryItr.hasNext()) {
-        ApplicationCategory category = appCategoryItr.next();
-        List<Application> appList = appStore.get(category);
-        Iterator<Application> appListItr = appList.iterator();
-        while (appListItr.hasNext()) {
-          Application app = appListItr.next();
-          if (!apps.contains(app)) {
-            apps.add(app);
-          }
-        }
-      }
-      // Get more application
-      List<Application> appLst = SpaceUtils.getAppList();
-      Iterator<Application> appListItr = appLst.iterator();
-      while (appListItr.hasNext()) {
-        Application app = appListItr.next();
-        if (isExisted(apps,app)) {
-          appListItr.remove();
-        }
-      }
-      
-      if (appLst.size() > 0) apps.addAll(appLst);
-      
-      if (apps.size() != 0) {
-        for (Application app : apps) {
-          String appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
-          if (appStatus != null) {
-            if (appStatus.equals(Space.ACTIVE_STATUS) && (!isExisted(lists, app))) {
-              lists.add(app);
+    List<String> appIdList = SpaceUtils.getAppIdList(space);
+    List<String> notAvailableAppIdList = new ArrayList<String>(appIdList);
+    List<Application> installedAppList = new ArrayList<Application>();
+    Map<ApplicationCategory, List<Application>> appStore = SpaceUtils.getAppStore(space);
+    Iterator<Entry<ApplicationCategory, List<Application>>> appCategoryEntrySetItr = appStore.entrySet().iterator();
+    List<Application> appList;
+    String appStatus;
+    while (appCategoryEntrySetItr.hasNext()) {
+      Entry<ApplicationCategory, List<Application>> appCategoryEntrySet = appCategoryEntrySetItr.next();
+      appList = appCategoryEntrySet.getValue();
+      for (Application app: appList) {
+        if (!isExisted(installedAppList, app)) {
+          if (appIdList.contains(app.getApplicationName())) {
+            appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
+            if (appStatus.equals(Space.ACTIVE_STATUS)) {
+              installedAppList.add(app);
+              notAvailableAppIdList.remove(app.getApplicationName());
             }
           }
         }
       }
     }
-    PageList pageList = new ObjectPageList(lists,3);
+    
+    for (String appId : notAvailableAppIdList) {
+        installedAppList.add(SpaceUtils.getAppFromPortalContainer(appId));
+    }
+    
+    PageList pageList = new ObjectPageList(installedAppList, 3);
     iterator.setPageList(pageList);
   }
   
@@ -145,7 +129,7 @@ public class UISpaceApplication extends UIForm {
   public UIPageIterator getUIPageIterator() { return iterator;}
   
   /**
-   * checking if an application is removable.
+   * Checks if an application is removable.
    * @param appId
    * @return true or false
    */
@@ -154,14 +138,12 @@ public class UISpaceApplication extends UIForm {
   }
   
   /**
-   * Get application name of space application when the display name of application is changed.<br>
+   * Gets application name of space application when the display name of application is changed.<br>
    * - If the label of application is changed then return new label.<br>
    * - Else return display name of application.<br> 
    * 
    * @param application
-   * 
    * @return application name depend on the display name is changed or not.
-   * 
    * @throws SpaceException
    */
   public String getAppName(Application application) throws SpaceException {
@@ -181,16 +163,9 @@ public class UISpaceApplication extends UIForm {
     
     PageNode homeNode = pageNav.getNode(spaceUrl);
     if (homeNode == null) {
-      try {
-        pageNav = Util.getUIPortal().getSelectedNavigation();
-      } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
       homeNode = pageNav.getNodes().get(0);
     }
     List<PageNode> nodes = homeNode.getChildren();
-    
     String installedApp = space.getApp();
     String[] apps = installedApp.split(",");
     for (String app : apps) {
@@ -203,12 +178,11 @@ public class UISpaceApplication extends UIForm {
         }
       }
     }
-    
     return application.getDisplayName();
   }
   
   /**
-   * triggers this action when usesr clicks on add button
+   * Triggers this action when user clicks on add button
    * @author hoatle
    *
    */
@@ -224,7 +198,7 @@ public class UISpaceApplication extends UIForm {
   }
   
   /**
-   * triggers this action when user clicks on remove button
+   * Triggers this action when user clicks on remove button
    * @author hoatle
    *
    */
@@ -244,22 +218,21 @@ public class UISpaceApplication extends UIForm {
         uiSpaceAppList.setSpace(uiSpaceApp.space);
         context.addUIComponentToUpdateByAjax(uiPopup);
       }
-      
       SpaceUtils.updateWorkingWorkSpace();
     }
   }
   
   /**
-   * checks one application is existed in list or not.
+   * Checks if an application exists in list or not.
    * 
    * @param appLst List of application
    * @param app Application for checking
    * @return true or false
    */
-  private boolean isExisted(List<Application> appLst, Application app) {
+  private boolean isExisted(List<Application> appList, Application app) {
     String appName = app.getApplicationName();
     String existedAppName = null;
-    for (Application application : appLst) {
+    for (Application application : appList) {
       existedAppName = application.getApplicationName();
       if (existedAppName.equals(appName)) return true; 
     }

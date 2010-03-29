@@ -29,9 +29,9 @@
   <div class="ContainerSpace">
 		<% for(app in applications)  {%>
 		<%    
-		String appId = app.getCategoryName() + "/" + app.getApplicationName() 
-		def isRemovable = uicomponent.isRemovable(appId);
-		def appName = uicomponent.getAppName(app);
+		String appId = app.getApplicationName()
+		def isRemovable = uicomponent.isRemovable(appId)
+		def appName = uicomponent.getAppName(app)
 		%>
 		
 		<div class="ContentSpace">

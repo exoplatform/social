@@ -26,13 +26,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
@@ -58,6 +59,7 @@ import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
  * August 29, 2008          
  */
 public class SpaceServiceImpl implements SpaceService {
+  private static Log logger = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
   final static public String SPACE_PARENT = "/spaces";
   final static public String MEMBER = "member";
   final static public String MANAGER = "manager";
@@ -77,10 +79,10 @@ public class SpaceServiceImpl implements SpaceService {
    * @param params
    * @throws Exception
    */
+  @SuppressWarnings("unchecked")
   public SpaceServiceImpl(InitParams params, SocialDataLocation dataLocation) throws Exception {
     storage = new JCRStorage(dataLocation);
-    
-    Iterator it = params.getValuesParamIterator();
+    Iterator<?> it = params.getValuesParamIterator();
     apps = new ArrayList<String>();
     while(it.hasNext()) {
       ValuesParam param = (ValuesParam) it.next();
@@ -321,8 +323,19 @@ public class SpaceServiceImpl implements SpaceService {
     spaceAppHandler.initApp(space, homeNodeApp, apps);
     for (String app : apps) {
       app = app.trim();
-      setApp(space, app, Space.INSTALL_STATUS);
-      setApp(space, app, Space.ACTIVE_STATUS);
+      String[] splited = app.split(":");
+      if (splited.length != 2) {
+        logger.error("app has problem with status value of form: [appId:isRemovable]");
+        return;
+      }
+      boolean isRemovable;
+      if (splited[1].equals("true")) {
+        isRemovable = true;
+      } else {
+        isRemovable = false;
+      }
+      //setApp(space, splited[0], isRemovable, Space.INSTALL_STATUS);
+      setApp(space, splited[0], isRemovable, Space.ACTIVE_STATUS);
     }
   }
   
@@ -421,7 +434,6 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  @SuppressWarnings("deprecation")
 public List<String> getMembers(Space space) throws SpaceException {
     try {
       OrganizationService orgService = getOrgService();
@@ -430,7 +442,7 @@ public List<String> getMembers(Space space) throws SpaceException {
       ArrayList<String> userNames = new ArrayList<String>();
       List<User> all = userPageList.getAll();
       for (User user : all) {
-		userNames.add(user.getUserName());
+        userNames.add(user.getUserName());
       }
       return userNames;
 //      ListAccess<User> usersPageList = userHandler.findUsersByGroupId(space.getGroupId());
@@ -650,7 +662,7 @@ public List<String> getMembers(Space space) throws SpaceException {
     }
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.installApplication(space, appId);
-    setApp(space, appId, Space.INSTALL_STATUS);
+    setApp(space, appId, SpaceUtils.isRemovableApp(space, appId), Space.INSTALL_STATUS);
     spaceLifeCycle.addApplication(space, appId);
   }
   
@@ -664,7 +676,7 @@ public List<String> getMembers(Space space) throws SpaceException {
     }
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.activateApplication(space, appId);
-    setApp(space, appId, Space.ACTIVE_STATUS);
+    setApp(space, appId, SpaceUtils.isRemovableApp(space, appId), Space.ACTIVE_STATUS);
     spaceLifeCycle.activateApplication(space, appId);
   }
   
@@ -679,9 +691,15 @@ public List<String> getMembers(Space space) throws SpaceException {
    * {@inheritDoc}
    */
   public void deactivateApplication(Space space, String appId) throws SpaceException {
+    String appStatus = SpaceUtils.getAppStatus(space, appId);
+    if (appStatus == null) {
+      logger.warn("appStatus is null!");
+      return; 
+    }
+    if (appStatus.equals(Space.DEACTIVE_STATUS)) return;
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.deactiveApplication(space, appId);
-    setApp(space, appId, Space.DEACTIVE_STATUS);
+    setApp(space, appId, SpaceUtils.isRemovableApp(space, appId), Space.DEACTIVE_STATUS);
     spaceLifeCycle.deactivateApplication(space, appId);
   }
   
@@ -696,6 +714,8 @@ public List<String> getMembers(Space space) throws SpaceException {
    * {@inheritDoc}
    */
   public void removeApplication(Space space, String appId) throws SpaceException {
+    String appStatus = SpaceUtils.getAppStatus(space, appId);
+    if (appStatus == null) return;
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.removeApplication(space, appId);
     removeApp(space, appId);
@@ -927,7 +947,7 @@ public List<String> getMembers(Space space) throws SpaceException {
   
     
   /**
-   * Get OrganizationService
+   * Gets OrganizationService
    * 
    * @return organizationService
    */
@@ -940,7 +960,7 @@ public List<String> getMembers(Space space) throws SpaceException {
   }
   
   /**
-   * Get UserACL
+   * Gets UserACL
    * 
    * @return userACL
    */
@@ -953,7 +973,7 @@ public List<String> getMembers(Space space) throws SpaceException {
   }
   
   /**
-   * Get space application handlers
+   * Gets space application handlers
    * @return
    */
   @SuppressWarnings("unchecked")
@@ -969,7 +989,7 @@ public List<String> getMembers(Space space) throws SpaceException {
   }
   
   /**
-   * Get space application handler
+   * Gets space application handler
    * @param space
    * @return
    * @throws SpaceException
@@ -982,24 +1002,37 @@ public List<String> getMembers(Space space) throws SpaceException {
   }
   
   /**
-   * Set application status to a space
+   * an application status is composed with the form of: [appId:isRemovableString:status].
+   * And space app properties is the combined of application statuses separated by a comma (,).
+   * For example: space.getApp() = "SpaceSettingPortlet:false:active,UserListPortlet:true:active";
    * @param space
    * @param appId
+   * @param isRemovable
    * @param status
    * @throws SpaceException
    */
-  private void setApp(Space space, String appId, String status) throws SpaceException {
+  private void setApp(Space space, String appId, boolean isRemovable, String status) throws SpaceException {
     String apps = space.getApp();
-
-    // Application is composed in form: id : displayName : status
-    String app = appId + ":" + appId + ":" + status; 
-    if(apps == null) apps = app;
-    else {
-      if(status.equals(Space.INSTALL_STATUS)) apps = apps + "," + app;
-      else {
-        String oldStatus = apps.substring(apps.indexOf(appId));
-        if(oldStatus.indexOf(",") != -1) oldStatus = oldStatus.substring(0, oldStatus.indexOf(",") - 1);
-        apps = apps.replaceFirst(oldStatus, app);
+    //an application status is composed with the form of [appId:isRemovableString:status]
+    String applicationStatus = appId;
+    if (isRemovable) {
+      applicationStatus += ":true";
+    } else {
+      applicationStatus += ":false";
+    }
+    applicationStatus += ":" + status;
+    if (apps == null) {
+      apps = applicationStatus;
+    } else {
+      int indexOfAppId = apps.indexOf(appId);
+      if (indexOfAppId != -1) {
+        String oldApplicationStatus = apps.substring(indexOfAppId);
+        if (oldApplicationStatus.indexOf(",") != -1) {
+          oldApplicationStatus = oldApplicationStatus.substring(0, oldApplicationStatus.indexOf(",") - 1);
+        }
+        apps = apps.replaceFirst(oldApplicationStatus, applicationStatus);
+      } else {
+        apps += "," + applicationStatus; 
       }
     }
     space.setApp(apps);
@@ -1007,23 +1040,25 @@ public List<String> getMembers(Space space) throws SpaceException {
   }
   
   /**
-   * Remove application from a space
+   * Removes application from a space
    * @param space
    * @param appId
    * @throws SpaceException
    */
   private void removeApp(Space space, String appId) throws SpaceException {
     String apps = space.getApp();
-    String oldStatus = apps.substring(apps.indexOf(appId));
-    if(oldStatus.indexOf(",") != -1) oldStatus = oldStatus.substring(0,oldStatus.indexOf(","));
-    apps = apps.replaceFirst(oldStatus, "");
-    if(apps.equals("")) apps = null;
-    space.setApp(apps);
-    saveSpace(space, false);
+    if (apps.indexOf(appId) != -1) {
+      String oldStatus = apps.substring(apps.indexOf(appId));
+      if(oldStatus.indexOf(",") != -1) oldStatus = oldStatus.substring(0, oldStatus.indexOf(",") + 1);
+      apps = apps.replaceFirst(oldStatus, "");
+      if(apps.equals("")) apps = null;
+      space.setApp(apps);
+      saveSpace(space, false);
+    }
   }
   
   /**
-   * Remove an item from an array
+   * Removes an item from an array
    * @param arrays
    * @param str
    * @return new array
@@ -1037,7 +1072,7 @@ public List<String> getMembers(Space space) throws SpaceException {
   }
   
   /**
-   * Add an item to an array
+   * Adds an item to an array
    * @param arrays
    * @param str
    * @return new array
@@ -1062,6 +1097,7 @@ public List<String> getMembers(Space space) throws SpaceException {
     }
   }
   
+  @SuppressWarnings("unchecked")
   private boolean isMandatory(GroupHandler groupHandler, Group group, List<String> mandatories) throws Exception
   {
      if (mandatories.contains(group.getId()))
