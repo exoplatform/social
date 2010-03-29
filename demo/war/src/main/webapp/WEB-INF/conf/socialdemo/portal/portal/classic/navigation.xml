@@ -26,6 +26,7 @@
     <uri>activities</uri>
     <name>activities</name>
     <label>#{portal.classic.myprofile}</label>
+    <visibility>DISPLAYED</visibility>
     <page-reference>portal::classic::activities</page-reference>
    </node>
   
@@ -33,6 +34,7 @@
 	  <uri>home</uri>
 	  <name>home</name>
 	  <label>#{portal.classic.home}</label>
+	  <visibility>SYSTEM</visibility>
 	  <page-reference>portal::classic::homepage</page-reference>	    
 	 </node>
    
@@ -73,6 +75,7 @@
     <uri>people</uri>
     <name>people</name>
     <label>#{portal.classic.people}</label>
+    <visibility>DISPLAYED</visibility>
     <page-reference>portal::classic::people</page-reference>
 	 </node>
 	 
@@ -80,6 +83,7 @@
     <uri>spaces</uri>
     <name>spaces</name>
     <label>#{portal.classic.spaces}</label>
+    <visibility>DISPLAYED</visibility>
     <page-reference>portal::classic::spaces</page-reference>
    </node>
    
