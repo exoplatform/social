@@ -248,4 +248,96 @@
     </portlet-info>
     
   </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Activities Toolbar Portlet</description>
+    <portlet-name>ActivitiesToolbarPortlet</portlet-name>
+    <display-name xml:lang="EN">Activities Toolbar Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/ActivitiesToolbarPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.ActivitiesToolBarPortlet</resource-bundle>
+    <portlet-info>
+      <title>Activities Toolbar Portlet</title>
+      <short-title>Activities Toolbar Portlet</short-title>
+      <keywords>Profile</keywords>
+    </portlet-info>    
+    
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIActivitiesToolBarPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+    
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">People Toolbar Portlet</description>
+    <portlet-name>PeopleToolbarPortlet</portlet-name>
+    <display-name xml:lang="EN">People Toolbar Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/PeopleToolbarPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.PeopleToolBarPortlet</resource-bundle>
+    <portlet-info>
+      <title>People Toolbar Portlet</title>
+      <short-title>People Toolbar Portlet</short-title>
+      <keywords>Profile</keywords>
+    </portlet-info>    
+    
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/portal/webui/component/UIPeopleToolBarPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+    
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Social Logo Portlet</description>
+    <portlet-name>SocialLogoPortlet</portlet-name>
+    <display-name xml:lang="EN">Social Logo Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/SocialLogoPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.SocialLogoPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Social Logo Portlet</title>
+      <short-title>Social Logo Portlet</short-title>
+      <keywords>Profile</keywords>
+    </portlet-info>     
+  </portlet>
 </portlet-app>
