@@ -117,19 +117,16 @@
 }
 
 /**********************************/
-.UIToolbarContainer .SocialPeopleIcon {
-	background: url('background/ToolbarContainer.gif') no-repeat left -96px; /* orientation=lt */
-	background: url('background/ToolbarContainer.gif') no-repeat right -96px; /* orientation=rt */
+.UIToolbarContainer .SocialPeopleToolBarIcon {
+	background: url('background/IconPeople_Space.gif') no-repeat left 7px;
 }
 
-.UIToolbarContainer .SocialMyProfileIcon {
-	background: url('background/ToolbarContainer.gif') no-repeat left -96px; /* orientation=lt */
-	background: url('background/ToolbarContainer.gif') no-repeat right -96px; /* orientation=rt */
+.UIToolbarContainer .SocialActivitiesToolBarIcon {
+	background: url('background/ActivitiesIcon.gif') no-repeat scroll 13px center;
 }
 
 .UIToolbarContainer .SocialSpacesIcon {
-	background: url('background/ToolbarContainer.gif') no-repeat left -96px; /* orientation=lt */
-	background: url('background/ToolbarContainer.gif') no-repeat right -96px; /* orientation=rt */
+	background: url('background/IconPeople_Space.gif') no-repeat left -27px;
 }
 
 .UIToolbarContainer .SocialSiteIcon {
