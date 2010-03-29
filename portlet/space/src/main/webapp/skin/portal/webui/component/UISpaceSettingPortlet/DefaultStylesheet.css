@@ -234,6 +234,7 @@
 	height: 16px;
 	cursor: pointer;
 	margin: 0px 120px;
+	display: block;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .RevokeInvitedButton {

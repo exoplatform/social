@@ -21,6 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
@@ -295,6 +299,10 @@ public class UISpaceMember extends UIForm {
     return spaceService.isLeader(space, userName);
   }
   
+  public boolean isCurrentUser(String userName) throws Exception {
+	return (getRemoteUser().equals(userName));
+  }
+
   /**
    * triggers this action when user click on "invite" button.
    * @author hoatle
@@ -378,40 +386,50 @@ public class UISpaceMember extends UIForm {
    *
    */
   static public class RemoveUserActionListener extends EventListener<UISpaceMember> {
+	    
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
+      PortalRequestContext prContext = Util.getPortalRequestContext();
+      boolean useAjax = prContext.useAjax();
       UIApplication uiApp = requestContext.getUIApplication();
-      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceMember.getSpaceService();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
       String currentUser = requestContext.getRemoteUser();
+      String userName = event.getRequestContext().getRequestParameter(OBJECTID);
+      if (!useAjax) userName = currentUser;
       
       try {
-        spaceService.removeMember(space, userName);
+          spaceService.removeMember(space, userName);
       } catch(SpaceException se) {
           uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_MEMBER, null, ApplicationMessage.WARNING));
           return;
       }
       
-      if(!uiSpaceMember.isSuperUser() && userName.equals(currentUser)) {
-        UIPortal uiPortal = Util.getUIPortal();
-        UserPortalConfigService userPortalConfig = uiSpaceMember.getApplicationComponent(UserPortalConfigService.class);
-        //TODO dang.tung 3.0
-        //PageNavigation nav = userPortalConfig.getPageNavigation(PortalConfig.PORTAL_TYPE, Util.getPortalRequestContext().getPortalOwner());
-        PageNavigation nav = null;
-        //TODO dang.tung
-        String uri = nav.getId() + "::spaces"; 
-        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
-            PageNodeEvent.CHANGE_PAGE_NODE,
-            uri);
-        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+      if (!useAjax) {
+        prContext = Util.getPortalRequestContext();
+        prContext.setResponseComplete(true);
+        prContext.getResponse().sendRedirect(uiSpaceMember.getManageSpacesUrl());
+        return;
       } else {
-        requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+        if(!uiSpaceMember.isSuperUser() && userName.equals(currentUser)) {
+          UIPortal uiPortal = Util.getUIPortal();
+          ExoContainer container = ExoContainerContext.getCurrentContainer();
+          DataStorage dataStorage = (DataStorage)container.getComponentInstance(DataStorage.class);
+          PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.PORTAL_TYPE, Util.getPortalRequestContext().getPortalOwner());;
+  
+          String uri = nav.getId() + "::spaces"; 
+          PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
+              PageNodeEvent.CHANGE_PAGE_NODE,
+              uri);
+          uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+        } else {
+          requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+        }
       }
     }
   }
-  
+
   /**
    * triggers this action when user click on "validate user's request" button
    * @author hoatle
