@@ -19,7 +19,7 @@
 <%
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable(); 
-  String accountSetting = "javascript:if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'AccountSettings', true));" 
+  String accountSetting = "javascript:if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIEditBasicInfo', 'BasicInfoSettings', true));" 
 %>
 <div class="TitleBar" id="$uicomponent.id">
 
@@ -30,7 +30,7 @@
 				<div class="ATitleBarC">
 					<div class="Title"><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></div>
 					<% if (isEditable) { %>
-						<a onclick="$accountSetting" href="#" class="EditIcon">&nbsp;</a>
+						<a onclick="<%=uicomponent.event("EditInfo", "" + !isEdit)%>" href="#" class="EditIcon">&nbsp;</a>
 					<% } %>
 				</div>
 			</div>

@@ -20,6 +20,7 @@
 	 import org.exoplatform.services.organization.User;
 	 import org.exoplatform.services.security.ConversationState;
 	 import org.exoplatform.web.CacheUserProfileFilter;
+   import org.exoplatform.webui.core.UIPopupWindow;
 %>
 <%
   //def profile = uicomponent.getProfile();
@@ -43,6 +44,7 @@
 <div class="UIBasicInfoSection">
 <% uiform.begin() %>
 <% uicomponent.renderChild(UIBasicInfoTitleBar.class); %>
+<% uicomponent.renderChild(UIPopupWindow.class); %>
 	<div class="PortletContent">
 	
 		<table class="UIFormGrid">

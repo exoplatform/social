@@ -1,0 +1,19 @@
+<%
+import org.exoplatform.portal.webui.util.Util;
+
+def portalURI = Util.getPortalRequestContext().getPortalURI();
+def peopleLink = portalURI + "people";
+%>
+<div class="UIPeopleToolBarPortlet" id="$uicomponent.id">
+    <div class="UIHorizontalTabs">
+        <div class="TabsContainer" style="position: relative">
+            <div class="UITab NormalToolbarTab">
+                <div class="">
+                            <a class="SocialPeopleToolBarIcon TBIcon" href="<%= peopleLink %>">
+                                    <%=_ctx.appRes("UIPeopleToolBarPortlet.label.People")%>
+                            </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
