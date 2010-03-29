@@ -165,6 +165,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);
       uiWorkingWS.updatePortletsByName("UserToolbarGroupPortlet");
+      uiWorkingWS.updatePortletsByName("SpacesToolbarPortlet"); // For social demo
     }
   }
 

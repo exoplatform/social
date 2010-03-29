@@ -82,8 +82,7 @@ public class SpaceUtils {
   static private SpaceService spaceService;
   static private List<Application> appList = new ArrayList<Application>();
 //  static private UserPortalConfigService userPortalConfigService;
-  static ExoContainer container = ExoContainerContext.getCurrentContainer() ;
-  static DataStorage userPortalConfigService = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
+  
   static private ApplicationRegistryService appService = null;
   
   private static final String REMOTE_CATEGORY_NAME = "remote";
@@ -387,7 +386,7 @@ public class SpaceUtils {
     }*/
 	  PageNavigation pageNav = null;
 	  try {
-		pageNav = userPortalConfigService.getPageNavigation(nav.getOwnerType(), nav.getOwnerId());
+		pageNav = getDataService().getPageNavigation(nav.getOwnerType(), nav.getOwnerId());
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -426,9 +425,6 @@ public class SpaceUtils {
     UIPortal uiPortal = Util.getUIPortal();
     if (exoContainer == null) {
       exoContainer = ExoContainerContext.getCurrentContainer();
-    }
-    if (userPortalConfigService == null) {
-      userPortalConfigService = (DataStorage) exoContainer.getComponentInstanceOfType(DataStorage.class);
     }
     List<PageNavigation> navs = uiPortal.getNavigations();
     
@@ -690,8 +686,10 @@ public class SpaceUtils {
         spaceNav.setOwnerId(groupId);
         spaceNav.setModifiable(true);
 
-        UIPortal uiPortal = Util.getUIPortal();
-        List<PageNavigation> pnavigations = uiPortal.getNavigations();
+//        UIPortal uiPortal = Util.getUIPortal();
+//        List<PageNavigation> pnavigations = uiPortal.getNavigations();
+        UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+        List<PageNavigation> pnavigations = uiPortalApp.getNavigations();
         pnavigations.add(spaceNav);
         configService.create(spaceNav);
       }
@@ -943,6 +941,12 @@ public class SpaceUtils {
      {
         return localizedString.getDefaultString();
      }
+  }
+  
+  private static DataStorage getDataService() {
+	  ExoContainer container = ExoContainerContext.getCurrentContainer() ;
+	  DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);  
+	  return dataStorage;
   }
   
   private static ApplicationRegistryService getApplicationRegistryService() {
