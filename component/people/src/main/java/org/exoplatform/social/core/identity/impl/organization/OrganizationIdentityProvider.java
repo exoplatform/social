@@ -79,7 +79,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     //TODO: tung.dang need to review again.
 	User user = null;
     String remote = identity.getRemoteId();
-    user = getUserFromCache(remote);
+//    user = getUserFromCache(remote);
     if(user == null) {
       try {
         UserHandler userHandler = organizationService.getUserHandler();
@@ -92,7 +92,7 @@ public class OrganizationIdentityProvider extends IdentityProvider {
     if (user == null) {
       return null;
     }
-    addUserToCache(user);
+//    addUserToCache(user);
     
     loadIdentity(user, identity);
     
