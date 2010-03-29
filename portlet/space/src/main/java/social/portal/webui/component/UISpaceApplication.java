@@ -115,7 +115,9 @@ public class UISpaceApplication extends UIForm {
     }
     
     for (String appId : notAvailableAppIdList) {
-        installedAppList.add(SpaceUtils.getAppFromPortalContainer(appId));
+        if (SpaceUtils.getAppStatus(space, appId).equals(Space.ACTIVE_STATUS)) {
+          installedAppList.add(SpaceUtils.getAppFromPortalContainer(appId));
+        }
     }
     
     PageList pageList = new ObjectPageList(installedAppList, 3);
