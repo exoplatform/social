@@ -163,7 +163,7 @@ public class UISpaceInfo extends UIForm {
         DataStorage dataStorage = uiSpaceInfo.getApplicationComponent(DataStorage.class);
         String cleanedString = SpaceUtils.cleanString(name);
         space.setUrl(cleanedString);
-        PageNavigation spaceNavigation = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+        PageNavigation spaceNavigation = Util.getUIPortal().getSelectedNavigation();//dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
         homeNode = spaceNavigation.getNodes().get(0);
         homeNode.setUri(cleanedString);
         homeNode.setName(cleanedString);
