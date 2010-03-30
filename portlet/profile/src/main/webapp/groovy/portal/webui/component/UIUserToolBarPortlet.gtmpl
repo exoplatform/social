@@ -1,0 +1,89 @@
+<%
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.web.application.JavascriptManager;
+
+def rcontext = _ctx.getRequestContext() ;
+JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.portal.UIPortalNavigation') ;
+jsmanager.importJavascript('eXo.portal.UIAdminToolbar') ;
+jsmanager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
+
+def user = uicomponent.getUser();
+def portalURI = Util.getPortalRequestContext().getPortalURI();
+def remoteUser = Util.getPortalRequestContext().getRemoteUser();
+def userLink = portalURI + "activities";
+
+void renderLink() {
+		def portalURI = Util.getPortalRequestContext().getPortalURI();
+		def labelActivities = _ctx.appRes("UIUserToolBarPortlet.label.activities");
+		def labelProfile = _ctx.appRes("UIUserToolBarPortlet.label.profile");
+		def labelRelations = _ctx.appRes("UIUserToolBarPortlet.label.relations");
+		def remoteUser = Util.getPortalRequestContext().getRemoteUser();
+		def activitiesLink = portalURI + "activities";
+		def profileLink = portalURI + "profile/" + remoteUser;
+		def relationsLink = portalURI + "relations/yours/" + remoteUser;
+		def navigations = uicomponent.getNavigations();
+
+ 		String clazz = "";
+ 		def icon = "DefaultPageIcon";
+ 		
+			print """
+						<div style="position: absolute; display:none" class="MenuItemContainer">
+							<div class="SubBlock">
+				""";
+				
+				if(navigations != null) {
+				 for(nav in navigations) {
+					 def pageNodes = nav.getNodes();
+				
+					 for(PageNode node in pageNodes) {
+	          if (node.getUri() == "activities") {
+							print """
+									<div class="MenuItem">
+										<div class="$clazz">						
+											<a href="$activitiesLink" class="ItemIcon $icon">$labelActivities</a>
+										</div>
+									</div>
+								""";
+			       } else if (node.getUri() == "profile") {
+			         print """
+									<div class="MenuItem">
+										<div class="$clazz">						
+											<a href="$profileLink" class="ItemIcon $icon">$labelProfile</a>
+										</div>
+									</div>
+								""";
+			       } else if (node.getUri() == "relations") {
+			         print """
+									<div class="MenuItem">
+										<div class="$clazz">						
+											<a href="$relationsLink" class="ItemIcon $icon">$labelRelations</a>
+										</div>
+									</div>
+								""";
+			       }
+					  }
+				  }
+				}  
+			print """
+						</div>
+					</div>
+				""";
+	}
+%>
+<div class="UIActivitiesToolBarPortlet" id="$uicomponent.id">
+    <div class="UIHorizontalTabs">
+        <div class="TabsContainer" style="position: relative">
+            <div class="UITab NormalToolbarTab">
+                <div class="">
+                            <a class="SocialActivitiesToolBarIcon TBIcon" href="<%= userLink %>">
+                                    <%=user.getFullName();%>
+                            </a>
+                </div>
+                <% renderLink() %>
+            </div>
+        </div>
+    </div>
+</div>

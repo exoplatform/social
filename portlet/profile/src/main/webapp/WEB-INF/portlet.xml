@@ -250,14 +250,14 @@
   </portlet>
   
   <portlet>
-    <description xml:lang="EN">Activities Toolbar Portlet</description>
-    <portlet-name>ActivitiesToolbarPortlet</portlet-name>
-    <display-name xml:lang="EN">Activities Toolbar Portlet</display-name>
+    <description xml:lang="EN">User Toolbar Portlet</description>
+    <portlet-name>UserToolBarPortlet</portlet-name>
+    <display-name xml:lang="EN">User Toolbar Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/ActivitiesToolbarPortlet/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/web/UserToolBarPortlet/webui/configuration.xml</value>
     </init-param>    
 
     <expiration-cache>0</expiration-cache>
@@ -265,21 +265,12 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.ActivitiesToolBarPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.web.UserToolBarPortlet</resource-bundle>
     <portlet-info>
-      <title>Activities Toolbar Portlet</title>
-      <short-title>Activities Toolbar Portlet</short-title>
+      <title>User Toolbar Portlet</title>
+      <short-title>User Toolbar Portlet</short-title>
       <keywords>Profile</keywords>
     </portlet-info>    
-    
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIActivitiesToolBarPortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-    
   </portlet>
   
   <portlet>
