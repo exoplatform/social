@@ -73,12 +73,12 @@ void renderLink() {
 				""";
 	}
 %>
-<div class="UIActivitiesToolBarPortlet" id="$uicomponent.id">
+<div class="UIUserToolBarPortlet" id="$uicomponent.id">
     <div class="UIHorizontalTabs">
         <div class="TabsContainer" style="position: relative">
             <div class="UITab NormalToolbarTab">
                 <div class="">
-                            <a class="SocialActivitiesToolBarIcon TBIcon" href="<%= userLink %>">
+                            <a class="SocialUserToolBarIcon TBIcon" href="<%= userLink %>">
                                     <%=user.getFullName();%>
                             </a>
                 </div>

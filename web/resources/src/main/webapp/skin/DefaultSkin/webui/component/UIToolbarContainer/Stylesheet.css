@@ -121,8 +121,8 @@
 	background: url('background/IconPeople_Space.gif') no-repeat left 7px;
 }
 
-.UIToolbarContainer .SocialActivitiesToolBarIcon {
-	background: url('background/ActivitiesIcon.gif') no-repeat scroll 13px center;
+.UIToolbarContainer .SocialUserToolBarIcon {
+	background: url('background/ProfileIcon.gif') no-repeat scroll 13px center;
 }
 
 .UIToolbarContainer .SocialSpacesIcon {
