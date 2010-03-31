@@ -1,35 +1,29 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!--
 
-    Copyright (C) 2003-2007 eXo Platform SAS.
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+  xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-<configuration>
 
   <component>
-    <key>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</key>
-    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NodeHierarchyCreatorImpl</type>
+    <key>org.exoplatform.social.space.SpaceService</key>
+    <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
+    <init-params>
+      <!-- Configure the applications to install in a space -->
+      <values-param>
+        <name>space.homeNodeApp</name>
+        <value>DashboardPortlet</value>
+      </values-param>
+      <!-- Configure removable application or not <value>Application:removable</value> -->
+      <values-param>
+        <name>space.apps</name>
+        <value>SpaceSettingPortlet:false</value>
+        <value>UserListPortlet:true</value>
+      </values-param>
+  	</init-params>	    
   </component>  
-  <component>
-    <key>org.exoplatform.commons.chromattic.ChromatticManager</key>
-    <type>org.exoplatform.commons.chromattic.ChromatticManager</type>
-  </component>
-	<component>
-    <type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
-  </component>
+  
   
   <component>
     <key>org.exoplatform.social.core.identity.IdentityManager</key>
@@ -37,76 +31,10 @@
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
-    <type>org.exoplatform.social.core.identity.model.PropertiesDefinition</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.relationship.RelationshipManager</key>
-    <type>org.exoplatform.social.core.relationship.RelationshipManager</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.identity.IdentityProvider</key>
-    <type>org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.identity.impl.organization.GroupIdentityProvider</key>
-    <type>org.exoplatform.social.core.identity.impl.organization.GroupIdentityProvider</type>
+      <key>org.exoplatform.services.organization.OrganizationService</key>
+     <type>org.exoplatform.commons.testing.mock.SimpleMockOrganizationService</type>
   </component>  
 
-   <component>
-      <key>org.exoplatform.social.core.identity.JCRStorage</key>
-      <type>org.exoplatform.social.core.identity.JCRStorage</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.identity.ProfileMapper</key>
-    <type>org.exoplatform.social.core.identity.ProfileMapper</type>
-  </component>
-  
-  
-  <component>
-    <key>org.exoplatform.social.core.identity.ProfileConfig</key>
-    <type>org.exoplatform.social.core.identity.ProfileConfig</type>
-    <init-params>
-      <values-param>
-        <name>nodetype.emails</name>
-        <value>exo:profileKeyValue</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.phones</name>
-        <value>exo:profileKeyValue</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.ims</name>
-        <value>exo:profileKeyValue</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.urls</name>
-        <value>exo:profileKeyValue</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.address</name>
-        <value>exo:profileAddress</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.experiences</name>
-        <value>exo:profileExperience</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.education</name>
-        <value>exo:profileEducation</value>
-      </values-param>
-      <values-param>
-        <name>forceMultiValue</name>
-        <value>xxxxxxxxxxxx</value>
-      </values-param>
-    </init-params>
-  </component>
-  
-  
   <component>
     <key>org.exoplatform.social.space.impl.SocialDataLocation</key>
     <type>org.exoplatform.social.space.impl.SocialDataLocation</type>
@@ -124,6 +52,58 @@
     </init-params>
   </component>
   
+  <component>
+    <key>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</key>
+    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NodeHierarchyCreatorImpl</type>
+  </component>
+	
+	
+  <component>
+    <key>org.exoplatform.social.core.activitystream.ActivityManager</key>
+    <type>org.exoplatform.social.core.activitystream.ActivityManager</type>
+  </component>
+
+<!-- the default identity provider  -->
+  <component>
+    <key>org.exoplatform.social.core.identity.IdentityProvider</key>
+    <type>org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider</type>
+  </component>
+  
+   <component>
+      <key>org.exoplatform.social.core.identity.JCRStorage</key>
+      <type>org.exoplatform.social.core.identity.JCRStorage</type>
+  </component>
+
+	<component>
+	  <type>org.exoplatform.social.space.SpaceIdentityProvider</type>
+	</component>
+ 
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.space.SpaceService</target-component>  
+    <component-plugin> 
+      <name>SpaceActivityPublisher</name>
+      <set-method>addSpaceListener</set-method>
+      <type>org.exoplatform.social.opensocial.service.SpaceActivityPublisher</type> 
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>  
+    <component-plugin> 
+      <name>SpaceIdentityProvider plugin</name>
+      <set-method>registerIdentityProviders</set-method>
+      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type> 
+      <init-params>
+        <values-param>
+	      <name>providers</name>
+          <description>provides identity for spaces</description>
+           <value>org.exoplatform.social.space.SpaceIdentityProvider</value> 
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+   
+  
   <external-component-plugins>
 	  <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>      
 	  <component-plugin> 
@@ -134,12 +114,14 @@
 	      <values-param>
 	        <name>autoCreatedInNewRepository</name>
 	        <description>Node types configuration file</description>
-	        <value>jar:/conf/standalone/test-people-nodetypes.xml</value>
+	        <value>jar:/conf/portal/social-nodetypes.xml</value>
+	         <value>jar:/conf/portal/space-nodetypes.xml</value>
 	      </values-param>
 	    </init-params>
 	  </component-plugin>
 	</external-component-plugins>
 	
+ 
 	<external-component-plugins>
     <target-component>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</target-component>
     <component-plugin>
@@ -461,98 +443,6 @@
 	    </init-params>            
 	  </component-plugin>
   </external-component-plugins>
-  <!--<external-component-plugins>
-  	<target-component>org.exoplatform.services.organization.OrganizationService</target-component>  	
-	  <component-plugin>
-	    <name>ecm.new.group.event.listener</name>
-	    <set-method>addListenerPlugin</set-method>
-	    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NewGroupListener</type>
-	    <description>description</description>
-	    <init-params>
-	      <object-param>
-	        <name>configuration></name>
-	        <description>description</description>
-	        <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig">
-          	<field  name="repository"><string>repository</string></field>
-           	<field name="workspaces">
-             	<collection type="java.util.ArrayList">
-              	<value><string>portal-test</string></value>              	              
-              </collection>              	
-            </field>            
-            <field  name="jcrPaths">
-             	<collection type="java.util.ArrayList">
-                <value>              	
-		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">              	 	
-		             		<field name="alias"><string>groupApplicationData</string></field>
-		                <field name="path"><string>ApplicationData</string></field>
-		                <field name="nodeType"><string>nt:unstructured</string></field>
-		                <field name="permissions">
-				              <collection type="java.util.ArrayList">               
-				                <value>                            
-				                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
-				                    <field name="identity"><string>*:/platform/administrators</string></field>
-				                    <field name="read"><string>true</string></field>                
-				                    <field name="addNode"><string>true</string></field>                
-				                    <field name="setProperty"><string>true</string></field>                
-				                    <field name="remove"><string>true</string></field>                
-				                  </object>  
-				                </value>			                  
-			                </collection>
-			              </field>			                 			               
-	              	</object>
-              	</value>                             	              	             
-             	</collection>
-            </field>            
-	        </object>
-	      </object-param>
-	    </init-params> 
-	  </component-plugin>
-	  <component-plugin>
-	    <name>ecm.new.user.event.listener</name>
-	    <set-method>addListenerPlugin</set-method>
-	    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NewUserListener</type>
-	    <description>description</description>
-	    <init-params>
-	      <object-param>
-	        <name>configuration</name>
-	        <description>description</description>
-	        <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig">
-          	<field  name="repository"><string>repository</string></field>
-           	<field name="workspaces">
-             	<collection type="java.util.ArrayList">
-              	<value><string>portal-test</string></value>              	              
-              </collection>              	
-            </field>            
-            <field  name="jcrPaths">
-             	<collection type="java.util.ArrayList">
-                <value>              	
-		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">              	 	
-		             		<field name="alias"><string>userApplicationData</string></field>
-		                <field name="path"><string>ApplicationData</string></field>
-		                <field name="nodeType"><string>nt:unstructured</string></field>
-		                <field name="permissions">
-				              <collection type="java.util.ArrayList">               
-				                <value>                            
-				                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
-				                    <field name="identity"><string>*:/platform/administrators</string></field>
-				                    <field name="read"><string>true</string></field>                
-				                    <field name="addNode"><string>true</string></field>                
-				                    <field name="setProperty"><string>true</string></field>                
-				                    <field name="remove"><string>true</string></field>                
-				                  </object>  
-				                </value>			                  
-			                </collection>
-			              </field>			                 			               
-	              	</object>
-              	</value>                
-             	</collection>
-            </field>	          
-	        </object>
-	      </object-param>
-	    </init-params>
-	  </component-plugin>	  	  	  	  
-	</external-component-plugins>
 
-  --><remove-configuration>org.exoplatform.services.resources.LocaleConfigService</remove-configuration>
-	<remove-configuration>org.exoplatform.services.resources.ResourceBundleService</remove-configuration>
+  
 </configuration>

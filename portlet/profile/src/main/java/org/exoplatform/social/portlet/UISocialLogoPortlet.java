@@ -160,7 +160,7 @@ public class UISocialLogoPortlet extends UIPortletApplication
        ExoContainer container = ExoContainerContext.getCurrentContainer();
        im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
      }
-     return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentProfileID());
+     return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentProfileID());
    }
    
    /**

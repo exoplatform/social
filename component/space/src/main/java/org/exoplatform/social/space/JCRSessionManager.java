@@ -126,6 +126,14 @@ public class JCRSessionManager {
      }
      return session;
   }
+  
+  public Session getOrOpenSession() {
+    Session session = getCurrentSession();
+    if (session == null) {
+      session = openSession();
+    }
+    return session;
+  }
 
   /**
    * Creates session

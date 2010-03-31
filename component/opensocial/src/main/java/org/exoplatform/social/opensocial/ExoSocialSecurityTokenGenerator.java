@@ -90,7 +90,7 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
 
     Identity id = null;
     try {
-      id = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, remoteId);
+      id = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId);
     } catch (Exception e) {
       e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
     }

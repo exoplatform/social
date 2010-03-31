@@ -33,11 +33,11 @@ public abstract class IdentityProvider {
 	/**
 	 * The identifier can be the URL of the profile
 	 * or if it's a CS contact manager contact, it will be the UID of the contact
+	 * @param remoteId TODO
 	 *
-	 * @param identity
 	 * @return null if nothing is found, or the Identity object
 	 */
-	public abstract Identity getIdentityByRemoteId(Identity identity) throws Exception;
+	public abstract Identity getIdentityByRemoteId(String remoteId) throws Exception;
 	
 	
 	/**

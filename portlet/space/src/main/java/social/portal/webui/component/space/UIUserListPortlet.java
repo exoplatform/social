@@ -197,7 +197,7 @@ public class UIUserListPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public String getUserAvatar(String userId) throws Exception {
-    Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
+    Identity identity = getIdentityManager().getOrCreateIdentity("organization", userId);
     Profile profile = identity.getProfile();
     ProfileAttachment attach = (ProfileAttachment) profile.getProperty("avatar");
     if (attach != null) {
@@ -214,7 +214,7 @@ public class UIUserListPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public Identity getIdentity(String userId) throws Exception {
-    Identity identity = getIdentityManager().getIdentityByRemoteId("organization", userId);
+    Identity identity = getIdentityManager().getOrCreateIdentity("organization", userId);
     if (identity != null) {
       return identity;
     }

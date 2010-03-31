@@ -1,4 +1,4 @@
-package org.exoplatform.social.opensocial.service;
+package org.exoplatform.social.space;
 
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
@@ -20,7 +20,7 @@ import org.exoplatform.social.space.spi.SpaceLifeCycleEvent;
  *         Lamarque</a>
  * @version $Revision$
  */
-public class SpaceActivityPublisher extends SpaceListenerPlugin {
+public class SpaceActivityPublisher  extends SpaceListenerPlugin {
 
   private static Log      LOG = ExoLogger.getExoLogger(SpaceActivityPublisher.class);
 
@@ -28,23 +28,26 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
 
   private IdentityManager identityManager;
 
+
   public SpaceActivityPublisher(InitParams params,
                                 ActivityManager activityManager,
                                 IdentityManager identityManager) throws Exception {
     this.activityManager = activityManager;
     this.identityManager = identityManager;
+
   }
 
   @Override
   public void spaceCreated(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
-    String group = space.getGroupId();
+    String spaceId = space.getId();
     try {
-      Identity groupIdentity = identityManager.getIdentityByRemoteId(GroupIdentityProvider.NAME, group, false);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceId, false);
+
       String creator = event.getTarget();
-      activityManager.recordActivity(groupIdentity.getId(), "", "space created", "space "
+      activityManager.recordActivity(spaceIdentity.getId(), "", "space created", "space "
           + space.getName() + " was created by " + creator + ".");
-      LOG.info("space " + space.getName() + " was added for group " + group);
+      LOG.info("space " + space.getName() + " was added for group " + space.getGroupId());
     } catch (Exception e) {
       LOG.error("Failed to initialize space activity stream ", e);
     }
@@ -83,7 +86,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String group = space.getGroupId();
     try {
-      Identity groupIdentity = identityManager.getIdentityByRemoteId(GroupIdentityProvider.NAME, group, false);
+      Identity groupIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, group, false);
       String member = event.getTarget();
       activityManager.recordActivity(groupIdentity.getId(), "", "new lead", member
           + " was granted lead.");
@@ -98,7 +101,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String group = space.getGroupId();
     try {
-      Identity groupIdentity = identityManager.getIdentityByRemoteId(GroupIdentityProvider.NAME, group, false);
+      Identity groupIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, group, false);
       String member = event.getTarget();
       activityManager.recordActivity(groupIdentity.getId(), "", "new member", member
           + " has joined.");
@@ -114,7 +117,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String group = space.getGroupId();
     try {
-      Identity groupIdentity = identityManager.getIdentityByRemoteId(GroupIdentityProvider.NAME, group, false);
+      Identity groupIdentity = identityManager.getOrCreateIdentity(GroupIdentityProvider.NAME, group, false);
       String member = event.getTarget();
       activityManager.recordActivity(groupIdentity.getId(), "", "departed member", member
           + " has left the space.");

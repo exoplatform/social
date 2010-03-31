@@ -37,16 +37,16 @@ public class GroupIdentityProvider extends IdentityProvider {
   }
   
   @Override
-  public Identity getIdentityByRemoteId(Identity identity) throws Exception {
+  public Identity getIdentityByRemoteId(String remoteId) throws Exception {
 
     Group group = null;
-    String groupId = identity.getRemoteId();
+    String groupId = remoteId; // the remote id is the group id
 
       try {
         GroupHandler groupHandler = organizationService.getGroupHandler();
         group = groupHandler.findGroupById(groupId);
       } catch (Exception e) {
-        LOG.error("Could not find group " + groupId, e);
+        LOG.error("Could not find group " + groupId);
         return null;
       }
 
@@ -55,7 +55,7 @@ public class GroupIdentityProvider extends IdentityProvider {
     }
 
     
-    identity = storage.getIdentityByRemoteId(NAME, group.getId()); 
+    Identity identity = new Identity(NAME, groupId); 
   
     return identity;
   }

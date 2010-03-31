@@ -145,7 +145,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     	if(token instanceof AnonymousSecurityToken) {
     		throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
     	}
-        Identity identity = getIdentity(id.getUserId(token));
+        Identity identity = getIdentity(id.getUserId(token), true);
 
         return ImmediateFuture.newInstance(convertToPerson(identity, fields));
     } catch (Exception e) {
@@ -358,7 +358,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   	  }	
       String userId = user.getUserId(token);
 
-      Identity id = getIdentity(userId);
+      Identity id = getIdentity(userId, true);
       String gadgetId = clean(appId);
       String instanceId = "" + token.getModuleId();
 
@@ -380,7 +380,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }	
       String userId = user.getUserId(token);
 
-      Identity id = getIdentity(userId);
+      Identity id = getIdentity(userId, true);
       String gadgetId = clean(appId);
       String instanceId = "" + token.getModuleId();
 

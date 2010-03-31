@@ -143,7 +143,7 @@ public class UIInvitationRelation extends UIContainer {
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentUserName());
+      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
   }
   
   
@@ -156,11 +156,11 @@ public class UIInvitationRelation extends UIContainer {
    */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    Identity identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
+    Identity identity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
     
     // portlet is added into space application
     if (identity == null) 
-      identity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentUserName());
+      identity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
     
     return identity;
   }
@@ -178,7 +178,7 @@ public class UIInvitationRelation extends UIContainer {
       String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
       String currUserId = uiMyRelation.getCurrentUserName();
       IdentityManager im = uiMyRelation.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
       Identity requestedIdentity = im.getIdentityById(identityId);
@@ -214,7 +214,7 @@ public class UIInvitationRelation extends UIContainer {
       String currUserId = uiMyRelation.getCurrentUserName();
 
       IdentityManager im = uiMyRelation.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
       Identity requestedIdentity = im.getIdentityById(identityId);

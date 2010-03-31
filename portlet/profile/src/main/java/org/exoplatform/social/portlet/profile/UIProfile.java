@@ -203,7 +203,7 @@ public class UIProfile extends UIContainer {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     }
-    return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentProfileID());
+    return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentProfileID());
   }
   
   /**

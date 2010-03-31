@@ -44,15 +44,15 @@ public class TestRelationshipManager extends BasicPeopleServiceTestCase {
 
   private void init() throws Exception {
 
-    Identity identity1 = identityManager.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, "john");
+    Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
     identityManager.saveIdentity(identity1);
     assertNotNull(identity1.getId());
 
-    Identity identity2 = identityManager.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, "james");
+    Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "james");
     identityManager.saveIdentity(identity2);
     assertNotNull(identity2.getId());
 
-    Identity identity3 = identityManager.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, "root");
+    Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
     identityManager.saveIdentity(identity3);
     assertNotNull(identity3.getId());
     

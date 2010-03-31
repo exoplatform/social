@@ -1107,5 +1107,13 @@ public class SpaceServiceImpl implements SpaceService {
      }
      return false;
   }
+
+  public JCRStorage getStorage() {
+    return storage;
+  }
+
+  public void setStorage(JCRStorage storage) {
+    this.storage = storage;
+  }
   
 }

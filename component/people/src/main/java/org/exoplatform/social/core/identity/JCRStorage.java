@@ -54,11 +54,12 @@ import org.exoplatform.services.jcr.impl.core.value.BooleanValue;
 import org.exoplatform.services.jcr.impl.core.value.DoubleValue;
 import org.exoplatform.services.jcr.impl.core.value.LongValue;
 import org.exoplatform.services.jcr.impl.core.value.StringValue;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.space.JCRSessionManager;
-import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
 
@@ -99,7 +100,7 @@ public class JCRStorage {
   /** The session manager. */
   private JCRSessionManager sessionManager;
   
-
+  private static final Log LOG = ExoLogger.getExoLogger(JCRStorage.class);
 
   /**
    * Instantiates a new jCR storage.
@@ -176,9 +177,7 @@ public class JCRStorage {
         identityNode.save();
       }  
     } catch (Exception e) {
-      e.printStackTrace();
-//      System.out.println("\n\n\n\n\n===>>>>> saveIdentity err");
-      // TODO: handle exception
+      LOG.error("failed to save identity " + identity, e);
     } finally {
       sessionManager.closeSession();
     }
@@ -187,20 +186,18 @@ public class JCRStorage {
   /**
    * Gets the identity by his id.
    * 
-   * @param id the id of identity
+   * @param identityId the id of identity
    * @return the identity
    * @throws Exception the exception
    */
-  public Identity getIdentity(String id) throws Exception {
+  public Identity findIdentityById(String identityId) throws Exception {
     Session session = sessionManager.openSession();
     Node identityNode = null;
     try {
-		identityNode = session.getNodeByUUID(id);
-        return getIdentity(identityNode);
-    }
-    catch (ItemNotFoundException e) {
-      //e.printStackTrace();	
-//      System.out.println("\n\n\n\n\n===>>>>> getIdentity err. return null");
+      identityNode = session.getNodeByUUID(identityId);
+      return getIdentity(identityNode);
+    } catch (ItemNotFoundException e) {
+      LOG.warn("failed to load identity " + identityId);
       return null;
     } finally {
       sessionManager.closeSession();
@@ -210,7 +207,7 @@ public class JCRStorage {
   /**
    * Gets the all identity.
    * 
-   * @return the all iendtity
+   * @return the all identities
    */
   public List<Identity> getAllIdentities() {
     List<Identity> identities = new ArrayList<Identity>();
@@ -226,8 +223,7 @@ public class JCRStorage {
       }
       return identities;
     } catch (Exception e) {
-//      System.out.println("\n\n\n\n\n\n ===>>>>> ====getAllSpaces err. return null \n");
-      e.printStackTrace();
+      LOG.error("Error while loading identities", e);
       return null;
     } finally {
       sessionManager.closeSession();
@@ -238,12 +234,12 @@ public class JCRStorage {
   /**
    * Gets the identity by remote id.
    * 
-   * @param identityProvider the identity provider
-   * @param id the id
+   * @param providerId the identity provider
+   * @param remoteId the id
    * @return the identity by remote id
    * @throws Exception the exception
    */
-  public Identity getIdentityByRemoteId(String identityProvider, String id) throws Exception {
+  public Identity findIdentity(String providerId, String remoteId) throws Exception {
     Session session = sessionManager.openSession();
     Identity identity = null;
     try {
@@ -251,8 +247,8 @@ public class JCRStorage {
   
       StringBuffer queryString = new StringBuffer("/").append(identityHomeNode.getPath())
           .append("/").append(IDENTITY_NODETYPE).append("[(@")
-          .append(IDENTITY_PROVIDERID).append("='").append(identityProvider).append("' and @")
-          .append(IDENTITY_REMOTEID).append("='").append(id.replaceAll("'", "''")).append("')]");
+          .append(IDENTITY_PROVIDERID).append("='").append(providerId).append("' and @")
+          .append(IDENTITY_REMOTEID).append("='").append(remoteId.replaceAll("'", "''")).append("')]");
       
       QueryManager queryManager = session.getWorkspace().getQueryManager();
       Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
@@ -260,16 +256,15 @@ public class JCRStorage {
       NodeIterator nodeIterator = queryResult.getNodes();
   
       if (nodeIterator.getSize() == 1) {
-  
         Node identityNode = (Node) nodeIterator.next();
         identity = new Identity(identityNode.getUUID());
         identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
         identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
+      } else {
+        LOG.debug("No node found for identity  " + providerId + ":" + remoteId);
       }
     } catch (Exception e) {
-//      System.out.println("\n\n\n\n\n===>>>>> getIdentityByRemoteId err");
-      e.printStackTrace();
-      // TODO: handle exception
+      LOG.error("failed to load identity by remote id : "+ providerId +":" + remoteId, e);
     } finally {
       sessionManager.closeSession();
     }
@@ -353,6 +348,7 @@ public class JCRStorage {
       QueryResult queryResult = query1.execute();
       nodeIterator = queryResult.getNodes();
     } catch (Exception e) {
+      LOG.warn("error while filtering identities: " + e.getMessage());
       return (new ArrayList<Identity>());
     } finally { 
       sessionManager.closeSession();
@@ -421,8 +417,7 @@ public class JCRStorage {
       QueryResult queryResult = query1.execute();
       nodeIterator = queryResult.getNodes();
     } catch (Exception e) {
-      // TODO: handle exception
-//      System.out.println("\n\n\n\n\n===>>>>>>==== loadPrgetIdentitiesFilterByAlphaBet err core/identity");
+      LOG.warn("Failed to filter identities by alphabet" + e.getMessage());
       return null;
     } finally {
       sessionManager.closeSession();
@@ -468,18 +463,14 @@ public class JCRStorage {
   
   
       if (p.getId() == null) {
-        //System.out.println("saving all the profileHomeNode");
+        LOG.debug("About to create a new profile...");
         profileHomeNode.save();
         p.setId(profileNode.getUUID());
       } else {
         profileNode.save();
-        //System.out.println("saving the profileNode");
-        //getSession().save();
       }
     } catch (Exception e) {
-      // TODO: handle exception
-//      System.out.println("\n\n\n\n\n===>>>>>>==== saveProfile err core/identity");
-      e.printStackTrace();
+      LOG.error("Failed to save profile " + p, e);
     } finally {
       sessionManager.closeSession();
     }
@@ -495,9 +486,9 @@ public class JCRStorage {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   protected void saveProfile(Profile p, Node n, Session session) throws Exception, IOException {
-    Map props = p.getProperties();
+    Map<String,Object> props = p.getProperties();
 
-    Iterator it = props.keySet().iterator();
+    Iterator<String> it = props.keySet().iterator();
 
     //first we remove the nodes that have to be removed
 
@@ -546,7 +537,7 @@ public class JCRStorage {
         setProperty(name, (String[]) propValue, n);
       }
       else if (propValue instanceof List) {
-        setProperty(name, (List<Map>) propValue, n);
+        setProperty(name, (List<Map<String,Object>>) propValue, n);
       }
       else if (propValue instanceof ProfileAttachment) {
         //fix id6 load
@@ -603,7 +594,7 @@ public class JCRStorage {
    * @throws ConstraintViolationException the constraint violation exception
    * @throws VersionException the version exception
    */
-  private void setProperty(String name, List<Map> props, Node n) throws Exception, ConstraintViolationException, VersionException {
+  private void setProperty(String name, List<Map<String,Object>> props, Node n) throws Exception, ConstraintViolationException, VersionException {
     //System.out.println("setting the List prop " + name + " = " + props);
 
     String ntName = getNodeTypeName(name);
@@ -618,12 +609,12 @@ public class JCRStorage {
       currNode.remove();
     }
 
-    Iterator<Map> it = props.iterator();
+    Iterator<Map<String, Object>> it = props.iterator();
     while(it.hasNext()) {
-      Map prop = it.next();
+      Map<String,Object> prop = it.next();
       Node propNode = n.addNode(name, ntName);
 
-      Iterator itKey = prop.keySet().iterator();
+      Iterator<String> itKey = prop.keySet().iterator();
       while (itKey.hasNext()) {
         String key = (String) itKey.next();
         Object propValue = prop.get(key);
@@ -682,17 +673,14 @@ public class JCRStorage {
       throw new Exception("the identity has to be saved before loading the profile");
     }
     try {
-      Session session = sessionManager.openSession();
+      Session session = sessionManager.getOrOpenSession();
       
       Node idNode = session.getNodeByUUID(p.getIdentity().getId());
       PropertyIterator it = idNode.getReferences();
   
       while (it.hasNext()) {
         Property prop = (Property) it.next();
-  //      System.out.println("is the profile NT? " + prop.getParent().getPrimaryNodeType().getName()
-  //          + " " + prop.getParent().getUUID());
         if (prop.getParent().isNodeType(PROFILE_NODETYPE)) {
-          //System.out.println("found the profile");
           Node n = prop.getParent();
           p.setId(n.getUUID());
           loadProfile(p, n, session);
@@ -700,8 +688,7 @@ public class JCRStorage {
         }
       }
       if(it.getSize() < 1) {
-        //TODO: save profile if have not existed.
-//        System.out.println("\n\n\n\n====>>> save profile L567===>>>>\n\n");
+        LOG.debug("Lazily initializing a new Profile...");
         Node profileHomeNode = getProfileServiceHome(session);
           Node profileNode;
           if(p.getId() == null) {
@@ -719,7 +706,6 @@ public class JCRStorage {
           saveProfile(p, profileNode, session);
           
           if (p.getId() == null) {
-            //System.out.println("saving all the profileHomeNode");
             profileHomeNode.save();
             p.setId(profileNode.getUUID());
           } else {
@@ -727,12 +713,10 @@ public class JCRStorage {
           }
       }
     } catch (Exception e) {
-      // TODO: handle exception
-//      System.out.println("\n\n\n\n\n===>>>>>>==== loadProfile err core/identity");
+      LOG.error("Failed to load Profile " + p, e);
     } finally {
       sessionManager.closeSession();
     }
-    //System.out.println("did not find the profile");
   }
 
   /**
@@ -782,9 +766,7 @@ public class JCRStorage {
           try {
             file.setInputStream(node.getNode("jcr:content").getProperty("jcr:data").getValue().getStream());
           } catch (Exception e) {
-            // TODO Auto-generated catch block
-//            System.out.println("\n\n\n\n\n===>>>>>>==== loadProfile err at getValue().getStream");
-            e.printStackTrace();
+            LOG.warn("Failed to load data for avatar of " + p + ": " + e.getMessage());
           }
           file.setLastModified(node.getNode("jcr:content").getProperty("jcr:lastModified").getLong());
           file.setFileName(node.getName());
@@ -799,9 +781,7 @@ public class JCRStorage {
         }
         l.add(copyPropertiesToMap(node.getProperties(), new HashMap()));
       }
-      //System.out.println("finish Loading the node:" + node.getName());
     }
-    //System.out.println("nodetype: " + n.getPrimaryNodeType().getName());
   }
 
   /**
@@ -856,7 +836,6 @@ public class JCRStorage {
    * @throws Exception the exception
    */
   public String getType(String nodetype, String property) throws Exception {
-    //System.out.println("getType(" + nodetype + ", " + property + ")");
     try {
       Session session = sessionManager.openSession();
       
@@ -866,12 +845,11 @@ public class JCRStorage {
   
       for(PropertyDefinition pDef : pDefs) {
         if(pDef.getName().equals(property)) {
-          //System.out.println("getType(" + nodetype + ", " + property + ") ==" + pDef.getRequiredType());
           return PropertyType.nameFromValue(pDef.getRequiredType());
         }
       }
     } catch (Exception e) {
-      // TODO: handle exception
+      LOG.error("Could not find type of property " + property +" for nodetype " + nodetype);
       return null;
     } finally {
       sessionManager.closeSession();

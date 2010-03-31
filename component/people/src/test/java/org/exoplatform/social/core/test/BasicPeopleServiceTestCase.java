@@ -34,7 +34,7 @@ import org.exoplatform.services.security.Identity;
 	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.test-configuration.xml"),
 	  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.people.portal-configuration.xml")
 	})
-public abstract class BasicPeopleServiceTestCase extends AbstractKernelTest {
+public abstract class BasicPeopleServiceTestCase  extends AbstractKernelTest {
  
   protected static Log          log = ExoLogger.getLogger("sample.services.test");
 

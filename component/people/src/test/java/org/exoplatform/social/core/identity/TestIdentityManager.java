@@ -19,7 +19,8 @@ package org.exoplatform.social.core.identity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.test.BasicPeopleServiceTestCase;
 
-public class TestIdentityManager extends  BasicPeopleServiceTestCase{
+public class TestIdentityManager extends  BasicPeopleServiceTestCase{ 
+  
   public TestIdentityManager() throws Exception {
 	super();
 	// TODO Auto-generated constructor stub
@@ -37,7 +38,7 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
   }
 
   public void testGetIdentityByRemoteId() throws Exception {
-    Identity identity = identityManager.getIdentityByRemoteId("organization", "john");
+    Identity identity = identityManager.getOrCreateIdentity("organization", "john");
     assertNotNull(identity);
     //assertEquals("john", identity.getProfile().getNickname());
     //assertEquals("john", identity.getDisplayName());
@@ -46,7 +47,7 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
     assertNotNull(identity.getId());
 
     //check if we load it a second time if we get the ID
-    identity = identityManager.getIdentityByRemoteId("organization", "john");
+    identity = identityManager.getOrCreateIdentity("organization", "john");
     assertNotNull(identity);
     assertNotNull("This object should have an id since it has been saved", identity.getId());
 
@@ -56,10 +57,8 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
   }
 
   public void testGetIdentityById() throws Exception {
-    //IdentityManager iManager = (IdentityManager) StandaloneContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
-    //iManager.addIdentityProvider(new OrganizationIdentityProvider());
 
-    Identity identity = identityManager.getIdentityByRemoteId("organization", "mary");
+    Identity identity = identityManager.getOrCreateIdentity("organization", "mary");
     assertNotNull(identity);
 
     assertNotNull(identity.getId());
@@ -74,7 +73,7 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
   }
   
   public void testGetIdentityByIdWithGlobalId() throws Exception {
-    Identity demo = identityManager.getIdentityByRemoteId("organization", "demo");
+    Identity demo = identityManager.getOrCreateIdentity("organization", "demo");
     identityManager.saveIdentity(demo);
     String demoId = demo.getId();
 
@@ -89,7 +88,7 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
   }
 
   public void testGetWrongId() throws Exception {
-    Identity identity = identityManager.getIdentityByRemoteId("organization", "jack");
+    Identity identity = identityManager.getOrCreateIdentity("organization", "jack");
     assertNull(identity);
 
     identity = identityManager.getIdentityById("wrongID");

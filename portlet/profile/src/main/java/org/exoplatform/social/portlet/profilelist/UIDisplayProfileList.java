@@ -159,7 +159,7 @@ public class UIDisplayProfileList extends UIContainer {
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
       String currUserId = portlet.getCurrentUserName();
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
       Identity requestedIdentity = im.getIdentityById(userId);
@@ -202,7 +202,7 @@ public class UIDisplayProfileList extends UIContainer {
       String currUserId = portlet.getCurrentUserName();
 
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
       Identity requestedIdentity = im.getIdentityById(userId);
@@ -236,7 +236,7 @@ public class UIDisplayProfileList extends UIContainer {
       String currUserId = portlet.getCurrentUserName();
 
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
       Identity requestedIdentity = im.getIdentityById(userId);
@@ -281,7 +281,7 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
+    return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
   }
   
   /**
@@ -355,7 +355,7 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, getCurrentUserName());
+      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
   }
   
   /**

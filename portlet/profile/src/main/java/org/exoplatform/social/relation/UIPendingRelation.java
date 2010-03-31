@@ -183,7 +183,7 @@ public class UIPendingRelation extends UIContainer {
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getIdentityByRemoteId("organization", getCurrentUserName());
+      return im.getOrCreateIdentity("organization", getCurrentUserName());
   }
   
   /**
@@ -195,8 +195,8 @@ public class UIPendingRelation extends UIContainer {
    */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    Identity identity = im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
-    if (identity == null) identity = im.getIdentityByRemoteId("organization", getCurrentUserName());
+    Identity identity = im.getOrCreateIdentity("organization", getCurrentViewerUserName());
+    if (identity == null) identity = im.getOrCreateIdentity("organization", getCurrentUserName());
     return identity;
   }
   
@@ -239,7 +239,7 @@ public class UIPendingRelation extends UIContainer {
       String currUserId = portlet.getCurrentUserName();
   
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
   
       Identity requestedIdentity = im.getIdentityById(userId);

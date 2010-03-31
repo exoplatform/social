@@ -75,15 +75,15 @@ public class OrganizationIdentityProvider extends IdentityProvider {
   /* (non-Javadoc)
    * @see org.exoplatform.social.core.identity.IdentityProvider#getIdentityByRemoteId(org.exoplatform.social.core.identity.model.Identity)
    */
-  public Identity getIdentityByRemoteId(Identity identity) throws Exception {
+  public Identity getIdentityByRemoteId(String remoteId) throws Exception {
     //TODO: tung.dang need to review again.
 	User user = null;
-    String remote = identity.getRemoteId();
+
 //    user = getUserFromCache(remote);
     if(user == null) {
       try {
         UserHandler userHandler = organizationService.getUserHandler();
-        user = userHandler.findUserByName(remote);
+        user = userHandler.findUserByName(remoteId);
       } catch (Exception e) {
         //e.printStackTrace();
         return null;
@@ -93,8 +93,8 @@ public class OrganizationIdentityProvider extends IdentityProvider {
       return null;
     }
 //    addUserToCache(user);
-    
-    loadIdentity(user, identity);
+    Identity identity = new Identity(NAME, remoteId);
+    populateUserProfile(user, identity);
     
     //TODO dang.tung need to save profile in database if node doesn't exist
     //saveProfile(identity.getProfile());
@@ -109,22 +109,17 @@ public class OrganizationIdentityProvider extends IdentityProvider {
    * @return the identity
    * @throws Exception the exception
    */
-  private Identity loadIdentity(User user, Identity identity) throws Exception {
+  private Identity populateUserProfile(User user, Identity identity) throws Exception {
       Profile profile = identity.getProfile();
-
       profile.setProperty("firstName", user.getFirstName());
       profile.setProperty("lastName", user.getLastName());
-
       profile.setProperty("username", user.getUserName());
 
-      //storage.loadProfile(profile);
-
       if (user.getEmail() != null && !profile.contains("emails")) {
-        List emails = new ArrayList();
-        Map email = new HashMap();
+        List<Map<String,String>> emails = new ArrayList<Map<String,String>>();
+        Map<String,String> email = new HashMap<String,String>();
         email.put("key", "work");
         email.put("value", user.getEmail());
-
         emails.add(email);
         profile.setProperty("emails", emails);
       }

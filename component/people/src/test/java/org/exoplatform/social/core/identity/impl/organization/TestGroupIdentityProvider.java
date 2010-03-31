@@ -23,32 +23,23 @@ public class TestGroupIdentityProvider extends BasicPeopleServiceTestCase {
     assertNotNull(groupIdentityProvider);
   }
   
-  public void testGetByRemoteid() throws Exception {
-    Identity identity = new Identity();
-    identity.setProviderId(GroupIdentityProvider.NAME);
-    identity.setRemoteId("foobarfoo");
+  public void testGetByRemoteId() throws Exception {
+    Identity identity = new Identity(GroupIdentityProvider.NAME, "foobarfoo");
 
     // identoty does not exist
-    assertNull(groupIdentityProvider.getIdentityByRemoteId(identity));
+    assertNull(groupIdentityProvider.getIdentityByRemoteId("foobarfoo"));
     
     // null identity
-    identity.setRemoteId(null);
-    assertNull(groupIdentityProvider.getIdentityByRemoteId(identity));
+    assertNull(groupIdentityProvider.getIdentityByRemoteId(null));
     
-    identity.setRemoteId("/platform/users");
-    assertNull(groupIdentityProvider.getIdentityByRemoteId(identity));
-    
-    
-    // identity for an existing group must have been saved prior
+    // identity for an existing group
     identityStorage.saveIdentity(identity);
     identity.setRemoteId("/platform/users");
-    Identity actual = groupIdentityProvider.getIdentityByRemoteId(identity);
-    assertNotNull(actual);
-    assertNotNull(actual.getId()); // must have an id
-    assertEquals(identity.getRemoteId(), actual.getRemoteId());
- 
-
     
+    Identity actual = groupIdentityProvider.getIdentityByRemoteId("/platform/users");
+    assertNotNull(actual);
+    assertEquals(identity.getRemoteId(), actual.getRemoteId());
+  
   }
 
 }

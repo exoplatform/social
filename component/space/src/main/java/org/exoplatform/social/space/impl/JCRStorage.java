@@ -29,12 +29,17 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.space.JCRSessionManager;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
 
 
 public class JCRStorage {
+  
+  private static final Log LOG = ExoLogger.getLogger(JCRStorage.class);
+  
   final static private String SPACE_NODETYPE = "exo:space".intern();
   final static private String SPACE_NAME = "exo:name".intern();
   final static private String SPACE_GROUPID = "exo:groupId".intern();
@@ -232,6 +237,7 @@ public class JCRStorage {
       if(isNew) spaceHomeNode.save();
       else spaceNode.save();
     } catch (Exception e) {
+      LOG.error("failed to save space", e);
       // TODO: handle exception
     } finally {
     }

@@ -30,6 +30,10 @@ var shindigVersion = "${org.shindig.version}";
   module.component.opensocial = 
 	new Project("org.exoplatform.social", "exo.social.component.opensocial","jar", module.version);
 
+  module.component.exosocial = 
+	new Project("org.exoplatform.social", "exo.social.component.exosocial","jar", module.version);
+
+  
   module.web = {};
 	
   module.web.eXoResources = new Project("org.exoplatform.social", "exo.social.web.socialResources", "war", module.version);

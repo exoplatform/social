@@ -54,11 +54,10 @@ public class Identity {
     
     /**
      * Instantiates a new identity
-     * 
-     * @param remoteId the remote id of identity
      * @param providerId the provider id of identity
+     * @param remoteId the remote id of identity
      */
-    public Identity(String remoteId, String providerId) {
+    public Identity(String providerId, String remoteId) {
     	this.remoteId = remoteId;
     	this.providerId = providerId;
     }

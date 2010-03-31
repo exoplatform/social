@@ -45,8 +45,8 @@ public class IdentityRestServiceTest extends AbstractResourceTest {
     identityRestService = new IdentityRestService();
     registry(identityRestService);
     
-    rootId = identityManager.getIdentityByRemoteId(PROVIDER_ID, "root").getId();
-    johnId = identityManager.getIdentityByRemoteId(PROVIDER_ID, "john").getId();
+    rootId = identityManager.getOrCreateIdentity(PROVIDER_ID, "root").getId();
+    johnId = identityManager.getOrCreateIdentity(PROVIDER_ID, "john").getId();
   }
   
   public void tearDown() throws Exception {

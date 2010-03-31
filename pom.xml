@@ -24,6 +24,7 @@
 	  <org.exoplatform.ws.version>2.1.0-GA</org.exoplatform.ws.version>
 	  <org.exoplatform.jcr.version>1.12.0-GA</org.exoplatform.jcr.version>
 	  <org.exoplatform.portal.version>3.0.0-GA</org.exoplatform.portal.version>
+	  <org.exoplatform.common.version>3.0.0-Alpha03</org.exoplatform.common.version>
 	  <org.jibx.version>1.2.1</org.jibx.version>
 	  <org.shindig.version>1.0-r790473-Patch02</org.shindig.version>
 	  <org.gatein.common.version>2.0.0-GA</org.gatein.common.version>
@@ -51,14 +52,15 @@
   </properties>
   
   <modules>
+   <module>component/space</module>  
    <module>component/people</module>
-   <module>component/opensocial</module>
+   <module>component/opensocial</module>   
+   <module>component/exosocial</module>
    <module>extension</module>
    <module>web/resources</module>
    <module>web/opensocial</module>
    <module>portlet/space</module>
    <module>portlet/profile</module>
-   <module>component/space</module>
    <module>webui/social</module>
    <module>application/rest</module>
    <module>server</module>
@@ -308,68 +310,68 @@
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.common</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.web</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.portal</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.portal</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
           <type>test-jar</type>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.pc</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.identity</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.resources</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.application-registry</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.xml-parser</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.scripting</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.dashboard</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.webui.portal</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.webui.eXo</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
@@ -379,42 +381,46 @@
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.gadgets-core</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.test.core</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.test.core</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
           <type>test-jar</type>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.test.jcr</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.test.jcr</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
           <type>test-jar</type>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.test.organization</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
         </dependency>
         <dependency>
           <groupId>org.exoplatform.portal</groupId>
           <artifactId>exo.portal.component.test.organization</artifactId>
-          <version>3.0.0-GA</version>
+          <version>${org.exoplatform.portal.version}</version>
           <type>test-jar</type>
         </dependency>
-
+		<dependency>
+	      <groupId>org.exoplatform.platform</groupId>
+	      <artifactId>exo.platform.commons.testing</artifactId>
+		  <version>${org.exoplatform.common.version}</version>
+		</dependency>  
          <!-- Chromattic -->
          <dependency>
             <groupId>org.chromattic</groupId>

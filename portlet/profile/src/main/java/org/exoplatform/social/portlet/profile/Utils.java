@@ -159,7 +159,7 @@ public class Utils {
       String currentUserName = context.getRemoteUser();
       if (URLUtils.getCurrentUser() != null) currentUserName = URLUtils.getCurrentUser() ;
       
-      return identityManager.getIdentityByRemoteId(OrganizationIdentityProvider.NAME, currentUserName);
+      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName);
   }
   
   /**

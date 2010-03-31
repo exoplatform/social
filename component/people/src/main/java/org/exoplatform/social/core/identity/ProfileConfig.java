@@ -35,7 +35,7 @@ import org.exoplatform.container.xml.ValuesParam;
 public class ProfileConfig {
   
   /** The force multi value. */
-  private List forceMultiValue = new ArrayList<String>();
+  private List<String> forceMultiValue = new ArrayList<String>();
   
   /** The node types. */
   private Map<String, String> nodeTypes = new HashMap<String, String>();

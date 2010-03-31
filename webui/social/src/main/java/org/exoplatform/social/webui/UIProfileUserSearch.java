@@ -222,7 +222,7 @@ public class UIProfileUserSearch extends UIForm {
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getIdentityByRemoteId(ORGANIZATION, getCurrentUserName());
+      return im.getOrCreateIdentity(ORGANIZATION, getCurrentUserName());
   }
   
   /**
@@ -235,9 +235,9 @@ public class UIProfileUserSearch extends UIForm {
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
     Identity identity = null;
-    identity = im.getIdentityByRemoteId(ORGANIZATION, getCurrentViewerUserName());
+    identity = im.getOrCreateIdentity(ORGANIZATION, getCurrentViewerUserName());
     if (identity == null) {
-      return im.getIdentityByRemoteId(ORGANIZATION, getCurrentUserName());
+      return im.getOrCreateIdentity(ORGANIZATION, getCurrentUserName());
     }
       
     return identity;

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+
+
+  <component>
+    <type>org.exoplatform.social.space.SpaceIdentityProvider</type>
+  </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.space.SpaceService</target-component>  
+    <component-plugin> 
+      <name>SpaceActivityPublisher</name>
+      <set-method>addSpaceListener</set-method>
+      <type>org.exoplatform.social.space.SpaceActivityPublisher</type> 
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>  
+    <component-plugin> 
+      <name>SpaceIdentityProvider plugin</name>
+      <set-method>registerIdentityProviders</set-method>
+      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type> 
+      <init-params>
+        <values-param>
+	      <name>providers</name>
+          <description></description>
+          <value>org.exoplatform.social.space.SpaceIdentityProvider</value> 
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+</configuration>

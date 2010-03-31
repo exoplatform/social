@@ -21,10 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.impl.organization.GroupIdentityProvider;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -43,41 +41,34 @@ public class IdentityManager {
   private Map<String, IdentityProvider> identityProviders = new HashMap<String, IdentityProvider>();
   
   /** The storage. */
-  private JCRStorage storage;
+  private JCRStorage identityStorage;
 
   /**
    * Instantiates a new identity manager.
    * 
    * @param dataLocation the data location
-   * @param ip the indentity provider such as organization service from portal
+   * @param defaultIdentityProvider the builtin default identity provider to use when when no other  provider match
    * @throws Exception the exception
    */
-  public IdentityManager(SocialDataLocation dataLocation, IdentityProvider ip) throws Exception {
-    this.storage = new JCRStorage(dataLocation);
-
-    ip.setIdentityManager(this);
-    this.addIdentityProvider(ip);
-    
-    
-    initProviders();
+  public IdentityManager(SocialDataLocation dataLocation, IdentityProvider defaultIdentityProvider) throws Exception {
+    this.identityStorage = new JCRStorage(dataLocation);
+    this.addIdentityProvider(defaultIdentityProvider);
   }
+  
+  public IdentityManager() {}
 
-
-  private void initProviders() {
-    try {
-    // group identity provider used to identify spaces
-    GroupIdentityProvider groupProvider =  (GroupIdentityProvider) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(GroupIdentityProvider.class);
-    if (groupProvider != null) {
-      this.addIdentityProvider(groupProvider);
-    } else {
-      LOG.warn("group provider component not found " +GroupIdentityProvider.class + ". Check config");
-    }
-    }
-    catch (Exception e) {
-      LOG.warn("Failed to initialize group provider " +GroupIdentityProvider.class + ": " + e.getMessage());
+  /**
+   * Registers one or more {@link IdentityProvider} through an {@link IdentityProviderPlugin}
+   * @param plugin
+   */
+  public void registerIdentityProviders(IdentityProviderPlugin plugin) {
+    List<IdentityProvider> pluginProviders =  plugin.getProviders();
+    if (pluginProviders != null) {
+      for (IdentityProvider identityProvider : pluginProviders) {
+        this.addIdentityProvider(identityProvider);
+      }
     }
   }
-
 
   /**
    * Gets the identity by id.
@@ -106,20 +97,21 @@ public class IdentityManager {
       GlobalId globalId = new GlobalId(id);
       String providerId = globalId.getDomain();
       String remoteId = globalId.getLocalId();
-      identity = storage.getIdentityByRemoteId(providerId, remoteId);
+      identity = identityStorage.findIdentity(providerId, remoteId);
     }
 
     // attempts to find a raw id
     if (identity == null) {
-      identity = storage.getIdentity(id);
+      identity = identityStorage.findIdentityById(id);
     }
     
 
     if (identity == null)
       return null;
 
+    // TODO :suspicious
     if(loadProfile)
-      identity = identityProviders.get(identity.getProviderId()).getIdentityByRemoteId(identity);
+      identityStorage.loadProfile(identity.getProfile());
 
     return identity;
   }
@@ -131,9 +123,12 @@ public class IdentityManager {
    * @param idProvider the id provider
    */
   public void addIdentityProvider(IdentityProvider idProvider) {
-    identityProviders.put(idProvider.getName(), idProvider);
+    if (idProvider != null) {
+      LOG.debug("Registering identity provider for " + idProvider.getName() + ": " + idProvider);
+      idProvider.setIdentityManager(this);
+      identityProviders.put(idProvider.getName(), idProvider);
+    }
   }
-
 
 
   /**
@@ -144,8 +139,8 @@ public class IdentityManager {
    * @return the identity
    * @throws Exception the exception
    */
-  public Identity getIdentityByRemoteId(String providerId, String remoteId) throws Exception {
-    return getIdentityByRemoteId(providerId, remoteId, true);  
+  public Identity getOrCreateIdentity(String providerId, String remoteId) throws Exception {
+    return getOrCreateIdentity(providerId, remoteId, true);  
   }
   
   /**
@@ -157,7 +152,7 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFiler profileFilter) throws Exception {
-    return storage.getIdentitiesByProfileFilter(providerId, profileFilter);
+    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter);
   }
   
   /**
@@ -180,7 +175,7 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFiler profileFilter) throws Exception {
-    return storage.getIdentitiesFilterByAlphaBet(providerId, profileFilter);
+    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter);
   }
   
   /**
@@ -204,54 +199,33 @@ public class IdentityManager {
    *  
    * @param providerId refering to the name of the Identity provider
    * @param remoteId   the identifier that identify the identity in the specific identity provider
-   * @param loadProfile the load profile
+   * @param loadProfile true to load profile
    * @return null if nothing is found, or the Identity object
    * TODO improve the performance by specifying what needs to be loaded
    * @throws Exception the exception
    */
-  public Identity getIdentityByRemoteId(String providerId, String remoteId, boolean loadProfile) throws Exception {
-    
-    Identity identity = storage.getIdentityByRemoteId(providerId, remoteId);
-    IdentityProvider identityProvider = identityProviders.get(providerId);
-    
-    Identity identity1 = new Identity(remoteId, providerId);
-    identity1 = identityProvider.getIdentityByRemoteId(identity1);
-    
-    if(identity == null && identity1 != null) {
-    	saveIdentity(identity1);
-    	//TODO: need to save profile 
+  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) throws Exception {
+
+    IdentityProvider identityProvider = getIdentityProvider(providerId);     
+
+    Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
+    Identity result = identityStorage.findIdentity(providerId, remoteId);
+
+    if(result == null) { 
+      if (identity1 != null) { // identity is valid for provider, but no yet referenced in storage
+    	  saveIdentity(identity1);
+    	  identityStorage.saveProfile(identity1.getProfile());
+    	  result = identity1;
+      } 
+    }
+
+    else if (loadProfile) { 
+      identityStorage.loadProfile(result.getProfile());
     }
     
-    if(identity == null) {
-    	identity = storage.getIdentityByRemoteId(providerId, remoteId);
-    	if (identity != null) {
-    	  identity = identityProvider.getIdentityByRemoteId(identity);
-    	  storage.saveProfile(identity.getProfile());
-    	} 
-    }
-    else if(loadProfile){ identity = identityProvider.getIdentityByRemoteId(identity);
-    }
-    
-    return identity;
+    return result;
   }
 
-    /**
-     * create a new identity object and assign him a uniq identity ID.
-     * 
-     * @param providerId the provider id
-     * @param remoteId the remote id
-     * @return the new identity
-     * @throws Exception the exception
-     * @return
-     */
-  public Identity getNewIdentity(String providerId, String remoteId) throws Exception {
-    Identity identity = new Identity();
-    identity.setProviderId(providerId);
-    identity.setRemoteId(remoteId);
-    //TODO  before saving, we should check if the identity exist on the provider
-    saveIdentity(identity);
-    return identity;
-  }
 
   /**
    * Save identity.
@@ -260,8 +234,8 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public void saveIdentity(Identity identity) throws Exception {
-    storage.saveIdentity(identity);
-    identityProviders.get(identity.getProviderId()).onSaveIdentity(identity);
+    identityStorage.saveIdentity(identity);
+    getIdentityProvider(identity.getProviderId()).onSaveIdentity(identity);
   }
 
   /**
@@ -271,7 +245,7 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public void saveProfile(Profile p) throws Exception {
-    IdentityProvider prov = identityProviders.get(p.getIdentity().getProviderId());
+    IdentityProvider prov = getIdentityProvider(p.getIdentity().getProviderId());
     prov.saveProfile(p);
   }
 
@@ -295,12 +269,12 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public List<Identity> getIdentities(String providerId, boolean loadProfile) throws Exception {
-    IdentityProvider ip = identityProviders.get(providerId);
+    IdentityProvider ip = getIdentityProvider(providerId);
     List<String> userids = ip.getAllUserId();
     List<Identity> ids = new ArrayList<Identity>();
 
     for(String userId : userids) {
-      ids.add(this.getIdentityByRemoteId(providerId, userId, loadProfile)); 
+      ids.add(this.getOrCreateIdentity(providerId, userId, loadProfile)); 
     }
     return ids;
   }
@@ -311,7 +285,19 @@ public class IdentityManager {
    * @return the storage
    */
   protected JCRStorage getStorage() {
-    return this.storage;
+    return this.identityStorage;
+  }
+
+  public void setIdentityStorage(JCRStorage identityStorage) {
+    this.identityStorage = identityStorage;
+  }
+  
+  private IdentityProvider getIdentityProvider(String providerId) {
+    IdentityProvider provider = identityProviders.get(providerId);
+    if (provider == null) {
+      throw new RuntimeException("No suitable identity provider exists for " + providerId);
+    }
+    return provider;
   }
 
 }

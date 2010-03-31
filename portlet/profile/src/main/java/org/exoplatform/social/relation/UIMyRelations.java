@@ -147,7 +147,7 @@ public class UIMyRelations extends UIContainer {
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
+      return im.getOrCreateIdentity("organization", getCurrentViewerUserName());
   }
   
   /**
@@ -159,8 +159,8 @@ public class UIMyRelations extends UIContainer {
    */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    Identity identity = im.getIdentityByRemoteId("organization", getCurrentViewerUserName());
-    if (identity == null) identity = im.getIdentityByRemoteId("organization", getCurrentUserName());
+    Identity identity = im.getOrCreateIdentity("organization", getCurrentViewerUserName());
+    if (identity == null) identity = im.getOrCreateIdentity("organization", getCurrentUserName());
     return identity;
   }
   
@@ -179,7 +179,7 @@ public class UIMyRelations extends UIContainer {
       String currUserId = uiMyRelation.getCurrentUserName();
 
       IdentityManager im = uiMyRelation.getIdentityManager();
-      Identity currIdentity = im.getIdentityByRemoteId(OrganizationIdentityProvider.NAME,
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
       Identity requestedIdentity = im.getIdentityById(identityId);
