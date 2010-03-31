@@ -157,15 +157,16 @@ public class UISpaceApplication extends UIForm {
     }
     PageNavigation pageNav = null;
     try {
-      pageNav = Util.getUIPortal().getSelectedNavigation();
+//      pageNav = Util.getUIPortal().getSelectedNavigation();
+      pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
     } catch (Exception e1) {
     // TODO Auto-generated catch block
      e1.printStackTrace();
     }
     
-    PageNode homeNode = pageNav.getNode(spaceUrl);
+    PageNode homeNode = SpaceUtils.getHomeNode(pageNav, spaceUrl);
     if (homeNode == null) {
-      homeNode = pageNav.getNodes().get(0);
+      return null;
     }
     List<PageNode> nodes = homeNode.getChildren();
     String installedApp = space.getApp();

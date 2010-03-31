@@ -362,9 +362,13 @@ public class SpaceUtils {
    */
   static public void setNavigation(PageNavigation nav) {
     UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
-    UserPortalConfig userPortalConfig = uiPortalApplication.getUserPortalConfig();
     try {
+      UserPortalConfig userPortalConfig = uiPortalApplication.getUserPortalConfig();
       List<PageNavigation> navs = userPortalConfig.getNavigations();
+      PageNavigation selectedNav = Util.getUIPortal().getSelectedNavigation();
+      if (selectedNav.getId() == nav.getId()) {
+        Util.getUIPortal().setSelectedNavigation(nav);
+      }
       boolean alreadyExisted = false;
       for (int i = 0; i < navs.size(); i++) {
         if (navs.get(i).getId() == nav.getId()) {
@@ -701,6 +705,28 @@ public class SpaceUtils {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
     return (PageNavigation) dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+  }
+  
+  /**
+   * This related to a bug from portal.
+   * When this bug is resolved, use pageNavigation.getNode(space.getUrl());
+   * @param pageNavigation
+   * @param spaceUrl
+   * @return
+   */
+  static public PageNode getHomeNode(PageNavigation pageNavigation, String spaceUrl) {
+    PageNode homeNode = pageNavigation.getNode(spaceUrl);
+    //works around
+    if (homeNode == null) {
+      List<PageNode> pageNodes = pageNavigation.getNodes();
+      for (PageNode pageNode : pageNodes) {
+        if (pageNode.getUri().equals(spaceUrl)) {
+          homeNode = pageNode;
+          break;
+        }
+      }
+    }
+    return homeNode;
   }
   
   /**

@@ -434,24 +434,21 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-public List<String> getMembers(Space space) throws SpaceException {
+  public List<String> getMembers(Space space) throws SpaceException {
     try {
       OrganizationService orgService = getOrgService();
-      UserHandler userHandler = orgService.getUserHandler();
-      PageList<User> userPageList = userHandler.findUsersByGroup(space.getGroupId());
-      ArrayList<String> userNames = new ArrayList<String>();
-      List<User> all = userPageList.getAll();
-      for (User user : all) {
-        userNames.add(user.getUserName());
+      Group group = orgService.getGroupHandler().findGroupById(space.getGroupId());
+      Collection<?> memberships = orgService.getMembershipHandler().findMembershipsByGroup(group);
+      Iterator<?> itr = memberships.iterator();
+      List<String> userNames = new ArrayList<String>();
+      while (itr.hasNext()) {
+        Membership membership = (Membership) itr.next();
+        String userName = membership.getUserName();
+        if (!userNames.contains(userName)) {
+          userNames.add(userName);
+        }
       }
       return userNames;
-//      ListAccess<User> usersPageList = userHandler.findUsersByGroupId(space.getGroupId());
-//      User[] users = usersPageList.load(0, usersPageList.getSize());
-//      ArrayList<String> userNames = new ArrayList<String>();
-//      for (User user : users) {
-//          userNames.add(user.getUserName());
-//      }
-//      return userNames;
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
     }

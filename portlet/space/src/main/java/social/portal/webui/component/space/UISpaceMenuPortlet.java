@@ -100,10 +100,9 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     }
     DataStorage dataStorage = getApplicationComponent(DataStorage.class);
     PageNavigation pageNav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
-    PageNode homeNode = pageNav.getNode(spaceUrl);
+    PageNode homeNode = SpaceUtils.getHomeNode(pageNav, space.getUrl());
     if (homeNode == null) {
-      PageNavigation selectedNavigation = getUIPortal().getSelectedNavigation(); 
-      homeNode = selectedNavigation.getNodes().get(0);
+      throw new Exception("homeNode is null!");
     }
     List<PageNode> list = homeNode.getChildren();
     PageNode pageNode = null;
@@ -138,7 +137,8 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       SpaceService spaceService = spaceMenu.getApplicationComponent(SpaceService.class);
       String spaceUrl = SpaceUtils.getSpaceUrl();
       Space space = spaceService.getSpaceByUrl(spaceUrl);
-      PageNavigation pageNav = uiPortal.getSelectedNavigation();
+//      PageNavigation pageNav = uiPortal.getSelectedNavigation();
+      PageNavigation pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
       PageNode selectedNode = uiPortal.getSelectedNode();
       String oldName = selectedNode.getName();
       String oldUri = selectedNode.getUri();
@@ -180,6 +180,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
         }
       }
       dataStorage.save(pageNav);
+      SpaceUtils.setNavigation(pageNav);
       if (newUri != null) {
          prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);
       }
@@ -321,6 +322,9 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   private boolean isAppNameExisted(PageNavigation pageNav, String nodeName) throws Exception
   {
     PageNode homeNode = pageNav.getNode(SpaceUtils.getSpaceUrl());
+    if (homeNode == null) {
+      throw new Exception("homeNode is null!");
+    }
     List<PageNode> nodes = homeNode.getChildren();
 
     // Check in case new name is duplicated with space name

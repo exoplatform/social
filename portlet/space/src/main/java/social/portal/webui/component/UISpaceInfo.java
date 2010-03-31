@@ -151,6 +151,7 @@ public class UISpaceInfo extends UIForm {
       String id = uiSpaceInfo.getUIStringInput("id").getValue();
       String name = uiSpaceInfo.getUIStringInput("name").getValue();
       Space space = spaceService.getSpaceById(id);
+      String spaceUrl = space.getUrl();
       if (space == null) {
         //redirect to spaces
         portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + "spaces");
@@ -163,8 +164,11 @@ public class UISpaceInfo extends UIForm {
         DataStorage dataStorage = uiSpaceInfo.getApplicationComponent(DataStorage.class);
         String cleanedString = SpaceUtils.cleanString(name);
         space.setUrl(cleanedString);
-        PageNavigation spaceNavigation = Util.getUIPortal().getSelectedNavigation();//dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
-        homeNode = spaceNavigation.getNodes().get(0);
+        PageNavigation spaceNavigation = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+        homeNode = SpaceUtils.getHomeNode(spaceNavigation, spaceUrl);
+        if (homeNode == null) {
+          throw new Exception("homeNode is null!");
+        }
         homeNode.setUri(cleanedString);
         homeNode.setName(cleanedString);
         homeNode.setLabel(name);
@@ -183,8 +187,8 @@ public class UISpaceInfo extends UIForm {
           }
         }
         dataStorage.save(spaceNavigation);
+        
         uiPortal.setSelectedNode(selectedNode);
-        uiPortal.setSelectedNavigation(spaceNavigation);
         SpaceUtils.setNavigation(spaceNavigation);
       }
       

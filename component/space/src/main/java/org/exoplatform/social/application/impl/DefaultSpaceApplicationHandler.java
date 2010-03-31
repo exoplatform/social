@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.groovy.runtime.metaclass.NewMetaMethod;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.container.ExoContainer;
@@ -81,7 +82,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
         PageNode appNode = createPageNodeFromApplication(space, app, false);
         childNodes.add(appNode);
       }
-      homeNode.setChildren((ArrayList<PageNode>) childNodes);
+      //homeNode.setChildren((ArrayList<PageNode>) childNodes);
       spaceNav.addNode(homeNode);
       dataStorage.save(spaceNav);
       SpaceUtils.setNavigation(spaceNav);
@@ -198,20 +199,18 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     PageNavigation nav = SpaceUtils.createGroupNavigation(space.getGroupId());
     PageNode pageNode = createPageNodeFromApplication(space, appId, false);
     try {
-      PageNode homeNode = nav.getNode(space.getUrl());
+      PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
       if (homeNode == null) {
-        nav = Util.getUIPortal().getSelectedNavigation();
-        homeNode = nav.getNodes().get(0);
+        throw new Exception("homeNode is null!");
       }
       List<PageNode> childNodes = homeNode.getChildren();
       if(childNodes == null) childNodes = new ArrayList<PageNode>();
       childNodes.add(pageNode);
-      homeNode.setChildren((ArrayList<PageNode>) childNodes);
       dataStorage.save(nav);
       SpaceUtils.setNavigation(nav);
     } catch (Exception e) {
       try {
-        //TODO if we can't update the navigation, we remove the page
+        //TODO if navigation can't be updated, remove the page
       } catch (Exception e1) {}
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_APPLICATION, e);
     }
@@ -236,7 +235,10 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       String groupId = space.getGroupId();
       PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
-      PageNode homeNode = nav.getNodes().get(0);
+      PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
+      if (homeNode == null) {
+        throw new Exception("homeNode is null!");
+      }
       List<PageNode> childNodes = homeNode.getChildren();
 /*      String nodeName = null;
       String installedApps = space.getApp();
@@ -345,12 +347,14 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       if (isRoot != true) {
         newName = pageName;
       }
-      String clonedName = SpaceUtils.cleanString(space.getName()) + "_" + newName.trim();
-      page = dataStorage.clonePage(SPACE_TEMPLATE_PAGE_ID, PortalConfig.GROUP_TYPE, space.getGroupId(), clonedName);
+      //String clonedName = SpaceUtils.cleanString(space.getName()) + "_" + newName.trim();
+      page = dataStorage.clonePage(SPACE_TEMPLATE_PAGE_ID, PortalConfig.GROUP_TYPE, space.getGroupId(), newName.trim());
     } catch (Exception e) {
       //e.printStackTrace();
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE, e);
     }
+    page.setOwnerType(PortalConfig.GROUP_TYPE);
+    page.setOwnerId(space.getGroupId());
     String visibility = space.getVisibility();
     if(visibility.equals(Space.PUBLIC)) {
       page.setAccessPermissions(new String[]{UserACL.EVERYONE});
@@ -371,6 +375,10 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       setPermissionForPage(page.getChildren(), space.getGroupId());	
       dataStorage.save(page);
+      //work around for BUG from GTNPORTAL for DataStorage.clonePage();
+      String portalName = Util.getPortalRequestContext().getPortalOwner();
+      Page clonedPage = dataStorage.getPage(PortalConfig.PORTAL_TYPE + "::" + portalName + "::" + pageName);
+      dataStorage.remove(clonedPage);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
     }

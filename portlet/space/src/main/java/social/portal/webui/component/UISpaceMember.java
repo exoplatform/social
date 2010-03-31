@@ -36,6 +36,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -474,7 +475,10 @@ public class UISpaceMember extends UIForm {
       if(!uiSpaceMember.isSuperUser() && userName.equals(requestContext.getRemoteUser())) {
         UIPortal uiPortal = Util.getUIPortal();
         PageNavigation nav = uiPortal.getSelectedNavigation();
-        PageNode homeNode = nav.getNode(space.getUrl());
+        PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
+        if (homeNode == null) {
+          throw new Exception("homeNode is null!");
+        }
         String uri = nav.getId() + "::" + homeNode.getUri();
         PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
             PageNodeEvent.CHANGE_PAGE_NODE,
