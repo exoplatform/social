@@ -222,9 +222,15 @@ public class IdentityManager {
     	//TODO: need to save profile 
     }
     
-    if(identity == null) 
+    if(identity == null) {
     	identity = storage.getIdentityByRemoteId(providerId, remoteId);
-    else if(loadProfile) identity = identityProvider.getIdentityByRemoteId(identity);
+    	if (identity != null) {
+    	  identity = identityProvider.getIdentityByRemoteId(identity);
+    	  storage.saveProfile(identity.getProfile());
+    	} 
+    }
+    else if(loadProfile){ identity = identityProvider.getIdentityByRemoteId(identity);
+    }
     
     return identity;
   }
