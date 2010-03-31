@@ -13,12 +13,14 @@
   <description>eXo Social People Service</description>
   <url>http://www.exoplatform.org</url>
   <dependencies>
+  <!-- 
     <dependency>
       <groupId>org.opensocial</groupId>
       <artifactId>opensocial-java-client</artifactId>
       <version>1.0</version>
       <scope>test</scope>
     </dependency>  
+    -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
