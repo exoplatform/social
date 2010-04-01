@@ -1,0 +1,8 @@
+.UINavigationPortlet {
+  background: #b6b6b6;
+  padding: 0px 8px;
+}
+	
+.UINavigationPortlet .UINavigationBar {
+	height: 10px;
+}
