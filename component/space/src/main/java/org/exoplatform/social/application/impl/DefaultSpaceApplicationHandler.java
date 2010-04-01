@@ -342,8 +342,8 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     if(isRoot) 
       pageName = space.getUrl();
     else pageName = app.getApplicationName();
+    String newName = space.getUrl();
     try {
-      String newName = space.getUrl();
       if (isRoot != true) {
         newName = pageName;
       }
@@ -355,6 +355,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     }
     page.setOwnerType(PortalConfig.GROUP_TYPE);
     page.setOwnerId(space.getGroupId());
+    page.setTitle(space.getName() + " - " + newName);
     String visibility = space.getVisibility();
     if(visibility.equals(Space.PUBLIC)) {
       page.setAccessPermissions(new String[]{UserACL.EVERYONE});
@@ -373,7 +374,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     pageChilds = setContainerById(pageChilds, container);
     page.setChildren(pageChilds);
     try {
-      setPermissionForPage(page.getChildren(), space.getGroupId());	
+      setPermissionForPage(page.getChildren(), "*:" + space.getGroupId());	
       dataStorage.save(page);
       //work around for BUG from GTNPORTAL for DataStorage.clonePage();
       String portalName = Util.getPortalRequestContext().getPortalOwner();
