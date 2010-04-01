@@ -32,8 +32,8 @@
   <portal-layout>
      <portlet-application>
        <portlet>
-         <application-ref>web</application-ref>
-         <portlet-ref>LogoPortlet</portlet-ref>
+         <application-ref>profile</application-ref>
+         <portlet-ref>SocialLogoPortlet</portlet-ref>
          <preferences>
            <preference>
              <name>url</name>

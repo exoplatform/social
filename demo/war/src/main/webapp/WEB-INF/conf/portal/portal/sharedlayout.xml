@@ -14,17 +14,6 @@
 		  </portlet-application>
 		</container>
 		
-		<container id="UserToolBarSitePortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <portlet-application>
-        <portlet>
-          <application-ref>exoadmin</application-ref>
-          <portlet-ref>UserToolbarSitePortlet</portlet-ref>
-        </portlet>
-	      <access-permissions>Everyone</access-permissions>
-		    <show-info-bar>false</show-info-bar>
-		  </portlet-application>
-		</container>
-
 		<container id="UserToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
 			<portlet-application>
 			  <portlet>
