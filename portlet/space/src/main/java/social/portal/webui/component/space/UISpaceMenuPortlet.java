@@ -26,11 +26,13 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
+import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
@@ -104,7 +106,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     if (homeNode == null) {
       throw new Exception("homeNode is null!");
     }
-    List<PageNode> list = homeNode.getChildren();
+    List<PageNode> list = homeNode.getNodes();
     PageNode pageNode = null;
     for(PageNode node:list){
       if(node.getName().equals(SPACE_SETTING_PORTLET)){
@@ -130,16 +132,31 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       UISpaceMenuPortlet spaceMenu = event.getSource();
       WebuiRequestContext context = event.getRequestContext();
       String newSpaceAppName = context.getRequestParameter(NEW_SPACE_APPLICATION_NAME);
-      UIPortal uiPortal = spaceMenu.getUIPortal();
+      UIPortal uiPortal = Util.getUIPortal();
       PortalRequestContext prContext = Util.getPortalRequestContext();
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
       SpaceService spaceService = spaceMenu.getApplicationComponent(SpaceService.class);
       String spaceUrl = SpaceUtils.getSpaceUrl();
       Space space = spaceService.getSpaceByUrl(spaceUrl);
-//      PageNavigation pageNav = uiPortal.getSelectedNavigation();
-      PageNavigation pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
+      
       PageNode selectedNode = uiPortal.getSelectedNode();
+      PageNode homeNode = null;
+      UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+      UserPortalConfig userPortalConfig = uiPortalApp.getUserPortalConfig();
+      List<PageNavigation> navigations = userPortalConfig.getNavigations();
+      PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
+      for (PageNavigation navi : navigations) {
+    	  if ((navi.getOwner()).equals(spaceNavigation.getOwner())) {
+    		  spaceNavigation = navi;
+    		  break;
+    	  }
+      }
+      homeNode = SpaceUtils.getHomeNode(spaceNavigation, spaceUrl);
+      if (homeNode == null) {
+    	  throw new Exception("homeNode is null!");
+      }
+      List<PageNode> childNodes = homeNode.getNodes();
       String oldName = selectedNode.getName();
       String oldUri = selectedNode.getUri();
       if (selectedNode.getResolvedLabel().equals(newSpaceAppName)) {
@@ -152,14 +169,23 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
         prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
         return;
       }
-      selectedNode.setLabel(newSpaceAppName);
       String newNodeName = newSpaceAppName.replace(' ', '_');
-      if (spaceMenu.isAppNameExisted(pageNav, newNodeName)) {
+      if (spaceMenu.isAppNameExisted(spaceNavigation, newNodeName)) {
          newNodeName = newNodeName + "_" + System.currentTimeMillis();
       }
-      selectedNode.setName(newNodeName);
       String newUri = oldUri.substring(0, oldUri.lastIndexOf("/") + 1) + newNodeName;
-      selectedNode.setUri(newUri);
+      PageNode childNode = null;
+      for (int i = 0; i < childNodes.size(); i++) {
+        childNode = childNodes.get(i);
+        if (selectedNode.getName().equals(childNode.getName())) {
+           childNode.setLabel(newSpaceAppName);
+           childNode.setName(newNodeName);
+           childNode.setUri(newUri);
+           selectedNode = childNode;
+           break;
+        }
+      }
+      
       String installedApps = space.getApp();
       String[] apps = installedApps.split(",");
       String[] appParts = null;
@@ -170,8 +196,8 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       for (String app : apps) {
         if (app.length() != 0) {
           appParts = app.split(":");
-          if (appParts[1].equals(oldName)) {
-            editedApp = appParts[0] + ":" + newNodeName + ":" + appParts[2];
+          if (appParts[0].equals(oldName)) {
+            editedApp = newNodeName + ":" + appParts[1] + ":" + appParts[2];
             newInstalledApps = installedApps.replaceAll(app, editedApp);
             space.setApp(newInstalledApps);
             spaceService.saveSpace(space, false);
@@ -179,8 +205,11 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
           }
         }
       }
-      dataStorage.save(pageNav);
-      SpaceUtils.setNavigation(pageNav);
+      dataStorage.save(spaceNavigation);
+      uiPortal.setSelectedNode(selectedNode);
+      uiPortal.setSelectedNavigation(spaceNavigation);
+      SpaceUtils.setNavigation(spaceNavigation);
+      
       if (newUri != null) {
          prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);
       }

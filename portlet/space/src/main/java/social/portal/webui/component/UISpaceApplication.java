@@ -176,7 +176,7 @@ public class UISpaceApplication extends UIForm {
         String[] appParts = app.split(":");
         if (appParts[0].equals(application.getApplicationName()) && (appParts.length == 3)) {
           for (PageNode node : nodes) {
-            if (node.getName().equals(appParts[1])) return node.getResolvedLabel();
+            if (node.getName().equals(appParts[0])) return node.getResolvedLabel();
           }
         }
       }
