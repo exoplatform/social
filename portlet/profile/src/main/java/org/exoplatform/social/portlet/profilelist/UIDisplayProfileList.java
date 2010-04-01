@@ -359,6 +359,15 @@ public class UIDisplayProfileList extends UIContainer {
   }
   
   /**
+   * Gets the rest context.
+   * 
+   * @return the rest context
+   */
+	public String getRestContext() {
+	  return PortalContainer.getInstance().getRestContextName();
+	}
+  
+  /**
    * Gets identity manager object.<br>
    * 
    * @return identity manager object.

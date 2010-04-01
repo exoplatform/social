@@ -129,7 +129,7 @@ public class UIManagePublicSpaces extends UIContainer {
   public String getImageSource(Space space) throws Exception {
     SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
     if (spaceAtt != null) {
-      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
+      return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
               + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
@@ -268,6 +268,15 @@ public class UIManagePublicSpaces extends UIContainer {
     RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
     return rService.getCurrentRepository().getConfiguration().getName() ;
   }
+  
+  /**
+   * Gets the rest context.
+   * 
+   * @return the rest context
+   */
+   private String getRestContext() {
+     return PortalContainer.getInstance().getRestContextName();
+   }
   
  /**
   * gets paginated public spaces so that the user can request to join

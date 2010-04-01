@@ -95,7 +95,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     Profile p = currIdentity.getProfile();
     ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
     if (att != null) {
-      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
+      return "/"+ getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
               + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
@@ -107,10 +107,10 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    * @return name of current portal.
    * 
    */
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
-  }
+//  private String getPortalName() {
+//    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+//    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+//  }
   
   /**
    * Gets the current repository.<br>
@@ -123,4 +123,13 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
     return rService.getCurrentRepository().getConfiguration().getName() ;
   }
+  
+  /**
+   * Gets the rest context.
+   * 
+   * @return the rest context
+   */
+	private String getRestContext() {
+	  return PortalContainer.getInstance().getRestContextName();
+	}
 }

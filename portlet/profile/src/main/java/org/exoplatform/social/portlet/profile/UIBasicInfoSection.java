@@ -18,6 +18,8 @@ package org.exoplatform.social.portlet.profile;
 
 import java.util.List;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.OrganizationService;
@@ -25,6 +27,8 @@ import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -180,6 +184,18 @@ public class UIBasicInfoSection extends UIProfileSection {
          uiApp.addMessage(new ApplicationMessage("UIAccountInputSet.msg.email-exist", args));
          return;
       }
+      
+      //TODO: save in profile
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      
+      Profile p = sect.getProfile(true);
+      
+      p.setProperty("firstName", uiForm.getUIStringInput("firstName").getValue());
+      p.setProperty("lastName", uiForm.getUIStringInput("lastName").getValue());
+      p.setProperty("username", newEmail); 
+      im.saveProfile(p);
+      
       user.setFirstName(uiForm.getUIStringInput("firstName").getValue());
       user.setLastName(uiForm.getUIStringInput("lastName").getValue());
       user.setEmail(newEmail);

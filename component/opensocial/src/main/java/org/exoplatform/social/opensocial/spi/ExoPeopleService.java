@@ -221,7 +221,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         String avatar = null;
         if (att != null) {
           try {
-            avatar = "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
+            avatar = "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
             + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
           } catch (Exception e) {}
         }
@@ -231,6 +231,16 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 
     return p;
   }
+  
+  
+  /**
+   * Gets the rest context.
+   * 
+   * @return the rest context
+   */
+	private String getRestContext() {
+	  return PortalContainer.getInstance().getRestContextName();
+	}
 
   /**
    * Convert to list fields.

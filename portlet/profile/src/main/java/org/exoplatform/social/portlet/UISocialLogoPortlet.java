@@ -119,7 +119,7 @@ public class UISocialLogoPortlet extends UIPortletApplication
      Profile p = getProfile(true);
      ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
      if (att != null) {
-       return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
+       return "/" + getRestContext() + "jcr/" + getRepository()+ "/" + att.getWorkspace()
                + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
      }
      return null;
@@ -147,6 +147,15 @@ public class UISocialLogoPortlet extends UIPortletApplication
      RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
      return rService.getCurrentRepository().getConfiguration().getName() ;
    }
+   
+   /**
+    * Gets the rest context.
+    * 
+    * @return the rest context
+    */
+    private String getRestContext() {
+      return PortalContainer.getInstance().getRestContextName();
+    }
    
    /**
     * Gets current identity of login user.<br>

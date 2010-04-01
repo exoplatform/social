@@ -261,7 +261,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   public String getImageSource(Space space) throws Exception {
     SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
     if (spaceAtt != null) {
-      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
+      return "/"+ getRestContext() + "/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
               + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
@@ -281,6 +281,15 @@ public class UIManageInvitationSpaces extends UIContainer {
     
     return invitedSpaceNames;
   }
+  
+  /**
+   * Gets the rest context.
+   * 
+   * @return the rest context
+   */
+    private String getRestContext() {
+  	return PortalContainer.getInstance().getRestContextName();
+    }
   
   /**
    * gets portal name

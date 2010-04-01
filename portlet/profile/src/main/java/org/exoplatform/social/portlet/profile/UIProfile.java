@@ -129,7 +129,7 @@ public class UIProfile extends UIContainer {
     Profile p = getProfile(true);
     ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
     if (att != null) {
-      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + att.getWorkspace()
+      return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
               + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
@@ -153,15 +153,24 @@ public class UIProfile extends UIContainer {
     
   }
   
-  /**
-   * Gets the current portal name.<br>
-   * 
-   * @return name of current portal.
-   * 
-   */
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+//  /**
+//   * Gets the current portal name.<br>
+//   * 
+//   * @return name of current portal.
+//   * 
+//   */
+//  private String getPortalName() {
+//    PortalContainer pcontainer =  PortalContainer.getInstance() ;
+//    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+//  }
+  
+ /**
+ * Gets the rest context.
+ * 
+ * @return the rest context
+ */
+  private String getRestContext() {
+	return PortalContainer.getInstance().getRestContextName();
   }
   
   /**
