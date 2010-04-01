@@ -48,7 +48,7 @@ import javax.portlet.PortletPreferences;
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform October 2, 2009
  */
-@ComponentConfig(lifecycle = UIApplicationLifecycle.class, template = "app:/groovy/portal/webui/component/UILogoPortlet.gtmpl")
+@ComponentConfig(lifecycle = UIApplicationLifecycle.class, template = "app:/groovy/portal/webui/component/UISocialLogoPortlet.gtmpl")
 public class UISocialLogoPortlet extends UIPortletApplication
 {
    private Profile profile;

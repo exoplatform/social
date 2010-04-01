@@ -27,7 +27,6 @@ void renderLink() {
 		def navigations = uicomponent.getNavigations();
 
  		String clazz = "";
- 		def icon = "DefaultPageIcon";
  		
 			print """
 						<div style="position: absolute; display:none" class="MenuItemContainer">
@@ -43,7 +42,7 @@ void renderLink() {
 							print """
 									<div class="MenuItem">
 										<div class="$clazz">						
-											<a href="$activitiesLink" class="ItemIcon $icon">$labelActivities</a>
+											<a href="$activitiesLink" class="ToolBarActivityIcon">$labelActivities</a>
 										</div>
 									</div>
 								""";
@@ -51,7 +50,7 @@ void renderLink() {
 			         print """
 									<div class="MenuItem">
 										<div class="$clazz">						
-											<a href="$profileLink" class="ItemIcon $icon">$labelProfile</a>
+											<a href="$profileLink" class="ToolBarProfileIcon">$labelProfile</a>
 										</div>
 									</div>
 								""";
@@ -59,7 +58,7 @@ void renderLink() {
 			         print """
 									<div class="MenuItem">
 										<div class="$clazz">						
-											<a href="$relationsLink" class="ItemIcon $icon">$labelRelations</a>
+											<a href="$relationsLink" class="ToolBarRelationIcon">$labelRelations</a>
 										</div>
 									</div>
 								""";
