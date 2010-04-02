@@ -118,11 +118,18 @@
 		<css-path>/skin/portal/webui/component/UIPendingSpacePortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
 	
-		<portlet-skin>
+	<portlet-skin>
 		<application-name>space</application-name>
 		<portlet-name>SpacesToolbarPortlet</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UISpaceToolbarPortlet/DefaultStylesheet.css</css-path>
+	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>space</application-name>
+		<portlet-name>SocialDemoNavigationPortlet</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UISocialDemoNavigationPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
 </gatein-resources>
 
