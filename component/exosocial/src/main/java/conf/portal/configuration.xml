@@ -35,7 +35,6 @@
     <target-component>org.exoplatform.social.core.relationship.RelationshipManager</target-component>  
     <component-plugin> 
       <name>RelationshipPublisher</name>
-      <description></description>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.social.people.RelationshipPublisher</type> 
     </component-plugin>
