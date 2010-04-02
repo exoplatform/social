@@ -335,7 +335,7 @@ public class SpaceServiceImpl implements SpaceService {
         isRemovable = false;
       }
       //setApp(space, splited[0], isRemovable, Space.INSTALL_STATUS);
-      setApp(space, splited[0], isRemovable, Space.ACTIVE_STATUS);
+      setApp(space, splited[0], splited[0], isRemovable, Space.ACTIVE_STATUS);
     }
   }
   
@@ -659,7 +659,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.installApplication(space, appId);
-    setApp(space, appId, SpaceUtils.isRemovableApp(space, appId), Space.INSTALL_STATUS);
+    setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.INSTALL_STATUS);
     spaceLifeCycle.addApplication(space, appId);
   }
   
@@ -673,7 +673,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.activateApplication(space, appId);
-    setApp(space, appId, SpaceUtils.isRemovableApp(space, appId), Space.ACTIVE_STATUS);
+    setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.ACTIVE_STATUS);
     spaceLifeCycle.activateApplication(space, appId);
   }
   
@@ -696,7 +696,7 @@ public class SpaceServiceImpl implements SpaceService {
     if (appStatus.equals(Space.DEACTIVE_STATUS)) return;
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.deactiveApplication(space, appId);
-    setApp(space, appId, SpaceUtils.isRemovableApp(space, appId), Space.DEACTIVE_STATUS);
+    setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.DEACTIVE_STATUS);
     spaceLifeCycle.deactivateApplication(space, appId);
   }
   
@@ -1001,17 +1001,18 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * an application status is composed with the form of: [appId:isRemovableString:status].
    * And space app properties is the combined of application statuses separated by a comma (,).
-   * For example: space.getApp() = "SpaceSettingPortlet:false:active,UserListPortlet:true:active";
+   * For example: space.getApp() = "SpaceSettingPortlet:SpaceSettingPortletName:false:active,UserListPortlet:UserListPortlet:true:active";
    * @param space
    * @param appId
+   * @param appName
    * @param isRemovable
    * @param status
    * @throws SpaceException
    */
-  private void setApp(Space space, String appId, boolean isRemovable, String status) throws SpaceException {
+  public void setApp(Space space, String appId, String appName, boolean isRemovable, String status) throws SpaceException {
     String apps = space.getApp();
-    //an application status is composed with the form of [appId:isRemovableString:status]
-    String applicationStatus = appId;
+    //an application status is composed with the form of [appId:appName:isRemovableString:status]
+    String applicationStatus = appId + ":" + appName;
     if (isRemovable) {
       applicationStatus += ":true";
     } else {

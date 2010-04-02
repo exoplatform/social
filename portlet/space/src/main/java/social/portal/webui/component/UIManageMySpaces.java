@@ -21,8 +21,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -578,8 +576,7 @@ public class UIManageMySpaces extends UIContainer {
    * @return current portal name
    */
   private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+    return PortalContainer.getCurrentPortalContainerName();
   }
   
   /**
@@ -588,8 +585,8 @@ public class UIManageMySpaces extends UIContainer {
    * @throws Exception
    */
   private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
+    RepositoryService rService = getApplicationComponent(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName();
   }
   
   /**

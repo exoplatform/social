@@ -157,7 +157,6 @@ public class UISpaceApplication extends UIForm {
     }
     PageNavigation pageNav = null;
     try {
-//      pageNav = Util.getUIPortal().getSelectedNavigation();
       pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
     } catch (Exception e1) {
     // TODO Auto-generated catch block
@@ -170,13 +169,13 @@ public class UISpaceApplication extends UIForm {
     }
     List<PageNode> nodes = homeNode.getChildren();
     String installedApp = space.getApp();
-    String[] apps = installedApp.split(",");
-    for (String app : apps) {
-      if (app.length() != 0) {
-        String[] appParts = app.split(":");
-        if (appParts[0].equals(application.getApplicationName()) && (appParts.length == 3)) {
+    String[] appStatuses = installedApp.split(",");
+    for (String appStatus : appStatuses) {
+      if (appStatus.length() != 0) {
+        String[] appParts = appStatus.split(":");
+        if (appParts[0].equals(application.getApplicationName()) && (appParts.length == 4)) {
           for (PageNode node : nodes) {
-            if (node.getName().equals(appParts[0])) return node.getResolvedLabel();
+            if (node.getName().equals(appParts[1])) return node.getResolvedLabel();
           }
         }
       }

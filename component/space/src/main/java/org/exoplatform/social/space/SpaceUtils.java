@@ -782,16 +782,25 @@ public class SpaceUtils {
     String installedApps = space.getApp();
     if (installedApps == null) return null;
     if (installedApps.contains(appId)) {
-      String appStatus = installedApps.substring(installedApps.indexOf(appId));
-      if (appStatus.contains(",")) {
-        appStatus = appStatus.substring(0, appStatus.indexOf(","));
-      }
-      String[] splited = appStatus.split(":");
-      if (splited.length != 3) {
-        logger.warn("appStatus is not in correct form of [appId:isRemovableString:status] : " + appStatus);
-        return null;
-      }
-      return splited[2];
+      String appStatusPattern = getAppStatusPattern(installedApps, appId);
+      return appStatusPattern.split(":")[3];
+    }
+    return null;
+  }
+  
+  
+  /**
+   * Gets appNodeName in a space by its appId
+   * @param space
+   * @param appId
+   * @return
+   */
+  static public String getAppNodeName(Space space, String appId) {
+    String installedApps = space.getApp();
+    if (installedApps == null) return null;
+    if (installedApps.contains(appId)) {
+      String appStatusPatern = getAppStatusPattern(installedApps, appId);
+      return appStatusPatern.split(":")[1];
     }
     return null;
   }
@@ -805,19 +814,10 @@ public class SpaceUtils {
    */
   static public boolean isRemovableApp(Space space, String appId) {
     String installedApps = space.getApp();
-    if (installedApps == null) {
-      return true;
-    }
     if (installedApps.contains(appId)) {
-      String appStatus = installedApps.substring(installedApps.indexOf(appId));
-      if (appStatus.contains(",")) {
-        appStatus = appStatus.substring(0, appStatus.indexOf(","));
-      }
+      String appStatus = getAppStatusPattern(installedApps, appId);
       String[] spliter = appStatus.split(":");
-      if (spliter.length != 3) {
-        logger.error("application status is not in correct form: [appId:isRemovableString:status]");
-      }
-      if (spliter[1].equals("false")) return false;
+      if (spliter[2].equals("false")) return false;
     }
     return true;
   }
@@ -874,6 +874,29 @@ public class SpaceUtils {
     if (user == null) {
       throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_USER);
     }
+  }
+  
+  /**
+   * Gets appStatusPattern: [appId:appNodeName:isRemovableString:status]
+   * @param installedApps
+   * @param appId
+   * @return
+   */
+  static private String getAppStatusPattern(String installedApps, String appId) {
+    if (installedApps == null) return null;
+    if (installedApps.contains(appId)) {
+      String appStatus = installedApps.substring(installedApps.indexOf(appId));
+      if (appStatus.contains(",")) {
+        appStatus = appStatus.substring(0, appStatus.indexOf(","));
+      }
+      String[] splited = appStatus.split(":");
+      if (splited.length != 4) {
+        logger.warn("appStatus is not in correct form of [appId:appNodeName:isRemovableString:status] : " + appStatus);
+        return null;
+      }
+      return appStatus;
+    }
+    return null;
   }
   
   /**

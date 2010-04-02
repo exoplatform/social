@@ -127,7 +127,7 @@ public class UIProfile extends UIContainer {
    */
   public String getImageSource() throws Exception {
     Profile p = getProfile(true);
-    ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
+    ProfileAttachment att = (ProfileAttachment) p.getProperty(Profile.AVATAR_PROPERTY);
     if (att != null) {
       return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
               + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
@@ -152,17 +152,6 @@ public class UIProfile extends UIContainer {
     }
     
   }
-  
-//  /**
-//   * Gets the current portal name.<br>
-//   * 
-//   * @return name of current portal.
-//   * 
-//   */
-//  private String getPortalName() {
-//    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-//    return pcontainer.getPortalContainerInfo().getContainerName() ;  
-//  }
   
  /**
  * Gets the rest context.
@@ -215,18 +204,18 @@ public class UIProfile extends UIContainer {
     return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentProfileID());
   }
   
-  /**
+ /**
   *
   * @return the list of sections ordered by display order
   */
- @SuppressWarnings("unchecked")
- private List getSections() {
-   List sects = new ArrayList();
-   sects.add(UIHeaderSection.class);
-   sects.add(UIBasicInfoSection.class);
-   sects.add(UIContactSection.class);
-   sects.add(UIExperienceSection.class);
-   return sects;
- }
+  @SuppressWarnings("unchecked")
+  private List getSections() {
+    List sects = new ArrayList();
+    sects.add(UIHeaderSection.class);
+    sects.add(UIBasicInfoSection.class);
+    sects.add(UIContactSection.class);
+    sects.add(UIExperienceSection.class);
+    return sects;
+  }
 
 }

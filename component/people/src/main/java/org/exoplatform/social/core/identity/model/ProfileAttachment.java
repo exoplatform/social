@@ -153,19 +153,19 @@ public class ProfileAttachment {
  * @return image size string
  */
   public String getSize() {
-  int KB_SIZE = 1024;
-  int MB_SIZE = 1024 * KB_SIZE;
-  int length = imageBytes.length;
-  double size;
-  if (length >= MB_SIZE) {
-    size = length / MB_SIZE;
-    return size + " MB";
-  } else if (length >= KB_SIZE) {
-    size = length / KB_SIZE;
-    return size + " KB";
-  } else { //Bytes size
-    return  length + " Bytes";
-  }
+    int KB_SIZE = 1024;
+    int MB_SIZE = 1024 * KB_SIZE;
+    int length = imageBytes.length;
+    double size;
+    if (length >= MB_SIZE) {
+      size = length / MB_SIZE;
+      return size + " MB";
+    } else if (length >= KB_SIZE) {
+      size = length / KB_SIZE;
+      return size + " KB";
+    } else { //Bytes size
+      return  length + " Bytes";
+    }
   }
   
   /**

@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.groovy.runtime.metaclass.NewMetaMethod;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.container.ExoContainer;
@@ -240,23 +239,8 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
         throw new Exception("homeNode is null!");
       }
       List<PageNode> childNodes = homeNode.getChildren();
-/*      String nodeName = null;
-      String installedApps = space.getApp();
-      String[] apps;
-      if (installedApps.contains(",")) {
-        apps = installedApps.split(",");
-      } else {
-        apps = new String[1];
-        apps[0] = installedApps;
-      }
-      for (String app : apps) {
-        String[] splited = app.split(":");
-        nodeName = splited[0];
-      }*/
-      PageNode childNode = homeNode.getChild(appId);
-      if (childNode == null) {
-        throw new Exception("childNode is null!");
-      }
+      String nodeName = SpaceUtils.getAppNodeName(space, appId);
+      PageNode childNode = homeNode.getChild(nodeName);
       childNodes.remove(childNode);
       dataStorage.save(nav);
       // remove page

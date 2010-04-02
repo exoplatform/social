@@ -51,8 +51,6 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIAvatarUploadContent extends UIContainer {
-  /** AVARTAR PROPERTY. */
-  static public final String AVARTAR_PROPERTY = "avatar";
   
   /** ProfileAttachment instance. */
   private ProfileAttachment profileAttachment;
@@ -137,7 +135,7 @@ public class UIAvatarUploadContent extends UIContainer {
       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
       UIProfile uiProfile = uiAvatarUploadContent.getAncestorOfType(UIProfile.class);
       Profile p = uiProfile.getProfile(true);
-      p.setProperty(AVARTAR_PROPERTY, uiAvatarUploadContent.getProfileAttachment());
+      p.setProperty(Profile.AVATAR_PROPERTY, uiAvatarUploadContent.getProfileAttachment());
       im.saveProfile(p);
       UIPopupWindow uiPopup = uiAvatarUploadContent.getParent();
       uiPopup.setShow(false);

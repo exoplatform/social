@@ -17,7 +17,10 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<page-set>  
+<page-set 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_0 http://www.gatein.org/xml/ns/gatein_objects_1_0"
+    xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_0">  
 
   <page>
     <name>homepage</name>
@@ -56,7 +59,7 @@
       </portlet>
       <title>Manage Spaces</title>
       <access-permissions>*:/platform/guests</access-permissions>
-      <show-info-bar>false</show-info-bar>      
+      <show-info-bar>false</show-info-bar>
     </portlet-application>
   </page>
   
@@ -254,10 +257,8 @@
   </page>
   
   <page>
-  	<page-id>portal::classic::requests</page-id>
-  	<owner-type>portal</owner-type>
-    <owner-id>classic</owner-id>
     <name>requests</name>
+    <title>Requests</title>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
@@ -337,7 +338,7 @@
 		     <show-info-bar>false</show-info-bar>
 		     <show-application-state>true</show-application-state>      
 		   </portlet-application>
- 		</container>
+ 		  </container>
 		</container>
   </page>
   

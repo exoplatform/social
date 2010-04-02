@@ -22,6 +22,7 @@ import java.util.List;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
+import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -145,6 +146,7 @@ public class UISpaceInfo extends UIForm {
       UISpaceInfo uiSpaceInfo = event.getSource();
       SpaceService spaceService = uiSpaceInfo.getSpaceService();
       UIPortal uiPortal = Util.getUIPortal();
+
       PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
@@ -161,10 +163,18 @@ public class UISpaceInfo extends UIForm {
       PageNode homeNode = null;
       boolean nameChanged = (space.getName() != name);
       if (nameChanged) {
+        UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
+        List<PageNavigation> pageNavigations = userPortalConfig.getNavigations();
         DataStorage dataStorage = uiSpaceInfo.getApplicationComponent(DataStorage.class);
         String cleanedString = SpaceUtils.cleanString(name);
         space.setUrl(cleanedString);
         PageNavigation spaceNavigation = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
+        for (PageNavigation pageNavigation : pageNavigations) {
+          if (pageNavigation.getOwner().equals(spaceNavigation.getOwner())) {
+            spaceNavigation = pageNavigation;
+            break;
+          }
+        }
         homeNode = SpaceUtils.getHomeNode(spaceNavigation, spaceUrl);
         if (homeNode == null) {
           throw new Exception("homeNode is null!");

@@ -17,7 +17,10 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<node-navigation>
+<node-navigation
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_0 http://www.gatein.org/xml/ns/gatein_objects_1_0"
+    xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_0">
   <priority>1</priority>
 
   <page-nodes>

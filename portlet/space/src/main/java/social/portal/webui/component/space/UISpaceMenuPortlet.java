@@ -169,7 +169,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
         prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
         return;
       }
-      String newNodeName = newSpaceAppName.replace(' ', '_');
+      String newNodeName = newSpaceAppName.trim().replace(' ', '_');
       if (spaceMenu.isAppNameExisted(spaceNavigation, newNodeName)) {
          newNodeName = newNodeName + "_" + System.currentTimeMillis();
       }
@@ -196,8 +196,8 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       for (String app : apps) {
         if (app.length() != 0) {
           appParts = app.split(":");
-          if (appParts[0].equals(oldName)) {
-            editedApp = newNodeName + ":" + appParts[1] + ":" + appParts[2];
+          if (appParts[1].equals(oldName)) {
+            editedApp = appParts[0] + ":" + newNodeName + ":" + appParts[2] + ":" + appParts[3];
             newInstalledApps = installedApps.replaceAll(app, editedApp);
             space.setApp(newInstalledApps);
             spaceService.saveSpace(space, false);
@@ -277,10 +277,6 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     return false;
   }
   
-  private UIPortal getUIPortal() {
-    return uiPortal;
-  }
-  
   /**
    * Application comparator
    * @author hoatle
@@ -357,10 +353,8 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     List<PageNode> nodes = homeNode.getChildren();
 
     // Check in case new name is duplicated with space name
-     for (PageNode node : pageNav.getNodes())
-     {
-        if (node.getName().equals(nodeName))
-        {
+     for (PageNode node : pageNav.getNodes()) {
+        if (node.getName().equals(nodeName)) {
            return true;
         }
      }

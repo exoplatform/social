@@ -199,7 +199,8 @@ public class UIManageInvitationSpaces extends UIContainer {
        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_ACCEPT_INVITATION, null, ApplicationMessage.ERROR));
        return;
      }
-     event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
+     //event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
+     SpaceUtils.updateWorkingWorkSpace();
    }
   }
 
@@ -296,8 +297,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @return portal name
    */
   private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance() ;
-    return pcontainer.getPortalContainerInfo().getContainerName() ;  
+    return PortalContainer.getCurrentPortalContainerName();
   }
   
   /**

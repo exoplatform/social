@@ -30,7 +30,7 @@
      <portlet-application>
       <portlet>
         <application-ref>dashboard</application-ref>
-        <portlet-ref>GadgetPortlet</portlet-ref>\
+        <portlet-ref>GadgetPortlet</portlet-ref>
         <preferences>
           <preference>
           	<name>url</name>

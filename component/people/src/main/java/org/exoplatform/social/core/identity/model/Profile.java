@@ -27,6 +27,8 @@ import java.util.HashMap;
  */
 public class Profile {
   
+  public static String AVATAR_PROPERTY = "avatar";
+  
   /** The properties. */
   private Map<String, Object> properties = new HashMap<String, Object>();
   
