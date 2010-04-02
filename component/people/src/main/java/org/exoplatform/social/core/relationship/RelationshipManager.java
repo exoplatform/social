@@ -27,7 +27,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.storage.JCRStorage;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RelationshipManager.
  */
@@ -35,6 +34,8 @@ public class RelationshipManager {
   
   /** The storage. */
   private JCRStorage storage;
+
+  private RelationshipLifeCycle lifeCycle = new RelationshipLifeCycle();
 
   /**
    * Instantiates a new relationship manager.
@@ -70,7 +71,7 @@ public class RelationshipManager {
       prop.setStatus(Relationship.Type.CONFIRM);
     }
     save(relationship);
-
+    lifeCycle.relationshipConfirmed(this, relationship);
   }
 
   /**
@@ -81,6 +82,7 @@ public class RelationshipManager {
    */
   public void remove(Relationship relationship) throws Exception {
     storage.removeRelationship(relationship);
+    lifeCycle.relationshipRemoved(this, relationship);
   }
 
   /**
@@ -95,6 +97,7 @@ public class RelationshipManager {
       prop.setStatus(Relationship.Type.IGNORE);
     }
     save(relationship);
+    lifeCycle.relationshipIgnored(this, relationship);
   }
 
   /**
@@ -167,25 +170,6 @@ public class RelationshipManager {
         pendingRel.add(relationship);
     }
     return pendingRel;
-//    List<Relationship> rels = get(identity);
-//    List<Relationship> pendingRel = new ArrayList<Relationship>();
-//    for (Relationship rel : rels) {
-//      if (rel.getStatus() == Relationship.Type.PENDING && !toConfirm) {
-//        pendingRel.add(rel);
-//      } else if (rel.getStatus() == Relationship.Type.PENDING && toConfirm
-//          && !identity.getId().equals(rel.getIdentity1().getId())) {
-//        pendingRel.add(rel);
-//      } else {
-//        List<Property> props = rel.getProperties(Relationship.Type.PENDING);
-//        for (Property prop : props) {
-//          if (toConfirm == prop.getInitiator().getId().equals(identity.getId())) {
-//            pendingRel.add(rel);
-//            break;
-//          }
-//        }
-//      }
-//    }
-//    return pendingRel;
   }
 
   /**

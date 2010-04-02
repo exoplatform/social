@@ -15,6 +15,12 @@
   <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>  
+    <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.ext</artifactId>
       <version>${org.exoplatform.jcr.version}</version>

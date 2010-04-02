@@ -7,9 +7,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.space.spi.SpaceLifeCycleListener;

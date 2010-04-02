@@ -27,6 +27,9 @@
 	<gadget name="statusUpdate2">
 		<path>/gadgets/activities2.xml</path>
 	</gadget>
+	<gadget name="spaceActivities">
+		<path>/gadgets/spaceactivities.xml</path>
+	</gadget>	
 	<gadget name="ComplianceTest08">
 		<url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>
 	</gadget>
