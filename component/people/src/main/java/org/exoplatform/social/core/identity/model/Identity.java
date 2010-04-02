@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.core.identity.model;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Identity.
  */

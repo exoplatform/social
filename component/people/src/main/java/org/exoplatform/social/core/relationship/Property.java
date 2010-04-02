@@ -18,7 +18,7 @@ package org.exoplatform.social.core.relationship;
 
 import org.exoplatform.social.core.identity.model.Identity;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Property.
  */

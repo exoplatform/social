@@ -13,7 +13,13 @@
   <description></description>
   <url>http://www.exoplatform.org</url>
   <dependencies>
-
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
@@ -36,7 +42,7 @@
     
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.container</artifactId>
+      <artifactId>exo.kernel.commons</artifactId>
       <version>${org.exoplatform.kernel.version}</version>
       <scope>provided</scope>
     </dependency>    

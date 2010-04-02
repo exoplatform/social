@@ -24,7 +24,10 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.lifecycle.RelationshipLifeCycle;
+import org.exoplatform.social.core.relationship.lifecycle.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.storage.JCRStorage;
+import org.exoplatform.social.relationship.spi.RelationshipListener;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
 /**
@@ -35,6 +38,9 @@ public class RelationshipManager {
   /** The storage. */
   private JCRStorage storage;
 
+  /**
+   * lifecycle of a relationship
+   */
   private RelationshipLifeCycle lifeCycle = new RelationshipLifeCycle();
 
   /**
@@ -384,4 +390,21 @@ public class RelationshipManager {
     }
     return Relationship.Type.CONFIRM;
   }
+  
+  
+
+  public void registerListener(RelationshipListener listener) {
+    lifeCycle.addListener(listener);
+  }
+
+
+  public void unregisterListener(RelationshipListener listener) {
+    lifeCycle.removeListener(listener);
+  }  
+  
+  public void addListenerPlugin(RelationshipListenerPlugin plugin) {
+    registerListener(plugin);
+  }
+  
+  
 }

@@ -4,10 +4,12 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.lifecycle.LifeCycleEvent;
 
-public class RelationshipEvent extends LifeCycleEvent<RelationshipManager,Relationship>{
+public class RelationshipEvent extends LifeCycleEvent<RelationshipManager, Relationship> {
 
-  public enum Type {REMOVE,IGNORE,CONFIRM}
-  
+  public enum Type {
+    REMOVE, IGNORE, CONFIRM
+  }
+
   private Type type;
 
   public RelationshipEvent(Type type, RelationshipManager source, Relationship payload) {
@@ -18,6 +20,10 @@ public class RelationshipEvent extends LifeCycleEvent<RelationshipManager,Relati
   public Type getType() {
     return type;
   }
-  
+
+  public String toString() {
+    return payload.getIdentity1().getDisplayName() + " " + type + " "
+        + payload.getIdentity1().getDisplayName();
+  }
 
 }
