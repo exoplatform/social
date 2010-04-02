@@ -10,10 +10,9 @@ jsmanager.importJavascript('eXo.portal.UIPortalNavigation') ;
 jsmanager.importJavascript('eXo.portal.UIAdminToolbar') ;
 jsmanager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
 
+String accountSetting = "javascript:if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'AccountSettings', true));"
+
 def user = uicomponent.getUser();
-def portalURI = Util.getPortalRequestContext().getPortalURI();
-def remoteUser = Util.getPortalRequestContext().getRemoteUser();
-def userLink = portalURI + "activities";
 
 void renderLink() {
 		def portalURI = Util.getPortalRequestContext().getPortalURI();
@@ -77,7 +76,7 @@ void renderLink() {
         <div class="TabsContainer" style="position: relative">
             <div class="UITab NormalToolbarTab">
                 <div class="">
-                            <a class="SocialUserToolBarIcon TBIcon" href="<%= userLink %>">
+                            <a class="SocialUserToolBarIcon TBIcon" href="<%= accountSetting %>">
                                     <%=user.getFullName();%>
                             </a>
                 </div>

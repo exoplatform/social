@@ -24,7 +24,6 @@
 @import url(DefaultSkin/webui/component/UIProfileUserSearch/Stylesheet.css);
 @import url(DefaultSkin/webui/component/UISpaceSearch/Stylesheet.css);
 @import url(DefaultSkin/webui/component/UIAutoSuggestControl/Stylesheet.css);
-@import url(DefaultSkin/portal/SocialNavigation.css) ;
 
 /*.ClearFix:after {
   content: ".";
