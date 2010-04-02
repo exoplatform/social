@@ -21,6 +21,9 @@ function getModule(params)
 var shindigVersion = "${org.shindig.version}";  
 	
   module.component = {} ;
+  module.component.common = 
+		new Project("org.exoplatform.social", "exo.social.component.common","jar", module.version);
+  
   module.component.people = 
 	new Project("org.exoplatform.social", "exo.social.component.people","jar", module.version);
 

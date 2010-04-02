@@ -34,6 +34,7 @@ function getProduct(version) {
 	product.addDependencies(portal.starter);
   product.addDependencies(social.extension.war) ;
   product.addDependencies(social.web.eXoResources) ;
+  product.addDependencies(social.component.common) ;
   product.addDependencies(social.component.people) ;
   product.addDependencies(social.component.space) ;
   product.addDependencies(social.portlet.space) ;
