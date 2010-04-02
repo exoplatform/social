@@ -49,5 +49,11 @@
       <version>${org.exoplatform.portal.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>      
   </dependencies>
 </project>

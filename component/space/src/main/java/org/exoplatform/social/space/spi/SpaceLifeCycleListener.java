@@ -1,12 +1,14 @@
 package org.exoplatform.social.space.spi;
 
+import org.exoplatform.social.lifecycle.LifeCycleListener;
+
 
 /**
  * A listener to follow the liecycle of a space.
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
  */
-public interface SpaceLifeCycleListener {
+public interface SpaceLifeCycleListener extends LifeCycleListener<SpaceLifeCycleEvent> {
   
   
   /**

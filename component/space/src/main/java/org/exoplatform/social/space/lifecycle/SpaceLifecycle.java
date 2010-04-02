@@ -1,72 +1,26 @@
 package org.exoplatform.social.space.lifecycle;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import org.exoplatform.social.lifecycle.AbstractLifeCycle;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
 import org.exoplatform.social.space.spi.SpaceLifeCycleEvent.Type;
 
 /**
- * Implementation of the lifecycle of spaces.
- * Events are dispatched asynchronously but sequentially to their listeners according to their type. 
- * Listeners may fail, this is safe for the lifecycle, subsequent listenrs cill still be called.
+ * Implementation of the lifecycle of spaces. <br/>
+ * Events are dispatched asynchronously but sequentially to their listeners
+ * according to their type.<br/>
+ * Listeners may fail, this is safe for the lifecycle, subsequent listeners will
+ * still be called.
  * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
+ * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
+ *         Lamarque</a>
  * @version $Revision$
  */
-public class SpaceLifecycle {
+public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, SpaceLifeCycleEvent> {
 
-  private Set<SpaceLifeCycleListener>                      listeners = new HashSet<SpaceLifeCycleListener>();
-
-  ExecutorService                                executor  = Executors.newSingleThreadExecutor();
-
-  protected ExecutorCompletionService<SpaceLifeCycleEvent> ecs;
-
-  /**
-   * {@inheritDoc}
-   */
-  public void addListener(SpaceLifeCycleListener listener) {
-    listeners.add(listener);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public void removeListener(SpaceLifeCycleListener listener) {
-    listeners.remove(listener);
-  }
-
-  /**
-   * Broadcasts an event to the registered listeners. The event is broadcasted
-   * asynchronously but sequentially.
-   * 
-   * @see #dispatchEvent(Object, Object)
-   * @param event
-   */
-  protected void broadcast(final SpaceLifeCycleEvent event) {
-    if (ecs == null) {
-      ecs = new ExecutorCompletionService<SpaceLifeCycleEvent>(executor);
-    }
-   
-    for (final SpaceLifeCycleListener listener : listeners) {
-      ecs.submit(new Callable<SpaceLifeCycleEvent>() {
-        public SpaceLifeCycleEvent call() throws Exception {
-          dispatchEvent(listener, event);
-          return event;
-        }
-      });
-    }
-  }
-
-  protected <E extends SpaceLifeCycleEvent> void dispatchEvent(final SpaceLifeCycleListener listener,
-                                                               final E event) {
-
+  @Override
+  protected void dispatchEvent(SpaceLifeCycleListener listener, SpaceLifeCycleEvent event) {
     switch (event.getType()) {
     case SPACE_CREATED:
       listener.spaceCreated(event);
