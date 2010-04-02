@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<Module>
+  <ModulePrefs  title="Space Activities"
+  				description="eXo Space activity Stream"
+  				author_email="hoatlevan@gmail.com"
+  				author_affiliation="eXo Platform">
+  	<Locale messages="activities2/locale/ALL_ALL.xml" />
+  	<Locale lang="en" messages="activities2/locale/en_ALL.xml" />
+  	<Locale lang="vi" messages="activities2/locale/vi_ALL.xml" />
+    <Require feature="opensocial-0.8" />
+    <Require feature="dynamic-height" />
+    <Require feature="settitle" />
+    <Require feature="views" />
+    <Require feature="minimessage" />
+  </ModulePrefs>
+  <Content type="html" view="default, home, profile">
+  <![CDATA[
+  	<link rel="stylesheet" type="text/css" href="activities2/style/style.css" />
+  	<link rel="stylesheet" type="text/css" href="activities2/style/home.css" />
+  	<script type="text/javascript" src="activities2/script/debug.js"></script>
+  	<script type="text/javascript" src="activities2/script/ie-patch.js"></script>
+  	<script type="text/javascript" src="activities2/script/htmlparser.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/Util.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/Locale.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/UIComposer.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/LinkShare.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/Like.js"></script>
+    <script type="text/javascript" src="activities2/script/eXo/social/Comment.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/StatusUpdate.js"></script>
+  	<div id="StatusUpdate" class="ActivitiesComponent">
+  		<div class="ActivitiesComponentBT">
+  			<div class="ActivitiesTitleBarR">
+  				<div id="AppTitle" class="ActivitiesTitleBarM">__MSG_title__</div>
+  			</div>
+  			<div class="ActivitiesContainer">
+  				<div id="UIMyStatusInput" class="MyStatusComponent">
+  					<table>
+  						<body>
+  							<tr>
+  								<td width='45'>
+  									<a id="UIOwnerAvatar" href="#OwnerAvatar" target="_parent" class="MyStatusAvatarBG">
+											<img id="ImgOwnerAvatar" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+										</a>
+								</td>
+  								<td width='100%'>
+  									<div id="UIComposer" class="MyStatusInput">
+											<div class="MyStatusInputTL">
+												<div class="MyStatusInputTR">
+													<div class="MyStatusInputTM"><span></span></div>
+												</div>
+											</div>
+											<div class="MyStatusInputL">
+												<div class="MyStatusInputML">
+													<div class="MyStatusInputR">
+														<div class="MyStatusInputM">
+				  											<div style="height: 2px;"><span></span></div>
+				  											<input type="text" id="UIComposerTextArea" class="Textbox" value="__MSG_what_are_you_doing__" />
+				  									</div>
+					 									<div id="UIComposerExtension" class="ExtensionInput">
+					 										<!-- dynamic loading -->
+						 								</div>
+						 							</div>
+												</div>
+											</div>	
+											<div class="MyStatusInputBL">
+												<div class="MyStatusInputBR">
+													<div class="MyStatusInputBM"><span></span></div>
+												</div>
+											</div>
+										</div>	
+  								</td>
+  								<td width='30'>
+  									<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
+  								</td>
+  							</tr>
+  						</body>
+  					</table>	
+  				</div>
+  				
+  				<div class="ATitleBarL">
+  					<div class="ATitleBarR">
+  						<div class="ATitleBarM">
+  							<div id="OwnerActivityTitle" class="ATitleBarC">Owner's Activity</div>
+  						</div>
+  					</div>
+  				</div>
+  				<div id="UIOwnerAppendableRoot"> 
+  					<!-- the root to append owner activities block -->
+  				</div>
+  				<div id="UIOwnerMore" class="DisplayNone">
+  				 <div  class="FloatRight">
+  					<a href="#ownerMore">__MSG_more__</a>
+  				 </div>
+  				 <div class="ClearRight"><span /></div>
+  				</div>
+  				<div class="ClearRight"><span>&nbsp</span></div>
+  				
+  
+  			</div>
+  		</div>
+  	</div>
+  ]]>
+  </Content>
+  
+  <Content type="html" view="canvas">
+  <![CDATA[
+  	<link rel="stylesheet" type="text/css" href="activities2/style/style.css" />
+  	<link rel="stylesheet" type="text/css" href="activities2/style/canvas.css" />
+  	<script type="text/javascript" src="activities2/script/debug.js"></script>
+  	<script type="text/javascript" src="activities2/script/ie-patch.js"></script>
+  	<script type="text/javascript" src="activities2/script/htmlparser.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/Util.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/Locale.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/UIComposer.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/LinkShare.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/Like.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/Comment.js"></script>
+  	<script type="text/javascript" src="activities2/script/eXo/social/StatusUpdate.js"></script>
+  	<div id="StatusUpdate" class="ActivitiesComponent">
+  		<div class="ActivitiesComponentBT">
+  			<div class="ActivitiesTitleBarR">
+  				<div id="AppTitle" class="ActivitiesTitleBarM">__MSG_title__</div>
+  			</div>
+  			<div class="ActivitiesContainer">
+  				<div id="UIMyStatusInput" class="MyStatusComponent">
+  					<table>
+  						<body>
+  							<tr>
+  								<td width='45'>
+  									<a id="UIOwnerAvatar" href="#OwnerAvatar" target="_parent" class="MyStatusAvatarBG">
+											<img id="ImgOwnerAvatar" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+										</a>
+								  </td>
+  								<td width='100%'>
+  									<div id="UIComposer" class="MyStatusInput">
+											<div class="MyStatusInputTL">
+												<div class="MyStatusInputTR">
+													<div class="MyStatusInputTM"><span></span></div>
+												</div>
+											</div>
+											<div class="MyStatusInputL">
+												<div class="MyStatusInputML">
+													<div class="MyStatusInputR">
+														<div class="MyStatusInputM">
+				  											<div style="height: 2px;"><span></span></div>
+				  											<textarea id="UIComposerTextArea" class="Textbox">__MSG_what_are_you_doing__</textarea>
+				  									</div>
+						 							</div>
+												</div>
+											</div>	
+											<div class="MyStatusInputBL">
+												<div class="MyStatusInputBR">
+													<div class="MyStatusInputBM"><span></span></div>
+												</div>
+											</div>
+										</div>	
+  								</td>
+  								<td width='30'>
+  									<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
+  								</td>
+  							</tr>
+  						  <tr>
+  						    <td>&nbsp;</td>
+  						    <td colspan="2">
+  						      <div id="UIComposerExtension" class="ExtensionInput">
+                      <!-- dynamic loading -->
+                    </div>
+                    <div id="UIComposerExtensionMessage" class="ExtensionMessage"></div>
+  						    </td>
+  						  </tr>
+  						</body>
+  					</table>	
+  				</div>
+  				
+  				<div class="ATitleBarL">
+  					<div class="ATitleBarR">
+  						<div class="ATitleBarM">
+  							<div id="OwnerActivityTitle" class="ATitleBarC">Owner's Activity</div>
+  						</div>
+  					</div>
+  				</div>
+  				<div id="UIOwnerAppendableRoot"> 
+  					<!-- the root to append owner activities block -->
+  				</div>
+				  <div id="UIOwnerMore" class="DisplayNone">
+				   <div  class="FloatRight">  
+  					<a href="#ownerMore">__MSG_more__</a> 
+  				 </div>
+  				 <div class="ClearRight"><span /></div>
+  				</div>  				
+  			</div>
+  		</div>
+  	</div>
+  ]]>
+  </Content>
+</Module>
