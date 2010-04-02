@@ -119,7 +119,7 @@ public class UISocialLogoPortlet extends UIPortletApplication
      Profile p = getProfile(true);
      ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
      if (att != null) {
-       return "/" + getRestContext() + "jcr/" + getRepository()+ "/" + att.getWorkspace()
+       return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
                + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
      }
      return null;
