@@ -142,20 +142,19 @@ public class ExoService {
     }
 
     protected Identity getIdentity(String id, boolean loadProfile) throws Exception {
-      Identity identity  = null;
+
       PortalContainer pc = PortalContainer.getInstance();
       IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
       
-      identity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, id);
-      
-      if (identity == null) {
-        identity = im.getIdentityById(id, loadProfile);
-      }
 
+      Identity identity = im.getIdentity(id, loadProfile);
+ 
+
+      // TODO SOC-729 : this is a nasty hack
       if(identity == null) {
         pc = (PortalContainer) ExoContainerContext.getContainerByName("socialdemo");
         im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
-        identity = im.getIdentityById(id, loadProfile);
+        identity = im.getIdentity(id, loadProfile);
       }
       
       if(identity == null) throw new Exception("\n\n\n can't find identity \n\n\n");

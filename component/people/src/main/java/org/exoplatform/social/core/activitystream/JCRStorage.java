@@ -25,7 +25,6 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.exoplatform.social.core.activitystream.model.Activity;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.JCRSessionManager;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
@@ -307,9 +306,9 @@ public class JCRStorage {
    * @return the activities
    * @throws Exception the exception
    */
-  public List<Activity> getActivities(Identity identity) throws Exception {
+  public List<Activity> getActivities(String user) throws Exception {
     List<Activity> activities = Lists.newArrayList();
-    Node n = getPublishedActivityServiceHome(identity.getId());
+    Node n = getPublishedActivityServiceHome(user);
     NodeIterator nodes = n.getNodes();
     String externalId;
     while (nodes.hasNext()) {

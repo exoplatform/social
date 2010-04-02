@@ -31,17 +31,10 @@ public class Identity {
     /** The provider id. */
     String  providerId;
     
-    /** The display name. */
-    String  displayName;
-    
     /** The profile. */
     Profile profile;
 
-    /**
-     * Instantiates a new identity.
-     */
-    public Identity() {
-    }
+
 
     /**
      * Instantiates a new identity.
@@ -62,18 +55,6 @@ public class Identity {
     	this.providerId = providerId;
     }
 
-    /**
-     * Instantiates a new identity.
-     * 
-     * @param id the id
-     * @param displayName the display name
-     * @param profile the profile
-     */
-    public Identity(String id, String displayName, Profile profile) {
-        this.id = id;
-        this.displayName = displayName;
-        this.profile = profile;
-    }
 
     /**
      * Gets the id.
@@ -93,23 +74,6 @@ public class Identity {
         this.id = id;
     }
 
-    /**
-     * Gets the display name.
-     * 
-     * @return the display name
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    /**
-     * Sets the display name.
-     * 
-     * @param displayName the new display name
-     */
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
 
     /**
      * Gets the profile.
@@ -165,5 +129,13 @@ public class Identity {
      */
     public void setProviderId(String providerId) {
         this.providerId = providerId;
+    }
+    
+    public String toString() {
+      return providerId + ":" + remoteId + "("+id+")";
+    }
+    
+    public GlobalId getGlobalId() {
+      return GlobalId.create(providerId, remoteId);
     }
 }

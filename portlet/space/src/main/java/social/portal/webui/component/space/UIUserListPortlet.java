@@ -199,7 +199,7 @@ public class UIUserListPortlet extends UIPortletApplication {
   public String getUserAvatar(String userId) throws Exception {
     Identity identity = getIdentityManager().getOrCreateIdentity("organization", userId);
     Profile profile = identity.getProfile();
-    ProfileAttachment attach = (ProfileAttachment) profile.getProperty("avatar");
+    ProfileAttachment attach = (ProfileAttachment) profile.getProperty(Profile.AVATAR);
     if (attach != null) {
       return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + attach.getWorkspace()
               + attach.getDataPath() + "/?rnd=" + System.currentTimeMillis();

@@ -67,7 +67,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
       for (Identity id : idSet) {
         //TODO filter by appID
-        result.addAll(convertToOSActivities(am.getActivities(id), fields));
+        List<org.exoplatform.social.core.activitystream.model.Activity> activities = am.getActivities(id);
+        result.addAll(convertToOSActivities(activities, fields));
       }
       // last time go first.
 //      Collections.reverse(result);

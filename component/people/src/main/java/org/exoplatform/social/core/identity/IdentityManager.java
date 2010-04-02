@@ -27,6 +27,7 @@ import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.picketlink.idm.common.exception.IdentityConfigurationException;
 
 
 
@@ -73,23 +74,23 @@ public class IdentityManager {
   /**
    * Gets the identity by id.
    * 
-   * @param id the id
+   * @param id can be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
    * @return the identity by id
    * @throws Exception the exception
    */
-  public Identity getIdentityById(String id) throws Exception {
-    return getIdentityById(id, true);
+  public Identity getIdentity(String id) throws Exception {
+    return getIdentity(id, true);
   }
 
   /**
    * Gets the identity by id also load his profile
    * 
-   * @param id the id
+   * @param can be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
    * @param loadProfile the load profile true if load and false if doesn't
    * @return null if nothing is found, or the Identity object
    * @throws Exception the exception
    */
-  public Identity getIdentityById(String id, boolean loadProfile) throws Exception {
+  public Identity getIdentity(String id, boolean loadProfile) throws Exception {
     Identity identity = null;
     
     // attempts to match a global id in the form "providerId:remoteId"
@@ -97,7 +98,7 @@ public class IdentityManager {
       GlobalId globalId = new GlobalId(id);
       String providerId = globalId.getDomain();
       String remoteId = globalId.getLocalId();
-      identity = identityStorage.findIdentity(providerId, remoteId);
+      identity = getOrCreateIdentity(providerId, remoteId, loadProfile);
     }
 
     // attempts to find a raw id
@@ -122,7 +123,7 @@ public class IdentityManager {
    * 
    * @param idProvider the id provider
    */
-  public void addIdentityProvider(IdentityProvider idProvider) {
+  public void addIdentityProvider(IdentityProvider<?> idProvider) {
     if (idProvider != null) {
       LOG.debug("Registering identity provider for " + idProvider.getName() + ": " + idProvider);
       idProvider.setIdentityManager(this);
@@ -206,10 +207,11 @@ public class IdentityManager {
    */
   public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) throws Exception {
 
-    IdentityProvider identityProvider = getIdentityProvider(providerId);     
+    IdentityProvider<?> identityProvider = getIdentityProvider(providerId);     
 
     Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
     Identity result = identityStorage.findIdentity(providerId, remoteId);
+
 
     if(result == null) { 
       if (identity1 != null) { // identity is valid for provider, but no yet referenced in storage
@@ -259,6 +261,7 @@ public class IdentityManager {
   public List<Identity> getIdentities(String providerId) throws Exception {
     return getIdentities(providerId, true);
   }
+  
 
   /**
    * Gets the identities.
@@ -292,8 +295,8 @@ public class IdentityManager {
     this.identityStorage = identityStorage;
   }
   
-  private IdentityProvider getIdentityProvider(String providerId) {
-    IdentityProvider provider = identityProviders.get(providerId);
+  private IdentityProvider<?> getIdentityProvider(String providerId) {
+    IdentityProvider<?> provider = identityProviders.get(providerId);
     if (provider == null) {
       throw new RuntimeException("No suitable identity provider exists for " + providerId);
     }

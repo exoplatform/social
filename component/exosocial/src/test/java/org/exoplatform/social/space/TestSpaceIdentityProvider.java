@@ -6,9 +6,6 @@ import junit.framework.TestCase;
 
 import org.exoplatform.social.core.identity.JCRStorage;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceIdentityProvider;
-import org.exoplatform.social.space.SpaceService;
 
 public class TestSpaceIdentityProvider extends TestCase {
 
@@ -27,7 +24,7 @@ public class TestSpaceIdentityProvider extends TestCase {
     JCRStorage identityStorage = mock(JCRStorage.class);
     when(identityStorage.findIdentity(SpaceIdentityProvider.NAME, spaceId)).thenReturn(spaceIdentity);
     
-    SpaceIdentityProvider identityProvider = new SpaceIdentityProvider(spaceService, identityStorage);    
+    SpaceIdentityProvider identityProvider = new SpaceIdentityProvider(spaceService);    
     Identity identity = identityProvider.getIdentityByRemoteId(spaceId);
     assertNotNull(identity);
     

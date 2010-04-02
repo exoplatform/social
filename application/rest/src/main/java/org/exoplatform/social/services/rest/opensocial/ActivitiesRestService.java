@@ -616,11 +616,11 @@ public class ActivitiesRestService implements ResourceContainer {
     _identityManager = getIdentityManager();
     try {
       for (String identityId : identityIds) {
-        identity = _identityManager.getIdentityById(identityId);
+        identity = _identityManager.getIdentity(identityId);
         profile = identity.getProfile();
-        username = (String) profile.getProperty("username");
+        username = (String) profile.getProperty(Profile.USERNAME);
         fullName = profile.getFullName();
-        profileAttachment = (ProfileAttachment)profile.getProperty("avatar");
+        profileAttachment = (ProfileAttachment)profile.getProperty(Profile.AVATAR);
         thumbnail = null;
         if (profileAttachment != null) {
           thumbnail = "/" + getPortalName() + "/rest/jcr/" + getRepository() + "/" + profileAttachment.getWorkspace() +

@@ -9,5 +9,9 @@ public interface RelationshipListener extends LifeCycleListener<RelationshipEven
   void ignored(RelationshipEvent event);
   
   void removed(RelationshipEvent event);
+
+  void requested(RelationshipEvent event);
+
+  void denied(RelationshipEvent event);
   
 }

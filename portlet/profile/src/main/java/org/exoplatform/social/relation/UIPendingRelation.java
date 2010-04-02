@@ -242,7 +242,7 @@ public class UIPendingRelation extends UIContainer {
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
   
-      Identity requestedIdentity = im.getIdentityById(userId);
+      Identity requestedIdentity = im.getIdentity(userId);
   
       // TODO Check if relation is deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();

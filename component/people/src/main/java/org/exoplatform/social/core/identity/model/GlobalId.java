@@ -54,5 +54,15 @@ public class GlobalId {
   public String toString() {
     return domain + SEPARATOR + localId;
   }
+  
+  public static GlobalId create(String providerId, String remoteId) {
+    if (providerId == null ) {
+      throw new IllegalArgumentException("Could not create a valid GlobalId with null providerId");
+    }
+    if (remoteId == null ) {
+      throw new IllegalArgumentException("Could not create a valid GlobalId with null remoteId");
+    }   
+    return new GlobalId(providerId + SEPARATOR + remoteId);
+  }
 
 }

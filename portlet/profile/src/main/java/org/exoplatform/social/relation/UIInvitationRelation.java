@@ -181,7 +181,7 @@ public class UIInvitationRelation extends UIContainer {
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
-      Identity requestedIdentity = im.getIdentityById(identityId);
+      Identity requestedIdentity = im.getIdentity(identityId);
 
       RelationshipManager rm = uiMyRelation.getRelationshipManager();
       
@@ -194,8 +194,7 @@ public class UIInvitationRelation extends UIContainer {
       }
       
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-      rel.setStatus(Relationship.Type.CONFIRM);
-      rm.save(rel);  
+      rm.confirm(rel);
     }
   }
   
@@ -217,7 +216,7 @@ public class UIInvitationRelation extends UIContainer {
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
-      Identity requestedIdentity = im.getIdentityById(identityId);
+      Identity requestedIdentity = im.getIdentity(identityId);
       
       // TODO Check if invitation is revoked or deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();

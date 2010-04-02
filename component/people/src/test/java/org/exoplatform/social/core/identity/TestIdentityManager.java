@@ -66,7 +66,7 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
     assertNotNull(identity.getId());
 
     String oldId = identity.getId();
-    identity = identityManager.getIdentityById(identity.getId());
+    identity = identityManager.getIdentity(identity.getId());
     assertNotNull(identity);
     assertEquals("this id should still be the same", oldId, identity.getId());
     
@@ -77,13 +77,13 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
     identityManager.saveIdentity(demo);
     String demoId = demo.getId();
 
-    Identity identity = identityManager.getIdentityById("organization:demo"); 
+    Identity identity = identityManager.getIdentity("organization:demo"); 
     assertNotNull(identity);
     String id = identity.getId();
     assertNotNull(id);
     assertEquals("ids should be identical", demoId, id);
 
-    identity = identityManager.getIdentityById(identity.getId());
+    identity = identityManager.getIdentity(identity.getId());
 
   }
 
@@ -91,7 +91,7 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
     Identity identity = identityManager.getOrCreateIdentity("organization", "jack");
     assertNull(identity);
 
-    identity = identityManager.getIdentityById("wrongID");
+    identity = identityManager.getIdentity("wrongID");
     assertNull(identity);
   }
 

@@ -27,7 +27,13 @@ import java.util.HashMap;
  */
 public class Profile {
   
-  public static String AVATAR_PROPERTY = "avatar";
+  public static String AVATAR = "avatar";
+  
+  public static final String USERNAME = "username";
+
+  public static final String FIRST_NAME = "firstName";
+  
+  public static final String LAST_NAME = "lastName";
   
   /** The properties. */
   private Map<String, Object> properties = new HashMap<String, Object>();
@@ -140,7 +146,11 @@ public class Profile {
    * @return the full name
    */
   public String getFullName() {
-    return getProperty("firstName") + " " + getProperty("lastName");
+    String first = (String) getProperty(FIRST_NAME);
+    String last = (String) getProperty(LAST_NAME);
+    String all = (first != null) ? first : "";
+    all += (last != null) ? " " + last : "";
+    return all;
   }
 
 }

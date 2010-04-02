@@ -159,13 +159,9 @@ public class UIDisplayProfileList extends UIContainer {
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
       String currUserId = portlet.getCurrentUserName();
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
-
-      Identity requestedIdentity = im.getIdentityById(userId);
-
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,  currUserId);
+      Identity requestedIdentity = im.getIdentity(userId);
       RelationshipManager rm = portlet.getRelationshipManager();
-
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       
       // Check if invitation is established by another user
@@ -177,12 +173,10 @@ public class UIDisplayProfileList extends UIContainer {
       }
       
       if (rel == null) {
-        rel = rm.create(currIdentity, requestedIdentity);
-        rel.setStatus(Relationship.Type.PENDING);
-        rm.save(rel);
+        rel = rm.invite(currIdentity, requestedIdentity);
+
       } else {
-        rel.setStatus(Relationship.Type.CONFIRM);
-        rm.save(rel);
+        rm.confirm(rel);
       }
     }
   }
@@ -205,7 +199,7 @@ public class UIDisplayProfileList extends UIContainer {
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
-      Identity requestedIdentity = im.getIdentityById(userId);
+      Identity requestedIdentity = im.getIdentity(userId);
 
       RelationshipManager rm = portlet.getRelationshipManager();
 
@@ -216,8 +210,7 @@ public class UIDisplayProfileList extends UIContainer {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      rel.setStatus(Relationship.Type.CONFIRM);
-      rm.save(rel);
+      rm.confirm(rel);
     }
   }
 
@@ -239,7 +232,7 @@ public class UIDisplayProfileList extends UIContainer {
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
-      Identity requestedIdentity = im.getIdentityById(userId);
+      Identity requestedIdentity = im.getIdentity(userId);
 
       RelationshipManager rm = portlet.getRelationshipManager();
 

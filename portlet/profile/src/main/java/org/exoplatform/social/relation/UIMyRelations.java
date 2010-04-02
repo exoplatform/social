@@ -182,7 +182,7 @@ public class UIMyRelations extends UIContainer {
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
 
-      Identity requestedIdentity = im.getIdentityById(identityId);
+      Identity requestedIdentity = im.getIdentity(identityId);
 
       RelationshipManager rm = uiMyRelation.getRelationshipManager();
       

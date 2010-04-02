@@ -33,6 +33,8 @@ import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
  */
 public interface SpaceService {
   
+  public static final String SPACES_APP_ID = "exosocial:spaces";
+
   /**
    * Gets all spaces of the portal
    * @return all spaces of portal

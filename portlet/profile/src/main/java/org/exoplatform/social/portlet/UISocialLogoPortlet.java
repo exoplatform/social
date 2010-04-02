@@ -117,7 +117,7 @@ public class UISocialLogoPortlet extends UIPortletApplication
     */
    protected String getImageSource() throws Exception {
      Profile p = getProfile(true);
-     ProfileAttachment att = (ProfileAttachment) p.getProperty("avatar");
+     ProfileAttachment att = (ProfileAttachment) p.getProperty(Profile.AVATAR);
      if (att != null) {
        return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
                + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();

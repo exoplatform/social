@@ -22,30 +22,28 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.IdentityProvider;
-import org.exoplatform.social.core.identity.JCRStorage;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class OrganizationIdentityProvider.
  */
-public class OrganizationIdentityProvider extends IdentityProvider {
+public class OrganizationIdentityProvider extends IdentityProvider<User> {
   
-  /** The storage. */
-  private JCRStorage storage;
+
   
   /** The organization service. */
   private OrganizationService organizationService;
   
   /** The Constant NAME. */
   public final static String NAME = "organization";
+ 
   //TODO: dang.tung: maybe we don't need it but it will fix the problem from portal - get user
   /** The user cache. */
   private Map<String, User> userCache = new HashMap<String, User>();
@@ -56,90 +54,27 @@ public class OrganizationIdentityProvider extends IdentityProvider {
    * @param storage the storage
    * @param organizationService the organization service
    */
-  public OrganizationIdentityProvider(JCRStorage storage, OrganizationService organizationService) {
-    this.storage = storage;
-    
-    //PortalContainer container = PortalContainer.getInstance();
-    this.organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
+  public OrganizationIdentityProvider(OrganizationService organizationService) {
+    this.organizationService = organizationService;
   }
 
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.core.identity.IdentityProvider#getName()
-   */
+  @Override
   public String getName() {
     return NAME;
   }
 
 
 
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.core.identity.IdentityProvider#getIdentityByRemoteId(org.exoplatform.social.core.identity.model.Identity)
-   */
-  public Identity getIdentityByRemoteId(String remoteId) throws Exception {
-    //TODO: tung.dang need to review again.
-	User user = null;
-
-//    user = getUserFromCache(remote);
-    if(user == null) {
-      try {
-        UserHandler userHandler = organizationService.getUserHandler();
-        user = userHandler.findUserByName(remoteId);
-      } catch (Exception e) {
-        //e.printStackTrace();
-        return null;
-      }
-    }
-    if (user == null) {
-      return null;
-    }
-//    addUserToCache(user);
-    Identity identity = new Identity(NAME, remoteId);
-    populateUserProfile(user, identity);
-    
-    //TODO dang.tung need to save profile in database if node doesn't exist
-    //saveProfile(identity.getProfile());
-    return identity;
-  }
-
-  /**
-   * Load identity.
-   * 
-   * @param user the user
-   * @param identity the identity
-   * @return the identity
-   * @throws Exception the exception
-   */
-  private Identity populateUserProfile(User user, Identity identity) throws Exception {
-      Profile profile = identity.getProfile();
-      profile.setProperty("firstName", user.getFirstName());
-      profile.setProperty("lastName", user.getLastName());
-      profile.setProperty("username", user.getUserName());
-
-      if (user.getEmail() != null && !profile.contains("emails")) {
-        List<Map<String,String>> emails = new ArrayList<Map<String,String>>();
-        Map<String,String> email = new HashMap<String,String>();
-        email.put("key", "work");
-        email.put("value", user.getEmail());
-        emails.add(email);
-        profile.setProperty("emails", emails);
-      }
-      
-    return identity;
-  }
-
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.core.identity.IdentityProvider#saveProfile(org.exoplatform.social.core.identity.model.Profile)
-   */
-  public void saveProfile(Profile p) throws Exception {
-    this.storage.saveProfile(p); 
-  }
 
   /* (non-Javadoc)
    * @see org.exoplatform.social.core.identity.IdentityProvider#getAllUserId()
    */
-  public List<String> getAllUserId() throws Exception {
-    //TODO: dang tung - need to review again.
-    PageList pl = organizationService.getUserHandler().findUsers(new Query());
+  public List<String> getAllUserId() {
+    try {
+    PageList pl;
+   
+      pl = organizationService.getUserHandler().findUsers(new Query());
+
     List<User> userList = pl.getAll();
     List<String> userIds = new ArrayList<String>();
 
@@ -147,6 +82,9 @@ public class OrganizationIdentityProvider extends IdentityProvider {
       userIds.add(user.getUserName());
     }
     return userIds;
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to load all users");
+    }
   }
   
   /**
@@ -174,5 +112,37 @@ public class OrganizationIdentityProvider extends IdentityProvider {
    */
   private void refreshCache() {
     userCache.clear();
+  }
+
+  @Override
+  public User findByRemoteId(String remoteId) {
+    User user;
+    try {
+      UserHandler userHandler = organizationService.getUserHandler();
+      user = userHandler.findUserByName(remoteId);
+    } catch (Exception e) {
+      return null;
+    }
+    return user;
+  }
+
+  @Override
+  public Identity populateIdentity(User user) {
+    Identity identity = new Identity(NAME, user.getUserName());
+    Profile profile = identity.getProfile();
+    profile.setProperty("firstName", user.getFirstName());
+    profile.setProperty("lastName", user.getLastName());
+    profile.setProperty("username", user.getUserName());
+
+    if (user.getEmail() != null && !profile.contains("emails")) {
+      List<Map<String,String>> emails = new ArrayList<Map<String,String>>();
+      Map<String,String> email = new HashMap<String,String>();
+      email.put("key", "work");
+      email.put("value", user.getEmail());
+      emails.add(email);
+      profile.setProperty("emails", emails);
+    }
+    
+  return identity;
   }
 }   

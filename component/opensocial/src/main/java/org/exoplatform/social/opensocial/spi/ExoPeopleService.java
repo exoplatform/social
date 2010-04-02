@@ -182,8 +182,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }
       else if(Person.Field.NAME.toString().equals(field)) {
         NameImpl name = new NameImpl();
-        name.setFamilyName((String) pro.getProperty("lastName"));
-        name.setGivenName((String) pro.getProperty("firstName"));
+        name.setFamilyName((String) pro.getProperty(Profile.LAST_NAME));
+        name.setGivenName((String) pro.getProperty(Profile.FIRST_NAME));
         name.setFormatted(name.getGivenName() + " " + name.getFamilyName());
         p.setName(name);
       }

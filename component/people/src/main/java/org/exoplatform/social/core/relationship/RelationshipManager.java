@@ -64,6 +64,23 @@ public class RelationshipManager {
   public Relationship getById(String id) throws Exception {
     return this.storage.getRelationship(id);
   }
+  
+  /**
+   * Creates a connection invitation between 2 identities
+   * @param currIdentity inviter
+   * @param requestedIdentity invitee
+   * @return a PENDING relation
+   * @throws Exception
+   */
+  public Relationship invite(Identity currIdentity, Identity requestedIdentity) throws Exception {
+    Relationship rel = create(currIdentity, requestedIdentity);
+    rel.setStatus(Relationship.Type.PENDING);
+    save(rel);
+    lifeCycle.relationshipRequested(this, rel);
+    return rel;
+  }
+  
+  
 
   /**
    * mark a relationship as confirmed.
@@ -78,6 +95,11 @@ public class RelationshipManager {
     }
     save(relationship);
     lifeCycle.relationshipConfirmed(this, relationship);
+  }
+  
+  public void deny(Relationship relationship) throws Exception {
+    storage.removeRelationship(relationship);
+    lifeCycle.relationshipDenied(this, relationship);
   }
 
   /**
@@ -318,7 +340,7 @@ public class RelationshipManager {
    * @param rel the rel
    * @throws Exception the exception
    */
-  public void save(Relationship rel) throws Exception {
+  void save(Relationship rel) throws Exception {
     if (rel.getIdentity1().getId().equals(rel.getIdentity2().getId()))
       throw new Exception("the two identity are the same");
     for (Property prop : rel.getProperties()) {
@@ -405,6 +427,7 @@ public class RelationshipManager {
   public void addListenerPlugin(RelationshipListenerPlugin plugin) {
     registerListener(plugin);
   }
-  
+
+
   
 }

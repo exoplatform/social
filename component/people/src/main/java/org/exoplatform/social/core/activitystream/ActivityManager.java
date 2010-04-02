@@ -69,7 +69,7 @@ public class ActivityManager {
     storage.deleteActivity(activityId);
   }
   
-//TODO should also filter by appID
+
   /**
  * Gets the activities by identity
  * 
@@ -78,31 +78,32 @@ public class ActivityManager {
  * @throws Exception the exception
  */
 public List<Activity> getActivities(Identity identity) throws Exception {
-    return storage.getActivities(identity);
+    String id = identity.getId();
+    return storage.getActivities(id);
   }
 
   /**
    * Save activity based on user and his activity
    * 
-   * @param userId the user id
+   * @param identityId the identity Id such as obtained by {@link Identity#getId()}
    * @param activity the activity
    * @return the activity
    * @throws Exception the exception when error in storage
    */
-  public Activity saveActivity(String userId, Activity activity) throws Exception {
+  public Activity saveActivity(String identityId, Activity activity) throws Exception {
     //TODO: check the security
     //TODO: should publish the activity in a different thread to improve performance
-    if(userId == null)
+    if(identityId == null)
       return null;
       
     if (activity.getId() == null) {
       activity.setPostedTime(System.currentTimeMillis());
     }
     activity.setUpdated(System.currentTimeMillis());
-    activity.setUserId(userId);
+    activity.setUserId(identityId);
 
 
-    return storage.save(userId, activity);
+    return storage.save(identityId, activity);
   }
   
   /**
@@ -120,17 +121,17 @@ public List<Activity> getActivities(Identity identity) throws Exception {
   /**
    * Record activity based on userId, type, title, and his body
    * 
-   * @param userId the user id
+   * @param identityId the Id such as obtained by {@link Identity#getId()}
    * @param type the type
    * @param title the title
    * @param body the body
    * @return the activity
    * @throws Exception the exception
    */
-  public Activity recordActivity(String userId, String type, String title, String body) throws Exception {
-    Activity activity = new Activity(userId, type, title, body);
+  public Activity recordActivity(String identityId, String type, String title, String body) throws Exception {
+    Activity activity = new Activity(identityId, type, title, body);
 
-    return saveActivity(userId, activity);
+    return saveActivity(identityId, activity);
   }
   
 }

@@ -54,7 +54,7 @@ public class TestSpaceActivityPublisher extends  AbstractJCRTestCase {
     SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, "root", SpaceLifeCycleEvent.Type.SPACE_CREATED);
     publisher.spaceCreated(event);
     
-    Identity identity = identityManager.getIdentityById(SpaceIdentityProvider.NAME + ":" + spaceId);
+    Identity identity = identityManager.getIdentity(SpaceIdentityProvider.NAME + ":" + spaceId);
     List<Activity> activities = activityManager.getActivities(identity);
     assertTrue(activities.get(0).getBody().contains(space.getName()));
     assertTrue(activities.get(0).getBody().contains("root"));

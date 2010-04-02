@@ -16,20 +16,20 @@
  */
 package org.exoplatform.social.core.identity;
 
+import java.util.List;
+
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-
-import java.util.List;
 
 /**
  * An identity provider represent a service that can serve identity
  * it can be eXo CS contact manager or a CRM tool for example.
  */
-public abstract class IdentityProvider {
+public abstract class IdentityProvider<T> {
+
+  
 	protected IdentityManager identityManager;
-	
-	public abstract String getName();
-	
+
 	/**
 	 * The identifier can be the URL of the profile
 	 * or if it's a CS contact manager contact, it will be the UID of the contact
@@ -37,8 +37,36 @@ public abstract class IdentityProvider {
 	 *
 	 * @return null if nothing is found, or the Identity object
 	 */
-	public abstract Identity getIdentityByRemoteId(String remoteId) throws Exception;
+  public Identity getIdentityByRemoteId(String remoteId) {
+
+    T target = findByRemoteId(remoteId);
+
+    // target not found in provider
+    if (target == null) {
+      return null;
+    }
+    
+    Identity identity = populateIdentity(target);
+
+    return identity;
+  }
 	
+
+  public abstract String getName();
+  
+	public abstract T findByRemoteId(String remoteId);
+	
+	public abstract Identity populateIdentity(T user);
+	
+	/**
+	 * saves the profile associated to this identity.
+	 * Default implementation stores in internal profile storage.
+	 * @param p
+	 * @throws Exception
+	 */
+  public void saveProfile(Profile p) throws Exception {
+    identityManager.saveProfile(p);
+  }
 	
 	/**
 	 * this method is called after the IdentityManager has saved the
@@ -50,10 +78,10 @@ public abstract class IdentityProvider {
 	    return;
 	}
 
-  public abstract void saveProfile(Profile p) throws Exception;
 
-  public List<String> getAllUserId() throws Exception {
-    return null;
+
+  public List<String> getAllUserId(){
+    throw new RuntimeException("getAllUserId() is not implemented for " + getClass());
   }
 
   public void setIdentityManager(IdentityManager identityManager) {

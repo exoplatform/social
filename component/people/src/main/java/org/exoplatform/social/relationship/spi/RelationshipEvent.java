@@ -7,7 +7,7 @@ import org.exoplatform.social.lifecycle.LifeCycleEvent;
 public class RelationshipEvent extends LifeCycleEvent<RelationshipManager, Relationship> {
 
   public enum Type {
-    REMOVE, IGNORE, CONFIRM
+    REMOVE, IGNORE, CONFIRM, PENDING, DENIED
   }
 
   private Type type;
@@ -22,8 +22,8 @@ public class RelationshipEvent extends LifeCycleEvent<RelationshipManager, Relat
   }
 
   public String toString() {
-    return payload.getIdentity1().getDisplayName() + " " + type + " "
-        + payload.getIdentity1().getDisplayName();
+    return payload.getIdentity1().getProfile().getFullName() + " " + type + " "
+        + payload.getIdentity2().getProfile().getFullName();
   }
 
 }

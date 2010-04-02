@@ -23,7 +23,12 @@ public class RelationshipLifeCycle extends AbstractLifeCycle<RelationshipListene
     case IGNORE:
       listener.ignored(event);
       break;
- 
+    case PENDING:
+      listener.requested(event);
+      break; 
+    case DENIED:
+      listener.denied(event);
+      break;      
     default:
       break;
     }
@@ -42,4 +47,12 @@ public class RelationshipLifeCycle extends AbstractLifeCycle<RelationshipListene
     broadcast(new RelationshipEvent(Type.IGNORE, relationshipManager, relationship));
   }
 
+  public void relationshipRequested(RelationshipManager relationshipManager, Relationship relationship) {
+    broadcast(new RelationshipEvent(Type.PENDING, relationshipManager, relationship));
+  }
+
+  public void relationshipDenied(RelationshipManager relationshipManager, Relationship relationship) {
+    broadcast(new RelationshipEvent(Type.DENIED, relationshipManager, relationship));
+  }
+  
 }

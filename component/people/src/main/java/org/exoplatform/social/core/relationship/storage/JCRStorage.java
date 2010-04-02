@@ -165,11 +165,11 @@ public class JCRStorage {
     Relationship relationship = new Relationship(relationshipNode.getUUID());
 
     Node idNode = relationshipNode.getProperty(RELATION_IDENTITY1).getNode();
-    Identity id = identityManager.getIdentityById(idNode.getUUID());
+    Identity id = identityManager.getIdentity(idNode.getUUID());
     relationship.setIdentity1(id);
 
     idNode = relationshipNode.getProperty(RELATION_IDENTITY2).getNode();
-    id = identityManager.getIdentityById(idNode.getUUID());
+    id = identityManager.getIdentity(idNode.getUUID());
     relationship.setIdentity2(id);
 
     relationship.setStatus(Relationship.Type.valueOf(relationshipNode.getProperty(PROPERTY_STATUS).getString()));
@@ -270,11 +270,11 @@ public class JCRStorage {
             String sId = idNode.getUUID();
 
             if (!sId.equals(identity.getId()))
-                results.add(identityManager.getIdentityById(idNode.getUUID()));
+                results.add(identityManager.getIdentity(idNode.getUUID()));
             else {
 
                 idNode = relationshipNode.getProperty(RELATION_IDENTITY2).getNode();
-                results.add(identityManager.getIdentityById(idNode.getUUID()));
+                results.add(identityManager.getIdentity(idNode.getUUID()));
             }
 
         }
@@ -319,7 +319,7 @@ public class JCRStorage {
       if (node.hasProperty(PROPERTY_INITIATOR)) {
         Node idNode = node.getProperty(PROPERTY_INITIATOR).getNode();
           
-        Identity id = identityManager.getIdentityById(idNode.getUUID());
+        Identity id = identityManager.getIdentity(idNode.getUUID());
         property.setInitiator(id);
       }
 

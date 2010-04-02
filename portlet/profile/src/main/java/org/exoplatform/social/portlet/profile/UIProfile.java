@@ -127,7 +127,7 @@ public class UIProfile extends UIContainer {
    */
   public String getImageSource() throws Exception {
     Profile p = getProfile(true);
-    ProfileAttachment att = (ProfileAttachment) p.getProperty(Profile.AVATAR_PROPERTY);
+    ProfileAttachment att = (ProfileAttachment) p.getProperty(Profile.AVATAR);
     if (att != null) {
       return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
               + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
