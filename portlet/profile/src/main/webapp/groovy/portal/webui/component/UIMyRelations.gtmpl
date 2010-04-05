@@ -3,9 +3,10 @@
  	import org.exoplatform.webui.form.UIFormPageIterator;
  	import org.exoplatform.webui.core.UIVirtualList;
  	import org.exoplatform.social.core.identity.model.ProfileAttachment;
+ 	import org.exoplatform.social.core.identity.model.Profile;
  	import org.exoplatform.portal.application.PortalRequestContext;
  	import org.exoplatform.social.webui.UIProfileUserSearch;
- 
+  
   def isEditable = uicomponent.isEditable();
 	def myRelation = uicomponent.getMyRelation();
 	def currIdentity = uicomponent.getCurrentIdentity();
@@ -14,11 +15,24 @@
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def relationIdx = 0;
+  def isOwner = false;
+  if (currIdentity.getRemoteId().equals(uicomponent.getCurrentUserName())) {
+    isOwner = true;
+  }
 %>
 <div class="UIMyRelations" id="$uicomponent.id">
 	<div class="UITabPane">
 		<div class="ActivitiesTitleBarM">
-			<%=_ctx.appRes(uicomponent.getId() + ".label.MyRelationsList")%>
+		 <% if (isOwner) {%>
+		    <%=_ctx.appRes(uicomponent.id + ".label.MyRelationsList")%>
+		 <%} else {
+		    def userRelationList = _ctx.appRes(uicomponent.id + ".label.UserRelationList");
+		    userRelationList = userRelationList.replace("{0}", currIdentity.profile.getPropertyValue("firstName"));
+		 %>
+		  <%= userRelationList %>
+		 
+		 <%}%>
+			
 		</div>
 		<div class="ContainerSpace">
 			<% uicomponent.renderChild(UIProfileUserSearch.class); %>
@@ -58,7 +72,7 @@
 		      position = "";
 		      
 		    String imageSource = "/eXoResourcesSocial/skin/ShareImages/Avartar.gif";
-		    ProfileAttachment att = id.profile.getProperty("avatar");
+		    ProfileAttachment att = id.profile.getProperty(Profile.AVATAR);
     		if (att != null) {
 					try {
       			imageSource = "/" + uicomponent.getPortalName()+"/rest/jcr/" + uicomponent.getRepository() + "/" + att.getWorkspace();
