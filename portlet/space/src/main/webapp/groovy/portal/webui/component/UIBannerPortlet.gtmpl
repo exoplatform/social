@@ -26,6 +26,7 @@
 	String changeLanguageAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ChangeLanguage', true));" ;
 	String portletId = uicomponent.getId() ;
 	String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";	
+	String homeURI = Util.getPortalRequestContext().getPortalURI();
 %>
 <div id="$portletId" class="UIBannerPortlet UIApplication">
 	<div class="ApplicationMinWidth">

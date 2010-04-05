@@ -2,26 +2,32 @@
 	import org.exoplatform.portal.config.model.PageNavigation;
 	import org.exoplatform.portal.config.model.PageNode;
 	import org.exoplatform.web.application.JavascriptManager;
-	import org.exoplatform.portal.webui.util.Util;
+	import org.exoplatform.portal.webui.util.Util ;
 	import org.exoplatform.webui.organization.OrganizationUtils;
-		
-	def rcontext = _ctx.getRequestContext();
-	JavascriptManager jsmanager = rcontext.getJavascriptManager();
-	jsmanager.importJavascript('eXo.portal.UIPortalNavigation') ;
-	jsmanager.importJavascript('eXo.portal.UIAdminToolbar') ;
-	jsmanager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
 	
- 	def portalURI = Util.getPortalRequestContext().getPortalURI();
- 
- 	def spacesLink = portalURI + "spaces";
- 	
-	def spaceNavigations = uicomponent.getSpaceNavigations();
-	void renderSpacePageNavigation(PageNavigation navigation) {
+	def rcontext = _ctx.getRequestContext() ;
+	JavascriptManager jsmanager = rcontext.getJavascriptManager();
+	jsmanager.importJavascript('eXo.portal.UIPortalNavigation');
+	jsmanager.importJavascript('eXo.portal.UIAdminToolbar');
+	jsmanager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
+		
+	def groupNavigations = uicomponent.getGroupNavigations();
+	def portalURI = Util.getPortalRequestContext().getPortalURI();
+	void renderGroupPageNavigation(PageNavigation navigation) {
 			nodes = navigation.getNodes() ;
 			if(nodes.size() < 1) return ;
+			String navTitle = _ctx.appRes("UIPageNavigation.label.titleBar") ;
+			navTitle = navTitle.replace("{0}", OrganizationUtils.getGroupLabel(navigation.ownerId));
+			print """
+						<div class="TitleBar"><div style="width: 99%" title="$navigation.ownerId">$navTitle</div></div>
+						<div class="SubBlock">
+							""" ;
 							for(int i = 0; i < nodes.size(); i++) {
 								renderPageNode(nodes.get(i), i%2 == 0 ) ;
 							}
+							print """
+						</div>
+			""" ;		
 	}
 	
 	void renderPageNode(PageNode node, boolean flag) {
@@ -72,21 +78,18 @@
 			</div>
 		""" ;			
 	}	
-%> 
-
+%> 	
 <div class="UIUserToolBarGroupPortlet" id="$uicomponent.id" >
 	<div class="UIHorizontalTabs">
 		<div class="TabsContainer">	
 			<div class="UITab NormalToolbarTab">
 				<div class="">
-							<a class="SocialSpacesIcon TBIcon" href="<%= spacesLink %>">
-									<%=_ctx.appRes("UISpacesToolBarPortlet.label.Spaces")%>
-							</a>
+							<a class="GroupIcon TBIcon" href="<%= portalURI + "groupnavigation" %>"><%=_ctx.appRes("UISocialUserToolBarGroupPortlet.label.group")%></a>
 				</div>
-				<% if (!spaceNavigations.isEmpty()) { %>
+				<% if (!groupNavigations.isEmpty()) { %>
 				<div style="display:none" class="MenuItemContainer">
-				<% for(navigation in spaceNavigations) {
-						renderSpacePageNavigation(navigation);
+				<% for(navigation in groupNavigations) {
+						renderGroupPageNavigation(navigation);
 				} %>
 				</div>
 				<% } %>
@@ -94,4 +97,3 @@
 		</div>
 	</div>	
 </div>
-

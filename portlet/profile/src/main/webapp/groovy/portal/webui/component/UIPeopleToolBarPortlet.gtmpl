@@ -1,8 +1,54 @@
 <%
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.web.application.JavascriptManager;
+
+def rcontext = _ctx.getRequestContext() ;
+JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.portal.UIPortalNavigation') ;
+jsmanager.importJavascript('eXo.portal.UIAdminToolbar') ;
+jsmanager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
 
 def portalURI = Util.getPortalRequestContext().getPortalURI();
 def peopleLink = portalURI + "people";
+
+void renderRelationsLink() {
+    def remoteUser = Util.getPortalRequestContext().getRemoteUser();
+		def portalURI = Util.getPortalRequestContext().getPortalURI();
+		def labelRelations = _ctx.appRes("UIPeopleToolBarPortlet.label.Relations");
+		def relationsLink = portalURI + "relations/myRelations/" + remoteUser;
+		def navigations = uicomponent.getNavigations();
+
+ 		String clazz = "";
+ 		
+			print """
+						<div style="position: absolute; display:none" class="MenuItemContainer">
+							<div class="SubBlock">
+				""";
+				
+				if(navigations != null) {
+				 for(nav in navigations) {
+					 def pageNodes = nav.getNodes();
+				
+					 for(PageNode node in pageNodes) {
+	          if (node.getUri() == "relations") {
+							print """
+									<div class="MenuItem">
+										<div class="$clazz">						
+											<a href="$relationsLink" class="ToolBarRelationIcon">$labelRelations</a>
+										</div>
+									</div>
+								""";
+			       }
+					  }
+				  }
+				}  
+			print """
+						</div>
+					</div>
+				""";
+	}
 %>
 <div class="UIPeopleToolBarPortlet" id="$uicomponent.id">
     <div class="UIHorizontalTabs">
@@ -13,6 +59,7 @@ def peopleLink = portalURI + "people";
                                     <%=_ctx.appRes("UIPeopleToolBarPortlet.label.People")%>
                             </a>
                 </div>
+                <% renderRelationsLink() %>
             </div>
         </div>
     </div>

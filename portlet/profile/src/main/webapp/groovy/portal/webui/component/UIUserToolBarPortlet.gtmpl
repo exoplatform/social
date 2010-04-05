@@ -18,11 +18,9 @@ void renderLink() {
 		def portalURI = Util.getPortalRequestContext().getPortalURI();
 		def labelActivities = _ctx.appRes("UIUserToolBarPortlet.label.activities");
 		def labelProfile = _ctx.appRes("UIUserToolBarPortlet.label.profile");
-		def labelRelations = _ctx.appRes("UIUserToolBarPortlet.label.relations");
 		def remoteUser = Util.getPortalRequestContext().getRemoteUser();
 		def activitiesLink = portalURI + "activities";
 		def profileLink = portalURI + "profile/" + remoteUser;
-		def relationsLink = portalURI + "relations/yours/" + remoteUser;
 		def navigations = uicomponent.getNavigations();
 
  		String clazz = "";
@@ -50,14 +48,6 @@ void renderLink() {
 									<div class="MenuItem">
 										<div class="$clazz">						
 											<a href="$profileLink" class="ToolBarProfileIcon">$labelProfile</a>
-										</div>
-									</div>
-								""";
-			       } else if (node.getUri() == "relations") {
-			         print """
-									<div class="MenuItem">
-										<div class="$clazz">						
-											<a href="$relationsLink" class="ToolBarRelationIcon">$labelRelations</a>
 										</div>
 									</div>
 								""";

@@ -17,8 +17,12 @@
 package social.portal.webui.component.space;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.webui.navigation.PageNavigationUtils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
@@ -60,6 +64,34 @@ public class UISpaceToolBarPortlet extends UIPortletApplication {
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
   
+  
+  public List<PageNavigation> getSpaceNavigations() throws Exception
+  {
+     String remoteUser = Util.getPortalRequestContext().getRemoteUser();
+     List<PageNavigation> allNavigations = Util.getUIPortalApplication().getNavigations();
+     List<PageNavigation> navigations = new ArrayList<PageNavigation>();
+     SpaceService spaceSrv = getSpaceService();
+     List<Space> spaces = spaceSrv.getAllSpaces();
+     
+     for (Space space : spaces) 
+	  {
+	      for (PageNavigation navigation : allNavigations)
+	      {
+	         if (navigation.getOwnerId().equals(space.getGroupId()))
+	         {
+	        	 navigations.add(PageNavigationUtils.filter(navigation, remoteUser));
+	            break;
+	         }
+   	 }
+     }
+     
+     return navigations;
+  }
+  
+  public PageNode getSelectedPageNode() throws Exception
+  {
+     return Util.getUIPortal().getSelectedNode();
+  }
   /**
    * gets spaceService
    * @return spaceService

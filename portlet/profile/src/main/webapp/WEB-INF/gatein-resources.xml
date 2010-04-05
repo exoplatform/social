@@ -82,5 +82,12 @@
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UISocialLogoPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
+	
+	<portlet-skin>
+		<application-name>profile</application-name>
+		<portlet-name>myrelationnavigationportlet</portlet-name>
+		<skin-name>Default</skin-name>
+		<css-path>/skin/portal/webui/component/UIMyRelationNavigation/DefaultStylesheet.css</css-path>
+	</portlet-skin>
 </gatein-resources>
 

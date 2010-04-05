@@ -18,7 +18,7 @@
 -->
 <webui-configuration>
   <application>
-    <ui-component-root>org.exoplatform.social.portlet.profile.UIPeopleToolBarPortlet</ui-component-root>
+    <ui-component-root>social.portal.webui.component.space.UISocialUserToolBarGroupPortlet</ui-component-root>
     <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
     <application-lifecycle-listeners>       
       <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>       

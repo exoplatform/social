@@ -295,15 +295,6 @@
       <short-title>People Toolbar Portlet</short-title>
       <keywords>Profile</keywords>
     </portlet-info>    
-    
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>app:/groovy/portal/webui/component/UIPeopleToolBarPortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-    
   </portlet>
   
   <portlet>
@@ -331,4 +322,35 @@
       <keywords>Profile</keywords>
     </portlet-info>     
   </portlet>
+  
+  <portlet>
+   <description xml:lang="EN">My Relation Navigation Portlet</description>
+   <portlet-name>myrelationnavigationportlet</portlet-name>
+   <display-name xml:lang="EN">My Relation Navigation Portlet</display-name>
+   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   
+   <init-param>
+     <name>webui.configuration</name>
+     <value>/WEB-INF/conf/portlet/web/MyRelationNavigationPortlet/webui/configuration.xml</value>
+   </init-param>    
+
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+     <portlet-mode>help</portlet-mode>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.web.MyRelationNavigationPortlet</resource-bundle>
+   <portlet-info>
+     <title>My Navigation Portlet</title>
+     <short-title>My Relation Navigation Portlet</short-title>
+     <keywords>Profile</keywords>
+   </portlet-info>
+   
+   <security-role-ref>
+     <role-name>admin</role-name>
+     <role-link>admin</role-link>
+   </security-role-ref>
+ </portlet>
+ 
 </portlet-app>
