@@ -149,3 +149,7 @@
 	background: url('background/ToolbarContainer.gif') no-repeat left -64px; /* orientation=lt */
 	background: url('background/ToolbarContainer.gif') no-repeat right -64px; /* orientation=rt */
 }
+
+.UIToolbarContainer .UserToolBarPortletTDContainer {
+  float: right;
+}
