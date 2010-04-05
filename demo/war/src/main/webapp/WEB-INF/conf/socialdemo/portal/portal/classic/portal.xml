@@ -62,8 +62,8 @@
 	  
      <portlet-application>
        <portlet>
-         <application-ref>web</application-ref>
-         <portlet-ref>FooterPortlet</portlet-ref>
+         <application-ref>space</application-ref>
+         <portlet-ref>SpaceFooterPortlet</portlet-ref>
          <preferences>
            <preference>
              <name>template</name>

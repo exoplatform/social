@@ -59,6 +59,24 @@
     <name>relations</name>
     <label>#{portal.classic.relations}</label>
     <visibility>SYSTEM</visibility>
+    <node>
+	    <uri>relations/myRelations</uri>
+	    <name>myRelations</name>
+	    <label>#{portal.classic.yours}</label>
+	    <page-reference>portal::classic::myRelations</page-reference>
+    </node>
+    <node>
+	    <uri>relations/myInvitations</uri>
+	    <name>myInvitations</name>
+	    <label>#{portal.classic.invitations}</label>
+	    <page-reference>portal::classic::myInvitations</page-reference>
+    </node>
+    <node>
+	    <uri>relations/myRequests</uri>
+	    <name>myRequests</name>
+	    <label>#{portal.classic.requests}</label>
+	    <page-reference>portal::classic::myRequests</page-reference>
+    </node>
 	  <node>
 	    <uri>relations/yours</uri>
 	    <name>yours</name>
