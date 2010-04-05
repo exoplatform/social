@@ -32,10 +32,21 @@
   def isOwner = false;
   if (ownerId.equals(viewerId)) {
   	isOwner = true;
+  } else {
+    def jsManager = pcontext.getJavascriptManager();
+    jsManager.addOnLoadJavascript("hideUIRelationNavigation");
   }
 %>
+<% if (!isOwner) {%>
+  <script type="text/javascript">
+    function hideUIRelationNavigation() {
+      var tdProfileRelation = document.getElementById('UIContainer-ProfileRelation').parentNode;
+      tdProfileRelation.style.display='none';
+    }
+  </script>
+<%}%>
 <div class="UIRelationNavigationPortlet" id="$uicomponent.id">
-	<div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Relation")%></div>
+	<div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.My-Relations")%></div>
 	<div class="UIVerclTab">
 	  <% if (selectedNode == "yours")  {%>
 	  <div class="SelectedTab Tab">
