@@ -513,4 +513,37 @@
    </security-role-ref>
  	</portlet>
   
+  <portlet>
+    <description xml:lang="EN">Footer Portlet</description>
+    <portlet-name>SpaceFooterPortlet</portlet-name>
+    <display-name xml:lang="EN">Footer Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/GroovyPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.FooterPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Footer Portlet</title>
+      <short-title>Footer Portlet</short-title>
+      <keywords>space</keywords>
+    </portlet-info>     
+
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/portal/webui/component/UIFooterPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
 </portlet-app>

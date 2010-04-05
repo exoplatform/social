@@ -1,0 +1,11 @@
+<div class="UIFooterPortlet" id="$uicomponent.id">
+	<div class="LeftFooter">
+		<div class="RightFooter">
+			<div class="RepeatFooter">
+				<div class="FooterInfoContainer">
+					<div class="CopyrightInfo"><%=_ctx.appRes("UIFooterPortlet.label.copyrightText")%><%=_ctx.appRes("UIFooterPortlet.label.companyTitleText")%></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

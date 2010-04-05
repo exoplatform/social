@@ -17,7 +17,15 @@
 .UIBannerPortlet {
 	overflow: auto;
 }
+.UIBannerPortlet .LogoBlock {
+  display: block;
+  width: 120px;
+}
 
+.UIBannerPortlet .LogoBlock .RightBanner {
+  background: url('DefaultSkin/background/LogoSocial.gif') no-repeat left bottom;
+  width: 120px;
+}
 .UIBannerPortlet .LeftBanner {
   background: #b5b6b6;
   border-top: 1px solid #a8a8ab;
