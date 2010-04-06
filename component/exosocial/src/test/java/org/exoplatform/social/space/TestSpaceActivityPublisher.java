@@ -35,7 +35,7 @@ public class TestSpaceActivityPublisher extends  AbstractJCRTestCase {
 
     ActivityManager activityManager = super.getComponent(ActivityManager.class);
     
-    assertNotNull(activityManager, "Activitymanager not initialized. Check test configuration");
+    assertNotNull(activityManager, "ActivityManager not initialized. Check test configuration");
     IdentityManager identityManager =  super.getComponent(IdentityManager.class);
     
     SpaceServiceImpl spaceService = (SpaceServiceImpl)super.getComponent(SpaceService.class);
@@ -56,6 +56,7 @@ public class TestSpaceActivityPublisher extends  AbstractJCRTestCase {
     
     Identity identity = identityManager.getIdentity(SpaceIdentityProvider.NAME + ":" + spaceId);
     List<Activity> activities = activityManager.getActivities(identity);
+    assertEquals(1, activities.size());
     assertTrue(activities.get(0).getBody().contains(space.getName()));
     assertTrue(activities.get(0).getBody().contains("root"));
   }

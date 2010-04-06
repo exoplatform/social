@@ -40,10 +40,9 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String spaceId = space.getId();
     try {
+      // this should create the identity for the space
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceId, false);
-      
-
-      String creator = event.getTarget();
+       String creator = event.getTarget();
       activityManager.recordActivity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(),  space.getName() + " was created by " + creator + ".");
       LOG.info("space " + space.getName() + " was added for group " + space.getGroupId());
     } catch (Exception e) {
