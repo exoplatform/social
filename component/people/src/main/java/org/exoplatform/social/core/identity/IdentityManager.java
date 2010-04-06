@@ -247,8 +247,9 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public void saveProfile(Profile p) throws Exception {
-    IdentityProvider prov = getIdentityProvider(p.getIdentity().getProviderId());
-    prov.saveProfile(p);
+	  identityStorage.saveProfile(p);
+//    IdentityProvider prov = getIdentityProvider(p.getIdentity().getProviderId());
+//    prov.saveProfile(p);
   }
 
   /**
