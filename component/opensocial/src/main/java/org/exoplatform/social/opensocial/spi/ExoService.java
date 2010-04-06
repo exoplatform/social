@@ -24,25 +24,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.protocol.ProtocolException;
+import org.apache.shindig.protocol.model.FilterOperation;
+import org.apache.shindig.protocol.model.SortOrder;
+import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
-import org.exoplatform.container.definition.PortalContainerConfig;
 import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.JCRStorage;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
+import org.exoplatform.social.jcr.QuerySpec;
+import org.exoplatform.social.jcr.QuerySpec.Operation;
 
 import com.google.common.collect.Sets;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Created by IntelliJ IDEA.
  * User: jeremi
@@ -173,4 +171,47 @@ public class ExoService {
       
       return getIdentity(id, false);
     }
+    
+    
+    protected QuerySpec toQuerySpec(CollectionOptions options) {
+      QuerySpec query = new QuerySpec();
+      query.setFirst(options.getFirst());
+      query.setMax(options.getMax());
+      
+      
+      if (options.getFilter() != null) {  
+        Operation operation = toOperation(options.getFilterOperation());
+        if (operation != null) {
+        query.addCondition(options.getFilter(), operation, options.getFilterValue());
+        }
+      }
+
+      
+      if (options.getSortBy() != null) {
+        QuerySpec.SortOrder sortOrder = (options.getSortOrder() == SortOrder.ascending) ? QuerySpec.SortOrder.asc : QuerySpec.SortOrder.desc;
+        query.addSort(options.getSortBy(), sortOrder);
+      }
+      
+      
+
+      if (options.getUpdatedSince() != null) {
+        query.addCondition("updated", QuerySpec.Operation.greaterThan, ""+  options.getUpdatedSince().getTime());
+      }
+      
+      
+      return query;
+      
+    }
+    
+
+    private Operation toOperation(FilterOperation filterOperation) {
+      try {
+      Operation.valueOf(Operation.class, filterOperation.name());
+      }
+      catch (IllegalArgumentException iae) {
+        ;
+      }
+      return null;
+    }  
+
 }
