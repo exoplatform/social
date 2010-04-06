@@ -411,21 +411,22 @@ public class SpaceUtils {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    //TODO: should be removed and implement by each implementation.
     //current page not existed, broadcast to default home node
-    String portalOwner = Util.getPortalRequestContext().getPortalOwner();
-    PageNavigation portalNavigation = null;
-    for (PageNavigation pn: navs) {
-      if (pn.getOwnerId().equals(portalOwner)) {
-        portalNavigation = pn;
-        break;
-      }
-    }
-    List<PageNode> nodes = portalNavigation.getNodes();
-    PageNode selectedPageNode = nodes.get(0);
-    PortalRequestContext prContext = Util.getPortalRequestContext();
-    String redirect = prContext.getPortalURI() + selectedPageNode.getUri();
-    prContext.getResponse().sendRedirect(redirect);
-    prContext.setResponseComplete(true);
+//    String portalOwner = Util.getPortalRequestContext().getPortalOwner();
+//    PageNavigation portalNavigation = null;
+//    for (PageNavigation pn: navs) {
+//      if (pn.getOwnerId().equals(portalOwner)) {
+//        portalNavigation = pn;
+//        break;
+//      }
+//    }
+//    List<PageNode> nodes = portalNavigation.getNodes();
+//    PageNode selectedPageNode = nodes.get(0);
+//    PortalRequestContext prContext = Util.getPortalRequestContext();
+//    String redirect = prContext.getPortalURI() + selectedPageNode.getUri();
+//    prContext.getResponse().sendRedirect(redirect);
+//    prContext.setResponseComplete(true);
   }
   
   /**
@@ -461,9 +462,9 @@ public class SpaceUtils {
     }
     String groupId;
     //add new space navigation
+    boolean spaceContained = false;
     for (Space space: spaces) {
       groupId = space.getGroupId();
-      boolean spaceContained = false;
       for (PageNavigation nav: spaceNavs) {
         if (groupId.equals(nav.getOwnerId())) {
           spaceContained = true;
@@ -481,8 +482,8 @@ public class SpaceUtils {
         removeNavigation(nav);
       }
     } else {
+      boolean navContained = false;	
       for (PageNavigation nav: spaceNavs) {
-        boolean navContained = false;
         for (Space space: spaces) {
           groupId = space.getGroupId();
           if (groupId.equals(nav.getOwnerId())) {
