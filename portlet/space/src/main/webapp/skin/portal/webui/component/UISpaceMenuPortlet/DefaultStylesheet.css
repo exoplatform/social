@@ -196,6 +196,17 @@
   width: 5px;
   cursor: pointer;
   border-right: 1px solid gray;
+  vertical-align: middle;
+}
+
+.ToggleElement .CloseSpaceMenuPortlet {
+  background: url('DefaultSkin/background/CloseContent.gif') no-repeat center center;
+  width: 5px;
+}
+
+.ToggleElement .OpenSpaceMenuPortlet {
+  background: url('DefaultSkin/background/OpenContent.gif') no-repeat center center;
+  width: 5px;
 }
 
 
@@ -238,3 +249,5 @@
 	position:relative;
 	width: 117px;
 }
+
+

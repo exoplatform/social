@@ -18,7 +18,8 @@ UISpaceMenuPortlet.init = function() {
 	tdToggleElement.setAttribute('class', 'ToggleElement');
 	tdToggleElement.setAttribute('className', 'ToggleElement');
 	
-	eXo.social.Util.insertAfter(tdToggleElement, menuTdContainer);
+	Util.insertAfter(tdToggleElement, menuTdContainer);
+	tdToggleElement.innerHTML = '<div class="CloseSpaceMenuPortlet"><span>&nbsp;</span></div>';
 	
 	//set event handler
 	Util.addEventListener(tdToggleElement, 'click', function() {
@@ -26,10 +27,12 @@ UISpaceMenuPortlet.init = function() {
 			uiSpaceMenuPortlet.style.display='none';
 			menuTdContainer.style.width='0px';
 			shown = false;
+			tdToggleElement.innerHTML = '<div class="OpenSpaceMenuPortlet"><span>&nbsp;</span></div>';
 		} else { //show
 			uiSpaceMenuPortlet.style.display='block';
 			menuTdContainer.style.width='162px';
 			shown = true;
+			tdToggleElement.innerHTML = '<div class="CloseSpaceMenuPortlet"><span>&nbsp;</span></div>';
 		}
 	});
 	
