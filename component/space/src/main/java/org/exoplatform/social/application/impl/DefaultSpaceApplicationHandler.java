@@ -98,6 +98,8 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       String groupId = space.getGroupId();
       PageNavigation spaceNav = SpaceUtils.getGroupNavigation(groupId);
+      // return in case group navigation was removed by portal SOC-548
+      if (spaceNav == null) return;
       ArrayList<PageNode> spaceNodes = spaceNav.getNodes();
       for (PageNode spaceNode : spaceNodes) {
         String pageId = spaceNode.getPageReference();
@@ -234,6 +236,8 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       String groupId = space.getGroupId();
       PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+      // return in case group navigation was removed by portal SOC-548
+      if (nav == null) return;
       PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
       if (homeNode == null) {
         throw new Exception("homeNode is null!");

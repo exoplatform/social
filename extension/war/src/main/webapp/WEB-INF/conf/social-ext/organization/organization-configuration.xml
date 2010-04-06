@@ -368,5 +368,11 @@
       <type>org.exoplatform.services.organization.impl.MembershipUpdateListener</type>
     </component-plugin>
     
+    <component-plugin>
+      <name>SocialGroupEventListenerImpl</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.social.application.impl.SocialGroupEventListenerImpl</type>
+    </component-plugin>
+    
   </external-component-plugins>
 </configuration>
