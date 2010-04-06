@@ -36,12 +36,12 @@
 
      <portlet-application>
        <portlet>
-         <application-ref>web</application-ref>
-         <portlet-ref>FooterPortlet</portlet-ref>
+         <application-ref>space</application-ref>
+         <portlet-ref>SpaceFooterPortlet</portlet-ref>
          <preferences>
            <preference>
              <name>template</name>
-             <value>par:/groovy/groovy/webui/component/UIFooterPortlet.gtmpl</value>
+             <value>par:/groovy/portal/webui/component/UIFooterPortlet.gtmpl</value>
              <read-only>false</read-only>
            </preference>
          </preferences>
