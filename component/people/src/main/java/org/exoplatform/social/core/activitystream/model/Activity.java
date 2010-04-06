@@ -16,14 +16,14 @@
  */
 package org.exoplatform.social.core.activitystream.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Activity.
  */
-public class Activity {
+public class Activity  {
   
   /** The  Constant label comment. */
   static final public String IS_COMMENT = "IS_COMMENT";
@@ -31,17 +31,20 @@ public class Activity {
   /** The body. */
   private String body = null;
   
+  /** The body. */
+  private String bodyId = null;
+  
   /** The external id. */
   private String externalId = null;
   
   /** The id. */
   private String id = null;
   
-  /** The updated. */
-  private Long updated = null;
+  /** The updatedTimestamp. */
+  private Long updatedTimestamp = null;
   
   /** The media items. */
-  private List<MediaItem> mediaItems = null;
+  private List<org.apache.shindig.social.opensocial.model.MediaItem> mediaItems = null;
   
   /** The posted time. */
   private Long postedTime = null;
@@ -57,6 +60,9 @@ public class Activity {
   
   /** The title. */
   private String title = null;
+  
+  /** The title ID. */
+  private String titleId = null;
   
   /** The url. */
   private String url = null;
@@ -75,6 +81,8 @@ public class Activity {
   
   /** The like identity ids. */
   private String[] likeIdentityIds = null;
+
+  
   
   /**
    * Instantiates a new activity based on userId, type, title and his body.
@@ -154,21 +162,21 @@ public class Activity {
   }
 
   /**
-   * Gets the updated.
+   * Gets the updatedTimestamp.
    * 
-   * @return the updated
+   * @return the updatedTimestamp
    */
-  public Long getUpdated() {
-    return updated;
+  public Long getUpdatedTimestamp() {
+    return updatedTimestamp;
   }
 
   /**
-   * Sets the updated.
+   * Sets the updatedTimestamp.
    * 
-   * @param updated the new updated
+   * @param updatedTimestamp the new updatedTimestamp
    */
   public void setUpdated(Long updated) {
-    this.updated = updated;
+    this.updatedTimestamp = updated;
   }
 
   /**
@@ -177,7 +185,7 @@ public class Activity {
    * @return the media items
    * @see org.exoplatform.social.core.activitystream.model.MediaItem
    */
-  public List<MediaItem> getMediaItems() {
+  public List<org.apache.shindig.social.opensocial.model.MediaItem> getMediaItems() {
     return mediaItems;
   }
 
@@ -187,7 +195,7 @@ public class Activity {
    * @param mediaItems the new media items
    * @see org.exoplatform.social.core.activitystream.model.MediaItem
    */
-  public void setMediaItems(List<MediaItem> mediaItems) {
+  public void setMediaItems(List<org.apache.shindig.social.opensocial.model.MediaItem> mediaItems) {
     this.mediaItems = mediaItems;
   }
 
@@ -209,24 +217,53 @@ public class Activity {
     this.postedTime = postedTime;
   }
 
+
+  public Float getPriority() {
+    if (priority == null) {
+      return null;
+    }
+    return (priority>0) ? (priority/100F) : 0F;
+  }
+  
   /**
    * Gets the priority.
    * 
    * @return the priority
    */
-  public Integer getPriority() {
+  public Integer getIntPriority() {
     return priority;
   }
-
-    /**
-     * Sets the priority.
-     * 
-     * @param priority a number between 0 and 100
-     */
+  
+  /**
+   * Sets the priority.
+   * 
+   * @param priority a number between 0 and 100
+   */
   public void setPriority(Integer priority) {
+    if (priority == null)  {
+      this.priority = null;
+      return;
+    }
     if (priority < 0 || priority > 100)
-     throw new IllegalArgumentException("the priority should be between 0 and 100");
+      throw new IllegalArgumentException("the priority should be between 0 and 100");
     this.priority = priority;
+  }
+
+
+  /**
+   * should be between 0 and 1
+   */
+  public void setPriority(Float priority) {
+    if (priority == null) {
+      this.priority = null;
+      return;
+    }
+    if (priority > 0) {
+      setPriority(new Float(priority*100).intValue());
+    } else {
+      setPriority(0);
+    }
+    
   }
 
   /**
@@ -235,6 +272,9 @@ public class Activity {
    * @return the stream
    */
   public Stream getStream() {
+    if (stream == null) {
+      stream = new Stream();
+    }
     return stream;
   }
 
@@ -389,5 +429,79 @@ public class Activity {
    */
   public String[] getLikeIdentityIds() {
     return likeIdentityIds;
+  }
+
+  public String getBodyId() {
+    return bodyId;
+  }
+
+  public void setBodyId(String bodyId) {
+    this.bodyId = bodyId;
+  }
+
+  public String getTitleId() {
+    return titleId;
+  }
+
+  public void setTitleId(String titleId) {
+    this.titleId = titleId;
+  }
+
+  public String getStreamUrl() {
+    return getStream().getUrl();
+  }
+
+  public void setStreamUrl(String streamUrl) {
+    this.getStream().setUrl(streamUrl);
+  }
+
+  public String getStreamSourceUrl() {
+    return getStream().getSourceUrl();
+  }
+
+  public void setStreamSourceUrl(String streamSourceUrl) {
+    getStream().setSourceUrl(streamSourceUrl);
+  }
+
+  public String getStreamTitle() {
+    return getStream().getTitle();
+  }
+
+  public void setStreamTitle(String streamTitle) {
+    this.getStream().setTitle(streamTitle);
+  }
+
+  public String getStreamFaviconUrl() {
+    return getStream().getFaviconUrl();
+  }
+
+  public void setStreamFaviconUrl(String streamFaviconUrl) {
+    getStream().setFaviconUrl(streamFaviconUrl);
+  }
+
+
+  public Date getUpdated() {
+    return (updatedTimestamp!=null) ? new Date(updatedTimestamp) : null;
+  }
+
+  public void setUpdated(Date updated) {
+    if (updated != null) {
+      updatedTimestamp = updated.getTime();
+    } else {
+      updatedTimestamp = null;
+    }
+  }
+
+  public String getAppId() {
+    if (type != null && type.startsWith("opensocial:")) {
+      return type.substring("opensocial:".length());
+    }
+    return null;
+  }
+
+  public void setAppId(String appId) {
+    if (appId!=null && !appId.startsWith("opensocial:")) {
+      setType("opensocial:" + appId);
+    }
   }
 }

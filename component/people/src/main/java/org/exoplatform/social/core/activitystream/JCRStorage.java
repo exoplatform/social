@@ -24,6 +24,8 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.space.JCRSessionManager;
 import org.exoplatform.social.space.impl.SocialDataLocation;
@@ -31,12 +33,13 @@ import org.exoplatform.social.space.impl.SocialDataLocation;
 import com.google.common.collect.Lists;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JCRStorage represents storage for activity manager
  * @see org.exoplatform.social.core.activitystream.ActivityManager
  */
 public class JCRStorage {
+  
+  private static final Log LOG = ExoLogger.getLogger(JCRStorage.class);
   
   /** The Constant PUBLISHED_NODE. */
   final private static String PUBLISHED_NODE = "published".intern();
@@ -155,7 +158,7 @@ public class JCRStorage {
         return appNode;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.error("Failed to get published activity service location for " + username, e);
       return null;
     }
    
@@ -192,7 +195,7 @@ public class JCRStorage {
       if(activity.getTitle() != null)
         activityNode.setProperty(TITLE, activity.getTitle());
       if(activity.getUpdated() != null)
-        activityNode.setProperty(UPDATED, activity.getUpdated());
+        activityNode.setProperty(UPDATED, activity.getUpdatedTimestamp());
       if(activity.getUserId() != null)
         activityNode.setProperty(USER_ID, activity.getUserId());
       if(activity.getType() != null)
@@ -213,6 +216,7 @@ public class JCRStorage {
       } 
     } catch (Exception e) {
       // TODO: handle exception
+      LOG.error("Failed to save activity", e);
     } finally {
       sessionManager.closeSession();
     }
@@ -235,7 +239,7 @@ public class JCRStorage {
         session.save();
       }
     } catch(Exception ex) {
-      ex.printStackTrace();
+      LOG.error("Failed to delete activity", ex);
     } finally {
       sessionManager.closeSession();
     }

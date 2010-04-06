@@ -16,12 +16,12 @@
  */
 package org.exoplatform.social.core.activitystream.model;
 
-// TODO: Auto-generated Javadoc
+
 
 /**
  * The Class MediaItem represent MediaItem in opensocial.
  */
-public class MediaItem {
+public class MediaItem implements org.apache.shindig.social.opensocial.model.MediaItem {
   
   /** The mime type. */
   private String mimeType;
@@ -32,20 +32,8 @@ public class MediaItem {
   /** The url. */
   private String url;
 
-  /**
-   * The Enum Type.
-   */
-  public enum Type {
-    
-    /** The AUDIO. */
-    AUDIO,
-    
-    /** The IMAGE. */
-    IMAGE,
-    
-    /** The VIDEO. */
-    VIDEO
-  }
+  private String thumbnailUrl;
+  
 
   /**
    * Gets the mime type.
@@ -99,5 +87,13 @@ public class MediaItem {
    */
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  public String getThumbnailUrl() {
+    return thumbnailUrl;
+  }
+
+  public void setThumbnailUrl(String thumbnailUrl) {
+    this.thumbnailUrl = thumbnailUrl;
   }
 }

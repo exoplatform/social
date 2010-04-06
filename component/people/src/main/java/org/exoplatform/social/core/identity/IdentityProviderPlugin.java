@@ -13,14 +13,15 @@ import org.exoplatform.services.log.Log;
 public class IdentityProviderPlugin extends BaseComponentPlugin {
 
   List<IdentityProvider<?>> providers;
-  private static Log LOG = ExoLogger.getExoLogger(IdentityProviderPlugin.class);
+
+  private static Log        LOG = ExoLogger.getExoLogger(IdentityProviderPlugin.class);
 
   @SuppressWarnings("unchecked")
   public IdentityProviderPlugin(InitParams initParams) {
     providers = new ArrayList<IdentityProvider<?>>();
 
     ValuesParam values = initParams.getValuesParam("providers");
-    if (values==null) {
+    if (values == null) {
       LOG.warn("Missing expected <values-param>. : providers");
       return;
     }
@@ -29,25 +30,23 @@ public class IdentityProviderPlugin extends BaseComponentPlugin {
       try {
         Class t = Class.forName(className);
         if (IdentityProvider.class.isAssignableFrom(t)) {
-          
-         
-          IdentityProvider provider = (IdentityProvider) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(t);
-         if (provider != null) {
-           providers.add(provider);
-         } else {
-           LOG.warn("No component of type " + className + " found in ExoContainer");
-         }
-          
+          IdentityProvider provider = (IdentityProvider) ExoContainerContext.getCurrentContainer()
+                                                                            .getComponentInstanceOfType(t);
+          if (provider != null) {
+            providers.add(provider);
+          } else {
+            LOG.warn("No component of type " + className + " found in ExoContainer");
+          }
+
         } else {
           LOG.warn(className + " must be of type " + IdentityProvider.class);
-          
+
         }
       } catch (Exception e) {
         LOG.error("Failed to instanciate provider of type " + className, e);
       }
     }
   }
-
 
   public List<IdentityProvider<?>> getProviders() {
     return providers;

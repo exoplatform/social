@@ -8,7 +8,6 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.component.people</artifactId>
-  <version>1.0.0-Beta03-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social People Service</name>
   <description>eXo Social People Service</description>
@@ -59,7 +58,7 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>1.0.0-Beta03-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
