@@ -27,7 +27,6 @@ import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.space.impl.SocialDataLocation;
-import org.picketlink.idm.common.exception.IdentityConfigurationException;
 
 
 
@@ -39,7 +38,7 @@ public class IdentityManager {
   private static final Log LOG = ExoLogger.getExoLogger(IdentityManager.class);
 
   /** The identity providers. */
-  private Map<String, IdentityProvider> identityProviders = new HashMap<String, IdentityProvider>();
+  private Map<String, IdentityProvider<?>> identityProviders = new HashMap<String, IdentityProvider<?>>();
   
   /** The storage. */
   private JCRStorage identityStorage;
@@ -51,7 +50,7 @@ public class IdentityManager {
    * @param defaultIdentityProvider the builtin default identity provider to use when when no other  provider match
    * @throws Exception the exception
    */
-  public IdentityManager(SocialDataLocation dataLocation, IdentityProvider defaultIdentityProvider) throws Exception {
+  public IdentityManager(SocialDataLocation dataLocation, IdentityProvider<?> defaultIdentityProvider) throws Exception {
     this.identityStorage = new JCRStorage(dataLocation);
     this.addIdentityProvider(defaultIdentityProvider);
   }
@@ -63,9 +62,9 @@ public class IdentityManager {
    * @param plugin
    */
   public void registerIdentityProviders(IdentityProviderPlugin plugin) {
-    List<IdentityProvider> pluginProviders =  plugin.getProviders();
+    List<IdentityProvider<?>> pluginProviders =  plugin.getProviders();
     if (pluginProviders != null) {
-      for (IdentityProvider identityProvider : pluginProviders) {
+      for (IdentityProvider<?> identityProvider : pluginProviders) {
         this.addIdentityProvider(identityProvider);
       }
     }

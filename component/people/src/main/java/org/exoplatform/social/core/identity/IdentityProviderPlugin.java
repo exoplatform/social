@@ -12,12 +12,12 @@ import org.exoplatform.services.log.Log;
 
 public class IdentityProviderPlugin extends BaseComponentPlugin {
 
-  List<IdentityProvider> providers;
+  List<IdentityProvider<?>> providers;
   private static Log LOG = ExoLogger.getExoLogger(IdentityProviderPlugin.class);
 
   @SuppressWarnings("unchecked")
   public IdentityProviderPlugin(InitParams initParams) {
-    providers = new ArrayList<IdentityProvider>();
+    providers = new ArrayList<IdentityProvider<?>>();
 
     ValuesParam values = initParams.getValuesParam("providers");
     if (values==null) {
@@ -49,7 +49,7 @@ public class IdentityProviderPlugin extends BaseComponentPlugin {
   }
 
 
-  public List<IdentityProvider> getProviders() {
+  public List<IdentityProvider<?>> getProviders() {
     return providers;
   }
 
