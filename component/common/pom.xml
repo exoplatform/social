@@ -10,23 +10,32 @@
   <artifactId>exo.social.component.common</artifactId>
   <packaging>jar</packaging>
   <name>eXo Social common components</name>
-  <description></description>
-  <url>http://www.exoplatform.org</url>
-  <dependencies>
 
-  
+  <dependencies>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
       <version>${org.exoplatform.kernel.version}</version>
       <scope>provided</scope>
     </dependency>
-    
+ 	<dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+	  <scope>provided</scope>
+	</dependency>    
+     <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+     </dependency>   
+     <dependency>
+        <groupId>org.gatein.pc</groupId>
+   		<artifactId>pc-api</artifactId>
+     </dependency>
 	<dependency>
       <groupId>org.exoplatform.platform</groupId>
       <artifactId>exo.platform.commons.testing</artifactId>
 	  <scope>test</scope>
 	</dependency>    
-
   </dependencies>
 </project>
