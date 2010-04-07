@@ -23,31 +23,6 @@
     xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_0">  
 
   <page>
-    <name>homepage</name>
-    <title>Home Page</title>
-	  <access-permissions>Everyone</access-permissions>
-	  <edit-permission>*:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>space</application-ref>
-        <portlet-ref>SpaceHomePagePortlet</portlet-ref>
-        <preferences>
-          <preference>
-            <name>template</name>
-      			<value>par:/groovy/portal/webui/component/UIHomePagePortlet.gtmpl</value>
-      			<read-only>false</read-only>
-          </preference>
-        </preferences>
-      </portlet>
-      <title>Social Home Page</title>
-      <access-permissions>Everyone</access-permissions>
-      <show-info-bar>false</show-info-bar>
-      <show-application-state>false</show-application-state>
-      <show-application-mode>false</show-application-mode>
-    </portlet-application>
-  </page>
-
-  <page>
     <name>manageSpaces</name>
     <title>Manage Spaces</title>
     <access-permissions>*:/platform/users</access-permissions>
