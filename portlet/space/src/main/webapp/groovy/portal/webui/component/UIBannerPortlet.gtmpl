@@ -42,8 +42,8 @@
 		    </div>
 	    </a>
 		<%} else {%>
+		    <a href="$homeURI" class="LogoBlockLogin"><span></span> </a>
 				<div class="LeftBanner">
-	      <div class="RightBanner">
 	      <div class="MiddleBanner">
 				<div class="LeftLoginContainer">
 					<div class="RightLoginContainer">
@@ -61,7 +61,6 @@
 					<div style="clear:both"><span></span></div>
 				</div>
 				<% } %>
-				</div>
 	      </div>   
 	    </div>
 	  </div>

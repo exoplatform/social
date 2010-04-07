@@ -22,6 +22,15 @@
   width: 120px;
 }
 
+.UIBannerPortlet .LogoBlockLogin {
+  background: url('DefaultSkin/background/LogoSocial.gif') no-repeat left bottom;
+	display: block;
+	float: left;
+	height: 43px;
+	padding-left: 8px;
+	width:120px;
+}
+	
 .UIBannerPortlet .LogoBlock .RightBanner {
   background: url('DefaultSkin/background/LogoSocial.gif') no-repeat left bottom;
   width: 120px;
