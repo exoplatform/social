@@ -170,12 +170,17 @@ public class UISpaceApplication extends UIForm {
     List<PageNode> nodes = homeNode.getChildren();
     String installedApp = space.getApp();
     String[] appStatuses = installedApp.split(",");
+    String applicationName = application.getDisplayName();
+    String appNodeName;
     for (String appStatus : appStatuses) {
       if (appStatus.length() != 0) {
         String[] appParts = appStatus.split(":");
-        if (appParts[0].equals(application.getApplicationName()) && (appParts.length == 4)) {
+        if (appParts[0].equals(applicationName)) {
           for (PageNode node : nodes) {
-            if (node.getName().equals(appParts[1])) return node.getResolvedLabel();
+            //bug from portal, does not change nodeName => gets from uri instead
+            String nodeUri = node.getUri();
+            appNodeName = nodeUri.substring(nodeUri.indexOf("/") + 1);
+            if (appNodeName.equals(appParts[1])) return node.getResolvedLabel();
           }
         }
       }

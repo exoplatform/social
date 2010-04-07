@@ -441,7 +441,7 @@
    <portlet-info>
      <title>Spaces ToolBar Portlet</title>
      <short-title>SpacesToolBar</short-title>
-     <keywords>Space</keywords>
+     <keywords>space</keywords>
    </portlet-info>
    
    <security-role-ref>
@@ -504,7 +504,7 @@
    <portlet-info>
      <title>Social User ToolBar Group Portlet</title>
      <short-title>Social User ToolBar Group Portlet</short-title>
-     <keywords>Space</keywords>
+     <keywords>space</keywords>
    </portlet-info>
    
    <security-role-ref>
@@ -545,5 +545,31 @@
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Space Activity Stream Portlet</description>
+    <portlet-name>SpaceActivityStreamPortlet</portlet-name>
+    <display-name xml:lang="EN">Space Activity Stream Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/SpaceActivityPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.SpaceActivityPortlet</resource-bundle>
+    
+    <portlet-info>
+      <title>Space Activity Stream Portlet</title>
+      <short-title>Space Activity</short-title>
+      <keywords>space</keywords>
+    </portlet-info>
   </portlet>
 </portlet-app>

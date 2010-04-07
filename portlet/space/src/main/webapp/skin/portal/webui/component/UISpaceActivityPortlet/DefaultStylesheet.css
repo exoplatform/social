@@ -1,0 +1,554 @@
+
+/**
+ * style.css
+ * stylesheet for status update app
+ */
+ 
+ * {
+	margin: 0;
+	padding: 0;
+}
+
+a:link, a:hover, a:active, a:visited  {
+	text-decoration: none;
+	color: #058EE6;
+}
+
+
+.FloatLeft {
+	float: left;
+}
+
+.FloatRight {
+	float: right;
+}
+
+.ClearLeft {
+	clear: left;
+}
+
+.ClearRight {
+	clear: right;
+}
+
+.ClearBoth {
+	clear: both;
+}
+
+.DisplayNone {
+	display: none;
+}
+
+body {
+	font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+	font-size:11px;
+	margin:0px;
+	padding:0px;
+}
+
+img {border: none}
+
+.ActivitiesComponent {
+	/*height: 120%;*/
+}
+
+.ActivitiesComponent  .ActivitiesComponentBT {
+	/*background: url('images/ActivitiesComponentBT.gif') no-repeat right bottom ;*/
+	/*height: 700px;*/
+}
+
+.ActivitiesComponent .ActivitiesTitleBarR {
+	background: url('images/ActivitiesComponentBTR.gif') no-repeat right top;
+	padding-right: 5px;
+}
+
+
+.ActivitiesComponent .ActivitiesTitleBarM {
+	background: url('images/ActivitiesComponentBTM.gif') repeat-x;
+	height: 22px;
+	color: #7d7d7d;
+	line-height: 22px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.ActivitiesComponent .ActivitiesContainer{
+	border-right: 1px solid #d6d6d6;
+	border-left: 1px solid #d6d6d6;
+	padding: 5px 20px 10px;
+	border-bottom: 1px solid #d6d6d6;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponent {
+	background: #f0f0f0;
+	padding: 5px 15px 5px 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponent table {
+	table-layout: fixed;
+	border: 0px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusComponent table td {
+	vertical-align: top;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusAvatarBG {
+	background: url('images/MyStatusAvatarBG.gif') no-repeat left top;
+	width: 27px; height: 27px;
+	padding: 2px;
+	margin: 5px 0 5px 12px;
+	display: block;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInput {
+	padding: 0 0 10px;
+	width: 100%;
+}
+
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputL {
+	background: url('images/MyStatusInputL.gif') repeat-y left;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputML {
+	background: url('images/MyStatusInputML.gif') no-repeat left 2px;
+	padding-left: 8px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputR  {
+	border-right:1px solid #d7d7d7;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputM {
+	background: white;
+	min-height: 20px;
+	height: auto !important;
+	height: 20px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputTL {
+	background: url('images/MyStatusInputTL.gif') no-repeat left top;
+	padding-left: 8px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputTR  {
+	background: url('images/MyStatusInputTR.gif') no-repeat Right top;
+	padding-right: 2px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputTM {
+	background: white;
+	height: 1px;
+	border-top:1px solid #d7d7d7;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputBL {
+	background: url('images/MyStatusInputBL.gif') no-repeat left bottom;
+	padding-left: 8px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputBR {
+	background: url('images/MyStatusInputBR.gif') no-repeat right bottom;
+	padding-right: 2px;
+}
+
+.ActivitiesComponent .ActivitiesContainer .MyStatusInputBM {
+	background: white;
+	height: 1px;
+	border-bottom:1px solid #d7d7d7;
+}
+
+.UISpaceActivityPortlet .textarea {
+	height: 30px;
+	max-height:60px;
+	overflow-x:hidden;
+	overflow-y:auto;
+	font-size: 11px;
+	width: 99%;
+}
+
+.UISpaceActivityPortlet .IconAdd {
+	background: url('images/IconAdd.gif') no-repeat right center;
+	width: 30px;
+	height: 22px;
+  float: right;
+}
+
+.ExtensionInput {
+}
+
+.ExtensionInput .Label {
+	float: left;
+  font-size: 12px;
+}
+
+.ExtensionInput .AttachIcon {
+	float: left;
+	width: 16px;
+	height: 16px;
+	margin-left: 6px;
+	cursor: pointer;
+}
+
+.ExtensionInput .ImageAttach {
+	background: url('images/ImageAttach.gif') no-repeat left center;
+}
+
+.ExtensionInput .VideoAttach {
+	background: url('images/VideoAttach.gif') no-repeat left center;
+}
+
+.ExtensionInput .LinkAttach {
+	background: url('images/LinkAttach.gif') no-repeat left center;
+	cursor: pointer;
+}
+
+.ATitleBarL {
+	background: url('images/ATitleBarL.gif') no-repeat left top;
+	padding-left: 4px;
+	margin-top: 8px;
+}
+
+.ATitleBarR {
+	background: url('images/ATitleBarR.gif') no-repeat right top;
+	padding-right: 4px;
+}
+
+.ATitleBarM {
+	background: url('images/ATitleBarM.gif') repeat-x;
+	padding-left: 4px;
+}
+
+.ATitleBarC {
+	background: url('images/ATitleBarC.gif') no-repeat left top;
+	height:25px;
+	color: white;
+	margin-left: 8px;
+	line-height: 20px;
+	font-weight: bold;
+}
+
+.ADecoratorContainer .ActivitiesContent {
+	background: #fbfbfb;
+	padding: 8px 8px 13px;
+}
+
+.ADecoratorContainerGray .ActivitiesContent {
+	background: #f2f2f2;
+	padding: 8px 8px 13px;
+	margin: 2px 0px;
+}
+
+.ListPeopleLike {
+	background: url('images/ListPeopleLike.gif') no-repeat 50px top;
+	padding-top: 6px;
+}
+
+.ListPeopleContent {
+	border: 1px solid #e5e1e2;
+	border-top: none;
+	padding: 8px;
+}
+
+.ListPeopleLikeBG {
+	background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
+	margin-left: 50px;
+	margin-bottom: 3px;
+}
+
+.ListPeopleLikeBG .ListPeopleLike .Title a {
+	color: #006cc6;
+}
+
+.CommentBlock {
+	background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
+	margin-left: 50px;
+	margin-bottom: 3px;
+}
+
+.CommentContent {
+	background: url('images/ListPeopleLike.gif') no-repeat 40px top;
+	padding-top: 6px;
+}
+
+.CommentListInfo {
+  padding-top: 3px;
+}
+
+.CommentBorder {
+	border: 1px solid #e5e1e2;
+	border-top: none;
+	padding: 2px;
+	background: #EEEEFF;
+}
+
+.CommentActivitiesContent {
+  background: #EEEEFF;
+  padding: 8px 8px 0px;
+  margin: 2px 0px;
+}
+
+.CommentActivitiesContent .Content .NewsDate {
+  width: 550px;
+}
+
+.CommentActivitiesContent .Content .Content {
+  width: 550px;
+}
+
+.TitleContent {
+  font-color: #000000;
+}
+
+.NewsDate {
+  font-color: gray;
+}
+
+.CommentFormBlock {
+  background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
+  width: 685px;
+  margin-left: 50px;
+  margin-bottom: 3px;
+}
+
+.CommentTextarea {
+	font-family: arial,sans-serif;
+	font-size: 11px;
+  border: 1px solid #D7D7D7;
+  width: 100%;
+  height: 20px;
+  color: gray;
+}
+
+.CommentButton {
+  border: 1px solid gray;
+  float: right;
+  margin-top: 3px;
+  width: 80px;
+}
+
+
+.AvatarPeopleBG {
+	background: url('images/AvatarPeopleBG.gif') no-repeat left top;
+	width: 52px;
+	height: 52px;
+	padding: 6px 0px 0px 6px;
+	float: left;
+	margin: 8px;
+}
+
+
+.ActivitiesContainer .UserName {
+	font-weight: bold;
+	color:#424242;
+	line-height: 24px;
+	float: left;
+}
+
+.ActivitiesContainer .ActionContenButton {
+	height: 15px;
+	width: 15px;
+	margin: 4px 4px 0px 0px;
+	cursor: pointer;
+	background: url('images/BlackBorderDownArrow.gif') no-repeat right top;
+}
+
+.ActivitiesContainer .ActionDeleteButton {
+  height: 15px;
+  width: 15px;
+  margin: 4px 4px 0px 0px;
+  cursor: pointer;
+  background: url('images/CloseButtonNormal.gif') no-repeat right top;
+  padding: 2px 6px;
+}
+
+.ActivitiesContainer a.ActionDeleteButton:hover{
+  background: url('images/CloseButtonHover.gif') no-repeat right top;
+}
+
+.ActivitiesContainer .ActionContent {
+	float: right;
+  position: relative;
+  width: 20px;
+}
+
+.ActivitiesContainer .MenuItemContainer {
+	border:1px solid #9E9FA3;
+}
+
+.ActivitiesContainer .MenuItem {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:#F5F9FA none repeat scroll 0 0;
+	height:28px;
+	line-height:28px;
+	opacity:0.9;
+	width:100%;
+}
+
+.ActivitiesContainer .MenuItem a {
+	padding:0px 20px;
+  color: black;
+}
+
+.ActivitiesContainer .MenuItem a:hover {
+  color: #058ee6;
+}
+
+.ActivitiesContainer .MenuItem .DefaultPageIcon {
+	background-position: 10px center;
+}
+
+.ActivitiesContainer .Content {
+	color:#424242;
+	line-height: 18px;
+}
+
+.ActivitiesContainer .ContentArea {
+  color:#424242;
+  line-height: 18px;
+  overflow-x: hidden;
+  width: 640px;
+}
+
+.ActivitiesContainer .LinkShareContent {
+  color:#424242;
+  line-height: 18px;
+  margin-left: 80px;
+}
+
+.ActivitiesContainer .Content span {
+	margin: 0 5px;
+}
+
+.ActivitiesContainer .NewsDate{
+	color:#9e9e9e;
+	line-height: 16px;
+	font-size: 10px;
+}
+
+.ActivitiesContainer .Likes {
+	line-height: 16px;
+	font-size: 10px;
+}
+
+.ExtensionInput .AddLink {
+  font-size: 12px;
+}
+
+.ExtensionInput .AddLinkContent {
+	margin: 5px 0px;
+	background: white;
+	border: 1px solid #d7d7d7;
+}
+
+.ExtensionInput .AddLinkContent .InputLink {
+	width: 630px;
+  height: 24px;
+	float: left;
+	border: 1px solid white;
+}
+
+.ExtensionInput .AddLinkContent .IconAdd {
+	float: right;
+}
+
+.ExtensionInput .ActionAdd {
+	float: right;
+}
+
+.ExtensionInput .ActionAdd a {
+	color: #0b4da3;
+}
+
+.ExtensionInput .ThumbnailLeft {
+	width: 85px;
+	float: left;
+}
+
+.ExtensionInput .ThumbnailLeft .ThumbnailBG {
+  background: url('images/AvatarPeopleBG.gif') no-repeat left top;
+  width: 52px;
+  height: 52px;
+  padding: 6px 0px 0px 6px;
+  float: left;
+  margin: 0px;
+}
+
+.ExtensionInput .ThumbnailLeft .Thumbnail {
+  width: 47px;
+  height: 47px;
+}
+
+.ExtensionInput .ThumbnailLeft .ThumbnailAction {
+  width: 75px; 
+}
+
+.ExtensionInput .ThumbnailLeft .ThumbnailAction .BackIcon {
+	width: 9px; 
+	height: 16px;
+	float: left;
+	cursor: pointer;
+	background: url('images/BackIcon.gif') no-repeat left center;
+	margin-left:4px;
+}
+
+.ExtensionInput .ThumbnailLeft .ThumbnailAction .Stats {
+  float: left;
+  font-size: 8px;
+  margin-left: 9px;
+}
+
+.ExtensionInput .ThumbnailLeft .ThumbnailAction .NextIcon {
+	width: 9px; 
+	height: 16px;
+	float: right;
+	cursor: pointer;
+	background: url('images/NextIcon.gif') no-repeat right center;
+	margin-right: 25px;
+}
+
+.ExtensionInput .ThumbnailOption {
+  font-size: 9px;
+  height: 20px;
+  white-space: nowrap;
+}
+
+.ExtensionInput .ContentRight {
+}
+
+.ExtensionInput .ContentRight .Title {
+	color: #000000;
+	width: 550px;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.ExtensionInput .ContentRight .Content {
+	color: #000000;
+	font-size: 10px;
+	margin: 3px 0px;
+	width: 550px;
+}
+
+.ExtensionInput .ContentRight .Source {
+	color: #000000;
+	width: 550px;
+	font-size: 9px;
+}
+
+.ExtensionInput .ContentRight .Source a {
+	color: #999999;
+}
+
+.LinkShare .Thumbnail {
+  float: left;
+}
+
+.LinkShare .Content {
+  margin-left: 110px;
+}

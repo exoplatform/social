@@ -12,7 +12,7 @@
       <!-- Configure the applications to install in a space -->
       <values-param>
         <name>space.homeNodeApp</name>
-        <value>DashboardPortlet</value>
+        <value>SpaceActivityStreamPortlet</value>
       </values-param>
       <!-- Configure removable application or not <value>Application:removable</value> -->
       <values-param>
