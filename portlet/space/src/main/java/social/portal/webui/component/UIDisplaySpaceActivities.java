@@ -84,9 +84,10 @@ public class UIDisplaySpaceActivities extends UIContainer {
    * @throws Exception
    */
   public String getUserAvatarImageSource(String userIdentityId) throws Exception {
+	PortalContainer pc = PortalContainer.getInstance();  
     if (userProfileCached.containsKey(userIdentityId)) {
       Profile userProfile = userProfileCached.get(userIdentityId);
-      return userProfile.getAvatarImageSource();
+      return userProfile.getAvatarImageSource(pc);
     }
     Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
     if (userIdentity == null) {
@@ -94,7 +95,7 @@ public class UIDisplaySpaceActivities extends UIContainer {
     }
     Profile userProfile = userIdentity.getProfile();
     userProfileCached.put(userIdentityId, userProfile);
-    return userProfile.getAvatarImageSource();
+    return userProfile.getAvatarImageSource(pc);
   }
   /**
    * Gets user's full name by its userIdentityId
