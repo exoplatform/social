@@ -24,6 +24,7 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
     this.portalContainer = portalContainer;
   }
 
+  @Override
   protected Map<String, String> buildValuesMap() {
     Map<String, String> map = super.buildValuesMap();
     if (portalContainer != null) {
@@ -41,20 +42,21 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
                                           String token,
                                           String activeUrl) throws BlobCrypterException {
     Map<String, String> values = crypter.unwrap(token, MAX_TOKEN_LIFETIME_SECS);
-    BlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(crypter, container, domain);
-    setTokenValues(t, values);
+    ExoBlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(crypter, container, domain);
+    t.setOwnerId(values.get(OWNER_KEY));
+    t.setViewerId(values.get(VIEWER_KEY));
+    t.setAppUrl(values.get(GADGET_KEY));
+    String moduleId = values.get(GADGET_INSTANCE_KEY);
+    if (moduleId != null) {
+      t.setModuleId(Long.parseLong(moduleId));
+    }
+    t.setTrustedJson(values.get(TRUSTED_JSON_KEY));
+    t.setPortalContainer(values.get(PORTAL_CONTAINER_KEY));
     t.setActiveUrl(activeUrl);
     return t;
   }
+  
 
-  /**
-   * {@inheritDoc}
-   * @param token
-   * @param values
-   */
-  protected static void setTokenValues(ExoBlobCrypterSecurityToken token, Map<String, String> values) {
-    BlobCrypterSecurityToken.setTokenValues(token, values);
-    token.setPortalContainer(values.get(PORTAL_CONTAINER_KEY));
-  }
+  
 
 }

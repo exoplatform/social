@@ -19,6 +19,7 @@ package org.exoplatform.social.opensocial;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.SecurityTokenDecoder;
 import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
@@ -29,6 +30,7 @@ import org.apache.shindig.protocol.conversion.BeanJsonConverter;
 import org.apache.shindig.protocol.conversion.BeanXStreamConverter;
 import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
 import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
+import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.model.Person;
@@ -45,6 +47,7 @@ import org.exoplatform.social.opensocial.oauth.EXoOAuthDataStore;
 import org.exoplatform.social.opensocial.spi.ExoActivityService;
 import org.exoplatform.social.opensocial.spi.ExoPeopleService;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.ImplementedBy;
@@ -95,11 +98,11 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
     bind(SecurityTokenDecoder.class).annotatedWith(Names.named("exo.auth.decoder")).to(ExoSecurityTokenDecoder.class);
     //bind(UrlParameterAuthenticationHandler.class).annotatedWith(Names.named("exo.auth.handlers.url")).to(ExoUrlAuthenticationHandler.class);
     
-    bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(
-        ExoAuthenticationHandlerProvider.class);
-    
+    bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(ExoAuthenticationHandlerProvider.class);
+
     bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.social.handlers"))
-        .toInstance(getHandlers());
+    .toInstance(getHandlers());
+    
     
     bind(String.class).annotatedWith(Names.named("shindig.canonical.json.db"))
     .toInstance("sampledata/canonicaldb.json");
@@ -113,6 +116,8 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
     bind(OAuthDataStore.class).to(EXoOAuthDataStore.class);
     
   }
+  
+
 
   /**
    * Hook to provide a Set of request handlers.  Subclasses may override

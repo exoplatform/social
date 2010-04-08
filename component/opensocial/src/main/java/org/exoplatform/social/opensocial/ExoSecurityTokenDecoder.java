@@ -33,6 +33,7 @@ public class ExoSecurityTokenDecoder implements SecurityTokenDecoder {
     }
   }
 
+  
   public SecurityToken createToken(Map<String, String> tokenParameters) throws SecurityTokenException {
     return decoder.createToken(tokenParameters);
   }
