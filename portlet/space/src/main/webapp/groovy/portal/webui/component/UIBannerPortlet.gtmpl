@@ -31,18 +31,12 @@
 <div id="$portletId" class="UIBannerPortlet UIApplication">
 	<div class="ApplicationMinWidth">
 	  <div class="InlineContainer">
+	  <a href="$homeURI" class="LogoBlock"><span></span> </a>
+	  <div class="LeftBanner">
+	  <div class="MiddleBanner">
 	  <%if(prContext.getRemoteUser() != null) {%> 
-	    <a href="$homeURI" class="LogoBlock">
-		    <div class="LeftBanner">
-		      <div class="RightBanner">
-		        <div class="MiddleBanner">
-		        	<div class="BannerTitle"><span></span></div>
-		        </div>
-		      </div>
-		    </div>
-	    </a>
+	        	<div class="BannerTitle"><span></span></div>
 		<%} else {%>
-		    <a href="$homeURI" class="LogoBlockLogin"><span></span> </a>
 				<div class="LeftBanner">
 	      <div class="MiddleBanner">
 				<div class="LeftLoginContainer">
@@ -63,6 +57,8 @@
 				<% } %>
 	      </div>   
 	    </div>
+	   </div>
+		 </div>
 	  </div>
 	</div>
 </div>
