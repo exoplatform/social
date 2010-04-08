@@ -20,6 +20,10 @@
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.portlet.profile.Utils;
   import org.exoplatform.portal.application.PortalRequestContext;
+  def uicomponentId = uicomponent.id;
+  def labelRelationTitle = _ctx.appRes("${uicomponentId}.label.RelationTitle")
+  def labelInvitationTitle = _ctx.appRes("${uicomponentId}.label.InvitationTitle")
+  def labelRequestTitle = _ctx.appRes("${uicomponentId}.label.RequestTitle")
   def pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def currIdentity = Utils.getCurrentIdentity();
@@ -53,7 +57,7 @@
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${myfriendsURL}" title="Persons who are connected to" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
+        <a href="${myfriendsURL}" title="$labelRelationTitle" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
 	  </div>
   <%if (isOwner == true) {%>
 	  <% if (selectedNode == "invitations")  {%>
@@ -61,14 +65,14 @@
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${invitationsURL}" title="Persons who wanting to be connected to you" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
+        <a href="${invitationsURL}" title="$labelInvitationTitle" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
 	  </div>
 	  <% if (selectedNode == "requests")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">
 	  <%}%>
-        <a href="${requestsURL}" title="Persons you would like to connect to" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
+        <a href="${requestsURL}" title="$labelRequestTitle" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
 	  </div>
   <%}%> 
 	</div>
