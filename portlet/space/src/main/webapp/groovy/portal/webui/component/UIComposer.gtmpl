@@ -19,9 +19,6 @@
 
 -->
 */
-JavascriptManager jsmanager = rcontext.getJavascriptManager();
-jsmanager.importJavascript('eXo.social.space.UIComposer','/space/javascript');
-jsmanager.addCustomizedOnLoadScript('eXo.social.space.UIComposer.onLoad("' + uicomponentId.getUIFormTextAreaID() + '");');
 %>
   <div class="UIForm $uicomponent.id">
     <% uiform.begin() %>
