@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.space;
 
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -389,5 +392,32 @@ public class Space {
    */
   public SpaceAttachment getSpaceAttachment() {
     return spaceAttachment;
+  }
+  
+  /**
+   * Gets space's image source url if available or null
+   * @return
+   * @throws Exception
+   */
+  public String getImageSource() throws Exception {
+    SpaceAttachment spaceAttachment = getSpaceAttachment();
+    if (spaceAttachment != null) {
+      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
+      + spaceAttachment.getWorkspace() + spaceAttachment.getDataPath() + "/?rnd="
+      + System.currentTimeMillis();
+    }
+    return null;
+  }
+  
+  /**
+   * Gets current repository name
+   * 
+   * @return repository name
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName();
   }
 }

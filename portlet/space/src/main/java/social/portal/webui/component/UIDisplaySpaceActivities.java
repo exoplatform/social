@@ -16,28 +16,27 @@
  */
 package social.portal.webui.component;
 
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceIdentityProvider;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 
 /**
- * UIComposer.java
+ * UIDisplaySpaceActivities.java
  * <p>
- * Allows users to type messages and then postMessage is broadcasted to its
- * parent.
+ * Displays space activities and its member's activities
  * 
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since Apr 6, 2010
@@ -50,6 +49,8 @@ public class UIDisplaySpaceActivities extends UIContainer {
   private IdentityManager identityManager_;
 
   private ActivityManager activityManager_;
+  
+  private static Map<String, Profile> userProfileCached = new HashMap<String, Profile>();
 
   /**
    * Constructor
@@ -60,26 +61,87 @@ public class UIDisplaySpaceActivities extends UIContainer {
 
   }
 
+  /**
+   * Sets space to work with
+   * @param space
+   */
   public void setSpace(Space space) {
     space_ = space;
   }
 
+  /**
+   * Returns current space to work with
+   * @return
+   */
   public Space getSpace() {
     return space_;
   }
-
-  public String getImageSource() throws Exception {
-    SpaceAttachment spaceAttachment = space_.getSpaceAttachment();
-    if (spaceAttachment != null) {
-      return "/" + getRestContext() + "/jcr/" + getRepository() + "/"
-          + spaceAttachment.getWorkspace() + spaceAttachment.getDataPath() + "/?rnd="
-          + System.currentTimeMillis();
+  
+  /**
+   * Gets user's avatar image source by userIdentityId
+   * @param userIdentityId
+   * @return
+   * @throws Exception
+   */
+  public String getUserAvatarImageSource(String userIdentityId) throws Exception {
+    if (userProfileCached.containsKey(userIdentityId)) {
+      Profile userProfile = userProfileCached.get(userIdentityId);
+      return userProfile.getAvatarImageSource();
     }
-    return null;
+    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
+    if (userIdentity == null) {
+      return null;
+    }
+    Profile userProfile = userIdentity.getProfile();
+    userProfileCached.put(userIdentityId, userProfile);
+    return userProfile.getAvatarImageSource();
+  }
+  /**
+   * Gets user's full name by its userIdentityId
+   * @param userIdentityId
+   * @return
+   * @throws Exception
+   */
+  public String getUserFullName(String userIdentityId) throws Exception {
+    if (userProfileCached.containsKey(userIdentityId)) {
+      Profile userProfile = userProfileCached.get(userIdentityId);
+      return userProfile.getFullName();
+    }
+    identityManager_ = getIdentityManager();
+    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
+    if (userIdentity == null) {
+      return null;
+    }
+    Profile userProfile = userIdentity.getProfile();
+    userProfileCached.put(userIdentityId, userProfile);
+    return userProfile.getFullName();
+  }
+  
+  /**
+   * Gets user profile uri
+   * @param userIdentityId
+   * @return
+   * @throws Exception
+   */
+  public String getUserProfileUri(String userIdentityId) throws Exception {
+    if (userProfileCached.containsKey(userIdentityId)) {
+      //TODO hard-coded, as from ExoPeopleService
+      Profile userProfile = userProfileCached.get(userIdentityId);
+      Identity userIdentity = userProfile.getIdentity();
+      return "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + userIdentity.getRemoteId();
+    }
+    identityManager_ = getIdentityManager();
+    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
+    if (userIdentity == null) {
+      return null;
+    }
+    Profile userProfile = userIdentity.getProfile();
+    userProfileCached.put(userIdentityId, userProfile);
+    return "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + userIdentity.getRemoteId();
   }
 
-  /***
-   * gets prettyTime
+  /**
+   * Gets prettyTime by timestamp
    * @param timestamp
    * @return
    */
@@ -126,6 +188,11 @@ public class UIDisplaySpaceActivities extends UIContainer {
     }
   }
 
+  /**
+   * Gets space activity list
+   * @return
+   * @throws Exception
+   */
   public List<Activity> getActivityList() throws Exception {
     identityManager_ = getIdentityManager();
     Identity spaceIdentity = identityManager_.getOrCreateIdentity(SpaceIdentityProvider.NAME,
@@ -136,26 +203,19 @@ public class UIDisplaySpaceActivities extends UIContainer {
     return activityList;
   }
 
+  /**
+   * Gets identityManager
+   * @return
+   */
   private IdentityManager getIdentityManager() {
     return getApplicationComponent(IdentityManager.class);
   }
 
+  /**
+   * Gets activityManager
+   * @return
+   */
   private ActivityManager getActivityManager() {
     return getApplicationComponent(ActivityManager.class);
-  }
-
-  private String getRestContext() {
-    return PortalContainer.getCurrentRestContextName();
-  }
-
-  /**
-   * gets current repository name
-   * 
-   * @return repository name
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
   }
 }

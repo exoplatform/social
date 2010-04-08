@@ -20,6 +20,9 @@ package org.exoplatform.social.core.identity.model;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -151,6 +154,33 @@ public class Profile {
     String all = (first != null) ? first : "";
     all += (last != null) ? " " + last : "";
     return all;
+  }
+  
+  /**
+   * Gets user's avatar image source
+   * @return
+   * @throws Exception 
+   */
+  public String getAvatarImageSource() throws Exception {
+    ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
+    if (profileAttachment != null) {
+      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
+      + profileAttachment.getWorkspace() + profileAttachment.getDataPath() + "/?rnd="
+      + System.currentTimeMillis();
+    }
+    return null;
+  }
+  
+  /**
+   * Gets current repository name
+   * 
+   * @return repository name
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName();
   }
 
 }

@@ -19,6 +19,7 @@ package social.portal.webui.component.space;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceIdentityProvider;
@@ -82,6 +83,7 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
       if (message == null || message.length() == 0) {
         return;
       }
+      String member = event.getRequestContext().getRemoteUser();
       UISpaceActivityPortlet uiPortlet = uiComposer.getAncestorOfType(UISpaceActivityPortlet.class);
       
       Space space = uiPortlet.getSpace();
@@ -89,10 +91,10 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
       ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
       IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
-      
-      String member = event.getRequestContext().getRemoteUser();
-      message = member + " posted '" + message + "'";
-      activityManager.recordActivity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), message);
+      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, member);
+      Activity activity = new Activity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), message);
+      activity.setExternalId(userIdentity.getId());
+      activityManager.saveActivity(spaceIdentity.getId(), activity);
     }
     
   }

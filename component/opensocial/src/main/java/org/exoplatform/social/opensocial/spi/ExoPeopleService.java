@@ -159,8 +159,9 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @param identity the identity
    * @param fields the fields
    * @return the person
+   * @throws Exception 
    */
-  private Person convertToPerson(Identity identity, Set<String> fields) {
+  private Person convertToPerson(Identity identity, Set<String> fields) throws Exception {
     Person p = injector.getInstance(Person.class);
     Profile pro = identity.getProfile();
 
@@ -189,7 +190,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }
       else if(Person.Field.PROFILE_URL.toString().equals(field)) {
         //TODO use a url manager to manage this
-        p.setProfileUrl("/portal/private/classic/activities/" + identity.getRemoteId());
+        p.setProfileUrl("/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + identity.getRemoteId());
       }
       else if(Person.Field.GENDER.toString().equals(field)) {
         String gender = (String) pro.getProperty("gender");
@@ -217,15 +218,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         } catch (SpaceException e) {}
       }
       else if(Person.Field.THUMBNAIL_URL.toString().equals(field)) {
-        ProfileAttachment att = (ProfileAttachment) pro.getProperty("avatar");
-        String avatar = null;
-        if (att != null) {
-          try {
-            avatar = "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
-            + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-          } catch (Exception e) {}
-        }
-        p.setThumbnailUrl(avatar);
+        p.setThumbnailUrl(pro.getAvatarImageSource());
       }
     }
 

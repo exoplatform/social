@@ -1,15 +1,5 @@
 
-/**
- * style.css
- * stylesheet for status update app
- */
- 
- * {
-	margin: 0;
-	padding: 0;
-}
-
-a:link, a:hover, a:active, a:visited  {
+.UISpaceActivityPortlet a:link, a:hover, a:active, a:visited  {
 	text-decoration: none;
 	color: #058EE6;
 }
@@ -39,17 +29,7 @@ a:link, a:hover, a:active, a:visited  {
 	display: none;
 }
 
-body {
-	font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
-	font-size:11px;
-	margin:0px;
-	padding:0px;
-}
-
-img {border: none}
-
 .ActivitiesComponent {
-	/*height: 120%;*/
 }
 
 .ActivitiesComponent  .ActivitiesComponentBT {

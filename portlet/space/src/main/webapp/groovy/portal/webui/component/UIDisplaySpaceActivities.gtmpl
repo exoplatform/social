@@ -27,8 +27,8 @@
   
   def activityList = uicomponent.getActivityList();
   def activityListEmpty = true;
-  def imageSource = uicomponent.getImageSource();
   def space = uicomponent.getSpace();
+  def spaceImageSource = space.getImageSource();
   if (activityList.size() > 0) {
     activityListEmpty = false;
   }
@@ -52,32 +52,58 @@
     %>
     
      <%for (Activity activity: activityList) {
+       def avatarImageSource = null;
+       def userFullName = null;
+       def userProfileUri = null;
+       
        if (isGrayContainer) {
           containerClassname = "ADecoratorContainerGray";
+          isGrayContainer = false;
        } else {
          containerClassname = "ADecoratorContainer";
          isGrayContainer = true;
        }
-       
      %>
       
         <div class="$containerClassname">
           <div class="ActivitiesContent">
-            
-            <a class="AvatarPeopleBG" title="Root Root" target="_parent" href="$spaceUrl">
-              <% if (imageSource) {%>
-                <img width="47px" height="47px" title="$space.name" src="$imageSource" />
-              <%} else {%>
-                <img width="47px" height="47px" title="$space.name" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
-              <%}%>
-            </a>
+            <% if (activity.externalId) {
+              avatarImageSource = uicomponent.getUserAvatarImageSource(activity.externalId);
+              userFullName = uicomponent.getUserFullName(activity.externalId);
+              userProfileUri = uicomponent.getUserProfileUri(activity.externalId);
+            %>
+              <a class="AvatarPeopleBG" title="$userFullName" href="$userProfileUri">
+                <% if (avatarImageSource) {%>
+                  <img width="47px" height="47px" title="$userFullName" src="$avatarImageSource" />
+                <%} else {%>
+                  <img width="47px" height="47px" title="$userFullName" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif" />
+                <%}%>
+              </a>
+            <%} else {%>
+              <a class="AvatarPeopleBG" title="$space.name" href="$spaceUrl">
+                <% if (spaceImageSource) {%>
+                  <img width="47px" height="47px" title="$space.name" src="$spaceImageSource" />
+                <%} else {%>
+                  <img width="47px" height="47px" title="$space.name" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+                <%}%>
+              </a>
+            <%}%>
             <div class="Content">
               <div style="height: 24px;" class="TitleContent">
-                <div class="UserName">
-                  <a title="$space.name" href="$spaceUrl">
-                     ${space.name}
-                  </a>
-                </div>
+                <% if (activity.externalId) {%>
+                  <div class="UserName">
+                    <a title="$userFullName" href="$userProfileUri">
+                       $userFullName
+                    </a>
+                  </div>
+                <%} else {%>
+                  <div class="UserName">
+                    <a title="$space.name" href="$spaceUrl">
+                       ${space.name}
+                    </a>
+                  </div>
+                <%}%>
+
                 <div style="clear: both; height: 0px;">
                   <span></span>
                 </div>
