@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.shindig.auth.AuthenticationHandler;
+import org.apache.shindig.auth.SecurityTokenDecoder;
 import org.apache.shindig.common.servlet.ParameterFetcher;
 import org.apache.shindig.protocol.DataServiceServletFetcher;
 import org.apache.shindig.protocol.conversion.BeanConverter;
@@ -45,6 +46,7 @@ import org.exoplatform.social.opensocial.spi.ExoPeopleService;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
+import com.google.inject.ImplementedBy;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
@@ -88,6 +90,8 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
         BeanJsonConverter.class);
     bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
         BeanXStreamAtomConverter.class);
+    
+    bind(SecurityTokenDecoder.class).annotatedWith(ImplementedBy.class).to(ExoSecurityTokenDecoder.class);
     
     bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(
         AuthenticationHandlerProvider.class);
