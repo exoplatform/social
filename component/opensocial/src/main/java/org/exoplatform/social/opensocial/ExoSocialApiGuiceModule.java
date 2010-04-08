@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.SecurityTokenDecoder;
+import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
 import org.apache.shindig.protocol.DataServiceServletFetcher;
 import org.apache.shindig.protocol.conversion.BeanConverter;
@@ -91,10 +92,11 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
     bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
         BeanXStreamAtomConverter.class);
     
-    bind(SecurityTokenDecoder.class).annotatedWith(ImplementedBy.class).to(ExoSecurityTokenDecoder.class);
+    bind(SecurityTokenDecoder.class).annotatedWith(Names.named("exo.auth.decoder")).to(ExoSecurityTokenDecoder.class);
+    //bind(UrlParameterAuthenticationHandler.class).annotatedWith(Names.named("exo.auth.handlers.url")).to(ExoUrlAuthenticationHandler.class);
     
     bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(
-        AuthenticationHandlerProvider.class);
+        ExoAuthenticationHandlerProvider.class);
     
     bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.social.handlers"))
         .toInstance(getHandlers());
