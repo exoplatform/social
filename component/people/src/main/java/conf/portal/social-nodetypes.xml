@@ -252,6 +252,10 @@
                             onParentVersion="COPY" protected="false" multiple="false">
           <valueConstraints/>
         </propertyDefinition>
+        <propertyDefinition name="exo:bodyTemplate" requiredType="String" autoCreated="false" mandatory="false"
+                            onParentVersion="COPY" protected="false" multiple="false">
+          <valueConstraints/>
+        </propertyDefinition>        
         <propertyDefinition name="exo:externalId" requiredType="String" autoCreated="false" mandatory="false"
                             onParentVersion="COPY" protected="false" multiple="false">
           <valueConstraints/>
@@ -260,6 +264,10 @@
                             onParentVersion="COPY" protected="false" multiple="false">
           <valueConstraints/>
         </propertyDefinition>
+        <propertyDefinition name="exo:titleTemplate" requiredType="String" autoCreated="false" mandatory="false"
+                            onParentVersion="COPY" protected="false" multiple="false">
+          <valueConstraints/>
+        </propertyDefinition>        
         <propertyDefinition name="exo:updated" requiredType="Long" autoCreated="false" mandatory="true"
                             onParentVersion="COPY" protected="false" multiple="false">
           <valueConstraints/>
@@ -292,6 +300,10 @@
                             onParentVersion="COPY" protected="false" multiple="true">
           <valueConstraints/>
         </propertyDefinition>
+        <propertyDefinition name="exo:params" requiredType="String" autoCreated="false" mandatory="false"
+                            onParentVersion="COPY" protected="false" multiple="true">
+          <valueConstraints/>
+        </propertyDefinition>        
       </propertyDefinitions>
     </nodeType>
 

@@ -16,7 +16,10 @@
  */
 package org.exoplatform.social.core.activitystream;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -53,6 +56,9 @@ public class JCRStorage {
   /** The Constant BODY. */
   private static final String BODY =  "exo:body".intern();
   
+  /** The Constant BODY. */
+  private static final String BODY_TEMPLATE =  "exo:bodyTemplate".intern();
+  
   /** The Constant EXTERNAL_ID. */
   private static final String EXTERNAL_ID =  "exo:externalId".intern();
   
@@ -71,6 +77,9 @@ public class JCRStorage {
   /** The Constant TITLE. */
   private static final String TITLE =  "exo:title".intern();
   
+  /** The Constant TITLE_TEMPLATE. */
+  private static final String TITLE_TEMPLATE =  "exo:titleTemplate".intern();
+  
   /** The Constant URL. */
   private static final String URL =  "exo:url".intern();
   
@@ -85,6 +94,9 @@ public class JCRStorage {
   
   /** The Constant LIKE_IDENTITY_IDS. */
   private static final String LIKE_IDENTITY_IDS = "exo:like".intern();
+  
+  /** The Constant LIKE_IDENTITY_IDS. */
+  private static final String PARAMS = "exo:params";
   
   //new change
   /** The data location. */
@@ -206,7 +218,12 @@ public class JCRStorage {
       //if(activity.getLikeIdentitiesId() != null) {
         activityNode.setProperty(LIKE_IDENTITY_IDS, activity.getLikeIdentityIds());  
       //}
+        
+        
       activityNode.setProperty(HIDDEN, activity.isHidden());
+      activityNode.setProperty(TITLE_TEMPLATE, activity.getTitleId());
+      activityNode.setProperty(BODY_TEMPLATE, activity.getBodyId());
+      activityNode.setProperty(PARAMS, mapToArray(activity.getTemplateParams()));
       
       if (activity.getId() == null) {
         activityHomeNode.save();
@@ -223,6 +240,19 @@ public class JCRStorage {
     return activity;
   }
   
+  private String[] mapToArray(Map<String, String> templateParams) {
+    if (templateParams == null) {
+      return null;
+    }
+    Set<String> keys = templateParams.keySet();
+    String [] result = new String[keys.size()];
+    int i = 0;
+    for (String key : keys) {
+      result[i++] = key + "=" +templateParams.get(key);
+    }
+    return result;
+  }
+
   /**
    * delete activity by its id.
    * 
@@ -300,7 +330,34 @@ public class JCRStorage {
       activity.setUserId(n.getProperty(USER_ID).getString());
     if (n.hasProperty(LIKE_IDENTITY_IDS))
       activity.setLikeIdentityIds(ValuesToStrings(n.getProperty(LIKE_IDENTITY_IDS).getValues()));
+    if(n.hasProperty(PARAMS)) {
+      activity.setTemplateParams(valuesToMap(n.getProperty(PARAMS).getValues()));
+    }
+    if(n.hasProperty(TITLE_TEMPLATE)) {
+      activity.setTitleId(n.getProperty(TITLE_TEMPLATE).getString());
+    }
+    if(n.hasProperty(BODY_TEMPLATE)) {
+      activity.setBodyId(n.getProperty(BODY_TEMPLATE).getString());
+    }
     return activity;
+  }
+
+  private Map<String, String> valuesToMap(Value[] values) {
+    if (values == null) {
+      return null;
+    }
+    Map<String, String> result = new HashMap<String, String>();
+    for (Value value : values) {
+      try {
+        String val = value.getString();
+        if (val.indexOf("=") > 0) {
+          result.put(val.split("=")[0], val.split("=")[1]);
+        }
+      } catch (Exception e) {
+        ;// ignore
+      }
+    }
+    return result;
   }
 
   /**

@@ -115,6 +115,9 @@ public List<Activity> getActivities(Identity identity) throws Exception {
    */
   public Activity saveActivity(Activity activity) throws Exception {
     activity.setUpdated(System.currentTimeMillis());
+    if (activity.getId() == null) {
+      activity.setPostedTime(System.currentTimeMillis());
+    }
     return storage.save(activity.getUserId(), activity);
   }
 

@@ -30,7 +30,7 @@ public class Activity  {
   
   /** The body. */
   private String body = null;
-  
+
   /** The body. */
   private String bodyId = null;
   
@@ -60,8 +60,8 @@ public class Activity  {
   
   /** The title. */
   private String title = null;
-  
-  /** The title ID. */
+
+  /** The titleId. */
   private String titleId = null;
   
   /** The url. */

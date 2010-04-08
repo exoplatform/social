@@ -536,6 +536,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         ownerId = statusUpdate.owner.getId();
         title = activity.getField(opensocial.Activity.Field.TITLE);
         body = activity.getField(opensocial.Activity.Field.BODY);
+        if (body === null) body = '';
         var stripedBody = Util.stripHtml(StatusUpdate.allowedTags, body);
         if (stripedBody !== '') {
           body = stripedBody;
@@ -812,6 +813,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		
 			function setDisplay() {
 		  		var body = activity.getField(opensocial.Activity.Field.BODY);
+		  		if (body === null) body = '';
 		  		var jsonBody = body.replace(/&#34;/g, '"');
 		  		jsonBody = jsonBody.replace(/&#92;/g, "\\");
 		  		try {

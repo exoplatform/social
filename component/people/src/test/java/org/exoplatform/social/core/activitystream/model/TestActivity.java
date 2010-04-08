@@ -65,6 +65,14 @@ public class TestActivity extends TestCase {
     assertEquals(stream.getTitle(),activity.getStreamTitle());
     assertEquals(stream.getUrl(),activity.getStreamUrl());
     
+    
+    assertNull(activity.getTitle());
+    assertNull(activity.getTitleId());
+    activity.setTitle("foo bar");
+    assertEquals("foo bar", activity.getTitle());
+    activity.setTitleId("FOO_BAR");
+    assertEquals("FOO_BAR", activity.getTitleId());
+    
   }
   
 }

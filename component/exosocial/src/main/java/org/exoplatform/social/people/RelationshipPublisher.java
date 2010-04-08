@@ -1,9 +1,13 @@
 package org.exoplatform.social.people;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.ActivityManager;
+import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.Relationship;
@@ -39,8 +43,23 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       reloadIfNeeded(id2);
       String user1 = id1.getProfile().getFullName();
       String user2 = id2.getProfile().getFullName();
-      activityManager.recordActivity(id1.getId(), PeopleService.PEOPLE_APP_ID, "New Relation", user1 + " is now following " + user2);
-      activityManager.recordActivity(id2.getId(), PeopleService.PEOPLE_APP_ID, "New Relation", user2 + " is now following " + user1);
+      // RELATION_CONFIRMED=<a href="${Requester.ProfileUrl}">${Requester.DisplayName}</a> is now connected to <a href="${Accepter.ProfileUrl}">${Accepter.DisplayName}</a>.
+      // RELATION_CONFIRMED=${Requester} is now connected to ${Accepter}</a>.
+      Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user1 + " is now connected to " + user2, null);
+      activity.setTitleId("RELATION_CONFIRMED");
+      Map<String,String> params = new HashMap<String,String>();
+      params.put("Requester", user1);
+      params.put("Accepter", user2);
+      activity.setTemplateParams(params);
+      activityManager.saveActivity(activity);
+      
+      Activity activity2 = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user2 + " is now connected to " + user1, null);
+      activity.setTitleId("RELATION_CONFIRMED");
+      Map<String,String> params2 = new HashMap<String,String>();
+      params2.put("Requester", user2);
+      params2.put("Accepter", user1);
+      activity.setTemplateParams(params);
+      activityManager.saveActivity(activity2);      
       
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
