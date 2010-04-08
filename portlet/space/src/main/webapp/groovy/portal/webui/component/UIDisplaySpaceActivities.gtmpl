@@ -25,6 +25,10 @@
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.core.activitystream.model.Activity;
   
+  def uicomponentId = uicomponent.id
+  def labelActivityStreamOfSpace = _ctx.appRes("${uicomponentId}.label.Activity_Stream_Of_Space");
+  def labelEmptyActivityList = _ctx.appRes("${uicomponentId}.label.Empty_Activity_List");
+  
   def activityList = uicomponent.getActivityList();
   def activityListEmpty = true;
   def space = uicomponent.getSpace();
@@ -38,14 +42,21 @@
     <div class="ATitleBarL">
         <div class="ATitleBarR">
           <div class="ATitleBarM">
-            <div id="OwnerActivityTitle" class="ATitleBarC">Activities of space: ${space.getName()}</div>
+            <div id="OwnerActivityTitle" class="ATitleBarC">
+            <%
+              labelActivityStreamOfSpace = labelActivityStreamOfSpace.replace("{0}", space.getName());
+            %>
+            $labelActivityStreamOfSpace
+            </div>
           </div>
         </div>
     </div>
         
     <div id="UIOwnerAppendableRoot">
-    <% if (activityListEmpty) {%>
-        _ctx.appRes("${uicomponent.id}.Empty_Activity_List");
+    <% if (activityListEmpty) {
+      labelEmptyActivityList = labelEmptyActivityList.replace("{0}", space.getName());
+    %>
+        $labelEmptyActivityList
     <%} else { 
       def isGrayContainer = false;
       def containerClassname = "ADecoratorContainer";
@@ -72,7 +83,7 @@
               userFullName = uicomponent.getUserFullName(activity.externalId);
               userProfileUri = uicomponent.getUserProfileUri(activity.externalId);
             %>
-              <a class="AvatarPeopleBG" title="$userFullName" href="$userProfileUri">
+              <a class="AvatarPeopleBG link" title="$userFullName" href="$userProfileUri">
                 <% if (avatarImageSource) {%>
                   <img width="47px" height="47px" title="$userFullName" src="$avatarImageSource" />
                 <%} else {%>
@@ -80,7 +91,7 @@
                 <%}%>
               </a>
             <%} else {%>
-              <a class="AvatarPeopleBG" title="$space.name" href="$spaceUrl">
+              <a class="AvatarPeopleBG link" title="$space.name" href="$spaceUrl">
                 <% if (spaceImageSource) {%>
                   <img width="47px" height="47px" title="$space.name" src="$spaceImageSource" />
                 <%} else {%>
@@ -92,13 +103,13 @@
               <div style="height: 24px;" class="TitleContent">
                 <% if (activity.externalId) {%>
                   <div class="UserName">
-                    <a title="$userFullName" href="$userProfileUri">
+                    <a class="link" title="$userFullName" href="$userProfileUri">
                        $userFullName
                     </a>
                   </div>
                 <%} else {%>
                   <div class="UserName">
-                    <a title="$space.name" href="$spaceUrl">
+                    <a class="link" title="$space.name" href="$spaceUrl">
                        ${space.name}
                     </a>
                   </div>
@@ -120,8 +131,7 @@
             </div>
           </div>
         </div>
-        
-     <%}%>
-    <% }%>
+       <%}%>
+    <%}%>
     </div>
 </div>

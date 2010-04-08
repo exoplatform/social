@@ -1,10 +1,3 @@
-
-.UISpaceActivityPortlet a:link, a:hover, a:active, a:visited  {
-	text-decoration: none;
-	color: #058EE6;
-}
-
-
 .FloatLeft {
 	float: left;
 }
@@ -27,6 +20,10 @@
 
 .DisplayNone {
 	display: none;
+}
+
+.UISpaceActivityPortlet .link {
+    color: #058EE6;
 }
 
 .ActivitiesComponent {
@@ -59,23 +56,23 @@
 	border-bottom: 1px solid #d6d6d6;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusComponent {
+.MyStatusComponent {
 	background: #f0f0f0;
 	padding: 5px 15px 5px 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusComponent table {
+.MyStatusComponent table {
 	table-layout: fixed;
 	border: 0px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusComponent table td {
+.MyStatusComponent table td {
 	vertical-align: top;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusAvatarBG {
+.MyStatusAvatarBG {
 	background: url('images/MyStatusAvatarBG.gif') no-repeat left top;
 	width: 27px; height: 27px;
 	padding: 2px;
@@ -83,65 +80,65 @@
 	display: block;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInput {
+.MyStatusInput {
 	padding: 0 0 10px;
 	width: 100%;
 }
 
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputL {
+.MyStatusInputL {
 	background: url('images/MyStatusInputL.gif') repeat-y left;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputML {
-	background: url('images/MyStatusInputML.gif') no-repeat left 2px;
+.MyStatusInputML {
 	padding-left: 8px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputR  {
+.MyStatusInputR  {
 	border-right:1px solid #d7d7d7;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputM {
+.MyStatusInputM {
 	background: white;
 	min-height: 20px;
 	height: auto !important;
 	height: 20px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputTL {
+.MyStatusInputTL {
 	background: url('images/MyStatusInputTL.gif') no-repeat left top;
 	padding-left: 8px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputTR  {
+.MyStatusInputTR  {
 	background: url('images/MyStatusInputTR.gif') no-repeat Right top;
 	padding-right: 2px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputTM {
+.MyStatusInputTM {
 	background: white;
 	height: 1px;
 	border-top:1px solid #d7d7d7;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputBL {
+.MyStatusInputBL {
 	background: url('images/MyStatusInputBL.gif') no-repeat left bottom;
 	padding-left: 8px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputBR {
+.MyStatusInputBR {
 	background: url('images/MyStatusInputBR.gif') no-repeat right bottom;
 	padding-right: 2px;
 }
 
-.ActivitiesComponent .ActivitiesContainer .MyStatusInputBM {
+.MyStatusInputBM {
 	background: white;
 	height: 1px;
 	border-bottom:1px solid #d7d7d7;
 }
 
 .UISpaceActivityPortlet .textarea {
+	border: 0px;
 	height: 30px;
 	max-height:60px;
 	overflow-x:hidden;

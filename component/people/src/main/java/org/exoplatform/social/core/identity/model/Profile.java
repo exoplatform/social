@@ -164,7 +164,7 @@ public class Profile {
   public String getAvatarImageSource(PortalContainer portalContainer) throws Exception {
     ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
     if (profileAttachment != null) {
-      return "/" + portalContainer.getCurrentRestContextName() + "/jcr/" + getRepository(portalContainer) + "/"
+      return "/" + portalContainer.getRestContextName() + "/jcr/" + getRepository(portalContainer) + "/"
       + profileAttachment.getWorkspace() + profileAttachment.getDataPath() + "/?rnd="
       + System.currentTimeMillis();
     }

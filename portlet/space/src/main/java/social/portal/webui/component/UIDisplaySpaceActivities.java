@@ -18,9 +18,7 @@ package social.portal.webui.component;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
@@ -49,8 +47,6 @@ public class UIDisplaySpaceActivities extends UIContainer {
   private IdentityManager identityManager_;
 
   private ActivityManager activityManager_;
-  
-  private static Map<String, Profile> userProfileCached = new HashMap<String, Profile>();
 
   /**
    * Constructor
@@ -84,18 +80,12 @@ public class UIDisplaySpaceActivities extends UIContainer {
    * @throws Exception
    */
   public String getUserAvatarImageSource(String userIdentityId) throws Exception {
-	PortalContainer pc = PortalContainer.getInstance();  
-    if (userProfileCached.containsKey(userIdentityId)) {
-      Profile userProfile = userProfileCached.get(userIdentityId);
-      return userProfile.getAvatarImageSource(pc);
-    }
     Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
     if (userIdentity == null) {
       return null;
     }
     Profile userProfile = userIdentity.getProfile();
-    userProfileCached.put(userIdentityId, userProfile);
-    return userProfile.getAvatarImageSource(pc);
+    return userProfile.getAvatarImageSource(PortalContainer.getInstance());
   }
   /**
    * Gets user's full name by its userIdentityId
@@ -104,17 +94,12 @@ public class UIDisplaySpaceActivities extends UIContainer {
    * @throws Exception
    */
   public String getUserFullName(String userIdentityId) throws Exception {
-    if (userProfileCached.containsKey(userIdentityId)) {
-      Profile userProfile = userProfileCached.get(userIdentityId);
-      return userProfile.getFullName();
-    }
     identityManager_ = getIdentityManager();
     Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
     if (userIdentity == null) {
       return null;
     }
     Profile userProfile = userIdentity.getProfile();
-    userProfileCached.put(userIdentityId, userProfile);
     return userProfile.getFullName();
   }
   
@@ -125,19 +110,11 @@ public class UIDisplaySpaceActivities extends UIContainer {
    * @throws Exception
    */
   public String getUserProfileUri(String userIdentityId) throws Exception {
-    if (userProfileCached.containsKey(userIdentityId)) {
-      //TODO hard-coded, as from ExoPeopleService
-      Profile userProfile = userProfileCached.get(userIdentityId);
-      Identity userIdentity = userProfile.getIdentity();
-      return "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + userIdentity.getRemoteId();
-    }
     identityManager_ = getIdentityManager();
     Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
     if (userIdentity == null) {
       return null;
     }
-    Profile userProfile = userIdentity.getProfile();
-    userProfileCached.put(userIdentityId, userProfile);
     return "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + userIdentity.getRemoteId();
   }
 
@@ -200,6 +177,7 @@ public class UIDisplaySpaceActivities extends UIContainer {
                                                                   space_.getId());
     activityManager_ = getActivityManager();
     List<Activity> activityList = activityManager_.getActivities(spaceIdentity);
+    //TODO make sure: activities are in time order
     Collections.reverse(activityList);
     return activityList;
   }
