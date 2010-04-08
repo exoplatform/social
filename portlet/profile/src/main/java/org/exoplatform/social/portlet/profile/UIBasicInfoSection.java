@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.pom.config.Utils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.OrganizationService;
@@ -94,16 +95,14 @@ public class UIBasicInfoSection extends UIProfileSection {
     UIFormStringInput userName = new UIFormStringInput("userName", "userName", username);
     userName.setEditable(false);
     addUIFormInput(userName);
-    addUIFormInput(new UIFormStringInput(FIRST_NAME, FIRST_NAME, useraccount.getFirstName())
-                   .addValidator(MandatoryValidator.class)
-                   .addValidator(StringLengthValidator.class, 3, 30)
-                   .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
-    addUIFormInput(new UIFormStringInput(LAST_NAME, LAST_NAME, useraccount.getLastName())
-                   .addValidator(MandatoryValidator.class)
-                   .addValidator(StringLengthValidator.class, 3, 30)
-                   .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
-    addUIFormInput(new UIFormStringInput("email", "email", useraccount.getEmail()).addValidator(
-            MandatoryValidator.class).addValidator(EmailAddressValidator.class));
+    addUIFormInput(new UIFormStringInput("firstName", "firstName", useraccount.getFirstName()).addValidator(
+	    StringLengthValidator.class, 3, 45).addValidator(MandatoryValidator.class).addValidator(
+	    ExpressionValidator.class, Utils.FIRST_CHARACTER_NAME_VALIDATOR_REGEX, "FirstCharacterNameValidator.msg"));
+	addUIFormInput(new UIFormStringInput("lastName", "lastName", useraccount.getLastName()).addValidator(
+	    StringLengthValidator.class, 3, 45).addValidator(MandatoryValidator.class).addValidator(
+	    ExpressionValidator.class, Utils.FIRST_CHARACTER_NAME_VALIDATOR_REGEX, "FirstCharacterNameValidator.msg"));
+	addUIFormInput(new UIFormStringInput("email", "email", useraccount.getEmail()).addValidator(
+	    MandatoryValidator.class).addValidator(EmailAddressValidator.class));
   }
   
   public User getViewUser() throws Exception {
@@ -206,12 +205,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIHeaderSection.class));
       UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication().getChild(UIWorkingWorkspace.class);
       uiWorkingWS.updatePortletsByName("profile");
-      ConversationState state = ConversationState.getCurrent();
-      if (userName.equals(((User)state.getAttribute(CacheUserProfileFilter.USER_PROFILE)).getUserName()))
-      {
-         state.setAttribute(CacheUserProfileFilter.USER_PROFILE, user);
-         uiWorkingWS.updatePortletsByName("UserInfoPortlet");
-      }
+      uiWorkingWS.updatePortletsByName("UserToolBarPortlet");
     }
   }
 }
