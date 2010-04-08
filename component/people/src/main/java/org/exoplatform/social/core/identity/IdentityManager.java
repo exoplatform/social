@@ -23,9 +23,12 @@ import java.util.Map;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.lifecycle.ProfileLifeCycle;
+import org.exoplatform.social.core.identity.lifecycle.ProfileListenerPlugin;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.spi.ProfileListener;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
 
@@ -42,6 +45,11 @@ public class IdentityManager {
   
   /** The storage. */
   private JCRStorage identityStorage;
+  
+  /**
+   * lifecycle for profile
+   */
+  private ProfileLifeCycle profileLifeCycle = new ProfileLifeCycle();
 
   /**
    * Instantiates a new identity manager.
@@ -125,7 +133,6 @@ public class IdentityManager {
   public void addIdentityProvider(IdentityProvider<?> idProvider) {
     if (idProvider != null) {
       LOG.debug("Registering identity provider for " + idProvider.getName() + ": " + idProvider);
-      idProvider.setIdentityManager(this);
       identityProviders.put(idProvider.getName(), idProvider);
     }
   }
@@ -238,17 +245,30 @@ public class IdentityManager {
     identityStorage.saveIdentity(identity);
     getIdentityProvider(identity.getProviderId()).onSaveIdentity(identity);
   }
-
-  /**
-   * Save profile.
-   * 
-   * @param p the profile based on some identity.
-   * @throws Exception the exception
-   */
-  public void saveProfile(Profile p) throws Exception {
-	  identityStorage.saveProfile(p);
-//    IdentityProvider prov = getIdentityProvider(p.getIdentity().getProviderId());
-//    prov.saveProfile(p);
+  
+  public void updateAvatar(Profile p) throws Exception {
+    identityStorage.saveProfile(p);
+    profileLifeCycle.avatarUpdated(p.getIdentity().getRemoteId(), p);
+  }
+  
+  public void updateBasicInfo(Profile p) throws Exception {
+    identityStorage.saveProfile(p);
+    profileLifeCycle.basicUpdated(p.getIdentity().getRemoteId(), p);
+  }
+  
+  public void updateContactSection(Profile p) throws Exception {
+    identityStorage.saveProfile(p);
+    profileLifeCycle.contactUpdated(p.getIdentity().getRemoteId(), p);
+  }
+  
+  public void updateExperienceSection(Profile p) throws Exception {
+    identityStorage.saveProfile(p);
+    profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), p);
+  }
+  
+  public void updateHeaderSection(Profile p) throws Exception {
+    identityStorage.saveProfile(p);
+    profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), p);
   }
 
   /**
@@ -302,5 +322,32 @@ public class IdentityManager {
     }
     return provider;
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void registerProfileListener(ProfileListener listener) {
+    profileLifeCycle.addListener(listener);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void unregisterProfileListener(ProfileListener listener) {
+    profileLifeCycle.removeListener(listener);
+  }  
+  
+  /**
+   * Registers a profile listener component plugin
+   * @param plugin
+   */
+  public void addProfileListener(ProfileListenerPlugin plugin) {
+    registerProfileListener(plugin);
+  }
+
+  public JCRStorage getIdentityStorage() {
+    return identityStorage;
+  }  
+  
 
 }

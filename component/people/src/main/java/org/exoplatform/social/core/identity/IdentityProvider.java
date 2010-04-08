@@ -19,7 +19,6 @@ package org.exoplatform.social.core.identity;
 import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 
 /**
  * An identity provider represent a service that can serve identity
@@ -27,8 +26,6 @@ import org.exoplatform.social.core.identity.model.Profile;
  */
 public abstract class IdentityProvider<T> {
 
-  
-	protected IdentityManager identityManager;
 
 	/**
 	 * The identifier can be the URL of the profile
@@ -58,15 +55,7 @@ public abstract class IdentityProvider<T> {
 	
 	public abstract Identity populateIdentity(T user);
 	
-	/**
-	 * saves the profile associated to this identity.
-	 * Default implementation stores in internal profile storage.
-	 * @param p
-	 * @throws Exception
-	 */
-  public void saveProfile(Profile p) throws Exception {
-    identityManager.saveProfile(p);
-  }
+
 	
 	/**
 	 * this method is called after the IdentityManager has saved the
@@ -84,8 +73,6 @@ public abstract class IdentityProvider<T> {
     throw new RuntimeException("getAllUserId() is not implemented for " + getClass());
   }
 
-  public void setIdentityManager(IdentityManager identityManager) {
-    this.identityManager = identityManager;
-  }
+
 }
 

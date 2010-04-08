@@ -136,7 +136,7 @@ public class UIHeaderSection extends UIProfileSection {
       Profile p = uiHeaderSect.getProfile(true);
       p.setProperty(POSITION, position);
       
-      im.saveProfile(p);      
+      im.updateHeaderSection(p);      
     }
   }
   

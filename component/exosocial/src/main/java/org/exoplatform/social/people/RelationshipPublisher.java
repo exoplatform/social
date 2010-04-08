@@ -35,7 +35,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     try {
       Identity id1 = relationship.getIdentity1();
       reloadIfNeeded(id1);
-      Identity id2 = relationship.getIdentity1();
+      Identity id2 = relationship.getIdentity2();
       reloadIfNeeded(id2);
       String user1 = id1.getProfile().getFullName();
       String user2 = id2.getProfile().getFullName();
@@ -47,9 +47,9 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     }
   }
 
-  private void reloadIfNeeded(Identity id1) throws Exception {
-    if (id1.getId() == null || id1.getProfile().getFullName().length() == 0) {
-      id1 = identityManager.getIdentity(id1.getGlobalId().toString(), true);
+  private void reloadIfNeeded(Identity identity) throws Exception {
+    if (identity.getId() == null || identity.getProfile().getFullName().length() == 0) {
+      identity = identityManager.getIdentity(identity.getGlobalId().toString(), true);
     }
   }
 

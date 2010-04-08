@@ -22,7 +22,8 @@ import org.exoplatform.social.space.spi.SpaceLifeCycleEvent;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-@ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml")})
+@ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.exosocial.configuration.xml")})
 public class TestSpaceActivityPublisher extends  AbstractJCRTestCase {
 
   public TestSpaceActivityPublisher() {

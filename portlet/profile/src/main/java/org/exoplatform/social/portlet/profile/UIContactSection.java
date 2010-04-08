@@ -364,7 +364,7 @@ public class UIContactSection extends UIProfileSection {
     p.setProperty(URLS, urls);
     p.setProperty(GENDER, gender);
     
-    im.saveProfile(p);
+    im.updateContactSection(p);
   }
 
   /**

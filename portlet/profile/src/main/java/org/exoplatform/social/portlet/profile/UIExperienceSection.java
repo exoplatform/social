@@ -438,7 +438,7 @@ public class UIExperienceSection extends UIProfileSection {
     if (totalUIComponent == 0) {
       if (p != null) {
         p.setProperty(EXPERIENCE, experiences);
-        im.saveProfile(p);
+        im.updateExperienceSection(p);
       }
       
       return 0;
@@ -500,7 +500,7 @@ public class UIExperienceSection extends UIProfileSection {
       
     p.setProperty(EXPERIENCE, experiences);
     
-    im.saveProfile(p);
+    im.updateExperienceSection(p);
     
     return 0;
   }

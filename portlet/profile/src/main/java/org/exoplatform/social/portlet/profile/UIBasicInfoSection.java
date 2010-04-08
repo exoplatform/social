@@ -194,7 +194,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       p.setProperty(Profile.FIRST_NAME, uiForm.getUIStringInput("firstName").getValue());
       p.setProperty(Profile.LAST_NAME, uiForm.getUIStringInput("lastName").getValue());
       p.setProperty(Profile.USERNAME, newEmail); 
-      im.saveProfile(p);
+      im.updateBasicInfo(p);
       
       user.setFirstName(uiForm.getUIStringInput("firstName").getValue());
       user.setLastName(uiForm.getUIStringInput("lastName").getValue());

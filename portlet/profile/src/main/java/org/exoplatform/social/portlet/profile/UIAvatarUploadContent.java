@@ -136,7 +136,7 @@ public class UIAvatarUploadContent extends UIContainer {
       UIProfile uiProfile = uiAvatarUploadContent.getAncestorOfType(UIProfile.class);
       Profile p = uiProfile.getProfile(true);
       p.setProperty(Profile.AVATAR, uiAvatarUploadContent.getProfileAttachment());
-      im.saveProfile(p);
+      im.updateAvatar(p);
       UIPopupWindow uiPopup = uiAvatarUploadContent.getParent();
       uiPopup.setShow(false);
       updateWorkingWorkSpace();
