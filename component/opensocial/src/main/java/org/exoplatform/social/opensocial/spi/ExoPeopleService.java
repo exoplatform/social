@@ -52,6 +52,7 @@ import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
+import org.exoplatform.social.opensocial.ExoBlobCrypterSecurityToken;
 import org.exoplatform.social.opensocial.model.impl.ExoPersonImpl;
 import org.exoplatform.social.opensocial.model.impl.SpaceImpl;
 import org.exoplatform.social.space.Space;
@@ -106,7 +107,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
             Identity id = it.next();
 
             if(id != null) {
-              result.add(convertToPerson(id, fields));
+              result.add(convertToPerson(id, fields, token));
             }
         }
 
@@ -145,9 +146,10 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     	if(token instanceof AnonymousSecurityToken) {
     		throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
     	}
-        Identity identity = getIdentity(id.getUserId(token), true);
+    	
+        Identity identity = getIdentity(id.getUserId(token), true, token);
 
-        return ImmediateFuture.newInstance(convertToPerson(identity, fields));
+        return ImmediateFuture.newInstance(convertToPerson(identity, fields, token));
     } catch (Exception e) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
       }
@@ -161,10 +163,11 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @return the person
    * @throws Exception 
    */
-  private Person convertToPerson(Identity identity, Set<String> fields) throws Exception {
+  private Person convertToPerson(Identity identity, Set<String> fields, SecurityToken st) throws Exception {
     Person p = injector.getInstance(Person.class);
     Profile pro = identity.getProfile();
-
+    PortalContainer container = getPortalContainer(st);
+    String portalName = container.getCurrentPortalContainerName();
     for (String field : fields) {
       if(Person.Field.DISPLAY_NAME.toString().equals(field)) {
         p.setDisplayName(pro.getFullName());  
@@ -190,7 +193,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }
       else if(Person.Field.PROFILE_URL.toString().equals(field)) {
         //TODO use a url manager to manage this
-        p.setProfileUrl("/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + identity.getRemoteId());
+        p.setProfileUrl("/"+ getPortalContainer(st) +"/private/classic/activities/" + identity.getRemoteId());
       }
       else if(Person.Field.GENDER.toString().equals(field)) {
         String gender = (String) pro.getProperty("gender");
@@ -202,7 +205,6 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       else if(ExoPersonImpl.Field.SPACES.toString().equals(field)) {
         List<org.exoplatform.social.opensocial.model.Space> spaces = new ArrayList<org.exoplatform.social.opensocial.model.Space>();
         //TODO: dang.tung: improve space to person, it will auto convert field by shindig
-        PortalContainer container = PortalContainer.getInstance();
         SpaceService spaceService = (SpaceService)(container.getComponentInstanceOfType(SpaceService.class));
         try {
           List<Space> allSpaces = spaceService.getAllSpaces();
@@ -218,7 +220,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         } catch (SpaceException e) {}
       }
       else if(Person.Field.THUMBNAIL_URL.toString().equals(field)) {
-        p.setThumbnailUrl(pro.getAvatarImageSource());
+        p.setThumbnailUrl(pro.getAvatarImageSource(container));
       }
     }
 
@@ -231,8 +233,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * 
    * @return the rest context
    */
-	private String getRestContext() {
-	  return PortalContainer.getInstance().getRestContextName();
+	private String getRestContext(SecurityToken st) {
+	  return getPortalContainer(st).getRestContextName();
 	}
 
   /**
@@ -360,8 +362,13 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   		throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));  
   	  }	
       String userId = user.getUserId(token);
-
-      Identity id = getIdentity(userId, true);
+      
+      String portalName = PortalContainer.getCurrentPortalContainerName();
+	  if(token instanceof ExoBlobCrypterSecurityToken) {
+  		portalName = ((ExoBlobCrypterSecurityToken)token).getPortalContainer();
+	  }
+      
+      Identity id = getIdentity(userId, true, token);
       String gadgetId = clean(appId);
       String instanceId = "" + token.getModuleId();
 
@@ -382,8 +389,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 		  throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN)); 
       }	
       String userId = user.getUserId(token);
-
-      Identity id = getIdentity(userId, true);
+      
+      Identity id = getIdentity(userId, true, token);
       String gadgetId = clean(appId);
       String instanceId = "" + token.getModuleId();
 
@@ -395,23 +402,13 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   }
   
   /**
-   * Gets the portal name.
-   * 
-   * @return the portal name
-   */
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();  
-  }
-  
-  /**
    * Gets the repository.
    * 
    * @return the repository
    * @throws Exception the exception
    */
-  private String getRepository() throws Exception {
-    PortalContainer pContainer = PortalContainer.getInstance();
+  private String getRepository(SecurityToken st) throws Exception {
+    PortalContainer pContainer = getPortalContainer(st);
     RepositoryService rService = (RepositoryService) pContainer.getComponentInstanceOfType(RepositoryService.class);
     return rService.getCurrentRepository().getConfiguration().getName() ;
   }

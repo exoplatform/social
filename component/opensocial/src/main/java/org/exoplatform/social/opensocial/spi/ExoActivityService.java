@@ -36,9 +36,11 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.opensocial.ExoBlobCrypterSecurityToken;
 
 import com.google.common.collect.Lists;
 
@@ -69,8 +71,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                                            CollectionOptions options,
                                                            SecurityToken token) throws SocialSpiException {
     List<Activity> result = Lists.newArrayList();
-
-    PortalContainer pc = PortalContainer.getInstance();
+    
+    PortalContainer pc = getPortalContainer(token);
     ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
 
     try {
@@ -116,11 +118,12 @@ public class ExoActivityService extends ExoService implements ActivityService {
       if (token instanceof AnonymousSecurityToken) {
         throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
       }
-      String user = userId.getUserId(token);
-      Identity id = getIdentity(user);
-
-      PortalContainer pc = PortalContainer.getInstance();
+      
+      PortalContainer pc = getPortalContainer(token);
       ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
+      
+      String user = userId.getUserId(token);
+      Identity id = getIdentity(user, token);
 
       List<org.exoplatform.social.core.activitystream.model.Activity> exoActivities = am.getActivities(id);
 
@@ -199,8 +202,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
       if (token instanceof AnonymousSecurityToken) {
         throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
       }
-
-      PortalContainer pc = PortalContainer.getInstance();
+      
+      PortalContainer pc = getPortalContainer(token);
       ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
 
       am.saveActivity(userId.getUserId(token), exoActivity);
@@ -487,7 +490,5 @@ public class ExoActivityService extends ExoService implements ActivityService {
       return (int) (act2.getPostedTime() - act1.getPostedTime());
     }
   }
-  
-  
   
 }

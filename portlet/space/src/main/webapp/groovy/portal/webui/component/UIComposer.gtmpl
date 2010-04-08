@@ -19,6 +19,9 @@
 
 -->
 */
+JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.social.space.UIComposer','/space/javascript');
+jsmanager.addCustomizedOnLoadScript('eXo.social.space.UIComposer.onLoad("' + uicomponentId.getUIFormTextAreaID() + '");');
 %>
   <div class="UIForm $uicomponent.id">
     <% uiform.begin() %>
@@ -49,7 +52,7 @@
                       </div>
                     </div>  
                   </td>
-                  <td width="30" style="padding-right:2px;" >
+                  <td width="30" style="padding-left:5px;" >
                     <a title="Share" onclick="<%= uicomponent.event("PostMessage"); %>" id="UIComposerShareButton" href="#" class="IconAdd">&nbsp;</a>
                   </td>
                 </tr>

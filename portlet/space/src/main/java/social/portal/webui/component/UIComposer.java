@@ -48,7 +48,8 @@ public class UIComposer extends UIForm {
    * @throws Exception
    */
   public UIComposer() throws Exception {
-    UIFormTextAreaInput composerInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
+	// TODO: should change value to resource bundle.  
+    UIFormTextAreaInput composerInput = new UIFormTextAreaInput("composerInput", "composerInput", "What are you doing?");
     addChild(composerInput);
   }
   
@@ -67,6 +68,9 @@ public class UIComposer extends UIForm {
     public void execute(Event<UIComposer> event) throws Exception {
       event.getSource().getParent().broadcast(event, event.getExecutionPhase());
     }
-    
+  }
+  
+  public String getUIFormTextAreaID() {
+	return getChild(UIFormTextAreaInput.class).getId();  
   }
 }

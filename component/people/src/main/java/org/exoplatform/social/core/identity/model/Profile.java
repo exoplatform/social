@@ -161,10 +161,10 @@ public class Profile {
    * @return
    * @throws Exception 
    */
-  public String getAvatarImageSource() throws Exception {
+  public String getAvatarImageSource(PortalContainer portalContainer) throws Exception {
     ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
     if (profileAttachment != null) {
-      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
+      return "/" + portalContainer.getCurrentRestContextName() + "/jcr/" + getRepository(portalContainer) + "/"
       + profileAttachment.getWorkspace() + profileAttachment.getDataPath() + "/?rnd="
       + System.currentTimeMillis();
     }
@@ -177,8 +177,7 @@ public class Profile {
    * @return repository name
    * @throws Exception
    */
-  private String getRepository() throws Exception {
-    PortalContainer portalContainer = PortalContainer.getInstance();
+  private String getRepository(PortalContainer portalContainer) throws Exception {
     RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
     return rService.getCurrentRepository().getConfiguration().getName();
   }

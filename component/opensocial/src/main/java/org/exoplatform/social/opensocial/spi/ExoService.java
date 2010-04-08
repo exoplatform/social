@@ -37,6 +37,7 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.jcr.QuerySpec;
 import org.exoplatform.social.jcr.QuerySpec.Operation;
+import org.exoplatform.social.opensocial.ExoBlobCrypterSecurityToken;
 
 import com.google.common.collect.Sets;
 
@@ -63,10 +64,11 @@ public class ExoService {
       
       if(token instanceof AnonymousSecurityToken) {
   		throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));  
-  	  }	
+  	  }
+      
       String userId = user.getUserId(token);
 
-      Identity id = getIdentity(userId);
+      Identity id = getIdentity(userId, token);
       Set<Identity> returnVal = Sets.newLinkedHashSet();
 
       if (group == null) {
@@ -77,7 +79,7 @@ public class ExoService {
         case all:
         case friends:
         case groupId:
-          returnVal.addAll(getFriendsList(id));
+          returnVal.addAll(getFriendsList(id, token));
           break;
         case self:
           returnVal.add(id);
@@ -94,16 +96,10 @@ public class ExoService {
      * @return the friends list
      * @throws Exception the exception
      */
-    protected List<Identity> getFriendsList(Identity id) throws Exception {
-      //PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
-      PortalContainer pc = PortalContainer.getInstance();
+    protected List<Identity> getFriendsList(Identity id, SecurityToken token) throws Exception {
+      PortalContainer pc = (PortalContainer) getPortalContainer(token);
       RelationshipManager rm = (RelationshipManager) pc.getComponentInstanceOfType(RelationshipManager.class);
       List<Relationship> rels = rm.getContacts(id);
-      if(rels == null) {
-    	  pc = (PortalContainer) ExoContainerContext.getContainerByName("socialdemo");
-    	  rm = (RelationshipManager) pc.getComponentInstanceOfType(RelationshipManager.class);
-    	  rels = rm.getContacts(id);
-      }
       List<Identity> ids = new ArrayList<Identity>();
 
       for(Relationship rel : rels) {
@@ -139,21 +135,12 @@ public class ExoService {
       return ids;
     }
 
-    protected Identity getIdentity(String id, boolean loadProfile) throws Exception {
+    protected Identity getIdentity(String id, boolean loadProfile, SecurityToken st) throws Exception {
 
-      PortalContainer pc = PortalContainer.getInstance();
+      PortalContainer pc = (PortalContainer) getPortalContainer(st);
       IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
       
-
       Identity identity = im.getIdentity(id, loadProfile);
- 
-
-      // TODO SOC-729 : this is a nasty hack
-      if(identity == null) {
-        pc = (PortalContainer) ExoContainerContext.getContainerByName("socialdemo");
-        im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
-        identity = im.getIdentity(id, loadProfile);
-      }
       
       if(identity == null) throw new Exception("\n\n\n can't find identity \n\n\n");
       
@@ -167,9 +154,17 @@ public class ExoService {
      * @return the identity
      * @throws Exception the exception
      */
-    protected Identity getIdentity(String id) throws Exception {
+    protected Identity getIdentity(String id, SecurityToken st) throws Exception {
       
-      return getIdentity(id, false);
+      return getIdentity(id, false, st);
+    }
+    
+    protected PortalContainer getPortalContainer(SecurityToken st) {
+    	String portalName = PortalContainer.getCurrentPortalContainerName();
+    	if(st instanceof ExoBlobCrypterSecurityToken) {
+    		portalName = ((ExoBlobCrypterSecurityToken)st).getPortalContainer();
+    	}
+    	return (PortalContainer) ExoContainerContext.getContainerByName(portalName);
     }
     
     
