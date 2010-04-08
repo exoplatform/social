@@ -20,20 +20,23 @@ package org.exoplatform.social.opensocial;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.shindig.common.crypto.BlobCrypter;
-import org.apache.shindig.common.crypto.BlobCrypterException;
 import org.apache.shindig.common.util.TimeSource;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.monitor.jvm.J2EEServerInfo;
 import org.exoplatform.portal.gadget.core.SecurityTokenGenerator;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.web.application.RequestContext;
 
 public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
+  
+    private static Log LOG = ExoLogger.getLogger(ExoSocialSecurityTokenGenerator.class);
+  
     private String containerKey;
     private final TimeSource timeSource;
 
@@ -46,27 +49,28 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
 
   protected String createToken(String gadgetURL, String owner, String viewer, Long moduleId, String container) {
       try {
-        BlobCrypterSecurityToken t = new BlobCrypterSecurityToken(
-          getBlobCrypter(this.containerKey), container, null);
-
+        BlobCrypter crypter = getBlobCrypter(this.containerKey);
+        ExoBlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(crypter, container, (String)null);
         t.setAppUrl(gadgetURL);
         t.setModuleId(moduleId);
         t.setOwnerId(owner);
         t.setViewerId(viewer);
         t.setTrustedJson("trusted");
-
+        String portalContainer = PortalContainer.getCurrentPortalContainerName();
+        t.setPortalContainer(portalContainer);
         return t.encrypt();
-    } catch (IOException e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-    } catch (BlobCrypterException e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+    } catch (Exception e) {
+      LOG.error("Failed to generate token for gadget " + gadgetURL + " for owner " + owner, e);
     }
       return null;
   }
+  
+ 
 
   public String createToken(String gadgetURL, Long moduleId) {
     RequestContext context = RequestContext.getCurrentInstance();
     String rUserId = getIdentityId(context.getRemoteUser());
+
 
     //PortalRequestContext request = Util.getPortalRequestContext() ;
     //String uri = request.getNodePath();
