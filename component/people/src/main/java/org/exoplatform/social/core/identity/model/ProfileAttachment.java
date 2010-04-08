@@ -66,6 +66,23 @@ public class ProfileAttachment {
    * @return the data path
    * @throws Exception the exception
    */
+  public String getDataPath(PortalContainer portalContainer) throws Exception {
+    Node attachmentData ;
+    try{
+      attachmentData = (Node)getSesison(portalContainer).getItem(getId()) ;      
+    }catch (ItemNotFoundException e) {
+      e.printStackTrace() ;
+      return null ;
+    }
+    return attachmentData.getPath() ;
+  }
+  
+  /**
+   * Gets the data path.
+   * 
+   * @return the data path
+   * @throws Exception the exception
+   */
   public String getDataPath() throws Exception {
     Node attachmentData ;
     try{
@@ -220,9 +237,19 @@ public class ProfileAttachment {
    * @return the sesison
    * @throws Exception the exception
    */
+  private Session getSesison(PortalContainer portalcontainer)throws Exception {
+    RepositoryService repoService = (RepositoryService)portalcontainer.getComponentInstanceOfType(RepositoryService.class) ;
+    return repoService.getDefaultRepository().getSystemSession(workspace) ;
+  }
+  
+  /**
+   * Gets the sesison.
+   * 
+   * @return the sesison
+   * @throws Exception the exception
+   */
   private Session getSesison()throws Exception {
-    RepositoryService repoService = (RepositoryService)PortalContainer
-      .getInstance().getComponentInstanceOfType(RepositoryService.class) ;
+    RepositoryService repoService = (RepositoryService)PortalContainer.getInstance().getComponentInstanceOfType(RepositoryService.class) ;
     return repoService.getDefaultRepository().getSystemSession(workspace) ;
   }
   

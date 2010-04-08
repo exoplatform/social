@@ -165,7 +165,7 @@ public class Profile {
     ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
     if (profileAttachment != null) {
       return "/" + portalContainer.getRestContextName() + "/jcr/" + getRepository(portalContainer) + "/"
-      + profileAttachment.getWorkspace() + profileAttachment.getDataPath() + "/?rnd="
+      + profileAttachment.getWorkspace() + profileAttachment.getDataPath(portalContainer) + "/?rnd="
       + System.currentTimeMillis();
     }
     return null;
