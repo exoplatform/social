@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+  <!-- 
   <external-component-plugins>
-    <!-- The full qualified name of the ExtensibleFilter -->
     <target-component>org.exoplatform.web.filter.ExtensibleFilter</target-component>
     <component-plugin>
       <name>RequestQueueingFilter</name>
@@ -15,8 +15,6 @@
           <name>RequestQueueingFilter</name>
           <object type="org.exoplatform.web.filter.FilterDefinition">
             <field name="filter"><object type="org.exoplatform.social.RequestQueueingFilter"/></field>
-            <!-- The mapping to use -->
-            <!-- WARNING: the mapping is expressed with regular expressions -->
             <field name="patterns">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
                 <value>
@@ -29,4 +27,5 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
+   -->
 </configuration>
