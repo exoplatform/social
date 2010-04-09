@@ -19,7 +19,6 @@ package social.portal.webui.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfig;
@@ -28,10 +27,8 @@ import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -123,15 +120,7 @@ public class UISpaceInfo extends UIForm {
     SpaceService spaceService = getSpaceService();
     String id = getUIStringInput("id").getValue();
     Space space = spaceService.getSpaceById(id);
-    if (space == null) {
-      return null;
-    }
-    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
-    if (spaceAtt != null) {
-      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
-              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
+    return space.getImageSource();
   }
   
   /**
@@ -257,22 +246,5 @@ public class UISpaceInfo extends UIForm {
    */
   public DataStorage getDataSource() {
       return getApplicationComponent(DataStorage.class);
-  }
-  /**
-   * Gets current portal name
-   * @return current portal name
-   */
-  private String getPortalName() {
-    return PortalContainer.getCurrentPortalContainerName();
-  }
-  
-  /**
-   * Gets current repository name
-   * @return current repository name
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
   }
 }

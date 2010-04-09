@@ -20,6 +20,36 @@
 -->
 */
 %>
+
+<%
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.webui.form.UIFormTextAreaInput;
+  def pContext = Util.getPortalRequestContext();
+  def jsManager = pContext.getJavascriptManager();
+  jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIComposer", "/eXoResourcesSocial/javascript");
+  jsManager.addOnLoadJavascript("configureUIComposer");
+  
+  def defaultInput = _ctx.appRes("${uicomponent.id}.Default_Input_Write_Something");
+%>
+<script type="text/javascript">
+  function configureUIComposer() {
+    var params = {
+      composerId: '${uicomponent.getChild(UIFormTextAreaInput.class).getId()}',
+      defaultInput: '$defaultInput',
+      focusColor: null,
+      blurColor: null,
+      minHeight: null,
+      maxHeight: null,
+      focusHeight: null,
+      focusCallback: null,
+      blurCallback: null,
+      keypressCallback: null,
+      postMessageCallback: null
+    }
+    var uiComposer = new eXo.social.webui.UIComposer(params);
+  }
+</script>
   <div class="UIForm $uicomponent.id">
     <% uiform.begin() %>
     <div id="UIMyStatusInput" class="MyStatusComponent">

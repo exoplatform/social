@@ -193,7 +193,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }
       else if(Person.Field.PROFILE_URL.toString().equals(field)) {
         //TODO use a url manager to manage this
-        p.setProfileUrl("/"+ getPortalContainer(st) +"/private/classic/activities/" + identity.getRemoteId());
+        p.setProfileUrl("/"+ getPortalContainer(st).getName() +"/private/classic/activities/" + identity.getRemoteId());
       }
       else if(Person.Field.GENDER.toString().equals(field)) {
         String gender = (String) pro.getProperty("gender");

@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfig;
@@ -33,9 +32,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceAttachment;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
@@ -248,15 +245,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
    */
   protected String getImageSource() throws Exception {
     Space space = getSpace();
-    if (space == null) {
-      return null;
-    }
-    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
-    if (spaceAtt != null) {
-      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
-              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
+    return space.getImageSource();
   }
 
   /**
@@ -286,22 +275,6 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     public int compare(PageNode pageNode1, PageNode pageNode2) {
       return pageNode1.getResolvedLabel().compareToIgnoreCase(pageNode2.getResolvedLabel());
     }
-  }
-  /**
-   * Gets current portal name
-   * @return current portal name
-   */
-  private String getPortalName() {
-    return PortalContainer.getCurrentPortalContainerName();
-  }
-  /**
-   * Gets current repository name
-   * @return
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);    
-    return rService.getCurrentRepository().getConfiguration().getName();
   }
   
   /**

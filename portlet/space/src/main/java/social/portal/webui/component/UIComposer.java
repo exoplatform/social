@@ -48,7 +48,7 @@ public class UIComposer extends UIForm {
    * @throws Exception
    */
   public UIComposer() throws Exception {
-	// TODO: should change value to resource bundle.  
+	// TODO: should change value to resource bundle.
     UIFormTextAreaInput composerInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
     addChild(composerInput);
   }

@@ -201,7 +201,7 @@ public class UIUserListPortlet extends UIPortletApplication {
     Profile profile = identity.getProfile();
     ProfileAttachment attach = (ProfileAttachment) profile.getProperty(Profile.AVATAR);
     if (attach != null) {
-      return "/" + getPortalName()+"/rest/jcr/" + getRepository()+ "/" + attach.getWorkspace()
+      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository()+ "/" + attach.getWorkspace()
               + attach.getDataPath() + "/?rnd=" + System.currentTimeMillis();
     }
     return null;
@@ -413,20 +413,12 @@ public class UIUserListPortlet extends UIPortletApplication {
   }
   
   /**
-   * get current portal name
-   * @return current portal name
-   */
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();  
-  }
-  /**
    * gets current repository name
    * @return current repository name
    * @throws Exception
    */
   private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);    
+    RepositoryService rService = getApplicationComponent(RepositoryService.class);
     return rService.getCurrentRepository().getConfiguration().getName();
   }
 }
