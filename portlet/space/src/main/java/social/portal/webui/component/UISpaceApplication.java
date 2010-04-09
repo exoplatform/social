@@ -170,7 +170,7 @@ public class UISpaceApplication extends UIForm {
     List<PageNode> nodes = homeNode.getChildren();
     String installedApp = space.getApp();
     String[] appStatuses = installedApp.split(",");
-    String applicationName = application.getDisplayName();
+    String applicationName = application.getApplicationName();
     String appNodeName;
     for (String appStatus : appStatuses) {
       if (appStatus.length() != 0) {
