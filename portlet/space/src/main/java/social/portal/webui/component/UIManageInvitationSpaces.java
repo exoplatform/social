@@ -21,8 +21,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.config.DataStorage;
+import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
@@ -199,7 +207,9 @@ public class UIManageInvitationSpaces extends UIContainer {
        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_ACCEPT_INVITATION, null, ApplicationMessage.ERROR));
        return;
      }
-     //event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
+     
+     PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
+     SpaceUtils.setNavigation(spaceNavigation);
      SpaceUtils.updateWorkingWorkSpace();
    }
   }
