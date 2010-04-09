@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform</groupId>
@@ -8,14 +8,14 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>1.0.0-Beta03-SNAPSHOT</version>
+  <version>1.0.0-RC1</version>
   <packaging>pom</packaging>
-  <name>eXo - Social</name>
+  <name>eXo Social</name>
   
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</connection>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/projects/social/trunk</url>
+    <connection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0.0-RC1</connection>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0.0-RC1</developerConnection>
+    <url>http://fisheye.exoplatform.org/browse/projects/social/tags/1.0.0-RC1</url>
   </scm>
   
   <properties>

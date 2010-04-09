@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
-    <version>1.0.0-Beta03-SNAPSHOT</version>
+    <version>1.0.0-RC1</version>
   </parent>
   <artifactId>exo.social.webui.social</artifactId>
-  <version>1.0.0-Beta03-SNAPSHOT</version>
+  <version>1.0.0-RC1</version>
   <packaging>jar</packaging>
   <name>Social webui Module</name>
   <description>social project, webui module</description>
@@ -22,7 +22,7 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>1.0.0-Beta03-SNAPSHOT</version>
+      <version>1.0.0-RC1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>1.0.0-Beta03-SNAPSHOT</version>
+      <version>1.0.0-RC1</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
