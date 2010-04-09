@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
-    <version>1.0.0-RC1</version>
+    <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.extension.ear</artifactId>
   <packaging>ear</packaging>
@@ -35,66 +35,66 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extension.config</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.application.rest</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.opensocial</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.portlet.profile</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.portlet.space</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.web.opensocial</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.web.socialResources</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.webui.social</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extension.jar</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extension.war</artifactId>
-      <version>1.0.0-RC1</version>
+      <version>1.0.0-GA-SNAPSHOT</version>
       <type>war</type>
     </dependency>
   </dependencies>
