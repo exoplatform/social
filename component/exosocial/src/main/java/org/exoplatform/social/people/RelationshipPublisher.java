@@ -53,12 +53,12 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       activity.setTemplateParams(params);
       activityManager.saveActivity(activity);
       
-      Activity activity2 = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user2 + " is now connected to " + user1, null);
-      activity.setTitleId("RELATION_CONFIRMED");
+      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, user2 + " is now connected to " + user1, null);
+      activity2.setTitleId("RELATION_CONFIRMED");
       Map<String,String> params2 = new HashMap<String,String>();
       params2.put("Requester", user2);
       params2.put("Accepter", user1);
-      activity.setTemplateParams(params);
+      activity2.setTemplateParams(params);
       activityManager.saveActivity(activity2);      
       
     } catch (Exception e) {
