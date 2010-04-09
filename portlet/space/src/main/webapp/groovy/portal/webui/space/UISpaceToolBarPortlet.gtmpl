@@ -17,11 +17,11 @@
  	
 	def spaceNavigations = uicomponent.getSpaceNavigations();
 	void renderSpacePageNavigation(PageNavigation navigation) {
-			nodes = navigation.getNodes() ;
-			if(nodes.size() < 1) return ;
-							for(int i = 0; i < nodes.size(); i++) {
-								renderPageNode(nodes.get(i), i%2 == 0 ) ;
-							}
+		nodes = navigation.getNodes() ;
+		if(nodes.size() < 1) return ;
+		for(int i = 0; i < nodes.size(); i++) {
+			renderPageNode(nodes.get(i), i%2 == 0 ) ;
+		}
 	}
 	
 	void renderPageNode(PageNode node, boolean flag) {
@@ -60,7 +60,9 @@
 					<div class="SubBlock">
 			""" ;
 				for(int j = 0; j < node.getChildren().size(); j++) {
-					renderPageNode(node.getChildren().get(j), j%2 == 0);
+				  PageNode childNode = node.getChildren().get(j);
+				  def isRender = uicomponent.isRender(node, childNode);
+				  if (isRender) renderPageNode(childNode, j%2 == 0);
 				}
 			print """
 					</div>

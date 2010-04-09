@@ -18,13 +18,19 @@ package social.portal.webui.component.space;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.navigation.PageNavigationUtils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -41,6 +47,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
                  template = "app:/groovy/portal/webui/space/UISpaceToolBarPortlet.gtmpl"
 )
 public class UISpaceToolBarPortlet extends UIPortletApplication {
+	
+  private static final String SPACE_SETTING_PORTLET = "SpaceSettingPortlet";
   
   /**
    * constructor
@@ -67,25 +75,46 @@ public class UISpaceToolBarPortlet extends UIPortletApplication {
   
   public List<PageNavigation> getSpaceNavigations() throws Exception
   {
-     String remoteUser = Util.getPortalRequestContext().getRemoteUser();
-     List<PageNavigation> allNavigations = Util.getUIPortalApplication().getNavigations();
-     List<PageNavigation> navigations = new ArrayList<PageNavigation>();
-     SpaceService spaceSrv = getSpaceService();
-     List<Space> spaces = spaceSrv.getAllSpaces();
-     
-     for (Space space : spaces) 
-	  {
-	      for (PageNavigation navigation : allNavigations)
-	      {
-	         if (navigation.getOwnerId().equals(space.getGroupId()))
-	         {
-	        	 navigations.add(PageNavigationUtils.filter(navigation, remoteUser));
-	            break;
-	         }
-   	 }
+	String remoteUser = Util.getPortalRequestContext().getRemoteUser();
+	SpaceService spaceSrv = getSpaceService();
+    List<Space> spaces = spaceSrv.getAllSpaces();
+    List<PageNavigation> navigations = new ArrayList<PageNavigation>();
+    for (Space space : spaces) {
+	    PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
+	    List<PageNode> nodes = spaceNavigation.getNodes();
+	    Iterator<PageNode> itr = nodes.iterator();
+	    PageNode spaceNode;
+	    String nodeName;
+	    String spaceName = space.getName();
+	    while (itr.hasNext()) {
+	      spaceNode = itr.next();
+	      nodeName = spaceNode.getName();
+	      if (!nodeName.equals(spaceName)) itr.remove();
+	    }
+	    
+	    navigations.add(PageNavigationUtils.filter(spaceNavigation, remoteUser));
+    }
+    return navigations;
+  }
+  
+  public boolean isRender(PageNode spaceNode, PageNode applicationNode) throws SpaceException {
+	 SpaceService spaceSrv = getSpaceService();
+	 String remoteUser = getUserId();
+	 String spaceUrl = spaceNode.getUri();
+     if (spaceUrl.contains("/")) {
+       spaceUrl = spaceUrl.split("/")[0];
      }
      
-     return navigations;
+     Space space = spaceSrv.getSpaceByUrl(spaceUrl);
+     
+	 if (spaceSrv.hasEditPermission(space, remoteUser)) return true;
+	 
+	 String appName = applicationNode.getName();
+	 if (!appName.contains(SPACE_SETTING_PORTLET)) {
+	   return true;
+	 }
+	 
+	 return false;
   }
   
   public PageNode getSelectedPageNode() throws Exception
