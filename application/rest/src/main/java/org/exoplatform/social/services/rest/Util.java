@@ -60,4 +60,9 @@ public class Util {
     }
     throw new WebApplicationException(Response.Status.BAD_REQUEST);
   }
+  
+  static public String getPortalName(UriInfo uriInfo) {
+    String path = uriInfo.getPath(false);
+    return path.split("/")[1];
+  }
 }

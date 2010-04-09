@@ -26,7 +26,7 @@ eXo.social.Comment.ref = {
  * config object
  */
 eXo.social.Comment.config = {
-	URL_COMMENTS: 'http://${HOST}/${REST_CONTEXT_NAME}/social/activities/${activityId}/comments'
+	URL_COMMENTS: 'http://${HOST}/${REST_CONTEXT_NAME}/${portalName}/social/activities/${activityId}/comments'
 }
 
 /**

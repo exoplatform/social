@@ -28,7 +28,7 @@ eXo.social.Like.ref = {
  * @static
  */
  eXo.social.Like.config = {
- 	REST_LIKE: 'http://${HOST}/${REST_CONTEXT_NAME}/social/activities/{activityId}/likes'
+ 	REST_LIKE: 'http://${HOST}/${REST_CONTEXT_NAME}/${portalName}/social/activities/{activityId}/likes'
  };
  
  /**

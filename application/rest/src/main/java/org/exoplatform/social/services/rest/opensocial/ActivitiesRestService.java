@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -59,11 +60,11 @@ import org.exoplatform.social.services.rest.Util;
  * @since      Dec 29, 2009
  * @copyright  eXo Platform SEA
  */
-@Path("social/activities")
+@Path("{portalName}/social/activities")
 public class ActivitiesRestService implements ResourceContainer {
   private ActivityManager _activityManager;
   private IdentityManager _identityManager;
-  
+  private String portalName_;
   /**
    * constructor
    */
@@ -120,6 +121,7 @@ public class ActivitiesRestService implements ResourceContainer {
                                   @PathParam("activityId") String activityId,
                                   @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    portalName_ = Util.getPortalName(uriInfo);
     Activity activity = destroyActivity(activityId);
     return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
   }
@@ -244,6 +246,7 @@ public class ActivitiesRestService implements ResourceContainer {
                             @PathParam("activityId") String activityId,
                             @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    portalName_ = Util.getPortalName(uriInfo);
     LikeList likeList = null;
     likeList = showLikes(activityId);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
@@ -266,6 +269,7 @@ public class ActivitiesRestService implements ResourceContainer {
                              @PathParam("format") String format,
                              Like like) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    portalName_ = Util.getPortalName(uriInfo);
     LikeList likeList = null;
     likeList = updateLike(activityId, like);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
@@ -287,6 +291,7 @@ public class ActivitiesRestService implements ResourceContainer {
                               @PathParam("identityId") String identityId,
                               @PathParam("format") String format) throws Exception{
     MediaType mediaType = Util.getMediaType(format);
+    portalName_ = Util.getPortalName(uriInfo);
     LikeList likeList =  null;
     likeList = destroyLike(activityId, identityId);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
@@ -409,6 +414,7 @@ public class ActivitiesRestService implements ResourceContainer {
                                @PathParam("activityId") String activityId,
                                @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    portalName_ = Util.getPortalName(uriInfo);
     CommentList commentList = null;
     commentList = showComments(activityId);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
@@ -431,6 +437,7 @@ public class ActivitiesRestService implements ResourceContainer {
                                 @PathParam("format") String format,
                                 Activity comment) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    portalName_ = Util.getPortalName(uriInfo);
     CommentList commentList = null;
     commentList = updateComment(activityId, comment);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
@@ -452,6 +459,7 @@ public class ActivitiesRestService implements ResourceContainer {
                                  @PathParam("commentId") String commentId,
                                  @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    portalName_ = Util.getPortalName(uriInfo);
     CommentList commentList = null;
     commentList = destroyComment(activityId, commentId);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
@@ -563,7 +571,7 @@ public class ActivitiesRestService implements ResourceContainer {
    */
   private ActivityManager getActivityManager() {
     if (_activityManager == null) {
-      PortalContainer portalContainer = PortalContainer.getInstance();
+      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName_);
       _activityManager = (ActivityManager) portalContainer.getComponentInstanceOfType(ActivityManager.class);
     }
     return _activityManager;
@@ -576,29 +584,10 @@ public class ActivitiesRestService implements ResourceContainer {
    */
   private IdentityManager getIdentityManager() {
     if (_identityManager == null) {
-      PortalContainer portalContainer = PortalContainer.getInstance();
+      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName_);
       _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
     }
     return _identityManager;
-  }
-  
-  /**
-   * gets repository
-   * @return repository name
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    RepositoryService repositoryService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
-    return repositoryService.getCurrentRepository().getConfiguration().getName();
-  }
-  
-  /**
-   * gets portalName
-   * @return portal name
-   */
-  private String getPortalName() {
-    return PortalContainer.getCurrentPortalContainerName();
   }
   
   /**
@@ -610,7 +599,6 @@ public class ActivitiesRestService implements ResourceContainer {
     String username, fullName, thumbnail;
     Profile profile;
     Identity identity;
-    ProfileAttachment profileAttachment;
     Like like;
     List<Like> likes = new ArrayList<Like>();
     _identityManager = getIdentityManager();
@@ -620,12 +608,7 @@ public class ActivitiesRestService implements ResourceContainer {
         profile = identity.getProfile();
         username = (String) profile.getProperty(Profile.USERNAME);
         fullName = profile.getFullName();
-        profileAttachment = (ProfileAttachment)profile.getProperty(Profile.AVATAR);
-        thumbnail = null;
-        if (profileAttachment != null) {
-          thumbnail = "/" + getPortalName() + "/rest/jcr/" + getRepository() + "/" + profileAttachment.getWorkspace() +
-                      profileAttachment.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-        }
+        thumbnail = profile.getAvatarImageSource((PortalContainer) ExoContainerContext.getContainerByName(portalName_));
         like = new Like();
         like.setIdentityId(identityId);
         like.setUsername(username);

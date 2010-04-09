@@ -97,8 +97,8 @@ eXo.social.StatusUpdate.configEnvironment = function() {
 	config.path.ROOT_PATH = config.path.ROOT_PATH.replace('${HOST}', host);
 	config.path.SCRIPT_PATH = config.path.SCRIPT_PATH.replace('${HOST}', host);
 	
-	eXo.social.Comment.config.URL_COMMENTS = eXo.social.Comment.config.URL_COMMENTS.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
-	eXo.social.Like.config.REST_LIKE = eXo.social.Like.config.REST_LIKE.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
+	eXo.social.Comment.config.URL_COMMENTS = eXo.social.Comment.config.URL_COMMENTS.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
+	eXo.social.Like.config.REST_LIKE = eXo.social.Like.config.REST_LIKE.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
 	eXo.social.LinkShare.config.LINKSHARE_REST_URL = eXo.social.LinkShare.config.LINKSHARE_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
 }
 
