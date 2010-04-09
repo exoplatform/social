@@ -22,7 +22,7 @@
   <page>
     <name>homepage</name>
     <title>Home Page</title>
-	  <access-permissions>*:/platform/guests</access-permissions>
+	  <access-permissions>Everyone</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>
     <portlet-application>
       <portlet>
