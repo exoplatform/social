@@ -47,11 +47,16 @@ eXo.social.StatusUpdate.MessageType_WARN = 'MessageType_WARN';
  * static config object
  */
 eXo.social.StatusUpdate.config = {
-	ACTIVITIES_REST_URL: "http://localhost:8080/rest/social/activities",
-	IDENTITY_REST_URL : "http://localhost:8080/rest/social/identity",
+	HOST_SCHEMA: null,
+	HOST_NAME: null,
+	HOST_PORT: null,
+	PORTAL_NAME: null,
+	REST_CONTEXT_NAME: null,
+	ACTIVITIES_REST_URL: "http://${HOST}/${REST_CONTEXT_NAME}/social/activities",
+	IDENTITY_REST_URL : "http://${HOST}/${REST_CONTEXT_NAME}/social/identity",
 	path : {
-		ROOT_PATH : "http://localhost:8080/social/gadgets/activities2",
-		SCRIPT_PATH : "http://localhost:8080/social/gadgets/activities2/script"
+		ROOT_PATH : "http://${HOST}/social/gadgets/activities2",
+		SCRIPT_PATH : "http://${HOST}/social/gadgets/activities2/script"
 	},
 	ui : {//dom id reference
 		UI_MY_STATUS_INPUT: "UIMyStatusInput",
@@ -72,6 +77,30 @@ eXo.social.StatusUpdate.config = {
 };
 //see SOC-654
 eXo.social.StatusUpdate.allowedTags = ['b', 'i', 'a', 'span', 'em', 'strong', 'p', 'ol', 'ul', 'li', 'br'];
+
+
+eXo.social.StatusUpdate.configEnvironment = function() {
+	var StatusUpdate = eXo.social.StatusUpdate;
+	var config = eXo.social.StatusUpdate.config;
+	//currently HOST_NAME = 'http://localhost:8080' = HOST_NAME + HOST_PORT
+	var spliter = config.HOST_NAME.split(":");
+	config.HOST_SCHEMA = spliter[0];
+	config.HOST_NAME = spliter[1].replace('//','');
+	config.HOST_PORT = spliter[2];
+	if (!(config.HOST_NAME && config.HOST_PORT && config.PORTAL_NAME && config.REST_CONTEXT_NAME)) {
+		//problem
+		alert('error: can not get right environment!');
+	}
+	var host = config.HOST_NAME + ":" + config.HOST_PORT;
+	config.ACTIVITIES_REST_URL = config.ACTIVITIES_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
+	config.IDENTITY_REST_URL = config.IDENTITY_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
+	config.path.ROOT_PATH = config.path.ROOT_PATH.replace('${HOST}', host);
+	config.path.SCRIPT_PATH = config.path.SCRIPT_PATH.replace('${HOST}', host);
+	
+	eXo.social.Comment.config.URL_COMMENTS = eXo.social.Comment.config.URL_COMMENTS.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
+	eXo.social.Like.config.REST_LIKE = eXo.social.Like.config.REST_LIKE.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
+	eXo.social.LinkShare.config.LINKSHARE_REST_URL = eXo.social.LinkShare.config.LINKSHARE_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
+}
 
 /**
  * main entry point for app
@@ -244,6 +273,11 @@ eXo.social.StatusUpdate.prototype.init = function() {
 			}
 			statusUpdate.viewer = response.get('viewer').getData();
 			statusUpdate.owner = response.get('owner').getData();
+			//update context environment
+			StatusUpdate.config.HOST_NAME = statusUpdate.owner.getField('hostName');
+			StatusUpdate.config.PORTAL_NAME = statusUpdate.owner.getField('portalName');
+			StatusUpdate.config.REST_CONTEXT_NAME = statusUpdate.owner.getField('restContextName');
+			StatusUpdate.configEnvironment();
 			statusUpdate.ownerFriends = response.get('ownerFriends').getData();
 
 			var username = getUsernameFromUrl();

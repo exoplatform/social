@@ -91,7 +91,7 @@ eXo.social.LinkShare = function(link, lang) {
  */
 eXo.social.LinkShare.config = {
     //change to the right url
-    LINKSHARE_REST_URL : "http://localhost:8080/rest/social/linkshare",
+    LINKSHARE_REST_URL : "http://${HOST}/${REST_CONTEXT_NAME}/social/linkshare",
     //the div's id in gadget to work on in this div tag
     WORKSPACE_ID : "UIComposerExtension",
     LINKSHARE_OPTION_ID: "UILinkShareOption",

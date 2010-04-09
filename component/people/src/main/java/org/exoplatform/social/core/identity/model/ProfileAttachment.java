@@ -61,7 +61,7 @@ public class ProfileAttachment {
   private long lastModified;
   
   /**
-   * Gets the data path.
+   * Gets the data path by specifying a PortalContainer instance
    * 
    * @return the data path
    * @throws Exception the exception

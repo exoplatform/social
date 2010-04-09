@@ -157,8 +157,8 @@ public class Profile {
   }
   
   /**
-   * Gets user's avatar image source
-   * @return
+   * Gets user's avatar image source by specifying a PortalContainer instance
+   * @return null or an url if available
    * @throws Exception 
    */
   public String getAvatarImageSource(PortalContainer portalContainer) throws Exception {
@@ -172,13 +172,38 @@ public class Profile {
   }
   
   /**
-   * Gets current repository name
+   * Gets user's avatar image source from current portal container
+   * @return null or an url if available
+   * @throws Exception
+   */
+  public String getAvatarImageSource() throws Exception {
+    ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
+    if (profileAttachment != null) {
+      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
+      + profileAttachment.getWorkspace() + profileAttachment.getDataPath() + "/?rnd="
+      + System.currentTimeMillis();
+    }
+    return null;
+  }
+  
+  /**
+   * Gets repository name by specifying a PortalContainer instance
    * 
    * @return repository name
    * @throws Exception
    */
   private String getRepository(PortalContainer portalContainer) throws Exception {
     RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName();
+  }
+  
+  /**
+   * Gets current repository name
+   * @return
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    RepositoryService rService = (RepositoryService) PortalContainer.getInstance().getComponentInstanceOfType(RepositoryService.class);
     return rService.getCurrentRepository().getConfiguration().getName();
   }
 

@@ -1044,10 +1044,24 @@ public class SpaceServiceImpl implements SpaceService {
    * @throws SpaceException
    */
   private void removeApp(Space space, String appId) throws SpaceException {
+    //[appId:appName:removeable:status]
+    //app can be: [appPatternToBeRemoved],
+    //            [appPattern, appPatternToBeRemoved]
+    //            [appPatternToBeRemoved, appPattern]
+    //            [appPattern, appPatternToBeRemoved, appPattern]
     String apps = space.getApp();
     if (apps.indexOf(appId) != -1) {
-      String oldStatus = apps.substring(apps.indexOf(appId));
-      if(oldStatus.indexOf(",") != -1) oldStatus = oldStatus.substring(0, oldStatus.indexOf(",") + 1);
+      String oldStatus;
+      if (apps.indexOf(",") != -1) {
+        oldStatus = apps.substring(apps.indexOf(appId));
+        if (oldStatus.indexOf(",") != -1) {
+          oldStatus = oldStatus.substring(0, oldStatus.indexOf(",") + 1);
+        } else {
+          oldStatus = "," + oldStatus;
+        }
+      } else {
+        oldStatus = apps;
+      }
       apps = apps.replaceFirst(oldStatus, "");
       if(apps.equals("")) apps = null;
       space.setApp(apps);
