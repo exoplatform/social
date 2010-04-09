@@ -153,7 +153,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 								Util.removeElementById(commentListInfoId);
 							}
 						} else if (res.rc === 404) { //activity not found
-						  alert(Locale.getMsg('error_activity_not_found'));
+						  //alert(Locale.getMsg('error_activity_not_found'));
 						  //remove activity
 						  Util.removeElementById('Activity' + eXo.social.Comment.currentActivityId);
 						  //check if delete all => displays empty message

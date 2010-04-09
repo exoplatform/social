@@ -57,7 +57,7 @@ public class IdentityRestServiceTest extends AbstractResourceTest {
   
   public void testGetRootId() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
-    ContainerResponse response = service("GET", "/social/identity/root/id/show.json", "", null, null, writer);
+    ContainerResponse response = service("GET", "/portal/social/identity/root/id/show.json", "", null, null, writer);
     UserId returnedUserId = (UserId) response.getEntity();
     assertEquals(200, response.getStatus());
     assertEquals("application/json", response.getContentType().toString());
@@ -66,7 +66,7 @@ public class IdentityRestServiceTest extends AbstractResourceTest {
   
   public void testGetJohnId() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
-    ContainerResponse response = service("GET", "/social/identity/john/id/show.json", "", null, null, writer);
+    ContainerResponse response = service("GET", "/portal/social/identity/john/id/show.json", "", null, null, writer);
     UserId returnedUserId = (UserId) response.getEntity();
     assertEquals(200, response.getStatus());
     assertEquals("application/json", response.getContentType().toString());

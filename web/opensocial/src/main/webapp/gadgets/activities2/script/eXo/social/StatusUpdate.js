@@ -52,8 +52,8 @@ eXo.social.StatusUpdate.config = {
 	HOST_PORT: null,
 	PORTAL_NAME: null,
 	REST_CONTEXT_NAME: null,
-	ACTIVITIES_REST_URL: "http://${HOST}/${REST_CONTEXT_NAME}/social/activities",
-	IDENTITY_REST_URL : "http://${HOST}/${REST_CONTEXT_NAME}/social/identity",
+	ACTIVITIES_REST_URL: "http://${HOST}/${REST_CONTEXT_NAME}/${portalName}/social/activities",
+	IDENTITY_REST_URL : "http://${HOST}/${REST_CONTEXT_NAME}/${portalName}/social/identity",
 	path : {
 		ROOT_PATH : "http://${HOST}/social/gadgets/activities2",
 		SCRIPT_PATH : "http://${HOST}/social/gadgets/activities2/script"
@@ -92,8 +92,8 @@ eXo.social.StatusUpdate.configEnvironment = function() {
 		alert('error: can not get right environment!');
 	}
 	var host = config.HOST_NAME + ":" + config.HOST_PORT;
-	config.ACTIVITIES_REST_URL = config.ACTIVITIES_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
-	config.IDENTITY_REST_URL = config.IDENTITY_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
+	config.ACTIVITIES_REST_URL = config.ACTIVITIES_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
+	config.IDENTITY_REST_URL = config.IDENTITY_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
 	config.path.ROOT_PATH = config.path.ROOT_PATH.replace('${HOST}', host);
 	config.path.SCRIPT_PATH = config.path.SCRIPT_PATH.replace('${HOST}', host);
 	
@@ -406,10 +406,19 @@ eXo.social.StatusUpdate.prototype.setActionContentButton = function(activityId) 
 eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
 	var Util = eXo.social.Util,
 	    Locale = eXo.social.Locale;
-      url = eXo.social.StatusUpdate.config.ACTIVITIES_REST_URL + '/destroy/' + activityId + '.json',
-      statusUpdate = this;
-	eXo.social.Util.makeRequest(url, function(res) {
-	   if (res.data.id) {
+      	url = eXo.social.StatusUpdate.config.ACTIVITIES_REST_URL + '/destroy/' + activityId + '.json',
+      	statusUpdate = this;
+	   eXo.social.Util.makeRequest(url, function(res) {
+	   if (res.rc === 404) {
+         Util.removeElementById('Activity' + activityId);
+         //check if delete all => displays empty message
+         var rootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_OWNER_APPENDABLE_ROOT);
+         if (!rootEl.hasChildNodes()) {
+           rootEl.innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [statusUpdate.owner.getDisplayName()]) + '</div>';
+         }
+         return;
+	   }
+	   if (res.data) {
          Util.removeElementById('Activity' + res.data.id);
          //check if delete all => displays empty message
          var rootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_OWNER_APPENDABLE_ROOT);

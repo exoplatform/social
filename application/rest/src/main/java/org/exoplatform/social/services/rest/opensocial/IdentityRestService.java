@@ -24,6 +24,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -35,7 +36,7 @@ import org.exoplatform.social.core.identity.IdentityManager;
  * @since      Dec 29, 2009
  * @copyright  eXo Platform SAS 
  */
-@Path("social/identity/{username}/id")
+@Path("{portalName}/social/identity/{username}/id")
 public class IdentityRestService implements ResourceContainer {
   private IdentityManager _identityManager;
   /**
@@ -52,8 +53,8 @@ public class IdentityRestService implements ResourceContainer {
   @GET
   @Path("show.json")
   @Produces({MediaType.APPLICATION_JSON})
-  public UserId getId(@PathParam("username") String username) throws Exception {
-      _identityManager = getIdentityManager();
+  public UserId getId(@PathParam("username") String username, @PathParam("portalName") String portalName) throws Exception {
+      _identityManager = getIdentityManager(portalName);
       String id = null;
       try {
         id = _identityManager.getOrCreateIdentity("organization", username).getId();
@@ -68,9 +69,9 @@ public class IdentityRestService implements ResourceContainer {
    * gets identityManager
    * @return
    */
-  private IdentityManager getIdentityManager() {
+  private IdentityManager getIdentityManager(String portalName) {
     if (_identityManager == null) {
-      PortalContainer portalContainer = PortalContainer.getInstance();
+      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
       _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
     }
     return _identityManager;
