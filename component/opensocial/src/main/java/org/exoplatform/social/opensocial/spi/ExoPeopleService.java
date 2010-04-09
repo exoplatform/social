@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
@@ -167,7 +168,6 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     Person p = injector.getInstance(Person.class);
     Profile pro = identity.getProfile();
     PortalContainer container = getPortalContainer(st);
-    String portalName = container.getCurrentPortalContainerName();
     for (String field : fields) {
       if(Person.Field.DISPLAY_NAME.toString().equals(field)) {
         p.setDisplayName(pro.getFullName());  
@@ -222,8 +222,15 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       else if(Person.Field.THUMBNAIL_URL.toString().equals(field)) {
         p.setThumbnailUrl(pro.getAvatarImageSource(container));
       }
+      
+      else if(ExoPersonImpl.Field.PORTAL_CONTAINER.toString().equals(field)) {
+    	  ((ExoPersonImpl) p).setPortalName(container.getName());
+      }
+      
+      else if(ExoPersonImpl.Field.REST_CONTEXT.toString().equals(field)) {
+    	  ((ExoPersonImpl) p).setRestContextName(container.getRestContextName());
+      }
     }
-
     return p;
   }
   

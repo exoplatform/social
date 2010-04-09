@@ -224,7 +224,9 @@ eXo.social.StatusUpdate.prototype.init = function() {
     		[opensocial.Person.Field.ID,
     		 opensocial.Person.Field.NAME,
     		 opensocial.Person.Field.PROFILE_URL,
-    		 opensocial.Person.Field.THUMBNAIL_URL];
+    		 opensocial.Person.Field.THUMBNAIL_URL,
+    		 "portalName",
+    		 "restContext"];
 		req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER, opts), 'viewer');
 		req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.OWNER, opts), 'owner');
 		var ownerFriendsSpec = opensocial.newIdSpec({"userId":"OWNER", "groupId":"FRIENDS"});

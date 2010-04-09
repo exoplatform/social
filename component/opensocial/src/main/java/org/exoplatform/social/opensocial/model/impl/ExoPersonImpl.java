@@ -28,9 +28,19 @@ public class ExoPersonImpl extends PersonImpl {
   
   private List<Space> spaces;
   
+  private String portalName;
+  
+  private String restContext;
+  
   public static enum Field {
     /* the json field for spaces*/
-    SPACES("spaces");
+    SPACES("spaces"),
+    
+    /* the json field for portal container*/
+    PORTAL_CONTAINER("portalName"),
+    
+    /* the json field for portal container*/
+    REST_CONTEXT("restContext");
     
     /**
      * The json field that the instance represents.
@@ -85,6 +95,21 @@ public class ExoPersonImpl extends PersonImpl {
   
   public List<Space> getSpaces() {
     return spaces;
+  }
+  
+  public void setPortalName(String portalName) {
+    this.portalName = portalName;
+  }
+  
+  public String getPortalName() {
+    return portalName;
+  }
+  public void setRestContextName(String restContext) {
+    this.restContext = restContext;
+  }
+  
+  public String getRestContextName() {
+    return restContext;
   }
 
 }
