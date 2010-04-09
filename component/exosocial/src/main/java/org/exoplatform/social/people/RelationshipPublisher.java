@@ -45,7 +45,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       String user2 = id2.getProfile().getFullName();
       // RELATION_CONFIRMED=<a href="${Requester.ProfileUrl}">${Requester.DisplayName}</a> is now connected to <a href="${Accepter.ProfileUrl}">${Accepter.DisplayName}</a>.
       // RELATION_CONFIRMED=${Requester} is now connected to ${Accepter}</a>.
-      Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user1 + " is now connected to " + user2, null);
+      Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user1, user1 + " is now connected to " + user2);
       activity.setTitleId("RELATION_CONFIRMED");
       Map<String,String> params = new HashMap<String,String>();
       params.put("Requester", user1);
@@ -53,7 +53,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       activity.setTemplateParams(params);
       activityManager.saveActivity(activity);
       
-      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, user2 + " is now connected to " + user1, null);
+      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, user2, user2 + " is now connected to " + user1);
       activity2.setTitleId("RELATION_CONFIRMED");
       Map<String,String> params2 = new HashMap<String,String>();
       params2.put("Requester", user2);
