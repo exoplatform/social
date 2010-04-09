@@ -23,7 +23,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.social</groupId>
-    <artifactId>sc</artifactId>
+    <artifactId>social</artifactId>
     <version>1.0.0-Beta03-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.server</artifactId>
