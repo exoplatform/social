@@ -25,7 +25,9 @@ import org.apache.shindig.common.crypto.BlobCrypter;
 import org.apache.shindig.common.util.TimeSource;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.monitor.jvm.J2EEServerInfo;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.gadget.core.SecurityTokenGenerator;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -57,7 +59,11 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
         t.setViewerId(viewer);
         t.setTrustedJson("trusted");
         String portalContainer = PortalContainer.getCurrentPortalContainerName();
+        PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+        String url = portalRequestContext.getRequest().getRequestURL().toString();
+        String hostName = url.substring(0, url.indexOf(portalRequestContext.getRequestContextPath()));
         t.setPortalContainer(portalContainer);
+        t.setHostName(hostName);
         return t.encrypt();
     } catch (Exception e) {
       LOG.error("Failed to generate token for gadget " + gadgetURL + " for owner " + owner, e);

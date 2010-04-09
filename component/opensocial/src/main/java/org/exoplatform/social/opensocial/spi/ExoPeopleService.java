@@ -230,6 +230,10 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       else if(ExoPersonImpl.Field.REST_CONTEXT.toString().equals(field)) {
     	  ((ExoPersonImpl) p).setRestContextName(container.getRestContextName());
       }
+      
+      else if(ExoPersonImpl.Field.HOST.toString().equals(field)) {
+    	  ((ExoPersonImpl) p).setHostName(getHost(st));
+      }
     }
     return p;
   }

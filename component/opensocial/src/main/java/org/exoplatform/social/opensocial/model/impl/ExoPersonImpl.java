@@ -24,6 +24,12 @@ import org.exoplatform.social.opensocial.model.Space;
 
 import com.google.common.collect.Maps;
 
+/**
+ * Created by The eXo Platform SARL
+ * Author : dang.tung
+ *          tungcnw@gmail.com
+ */
+
 public class ExoPersonImpl extends PersonImpl {
   
   private List<Space> spaces;
@@ -32,6 +38,8 @@ public class ExoPersonImpl extends PersonImpl {
   
   private String restContext;
   
+  private String hostName;
+  
   public static enum Field {
     /* the json field for spaces*/
     SPACES("spaces"),
@@ -39,8 +47,11 @@ public class ExoPersonImpl extends PersonImpl {
     /* the json field for portal container*/
     PORTAL_CONTAINER("portalName"),
     
-    /* the json field for portal container*/
-    REST_CONTEXT("restContext");
+    /* the json field for rest container*/
+    REST_CONTEXT("restContext"),
+    
+    /* the json field for host name*/
+    HOST("host");
     
     /**
      * The json field that the instance represents.
@@ -110,6 +121,14 @@ public class ExoPersonImpl extends PersonImpl {
   
   public String getRestContextName() {
     return restContext;
+  }
+  
+  public void setHostName(String hostName) {
+    this.hostName = hostName;
+  }
+  
+  public String getHostName() {
+    return hostName;
   }
 
 }

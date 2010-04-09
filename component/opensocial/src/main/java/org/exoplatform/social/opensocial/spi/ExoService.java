@@ -167,6 +167,13 @@ public class ExoService {
     	return (PortalContainer) ExoContainerContext.getContainerByName(portalName);
     }
     
+    protected String getHost(SecurityToken st) {
+    	String host = null;
+    	if(st instanceof ExoBlobCrypterSecurityToken) {
+    		host = ((ExoBlobCrypterSecurityToken)st).getHostName();
+    	}
+    	return host;
+    }
     
     protected QuerySpec toQuerySpec(CollectionOptions options) {
       QuerySpec query = new QuerySpec();
