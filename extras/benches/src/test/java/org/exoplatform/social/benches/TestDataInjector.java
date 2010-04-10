@@ -20,12 +20,14 @@ import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.space.SpaceService;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@SuppressWarnings("deprecation")
 @ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.benches.configuration.xml")})
 public class TestDataInjector extends  AbstractJCRTestCase  {
@@ -51,6 +53,30 @@ public class TestDataInjector extends  AbstractJCRTestCase  {
       Assert.assertNotNull(identity.getId());
     }
     
+  }
+  
+  
+  @Test
+  public void generateRelations() {
+    ActivityManager activityManager = getComponent(ActivityManager.class);
+    
+    OrganizationService organizationService = Mockito.mock(OrganizationService.class);
+    Mockito.when(organizationService.getUserHandler()).thenReturn(new FakeUserHandler());
+    ExoContainerContext.getCurrentContainer().unregisterComponent(OrganizationService.class);
+    ExoContainerContext.getCurrentContainer().registerComponentInstance(OrganizationService.class, organizationService);    
+    
+    IdentityManager identityManager = getComponent(IdentityManager.class);
+    RelationshipManager relationshipManager = getComponent(RelationshipManager.class);
+    SpaceService spaceService = getComponent(SpaceService.class);
+ 
+    
+    DataInjector injector = new DataInjector(activityManager, identityManager, relationshipManager, spaceService, organizationService);
+    injector.generatePeople(10);   /// injecting relations requires some pple
+    Collection<Relationship> relationships = injector.generateRelations(10);    
+    Assert.assertEquals(relationships.size(), 10);
+    for (Relationship relationship : relationships) {
+      Assert.assertNotNull(relationship.getId());
+    }   
   }
   
   
