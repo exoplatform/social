@@ -4,10 +4,10 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
-    <version>1.0.0-GA-SNAPSHOT</version>
+    <version>1.0.0-CR01</version>
   </parent>
   <artifactId>exo.social.component.space</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
+  <version>1.0.0-CR01</version>
   <packaging>jar</packaging>
   <name>eXo Social Space Service</name>
   <description>eXo Social Core Space Service</description>
