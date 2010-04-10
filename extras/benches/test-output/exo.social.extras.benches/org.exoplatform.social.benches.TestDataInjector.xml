@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.exoplatform.social.benches.TestDataInjector" failures="0" tests="1" time="78.06" errors="0">
-  <properties/>
-  <testcase name="injectPeople" time="73.169" classname="org.exoplatform.social.benches.TestDataInjector"/>
-</testsuite>
