@@ -1,17 +1,20 @@
 package org.exoplatform.social.benches;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.social.benches.util.LoremIpsum4J;
+import org.exoplatform.social.benches.util.NameGenerator;
 import org.exoplatform.social.core.activitystream.ActivityManager;
+import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.GlobalId;
@@ -44,6 +47,8 @@ public class DataInjector {
   private UserHandler         userHandler;
 
   private AtomicInteger       userCount;
+  
+  private NameGenerator nameGenerator;
 
   public DataInjector(ActivityManager activityManager,
                       IdentityManager identityManager,
@@ -57,6 +62,7 @@ public class DataInjector {
     this.orgnizationservice = organizationService;
     userHandler = orgnizationservice.getUserHandler();
     userCount = new AtomicInteger(0);
+    nameGenerator = new NameGenerator();
   }
 
   /**
@@ -86,6 +92,44 @@ public class DataInjector {
     }
     return relationships;
   }
+  
+  
+  public Collection<Activity> generateActivities(long count) {
+    Collection<Activity> activities = new ArrayList<Activity>();
+    for (int i = 0; i < count; i++) {
+      Activity activity = generateActivity();
+      if (activity != null) {
+        activities.add(activity);
+      }
+    }
+    return activities;
+  }
+
+  private Activity generateActivity() {
+    Identity id1 = findRandomUser(null);
+    Activity activity = null;
+    if (id1 != null) {
+
+      try {
+        activity = generateRandomActvity();
+        activityManager.saveActivity(id1.getId(), activity);
+
+      } catch (Exception e) {
+        LOG.error("failed to save activity for " + id1 + ": "  + e.getMessage());
+      }
+      LOG.info("created activity for " + id1);
+    }
+    return activity;    
+  }
+
+  private Activity generateRandomActvity() {
+    Activity activity = new Activity();
+    activity.setAppId("benches");
+    LoremIpsum4J lorem = new LoremIpsum4J();
+    activity.setBody(lorem.getWords(10));
+    activity.setTitle(lorem.getParagraphs());
+    return activity;
+  }
 
   private Relationship generateRelationship() {
     Identity[] pple = getUnrelated();
@@ -99,7 +143,7 @@ public class DataInjector {
         LOG.error("failed to create relation between " + pple[0] + " and " + pple[1] + ": "
             + e.getMessage());
       }
-      LOG.info("creating relation between " + pple[0] + " and " + pple[1]);
+      LOG.info("created relation between " + pple[0] + " and " + pple[1]);
     }
     return relationship;
   }
@@ -204,10 +248,7 @@ public class DataInjector {
         try {
           avail = true;
           user = userHandler.createUserInstance(username);
-          user.setEmail(username + "@exoplatform.int");
-          user.setFirstName(username);
-          user.setLastName(username);
-          user.setPassword("exo");
+          initRandomUser(user, username);
           userHandler.createUser(user, true);
         } catch (Exception e) {
           LOG.warn("failed to create user " + username + ": " + e.getMessage());
@@ -216,6 +257,13 @@ public class DataInjector {
       }
     }
     return user;
+  }
+
+  void initRandomUser(User user, String username) {
+    user.setEmail(username + "@exoplatform.int");
+    user.setFirstName(nameGenerator.compose(3));
+    user.setLastName(nameGenerator.compose(4));
+    user.setPassword("exo");
   }
 
   private String username(int idx) {
