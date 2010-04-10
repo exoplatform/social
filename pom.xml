@@ -64,6 +64,7 @@
    <module>portlet/profile</module>
    <module>webui/social</module>
    <module>application/rest</module>
+   <module>extras</module>
    <module>server</module>
    <module>demo</module>
    <module>packaging</module>

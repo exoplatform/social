@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.exoplatform.social</groupId>
+    <artifactId>extras</artifactId>
+    <version>1.0.0-GA-SNAPSHOT</version>
+  </parent>
+  <groupId>org.exoplatform.social</groupId>
+  <artifactId>exo.social.extras.benches</artifactId>
+  <version>1.0.0-GA-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>eXo Social - Extras - Benches</name>
+  <dependencies>
+  
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.people</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>  
+    
+    
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.space</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.exoplatform.core</groupId>
+      <artifactId>exo.core.component.organization.api</artifactId>
+      <version>${org.exoplatform.core.version}</version>
+      <scope>provided</scope>
+    </dependency>  
+    
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.commons</artifactId>
+      <version>${org.exoplatform.kernel.version}</version>
+      <scope>provided</scope>
+    </dependency>       
+    
+ 	<dependency>
+      <groupId>org.exoplatform.platform</groupId>
+      <artifactId>exo.platform.commons.testing</artifactId>
+	  <scope>test</scope>
+	</dependency>    
+    
+ 
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+  
+
+ <!-- 
+
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+      <version>${org.exoplatform.kernel.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+
+   
+-->
+  </dependencies>  
+ </project>
