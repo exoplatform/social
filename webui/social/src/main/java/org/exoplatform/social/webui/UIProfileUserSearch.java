@@ -30,7 +30,9 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.ProfileFiler;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.RelationshipManager;
@@ -82,9 +84,6 @@ public class UIProfileUserSearch extends UIForm {
   
   /** EXPERIENCE. */
   final public static String EXPERIENCE = "experiences";
-  
-  /** ORGANIZATION. */
-  final public static String ORGANIZATION = "organization";
   
   /** DEFAULT GENDER. */
   final public static String GENDER_DEFAULT = "Gender";
@@ -222,7 +221,7 @@ public class UIProfileUserSearch extends UIForm {
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getOrCreateIdentity(ORGANIZATION, getCurrentUserName());
+      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
   }
   
   /**
@@ -235,9 +234,9 @@ public class UIProfileUserSearch extends UIForm {
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
     Identity identity = null;
-    identity = im.getOrCreateIdentity(ORGANIZATION, getCurrentViewerUserName());
+    identity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
     if (identity == null) {
-      return im.getOrCreateIdentity(ORGANIZATION, getCurrentUserName());
+      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
     }
       
     return identity;
@@ -300,7 +299,7 @@ public class UIProfileUserSearch extends UIForm {
         uiSearch.setSelectedChar(charSearch);
         try {
           if (charSearch == null) { // is search by input condition and filter
-            identitiesSearchResult = idm.getIdentitiesByProfileFilter(filter);
+            identitiesSearchResult = idm.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter);
             uiSearch.setIdentityList(identitiesSearchResult);
             
             // Using regular expression for search
@@ -325,7 +324,7 @@ public class UIProfileUserSearch extends UIForm {
               filter.setName("");
             }
             
-            identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(filter);
+            identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME, filter);
             uiSearch.setIdentityList(identitiesSearchResult);
           }
         } catch (Exception e) {

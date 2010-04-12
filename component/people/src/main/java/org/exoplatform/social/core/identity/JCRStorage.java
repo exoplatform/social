@@ -365,6 +365,7 @@ public class JCRStorage {
       profileNode = (Node) nodeIterator.next();
       identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
       identity = getIdentity(identityNode);
+      if(!identity.getProviderId().equals(identityProvider)) continue;
       if (userName.length() != 0) {
         fullUserName = identity.getProfile().getFullName();
         fullNameLC = fullUserName.toLowerCase();
@@ -426,7 +427,9 @@ public class JCRStorage {
     while (nodeIterator.hasNext()) {
       Node profileNode = (Node) nodeIterator.next();
       Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
-      listIdentity.add(getIdentity(identityNode));
+      Identity identity = getIdentity(identityNode);
+      if(!identity.getProviderId().equals(identityProvider)) continue;
+      listIdentity.add(identity);
     }
     
     return listIdentity;
