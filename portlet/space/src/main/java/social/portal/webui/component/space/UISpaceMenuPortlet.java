@@ -106,7 +106,7 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
     List<PageNode> list = homeNode.getNodes();
     PageNode pageNode = null;
     for(PageNode node:list){
-      if(node.getName().equals(SPACE_SETTING_PORTLET)){
+      if(node.getName().contains(SPACE_SETTING_PORTLET)){
         pageNode = node;
         break;
       }

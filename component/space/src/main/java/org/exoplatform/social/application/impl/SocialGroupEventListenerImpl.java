@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -72,6 +71,7 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
 		  UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
 		  UIWorkingWorkspace uiWorkSpace = uiPortalApp.getChild(UIWorkingWorkspace.class);
 		  uiWorkSpace.updatePortletsByName("SpacesToolbarPortlet");
+		  uiWorkSpace.updatePortletsByName("SocialUserToolBarGroupPortlet");
 	  }
 
 	  /**

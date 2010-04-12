@@ -256,6 +256,13 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
           }
         }
       }
+      
+      // In case bug SOC-674
+      if (childNode == null) {
+    	  nodeName = space.getName() + nodeName;
+    	  childNode = homeNode.getChild(nodeName);
+      }
+      
       childNodes.remove(childNode);
       dataStorage.save(nav);
       // remove page
@@ -295,6 +302,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
    * @throws SpaceException
    */
   private PageNode createPageNodeFromApplication(Space space, String appId, boolean isRoot) throws SpaceException {
+	String portalName = Util.getPortalRequestContext().getPortalOwner();
     Application app = getApplication(appCache, appId);
     if (app == null) {
       try {
@@ -352,31 +360,20 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       //e.printStackTrace();
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE, e);
     }
-    page.setOwnerType(PortalConfig.GROUP_TYPE);
-    page.setOwnerId(space.getGroupId());
-    page.setTitle(space.getName() + " - " + newName);
-    String visibility = space.getVisibility();
-    if(visibility.equals(Space.PUBLIC)) {
-      page.setAccessPermissions(new String[]{UserACL.EVERYONE});
-    } else {
-      page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
-    }
-    page.setEditPermission("manager:" + space.getGroupId());
-    page.setModifiable(true);
-    
-    ArrayList<ModelObject> pageChilds = page.getChildren();
-    Container container = findContainerById(pageChilds, APPLICATION);
-    ArrayList<ModelObject> childs = container.getChildren();
-    if(app.getType() == ApplicationType.GADGET) childs.add(gadgetApplication);
-    else childs.add(portletApplication);
-    container.setChildren(childs);
-    pageChilds = setContainerById(pageChilds, container);
-    page.setChildren(pageChilds);
+    setPage(space, app, gadgetApplication, portletApplication, page, newName);	
     try {
-      setPermissionForPage(page.getChildren(), "*:" + space.getGroupId());	
-      dataStorage.save(page);
+      try {
+    	dataStorage.save(page);
+      } catch (Exception e) {
+    	Page clonedPage = dataStorage.getPage(PortalConfig.PORTAL_TYPE + "::" + portalName + "::" + pageName);
+        dataStorage.remove(clonedPage);
+        newName = space.getName() + newName;
+        pageName = space.getName() + pageName;
+        page = dataStorage.clonePage(SPACE_TEMPLATE_PAGE_ID, PortalConfig.GROUP_TYPE, space.getGroupId(), newName.trim());
+        setPage(space, app, gadgetApplication, portletApplication, page, newName);
+        dataStorage.save(page);
+	  }
       //work around for BUG from GTNPORTAL for DataStorage.clonePage();
-      String portalName = Util.getPortalRequestContext().getPortalOwner();
       Page clonedPage = dataStorage.getPage(PortalConfig.PORTAL_TYPE + "::" + portalName + "::" + pageName);
       dataStorage.remove(clonedPage);
     } catch (Exception e) {
@@ -397,6 +394,32 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     pageNode.setModifiable(true);
     return pageNode;
   }
+
+private void setPage(Space space, Application app, org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication, 
+		org.exoplatform.portal.config.model.Application<Portlet> portletApplication, 
+		Page page, String newName) {
+	page.setOwnerType(PortalConfig.GROUP_TYPE);
+    page.setOwnerId(space.getGroupId());
+    page.setTitle(space.getName() + " - " + newName);
+    String visibility = space.getVisibility();
+    if(visibility.equals(Space.PUBLIC)) {
+      page.setAccessPermissions(new String[]{UserACL.EVERYONE});
+    } else {
+      page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+    }
+    page.setEditPermission("manager:" + space.getGroupId());
+    page.setModifiable(true);
+    
+    ArrayList<ModelObject> pageChilds = page.getChildren();
+    Container container = findContainerById(pageChilds, APPLICATION);
+    ArrayList<ModelObject> childs = container.getChildren();
+    if(app.getType() == ApplicationType.GADGET) childs.add(gadgetApplication);
+    else childs.add(portletApplication);
+    container.setChildren(childs);
+    pageChilds = setContainerById(pageChilds, container);
+    page.setChildren(pageChilds);
+    setPermissionForPage(page.getChildren(), "*:" + space.getGroupId());
+}
   
   /**
    * Gets application from appStore by appId

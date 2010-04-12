@@ -26,6 +26,7 @@ import org.exoplatform.portal.webui.navigation.PageNavigationUtils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -50,7 +51,6 @@ public class UISocialUserToolBarGroupPortlet extends UIPortletApplication
    public List<PageNavigation> getGroupNavigations() throws Exception
    {
       String remoteUser = Util.getPortalRequestContext().getRemoteUser();
-      //List<PageNavigation> allNavigations = Util.getUIPortal().getNavigations();
       List<PageNavigation> allNavigations = Util.getUIPortalApplication().getNavigations();
       List<PageNavigation> navigations = new ArrayList<PageNavigation>();
       SpaceService spaceSrv = getSpaceService();
@@ -77,6 +77,7 @@ public class UISocialUserToolBarGroupPortlet extends UIPortletApplication
       }
       
       return navigations;
+      
    }
 
    public PageNode getSelectedPageNode() throws Exception

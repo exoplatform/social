@@ -29,6 +29,7 @@
   <div class="ContainerSpace">
 		<% for(app in applications)  {%>
 		<%    
+		if (app != null) {
 		String appId = app.getApplicationName()
 		def isRemovable = uicomponent.isRemovable(appId)
 		def appName = uicomponent.getAppName(app)
@@ -55,6 +56,7 @@
 			</div>
 			<div style="clear: left;"><span></span></div>
 		</div>
+		<% } %>
 		<% } %>
 	</div>
 	<div>

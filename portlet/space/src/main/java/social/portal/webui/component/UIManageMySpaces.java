@@ -22,12 +22,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.navigation.UINavigationManagement;
 import org.exoplatform.portal.webui.navigation.UINavigationNodeSelector;
@@ -265,7 +269,8 @@ public class UIManageMySpaces extends UIContainer {
         return;
       } else {
         String spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl();
-        String spaceSettingUrl = spaceUrl + "/" + "SpaceSettingPortlet";
+        String spaceSettingNodeName = uiMySpaces.getNodeName(space, "SpaceSettingPortlet");
+        String spaceSettingUrl = spaceUrl + "/" + spaceSettingNodeName;
         PortalRequestContext prContext = Util.getPortalRequestContext();
         prContext.setResponseComplete(true);
         prContext.getResponse().sendRedirect(spaceSettingUrl);
@@ -596,6 +601,50 @@ public class UIManageMySpaces extends UIContainer {
    */
    private String getRestContext() {
      return PortalContainer.getInstance().getRestContextName();
+   }
+   
+   /**
+    * Get node's name base on application name
+    * @param space
+    * @param appId
+    * @throws SpaceException
+    */
+   private String getNodeName(Space space, String appId) throws SpaceException {
+	 ExoContainer container = ExoContainerContext.getCurrentContainer() ;
+	 DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
+     try {
+       String groupId = space.getGroupId();
+       PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+       // return in case group navigation was removed by portal SOC-548
+       if (nav == null) return null;
+       PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
+       if (homeNode == null) {
+         throw new Exception("homeNode is null!");
+       }
+       String nodeName = SpaceUtils.getAppNodeName(space, appId);
+       PageNode childNode = homeNode.getChild(nodeName);
+       //bug from portal, gets by nodeUri instead
+       if (childNode == null) {
+         for (PageNode pageNode : homeNode.getChildren()) {
+           String nodeUri = pageNode.getUri();
+           nodeUri = nodeUri.substring(nodeUri.indexOf("/") + 1);
+           if (nodeUri.equals(nodeName)) {
+             childNode = pageNode;
+             break;
+           }
+         }
+       }
+       
+       // In case bug SOC-674
+       if (childNode == null) {
+     	  nodeName = space.getName() + nodeName;
+     	  childNode = homeNode.getChild(nodeName);
+       }
+       
+       return nodeName;
+     } catch (Exception e) {
+       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
+     }
    }
 }
 

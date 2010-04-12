@@ -18,6 +18,7 @@ package social.portal.webui.component;
 
 import java.util.ResourceBundle;
 
+import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -160,6 +161,10 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
       
+      // Reset navigation after creating (SOC-674)
+//      PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
+//      SpaceUtils.setNavigation(spaceNavigation);
+      SpaceUtils.reloadNavigation();
       //TODO: don't need to update working workspace
       //      just group tool bar portlet.
       UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
