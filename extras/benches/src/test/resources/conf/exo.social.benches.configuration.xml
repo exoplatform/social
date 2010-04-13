@@ -47,12 +47,12 @@
     <type>org.exoplatform.social.core.identity.IdentityManager</type>
   </component>
 
-<!-- 
+ 
   <component>
       <key>org.exoplatform.services.organization.OrganizationService</key>
      <type>org.exoplatform.commons.testing.mock.SimpleMockOrganizationService</type>
   </component>  
--->
+
   <component>
     <key>org.exoplatform.social.space.impl.SocialDataLocation</key>
     <type>org.exoplatform.social.space.impl.SocialDataLocation</type>
@@ -79,6 +79,10 @@
   <component>
     <key>org.exoplatform.social.core.activitystream.ActivityManager</key>
     <type>org.exoplatform.social.core.activitystream.ActivityManager</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.core.LinkProvider</type>
   </component>
 
 <!-- the default identity provider  -->

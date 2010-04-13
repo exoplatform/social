@@ -47,6 +47,9 @@ public class DataInjector {
   private UserHandler         userHandler;
 
   private AtomicInteger       userCount;
+  private AtomicInteger       relationshipCount;
+  private AtomicInteger       activityCount;
+  private AtomicInteger       spaceCount;
   
   private NameGenerator nameGenerator;
 
@@ -62,6 +65,9 @@ public class DataInjector {
     this.orgnizationservice = organizationService;
     userHandler = orgnizationservice.getUserHandler();
     userCount = new AtomicInteger(0);
+    relationshipCount = new AtomicInteger(0);
+    activityCount = new AtomicInteger(0);
+    spaceCount = new AtomicInteger(0);
     nameGenerator = new NameGenerator();
   }
 
@@ -106,25 +112,26 @@ public class DataInjector {
   }
 
   private Activity generateActivity() {
-    Identity id1 = findRandomUser(null);
+    Identity id1 = selectRandomUser(null);
     Activity activity = null;
     if (id1 != null) {
 
       try {
+        int idx = activityCount.getAndIncrement();
         activity = generateRandomActvity();
+        activity.setExternalId("benches:"+ idx);
         activityManager.saveActivity(id1.getId(), activity);
-
+        LOG.info("created activity " + activity.getExternalId());
       } catch (Exception e) {
         LOG.error("failed to save activity for " + id1 + ": "  + e.getMessage());
       }
-      LOG.info("created activity for " + id1);
+
     }
     return activity;    
   }
 
   private Activity generateRandomActvity() {
     Activity activity = new Activity();
-    activity.setAppId("benches");
     LoremIpsum4J lorem = new LoremIpsum4J();
     activity.setBody(lorem.getWords(10));
     activity.setTitle(lorem.getParagraphs());
@@ -132,26 +139,27 @@ public class DataInjector {
   }
 
   private Relationship generateRelationship() {
-    Identity[] pple = getUnrelated();
+    Identity[] pple = selectUnrelatedUsers();
     Relationship relationship = null;
     if (pple != null) {
 
       try {
+        int idx = relationshipCount.getAndIncrement();
         relationship = relationshipManager.create(pple[0], pple[1]);
         relationshipManager.confirm(relationship);
       } catch (Exception e) {
         LOG.error("failed to create relation between " + pple[0] + " and " + pple[1] + ": "
             + e.getMessage());
       }
-      LOG.info("created relation between " + pple[0] + " and " + pple[1]);
+      LOG.info("created relation " + relationship + ".");
     }
     return relationship;
   }
 
-  private Identity[] getUnrelated() {
+  private Identity[] selectUnrelatedUsers() {
 
-    Identity id1 = findRandomUser(null);
-    Identity id2 = findRandomUser(id1);
+    Identity id1 = selectRandomUser(null);
+    Identity id2 = selectRandomUser(id1);
 
     if (id1 != null && id2 != null) {
       return new Identity[] { id1, id2 };
@@ -161,7 +169,7 @@ public class DataInjector {
 
   }
 
-  private Identity findRandomUser(Identity except) {
+  private Identity selectRandomUser(Identity except) {
 
     Identity identity = null;
     int limit = 10;
