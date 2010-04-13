@@ -1045,16 +1045,20 @@ public class SpaceServiceImpl implements SpaceService {
    */
   private void removeApp(Space space, String appId) throws SpaceException {
 	String apps = space.getApp();
-    String remainApp = null;
+    StringBuffer remainApp = new StringBuffer();
     String[] listApp = apps.split(",");
-    for (String app : listApp) {
-      if (app.split("::")[0].equals(appId)) continue;
-      
-      if (remainApp == null) remainApp += app;
-      remainApp += "," + app;
+    String[] appPart;
+    String app;
+    for (int idx = 0; idx < listApp.length; idx++) {
+      app = listApp[idx];
+      appPart = app.split(":");
+      if (!appPart[0].equals(appId)) {
+        if (remainApp.length() != 0) remainApp.append(",");
+        remainApp.append(app);
+      }
     }
     
-    space.setApp(remainApp);
+    space.setApp(remainApp.toString());
     saveSpace(space, false);
   }
   
