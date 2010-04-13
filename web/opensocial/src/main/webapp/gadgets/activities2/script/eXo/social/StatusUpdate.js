@@ -52,11 +52,11 @@ eXo.social.StatusUpdate.config = {
 	HOST_PORT: null,
 	PORTAL_NAME: null,
 	REST_CONTEXT_NAME: null,
-	ACTIVITIES_REST_URL: "http://${HOST}/${REST_CONTEXT_NAME}/${portalName}/social/activities",
-	IDENTITY_REST_URL : "http://${HOST}/${REST_CONTEXT_NAME}/${portalName}/social/identity",
+	ACTIVITIES_REST_URL: "${HOST_SCHEMA}://${HOST}/${REST_CONTEXT_NAME}/${portalName}/social/activities",
+	IDENTITY_REST_URL : "${HOST_SCHEMA}://${HOST}/${REST_CONTEXT_NAME}/${portalName}/social/identity",
 	path : {
-		ROOT_PATH : "http://${HOST}/social/gadgets/activities2",
-		SCRIPT_PATH : "http://${HOST}/social/gadgets/activities2/script"
+		ROOT_PATH : "${HOST_SCHEMA}://${HOST}/social/gadgets/activities2",
+		SCRIPT_PATH : "${HOST_SCHEMA}://${HOST}/social/gadgets/activities2/script"
 	},
 	ui : {//dom id reference
 		UI_MY_STATUS_INPUT: "UIMyStatusInput",
@@ -87,19 +87,25 @@ eXo.social.StatusUpdate.configEnvironment = function() {
 	config.HOST_SCHEMA = spliter[0];
 	config.HOST_NAME = spliter[1].replace('//','');
 	config.HOST_PORT = spliter[2];
-	if (!(config.HOST_NAME && config.HOST_PORT && config.PORTAL_NAME && config.REST_CONTEXT_NAME)) {
+	var host;
+	if (config.HOST_PORT) {
+		host = config.HOST_NAME + ":" + config.HOST_PORT;
+	} else {
+		host = config.HOST_NAME;
+	}
+	if (!(config.HOST_SCHEMA && host && config.PORTAL_NAME && config.REST_CONTEXT_NAME)) {
 		//problem
 		alert('error: can not get right environment!');
 	}
-	var host = config.HOST_NAME + ":" + config.HOST_PORT;
-	config.ACTIVITIES_REST_URL = config.ACTIVITIES_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
-	config.IDENTITY_REST_URL = config.IDENTITY_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
-	config.path.ROOT_PATH = config.path.ROOT_PATH.replace('${HOST}', host);
-	config.path.SCRIPT_PATH = config.path.SCRIPT_PATH.replace('${HOST}', host);
 	
-	eXo.social.Comment.config.URL_COMMENTS = eXo.social.Comment.config.URL_COMMENTS.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
-	eXo.social.Like.config.REST_LIKE = eXo.social.Like.config.REST_LIKE.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
-	eXo.social.LinkShare.config.LINKSHARE_REST_URL = eXo.social.LinkShare.config.LINKSHARE_REST_URL.replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
+	config.ACTIVITIES_REST_URL = config.ACTIVITIES_REST_URL.replace('${HOST_SCHEMA}', config.HOST_SCHEMA).replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
+	config.IDENTITY_REST_URL = config.IDENTITY_REST_URL.replace('${HOST_SCHEMA}', config.HOST_SCHEMA).replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
+	config.path.ROOT_PATH = config.path.ROOT_PATH.replace('${HOST_SCHEMA}', config.HOST_SCHEMA).replace('${HOST}', host);
+	config.path.SCRIPT_PATH = config.path.SCRIPT_PATH.replace('${HOST_SCHEMA}', config.HOST_SCHEMA).replace('${HOST}', host);
+	
+	eXo.social.Comment.config.URL_COMMENTS = eXo.social.Comment.config.URL_COMMENTS.replace('${HOST_SCHEMA}', config.HOST_SCHEMA).replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
+	eXo.social.Like.config.REST_LIKE = eXo.social.Like.config.REST_LIKE.replace('${HOST_SCHEMA}', config.HOST_SCHEMA).replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
+	eXo.social.LinkShare.config.LINKSHARE_REST_URL = eXo.social.LinkShare.config.LINKSHARE_REST_URL.replace('${HOST_SCHEMA}', config.HOST_SCHEMA).replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME);
 }
 
 /**
