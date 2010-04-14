@@ -1,5 +1,7 @@
 package org.exoplatform.social.space;
 
+import java.util.List;
+
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityProvider;
@@ -28,6 +30,14 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
     Space space;
     try {
       space = spaceService.getSpaceById(spaceId);
+      
+      // attempt to find by name
+      if (space ==null) {
+        List<Space> spaces = spaceService.getSpacesByName(spaceId.split(":")[1], false);
+        if (spaces != null && spaces.size()>0) {
+          return spaces.get(0); // first match
+        }
+      }
     } catch (Exception e) {
       LOG.error("Could not find space " + spaceId, e);
       return null;
