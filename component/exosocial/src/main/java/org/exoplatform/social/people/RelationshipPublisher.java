@@ -42,7 +42,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       Identity id2 = relationship.getIdentity2();
       reloadIfNeeded(id2);
       String user1 = "@" + id1.getRemoteId();
-      String user2 = "@" + id2.getProfile().getFullName();
+      String user2 = "@" + id2.getRemoteId();
 
       // @foo is now connected to @bar
       Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user1, user1 + " is now connected to " + user2);
