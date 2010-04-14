@@ -44,7 +44,22 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <version>1.0.0-GA-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.benches</artifactId>
+      <version>1.0.0-GA-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.opensocial</artifactId>
+      <version>1.0.0-GA-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.exosocial</artifactId>
       <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -125,6 +140,21 @@
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.application.rest</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.common</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extras.benches</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.exosocial</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>

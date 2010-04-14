@@ -27,10 +27,12 @@
      <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
+        <scope>provided</scope>
      </dependency>   
      <dependency>
         <groupId>org.gatein.pc</groupId>
    		<artifactId>pc-api</artifactId>
+   		<scope>provided</scope>
      </dependency>
 	<dependency>
       <groupId>org.exoplatform.platform</groupId>
