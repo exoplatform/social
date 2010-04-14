@@ -71,10 +71,6 @@ import com.google.inject.name.Names;
  * */
 public class ExoSocialApiGuiceModule  extends AbstractModule {
 
-  
-//  public ExoSocialApiGuiceModule() {
-//    super();
-//  }
 
   /** {@inheritDoc} */
   @Override

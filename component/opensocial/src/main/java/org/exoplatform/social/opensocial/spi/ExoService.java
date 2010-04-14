@@ -160,11 +160,13 @@ public class ExoService {
     }
     
     protected PortalContainer getPortalContainer(SecurityToken st) {
-    	String portalName = PortalContainer.getCurrentPortalContainerName();
+    	String portalName = PortalContainer.getCurrentPortalContainerName(); 
     	if(st instanceof ExoBlobCrypterSecurityToken) {
     		portalName = ((ExoBlobCrypterSecurityToken)st).getPortalContainer();
     	}
-    	return (PortalContainer) ExoContainerContext.getContainerByName(portalName);
+    	PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
+    	ExoContainerContext.setCurrentContainer(portalContainer);
+    	return portalContainer;
     }
     
     protected String getHost(SecurityToken st) {

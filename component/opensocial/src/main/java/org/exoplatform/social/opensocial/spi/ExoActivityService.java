@@ -36,11 +36,10 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
+import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.opensocial.ExoBlobCrypterSecurityToken;
 
 import com.google.common.collect.Lists;
 
@@ -71,7 +70,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                                            CollectionOptions options,
                                                            SecurityToken token) throws SocialSpiException {
     List<Activity> result = Lists.newArrayList();
-    
+
     PortalContainer pc = getPortalContainer(token);
     ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
 
@@ -81,7 +80,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
         // TODO filter by appID
         List<org.exoplatform.social.core.activitystream.model.Activity> activities = am.getActivities(id);
         result.addAll(convertToOSActivities(activities, fields));
-       
+
       }
       // last time go first.
       // Collections.reverse(result);
@@ -118,10 +117,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
       if (token instanceof AnonymousSecurityToken) {
         throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
       }
-      
+
       PortalContainer pc = getPortalContainer(token);
       ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
-      
+
       String user = userId.getUserId(token);
       Identity id = getIdentity(user, token);
 
@@ -202,12 +201,28 @@ public class ExoActivityService extends ExoService implements ActivityService {
       if (token instanceof AnonymousSecurityToken) {
         throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
       }
-      
+
       PortalContainer pc = getPortalContainer(token);
       ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
+      IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
-      am.saveActivity(userId.getUserId(token), exoActivity);
-
+      // identity for the stream to post on
+      String targetActivityStream = null;
+      
+      /// someone posting for a space ?
+      if (groupId.getType() == GroupId.Type.groupId) {
+        String space = groupId.getGroupId();
+        Identity spaceIdentity = identityManager.getIdentity(space); // can be space:name or space:UUID
+        targetActivityStream = spaceIdentity.getId();
+        
+      } 
+      // someone posting on his own wall
+      else {
+        targetActivityStream = userId.getUserId(token);
+      }
+     
+      am.saveActivity(targetActivityStream, exoActivity);
+      
       return ImmediateFuture.newInstance(null);
     } catch (Exception e) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
@@ -469,9 +484,6 @@ public class ExoActivityService extends ExoService implements ActivityService {
     Collections.sort(lstActivities, new ActivityComparator());
     return lstActivities;
   }
-  
-
-
 
   /**
    * Implement ActivityComparator class for sorting in increase order of posted
@@ -490,5 +502,5 @@ public class ExoActivityService extends ExoService implements ActivityService {
       return (int) (act2.getPostedTime() - act1.getPostedTime());
     }
   }
-  
+
 }

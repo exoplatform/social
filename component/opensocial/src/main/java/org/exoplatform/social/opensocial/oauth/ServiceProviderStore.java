@@ -26,7 +26,9 @@ public class ServiceProviderStore {
   public ServiceProviderStore(InitParams params) {
     providers =  new HashMap<String, ServiceProviderData>();
     try {
-
+      if (params == null) {
+        return;
+      }
     Iterator<PropertiesParam> it = params.getPropertiesParamIterator();
     while (it.hasNext()) {
       PropertiesParam propertiesParam = (PropertiesParam) it.next();
