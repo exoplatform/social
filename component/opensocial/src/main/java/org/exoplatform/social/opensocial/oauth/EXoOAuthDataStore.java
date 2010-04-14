@@ -30,7 +30,9 @@ import org.apache.shindig.common.crypto.Crypto;
 import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.opensocial.spi.ExoActivityService;
@@ -187,7 +189,8 @@ public class EXoOAuthDataStore implements OAuthDataStore {
 
   public ServiceProviderStore getProviderStore() {
     if (providerStore == null) {
-      providerStore = (ServiceProviderStore) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ServiceProviderStore.class);
+      ExoContainer container = PortalContainer.getInstance();
+      providerStore = (ServiceProviderStore) container.getComponentInstanceOfType(ServiceProviderStore.class);
     }
     return providerStore;
   }

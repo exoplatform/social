@@ -22,10 +22,7 @@ public class ServiceProviderStore {
   private static Log log = ExoLogger.getExoLogger(ServiceProviderStore.class);
   private Map<String,ServiceProviderData> providers;
   
-  public ServiceProviderStore(Map<String,ServiceProviderData> consumerSecrets) {
-    this.providers = consumerSecrets;
-  }
-  
+
   public ServiceProviderStore(InitParams params) {
     providers =  new HashMap<String, ServiceProviderData>();
     try {
@@ -54,6 +51,11 @@ public class ServiceProviderStore {
    */
   public ServiceProviderData getServiceProvider(String consumerKey) {
     return providers.get(consumerKey);
+  }
+
+
+  public void setProviders(Map<String, ServiceProviderData> providers) {
+    this.providers = providers;
   }
 
   
