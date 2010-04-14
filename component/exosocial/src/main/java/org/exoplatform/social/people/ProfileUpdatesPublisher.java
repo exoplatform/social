@@ -28,30 +28,29 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
   
   @Override
   public void avatarUpdated(ProfileLifeCycleEvent event) {
-    publish(event, event.getUsername() + " has a new profile picture.");
+    publish(event, "@" + event.getUsername() + " has a new profile picture.");
   }
 
- 
 
   @Override
   public void basicInfoUpdated(ProfileLifeCycleEvent event) {
-    publish(event, event.getUsername() + " has updated his basic profile info.");
+    publish(event, "@" + event.getUsername() + " profile has updated his basic profile info.");
   }
 
   @Override
   public void contactSectionUpdated(ProfileLifeCycleEvent event) {
-    publish(event, event.getUsername() + " has updated his contact info.");
+   publish(event, "@" + event.getUsername() + " profile has some updated his contact info.");
 
   }
 
   @Override
   public void experienceSectionUpdated(ProfileLifeCycleEvent event) {
-    publish(event, event.getUsername() + " has updated his experience.");
+    publish(event, "@" + event.getUsername() + " profile has an updated experience section.");
   }
 
   @Override
   public void headerSectionUpdated(ProfileLifeCycleEvent event) {
-    publish(event, event.getUsername() + " has updated his header info.");
+    publish(event, "@" + event.getUsername() + " has updated his header info.");
   }
   
   private void publish(ProfileLifeCycleEvent event, String message) {
