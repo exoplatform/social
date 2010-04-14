@@ -29,7 +29,7 @@
   <artifactId>exo.social.demo.ear</artifactId>
   <packaging>ear</packaging>
   <name>GateIn Portal Social Demo Ear</name>
-  <description>GateIn Social Portal Ear</description>
+  <description>GateIn Social Demo Ear</description>
   <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>
@@ -39,17 +39,27 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.demo.jar</artifactId>
-      <version>1.0.0-GA-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.application.rest</artifactId>
       <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <version>1.0.0-GA-SNAPSHOT</version>
+    </dependency><!--
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.benches</artifactId>
+      <version>1.0.0-GA-SNAPSHOT</version>
+    </dependency>
+    --><dependency>
+      <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.opensocial</artifactId>
+      <version>1.0.0-GA-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.exosocial</artifactId>
       <version>1.0.0-GA-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -93,9 +103,8 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.demo.rest-war</artifactId>
+      <artifactId>exo.social.demo.jar</artifactId>
       <version>1.0.0-GA-SNAPSHOT</version>
-      <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
@@ -103,9 +112,15 @@
       <version>1.0.0-GA-SNAPSHOT</version>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.demo.rest-war</artifactId>
+      <version>1.0.0-GA-SNAPSHOT</version>
+      <type>war</type>
+    </dependency>
   </dependencies>
   <build>
-    <finalName>social-demo</finalName>
+    <finalName>socialdemo</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -122,11 +137,13 @@
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.demo.war</artifactId>
               <contextRoot>socialdemo</contextRoot>
+              <bundleFileName>socialdemo.war</bundleFileName>
             </webModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.demo.rest-war</artifactId>
               <contextRoot>rest-socialdemo</contextRoot>
+              <bundleFileName>rest-socialdemo.war</bundleFileName>
             </webModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
@@ -136,6 +153,21 @@
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.application.rest</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.common</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule><!--
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extras.benches</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            --><jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.exosocial</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
