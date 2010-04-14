@@ -63,7 +63,6 @@ public class IdentityManager {
     this.addIdentityProvider(defaultIdentityProvider);
   }
   
-  public IdentityManager() {}
 
   /**
    * Registers one or more {@link IdentityProvider} through an {@link IdentityProviderPlugin}

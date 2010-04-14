@@ -17,12 +17,20 @@
 package org.exoplatform.social.core.activitystream;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.LinkProvider;
 import org.exoplatform.social.core.activitystream.model.Activity;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
-// TODO: Auto-generated Javadoc
+
 
 /**
  * This class represents an Activity Manager, also can configure as service
@@ -35,6 +43,11 @@ public class ActivityManager {
   /** The storage. */
   private JCRStorage storage;
   
+  private LinkProvider linkProvider;
+
+  
+  private static final Log LOG = ExoLogger.getLogger(ActivityManager.class);
+  
   
   /**
    * Instantiates a new activity manager.
@@ -44,8 +57,9 @@ public class ActivityManager {
    * @see 	org.exoplatform.social.space.impl.SoscialDataLocation.
    * @throws Exception exception when can't instantiates tree node.
    */
-  public ActivityManager(SocialDataLocation dataLocation) throws Exception {
+  public ActivityManager(SocialDataLocation dataLocation, LinkProvider linkProvider) throws Exception {
     this.storage = new JCRStorage(dataLocation);
+    this.linkProvider = linkProvider;
   }
 
   //TODO should also filter by appID
@@ -56,9 +70,10 @@ public class ActivityManager {
    * @return the activity
    */
   public Activity getActivity(String activityId) {
-    return storage.load(activityId);
+    Activity activity = storage.load(activityId);
+    substituteUsernames(activity);
+    return activity;
   }
-  
   /**
    * delete activity by its id.
    * 
@@ -77,10 +92,22 @@ public class ActivityManager {
  * @return the activities
  * @throws Exception the exception
  */
-public List<Activity> getActivities(Identity identity) throws Exception {
-    String id = identity.getId();
-    return storage.getActivities(id);
-  }
+  /**
+   * Gets the activities by identity
+   * 
+   * @param identity the identity
+   * @return the activities
+   * @throws Exception the exception
+   */
+  public List<Activity> getActivities(Identity identity) throws Exception {
+      List<Activity> activities = storage.getActivities(identity.getId());
+      for (Activity activity : activities) {
+        substituteUsernames(activity);
+      }
+      return activities;
+    }
+
+
 
   /**
    * Save activity based on user and his activity
@@ -136,5 +163,45 @@ public List<Activity> getActivities(Identity identity) throws Exception {
 
     return saveActivity(identityId, activity);
   }
+  
+
+  void substituteUsernames(Activity activity) {
+    if (activity != null) {
+    activity.setTitle(substituteUsernames(activity.getTitle()));
+    activity.setBody(substituteUsernames(activity.getBody()));
+    }
+  }
+
+  /*
+   * Substitute @usernam expressions by full user profile link
+   */
+  private String substituteUsernames(String message) {
+    if (message == null) {
+      return null;
+    }
+    
+
+    Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
+    Matcher matcher = pattern.matcher(message);
+
+    // Replace all occurrences of pattern in input
+    StringBuffer buf = new StringBuffer();
+    boolean found = false;
+    while ((found = matcher.find())) {
+        // Get the match result
+        String replaceStr = matcher.group().substring(1);
+
+        // Convert to uppercase
+        replaceStr = linkProvider.getProfileLink(replaceStr);
+
+        // Insert replacement
+        matcher.appendReplacement(buf, replaceStr);
+    }
+    matcher.appendTail(buf);
+    return buf.toString();
+    
+  }
+
+
   
 }

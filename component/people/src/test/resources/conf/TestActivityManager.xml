@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+
+<external-component-plugins>
+    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+    <component-plugin>
+      <name>init.service.listener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.services.organization.OrganizationDatabaseInitializer</type>
+      <description>this listener populate organization data for the first launch</description>
+      <init-params>
+        <value-param>
+          <name>checkDatabaseAlgorithm</name>
+          <description>check database</description>
+          <value>entry</value>
+        </value-param>
+        <value-param>
+          <name>printInformation</name>
+          <description>Print information init database</description>
+          <value>true</value>
+        </value-param>
+        <object-param>
+          <name>configuration</name>
+          <description>description</description>
+          <object type="org.exoplatform.services.organization.OrganizationConfig">
+            <field  name="membershipType">
+              <collection type="java.util.ArrayList">
+
+              </collection>
+            </field>
+
+            <field  name="group">
+              <collection type="java.util.ArrayList">
+
+              </collection>
+            </field>
+            
+            <field  name="user">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>root</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Root</string></field>
+                    <field  name="lastName"><string>Root</string></field>
+                    <field  name="email"><string>root@localhost</string></field>
+                    <field  name="groups">
+                      <string></string>
+                    </field>
+                  </object>
+                </value>
+                            
+              </collection>
+            </field>
+            
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+
+  </external-component-plugins>
+</configuration>

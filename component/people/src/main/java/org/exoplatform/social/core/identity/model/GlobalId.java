@@ -55,6 +55,12 @@ public class GlobalId {
     return domain + SEPARATOR + localId;
   }
   
+  /**
+   * creates a global id based on provider and remote id
+   * @param providerId
+   * @param remoteId
+   * @return
+   */
   public static GlobalId create(String providerId, String remoteId) {
     if (providerId == null ) {
       throw new IllegalArgumentException("Could not create a valid GlobalId with null providerId");

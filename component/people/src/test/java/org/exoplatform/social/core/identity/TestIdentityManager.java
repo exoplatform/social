@@ -16,27 +16,42 @@
  */
 package org.exoplatform.social.core.identity;
 
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.test.BasicPeopleServiceTestCase;
+import static org.testng.Assert.*;
 
-public class TestIdentityManager extends  BasicPeopleServiceTestCase{ 
+import org.exoplatform.commons.testing.jcr.AbstractJCRTestCase;
+import org.exoplatform.commons.testing.mock.SimpleMockOrganizationService;
+import org.exoplatform.component.test.ConfigurationUnit;
+import org.exoplatform.component.test.ConfiguredBy;
+import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.testng.annotations.Test;
+
+@ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.people.configuration.xml")})
+public class TestIdentityManager extends  AbstractJCRTestCase{ 
   
   public TestIdentityManager() throws Exception {
 	super();
-	// TODO Auto-generated constructor stub
   }
 
   private IdentityManager identityManager;
 
-  public void setUp() throws Exception {
-	super.setUp();	
-	identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-  }
   
+  protected void afterContainerStart() {
+    identityManager = getComponent(IdentityManager.class);
+    SimpleMockOrganizationService  organizationService = (SimpleMockOrganizationService) getComponent(OrganizationService.class);
+    organizationService.addMemberships("john", "member:/platform/users");
+    organizationService.addMemberships("demo", "member:/platform/users");    
+    organizationService.addMemberships("mary", "member:/platform/users");   
+  }
+
+  @Test
   public void testIdentityManager() {
 	assertNotNull(identityManager);
   }
 
+  @Test
   public void testGetIdentityByRemoteId() throws Exception {
     Identity identity = identityManager.getOrCreateIdentity("organization", "john");
     assertNotNull(identity);
@@ -53,9 +68,10 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
 
     String id = identity.getId();
     identityManager.saveIdentity(identity);
-    assertEquals("The id should not change after having been saved", id, identity.getId());
+    assertEquals(identity.getId(), id, "The id should not change after having been saved");
   }
 
+  @Test
   public void testGetIdentityById() throws Exception {
 
     Identity identity = identityManager.getOrCreateIdentity("organization", "mary");
@@ -68,10 +84,11 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
     String oldId = identity.getId();
     identity = identityManager.getIdentity(identity.getId());
     assertNotNull(identity);
-    assertEquals("this id should still be the same", oldId, identity.getId());
+    assertEquals(identity.getId(), oldId, "this id should still be the same");
     
   }
   
+  @Test
   public void testGetIdentityByIdWithGlobalId() throws Exception {
     Identity demo = identityManager.getOrCreateIdentity("organization", "demo");
     identityManager.saveIdentity(demo);
@@ -81,12 +98,13 @@ public class TestIdentityManager extends  BasicPeopleServiceTestCase{
     assertNotNull(identity);
     String id = identity.getId();
     assertNotNull(id);
-    assertEquals("ids should be identical", demoId, id);
+    assertEquals(id, demoId,"ids should be identical");
 
     identity = identityManager.getIdentity(identity.getId());
 
   }
 
+  @Test
   public void testGetWrongId() throws Exception {
     Identity identity = identityManager.getOrCreateIdentity("organization", "jack");
     assertNull(identity);

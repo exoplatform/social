@@ -17,9 +17,9 @@
 package org.exoplatform.social.core.activitystream.model;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
- * The Class Stream.
+ * Sequence of activities
  */
 public class Stream {
   

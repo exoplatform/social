@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
 
-// TODO: Auto-generated Javadoc
+
 /**
- * The Class Relationship.
+ * Relationship between 2 social identities
  */
 public class Relationship {
   
@@ -208,4 +208,9 @@ public class Relationship {
     }
     return pendingProps;
   }
+  
+  public String toString() {
+    return identity1 + "--[" + status + "]--" + identity2;
+  }
+  
 }

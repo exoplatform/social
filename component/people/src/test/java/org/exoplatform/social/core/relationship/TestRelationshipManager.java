@@ -16,26 +16,33 @@
  */
 package org.exoplatform.social.core.relationship;
 
+import org.exoplatform.commons.testing.jcr.AbstractJCRTestCase;
+import org.exoplatform.component.test.ConfigurationUnit;
+import org.exoplatform.component.test.ConfiguredBy;
+import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.test.BasicPeopleServiceTestCase;
+import static org.testng.Assert.*;
 
-
-public class TestRelationshipManager extends BasicPeopleServiceTestCase {
+@ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.people.configuration.xml")})
+public class TestRelationshipManager extends AbstractJCRTestCase {
   
   RelationshipManager relationshipManager;
   IdentityManager identityManager;
   	
   public TestRelationshipManager() throws Exception {
 	super();  
-	// TODO Auto-generated constructor stub
+
   }
 
-  public void setUp() throws Exception {
-	super.setUp();
-	identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-	relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+
+  protected void afterContainerStart() {
+
+	identityManager = getComponent(IdentityManager.class);
+	relationshipManager = getComponent(RelationshipManager.class);
   }
   
   public void testRelationshipService() {

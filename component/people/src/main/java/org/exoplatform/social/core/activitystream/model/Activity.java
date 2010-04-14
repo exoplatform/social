@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Class Activity.
+ * An activity is a piece of message aimed at sharing some status, mood, idea, notification, data...
  */
 public class Activity  {
   

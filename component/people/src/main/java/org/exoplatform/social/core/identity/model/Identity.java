@@ -18,7 +18,7 @@ package org.exoplatform.social.core.identity.model;
 
 
 /**
- * The Class Identity.
+ * Represents persons or objects relevant to the social system.
  */
 public class Identity {
     
@@ -132,7 +132,7 @@ public class Identity {
     }
     
     public String toString() {
-      return providerId + ":" + remoteId + "("+id+")";
+      return providerId + ":" + remoteId;
     }
     
     public GlobalId getGlobalId() {
