@@ -41,8 +41,16 @@
   </component>
 
   <component>
+    <type>org.exoplatform.social.core.LinkProvider</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.core.activitystream.ActivityManager</key>
     <type>org.exoplatform.social.core.activitystream.ActivityManager</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.LinkProvider</type>
   </component>
 
   <component>
