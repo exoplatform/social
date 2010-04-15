@@ -16,17 +16,16 @@
  */
 package org.exoplatform.social.core.activitystream;
 
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.LinkProvider;
 import org.exoplatform.social.core.activitystream.model.Activity;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
@@ -42,11 +41,11 @@ public class ActivityManager {
   
   /** The storage. */
   private JCRStorage storage;
-  
-  private LinkProvider linkProvider;
-
-  
+ 
   private static final Log LOG = ExoLogger.getLogger(ActivityManager.class);
+  
+  
+  private SortedSet<ActivityProcessor> processors;
   
   
   /**
@@ -57,10 +56,11 @@ public class ActivityManager {
    * @see 	org.exoplatform.social.space.impl.SoscialDataLocation.
    * @throws Exception exception when can't instantiates tree node.
    */
-  public ActivityManager(SocialDataLocation dataLocation, LinkProvider linkProvider) throws Exception {
+  public ActivityManager(SocialDataLocation dataLocation) throws Exception {
     this.storage = new JCRStorage(dataLocation);
-    this.linkProvider = linkProvider;
+    this.processors = new TreeSet<ActivityProcessor>(processorComparator());
   }
+
 
   //TODO should also filter by appID
   /**
@@ -71,7 +71,7 @@ public class ActivityManager {
    */
   public Activity getActivity(String activityId) {
     Activity activity = storage.load(activityId);
-    substituteUsernames(activity);
+    processActivitiy(activity);
     return activity;
   }
   /**
@@ -102,12 +102,11 @@ public class ActivityManager {
   public List<Activity> getActivities(Identity identity) throws Exception {
       List<Activity> activities = storage.getActivities(identity.getId());
       for (Activity activity : activities) {
-        substituteUsernames(activity);
+        processActivitiy(activity);
       }
       return activities;
     }
-
-
+  
 
   /**
    * Save activity based on user and his activity
@@ -165,43 +164,56 @@ public class ActivityManager {
   }
   
 
-  void substituteUsernames(Activity activity) {
-    if (activity != null) {
-    activity.setTitle(substituteUsernames(activity.getTitle()));
-    activity.setBody(substituteUsernames(activity.getBody()));
-    }
-  }
-
-  /*
-   * Substitute @usernam expressions by full user profile link
+  /**
+   * Adds a new processor
+   * @param processor
    */
-  private String substituteUsernames(String message) {
-    if (message == null) {
-      return null;
-    }
-    
-
-    Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
-    Matcher matcher = pattern.matcher(message);
-
-    // Replace all occurrences of pattern in input
-    StringBuffer buf = new StringBuffer();
-    boolean found = false;
-    while ((found = matcher.find())) {
-        // Get the match result
-        String replaceStr = matcher.group().substring(1);
-
-        // Convert to uppercase
-        replaceStr = linkProvider.getProfileLink(replaceStr);
-
-        // Insert replacement
-        matcher.appendReplacement(buf, replaceStr);
-    }
-    matcher.appendTail(buf);
-    return buf.toString();
-    
+  public void addProcessor(ActivityProcessor processor) {
+    processors.add(processor);
+    LOG.info("added activity processor " + processor.getClass());
   }
+  
+  /**
+   * adds a new processor plugin
+   * @param plugin
+   */
+  public void addProcessorPlugin(BaseActivityProcessorPlugin plugin) {
+    addProcessor(plugin);
+  }
+  
+  
+  /**
+   * Comparator used to order the processors by priority
+   * @return
+   */
+  private static Comparator<ActivityProcessor> processorComparator() {
+    return new Comparator<ActivityProcessor>() {
 
+      public int compare(ActivityProcessor p1, ActivityProcessor p2) {
+        if (p1 == null || p1 == null) {
+          throw new IllegalArgumentException("Cannot compare null ActivityProcessor");
+        }
+        return p1.getPriority() - p2.getPriority();
+      }
+
+    };
+  }  
+
+  /**
+   * Pass an activity through the chain of processors
+   * 
+   * @param activity
+   */
+  void processActivitiy(Activity activity) {
+    Iterator<ActivityProcessor> it = processors.iterator();
+    while (it.hasNext()) {
+      try {
+        it.next().processActivity(activity);
+      } catch (Exception e) {
+        LOG.warn("activity processing failed " + e.getMessage());
+      }
+    }
+  }
 
   
 }

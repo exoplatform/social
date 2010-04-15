@@ -10,6 +10,41 @@
   </component>
 
   <external-component-plugins>
+    <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>  
+    <component-plugin> 
+      <name>UsernameProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.activity.UsernameProcessor</type> 
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower are executed first)</description>
+          <value>2</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <!--   
+    <component-plugin> 
+      <name>GoogleMapProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.activity.GoogleMapProcessor</type> 
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower are executed first)</description>
+          <value>1</value>
+        </value-param>
+        <value-param>
+          <name>key</name>
+          <description>your google map API key</description>
+          <value>xxx</value>
+        </value-param>        
+      </init-params>
+    </component-plugin> 
+    -->       
+  </external-component-plugins>
+
+  <external-component-plugins>
     <target-component>org.exoplatform.social.space.SpaceService</target-component>  
     <component-plugin> 
       <name>SpaceActivityPublisher</name>

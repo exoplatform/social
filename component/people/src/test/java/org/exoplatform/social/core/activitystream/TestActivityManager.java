@@ -1,65 +1,45 @@
 package org.exoplatform.social.core.activitystream;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import junit.framework.TestCase;
 
-import org.exoplatform.commons.testing.jcr.AbstractJCRTestCase;
-import org.exoplatform.commons.testing.mock.SimpleMockOrganizationService;
-import org.exoplatform.component.test.ConfigurationUnit;
-import org.exoplatform.component.test.ConfiguredBy;
-import org.exoplatform.component.test.ContainerScope;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.activitystream.model.Activity;
-import org.exoplatform.social.core.identity.IdentityProvider;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
-import org.testng.Assert;
+import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.mockito.Mockito;
 import org.testng.annotations.Test;
 
-@ConfiguredBy( {
-    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
-    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.people.configuration.xml") })
-public class TestActivityManager extends AbstractJCRTestCase {
+public class TestActivityManager extends TestCase {
 
   public TestActivityManager() throws Exception {
     super();
   }
 
   @Test
-  public void testSubstituteUsernames() throws Exception {
-    ActivityManager activityManager = getComponent(ActivityManager.class);
+  public void testAddProviders() throws Exception {
+    SocialDataLocation data = Mockito.mock(SocialDataLocation.class);
 
-    SimpleMockOrganizationService organizationService = (SimpleMockOrganizationService) getComponent(OrganizationService.class);
-    organizationService.addMemberships("root", "member:/platform/users");
-    organizationService.addMemberships("john", "member:/platform/users");
-    OrganizationIdentityProvider provider = getComponent(IdentityProvider.class);
+    ActivityManager activityManager = new ActivityManager(data); // getComponent(ActivityManager.class);
+    activityManager.addProcessor(new FakeProcessor(10));
+    activityManager.addProcessor(new FakeProcessor(2));
+    activityManager.addProcessor(new FakeProcessor(1));
+    Activity activity = new Activity();
+    activityManager.processActivitiy(activity);
 
-    Assert.assertNotNull(provider.getIdentityByRemoteId("root"));
-
-    
-    Activity activity = null;
-    activityManager.substituteUsernames(activity);
-    assertNull(activity);
-    
-    activity = new Activity();
-    activityManager.substituteUsernames(activity);
-    assertNull(activity.getTitle());
-    assertNull(activity.getBody());
-
-    activity.setTitle("single @root substitution");
-    activityManager.substituteUsernames(activity);
-    assertEquals(activity.getTitle(),
-                 "single <a href=\"/portal/private/classic/profile/root\" class=\"link\" target=\"_parent\">root root</a> substitution");
-    assertNull(activity.getBody());
-
-    activity.setTitle("@root and @john title");
-    activity.setBody("body with @root and @john");
-    activityManager.substituteUsernames(activity);
-    assertEquals(activity.getTitle(),
-                 "<a href=\"/portal/private/classic/profile/root\" class=\"link\" target=\"_parent\">root root</a> and <a href=\"/portal/private/classic/profile/john\" class=\"link\" target=\"_parent\">john john</a> title");
-    assertEquals(activity.getBody(),
-                 "body with <a href=\"/portal/private/classic/profile/root\" class=\"link\" target=\"_parent\">root root</a> and <a href=\"/portal/private/classic/profile/john\" class=\"link\" target=\"_parent\">john john</a>");
+    // just verify that we run in priority order
+    assertEquals("null-1-2-10", activity.getTitle());
 
   }
 
+  class FakeProcessor extends BaseActivityProcessorPlugin {
+
+    public FakeProcessor(int priority) {
+      super(null);
+      super.priority = priority;
+    }
+
+    public void processActivity(Activity activity) {
+      activity.setTitle(activity.getTitle() + "-" + priority);
+    }
+
+  }
 
 }

@@ -11,23 +11,24 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.testng.annotations.Test;
 
 @ConfiguredBy( {
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.people.configuration.xml") })
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.people.configuration.xml") })
+public class TestLinkProvider extends AbstractJCRTestCase {
 
-public class TestLinkProvider  extends AbstractJCRTestCase {
-
-  
   @Test
   public void testGetProfileLink() throws Exception {
-    LinkProvider provider = getComponent(LinkProvider.class);
 
     SimpleMockOrganizationService organizationService = (SimpleMockOrganizationService) getComponent(OrganizationService.class);
     organizationService.addMemberships("root", "member:/platform/users");
+    organizationService.addMemberships("john", "member:/platform/users");
 
-    assertEquals(null, provider.getProfileLink(null));
+    LinkProvider provider = getComponent(LinkProvider.class);
 
     // but when we have the identity we generate a link
     String link = provider.getProfileLink("root");
-    assertEquals(link, "<a href=\"/portal/private/classic/profile/root\" class=\"link\" target=\"_parent\">root root</a>");
+    assertEquals(link,
+                 "<a href=\"/portal/private/classic/profile/root\" class=\"link\" target=\"_parent\">root root</a>");
+
   }
+
 }
