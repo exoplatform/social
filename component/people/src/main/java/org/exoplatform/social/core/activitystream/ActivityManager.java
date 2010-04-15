@@ -26,7 +26,6 @@ import java.util.TreeSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.LinkProvider;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.impl.SocialDataLocation;
@@ -44,9 +43,6 @@ public class ActivityManager {
   private JCRStorage storage;
  
   private static final Log LOG = ExoLogger.getLogger(ActivityManager.class);
-  
-  private LinkProvider     linkProvider;
-
   
   private SortedSet<ActivityProcessor> processors;
   

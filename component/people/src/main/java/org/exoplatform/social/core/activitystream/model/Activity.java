@@ -81,6 +81,7 @@ public class Activity  {
   
   /** The like identity ids. */
   private String[] likeIdentityIds = null;
+  
 
   
   
@@ -103,7 +104,8 @@ public class Activity  {
    * Instantiates a new activity.
    */
   public Activity() {
-    
+    setUpdated(new Date());
+    setPostedTime(new Date().getTime());
   }
 
 
@@ -504,4 +506,29 @@ public class Activity  {
       setType("opensocial:" + appId);
     }
   }
+
+  /**
+   * get the ID of the stream where this activity is bound to
+   */
+  public String getStreamId() {
+    return getStream().getStreamId();
+  }
+
+
+  public void setStreamId(String streamId) {
+    getStream().setStreamId(streamId);
+  }
+  
+  /**
+   * get the ID of the stream where this activity is bound to
+   */
+  public String getStreamOwner() {
+    return getStream().getStreamOwner();
+  }
+
+
+  public void setStreamOwner(String streamOwner) {
+    getStream().setStreamOwner(streamOwner);
+  }
+  
 }

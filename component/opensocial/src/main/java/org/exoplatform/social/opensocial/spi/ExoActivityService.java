@@ -207,21 +207,23 @@ public class ExoActivityService extends ExoService implements ActivityService {
       IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
       // identity for the stream to post on
-      String targetActivityStream = null;
+      String streamId = null;
       
       /// someone posting for a space ?
       if (groupId.getType() == GroupId.Type.groupId) {
         String space = groupId.getGroupId();
         Identity spaceIdentity = identityManager.getIdentity(space); // can be space:name or space:UUID
-        targetActivityStream = spaceIdentity.getId();
+        streamId = spaceIdentity.getId();
         
       } 
       // someone posting on his own wall
       else {
-        targetActivityStream = userId.getUserId(token);
+        String user = userId.getUserId(token);
+        Identity userIdentity = identityManager.getIdentity(user); // can be organization:name or organization:UUID
+        streamId = userIdentity.getId();
       }
      
-      am.saveActivity(targetActivityStream, exoActivity);
+      am.saveActivity(streamId, exoActivity);
       
       return ImmediateFuture.newInstance(null);
     } catch (Exception e) {

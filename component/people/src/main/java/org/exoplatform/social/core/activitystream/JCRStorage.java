@@ -16,16 +16,25 @@
  */
 package org.exoplatform.social.core.activitystream;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.VersionException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
@@ -145,6 +154,7 @@ public class JCRStorage {
         return activityHomeNode.getNode(username);
       } else {
         Node appNode = activityHomeNode.addNode(username, NT_UNSTRUCTURED);
+        //appNode.addMixin("mix:referenceable");
         activityHomeNode.save();
         return appNode;
       }
@@ -169,6 +179,7 @@ public class JCRStorage {
         return userActivityHomeNode.getNode(PUBLISHED_NODE);
       } catch (PathNotFoundException ex) {
         Node appNode = userActivityHomeNode.addNode(PUBLISHED_NODE, NT_UNSTRUCTURED);
+        appNode.addMixin("mix:referenceable");
         userActivityHomeNode.save();
         return appNode;
       }
@@ -180,7 +191,7 @@ public class JCRStorage {
   }
 
   /**
-   * Saves activity base on userId and activity
+   * Saves activity based on userId and activity
    * 
    * @param userId the user id
    * @param activity the activity
@@ -189,6 +200,11 @@ public class JCRStorage {
    */
   public Activity save(String userId, Activity activity) throws Exception {
     Node activityNode;
+    
+    checkMandatory(activity.getUpdated(), "Activity.getUpdated()");
+    checkMandatory(activity.getPostedTime(), "Activity.getPostedTime()");
+
+    
     Node activityHomeNode = getPublishedActivityServiceHome(userId);
     try {
       Session session = sessionManager.openSession();
@@ -199,18 +215,20 @@ public class JCRStorage {
         activityNode = session.getNodeByUUID(activity.getId());
       }
       
+      setStreamInfo(activity, activityNode);
+
+      activityNode.setProperty(UPDATED_TIMESTAMP, activity.getUpdatedTimestamp());
+      activityNode.setProperty(POSTED_TIME, activity.getPostedTime());
+      
       if(activity.getBody() != null)
         activityNode.setProperty(BODY, activity.getBody());
       if(activity.getExternalId() != null)
         activityNode.setProperty(EXTERNAL_ID, activity.getExternalId());
-      if(activity.getPostedTime() != null)
-        activityNode.setProperty(POSTED_TIME, activity.getPostedTime());
+       
       if(activity.getPriority() != null)
         activityNode.setProperty(PRIORITY, activity.getPriority());
       if(activity.getTitle() != null)
         activityNode.setProperty(TITLE, activity.getTitle());
-      if(activity.getUpdated() != null)
-        activityNode.setProperty(UPDATED_TIMESTAMP, activity.getUpdatedTimestamp());
       if(activity.getUserId() != null)
         activityNode.setProperty(USER_ID, activity.getUserId());
       if(activity.getType() != null)
@@ -239,6 +257,30 @@ public class JCRStorage {
       sessionManager.closeSession();
     }
     return activity;
+  }
+
+  private void checkMandatory(Object value, String name) {
+    if (value == null) {
+      throw new IllegalStateException("field " + name + "should is mandatory");
+    }
+  }
+
+  /**
+   * set stream owner and id in he activity object.
+   * the stream id is the UUID of the parent (ex UUID of 'published').
+   * The stream owner is the name of the 2nd ancestor node (parent of published)
+   * @param activity
+   * @param activityNode
+   * @throws Exception
+   */
+  private void setStreamInfo(Activity activity, Node activityNode) throws Exception {
+    try {
+      activity.setStreamOwner(activityNode.getParent().getParent().getName());
+      activity.setStreamId(activityNode.getParent().getUUID());
+    } catch (UnsupportedRepositoryOperationException e) {
+      activityNode.getParent().addMixin("mix:referenceable");
+      activity.setStreamId(activityNode.getParent().getUUID());
+    }
   }
   
   private String[] mapToArray(Map<String, String> templateParams) {
@@ -302,47 +344,50 @@ public class JCRStorage {
   /**
    * Load activity by node from jcr.
    * 
-   * @param n the node
+   * @param activityNode the node
    * @return the activity
    * @throws Exception the exception
    */
-  private Activity load(Node n) throws Exception {
+  private Activity load(Node activityNode) throws Exception {
     Activity activity = new Activity();
-    activity.setId(n.getUUID());
+    activity.setId(activityNode.getUUID());
 
-    if (n.hasProperty(BODY))
-      activity.setBody(n.getProperty(BODY).getString());
-    if (n.hasProperty(EXTERNAL_ID))
-      activity.setExternalId(n.getProperty(EXTERNAL_ID).getString());
-    if (n.hasProperty(HIDDEN))
-      activity.setHidden(n.getProperty(HIDDEN).getBoolean());
-    if (n.hasProperty(POSTED_TIME))
-      activity.setPostedTime(n.getProperty(POSTED_TIME).getLong());
-    if (n.hasProperty(PRIORITY))
-      activity.setPriority((int) n.getProperty(PRIORITY).getLong());
-    if (n.hasProperty(TITLE))
-      activity.setTitle(n.getProperty(TITLE).getString());
-    if (n.hasProperty(TYPE))
-      activity.setType(n.getProperty(TYPE).getString());
-    if (n.hasProperty(REPLY_TO_ID))
-      activity.setReplyToId(n.getProperty(REPLY_TO_ID).getString());
-    if (n.hasProperty(UPDATED_TIMESTAMP))
-      activity.setUpdatedTimestamp(n.getProperty(UPDATED_TIMESTAMP).getLong());
-    if (n.hasProperty(URL))
-      activity.setUrl(n.getProperty(URL).getString());
+    activity.setStreamId(activityNode.getParent().getUUID());
+    activity.setStreamOwner(activityNode.getParent().getParent().getName());
+    
+    if (activityNode.hasProperty(BODY))
+      activity.setBody(activityNode.getProperty(BODY).getString());
+    if (activityNode.hasProperty(EXTERNAL_ID))
+      activity.setExternalId(activityNode.getProperty(EXTERNAL_ID).getString());
+    if (activityNode.hasProperty(HIDDEN))
+      activity.setHidden(activityNode.getProperty(HIDDEN).getBoolean());
+    if (activityNode.hasProperty(POSTED_TIME))
+      activity.setPostedTime(activityNode.getProperty(POSTED_TIME).getLong());
+    if (activityNode.hasProperty(PRIORITY))
+      activity.setPriority((int) activityNode.getProperty(PRIORITY).getLong());
+    if (activityNode.hasProperty(TITLE))
+      activity.setTitle(activityNode.getProperty(TITLE).getString());
+    if (activityNode.hasProperty(TYPE))
+      activity.setType(activityNode.getProperty(TYPE).getString());
+    if (activityNode.hasProperty(REPLY_TO_ID))
+      activity.setReplyToId(activityNode.getProperty(REPLY_TO_ID).getString());    
+    if (activityNode.hasProperty(UPDATED_TIMESTAMP))
+      activity.setUpdatedTimestamp(activityNode.getProperty(UPDATED_TIMESTAMP).getLong());
+    if (activityNode.hasProperty(URL))
+      activity.setUrl(activityNode.getProperty(URL).getString());
     //TODO: replace by a reference to the identity node
-    if (n.hasProperty(USER_ID))
-      activity.setUserId(n.getProperty(USER_ID).getString());
-    if (n.hasProperty(LIKE_IDENTITY_IDS))
-      activity.setLikeIdentityIds(ValuesToStrings(n.getProperty(LIKE_IDENTITY_IDS).getValues()));
-    if(n.hasProperty(PARAMS)) {
-      activity.setTemplateParams(valuesToMap(n.getProperty(PARAMS).getValues()));
+    if (activityNode.hasProperty(USER_ID))
+      activity.setUserId(activityNode.getProperty(USER_ID).getString());
+    if (activityNode.hasProperty(LIKE_IDENTITY_IDS))
+      activity.setLikeIdentityIds(ValuesToStrings(activityNode.getProperty(LIKE_IDENTITY_IDS).getValues()));
+    if(activityNode.hasProperty(PARAMS)) {
+      activity.setTemplateParams(valuesToMap(activityNode.getProperty(PARAMS).getValues()));
     }
-    if(n.hasProperty(TITLE_TEMPLATE)) {
-      activity.setTitleId(n.getProperty(TITLE_TEMPLATE).getString());
+    if(activityNode.hasProperty(TITLE_TEMPLATE)) {
+      activity.setTitleId(activityNode.getProperty(TITLE_TEMPLATE).getString());
     }
-    if(n.hasProperty(BODY_TEMPLATE)) {
-      activity.setBodyId(n.getProperty(BODY_TEMPLATE).getString());
+    if(activityNode.hasProperty(BODY_TEMPLATE)) {
+      activity.setBodyId(activityNode.getProperty(BODY_TEMPLATE).getString());
     }
     return activity;
   }
@@ -410,8 +455,7 @@ public class JCRStorage {
         try {
           deleteActivity(commentId);
         } catch(Exception ex) {
-          ex.printStackTrace();
-          //TODO hoatle LOG
+          LOG.warn("Failed to delete comment actvity " + commentId + ": " + ex.getMessage());
           //TODO hoatle handles or ignores?
         }
       }

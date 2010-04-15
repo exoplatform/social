@@ -34,6 +34,16 @@ public class Stream {
   
   /** The url. */
   private String url;
+  
+  /**
+   * internal uuid for this stream
+   */
+  private String streamId = null;
+  
+  /**
+   * internal uuid for this stream owner
+   */
+  private String streamOwner = null;
 
   /**
    * Gets the favicon url.
@@ -105,5 +115,21 @@ public class Stream {
    */
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  public String getStreamId() {
+    return streamId;
+  }
+
+  public void setStreamId(String streamId) {
+    this.streamId = streamId;
+  }
+
+  public String getStreamOwner() {
+    return streamOwner;
+  }
+
+  public void setStreamOwner(String streamOwner) {
+    this.streamOwner = streamOwner;
   }
 }
