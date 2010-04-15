@@ -30,18 +30,17 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.services.rest.Util;
 
 /**
@@ -83,22 +82,6 @@ public class ActivitiesRestService implements ResourceContainer {
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    
-    String rawCommentIds = activity.getExternalId();
-    //rawCommentIds can be: null || ,a,b,c,d
-    if (rawCommentIds != null) {
-      String[] commentIds = rawCommentIds.split(",");
-      //remove the first empty element
-      commentIds = removeItemFromArray(commentIds, "");
-      for (String commentId : commentIds) {
-        try {
-          _activityManager.deleteActivity(commentId);
-        } catch(Exception ex) {
-          //TODO hoatle LOG
-          //TODO hoatle handles or ignores?
-        }
-      }
-    }
     try {
       _activityManager.deleteActivity(activityId);
     } catch(Exception ex) {
@@ -118,10 +101,11 @@ public class ActivitiesRestService implements ResourceContainer {
   @POST
   @Path("destroy/{activityId}.{format}")
   public Response destroyActivity(@Context UriInfo uriInfo,
+                                  @PathParam("portalName") String portalName,
                                   @PathParam("activityId") String activityId,
                                   @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    portalName_ = Util.getPortalName(uriInfo);
+    portalName_ = portalName;
     Activity activity = destroyActivity(activityId);
     return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
   }
@@ -243,10 +227,11 @@ public class ActivitiesRestService implements ResourceContainer {
   @GET
   @Path("{activityId}/likes/show.{format}")
   public Response showLikes(@Context UriInfo uriInfo,
+                            @PathParam("portalName") String portalName,
                             @PathParam("activityId") String activityId,
                             @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    portalName_ = Util.getPortalName(uriInfo);
+    portalName_ = portalName;
     LikeList likeList = null;
     likeList = showLikes(activityId);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
@@ -265,11 +250,12 @@ public class ActivitiesRestService implements ResourceContainer {
   @Path("{activityId}/likes/update.{format}")
   @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
   public Response updateLike(@Context UriInfo uriInfo,
+                             @PathParam("portalName") String portalName,
                              @PathParam("activityId") String activityId,
                              @PathParam("format") String format,
                              Like like) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    portalName_ = Util.getPortalName(uriInfo);
+    portalName_ = portalName;
     LikeList likeList = null;
     likeList = updateLike(activityId, like);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
@@ -287,11 +273,12 @@ public class ActivitiesRestService implements ResourceContainer {
   @POST
   @Path("{activityId}/likes/destroy/{identityId}.{format}")
   public Response destroyLike(@Context UriInfo uriInfo,
+                              @PathParam("portalName") String portalName,
                               @PathParam("activityId") String activityId,
                               @PathParam("identityId") String identityId,
                               @PathParam("format") String format) throws Exception{
     MediaType mediaType = Util.getMediaType(format);
-    portalName_ = Util.getPortalName(uriInfo);
+    portalName_ = portalName;
     LikeList likeList =  null;
     likeList = destroyLike(activityId, identityId);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
@@ -312,7 +299,7 @@ public class ActivitiesRestService implements ResourceContainer {
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    String rawCommentIds = activity.getExternalId();
+    String rawCommentIds = activity.getReplyToId();
     //rawCommentIds can be: null || ,a,b,c,d
     if (rawCommentIds == null) {
       commentList.setComments(new ArrayList<Activity>());
@@ -347,13 +334,13 @@ public class ActivitiesRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     comment.setPostedTime(System.currentTimeMillis());
-    comment.setExternalId(Activity.IS_COMMENT);
+    comment.setReplyToId(Activity.IS_COMMENT);
     try {
       comment = _activityManager.saveActivity(comment);
-      String rawCommentIds = activity.getExternalId();
+      String rawCommentIds = activity.getReplyToId();
       if (rawCommentIds == null) rawCommentIds = "";
       rawCommentIds += "," + comment.getId();
-      activity.setExternalId(rawCommentIds);
+      activity.setReplyToId(rawCommentIds);
       _activityManager.saveActivity(activity);
     } catch(Exception ex) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
@@ -377,7 +364,7 @@ public class ActivitiesRestService implements ResourceContainer {
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    String rawCommentIds = activity.getExternalId();
+    String rawCommentIds = activity.getReplyToId();
     try {
       if (rawCommentIds.contains(commentId)) {
         Activity comment = _activityManager.getActivity(commentId);
@@ -388,7 +375,7 @@ public class ActivitiesRestService implements ResourceContainer {
         _activityManager.deleteActivity(commentId);
         commentId = "," + commentId;
         rawCommentIds = rawCommentIds.replace(commentId, "");
-        activity.setExternalId(rawCommentIds);
+        activity.setReplyToId(rawCommentIds);
         _activityManager.saveActivity(activity);
       } else {
         throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -411,10 +398,11 @@ public class ActivitiesRestService implements ResourceContainer {
   @GET
   @Path("{activityId}/comments/show.{format}")
   public Response showComments(@Context UriInfo uriInfo,
+                               @PathParam("portalName") String portalName,
                                @PathParam("activityId") String activityId,
                                @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    portalName_ = Util.getPortalName(uriInfo);
+    portalName_ = portalName;
     CommentList commentList = null;
     commentList = showComments(activityId);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
@@ -433,11 +421,12 @@ public class ActivitiesRestService implements ResourceContainer {
   @Path("{activityId}/comments/update.{format}")
   @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
   public Response updateComment(@Context UriInfo uriInfo,
+                                @PathParam("portalName") String portalName,
                                 @PathParam("activityId") String activityId,
                                 @PathParam("format") String format,
                                 Activity comment) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    portalName_ = Util.getPortalName(uriInfo);
+    portalName_ = portalName;
     CommentList commentList = null;
     commentList = updateComment(activityId, comment);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
@@ -455,11 +444,12 @@ public class ActivitiesRestService implements ResourceContainer {
   @POST
   @Path("{activityId}/comments/destroy/{commentId}.{format}")
   public Response destroyComment(@Context UriInfo uriInfo,
+                                 @PathParam("portalName") String portalName,
                                  @PathParam("activityId") String activityId,
                                  @PathParam("commentId") String commentId,
                                  @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    portalName_ = Util.getPortalName(uriInfo);
+    portalName_ = portalName;
     CommentList commentList = null;
     commentList = destroyComment(activityId, commentId);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
@@ -572,6 +562,9 @@ public class ActivitiesRestService implements ResourceContainer {
   private ActivityManager getActivityManager() {
     if (_activityManager == null) {
       PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName_);
+      if (portalContainer == null) {
+        throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+      }
       _activityManager = (ActivityManager) portalContainer.getComponentInstanceOfType(ActivityManager.class);
     }
     return _activityManager;
@@ -585,6 +578,9 @@ public class ActivitiesRestService implements ResourceContainer {
   private IdentityManager getIdentityManager() {
     if (_identityManager == null) {
       PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName_);
+      if (portalContainer == null) {
+        throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+      }
       _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
     }
     return _identityManager;

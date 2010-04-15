@@ -27,6 +27,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
@@ -66,7 +67,7 @@ public class JCRStorage {
   private static final String ID =  "exo:id".intern();
   
   /** The Constant UPDATED. */
-  private static final String UPDATED =  "exo:updated".intern();
+  private static final String UPDATED_TIMESTAMP =  "exo:updatedTimestamp".intern();
   
   /** The Constant POSTED_TIME. */
   private static final String POSTED_TIME =  "exo:postedTime".intern();
@@ -89,11 +90,13 @@ public class JCRStorage {
   /** The Constant TYPE. */
   private static final String TYPE =  "exo:type".intern();
   
+  private static final String REPLY_TO_ID = "exo:replyToId".intern();
+  
   /** The Constant HIDDEN. */
   private static final String HIDDEN =  "exo:hidden".intern();
   
   /** The Constant LIKE_IDENTITY_IDS. */
-  private static final String LIKE_IDENTITY_IDS = "exo:like".intern();
+  private static final String LIKE_IDENTITY_IDS = "exo:likeIdentityIds".intern();
   
   /** The Constant LIKE_IDENTITY_IDS. */
   private static final String PARAMS = "exo:params";
@@ -177,16 +180,16 @@ public class JCRStorage {
   }
 
   /**
-   * Save activity base on user id and activity
+   * Saves activity base on userId and activity
    * 
-   * @param user the user id
+   * @param userId the user id
    * @param activity the activity
    * @return the activity
    * @throws Exception the exception
    */
-  public Activity save(String user, Activity activity) throws Exception {
+  public Activity save(String userId, Activity activity) throws Exception {
     Node activityNode;
-    Node activityHomeNode = getPublishedActivityServiceHome(user);
+    Node activityHomeNode = getPublishedActivityServiceHome(userId);
     try {
       Session session = sessionManager.openSession();
       if (activity.getId() == null) {
@@ -207,19 +210,17 @@ public class JCRStorage {
       if(activity.getTitle() != null)
         activityNode.setProperty(TITLE, activity.getTitle());
       if(activity.getUpdated() != null)
-        activityNode.setProperty(UPDATED, activity.getUpdatedTimestamp());
+        activityNode.setProperty(UPDATED_TIMESTAMP, activity.getUpdatedTimestamp());
       if(activity.getUserId() != null)
         activityNode.setProperty(USER_ID, activity.getUserId());
       if(activity.getType() != null)
         activityNode.setProperty(TYPE, activity.getType());
+      if (activity.getReplyToId() != null)
+        activityNode.setProperty(REPLY_TO_ID, activity.getReplyToId());
       if(activity.getUrl() != null) {
         activityNode.setProperty(URL, activity.getUrl());  
       }
-      //if(activity.getLikeIdentitiesId() != null) {
-        activityNode.setProperty(LIKE_IDENTITY_IDS, activity.getLikeIdentityIds());  
-      //}
-        
-        
+      activityNode.setProperty(LIKE_IDENTITY_IDS, activity.getLikeIdentityIds());
       activityNode.setProperty(HIDDEN, activity.isHidden());
       activityNode.setProperty(TITLE_TEMPLATE, activity.getTitleId());
       activityNode.setProperty(BODY_TEMPLATE, activity.getBodyId());
@@ -254,12 +255,14 @@ public class JCRStorage {
   }
 
   /**
-   * delete activity by its id.
+   * Deletes activity by its id.
    * 
    * @param activityId the activity id
    * @throws Exception the exception
    */
   public void deleteActivity(String activityId) throws Exception {
+    deleteActivityComments(activityId);
+    
     Session session = sessionManager.openSession();
     Node activityNode = null;
     try {
@@ -321,8 +324,10 @@ public class JCRStorage {
       activity.setTitle(n.getProperty(TITLE).getString());
     if (n.hasProperty(TYPE))
       activity.setType(n.getProperty(TYPE).getString());
-    if (n.hasProperty(UPDATED))
-      activity.setUpdated(n.getProperty(UPDATED).getLong());
+    if (n.hasProperty(REPLY_TO_ID))
+      activity.setReplyToId(n.getProperty(REPLY_TO_ID).getString());
+    if (n.hasProperty(UPDATED_TIMESTAMP))
+      activity.setUpdatedTimestamp(n.getProperty(UPDATED_TIMESTAMP).getLong());
     if (n.hasProperty(URL))
       activity.setUrl(n.getProperty(URL).getString());
     //TODO: replace by a reference to the identity node
@@ -371,12 +376,12 @@ public class JCRStorage {
     List<Activity> activities = Lists.newArrayList();
     Node n = getPublishedActivityServiceHome(user);
     NodeIterator nodes = n.getNodes();
-    String externalId;
+    String replyToId;
     while (nodes.hasNext()) {
       Node node = nodes.nextNode();
-      if (node.hasProperty(EXTERNAL_ID)) {
-        externalId = node.getProperty(EXTERNAL_ID).getString();
-        if (!externalId.equals(Activity.IS_COMMENT)) {
+      if (node.hasProperty(REPLY_TO_ID)) {
+        replyToId = node.getProperty(REPLY_TO_ID).getString();
+        if (!replyToId.equals(Activity.IS_COMMENT)) {
           activities.add(load(node));
         }
       } else {
@@ -384,6 +389,33 @@ public class JCRStorage {
       }
     }
     return activities;
+  }
+  
+  /**
+   * Delete an activity's comments
+   * All the comment ids are stored in an activity's replytoId
+   * @param activityId
+   */
+  private void deleteActivityComments(String activityId) {
+    Activity activity = load(activityId);
+    String rawCommentIds = activity.getReplyToId();
+    //rawCommentIds can be: null || ,a,b,c,d
+    if (rawCommentIds != null) {
+      if (rawCommentIds.equals(Activity.IS_COMMENT)) return;
+      
+      String[] commentIds = rawCommentIds.split(",");
+      //remove the first empty element
+      commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
+      for (String commentId : commentIds) {
+        try {
+          deleteActivity(commentId);
+        } catch(Exception ex) {
+          ex.printStackTrace();
+          //TODO hoatle LOG
+          //TODO hoatle handles or ignores?
+        }
+      }
+    }
   }
   
   /**

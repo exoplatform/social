@@ -44,7 +44,7 @@ public class TestActivity extends TestCase {
     activity.setUpdated(date);
     assertEquals((Long)date.getTime(), activity.getUpdatedTimestamp());
     
-    activity.setUpdated(date.getTime());
+    activity.setUpdatedTimestamp(date.getTime());
     assertEquals(activity.getUpdated().getTime(), date.getTime());
     
     

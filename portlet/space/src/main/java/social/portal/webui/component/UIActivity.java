@@ -1,0 +1,505 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+package social.portal.webui.component;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activitystream.ActivityManager;
+import org.exoplatform.social.core.activitystream.model.Activity;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceIdentityProvider;
+import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormTextAreaInput;
+
+/**
+ * UIActivity.java
+ *
+ * @author    <a href="http://hoatle.net">hoatle</a>
+ * @since 	  Apr 12, 2010
+ * @copyright eXo Platform SAS
+ */
+@ComponentConfig(
+  lifecycle = UIFormLifecycle.class,
+  template = "app://groovy/portal/webui/component/UIActivity.gtmpl",
+  events = {
+    @EventConfig(listeners = UIActivity.ToggleDisplayLikesActionListener.class),
+    @EventConfig(listeners = UIActivity.ToggleDisplayCommentFormActionListener.class),
+    @EventConfig(listeners = UIActivity.LikeActivityActionListener.class),
+    @EventConfig(listeners = UIActivity.SetCommentListStatusActionListener.class),
+    @EventConfig(listeners = UIActivity.PostCommentActionListener.class)
+  }
+)
+public class UIActivity extends UIForm {
+  private final Log logger = ExoLogger.getLogger(UIActivity.class);
+  static public int LATEST_COMMENTS_SIZE = 2;
+  static public enum Status {
+    LATEST("latest"),
+    ALL("all"),
+    NONE("none");
+    public String getStatus() {
+      return status_;
+    }
+    private Status(String status) {
+      status_ = status;
+    } 
+    private String status_;
+  }
+  
+  private Activity activity_;
+  private List<Activity> comments_;
+  private String[] identityLikes_;
+  private ActivityManager activityManager_;
+  private IdentityManager identityManager_;
+  private boolean commentFormDisplayed_ = false;
+  private boolean likesDisplayed_ = false;
+  private Status commentListStatus_ = Status.LATEST;
+  private boolean allCommentsHidden_ = false;
+  private boolean commentFormFocused_ = false;
+  //display back ground color
+  private boolean  grayColored_ = false;
+  /**
+   * Constructor
+   * @throws Exception 
+   */
+  public UIActivity() throws Exception {
+    setSubmitAction("return false;");
+  }
+  
+  public UIActivity setActivity(Activity activity) {
+    activity_ = activity;
+    if (activity_ == null) {
+      logger.warn("activity_ is null!");
+    }
+    init();
+    return this;
+  }
+  
+  public void setGrayColored(boolean grayColored) {
+    grayColored_ = grayColored;
+  }
+  
+  public boolean isGrayColored() {
+    return grayColored_;
+  }
+  
+  public Activity getActivity() {
+    return activity_;
+  }
+  
+  public void setCommentFormDisplayed(boolean commentFormDisplayed) {
+    commentFormDisplayed_ = commentFormDisplayed;
+  }
+  
+  public boolean isCommentFormDisplayed() {
+    return commentFormDisplayed_;
+  }
+  
+  public void setLikesDisplayed(boolean likesDisplayed) {
+    likesDisplayed_ = likesDisplayed;
+  }
+  
+  public boolean isLikesDisplayed() {
+    return likesDisplayed_;
+  }
+  
+  public void setAllCommentsHidden(boolean allCommentsHidden) {
+    allCommentsHidden_ = allCommentsHidden;
+  }
+  
+  public boolean isAllCommentsHidden() {
+    return allCommentsHidden_;
+  }
+  
+  public void setCommentFormFocused(boolean commentFormFocused) {
+    commentFormFocused_ = commentFormFocused;
+  }
+  
+  public boolean isCommentFormFocused() {
+    return commentFormFocused_;
+  }
+  
+  public void setCommentListStatus(Status status) {
+    commentListStatus_ = status;
+    if (status == Status.ALL) {
+      commentFormDisplayed_ = true;
+    }
+  }
+  
+  public Status getCommentListStatus() {
+    return commentListStatus_;
+  }
+  
+  public boolean commentListToggleable() {
+    return comments_.size() > LATEST_COMMENTS_SIZE;
+  }
+
+  /**
+   * Gets all the comments or latest comments or empty list comments
+   * Gets latest comments for displaying at the first time
+   * if available, returns max LATEST_COMMENTS_SIZE latest comments.
+   * @return
+   */
+  public List<Activity> getComments() {
+    if (commentListStatus_ == Status.ALL) {
+      return comments_;
+    } else if (commentListStatus_ == Status.NONE) {
+      return new ArrayList<Activity>();
+    } else {
+      int commentsSize = comments_.size();
+      if (commentsSize > LATEST_COMMENTS_SIZE) {
+        return comments_.subList(commentsSize - LATEST_COMMENTS_SIZE, commentsSize);
+      }
+    }
+    return comments_;
+  }
+
+  public List<Activity> getAllComments() {
+    return comments_;
+  }
+  
+  public String[] getIdentityLikes() {
+    return identityLikes_;
+  }
+  
+  /**
+   * removes currently viewing userId if he liked this activity
+   * @return
+   * @throws Exception 
+   */
+  public String[] getDisplayedIdentityLikes() throws Exception {
+    identityManager_ = getIdentityManager();
+    Identity userIdentity = identityManager_.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getRemoteUser());
+    if (isLiked()) {
+      return (String[]) ArrayUtils.removeElement(identityLikes_, userIdentity.getId());
+    }
+    return identityLikes_;
+  }
+  
+  public void setIdenityLikes(String[] identityLikes) {
+    identityLikes_ = identityLikes;
+  }
+  
+  /**
+   * Gets user's full name by its userIdentityId
+   * @param userIdentityId
+   * @return
+   * @throws Exception
+   */
+  public String getUserFullName(String userIdentityId) throws Exception {
+    identityManager_ = getIdentityManager();
+    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
+    if (userIdentity == null) {
+      return null;
+    }
+    Profile userProfile = userIdentity.getProfile();
+    return userProfile.getFullName();
+  }
+  
+  /**
+   * Gets user profile uri
+   * @param userIdentityId
+   * @return
+   * @throws Exception
+   */
+  public String getUserProfileUri(String userIdentityId) throws Exception {
+    //TODO hoatle Uses LinkProvider
+    identityManager_ = getIdentityManager();
+    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
+    if (userIdentity == null) {
+      return null;
+    }
+    return "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + userIdentity.getRemoteId();
+  }
+  
+  /**
+   * Gets user's avatar image source by userIdentityId
+   * @param userIdentityId
+   * @return
+   * @throws Exception
+   */
+  public String getUserAvatarImageSource(String userIdentityId) throws Exception {
+    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
+    if (userIdentity == null) {
+      return null;
+    }
+    Profile userProfile = userIdentity.getProfile();
+    return userProfile.getAvatarImageSource(PortalContainer.getInstance());
+  }
+  
+  public boolean isSpaceActivity() {
+    identityManager_ = getIdentityManager();
+    try {
+      return identityManager_.getOrCreateIdentity(SpaceIdentityProvider.NAME, activity_.getUserId()) != null;
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
+  public Space getSpace() throws SpaceException {
+    Space space = null;
+    if (isSpaceActivity()) {
+      SpaceService spaceService = getApplicationComponent(SpaceService.class);
+      space = spaceService.getSpaceByUrl(SpaceUtils.getSpaceUrl());
+    }
+    return space;
+  }
+  
+  public String event(String name, String callback, boolean updateForm) throws Exception {
+    if (updateForm) {
+      return super.url(name);
+    }
+    StringBuilder b = new StringBuilder();
+    b.append("javascript:eXo.social.webui.UIForm.submitForm('").append(getFormId()).append("','");
+    b.append(name).append("',");
+    b.append(callback).append(",");
+    b.append("true").append(")");
+    return b.toString();
+  }
+  
+  /**
+   * Gets prettyTime by timestamp
+   * @param timestamp
+   * @return
+   */
+  public String toPrettyTime(long postedTime) {
+    //TODO use app resource
+    long time = (new Date().getTime() - postedTime) / 1000;
+    long value = 0;
+    if (time < 60) {
+      return "less than a minute ago";
+    } else {
+      if (time < 120) {
+        return "about a minute ago";
+      } else {
+        if (time < 3600) {
+          value = Math.round(time / 60);
+          return "about " + value + " minutes ago";
+        } else {
+          if (time < 7200) {
+            return "about an hour ago";
+          } else {
+            if (time < 86400) {
+              value = Math.round(time / 3600);
+              return "about " + value + " hours ago";
+            } else {
+              if (time < 172800) {
+                return "about a day ago";
+              } else {
+                if (time < 2592000) {
+                  value = Math.round(time / 86400);
+                  return "about " + value + " days ago";
+                } else {
+                  if (time < 5184000) {
+                    return "about a month ago";
+                  } else {
+                    value = Math.round(time / 2592000);
+                    return "about " + value + " months ago";
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  private String getFormId() {
+     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+     if (context instanceof PortletRequestContext) {
+        return ((PortletRequestContext)context).getWindowId() + "#" + getId();
+     }
+     return getId();
+  }
+  
+  /**
+   * Initialize activity's comments; activity's identityId likes list
+   */
+  private void init() {
+    addChild(new UIFormTextAreaInput("CommentTextarea" + activity_.getId(), "CommentTextarea", null));
+    if (activity_ != null) {
+      activityManager_ = getActivityManager();
+      comments_ = activityManager_.getComments(activity_);
+      identityLikes_ = activity_.getLikeIdentityIds();
+    }
+    //avoid any null value
+    //if (comments_ == null) comments_ = new ArrayList<Activity>();
+  }
+  
+  private void saveComment(String remoteUser, String message) throws Exception {
+    activityManager_ = getActivityManager();
+    identityManager_ = getIdentityManager();
+    Identity userIdentity = identityManager_.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+    Activity comment = new Activity(userIdentity.getId(), SpaceService.SPACES_APP_ID, remoteUser, message);
+    activityManager_.saveComment(getActivity(), comment);
+    comments_ = activityManager_.getComments(getActivity());
+    setCommentListStatus(Status.ALL);
+  }
+  
+  private void setLike(boolean isLiked, String remoteUser) throws Exception {
+    activityManager_ = getActivityManager();
+    identityManager_ = getIdentityManager();
+    Identity userIdentity = identityManager_.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+    if (isLiked) {
+      activityManager_.saveLike(activity_, userIdentity);
+    } else {
+      activityManager_.removeLike(activity_, userIdentity);
+    }
+    activity_ = activityManager_.getActivity(activity_.getId());
+    setIdenityLikes(activity_.getLikeIdentityIds());
+  }
+  
+  /**
+   * Checks if this activity is liked by the remote user
+   * @return
+   * @throws Exception 
+   */
+  public boolean isLiked() throws Exception {
+    identityManager_ = getIdentityManager();
+    return ArrayUtils.contains(identityLikes_, identityManager_.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getRemoteUser()).getId());
+  }
+  
+  private String getRemoteUser() {
+    PortalRequestContext requestContext = Util.getPortalRequestContext();
+    return requestContext.getRemoteUser();
+  }
+  
+  /**
+   * Gets activityManager
+   * @return
+   */
+  private ActivityManager getActivityManager() {
+    return getApplicationComponent(ActivityManager.class);
+  }
+  
+  /**
+   * Gets identityManager
+   * @return
+   */
+  private IdentityManager getIdentityManager() {
+    return getApplicationComponent(IdentityManager.class);
+  }
+  
+  
+  static public class ToggleDisplayLikesActionListener extends EventListener<UIActivity> {
+
+    @Override
+    public void execute(Event<UIActivity> event) throws Exception {
+      UIActivity uiActivity = event.getSource();
+      if (uiActivity.isLikesDisplayed()) {
+        uiActivity.setLikesDisplayed(false);
+      } else {
+        uiActivity.setLikesDisplayed(true);
+      }
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
+    }
+    
+  }
+  
+  static public class LikeActivityActionListener extends EventListener<UIActivity> {
+
+    @Override
+    public void execute(Event<UIActivity> event) throws Exception {
+      UIActivity uiActivity = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String isLikedStr = requestContext.getRequestParameter(OBJECTID);
+      boolean isLiked = Boolean.parseBoolean(isLikedStr);
+      uiActivity.setLike(isLiked, requestContext.getRemoteUser());
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+    }
+    
+  }
+  
+  static public class SetCommentListStatusActionListener extends EventListener<UIActivity> {
+
+    @Override
+    public void execute(Event<UIActivity> event) throws Exception {
+      UIActivity uiActivity = event.getSource();
+      String status = event.getRequestContext().getRequestParameter(OBJECTID);
+      Status commentListStatus = null;
+      if (status.equals(Status.LATEST.getStatus())) {
+        commentListStatus = Status.LATEST;
+      } else if (status.equals(Status.ALL.getStatus())) {
+        commentListStatus = Status.ALL;
+      } else if (status.equals(Status.NONE.getStatus())) {
+        commentListStatus = Status.NONE;
+      }
+      if (commentListStatus != null) {
+        uiActivity.setCommentListStatus(commentListStatus);
+      }
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
+    }
+  }
+  
+  static public class ToggleDisplayCommentFormActionListener extends EventListener<UIActivity> {
+
+    @Override
+    public void execute(Event<UIActivity> event) throws Exception {
+      UIActivity uiActivity = event.getSource();
+      if (uiActivity.isCommentFormDisplayed()) {
+        uiActivity.setCommentFormDisplayed(false);
+      } else {
+        uiActivity.setCommentFormDisplayed(true);
+      }
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
+    }
+    
+  }
+
+
+  static public class PostCommentActionListener extends EventListener<UIActivity> {
+
+    @Override
+    public void execute(Event<UIActivity> event) throws Exception {
+      UIActivity uiActivity = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIFormTextAreaInput uiFormComment = uiActivity.getChild(UIFormTextAreaInput.class);
+      String message = uiFormComment.getValue();
+      uiFormComment.reset();
+      uiActivity.saveComment(requestContext.getRemoteUser(), message);
+      uiActivity.setCommentFormFocused(true);
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      
+      uiActivity.getParent().broadcast(event, event.getExecutionPhase());
+    }
+    
+  }
+}

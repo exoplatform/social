@@ -16,6 +16,8 @@
  */
 package social.portal.webui.component.space;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -25,7 +27,6 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceIdentityProvider;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
@@ -53,17 +54,17 @@ import social.portal.webui.component.UIDisplaySpaceActivities;
   }
 ) 
 public class UISpaceActivityPortlet extends UIPortletApplication {
-
+  private final Log logger = ExoLogger.getLogger(UISpaceActivityPortlet.class);
   private Space space_;
+  private UIDisplaySpaceActivities uiDisplaySpaceActivities_;
   /**
    * constructor
    */
   public UISpaceActivityPortlet() throws Exception {
     addChild(UIComposer.class, null, null);
-    UIDisplaySpaceActivities uiDisplaySpaceActivities = addChild(UIDisplaySpaceActivities.class, null, null);
+    uiDisplaySpaceActivities_ = addChild(UIDisplaySpaceActivities.class, null, null);
     space_ = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
-    uiDisplaySpaceActivities.setSpace(space_);
-    
+    uiDisplaySpaceActivities_.setSpace(space_);
   }
   
   public SpaceService getSpaceService() {
@@ -72,6 +73,18 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
   
   public Space getSpace() {
     return space_;
+  }
+  
+  public void setSpace(Space space) {
+    space_ = space;
+  }
+  
+  /**
+   * resets to reload all activities
+   * @throws Exception
+   */
+  public void refresh() throws Exception {
+    uiDisplaySpaceActivities_.setSpace(space_);
   }
   
   static public class PostMessageActionListener extends EventListener<UIComposer> {
@@ -84,9 +97,11 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
         return;
       }
       String member = event.getRequestContext().getRemoteUser();
-      UISpaceActivityPortlet uiPortlet = uiComposer.getAncestorOfType(UISpaceActivityPortlet.class);
+      UISpaceActivityPortlet uiSpaceActivityPortlet = uiComposer.getAncestorOfType(UISpaceActivityPortlet.class);
+      UIDisplaySpaceActivities uiDisplaySpaceActivities = uiSpaceActivityPortlet.getChild(UIDisplaySpaceActivities.class);
       
-      Space space = uiPortlet.getSpace();
+      Space space = uiSpaceActivityPortlet.getSpace();
+      
       uiComposer.reset();
       ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
       IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
@@ -95,6 +110,8 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
       Activity activity = new Activity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), message);
       activity.setExternalId(userIdentity.getId());
       activityManager.saveActivity(spaceIdentity.getId(), activity);
+      
+      uiDisplaySpaceActivities.setSpace(space);
     }
     
   }

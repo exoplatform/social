@@ -22,116 +22,24 @@
 %>
 
 <%
-  import org.exoplatform.portal.webui.util.Util;
-  import org.exoplatform.social.core.activitystream.model.Activity;
-  
-  def uicomponentId = uicomponent.id
-  def labelActivityStreamOfSpace = _ctx.appRes("${uicomponentId}.label.Activity_Stream_Of_Space");
-  def labelEmptyActivityList = _ctx.appRes("${uicomponentId}.label.Empty_Activity_List");
-  
-  def activityList = uicomponent.getActivityList();
-  def activityListEmpty = true;
   def space = uicomponent.getSpace();
-  def spaceImageSource = space.getImageSource();
-  if (activityList.size() > 0) {
-    activityListEmpty = false;
-  }
-  def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl();
-%>
+  def uicomponentId = uicomponent.id;
+  def labelActivityStreamOfSpace = _ctx.appRes("${uicomponentId}.label.Activity_Stream_Of_Space").replace("{0}", space.name);
+  def labelEmptyActivityList = _ctx.appRes("${uicomponentId}.label.Empty_Activity_List").replace("{0}", space.name);
+ %>
+
 <div class="UIDisplaySpaceActivities" id="$uicomponent.id">
     <div class="ATitleBarL">
         <div class="ATitleBarR">
           <div class="ATitleBarM">
-            <div id="OwnerActivityTitle" class="ATitleBarC">
-            <%
-              labelActivityStreamOfSpace = labelActivityStreamOfSpace.replace("{0}", space.getName());
-            %>
-            $labelActivityStreamOfSpace
+            <div class="ATitleBarC">
+              <span class="SpaceName">$labelActivityStreamOfSpace</span>
             </div>
           </div>
         </div>
     </div>
-        
-    <div id="UIOwnerAppendableRoot">
-    <% if (activityListEmpty) {
-      labelEmptyActivityList = labelEmptyActivityList.replace("{0}", space.getName());
-    %>
-        $labelEmptyActivityList
-    <%} else { 
-      def isGrayContainer = false;
-      def containerClassname = "ADecoratorContainer";
-    %>
-    
-     <%for (Activity activity: activityList) {
-       def avatarImageSource = null;
-       def userFullName = null;
-       def userProfileUri = null;
-       
-       if (isGrayContainer) {
-          containerClassname = "ADecoratorContainerGray";
-          isGrayContainer = false;
-       } else {
-         containerClassname = "ADecoratorContainer";
-         isGrayContainer = true;
-       }
-     %>
-      
-        <div class="$containerClassname">
-          <div class="ActivitiesContent">
-            <% if (activity.externalId) {
-              avatarImageSource = uicomponent.getUserAvatarImageSource(activity.externalId);
-              userFullName = uicomponent.getUserFullName(activity.externalId);
-              userProfileUri = uicomponent.getUserProfileUri(activity.externalId);
-            %>
-              <a class="AvatarPeopleBG link" title="$userFullName" href="$userProfileUri">
-                <% if (avatarImageSource) {%>
-                  <img width="47px" height="47px" title="$userFullName" src="$avatarImageSource" />
-                <%} else {%>
-                  <img width="47px" height="47px" title="$userFullName" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif" />
-                <%}%>
-              </a>
-            <%} else {%>
-              <a class="AvatarPeopleBG link" title="$space.name" href="$spaceUrl">
-                <% if (spaceImageSource) {%>
-                  <img width="47px" height="47px" title="$space.name" src="$spaceImageSource" />
-                <%} else {%>
-                  <img width="47px" height="47px" title="$space.name" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
-                <%}%>
-              </a>
-            <%}%>
-            <div class="Content">
-              <div style="height: 24px;" class="TitleContent">
-                <% if (activity.externalId) {%>
-                  <div class="UserName">
-                    <a class="link" title="$userFullName" href="$userProfileUri">
-                       $userFullName
-                    </a>
-                  </div>
-                <%} else {%>
-                  <div class="UserName">
-                    <a class="link" title="$space.name" href="$spaceUrl">
-                       ${space.name}
-                    </a>
-                  </div>
-                <%}%>
-
-                <div style="clear: both; height: 0px;">
-                  <span></span>
-                </div>
-              </div>
-              <div class="ContentArea">
-                 ${activity.body}
-              </div>
-              <div class="NewsDate">
-                 ${uicomponent.toPrettyTime(activity.postedTime)} 
-              </div>
-            </div>
-            <div class="ClearLeft">
-              <span></span>
-            </div>
-          </div>
-        </div>
-       <%}%>
-    <%}%>
-    </div>
+    <% uicomponent.renderChildren(); %>
 </div>
+<% if (!uicomponent.hasChildren()) {%>
+  <div class="EmptyList">labelEmptyActivityList</div>
+<%}%>

@@ -17,19 +17,21 @@
 package social.portal.webui.component;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceIdentityProvider;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIDisplaySpaceActivities.java
@@ -40,13 +42,18 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
  * @since Apr 6, 2010
  * @copyright eXo Platform SAS
  */
-@ComponentConfig(template = "app://groovy/portal/webui/component/UIDisplaySpaceActivities.gtmpl")
+@ComponentConfig(
+  template = "app://groovy/portal/webui/component/UIDisplaySpaceActivities.gtmpl",
+  events = {
+    @EventConfig(listeners = UIDisplaySpaceActivities.UpdateNewActionListener.class),
+    @EventConfig(listeners = UIDisplaySpaceActivities.MoreActionListener.class)
+  }
+)
 public class UIDisplaySpaceActivities extends UIContainer {
+  private final Log logger = ExoLogger.getLogger(UIDisplaySpaceActivities.class);
   private Space           space_;
-
-  private IdentityManager identityManager_;
-
-  private ActivityManager activityManager_;
+  
+  private List<Activity> activityList_;
 
   /**
    * Constructor
@@ -54,15 +61,16 @@ public class UIDisplaySpaceActivities extends UIContainer {
    * @throws Exception
    */
   public UIDisplaySpaceActivities() throws Exception {
-
   }
 
   /**
    * Sets space to work with
    * @param space
+   * @throws Exception 
    */
-  public void setSpace(Space space) {
+  public void setSpace(Space space) throws Exception {
     space_ = space;
+    init();
   }
 
   /**
@@ -74,112 +82,19 @@ public class UIDisplaySpaceActivities extends UIContainer {
   }
   
   /**
-   * Gets user's avatar image source by userIdentityId
-   * @param userIdentityId
-   * @return
+   * initialize
    * @throws Exception
    */
-  public String getUserAvatarImageSource(String userIdentityId) throws Exception {
-    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
-    if (userIdentity == null) {
-      return null;
+  private void init() throws Exception {
+    if (space_ == null) {
+      logger.warn("space_ is null! Can not display spaceActivites");
+      return;
     }
-    Profile userProfile = userIdentity.getProfile();
-    return userProfile.getAvatarImageSource(PortalContainer.getInstance());
-  }
-  /**
-   * Gets user's full name by its userIdentityId
-   * @param userIdentityId
-   * @return
-   * @throws Exception
-   */
-  public String getUserFullName(String userIdentityId) throws Exception {
-    identityManager_ = getIdentityManager();
-    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
-    if (userIdentity == null) {
-      return null;
-    }
-    Profile userProfile = userIdentity.getProfile();
-    return userProfile.getFullName();
-  }
-  
-  /**
-   * Gets user profile uri
-   * @param userIdentityId
-   * @return
-   * @throws Exception
-   */
-  public String getUserProfileUri(String userIdentityId) throws Exception {
-    identityManager_ = getIdentityManager();
-    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
-    if (userIdentity == null) {
-      return null;
-    }
-    return "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + userIdentity.getRemoteId();
-  }
-
-  /**
-   * Gets prettyTime by timestamp
-   * @param timestamp
-   * @return
-   */
-  public String toPrettyTime(long postedTime) {
-    //TODO use app resource
-    long time = (new Date().getTime() - postedTime) / 1000;
-    long value = 0;
-    if (time < 60) {
-      return "less than a minute ago";
-    } else {
-      if (time < 120) {
-        return "about a minute ago";
-      } else {
-        if (time < 3600) {
-          value = Math.round(time / 60);
-          return "about " + value + " minutes ago";
-        } else {
-          if (time < 7200) {
-            return "about an hour ago";
-          } else {
-            if (time < 86400) {
-              value = Math.round(time / 3600);
-              return "about " + value + " hours ago";
-            } else {
-              if (time < 172800) {
-                return "about a day ago";
-              } else {
-                if (time < 2592000) {
-                  value = Math.round(time / 86400);
-                  return "about " + value + " days ago";
-                } else {
-                  if (time < 5184000) {
-                    return "about a month ago";
-                  } else {
-                    value = Math.round(time / 2592000);
-                    return "about " + value + " months ago";
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Gets space activity list
-   * @return
-   * @throws Exception
-   */
-  public List<Activity> getActivityList() throws Exception {
-    identityManager_ = getIdentityManager();
-    Identity spaceIdentity = identityManager_.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                  space_.getId());
-    activityManager_ = getActivityManager();
-    List<Activity> activityList = activityManager_.getActivities(spaceIdentity);
-    //TODO make sure: activities are in time order
-    Collections.reverse(activityList);
-    return activityList;
+    setChildren(null); //TODO hoatle handle this for better performance
+    Identity spaceIdentity = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space_.getId());
+    activityList_ = getActivityManager().getActivities(spaceIdentity);
+    if (activityList_ != null) Collections.reverse(activityList_); //TODO sort by postedTime needed
+    addChild(UIActivitiesContainer.class, null, null).setActivityList(activityList_).setIndex(0);
   }
 
   /**
@@ -196,5 +111,38 @@ public class UIDisplaySpaceActivities extends UIContainer {
    */
   private ActivityManager getActivityManager() {
     return getApplicationComponent(ActivityManager.class);
+  }
+  
+  static public class UpdateNewActionListener extends EventListener<UIDisplaySpaceActivities> {
+
+    @Override
+    public void execute(Event<UIDisplaySpaceActivities> event) throws Exception {
+      // TODO Auto-generated method stub
+      
+    }
+    
+  }
+  
+  /**
+   * If any older activities available, populates uiActivityList for a new UIActivitiesContainer.
+   * @author hoatle
+   *
+   */
+  static public class MoreActionListener extends EventListener<UIDisplaySpaceActivities> {
+
+    @Override
+    public void execute(Event<UIDisplaySpaceActivities> event) throws Exception {
+      
+    }
+    
+  }
+  
+  static public class PostCommentActionListener extends EventListener<UIActivity> {
+
+    @Override
+    public void execute(Event<UIActivity> event) throws Exception {
+      
+    }
+    
   }
 }

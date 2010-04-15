@@ -286,7 +286,7 @@
 
 .CommentFormBlock {
   background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
-  width: 685px;
+  /*width: 685px;*/
   margin-left: 50px;
   margin-bottom: 3px;
 }
@@ -304,6 +304,7 @@
   border: 1px solid gray;
   float: right;
   margin-top: 3px;
+  margin-right: 7px;
   width: 80px;
 }
 

@@ -73,9 +73,9 @@ public class Activity  {
   /** The type. */
   private String type = null;
   
-  /** The replyto id. */
-  private String replytoId = null;
-  
+  /** The replyTo id. */
+  private String replyToId = null;
+ 
   /** The hidden. */
   private boolean hidden = false;
   
@@ -173,10 +173,10 @@ public class Activity  {
   /**
    * Sets the updatedTimestamp.
    * 
-   * @param updatedTimestamp the new updatedTimestamp
+   * @param timestamp the new updatedTimestamp
    */
-  public void setUpdated(Long updated) {
-    this.updatedTimestamp = updated;
+  public void setUpdatedTimestamp(Long timestamp) {
+    this.updatedTimestamp = timestamp;
   }
 
   /**
@@ -364,8 +364,8 @@ public class Activity  {
    * 
    * @return the replyto id
    */
-  public String getReplytoId() {
-      return replytoId;
+  public String getReplyToId() {
+      return replyToId;
   }
 
   /**
@@ -373,8 +373,8 @@ public class Activity  {
    * 
    * @param replytoId the new replyto id
    */
-  public void setReplytoId(String replytoId) {
-      this.replytoId = replytoId;
+  public void setReplyToId(String replyToId) {
+      this.replyToId = replyToId;
   }
 
   /**

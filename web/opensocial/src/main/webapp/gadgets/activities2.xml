@@ -201,6 +201,21 @@
   					</table>	
   				</div>
   				
+	        <div id="UIFriendsActivities">
+	            <div class="ATitleBarL">
+	                <div class="ATitleBarR">
+	                    <div class="ATitleBarM">
+	                        <div id="OwnerFriendsActivityTitle" class="ATitleBarC">__MSG_friends_activities__</div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div id="UIFriendsAppendableRoot"> 
+	                <!-- the root to append friends activities block -->
+	            </div>
+	            <div id="UIFriendsMore" class="FloatRight DisplayNone"><a href="#friendsMore">__MSG_more__</a></div>
+	            <div class="ClearRight"><span>&nbsp</span></div>
+	        </div>
+
   				<div class="ATitleBarL">
   					<div class="ATitleBarR">
   						<div class="ATitleBarM">
@@ -216,21 +231,8 @@
   					<a href="#ownerMore">__MSG_more__</a> 
   				 </div>
   				 <div class="ClearRight"><span /></div>
-  				</div>  				
-  				<div id="UIFriendsActivities">
-	  				<div class="ATitleBarL">
-	  					<div class="ATitleBarR">
-	  						<div class="ATitleBarM">
-	  							<div id="OwnerFriendsActivityTitle" class="ATitleBarC">__MSG_friends_activities__</div>
-	  						</div>
-	  					</div>
-	  				</div>
-	  				<div id="UIFriendsAppendableRoot"> 
-	  					<!-- the root to append friends activities block -->
-	  				</div>
-	  				<div id="UIFriendsMore" class="FloatRight DisplayNone"><a href="#friendsMore">__MSG_more__</a></div>
-	  				<div class="ClearRight"><span>&nbsp</span></div>
   				</div>
+  			
   			</div>
   		</div>
   	</div>

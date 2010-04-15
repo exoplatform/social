@@ -53,7 +53,8 @@ public class IdentityRestService implements ResourceContainer {
   @GET
   @Path("show.json")
   @Produces({MediaType.APPLICATION_JSON})
-  public UserId getId(@PathParam("username") String username, @PathParam("portalName") String portalName) throws Exception {
+  public UserId getId(@PathParam("username") String username,
+                      @PathParam("portalName") String portalName) throws Exception {
       _identityManager = getIdentityManager(portalName);
       String id = null;
       try {

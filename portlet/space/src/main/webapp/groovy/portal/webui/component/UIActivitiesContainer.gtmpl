@@ -20,9 +20,7 @@
 -->
 */
 %>
-<%
-  uicomponent.refresh();
-%>
-<div class="UISpaceActivityPortlet" id="$uicomponent.id">
-  <% uicomponent.renderChildren(); %>
+
+<div class="UIActivitiesContainer" id="$uicomponent.id">
+    <% uicomponent.renderChildren(); %>
 </div>

@@ -1,0 +1,313 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.apache.commons.lang.StringEscapeUtils;
+  
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.webui.form.UIFormTextAreaInput;
+  
+  def pcontext = Util.getPortalRequestContext();
+  def jsManager = pcontext.getJavascriptManager();
+  
+  def activity = uicomponent.getActivity();
+  
+  jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIForm", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIActivity", "/eXoResourcesSocial/javascript");
+  
+  def labelComment = _ctx.appRes("UIActivity.label.Comment");
+  def labelLike = _ctx.appRes("UIActivity.label.Like");
+  def labelUnlike = _ctx.appRes("UIActivity.label.Unlike");
+  def inputWriteAComment = _ctx.appRes("UIActivity.input.Write_A_Comment");
+  def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
+  def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
+  def labelOnePersonLikeThis = _ctx.appRes("UIActivity.label.One_Person_Like_This");
+  def labelPeopleLikeThis = _ctx.appRes("UIActivity.label.People_Like_This");
+  def labelYouLikeThis = _ctx.appRes("UIActivity.label.You_Like_This");
+  def labelYouAndOnePersonLikeThis = _ctx.appRes("UIActivity.label.You_And_One_Person_Like_This");
+  def labelYouAndPeopleLikeThis = _ctx.appRes("UIActivity.label.You_And_People_Like_This");
+  
+  def likeActivityAction = uicomponent.event("LikeActivity", "true");
+  def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
+  
+  def commentList = uicomponent.getComments();
+  def allComments = uicomponent.getAllComments();
+  if (allComments) {
+    labelShowAllComments = labelShowAllComments.replace("{0}", allComments.size() + "");
+    labelHideAllComments = labelHideAllComments.replace("{0}", allComments.size() + "");
+  
+  }
+  def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
+  def identityLikesNum = 0;
+  def labelLikes = null;
+  def toggleDisplayLikesAction = uicomponent.event("ToggleDisplayLikes");
+  def startTag = "<a onclick=\"$toggleDisplayLikesAction\" id=\"DisplayListPeopleLikes${activity.id}\" href=\"#DisplayListPeopleLikes\">";
+  def endTag = "</a>";
+  if (displayedIdentityLikes != null) {
+    identityLikesNum = displayedIdentityLikes.length;
+  }
+  def commentListStatus = uicomponent.getCommentListStatus();
+  def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
+  def likesDisplayed = uicomponent.isLikesDisplayed();
+  
+  def params = "{activityId: '${activity.id}', inputWriteAComment: '$inputWriteAComment', commentFormDisplayed: $commentFormDisplayed, commentFormFocused: ${uicomponent.isCommentFormFocused()}}";
+  jsManager.addOnLoadJavascript("(new eXo.social.webui.UIActivity()).init($params)");
+
+  def activityUserName, activityUserProfileUri, activityImageSource, activityContentBody, activityPrettyTime;
+  def commentFormBlockClass = "", listPeopleLikeBlockClass = "", listPeopleBGClass = "", activityDecoratorBG = "ADecoratorContainer";
+  if (!uicomponent.isCommentFormDisplayed()) {
+    commentFormBlockClass = "DisplayNone";
+  }
+  
+  if (!likesDisplayed) {
+    listPeopleLikeBlockClass = "DisplayNone";
+  }
+  
+  if (uicomponent.isGrayColored()) {
+    activityDecoratorBG = "ADecoratorContainerGray";
+  }
+  
+  if (uicomponent.isLiked()) {
+    if (identityLikesNum > 1) {
+      labelLikes = labelYouAndPeopleLikeThis.replace("{start}", startTag).replace("{end}", endTag).replace("{0}", identityLikesNum + "");
+    } else if (identityLikesNum == 1) {
+      labelLikes = labelYouAndOnePersonLikeThis.replace("{start}", startTag).replace("{end}", endTag);
+    } else {
+      labelLikes = labelYouLikeThis;
+    }
+  } else {
+    if (identityLikesNum > 1) {
+        labelLikes = labelPeopleLikeThis.replace("{start}", startTag).replace("{end}", endTag).replace("{0}", identityLikesNum + "");
+    } else if (identityLikesNum == 1) {
+        labelLikes = labelOnePersonLikeThis.replace("{start}", startTag).replace("{end}", endTag);
+    }
+  }
+  
+  if (!labelLikes) {
+   //hides diplayPeopleBG
+   listPeopleBGClass = "DisplayNone";
+  }
+
+  activityContentBody = StringEscapeUtils.escapeHtml(activity.body); //TODO hoatle filtered content with allowed tags
+  activityPrettyTime = uicomponent.toPrettyTime(activity.postedTime);
+
+  //TODO hoatle : makes sure to have space actitivy, space's member activity + user activity
+  if (activity.externalId) {
+    //space's member activity
+     activityUserName = uicomponent.getUserFullName(activity.externalId);
+     activityUserProfileUri = uicomponent.getUserProfileUri(activity.externalId);
+     activityImageSource = uicomponent.getUserAvatarImageSource(activity.externalId);
+  } else {
+    if (uicomponent.isSpaceActivity()) {
+      def space = uicomponent.getSpace();
+      activityUserName = space.name;
+      activityContentBody = activity.body;
+      activityUserProfileUri = space.url;
+      activityImageSource = space.getImageSource();
+      if (!activityImageSource) activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+    } else {
+      //user activity
+      activityUserName = uicomponent.getUserFullName(activity.userId);
+      activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
+      activityImageSource = uicomponent.getUserAvatarImageSource(activity.userId);
+    }
+  }
+  if (!activityImageSource) activityImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+%>
+
+<div class="UIActivity $activityDecoratorBG">
+  <% uiform.begin() %>
+  <div class="ActivitiesContent">
+    <a class="AvatarPeopleBG" title="$activityUserName" href="$activityUserProfileUri">
+      <img width="47px" height="47px" title="$activityUserName" src="$activityImageSource" />
+    </a>
+    <div class="Content">
+      <div style="height: 24px;" class="TitleContent">
+        <div class="UserName">
+          <a class="link" title="$activityUserName" href="$activityUserProfileUri">
+            $activityUserName
+          </a>
+        </div>
+        <div class="ActionContent">
+          <div href="#action" class="ActionContenButton">
+            <span></span>
+          </div>
+          <div class="MenuItemContainer" style="position: absolute; display: block; min-width: 98px; top: 19px; right: 5px; visibility: hidden;">
+            <div class="SubBlock">
+              <div class="MenuItem">
+                <a href="#delete" title="Delete" class="ItemIcon DeleteIcon DefaultPageIcon">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="clear: both; height: 0px;">
+          <span></span>
+        </div>
+      </div>
+      <div class="ContentArea">
+        $activityContentBody
+      </div>
+      <div class="NewsDate">
+        $activityPrettyTime
+      </div>
+      <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false); %>
+      <a onclick="$toggleDisplayCommentAction" class="link" id="CommentLink${activity.id}" href="#comment">
+        $labelComment
+      </a>
+      <span> | </span>
+      <% if (uicomponent.isLiked()) { %>
+        <a onclick="$unlikeActivityAction" class="link" id="UnLikeLink${activity.id}" href="#unlike">
+          $labelUnlike
+        </a>
+      <% } else { %>
+        <a onclick="$likeActivityAction" class="link" id="LikeLink${activity.id}" href="#like">
+          $labelLike
+        </a>
+      <% }%>
+    </div>
+    <div class="ClearLeft">
+      <span></span>
+    </div>
+  </div>
+  <div class="ListPeopleLikeBG $listPeopleBGClass">
+    <div class="ListPeopleLike">
+      <div class="ListPeopleContent">
+        <% if (!labelLikes) labelLikes = ""; %>
+        <div class="Title">$labelLikes</div>
+        <div class="$listPeopleLikeBlockClass">
+        <% 
+        def personLikeFullName, personLikeProfileUri, personLikeAvatarImageSource;
+        displayedIdentityLikes.each({
+          personLikeFullName = uicomponent.getUserFullName(it);
+          personLikeProfileUri = uicomponent.getUserProfileUri(it);
+          personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
+          if (!personLikeAvatarImageSource) {
+            personLikeAvatarImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+          }
+        %>
+          <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
+            <img width="47px" height="47px" src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
+          </a>
+        <% })%>
+        </div>
+        <div class="ClearLeft">
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="CommentListInfo">
+  <% if (uicomponent.commentListToggleable()) {
+    def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
+    def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
+   %>
+			<div class="CommentBlock">
+			  <div class="CommentContent">
+			    <div class="CommentBorder">
+			    <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
+              <a onclick="$showAllCommentsAction" href="#show-all-comments">
+                    $labelShowAllComments
+              </a>
+          <% } else if (commentListStatus.getStatus().equals("all")) { %>
+              <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
+                    $labelHideAllComments
+              </a>
+          <% } %>
+			    </div>
+			  </div>
+			</div>
+	<% } %>
+  </div>
+  <div class="CommentListBlock">
+  <% 
+  def commenterFullName, commenterProfileUri, commenterImageSource, commentMessage, commentPrettyTime;
+  def first = true, commentContentClass;
+  commentList.each({
+    if (first & !uicomponent.commentListToggleable()) {
+      commentContentClass = "CommentContent";
+      first = false;
+    } else {
+      commentContentClass = "";
+    }
+    commenterFullName = uicomponent.getUserFullName(it.userId);
+    commenterProfileUri = uicomponent.getUserProfileUri(it.userId);
+    commenterImageSource = uicomponent.getUserAvatarImageSource(it.userId);
+    if (!commenterImageSource) {
+      commenterImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+    }
+    commentMessage = StringEscapeUtils.escapeHtml(it.body);
+    commentPrettyTime = uicomponent.toPrettyTime(it.postedTime);
+  %>
+		<div id="CommentBlock${activity.id}" class="CommentBlock">
+		  <div class="$commentContentClass">
+		    <div class="CommentBorder">
+		      <div class="CommentActivitiesContent">
+		        <a class="link AvatarPeopleBG" title="$commenterFullName" href="$commenterProfileUri">
+		          <img width="47px" height="47px" src="$commenterImageSource" />
+		        </a>
+		        <div class="Content">
+		          <div style="height: 24px;" class="Titlecontent">
+		            <div class="UserName">
+		              <a class="link" href="$commenterProfileUri">
+		                $commenterFullName
+		              </a>
+		            </div>
+		            <div class="ActionContent">
+		              <a href="#action-delete" class="ActionDeleteButton" id="DeleteCommentButton">
+		                &nbsp;
+		              </a>
+		            </div>
+		            <div style="clear: both; height: 0px;">
+		              <span></span>
+		            </div>
+		          </div>
+		          <div class="Content">
+		            $commentMessage
+		          </div>
+		          <div class="NewsDate">
+		            $commentPrettyTime
+		          </div>
+		        </div>
+		        <div class="ClearLeft">
+		          <span></span>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+  <% }) %>
+  </div>
+  <div class="CommentFormBlock $commentFormBlockClass" id="CommentFormBlock${activity.id}">
+    <div class="CommentContent">
+      <div class="CommentBorder">
+        <% uicomponent.renderChild(UIFormTextAreaInput.class); %>
+        <input type="button" onclick="<%= uicomponent.event("PostComment") %>" value="$labelComment" class="CommentButton DisplayNone" id="CommentButton${activity.id}" />
+        <div class="ClearBoth">
+        </div>
+      </div>
+    </div>
+  </div>
+  <% uiform.end() %>
+</div>

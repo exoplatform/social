@@ -268,7 +268,7 @@
                             onParentVersion="COPY" protected="false" multiple="false">
           <valueConstraints/>
         </propertyDefinition>        
-        <propertyDefinition name="exo:updated" requiredType="Long" autoCreated="false" mandatory="true"
+        <propertyDefinition name="exo:updatedTimestamp" requiredType="Long" autoCreated="false" mandatory="true"
                             onParentVersion="COPY" protected="false" multiple="false">
           <valueConstraints/>
         </propertyDefinition>
@@ -289,6 +289,10 @@
           <valueConstraints/>
         </propertyDefinition>
         <propertyDefinition name="exo:type" requiredType="String" autoCreated="false" mandatory="false"
+                            onParentVersion="COPY" protected="false" multiple="false">
+          <valueConstraints/>
+        </propertyDefinition>
+        <propertyDefinition name="exo:replyToId" requiredType="String" autoCreated="false" mandatory="false"
                             onParentVersion="COPY" protected="false" multiple="false">
           <valueConstraints/>
         </propertyDefinition>
