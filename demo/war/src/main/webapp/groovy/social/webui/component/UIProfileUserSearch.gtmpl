@@ -37,7 +37,7 @@ def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
 def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
 def femaleLabel = _ctx.appRes("${uicomponentId}.label.FeMale");
 def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
-def professionalDefaultVal = _ctx.appRes("${uicomponentId}.label.Professional");
+def skillsDefaultVal = _ctx.appRes("${uicomponentId}.label.Skills");
 def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
 def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
@@ -46,7 +46,7 @@ def searchId = "Search";
 def moreSearchId = "MoreSearch";
 def hideMoreSearchId = "HideMoreSearch";
 def positionId = "position";
-def professionalId = "professional";
+def skillsId = "skills";
 def genderId = "gender";
 def selectedStartChar = uicomponent.getSelectedChar();
 def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
@@ -71,7 +71,7 @@ def childs = uicomponent.getChildren();
             
             <input id="defaultUserContact" type="hidden" value="$nameDefaultVal">
             <input id="defaultPos" type="hidden" value="$positionDefaultVal">
-            <input id="defaultProf" type="hidden" value="$professionalDefaultVal">
+            <input id="defaultSkills" type="hidden" value="$skillsDefaultVal">
             <input id="defaultGender" type="hidden" value="$allGenderLabel">
             <input id="searchAll" type="hidden" value="$searchAll">
             <div id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</div>

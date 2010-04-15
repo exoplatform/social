@@ -30,7 +30,6 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.ProfileFiler;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -70,8 +69,8 @@ public class UIProfileUserSearch extends UIForm {
   /** USER CONTACT. */
   final public static String USER_CONTACT = "name";
   
-  /** PROFESSIONAL. */
-  final public static String PROFESSIONAL = "professional";
+  /** SKILLS. */
+  final public static String SKILLS = "skills";
   
   /** POSITION. */
   final public static String POSITION = "position";
@@ -208,7 +207,7 @@ public class UIProfileUserSearch extends UIForm {
     
     addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, USER_CONTACT));
     addUIFormInput(new UIFormStringInput(POSITION, POSITION, POSITION));
-    addUIFormInput(new UIFormStringInput(PROFESSIONAL, PROFESSIONAL, PROFESSIONAL));
+    addUIFormInput(new UIFormStringInput(SKILLS, SKILLS, SKILLS));
     addUIFormInput(new UIFormSelectBox(GENDER, GENDER, options));
   }
   
@@ -274,7 +273,7 @@ public class UIProfileUserSearch extends UIForm {
       
       String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
       String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
-      String defaultProfVal = resApp.getString(uiSearch.getId() + ".label.Professional");
+      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
       String defaultGenderVal = resApp.getString(uiSearch.getId() + ".label.AllGender");
       
       if (!isValidInput(filter)) { // is invalid condition input
@@ -287,14 +286,14 @@ public class UIProfileUserSearch extends UIForm {
         if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
           filter.setPosition("");
         }
-        if ((filter.getProfessional() == null) || filter.getProfessional().equals(defaultProfVal)) {
-          filter.setProfessional("");
+        if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
+          filter.setSkills("");
         }
         if (filter.getGender().equals(defaultGenderVal)) {
           filter.setGender("");
         }
         
-        String professional = null;
+        String skills = null;
         
         uiSearch.setSelectedChar(charSearch);
         try {
@@ -303,15 +302,15 @@ public class UIProfileUserSearch extends UIForm {
             uiSearch.setIdentityList(identitiesSearchResult);
             
             // Using regular expression for search
-            professional = filter.getProfessional();
-            if (professional.length() > 0) {
-              professional = ((professional == "") || (professional.length() == 0)) ? "*" : professional;
-              professional = (professional.charAt(0)!='*') ? "*" + professional : professional;
-              professional = (professional.charAt(professional.length()-1)!='*') ? professional += "*" : professional;
-              professional = (professional.indexOf("*") >= 0) ? professional.replace("*", ".*") : professional;
-              professional = (professional.indexOf("%") >= 0) ? professional.replace("%", ".*") : professional;
-              Pattern.compile(professional);
-              identities = uiSearch.getIdentitiesByProfessional(professional, identitiesSearchResult);
+            skills = filter.getSkills();
+            if (skills.length() > 0) {
+              skills = ((skills == "") || (skills.length() == 0)) ? "*" : skills;
+              skills = (skills.charAt(0)!='*') ? "*" + skills : skills;
+              skills = (skills.charAt(skills.length()-1)!='*') ? skills += "*" : skills;
+              skills = (skills.indexOf("*") >= 0) ? skills.replace("*", ".*") : skills;
+              skills = (skills.indexOf("%") >= 0) ? skills.replace("%", ".*") : skills;
+              Pattern.compile(skills);
+              identities = uiSearch.getIdentitiesBySkills(skills, identitiesSearchResult);
               uiSearch.setIdentityList(identities);
             }
             
@@ -376,22 +375,22 @@ public class UIProfileUserSearch extends UIForm {
   }
   
   /**
-   * Filter identity follow professional information.
+   * Filter identity follow skills information.
    * 
-   * @param professional
+   * @param skills
    *        <code>String</code>
    *        
    * @param identities
    *        <code>Object</code>
    *        
-   * @return List of identities that has professional information match.
+   * @return List of identities that has skills information match.
    */
   @SuppressWarnings("unchecked")
-  private List<Identity> getIdentitiesByProfessional(String professional, List<Identity> identities) {
+  private List<Identity> getIdentitiesBySkills(String skills, List<Identity> identities) {
       List<Identity> identityLst = new ArrayList<Identity>();
       String prof = null;
       ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
-      String profes = professional.trim().toLowerCase();
+      String skill = skills.trim().toLowerCase();
       
       if (identities.size() == 0) return identityLst;
     
@@ -400,12 +399,12 @@ public class UIProfileUserSearch extends UIForm {
         experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(EXPERIENCE);
         if (experiences == null) continue;
         for (HashMap<String, Object> exp : experiences) {
-          prof = (String) exp.get(PROFESSIONAL);
+          prof = (String) exp.get(SKILLS);
           if (prof == null) continue;
           Pattern p = Pattern.compile(REG_FOR_SPLIT);
           String[] items = p.split(prof);
           for(String item : items) {
-              if (item.toLowerCase().matches(profes)) { 
+              if (item.toLowerCase().matches(skill)) { 
                 identityLst.add(id);
                 break;
               }

@@ -449,6 +449,12 @@ input.hint,textarea.hint {
 
 .UIProfile .Experience input {
 	height: 14px;
+	width: 205px;
+}
+
+.UIProfile .Experience .checkbox {
+  height: 15px;
+  width: 15px;
 }
 
 .UIProfile .Experience .UIFormGrid td.FieldComponent {

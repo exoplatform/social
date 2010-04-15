@@ -39,8 +39,8 @@ public class ProfileFiler {
   /** The company. */
   private String company;
   /* filer by user profile professional*/
-  /** The professional. */
-  private String professional;
+  /** The skills. */
+  private String skills;
   /* filer by user profile gender*/
   /** The gender. */
   private String gender;
@@ -74,18 +74,18 @@ public class ProfileFiler {
   public void setCompany(String company) { this.company = company; }
   
   /**
-   * Gets the professional.
+   * Gets the skills.
    * 
-   * @return the professional
+   * @return the skills
    */
-  public String getProfessional() { return professional;}
+  public String getSkills() { return skills;}
   
   /**
-   * Sets the professional.
+   * Sets the skills.
    * 
-   * @param professional the new professional
+   * @param skills the new skills
    */
-  public void setProfessional(String professional) { this.professional = professional;}
+  public void setSkills(String skills) { this.skills = skills;}
   
   /**
    * Gets the gender.

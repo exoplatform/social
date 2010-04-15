@@ -36,7 +36,7 @@ function UIProfileUserSearch() {
     * Contact name search text box object.
     * @scope private.
     */
-   this.profTextObj = null;
+   this.skillTextObj = null;
    
    /**
     * Contact name search text box object.
@@ -64,7 +64,7 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 	var profileSearch = document.getElementById(uicomponentId);
 	var searchEl = DOMUtil.findDescendantById(profileSearch, 'Search');
 	var posEl = DOMUtil.findDescendantById(profileSearch, 'position');
-	var profEl = DOMUtil.findDescendantById(profileSearch, 'professional');
+	var skillEl = DOMUtil.findDescendantById(profileSearch, 'skills');
 	var filterBlock = DOMUtil.findDescendantById(profileSearch, 'Filter');
 	var genderEl = DOMUtil.findDescendantsByTagName(profileSearch, 'select');
 	var moreSearchEl = DOMUtil.findDescendantById(profileSearch, 'MoreSearch');
@@ -72,34 +72,34 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 	// Get default value
 	var defaultUserContact = document.getElementById('defaultUserContact').value;
 	var defaultPos = document.getElementById('defaultPos').value;
-	var defaultProf = document.getElementById('defaultProf').value;
+	var defaultSkills = document.getElementById('defaultSkills').value;
 	var defaultGender = document.getElementById('defaultGender').value;
 	// Default value set in component
 	var defaultNameVal = "name";
 	var defaultPosVal = "position";
-	var defaultProfVal = "professional";
+	var defaultSkillsVal = "skills";
 	var defaultGenderVal = "Gender";
 	// filter has input value or not
 	var hasFilter = false;
 	
 	this.nameTextObj = searchEl;
 	this.posTextObj = posEl;
-	this.profTextObj = profEl;
+	this.skillTextObj = skillEl;
 	this.genderSelObj = genderEl;
 	this.filterBlock = filterBlock;
 	
-	if ((posEl.value != defaultPos) || (profEl.value != defaultProf) || (genderEl[0].value != defaultGender)) {
+	if ((posEl.value != defaultPos) || (skillEl.value != defaultSkills) || (genderEl[0].value != defaultGender)) {
 		hasFilter = true;
 	}
 	
 	// Need for the first run time or component is empty then initialize the component value.
 	if ((searchEl.value == defaultNameVal) || (searchEl.value.trim().length == 0)) searchEl.value = defaultUserContact;
 	if ((posEl.value == defaultPosVal) || (posEl.value.trim().length == 0)) posEl.value = defaultPos;
-	if ((profEl.value == defaultProfVal) || (profEl.value.trim().length == 0)) profEl.value = defaultProf;
+	if ((skillEl.value == defaultSkillsVal) || (skillEl.value.trim().length == 0)) skillEl.value = defaultSkills;
 	
 	(searchEl.value != defaultUserContact) ? (searchEl.style.color = '#000000') : (searchEl.style.color = '#C7C7C7');
 	(posEl.value != defaultPos) ? (posEl.style.color = '#000000') : (posEl.style.color = '#C7C7C7');
-	(profEl.value != defaultProf) ? (profEl.style.color = '#000000') : (profEl.style.color = '#C7C7C7');
+	(skillEl.value != defaultSkills) ? (skillEl.style.color = '#000000') : (skillEl.style.color = '#C7C7C7');
 	
 	if (hasFilter) {
 		moreSearchEl.style.display='none';
@@ -107,7 +107,7 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 		filterBlock.style.display='block';
 	} else {
 		posEl.value = defaultPos;
-		profEl.value = defaultProf;
+		skillEl.value = defaultSkills;
 		genderEl[0].value= defaultGender;
 		moreSearchEl.style.display='block';
 		hideMoreSearchEl.style.display='none';
@@ -125,18 +125,18 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 UIProfileUserSearch.prototype.initTextBox = function() {
 	var nameEl = this.nameTextObj;
 	var posEl = this.posTextObj;
-	var profEl = this.profTextObj;
+	var skillEl = this.skillTextObj;
 	var genderEl = this.genderSelObj;
 	var DOMUtil = eXo.core.DOMUtil;
 	var UIForm = eXo.webui.UIForm;
 	var searchId = 'Search';
 	var positionId = 'position';
-	var professionalId = 'professional';
+	var skillsId = 'skills';
 	var genderId = 'gender';
 	var filterId = 'Filter';
 	var defaultUserContact = document.getElementById('defaultUserContact').value;
 	var defaultPos = document.getElementById('defaultPos').value;
-	var defaultProf = document.getElementById('defaultProf').value;
+	var defaultSkills = document.getElementById('defaultSkills').value;
 	var defaultGender = document.getElementById('defaultGender').value;
 	var uiProfileUserSearchObj = eXo.social.webui.UIProfileUserSearch;
 	var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
@@ -144,10 +144,10 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 	// Turn off auto-complete attribute of text-box control
 	nameEl.setAttribute('autocomplete','off');
 	posEl.setAttribute('autocomplete','off');
-	profEl.setAttribute('autocomplete','off');
+	skillEl.setAttribute('autocomplete','off');
 	
 	// Add focus event for control
-	nameEl.onfocus = posEl.onfocus = profEl.onfocus = function(event) {
+	nameEl.onfocus = posEl.onfocus = skillEl.onfocus = function(event) {
 		var e = event || window.event;
 		var filter = e.srcElement || e.target;
 		var elementId = filter.id;
@@ -159,7 +159,7 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 			} else if (elementId == positionId) {
 				defaultValue = defaultPos;
 			} else {
-				defaultValue = defaultProf;
+				defaultValue = defaultSkills;
 			}
 			if (filter.value == defaultValue) {
 				filter.value='';
@@ -168,7 +168,7 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 	}
 
 	// Add blur event for control
-	nameEl.onblur = posEl.onblur = profEl.onblur = function(event) {
+	nameEl.onblur = posEl.onblur = skillEl.onblur = function(event) {
 		var e = event || window.event;
 		var filter = e.srcElement || e.target;
 		var elementId = filter.id;
@@ -182,7 +182,7 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 			} else if (elementId == positionId) {
 				defaultValue = defaultPos;
 			} else {
-				defaultValue = defaultProf;
+				defaultValue = defaultSkills;
 			}
 			
 			if (filter.value.trim() == '') {
@@ -203,7 +203,7 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 		
 		if(keynum == 13) {
 			posEl.value = defaultPos;
-			profEl.value = defaultProf;
+			skillEl.value = defaultSkills;
 			genderEl[0].value= defaultGender;
 			
 			suggestControlObj.hideSuggestions();
@@ -217,7 +217,7 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 	}
 	
 	// Add keydown event for control
-	posEl.onkeydown = profEl.onkeydown = genderEl.onkeydown = function(event) {
+	posEl.onkeydown = skillEl.onkeydown = genderEl.onkeydown = function(event) {
 		var e = event || window.event;
 		var textBox = e.srcElement || e.target;
 		var keynum = e.keyCode || e.which;  
@@ -243,11 +243,11 @@ UIProfileUserSearch.prototype.initTextBox = function() {
  */
 UIProfileUserSearch.prototype.clickSearch = function(uicomponentId) {
 	var posEl = this.posTextObj;
-	var profEl = this.profTextObj;
+	var skillEl = this.skillTextObj;
 	var genderEl = this.genderSelObj;
 	var filterBlock = this.filterBlock;
 	var defaultPos = document.getElementById('defaultPos').value;
-	var defaultProf = document.getElementById('defaultProf').value;
+	var defaultSkills = document.getElementById('defaultSkills').value;
 	var defaultGender = document.getElementById('defaultGender').value;
 	var DOMUtil = eXo.core.DOMUtil;
 	var UIForm = eXo.webui.UIForm;
@@ -258,7 +258,7 @@ UIProfileUserSearch.prototype.clickSearch = function(uicomponentId) {
 
 	if (filterBlock.style.display == 'none') {
 		posEl.value = defaultPos;
-		profEl.value = defaultProf;
+		skillEl.value = defaultSkills;
 		genderEl[0].value= defaultGender;
 	}
 	
