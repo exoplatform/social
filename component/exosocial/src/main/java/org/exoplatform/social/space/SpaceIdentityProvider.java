@@ -33,7 +33,12 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
       
       // attempt to find by name
       if (space ==null) {
-        List<Space> spaces = spaceService.getSpacesByName(spaceId.split(":")[1], false);
+        String name = spaceId;
+        if (spaceId.contains(":")) {
+          name = spaceId.split(":")[1];
+        }
+        
+        List<Space> spaces = spaceService.getSpacesByName(name, false);
         if (spaces != null && spaces.size()>0) {
           return spaces.get(0); // first match
         }

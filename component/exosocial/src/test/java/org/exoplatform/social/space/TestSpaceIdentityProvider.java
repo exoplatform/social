@@ -57,8 +57,14 @@ public class TestSpaceIdentityProvider extends AbstractJCRTestCase {
     Identity identity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceId);
     
     SpaceIdentityProvider identityProvider = new SpaceIdentityProvider(spaceService);    
-    Identity identity2 = identityProvider.getIdentityByRemoteId("space:space1");
-    assertEquals(identity2.getRemoteId(), identity.getRemoteId());
+    Identity actual = identityProvider.getIdentityByRemoteId("space:space1");
+    assertEquals(actual.getRemoteId(), identity.getRemoteId());
+    
+    
+    // whe can even support without :
+    actual = identityProvider.getIdentityByRemoteId("space1");
+    assertEquals(actual.getRemoteId(), identity.getRemoteId());
+    
     
   }
   
