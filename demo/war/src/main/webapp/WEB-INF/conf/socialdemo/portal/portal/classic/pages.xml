@@ -43,22 +43,6 @@
       <show-application-mode>false</show-application-mode>
     </portlet-application>
   </page>
-
-  <page>
-    <name>manageSpaces</name>
-    <title>Manage Spaces</title>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>space</application-ref>
-        <portlet-ref>ManageSpacesPortlet</portlet-ref>
-      </portlet>
-      <title>Manage Spaces</title>
-      <access-permissions>*:/platform/guests</access-permissions>
-      <show-info-bar>false</show-info-bar>      
-    </portlet-application>
-  </page>
   
   <page>
     <name>people</name>

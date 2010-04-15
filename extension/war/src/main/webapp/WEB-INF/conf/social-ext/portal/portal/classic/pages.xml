@@ -21,22 +21,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_0 http://www.gatein.org/xml/ns/gatein_objects_1_0"
     xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_0">  
-
-  <page>
-    <name>manageSpaces</name>
-    <title>Manage Spaces</title>
-    <access-permissions>*:/platform/users</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>space</application-ref>
-        <portlet-ref>ManageSpacesPortlet</portlet-ref>
-      </portlet>
-      <title>Manage Spaces</title>
-      <access-permissions>*:/platform/guests</access-permissions>
-      <show-info-bar>false</show-info-bar>
-    </portlet-application>
-  </page>
   
   <page>
     <name>people</name>
@@ -532,38 +516,7 @@
  		  </container>
 		</container>
   </page>
-  
-  <!-- <page>
-    <name>groupnavigation</name>
-    <title>Group Navigation</title>
-	  <access-permissions>*:/platform/users</access-permissions>
-	  <edit-permission>*:/platform/administrators</edit-permission>    
-    <portlet-application>
-      <portlet>
-        <application-ref>exoadmin</application-ref>
-        <portlet-ref>GroupNavigationPortlet</portlet-ref>
-      </portlet>
-      <title>Group Navigation</title>
-      <access-permissions>Everyone</access-permissions>
-      <show-info-bar>false</show-info-bar>
-    </portlet-application>
-  </page>
-  
-  <page>
-    <name>portalnavigation</name>
-    <title>Portal Navigation</title>
-	  <access-permissions>*:/platform/users</access-permissions>
-	  <edit-permission>*:/platform/administrators</edit-permission>    
-    <portlet-application>
-      <portlet>
-        <application-ref>exoadmin</application-ref>
-        <portlet-ref>PortalNavigationPortlet</portlet-ref>
-      </portlet>
-      <title>Portal Navigation</title>
-      <access-permissions>Everyone</access-permissions>
-      <show-info-bar>false</show-info-bar>
-    </portlet-application>
-  </page>  -->
+ 
   <page>
     <name>spacetemplate</name>
     <title>Space Template</title>
