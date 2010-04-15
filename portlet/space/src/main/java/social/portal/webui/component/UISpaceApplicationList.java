@@ -116,13 +116,14 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
       while (appItr.hasNext()) {
         Application app = appItr.next();
         String appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
-        if (appStatus != null) {
-          if (!appStatus.equals(Space.ACTIVE_STATUS)) {
-            tempAppList.add(app);
-          }
-        } else {
-          tempAppList.add(app);
-        }
+//        if (appStatus != null) {
+//          if (!appStatus.equals(Space.ACTIVE_STATUS)) {
+//            tempAppList.add(app);
+//          }
+//        } else {
+//          tempAppList.add(app);
+//        }
+        tempAppList.add(app);
       }
       if (tempAppList.size() > 0) {
         appStore.put(appCategory, tempAppList);

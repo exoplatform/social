@@ -17,6 +17,7 @@
 package social.portal.webui.component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -113,13 +114,47 @@ public class UISpaceApplication extends UIForm {
       }
     }
     
-    for (String appId : notAvailableAppIdList) {
+    List<String> availableAppIdList = new ArrayList<String>();
+    
+    for (String appId : appIdList) {
+      if (!availableAppIdList.contains(appId)) availableAppIdList.add(appId); 
+    }
+    for (String appId : availableAppIdList) {
         if (SpaceUtils.getAppStatus(space, appId).equals(Space.ACTIVE_STATUS)) {
           installedAppList.add(SpaceUtils.getAppFromPortalContainer(appId));
         }
     }
     
-    PageList pageList = new ObjectPageList(installedAppList, 3);
+    // Change name of application fit for issue SOC-739
+    String apps = space.getApp();
+    String[] listApp = apps.split(",");
+    List<Application> installedApps = new ArrayList<Application>();
+    String appName;
+    String spaceAppName;
+    String[] appParts;
+    // make unique installedAppList
+    // loop and check, if duplicate then create
+    Application application;
+    for (int index = 0; index < listApp.length; index++){
+      for (int idx = 0; idx <installedAppList.size(); idx++) {
+        application = installedAppList.get(idx);	
+        String temporalSpaceName = application.getApplicationName();
+      
+    	//Application application = installedAppList.get(idx);
+        
+    	//appName = application.getApplicationName();
+    	appParts = listApp[index].split(":");
+    	spaceAppName = appParts[0];
+    	  if (temporalSpaceName.equals(spaceAppName)) {
+    		String newName = appParts[0] + ":" + appParts[1];
+//    		application.setApplicationName(appParts[0] + ":" + appParts[1]);
+    		installedApps.add(setAppName(application, newName));
+    		break;
+    	  }
+      }
+    }
+    PageList pageList = new ObjectPageList(installedApps, 3);
+//    PageList pageList = new ObjectPageList(installedAppList, 3);
     iterator.setPageList(pageList);
   }
   
@@ -167,22 +202,13 @@ public class UISpaceApplication extends UIForm {
       return null;
     }
     List<PageNode> nodes = homeNode.getChildren();
-    String installedApp = space.getApp();
-    String[] appStatuses = installedApp.split(",");
     String applicationName = application.getApplicationName();
+    String appName = applicationName.split(":")[1];
     String appNodeName;
-    for (String appStatus : appStatuses) {
-      if (appStatus.length() != 0) {
-        String[] appParts = appStatus.split(":");
-        if (appParts[0].equals(applicationName)) {
-          for (PageNode node : nodes) {
-            //bug from portal, does not change nodeName => gets from uri instead
-            String nodeUri = node.getUri();
-            appNodeName = nodeUri.substring(nodeUri.indexOf("/") + 1);
-            if (appNodeName.equals(appParts[1])) return node.getResolvedLabel();
-          }
-        }
-      }
+    for (PageNode node : nodes) {
+      String nodeUri = node.getUri();
+      appNodeName = nodeUri.substring(nodeUri.indexOf("/") + 1);
+      if (appNodeName.equals(appName)) return node.getResolvedLabel();
     }
     return application.getDisplayName();
   }
@@ -212,9 +238,19 @@ public class UISpaceApplication extends UIForm {
     public void execute(Event<UISpaceApplication> event) throws Exception {
       UISpaceApplication uiSpaceApp = event.getSource();
       WebuiRequestContext context = event.getRequestContext();
-      String appId = context.getRequestParameter(OBJECTID);
+      String removedAppName = context.getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceApp.getApplicationComponent(SpaceService.class);
-      spaceService.removeApplication(uiSpaceApp.space.getId(), appId);
+      String appId = null;
+      String appName = null;
+      String[] removedApps = removedAppName.split(":");
+      if (removedApps.length == 2) {
+    	appId = removedApps[0];
+    	appName = removedApps[1];
+      } else {
+    	appId = removedAppName;
+      }
+      
+      spaceService.removeApplication(uiSpaceApp.space.getId(), appId, appName);
       uiSpaceApp.setValue(spaceService.getSpaceById(uiSpaceApp.space.getId()));
       UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
       
@@ -244,4 +280,32 @@ public class UISpaceApplication extends UIForm {
     }
     return false;
   }
+  
+  /**
+   * Clone application object with new name.
+   * 
+   * @param application
+   * @param appName
+   * @return
+   */
+  private Application setAppName(Application application, String appName) {
+	  Application app = new Application();
+	  
+	  app.setCategoryName(application.getCategoryName());
+	  app.setDisplayName(application.getDisplayName());
+	  app.setDescription(application.getDescription());
+	  app.setCreatedDate(application.getCreatedDate());
+	  app.setModifiedDate(application.getModifiedDate());
+	  app.setAccessPermissions(application.getAccessPermissions());
+	  app.setApplicationName(appName);
+	  app.setType(application.getType());
+	  app.setStorageId(application.getStorageId());
+	  app.setId(application.getId());
+	  app.setIconURL(application.getIconURL());
+	  app.setContentId(application.getContentId());
+
+	  return app;
+	  
+  }
+
 }

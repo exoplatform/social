@@ -75,7 +75,9 @@
 		  		def SpaceClass = "";
 		  		def nodeTitle = node.getResolvedLabel();
 		  		def nodeLabel = getFitString(nodeTitle, 15);
-		  		def nodeName = node.getName();
+  	  		def nodeUri = node.getUri();
+  	  		def uriParts = nodeUri.split("/");
+  	  		def nodeName = uriParts[uriParts.length - 1];
 					String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + nodeName;
 		%>
 		<%

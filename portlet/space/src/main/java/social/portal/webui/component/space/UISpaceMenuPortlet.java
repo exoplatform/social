@@ -67,6 +67,8 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
   /** INVALID APPLICATION NAME MESSAGE. */
   private static final String INVALID_APPLICATION_NAME_MSG = "UISpaceMenuPortlet.msg.invalidAppName";
   
+  private static final String EXISTING_APPLICATION_NAME_MSG = "UISpaceMenuPortlet.msg.existingAppName";
+  
   private static final String SPACE_SETTING_PORTLET = "SpaceSettingPortlet";
   /** Stores SpaceService object. */
   private SpaceService spaceService = null;
@@ -168,7 +170,9 @@ public class UISpaceMenuPortlet extends UIPortletApplication {
       }
       String newNodeName = newSpaceAppName.trim().replace(' ', '_');
       if (spaceMenu.isAppNameExisted(spaceNavigation, newNodeName)) {
-         newNodeName = newNodeName + "_" + System.currentTimeMillis();
+    	  uiApp.addMessage(new ApplicationMessage(EXISTING_APPLICATION_NAME_MSG, null, ApplicationMessage.INFO));
+    	  prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
+          return;
       }
       String newUri = oldUri.substring(0, oldUri.lastIndexOf("/") + 1) + newNodeName;
       PageNode childNode = null;
