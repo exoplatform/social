@@ -31,7 +31,27 @@ import static org.testng.Assert.*;
     @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.opensocial.configuration.xml") })
 public class TestExoActivityService extends AbstractJCRTestCase {
 
+  /**
+   * posting with the UserId = username
+   * 
+   * @throws Exception
+   */
+  // unsupported
+  public void postToSelfStreamWithUsername() throws Exception {
+    SimpleMockOrganizationService orgniaztionService = getComponent(OrganizationService.class);
+    orgniaztionService.addMemberships("root", "member:/platform/users");
+    IdentityManager identityManager = getComponent(IdentityManager.class);
 
+    // format : organization:username
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                            "root");
+    String userId = "root";
+    Activity activity = createActivityOnOwnStream(userId);
+    org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(identity);
+    assertEquals(actual.getBody(), activity.getBody());
+    assertEquals(actual.getUserId(), identity.getId());
+    assertEquals(actual.getStreamOwner(), identity.getId());
+  }
 
   /**
    * posting with the UserId having GlobalId notation (xx:yyy)
@@ -47,7 +67,7 @@ public class TestExoActivityService extends AbstractJCRTestCase {
     // format : organization:username
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                             "john");
-    String globalId = "organization:john";
+    String globalId = OrganizationIdentityProvider.NAME + ":john";
     Activity activity = createActivityOnOwnStream(globalId);
     org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(identity);
     assertEquals(actual.getBody(), activity.getBody());
@@ -91,7 +111,7 @@ public class TestExoActivityService extends AbstractJCRTestCase {
     // format : organization:username
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                             "jack");
-    String globalId = "organization:" + identity.getId();
+    String globalId = OrganizationIdentityProvider.NAME + ":" + identity.getId();
     Activity activity = createActivityOnOwnStream(globalId);
     org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(identity);
     assertEquals(actual.getBody(), activity.getBody());
