@@ -430,7 +430,7 @@ public interface SpaceService {
    * @param appId
    * @throws SpaceException
    */
-  void removeApplication(Space space, String appId) throws SpaceException;
+  void removeApplication(Space space, String appId, String appName) throws SpaceException;
   
   /**
    * Remove and installed application from a space
@@ -438,7 +438,7 @@ public interface SpaceService {
    * @param appId
    * @throws SpaceException
    */
-  void removeApplication(String spaceId, String appId) throws SpaceException;
+  void removeApplication(String spaceId, String appId, String appName) throws SpaceException;
   
   /**
    * Request to join a space, add that user to pending list

@@ -653,13 +653,13 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void installApplication(Space space, String appId) throws SpaceException {
-    String appStatus = SpaceUtils.getAppStatus(space, appId);
-    if (appStatus != null) {
-      if (appStatus.equals(Space.INSTALL_STATUS)) return;
-    }
-    SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
-    appHandler.installApplication(space, appId);
-    setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.INSTALL_STATUS);
+//    String appStatus = SpaceUtils.getAppStatus(space, appId);
+//    if (appStatus != null) {
+//      if (appStatus.equals(Space.INSTALL_STATUS)) return;
+//    }
+//    SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
+//    appHandler.installApplication(space, appId); // not implement yet
+//    setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.INSTALL_STATUS);
     spaceLifeCycle.addApplication(space, appId);
   }
   
@@ -667,13 +667,19 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void activateApplication(Space space, String appId) throws SpaceException {
-    String appStatus = SpaceUtils.getAppStatus(space, appId);
-    if (appStatus != null) {
-      if (appStatus.equals(Space.ACTIVE_STATUS)) return;
-    }
+//    String appStatus = SpaceUtils.getAppStatus(space, appId);
+//    if (appStatus != null) {
+//      if (appStatus.equals(Space.ACTIVE_STATUS)) return;
+//    }
+	String appName = null;
+	if (SpaceUtils.isInstalledApp(space, appId)) {
+		appName = appId + System.currentTimeMillis();
+	} else {
+		appName = appId;
+	}
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
-    appHandler.activateApplication(space, appId);
-    setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.ACTIVE_STATUS);
+    setApp(space, appId, appName, SpaceUtils.isRemovableApp(space, appId), Space.ACTIVE_STATUS);
+    appHandler.activateApplication(space, appId, appName);
     spaceLifeCycle.activateApplication(space, appId);
   }
   
@@ -710,20 +716,20 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public void removeApplication(Space space, String appId) throws SpaceException {
+  public void removeApplication(Space space, String appId, String appName) throws SpaceException {
     String appStatus = SpaceUtils.getAppStatus(space, appId);
     if (appStatus == null) return;
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
-    appHandler.removeApplication(space, appId);
-    removeApp(space, appId);
+    appHandler.removeApplication(space, appId, appName);
+    removeApp(space, appId, appName);
     spaceLifeCycle.removeApplication(space, appId);
   }
   
   /**
    * {@inheritDoc}
    */
-  public void removeApplication(String spaceId, String appId) throws SpaceException {
-    removeApplication(getSpaceById(spaceId), appId);
+  public void removeApplication(String spaceId, String appId, String appName) throws SpaceException {
+    removeApplication(getSpaceById(spaceId), appId, appName);
   }
   
   /**
@@ -1022,16 +1028,16 @@ public class SpaceServiceImpl implements SpaceService {
     if (apps == null) {
       apps = applicationStatus;
     } else {
-      int indexOfAppId = apps.indexOf(appId);
-      if (indexOfAppId != -1) {
-        String oldApplicationStatus = apps.substring(indexOfAppId);
-        if (oldApplicationStatus.indexOf(",") != -1) {
-          oldApplicationStatus = oldApplicationStatus.substring(0, oldApplicationStatus.indexOf(",") - 1);
-        }
-        apps = apps.replaceFirst(oldApplicationStatus, applicationStatus);
-      } else {
+//      int indexOfAppId = apps.indexOf(appId);
+//      if (indexOfAppId != -1) {
+//        String oldApplicationStatus = apps.substring(indexOfAppId);
+//        if (oldApplicationStatus.indexOf(",") != -1) {
+//          oldApplicationStatus = oldApplicationStatus.substring(0, oldApplicationStatus.indexOf(",") - 1);
+//        }
+//        apps = apps.replaceFirst(oldApplicationStatus, applicationStatus);
+//      } else {
         apps += "," + applicationStatus; 
-      }
+//      }
     }
     space.setApp(apps);
     saveSpace(space, false);
@@ -1043,7 +1049,7 @@ public class SpaceServiceImpl implements SpaceService {
    * @param appId
    * @throws SpaceException
    */
-  private void removeApp(Space space, String appId) throws SpaceException {
+  private void removeApp(Space space, String appId, String appName) throws SpaceException {
 	String apps = space.getApp();
     StringBuffer remainApp = new StringBuffer();
     String[] listApp = apps.split(",");
@@ -1052,7 +1058,7 @@ public class SpaceServiceImpl implements SpaceService {
     for (int idx = 0; idx < listApp.length; idx++) {
       app = listApp[idx];
       appPart = app.split(":");
-      if (!appPart[0].equals(appId)) {
+      if (!appPart[1].equals(appName)) {
         if (remainApp.length() != 0) remainApp.append(",");
         remainApp.append(app);
       }

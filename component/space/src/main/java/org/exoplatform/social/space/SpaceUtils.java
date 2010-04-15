@@ -878,6 +878,24 @@ public class SpaceUtils {
   }
   
   /**
+   * Check an application is installed or not yet.
+   * @param space
+   * @param appId
+   * @return
+   */
+  static public boolean isInstalledApp(Space space, String appId){
+	String installedApps = space.getApp();
+	if (installedApps == null) return false;
+	String[] apps = installedApps.split(",");
+	String[] appPart;
+	for (int idx = 0; idx < apps.length; idx++) {
+	  appPart = apps[idx].split(":");
+	  if (appPart[0].equals(appId)) return true;
+	}
+	return false;
+  }
+  
+  /**
    * Gets appStatusPattern: [appId:appNodeName:isRemovableString:status]
    * @param installedApps
    * @param appId

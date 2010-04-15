@@ -58,7 +58,7 @@ public interface SpaceApplicationHandler {
    * @param appId
    * @throws SpaceException
    */
-  public void activateApplication(Space space, String appId) throws SpaceException;
+  public void activateApplication(Space space, String appId, String appName) throws SpaceException;
   
   /**
    * Deactivate an installed application in a space
@@ -74,7 +74,7 @@ public interface SpaceApplicationHandler {
    * @param appId
    * @throws SpaceException
    */
-  public void removeApplication(Space space, String appId) throws SpaceException;
+  public void removeApplication(Space space, String appId, String appName) throws SpaceException;
   
   /**
    * Remove all applications in a space
