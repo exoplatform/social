@@ -178,6 +178,7 @@
 			    <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br/>
 			    <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
 			    <%if(description != null) {%>${description} <%}%>
+			    <%if(skills != null) {%>${skills} <%}%><br>
 			  </div>
 		    <%}%>
 		    </div>
