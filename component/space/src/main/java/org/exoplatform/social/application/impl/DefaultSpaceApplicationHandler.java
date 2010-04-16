@@ -266,6 +266,7 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
     try {
       String groupId = space.getGroupId();
       PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+      
       // return in case group navigation was removed by portal SOC-548
       if (nav == null) return;
       PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
@@ -297,6 +298,8 @@ public  class DefaultSpaceApplicationHandler implements SpaceApplicationHandler 
       
       childNodes.remove(childNode);
       dataStorage.save(nav);
+      SpaceUtils.setNavigation(nav);
+      
       // remove page
       String pageId = childNode.getPageReference();
       Page page = dataStorage.getPage(pageId);
