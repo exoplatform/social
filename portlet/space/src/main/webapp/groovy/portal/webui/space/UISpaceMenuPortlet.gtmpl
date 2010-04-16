@@ -1,128 +1,21 @@
-<% 
-  import org.exoplatform.portal.config.model.PageNode
- 	import org.exoplatform.portal.webui.util.Util
- 	import org.exoplatform.social.space.SpaceUtils
- 	import org.exoplatform.web.application.JavascriptManager
- 	import org.exoplatform.portal.application.PortalRequestContext
- 	
- 	SpaceUtils.reloadNavigation()
-	def apps = uicomponent.getApps()       
-	def spaceUrl = SpaceUtils.getSpaceUrl()
- 	String appSelected = uicomponent.getAppSelected()
- 	def imageSource = uicomponent.getImageSource()
- 	def spaceUserListName = "UserListPortlet";
- 	def spaceSettingName = "SpaceSettingPortlet";
- 	
- 	public String getFitString(String nodeLabel, int maxLen) {
- 	  def labelStr = ""; 
-    def labelStrPrev = "";
-    def appendLabel = " ...";
- 	  def fitStr = nodeLabel;
- 	  if (fitStr == null) {
- 	    return "";
- 	  }
- 	  if (fitStr.length() > maxLen) {
-	    def labels = fitStr.split(" ");
-	    for (i in 0..(labels.size()-1)) {
-	        labelStr += " ";
-	        labelStr += labels[i];
-	        if (labelStr.length() > maxLen) {
-	            break;
-	        } else {
-	            labelStrPrev = labelStr;
-	        }
-	    }
-	    
-	    if (labelStrPrev.length() == 0) { 
-	        fitStr = fitStr.substring(0, maxLen - 2) + appendLabel;
-	    } else {
-	        fitStr = labelStrPrev + appendLabel;
-	    }
-		}
- 	  return fitStr;
- 	}
- 	
- 	String spaceName = uicomponent.getSpaceName();
- 	String spaceNameDisplay = getFitString(spaceName, 20);
- 	
- 	PortalRequestContext pcontext = Util.getPortalRequestContext();
- 	JavascriptManager jsManager = pcontext.getJavascriptManager();
- 	jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
- 	jsManager.importJavascript("eXo.social.webui.UISpaceMenuPortlet", "/eXoResourcesSocial/javascript");
- 	jsManager.addOnLoadJavascript("eXo.social.webui.UISpaceMenuPortlet.init");
- 	jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition","/eXoResourcesSocial/javascript");
-%>
+<!--
 
+    Copyright (C) 2003-2007 eXo Platform SAS.
 
-<div id="$uicomponent.id" class="UISpaceMenuPortlet">
-<% String home = Util.getPortalRequestContext().getPortalURI() + spaceUrl %>
-	<div class="SpaceMenuPortlet">
-		<div class="ProfTitle" title="$spaceName"><%= spaceNameDisplay %></div>
-		<a class="Avartar">
-			<% if(imageSource == null) { %>
-				<img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt=""/>
-			<% } else { %>
-  			<img src="$imageSource" height="65px" width="65px">
-  		<% } %>
-		</a>
-		<% if(spaceUrl.equals(appSelected)) { %>
-  	<div class="Home"><a class="HomeSelect" href="$home"><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></a></div>
-		<% } else { %>
-		<div class="Home"><a class="HomeSpace" href="$home"><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></a></div>
-		<% } %>
-  	<% if(apps.size() != 0) { 
-	  		for(PageNode node in apps) {
-		  		def SpaceClass = "";
-		  		def nodeTitle = node.getResolvedLabel();
-		  		def nodeLabel = getFitString(nodeTitle, 15);
-  	  		def nodeUri = node.getUri();
-  	  		def uriParts = nodeUri.split("/");
-  	  		def nodeName = uriParts[uriParts.length - 1];
-					String pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + nodeName;
-		%>
-		<%
-			if (node.getName().equals(spaceUserListName)) { %>
-					<div class="UserListApp">
-					<% if(node.getName().equals(appSelected)) { %>
-			  			<a class="UserListAppSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
-			  	<% } else { %>
-			  			<a class="UserListAppBG" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
-			  	<% } 
-			} else if (node.getName().equals(spaceSettingName)) { %>
-					<div class="SpaceSetting">
-					<% if(node.getName().equals(appSelected)) {	%>
-			  			<a class="SpaceSettingSelect" href='$pageURI' title="$nodeTitle">
-			  			    <span>$nodeLabel</span>
-			  			</a>
-			  	<% } else { %>
-			  			<a class="SpaceSettingBG" href='$pageURI' title="$nodeTitle">
-			  			    <span>$nodeLabel</span>
-			  			</a>
-			  	<% }
-			} else { %>
-					<div class="ApplicationAdd">
-					<%
-            String ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + node.getResolvedLabel() + "\")"; 
-          %>
-				  <% if(nodeName.equals(appSelected)) { %>
-				      <% if(uicomponent.isLeader()) {%>
-				  			<div class="ApplicationAddSelect" title="$nodeTitle">
-				  			    <span id='$nodeName' ondblclick='$ondblclick'>$nodeLabel</span>
-				  			</div>
-			  			<% } else {%>
-				  			<a class="ApplicationAddSelect" href="$pageURI" title="$nodeTitle">
-	                  <span>$nodeLabel</span>
-	              </a>
-			  			<% } %>
-			  	<% } else { %>
-			  			<a class="ApplicationAddBG" href="$pageURI" title="$nodeTitle">
-			  			    <span>$nodeLabel</span>
-			  			</a>
-			  	<% } %>
-					<%}%>
-			  	</div>
-		  <% } %>
-	  <% } %>
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
 
-	</div>
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<div class="UISpaceMenuPortlet" id="$uicomponent.id">
+  <% uicomponent.renderChildren(); %>
 </div>

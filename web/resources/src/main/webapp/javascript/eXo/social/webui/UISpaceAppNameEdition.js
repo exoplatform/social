@@ -47,7 +47,7 @@ UISpaceAppNameEdition.prototype.renameAppLabel = function(e) {
 			var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
 			href += "&portal:type=action";
 			href += "&portal:isSecure=false";
-			href += "&uicomponent=UISpaceMenuPortlet";
+			href += "&uicomponent=UISpaceMenu";
 			href += "&op=RenameSpaceAppName";
 			href += "&newSpaceAppName=" + encodeURIComponent(newSpaceAppName);
 			window.location = href;
