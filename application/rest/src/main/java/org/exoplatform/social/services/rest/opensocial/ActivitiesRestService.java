@@ -164,7 +164,8 @@ public class ActivitiesRestService implements ResourceContainer {
       identityIds = addItemToArray(identityIds, identityId);
       activity.setLikeIdentityIds(identityIds);
       try {
-        _activityManager.saveActivity(activity);
+        Identity user = getIdentityManager().getIdentity(activity.getUserId());
+        _activityManager.saveActivity(user, activity);
       } catch (Exception ex) {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
@@ -198,7 +199,8 @@ public class ActivitiesRestService implements ResourceContainer {
         identityIds = removeItemFromArray(identityIds, identityId);
         activity.setLikeIdentityIds(identityIds);
         try {
-          _activityManager.saveActivity(activity);
+          Identity user = getIdentityManager().getIdentity(activity.getUserId());
+          _activityManager.saveActivity(user, activity);
         } catch(Exception ex) {
           throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
@@ -336,12 +338,14 @@ public class ActivitiesRestService implements ResourceContainer {
     comment.setPostedTime(System.currentTimeMillis());
     comment.setReplyToId(Activity.IS_COMMENT);
     try {
-      comment = _activityManager.saveActivity(comment);
+      Identity commenter = getIdentityManager().getIdentity(comment.getUserId());
+      comment = _activityManager.saveActivity(commenter, comment);
       String rawCommentIds = activity.getReplyToId();
       if (rawCommentIds == null) rawCommentIds = "";
       rawCommentIds += "," + comment.getId();
       activity.setReplyToId(rawCommentIds);
-      _activityManager.saveActivity(activity);
+      Identity user = getIdentityManager().getIdentity(activity.getUserId());
+      _activityManager.saveActivity(user, activity);
     } catch(Exception ex) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
@@ -360,6 +364,7 @@ public class ActivitiesRestService implements ResourceContainer {
     CommentList commentList = new CommentList();
     commentList.setActivityId(activityId);
     _activityManager = getActivityManager();
+
     Activity activity = _activityManager.getActivity(activityId);
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -376,7 +381,9 @@ public class ActivitiesRestService implements ResourceContainer {
         commentId = "," + commentId;
         rawCommentIds = rawCommentIds.replace(commentId, "");
         activity.setReplyToId(rawCommentIds);
-        _activityManager.saveActivity(activity);
+        
+        Identity user = getIdentityManager().getIdentity(activity.getUserId());
+        _activityManager.saveActivity(user, activity);
       } else {
         throw new WebApplicationException(Response.Status.BAD_REQUEST);
       }

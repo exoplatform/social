@@ -48,11 +48,14 @@ public class TestRelationshipPublisher extends  AbstractJCRTestCase {
     
     List<Activity> maryActivities = activityManager.getActivities(mary);
     assertEquals(maryActivities.size(), 1);
-    assertTrue(maryActivities.get(0).getTitleId().equals("RELATION_CONFIRMED"));
+    assertTrue(maryActivities.get(0).getTitleId().equals("CONNECTION_CONFIRMED"));
+    assertTrue(maryActivities.get(0).getTemplateParams().get("Requester").contains("mary"));
+    assertTrue(maryActivities.get(0).getTemplateParams().get("Accepter").contains("john"));
+    
     List<Activity> johnActivities = activityManager.getActivities(john);
     assertEquals(johnActivities.size(), 1);
-    assertTrue(johnActivities.get(0).getTitleId().equals("RELATION_CONFIRMED"));
-    assertTrue(johnActivities.get(0).getTemplateParams().get("Requester").contains("mary"));
-    
+    assertTrue(johnActivities.get(0).getTitleId().equals("CONNECTION_CONFIRMED"));
+    assertTrue(johnActivities.get(0).getTemplateParams().get("Requester").contains("john"));
+    assertTrue(johnActivities.get(0).getTemplateParams().get("Accepter").contains("mary"));
   }
 }

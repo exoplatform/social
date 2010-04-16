@@ -196,34 +196,50 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                      SecurityToken token) throws SocialSpiException {
     try {
       activity.setAppId(appId);
-      org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity,
-                                                                                                    fields);
+      
+      org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity, fields);
+      
+      
       if (token instanceof AnonymousSecurityToken) {
-        throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
+        throw new ProtocolException(HttpServletResponse.SC_UNAUTHORIZED, " a non anonymous security token is expected");
       }
 
       PortalContainer pc = getPortalContainer(token);
       ActivityManager am = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
       IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
+      String user = userId.getUserId(token); // can be organization:name or organization:UUID
+      Identity userIdentity = identityManager.getIdentity(user); 
+      
       // identity for the stream to post on
-      String streamId = null;
+      Identity targetStream = userIdentity;
       
       /// someone posting for a space ?
       if (groupId.getType() == GroupId.Type.groupId) {
-        String space = groupId.getGroupId();
-        Identity spaceIdentity = identityManager.getIdentity(space); // can be space:name or space:UUID
-        streamId = spaceIdentity.getId();
-        
+        String group = groupId.getGroupId(); // can be space:name or space:UUID
+        targetStream = identityManager.getIdentity(group); 
+        // TODO : check that member is allowed to post on group or throw SC_UNAUTHORIZED
       } 
-      // someone posting on his own wall
-      else {
-        String user = userId.getUserId(token);
-        Identity userIdentity = identityManager.getIdentity(user); // can be organization:name or organization:UUID
-        streamId = userIdentity.getId();
+
+      // we need to know where to post
+      if (targetStream == null) {
+        throw new ProtocolException(HttpServletResponse.SC_FORBIDDEN, user + " is an unknown identity");
       }
-     
-      am.saveActivity(streamId, exoActivity);
+      
+      // Define activity user if not already set
+      String activityUser = exoActivity.getUserId();
+      if (activityUser == null) {
+        exoActivity.setUserId(userIdentity.getId());  
+      
+        // making sure it resolves to a valid identity
+      } else {
+        Identity activityUserIdentity = identityManager.getIdentity(activityUser);
+        if (activityUserIdentity == null) {
+          throw new ProtocolException(HttpServletResponse.SC_FORBIDDEN, activityUser + " is an unknown identity");
+        }
+      }
+      
+      am.saveActivity(targetStream, exoActivity);
       
       return ImmediateFuture.newInstance(null);
     } catch (Exception e) {

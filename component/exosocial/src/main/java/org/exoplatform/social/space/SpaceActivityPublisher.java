@@ -43,7 +43,7 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
       // this should create the identity for the space
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceId, false);
        String creator = event.getTarget();
-      activityManager.recordActivity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(),  space.getName() + " was created by @" + creator + ".");
+      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, space.getName(),  space.getName() + " was created by @" + creator + ".");
       LOG.info("space " + space.getName() + " was added for group " + space.getGroupId());
     } catch (Exception e) {
       LOG.error("Failed to initialize space activity stream ", e);
@@ -84,7 +84,7 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
     try {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
       String member = event.getTarget();
-      activityManager.recordActivity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), "@" + member
+      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, space.getName(), "@" + member
           + " was granted lead.");
     } catch (Exception e) {
       LOG.error("Failed to grant lead ", e);
@@ -98,7 +98,7 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
     try {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
       String member = event.getTarget();
-      activityManager.recordActivity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(),"@" + member
+      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, space.getName(),"@" + member
           + " has joined.");
     } catch (Exception e) {
       LOG.error("Failed to log join activity ", e);
@@ -112,7 +112,7 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
     try {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
       String member = event.getTarget();
-      activityManager.recordActivity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), "@" + member
+      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, space.getName(), "@" + member
           + " has left the space.");
     } catch (Exception e) {
       LOG.error("Failed to log leave activity ", e);

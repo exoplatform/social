@@ -120,7 +120,7 @@ public class DataInjector {
         int idx = activityCount.getAndIncrement();
         activity = generateRandomActvity();
         activity.setExternalId("benches:"+ idx);
-        activityManager.saveActivity(id1.getId(), activity);
+        activityManager.saveActivity(id1, activity);
         LOG.info("created activity " + activity.getExternalId());
       } catch (Exception e) {
         LOG.error("failed to save activity for " + id1 + ": "  + e.getMessage());

@@ -16,30 +16,23 @@
  */
 package org.exoplatform.social.core.activitystream;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.version.VersionException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.JCRSessionManager;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
@@ -143,38 +136,67 @@ public class JCRStorage {
   /**
    * Gets the user activity service home node.
    * 
-   * @param username the username
+   * @param owner the owner of the stream
    * @return the user activity service home
    */
-  private Node getUserActivityServiceHome(String username) {
+  private Node getStreamLocation(Identity owner) {
+    
+    String type = owner.getProviderId();
+    String id = owner.getRemoteId();
+    
+    if(type != null && id != null) {
+      return getStreamsLocationByType(type, id);
+    } 
+    else {
+      // default location for stream without a prefix
+      LOG.warn("attempting to get a stream for non prefixed owner : " + id);
+      return getStreamsLocationByType("default", id);
+    }
+
+  }
+  
+  private Node getStreamsLocationByType(String type, String username) {
     Session session = sessionManager.openSession();
     try {
+
+      // first get or create the node for type. Ex: /activities/organization
       Node activityHomeNode = getActivityServiceHome(session);
-      if (activityHomeNode.hasNode(username)){
-        return activityHomeNode.getNode(username);
+      Node typeHome = null;
+      if (activityHomeNode.hasNode(type)){
+        typeHome = activityHomeNode.getNode(type);
       } else {
-        Node appNode = activityHomeNode.addNode(username, NT_UNSTRUCTURED);
-        //appNode.addMixin("mix:referenceable");
+        typeHome = activityHomeNode.addNode(type, NT_UNSTRUCTURED);
         activityHomeNode.save();
-        return appNode;
       }
+      
+      // now get or create the node for the owner. Ex: /activities/organization/root
+      if (typeHome.hasNode(username)){
+        return typeHome.getNode(username);
+      } else {
+        Node streamNode = typeHome.addNode(username, NT_UNSTRUCTURED);
+        typeHome.save();
+        return streamNode;
+      }     
+      
+      
     } catch (Exception e) {
+      LOG.error("failed to locate stream owner node for " +username, e);
       return null;
     } finally {
       sessionManager.closeSession();
     }
-    
   }
+
 
   /**
    * Gets the published activity service home node.
    * 
-   * @param username the username
+   * @param owner the owner of the stream
    * @return the published activity service home
    */
-  private Node getPublishedActivityServiceHome(String username) {
+  private Node getPublishedActivityServiceHome(Identity owner) {
     try {
-      Node userActivityHomeNode = getUserActivityServiceHome(username);
+      Node userActivityHomeNode = getStreamLocation(owner);
       try {
         return userActivityHomeNode.getNode(PUBLISHED_NODE);
       } catch (PathNotFoundException ex) {
@@ -184,28 +206,28 @@ public class JCRStorage {
         return appNode;
       }
     } catch (Exception e) {
-      LOG.error("Failed to get published activity service location for " + username, e);
+      LOG.error("Failed to get published activity service location for " + owner, e);
       return null;
     }
    
   }
 
   /**
-   * Saves activity based on userId and activity
+   * Saves an activity into a stream
    * 
-   * @param userId the user id
-   * @param activity the activity
+   * @param owner owner of the stream where this activity is bound. Ususally a user or space identity
+   * @param activity the activity to save
    * @return the activity
    * @throws Exception the exception
    */
-  public Activity save(String userId, Activity activity) throws Exception {
+  public Activity save(Identity owner, Activity activity) throws Exception {
     Node activityNode;
-    
+    LOG.info("storing activity for owner " + owner + " by " + activity.getUserId());
     checkMandatory(activity.getUpdated(), "Activity.getUpdated()");
     checkMandatory(activity.getPostedTime(), "Activity.getPostedTime()");
 
-    
-    Node activityHomeNode = getPublishedActivityServiceHome(userId);
+
+    Node activityHomeNode = getPublishedActivityServiceHome(owner);
     try {
       Session session = sessionManager.openSession();
       if (activity.getId() == null) {
@@ -259,9 +281,14 @@ public class JCRStorage {
     return activity;
   }
 
+  /**
+   * verify that a field is not empty
+   * @param value
+   * @param name name of the field
+   */
   private void checkMandatory(Object value, String name) {
     if (value == null) {
-      throw new IllegalStateException("field " + name + "should is mandatory");
+      throw new IllegalStateException("field " + name + " is mandatory");
     }
   }
 
@@ -274,7 +301,7 @@ public class JCRStorage {
    * @throws Exception
    */
   private void setStreamInfo(Activity activity, Node activityNode) throws Exception {
-    try {
+    try {// /activities/space/spaceID/published/activity
       activity.setStreamOwner(activityNode.getParent().getParent().getName());
       activity.setStreamId(activityNode.getParent().getUUID());
     } catch (UnsupportedRepositoryOperationException e) {
@@ -283,6 +310,11 @@ public class JCRStorage {
     }
   }
   
+  /**
+   * transforms a map into a string array where values are in the form key=value
+   * @param templateParams
+   * @return
+   */
   private String[] mapToArray(Map<String, String> templateParams) {
     if (templateParams == null) {
       return null;
@@ -322,15 +354,15 @@ public class JCRStorage {
   }
 
   /**
-   * load activity by its id
+   * Load activity by its id.
    * 
-   * @param id the id
+   * @param activityId the id of the activity. An UUID.
    * @return the activity
    */
-  public Activity load(String id) {
+  public Activity load(String activityId) {
     Session session = sessionManager.openSession();
     try {
-      Node activityNode = session.getNodeByUUID(id);
+      Node activityNode = session.getNodeByUUID(activityId);
       if (activityNode != null)
         return load(activityNode);
     } catch (Exception e) {
@@ -342,7 +374,7 @@ public class JCRStorage {
   }
 
   /**
-   * Load activity by node from jcr.
+   * Loads an activity object by node from jcr.
    * 
    * @param activityNode the node
    * @return the activity
@@ -392,6 +424,11 @@ public class JCRStorage {
     return activity;
   }
 
+  /**
+   * transforms an array {@link Value} into a map of string. The values are expected to be of string type and in the form key=value 
+   * @param values
+   * @return
+   */
   private Map<String, String> valuesToMap(Value[] values) {
     if (values == null) {
       return null;
@@ -417,9 +454,9 @@ public class JCRStorage {
    * @return the activities
    * @throws Exception the exception
    */
-  public List<Activity> getActivities(String user) throws Exception {
+  public List<Activity> getActivities(Identity owner) throws Exception {
     List<Activity> activities = Lists.newArrayList();
-    Node n = getPublishedActivityServiceHome(user);
+    Node n = getPublishedActivityServiceHome(owner);
     NodeIterator nodes = n.getNodes();
     String replyToId;
     while (nodes.hasNext()) {

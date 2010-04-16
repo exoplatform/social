@@ -109,7 +109,8 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
       Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, member);
       Activity activity = new Activity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), message);
       activity.setExternalId(userIdentity.getId());
-      activityManager.saveActivity(spaceIdentity.getId(), activity);
+      activity.setUserId(userIdentity.getId());
+      activityManager.saveActivity(spaceIdentity, activity);
       
       uiDisplaySpaceActivities.setSpace(space);
     }

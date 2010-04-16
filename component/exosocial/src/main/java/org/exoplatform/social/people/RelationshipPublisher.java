@@ -32,10 +32,12 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     this.identityManager = identityManager;
   }
 
-  @Override
+
+  /**
+   * Publish an activity on both user's steam to indicate their new connection
+   */
   public void confirmed(RelationshipEvent event) {
     Relationship relationship = event.getPayload();
-
     try {
       Identity id1 = relationship.getIdentity1();
       reloadIfNeeded(id1);
@@ -44,25 +46,21 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       String user1 = "@" + id1.getRemoteId();
       String user2 = "@" + id2.getRemoteId();
 
-      // @foo is now connected to @bar
-      Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user1, user1 + " is now connected to " + user2);
-
-      // RELATION_CONFIRMED=<a href="${Requester.ProfileUrl}">${Requester.DisplayName}</a> is now connected to <a href="${Accepter.ProfileUrl}">${Accepter.DisplayName}</a>.
-      // RELATION_CONFIRMED=${Requester} is now connected to ${Accepter}</a>.
-      activity.setTitleId("RELATION_CONFIRMED");
+      Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user1, "I am now connected to " + user2);
+      activity.setTitleId("CONNECTION_CONFIRMED");
       Map<String,String> params = new HashMap<String,String>();
       params.put("Requester", user1);
       params.put("Accepter", user2);
       activity.setTemplateParams(params);
-      activityManager.saveActivity(activity);
+      activityManager.saveActivity(id1, activity);
       
-      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, user2, user2 + " is now connected to " +  user1);
-      activity2.setTitleId("RELATION_CONFIRMED");
+      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, user2, "I am now connected to " +  user1);
+      activity2.setTitleId("CONNECTION_CONFIRMED");
       Map<String,String> params2 = new HashMap<String,String>();
       params2.put("Requester", user2);
       params2.put("Accepter", user1);
-      activity2.setTemplateParams(params);
-      activityManager.saveActivity(activity2);      
+      activity2.setTemplateParams(params2);
+      activityManager.saveActivity(id2, activity2);      
       
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
@@ -90,8 +88,30 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     
   }
 
+  /**
+   * Publish an activity on invited member to show the invitation to connect
+   */
   public void requested(RelationshipEvent event) {
-    ;// void on purpose 
+    Relationship relationship = event.getPayload();
+    try {
+      Identity id1 = relationship.getIdentity1();
+      reloadIfNeeded(id1);
+      Identity id2 = relationship.getIdentity2();
+      reloadIfNeeded(id2);
+      String user1 = "@" + id1.getRemoteId();
+      String user2 = "@" + id2.getRemoteId();
+
+      Activity activity2 = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user2, user1 + " has invited " +  user2 + " to connect");
+      activity2.setTitleId("CONNECTION_REQUESTED");
+      Map<String,String> params2 = new HashMap<String,String>();
+      params2.put("Requester", user1);
+      params2.put("Invited", user2);
+      activity2.setTemplateParams(params2);
+      activityManager.saveActivity(id2, activity2);      
+      
+    } catch (Exception e) {
+      LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
+    }
   }
 
 }

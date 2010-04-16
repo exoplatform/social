@@ -17,7 +17,7 @@ public class TestActivityManager extends TestCase {
   public void testAddProviders() throws Exception {
     SocialDataLocation data = Mockito.mock(SocialDataLocation.class);
 
-    ActivityManager activityManager = new ActivityManager(data); // getComponent(ActivityManager.class);
+    ActivityManager activityManager = new ActivityManager(data, null); // getComponent(ActivityManager.class);
     activityManager.addProcessor(new FakeProcessor(10));
     activityManager.addProcessor(new FakeProcessor(2));
     activityManager.addProcessor(new FakeProcessor(1));

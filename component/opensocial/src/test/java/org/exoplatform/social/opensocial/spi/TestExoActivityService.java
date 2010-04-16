@@ -31,6 +31,9 @@ import static org.testng.Assert.*;
     @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.opensocial.configuration.xml") })
 public class TestExoActivityService extends AbstractJCRTestCase {
 
+  private static final String ORGANIZATION = OrganizationIdentityProvider.NAME;
+  private static final String SPACE = SpaceIdentityProvider.NAME;
+
   /**
    * posting with the UserId = username
    * 
@@ -43,14 +46,14 @@ public class TestExoActivityService extends AbstractJCRTestCase {
     IdentityManager identityManager = getComponent(IdentityManager.class);
 
     // format : organization:username
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+    Identity identity = identityManager.getOrCreateIdentity(ORGANIZATION,
                                                             "root");
     String userId = "root";
     Activity activity = createActivityOnOwnStream(userId);
     org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(identity);
     assertEquals(actual.getBody(), activity.getBody());
     assertEquals(actual.getUserId(), identity.getId());
-    assertEquals(actual.getStreamOwner(), identity.getId());
+    assertEquals(actual.getStreamOwner(), identity.getRemoteId());
   }
 
   /**
@@ -65,14 +68,14 @@ public class TestExoActivityService extends AbstractJCRTestCase {
     IdentityManager identityManager = getComponent(IdentityManager.class);
 
     // format : organization:username
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+    Identity identity = identityManager.getOrCreateIdentity(ORGANIZATION,
                                                             "john");
-    String globalId = OrganizationIdentityProvider.NAME + ":john";
+    String globalId = ORGANIZATION + ":john";
     Activity activity = createActivityOnOwnStream(globalId);
     org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(identity);
     assertEquals(actual.getBody(), activity.getBody());
     assertEquals(actual.getUserId(), identity.getId());
-    assertEquals(actual.getStreamOwner(), identity.getId());
+    assertEquals(actual.getStreamOwner(), identity.getRemoteId());
   }
 
   /**
@@ -87,14 +90,14 @@ public class TestExoActivityService extends AbstractJCRTestCase {
     IdentityManager identityManager = getComponent(IdentityManager.class);
 
     // format : organization:username
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+    Identity identity = identityManager.getOrCreateIdentity(ORGANIZATION,
                                                             "mary");
     String uuid = identity.getId();
     Activity activity = createActivityOnOwnStream(uuid);
     org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(identity);
     assertEquals(actual.getBody(), activity.getBody());
     assertEquals(actual.getUserId(), identity.getId());
-    assertEquals(actual.getStreamOwner(), identity.getId());
+    assertEquals(actual.getStreamOwner(), identity.getRemoteId());
   }
   
   /**
@@ -109,14 +112,14 @@ public class TestExoActivityService extends AbstractJCRTestCase {
     IdentityManager identityManager = getComponent(IdentityManager.class);
 
     // format : organization:username
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+    Identity identity = identityManager.getOrCreateIdentity(ORGANIZATION,
                                                             "jack");
-    String globalId = OrganizationIdentityProvider.NAME + ":" + identity.getId();
+    String globalId = ORGANIZATION + ":" + identity.getId();
     Activity activity = createActivityOnOwnStream(globalId);
     org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(identity);
     assertEquals(actual.getBody(), activity.getBody());
     assertEquals(actual.getUserId(), identity.getId());
-    assertEquals(actual.getStreamOwner(), identity.getId());
+    assertEquals(actual.getStreamOwner(), identity.getRemoteId());
   }
   
   
@@ -147,12 +150,12 @@ public class TestExoActivityService extends AbstractJCRTestCase {
   }
 
   @Test
-  public void testCreateActivityOnSpaceStream() throws Exception {
+  public void postToSpaceWithGlobalId() throws Exception {
     ExoActivityService activityService = new ExoActivityService();
     SimpleMockOrganizationService orgniaztionService = getComponent(OrganizationService.class);
     orgniaztionService.addMemberships("root", "member:/platform/users");
     IdentityManager identityManager = getComponent(IdentityManager.class);
-    Identity root = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
+    Identity root = identityManager.getOrCreateIdentity(ORGANIZATION, "root");
     String rootIdentityId = root.getId();
 
     Space space = new Space();
@@ -162,12 +165,12 @@ public class TestExoActivityService extends AbstractJCRTestCase {
     SpaceService spaceService = getComponent(SpaceService.class);
     spaceService.saveSpace(space, true);
 
-    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                 "space:space1");
-    String space1ID = spaceIdentity.getId();
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SPACE,"space:space1");
+    String spaceId = spaceIdentity.getRemoteId();
 
     UserId viewer = new UserId(UserId.Type.viewer, null);
-    GroupId space1Group = new GroupId(GroupId.Type.groupId, space1ID);
+    String globalId = "space:space1";// we are passing a globalId
+    GroupId spaceGroup = new GroupId(GroupId.Type.groupId, globalId);
     String appId = "test";
     Set<String> fields = Collections.emptySet();
     Activity activity = new ActivityImpl();
@@ -176,11 +179,53 @@ public class TestExoActivityService extends AbstractJCRTestCase {
     FakeToken token = new FakeToken();
     token.ownerId = rootIdentityId;
     token.viewerId = rootIdentityId;
-    activityService.createActivity(viewer, space1Group, appId, fields, activity, token);
+    activityService.createActivity(viewer, spaceGroup, appId, fields, activity, token);
 
-    org.exoplatform.social.core.activitystream.model.Activity act = getFirstActivity(spaceIdentity);
-    assertEquals(act.getBody(), activity.getBody());
-    assertEquals(act.getUserId(), space1ID);
+    org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(spaceIdentity);
+    assertEquals(actual.getBody(), activity.getBody());
+    assertEquals(actual.getUserId(), rootIdentityId);
+    assertEquals(actual.getStreamOwner(), spaceId);
+
+  }
+  
+  
+  
+  public void postToSpaceWithUUID() throws Exception {
+    ExoActivityService activityService = new ExoActivityService();
+    SimpleMockOrganizationService orgniaztionService = getComponent(OrganizationService.class);
+    orgniaztionService.addMemberships("run", "member:/platform/users");
+    IdentityManager identityManager = getComponent(IdentityManager.class);
+    Identity poster = identityManager.getOrCreateIdentity(ORGANIZATION, "ron");
+    String posterIdentityId = poster.getId();
+
+    Space space = new Space();
+    space.setName("space1");
+    space.setGroupId("/spaces/space1");
+    space.setDescription("desc");
+    SpaceService spaceService = getComponent(SpaceService.class);
+    spaceService.saveSpace(space, true);
+
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SPACE,
+                                                                 "space:space1");
+    String spaceId = spaceIdentity.getRemoteId();
+
+    UserId viewer = new UserId(UserId.Type.viewer, null);
+    String uuid = spaceIdentity.getId(); // we are passing an UUID
+    GroupId spaceGroup = new GroupId(GroupId.Type.groupId, uuid); 
+    String appId = "test";
+    Set<String> fields = Collections.emptySet();
+    Activity activity = new ActivityImpl();
+    activity.setBody("ron sur space1");
+    activity.setTitle("Ron Ron");
+    FakeToken token = new FakeToken();
+    token.ownerId = posterIdentityId;
+    token.viewerId = posterIdentityId;
+    activityService.createActivity(viewer, spaceGroup, appId, fields, activity, token);
+
+    org.exoplatform.social.core.activitystream.model.Activity actual = getFirstActivity(spaceIdentity);
+    assertEquals(actual.getBody(), activity.getBody());
+    assertEquals(actual.getUserId(), posterIdentityId);
+    assertEquals(actual.getStreamOwner(), spaceId);
 
   }
 

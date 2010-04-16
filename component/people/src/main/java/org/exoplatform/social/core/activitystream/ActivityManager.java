@@ -27,6 +27,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
+import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 
@@ -45,6 +46,8 @@ public class ActivityManager {
   private static final Log LOG = ExoLogger.getLogger(ActivityManager.class);
   
   private SortedSet<ActivityProcessor> processors;
+
+  private IdentityManager identityManager;
   
   /**
    * Instantiates a new activity manager.
@@ -54,9 +57,10 @@ public class ActivityManager {
    * @see org.exoplatform.social.space.impl.SoscialDataLocation.
    * @throws Exception exception when can't instantiates tree node.
    */
-  public ActivityManager(SocialDataLocation dataLocation) throws Exception {
+  public ActivityManager(SocialDataLocation dataLocation, IdentityManager identityManager) throws Exception {
     this.storage = new JCRStorage(dataLocation);
     this.processors = new TreeSet<ActivityProcessor>(processorComparator());
+    this.identityManager = identityManager;
   }
 
 
@@ -84,60 +88,62 @@ public class ActivityManager {
   }
 
   /**
-   * Gets the activities by identity
+   * Gets the lastest activities by identity
    * 
    * @param identity the identity
    * @return the activities
    * @throws Exception the exception
    */
   public List<Activity> getActivities(Identity identity) throws Exception {
-      List<Activity> activities = storage.getActivities(identity.getId());
-      for (Activity activity : activities) {
-        processActivitiy(activity);
-      }
-      return activities;
+    List<Activity> activities = storage.getActivities(identity);
+    for (Activity activity : activities) {
+      processActivitiy(activity);
     }
+    return activities;
+  }
 
   /**
-   * Save activity based on user and his activity
+   * Saves an activity to the default stream of a owner
    * 
-   * @param identityId the identity Id such as obtained by
-   *          {@link Identity#getId()}
+   * @param owner owner of the activity stream. Usually a user or space
    * @param activity the activity
    * @return the activity
    * @throws Exception the exception when error in storage
    */
-  public Activity saveActivity(String identityId, Activity activity) throws Exception {
+  public Activity saveActivity(Identity owner, Activity activity) throws Exception {
     // TODO: check the security
-    // TODO: should publish the activity in a different thread to improve
-    // performance
-    if (identityId == null)
+    if (owner == null)
       return null;
 
     if (activity.getId() == null) {
       activity.setPostedTime(System.currentTimeMillis());
     }
     activity.setUpdatedTimestamp(System.currentTimeMillis());
-    activity.setUserId(identityId);
 
-    return storage.save(identityId, activity);
+    // if not given, the activity is from the stream owner
+    if (activity.getUserId() == null) {
+      activity.setUserId(owner.getId());
+    }
+
+    return storage.save(owner, activity);
   }
 
   /**
-   * Save activity.
-   * 
-   * @param activity the activity
+   * Saves activity into the stream for the activity's userId
+   * @see Activity#getUserId()
+   * @param activity the activity to save
    * @return the activity
-   * @throws Exception the exception
    */
   public Activity saveActivity(Activity activity) throws Exception {
     activity.setUpdatedTimestamp(System.currentTimeMillis());
     if (activity.getId() == null) {
       activity.setPostedTime(System.currentTimeMillis());
     }
-    return storage.save(activity.getUserId(), activity);
+    Identity owner = identityManager.getIdentity(activity.getUserId());
+    return storage.save(owner, activity);
   }
 
+  
   /**
    * Save new or updates comment to an activity comment is an instance of
    * Activity with mandatory properties: userId, body.
@@ -183,7 +189,7 @@ public class ActivityManager {
    * Removes activity like, if this activity liked, remove; else does nothing
    * 
    * @param activity
-   * @param identity
+   * @param identity user that unlikes the activity
    * @throws Exception
    */
   public void removeLike(Activity activity, Identity identity) throws Exception {
@@ -191,6 +197,7 @@ public class ActivityManager {
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());
       activity.setLikeIdentityIds(identityIds);
+   
       saveActivity(activity);
     } else {
       LOG.warn("activity is not liked by identity: " + identity);
@@ -218,19 +225,19 @@ public class ActivityManager {
   }
 
   /**
-   * Record activity based on userId, type, title, and his body
+   * Records an activity
    * 
-   * @param identityId the Id such as obtained by {@link Identity#getId()}
-   * @param type the type
+   * @param owner the owner of the target stream for this activity
+   * @param type the type of activity (freeform)
    * @param title the title
    * @param body the body
    * @return the activity
    * @throws Exception the exception
    */
-  public Activity recordActivity(String identityId, String type, String title, String body) throws Exception {
-    Activity activity = new Activity(identityId, type, title, body);
-
-    return saveActivity(identityId, activity);
+  public Activity recordActivity(Identity owner, String type, String title, String body) throws Exception {
+    String userId = owner.getId();
+    Activity activity = new Activity(userId, type, title, body);
+    return saveActivity(owner, activity);
   }
   /**
    * Adds a new processor

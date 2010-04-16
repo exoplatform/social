@@ -78,23 +78,22 @@ public class IdentityManager {
   }
 
   /**
-   * Gets the identity by id.
+   * Gets the identity by id and also loads his profile
    * 
-   * @param id can be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
-   * @return the identity by id
-   * @throws Exception the exception
+   * @param can be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
+   * @return null if nothing is found, or the Identity object
+   * @see #getIdentity(String, boolean)
    */
   public Identity getIdentity(String id) throws Exception {
     return getIdentity(id, true);
   }
 
   /**
-   * Gets the identity by id also load his profile
+   * Gets the identity by id optionnaly loading his profile
    * 
    * @param can be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
    * @param loadProfile the load profile true if load and false if doesn't
    * @return null if nothing is found, or the Identity object
-   * @throws Exception the exception
    */
   public Identity getIdentity(String id, boolean loadProfile) throws Exception {
     Identity identity = null;
@@ -122,7 +121,7 @@ public class IdentityManager {
 
     return identity;
   }
-
+  
 
   /**
    * Adds the identity provider.

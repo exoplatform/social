@@ -57,7 +57,7 @@ public class TestSpaceActivityPublisher extends  AbstractJCRTestCase {
     
     Identity identity = identityManager.getIdentity(SpaceIdentityProvider.NAME + ":" + spaceId);
     List<Activity> activities = activityManager.getActivities(identity);
-    assertEquals(1, activities.size());
+    assertEquals(activities.size(), 1);
     assertTrue(activities.get(0).getBody().contains(space.getName()));
     assertTrue(activities.get(0).getBody().contains("root"));
   }

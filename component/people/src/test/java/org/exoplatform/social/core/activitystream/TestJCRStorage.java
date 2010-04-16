@@ -8,6 +8,8 @@ import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.social.core.activitystream.model.Activity;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.impl.SocialDataLocation;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -28,14 +30,15 @@ public class TestJCRStorage extends AbstractJCRTestCase {
     activity.setTitle("blabla");
     activity.setUserId("root");
     activity.setUpdated(new Date());
-    storage.save("john", activity);
+    Identity john = new Identity(OrganizationIdentityProvider.NAME, "john");
+    storage.save(john, activity);
     
     String streamId = activity.getStreamId();
     assertNotNull(streamId);
     assertEquals(activity.getStreamOwner(), "john");
     
     
-    List<Activity> activities = storage.getActivities("john");
+    List<Activity> activities = storage.getActivities(john);
     assertEquals(activities.size(), 1);
     assertEquals(activities.get(0).getStreamOwner(), "john");
     assertEquals(activities.get(0).getStreamId(), streamId);
