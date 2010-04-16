@@ -103,11 +103,12 @@ public class ActivityManager {
   }
 
   /**
-   * Saves an activity to the default stream of a owner
+   * Saves an activity to the stream of a owner.<br/>
+   * Note that the Activity.userId will be set to the owner identity if not already set.
    * 
    * @param owner owner of the activity stream. Usually a user or space
-   * @param activity the activity
-   * @return the activity
+   * @param activity the activity to save
+   * @return the activity saved
    * @throws Exception the exception when error in storage
    */
   public Activity saveActivity(Identity owner, Activity activity) throws Exception {
@@ -115,10 +116,12 @@ public class ActivityManager {
     if (owner == null)
       return null;
 
+    // posted now
+    long now = System.currentTimeMillis();
     if (activity.getId() == null) {
-      activity.setPostedTime(System.currentTimeMillis());
+      activity.setPostedTime(now);
     }
-    activity.setUpdatedTimestamp(System.currentTimeMillis());
+    activity.setUpdatedTimestamp(now);
 
     // if not given, the activity is from the stream owner
     if (activity.getUserId() == null) {
@@ -133,14 +136,11 @@ public class ActivityManager {
    * @see Activity#getUserId()
    * @param activity the activity to save
    * @return the activity
+   * @see #saveActivity(Identity, Activity)
    */
   public Activity saveActivity(Activity activity) throws Exception {
-    activity.setUpdatedTimestamp(System.currentTimeMillis());
-    if (activity.getId() == null) {
-      activity.setPostedTime(System.currentTimeMillis());
-    }
     Identity owner = identityManager.getIdentity(activity.getUserId());
-    return storage.save(owner, activity);
+    return saveActivity(owner, activity);
   }
 
   
