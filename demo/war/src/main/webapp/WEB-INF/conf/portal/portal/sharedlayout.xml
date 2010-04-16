@@ -64,7 +64,7 @@
           <application-ref>exoadmin</application-ref>
           <portlet-ref>AdminToolbarPortlet</portlet-ref>
         </portlet>
-		   <access-permissions>Everyone</access-permissions>
+		   <access-permissions>*:/platform/administrators</access-permissions>
 		    <show-info-bar>false</show-info-bar>
 		  </portlet-application>
 		</container>
