@@ -195,7 +195,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                      Activity activity,
                                      SecurityToken token) throws SocialSpiException {
     try {
-      activity.setAppId(appId);
+      activity.setAppId(appId); //groupId = new GroupId(GroupId.Type.groupId, "space:qsdsqd")
       
       org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity, fields);
       
@@ -242,7 +242,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
       am.saveActivity(targetStream, exoActivity);
       
       return ImmediateFuture.newInstance(null);
-    } catch (Exception e) {
+    } catch (Throwable e) {
+      if (e instanceof ProtocolException) {
+        throw (ProtocolException)e;
+      }
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
   }
