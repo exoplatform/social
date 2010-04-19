@@ -125,6 +125,11 @@
 	background: url('background/ProfileIcon.gif') no-repeat 12px center; 
 }
 
+.UIToolbarContainer .MenuItem .ToolBarDirectoryIcon  {
+	background: url('background/ToolbarContainer.gif') no-repeat left -96px; /* orientation=lt */
+	background: url('background/ToolbarContainer.gif') no-repeat right -96px; /* orientation=rt */
+}
+
 .UIToolbarContainer .MenuItem .ToolBarRelationIcon {	
 	background: url('background/RelationIcon.gif') no-repeat 12px center; 
 }

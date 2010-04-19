@@ -16,9 +16,10 @@ def peopleLink = portalURI + "people";
 void renderRelationsLink() {
     def remoteUser = Util.getPortalRequestContext().getRemoteUser();
 		def portalURI = Util.getPortalRequestContext().getPortalURI();
+		def labelDirectory = _ctx.appRes("UIPeopleToolBarPortlet.label.Directory");
 		def labelRelations = _ctx.appRes("UIPeopleToolBarPortlet.label.Relations");
+		def directoryLink = portalURI + "people";
 		def relationsLink = portalURI + "relations/myRelations/" + remoteUser;
-		def navigations = uicomponent.getNavigations();
 
  		String clazz = "";
  		
@@ -27,24 +28,21 @@ void renderRelationsLink() {
 							<div class="SubBlock">
 				""";
 				
-				if(navigations != null) {
-				 for(nav in navigations) {
-					 def pageNodes = nav.getNodes();
-				
-					 for(PageNode node in pageNodes) {
-	          if (node.getUri() == "relations") {
-							print """
-									<div class="MenuItem">
-										<div class="$clazz">						
-											<a href="$relationsLink" class="ToolBarRelationIcon">$labelRelations</a>
-										</div>
-									</div>
-								""";
-			       }
-					  }
-				  }
-				}  
-			print """
+			 print """
+						<div class="MenuItem">
+							<div class="$clazz">						
+								<a href="$directoryLink" class="ToolBarDirectoryIcon">$labelDirectory</a>
+							</div>
+						</div>
+					""";
+				print """
+						<div class="MenuItem">
+							<div class="$clazz">						
+								<a href="$relationsLink" class="ToolBarRelationIcon">$labelRelations</a>
+							</div>
+						</div>
+					""";
+			  print """
 						</div>
 					</div>
 				""";
