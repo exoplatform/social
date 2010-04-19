@@ -14,7 +14,7 @@
     <component-plugin> 
       <name>UsernameProcessor</name>
       <set-method>addProcessorPlugin</set-method>
-      <type>org.exoplatform.social.activity.UsernameProcessor</type> 
+      <type>org.exoplatform.social.activity.MentionsProcessor</type> 
       <init-params>
         <value-param>
           <name>priority</name>

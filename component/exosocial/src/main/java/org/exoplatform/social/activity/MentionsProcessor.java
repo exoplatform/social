@@ -13,12 +13,12 @@ import org.exoplatform.social.core.activitystream.model.Activity;
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
  */
-public class UsernameProcessor extends BaseActivityProcessorPlugin {
+public class MentionsProcessor extends BaseActivityProcessorPlugin {
 
   
   private LinkProvider linkProvider;
 
-  public UsernameProcessor(InitParams params, LinkProvider linkProvider) {
+  public MentionsProcessor(InitParams params, LinkProvider linkProvider) {
     super(params);
     this.linkProvider = linkProvider;
   }

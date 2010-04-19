@@ -6,9 +6,9 @@ import org.exoplatform.social.core.LinkProvider;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.mockito.Mockito;
 
-public class TestUsernameProcessor extends TestCase {
+public class TestMentionsProcessor extends TestCase {
 
-  public TestUsernameProcessor() throws Exception {
+  public TestMentionsProcessor() throws Exception {
     super();
   }
 
@@ -17,7 +17,7 @@ public class TestUsernameProcessor extends TestCase {
     LinkProvider linkProvider = Mockito.mock(LinkProvider.class);
     Mockito.when(linkProvider.getProfileLink(Mockito.anyString())).thenReturn("FOO", "BAR", "ZED", "JOE", "CAR");
 
-    UsernameProcessor processor = new UsernameProcessor(null, linkProvider);
+    MentionsProcessor processor = new MentionsProcessor(null, linkProvider);
 
     Activity activity = null;
     processor.processActivity(activity);
