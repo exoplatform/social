@@ -29,6 +29,29 @@
   <component>
     <key>org.exoplatform.social.core.activitystream.ActivityManager</key>
     <type>org.exoplatform.social.core.activitystream.ActivityManager</type>
+    <component-plugins>
+      <component-plugin> 
+        <name>OSHtmlSanitizer</name>
+        <set-method>addProcessorPlugin</set-method>
+        <type>org.exoplatform.social.core.activitystream.OSHtmlSanitizerProcessor</type>
+        <init-params>
+          <values-param>
+            <name>allowedTags</name>
+            <value>b</value>
+            <value>i</value>
+            <value>a</value>
+            <value>span</value>
+            <value>em</value>
+            <value>strong</value>
+            <value>p</value>
+            <value>ol</value>
+            <value>ul</value>
+            <value>li</value>
+            <value>br</value>
+          </values-param>
+        </init-params>
+      </component-plugin>    
+    </component-plugins>
   </component>
   
    <component>
