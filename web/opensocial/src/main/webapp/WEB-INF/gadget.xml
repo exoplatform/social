@@ -24,26 +24,26 @@
 	<gadget name="SocialHelloWorld">
 		<path>/gadgets/SocialHelloWorld.xml</path>
 	</gadget>
-	<gadget name="statusUpdate2">
-		<path>/gadgets/activities2.xml</path>
+	<gadget name="StatusUpdate">
+		<path>/gadgets/activities/activities.xml</path>
 	</gadget>
-	<gadget name="spaceActivities">
+	<gadget name="SpaceActivities">
 		<path>/gadgets/spaceactivities.xml</path>
 	</gadget>	
 	<gadget name="ComplianceTest08">
 		<url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>
 	</gadget>
-  <gadget name="codeSharer">
+  <gadget name="CodeSharer">
 		<path>/gadgets/codeSharer.xml</path>
 	</gadget>
-  <gadget name="applicationReg">
+  <gadget name="ApplicationList">
 		<path>/gadgets/applicationReg.xml</path>
 	</gadget>
 	<gadget name="viewerFriends">
 		<path>/gadgets/viewerFriends.xml</path>
 	</gadget>
 	<gadget name="rssFetch">
-		<path>/gadgets/rssFetch.xml</path>
+		<path>/gadgets/rssFetch/rssFetch.xml</path>
 	</gadget>	
 	<gadget name="userSpaceRestService">
 		<path>/gadgets/userSpaceRestService.xml</path>
@@ -52,6 +52,6 @@
 		<path>/gadgets/codeRunner.xml</path>
 	</gadget>
 	<gadget name="clock">
-		<path>/gadgets/clock.xml</path>
+		<path>/gadgets/clock/clock.xml</path>
 	</gadget>
 </gadgets>

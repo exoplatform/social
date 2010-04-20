@@ -149,8 +149,8 @@
 				}      
     </style>
     
-	  <link rel="stylesheet" type="text/css" href="viewerFriends/style.css"></link>
-	  <script type="text/javascript" src="viewerFriends/script.js"></script>
+	  <link rel="stylesheet" type="text/css" href="style.css"></link>
+	  <script type="text/javascript" src="script.js"></script>
 	  <script type="text/javascript">
 	  
 	   var viewerFriends = new ViewerFriend();

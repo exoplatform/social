@@ -157,8 +157,8 @@
 				}      
     </style>
     
-	  <link rel="stylesheet" type="text/css" href="rssFetch/style.css"></link>
-	  <script type="text/javascript" src="rssFetch/script.js"></script>
+	  <link rel="stylesheet" type="text/css" href="style.css"></link>
+	  <script type="text/javascript" src="script.js"></script>
 	  
     <div id="rssFeed" style="overflow: auto;"></div>
 		
@@ -290,8 +290,8 @@
 				}      
     </style>
     
-	  <link rel="stylesheet" type="text/css" href="rssFetch/style.css"></link>
-	  <script type="text/javascript" src="rssFetch/script.js"></script>
+	  <link rel="stylesheet" type="text/css" href="style.css"></link>
+	  <script type="text/javascript" src="script.js"></script>
 	  
 	  <div id="rssFeed" style="overflow: auto;"></div>
 		

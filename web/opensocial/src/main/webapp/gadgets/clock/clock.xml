@@ -24,8 +24,8 @@
  </ModulePrefs>
  <Content type="html" view="home">
    <![CDATA[
- 	<link rel="stylesheet" type="text/css" href="clock/style.css"></link>
- 	<script type="text/javascript" src="clock/script.js"></script>
+ 	<link rel="stylesheet" type="text/css" href="style.css"></link>
+ 	<script type="text/javascript" src="script.js"></script>
 	<div id='Clock' class="Clock" />
  ]]>
  </Content>
