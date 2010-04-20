@@ -37,10 +37,10 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
  * Manages pending relation of all existing users. Manages actions 
@@ -61,14 +61,14 @@ import org.exoplatform.webui.form.UIFormPageIterator;
     }
 )
 public class UIPendingRelation extends UIContainer {
-  /** UIFormPageIterator ID. */
-  private final String iteratorID_ = "UIFormPageIteratorPendingRelation";
+  /** UIPageIterator ID. */
+  private final String iteratorID_ = "UIPageIteratorPendingRelation";
   
   /** Label for display invitation is revoked information */
   private static final String INVITATION_REVOKED_INFO = "UIPendingRelation.label.RevokedInfo";
   
-  /** Stores UIFormPageIterator instance. */
-  UIFormPageIterator uiFormPageIterator_;
+  /** Stores UIPageIterator instance. */
+  UIPageIterator uiPageIterator_;
   
   /** Stores current identity. */
   Identity            currIdentity = null;
@@ -109,8 +109,8 @@ public class UIPendingRelation extends UIContainer {
    * 
    * @return an iterator contains information for display.
    */
-  public UIFormPageIterator getUiFormPageIterator() {
-    return uiFormPageIterator_;
+  public UIPageIterator getUIPageIterator() {
+    return uiPageIterator_;
   }
 
   /**
@@ -119,8 +119,8 @@ public class UIPendingRelation extends UIContainer {
    * @throws Exception 
    */
   public UIPendingRelation() throws Exception {
-    uiFormPageIterator_ = createUIComponent(UIFormPageIterator.class, null, iteratorID_);
-    addChild(uiFormPageIterator_);
+    uiPageIterator_ = createUIComponent(UIPageIterator.class, null, iteratorID_);
+    addChild(uiPageIterator_);
     uiProfileUserSearchPending = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     addChild(uiProfileUserSearchPending);
   }
@@ -134,21 +134,19 @@ public class UIPendingRelation extends UIContainer {
   @SuppressWarnings("unchecked")
   public List<Relationship> getPendingRelationList() throws Exception {
     List<Relationship> listRelationShip = getPendingRelationships();
-    int currentPage = uiFormPageIterator_.getCurrentPage();
+    int currentPage = uiPageIterator_.getCurrentPage();
     LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
     
     uiProfileUserSearchPending.setAllUserContactName(getAllPendingUserNames()); // set identitite names for suggestion
-    uiFormPageIterator_.setPageList(pageList) ;  
-    int pageCount = uiFormPageIterator_.getAvailablePage();
+    uiPageIterator_.setPageList(pageList) ;  
+    int pageCount = uiPageIterator_.getAvailablePage();
     if(pageCount >= currentPage){
-      uiFormPageIterator_.setCurrentPage(currentPage);
+      uiPageIterator_.setCurrentPage(currentPage);
     }else if(pageCount < currentPage){
-      uiFormPageIterator_.setCurrentPage(currentPage-1);
+      uiPageIterator_.setCurrentPage(currentPage-1);
     }
-    List<Relationship> lists;
-    lists = uiFormPageIterator_.getCurrentPageData();
     
-    return lists;
+    return uiPageIterator_.getCurrentPageData();
   }
     
   /**

@@ -5,7 +5,7 @@
  	import org.exoplatform.container.PortalContainer;
  	import org.exoplatform.services.jcr.RepositoryService;
  	import org.exoplatform.portal.application.PortalRequestContext;
- 	import org.exoplatform.webui.form.UIFormPageIterator;
+  import org.exoplatform.webui.core.UIPageIterator;
  	import org.exoplatform.social.webui.UIProfileUserSearch;
  
  	PortalContainer portalContainer = PortalContainer.getInstance();
@@ -17,7 +17,7 @@
   def isEditable = uicomponent.isEditable();
 	def myInvitations = uicomponent.getInvitation();
 	def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
-	UIFormPageIterator iteratorInvitation = uicomponent.getUiFormPageIteratorInvitation();
+	UIPageIterator iteratorInvitation = uicomponent.getUIPageIteratorInvitation();
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def invitationRelationIdx = 0
@@ -96,7 +96,7 @@
 	<% } %>
 		<% } %>
 		<%
-		 		if (uicomponent.getUiFormPageIteratorInvitation().getAvailablePage() > 1) {
+		 		if (iteratorInvitation.getAvailablePage() > 1) {
 		 			uicomponent.renderUIComponent(iteratorInvitation) ;
 		 		}
 	 	%>

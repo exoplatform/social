@@ -40,10 +40,10 @@ import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-import org.exoplatform.webui.form.UIFormPageIterator;
 
 /**
  * Manages invitation relation of all existing users. Manages actions 
@@ -68,14 +68,14 @@ import org.exoplatform.webui.form.UIFormPageIterator;
   }
 )
 public class UIInvitationRelation extends UIContainer {
-  /** UIFormPageIterator ID. */
-  private final String iteratorIDInvitation = "UIFormPageIteratorInvitation";
+  /** UIPageIterator ID. */
+  private final String iteratorIDInvitation = "UIPageIteratorInvitation";
   
   /** Label displays revoked information. */
   private static final String INVITATION_REVOKED_INFO = "UIInvitationRelation.label.RevokedInfo";
   
-  /** Stores UIFormPageIterator object. */
-  UIFormPageIterator uiFormPageIteratorInvitation;
+  /** Stores UIPageIterator object. */
+  private UIPageIterator uiPageIteratorInvitation;
   
   /** Stores relationship manager object. */
   private RelationshipManager relationshipManager;
@@ -104,8 +104,8 @@ public class UIInvitationRelation extends UIContainer {
    * 
    * @return an iterator.
    */
-  public UIFormPageIterator getUiFormPageIteratorInvitation() {
-    return uiFormPageIteratorInvitation;
+  public UIPageIterator getUIPageIteratorInvitation() {
+    return uiPageIteratorInvitation;
   }
   
   /**
@@ -114,8 +114,8 @@ public class UIInvitationRelation extends UIContainer {
    * @throws Exception 
    */
   public UIInvitationRelation() throws Exception {
-    uiFormPageIteratorInvitation = createUIComponent(UIFormPageIterator.class, null, iteratorIDInvitation);
-    addChild(uiFormPageIteratorInvitation);
+    uiPageIteratorInvitation = createUIComponent(UIPageIterator.class, null, iteratorIDInvitation);
+    addChild(uiPageIteratorInvitation);
     uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     addChild(uiProfileUserSearchRelation);
   }
@@ -129,7 +129,7 @@ public class UIInvitationRelation extends UIContainer {
    */
   public List<Relationship> getInvitation() throws Exception {
     List<Relationship> invitationList = getInvitedRelations();
-    List<Relationship> contactLists = getDisplayRelationList(invitationList, uiFormPageIteratorInvitation);
+    List<Relationship> contactLists = getDisplayRelationList(invitationList, uiPageIteratorInvitation);
     uiProfileUserSearchRelation.setAllUserContactName(getAllInvitedUserNames()); // set identitite names for suggestion
     return contactLists;
   }
@@ -290,7 +290,7 @@ public class UIInvitationRelation extends UIContainer {
    * @param listContacts
    *        All invited contact.
    *        
-   * @param uiFormPageIterator
+   * @param uiPageIterator
    *        Page iterator for paging.
    *        
    * @return list of relation in current page.
@@ -298,19 +298,18 @@ public class UIInvitationRelation extends UIContainer {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts, UIFormPageIterator uiFormPageIterator) throws Exception {
-    int curPage = uiFormPageIterator.getCurrentPage();
+  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts, UIPageIterator uiPageIterator) throws Exception {
+    int curPage = uiPageIterator.getCurrentPage();
     LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
-    uiFormPageIterator.setPageList(pageListContact) ;  
-    int availablePageCount = uiFormPageIterator.getAvailablePage();
+    uiPageIterator.setPageList(pageListContact) ;  
+    int availablePageCount = uiPageIterator.getAvailablePage();
     if(availablePageCount >= curPage){
-      uiFormPageIterator.setCurrentPage(curPage);
+      uiPageIterator.setCurrentPage(curPage);
     }else if(availablePageCount < curPage){
-      uiFormPageIterator.setCurrentPage(curPage-1);
+      uiPageIterator.setCurrentPage(curPage-1);
     }
-    List<Relationship> contactLists;
-    contactLists = uiFormPageIterator.getCurrentPageData();
-    return contactLists;
+
+    return uiPageIterator.getCurrentPageData();
   }
   
   /**

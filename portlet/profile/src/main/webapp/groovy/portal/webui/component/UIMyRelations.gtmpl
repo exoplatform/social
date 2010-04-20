@@ -1,6 +1,6 @@
 <%
 	import org.exoplatform.portal.webui.util.Util ;
- 	import org.exoplatform.webui.form.UIFormPageIterator;
+  import org.exoplatform.webui.core.UIPageIterator;
  	import org.exoplatform.webui.core.UIVirtualList;
  	import org.exoplatform.social.core.identity.model.ProfileAttachment;
  	import org.exoplatform.social.core.identity.model.Profile;
@@ -11,7 +11,7 @@
 	def myRelation = uicomponent.getMyRelation();
 	def currIdentity = uicomponent.getCurrentIdentity();
 	def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
-	UIFormPageIterator iteratorContact = uicomponent.getUiFormPageIteratorContact();
+	UIPageIterator iteratorContact = uicomponent.getUIPageIteratorContact();
 	PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def relationIdx = 0;
@@ -109,7 +109,7 @@
 		<% } %>
 		<%}%>
 		<%
-		 		if (uicomponent.getUiFormPageIteratorContact().getAvailablePage() > 1) {
+		 		if (iteratorContact.getAvailablePage() > 1) {
 		 			uicomponent.renderUIComponent(iteratorContact) ;
 		 		}
 	 	%>
