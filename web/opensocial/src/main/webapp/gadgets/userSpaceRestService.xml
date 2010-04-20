@@ -61,20 +61,26 @@
 			  }								
 				
 				opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = [
-						opensocial.Person.Field.PROFILE_URL];
+						opensocial.Person.Field.PROFILE_URL,
+						"portalName",
+						"restContext",
+						"host"];
 			
 				req.add(req.newFetchPersonRequest("VIEWER", opts), 'viewer');
 				req.send(onLoad);
 			
 				function onLoad(data) {
-					if (!data.hadError()) {								
+					if (!data.hadError()) {				
 						this.viewer = data.get('viewer').getData();
 						var profile_url =  this.viewer.getField(opensocial.Person.Field.PROFILE_URL);
 						var userId = profile_url.substr(profile_url.lastIndexOf('/') + 1);
+						var hostName = this.viewer.getField('hostName');
+						var portalName = this.viewer.getField('portalName');
+						var restContext = this.viewer.getField('restContextName');
 						if (tabId == 'myspace_id') {
-							var siteUrl = 'http://localhost:8080/rest/social/spaces/' + userId + '/mySpaces/show.json';
+							var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/" + userId + '/mySpaces/show.json';
 						} else {
-							var siteUrl = 'http://localhost:8080/rest/social/spaces/' + userId + '/pendingSpaces/show.json';					
+							var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/" + userId + '/pendingSpaces/show.json';
 						}
 								
 						spaceList.makeRequest(siteUrl,spaceList.displayValue);
@@ -90,17 +96,6 @@
 			}
 			
 			SpaceList.prototype.makeCachedRequest = function(url, callback, params, refreshInterval) {
-			  var ts = new Date().getTime();
-			  var sep = "?";
-			  
-			  if (refreshInterval && refreshInterval > 0) {
-			    ts = Math.floor(ts / (refreshInterval * 1000));
-			  }
-			  if (url.indexOf("?") > -1) {
-			    sep = "&";
-			  }
-			  
-			  url = [ url, sep, "nocache=", ts ].join("");
 			  gadgets.io.makeRequest(url, callback, params);
 			}
 			
@@ -117,7 +112,7 @@
 				}
 				
 			  if (!resp) {
-			  	alert('response is invalid');
+			  	//alert('response is invalid');
 			  } else {
 					var spaceData = resp.data.spaces;
 					

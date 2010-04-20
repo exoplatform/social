@@ -60,7 +60,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
   
   public void testJsonShowMySpaceList() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
-    ContainerResponse response = service("GET", "/social/spaces/root/mySpaces/show.json", "", null, null, writer);
+    ContainerResponse response = service("GET", "/portal/social/spaces/root/mySpaces/show.json", "", null, null, writer);
     assertEquals(200, response.getStatus());
     SpaceList spaceList = (SpaceList) response.getEntity();
     assertEquals("application/json", response.getContentType().toString());
@@ -69,7 +69,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
   
   public void testJsonShowPendingSpaceList() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
-    ContainerResponse response = service("GET", "/social/spaces/root/pendingSpaces/show.json", "", null, null, writer);
+    ContainerResponse response = service("GET", "/portal/social/spaces/root/pendingSpaces/show.json", "", null, null, writer);
     assertEquals(200, response.getStatus());
     assertEquals("application/json", response.getContentType().toString());
     SpaceList spaceList = (SpaceList) response.getEntity();
@@ -78,7 +78,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
   
   public void testXmlShowMySpaceList() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
-    ContainerResponse response = service("GET", "/social/spaces/root/mySpaces/show.xml", "", null, null, writer);
+    ContainerResponse response = service("GET", "/portal/social/spaces/root/mySpaces/show.xml", "", null, null, writer);
     assertEquals(200, response.getStatus());
     assertEquals("application/xml", response.getContentType().toString());
     SpaceList spaceList = (SpaceList) response.getEntity();
@@ -87,7 +87,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
   
   public void testXmlShowPendingSpaceList() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
-    ContainerResponse response = service("GET", "/social/spaces/root/pendingSpaces/show.xml", "", null, null, writer);
+    ContainerResponse response = service("GET", "/portal/social/spaces/root/pendingSpaces/show.xml", "", null, null, writer);
     assertEquals(200, response.getStatus());
     assertEquals("application/xml", response.getContentType().toString());
     SpaceList spaceList = (SpaceList) response.getEntity();

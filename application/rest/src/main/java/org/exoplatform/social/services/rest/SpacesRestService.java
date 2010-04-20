@@ -29,6 +29,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.space.Space;
@@ -49,7 +51,7 @@ import org.exoplatform.social.space.SpaceService;
  * @since      Jan 6, 2010
  * @copyright  eXo Platform SAS 
  */
-@Path("social/spaces")
+@Path("{portalName}/social/spaces")
 public class SpacesRestService implements ResourceContainer {
   private SpaceService _spaceService;
   /**
@@ -63,9 +65,9 @@ public class SpacesRestService implements ResourceContainer {
    * @return spaceList
    * @see SpaceList
    */
-  private SpaceList showMySpaceList(String userId) {
+  private SpaceList showMySpaceList(String userId, String portalName) {
     SpaceList spaceList = new SpaceList();
-    _spaceService = getSpaceService();
+    _spaceService = getSpaceService(portalName);
     List<Space> mySpaces;
     try {
       mySpaces = _spaceService.getSpaces(userId);
@@ -82,9 +84,9 @@ public class SpacesRestService implements ResourceContainer {
    * @return spaceList
    * @see SpaceList
    */
-  private SpaceList showPendingSpaceList(String userId) {
+  private SpaceList showPendingSpaceList(String userId, String portalName) {
     SpaceList spaceList = new SpaceList();
-    _spaceService = getSpaceService();
+    _spaceService = getSpaceService(portalName);
     List<Space> pendingSpaces;
     try {
       pendingSpaces = _spaceService.getPendingSpaces(userId);
@@ -105,10 +107,11 @@ public class SpacesRestService implements ResourceContainer {
   @GET
   @Path("{userId}/mySpaces/show.{format}")
   public Response showMySpaceList(@Context UriInfo uriInfo,
+		  						  @PathParam("portalName") String portalName,
                                   @PathParam("userId") String userId,
                                   @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    SpaceList mySpaceList = showMySpaceList(userId);
+    SpaceList mySpaceList = showMySpaceList(userId, portalName);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
   
@@ -123,10 +126,11 @@ public class SpacesRestService implements ResourceContainer {
   @GET
   @Path("{userId}/pendingSpaces/show.{format}")
   public Response showPendingSpaceList(@Context UriInfo uriInfo,
+		  							   @PathParam("portalName") String portalName,
                                        @PathParam("userId") String userId,
                                        @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
-    SpaceList pendingSpaceList = showPendingSpaceList(userId);
+    SpaceList pendingSpaceList = showPendingSpaceList(userId, portalName);
     return Util.getResponse(pendingSpaceList, uriInfo, mediaType, Response.Status.OK);
   }
   
@@ -165,11 +169,8 @@ public class SpacesRestService implements ResourceContainer {
    * @return spaceService
    * @see SpaceService
    */
-  private SpaceService getSpaceService() {
-    if (_spaceService == null) {
-      PortalContainer portalContainer = PortalContainer.getInstance();
-      _spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    }
-    return _spaceService;
+  private SpaceService getSpaceService(String portalName) {
+    PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
+    return (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
   }
 }
