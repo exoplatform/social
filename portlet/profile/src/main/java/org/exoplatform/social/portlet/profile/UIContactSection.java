@@ -129,7 +129,7 @@ public class UIContactSection extends UIProfileSection {
   final public static String INVALID_EMAIl = "UIContactSect.msg.Invalid-email";
   
   /** PHONE REGEX EXPRESSION. */
-  final public static String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().-]+$";
+  final public static String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]+$";
   
   /** INVALID PHONE. */
   final public static String INVALID_PHONE = "UIContactSect.msg.Invalid-phone";
@@ -586,7 +586,7 @@ public class UIContactSection extends UIProfileSection {
       phoneCount += 1;
       addUIFormInput(new UIFormStringInput(FONE + (++phoneIdx),null,null)
       .addValidator(MandatoryValidator.class)
-      .addValidator(StringLengthValidator.class, 3, 20)
+      .addValidator(StringLengthValidator.class, 3, 30)
       .addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, INVALID_PHONE));
     } else if (IMS.equals(type)) {
       createUISelectBox(new String[]{GTALK, MSN, SKYPE, YAHOO, OTHER}, IMS);

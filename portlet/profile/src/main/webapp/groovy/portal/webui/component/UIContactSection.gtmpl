@@ -81,6 +81,9 @@
 						           			uiform.renderField(phoneChilds.get(i));
 						           			%>
 						           			  <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a>
+						           			  <% if (i != phoneCount - 1) { %>
+				           				        <br />
+				           				    <% } %>
 						           			<%
 						         		}
 					         		}
