@@ -150,12 +150,16 @@ public class UISpaceInfo extends UIForm {
       }
       PageNode selectedNode = uiPortal.getSelectedNode();
       PageNode homeNode = null;
-      boolean nameChanged = (space.getName() != name);
+      boolean nameChanged = (!space.getName().equals(name));
       if (nameChanged) {
+    	String cleanedString = SpaceUtils.cleanString(name);
+    	if(spaceService.getSpaceByUrl(cleanedString) != null) {
+    	  uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.current-name-exist", null, ApplicationMessage.INFO));
+    	  return;
+    	}
         UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
         List<PageNavigation> pageNavigations = userPortalConfig.getNavigations();
         DataStorage dataStorage = uiSpaceInfo.getApplicationComponent(DataStorage.class);
-        String cleanedString = SpaceUtils.cleanString(name);
         space.setUrl(cleanedString);
         PageNavigation spaceNavigation = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
         for (PageNavigation pageNavigation : pageNavigations) {
