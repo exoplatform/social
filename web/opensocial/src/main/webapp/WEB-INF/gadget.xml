@@ -44,11 +44,11 @@
 	</gadget>
 	<gadget name="rssFetch">
 		<path>/gadgets/rssFetch/rssFetch.xml</path>
-	</gadget>	
+	</gadget><!--	
 	<gadget name="userSpaceRestService">
 		<path>/gadgets/userSpaceRestService.xml</path>
 	</gadget>
-	<gadget name="codeRunner">
+	--><gadget name="codeRunner">
 		<path>/gadgets/codeRunner.xml</path>
 	</gadget>
 	<gadget name="clock">
