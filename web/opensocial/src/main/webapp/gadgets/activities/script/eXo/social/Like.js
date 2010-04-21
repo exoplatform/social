@@ -110,7 +110,7 @@ eXo.social.Like.ref = {
  	 return;
  	} else if (!response.data) {
 		debug.warn('Like.displayLike: response data is null!!!');
-		alert(Locale.getMsg('internal_error'));
+		//alert(Locale.getMsg('internal_error'));
 		return;
 	}
 	if (!statusUpdate) {

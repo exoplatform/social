@@ -153,7 +153,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 								Util.removeElementById(commentListInfoId);
 							}
 						} else if (res.rc === 404) { //activity not found
-						  //alert(Locale.getMsg('error_activity_not_found'));
+						  alert(Locale.getMsg('error_activity_not_found'));
 						  //remove activity
 						  Util.removeElementById('Activity' + eXo.social.Comment.currentActivityId);
 						  //check if delete all => displays empty message
@@ -167,7 +167,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
               } 
               return;
 						} else {
-							alert(Locale.getMsg('internal_error'));
+							//alert(Locale.getMsg('internal_error'));
 							debug.warn('problem deleting comment');
 						}
 					})
@@ -356,7 +356,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 			commentTextareaEl.disabled = false;
 			commentButtonEl.disabled = false;
 			if (res.rc === 404) { //activity deleted
-			   alert(Locale.getMsg('error_activity_not_found'));
+			   //alert(Locale.getMsg('error_activity_not_found'));
 			   Util.removeElementById('Activity' + eXo.social.Comment.currentActivityId);
 			   //check if delete all => displays empty message
 			   var ownerRootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_OWNER_APPENDABLE_ROOT);
@@ -414,7 +414,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
 				setDeleteComment(commentId);
 				gadgets.window.adjustHeight();
 			} else { //failed
-				alert(Locale.getMsg('internal_error'));
+				//alert(Locale.getMsg('internal_error'));
 				debug.warn('post comment failed!');
 			}
 		});

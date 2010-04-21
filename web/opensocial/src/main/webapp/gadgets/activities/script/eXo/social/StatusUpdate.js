@@ -95,7 +95,7 @@ eXo.social.StatusUpdate.configEnvironment = function() {
 	}
 	if (!(config.HOST_SCHEMA && host && config.PORTAL_NAME && config.REST_CONTEXT_NAME)) {
 		//problem
-		alert('error: can not get right environment!');
+		//alert('error: can not get right environment!');
 	}
 	
 	config.ACTIVITIES_REST_URL = config.ACTIVITIES_REST_URL.replace('${HOST_SCHEMA}', config.HOST_SCHEMA).replace('${HOST}', host).replace('${REST_CONTEXT_NAME}', config.REST_CONTEXT_NAME).replace('${portalName}', config.PORTAL_NAME);
@@ -433,7 +433,7 @@ eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
          }
 	   } else {
 		   //TODO informs about the error
-	     alert('Problem when deleting the activity!');
+	     //alert('Problem when deleting the activity!');
 	   }
 	}, null, gadgets.io.MethodType.POST, gadgets.io.ContentType.JSON, null);
 }
