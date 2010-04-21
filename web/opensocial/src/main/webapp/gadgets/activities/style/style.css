@@ -554,3 +554,15 @@ img {border: none}
 .LinkShare .Content {
   margin-left: 110px;
 }
+
+.ActivitiesShowHideBlock .CollapseAllActivities {
+  background: transparent url('images/CollapseActivitiesIcon.gif') no-repeat scroll left center;
+  cursor: pointer;
+  padding: 0 20px;
+}
+
+.ActivitiesShowHideBlock .ExpandAllActivities {
+  background: transparent url('images/ExpandActivitiesIcon.gif') no-repeat scroll left center;
+  cursor: pointer;
+  padding: 0 20px;
+}

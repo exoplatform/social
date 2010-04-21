@@ -30,6 +30,7 @@ eXo.social.StatusUpdate = function() {
 	this.ownerMoreClickedTimes = 0; //click num
 	this.friendsMoreClickedTimes = 0;
 	this.miniMessage = new gadgets.MiniMessage();
+	this.isOwnerActivityShown = false;
 }
 
 /**
@@ -69,7 +70,8 @@ eXo.social.StatusUpdate.config = {
 		UI_OWNER_APPENDABLE_ROOT :"UIOwnerAppendableRoot",
 		UI_OWNER_MORE : "UIOwnerMore",
 		UI_FRIENDS_APPENDABLE_ROOT: "UIFriendsAppendableRoot",
-		UI_FRIENDS_MORE: "UIFriendsMore"
+		UI_FRIENDS_MORE: "UIFriendsMore",
+		UI_OWNER_ACTIVITIES_SHOW_HIDE: "UIOwnerActivitiesShowHide"
 	},
 	BATCH_SIZE: 10, //batch size to get activities
 	MAX_ACTIVITIES : 5, //default displays 5 item only
@@ -143,12 +145,17 @@ eXo.social.StatusUpdate.prototype.init = function() {
 	var miniMessage = statusUpdate.miniMessage;
 	var uiComposerTextArea = Util.getElementById(config.ui.UI_COMPOSER_TEXTAREA);
 	var uiComposer = new UIComposer(uiComposerTextArea);
+	var uiOwnerActivitiesShowHide = Util.getElementById(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+	
 	this.uiComposer = uiComposer;
 	uiComposer.statusUpdate = this;
 	if (!uiComposerTextArea) {
 		debug.error("uiComposerTextArea is null!");
 		return;
 	}
+	
+	Util.showElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
+	
 	//event handler attach
 	Util.addEventListener(uiComposerTextArea, 'focus', function() {
 		uiComposer.focusInput(this);
@@ -168,6 +175,21 @@ eXo.social.StatusUpdate.prototype.init = function() {
 		statusUpdate.share(this);
 	}, false);
 
+  Util.addEventListener(uiOwnerActivitiesShowHide, 'click', function(evt) {
+		if (statusUpdate.isOwnerActivityShown) {
+			statusUpdate.isOwnerActivityShown = false;
+			uiOwnerActivitiesShowHide.innerHTML='<div class="ExpandAllActivities">' + Locale.getMsg('expand_all_activities') + '</div>';
+			Util.showElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+			Util.hideElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
+		} else {
+			statusUpdate.isOwnerActivityShown = true; 
+			uiOwnerActivitiesShowHide.innerHTML='<div class="CollapseAllActivities">' + Locale.getMsg('collapse_all_activities') + '</div>';
+			Util.showElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+			Util.showElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
+		}
+		
+		gadgets.window.adjustHeight();
+	}, false);
 
 	//run to set viewer, owner, owner's friends
 	(function() {
@@ -420,6 +442,8 @@ eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
          //check if delete all => displays empty message
          var rootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_OWNER_APPENDABLE_ROOT);
          if (!rootEl.hasChildNodes()) {
+         	 eXo.social.StatusUpdate.isOwnerActivityShown = false;
+         	 Util.hideElement(eXo.social.StatusUpdate.config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
            rootEl.innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [statusUpdate.owner.getDisplayName()]) + '</div>';
          }
          return;
@@ -429,6 +453,8 @@ eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
          //check if delete all => displays empty message
          var rootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_OWNER_APPENDABLE_ROOT);
          if (!rootEl.hasChildNodes()) {
+         	 eXo.social.StatusUpdate.isOwnerActivityShown = false;
+         	 Util.hideElement(eXo.social.StatusUpdate.config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
            rootEl.innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [statusUpdate.owner.getDisplayName()]) + '</div>';
          }
 	   } else {
@@ -768,9 +794,12 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   	}
   	
   	var displayActivities = function(appendableRootId, moreId, activities, isOwnerActivity, displayName) {
+  		var uiOwnerActivitiesShowHide = Util.getElementById(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+  		
   		if (!activities || activities.length === 0) {
   			if (isOwnerActivity) {
   				displayActivitiesNext = true;
+  				Util.hideElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
     			Util.getElementById(appendableRootId).innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [displayName]) + '</div>';
     		} else {
     			Util.getElementById(appendableRootId).innerHTML = '<div class="Empty">' + Locale.getMsg('displayName_do_not_have_update', [displayName]) + '</div>';
@@ -778,6 +807,29 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   			gadgets.window.adjustHeight();
     		return;
   		}
+  		
+  		if (activities != null) {
+  			if(activities.length > 0) {
+		  		if (statusUpdate.isOwnerActivityShown) {
+		  			Util.showElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
+		  		} else {
+		  			Util.hideElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
+		  		}
+  			}
+  		} 
+  		
+  		if (statusUpdate.isOwnerActivityShown) {
+				uiOwnerActivitiesShowHide.innerHTML='<div class="CollapseAllActivities">' + Locale.getMsg('collapse_all_activities') + '</div>';
+			} else {
+				uiOwnerActivitiesShowHide.innerHTML='<div class="ExpandAllActivities">' + Locale.getMsg('expand_all_activities') + '</div>';
+			}
+			
+			if (!activities || activities.length === 0) {
+				Util.hideElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+			} else {
+    		Util.showElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+			}
+			
   		Util.getElementById(appendableRootId).innerHTML = ''; //resets
   		var activitiesLength = activities.length;
   		var displayActivityNum = activitiesLength;

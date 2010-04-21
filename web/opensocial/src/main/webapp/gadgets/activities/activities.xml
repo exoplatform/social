@@ -102,6 +102,7 @@
   						</div>
   					</div>
   				</div>
+  				<div id="UIOwnerActivitiesShowHide" class="ActivitiesShowHideBlock"></div>
   				<div id="UIOwnerAppendableRoot"> 
   					<!-- the root to append owner activities block -->
   				</div>
@@ -223,6 +224,7 @@
   						</div>
   					</div>
   				</div>
+  				<div id="UIOwnerActivitiesShowHide" class="ActivitiesShowHideBlock"></div>
   				<div id="UIOwnerAppendableRoot"> 
   					<!-- the root to append owner activities block -->
   				</div>
