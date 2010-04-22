@@ -101,6 +101,21 @@ public class ActivityManager {
     }
     return activities;
   }
+  
+  /**
+   * Gets the latest activities by identity
+   * 
+   * @param identity the identity
+   * @return the activities
+   * @throws Exception the exception
+   */
+  private List<Activity> getActivities(Identity identity, long start, long limit) throws Exception {
+    List<Activity> activities = storage.getActivities(identity, start, limit);
+    for (Activity activity : activities) {
+      processActivitiy(activity);
+    }
+    return activities;
+  }
 
   /**
    * Saves an activity to the stream of a owner.<br/>

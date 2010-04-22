@@ -27,8 +27,12 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
@@ -454,10 +458,28 @@ public class JCRStorage {
    * @return the activities
    * @throws Exception the exception
    */
-  public List<Activity> getActivities(Identity owner) throws Exception {
+  public List<Activity> getActivities(Identity owner, long offset, long limit) throws Exception {
     List<Activity> activities = Lists.newArrayList();
+
     Node n = getPublishedActivityServiceHome(owner);
-    NodeIterator nodes = n.getNodes();
+    String path = n.getPath();
+
+    try {
+      Session session = sessionManager.getOrOpenSession();
+
+    
+    QueryManager qm = session.getWorkspace().getQueryManager();
+    String query = "select * from exo:activity where jcr:path like '" + path + "[%]/exo:activity[%]'" //+ " and exo:replyToId <> '" + Activity.IS_COMMENT +"'" 
+    + " order by exo:updatedTimestamp desc";
+    QueryImpl impl = (QueryImpl) qm.createQuery(query, Query.SQL);
+    impl.setLimit(limit);
+    impl.setOffset(offset);
+    QueryResult result = impl.execute();
+    
+    NodeIterator nodes = result.getNodes();//n.getNodes();
+    
+    //NodeIterator nodes  = n.getNodes();
+    
     String replyToId;
     while (nodes.hasNext()) {
       Node node = nodes.nextNode();
@@ -470,8 +492,42 @@ public class JCRStorage {
         activities.add(load(node));
       }
     }
+
+    } catch (Exception e) {
+      
+    LOG.error("Failed to retrieve activities for owner", e);
+    } finally {
+        sessionManager.closeSession();
+    }
     return activities;
   }
+  
+  /**
+   * Gets the activities by identity.
+   * 
+   * @param identity the identity
+   * @return the activities
+   * @throws Exception the exception
+   */
+  public List<Activity> getActivities(Identity owner) throws Exception {
+    List<Activity> activities = Lists.newArrayList();
+    Node n = getPublishedActivityServiceHome(owner);
+    NodeIterator nodes = n.getNodes();
+    String replyToId;
+    while (nodes.hasNext()) {
+      Node node = nodes.nextNode();
+      if (node.hasProperty(REPLY_TO_ID)) {
+        replyToId = node.getProperty(REPLY_TO_ID).getString();
+        if (!replyToId.equals(Activity.IS_COMMENT)) {
+          activities.add(load(node));
+        }
+      } else {   
+        activities.add(load(node));
+      }
+    }
+    return activities;
+  }
+  
   
   /**
    * Delete an activity's comments
