@@ -1,6 +1,5 @@
 package org.exoplatform.social.benches;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
@@ -110,12 +109,28 @@ public class DataInjector {
     }
     return activities;
   }
+  
+  public Collection<Activity> generateActivities(String user, long count) {
+    Collection<Activity> activities = new ArrayList<Activity>();
+    try {
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user);
+    for (int i = 0; i < count; i++) {
+      Activity activity = generateActivity(identity);
+      if (activity != null) {
+        activities.add(activity);
+      }
+    }
+    }
+    catch (Exception e) {
+      LOG.warn("Failed to generate activities for " + user, e);
+    }
+    return activities;
+  }
 
-  private Activity generateActivity() {
-    Identity id1 = selectRandomUser(null);
+  
+  private Activity generateActivity(Identity id1) {
     Activity activity = null;
     if (id1 != null) {
-
       try {
         int idx = activityCount.getAndIncrement();
         activity = generateRandomActvity();
@@ -128,6 +143,11 @@ public class DataInjector {
 
     }
     return activity;    
+  }
+  
+  private Activity generateActivity() {
+    Identity id1 = selectRandomUser(null);
+    return generateActivity(id1);  
   }
 
   private Activity generateRandomActvity() {
@@ -276,6 +296,22 @@ public class DataInjector {
 
   private String username(int idx) {
     return "bench.user" + (idx);
+  }
+
+  public AtomicInteger getUserCount() {
+    return userCount;
+  }
+
+  public AtomicInteger getRelationshipCount() {
+    return relationshipCount;
+  }
+
+  public AtomicInteger getActivityCount() {
+    return activityCount;
+  }
+
+  public AtomicInteger getSpaceCount() {
+    return spaceCount;
   }
 
 }

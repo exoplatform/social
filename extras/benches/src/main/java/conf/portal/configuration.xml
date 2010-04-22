@@ -13,12 +13,13 @@
     <init-params>
       <properties-param>
         <name>inject.conf</name>
-        <description>possible properties are 'people', 'relations' and 'activities' as long values</description>  
+        <description>possible properties are 'people', 'relations' and 'activities'  or USERNAME.activities (ex: john.activities) as long values</description>  
       	<!--  Example config : 100 of each -->
       	<!--  
         <property name="people" value="100"/>
         <property name="relations" value="100"/>
         <property name="activities" value="100"/>
+        <property name="john.activities" value="10"/>
         -->
       </properties-param>
     </init-params>
