@@ -96,8 +96,9 @@ public class EXoOAuthDataStore implements OAuthDataStore {
           return null;
       }
 
-      // null below is for the callbackUrl, which we don't have in the db
-      OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, SERVICE_PROVIDER);
+      String callbackUrl = data.getCallbackUrl();
+      
+      OAuthConsumer consumer = new OAuthConsumer(callbackUrl, consumerKey, consumerSecret, SERVICE_PROVIDER);
 
       return consumer;
 

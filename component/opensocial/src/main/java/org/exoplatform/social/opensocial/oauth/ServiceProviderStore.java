@@ -19,7 +19,10 @@ public class ServiceProviderStore {
 
   public static final String SHARED_SECRET = "sharedSecret";
   public static final String CONSUMER_KEY = "consumerKey";
+  public static final String CALLBACK_URL = "callbackUrl";
+  
   private static Log log = ExoLogger.getExoLogger(ServiceProviderStore.class);
+  
   private Map<String,ServiceProviderData> providers;
   
 
@@ -36,7 +39,8 @@ public class ServiceProviderStore {
       String description = propertiesParam.getDescription();
       String consumerKey = propertiesParam.getProperty(CONSUMER_KEY);
       String sharedSecret = propertiesParam.getProperty(SHARED_SECRET);
-      ServiceProviderData provider = new ServiceProviderData(name, description, consumerKey, sharedSecret);
+      String callbackUrl = propertiesParam.getProperty(CALLBACK_URL);
+      ServiceProviderData provider = new ServiceProviderData(name, description, consumerKey, sharedSecret, callbackUrl);
       providers.put(consumerKey, provider);
     }
 

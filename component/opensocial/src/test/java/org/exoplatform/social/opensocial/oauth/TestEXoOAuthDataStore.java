@@ -7,12 +7,12 @@ import junit.framework.TestCase;
 
 public class TestEXoOAuthDataStore extends TestCase {
 
-  public void testGetConsumer() {
+  public void testGetConsumer() { 
     EXoOAuthDataStore dataStore = new EXoOAuthDataStore(null, null, null) ;
     
     Map<String,ServiceProviderData> providers = new HashMap<String, ServiceProviderData>();
-    providers.put("foo", new ServiceProviderData("p1", null, "foo", "secret1"));
-    providers.put("bar", new ServiceProviderData("p2", null, "bar", "secret2"));
+    providers.put("foo", new ServiceProviderData("p1", null, "foo", "secret1", "http://foo.callback"));
+    providers.put("bar", new ServiceProviderData("p2", null, "bar", "secret2", null));
     
     ServiceProviderStore store = new ServiceProviderStore(null);
     store.setProviders(providers);
@@ -24,7 +24,8 @@ public class TestEXoOAuthDataStore extends TestCase {
     assertEquals("secret1",dataStore.getConsumer("foo").consumerSecret);
     assertEquals("secret2",dataStore.getConsumer("bar").consumerSecret);
 
-
+    assertEquals("http://foo.callback",dataStore.getConsumer("foo").callbackURL);
+    assertNull(dataStore.getConsumer("bar").callbackURL);
     
     
   }

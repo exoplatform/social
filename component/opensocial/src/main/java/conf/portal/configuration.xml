@@ -33,6 +33,7 @@
 				<description>sample service provider. </description>
 				<property name="consumerKey" value="key" />
 				<property name="sharedSecret" value="secret" />
+				<property name="callbackUrl" value="http://example.org/auth/callback" />
 			</properties-param>
 		</init-params>
 		-->

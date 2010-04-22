@@ -30,11 +30,17 @@ public class ServiceProviderData {
    */
   private String sharedSecret;
   
-  public ServiceProviderData(String name, String description, String consumerKey, String sharedSecret) {
+  /**
+   * The callback url
+   */
+  private String callbackUrl;
+  
+  public ServiceProviderData(String name, String description, String consumerKey, String sharedSecret, String callbackUrl) {
     this.name = name;
     this.description = description;
     this.consumerKey = consumerKey;
     this.sharedSecret = sharedSecret;
+    this.callbackUrl = callbackUrl;
   }
 
   public String getName() {
@@ -67,6 +73,14 @@ public class ServiceProviderData {
 
   public void setSharedSecret(String sharedSecret) {
     this.sharedSecret = sharedSecret;
+  }
+
+  public String getCallbackUrl() {
+    return callbackUrl;
+  }
+
+  public void setCallbackUrl(String callbackUrl) {
+    this.callbackUrl = callbackUrl;
   }
   
 }
