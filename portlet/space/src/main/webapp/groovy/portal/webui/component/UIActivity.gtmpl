@@ -28,9 +28,12 @@
   
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
-  
+  def labelActivityCanBeDeleted = _ctx.appRes("UIActivity.label.Activity_Can_Be_Deleted");
   def activity = uicomponent.getActivity();
-  
+%>
+
+<% if (activity) { //process if not null
+
   jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
   jsManager.importJavascript("eXo.social.PortalHttpRequest", "/eXoResourcesSocial/javascript");
   jsManager.importJavascript("eXo.social.webui.UIForm", "/eXoResourcesSocial/javascript");
@@ -39,6 +42,7 @@
   def labelComment = _ctx.appRes("UIActivity.label.Comment");
   def labelLike = _ctx.appRes("UIActivity.label.Like");
   def labelUnlike = _ctx.appRes("UIActivity.label.Unlike");
+  def labelSource = _ctx.appRes("UIActivity.label.Source");
   def inputWriteAComment = _ctx.appRes("UIActivity.input.Write_A_Comment");
   def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
   def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
@@ -47,6 +51,8 @@
   def labelYouLikeThis = _ctx.appRes("UIActivity.label.You_Like_This");
   def labelYouAndOnePersonLikeThis = _ctx.appRes("UIActivity.label.You_And_One_Person_Like_This");
   def labelYouAndPeopleLikeThis = _ctx.appRes("UIActivity.label.You_And_People_Like_This");
+  
+  def hasAttachedExtension = uicomponent.hasAttachedExtension();
   
   def likeActivityAction = uicomponent.event("LikeActivity", "true");
   def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
@@ -62,7 +68,7 @@
   def identityLikesNum = 0;
   def labelLikes = null;
   def toggleDisplayLikesAction = uicomponent.event("ToggleDisplayLikes");
-  def startTag = "<a onclick=\"$toggleDisplayLikesAction\" id=\"DisplayListPeopleLikes${activity.id}\" href=\"#DisplayListPeopleLikes\">";
+  def startTag = "<a onclick=\"$toggleDisplayLikesAction\" id=\"ToggleDisplayListPeopleLikes${activity.id}\" href=\"#ToggleDisplayListPeopleLikes\">";
   def endTag = "</a>";
   if (displayedIdentityLikes != null) {
     identityLikesNum = displayedIdentityLikes.length;
@@ -70,22 +76,27 @@
   def commentListStatus = uicomponent.getCommentListStatus();
   def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
   def likesDisplayed = uicomponent.isLikesDisplayed();
-  
-  def params = "{activityId: '${activity.id}', inputWriteAComment: '$inputWriteAComment', commentFormDisplayed: $commentFormDisplayed, commentFormFocused: ${uicomponent.isCommentFormFocused()}}";
-  jsManager.addOnLoadJavascript("(new eXo.social.webui.UIActivity()).init($params)");
-
+  //params for init UIActivity javascript object
+  def params = """
+    {activityId: '${activity.id}',
+     inputWriteAComment: '$inputWriteAComment',
+     commentMinCharactersAllowed: ${uicomponent.getCommentMinCharactersAllowed()},
+     commentMaxCharactersAllowed: ${uicomponent.getCommentMaxCharactersAllowed()},
+     commentFormDisplayed: $commentFormDisplayed,
+     commentFormFocused: ${uicomponent.isCommentFormFocused()}
+    }
+  """
+  jsManager.addOnLoadJavascript("new eXo.social.webui.UIActivity($params)");
+  //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
+  uicomponent.setCommentFormFocused(false);
   def activityUserName, activityUserProfileUri, activityImageSource, activityContentBody, activityPrettyTime;
-  def commentFormBlockClass = "", listPeopleLikeBlockClass = "", listPeopleBGClass = "", activityDecoratorBG = "ADecoratorContainer";
-  if (!uicomponent.isCommentFormDisplayed()) {
+  def commentFormBlockClass = "", listPeopleLikeBlockClass = "", listPeopleBGClass = "";
+  if (!commentFormDisplayed) {
     commentFormBlockClass = "DisplayNone";
   }
   
   if (!likesDisplayed) {
     listPeopleLikeBlockClass = "DisplayNone";
-  }
-  
-  if (uicomponent.isGrayColored()) {
-    activityDecoratorBG = "ADecoratorContainerGray";
   }
   
   if (uicomponent.isLiked()) {
@@ -109,34 +120,26 @@
    listPeopleBGClass = "DisplayNone";
   }
 
-  activityContentBody = StringEscapeUtils.escapeHtml(activity.body); //TODO hoatle filtered content with allowed tags
+  activityContentBody = activity.body;
   activityPrettyTime = uicomponent.toPrettyTime(activity.postedTime);
 
-  //TODO hoatle : makes sure to have space actitivy, space's member activity + user activity
-  if (activity.externalId) {
-    //space's member activity
-     activityUserName = uicomponent.getUserFullName(activity.externalId);
-     activityUserProfileUri = uicomponent.getUserProfileUri(activity.externalId);
-     activityImageSource = uicomponent.getUserAvatarImageSource(activity.externalId);
+  //TODO hoatle : makes sure to have space actitivy, user activity
+  if (uicomponent.isSpaceActivity(activity.userId)) {
+    def space = uicomponent.getSpace();
+    activityUserName = space.name;
+    activityUserProfileUri = space.url;
+    activityImageSource = space.getImageSource();
+    if (!activityImageSource) activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
   } else {
-    if (uicomponent.isSpaceActivity()) {
-      def space = uicomponent.getSpace();
-      activityUserName = space.name;
-      activityContentBody = activity.body;
-      activityUserProfileUri = space.url;
-      activityImageSource = space.getImageSource();
-      if (!activityImageSource) activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
-    } else {
-      //user activity
-      activityUserName = uicomponent.getUserFullName(activity.userId);
-      activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
-      activityImageSource = uicomponent.getUserAvatarImageSource(activity.userId);
-    }
+    //user activity
+    activityUserName = uicomponent.getUserFullName(activity.userId);
+    activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
+    activityImageSource = uicomponent.getUserAvatarImageSource(activity.userId);
+    if (!activityImageSource) activityImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
   }
-  if (!activityImageSource) activityImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
 %>
 
-<div class="UIActivity $activityDecoratorBG">
+<div class="UIActivity ADecoratorContainer">
   <% uiform.begin() %>
   <div class="ActivitiesContent">
     <a class="AvatarPeopleBG" title="$activityUserName" href="$activityUserProfileUri">
@@ -166,14 +169,53 @@
           <span></span>
         </div>
       </div>
+      <% if (!hasAttachedExtension) { %>
       <div class="ContentArea">
         $activityContentBody
       </div>
+      <%} else {
+        def extension = uicomponent.getAttachedExtensionType();
+        if ("link".equals(extension)) {
+          def linkSource = uicomponent.getLinkSource();
+          def linkTitle = uicomponent.getLinkTitle();
+          def linkImage = uicomponent.getLinkImage();
+          def linkDescription = uicomponent.getLinkDescription();
+          def linkComment = uicomponent.getLinkComment();
+          def linkClass = "Content";
+          def link = "";
+          if (linkImage.equals("")) {
+            linkClass = "";
+          } else {
+            link = "<img width=\"150px\" title=\"$linkTitle\" src=\"$linkImage\" />";
+          }
+        %>
+          <div class="ContentArea">$linkComment</div>
+          <div class="LinkShare">
+            <div class="Thumbnail">
+                $link
+            </div>
+            <div class="$linkClass">
+              <div class="Title">
+                <a class="ColorLink" target="_blank" href="$linkSource">$linkTitle</a>
+              </div>
+              <div class="Description">$linkDescription</div>
+              <div class="Source">$labelSource : $linkSource</div>
+            </div>
+            <div style="clear: both; height: 0px;"><span></span></div>
+          </div>
+        <%} else {
+          //TODO hoatle handle photo, video
+        }
+      }%>
+
       <div class="NewsDate">
         $activityPrettyTime
       </div>
-      <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false); %>
-      <a onclick="$toggleDisplayCommentAction" class="link" id="CommentLink${activity.id}" href="#comment">
+      <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false); 
+         def commentLink = "";
+         if (hasAttachedExtension) commentLink = "CommentLink";
+      %>
+      <a class="link $commentLink" onclick="$toggleDisplayCommentAction" class="link" id="CommentLink${activity.id}" href="#comment">
         $labelComment
       </a>
       <span> | </span>
@@ -311,3 +353,6 @@
   </div>
   <% uiform.end() %>
 </div>
+<% } else { %> <!-- activity not found -->
+<div class="UIActivity">$labelActivityCanBeDeleted</div>
+<% }%>

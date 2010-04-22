@@ -12,7 +12,7 @@
    * makes ajaxPostRequest
    */
   PortalHttpRequest.ajaxPostRequest = function(url, queryString, async, callback) {
-    if (async != false) async = true;
+    if (async !== false) async = true;
     var request = eXo.core.Browser.createHttpRequest();
     request.open('POST', url, async);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

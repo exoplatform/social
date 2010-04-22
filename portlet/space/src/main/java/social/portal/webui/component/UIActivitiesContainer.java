@@ -75,14 +75,8 @@ public class UIActivitiesContainer extends UIContainer {
   private void init() throws Exception {
     //sort activity list needed ?
     if (activityList_ == null) activityList_ = new ArrayList<Activity>();
-    boolean grayColored = false;
     for (Activity activity : activityList_) {
-      addChild(UIActivity.class, null, "UIActivity" + activity.getId()).setActivity(activity).setGrayColored(grayColored);
-      if (grayColored) {
-        grayColored = false;
-      } else {
-        grayColored = true;
-      }
+      addChild(UIActivity.class, null, "UIActivity" + activity.getId()).setActivity(activity);
     }
   }
   

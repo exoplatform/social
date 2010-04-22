@@ -50,7 +50,7 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 public class UIDisplaySpaceActivities extends UIContainer {
-  private final Log logger = ExoLogger.getLogger(UIDisplaySpaceActivities.class);
+  static private final Log LOG = ExoLogger.getLogger(UIDisplaySpaceActivities.class);
   private Space           space_;
   
   private List<Activity> activityList_;
@@ -87,7 +87,7 @@ public class UIDisplaySpaceActivities extends UIContainer {
    */
   private void init() throws Exception {
     if (space_ == null) {
-      logger.warn("space_ is null! Can not display spaceActivites");
+      LOG.warn("space_ is null! Can not display spaceActivites");
       return;
     }
     setChildren(null); //TODO hoatle handle this for better performance

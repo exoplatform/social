@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -46,6 +47,12 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import social.portal.webui.component.composer.UIComposer;
+import social.portal.webui.component.composer.UIComposerLinkExtension;
+import social.portal.webui.component.composer.UIComposerExtensionContainer.Extension;
 
 /**
  * UIActivity.java
@@ -66,8 +73,11 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
   }
 )
 public class UIActivity extends UIForm {
-  private final Log logger = ExoLogger.getLogger(UIActivity.class);
+  static private final Log LOG = ExoLogger.getLogger(UIActivity.class);
   static public int LATEST_COMMENTS_SIZE = 2;
+  private int commentMinCharactersAllowed_ = 0;
+  private int commentMaxCharactersAllowed_ = 0;
+  private JSONObject dataBody_;
   static public enum Status {
     LATEST("latest"),
     ALL("all"),
@@ -91,8 +101,6 @@ public class UIActivity extends UIForm {
   private Status commentListStatus_ = Status.LATEST;
   private boolean allCommentsHidden_ = false;
   private boolean commentFormFocused_ = false;
-  //display back ground color
-  private boolean  grayColored_ = false;
   /**
    * Constructor
    * @throws Exception 
@@ -104,22 +112,30 @@ public class UIActivity extends UIForm {
   public UIActivity setActivity(Activity activity) {
     activity_ = activity;
     if (activity_ == null) {
-      logger.warn("activity_ is null!");
+      LOG.warn("activity_ is null!");
     }
     init();
     return this;
   }
   
-  public void setGrayColored(boolean grayColored) {
-    grayColored_ = grayColored;
-  }
-  
-  public boolean isGrayColored() {
-    return grayColored_;
-  }
-  
   public Activity getActivity() {
     return activity_;
+  }
+  
+  public void setCommentMinCharactersAllowed(int num) {
+    commentMinCharactersAllowed_ = num;
+  }
+  
+  public int getCommentMinCharactersAllowed() {
+    return commentMinCharactersAllowed_;
+  }
+  
+  public void setCommentMaxCharactersAllowed(int num) {
+    commentMaxCharactersAllowed_ = num;
+  }
+  
+  public int getCommentMaxCharactersAllowed() {
+    return commentMaxCharactersAllowed_;
   }
   
   public void setCommentFormDisplayed(boolean commentFormDisplayed) {
@@ -262,24 +278,15 @@ public class UIActivity extends UIForm {
     return userProfile.getAvatarImageSource(PortalContainer.getInstance());
   }
   
-  public boolean isSpaceActivity() {
+  public boolean isSpaceActivity(String remoteId) throws Exception {
     identityManager_ = getIdentityManager();
-    try {
-      return identityManager_.getOrCreateIdentity(SpaceIdentityProvider.NAME, activity_.getUserId()) != null;
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return false;
+    Identity spaceIdentity = identityManager_.getIdentity(SpaceIdentityProvider.NAME, remoteId, false);
+    return spaceIdentity != null;
   }
   
   public Space getSpace() throws SpaceException {
-    Space space = null;
-    if (isSpaceActivity()) {
-      SpaceService spaceService = getApplicationComponent(SpaceService.class);
-      space = spaceService.getSpaceByUrl(SpaceUtils.getSpaceUrl());
-    }
-    return space;
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    return spaceService.getSpaceByUrl(SpaceUtils.getSpaceUrl());
   }
   
   public String event(String name, String callback, boolean updateForm) throws Exception {
@@ -292,6 +299,58 @@ public class UIActivity extends UIForm {
     b.append(callback).append(",");
     b.append("true").append(")");
     return b.toString();
+  }
+  
+  
+  public boolean hasAttachedExtension() {
+    try {
+      dataBody_ = new JSONObject(activity_.getBody());
+      return true;
+    } catch (org.json.JSONException je) {
+      return false;
+    }
+  }
+  
+  public String getAttachedExtensionType() throws JSONException {
+    if (dataBody_ != null) {
+      return dataBody_.getString(UIComposer.EXTENSION_KEY);
+    }
+    return null;
+  }
+  
+  public String getLinkTitle() throws JSONException {
+    if (dataBody_ != null) {
+      return ((JSONObject)dataBody_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.TITLE_PARAM);
+    }
+    return "";
+  }
+  
+  public String getLinkImage() throws JSONException {
+    if (dataBody_ != null) {
+      return ((JSONObject)dataBody_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.IMAGE_PARAM);
+    }
+    return "";
+  }
+  
+  public String getLinkSource() throws JSONException {
+    if (dataBody_ != null) {
+      return ((JSONObject)dataBody_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.LINK_PARAM);
+    }
+    return "";
+  }
+  
+  public String getLinkComment() throws JSONException {
+    if (dataBody_ != null) {
+      return dataBody_.getString(UIComposer.COMMENT_KEY);
+    }
+    return "";
+  }
+  
+  public String getLinkDescription() throws JSONException {
+    if (dataBody_ != null) {
+      return ((JSONObject)dataBody_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.DESCRIPTION_PARAM);
+    }
+    return "";
   }
   
   /**
@@ -360,8 +419,6 @@ public class UIActivity extends UIForm {
       comments_ = activityManager_.getComments(activity_);
       identityLikes_ = activity_.getLikeIdentityIds();
     }
-    //avoid any null value
-    //if (comments_ == null) comments_ = new ArrayList<Activity>();
   }
   
   private void saveComment(String remoteUser, String message) throws Exception {
@@ -397,6 +454,21 @@ public class UIActivity extends UIForm {
     return ArrayUtils.contains(identityLikes_, identityManager_.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getRemoteUser()).getId());
   }
   
+  /**
+   * refresh, regets all like, comments of this activity
+   */
+  private void refresh() {
+    activityManager_ = getActivityManager();
+    activity_ = activityManager_.getActivity(activity_.getId());
+    if (activity_ == null) { //not found -> should render nothing
+      LOG.info("activity_ is null, not found. It can be deleted!");
+      return;
+    }
+    comments_ = activityManager_.getComments(activity_);
+    identityLikes_ = activity_.getLikeIdentityIds();
+  }
+  
+  
   private String getRemoteUser() {
     PortalRequestContext requestContext = Util.getPortalRequestContext();
     return requestContext.getRemoteUser();
@@ -424,6 +496,7 @@ public class UIActivity extends UIForm {
     @Override
     public void execute(Event<UIActivity> event) throws Exception {
       UIActivity uiActivity = event.getSource();
+      uiActivity.refresh();
       if (uiActivity.isLikesDisplayed()) {
         uiActivity.setLikesDisplayed(false);
       } else {
@@ -439,6 +512,7 @@ public class UIActivity extends UIForm {
     @Override
     public void execute(Event<UIActivity> event) throws Exception {
       UIActivity uiActivity = event.getSource();
+      uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       String isLikedStr = requestContext.getRequestParameter(OBJECTID);
       boolean isLiked = Boolean.parseBoolean(isLikedStr);
@@ -453,6 +527,7 @@ public class UIActivity extends UIForm {
     @Override
     public void execute(Event<UIActivity> event) throws Exception {
       UIActivity uiActivity = event.getSource();
+      uiActivity.refresh();
       String status = event.getRequestContext().getRequestParameter(OBJECTID);
       Status commentListStatus = null;
       if (status.equals(Status.LATEST.getStatus())) {
@@ -481,7 +556,6 @@ public class UIActivity extends UIForm {
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
     }
-    
   }
 
 
@@ -490,6 +564,7 @@ public class UIActivity extends UIForm {
     @Override
     public void execute(Event<UIActivity> event) throws Exception {
       UIActivity uiActivity = event.getSource();
+      uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIFormTextAreaInput uiFormComment = uiActivity.getChild(UIFormTextAreaInput.class);
       String message = uiFormComment.getValue();
@@ -500,6 +575,5 @@ public class UIActivity extends UIForm {
       
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
-    
   }
 }

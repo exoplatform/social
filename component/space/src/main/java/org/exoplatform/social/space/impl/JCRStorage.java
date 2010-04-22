@@ -24,6 +24,9 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
@@ -100,7 +103,6 @@ public class JCRStorage {
       }
       return spaces;
     } catch (Exception e) {
-//      System.out.println("\n\n\n\n\n\n ===>>>>> ====getAllSpaces err. return null \n");
       e.printStackTrace();
       return null;
     } finally {
@@ -111,13 +113,28 @@ public class JCRStorage {
   public Space getSpaceById(String id) {
     try {
       Session session = sessionManager.openSession();
+      Node spaceHomeNode = getSpaceHome(session);
+      StringBuffer queryString = new StringBuffer("/").append(spaceHomeNode.getPath())
+      .append("/").append(SPACE_NODETYPE).append("[(@")
+      .append("jcr:uuid").append("='").append(id).append("')]");
+      QueryManager queryManager = session.getWorkspace().getQueryManager();
+      Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
+      QueryResult queryResult = query.execute();
+      NodeIterator nodeIterator = queryResult.getNodes();
+      Node identityNode = null;
       
-      return getSpace(session.getNodeByUUID(id), session);
+      if (nodeIterator.getSize() == 1) {
+        identityNode = (Node) nodeIterator.next();
+      } else {
+        LOG.debug("No node found for sapce");
+      }
+      return getSpace(identityNode, session);
     } catch (Exception e) {
-      return null;
+      // TODO: handle exception
     } finally {
       sessionManager.closeSession();
     }
+    return null;
   }
   
   public Space getSpaceByUrl(String url) {
@@ -269,7 +286,6 @@ public class JCRStorage {
           file.setInputStream(image.getNode("jcr:content").getProperty("jcr:data").getValue().getStream());
         } catch (Exception ex) {
           // TODO: handle exception
-//          System.out.println("\n\n\n\n====>>>>>> getSpace err at getValue().getStream\n");
           ex.getStackTrace();
         }
         file.setFileName(image.getName()) ;

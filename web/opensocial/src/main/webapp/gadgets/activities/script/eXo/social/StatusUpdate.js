@@ -696,11 +696,11 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   			html.push('</div>');
 	   			html.push('<div class="LinkShare">')
 	   				html.push('<div class="Thumbnail">');
-	   				if (jsonBody.data.noThumbnail === false) {
-	   					html.push('<img width="100px" src="' + jsonBody.data.images[jsonBody.data.selectedImageIndex] + '" title="' + jsonBody.data.title + '" />');
+	   				if (jsonBody.data.image !== '') {
+	   					html.push('<img width="100px" src="' + jsonBody.data.image + '" title="' + jsonBody.data.title + '" />');
 	   				}
 	   				html.push('</div>');
-	   				if (jsonBody.data.noThumbnail === false) {
+	   				if (jsonBody.data.image !== '') {
 		   			html.push('<div class="Content">'); //margin-left is set
 	   				} else {
 	   				html.push('<div>'); //no margin-left is set

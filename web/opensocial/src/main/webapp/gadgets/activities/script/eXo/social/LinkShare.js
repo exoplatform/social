@@ -642,7 +642,16 @@ eXo.social.LinkShare.prototype.save = function(status, callback) {
 	//add owner's comment to description
 	//save all info to body tag
 	var body = {};
-	body.data = LinkShare.data;
+	var chosenImage = '';
+	if (LinkShare.data.images.length > 0) {
+	  chosenImage = LinkShare.data.images[LinkShare.data.selectedImageIndex];
+	}
+	body.data = {
+	  link: LinkShare.data.link,
+	  image: chosenImage,
+	  title: LinkShare.data.title,
+	  description: LinkShare.data.description
+	};
 	body.comment = status;
 	//body.comment = status;
 	params[opensocial.Activity.Field.TITLE] = Locale.getMsg('user_shared_a_link', [viewerName]);

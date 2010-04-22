@@ -27,15 +27,18 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceIdentityProvider;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
-import social.portal.webui.component.UIComposer;
 import social.portal.webui.component.UIDisplaySpaceActivities;
+import social.portal.webui.component.composer.UIComposer;
 
 /**
  * UISpaceActivityPortlet.java
@@ -54,14 +57,18 @@ import social.portal.webui.component.UIDisplaySpaceActivities;
   }
 ) 
 public class UISpaceActivityPortlet extends UIPortletApplication {
-  private final Log logger = ExoLogger.getLogger(UISpaceActivityPortlet.class);
+  static private final Log LOG = ExoLogger.getLogger(UISpaceActivityPortlet.class);
   private Space space_;
   private UIDisplaySpaceActivities uiDisplaySpaceActivities_;
+  //TODO hoatle need to specify reasonable characters length here
+  private static final int MIN_CHARACTERS_REQUIRED = 0;
+  private static final int MAX_CHARACTERS_ALLOWED = 500;
   /**
    * constructor
    */
   public UISpaceActivityPortlet() throws Exception {
-    addChild(UIComposer.class, null, null);
+    UIComposer uiComposer = addChild(UIComposer.class, null, null);
+    uiComposer.setStringLengthValidator(MIN_CHARACTERS_REQUIRED, MAX_CHARACTERS_ALLOWED);
     uiDisplaySpaceActivities_ = addChild(UIDisplaySpaceActivities.class, null, null);
     space_ = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
     uiDisplaySpaceActivities_.setSpace(space_);
@@ -92,26 +99,24 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
     @Override
     public void execute(Event<UIComposer> event) throws Exception {
       UIComposer uiComposer = event.getSource();
-      String message = uiComposer.getMessage();
-      if (message == null || message.length() == 0) {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApplication = requestContext.getUIApplication();
+      String bodyData  = uiComposer.getBodyData();
+      if (bodyData.equals("")) {
+        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.ERROR));
         return;
       }
-      String member = event.getRequestContext().getRemoteUser();
+      String member = requestContext.getRemoteUser();
       UISpaceActivityPortlet uiSpaceActivityPortlet = uiComposer.getAncestorOfType(UISpaceActivityPortlet.class);
       UIDisplaySpaceActivities uiDisplaySpaceActivities = uiSpaceActivityPortlet.getChild(UIDisplaySpaceActivities.class);
-      
       Space space = uiSpaceActivityPortlet.getSpace();
-      
       uiComposer.reset();
       ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
       IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
       Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, member);
-      Activity activity = new Activity(spaceIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), message);
-      activity.setExternalId(userIdentity.getId());
-      activity.setUserId(userIdentity.getId());
+      Activity activity = new Activity(userIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), bodyData);
       activityManager.saveActivity(spaceIdentity, activity);
-      
       uiDisplaySpaceActivities.setSpace(space);
     }
     

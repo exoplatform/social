@@ -16,6 +16,7 @@
 
 .ClearBoth {
 	clear: both;
+	height: 0px;
 }
 
 .DisplayNone {
@@ -23,7 +24,17 @@
 }
 
 .UISpaceActivityPortlet .link {
-    color: #058EE6;
+    color: gray;
+}
+
+.UISpaceActivityPortlet .ColorLink {
+  color: #058EE6;
+}
+
+.UIComposerExtensionContainer .LabelAttach {
+  border-bottom: 1px solid gray;
+  font-size: 12px;
+  padding-bottom: 1px;
 }
 
 .ActivitiesComponent {
@@ -56,23 +67,23 @@
 	border-bottom: 1px solid #d6d6d6;
 }
 
-.MyStatusComponent {
+.StatusComponent {
 	background: #f0f0f0;
 	padding: 5px 15px 5px 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 }
 
-.MyStatusComponent table {
+.StatusComponent table {
 	table-layout: fixed;
 	border: 0px;
 }
 
-.MyStatusComponent table td {
+.StatusComponent table td {
 	vertical-align: top;
 }
 
-.MyStatusAvatarBG {
+.StatusAvatarBG {
 	background: url('images/MyStatusAvatarBG.gif') no-repeat left top;
 	width: 27px; height: 27px;
 	padding: 2px;
@@ -80,58 +91,58 @@
 	display: block;
 }
 
-.MyStatusInput {
+.StatusInput {
 	padding: 0 0 10px;
 	width: 100%;
 }
 
 
-.MyStatusInputL {
+.StatusInputL {
 	background: url('images/MyStatusInputL.gif') repeat-y left;
 }
 
-.MyStatusInputML {
+.StatusInputML {
 	padding-left: 8px;
 }
 
-.MyStatusInputR  {
+.StatusInputR  {
 	border-right:1px solid #d7d7d7;
 }
 
-.MyStatusInputM {
+.StatusInputM {
 	background: white;
 	min-height: 20px;
 	height: auto !important;
 	height: 20px;
 }
 
-.MyStatusInputTL {
+.StatusInputTL {
 	background: url('images/MyStatusInputTL.gif') no-repeat left top;
 	padding-left: 8px;
 }
 
-.MyStatusInputTR  {
+.StatusInputTR  {
 	background: url('images/MyStatusInputTR.gif') no-repeat Right top;
 	padding-right: 2px;
 }
 
-.MyStatusInputTM {
+.StatusInputTM {
 	background: white;
 	height: 1px;
 	border-top:1px solid #d7d7d7;
 }
 
-.MyStatusInputBL {
+.StatusInputBL {
 	background: url('images/MyStatusInputBL.gif') no-repeat left bottom;
 	padding-left: 8px;
 }
 
-.MyStatusInputBR {
+.StatusInputBR {
 	background: url('images/MyStatusInputBR.gif') no-repeat right bottom;
 	padding-right: 2px;
 }
 
-.MyStatusInputBM {
+.StatusInputBM {
 	background: white;
 	height: 1px;
 	border-bottom:1px solid #d7d7d7;
@@ -147,22 +158,26 @@
 	width: 99%;
 }
 
-.UISpaceActivityPortlet .IconAdd {
-	background: url('images/IconAdd.gif') no-repeat right center;
-	width: 30px;
-	height: 22px;
-  float: right;
+.UIComposer .ShareButton {
+  border: 1px solid gray;
+  width: 90px;
+  height: 25px;
+  font-size: 14px;
+}
+
+.UIComposer .UIComposerExtensionContainer {
+  margin-left: 10px;
 }
 
 .ExtensionInput {
 }
 
-.ExtensionInput .Label {
+.UIComposerExtensionContainer .Label {
 	float: left;
   font-size: 12px;
 }
 
-.ExtensionInput .AttachIcon {
+.UIComposerExtensionContainer .AttachIcon {
 	float: left;
 	width: 16px;
 	height: 16px;
@@ -170,15 +185,15 @@
 	cursor: pointer;
 }
 
-.ExtensionInput .ImageAttach {
+.UIComposerExtensionContainer .ImageAttach {
 	background: url('images/ImageAttach.gif') no-repeat left center;
 }
 
-.ExtensionInput .VideoAttach {
+.UIComposerExtensionContainer .VideoAttach {
 	background: url('images/VideoAttach.gif') no-repeat left center;
 }
 
-.ExtensionInput .LinkAttach {
+.UIComposerExtensionContainer .LinkAttach {
 	background: url('images/LinkAttach.gif') no-repeat left center;
 	cursor: pointer;
 }
@@ -268,20 +283,29 @@
   margin: 2px 0px;
 }
 
-.CommentActivitiesContent .Content .NewsDate {
-  width: 550px;
-}
 
 .CommentActivitiesContent .Content .Content {
+  color:black;
+  line-height: 18px;
+  overflow-x: hidden;
   width: 550px;
+  font-size: 13px;
 }
 
 .TitleContent {
   font-color: #000000;
 }
 
-.NewsDate {
-  font-color: gray;
+.UISpaceActivityPortlet .NewsDate {
+  color:#9e9e9e;
+  line-height: 16px;
+  font-size: 10px;
+  padding-top: 5px;
+  margin-left: 70px;
+}
+
+.UISpaceActivityPortlet .CommentLink {
+  margin-left: 70px;
 }
 
 .CommentFormBlock {
@@ -386,11 +410,13 @@
 	line-height: 18px;
 }
 
-.ActivitiesContainer .ContentArea {
-  color:#424242;
+.ContentArea {
+  color:black;
   line-height: 18px;
   overflow-x: hidden;
-  width: 640px;
+  font-size: 13px;
+  margin-bottom: 3px;
+  margin-top: -5px;
 }
 
 .ActivitiesContainer .LinkShareContent {
@@ -403,128 +429,126 @@
 	margin: 0 5px;
 }
 
-.ActivitiesContainer .NewsDate{
-	color:#9e9e9e;
-	line-height: 16px;
-	font-size: 10px;
-}
-
 .ActivitiesContainer .Likes {
 	line-height: 16px;
 	font-size: 10px;
 }
 
-.ExtensionInput .AddLink {
+.UIComposerLinkExtension {
+  margin: 5px 0px;
+  background: white;
+  border: 1px solid #d7d7d7;
+  height: 23px;
+}
+
+.UIComposerLinkExtension .AddLink {
   font-size: 12px;
 }
 
-.ExtensionInput .AddLinkContent {
-	margin: 5px 0px;
-	background: white;
-	border: 1px solid #d7d7d7;
-}
-
-.ExtensionInput .AddLinkContent .InputLink {
-	width: 630px;
-  height: 24px;
+.UIComposerLinkExtension #InputLink {
+	width: 85%;
+  height: 19px;
 	float: left;
 	border: 1px solid white;
 }
 
-.ExtensionInput .AddLinkContent .IconAdd {
+.UIComposerLinkExtension .AttachButton {
+  border: 1px solid gray;
+  float: right;
+  height: 23px;
+}
+
+.UIComposerLinkExtension .ActionAdd {
 	float: right;
 }
 
-.ExtensionInput .ActionAdd {
-	float: right;
-}
-
-.ExtensionInput .ActionAdd a {
+.UIComposerLinkExtension .ActionAdd a {
 	color: #0b4da3;
 }
 
-.ExtensionInput .ThumbnailLeft {
-	width: 85px;
+.UILinkShareDisplay {
+  margin-top: 5px;
+}
+
+.UILinkShareDisplay .ThumbnailLeft {
+	width: 165px;
 	float: left;
 }
 
-.ExtensionInput .ThumbnailLeft .ThumbnailBG {
-  background: url('images/AvatarPeopleBG.gif') no-repeat left top;
-  width: 52px;
-  height: 52px;
-  padding: 6px 0px 0px 6px;
-  float: left;
-  margin: 0px;
+.UILinkShareDisplay .ThumbnailLeft .ThumbnailShown {
+  width: 150px;
 }
 
-.ExtensionInput .ThumbnailLeft .Thumbnail {
-  width: 47px;
-  height: 47px;
+.UILinkShareDisplay .ThumbnailLeft .ThumbnailHidden {
+  display: none;
+  width: 150px;
 }
 
-.ExtensionInput .ThumbnailLeft .ThumbnailAction {
-  width: 75px; 
+.UILinkShareDisplay .ThumbnailLeft .ThumbnailAction {
+  width: 100px; 
 }
 
-.ExtensionInput .ThumbnailLeft .ThumbnailAction .BackIcon {
+.UILinkShareDisplay .ThumbnailLeft .ThumbnailAction .BackIcon {
 	width: 9px; 
 	height: 16px;
 	float: left;
 	cursor: pointer;
 	background: url('images/BackIcon.gif') no-repeat left center;
-	margin-left:4px;
+	margin-left: 35px;
 }
 
-.ExtensionInput .ThumbnailLeft .ThumbnailAction .Stats {
+.UILinkShareDisplay .ThumbnailLeft .ThumbnailAction .Stats {
   float: left;
   font-size: 8px;
   margin-left: 9px;
+  background: none;
 }
 
-.ExtensionInput .ThumbnailLeft .ThumbnailAction .NextIcon {
+.UILinkShareDisplay .ThumbnailLeft .ThumbnailAction .NextIcon {
 	width: 9px; 
 	height: 16px;
 	float: right;
 	cursor: pointer;
 	background: url('images/NextIcon.gif') no-repeat right center;
-	margin-right: 25px;
+	margin-right: 15px;
 }
 
-.ExtensionInput .ThumbnailOption {
+.UILinkShareDisplayn .ThumbnailOption {
   font-size: 9px;
   height: 20px;
   white-space: nowrap;
 }
 
-.ExtensionInput .ContentRight {
+.UILinkShareDisplay .ContentRight {
 }
 
-.ExtensionInput .ContentRight .Title {
+.UILinkShareDisplay .ContentRight .Title {
 	color: #000000;
 	width: 550px;
 	font-size: 11px;
 	font-weight: bold;
 }
 
-.ExtensionInput .ContentRight .Content {
+.UILinkShareDisplay .ContentRight .Content {
 	color: #000000;
 	font-size: 10px;
 	margin: 3px 0px;
 	width: 550px;
 }
 
-.ExtensionInput .ContentRight .Source {
+.UILinkShareDisplay .ContentRight .Source {
 	color: #000000;
 	width: 550px;
 	font-size: 9px;
 }
 
-.ExtensionInput .ContentRight .Source a {
+.UILinkShareDisplay .ContentRight .Source a {
 	color: #999999;
 }
 
 .LinkShare .Thumbnail {
   float: left;
+  margin-right: 10px;
 }
 
 .LinkShare .Content {

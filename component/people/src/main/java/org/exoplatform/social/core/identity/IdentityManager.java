@@ -211,30 +211,25 @@ public class IdentityManager {
    */
   public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) throws Exception {
 
-    IdentityProvider<?> identityProvider = getIdentityProvider(providerId);     
+    IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
 
     Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
     Identity result = identityStorage.findIdentity(providerId, remoteId);
 
-
     if(result == null) { 
       if (identity1 != null) { // identity is valid for provider, but no yet referenced in storage
-    	  saveIdentity(identity1);
-    	  identityStorage.saveProfile(identity1.getProfile());
-    	  result = identity1;
+        saveIdentity(identity1);
+        identityStorage.saveProfile(identity1.getProfile());
+        result = identity1;
       } 
-    }
-
-    else if (loadProfile) { 
+    } else if (loadProfile) { 
       identityStorage.loadProfile(result.getProfile());
     }
-    
     return result;
   }
 
-
   /**
-   * Save identity.
+   * Saves identity.
    * 
    * @param identity the identity
    * @throws Exception the exception
@@ -345,7 +340,5 @@ public class IdentityManager {
 
   public JCRStorage getIdentityStorage() {
     return identityStorage;
-  }  
-  
-
+  }
 }

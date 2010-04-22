@@ -1,0 +1,77 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  def labelAttach = _ctx.appRes("UIComposerExtensionContainer.label.Attach");
+  def labelAttachLink = _ctx.appRes("UIComposerExtensionContainer.label.Attach_Link");
+  labelAttachLink = labelAttachLink.replace(":", "");
+  def labelAttachPhoto = _ctx.appRes("UIComposerExtensionContainer.label.Attach_Photo");
+  def labelAttachVideo = _ctx.appRes("UIComposerExtensionContainer.label.Attach_Video");
+  def labelClose = _ctx.appRes("UIComposerExtensionContainer.label.Close");
+  
+  def currentExtension = uicomponent.getCurrentExtension();
+  def enabledExtensionList = uicomponent.getEnabledExtensionList();
+  def linkEnabled, photoEnabled, videoEnabled;
+  def linkAction = uicomponent.event("InvokeExtension", "link");
+  def photoAction = uicomponent.event("InvokeExtension", "photo");
+  def videoAction = uicomponent.event("InvokeExtension", "video");
+  def closeAction = uicomponent.event("CloseExtension");
+  def labelExtension;
+  enabledExtensionList.each({
+    def extension = it.getExtension();
+    if ("link".equals(extension)) {
+      linkEnabled = true;
+      labelExtension = labelAttachLink;
+    } else if ("photo".equals(extension)) {
+      photoEnabled = true;
+      labelExtension = labelAttachPhoto;
+    } else if ("video".equals(extension)) {
+      videoEnabled = true;
+      labelExtension = labelAttachVideo;
+    }
+  })
+  if (!currentExtension) { %>
+<div id="$uicomponent.id" class="UIComposerExtensionContainer"><div class="FloatLeft">
+  <% if (enabledExtensionList.size() > 0) { %>
+  <div class="Label">$labelAttach</div>
+    <% if (linkEnabled) { %>
+  <div title="$labelAttachLink" onclick="$linkAction" class="AttachIcon LinkAttach"><span></span></div>
+    <% } %>
+    <% if (photoEnabled) { %>
+  <div title="$labelAttachPhoto" onclick="$photoAction" class="AttachIcon PhotoAttach"><span></span></div>
+    <% } %>
+    <% if (videoEnabled) { %>
+  <div title="$labelAttachVideo" onclick="$videoAction" class="AttachIcon VideoAttach"><span></span></div>
+    <% }%>
+  <%}%>
+</div></div>
+<% } else { %>
+<div id="$uicomponent.id" class="UIComposerExtensionContainer">
+  <div class="LabelAttach">$labelExtension
+    <div class="FloatRight">[<a class="ColorLink" title="$labelClose" onclick="$closeAction" href="#close">x</a>]</span></div>
+    <div class="ClearRight"></div>
+  </div>
+  <% uicomponent.renderChildren() %>
+</div>
+<% 
+  uicomponent.setCurrentExtension(null);
+} %>
