@@ -4,11 +4,11 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>extras</artifactId>
-    <version>1.0.0-CR02</version>
+    <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extras.benches</artifactId>
-  <version>1.0.0-CR02</version>
+  <version>1.0.0-GA-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social - Extras - Benches</name>
   <dependencies>

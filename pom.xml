@@ -8,14 +8,14 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>1.0.0-CR02</version>
+  <version>1.0.0-GA-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0.0-CR02</connection>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0.0-CR02</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/projects/social/tags/1.0.0-CR02</url>
+    <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</connection>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</developerConnection>
+    <url>http://fisheye.exoplatform.org/browse/projects/social/trunk</url>
   </scm>
   
   <properties>
