@@ -227,9 +227,39 @@ public class IdentityManager {
     }
     return result;
   }
+  
+  /**
+   * Gets identity
+   * @param providerId
+   * @param remoteId
+   * @param loadProfile
+   * @return
+   * @throws Exception
+   */
+  public Identity getIdentity(String providerId, String remoteId, boolean loadProfile) throws Exception {
+    IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
+    Identity identity = identityProvider.getIdentityByRemoteId(remoteId);
+    if (identity == null) return null;
+    if (loadProfile) {
+      identityStorage.loadProfile(identity.getProfile());
+    }
+    return identity;
+  }
 
   /**
-   * Saves identity.
+   * Checks if identity existed or not
+   * @param providerId
+   * @param remoteId
+   * @param loadProfile
+   * @return
+   */
+  public boolean identityExisted(String providerId, String remoteId) {
+    IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
+    return identityProvider.getIdentityByRemoteId(remoteId) != null ? true : false;
+  }
+
+  /**
+   * Save identity.
    * 
    * @param identity the identity
    * @throws Exception the exception
