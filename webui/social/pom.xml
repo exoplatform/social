@@ -4,10 +4,10 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
-    <version>1.0.0-GA-SNAPSHOT</version>
+    <version>1.0.0-CR02</version>
   </parent>
   <artifactId>exo.social.webui.social</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
+  <version>1.0.0-CR02</version>
   <packaging>jar</packaging>
   <name>Social webui Module</name>
   <description>social project, webui module</description>
@@ -22,7 +22,7 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>1.0.0-GA-SNAPSHOT</version>
+      <version>1.0.0-CR02</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>1.0.0-GA-SNAPSHOT</version>
+      <version>1.0.0-CR02</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

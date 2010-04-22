@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
-    <version>1.0.0-GA-SNAPSHOT</version>
+    <version>1.0.0-CR02</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
