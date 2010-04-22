@@ -3,6 +3,7 @@
 	Message bundle for vi_ALL
 -->
 <messageBundle>
+  <msg name="loading">Đang tải trang... Chờ trong giây lát...</msg>
 	<msg name="title">Cập nhật trạng thái</msg>
 	<msg name="description">Ứng dụng cập nhật trạng thái</msg>
 	<msg name="what_are_you_doing">Bạn đang làm gì?</msg>
@@ -13,7 +14,7 @@
 	<msg name="not_valid_link">Có thể liên kết sai định dạng, bạn hãy kiểm tra lại.</msg>
 	<msg name="user_shared_a_link">{0} chia sẻ một liên kết</msg>
 	<msg name="problem_happens_to_fix_soon">Đã có lỗi xảy ra! Hiện lỗi này đang được khắc phục.</msg>
-	<msg name="owner_friends">Bạn của bạn</msg>
+	<msg name="owner_friends">Mối liên hệ của bạn</msg>
 	<msg name="activities_of_displayName">Hoạt động của {0}</msg>
 	<msg name="friends_activities">Hoạt động của bạn bè</msg>
 	<msg name="displayName_does_not_have_update">{0} chưa có cập nhật nào</msg>
@@ -71,6 +72,6 @@
 	<msg name="am">Sáng</msg>
 	<msg name="pm">Chiều</msg>
 	<msg name="day_date_month_year_at_hour_min_ap">Lúc {4} : {5} : {6}, {0} ngày {1} {2} năm {3}</msg>
-  <msg name="error_activity_not_found">Có lỗi xảy r: Hoạt động này đã bị xoá!</msg>
+  <msg name="error_activity_not_found">Có lỗi xảy ra: Hoạt động này đã bị xoá!</msg>
 	<msg name="internal_error">Có lỗi xảy ra. Phiền bạn refresh lại trình duyệt!</msg>
 </messageBundle>

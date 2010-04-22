@@ -60,6 +60,8 @@ eXo.social.StatusUpdate.config = {
 		SCRIPT_PATH : "${HOST_SCHEMA}://${HOST}/social/gadgets/activities2/script"
 	},
 	ui : {//dom id reference
+	  UI_STATUS_LOADING: "StatusLoading",
+	  UI_STATUS_UPDATE: "StatusUpdate",
 		UI_MY_STATUS_INPUT: "UIMyStatusInput",
 		UI_FRIENDS_ACTIVITIES: "UIFriendsActivities",
 		UI_OWNER_AVATAR: "UIOwnerAvatar",
@@ -115,6 +117,8 @@ eXo.social.StatusUpdate.configEnvironment = function() {
  * @static
  */
 eXo.social.StatusUpdate.main = function() {
+  var Util = eXo.social.Util;
+  Util.hideElement(eXo.social.StatusUpdate.config.ui.UI_STATUS_UPDATE);
 	//get full render from start BUG #SOC-375
 	gadgets.window.adjustHeight();
 	var statusUpdate = new eXo.social.StatusUpdate();
@@ -252,7 +256,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
 			    	req.add(req.newFetchPeopleRequest(ownerFriendsSpec, opts), 'ownerFriends');
 					req.send(function(res) {
 						if (res.hadError()) {
-							debug.warn("Can not reget owner!");
+							debug.warn("Can not re-get owner!");
 							debug.info(res);
 							miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
 							return;
@@ -261,13 +265,15 @@ eXo.social.StatusUpdate.prototype.init = function() {
 						statusUpdate.ownerFriends = res.get('ownerFriends').getData();
 						debug.info(statusUpdate.ownerFriends);
 						//hides text input + friends's activities
-						var uiMyStatusInput = Util.getElementById(config.ui.UI_MY_STATUS_INPUT);
-						var uiFriendsActivities = Util.getElementById(config.ui.UI_FRIENDS_ACTIVITIES);
-						uiMyStatusInput.style.display = 'none';
-						uiFriendsActivities.style.display = 'none';
+						Util.hideElement(config.ui.UI_MY_STATUS_INPUT);
+						Util.hideElement(config.ui.UI_FRIENDS_ACTIVITIES);
+						Util.hideElement(config.ui.UI_STATUS_LOADING);
+            Util.showElement(config.ui.UI_STATUS_UPDATE);
 						statusUpdate.refresh();
 					});
 				} else {
+				  Util.hideElement(config.ui.UI_STATUS_LOADING);
+          Util.showElement(config.ui.UI_STATUS_UPDATE);
 					statusUpdate.refresh();
 				}
 			}
@@ -314,6 +320,8 @@ eXo.social.StatusUpdate.prototype.init = function() {
 				debug.info(url);
 				Util.makeRequest(url, fixOwnerHandler);
 			} else {
+			  Util.hideElement(config.ui.UI_STATUS_LOADING);
+        Util.showElement(config.ui.UI_STATUS_UPDATE);
 				statusUpdate.refresh();
 			}
 			//BUG: can not use person.isViewer() or person.isOwner()
@@ -541,7 +549,7 @@ eXo.social.StatusUpdate.prototype.updateFriendsActivities = function() {
  * @param	dataResponse
  * @param	opt_dataMode - can be StatusUpdate.DataMode_BOTH
  *								  StatusUpdate.DataMode_OWNER_ONLY
- *                                StatusUpdate.DataMode_FRIENDS_ONLY
+ *                  StatusUpdate.DataMode_FRIENDS_ONLY
  */
 eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, dataMode) {
 	var Locale = eXo.social.Locale;

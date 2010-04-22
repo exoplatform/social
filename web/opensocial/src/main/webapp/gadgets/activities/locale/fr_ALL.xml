@@ -15,7 +15,7 @@
 	<msg name="problem_happens_to_fix_soon">Désolé pour ce problème. Nous y travaillons.</msg>
 	<msg name="activities_of_displayName">Les activités de {0} </msg>
 	<msg name="friends_activities">Activités des relations</msg>
-	<msg name="owner_friends">Owner's friends</msg>
+	<msg name="owner_friends">Owner's relations</msg>
 	<msg name="displayName_does_not_have_update">{0} n'a pas envoyé d'activité</msg>
 	<msg name="displayName_do_not_have_update">{0} n'a pas envoyé d'activité</msg>
 	<msg name="comment">Commentaire</msg>

@@ -51,6 +51,11 @@ img {border: none}
 	/*height: 120%;*/
 }
 
+.StatusLoading {
+  text-align: center;
+  font-size: 13px;
+}
+
 .ActivitiesComponent  .ActivitiesComponentBT {
 	/*background: url('images/ActivitiesComponentBT.gif') no-repeat right bottom ;*/
 	/*height: 700px;*/
