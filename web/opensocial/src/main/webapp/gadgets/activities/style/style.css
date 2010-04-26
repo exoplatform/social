@@ -1,6 +1,6 @@
 /**
  * style.css
- * stylesheet for status update app
+ * stylesheet for status update application
  */
  
  * {
@@ -10,7 +10,16 @@
 
 a:link, a:hover, a:active, a:visited  {
 	text-decoration: none;
-	color: #058EE6;
+	color: gray;
+}
+
+a.Link {
+  color: gray;
+}
+
+a.ColorLink {
+  color: #058EE6;
+}
 }
 
 
@@ -184,6 +193,14 @@ img {border: none}
   float: right;
 }
 
+.ActivitiesComponent .ActivitiesContainer .UIComposerShareButton {
+  border: 1px solid gray;
+  background: white;
+  font-size: 14px;
+  height: 25px;
+  width: 90px;
+}
+
 .ExtensionInput {
 }
 
@@ -191,6 +208,14 @@ img {border: none}
 	float: left;
   font-size: 12px;
 }
+
+.ExtensionInput .LabelAttach {
+  border-bottom: 1px solid gray;
+  font-size: 12px;
+  padding-bottom: 1px;
+}
+
+
 
 .ExtensionInput .AttachIcon {
 	float: left;
@@ -303,7 +328,11 @@ img {border: none}
 }
 
 .CommentActivitiesContent .Content .Content {
+  color: black;
+  line-height: 18px;
+  overflow-x: hidden;
   width: 550px;
+  font-size: 13px;
 }
 
 .TitleContent {
@@ -349,7 +378,6 @@ img {border: none}
 
 
 .ActivitiesContainer .UserName {
-	font-weight: bold;
 	color:#424242;
 	line-height: 24px;
 	float: left;
@@ -416,10 +444,11 @@ img {border: none}
 }
 
 .ActivitiesContainer .ContentArea {
-  color:#424242;
+  color:black;
   line-height: 18px;
   overflow-x: hidden;
-  width: 640px;
+  font-size: 13px;
+  margin-bottom: 3px;
 }
 
 .ActivitiesContainer .LinkShareContent {
@@ -454,14 +483,16 @@ img {border: none}
 }
 
 .ExtensionInput .AddLinkContent .InputLink {
-	width: 630px;
+	width: 90%;
   height: 24px;
 	float: left;
 	border: 1px solid white;
 }
 
-.ExtensionInput .AddLinkContent .IconAdd {
-	float: right;
+.ExtensionInput .AddLinkContent .AddLinkButton {
+  border: 1px solid gray;
+  float: right;
+  height: 24px;
 }
 
 .ExtensionInput .ActionAdd {
@@ -475,6 +506,7 @@ img {border: none}
 .ExtensionInput .ThumbnailLeft {
 	width: 85px;
 	float: left;
+	margin-top: 5px;
 }
 
 .ExtensionInput .ThumbnailLeft .ThumbnailBG {
@@ -526,6 +558,7 @@ img {border: none}
 }
 
 .ExtensionInput .ContentRight {
+  margin-top: 5px;
 }
 
 .ExtensionInput .ContentRight .Title {

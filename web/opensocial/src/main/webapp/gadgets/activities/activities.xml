@@ -24,6 +24,7 @@
   				author_affiliation="eXo Platform">
   	<Locale messages="locale/ALL_ALL.xml" />
   	<Locale lang="en" messages="locale/en_ALL.xml" />
+    <Locale lang="fr" messages="locale/fr_ALL.xml" />
   	<Locale lang="vi" messages="locale/vi_ALL.xml" />
     <Require feature="opensocial-0.8" />
     <Require feature="dynamic-height" />
@@ -185,21 +186,17 @@
 													<div class="MyStatusInputBM"><span></span></div>
 												</div>
 											</div>
-										</div>	
-  								</td>
-  								<td width='30'>
-  									<a id="UIComposerShareButton" href="#statusUpdate.share" title="__MSG_share__" class="IconAdd">&nbsp;</a>
-  								</td>
-  							</tr>
-  						  <tr>
-  						    <td>&nbsp;</td>
-  						    <td colspan="2">
-  						      <div id="UIComposerExtension" class="ExtensionInput">
+										</div>
+										<div id="UIComposerExtension" class="ExtensionInput">
                       <!-- dynamic loading -->
                     </div>
                     <div id="UIComposerExtensionMessage" class="ExtensionMessage"></div>
-  						    </td>
-  						  </tr>
+                    <div class="StatusShare FloatRight">
+                      <input type="button" id="UIComposerShareButton" class="UIComposerShareButton" value="__MSG_share__" />
+                    </div>
+                    <div class="ClearBoth"><span></span></div>
+  								</td>
+  							</tr>
   						</body>
   					</table>	
   				</div>

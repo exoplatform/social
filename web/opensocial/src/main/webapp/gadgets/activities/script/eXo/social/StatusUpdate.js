@@ -636,7 +636,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   			html.push('</a>');
   			html.push('<div class="Content">');
   			html.push('<div class="TitleContent" style="height: 24px;">');
-  				html.push('<div class="UserName"><a href="' + profileUrl + '" target="_parent" title="' + userName + '">' + userName + '</a></div>');
+  				html.push('<div class="UserName"><a class="Link" href="' + profileUrl + '" target="_parent" title="' + userName + '">' + userName + '</a></div>');
   			if (isOwnerActivity) {
   				html.push(getActionContentBlock());
   			}
@@ -683,14 +683,14 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   		html.push('<div class="LinkShareContent">');
 	   			html.push('<div class="TitleContent" style="height: 24px;">');
 	   				html.push('<div class="UserName">');
-	   					html.push(userName);
-	   					html.push('</div>');
+	   					html.push('<a class="Link" href="' + profileUrl + '" target="_parent" title="' + userName + '">' + userName + '</a>');
+	   				html.push('</div>');
 	   				if (isOwnerActivity) {
 	   						html.push(getActionContentBlock());
 	   				}
 	   				html.push('<div style="clear: both; height: 0px;"><span></span></div>');
 	   			html.push('</div>');
-	   			html.push('<div class="UserStatus">');
+	   			html.push('<div class="ContentArea">');
 	   			if (jsonBody.comment) {
 	   				var comment = Util.stripHtml(StatusUpdate.allowedTags, jsonBody.comment);
 	   				if (comment !== '') {
@@ -713,7 +713,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	   				} else {
 	   				html.push('<div>'); //no margin-left is set
 	   				}
-		   				html.push('<div class="Title"><a href="'+ jsonBody.data.link +'" target="_blank">' + jsonBody.data.title + '</a></div>');
+		   				html.push('<div class="Title"><a class="ColorLink" href="'+ jsonBody.data.link +'" target="_blank">' + jsonBody.data.title + '</a></div>');
 		   				html.push('<div class="Description">' + jsonBody.data.description + '</div>');
 		   				html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonBody.data.link + '</div>');
 	   				html.push('</div>');
@@ -753,9 +753,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		var html = [];
 		if (statusUpdate.currentView === 'canvas') {
 			if (isOwner(viewerId) || isFriend(viewerId)) {
-				html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('comment') + '</a><span>  |  </span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: visible;">' + Locale.getMsg('like') + '</a>');
-			} else {
-				//html.push('<a id="Comment' + activityId + '" href="#comment" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('comment') + '</a><span></span><a id="Like' + activityId + '" href="#like" style="color: #058ee6; visibility: hidden;">' + Locale.getMsg('like') + '</a>');
+				html.push('<a class="Link" id="Comment' + activityId + '" href="#comment">' + Locale.getMsg('comment') + '</a><span>  |  </span><a class="Link" id="Like' + activityId + '" href="#like">' + Locale.getMsg('like') + '</a>');
 			}
 		}
 		return html.join('');
@@ -870,7 +868,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  	} else {
 			Util.getElementById(moreId).style.display = 'none';
 	  	}
-  		var useLightBackground = true;
+  		//var useLightBackground = true;
   		var index = 0;
   		ajaxQueue();
   		function ajaxQueue() {
@@ -880,7 +878,8 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   				return
   			}
 	  		var html = '';
-	  		var aDecoratorContainerClass = '';
+	  		var aDecoratorContainerClass = 'ADecoratorContainer';
+	  		/*
 	  		if (!useLightBackground) {
 	  			aDecoratorContainerClass = 'ADecoratorContainerGray';
 	  			useLightBackground = true;
@@ -888,6 +887,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 	  			aDecoratorContainerClass = 'ADecoratorContainer';
 	  			useLightBackground = false;
 	  		}
+	  		*/
 	  		var activity = activities[index];
 			var activityId =  activity.getField(opensocial.Activity.Field.ID);
 			userId = activity.getField(opensocial.Activity.Field.USER_ID);

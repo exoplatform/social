@@ -204,7 +204,7 @@ eXo.social.LinkShare.prototype.addAttachOption = function() {
 	lsOptionHtml.push('<div class="Label">' + Locale.getMsg('attach') + '</div>');
 	//atOptionHtml.push('<div class="ImageFile AttachIcon"><span></span></div>'); //disabled now
  	//atOptionHtml.push('<div class="VideoFile AttachIcon"><span></span></div>'); //disabled now
- 	lsOptionHtml.push('<div id="LinkAttach" class="LinkAttach AttachIcon"><span></span></div>'); //TODO: change class to LinkAttach
+ 	lsOptionHtml.push('<div id="LinkAttach" title="' + Locale.getMsg('attach_link') + '" class="LinkAttach AttachIcon"><span></span></div>');
  	lsOptionHtml.push('<div class="ClearLeft"><span></span></div>');
 	//adds element
 	var newElement = Util.addElement(config.WORKSPACE_ID, lsOptionTagName, lsOptionId, lsOptionHtml.join(''));
@@ -237,24 +237,20 @@ eXo.social.LinkShare.prototype.addAttachAction = function() {
       lsActionTagName = 'div',
       lsActionId = config.LINKSHARE_ACTION_ID,
       lsActionHtml = [];
-  lsActionHtml.push('<div class="AddLink"><a class="LinkAttach AttachIcon">&nbsp;</a> ' + Locale.getMsg('attach_link') + ' (<span class="Close"><a href="#linkShare.displayAttachOption">' + Locale.getMsg('close') + '</a></span>)</div>');
+  lsActionHtml.push('<div class="LabelAttach">' + Locale.getMsg('attach_link'));
+    lsActionHtml.push('<div class="FloatRight">[<a class="Close ColorLink" title="' + Locale.getMsg('close') + '" href="#close">x</a>]</span></div>');
+    lsActionHtml.push('<div class="ClearRight"></div>');
+  lsActionHtml.push('</div>');
   lsActionHtml.push('<div class="AddLinkContent">');
     lsActionHtml.push('<input id="InputLink" class="InputLink" type="textbox" />');
-    lsActionHtml.push('<a id="AddLinkButton" title="' + Locale.getMsg('attach_link') + '" href="#attach_link" class="IconAdd"> </a>');
+    lsActionHtml.push('<input id="AddLinkButton" class="AddLinkButton" type="button" value="'+ Locale.getMsg('attach') +'" />');
     lsActionHtml.push('<div style="clear:both; height: 0px"><span></span></div>');
   lsActionHtml.push('</div>');
   lsActionHtml.push('<div style="clear:both; height:0px;"><span></span></div>');
-  /*
-  lsActionHtml.push('</div>');
-	lsActionHtml.push('<div class="LinkAttachAction">' + Locale.getMsg('link') + ' <span class="Close"><a href="#linkShare.displayAttachOption">' + Locale.getMsg('close') + '</a></span></div>');
-	lsActionHtml.push('<div class="Attachction">');
-		lsActionHtml.push('<input type="text" value="http://"');
-		lsActionHtml.push('<a href="#linkShare.getInfo">' + Locale.getMsg('attach') + '</a>');
-	lsActionHtml.push('</div>');
-  */
+  
 	var newElement = Util.addElement(config.WORKSPACE_ID, lsActionTagName, lsActionId, lsActionHtml.join(''));
 	//event attach
-	var spanCloseElement = Util.getElementsByClass(newElement, 'span', 'Close')[0];
+	var spanCloseElement = Util.getElementsByClass(newElement, 'a', 'Close')[0];
 	var linkShare = this;
 	
 	Util.addEventListener(spanCloseElement, 'click', function() {
@@ -262,6 +258,7 @@ eXo.social.LinkShare.prototype.addAttachAction = function() {
 	}, false);
 	var inputElement = Util.getElementById('InputLink');
 	inputElement.style.color = '#777777';
+	inputElement.value = 'http://';
 	Util.addEventListener(inputElement, 'focus', function() {
 		if (this.value === 'http://') {
 			this.value = '';
@@ -334,7 +331,10 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
       lsDisplayTagName = "div",
       lsDisplayId = config.LINKSHARE_DISPLAY_ID,
       lsDisplayHtml = [];
-	  lsDisplayHtml.push('<div class="AddLink"><a class="LinkAttach AttachIcon">&nbsp;</a> ' + Locale.getMsg('content_to_display') + ' (<span class="Close"><a href="#linkShare.displayAttachOption">' + Locale.getMsg('close') + '</a></span>)</div>');
+	  lsDisplayHtml.push('<div class="LabelAttach">' + Locale.getMsg('attach_link'));
+	    lsDisplayHtml.push('<div class="FloatRight">[<a class="Close ColorLink" title="' + Locale.getMsg('close') + '" href="#close">x</a>]</span></div>');
+	    lsDisplayHtml.push('<div class="ClearRight"></div>');
+	  lsDisplayHtml.push('</div>');
 		lsDisplayHtml.push('<div class="ThumbnailLeft">');
 	  		lsDisplayHtml.push('<div id="' + config.THUMBNAIL_DISPLAY_ID +'">');
 	  			lsDisplayHtml.push(this.getThumbnailDisplay());
@@ -350,10 +350,11 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
 			lsDisplayHtml.push('<div class="Content Editable">' + LinkShare.data.description + '</div>');
 			lsDisplayHtml.push('<div class="Source">' + LinkShare.data.link + '</div>');
 		lsDisplayHtml.push('</div>');
+		lsDisplayHtml.push('<div class="ClearBoth"></div>');
 	Util.showElement(config.WORKSPACE_ID);
 	var newElement = Util.addElement(config.WORKSPACE_ID, lsDisplayTagName, lsDisplayId, lsDisplayHtml.join(''));
 	//attach event
-	var spanCloseEl = Util.getElementsByClass(newElement, 'span', 'Close')[0];
+	var spanCloseEl = Util.getElementsByClass(newElement, 'a', 'Close')[0];
 	Util.addEventListener(spanCloseEl, 'click', function() {
 		linkShare.displayAttach(config.LINKSHARE_OPTION_ID);
 	}, false);

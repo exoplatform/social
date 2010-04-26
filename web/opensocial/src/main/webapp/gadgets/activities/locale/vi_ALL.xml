@@ -16,7 +16,7 @@
 	<msg name="problem_happens_to_fix_soon">Đã có lỗi xảy ra! Hiện lỗi này đang được khắc phục.</msg>
 	<msg name="owner_friends">Mối liên hệ của bạn</msg>
 	<msg name="activities_of_displayName">Hoạt động của {0}</msg>
-	<msg name="friends_activities">Hoạt động của bạn bè</msg>
+	<msg name="friends_activities">Hoạt động của các liên hệ</msg>
 	<msg name="displayName_does_not_have_update">{0} chưa có cập nhật nào</msg>
 	<msg name="displayName_do_not_have_update">{0} chưa có cập nhật nào</msg>
 	<msg name="comment">Bình luận</msg>
