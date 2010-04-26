@@ -159,7 +159,7 @@
           <div class="MenuItemContainer" style="position: absolute; display: block; min-width: 98px; top: 19px; right: 5px; visibility: hidden;">
             <div class="SubBlock">
               <div class="MenuItem">
-                <a href="#delete" title="Delete" class="ItemIcon DeleteIcon DefaultPageIcon">
+                <!--<a href="#delete" title="Delete" class="ItemIcon DeleteIcon DefaultPageIcon">-->
                 </a>
               </div>
             </div>
@@ -178,6 +178,9 @@
         if ("link".equals(extension)) {
           def linkSource = uicomponent.getLinkSource();
           def linkTitle = uicomponent.getLinkTitle();
+          if (linkTitle.equals("")) {
+            linkTitle = linkSource;
+          }
           def linkImage = uicomponent.getLinkImage();
           def linkDescription = uicomponent.getLinkDescription();
           def linkComment = uicomponent.getLinkComment();

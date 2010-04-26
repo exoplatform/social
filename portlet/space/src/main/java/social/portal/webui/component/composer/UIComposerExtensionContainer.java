@@ -31,7 +31,9 @@ import org.json.JSONObject;
 
 /**
  * UIComposerExtention.java
- *
+ * <p>
+ * This ui component contains action links to invoke corresponding uiextension (link, photo, video...) 
+ * </p>
  * @author    <a href="http://hoatle.net">hoatle</a>
  * @since 	  Apr 19, 2010
  * @copyright eXo Platform SAS
@@ -127,11 +129,11 @@ public class UIComposerExtensionContainer extends UIContainer {
     }
     
     if (enabledExtensionList_.contains(Extension.PHOTO)) {
-      
+      //TODO hoatle needs UIComposerPhotoExtension
     }
     
     if (enabledExtensionList_.contains(Extension.VIDEO)) {
-      
+      //TODO hoatle needs UIComposerVideoExtension
     }
   }
   
@@ -141,6 +143,7 @@ public class UIComposerExtensionContainer extends UIContainer {
     public void execute(Event<UIComposerExtensionContainer> event) throws Exception {
       UIComposerExtensionContainer uiComposerExtension = event.getSource();
       uiComposerExtension.setCurrentExtension(null);
+      uiComposerExtension.setExtensionAttached(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiComposerExtension);
     }
     

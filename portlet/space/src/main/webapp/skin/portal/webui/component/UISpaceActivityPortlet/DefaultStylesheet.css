@@ -522,6 +522,15 @@
 .UILinkShareDisplay .ContentRight {
 }
 
+.UILinkShareDisplay .ContentRight .InputTitle {
+  
+}
+
+.UILinkShareDisplay .ContentRight .InputDescription {
+  
+}
+
+
 .UILinkShareDisplay .ContentRight .Title {
 	color: #000000;
 	width: 550px;

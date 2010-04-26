@@ -74,4 +74,5 @@
 </div>
 <% 
   uicomponent.setCurrentExtension(null);
+  uicomponent.setExtensionAttached(false);
 } %>

@@ -41,6 +41,7 @@
   def requestContext = _ctx.getRequestContext();
   def jsManager = requestContext.getJavascriptManager();
   jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/eXoResourcesSocial/javascript");
   jsManager.importJavascript("eXo.social.webui.UIComposerLinkExtension", "/eXoResourcesSocial/javascript");
   
   def noThumbnail = _ctx.appRes("${uicomponentId}.msg.No_Thumbnail"),

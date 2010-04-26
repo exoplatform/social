@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+ 
 /**
  * UIComposerLinkExtension.js
  */
@@ -7,7 +24,8 @@
       Util = eXo.social.Util,
       HTTP = "http://",
       GRAY_COLOR = "gray",
-      BLACK_COLOR = "black";
+      BLACK_COLOR = "black",
+      uiComposerLinkExtension;
   
   function changeLinkContent() {
     var link = this.linkData.link,
@@ -24,7 +42,75 @@
     });
   }
   
+  /**
+   * creates input/ textarea element for edit inline
+   * if tagName = input 
+   * <input type="text" id="editableText" value="" />
+   * if tagName = textarea
+   * <textarea cols="10" rows="3">value</textarea>
+   */
+  function addEditableText(oldEl, tagName) {
+    var textContent = oldEl.innerText; //IE
+    if (textContent === undefined) {
+        textContent = oldEl.textContent;
+    }
+    textContent = textContent.trim();
+    var editableEl = document.createElement(tagName);
+    if ('input' === tagName) {
+      editableEl.setAttribute('type', 'text');
+      editableEl.setAttribute('size', 50);
+      editableEl.setAttribute('class', 'InputTitle');
+      editableEl.setAttribute('className', 'InputTitle');
+      
+    } else if ('textarea' === tagName) {
+      editableEl.setAttribute('cols', 50);
+      editableEl.setAttribute('rows', 5);
+      editableEl.setAttribute('class', 'InputDescription');
+      editableEl.setAttribute('className', 'InputDescription');
+    }
+    //editableEl.setAttribute('id', "UIEditableText");
+    editableEl.value = textContent;
+    //insertafter and hide oldEl
+    Util.insertAfter(editableEl, oldEl);
+    oldEl.style.display='none';
+    editableEl.focus();
+    //ENTER -> done
+    Util.addEventListener(editableEl, 'keypress', function(e) {
+        if (Util.isEnterKey(e)) {
+            updateElement(this);
+            return false;
+        }
+    }, false);
+    
+    Util.addEventListener(editableEl, 'blur', function() {
+        updateElement(this);
+    }, false);
+    
+    var updateElement = function(editableEl) {
+        //hide this, set new value and display
+        var oldEl = editableEl.previousSibling;
+        if (oldEl.innerText != null) { //IE
+            oldEl.innerText = editableEl.value;
+        } else {
+            oldEl.textContent = editableEl.value;
+        }
+        //updates data
+        //detects element by class, if class contains ContentTitle -> update title,
+        // if class contains ContentDescription -> update description
+        oldEl.style.display="block";
+        if (Util.hasClass(oldEl, 'Title')) {
+          uiComposerLinkExtension.linkData.title = editableEl.value;
+          changeLinkContent.apply(uiComposerLinkExtension);
+        } else if (Util.hasClass(oldEl, 'Content')) {
+          uiComposerLinkExtension.linkData.description = editableEl.value;
+          changeLinkContent.apply(uiComposerLinkExtension);
+        }
+        editableEl.parentNode.removeChild(editableEl);
+    }
+}
+  
   function UIComposerLinkExtension(params) {
+    uiComposerLinkExtension = this;
     this.configure(params);
     this.init();
   }
@@ -63,6 +149,7 @@
     }
     
     var shareButton = Util.getElementById('ShareButton');
+    uiComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
       //trick: enable share button
       if (shareButton) {
@@ -74,13 +161,21 @@
       this.backThumbnail = Util.getElementById(this.backThumbnailId);
       this.nextThumbnail = Util.getElementById(this.nextThumbnailId);
       this.stats = Util.getElementById(this.statsId);
+      this.linkTitle = Util.getElementById('LinkTitle');
+      this.linkDescription = Util.getElementById('LinkDescription');
+      Util.addEventListener(this.linkTitle, 'click', function(evt) {
+        addEditableText(this, 'input');
+      }, false);
+      
+      Util.addEventListener(this.linkDescription, 'click', function(evt) {
+        addEditableText(this, 'textarea');
+      }, false);
+      
       if (this.thumbnails) {
         this.thumbnailCheckbox = Util.getElementById(this.thumbnailCheckboxId);
         this.images = this.thumbnails.getElementsByTagName('img');
         doStats.apply(this);
 
-        var uiComposerLinkExtension = this;
-        
         Util.addEventListener(this.backThumbnail, 'click', function(evt) {
           if (uiComposerLinkExtension.shownThumbnailIndex > 0) {
             uiComposerLinkExtension.shownThumbnailIndex--;

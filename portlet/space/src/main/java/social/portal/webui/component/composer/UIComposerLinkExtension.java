@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.social.services.rest.opensocial.LinkShare;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -37,6 +36,10 @@ import social.portal.webui.component.composer.UIComposerExtensionContainer.Exten
 
 /**
  * UIComposerLinkExtension.java
+ * <p>
+ * an ui component to attach link, gets link information and displays; changes link title,
+ * description content inline.
+ * </p>
  *
  * @author    <a href="http://hoatle.net">hoatle</a>
  * @since 	  Apr 19, 2010
@@ -61,6 +64,9 @@ public class UIComposerLinkExtension extends UIContainer {
   private boolean linkInfoDisplayed_ = false;
   private JSONObject dataLink_;
   
+  /**
+   * constructor
+   */
   public UIComposerLinkExtension() {
     addChild(new UIFormStringInput("InputLink", "InputLink", null));
   }
@@ -89,6 +95,11 @@ public class UIComposerLinkExtension extends UIContainer {
     return linkShare_;
   }
   
+  /**
+   * sets link url to gets content
+   * @param url
+   * @throws JSONException
+   */
   private void setLink(String url) throws JSONException {
     if (!(url.contains(HTTP) || url.contains(HTTPS))) {
       url = HTTP + url;

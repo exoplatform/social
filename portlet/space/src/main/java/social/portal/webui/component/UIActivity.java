@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -52,11 +51,12 @@ import org.json.JSONObject;
 
 import social.portal.webui.component.composer.UIComposer;
 import social.portal.webui.component.composer.UIComposerLinkExtension;
-import social.portal.webui.component.composer.UIComposerExtensionContainer.Extension;
 
 /**
  * UIActivity.java
- *
+ * <p>
+ * Displays activity
+ * </p>
  * @author    <a href="http://hoatle.net">hoatle</a>
  * @since 	  Apr 12, 2010
  * @copyright eXo Platform SAS
