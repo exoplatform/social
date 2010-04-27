@@ -139,7 +139,7 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .AddInvite input {
-	width: 275px;
+	width: 270px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .UIActionContainer {
@@ -163,9 +163,17 @@
 	cursor: pointer;
 }
 
+.UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchAddMemberIcon {
+	background: url('DefaultSkin/background/SearchAddMember.png') no-repeat right;
+	width: 17px;
+	height: 16px;
+	margin: 5px 7px;
+	cursor: pointer;
+}
+
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .UIActionContainer .InviteButton {
-	background: url('DefaultSkin/background/InviteButton.gif') no-repeat right 13px;
-	width: 15px;
+	background: url('DefaultSkin/background/InviteUserButton.png') no-repeat right 13px;
+	width: 20px;
 	height: 34px;
 	margin-left: 45px;
 	cursor: pointer;

@@ -18,6 +18,7 @@
 -->
 <% import org.exoplatform.webui.core.UIPopupWindow
 	 import org.exoplatform.webui.core.UIPageIterator;
+	 import org.exoplatform.web.application.JavascriptManager;
 	 
 	 def uicomponentId = uicomponent.id
    def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction")
@@ -28,6 +29,7 @@
    def labelRemoveLeader = _ctx.appRes("${uicomponentId}.label.RemoveLeader")
    def labelMakeLeader = _ctx.appRes("${uicomponentId}.label.MakeLeader")
    def labelRemoveAction = _ctx.appRes("${uicomponentId}.label.RemoveAction")
+   def allUserName = uicomponent.getAllUserNames().toString();
 	 List<String> pendingUsers = uicomponent.getPendingUsers();
 	 List<String> invitedUsers = uicomponent.getInvitedUsers();
 	 List<String> existingUsers = uicomponent.getExistingUsers();
@@ -36,6 +38,11 @@
 	 UIPageIterator iteratorInvitedUsers = uicomponent.getUIPageIteratorInvitedUsers();
 	 UIPageIterator iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
 	 
+	 def rcontext = _ctx.getRequestContext() ;
+	 JavascriptManager jsmanager = rcontext.getJavascriptManager();
+   jsmanager.importJavascript('eXo.social.webui.UISpaceMemberSuggestion', '/eXoResourcesSocial/javascript');
+   jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestMultiValueControl','/eXoResourcesSocial/javascript');
+   jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceMemberSuggest.onLoad("' + allUserName + '");');
 	 def pendingIdx = 0;
 	 def invitedIdx = 0;
 	 def existingIdx = 0;
@@ -51,7 +58,7 @@
 						<div class="SearchInviteForm">
 						  <div class="AddInvite"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%> :<% uiform.renderField("user") %></div>
 						  	<div class="SearchInviteButton">
-								<div class="IconButton" onclick="$searchUserAction" title="$labelSearchUserAction"><span></span></div>
+								<div class="SearchAddMemberIcon" onclick="$searchUserAction" title="$labelSearchUserAction"><span></span></div>
 							</div>
 						  <div style="clear: left;"><span></span></div>
 				  	</div>
