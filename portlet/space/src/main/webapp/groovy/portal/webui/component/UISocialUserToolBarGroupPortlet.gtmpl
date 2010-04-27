@@ -4,6 +4,7 @@
 	import org.exoplatform.web.application.JavascriptManager;
 	import org.exoplatform.portal.webui.util.Util ;
 	import org.exoplatform.webui.organization.OrganizationUtils;
+	import org.exoplatform.portal.mop.Visibility;
 	
 	def rcontext = _ctx.getRequestContext() ;
 	JavascriptManager jsmanager = rcontext.getJavascriptManager();
@@ -16,14 +17,26 @@
 	void renderGroupPageNavigation(PageNavigation navigation) {
 			nodes = navigation.getNodes() ;
 			if(nodes.size() < 1) return ;
+			def countVisibilityNode = 0;
+      for (int idx = 0; idx < nodes.size(); idx++) {
+        if (nodes.get(idx).getVisibility() == Visibility.HIDDEN) {
+          countVisibilityNode = countVisibilityNode + 1;
+        }
+      }
+			if (countVisibilityNode == nodes.size()) return;
 			String navTitle = _ctx.appRes("UIPageNavigation.label.titleBar") ;
 			navTitle = navTitle.replace("{0}", OrganizationUtils.getGroupLabel(navigation.ownerId));
+			
 			print """
+			      
 						<div class="TitleBar"><div style="width: 99%" title="$navigation.ownerId">$navTitle</div></div>
 						<div class="SubBlock">
 							""" ;
 							for(int i = 0; i < nodes.size(); i++) {
-								renderPageNode(nodes.get(i), i%2 == 0 ) ;
+							  def node = nodes.get(i);
+							  if (node.getVisibility() != Visibility.HIDDEN) {
+								  renderPageNode(node, i%2 == 0 );
+								}
 							}
 							print """
 						</div>
@@ -89,6 +102,7 @@
 				<% if (!groupNavigations.isEmpty()) { %>
 				<div style="display:none" class="MenuItemContainer">
 				<% for(navigation in groupNavigations) {
+				    uicomponent.localizePageNavigation(navigation);
 						renderGroupPageNavigation(navigation);
 				} %>
 				</div>

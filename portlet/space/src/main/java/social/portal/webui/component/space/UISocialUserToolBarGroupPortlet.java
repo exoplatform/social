@@ -22,9 +22,12 @@ package social.portal.webui.component.space;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.Visibility;
 import org.exoplatform.portal.webui.navigation.PageNavigationUtils;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.resources.ResourceBundleManager;
 import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -33,6 +36,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Created by The eXo Platform SAS
@@ -68,14 +73,23 @@ public class UISocialUserToolBarGroupPortlet extends UIPortletApplication
  	  {
 	      for (PageNavigation navigation : navigations)
 	      {
-	         if (navigation.getOwnerId().equals(space.getGroupId()))
-	         {
-	            navigations.remove(navigation);
+	    	  if (navigation.getOwnerType().equals(space.getGroupId()))
+	          {
+	    		navigations.remove(navigation);
 	            break;
-	         }
+	          }
     	 }
       }
       
+      for (PageNavigation navi : navigations) {
+	  	 List<PageNode> nodes = navi.getNodes();
+	  	 for (PageNode node : nodes) {
+	  		 if (!isRender(node)) { 
+	  			 node.setVisibility(Visibility.HIDDEN);
+	  		 }
+	  	 }
+	  }
+
       return navigations;
       
    }
@@ -85,10 +99,45 @@ public class UISocialUserToolBarGroupPortlet extends UIPortletApplication
       return Util.getUIPortal().getSelectedNode();
    }
    
+   protected void localizePageNavigation(PageNavigation nav)
+   {
+	  Locale locale = Util.getUIPortalApplication().getLocale();
+      ResourceBundleManager mgr = getApplicationComponent(ResourceBundleManager.class);
+      if (nav.getOwnerType().equals(PortalConfig.USER_TYPE))
+         return;
+      ResourceBundle res = mgr.getNavigationResourceBundle(locale.getLanguage(), nav.getOwnerType(), nav.getOwnerId());
+      for (PageNode node : nav.getNodes())
+      {
+         resolveLabel(res, node);
+      }
+   }
+
+   private void resolveLabel(ResourceBundle res, PageNode node)
+   {
+      node.setResolvedLabel(res);
+      if (node.getChildren() == null)
+         return;
+      for (PageNode childNode : node.getChildren())
+      {
+         resolveLabel(res, childNode);
+      }
+   }
+   
+   private boolean isRender(PageNode node) throws SpaceException {
+	   SpaceService spaceSrv = getSpaceService();
+	   List<Space> spaces = spaceSrv.getAllSpaces();
+	   for (Space space : spaces) {
+		   if (space.getName().equals(node.getUri())) return false;
+	   }
+	   return true;
+   }
+
+
    private SpaceService getSpaceService() {
 	   if (spaceService == null) {
 		  spaceService = getApplicationComponent(SpaceService.class);
 	   }
 	   return spaceService;
    }
+   
 }

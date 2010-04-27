@@ -168,8 +168,9 @@ public class UISpaceAddForm extends UIFormTabPane {
       //TODO: don't need to update working workspace
       //      just group tool bar portlet.
       UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+      uiPortalApp.localizeNavigations();
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);
-      uiWorkingWS.updatePortletsByName("UserToolbarGroupPortlet");
+      uiWorkingWS.updatePortletsByName("SocialUserToolBarGroupPortlet");
       uiWorkingWS.updatePortletsByName("SpacesToolbarPortlet"); // For social demo
     }
   }
