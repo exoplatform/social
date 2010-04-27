@@ -28,10 +28,11 @@
     <div class="LeftColumn">
     <% if (isEditable) { %>
 	   <div class="AvatarSpace" style="cursor: pointer;">
-	  <% } else { %>
-	   <div class="AvatarSpace">
-	  <% } %>
 		  <div class="Image" onclick="$changeAvatar" title="Click to chage avatar">
+		<% } else { %>
+	   <div class="AvatarSpace">
+	   <div class="Image" onclick="$changeAvatar">
+	  <% } %>
 		  	<% if(imageSource == null) { %>
 		  		<img src="/profile/skin/portal/webui/component/UIProfilePortlet/background/BLAvatar.gif" height="119px" width="119px" alt="">
 		  	<% } else { %>

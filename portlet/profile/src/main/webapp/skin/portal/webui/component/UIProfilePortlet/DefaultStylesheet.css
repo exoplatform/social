@@ -496,6 +496,10 @@ input.hint,textarea.hint {
   font-size: 11px;
 }
 
+.UIProfile .UIContactSection .NoContactInformation {
+  text-align: center;
+}
+
 .UIProfile .UIBasicInfoSection .UIForm td.FieldComponent {
 	padding: 2px;
 	font-size: 11px;

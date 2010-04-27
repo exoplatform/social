@@ -29,7 +29,7 @@
   def exp = profile.getPropertyValue("experiences");
   def pastExp = uicomponent.getPastExperience();
   def currentExp = uicomponent.getCurrentExperience();
-  
+  def currentUser = profile.getPropertyValue("firstName");
 %>
 <div class="experience">
 <%uiform.begin()%>
@@ -184,7 +184,11 @@
 		    </div>
       <%}%>
     <%} else {%>
+        <% if(isEditable) {%>
     		<div class="NoneExperience"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
+    		<% } else {%>
+    		<div class="NoneExperience">$currentUser <%=_ctx.appRes(uicomponent.getName() + ".label.noneExperienceOther")%></div>
+    		<% } %>
     <%}%>
   <%} //end if else
   %>
