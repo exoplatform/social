@@ -29,7 +29,6 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -349,7 +348,7 @@ public class UIManageMySpaces extends UIContainer {
       uiPopup.setUIComponent(pageManager);
       uiPopup.setWindowSize(400, 400);
       uiPopup.setRendered(true);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiMySpaces);
     }
     
   }
