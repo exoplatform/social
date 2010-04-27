@@ -275,62 +275,60 @@ public class UIProfileUserSearch extends UIForm {
       String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
       String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
       String defaultGenderVal = resApp.getString(uiSearch.getId() + ".label.AllGender");
-      
-      if (!isValidInput(filter)) { // is invalid condition input
-        uiSearch.setIdentityList(new ArrayList<Identity>());
-      } else {
-      
-        if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
-          filter.setName("");
-        }
-        if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+      try {
+	   uiSearch.setSelectedChar(charSearch);
+	   if(charSearch != null) { // search by alphabet
+          ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
+          filter.setName(charSearch);
           filter.setPosition("");
-        }
-        if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
-          filter.setSkills("");
-        }
-        if (filter.getGender().equals(defaultGenderVal)) {
           filter.setGender("");
-        }
-        
-        String skills = null;
-        
-        uiSearch.setSelectedChar(charSearch);
-        try {
-          if (charSearch == null) { // is search by input condition and filter
-            identitiesSearchResult = idm.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter);
-            uiSearch.setIdentityList(identitiesSearchResult);
-            
-            // Using regular expression for search
-            skills = filter.getSkills();
-            if (skills.length() > 0) {
-              skills = ((skills == "") || (skills.length() == 0)) ? "*" : skills;
-              skills = (skills.charAt(0)!='*') ? "*" + skills : skills;
-              skills = (skills.charAt(skills.length()-1)!='*') ? skills += "*" : skills;
-              skills = (skills.indexOf("*") >= 0) ? skills.replace("*", ".*") : skills;
-              skills = (skills.indexOf("%") >= 0) ? skills.replace("%", ".*") : skills;
-              Pattern.compile(skills);
-              identities = uiSearch.getIdentitiesBySkills(skills, identitiesSearchResult);
-              uiSearch.setIdentityList(identities);
-            }
-            
-          } else { // search by alphabet
-            ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
-            filter.setName(charSearch);
-            filter.setPosition("");
-            filter.setGender("");
-            if ("All".equals(charSearch)) {
-              filter.setName("");
-            }
-            
-            identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME, filter);
-            uiSearch.setIdentityList(identitiesSearchResult);
+          if ("All".equals(charSearch)) {
+            filter.setName("");
           }
+          
+          identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME, filter);
+          uiSearch.setIdentityList(identitiesSearchResult);
+        } else {
+	      if (!isValidInput(filter)) { // is invalid condition input
+	        uiSearch.setIdentityList(new ArrayList<Identity>());
+	      } else {
+	        if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
+	          filter.setName("");
+	        }
+	        if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+	          filter.setPosition("");
+	        }
+	        if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
+	          filter.setSkills("");
+	        }
+	        if (filter.getGender().equals(defaultGenderVal)) {
+	          filter.setGender("");
+	        }
+	        
+	        String skills = null;
+	        
+//		        uiSearch.setSelectedChar(charSearch);
+	        
+	        identitiesSearchResult = idm.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter);
+	        uiSearch.setIdentityList(identitiesSearchResult);
+	        
+	        // Using regular expression for search
+	        skills = filter.getSkills();
+	        if (skills.length() > 0) {
+	          skills = ((skills == "") || (skills.length() == 0)) ? "*" : skills;
+	          skills = (skills.charAt(0)!='*') ? "*" + skills : skills;
+	          skills = (skills.charAt(skills.length()-1)!='*') ? skills += "*" : skills;
+	          skills = (skills.indexOf("*") >= 0) ? skills.replace("*", ".*") : skills;
+	          skills = (skills.indexOf("%") >= 0) ? skills.replace("%", ".*") : skills;
+	          Pattern.compile(skills);
+	          identities = uiSearch.getIdentitiesBySkills(skills, identitiesSearchResult);
+	          uiSearch.setIdentityList(identities);
+	        }
+	      }
+        }
         } catch (Exception e) {
           uiSearch.setIdentityList(new ArrayList<Identity>());
         }
-      }
-      
       Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();
