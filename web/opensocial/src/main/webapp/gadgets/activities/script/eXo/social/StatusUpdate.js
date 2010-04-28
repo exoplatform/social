@@ -451,7 +451,9 @@ eXo.social.StatusUpdate.prototype.deleteActivity = function(activityId) {
          var rootEl = Util.getElementById(eXo.social.StatusUpdate.config.ui.UI_OWNER_APPENDABLE_ROOT);
          if (!rootEl.hasChildNodes()) {
          	 eXo.social.StatusUpdate.isOwnerActivityShown = false;
-         	 Util.hideElement(eXo.social.StatusUpdate.config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+         	 if (statusUpdate.owner.getId() === statusUpdate.viewer.getId()) {
+         	   Util.hideElement(eXo.social.StatusUpdate.config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+         	 }
            rootEl.innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [statusUpdate.owner.getDisplayName()]) + '</div>';
          }
          return;
@@ -805,7 +807,9 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
   		if (!activities || activities.length === 0) {
   			if (isOwnerActivity) {
   				displayActivitiesNext = true;
-  				Util.hideElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+  				if (statusUpdate.owner.getId() === statusUpdate.viewer.getId()) {
+  				  Util.hideElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+  				}
     			Util.getElementById(appendableRootId).innerHTML = '<div class= "Empty">' + Locale.getMsg('displayName_does_not_have_update', [displayName]) + '</div>';
     		} else {
     			Util.getElementById(appendableRootId).innerHTML = '<div class="Empty">' + Locale.getMsg('displayName_do_not_have_update', [displayName]) + '</div>';
@@ -814,28 +818,29 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
     		return;
   		}
   		
-  		if (activities != null) {
-  			if(activities.length > 0) {
-		  		if (statusUpdate.isOwnerActivityShown) {
-		  			Util.showElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
-		  		} else {
-		  			Util.hideElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
-		  		}
-  			}
-  		} 
-  		
-  		if (statusUpdate.isOwnerActivityShown) {
-				uiOwnerActivitiesShowHide.innerHTML='<div class="CollapseAllActivities">' + Locale.getMsg('collapse_all_activities') + '</div>';
-			} else {
-				uiOwnerActivitiesShowHide.innerHTML='<div class="ExpandAllActivities">' + Locale.getMsg('expand_all_activities') + '</div>';
-			}
-			
-			if (!activities || activities.length === 0) {
-				Util.hideElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
-			} else {
-    		Util.showElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
-			}
-			
+  		if (statusUpdate.owner.getId() === statusUpdate.viewer.getId()) {
+	  		if (activities != null) {
+	  			if(activities.length > 0) {
+			  		if (statusUpdate.isOwnerActivityShown) {
+			  			Util.showElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
+			  		} else {
+			  			Util.hideElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
+			  		}
+	  			}
+	  		} 
+	  		
+	  		if (statusUpdate.isOwnerActivityShown) {
+					uiOwnerActivitiesShowHide.innerHTML='<div class="CollapseAllActivities">' + Locale.getMsg('collapse_all_activities') + '</div>';
+				} else {
+					uiOwnerActivitiesShowHide.innerHTML='<div class="ExpandAllActivities">' + Locale.getMsg('expand_all_activities') + '</div>';
+				}
+				
+				if (!activities || activities.length === 0) {
+					Util.hideElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+				} else {
+	    		Util.showElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
+				}
+  		}
   		Util.getElementById(appendableRootId).innerHTML = ''; //resets
   		var activitiesLength = activities.length;
   		var displayActivityNum = activitiesLength;
