@@ -278,7 +278,10 @@ public class UIProfileUserSearch extends UIForm {
       try {
 	   uiSearch.setSelectedChar(charSearch);
 	   if(charSearch != null) { // search by alphabet
-          ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(USER_CONTACT);
+          ((UIFormStringInput)uiSearch.getChildById(SEARCH)).setValue(defaultNameVal);
+          ((UIFormStringInput)uiSearch.getChildById(POSITION)).setValue(defaultPosVal);
+          ((UIFormStringInput)uiSearch.getChildById(SKILLS)).setValue(defaultSkillsVal);
+          ((UIFormStringInput)uiSearch.getChildById(GENDER)).setValue(defaultGenderVal);
           filter.setName(charSearch);
           filter.setPosition("");
           filter.setGender("");

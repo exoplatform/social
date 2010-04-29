@@ -191,7 +191,10 @@ public class UISpaceSearch extends UIForm {
       spaceName = (charSearch != null) ? charSearch : spaceName;
       spaceName = ((charSearch != null) && ALL.equals(charSearch)) ? "" : spaceName;
       
-      if (charSearch != null) ((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(DEFAULT_SPACE_NAME_SEARCH);
+      if (charSearch != null) {
+    	  ((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(defaultSpaceName);
+    	  ((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_DESC_SEARCH)).setValue(defaultSpaceDesc);
+      }
       uiSpaceSearch.setSelectedChar(charSearch);
          
       if (charSearch == null) { // is not searching by first character

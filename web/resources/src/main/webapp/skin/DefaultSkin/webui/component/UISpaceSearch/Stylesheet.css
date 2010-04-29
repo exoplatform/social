@@ -42,7 +42,7 @@ a:ACTIVE {
 }
 
 .UISpaceSearch .CenterContentSearchInput .SpaceSearchInput input {
-  width: 255px;
+  width: 253px;
   height: 14px;
   font-size:11px;
   float: left;
@@ -61,7 +61,7 @@ a:ACTIVE {
 .UISpaceSearch .AdvanceSpaceSearchLable {
   float: left;
   line-height: 18px;
-  padding-left: 5px;
+  padding-left: 12px;
   cursor: pointer;
 }
 
@@ -78,7 +78,7 @@ a:ACTIVE {
 
 .UISpaceSearch .Filter .Lable {
   float: left;
-  padding: 4px 4px 4px 50px;
+  padding: 4px 4px 4px 46px;
   width: 100px;
   text-align: right;
   color: black;
