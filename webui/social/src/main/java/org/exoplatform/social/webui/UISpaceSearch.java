@@ -53,6 +53,9 @@ public class UISpaceSearch extends UIForm {
   /** SPACE SEARCH. */
   final public static String SPACE_SEARCH = "SpaceSearch";
   
+  /** SPACE DESCRIPTION SEARCH. */
+  final public static String SPACE_DESC_SEARCH = "SpaceDescSearch";
+  
   /** SEARCH. */
   final public static String SEARCH = "Search";
   
@@ -61,6 +64,9 @@ public class UISpaceSearch extends UIForm {
   
   /** DEFAULT SPACE NAME SEARCH. */
   final public static String DEFAULT_SPACE_NAME_SEARCH = "Space name";
+  
+  /** DEFAULT SPACE NAME SEARCH. */
+  final public static String DEFAULT_SPACE_DESC_SEARCH = "Description";
   
   /** INPUT PATTERN FOR CHECKING. */
   final static String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
@@ -155,6 +161,7 @@ public class UISpaceSearch extends UIForm {
    */
   public UISpaceSearch() throws Exception { 
     addUIFormInput(new UIFormStringInput(SPACE_SEARCH, null, DEFAULT_SPACE_NAME_SEARCH));
+    addUIFormInput(new UIFormStringInput(SPACE_DESC_SEARCH, null, DEFAULT_SPACE_DESC_SEARCH));
   }
   
   /**
@@ -173,8 +180,12 @@ public class UISpaceSearch extends UIForm {
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceName = resApp.getString(uiSpaceSearch.getId() + ".label.SpaceName");
-      String spaceName = (((UIFormStringInput)uiSpaceSearch.getChild(UIFormStringInput.class)).getValue());
+      String spaceName = (((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
+      String defaultSpaceDesc = resApp.getString(uiSpaceSearch.getId() + ".label.Description");
+      String spaceDesc = (((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_DESC_SEARCH)).getValue());
       if (spaceName != null) spaceName = spaceName.trim();
+      if (spaceDesc != null) spaceDesc = spaceDesc.trim();
+      spaceDesc = ((spaceDesc == null) || (spaceDesc.length() == 0) || spaceDesc.equals(defaultSpaceDesc)) ? null : spaceDesc;
       
       spaceName = ((spaceName == null) || (spaceName.length() == 0) || spaceName.equals(defaultSpaceName)) ? "*" : spaceName;
       spaceName = (charSearch != null) ? charSearch : spaceName;
@@ -191,8 +202,14 @@ public class UISpaceSearch extends UIForm {
           spaceName = (spaceName.charAt(spaceName.length()-1) != '*') ? spaceName += "*" : spaceName;
           spaceName = (spaceName.indexOf("*") >= 0) ? spaceName.replace("*", ".*") : spaceName;
           spaceName = (spaceName.indexOf("%") >= 0) ? spaceName.replace("%", ".*") : spaceName;
-          List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, false);
-          uiSpaceSearch.setSpaceList(spaceSearchResult);
+          List<Space> spacesSearchByName = spaceService.getSpacesByName(spaceName, false);
+          List<Space> spaceSearchResult = new ArrayList<Space>();
+          if (spaceDesc == null) {
+        	  uiSpaceSearch.setSpaceList(spacesSearchByName);
+          } else {
+        	  spaceSearchResult = filterSpacesByDesc(spacesSearchByName, spaceDesc);
+        	  uiSpaceSearch.setSpaceList(spaceSearchResult);
+          }
         }
       } else { // is searching by alphabet
         List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, true );
@@ -207,7 +224,53 @@ public class UISpaceSearch extends UIForm {
       }
     }
     
-    /**
+    private List<Space> filterSpacesByDesc(List<Space> spacesSearchByName, String spaceDesc) {
+    	List<Space> spaces = new ArrayList<Space>();
+    	String[] spaceDescriptions = spaceDesc.split("\u0020"); // split by space
+    	String exactSearchStr = getExactSearchStr(spaceDesc);
+    	String description = null;
+    	String descPart = null;
+    	if (exactSearchStr != null) {
+    		for (Space space : spacesSearchByName) {
+    			description = space.getDescription();
+    			if (description.contains(exactSearchStr) && !spaces.contains(space)) {
+    				spaces.add(space);
+    			}
+    		}
+    		
+    		return spaces;
+    	}
+    	
+    	for (Space space : spacesSearchByName) {
+    		description = space.getDescription();
+    		for (int idx = 0; idx < spaceDescriptions.length; idx++) {
+    			descPart = spaceDescriptions[idx];
+    			if (description.contains(descPart) && !spaces.contains(space)) spaces.add(space);
+    		}
+    	}
+    	
+		return spaces;
+	}
+    
+    private String getExactSearchStr(String spaceDesc) {
+    	int firstIndexOfDQuoter = spaceDesc.indexOf('\u0022'); // index of double quoter
+    	int lastIndexOfDQuoter = spaceDesc.lastIndexOf('\u0022'); // index of double quoter
+    	int firstIndexOfQuoter = spaceDesc.indexOf("\u0027"); // index of single quoter
+    	int lastIndexOfQuoter = spaceDesc.lastIndexOf("\u0027"); // index of single quoter
+    	
+    	if ((firstIndexOfDQuoter != -1) && (lastIndexOfDQuoter != -1) && 
+    			(firstIndexOfDQuoter < lastIndexOfDQuoter)) {
+    		return spaceDesc.substring(firstIndexOfDQuoter + 1, lastIndexOfDQuoter - 2);
+    	}
+    	
+    	if ((firstIndexOfQuoter != -1) && (lastIndexOfQuoter != -1) && 
+    			(firstIndexOfQuoter < lastIndexOfQuoter)) {
+    		return spaceDesc.substring(firstIndexOfQuoter + 1, lastIndexOfQuoter - 2);
+    	}
+    	
+    	return null;
+    }
+	/**
      * Checks input values follow regular expression.
      * 
      * @param input

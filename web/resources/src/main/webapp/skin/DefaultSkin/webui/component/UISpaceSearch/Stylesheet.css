@@ -19,13 +19,13 @@ a:ACTIVE {
 	outline: none;
 }
 
-.UISpaceSearch .CenterContentInput {
+.UISpaceSearch .CenterContentSearchInput {
   float: left;
-  width: 42%;
+  width: 36%;
   padding: 0px 5px;
 }
 
-.UISpaceSearch .CenterContentInput select {
+.UISpaceSearch .CenterContentSearchInput select {
   height: 18px;
   background: #fff;
   border: 1px solid #b8b8b8;
@@ -33,15 +33,15 @@ a:ACTIVE {
   color: #cbcbcb;
 }
 
-.UISpaceSearch .CenterContentInput .SpaceSearchInput {
-  width: 275px;
+.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput {
+  width: 273px;
   font-size:11px;
   float: left;
   border: 1px solid #b7b7b7;
   background: white;
 }
 
-.UISpaceSearch .CenterContentInput .SpaceSearchInput input {
+.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput input {
   width: 255px;
   height: 14px;
   font-size:11px;
@@ -50,10 +50,59 @@ a:ACTIVE {
   border: 1px solid white;
 }
 
-.UISpaceSearch .CenterContentInput .SpaceSearchInput .SearchIcon {
+.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput .SearchIcon {
   width: 14px;
   float: left;
   background: white url( "/eXoResourcesSocial/skin/DefaultSkin/webui/component/UISpaceSearch//background/IconSearch.gif" ) no-repeat right center;
   font-size: 11px;
   cursor: pointer;
+}
+
+.UISpaceSearch .AdvanceSpaceSearchLable {
+  float: left;
+  line-height: 18px;
+  padding-left: 5px;
+  cursor: pointer;
+}
+
+.UISpaceSearch .HideAdvanceSpaceSearchLable{
+  line-height: 18px;
+  cursor: pointer;
+  float: left;
+  padding: 0px;
+}
+
+.UISpaceSearch .Filter {
+  padding-top: 4px;
+}
+
+.UISpaceSearch .Filter .Lable {
+  float: left;
+  padding: 4px 4px 4px 50px;
+  width: 100px;
+  text-align: right;
+  color: black;
+}
+
+.UISpaceSearch .FilterInput {
+  float: left;
+  border: 1px solid #b7b7b7;
+  margin-right: 4px;
+  background: white;
+  height: 18px;
+  width: 273px;
+}
+
+.UISpaceSearch .FilterInput input {
+  height: 12px;
+  width: 270px;
+  font-size:11px;
+  color: #C7C7C7;
+  border: 1px solid white;
+  margin: 0px;
+}
+
+.UISpaceSearch .ClearLeft {
+  clear: left;
+  height: 0px;
 }

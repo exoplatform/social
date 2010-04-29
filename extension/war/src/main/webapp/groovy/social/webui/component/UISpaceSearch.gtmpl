@@ -41,6 +41,14 @@ PortalRequestContext pcontext = Util.getPortalRequestContext();
 def portalURI = pcontext.getPortalURI();
 def childs = uicomponent.getChildren();
 def searchAction = uicomponent.event('Search');
+def moreSearchId = "MoreSearch";
+def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreLabel");
+def hideLabel = _ctx.appRes("${uicomponentId}.label.HideLabel");
+def defaultDescription = _ctx.appRes("${uicomponentId}.label.Description");
+def filterByLabel = _ctx.appRes("${uicomponentId}.label.FilterBy");
+def hideMoreSearchId = "HideMoreSearch";
+def filterId = "Filter";
+
 %>
 <div class="UISpaceSearch">
 <% uiform.begin() %>
@@ -51,13 +59,23 @@ def searchAction = uicomponent.event('Search');
                 <div class="LeftContentInput">
                     $findSpaceLabel : 
                 </div>
-                <div class="CenterContentInput">
+                <div class="CenterContentSearchInput">
                       <div class="SpaceSearchInput"><%uiform.renderField(childs.get(0)); %>
                       <div class="SearchIcon" title="Search" onclick="$searchAction"><span></span></div>
                       </div>
                       
                       <input id="defaultSpaceName" type="hidden" value="$defaultSpaceName">
                 </div>
+                <div id="$moreSearchId" class="AdvanceSpaceSearchLable" onclick="eXo.social.webui.UISpaceSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
+                <div class="ClearLeft"><span /></span></div>
+                <div class="Filter" id="$filterId">
+			            <div class="Lable">${filterByLabel} :</div>
+			            <div class="FilterInput"><% uiform.renderField(childs.get(1))%></div>
+
+			            <input id="defaultDescription" type="hidden" value="$defaultDescription">
+			            <div id="$hideMoreSearchId" class="HideAdvanceSpaceSearchLable" onclick="eXo.social.webui.UISpaceSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</div>
+			          </div>
+      
                 <div class="ClearBoth"><span/></div>
             </div>
         </div>
