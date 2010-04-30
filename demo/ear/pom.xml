@@ -28,8 +28,8 @@
   </parent>
   <artifactId>exo.social.demo.ear</artifactId>
   <packaging>ear</packaging>
-  <name>GateIn Portal Social Demo Ear</name>
-  <description>GateIn Social Demo Ear</description>
+  <name>eXo Social Demo EAR</name>
+  <description>eXo Social Demo EAR</description>
   <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>

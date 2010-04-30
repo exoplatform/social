@@ -6,9 +6,9 @@
     <artifactId>social</artifactId>
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
-  <artifactId>portal.packaging.product</artifactId>
+  <artifactId>social.packaging.product</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Social Portal Packaging Product</name>
+  <name>eXo Social Packaging Product</name>
   <properties>
     <exobuild.name>portal</exobuild.name>
     <exobuild.type>product</exobuild.type>

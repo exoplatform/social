@@ -28,10 +28,10 @@
   </parent>
   <artifactId>exo.social.extension.root</artifactId>
   <packaging>pom</packaging>
-  <name>Social Extension Root POM</name>
+  <name>eXo Social Extension</name>
   <modules>
     <module>config</module>
-    <module>jar</module>
+   <!-- <module>jar</module> -->
     <module>war</module>
     <module>ear</module>
   </modules>

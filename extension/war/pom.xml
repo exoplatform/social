@@ -28,8 +28,8 @@
   </parent>
   <artifactId>exo.social.extension.war</artifactId>
   <packaging>war</packaging>
-  <name>Social Extension War</name>
-  <description>Social Extension War</description>
+  <name>eXo Social Extension Webapp</name>
+  <description>eXo Social Extension Webapp</description>
   <url>http://www.exoplatform.org</url>
   <build>
     <finalName>social-ext</finalName>

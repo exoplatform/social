@@ -28,11 +28,11 @@
   </parent>
   <artifactId>exo.social.demo.root</artifactId>
   <packaging>pom</packaging>
-  <name>GateIn Social Sample Portal</name>
-  <description>GateIn Social Sample Portal Root Pom</description>
+  <name>eXo Social Demo Portal</name>
+  <description>eXo Social Demo Portal</description>
   <modules>
     <module>config</module>
-    <module>jar</module>
+<!--    <module>jar</module> -->
     <module>war</module>
     <module>rest-war</module>
     <module>ear</module>

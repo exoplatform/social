@@ -28,8 +28,8 @@
   </parent>
   <artifactId>exo.social.demo.war</artifactId>
   <packaging>war</packaging>
-  <name>GateIn Social Sample Portal War</name>
-  <description>GateIn Sample Portal War</description>
+  <name>eXo Social Demo Webapp</name>
+  <description>eXo Social Demo Webapp</description>
   <url>http://www.exoplatform.org</url>
   <build>
     <finalName>socialdemo</finalName>

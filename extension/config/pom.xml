@@ -28,7 +28,7 @@
   </parent>
   <artifactId>exo.social.extension.config</artifactId>
   <packaging>jar</packaging>
-  <name>Social Extension Configuration</name>
-  <description>Social Extension Configuration</description>
+  <name>eXo Social Extension Portal Container Definition</name>
+  <description>eXo Social Extension Portal Container Definition</description>
   <url>http://www.exoplatform.org</url>
 </project>

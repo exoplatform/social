@@ -68,7 +68,6 @@ var shindigVersion = "${org.shindig.version}";
 	module.extension = {};
 	module.extension.war =
    new Project("org.exoplatform.social", "exo.social.extension.war", "war", module.version).
-   addDependency(new Project("org.exoplatform.social", "exo.social.extension.jar", "jar", module.version)).
    addDependency(new Project("org.exoplatform.social", "exo.social.extension.config", "jar", module.version));
 	module.extension.war.deployName = "social-ext";
 
@@ -76,8 +75,7 @@ var shindigVersion = "${org.shindig.version}";
    // demo portal
    module.demo.portal = 
 	   new Project("org.exoplatform.social", "exo.social.demo.war", "war", module.version).
-	   addDependency(new Project("org.exoplatform.social", "exo.social.demo.config", "jar", module.version)).
-		addDependency(new Project("org.exoplatform.social", "exo.social.demo.jar", "jar", module.version));
+		addDependency(new Project("org.exoplatform.social", "exo.social.demo.config", "jar", module.version));
 	   module.demo.portal.deployName = "socialdemo";  
 	   
    // demo rest endpoint	   

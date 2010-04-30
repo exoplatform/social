@@ -27,12 +27,12 @@
 	<gadget name="StatusUpdate">
 		<path>/gadgets/activities/activities.xml</path>
 	</gadget>
-	<gadget name="SpaceActivities">
-		<path>/gadgets/spaceactivities.xml</path>
-	</gadget>	
+
+	<!-- 
 	<gadget name="ComplianceTest08">
 		<url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>
 	</gadget>
+	-->
   <gadget name="CodeSharer">
 		<path>/gadgets/codeSharer.xml</path>
 	</gadget>
@@ -40,7 +40,7 @@
 		<path>/gadgets/applicationReg.xml</path>
 	</gadget>
 	<gadget name="viewerFriends">
-		<path>/gadgets/viewerFriends.xml</path>
+		<path>/gadgets/viewerFriends/viewerFriends.xml</path>
 	</gadget>
 	<gadget name="rssFetch">
 		<path>/gadgets/rssFetch/rssFetch.xml</path>

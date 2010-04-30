@@ -28,7 +28,6 @@
   </parent>
   <artifactId>exo.social.demo.config</artifactId>
   <packaging>jar</packaging>
-  <name>GateIn Social Sample Portal Configuration</name>
-  <description>GateIn Social Sample Portal Configuration</description>
-  <url>http://www.exoplatform.org</url>
+  <name>eXo Social Demo Portal Definition</name>
+  <description>eXo Social Demo Portal Definition</description>
 </project>

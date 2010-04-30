@@ -28,7 +28,7 @@
   </parent>
   <artifactId>exo.social.extension.jar</artifactId>
   <packaging>jar</packaging>
-  <name>Social Extension Java Classes</name>
-  <description>Social Extension Java Classes</description>
+  <name>eXo Social Extension Classes</name>
+  <description>eXo Social Extension Classes</description>
   <url>http://www.exoplatform.org</url>
 </project>

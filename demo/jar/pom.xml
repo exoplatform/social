@@ -28,8 +28,8 @@
   </parent>
   <artifactId>exo.social.demo.jar</artifactId>
   <packaging>jar</packaging>
-  <name>GateIn Social Java Classes</name>
-  <description>GateIn Social Java Classes</description>
+  <name>eXo Social Demo Classes</name>
+  <description>eXo Social Demo Classes</description>
   <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>

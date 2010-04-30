@@ -8,7 +8,7 @@
   </parent>
   <artifactId>social.packaging.module</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Social Portal Packaging Module</name>
+  <name>eXo Social Packaging Module</name>
   <properties>
     <exobuild.name>social</exobuild.name>
     <exobuild.type>module</exobuild.type>
