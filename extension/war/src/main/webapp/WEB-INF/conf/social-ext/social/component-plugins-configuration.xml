@@ -21,7 +21,7 @@
 <configuration>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.social.space.impl.SocialDataLocation</target-component>
+    <target-component>org.exoplatform.social.jcr.SocialDataLocationnent>
     <component-plugin>
       <name>social.data.location</name>
       <set-method>setLocation</set-method>
