@@ -27,7 +27,7 @@ import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceIdentityProvider;
+import org.exoplatform.social.space.impl.SpaceIdentityProvider;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.event.Event;

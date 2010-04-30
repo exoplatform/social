@@ -8,8 +8,8 @@ import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.jcr.SocialDataLocation;
 
-import org.exoplatform.social.space.impl.SocialDataLocation;
 
 /**
  * replacement component for ActivityManager that decorates entry methods by
