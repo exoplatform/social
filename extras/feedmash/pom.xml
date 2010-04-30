@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.o	rg/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.exoplatform.social</groupId>
+    <artifactId>extras</artifactId>
+    <version>1.0.0-GA-SNAPSHOT</version>
+  </parent>
+  <groupId>org.exoplatform.social.demos</groupId>
+  <artifactId>exo.social.extras.feedmash</artifactId>
+
+  <packaging>jar</packaging>
+  <name>eXo Social - Extras - Feed Masher</name>
+  <description>a service apable of republishing feeds into activity streams</description>
+  <properties>
+  
+  </properties>
+  
+
+ 
+
+
+   <dependencies>
+   <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+       <artifactId>exo.kernel.component.common</artifactId>
+      <version>${org.exoplatform.kernel.version}</version>
+   </dependency>
+	<dependency>
+	  <groupId>rome</groupId>
+	  <artifactId>rome</artifactId>
+	  <version>0.9</version>
+	</dependency>
+   <dependency>
+    <groupId>org.exoplatform.social</groupId>
+    <artifactId>exo.social.component.people</artifactId>
+    <version>${project.version}</version>
+  </dependency>
+   </dependencies>
+
+   <build>
+ 
+   </build>
+
+
+ 
+</project>

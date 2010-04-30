@@ -7,11 +7,11 @@
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>extras</artifactId>
+  <artifactId>web</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Social - Extras</name>
+  <name>eXo Social - Web</name>
   <modules>
-   <module>benches</module>
-   <module>feedmash</module>
+   <module>resources</module>
+   <module>opensocial</module>
  </modules>
  </project>

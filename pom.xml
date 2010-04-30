@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform</groupId>
     <artifactId>exo.parent</artifactId>
-    <version>7</version>
+    <version>8</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
@@ -40,7 +40,8 @@
 	  <version.chromattic>1.0.0</version.chromattic>
 	  <version.reflect>1.0.0</version.reflect>
 	  <jcip.version>1.0</jcip.version>
-	
+	  <javax.jcr.version>1.0</javax.jcr.version>
+	  <junit.version>3.8.1</junit.version>
 	  <!-- ************** -->
 	  <!-- Build settings -->
 	  <!-- ************** -->
@@ -52,16 +53,10 @@
   </properties>
   
   <modules>
-   <module>component/common</module>
-   <module>component/space</module>  
-   <module>component/people</module>
-   <module>component/opensocial</module>   
-   <module>component/exosocial</module>
+   <module>component</module>
    <module>extension</module>
-   <module>web/resources</module>
-   <module>web/opensocial</module>
-   <module>portlet/space</module>
-   <module>portlet/profile</module>
+   <module>web</module>
+   <module>portlet</module>
    <module>webui/social</module>
    <module>application/rest</module>
    <module>extras</module>

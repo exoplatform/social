@@ -43,6 +43,10 @@
 						<!-- The name of the realm -->
 						<field name="realmName"><string>gatein-domain-socialdemo</string></field>						
 						<!-- All the dependencies of the portal container ordered by loading priority -->
+						<!-- The path to the external properties file -->
+						<field name="externalSettingsPath">
+							<string>socialdemo.properties</string>
+						</field>						
 						<field name="dependencies">
 							<collection type="java.util.ArrayList">
 								<value>

@@ -23,7 +23,6 @@ under the License.
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
     <version>1.0.0-GA-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>exo.social.web.opensocial</artifactId>
   <packaging>war</packaging>
