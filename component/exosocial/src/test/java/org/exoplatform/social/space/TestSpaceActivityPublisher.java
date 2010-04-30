@@ -14,9 +14,9 @@ import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceActivityPublisher;
-import org.exoplatform.social.space.SpaceIdentityProvider;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.impl.JCRStorage;
+import org.exoplatform.social.space.impl.SpaceIdentityProvider;
 import org.exoplatform.social.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.space.spi.SpaceLifeCycleEvent;
 import static org.testng.Assert.*;
@@ -28,8 +28,15 @@ public class TestSpaceActivityPublisher extends  AbstractJCRTestCase {
 
   public TestSpaceActivityPublisher() {
     super();
-    // TODO Auto-generated constructor stub
   }
+  
+  protected void afterContainerStart() {
+    // the spaceIdentityProvider is required
+    IdentityManager identityManager = getComponent(IdentityManager.class);
+    SpaceService spaceService = getComponent(SpaceService.class);
+    identityManager.addIdentityProvider(new SpaceIdentityProvider(spaceService));
+  }
+
 
   @Test
   public void testSpaceCreation() throws Exception {

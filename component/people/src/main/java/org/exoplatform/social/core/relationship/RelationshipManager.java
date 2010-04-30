@@ -28,7 +28,7 @@ import org.exoplatform.social.core.relationship.lifecycle.RelationshipLifeCycle;
 import org.exoplatform.social.core.relationship.lifecycle.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.storage.JCRStorage;
 import org.exoplatform.social.relationship.spi.RelationshipListener;
-import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.exoplatform.social.jcr.SocialDataLocation;
 
 /**
  * The Class RelationshipManager.

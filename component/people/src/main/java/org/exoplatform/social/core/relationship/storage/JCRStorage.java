@@ -19,8 +19,8 @@ package org.exoplatform.social.core.relationship.storage;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.*;
-import org.exoplatform.social.space.JCRSessionManager;
-import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.exoplatform.social.jcr.JCRSessionManager;
+import org.exoplatform.social.jcr.SocialDataLocation;
 
 import javax.jcr.*;
 import java.util.List;

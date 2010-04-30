@@ -29,7 +29,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.exoplatform.social.jcr.SocialDataLocation;
 
 /**
  * This class represents an Activity Manager, also can configure as service in

@@ -8,17 +8,9 @@
 
 
 	<component>
-	  <type>org.exoplatform.social.space.SpaceIdentityProvider</type>
+	  <type>org.exoplatform.social.space.impl.SpaceIdentityProvider</type>
 	</component>
  
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.space.SpaceService</target-component>  
-    <component-plugin> 
-      <name>SpaceActivityPublisher</name>
-      <set-method>addSpaceListener</set-method>
-      <type>org.exoplatform.social.space.SpaceActivityPublisher</type> 
-    </component-plugin>
-  </external-component-plugins>
 
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>  
@@ -30,7 +22,7 @@
         <values-param>
 	      <name>providers</name>
           <description>provides identity for spaces</description>
-           <value>org.exoplatform.social.space.SpaceIdentityProvider</value> 
+           <value>org.exoplatform.social.space.impl.SpaceIdentityProvider</value> 
         </values-param>
       </init-params>
     </component-plugin>

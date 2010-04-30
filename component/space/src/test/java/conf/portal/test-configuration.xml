@@ -5,8 +5,8 @@
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
 
   <component>
-      <key>org.exoplatform.social.space.impl.SocialDataLocation</key>
-      <type>org.exoplatform.social.space.impl.SocialDataLocation</type>
+      <key>org.exoplatform.social.jcr.SocialDataLocation</key>
+      <type>org.exoplatform.social.jcr.SocialDataLocation</type>
       <init-params>
         <value-param>
           <name>repository</name>
@@ -20,24 +20,7 @@
         </value-param>      
       </init-params>
   </component>
-  
-	<component>
-    <key>org.exoplatform.social.space.SpaceService</key>
-    <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
-    <init-params>
-      <!-- Configure the applications to install in a space -->
-      <values-param>
-        <name>space.homeNodeApp</name>
-        <value>DashboardPortlet</value>
-      </values-param>
-      <!-- Configure removable application or not <value>Application:removable</value> -->
-      <values-param>
-        <name>space.apps</name>
-        <value>SpaceSettingPortlet:false</value>
-        <value>UserListPortlet:true</value>
-      </values-param>
-  	</init-params>	
-  </component>
+
   
   <component>
     <key>org.exoplatform.services.log.LogConfigurationInitializer</key>
@@ -79,25 +62,7 @@
 		<type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
 	</component>
 
-  <!-- <component>
-    <key>org.exoplatform.services.jcr.RepositoryService</key>
-    <type>org.exoplatform.services.jcr.impl.RepositoryServiceImpl</type>
-    <component-plugins>
-      <component-plugin>
-        <name>add.nodeType</name>
-        <set-method>addPlugin</set-method>
-        <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-        <init-params>
-         <values-param>
-           <name>autoCreatedInNewRepository</name>
-           <description>Node types configuration file</description>
-           <value>jar:/conf/portal/test-space-nodetypes.xml</value>	            
-         </values-param>
-       </init-params>
-      </component-plugin>
-    </component-plugins>
-  </component> -->
-  
+
   <component>
     <key>org.exoplatform.services.resources.LocaleConfigService</key>
     <type>org.exoplatform.services.resources.impl.LocaleConfigServiceImpl</type>

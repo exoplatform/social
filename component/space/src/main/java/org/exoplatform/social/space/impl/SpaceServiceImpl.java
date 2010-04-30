@@ -44,6 +44,7 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.jcr.SocialDataLocation;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;

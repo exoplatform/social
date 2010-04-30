@@ -59,8 +59,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
-import org.exoplatform.social.space.JCRSessionManager;
-import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.exoplatform.social.jcr.JCRSessionManager;
+import org.exoplatform.social.jcr.SocialDataLocation;
 
 
 // TODO: Auto-generated Javadoc

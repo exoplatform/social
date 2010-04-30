@@ -30,27 +30,6 @@
       <type>org.exoplatform.social.core.identity.JCRStorage</type>
   </component>
 
-
-  <component>
-    <key>org.exoplatform.social.space.SpaceService</key>
-    <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
-    <init-params>
-      <values-param>
-        <name>space.homeNodeApp</name>
-        <value>DashboardPortlet</value>
-      </values-param>
-      <values-param>
-        <name>space.apps</name>
-        <value>SpaceSettingPortlet:false</value>
-        <value>UserListPortlet:true</value>
-      </values-param>
-  	</init-params>	    
-  </component>  
-  
-
-
-
-	
 	
   <component>
     <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
@@ -118,8 +97,8 @@
   </component>
   
   <component>
-    <key>org.exoplatform.social.space.impl.SocialDataLocation</key>
-    <type>org.exoplatform.social.space.impl.SocialDataLocation</type>
+    <key>org.exoplatform.social.jcr.SocialDataLocation</key>
+    <type>org.exoplatform.social.jcr.SocialDataLocation</type>
     <init-params>
       <value-param>
         <name>repository</name>
@@ -159,7 +138,6 @@
 	        <name>autoCreatedInNewRepository</name>
 	        <description>Node types configuration file</description>
 	        <value>jar:/conf/portal/social-nodetypes.xml</value>
-	         <value>jar:/conf/portal/space-nodetypes.xml</value>
 	      </values-param>
 	    </init-params>
 	  </component-plugin>

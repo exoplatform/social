@@ -17,6 +17,7 @@
       <!-- Configure removable application or not <value>Application:removable</value> -->
       <values-param>
         <name>space.apps</name>
+        <value>DashboardPortlet:true</value>
         <value>SpaceSettingPortlet:false</value>
         <value>UserListPortlet:true</value>
       </values-param>
@@ -27,6 +28,27 @@
     <key>org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler</key>
     <type>org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler</type>
   </component>     
+    
+  <component>
+    <type>org.exoplatform.social.space.impl.SpaceIdentityProvider</type>
+  </component>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>  
+     <component-plugin> 
+      <name>SpaceIdentityProvider plugin</name>
+      <set-method>registerIdentityProviders</set-method>
+      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type> 
+      <init-params>
+        <values-param>
+	      <name>providers</name>
+          <description></description>
+          <value>org.exoplatform.social.space.impl.SpaceIdentityProvider</value> 
+        </values-param>
+      </init-params>
+    </component-plugin> 
+  </external-component-plugins>      
+  
     
   <external-component-plugins>
 	  <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>      

@@ -29,7 +29,7 @@ import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.spi.ProfileListener;
-import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.exoplatform.social.jcr.SocialDataLocation;
 
 
 

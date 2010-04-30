@@ -1,4 +1,4 @@
-package org.exoplatform.social.space;
+package org.exoplatform.social.space.impl;
 
 import java.util.List;
 
@@ -7,6 +7,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceService;
 
 /**
  * provides identity for a space

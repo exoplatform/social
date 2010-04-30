@@ -457,6 +457,7 @@ private void setPage(Space space, Application app, org.exoplatform.portal.config
     }
     page.setEditPermission("manager:" + space.getGroupId());
     page.setModifiable(true);
+
     
     ArrayList<ModelObject> pageChilds = page.getChildren();
     Container container = findContainerById(pageChilds, APPLICATION);

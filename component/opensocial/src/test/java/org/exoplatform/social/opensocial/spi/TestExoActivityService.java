@@ -20,8 +20,8 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.opensocial.ExoBlobCrypterSecurityToken;
 import org.exoplatform.social.space.Space;
-import org.exoplatform.social.space.SpaceIdentityProvider;
 import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.impl.SpaceIdentityProvider;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;

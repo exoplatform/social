@@ -10,7 +10,7 @@ import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.exoplatform.social.jcr.SocialDataLocation;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 

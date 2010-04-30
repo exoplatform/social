@@ -16,78 +16,75 @@
  */
 package org.exoplatform.social.space;
 
-import javax.jcr.Session;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
 
-import org.exoplatform.container.StandaloneContainer;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.social.space.test.SpaceServiceTestCase;
-import org.exoplatform.test.BasicTestCase;
+import org.exoplatform.commons.testing.jcr.AbstractJCRTestCase;
+import org.exoplatform.component.test.ConfigurationUnit;
+import org.exoplatform.component.test.ConfiguredBy;
+import org.exoplatform.component.test.ContainerScope;
+import org.testng.annotations.Test;
 
-/**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * September 3, 2008          
- */
+@ConfiguredBy( {
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.space.configuration.xml") })
+public class TestSpaceService extends AbstractJCRTestCase {
 
-public class TestSpaceService extends SpaceServiceTestCase {  
+  protected void afterContainerStart() {
 
-  private SpaceService spaceService;
-  
-  public TestSpaceService() throws Exception {	  
-	super();
-	// TODO Auto-generated constructor stub
   }
-  
-  public void setUp() throws Exception {
-	spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
-	SessionProviderService sessionProviderService = (SessionProviderService) container.getComponentInstanceOfType(SessionProviderService.class) ;
-	sProvider = sessionProviderService.getSystemSessionProvider(null) ;
+
+  public TestSpaceService() throws Exception {
+    super();
   }
-  
-  public void testGetAllSpaces() throws Exception{
-    assertNotNull(spaceService) ;
+
+  @Test
+  public void testGetAllSpaces() throws Exception {
+    SpaceService spaceService = getComponent(SpaceService.class);
+    assertNotNull(spaceService);
   }
-  
+
+  @Test
   public void testAddSpace() throws Exception {
+
+    SpaceService spaceService = getComponent(SpaceService.class);
     Space space1 = new Space();
     space1.setApp("Calendar;FileSharing");
     space1.setGroupId("Group1");
     space1.setName("Space1");
-    
+
     Space space2 = new Space();
     space2.setApp("Contact,Forum");
     space2.setGroupId("Group2");
     space2.setParent(space1.getId());
     space2.setName("Space2");
-    
+
     spaceService.saveSpace(space1, true);
     spaceService.saveSpace(space2, true);
-    
-    assertEquals(2, spaceService.getAllSpaces().size());
-    
+
+    assertEquals(spaceService.getAllSpaces().size(), 2);
+
     Space space3 = spaceService.getSpaceById(space1.getId());
     assertNotNull(space3);
     assertEquals(space1.getId(), space3.getId());
-    assertNotSame("Calendar", space3.getApp());
-    assertEquals("Group1",space3.getGroupId());
+    assertNotSame(space3.getApp(), "Calendar");
+    assertEquals(space3.getGroupId(), "Group1");
   }
-  
+
+  @Test
   public void testGetSpace() throws Exception {
+    SpaceService spaceService = getComponent(SpaceService.class);
     Space space = new Space();
     space.setApp("Calendar");
     space.setGroupId("Group1");
     space.setName("calendar");
     spaceService.saveSpace(space, true);
-    
     Space s = spaceService.getSpaceById(space.getId());
     assertNotNull(s);
-    assertEquals(3,spaceService.getAllSpaces().size());
+    assertEquals(3, spaceService.getAllSpaces().size());
     assertEquals("Calendar", s.getApp());
     assertEquals("Group1", s.getGroupId());
   }
-  
+
 }

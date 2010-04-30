@@ -48,8 +48,8 @@
   </component>  
 
   <component>
-    <key>org.exoplatform.social.space.impl.SocialDataLocation</key>
-    <type>org.exoplatform.social.space.impl.SocialDataLocation</type>
+    <key>org.exoplatform.social.jcr.SocialDataLocation</key>
+    <type>org.exoplatform.social.jcr.SocialDataLocation</type>
     <init-params>
       <value-param>
         <name>repository</name>
@@ -130,7 +130,6 @@
     </init-params>    
   </component>	
 
-  
   <external-component-plugins>
 	  <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>      
 	  <component-plugin> 

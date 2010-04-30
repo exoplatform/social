@@ -5,9 +5,7 @@
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
 
 
-  <component>
-    <type>org.exoplatform.social.space.SpaceIdentityProvider</type>
-  </component>
+
 
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>  
@@ -55,18 +53,6 @@
   
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>  
-    <component-plugin> 
-      <name>SpaceIdentityProvider plugin</name>
-      <set-method>registerIdentityProviders</set-method>
-      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type> 
-      <init-params>
-        <values-param>
-	      <name>providers</name>
-          <description></description>
-          <value>org.exoplatform.social.space.SpaceIdentityProvider</value> 
-        </values-param>
-      </init-params>
-    </component-plugin>
     <component-plugin> 
       <name>ProfileUpdatesPublisher</name>
       <set-method>addProfileListener</set-method>

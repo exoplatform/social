@@ -17,7 +17,9 @@
       <key>org.exoplatform.container.configuration.ConfigurationManager</key>
     <type>org.exoplatform.container.configuration.ConfigurationManagerImpl</type>
   </component>
-
+  <component>
+    <type>org.exoplatform.social.space.impl.SpaceIdentityProvider</type>
+  </component>
   <component>
     <key>org.exoplatform.social.space.SpaceService</key>
     <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
@@ -130,26 +132,6 @@
     </init-params>    
   </component>	
 
-  	<component>
-	  <type>org.exoplatform.social.space.impl.SpaceIdentityProvider</type>
-	</component>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>  
-    <component-plugin> 
-      <name>SpaceIdentityProvider plugin</name>
-      <set-method>registerIdentityProviders</set-method>
-      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type> 
-      <init-params>
-        <values-param>
-	      <name>providers</name>
-          <description>provides identity for spaces</description>
-           <value>org.exoplatform.social.space.impl.SpaceIdentityProvider</value> 
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-   
   
   <external-component-plugins>
 	  <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>      

@@ -34,7 +34,8 @@ import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.space.JCRSessionManager;
+import org.exoplatform.social.jcr.JCRSessionManager;
+import org.exoplatform.social.jcr.SocialDataLocation;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceAttachment;
 

@@ -54,6 +54,67 @@
       <artifactId>exo.social.component.common</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
-    </dependency>      
+    </dependency>  
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.people</artifactId>  
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>  
+	<dependency>
+      <groupId>org.exoplatform.platform</groupId>
+      <artifactId>exo.platform.commons.testing</artifactId>
+	  <scope>test</scope>
+	</dependency>   
+     <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <version>${javax.jcr.version}</version>
+      <scope>provided</scope>
+    </dependency> 
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>     
+    </dependency>
+ 	<dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+	  <scope>provided</scope>
+	</dependency>     
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>3.8</version>
+      <scope>provided</scope>     
+    </dependency>    
+     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>     
+    </dependency>    
+
+    
+  <!-- 
+[WARNING] Used undeclared dependencies found:
+[WARNING]    org.gatein.common:common-common:jar:2.0.0-GA:provided
+[WARNING]    org.exoplatform.portal:exo.portal.component.test.core:jar:3.0.0-GA:test
+[WARNING]    org.exoplatform.core:exo.core.component.organization.api:jar:2.3.0-GA:provided
+[WARNING]    org.exoplatform.portal:exo.portal.component.application-registry:jar:3.0.0-GA:provided
+[WARNING]    org.exoplatform.portal:exo.portal.component.portal:jar:3.0.0-GA:provided
+[WARNING]    org.exoplatform.kernel:exo.kernel.commons:jar:2.2.0-GA:provided
+[WARNING]    org.exoplatform.core:exo.core.component.security.core:jar:2.3.0-GA:provided
+
+[WARNING]    org.exoplatform.portal:exo.portal.webui.core:jar:3.0.0-GA:provided
+[WARNING]    javax.servlet:servlet-api:jar:2.5:test
+[WARNING]    org.testng:testng:jar:jdk15:5.10:test
+[WARNING]    org.mockito:mockito-all:jar:1.8.1:test
+[WARNING]    org.exoplatform.tool:exo.tool.framework.junit:jar:1.2.1-GA:provided
+	 -->  	
+	
+	      
   </dependencies>
 </project>

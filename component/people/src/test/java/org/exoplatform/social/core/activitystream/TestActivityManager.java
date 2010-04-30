@@ -3,7 +3,7 @@ package org.exoplatform.social.core.activitystream;
 import junit.framework.TestCase;
 
 import org.exoplatform.social.core.activitystream.model.Activity;
-import org.exoplatform.social.space.impl.SocialDataLocation;
+import org.exoplatform.social.jcr.SocialDataLocation;
 import org.mockito.Mockito;
 import org.testng.annotations.Test;
 
