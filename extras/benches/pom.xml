@@ -8,7 +8,6 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extras.benches</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social - Extras - Benches</name>
   <dependencies>
@@ -53,27 +52,7 @@
       <artifactId>exo.platform.commons.testing</artifactId>
 	  <scope>test</scope>
 	</dependency>    
-    
- 
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.common</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-  
-
- <!-- 
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.container</artifactId>
-      <version>${org.exoplatform.kernel.version}</version>
-      <scope>provided</scope>
-    </dependency>
 
 
-   
--->
   </dependencies>  
  </project>
