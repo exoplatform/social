@@ -18,10 +18,14 @@
 
 -->
 
-<configuration>
+<configuration
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
 
   <external-component-plugins>
-    <target-component>org.exoplatform.social.jcr.SocialDataLocationnent>
+    <target-component>org.exoplatform.social.jcr.SocialDataLocation</target-component>
+    
     <component-plugin>
       <name>social.data.location</name>
       <set-method>setLocation</set-method>

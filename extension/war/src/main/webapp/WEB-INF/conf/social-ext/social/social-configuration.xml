@@ -17,13 +17,19 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<configuration>
+<configuration
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <component>
    <key>org.exoplatform.portal.gadget.core.SecurityTokenGenerator</key>
    <type>org.exoplatform.social.opensocial.ExoSocialSecurityTokenGenerator</type>
   </component>
   <component>
-      <key>org.exoplatform.social.jcr.SocialDataLocationtype>org.exoorg.exoorg.exoplatform.social.jcr.SocialDataLocation        <value-param>
+      <key>org.exoplatform.social.jcr.SocialDataLocation</key>
+      <type>org.exoplatform.social.jcr.SocialDataLocation</type>
+      <init-params>
+        <value-param>
           <name>repository</name>
           <description>JCR repository for Social data</description>
           <value>repository</value>
