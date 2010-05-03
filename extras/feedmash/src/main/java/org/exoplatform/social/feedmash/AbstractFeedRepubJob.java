@@ -4,12 +4,12 @@ import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.scheduler.JobInfo;
-import org.exoplatform.services.scheduler.JobSchedulerService;
+import org.exoplatform.social.application.Application;
+import org.exoplatform.social.application.ApplicationsIdentityProvider;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.quartz.Job;
@@ -118,8 +118,9 @@ public abstract class AbstractFeedRepubJob implements Job {
   
   @SuppressWarnings("unchecked")
   protected <T> T getExoComponent(Class<T> type) {
-    return (T) ExoContainerContext.getContainerByName(portalContainer)
-                                  .getComponentInstanceOfType(type);
+    ExoContainer container = ExoContainerContext.getContainerByName(portalContainer);
+    ExoContainerContext.setCurrentContainer(container);
+    return (T) container.getComponentInstanceOfType(type);
   }
 
   
@@ -132,6 +133,36 @@ public abstract class AbstractFeedRepubJob implements Job {
       LOG.warn("Could not find identity for " + targetUser + ": " + e.getMessage());
     }
     return identity;
+  }
+  
+  protected String getStringParam(JobDataMap dataMap, String name, String defaultValue) {
+    String value = dataMap.getString(name);
+    return (value == null) ? defaultValue : value;
+  }
+  
+  
+  protected Identity getAppIdentity( Application app) throws Exception {
+
+    IdentityManager identityManager = getExoComponent(IdentityManager.class);
+    appExists(app, identityManager);
+
+    ApplicationsIdentityProvider appIdentityProvider = new ApplicationsIdentityProvider();
+    appIdentityProvider.addApplication(app);
+    identityManager.addIdentityProvider(appIdentityProvider);
+    Identity identity = identityManager.getOrCreateIdentity(ApplicationsIdentityProvider.NAME,
+                                                        app.getId());
+    return identity;
+  }
+
+  private boolean appExists(Application application, IdentityManager identityManager) {
+    boolean exists = false;
+    try {
+      exists = identityManager.identityExisted(ApplicationsIdentityProvider.NAME, application.getId());
+    } catch (Exception e) {
+      return false;
+
+    }
+    return exists;
   }
   
 }

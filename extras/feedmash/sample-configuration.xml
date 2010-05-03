@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
-   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+	xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
 
-  
-<!-- Example of configurations that you can customize -->
-
- <external-component-plugins>
+<!-- This is a placeholder file for kernel components customization.
+This file is loaded in last by socialdemo portal.
+You can override any kernel component or define any additional external-component-plugin.
+-->
+ 
+<external-component-plugins>
    <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
     <component-plugin>
       <name>RepubSocialJiraActivityJob</name>
@@ -17,9 +17,10 @@
       <init-params>
         <properties-param>
           <name>mash.info</name>
-          <property name="feedURL" value="http://jira.exoplatform.org/plugins/servlet/streams?key=SOC"/> 
           <property name="categoryMatch" value="resolved|created"/>         
           <property name="targetActivityStream" value="space:exosocial"/>   
+          <property name="baseURL" value="http://jira.exoplatform.org"/>
+          <property name="project" value="SOC"/>
         </properties-param>
         <properties-param>
           <name>job.info</name>
@@ -42,8 +43,12 @@
       <init-params>
         <properties-param>
           <name>mash.info</name>
-           <property name="feedURL" value="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/rssAll"/>          
-           <property name="targetActivityStream" value="space:exosocial"/>  
+           <property name="feedURL" value="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/rssAll"/>  
+           <property name="baseURL" value="http://builder.exoplatform.org/hudson/view/social"/>   
+           <property name="project" value="social-trunk-ci"/>            
+           <property name="targetActivityStream" value="space:exosocial"/>
+           <property name="successIcon" value="http://builder.exoplatform.org/hudson/plugin/greenballs/48x48/green.gif"/>   
+           <property name="failureIcon" value="http://builder.exoplatform.org/hudson/plugin/greenballs/48x48/red.gif"/>     
         </properties-param>
         <properties-param>
           <name>job.info</name>

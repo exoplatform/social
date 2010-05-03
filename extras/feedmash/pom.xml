@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.o	rg/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>extras</artifactId>
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
-  <groupId>org.exoplatform.social.demos</groupId>
   <artifactId>exo.social.extras.feedmash</artifactId>
 
   <packaging>jar</packaging>
   <name>eXo Social - Extras - Feed Masher</name>
-  <description>a service apable of republishing feeds into activity streams</description>
-  <properties>
-  
-  </properties>
-  
-
+  <description>a service capable of republishing feeds into activity streams</description>
  
-
-
    <dependencies>
    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
