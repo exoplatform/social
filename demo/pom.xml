@@ -26,7 +26,7 @@
     <artifactId>social</artifactId>
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
-  <artifactId>exo.social.demo.root</artifactId>
+  <artifactId>exo.social.demo</artifactId>
   <packaging>pom</packaging>
   <name>eXo Social Demo Portal</name>
   <description>eXo Social Demo Portal</description>
