@@ -29,7 +29,7 @@
     <component-plugin>
       <name>social.data.location</name>
       <set-method>setLocation</set-method>
-      <type>org.exoplatform.social.space.DataLocationPlugin</type>
+      <type>org.exoplatform.social.jcr.DataLocationPlugin</type>
       <init-params>
         <value-param>
           <name>repository</name>
