@@ -27,7 +27,8 @@
 
 	<portal-skin>
 		<skin-name>Default</skin-name>
-		 <css-path>/skin/Stylesheet.css</css-path>
+		<skin-module>Social</skin-module>
+		<css-path>/skin/Stylesheet.css</css-path>
 	</portal-skin>	
 	
 </gatein-resources>
