@@ -61,10 +61,12 @@ var shindigVersion = "${org.shindig.version}";
 		addDependency(new Project("net.sf.json-lib", "json-lib", "jar", "2.2")).
 		addDependency(new Project("org.gatein.shindig", "shindig-social-api", "jar", shindigVersion)).
 		addDependency(new Project("org.apache.geronimo.specs", "geronimo-stax-api_1.0_spec", "jar", "1.0.1"));
-
-
   module.web.opensocial.deployName = "social" ;
-		
+
+  module.extras = {};
+  module.extras.feedmash = new Project("org.exoplatform.social", "exo.social.extras.feedmash", "jar", module.version);
+  
+  
 	module.extension = {};
 	module.extension.war =
    new Project("org.exoplatform.social", "exo.social.extension.war", "war", module.version).
@@ -83,6 +85,9 @@ var shindigVersion = "${org.shindig.version}";
        new Project("org.exoplatform.social", "exo.social.demo.rest-war", "war", module.version);
        module.demo.rest.deployName = "rest-socialdemo"; 
 
+       
+       
+       
    module.server = {}
 
    module.server.tomcat = {}

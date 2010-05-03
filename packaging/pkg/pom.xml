@@ -57,7 +57,7 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>portal.packaging.product</artifactId>
+      <artifactId>social.packaging.product</artifactId>
       <version>${project.version}</version>
       <type>js</type>
     </dependency>
@@ -194,7 +194,7 @@
                     <argument>org.mozilla.javascript.tools.shell.Main</argument>
                     <argument>${basedir}/target/exopackage/javascript/eXo/eXo.js</argument>
                     <argument>exobuild</argument>
-                    <argument>--product=portal</argument>
+                    <argument>--product=social</argument>
                     <argument>--deploy=tomcat</argument>
                   </arguments>
                 </configuration>
@@ -274,7 +274,7 @@
                     <argument>org.mozilla.javascript.tools.shell.Main</argument>
                     <argument>${basedir}/target/exopackage/javascript/eXo/eXo.js</argument>
                     <argument>exobuild</argument>
-                    <argument>--product=portal</argument>
+                    <argument>--product=social</argument>
                     <argument>--deploy=jbossear</argument>
                   </arguments>
                 </configuration>

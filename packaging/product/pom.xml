@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
   <name>eXo Social Packaging Product</name>
   <properties>
-    <exobuild.name>portal</exobuild.name>
+    <exobuild.name>social</exobuild.name>
     <exobuild.type>product</exobuild.type>
   </properties>
   <!-- Attach .js to the pom -->

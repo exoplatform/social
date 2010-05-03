@@ -23,9 +23,7 @@ function getProduct(version) {
   product.addDependencies(portal.eXoGadgetServer) ;
   product.addDependencies(portal.eXoGadgets) ;
   product.addDependencies(portal.webui.portal);
-
   product.addDependencies(portal.web.eXoResources);
-
   product.addDependencies(portal.web.portal);
 
 	// starter for social
@@ -44,6 +42,7 @@ function getProduct(version) {
   product.addDependencies(social.component.exosocial);
   product.addDependencies(social.application.rest);
   product.addDependencies(social.webui.social);
+  product.addDependencies(social.extras.feedmash);
 
   product.addDependencies(social.demo.portal);
   product.addDependencies(social.demo.rest);
