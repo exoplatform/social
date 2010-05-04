@@ -23,13 +23,46 @@
 	display: none;
 }
 
+
+.UISpaceActivityPortlet {
+  margin: 10px;
+}
+
+
 .UISpaceActivityPortlet .link {
     color: gray;
+    text-decoration: none;
+}
+
+.UISpaceActivityPortlet .link {
+    text-decoration: underline;
+}
+
+.UISpaceActivityPortlet .UserName .link {
+    color: #0065CC;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.UISpaceActivityPortlet .UserName .link:hover {
+    color: #0065CC;
+    text-decoration: underline;
 }
 
 .UISpaceActivityPortlet .ColorLink {
   color: #058EE6;
+  text-decoration: underline;
 }
+
+
+.UIActivity {
+  border-style:solid;
+  border-width:0 0 1px 0;
+  border-color:#E9E9E9;
+  padding-bottom:10px;
+  padding-top:10px;
+}
+
 
 .UIComposerExtensionContainer .LabelAttach {
   border-bottom: 1px solid gray;
@@ -224,7 +257,7 @@
 }
 
 .ADecoratorContainer .ActivitiesContent {
-	background: #fbfbfb;
+	background: white;/*#fbfbfb;*/
 	padding: 8px 8px 13px;
 }
 
@@ -411,12 +444,20 @@
 }
 
 .ContentArea {
-  color:black;
   line-height: 18px;
   overflow-x: hidden;
   font-size: 13px;
   margin-bottom: 3px;
   margin-top: -5px;
+}
+
+.ContentArea a {
+  color:#058EE6;
+}
+
+.ContentArea a:HOVER {
+  color:#058EE6;
+  text-decoration: underline;
 }
 
 .ActivitiesContainer .LinkShareContent {
