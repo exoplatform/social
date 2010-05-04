@@ -111,7 +111,7 @@ public class Property {
   }
 
   /**
-   * if the relation is not symetric, it always return Relationship.Type.CONFIRM
+   * if the relationship is not symetric, it always return Relationship.Type.CONFIRM
    * 
    * @return the status
    * @return

@@ -441,7 +441,7 @@
 }
 
 .UIProfileSpace .ContainerSpace .PortletContent .NotYet {
-  color:#FF0000;
+  color:gray;
   text-align:center;
 }
 

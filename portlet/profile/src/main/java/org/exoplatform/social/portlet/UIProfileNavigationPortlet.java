@@ -31,7 +31,7 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * Manages the navigation of relation.<br>
+ * Manages the navigation of connections.<br>
  *   - Decides which node is current selected.<br>
  *   - Checked is view by current user or by another.<br>
  */

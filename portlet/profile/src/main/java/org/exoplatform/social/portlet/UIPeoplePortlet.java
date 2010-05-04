@@ -24,8 +24,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
  * Manages information about all existing users. Manages actions 
- * such as request make relation, invoke request, accept or deny invitation 
- * and delete relation.
+ * such as request make connections, invoke request, accept or deny invitation 
+ * and delete connection.
  * 
  * Author : hanhvq@gmail.com
  * Oct 24, 2009  

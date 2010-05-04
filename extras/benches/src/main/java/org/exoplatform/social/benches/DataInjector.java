@@ -168,10 +168,10 @@ public class DataInjector {
         relationship = relationshipManager.create(pple[0], pple[1]);
         relationshipManager.confirm(relationship);
       } catch (Exception e) {
-        LOG.error("failed to create relation between " + pple[0] + " and " + pple[1] + ": "
+        LOG.error("failed to create connection between " + pple[0] + " and " + pple[1] + ": "
             + e.getMessage());
       }
-      LOG.info("created relation " + relationship + ".");
+      LOG.info("created connection " + relationship + ".");
     }
     return relationship;
   }

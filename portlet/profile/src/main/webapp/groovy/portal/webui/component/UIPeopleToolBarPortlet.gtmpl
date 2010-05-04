@@ -19,7 +19,7 @@ void renderRelationsLink() {
 		def labelDirectory = _ctx.appRes("UIPeopleToolBarPortlet.label.Directory");
 		def labelRelations = _ctx.appRes("UIPeopleToolBarPortlet.label.Relations");
 		def directoryLink = portalURI + "people";
-		def relationsLink = portalURI + "relations/myRelations/" + remoteUser;
+		def relationsLink = portalURI + "connections/myConnections/" + remoteUser;
 
  		String clazz = "";
  		

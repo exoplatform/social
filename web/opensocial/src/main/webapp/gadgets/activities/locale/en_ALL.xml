@@ -6,7 +6,7 @@
   <msg name="loading">Loading... Please wait...</msg>
 	<msg name="title">Status Update</msg>
 	<msg name="description">Status Update Application</msg>
-	<msg name="what_are_you_doing">What are you doing?</msg>
+	<msg name="what_are_you_doing">What are you working on?</msg>
 	<msg name="share">Share</msg>
 	<msg name="attach">Attach</msg>
 	<msg name="please_provide_link">Please provide link.</msg>
@@ -14,9 +14,9 @@
 	<msg name="not_valid_link">Please make sure that your provided link is correct.</msg>
 	<msg name="user_shared_a_link">{0} shared a link</msg>
 	<msg name="problem_happens_to_fix_soon">Sorry that problem happens. We will fix this soon.</msg>
-	<msg name="activities_of_displayName">Activities of {0}'s</msg>
-	<msg name="friends_activities">Relations' activities</msg>
-	<msg name="owner_friends">Owner's relations</msg>
+	<msg name="activities_of_displayName">{0}'s updates</msg>
+	<msg name="friends_activities">network's updates</msg>
+	<msg name="owner_friends">network</msg>
 	<msg name="displayName_does_not_have_update">{0} does not have any updates yet</msg>
 	<msg name="displayName_do_not_have_update">{0} do not have any updates yet</msg>
 	<msg name="collapse_all_activities">Collapse All</msg>

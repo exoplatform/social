@@ -124,7 +124,7 @@ public class StartupInjectionConfig implements Startable {
     }
     if (relations > 0) {
       nothingWasDone = false;
-      LOG.info("\t> about to inject " + relations + " relations.");
+      LOG.info("\t> about to inject " + relations + " connections.");
       injector.generateRelations(relations);
     }
     if (activities > 0) {

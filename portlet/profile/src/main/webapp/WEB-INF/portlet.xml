@@ -83,9 +83,9 @@
    </security-role-ref>
  </portlet>
  <portlet>
-   <description xml:lang="EN">Relation Navigation Portlet</description>
-   <portlet-name>relationnavigationportlet</portlet-name>
-   <display-name xml:lang="EN">Relation Navigation Portlet</display-name>
+   <description xml:lang="EN">Connection Navigation Portlet</description>
+   <portlet-name>connectionnav</portlet-name>
+   <display-name xml:lang="EN">Connection Navigation Portlet</display-name>
    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
    
    <init-param>
@@ -101,8 +101,8 @@
    <supported-locale>en</supported-locale>
    <resource-bundle>locale.portlet.web.RelationNavigationPortlet</resource-bundle>
    <portlet-info>
-     <title>Navigation Portlet</title>
-     <short-title>Relation Navigation Portlet</short-title>
+     <title>Connection Navigation Portlet</title>
+     <short-title>Connection Navigation Portlet</short-title>
      <keywords>Profile</keywords>
    </portlet-info>
    
@@ -147,9 +147,9 @@
   </portlet>
   
   <portlet>
-    <description xml:lang="EN">Relation Portlet</description>
-    <portlet-name>relation</portlet-name>
-    <display-name xml:lang="EN">Relation Portlet</display-name>
+    <description xml:lang="EN">Connection Portlet</description>
+    <portlet-name>connection</portlet-name>
+    <display-name xml:lang="EN">Connection Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
     <init-param>
@@ -166,8 +166,8 @@
     <resource-bundle>locale.portlet.web.RelationPortlet</resource-bundle>
     
     <portlet-info>
-      <title>Relation Portlet</title>
-      <short-title>Relation Portlet</short-title>
+      <title>Connection Portlet</title>
+      <short-title>Connection Portlet</short-title>
       <keywords>Profile</keywords>
     </portlet-info>     
   </portlet>
@@ -325,7 +325,7 @@
   
   <portlet>
    <description xml:lang="EN">My Relation Navigation Portlet</description>
-   <portlet-name>myrelationnavigationportlet</portlet-name>
+   <portlet-name>myconnectionnav</portlet-name>
    <display-name xml:lang="EN">My Relation Navigation Portlet</display-name>
    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
    
@@ -342,8 +342,8 @@
    <supported-locale>en</supported-locale>
    <resource-bundle>locale.portlet.web.MyRelationNavigationPortlet</resource-bundle>
    <portlet-info>
-     <title>My Navigation Portlet</title>
-     <short-title>My Relation Navigation Portlet</short-title>
+     <title>My Connections Navigation Portlet</title>
+     <short-title>My Connections Navigation Portlet</short-title>
      <keywords>Profile</keywords>
    </portlet-info>
    

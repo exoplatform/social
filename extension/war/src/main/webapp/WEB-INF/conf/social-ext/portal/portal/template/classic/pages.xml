@@ -150,8 +150,8 @@
   </page>
   
   <page>
-    <name>relations</name>
-    <title>Relations</title>
+    <name>connections</name>
+    <title>Connections</title>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
@@ -171,9 +171,9 @@
 				<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
-		       <portlet-ref>relationnavigationportlet</portlet-ref>
+		       <portlet-ref>connectionnav</portlet-ref>
 		     </portlet>
-		     <title>Relation Navigation</title>
+		     <title>Connection Navigation</title>
 		     <access-permissions>*:/platform/users</access-permissions>
 		     <show-info-bar>false</show-info-bar>
 		     <show-application-state>true</show-application-state>      
@@ -183,9 +183,9 @@
 	 			<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
-		       <portlet-ref>relation</portlet-ref>
+		       <portlet-ref>connection</portlet-ref>
 		     </portlet>
-		     <title>my relations</title>
+		     <title>my connections</title>
 		     <access-permissions>*:/platform/users</access-permissions>
 		     <show-info-bar>false</show-info-bar>
 		     <show-application-state>true</show-application-state>      
@@ -216,9 +216,9 @@
 				<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
-		       <portlet-ref>relationnavigationportlet</portlet-ref>
+		       <portlet-ref>connectionnav</portlet-ref>
 		     </portlet>
-		     <title>Relation Navigation</title>
+		     <title>Connection Navigation</title>
 		     <access-permissions>*:/platform/users</access-permissions>
 		     <show-info-bar>false</show-info-bar>
 		     <show-application-state>true</show-application-state>      
@@ -261,9 +261,9 @@
 				<portlet-application>
 		     <portlet>
 		       <application-ref>profile</application-ref>
-		       <portlet-ref>relationnavigationportlet</portlet-ref>
+		       <portlet-ref>connectionnav</portlet-ref>
 		     </portlet>
-		     <title>Relation Navigation</title>
+		     <title>Connection Navigation</title>
 		     <access-permissions>*:/platform/users</access-permissions>
 		     <show-info-bar>false</show-info-bar>
 		     <show-application-state>true</show-application-state>      

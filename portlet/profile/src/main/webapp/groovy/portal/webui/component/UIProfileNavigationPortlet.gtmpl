@@ -27,7 +27,7 @@
   def currentUser = currIdentity.profile.getPropertyValue("firstName");;
   def actititesURL = portalURI + "activities/" + currIdentity.getRemoteId();
   def profileURL = portalURI + "profile/" + currIdentity.getRemoteId();
-	def relationURL = portalURI + "relations/yours/" + currIdentity.getRemoteId();
+	def relationURL = portalURI + "connections/yours/" + currIdentity.getRemoteId();
 	def selectedNode = uicomponent.getSelectedNode();
 	def imageSource = uicomponent.getImageSource();
 	def isMe = uicomponent.isMe();
@@ -60,7 +60,7 @@
 	  <%}%>
         <a href="${profileURL}" class="ProfileIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a>
 	  </div>
-	  <% if (selectedNode == "relations")  {%>
+	  <% if (selectedNode == "connections")  {%>
 	  <div class="SelectedTab Tab">
 	  <% } else  {%>
 	  <div class="NormalTab Tab">

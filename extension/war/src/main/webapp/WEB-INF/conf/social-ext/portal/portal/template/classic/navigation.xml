@@ -44,24 +44,24 @@
    </node>
    
    <node>
-    <uri>relations</uri>
-    <name>relations</name>
-    <label>#{portal.@owner@.relations}</label>
+    <uri>connections</uri>
+    <name>connections</name>
+    <label>#{portal.@owner@.connections}</label>
     <visible>false</visible>
 	  <node>
-	    <uri>relations/yours</uri>
+	    <uri>connections/yours</uri>
 	    <name>yours</name>
 	    <label>#{portal.@owner@.yours}</label>
-	    <page-reference>portal::@owner@::relations</page-reference>
+	    <page-reference>portal::@owner@::connections</page-reference>
 	   </node>
 	   <node>
-	    <uri>relations/invitations</uri>
+	    <uri>connections/invitations</uri>
 	    <name>invitations</name>
 	    <label>#{portal.@owner@.invitations}</label>
 	    <page-reference>portal::@owner@::invitations</page-reference>
 	   </node>
 	   <node>
-	    <uri>relations/requests</uri>
+	    <uri>connections/requests</uri>
 	    <name>requests</name>
 	    <label>#{portal.@owner@.requests}</label>
 	    <page-reference>portal::@owner@::requests</page-reference>

@@ -105,7 +105,7 @@
 			            	<br />
 			            <%}%>
 			            <%if (childs.get(i + 6).isRendered()) {%>
-			            <%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%><%uiform.renderField(childs.get(i + 6));%>
+			            <%uiform.renderField(childs.get(i + 6));%>&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%>
 			            <%}%>
 			          </td>
 			        </tr>

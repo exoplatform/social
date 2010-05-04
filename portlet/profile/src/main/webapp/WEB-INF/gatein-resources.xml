@@ -36,7 +36,7 @@
 	
 	<portlet-skin>
 		<application-name>profile</application-name>
-		<portlet-name>relation</portlet-name>
+		<portlet-name>connection</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIRelationPortlet/DefaultStylesheet.css</css-path>
 	</portlet-skin>
@@ -64,7 +64,7 @@
 	
 	<portlet-skin>
 		<application-name>profile</application-name>
-		<portlet-name>relationnavigationportlet</portlet-name>
+		<portlet-name>connectionnav</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIRelationNavigation/DefaultStylesheet.css</css-path>
 	</portlet-skin>
@@ -85,7 +85,7 @@
 	
 	<portlet-skin>
 		<application-name>profile</application-name>
-		<portlet-name>myrelationnavigationportlet</portlet-name>
+		<portlet-name>myconnectionnav</portlet-name>
 		<skin-name>Default</skin-name>
 		<css-path>/skin/portal/webui/component/UIMyRelationNavigation/DefaultStylesheet.css</css-path>
 	</portlet-skin>

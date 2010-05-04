@@ -47,8 +47,8 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 /**
  * Displays information about all existing users. Manages actions 
- * such as request make relation, invoke request, accept or deny invitation 
- * and delete relation.<br>
+ * such as request make connection, invoke request, accept or deny invitation 
+ * and delete connection.<br>
  *   - Get all existing users.<br>
  *   - Check the status of each user with current user then display the list.<br>
  *   - Process actions from user: add contact, accept contact, deny contact and search.<br>
@@ -146,10 +146,10 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Listens to add action then make request to invite person to make relation.<br>
+   * Listens to add action then make request to invite person to make connection.<br>
    *   - Gets information of user is invited.<br>
-   *   - Checks the relation to confirm that there have not got relation yet.<br>
-   *   - Saves the new relation.<br>
+   *   - Checks the relationship to confirm that there have not got connection yet.<br>
+   *   - Saves the new connection.<br>
    *
    */
   public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
@@ -182,10 +182,10 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Listens to accept actions then make relation to accepted person.<br>
+   * Listens to accept actions then make connection to accepted person.<br>
    *   - Gets information of user who made request.<br>
-   *   - Checks the relation to confirm that there still got invited relation.<br>
-   *   - Makes and Save the new relation.<br>
+   *   - Checks the relationship to confirm that there still got invited connection.<br>
+   *   - Makes and Save the new relationship.<br>
    */
   public static class AcceptContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
@@ -283,7 +283,7 @@ public class UIDisplayProfileList extends UIContainer {
    * @param identity
    *        Object is checked status with current user.
    *        
-   * @return type of relation status that equivalent the relation.
+   * @return type of relationship status that equivalent the relationship.
    * 
    * @throws Exception
    */
