@@ -122,21 +122,20 @@
 
   activityContentBody = activity.body;
   activityPrettyTime = uicomponent.toPrettyTime(activity.postedTime);
+  activityUserName = uicomponent.getUserFullName(activity.userId);
+  activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
+  
+  activityImageSource = uicomponent.getUserAvatarImageSource(activity.userId);
+   if (!activityImageSource)  {
+     if (uicomponent.isSpaceActivity(activity.userId)) {
+       activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";  
+     } else if (uicomponent.isUserActivity(activity.userId)) {   
+       activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/AvatarPeople.gif";
+     } else {
+       activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/ApplicationDefaultLogo48x48.png";     
+     }
+   }
 
-  //TODO hoatle : makes sure to have space actitivy, user activity
-  if (uicomponent.isSpaceActivity(activity.userId)) {
-    def space = uicomponent.getSpace();
-    activityUserName = space.name;
-    activityUserProfileUri = space.url;
-    activityImageSource = space.getImageSource();
-    if (!activityImageSource) activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
-  } else {
-    //user activity
-    activityUserName = uicomponent.getUserFullName(activity.userId);
-    activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
-    activityImageSource = uicomponent.getUserAvatarImageSource(activity.userId);
-    if (!activityImageSource) activityImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
-  }
 %>
 
 <div class="UIActivity ADecoratorContainer">

@@ -14,10 +14,10 @@ You can override any kernel component or define any additional external-componen
       <set-method>addPeriodJob</set-method>
       <type>org.exoplatform.social.feedmash.FeedmashJobPlugin</type>
       <description>will republish resolved and closed jiras events of exosocial project into a space</description>
-      <init-params>
-        <properties-param>
+      <init-params> 
+        <properties-param>     
           <name>mash.info</name>
-          <property name="categoryMatch" value="resolved|created"/>         
+          <property name="categoryMatch" value="resolved|created|reopened"/>         
           <property name="targetActivityStream" value="space:exosocial"/>   
           <property name="baseURL" value="http://jira.exoplatform.org"/>
           <property name="project" value="SOC"/>
@@ -33,7 +33,7 @@ You can override any kernel component or define any additional external-componen
           <property name="startTime" value="+45"/>
           <property name="endTime" value=""/>      
         </properties-param>        
-      </init-params>
+      </init-params>  
     </component-plugin>
     <component-plugin>
       <name>WatchSocialBuildStatus</name>
@@ -48,7 +48,7 @@ You can override any kernel component or define any additional external-componen
            <property name="project" value="social-trunk-ci"/>            
            <property name="targetActivityStream" value="space:exosocial"/>
            <property name="successIcon" value="http://builder.exoplatform.org/hudson/plugin/greenballs/48x48/green.gif"/>   
-           <property name="failureIcon" value="http://builder.exoplatform.org/hudson/plugin/greenballs/48x48/red.gif"/>     
+           <property name="failureIcon" value="http://builder.exoplatform.org/hudson/images/48x48/red.gif"/>     
         </properties-param>
         <properties-param>
           <name>job.info</name>
@@ -64,5 +64,6 @@ You can override any kernel component or define any additional external-componen
       </init-params>
     </component-plugin>    
  </external-component-plugins> 
+ 
 
 </configuration>

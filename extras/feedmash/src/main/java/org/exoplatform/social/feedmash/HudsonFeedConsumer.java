@@ -20,7 +20,7 @@ public class HudsonFeedConsumer extends AbstractFeedRepubJob {
   
   private String successIcon = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/GreenFlag.gif";
   private String failureIcon = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/RedFlag.gif";
-
+  private String hudsonLogo = "http://wiki.hudson-ci.org/download/attachments/2916393/banner-100.png?version=1&modificationDate=1185846429000";
   private String baseUrl;
 
   private String project;
@@ -73,11 +73,8 @@ public class HudsonFeedConsumer extends AbstractFeedRepubJob {
       String message = null;
       if (entry.getTitle().contains(BuildStatus.SUCCESS.name())) {
         currentStatus = BuildStatus.SUCCESS.name();
-
-        
       } else {
         currentStatus = BuildStatus.FAILURE.name();
-        message = "<img src=\""+failureIcon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;<a href=\""+ entry.getLink()+"\">" + entry.getTitle() + "</a>"; 
       }
 
       Identity targetStream = getIdentity(targetUser);
@@ -121,6 +118,7 @@ public class HudsonFeedConsumer extends AbstractFeedRepubJob {
     application.setId("Hudson-" + project);
     application.setName("Hudson " + "(" +project + ")");
     String url = baseUrl + "/job/" + project;
+    application.setIcon(hudsonLogo);
     application.setUrl(url);
     return application;
   }

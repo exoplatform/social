@@ -65,7 +65,11 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
     Profile profile = identity.getProfile();
     profile.setProperty(Profile.FIRST_NAME, space.getName());
     profile.setProperty(Profile.USERNAME, space.getGroupId());
+    profile.setProperty(Profile.AVATAR_URL, space.getImageSource());
+    profile.setProperty(Profile.URL, space.getImageSource());
     return identity;
   }
+  
+
 
 }

@@ -29,11 +29,13 @@ public class ApplicationsIdentityProvider extends IdentityProvider<Application> 
   public Identity populateIdentity(Application app) {
     Identity identity = new Identity(NAME, app.getId());
     Profile profile = identity.getProfile();
-    profile.setProperty(Profile.AVATAR, app.getIcon());
     profile.setProperty(Profile.USERNAME, app.getName());
     profile.setProperty(Profile.FIRST_NAME, app.getName());
+    profile.setProperty(Profile.AVATAR_URL, app.getIcon());
+    profile.setProperty(Profile.URL, app.getUrl());
     return identity;
   }
+
   
   public void addApplication(Application app) {
     appsByUrl.put(app.getId(), app);

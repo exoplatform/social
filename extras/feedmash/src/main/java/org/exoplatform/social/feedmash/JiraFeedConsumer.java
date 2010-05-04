@@ -8,9 +8,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.application.Application;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
-import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.IdentityProvider;
-import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.quartz.JobDataMap;
 
@@ -20,7 +17,8 @@ import com.sun.syndication.feed.synd.SyndEntryImpl;
 public class JiraFeedConsumer extends AbstractFeedRepubJob {
 
   private static final Log LOG = ExoLogger.getLogger(JiraFeedConsumer.class);
-
+  private String jiraLogo = "http://www.meta-inf.hu/images/atlassian/logo-jira.gif";
+  
   public JiraFeedConsumer() {
   }
 
@@ -75,6 +73,7 @@ public class JiraFeedConsumer extends AbstractFeedRepubJob {
     application.setName("JIRA (" + project + ")");
     String url = baseUrl + "/browse/" + project;
     application.setUrl(url);
+    application.setIcon(jiraLogo);
     return application;
   }
 

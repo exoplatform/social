@@ -399,12 +399,16 @@ public class Space {
    * @return
    * @throws Exception
    */
-  public String getImageSource() throws Exception {
+  public String getImageSource()  {
+    try {
     SpaceAttachment spaceAttachment = getSpaceAttachment();
     if (spaceAttachment != null) {
       return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
       + spaceAttachment.getWorkspace() + spaceAttachment.getDataPath() + "/?rnd="
       + System.currentTimeMillis();
+    }
+    } catch (Exception e) {
+      ;
     }
     return null;
   }

@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
@@ -253,14 +252,24 @@ public class UIActivity extends UIForm {
    * @return
    * @throws Exception
    */
-  public String getUserProfileUri(String userIdentityId) throws Exception {
-    //TODO hoatle Uses LinkProvider
-    identityManager_ = getIdentityManager();
-    Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
-    if (userIdentity == null) {
-      return null;
+  public String getUserProfileUri(String userIdentityId) {
+
+    try {
+      identityManager_ = getIdentityManager();
+      Identity userIdentity = identityManager_.getIdentity(userIdentityId, true);
+      if (userIdentity == null) {
+        return "#";
+      }
+
+      String url = userIdentity.getProfile().getUrl();
+      if (url != null) {
+        return url;
+      } else {
+        return "#";
+      }
+    } catch (Exception e) {
+      return "#";
     }
-    return "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/activities/" + userIdentity.getRemoteId();
   }
   
   /**
@@ -275,13 +284,33 @@ public class UIActivity extends UIForm {
       return null;
     }
     Profile userProfile = userIdentity.getProfile();
-    return userProfile.getAvatarImageSource(PortalContainer.getInstance());
+    return userProfile.getAvatarImageSource();
   }
   
-  public boolean isSpaceActivity(String remoteId) throws Exception {
-    identityManager_ = getIdentityManager();
-    Identity spaceIdentity = identityManager_.getIdentity(SpaceIdentityProvider.NAME, remoteId, false);
-    return spaceIdentity != null;
+  public boolean isSpaceActivity(String id) {
+    try {
+      identityManager_ = getIdentityManager();
+      Identity identity = identityManager_.getIdentity(id, false);
+      String remoteId = identity.getRemoteId();
+      boolean result = (identityManager_.getIdentity(SpaceIdentityProvider.NAME, remoteId, false) != null);
+      return result;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+  
+  public boolean isUserActivity(String id) throws Exception {
+    try {
+      identityManager_ = getIdentityManager();
+      Identity identity = identityManager_.getIdentity(id, false);
+      String remoteId = identity.getRemoteId();
+      boolean result = (identityManager_.getIdentity(OrganizationIdentityProvider.NAME,
+                                                     remoteId,
+                                                     false) != null);
+      return result;
+    } catch (Exception e) {
+      return false;
+    }
   }
   
   public Space getSpace() throws SpaceException {

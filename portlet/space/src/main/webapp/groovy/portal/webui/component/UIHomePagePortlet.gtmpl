@@ -19,7 +19,7 @@
 <div class="UISocialHomepage" id="$uicomponent.id">
 	<div class="LeftSocialHomepage">
 		<div class="HomeBackground">
-			<div class="HomeBackgroundText">eXo Enterprise Social</div>
+			<div class="HomeBackgroundText">eXo Social</div>
 		</div>
 		<div class="LeftBoxDecorator">
 			<div class="RightBoxDecorator">
