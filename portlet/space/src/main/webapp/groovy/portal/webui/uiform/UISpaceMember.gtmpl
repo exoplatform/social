@@ -50,6 +50,7 @@
 <div class="UISpaceMember">
 	<% uiform.begin() %>
 	<% String searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
+	<% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
 	<div class="TitleContainer" style="background: none;" >
 	  <div class="InviteSocialLeft">
 	    <div class="InviteSocialRight">
@@ -58,14 +59,13 @@
 						<div class="SearchInviteForm">
 						  <div class="AddInvite"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%> :<% uiform.renderField("user") %></div>
 						  	<div class="SearchInviteButton">
-								<div class="SearchAddMemberIcon" onclick="$searchUserAction" title="$labelSearchUserAction"><span></span></div>
+								<div class="SearchAddMemberIcon" onclick="$inviteAction" title="$labelInviteAction"><span></span></div>
 							</div>
 						  <div style="clear: left;"><span></span></div>
 				  	</div>
 				  	<div class="SearchInviteButton">
 				  		<div class="UIActionContainer" style="padding: 5px 0px 8px; margin-left:0px">
-				  			<% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
-								<div class="InviteButton" onclick="$inviteAction" title="$labelInviteAction"><span></span></div>
+								<div class="InviteButton" onclick="$searchUserAction" title="$labelSearchUserAction"><span></span></div>
 							</div>
 						</div>
 					  
