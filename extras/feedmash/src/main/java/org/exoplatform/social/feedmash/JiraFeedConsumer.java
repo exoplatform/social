@@ -72,7 +72,7 @@ public class JiraFeedConsumer extends AbstractFeedRepubJob {
   private Application jiraApp() {
     Application application = new Application();
     application.setId("jira-" + project);
-    application.setName(project + " on JIRA");
+    application.setName("JIRA (" + project + ")");
     String url = baseUrl + "/browse/" + project;
     application.setUrl(url);
     return application;

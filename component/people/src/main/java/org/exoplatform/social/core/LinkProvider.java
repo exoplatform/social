@@ -33,7 +33,7 @@ public class LinkProvider {
       
       String container = PortalContainer.getCurrentPortalContainerName();
       String url = "/"+ container +"/private/classic/profile/" + identity.getRemoteId();
-      link = "<a href=\"" + url + "\" class=\"link\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
+      link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
 
       } catch (Exception e) {
         LOG.error("failed to substitute username for " + username + ": " + e.getMessage());

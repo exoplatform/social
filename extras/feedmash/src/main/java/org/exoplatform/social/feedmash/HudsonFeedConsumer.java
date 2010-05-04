@@ -70,30 +70,30 @@ public class HudsonFeedConsumer extends AbstractFeedRepubJob {
   protected void handle(SyndEntryImpl entry) { 
     try {
       String currentStatus;
-      String title = null;
+      String message = null;
       if (entry.getTitle().contains(BuildStatus.SUCCESS.name())) {
         currentStatus = BuildStatus.SUCCESS.name();
-        title = "<a href=\""+ entry.getLink()+"><img src=\""+successIcon+ "\" alt=\"success\" title=\"success\" />&nbsp;" + entry.getTitle() + "/a>";
+
         
       } else {
         currentStatus = BuildStatus.FAILURE.name();
-        title = "<a href=\""+ entry.getLink()+"><img src=\""+failureIcon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;" + entry.getTitle() + "/a>"; 
+        message = "<img src=\""+failureIcon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;<a href=\""+ entry.getLink()+"\">" + entry.getTitle() + "</a>"; 
       }
-
-      LOG.debug("publishing hudson build status change on : "+ targetUser + "'s stream, status: " + currentStatus);   
 
       Identity targetStream = getIdentity(targetUser);
       if (targetStream == null) {
         return;
       }
        
+
+      LOG.debug("Publishing "+ currentStatus+" on : "+ targetStream.getRemoteId() + "'s stream");   
+      
       ActivityManager activityManager = getExoComponent(ActivityManager.class);
-      
       Identity hudson = getHudsonIdentity();
-      
+      message = message(currentStatus,entry.getLink(), entry.getTitle()); 
       Activity activity = new Activity();
       activity.setTitle("");
-      activity.setBody(title);
+      activity.setBody(message);
       activity.setAppId("feedmash:" + getClass());
       activity.setUserId(hudson.getId());
       activityManager.saveActivity(targetStream, activity);
@@ -107,6 +107,11 @@ public class HudsonFeedConsumer extends AbstractFeedRepubJob {
     }
   }
 
+  private String message(String status, String link, String title) {
+    String icon = (status == BuildStatus.SUCCESS.name()) ? successIcon : failureIcon;
+    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;<a href=\""+ link+"\">" + title + "</a>"; 
+  }
+
   private Identity getHudsonIdentity() throws Exception {
     return getAppIdentity(hudsonApp());
   }
@@ -114,7 +119,7 @@ public class HudsonFeedConsumer extends AbstractFeedRepubJob {
   private Application hudsonApp() {
     Application application = new Application();
     application.setId("Hudson-" + project);
-    application.setName(project + " on Hudson");
+    application.setName("Hudson " + "(" +project + ")");
     String url = baseUrl + "/job/" + project;
     application.setUrl(url);
     return application;

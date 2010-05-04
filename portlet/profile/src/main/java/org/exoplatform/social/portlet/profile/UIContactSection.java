@@ -114,7 +114,7 @@ public class UIContactSection extends UIProfileSection {
   final public static String WEBSITE_TITLE = "Website Title";
   
   /** URL EXAMPLE. */
-  final public static String URL_EXAMPLE = "URL (ex: http://www.site.com)";
+  final public static String URL_EXAMPLE = "http://";
   
   /** KEY. */
   final public static String KEY = "key";

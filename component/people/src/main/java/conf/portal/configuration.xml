@@ -48,6 +48,7 @@
             <value>ul</value>
             <value>li</value>
             <value>br</value>
+            <value>img</value>
           </values-param>
         </init-params>
       </component-plugin>    

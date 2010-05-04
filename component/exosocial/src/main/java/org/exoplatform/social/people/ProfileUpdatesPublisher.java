@@ -39,7 +39,7 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
 
   @Override
   public void contactSectionUpdated(ProfileLifeCycleEvent event) {
-   publish(event, "@" + event.getUsername() + " profile has some updated his contact info.");
+   publish(event, "@" + event.getUsername() + " profile has updated his contact info.");
 
   }
 
@@ -61,7 +61,7 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
       reloadIfNeeded(identity);
       activityManager.recordActivity(identity,
                                      PeopleService.PEOPLE_APP_ID,
-                                     username,
+                                     "",
                                      message);
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
