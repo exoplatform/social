@@ -37,6 +37,7 @@ import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -73,9 +74,6 @@ public class UISpaceMenu extends UIContainer {
   /** Stores SpaceService object. */
   private SpaceService spaceService = null;
   
-  /** Stores UIPortal object. */
-  private UIPortal uiPortal = null;
-  
   /** Stores Space object. */
   private Space space = null;
   
@@ -84,7 +82,6 @@ public class UISpaceMenu extends UIContainer {
    * @throws Exception
    */
   public UISpaceMenu() throws  Exception { 
-    uiPortal = Util.getUIPortal();
   }
   
   /**
@@ -237,6 +234,7 @@ public class UISpaceMenu extends UIContainer {
    * @throws Exception
    */
   public String getAppSelected() throws Exception {
+    UIPortal uiPortal = Util.getUIPortal();
     PageNode selectedNode = uiPortal.getSelectedNode();
     String[] split = selectedNode.getUri().split("/");
     return split[split.length - 1];
@@ -249,7 +247,11 @@ public class UISpaceMenu extends UIContainer {
    */
   protected String getImageSource() throws Exception {
     Space space = getSpace();
-    return space.getImageSource();
+    if (space != null) {
+      return space.getImageSource();
+    } else {
+      return "";
+    }
   }
 
   /**

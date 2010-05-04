@@ -16,8 +16,11 @@
  */
 package social.portal.webui.component.space;
 
+import javax.portlet.PortletPreferences;
+
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -29,6 +32,7 @@ import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.social.space.impl.SpaceIdentityProvider;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
@@ -73,6 +77,7 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
     space_ = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
     uiDisplaySpaceActivities_.setSpace(space_);
   }
+
   
   public SpaceService getSpaceService() {
     return getApplicationComponent(SpaceService.class);

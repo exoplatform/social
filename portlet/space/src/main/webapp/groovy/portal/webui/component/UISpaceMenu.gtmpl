@@ -4,7 +4,7 @@
  	import org.exoplatform.social.space.SpaceUtils
  	import org.exoplatform.web.application.JavascriptManager
  	import org.exoplatform.portal.application.PortalRequestContext
- 	
+
  	SpaceUtils.reloadNavigation()
 	def apps = uicomponent.getApps()       
 	def spaceUrl = SpaceUtils.getSpaceUrl()
@@ -49,8 +49,8 @@
  	JavascriptManager jsManager = pcontext.getJavascriptManager();
  	jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
  	jsManager.importJavascript("eXo.social.webui.UISpaceMenuPortlet", "/eXoResourcesSocial/javascript");
- 	jsManager.addOnLoadJavascript("eXo.social.webui.UISpaceMenuPortlet.init");
  	jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition","/eXoResourcesSocial/javascript");
+ 	jsManager.addOnLoadJavascript("eXo.social.webui.UISpaceMenuPortlet.init");
 %>
 
 

@@ -152,11 +152,11 @@ public class UISpaceInfo extends UIForm {
       PageNode homeNode = null;
       boolean nameChanged = (!space.getName().equals(name));
       if (nameChanged) {
-    	String cleanedString = SpaceUtils.cleanString(name);
-    	if(spaceService.getSpaceByUrl(cleanedString) != null) {
-    	  uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.current-name-exist", null, ApplicationMessage.INFO));
-    	  return;
-    	}
+        String cleanedString = SpaceUtils.cleanString(name);
+        if(spaceService.getSpaceByUrl(cleanedString) != null) {
+          uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.current-name-exist", null, ApplicationMessage.INFO));
+          return;
+        }
         UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
         List<PageNavigation> pageNavigations = userPortalConfig.getNavigations();
         DataStorage dataStorage = uiSpaceInfo.getApplicationComponent(DataStorage.class);
@@ -169,6 +169,7 @@ public class UISpaceInfo extends UIForm {
           }
         }
         homeNode = SpaceUtils.getHomeNode(spaceNavigation, spaceUrl);
+        SpaceUtils.changeSpaceUrlPreference(homeNode, space, true);
         if (homeNode == null) {
           throw new Exception("homeNode is null!");
         }
@@ -181,6 +182,7 @@ public class UISpaceInfo extends UIForm {
         String newUri;
         for (int i = 0; i < childNodes.size(); i++) {
           childNode = childNodes.get(i);
+          SpaceUtils.changeSpaceUrlPreference(childNode, space, false);
           oldUri = childNode.getUri();
           newUri = oldUri.replace(oldUri.substring(0, oldUri.lastIndexOf("/")), cleanedString);
           childNode.setUri(newUri);

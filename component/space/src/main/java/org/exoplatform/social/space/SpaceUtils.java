@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.portlet.PortletPreferences;
 import javax.servlet.http.HttpServletRequest;
 
 import org.exoplatform.application.registry.Application;
@@ -39,10 +40,15 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.ApplicationType;
+import org.exoplatform.portal.config.model.Container;
+import org.exoplatform.portal.config.model.ModelObject;
+import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.pom.spi.portlet.PortletBuilder;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -56,6 +62,8 @@ import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.gatein.common.i18n.LocalizedString;
 import org.gatein.common.util.Tools;
 import org.gatein.pc.api.Portlet;
@@ -70,11 +78,14 @@ import com.ibm.icu.text.Transliterator;
  * Utility for working with space
  */
 public class SpaceUtils {
-  static public final Log logger = ExoLogger.getLogger(SpaceUtils.class);
+  static private final Log LOG = ExoLogger.getLogger(SpaceUtils.class);
   static public final String SPACE_GROUP = "/spaces";
   static public final String PLATFORM_USERS_GROUP = "/platform/users";
   static public final String  MEMBER      = "member";
   static public final String  MANAGER     = "manager";
+  static public final String MENU_CONTAINER = "Menu";
+  static public final String APPLICATION_CONTAINER = "Application";
+  static public final String SPACE_URL = "SPACE_URL";
   static private ExoContainer container;
   static private SpaceService spaceService;
   static private List<Application> appListCache = new ArrayList<Application>();
@@ -193,11 +204,13 @@ public class SpaceUtils {
    * @throws Exception
    */
   static public Application getAppFromPortalContainer(String appId) throws Exception {
+    //TODO do we really need this?
     if (appListCache.size() > 1) {
       for (Application app : appListCache) {
         if (app.getApplicationName().equals(appId)) return app;
       }
     }
+    
     if (container == null) {
       container = ExoContainerContext.getCurrentContainer();
     }
@@ -264,7 +277,7 @@ public class SpaceUtils {
             } else {
                contentId = info.getApplicationName() + "/" + info.getName();
             }
-
+            app.setType(ApplicationType.PORTLET);
             app.setContentId(contentId);
             app.setApplicationName(portletName);
             app.setCategoryName(categoryName);
@@ -340,7 +353,7 @@ public class SpaceUtils {
   /**
    * Utility for getting space url based on url address 
    */
-  static public String getSpaceUrl() {
+/*  static public String getSpaceUrl() {
     PageNode selectedNode = null;
     try {
       selectedNode = Util.getUIPortal().getSelectedNode();
@@ -353,14 +366,116 @@ public class SpaceUtils {
       spaceUrl = spaceUrl.split("/")[0];
     }
     return spaceUrl;
+  }*/
+  
+  /**
+   * Gets spaceName by portletPreference
+   * @return
+   */
+  static public String getSpaceUrl() {
+    PortletRequestContext pcontext = (PortletRequestContext)WebuiRequestContext.getCurrentInstance();
+    PortletPreferences pref = pcontext.getRequest().getPreferences();
+    return pref.getValue(SPACE_URL, "");
   }
   
   /**
+   * change spaceUrl preferences for all applications in a pageNode.
+   * This pageNode is the clonedPage of spacetemplate.
+   * @param spacePageNode
+   * @param newUrl
+   * @throws Exception 
+   */
+  @SuppressWarnings("unchecked")
+  static public void changeSpaceUrlPreference(PageNode spacePageNode, Space space, boolean isRoot) throws Exception {
+    String pageId = spacePageNode.getPageReference();
+    DataStorage dataStorage = getDataStorage();
+    Page page = dataStorage.getPage(pageId);
+    ArrayList<ModelObject> pageChildren = page.getChildren();
+    Container menuContainer = findContainerById(pageChildren, MENU_CONTAINER);
+    
+    org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> 
+    menuPortlet = (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) 
+                  menuContainer.getChildren().get(0);
+    
+    ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> menuState = menuPortlet.getState();
+    org.exoplatform.portal.pom.spi.portlet.Portlet menuPortletPreference;
+    try {
+      menuPortletPreference = dataStorage.load(menuState, ApplicationType.PORTLET);
+      if (menuPortletPreference == null) {
+        menuPortletPreference = new PortletBuilder().add(SPACE_URL, space.getUrl()).build();
+      } else {
+        menuPortletPreference.setValue(SPACE_URL, space.getUrl());
+      }
+      dataStorage.save(menuState, menuPortletPreference);
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+    
+    Container applicationContainer = findContainerById(pageChildren, APPLICATION_CONTAINER);
+    
+    try {
+      org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> 
+      applicationPortlet = (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>)
+                          applicationContainer.getChildren().get(0);
+      ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> appState = applicationPortlet.getState();
+      org.exoplatform.portal.pom.spi.portlet.Portlet appPortletPreference;
+      try {
+        appPortletPreference = dataStorage.load(appState, ApplicationType.PORTLET);
+        if (appPortletPreference == null) {
+          appPortletPreference = new PortletBuilder().add(SPACE_URL, space.getUrl()).build();
+        } else {
+          appPortletPreference.setValue(SPACE_URL, space.getUrl());
+        }
+        dataStorage.save(appState, appPortletPreference);
+      } catch(Exception e) {
+        LOG.warn("Can not save application preference!");
+        e.printStackTrace();
+      }
+      
+    } catch(Exception e) {
+      //ignore it? exception will happen when this is gadgetApplicationType
+    }
+  
+  }
+  
+  
+  /**
+   * Finds container by id
+   * 
+   * @param childs
+   * @param id
+   * @return
+   */
+  public static Container findContainerById(ArrayList<ModelObject> children, String id) {
+    Container found = null;
+    for (Object obj : children) {
+      if (org.exoplatform.portal.config.model.Application.class.isInstance(obj))
+        continue;
+      Container child = (Container) obj;
+      if (child.getId() == null) {
+        found = findContainerById(child.getChildren(), id);
+        if (found != null)
+          return found;
+      } else {
+        if (child.getId().equals(id))
+          return child;
+        else
+          found = findContainerById(child.getChildren(), id);
+        if (found != null)
+          return found;
+      }
+    }
+    return found;
+  }
+  
+  /**
+   * 
    * Utility for setting navigation.
    * Set pageNavigation, if existed in portal navigations, reset; if not, added to portal navigations.
    * @param nav
    */
   static public void setNavigation(PageNavigation nav) {
+    if (nav == null) return;
     UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
     try {
       UserPortalConfig userPortalConfig = uiPortalApplication.getUserPortalConfig();
@@ -400,7 +515,7 @@ public class SpaceUtils {
     }
     DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
     if (dataStorage == null) {
-      logger.warn("dataStorage is null!");
+      LOG.warn("dataStorage is null!");
       return;
     }
 
@@ -910,7 +1025,7 @@ public class SpaceUtils {
       }
       String[] splited = appStatus.split(":");
       if (splited.length != 4) {
-        logger.warn("appStatus is not in correct form of [appId:appNodeName:isRemovableString:status] : " + appStatus);
+        LOG.warn("appStatus is not in correct form of [appId:appNodeName:isRemovableString:status] : " + appStatus);
         return null;
       }
       return appStatus;
@@ -943,6 +1058,15 @@ public class SpaceUtils {
   static public OrganizationService getOrganizationService(){
     PortalContainer portalContainer = PortalContainer.getInstance();
     return (OrganizationService) portalContainer.getComponentInstanceOfType(OrganizationService.class);
+  }
+  
+  /**
+   * Gets dataStorage
+   * @return
+   */
+  static public DataStorage getDataStorage() {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    return (DataStorage) portalContainer.getComponentInstanceOfType(DataStorage.class);
   }
   
   /**

@@ -391,11 +391,19 @@ eXo.social.StatusUpdate.prototype.setDeleteActivity = function(activityId) {
   var Locale = eXo.social.Locale;
   var el = Util.getElementById('Delete'+activityId);
   var statusUpdate = this;
+  
+  Util.addEventListener(el, 'click', function(evt) {
+    if (confirm(Locale.getMsg('are_you_sure_to_delete_this_activity'))) {
+      statusUpdate.deleteActivity(activityId);
+    }
+  }, false);
+  /*
   el.onclick = function() {
-	if (confirm(Locale.getMsg('are_you_sure_to_delete_this_activity'))) {
-		statusUpdate.deleteActivity(activityId);
-	}
+		if (confirm(Locale.getMsg('are_you_sure_to_delete_this_activity'))) {
+			statusUpdate.deleteActivity(activityId);
+		}
   }
+  */
 }
 
 /**

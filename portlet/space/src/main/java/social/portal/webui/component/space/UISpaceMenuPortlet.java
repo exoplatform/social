@@ -34,7 +34,7 @@ import social.portal.webui.component.UISpaceMenu;
 )
 
 public class UISpaceMenuPortlet extends UIPortletApplication {
-  
+    
   public UISpaceMenuPortlet() throws  Exception {
 	  addChild(UISpaceMenu.class, null, null);
   }
