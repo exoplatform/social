@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
@@ -130,9 +131,13 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public Identity populateIdentity(User user) {
     Identity identity = new Identity(NAME, user.getUserName());
     Profile profile = identity.getProfile();
-    profile.setProperty("firstName", user.getFirstName());
-    profile.setProperty("lastName", user.getLastName());
-    profile.setProperty("username", user.getUserName());
+    profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
+    profile.setProperty(Profile.LAST_NAME, user.getLastName());
+    profile.setProperty(Profile.USERNAME, user.getUserName());
+    
+    // TODO reuse linkprovider
+    String url = "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/profile/" + user.getUserName();
+    profile.setProperty(Profile.URL,  url);
 
     if (user.getEmail() != null && !profile.contains("emails")) {
       List<Map<String,String>> emails = new ArrayList<Map<String,String>>();

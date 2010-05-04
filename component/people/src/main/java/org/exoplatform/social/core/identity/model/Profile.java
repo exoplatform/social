@@ -24,19 +24,33 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Profile.
  */
 public class Profile {
   
-  public static String AVATAR = "avatar";
+
   
   public static final String USERNAME = "username";
 
   public static final String FIRST_NAME = "firstName";
   
   public static final String LAST_NAME = "lastName";
+
+  /**
+   * property of type {@link ProfileAttachment} that contains the avatar
+   */
+  public static String AVATAR = "avatar";
+  
+  /**
+   * url of the avatar (can be used instead of {@link #AVATAR})
+   */
+  public static final String AVATAR_URL = "avatarUrl";
+  
+  /**
+   * An optional url for this profile
+   */
+  public static final String URL = "Url";
   
   /** The properties. */
   private Map<String, Object> properties = new HashMap<String, Object>();
@@ -161,29 +175,40 @@ public class Profile {
    * @return null or an url if available
    * @throws Exception 
    */
-  public String getAvatarImageSource(PortalContainer portalContainer) throws Exception {
-    ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
-    if (profileAttachment != null) {
-      return "/" + portalContainer.getRestContextName() + "/jcr/" + getRepository(portalContainer) + "/"
-      + profileAttachment.getWorkspace() + profileAttachment.getDataPath(portalContainer) + "/?rnd="
-      + System.currentTimeMillis();
+  public String getAvatarImageSource(PortalContainer portalContainer) {
+    try {
+      String avatarUrl = (String) getProperty(AVATAR_URL);
+      if (avatarUrl != null) {
+        return avatarUrl;
+      }
+      ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
+      if (profileAttachment != null) {
+        return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
+            + profileAttachment.getWorkspace() + profileAttachment.getDataPath() + "/?rnd="
+            + System.currentTimeMillis();
+      }
+    } catch (Exception e) {
+
     }
     return null;
   }
   
   /**
-   * Gets user's avatar image source from current portal container
+   * Get this profile URL
+   * @return
+   */
+  public String getUrl() {
+    return (String) getProperty(URL);
+  }
+  
+  /**
+   * Gets user's avatar image source from current portal container.
+   * uses the {@link #AVATAR_URL} if specified or loads the {@link ProfileAttachment} from the {@link #AVATAR} property
    * @return null or an url if available
    * @throws Exception
    */
-  public String getAvatarImageSource() throws Exception {
-    ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
-    if (profileAttachment != null) {
-      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-      + profileAttachment.getWorkspace() + profileAttachment.getDataPath() + "/?rnd="
-      + System.currentTimeMillis();
-    }
-    return null;
+  public String getAvatarImageSource() {
+    return getAvatarImageSource(PortalContainer.getInstance());
   }
   
   /**

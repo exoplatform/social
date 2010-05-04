@@ -27,7 +27,7 @@ public class TestLinkProvider extends AbstractJCRTestCase {
     // but when we have the identity we generate a link
     String link = provider.getProfileLink("root");
     assertEquals(link,
-                 "<a href=\"/portal/private/classic/profile/root\" class=\"link\" target=\"_parent\">root root</a>");
+                 "<a href=\"/portal/private/classic/profile/root\" target=\"_parent\">root root</a>");
 
   }
 

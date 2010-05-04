@@ -55,7 +55,8 @@
     </component-plugins>
   </component>
   
-   <component>
+  
+  <component>
     <type>org.exoplatform.social.core.LinkProvider</type>
   </component> 
   
