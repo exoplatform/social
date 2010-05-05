@@ -59,6 +59,10 @@ eXo.social.Locale.getMsg = function(key, opt_args) {
 	//checks if number of {\d} in msg matches opt_args.length
 	var regex = /{\d+}/g;
 	var matches = msg.match(regex);
+	if (matches == null) {
+	   debug.warn('no argument found to be substituted with: ' + opt_args);
+	   return msg;
+	}
 	if (matches.length !== opt_args.length) {
 		debug.warn("required " + matches.length + " args, provided: " + opt_args.length);
 	}
