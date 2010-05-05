@@ -208,9 +208,21 @@
 	line-height: 24px;
 }
 
+.UIInvitationSpacePortlet .BoxSpaceList .TitleContent .Text .MembersCount{
+  margin-right: 50px;
+  font-weight: normal;
+  line-height: 24px;
+}
+
 .UIInvitationSpacePortlet .BoxSpaceList .ContentBox .Content {
 	line-height: 16px;
 	padding-top: 5px;
+}
+
+.UIInvitationSpacePortlet .BoxSpaceList .ContentBox .Content .SpaceStatus {
+  font-weight: smaller;
+  font-style: italic;
+  color:#aaaaaa
 }
 
 .UIInvitationSpacePortlet .IconDel {

@@ -119,11 +119,12 @@
 						<% } %>
 						<a href="#" onclick="<%= editSpaceNavigationAction %>"  title="<%= labelActionEditSpaceNavigation %>" class="Icon IconEditSpaceNavigation"><span></span></a>
 						<a href="<%=uicomponent.url("EditSpace", space.id);%>" title="<%= labelActionEditSpace %>" class="Icon IconEditSpace"><span></span></a>
-						<div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a></div>
+						<div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </div>
 						<div class="ClearBoth"><span></span></div>
 					</div>
-					<div class="Content">$status / $fieldLabelMembers <%= SpaceUtils.countMembers(space) %>
-						<br/> $space.description
+					<div class="Content">
+						$space.description<br/>
+						<span class="SpaceStatus">$status</span>
 					</div>
 				</div>
 				<div class="ClearBoth"><span></span></div>
@@ -141,11 +142,12 @@
 			<div class="ContentBox">
 				<div class="TitleContent">
 					<a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeave"><span></span></a>
-					<div class="Text"><a href="<%= spaceUrl %>">$space.name</a></div>
+					<div class="Text"><a href="<%= spaceUrl %>">$space.name</a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </div>
 					<div class="ClearBoth"><span></span></div>
 				</div>
-				<div class="Content">$status / $fieldLabelMembers <%= SpaceUtils.countMembers(space) %>
-					<br/>$space.description
+				<div class="Content">
+						$space.description<br/>
+						<span class="SpaceStatus">$status</span>
 				</div>
 			</div>
 			<div class="ClearBoth"><span></span></div>

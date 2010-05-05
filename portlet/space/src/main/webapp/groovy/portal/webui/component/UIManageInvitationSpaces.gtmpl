@@ -76,11 +76,11 @@
 				<div class="TitleContent">
 					<a href="#" onclick="<%= denySpaceAction %>" title="Deny" class="Icon IconDeny"><span></span></a>
 					<a href="#" onclick="<%= acceptSpaceAction %>" title="Accept" class="Icon IconAccept"><span></span></a>
-					<div class="Text"><span><%= space.name %></span></div>
+					<div class="Text"><span><%= space.name %></span><span class="MembersCount"> - $visibility - $labelMembers <%= SpaceUtils.countMembers(space)%></span></div>
 					<div class="ClearBoth"><span></span></div>
 				</div>
-				<div class="Content">$visibility / <%= SpaceUtils.countMembers(space) %> $labelMembers
-					<br/> $space.description
+				<div class="Content">
+					$space.description
 				</div>
 			</div>
 			<div class="ClearBoth"><span></span></div>

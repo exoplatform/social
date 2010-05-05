@@ -211,6 +211,23 @@
 	line-height: 16px;
 	padding-top: 5px;
 }
+.UIPublicSpacePortlet .BoxSpaceList .TitleContent .Text .MembersCount {
+  margin-right: 50px;
+  font-weight: normal;
+  line-height: 24px;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .ContentBox .Content {
+  line-height: 16px;
+  padding-top: 5px;
+}
+
+.UIPublicSpacePortlet .BoxSpaceList .ContentBox .Content .SpaceStatus {
+  font-weight: smaller;
+  font-style: italic;
+  color:#aaaaaa
+}
+
 
 .UIPublicSpacePortlet .IconAdd {
 	background: url('DefaultSkin/background/IconAdd.gif') no-repeat left top;

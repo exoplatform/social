@@ -198,9 +198,21 @@
   line-height: 24px;
 }
 
+.UIMySpacePortlet .BoxSpaceList .TitleContent .Text .MembersCount{
+  margin-right: 50px;
+  font-weight: normal;
+  line-height: 24px;
+}
+
 .UIMySpacePortlet .BoxSpaceList .ContentBox .Content {
   line-height: 16px;
   padding-top: 5px;
+}
+
+.UIMySpacePortlet .BoxSpaceList .ContentBox .Content .SpaceStatus {
+  font-weight: smaller;
+  font-style: italic;
+  color:#aaaaaa
 }
 
 .UIMySpacePortlet .IconDel {

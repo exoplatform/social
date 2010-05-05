@@ -194,6 +194,23 @@
 	border-bottom: 1px solid #ededed;
 }
 
+.UIPendingSpacePortlet .BoxSpaceList .TitleContent .Text .MembersCount{
+  margin-right: 50px;
+  font-weight: normal;
+  line-height: 24px;
+}
+
+.UIPendingSpacePortlet .BoxSpaceList .ContentBox .Content {
+  line-height: 16px;
+  padding-top: 5px;
+}
+
+.UIPendingSpacePortlet .BoxSpaceList .ContentBox .Content .SpaceStatus {
+  font-weight: smaller;
+  font-style: italic;
+  color:#aaaaaa
+}
+
 .UIPendingSpacePortlet .BoxSpaceList .TitleContent .Icon {
 	width: 20px;
 	height: 20px;
