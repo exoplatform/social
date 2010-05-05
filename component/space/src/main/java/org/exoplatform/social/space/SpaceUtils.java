@@ -884,9 +884,14 @@ public class SpaceUtils {
    * @throws SpaceException
    */
   static public int countMembers(Space space) throws SpaceException {
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    SpaceService spaceService = (SpaceService)portalContainer.getComponentInstanceOfType(SpaceService.class);
-    return spaceService.getMembers(space).size();
+    try {
+      PortalContainer portalContainer = PortalContainer.getInstance();
+      SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+      return spaceService.getMembers(space).size();
+    } catch (Exception e) {
+      LOG.error("Failed to count space members for " + space, e);
+      return 0;
+    }
   }
   
   /**

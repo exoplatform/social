@@ -340,6 +340,10 @@ public class Space {
     this.visibility = visibility;
   }
   
+  public String toString() {
+    return name + " (" + groupId + ")";
+  }
+  
   /**
    * Gets the registration.
    * 
