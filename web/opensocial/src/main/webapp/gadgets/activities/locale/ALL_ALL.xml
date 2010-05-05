@@ -19,8 +19,8 @@
 	<msg name="owner_friends">Your connections</msg>
 	<msg name="displayName_does_not_have_update">not any updates posted yet</msg>
 	<msg name="displayName_do_not_have_update">not any updates posted yet</msg>
-	<msg name="collapse_all_activities">Collapse All</msg>
-  <msg name="expand_all_activities">Expand All</msg>
+	<msg name="collapse_all_activities">Collapse</msg>
+  <msg name="expand_all_activities">Expand</msg>
 	<msg name="comment">Comment</msg>
 	<msg name="write_a_comment">Write a comment...</msg>
 	<msg name="user_commented_on_an_activity">{0} commented on an activity.</msg>

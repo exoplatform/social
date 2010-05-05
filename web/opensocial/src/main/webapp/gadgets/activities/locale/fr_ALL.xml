@@ -15,16 +15,18 @@
 	<msg name="problem_happens_to_fix_soon">Désolé pour ce problème. Nous y travaillons.</msg>
 	<msg name="activities_of_displayName">Les activités de {0} </msg>
 	<msg name="friends_activities">Activités du réseau</msg>
-	<msg name="owner_friends">ce réseau</msg>
+	<msg name="owner_friends">Vos contacts</msg>
 	<msg name="displayName_does_not_have_update">aucune activité envoyée</msg>
 	<msg name="displayName_do_not_have_update">aucune activité envoyée</msg>
 	<msg name="comment">Commentaire</msg>
+	<msg name="collapse_all_activities">Replier</msg>
+    <msg name="expand_all_activities">Déplier</msg>
 	<msg name="write_a_comment">Laissez un commentaire...</msg>
 	<msg name="show_all_num_comments">Afficher tous les {0} commentaires.</msg>
 	<msg name="hide_all_comments">Masquer tous les commentaires.</msg>
 	<msg name="user_commented_on_an_activity">{0} a commenté sur une activié.</msg>
 	<msg name="like">J'aime</msg>
-	<msg name="unlike">J'aime pas</msg>
+	<msg name="unlike">Je n'aime plus</msg>
 	<msg name="delete">Supprimer</msg>
 	<msg name="are_you_sure_to_delete_this_activity">Etes-vous certain de vouloir supprimer cette activité?</msg>
 	<msg name="are_you_sure_to_delete_this_comment">Etes-vous certain de vouloir supprimer ce commentaire?</msg>
@@ -40,9 +42,9 @@
 	<msg name="one_person">1 persone</msg>
 	<msg name="num_persons">{0} personnes</msg>
 	<msg name="you_and_persons_like_this">Vous et {0} avez apprécié.</msg>
-	<msg name="you_like_this">Vous appréciez.</msg>
-	<msg name="person_likes_this">{0} apprécie.</msg>
-	<msg name="persons_like_this">{0} apprécient.</msg>
+	<msg name="you_like_this">Vous aimez.</msg>
+	<msg name="person_likes_this">{0} aime.</msg>
+	<msg name="persons_like_this">{0} aiment.</msg>
 	<msg name="an_undetermined_amount_of_time_ago">Il y a un certain temps.</msg>
 	<msg name="less_than_a_minute_ago">Il y a moins d'une minute.</msg>
 	<msg name="about_a_minute_ago">Environ il y a une minute.</msg>
@@ -73,4 +75,5 @@
 	<msg name="day_date_month_year_at_hour_min_ap">{0} {1} {2} {3} at {4} : {5} : {6}.</msg>
 	<msg name="error_activity_not_found">Erreur: cette activité vient d'être supprimée par son auteur.</msg>
 	<msg name="internal_error">Une erreur interne vient de survenir. Veuillez rafraîchir.</msg>
+    <msg name="RELATION_CONFIRMED">${Requester} est maintenant connecté à ${Accepter}</msg>
 </messageBundle>
