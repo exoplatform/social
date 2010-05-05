@@ -86,10 +86,7 @@ img {border: none}
 }
 
 .ActivitiesComponent .ActivitiesContainer{
-	border-right: 1px solid #d6d6d6;
-	border-left: 1px solid #d6d6d6;
-	padding: 5px 20px 10px;
-	border-bottom: 1px solid #d6d6d6;
+	padding:10px;
 }
 
 .ActivitiesComponent .ActivitiesContainer .MyStatusComponent {
@@ -265,7 +262,16 @@ img {border: none}
 
 .ADecoratorContainer .ActivitiesContent {
 	background: #fbfbfb;
-	padding: 8px 8px 13px;
+	padding: 10px;
+}
+
+.ADecoratorContainer .ActivitiesContent .Link {
+	color: gray;
+	text-decoration: underline;
+}
+
+.ADecoratorContainer .ActivitiesContent .Link:hover {
+	text-decoration: none;
 }
 
 .ADecoratorContainerGray .ActivitiesContent {
@@ -376,11 +382,18 @@ img {border: none}
 	margin: 8px;
 }
 
-
 .ActivitiesContainer .UserName {
-	color:#424242;
 	line-height: 24px;
 	float: left;
+}
+
+.ActivitiesContainer .TitleContent .UserName a {
+	color: #0065CC;
+	text-decoration: none;
+}
+
+.ActivitiesContainer .TitleContent .UserName a:hover {
+	text-decoration: underline;
 }
 
 .ActivitiesContainer .ActionContenButton {
@@ -444,11 +457,18 @@ img {border: none}
 }
 
 .ActivitiesContainer .ContentArea {
-  color:black;
   line-height: 18px;
   overflow-x: hidden;
   font-size: 13px;
   margin-bottom: 3px;
+}
+
+.ActivitiesContainer .ContentArea a {
+  color: #058EE6;
+}
+
+.ActivitiesContainer .ContentArea a:hover {
+	text-decoration: underline;
 }
 
 .ActivitiesContainer .LinkShareContent {
@@ -593,6 +613,14 @@ img {border: none}
   margin-left: 110px;
 }
 
+.LinkShare .Content .Title .ColorLink {
+  text-decoration: underline;
+}
+
+.ActivitiesShowHideBlock {
+	padding: 10px 0px;
+}
+
 .ActivitiesShowHideBlock .CollapseAllActivities {
   background: transparent url('images/CollapseActivitiesIcon.gif') no-repeat scroll left center;
   cursor: pointer;
@@ -603,4 +631,8 @@ img {border: none}
   background: transparent url('images/ExpandActivitiesIcon.gif') no-repeat scroll left center;
   cursor: pointer;
   padding: 0 20px;
+}
+
+.ActivitiesContainer .Empty {
+	padding: 10px;
 }
