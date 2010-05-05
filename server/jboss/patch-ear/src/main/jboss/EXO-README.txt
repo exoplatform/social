@@ -1,22 +1,3 @@
-====
-    Copyright (C) 2010 eXo Platform SAS.
-    
-    This is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Lesser General Public License as
-    published by the Free Software Foundation; either version 2.1 of
-    the License, or (at your option) any later version.
-    
-    This software is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-    Lesser General Public License for more details.
-    
-    You should have received a copy of the GNU Lesser General Public
-    License along with this software; if not, write to the Free
-    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-    02110-1301 USA, or see the FSF site: http://www.fsf.org.
-====
-
 ==============================================
     Release Notes - exo-social - Version 1.0.0 GA
 ==============================================
@@ -47,11 +28,9 @@ eXo Social is composed of 2 modules :
 =============
 
 
-    * General
-          o Upgraded to GateIn 3.0 GA and dependencies http://www.jboss.org/gatein/
-          o Configure new share-layout on socialdemo and portal for better use.
-          o Fix a lots of bug in gadget activities.
-          o Integrate space's activities stream.
+* French translation
+* Enhanced Space Activities
+* Several usability enhancements
 
           
           
@@ -98,15 +77,14 @@ Need to set the JAVA_HOME variable for run Social servers.
 
 -) How to access the eXo Social
 
+
 * Enter one of the following addresses into your browser address bar:
+   Social demo portal  
+      http://localhost:8080/socialdemo
    Classic :
       http://localhost:8080/portal
       http://localhost:8080/portal/public/classic
-   Social demo portal  
-      http://localhost:8080/socialdemo
 
-You can log into the portal with the following accounts: root, john, marry, demo.
-All those accounts have the default password "gtn".
 
 * Direct link to access applications in Social :
     +) Spaces application: http://localhost:8080/socialdemo/private/classic/spaces     
@@ -115,6 +93,13 @@ All those accounts have the default password "gtn".
     +) Profile of user: http://localhost:8080/socialdemo/private/classic/profile     
     
   You will get login form if you are not yet logged in to Social.
+
+
+
+You can log into the portal with the following accounts: root, john, marry, demo.
+All those accounts have the default password "gtn".
+
+
 
 
 ===========
@@ -131,6 +116,50 @@ All those accounts have the default password "gtn".
 ===========
 5 CHANGELOG
 ===========
+
+-  1.0.0 GA
+
+Bug
+    * [SOC-589] - Show exception when delete user who invited
+    * [SOC-671] - Session timeout when delete user in member tab of space which used to create this space
+    * [SOC-697] - Duplicate Space's group in Application registry portlet
+    * [SOC-702] - Show wrong in Popup My Space after created new node 
+    * [SOC-704] - Lose page's title of request page in Manage Page
+    * [SOC-712] - IE6: Error displaying in Search invited form when don't any user is invited
+    * [SOC-814] - Error when go to Activity page with Ubuntu
+    * [SOC-815] - Can not search by alphabet or All after inputing some special chars (eg: @, #, $,\, ...) into search text box
+    * [SOC-835] - Not display navigation in menu of group toolbar after creating space bound to existing group
+    * [SOC-837] - gadget on the dashboard of a space
+    * [SOC-838] - New clonned node does not have same properties and page as original node
+    * [SOC-839] - Display collapse/append when view other activities
+    * [SOC-840] - Occur exception and can't view space setting portlet in special case
+    * [SOC-841] - User can't add navigation if user  is manager of group but navigation for that group has not been created yet
+    * [SOC-842] - Can not view friend's activity in list of invited user
+    * [SOC-843] - Page index of the member list of a space does not work well
+    * [SOC-846] - Blue border is missing on space layout
+
+Feedback
+    * [SOC-82] - should synchronous data in some portlet
+    * [SOC-745] - look and feel of login page is outdated
+    * [SOC-747] - enhance readability of space description
+    * [SOC-752] - Members screen is confusing.
+    * [SOC-756] -  "Friends activities" should be renamed "${OWNER} Relations Activities"
+    * [SOC-761] - Enhance how empty fields of someone else's profile are displayed
+    * [SOC-825] - When going to someone else's profile, it first shows me the status update field, then disappears
+
+Improvement
+    * [SOC-830] - Update link title, description inlined after attaching a link
+    * [SOC-833] - Make user activies and space activities's has the same look and feel
+    * [SOC-849] - Enhance look and feel of activities
+
+Task
+    * [SOC-687] - social.ear for JBoss
+    * [SOC-693] - Rename Invitation/Request listing
+    * [SOC-737] - Data injector
+    * [SOC-763] - Fix the invalid gatein-resources.xml in ExoResourcesSocial
+    * [SOC-783] - french translation
+    * [SOC-847] - Global wording review
+
 
 - 1.0.0 CR02
 
