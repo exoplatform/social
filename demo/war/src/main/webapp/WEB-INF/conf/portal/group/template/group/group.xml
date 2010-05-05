@@ -47,6 +47,15 @@
 	    <show-info-bar>false</show-info-bar>
 	  </portlet-application>
 	  
+	  <portlet-application>
+      <portlet>
+        <application-ref>space</application-ref>
+        <portlet-ref>SocialDemoNavigationPortlet</portlet-ref>
+      </portlet>
+      <access-permissions>Everyone</access-permissions>
+	    <show-info-bar>false</show-info-bar>
+	  </portlet-application>
+	  
     <page-body>
     </page-body>
 
