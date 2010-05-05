@@ -33,6 +33,7 @@ import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
+import org.exoplatform.portal.config.model.Dashboard;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PageNavigation;
@@ -60,6 +61,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
 
   public static final String                                 SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
   
+  static public final String                                 APPLICATION_CONTAINER  = "Application";
+  
   private ExoContainer                                       container              = ExoContainerContext.getCurrentContainer();
 
   private DataStorage                                        dataStorage            = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
@@ -84,14 +87,19 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       List<PageNode> childNodes = homeNode.getChildren();
       if (childNodes == null)
         childNodes = new ArrayList<PageNode>();
+      PageNode dashBoardPageNode = null;
       for (String app : apps) {
         app = (app.trim()).split(":")[0];
         PageNode appNode = createPageNodeFromApplication(space, app, null, false);
+        // if current node is DashBoard application portlet
+        if ("DashboardPortlet".equals(app)) dashBoardPageNode = appNode;
         childNodes.add(appNode);
       }
       // homeNode.setChildren((ArrayList<PageNode>) childNodes);
       spaceNav.addNode(homeNode);
       dataStorage.save(spaceNav);
+      //TODO. Change number of column into 2 in dashboard application in space SOC-837
+      changeDashBoardColumn(dashBoardPageNode);
       SpaceUtils.setNavigation(spaceNav);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);
@@ -241,8 +249,11 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       List<PageNode> childNodes = homeNode.getChildren();
       if (childNodes == null)
         childNodes = new ArrayList<PageNode>();
+      // 
       childNodes.add(pageNode);
       dataStorage.save(nav);
+      //TODO. change number of column into 2 in dashboard application in space SOC-837
+      if ("DashboardPortlet".equals(appId)) changeDashBoardColumn(pageNode);
       uiPortal.setSelectedNode(selectedNode);
       uiPortal.setSelectedNavigation(nav);
       SpaceUtils.setNavigation(nav);
@@ -604,4 +615,33 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     return portletApp;
   }
 
+  /**
+   * Change the number of columns in DashBoard of space into 2 instead of 3 by default. 
+   * 
+   * @param spaceAppNode Dashboard page node.
+   * @throws Exception 
+   */
+  private void changeDashBoardColumn(PageNode spaceAppNode) throws Exception {
+	String pageId = spaceAppNode.getPageReference();	
+    Page page = dataStorage.getPage(pageId);
+    ArrayList<ModelObject> pageChildren = page.getChildren();
+    
+    Container applicationContainer = SpaceUtils.findContainerById(pageChildren, APPLICATION_CONTAINER);
+    
+    try {
+      org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> 
+      applicationPortlet = (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>)
+                          applicationContainer.getChildren().get(0);
+      
+      // Get DashBoard storageId for load DashBoard container
+      String dashboardId = applicationPortlet.getStorageId();
+      Dashboard container = dataStorage.loadDashboard(dashboardId);
+      ArrayList<ModelObject> containerDatas = container.getChildren();
+      // Remove one child (one column) from children.
+      containerDatas.remove(2);
+      container.setChildren(containerDatas);
+      dataStorage.saveDashboard(container);
+    } catch(Exception e) {
+    }
+  }
 }
