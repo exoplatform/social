@@ -169,10 +169,10 @@ public class UISpaceInfo extends UIForm {
           }
         }
         homeNode = SpaceUtils.getHomeNode(spaceNavigation, spaceUrl);
-        SpaceUtils.changeSpaceUrlPreference(homeNode, space, true);
         if (homeNode == null) {
           throw new Exception("homeNode is null!");
         }
+        SpaceUtils.changeSpaceUrlPreference(homeNode, space);
         homeNode.setUri(cleanedString);
         homeNode.setName(cleanedString);
         homeNode.setLabel(name);
@@ -182,7 +182,7 @@ public class UISpaceInfo extends UIForm {
         String newUri;
         for (int i = 0; i < childNodes.size(); i++) {
           childNode = childNodes.get(i);
-          SpaceUtils.changeSpaceUrlPreference(childNode, space, false);
+          SpaceUtils.changeSpaceUrlPreference(childNode, space);
           oldUri = childNode.getUri();
           newUri = oldUri.replace(oldUri.substring(0, oldUri.lastIndexOf("/")), cleanedString);
           childNode.setUri(newUri);

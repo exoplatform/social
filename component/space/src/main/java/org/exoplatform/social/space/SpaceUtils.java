@@ -90,7 +90,7 @@ public class SpaceUtils {
   static private SpaceService spaceService;
   static private List<Application> appListCache = new ArrayList<Application>();
   static private ApplicationRegistryService appService = null;
-  
+  static public String[] PORTLETS_SPACE_URL_PREFERENCE_NEEDED = {"SpaceActivityStreamPortlet", "SpaceSettingPortlet", "UserListPortlet"}; 
   private static final String REMOTE_CATEGORY_NAME = "remote";
   /**
    * Creates a new group from an existing group.
@@ -382,11 +382,11 @@ public class SpaceUtils {
    * change spaceUrl preferences for all applications in a pageNode.
    * This pageNode is the clonedPage of spacetemplate.
    * @param spacePageNode
-   * @param newUrl
+   * @param space
    * @throws Exception 
    */
   @SuppressWarnings("unchecked")
-  static public void changeSpaceUrlPreference(PageNode spacePageNode, Space space, boolean isRoot) throws Exception {
+  static public void changeSpaceUrlPreference(PageNode spacePageNode, Space space) throws Exception {
     String pageId = spacePageNode.getPageReference();
     DataStorage dataStorage = getDataStorage();
     Page page = dataStorage.getPage(pageId);
@@ -408,6 +408,7 @@ public class SpaceUtils {
       }
       dataStorage.save(menuState, menuPortletPreference);
     } catch(Exception e) {
+      LOG.warn("Can not save menu portlet preference!");
       e.printStackTrace();
     }
     
@@ -422,13 +423,13 @@ public class SpaceUtils {
       try {
         appPortletPreference = dataStorage.load(appState, ApplicationType.PORTLET);
         if (appPortletPreference == null) {
-          appPortletPreference = new PortletBuilder().add(SPACE_URL, space.getUrl()).build();
+          return;
         } else {
           appPortletPreference.setValue(SPACE_URL, space.getUrl());
         }
         dataStorage.save(appState, appPortletPreference);
       } catch(Exception e) {
-        LOG.warn("Can not save application preference!");
+        LOG.warn("Can not save application portlet preference!");
         e.printStackTrace();
       }
       

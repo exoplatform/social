@@ -600,8 +600,12 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     String persistenceid = instanceId.substring(i1 + 2);
     String[] persistenceChunks = split("/", persistenceid);
     PortletBuilder pb = new PortletBuilder();
-    //TODO hoatle set spaceURL for selected apps only
-    pb.add(SpaceUtils.SPACE_URL, space.getUrl());
+    for (String appName : SpaceUtils.PORTLETS_SPACE_URL_PREFERENCE_NEEDED) {
+      if (instanceId.contains(appName)) {
+        pb.add(SpaceUtils.SPACE_URL, space.getUrl());
+        break;
+      }
+    }
     
     TransientApplicationState<Portlet> portletState = new TransientApplicationState<Portlet>(persistenceChunks[0]
                                                                                           + "/"
