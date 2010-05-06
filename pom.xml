@@ -4,18 +4,18 @@
   <parent>
     <groupId>org.exoplatform</groupId>
     <artifactId>exo.parent</artifactId>
-    <version>8</version>
-  </parent>
+    <version>7</version>
+  </parent> 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
+  <version>1.0.0-GA</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</connection>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/projects/social/trunk</url>
+    <connection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0.0-GA</connection>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0.0-GA</developerConnection>
+    <url>http://fisheye.exoplatform.org/browse/projects/social/tags/1.0.0-GA</url>
   </scm>
   
   <properties>

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
-    <version>1.0.0-GA-SNAPSHOT</version>
+    <version>1.0.0-GA</version>
   </parent>
   <artifactId>exo.social.packaging.assembly</artifactId>
   <packaging>pom</packaging>
