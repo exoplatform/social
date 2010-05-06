@@ -19,41 +19,41 @@
 <div class="UISocialHomepage" id="$uicomponent.id">
 	<div class="LeftSocialHomepage">
 		<div class="HomeBackground">
-			<div class="HomeBackgroundText">eXo Social</div>
+			<div class="HomeBackgroundText"><%=_ctx.appRes("UIHomePagePortlet.title.product")%></div>
 		</div>
 		<div class="LeftBoxDecorator">
 			<div class="RightBoxDecorator">
 				<div class="CenterBoxDecorator">
 					<div class="BoxLeft">
 						<div class="TitBoxLeft">
-							<div class="TitBoxLeftL">People</div>
-							<div class="TitBoxLeftR">Your own enterprise social network</div>
+							<div class="TitBoxLeftL"><%=_ctx.appRes("UIHomePagePortlet.title.people")%></div>
+							<div class="TitBoxLeftR"><%=_ctx.appRes("UIHomePagePortlet.label.addSocial")%></div>
 							<div class="ClearBoth"><span></span></div>
 						</div>
 						<div class="ContentBoxLeft">
 							<a class="PeopleIcon IconBoxleft"><span></span></a>
-							<div class="TxtBoxLeft">Turn your directory into a social network
-								<br/>Users can fill their profile
-								<br/>Search by skills and experience
-								<br/>Activity status updates
-								<br/>Opensocial API support 
+							<div class="TxtBoxLeft"><%=_ctx.appRes("UIHomePagePortlet.info.people1")%>
+								<br/><%=_ctx.appRes("UIHomePagePortlet.info.people2")%>
+								<br/><%=_ctx.appRes("UIHomePagePortlet.info.people3")%>
+								<br/><%=_ctx.appRes("UIHomePagePortlet.info.people4")%>
+								<br/><%=_ctx.appRes("UIHomePagePortlet.info.people5")%>
 							</div>
 							<div class="ClearBoth"><span></span></div>
 						</div>
 					</div>
 					<div class="BoxLeft LineBoxLeft">
 						<div class="TitBoxLeft">
-							<div class="TitBoxLeftL">Spaces</div>
-							<div class="TitBoxLeftR">Community management made easy</div>
+							<div class="TitBoxLeftL"><%=_ctx.appRes("UIHomePagePortlet.title.spaces")%></div>
+							<div class="TitBoxLeftR"><%=_ctx.appRes("UIHomePagePortlet.label.addCommunities")%></div>
 							<div class="ClearBoth"><span></span></div>
 						</div>
 						<div class="ContentBoxLeft">
 							<a class="SpaceIcon IconBoxleft"><span></span></a>
-							<div class="TxtBoxLeft">Let dormant communities reveal themselves
-								<br/>Open community management
-								<br/>Activity streams to aggregate knowledge
-								<br/>Easily deploy custom applications
-								<br/>User friendly interface
+							<div class="TxtBoxLeft"><%=_ctx.appRes("UIHomePagePortlet.info.spaces1")%>
+								<br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces2")%>
+								<br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces3")%>
+								<br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces4")%>
+								<br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces5")%>
 							</div>
 							<div class="ClearBoth"><span></span></div>
 						</div>
@@ -65,17 +65,17 @@
 	</div>
 	<div class="RightSocialHomepage">
 		<div class="BoxRight">
-			<div class="TitBoxRight">DOWNDLOAD</div>
+			<div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.download")%></div>
 			<a href="https://sourceforge.net/projects/exo-social/" class="ImgBoxRight ImgDownload"><span></span></a>
 		</div>
 		<div class="LineBoxRight"><span></span></div>
 		<div class="BoxRight">
-			<div class="TitBoxRight">FEEDBACK</div>
+			<div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.feedback")%></div>
 			<a href="http://spreadsheets.google.com/viewform?formkey=dERsbWp1NWl3eGs0ekZEV3NpWi1Sa0E6MA" class="ImgBoxRight ImgFeedBack"><span></span></a>
 		</div>
 		<div class="LineBoxRight"><span></span></div>
 		<div class="BoxRight">
-			<div class="TitBoxRight">CONTACT</div>
+			<div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.contact")%></div>
 			<a href="mailto:exo-sc@exoplatform.com" class="ImgBoxRight ImgContact"><span></span></a>
 		</div>
 	</div>
