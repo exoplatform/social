@@ -7,11 +7,9 @@
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.application.rest</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>eXo Social Application Rest Service</name>
-  <description>eXo Social Application Rest Service</description>
-  <url>http://www.exoplatform.org</url>
+  <name>eXo Social Application REST Service</name>
+  <description>eXo Social Application REST Service</description>
   <dependencies>
     <dependency>
       <groupId>net.sourceforge.nekohtml</groupId>

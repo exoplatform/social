@@ -7,7 +7,6 @@
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.web.socialResources</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>Social Resources</name>
   <build>

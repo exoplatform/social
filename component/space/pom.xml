@@ -7,11 +7,9 @@
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.component.space</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Space Service</name>
   <description>eXo Social Core Space Service</description>
-  <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
@@ -96,25 +94,6 @@
       <version>2.5</version>
       <scope>provided</scope>     
     </dependency>    
-
-    
-  <!-- 
-[WARNING] Used undeclared dependencies found:
-[WARNING]    org.gatein.common:common-common:jar:2.0.0-GA:provided
-[WARNING]    org.exoplatform.portal:exo.portal.component.test.core:jar:3.0.0-GA:test
-[WARNING]    org.exoplatform.core:exo.core.component.organization.api:jar:2.3.0-GA:provided
-[WARNING]    org.exoplatform.portal:exo.portal.component.application-registry:jar:3.0.0-GA:provided
-[WARNING]    org.exoplatform.portal:exo.portal.component.portal:jar:3.0.0-GA:provided
-[WARNING]    org.exoplatform.kernel:exo.kernel.commons:jar:2.2.0-GA:provided
-[WARNING]    org.exoplatform.core:exo.core.component.security.core:jar:2.3.0-GA:provided
-
-[WARNING]    org.exoplatform.portal:exo.portal.webui.core:jar:3.0.0-GA:provided
-[WARNING]    javax.servlet:servlet-api:jar:2.5:test
-[WARNING]    org.testng:testng:jar:jdk15:5.10:test
-[WARNING]    org.mockito:mockito-all:jar:1.8.1:test
-[WARNING]    org.exoplatform.tool:exo.tool.framework.junit:jar:1.2.1-GA:provided
-	 -->  	
-	
-	      
+ 
   </dependencies>
 </project>

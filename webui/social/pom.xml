@@ -7,11 +7,9 @@
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.webui.social</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Social webui Module</name>
   <description>social project, webui module</description>
-  <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
@@ -22,7 +20,7 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>1.0.0-GA-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -34,7 +32,7 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>1.0.0-GA-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

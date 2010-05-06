@@ -7,16 +7,14 @@
     <version>1.0.0-GA-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.portlet.space</artifactId>
-  <version>1.0.0-GA-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>eXo Social Portlet Space</name>
   <description>social project, portlet web category</description>
-  <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>1.0.0-GA-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -34,13 +32,13 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.webui.social</artifactId>
-      <version>1.0.0-GA-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>1.0.0-GA-SNAPSHOT</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
