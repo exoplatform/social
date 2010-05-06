@@ -31,7 +31,7 @@
   <name>eXo Social Extension</name>
   <modules>
     <module>config</module>
-   <!-- <module>jar</module> -->
+    <module>jar</module>
     <module>war</module>
     <module>ear</module>
   </modules>
