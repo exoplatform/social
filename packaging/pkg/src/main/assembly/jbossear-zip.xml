@@ -4,14 +4,13 @@
    <id>jbossas</id>
    <formats>
       <format>zip</format>
-      <format>tar.gz</format>
    </formats>
    <includeBaseDirectory>false</includeBaseDirectory>
    <fileSets>
       <fileSet>
          <directory>target/jboss</directory>
          <outputDirectory>${project.build.finalName}</outputDirectory>
-         <useDefaultExcludes>true</useDefaultExcludes>
+         <!--useDefaultExcludes>true</useDefaultExcludes-->
          <excludes>
             <exclude>**/*.sh</exclude>
          </excludes>
@@ -19,7 +18,7 @@
       <fileSet>
          <directory>target/jboss</directory>
          <outputDirectory>${project.build.finalName}</outputDirectory>
-         <useDefaultExcludes>true</useDefaultExcludes>
+         <!--useDefaultExcludes>true</useDefaultExcludes-->>
          <includes>
             <include>**/*.sh</include>
          </includes>
