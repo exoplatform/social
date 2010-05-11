@@ -101,6 +101,7 @@ public class UIManageMySpaces extends UIContainer {
   static private final Integer LEADER = 1, MEMBER = 2;
   private static final String SPACE_DELETED_INFO = "UIManageMySpaces.msg.DeletedInfo";
   private static final String MEMBERSHIP_REMOVED_INFO = "UIManageMySpaces.msg.MemberShipRemovedInfo";
+  private static final String NAVIGATION_REMOVED_INFO = "UIManageMySpaces.msg.NavigationRemovedInfo";
   
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
   private UIPageIterator iterator;
@@ -305,6 +306,12 @@ public class UIManageMySpaces extends UIContainer {
       }
       
       PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
+      
+      if (groupNav == null) {
+	    uiApp.addMessage(new ApplicationMessage(NAVIGATION_REMOVED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
       uiMySpaces.setSelectedNavigation(groupNav);
       UIPopupWindow uiPopup = uiMySpaces.getChild(UIPopupWindow.class);
       UINavigationManagement pageManager = uiPopup.createUIComponent(UINavigationManagement.class,

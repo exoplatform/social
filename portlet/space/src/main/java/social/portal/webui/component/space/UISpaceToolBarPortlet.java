@@ -18,17 +18,15 @@ package social.portal.webui.component.space;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.navigation.PageNavigationUtils;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
@@ -77,15 +75,20 @@ public class UISpaceToolBarPortlet extends UIPortletApplication {
   {
 	String remoteUser = Util.getPortalRequestContext().getRemoteUser();
 	SpaceService spaceSrv = getSpaceService();
-    List<Space> spaces = spaceSrv.getAllSpaces();
+    List<Space> spaces = spaceSrv.getAccessibleSpaces(remoteUser);
     List<PageNavigation> navigations = new ArrayList<PageNavigation>();
+    PageNavigation spaceNavigation = null;
+    List<PageNode> nodes =  null;
+    Iterator<PageNode> itr;
+    PageNode spaceNode;
+    String nodeName;
+    String spaceName;
     for (Space space : spaces) {
-	    PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
-	    List<PageNode> nodes = spaceNavigation.getNodes();
-	    Iterator<PageNode> itr = nodes.iterator();
-	    PageNode spaceNode;
-	    String nodeName;
-	    String spaceName = space.getName();
+	    spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
+        if (spaceNavigation == null) continue;
+	    nodes = spaceNavigation.getNodes();
+	    itr = nodes.iterator();
+	    spaceName = space.getName();
 	    while (itr.hasNext()) {
 	      spaceNode = itr.next();
 	      nodeName = spaceNode.getName();
