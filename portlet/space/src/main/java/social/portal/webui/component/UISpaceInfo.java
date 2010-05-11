@@ -77,12 +77,16 @@ public class UISpaceInfo extends UIForm {
    */
   public UISpaceInfo() throws Exception {
     addUIFormInput((UIFormStringInput)new UIFormStringInput("id","id",null).setRendered(false)).
-    addUIFormInput(new UIFormStringInput("name","name",null).
-                   addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}]+$", "UISpaceInfo.msg.name-invalid").
-                   addValidator(StringLengthValidator.class, 3, 30)).
+
+    addUIFormInput(new UIFormStringInput("name", "name", null)
+                        .addValidator(MandatoryValidator.class)
+                        .addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\- \\d]+$", "ResourceValidator.msg.Invalid-char")
+                        .addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}]+$", "UISpaceInfo.msg.name-invalid")
+                        .addValidator(StringLengthValidator.class, 3, 30));
+
     addUIFormInput(new UIFormTextAreaInput("description","description",null).
                    addValidator(StringLengthValidator.class, 0, 255));
+    
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
     SelectItemOption<String> pHigh = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
     SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_IMMEDIATE, Space.INTERMEDIATE_PRIORITY);
