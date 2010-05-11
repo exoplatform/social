@@ -468,8 +468,17 @@ img {border: none}
 }
 
 .ActivitiesContainer .ContentArea a:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
+
+.ActivitiesContainer .ContentArea ol {
+  list-style-type: decimal; 
+}
+
+.ActivitiesContainer .ContentArea ul {
+  list-style-type: circle;
+}
+
 
 .ActivitiesContainer .LinkShareContent {
   color:#424242;
@@ -636,3 +645,4 @@ img {border: none}
 .ActivitiesContainer .Empty {
 	padding: 10px;
 }
+
