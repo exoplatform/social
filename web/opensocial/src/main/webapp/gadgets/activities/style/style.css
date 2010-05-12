@@ -472,13 +472,14 @@ img {border: none}
 }
 
 .ActivitiesContainer .ContentArea ol {
-  list-style-type: decimal; 
+  list-style-type: decimal;
+  padding:0 0 0 25px;
 }
 
 .ActivitiesContainer .ContentArea ul {
   list-style-type: circle;
+  padding:0 0 0 25px;
 }
-
 
 .ActivitiesContainer .LinkShareContent {
   color:#424242;
@@ -645,4 +646,3 @@ img {border: none}
 .ActivitiesContainer .Empty {
 	padding: 10px;
 }
-
