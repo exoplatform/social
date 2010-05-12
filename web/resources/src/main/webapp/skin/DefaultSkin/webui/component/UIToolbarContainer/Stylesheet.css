@@ -75,6 +75,8 @@
 .UIToolbarContainer .MenuItemContainer {	
 	position: absolute;
 	border: 1px solid #9e9fa3;
+    display: none;
+    z-index: 1000;
 }
 
 .UIToolbarContainer .TitleBar {
