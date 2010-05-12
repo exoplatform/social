@@ -473,10 +473,12 @@ img {border: none}
 
 .ActivitiesContainer .ContentArea ol {
   list-style-type: decimal;
+  padding:0 0 0 25px;
 }
 
 .ActivitiesContainer .ContentArea ul {
   list-style-type: circle;
+  padding:0 0 0 25px;
 }
 
 .ActivitiesContainer .LinkShareContent {
