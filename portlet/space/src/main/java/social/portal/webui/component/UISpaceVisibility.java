@@ -18,9 +18,13 @@ package social.portal.webui.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.social.space.Space;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.model.SelectItemOption;
+import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
@@ -35,11 +39,14 @@ import org.exoplatform.webui.form.UIFormRadioBoxInput;
  * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since  Jul 1, 2009
  */
+
+@ComponentConfig(template = "app:/groovy/portal/webui/component/UIVisibilityFormInputSet.gtmpl")
 public class UISpaceVisibility extends UIFormInputSet {
   private final String UI_SPACE_VISIBILITY   = "UIVisibility";
   private final String UI_SPACE_REGISTRATION = "UIRegistration";
   private final String VISIBILITY_BINDING    = "visibility";
   private final String REGISTRATION_BINDING  = "registration";
+  private final String VISIBLE_VALIDATION_SPACE = "UISpaceVisibility.label.VisibleAndValidationSpace";
   
   /**
    * Constructor
@@ -48,6 +55,7 @@ public class UISpaceVisibility extends UIFormInputSet {
    */
   public UISpaceVisibility(String name) throws Exception {
     super(name);
+    setComponentConfig(getClass(), null);
 //    List<SelectItemOption<String>> spaceVisibility = new ArrayList<SelectItemOption<String>>(3);
 //    SelectItemOption<String> publicOption = new SelectItemOption<String>(Space.PUBLIC);
 //    spaceVisibility.add(publicOption);
@@ -81,5 +89,12 @@ public class UISpaceVisibility extends UIFormInputSet {
                                                                       spaceRegistration);
     uiRadioRegistration.setValue(Space.VALIDATION);
     addUIFormInput(uiRadioRegistration);
+    
+    UIFormInputInfo visibilityInfo = new UIFormInputInfo("Visibility", null, null);
+    WebuiRequestContext webReqCtx = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resApp = webReqCtx.getApplicationResourceBundle();
+    String visibleAndOpen = resApp.getString(VISIBLE_VALIDATION_SPACE);
+    visibilityInfo.setValue(visibleAndOpen);
+    addUIFormInput(visibilityInfo);
   }
 }
