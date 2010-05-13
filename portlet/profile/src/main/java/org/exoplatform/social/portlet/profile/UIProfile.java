@@ -47,11 +47,11 @@ import org.exoplatform.webui.event.EventListener;
  */
 
 @ComponentConfig(
-    lifecycle = UIApplicationLifecycle.class,
-    template = "app:/groovy/portal/webui/component/UIProfile.gtmpl",
-    events = {
-      @EventConfig(listeners=UIProfile.ChangeAvatarActionListener.class)
-    }
+  lifecycle = UIApplicationLifecycle.class,
+  template = "app:/groovy/portal/webui/component/UIProfile.gtmpl",
+  events = {
+    @EventConfig(listeners=UIProfile.ChangeAvatarActionListener.class)
+  }
 )
 public class UIProfile extends UIContainer {
   

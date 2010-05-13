@@ -54,11 +54,11 @@ import org.exoplatform.webui.event.Event.Phase;
  * Aug 25, 2009  
  */
 @ComponentConfig(
-    template =  "app:/groovy/portal/webui/component/UIPendingRelation.gtmpl",
-    events = { 
-        @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class),
-        @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE)
-    }
+  template =  "app:/groovy/portal/webui/component/UIPendingRelation.gtmpl",
+  events = { 
+    @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class),
+    @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE)
+  }
 )
 public class UIPendingRelation extends UIContainer {
   /** UIPageIterator ID. */

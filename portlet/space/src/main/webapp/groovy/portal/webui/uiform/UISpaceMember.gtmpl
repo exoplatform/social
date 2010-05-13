@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -16,199 +18,203 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<% import org.exoplatform.webui.core.UIPopupWindow
-	 import org.exoplatform.webui.core.UIPageIterator;
-	 import org.exoplatform.web.application.JavascriptManager;
-	 
-	 def uicomponentId = uicomponent.id
-   def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction")
-   def labelInviteAction = _ctx.appRes("${uicomponentId}.label.InviteAction")
-   def labelValidateAction = _ctx.appRes("${uicomponentId}.label.ValidateAction")
-   def labelDeclineAction = _ctx.appRes("${uicomponentId}.label.DeclineAction")
-   def labelRevokeInvitedAction = _ctx.appRes("${uicomponentId}.label.RevokeInvitedAction")
-   def labelRemoveLeader = _ctx.appRes("${uicomponentId}.label.RemoveLeader")
-   def labelMakeLeader = _ctx.appRes("${uicomponentId}.label.MakeLeader")
-   def labelRemoveAction = _ctx.appRes("${uicomponentId}.label.RemoveAction")
-   def allUserName = uicomponent.getAllUserNames().toString();
-	 List<String> pendingUsers = uicomponent.getPendingUsers();
-	 List<String> invitedUsers = uicomponent.getInvitedUsers();
-	 List<String> existingUsers = uicomponent.getExistingUsers();
-	 
-	 UIPageIterator iteratorPendingUsers = uicomponent.getUIPageIteratorPendingUsers() 
-	 UIPageIterator iteratorInvitedUsers = uicomponent.getUIPageIteratorInvitedUsers();
-	 UIPageIterator iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
-	 
-	 def rcontext = _ctx.getRequestContext() ;
-	 JavascriptManager jsmanager = rcontext.getJavascriptManager();
-   jsmanager.importJavascript('eXo.social.webui.UISpaceMemberSuggestion', '/eXoResourcesSocial/javascript');
-   jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestMultiValueControl','/eXoResourcesSocial/javascript');
-   jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceMemberSuggest.onLoad("' + allUserName + '");');
-	 def pendingIdx = 0;
-	 def invitedIdx = 0;
-	 def existingIdx = 0;
+*/
 %>
-<div class="UISpaceMember">
-	<% uiform.begin() %>
-	<% String searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
-	<% String inviteAction = uicomponent.event("Invite") + "; return false;"%>
-	<div class="TitleContainer" style="background: none;" >
-	  <div class="InviteSocialLeft">
-	    <div class="InviteSocialRight">
-	      <div class="InviteSocialCenter">
-	        <div style="margin: auto;">
-						<div class="SearchInviteForm">
-						  <div class="AddInvite"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%> :<% uiform.renderField("user") %></div>
-						  	<div class="SearchInviteButton">
-								<div class="SearchAddMemberIcon" onclick="$inviteAction" title="$labelInviteAction"><span></span></div>
-							</div>
-						  <div style="clear: left;"><span></span></div>
-				  	</div>
-				  	<div class="SearchInviteButton">
-				  		<div class="UIActionContainer" style="padding: 5px 0px 8px; margin-left:0px">
-								<div class="InviteButton" onclick="$searchUserAction" title="$labelSearchUserAction"><span></span></div>
-							</div>
-						</div>
-					  
-					  <div style="clear: left;"><span></span></div>
-					</div>
-				</div>
-			</div>
-		</div> 
+<% 
+  import org.exoplatform.webui.core.UIPopupWindow;
+  import org.exoplatform.webui.core.UIPageIterator;
+  import org.exoplatform.web.application.JavascriptManager;
+  
+  def uicomponentId = uicomponent.id;
+  def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction");
+  def labelInviteAction = _ctx.appRes("${uicomponentId}.label.InviteAction");
+  def labelValidateAction = _ctx.appRes("${uicomponentId}.label.ValidateAction");
+  def labelDeclineAction = _ctx.appRes("${uicomponentId}.label.DeclineAction");
+  def labelRevokeInvitedAction = _ctx.appRes("${uicomponentId}.label.RevokeInvitedAction");
+  def labelRemoveLeader = _ctx.appRes("${uicomponentId}.label.RemoveLeader");
+  def labelMakeLeader = _ctx.appRes("${uicomponentId}.label.MakeLeader");
+  def labelRemoveAction = _ctx.appRes("${uicomponentId}.label.RemoveAction");
+  def allUserName = uicomponent.getAllUserNames().toString();
+  def pendingUsers = uicomponent.getPendingUsers();
+  def invitedUsers = uicomponent.getInvitedUsers();
+  def existingUsers = uicomponent.getExistingUsers();
+  def iteratorPendingUsers = uicomponent.getUIPageIteratorPendingUsers();
+  def iteratorInvitedUsers = uicomponent.getUIPageIteratorInvitedUsers();
+  def iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
+  def rcontext = _ctx.getRequestContext();
+  def jsmanager = rcontext.getJavascriptManager();
+  jsmanager.importJavascript('eXo.social.webui.UISpaceMemberSuggestion', '/eXoResourcesSocial/javascript');
+  jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestMultiValueControl','/eXoResourcesSocial/javascript');
+  jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceMemberSuggest.onLoad("' + allUserName + '");');
+  def pendingIdx = 0;
+  def invitedIdx = 0;
+  def existingIdx = 0;
+%>
+<div class="$uicomponent.id">
+<% uiform.begin() %>
+  <% def searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
+  <% def inviteAction = uicomponent.event("Invite") + "; return false;"%>
+  <div class="TitleContainer" style="background: none;">
+    <div class="InviteSocialLeft">
+      <div class="InviteSocialRight">
+        <div class="InviteSocialCenter">
+          <div style="margin: auto;">
+            <div class="SearchInviteForm">
+              <div class="AddInvite"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%> :<% uiform.renderField("user") %></div>
+              <div class="SearchInviteButton">
+                <div class="SearchAddMemberIcon" onclick="$inviteAction" title="$labelInviteAction"><span></span></div>
+              </div>
+              <div style="clear: left;"><span></span></div>
+            </div>
+            <div class="SearchInviteButton">
+              <div class="UIActionContainer" style="padding: 5px 0px 8px; margin-left:0px">
+                <div class="InviteButton" onclick="$searchUserAction" title="$labelSearchUserAction"><span></span></div>
+              </div>
+            </div>
+            <div style="clear: left;"><span></span></div>
+          </div>
+        </div>
+      </div>
+    </div> 
   </div>
-  
   <!-- pending -->
-  <% if(pendingUsers.size() > 0) { %>
-	  <table cellspacing="0" borderspacing="0" class="UIGrid" style="table-layout: auto; margin-top: 5px;" >
-			  <thead>
-			    <tr>
-				    <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.pending")%></th>
-					<th class="TitleBar" style="width: 80px;"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
-			    </tr>
-			  </thead>
-			  <% for(pendingUser in pendingUsers) { %>
-				  <% String declineAction = uicomponent.event("DeclineUser", pendingUser) + "; return false;";
-				     String validateAction = uicomponent.event("ValidateUser", pendingUser) + "; return false;";
-				     pendingIdx += 1;
-				  %>
-					  <tbody>
-					<% if (pendingIdx % 2 == 0) {%>
-							<tr class="EvenRow">
-					<% } else {%>
-							<tr class="OddRow">
-					<% } %>
-								<td><%=pendingUser %></td>
-								<td width="40">
-									<div class="ValidateButton" onclick="$validateAction" title="$labelValidateAction"><span></span></div>
-									<div class="DeclineButton" onclick="$declineAction" title="$labelDeclineAction"><span></span></div>
-									<div style="clear: left;"><span></span></div>
-								</td>
-							</tr>
-					  </tbody>
-			  <% } %>
-	  </table>
-  	<div>
-			<%
-				if(iteratorPendingUsers.getAvailablePage() > 1) {
-					uicomponent.renderUIComponent(iteratorPendingUsers) ;
-				}
-			%>	
-		</div>  
-	<% } %>
-  
+  <% if (pendingUsers.size() > 0) { %>
+  <table cellspacing="0" borderspacing="0" class="UIGrid" style="table-layout: auto; margin-top: 5px;">
+    <thead>
+      <tr>
+        <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.pending")%></th>
+        <th class="TitleBar" style="width: 80px;"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+      </tr>
+    </thead>
+    <% for(pendingUser in pendingUsers) {
+         def declineAction = uicomponent.event("DeclineUser", pendingUser) + "; return false;";
+         def validateAction = uicomponent.event("ValidateUser", pendingUser) + "; return false;";
+         pendingIdx +=1;
+     %>
+    <tbody>
+      <% if (pendingIdx % 2 == 0) { %>
+      <tr class="EvenRow">
+      <% } else { %>
+      <tr class="OddRow">
+      <% } %>
+        <td><%=pendingUser %></td>
+        <td width="40">
+          <div class="ValidateButton" onclick="$validateAction" title="$labelValidateAction"><span></span></div>
+          <div class="DeclineButton" onclick="$declineAction" title="$labelDeclineAction"><span></span></div>
+          <div style="clear: left;"><span></span></div>
+        </td>
+      </tr>
+    </tbody>
+    <% } /*end for*/ %>
+  </table>
+  <div>
+  <%
+    if(iteratorPendingUsers.getAvailablePage() > 1) {
+      uicomponent.renderUIComponent(iteratorPendingUsers);
+    }
+  %>
+  </div>
+  <% } /*end if*/%>
   
   <!-- Invited -->
   <% if(invitedUsers.size() > 0) { %>
-	  <table cellspacing="0" borderspacing="0" class="UIGrid" style="table-layout: auto; margin-top: 5px;" >
-			  <thead>
-			    <tr>
-				    <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></th>
-					<th class="TitleBar" style="width: 80px;"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
-			    </tr>
-			  </thead>
-			  <% for(invitedUser in invitedUsers) { %>
-				  <% String revokeAction = uicomponent.event("RevokeInvitedUser", invitedUser) + "; return false;";
-				     invitedIdx += 1;
-				  %>
-					  <tbody>
-					<% if (invitedIdx % 2 == 0) {%>
-							<tr class="EvenRow">
-					<% } else {%>
-							<tr class="OddRow">
-					<% } %>
-								<td><%=invitedUser %></td>
-								<td width="60">
-									<div class="RevokeInvitedButton" onclick="$revokeAction" title="$labelRevokeInvitedAction"><span></span></div>
-									<div style="clear: left;"><span></span></div>
-								</td>
-							</tr>
-					  </tbody>
-			  <% } %>
-	  </table>
-			<%
-				if(iteratorInvitedUsers.getAvailablePage() > 1) {
-					uicomponent.renderUIComponent(iteratorInvitedUsers) ;
-				}
-			%>	
-	<% } %>
+  <table cellspacing="0" borderspacing="0" class="UIGrid" style="table-layout: auto; margin-top: 5px;" >
+    <thead>
+      <tr>
+        <th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></th>
+        <th class="TitleBar" style="width: 80px;"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+      </tr>
+    </thead>
+    <% for(invitedUser in invitedUsers) {
+         def revokeAction = uicomponent.event("RevokeInvitedUser", invitedUser) + "; return false;";
+         invitedIdx += 1;
+    %>
+    <tbody>
+      <% if (invitedIdx % 2 == 0) { %>
+      <tr class="EvenRow">
+      <% } else { %>
+      <tr class="OddRow">
+      <% } %>
+        <td><%=invitedUser %></td>
+        <td width="60">
+          <div class="RevokeInvitedButton" onclick="$revokeAction" title="$labelRevokeInvitedAction"><span></span></div>
+          <div style="clear: left;"><span></span></div>
+        </td>
+      </tr>
+    </tbody>
+    <% } /*end for*/%>
+  </table>
+    <%
+      if(iteratorInvitedUsers.getAvailablePage() > 1) {
+        uicomponent.renderUIComponent(iteratorInvitedUsers);
+      }
+    %>
+  <% } /*end if*/%>
   
   <% if(existingUsers.size() > 0) { %>
-		  <div class="TitleContainer" style="margin-top: 6px;">
-			  <table cellspacing="0" borderspacing="0" class="UIGrid" >
-				  <thead>
-				    <tr>
-					    <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
-					    <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".title.leader")%></th>
-					    <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				  <% for(user in existingUsers) {
-				  	 boolean isLeader = uicomponent.isLeader(user);
-				  	 def manageSpacesUrl = "#"
-				  	 def homeSpaceUrl = "#"
-		         if (!uicomponent.isSuperUser()) {
-		            manageSpacesUrl = uicomponent.manageSpacesUrl
-		            homeSpaceUrl = uicomponent.homeSpaceUrl
-		         }
-				  	 String removeLeader = uicomponent.event("RemoveLeader", user) + "; return false;"
-				  	 String makeLeader = uicomponent.event("MakeLeader", user) + "; return false;"
-				  	 String removeAction = uicomponent.event("RemoveUser", user) + "; return false;"
-				  	 def removeOwnerAction = uicomponent.url('RemoveUser'); 
-				  	 
-				  	 existingIdx += 1;
-				  %>
-					<% if (existingIdx % 2 == 0) {%>
-							<tr class="EvenRow">
-					<% } else {%>
-							<tr class="OddRow">
-					<% } %>
-							<td class="text"><span class="label" id="label"><%= user %></span></td>
-							<% if(isLeader) {%>  
-							<td class="text" style="text-align: center"><div class="ManageMemButtonSub" onclick="$removeLeader" title="$labelRemoveLeader"><a class="label" id="label" href="$homeSpaceUrl"><span></span></a></div></td>  
-							<% } else { %>
-							<td class="text" style="text-align: center"><div class="ManageMemButtonAdd" onclick="$makeLeader" title="$labelMakeLeader"><a class="label" id="label" href="#"></a></div></td>
-							<% } %>
-							<td>
-								<% if(uicomponent.isCurrentUser(user)) {%>
-                    <a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"  class="DeleteMemberButton" ><span></span></a>
-                <% } else { %>
-                    <a href="#" onclick="$removeAction" title="$labelRemoveAction"  class="DeleteMemberButton"><span></span></a>
-                <% } %> 
-                  <div style="clear: right;"><span></span></div>
-							</td>
-						</tr>
-					<% } %>	
-				  </tbody>
-				</table>
-		  </div>
-		  <div>
-					<%
-						if(iteratorExistingUsers.getAvailablePage() > 1) {
-							uicomponent.renderUIComponent(iteratorExistingUsers) ;
-						}
-					%>	
-			</div>
-	<% } %>  
-  <% uiform.end() %>
-  <% uiform.renderChild(UIPopupWindow.class) %>
+  <div class="TitleContainer" style="margin-top: 6px;">
+    <table cellspacing="0" borderspacing="0" class="UIGrid" >
+      <thead>
+        <tr>
+          <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
+          <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".title.leader")%></th>
+          <th class="TitleBar" width="25%"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+        </tr>
+      </thead>
+      <tbody>
+      <% for(user in existingUsers) {
+           def isLeader = uicomponent.isLeader(user);
+           def manageSpacesUrl = "#";
+           def homeSpaceUrl = "#";
+           if (!uicomponent.isSuperUser()) {
+             manageSpacesUrl = uicomponent.manageSpacesUrl;
+             homeSpaceUrl = uicomponent.homeSpaceUrl;
+           }
+           def removeLeader = uicomponent.event("RemoveLeader", user) + "; return false;";
+           def makeLeader = uicomponent.event("MakeLeader", user) + "; return false;";
+           def removeAction = uicomponent.event("RemoveUser", user) + "; return false;";
+           def removeOwnerAction = uicomponent.url('RemoveUser');
+           existingIdx += 1;
+           if (existingIdx % 2 == 0) { %>
+        <tr class="EvenRow">
+        <% } else { %>
+        <tr class="OddRow">
+        <% } %>
+          <td class="text"><span class="label" id="label"><%= user %></span></td>
+          <% if(isLeader) { %>
+          <td class="text" style="text-align: center">
+            <div class="ManageMemButtonSub" onclick="$removeLeader" title="$labelRemoveLeader">
+              <a class="label" id="label" href="$homeSpaceUrl"><span></span></a>
+            </div>
+          </td>
+          <% } else { %>
+          <td class="text" style="text-align: center">
+            <div class="ManageMemButtonAdd" onclick="$makeLeader" title="$labelMakeLeader">
+              <a class="label" id="label" href="#"></a>
+            </div>
+          </td>
+          <% } %>
+          <td>
+          <% if(uicomponent.isCurrentUser(user)) { %>
+            <a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"  class="DeleteMemberButton" ><span></span></a>
+          <% } else { %>
+            <a href="#" onclick="$removeAction" title="$labelRemoveAction"  class="DeleteMemberButton"><span></span></a>
+          <% } %> 
+            <div style="clear: right;"><span></span></div>
+          </td>
+        </tr>
+      <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <%
+      if(iteratorExistingUsers.getAvailablePage() > 1) {
+        uicomponent.renderUIComponent(iteratorExistingUsers);
+      }
+    %>
+  </div>
+  <% } %>  
+  <% uiform.end(); %>
+  <% uiform.renderChild(UIPopupWindow.class); %>
 </div>

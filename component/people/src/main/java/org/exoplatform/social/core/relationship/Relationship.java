@@ -21,12 +21,11 @@ import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
 
-
 /**
  * Relationship between 2 social identities
  */
 public class Relationship {
-  
+
   /** The id. */
   private String         id;
 
@@ -43,22 +42,23 @@ public class Relationship {
   private Type           status = Type.PENDING;
 
   /**
-   * The Enum Type.
+   * The Relationship Type Enum
    */
   public enum Type {
-    
     /** The PENDING. */
-    PENDING, 
- /** The CONFIRM. */
- CONFIRM, 
- /** The IGNORE. */
- IGNORE, 
- /** The ALIEN. */
- ALIEN, 
- /** The REQUIR e_ validation. */
- REQUIRE_VALIDATION, 
- /** The SELF. */
- SELF
+    PENDING,
+    /** The CONFIRM. */
+    CONFIRM,
+    /** The IGNORE. */
+    IGNORE,
+    /** The ALIEN. */
+    ALIEN,
+    /** The REQUIRE_VALIDATION. */
+    REQUIRE_VALIDATION,
+    /** The SELF. */
+    SELF,
+    /** The SPACE_MEMBER type **/
+    SPACE_MEMBER
   }
 
   /**
@@ -208,9 +208,9 @@ public class Relationship {
     }
     return pendingProps;
   }
-  
+
   public String toString() {
     return identity1 + "--[" + status + "]--" + identity2;
   }
-  
+
 }

@@ -30,6 +30,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
@@ -46,6 +47,8 @@ import org.exoplatform.portal.pom.spi.portlet.PortletBuilder;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.application.SpaceApplicationHandler;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
@@ -57,12 +60,14 @@ import org.exoplatform.social.space.SpaceUtils;
  */
 
 public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
+  private final Log                                          LOG                    = ExoLogger.getLogger(DefaultSpaceApplicationHandler.class);
+
   public static final String                                 NAME                   = "classic";
 
   public static final String                                 SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
-  
+
   static public final String                                 APPLICATION_CONTAINER  = "Application";
-  
+
   private ExoContainer                                       container              = ExoContainerContext.getCurrentContainer();
 
   private DataStorage                                        dataStorage            = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
@@ -92,15 +97,21 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
         app = (app.trim()).split(":")[0];
         PageNode appNode = createPageNodeFromApplication(space, app, null, false);
         // if current node is DashBoard application portlet
-        if ("DashboardPortlet".equals(app)) dashBoardPageNode = appNode;
+        if ("DashboardPortlet".equals(app))
+          dashBoardPageNode = appNode;
         childNodes.add(appNode);
       }
       // homeNode.setChildren((ArrayList<PageNode>) childNodes);
       spaceNav.addNode(homeNode);
       dataStorage.save(spaceNav);
-      //TODO. Change number of column into 2 in dashboard application in space SOC-837
+      // TODO. Change number of column into 2 in dashboard application in space
+      // SOC-837
       changeDashBoardColumn(dashBoardPageNode);
       SpaceUtils.setNavigation(spaceNav);
+      PortalConfig portalConfig = dataStorage.getPortalConfig(PortalConfig.GROUP_TYPE,
+                                                              space.getGroupId());
+      LOG.info("portalConfig: " + portalConfig);
+
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);
     }
@@ -180,32 +191,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   }
 
   /**
-   * Gets all applications installed in a space
-   * 
-   * @param space
-   * @return
-   * @throws Exception
-   */
-  private List<Application> getSpaceApplications(Space space) throws Exception {
-    List<Application> allApps = SpaceUtils.getApplications(space.getGroupId());
-    List<Application> appList = new ArrayList<Application>();
-    String spaceApps = space.getApp();
-    if (spaceApps != null) {
-      String[] apps = spaceApps.split(",");
-      for (String obj : apps) {
-        String appId = obj.split(":")[0];
-        for (Application app : allApps) {
-          if (app.getApplicationName().equals(appId)) {
-            appList.add(app);
-            break;
-          }
-        }
-      }
-    }
-    return appList;
-  }
-
-  /**
    * {@inheritDoc}
    */
   public String getName() {
@@ -252,8 +237,10 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       // 
       childNodes.add(pageNode);
       dataStorage.save(nav);
-      //TODO. change number of column into 2 in dashboard application in space SOC-837
-      if ("DashboardPortlet".equals(appId)) changeDashBoardColumn(pageNode);
+      // TODO. change number of column into 2 in dashboard application in space
+      // SOC-837
+      if ("DashboardPortlet".equals(appId))
+        changeDashBoardColumn(pageNode);
       uiPortal.setSelectedNode(selectedNode);
       uiPortal.setSelectedNavigation(nav);
       SpaceUtils.setNavigation(nav);
@@ -361,8 +348,10 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    * @return
    * @throws SpaceException
    */
-  private PageNode createPageNodeFromApplication(Space space, String appId, String appName, boolean isRoot) throws SpaceException {
-    String portalName = Util.getPortalRequestContext().getPortalOwner();
+  private PageNode createPageNodeFromApplication(Space space,
+                                                 String appId,
+                                                 String appName,
+                                                 boolean isRoot) throws SpaceException {
     Application app = getApplication(appCache, appId);
     if (app == null) {
       try {
@@ -371,7 +360,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
         }
         app = getApplication(appStoreCache, appId);
         if (app == null) {
-          //retry
+          // retry
           appStoreCache = SpaceUtils.getAppStore(space);
           app = getApplication(appStoreCache, appId);
           if (app == null) {
@@ -387,75 +376,56 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       }
     }
     String contentId = app.getContentId();
-    if(contentId == null) contentId = app.getCategoryName() + "/" + app.getApplicationName();
-    String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + contentId + "/" + app.getApplicationName() + app.hashCode();
+    if (contentId == null)
+      contentId = app.getCategoryName() + "/" + app.getApplicationName();
+    String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + contentId
+        + "/" + app.getApplicationName() + System.currentTimeMillis();
     org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication = null;
     org.exoplatform.portal.config.model.Application<Portlet> portletApplication = null;
-    
+
     if (app.getType() == ApplicationType.GADGET) {
       TransientApplicationState<Gadget> gadgetState = new TransientApplicationState<Gadget>(app.getApplicationName());
-      gadgetApplication = 
-        org.exoplatform.portal.config.model.Application.createGadgetApplication();
+      gadgetApplication = org.exoplatform.portal.config.model.Application.createGadgetApplication();
       gadgetApplication.setState(gadgetState);
-      gadgetApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+      gadgetApplication.setAccessPermissions(new String[] { "*:" + space.getGroupId() });
       gadgetApplication.setShowInfoBar(false);
     } else {
       portletApplication = createPortletApplication(appInstanceId, space, isRoot);
-      portletApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+      portletApplication.setAccessPermissions(new String[] { "*:" + space.getGroupId() });
       portletApplication.setShowInfoBar(false);
     }
 
+    String pageTitle = space.getName() + " - " + app.getDisplayName();
+    String pageName = app.getApplicationName();
+    if (SpaceUtils.isInstalledApp(space, appId) && (appName != null)) {
+      pageName = appName;
+    }
+    UserPortalConfigService userPortalConfigService = getUserPortalConfigService();
     Page page = null;
-    String pageName = null;
-    if(isRoot) {
-      pageName = space.getUrl();
-    } else {      // Check application is installed or not yet
-      if (SpaceUtils.isInstalledApp(space, appId) && (appName != null)) {
-        pageName = appName;
-      } else {
-        pageName = app.getApplicationName();
-      }
-    } 
-    String newName = space.getUrl();
     try {
-      if (isRoot != true) {
-        newName = pageName;
-      }
-      //String clonedName = SpaceUtils.cleanString(space.getName()) + "_" + newName.trim();
-      page = dataStorage.clonePage(SPACE_TEMPLATE_PAGE_ID, PortalConfig.GROUP_TYPE, space.getGroupId(), newName.trim());
+      page = userPortalConfigService.createPageTemplate("space",
+                                                        PortalConfig.GROUP_TYPE,
+                                                        space.getGroupId());
+      page.setName(pageName);
+      page.setTitle(pageTitle);
+      page.setModifiable(true);
+      dataStorage.create(page);
+      page = dataStorage.getPage(page.getPageId());
+      setPage(space, app, gadgetApplication, portletApplication, page);
+      dataStorage.save(page);
     } catch (Exception e) {
-      //e.printStackTrace();
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE, e);
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
-    setPage(space, app, gadgetApplication, portletApplication, page, newName, isRoot);	
-    try {
-      try {
-        dataStorage.save(page);
-      } catch (Exception e) {
-        Page clonedPage = dataStorage.getPage(PortalConfig.PORTAL_TYPE + "::" + portalName + "::" + pageName);
-        dataStorage.remove(clonedPage);
-        newName = space.getName() + newName;
-        pageName = space.getName() + pageName;
-        page = dataStorage.clonePage(SPACE_TEMPLATE_PAGE_ID, PortalConfig.GROUP_TYPE, space.getGroupId(), newName.trim());
-        setPage(space, app, gadgetApplication, portletApplication, page, newName, isRoot);
-        dataStorage.save(page);
-	  }
-      //work around for BUG from GTNPORTAL for DataStorage.clonePage();
-      Page clonedPage = dataStorage.getPage(PortalConfig.PORTAL_TYPE + "::" + portalName + "::" + pageName);
-      dataStorage.remove(clonedPage);
-    } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_CREATE_PAGE,e);
-    }
-    
     PageNode pageNode = new PageNode();
-    
     String label = app.getDisplayName();
     if (appName != null) {
-    	String sufixLabel = pageName.replaceAll(app.getApplicationName(), "");
-    	label = label + sufixLabel;
+      String sufixLabel = pageName.replaceAll(app.getApplicationName(), "");
+      label = label + sufixLabel;
     }
-    
-    if(isRoot) {
+
+    if (isRoot) {
+      pageName = space.getUrl();
       label = space.getName();
       pageNode.setUri(pageName);
     } else {
@@ -473,11 +443,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
                        Application app,
                        org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication,
                        org.exoplatform.portal.config.model.Application<Portlet> portletApplication,
-                       Page page,
-                       String newName, boolean isRoot) {
-    page.setOwnerType(PortalConfig.GROUP_TYPE);
-    page.setOwnerId(space.getGroupId());
-    page.setTitle(space.getName() + " - " + newName);
+                       Page page) {
     String visibility = space.getVisibility();
     if (visibility.equals(Space.PUBLIC)) {
       page.setAccessPermissions(new String[] { UserACL.EVERYONE });
@@ -485,12 +451,12 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       page.setAccessPermissions(new String[] { "*:" + space.getGroupId() });
     }
     page.setEditPermission("manager:" + space.getGroupId());
-    page.setModifiable(true);
 
     ArrayList<ModelObject> pageChilds = page.getChildren();
-    
+
     Container menuContainer = SpaceUtils.findContainerById(pageChilds, SpaceUtils.MENU_CONTAINER);
-    org.exoplatform.portal.config.model.Application<Portlet> menuPortlet = (org.exoplatform.portal.config.model.Application<Portlet>) menuContainer.getChildren().get(0);
+    org.exoplatform.portal.config.model.Application<Portlet> menuPortlet = (org.exoplatform.portal.config.model.Application<Portlet>) menuContainer.getChildren()
+                                                                                                                                                   .get(0);
     ApplicationState<Portlet> state = menuPortlet.getState();
     Portlet portletPreference;
     try {
@@ -505,13 +471,15 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    
+
     Container container = SpaceUtils.findContainerById(pageChilds, SpaceUtils.APPLICATION_CONTAINER);
     ArrayList<ModelObject> children = container.getChildren();
-    if (app.getType() == ApplicationType.GADGET)
+    if (app.getType() == ApplicationType.GADGET) {
       children.add(gadgetApplication);
-    else
+    }
+    else {
       children.add(portletApplication);
+    }
     container.setChildren(children);
     pageChilds = setContainerById(pageChilds, container);
     page.setChildren(pageChilds);
@@ -541,7 +509,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     return null;
   }
 
-
   /**
    * Sets permission for page
    * 
@@ -549,6 +516,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    * @param id
    * @return
    */
+  @SuppressWarnings("unchecked")
   private void setPermissionForPage(ArrayList<ModelObject> childrens, String perm) {
     for (ModelObject modelObject : childrens) {
       if (modelObject instanceof org.exoplatform.portal.config.model.Application<?>) {
@@ -592,7 +560,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    * @param instanceId
    * @return
    */
-  private org.exoplatform.portal.config.model.Application<Portlet> createPortletApplication(String instanceId, Space space, Boolean isRoot) {
+  private org.exoplatform.portal.config.model.Application<Portlet> createPortletApplication(String instanceId,
+                                                                                            Space space,
+                                                                                            Boolean isRoot) {
     int i0 = instanceId.indexOf("#");
     int i1 = instanceId.indexOf(":/", i0 + 1);
     String ownerType = instanceId.substring(0, i0);
@@ -606,37 +576,39 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
         break;
       }
     }
-    
+
     TransientApplicationState<Portlet> portletState = new TransientApplicationState<Portlet>(persistenceChunks[0]
-                                                                                          + "/"
-                                                                                          + persistenceChunks[1],
-                                                                                      pb.build(),
-                                                                                      ownerType,
-                                                                                      ownerId,
-                                                                                      persistenceChunks[2]);
+                                                                                                 + "/"
+                                                                                                 + persistenceChunks[1],
+                                                                                             pb.build(),
+                                                                                             ownerType,
+                                                                                             ownerId,
+                                                                                             persistenceChunks[2]);
     org.exoplatform.portal.config.model.Application<Portlet> portletApp = org.exoplatform.portal.config.model.Application.createPortletApplication();
     portletApp.setState(portletState);
     return portletApp;
   }
 
   /**
-   * Change the number of columns in DashBoard of space into 2 instead of 3 by default. 
+   * Change the number of columns in DashBoard of space into 2 instead of 3 by
+   * default.
    * 
    * @param spaceAppNode Dashboard page node.
-   * @throws Exception 
+   * @throws Exception
    */
+  @SuppressWarnings("unchecked")
   private void changeDashBoardColumn(PageNode spaceAppNode) throws Exception {
-	String pageId = spaceAppNode.getPageReference();	
+    String pageId = spaceAppNode.getPageReference();
     Page page = dataStorage.getPage(pageId);
     ArrayList<ModelObject> pageChildren = page.getChildren();
-    
-    Container applicationContainer = SpaceUtils.findContainerById(pageChildren, APPLICATION_CONTAINER);
-    
+
+    Container applicationContainer = SpaceUtils.findContainerById(pageChildren,
+                                                                  APPLICATION_CONTAINER);
+
     try {
-      org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> 
-      applicationPortlet = (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>)
-                          applicationContainer.getChildren().get(0);
-      
+      org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> applicationPortlet = (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) applicationContainer.getChildren()
+                                                                                                                                                                                                                                                 .get(0);
+
       // Get DashBoard storageId for load DashBoard container
       String dashboardId = applicationPortlet.getStorageId();
       Dashboard container = dataStorage.loadDashboard(dashboardId);
@@ -645,7 +617,18 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       containerDatas.remove(2);
       container.setChildren(containerDatas);
       dataStorage.saveDashboard(container);
-    } catch(Exception e) {
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+  }
+
+  /**
+   * Gets userPortalConfigService for the usage of creating new page from page
+   * template
+   * 
+   * @return
+   */
+  private UserPortalConfigService getUserPortalConfigService() {
+    return (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
   }
 }

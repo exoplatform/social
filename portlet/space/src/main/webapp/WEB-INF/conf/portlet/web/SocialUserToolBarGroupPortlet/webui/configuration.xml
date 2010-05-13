@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -20,8 +21,8 @@
   <application>
     <ui-component-root>social.portal.webui.component.space.UISocialUserToolBarGroupPortlet</ui-component-root>
     <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
-    <application-lifecycle-listeners>       
-      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>       
+    <application-lifecycle-listeners>
+      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>
     </application-lifecycle-listeners>
   </application>
 </webui-configuration>

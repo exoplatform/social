@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -16,58 +18,58 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<%
-	import org.exoplatform.webui.core.UIPageIterator;
-	import org.exoplatform.application.registry.Application;
-	import org.exoplatform.webui.core.UIPopupContainer;
-	
-	UIPageIterator iterator = uicomponent.getUIPageIterator();
-	List<Application> applications = uicomponent.getApplications();
+*/
 %>
-<div class="UISpaceApplication">
-	<% uiform.begin() %>
+<%
+  import org.exoplatform.webui.core.UIPageIterator;
+  import org.exoplatform.application.registry.Application;
+  import org.exoplatform.webui.core.UIPopupContainer;
+  
+  UIPageIterator iterator = uicomponent.getUIPageIterator();
+  List<Application> applications = uicomponent.getApplications();
+%>
+<div class="$uicomponent.id">
+  <% uiform.begin() %>
   <div class="ContainerSpace">
-		<% for(app in applications)  {%>
-		<%    
-		if (app != null) {
-		String appId = app.getApplicationName()
-		def isRemovable = uicomponent.isRemovable(appId)
-		def appName = uicomponent.getAppName(app)
-		%>
-		
-		<div class="ContentSpace">
-			<div class="ApplicationIcon"><span></span></div>
-			<div class="CommunityContainer">
-				<div class="CommunityMane Line">
-					<div style="float: left;" class="CommunityName"><%= appName %></div>
-					<% if (isRemovable) { %>
-					<div class="SpaceAction">
-          <div class="LeftButton">
-					    <div class="RightButton">
-								<% String removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;" %>
-					      <div class="CenterButton RemoveButton" onclick="$removeApplication" title="<%= _ctx.appRes(uicomponent.getId() + ".button.remove")%>"><span></span></div>
-					    </div>
-					  </div>
+  <% for(app in applications) {
+       if (app != null) {
+         def appId = app.getApplicationName();
+         def isRemovable = uicomponent.isRemovable(appId);
+         def appName = uicomponent.getAppName(app);
+  %>
+    <div class="ContentSpace">
+      <div class="ApplicationIcon"><span></span></div>
+      <div class="CommunityContainer">
+        <div class="CommunityMane Line">
+          <div style="float: left;" class="CommunityName"><%= appName %></div>
+          <% if (isRemovable) { %>
+          <div class="SpaceAction">
+            <div class="LeftButton">
+              <div class="RightButton">
+              <% def removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;" %>
+                <div class="CenterButton RemoveButton" onclick="$removeApplication" title="<%= _ctx.appRes(uicomponent.getId() + ".button.remove")%>"><span></span></div>
+              </div>
+            </div>
+          </div>
+          <% } %>
+          <div style="clear: both;"><span></span></div>
         </div>
-        <% } %>
-					<div style="clear: both;"><span></span></div>
-				</div>
-				<div class="Text"><%= app.getDescription() %></div>
-			</div>
-			<div style="clear: left;"><span></span></div>
-		</div>
-		<% } %>
-		<% } %>
-	</div>
-	<div>
-			<%
-				if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
-				_ctx.renderUIComponent(iterator) ;
-				}
-			%>	
-	</div>	
-	<div class="AddAplicationButton">
-	<% String addApplication = uicomponent.event("AddApplication") + ";return false;" %>
+        <div class="Text"><%= app.getDescription() %></div>
+      </div>
+      <div style="clear: left;"><span></span></div>
+    </div>
+    <% } %>
+  <% } %>
+  </div>
+  <div>
+    <%
+      if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
+        _ctx.renderUIComponent(iterator);
+      }
+    %>
+  </div>
+  <div class="AddAplicationButton">
+    <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
     <div class="LeftButton" onclick="<%= addApplication %>">
       <div class="RightButton">
         <div class="CenterButton">

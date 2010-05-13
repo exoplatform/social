@@ -17,49 +17,47 @@
 
 -->
 <%
-	import org.exoplatform.portal.application.PortalRequestContext;
-	import org.exoplatform.portal.webui.util.Util;
-	
-	def prContext = _ctx.getRequestContext().getParentAppRequestContext();
-	
-	String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));" ;
-	String changeLanguageAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ChangeLanguage', true));" ;
-	String portletId = uicomponent.getId() ;
-	String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";	
-	String homeURI = Util.getPortalRequestContext().getPortalURI();
+  import org.exoplatform.portal.application.PortalRequestContext;
+  import org.exoplatform.portal.webui.util.Util;
+  
+  def prContext = _ctx.getRequestContext().getParentAppRequestContext();
+  String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));";
+  String changeLanguageAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ChangeLanguage', true));";
+  String portletId = uicomponent.getId();
+  String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";
+  String homeURI = Util.getPortalRequestContext().getPortalURI();
 %>
 <div id="$portletId" class="UIBannerPortlet UIApplication">
-	<div class="ApplicationMinWidth">
-	  <div class="InlineContainer">
-	  <a href="$homeURI" class="LogoBlock"><span></span> </a>
-	  <div class="LeftBanner">
-	  <div class="MiddleBanner">
-	  <%if(prContext.getRemoteUser() != null) {%> 
-	        	<div class="BannerTitle"><span></span></div>
-		<%} else {%>
-				<div class="LeftBanner">
-	      <div class="MiddleBanner">
-				<div class="LeftLoginContainer">
-					<div class="RightLoginContainer">
-							<div class="MiddleLoginContainer">
-								<a class="Login" onclick="$signInAction"><%=_ctx.appRes("UIBanner.label.Signin")%></a>
-								<a class="Register" href="$registerURI">
-										<%=_ctx.appRes("UIBannerPortlet.action.Register")%>
-									</a>								
-								<a class="Language" onclick="$changeLanguageAction">
-									<%=_ctx.appRes("UIBanner.label.ChangeLanguage")%>
-								</a>		
-								<div style="clear:both"><span></span></div>
-							</div>
-					</div>
-					<div style="clear:both"><span></span></div>
-				</div>
-				<% } %>
-	      </div>   
-	    </div>
-	   </div>
-		 </div>
-	  </div>
-	</div>
+  <div class="ApplicationMinWidth">
+    <div class="InlineContainer">
+      <a href="$homeURI" class="LogoBlock"><span></span></a>
+      <div class="LeftBanner">
+        <div class="MiddleBanner">
+        <%if(prContext.getRemoteUser() != null) {%> 
+          <div class="BannerTitle"><span></span></div>
+        <%} else {%>
+          <div class="LeftBanner">
+            <div class="MiddleBanner">
+              <div class="LeftLoginContainer">
+                <div class="RightLoginContainer">
+                  <div class="MiddleLoginContainer">
+                    <a class="Login" onclick="$signInAction"><%=_ctx.appRes("UIBanner.label.Signin")%></a>
+                    <a class="Register" href="$registerURI">
+                    <%=_ctx.appRes("UIBannerPortlet.action.Register")%>
+                    </a>
+                    <a class="Language" onclick="$changeLanguageAction">
+                    <%=_ctx.appRes("UIBanner.label.ChangeLanguage")%>
+                    </a>
+                    <div style="clear:both"><span></span></div>
+                  </div>
+                </div>
+                <div style="clear:both"><span></span></div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-

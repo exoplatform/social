@@ -46,8 +46,8 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "app:/groovy/portal/webui/component/UIAvatarUploadContent.gtmpl",
   events = {
-      @EventConfig(listeners = UIAvatarUploadContent.SaveActionListener.class),
-      @EventConfig(listeners = UIAvatarUploadContent.AbortActionListener.class)
+    @EventConfig(listeners = UIAvatarUploadContent.SaveActionListener.class),
+    @EventConfig(listeners = UIAvatarUploadContent.AbortActionListener.class)
   }
 )
 public class UIAvatarUploadContent extends UIContainer {

@@ -117,7 +117,7 @@ public class UIComposer extends UIForm {
     public void execute(Event<UIComposer> event) throws Exception {
       UIComposer uiComposer = event.getSource();
       UIComposerExtensionContainer uiComposerExtensionContainer = uiComposer.getChild(UIComposerExtensionContainer.class);
-      String message = uiComposer.getMessage();
+      String message = uiComposer.getMessage().trim();
       String defaultInput = event.getRequestContext().getApplicationResourceBundle().getString(uiComposer.getId()+".Default_Input_Write_Something");
       if (message.equals(defaultInput)) {
         message = "";

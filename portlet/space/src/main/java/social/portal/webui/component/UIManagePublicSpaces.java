@@ -51,8 +51,8 @@ import org.exoplatform.webui.event.Event.Phase;
 @ComponentConfig(
   template = "app:/groovy/portal/webui/component/UIManagePublicSpaces.gtmpl",
   events = {
-      @EventConfig(listeners = UIManagePublicSpaces.RequestJoinActionListener.class),
-      @EventConfig(listeners = UIManagePublicSpaces.SearchActionListener.class , phase = Phase.DECODE)
+    @EventConfig(listeners = UIManagePublicSpaces.RequestJoinActionListener.class),
+    @EventConfig(listeners = UIManagePublicSpaces.SearchActionListener.class , phase = Phase.DECODE)
   }
 )
 public class UIManagePublicSpaces extends UIContainer {

@@ -85,7 +85,7 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
     broadcast(event);
   }
 
-  public void memberJoigned(Space space, String userId) {
+  public void memberJoined(Space space, String userId) {
     broadcast(new SpaceLifeCycleEvent(space, userId, Type.JOINED));
   }
 

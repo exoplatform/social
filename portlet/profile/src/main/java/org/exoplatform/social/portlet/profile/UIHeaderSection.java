@@ -37,64 +37,61 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
+
 /**
- * Component is used for short user information (name, position) managing.<br> 
- *
+ * Component is used for short user information (name, position) managing.<br>
  */
 
 @ComponentConfig(
-    lifecycle = UIFormLifecycle.class,
-    template =  "app:/groovy/portal/webui/component/UIHeaderSection.gtmpl",
-    events = {
-        @EventConfig(listeners = UIProfileSection.EditActionListener.class, phase=Phase.DECODE),
-        @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE),
-        @EventConfig(listeners = UIHeaderSection.SaveActionListener.class)
-    }
+  lifecycle = UIFormLifecycle.class,
+  template = "app:/groovy/portal/webui/component/UIHeaderSection.gtmpl",
+  events = {
+    @EventConfig(listeners = UIProfileSection.EditActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIHeaderSection.SaveActionListener.class)
+  }
 )
-
 public class UIHeaderSection extends UIProfileSection {
   /** POSITION. */
-  final public static String POSITION = "position";
-  
+  final public static String POSITION             = "position";
+
   /** REGEX EXPRESSION. */
-  final public static String REGEX_EXPRESSION = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
-  
+  final public static String REGEX_EXPRESSION     = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
+
   /** INVALID CHARACTER MESSAGE. */
   final public static String INVALID_CHAR_MESSAGE = "UIHeaderSection.msg.Invalid-char";
-  
-  /** 
+
+  /**
    * Initializes components for header form.<br>
    */
-  public UIHeaderSection() throws Exception { 
-    addUIFormInput(new UIFormStringInput(POSITION, POSITION, null)
-                   .addValidator(MandatoryValidator.class)
-                   .addValidator(StringLengthValidator.class, 3, 30)
-                   .addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
+  public UIHeaderSection() throws Exception {
+    addUIFormInput(new UIFormStringInput(POSITION, POSITION, null).
+                   addValidator(MandatoryValidator.class).
+                   addValidator(StringLengthValidator.class, 3, 30).
+                   addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
   }
-  
+
   /**
    * Get user
+   * 
    * @return
    * @throws Exception
    */
   public User getViewUser() throws Exception {
-	    RequestContext context = RequestContext.getCurrentInstance();
-	    String currentUserName = context.getRemoteUser();
-	    String currentViewer = URLUtils.getCurrentUser();
-	    
-	    if((currentViewer != null) && (currentViewer != currentUserName)) {
-	      OrganizationService orgSer = getApplicationComponent(OrganizationService.class);
-	      UserHandler userHandler = orgSer.getUserHandler();
-	      return userHandler.findUserByName(currentViewer);      
-	    }
-	    
-	    ConversationState state = ConversationState.getCurrent();
-	    return (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+    RequestContext context = RequestContext.getCurrentInstance();
+    String currentUserName = context.getRemoteUser();
+    String currentViewer = URLUtils.getCurrentUser();
+    if ((currentViewer != null) && (currentViewer != currentUserName)) {
+      OrganizationService orgSer = getApplicationComponent(OrganizationService.class);
+      UserHandler userHandler = orgSer.getUserHandler();
+      return userHandler.findUserByName(currentViewer);
+    }
+    ConversationState state = ConversationState.getCurrent();
+    return (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
   }
-  
+
   /**
    * Changes form into edit mode when edit button is clicked.<br>
-   *
    */
   public static class EditActionListener extends EventListener<UIHeaderSection> {
     public void execute(Event<UIHeaderSection> event) throws Exception {
@@ -102,11 +99,10 @@ public class UIHeaderSection extends UIProfileSection {
       uiHeader.setEditMode(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiHeader);
     }
-  }  
-  
+  }
+
   /**
    * Changes form into edit mode when edit button is clicked.<br>
-   *
    */
   public static class CancelActionListener extends EventListener<UIHeaderSection> {
     public void execute(Event<UIHeaderSection> event) throws Exception {
@@ -114,32 +110,27 @@ public class UIHeaderSection extends UIProfileSection {
       uiHeader.setEditMode(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiHeader);
     }
-  }  
-  
+  }
+
   /**
    * Stores profile information into database when form is submited.<br>
-   *
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
 
     public void execute(Event<UIProfileSection> event) throws Exception {
       super.execute(event);
-      
-      UIProfileSection sect = event.getSource();       
-      UIHeaderSection uiHeaderSect = (UIHeaderSection)sect;
-      
+      UIProfileSection sect = event.getSource();
+      UIHeaderSection uiHeaderSect = (UIHeaderSection) sect;
       UIFormStringInput uiPosition = uiHeaderSect.getChildById(POSITION);
       String position = uiPosition.getValue();
-      
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
       Profile p = uiHeaderSect.getProfile(true);
       p.setProperty(POSITION, position);
-      
-      im.updateHeaderSection(p);      
+      im.updateHeaderSection(p);
     }
   }
-  
+
   /**
    * Gets position information from profile and set value into uicomponent.<br>
    * 
@@ -149,8 +140,7 @@ public class UIHeaderSection extends UIProfileSection {
     UIFormStringInput uiPosition = getChildById(POSITION);
     Profile profile = getProfile(false);
     String position = (String) profile.getProperty(POSITION);
-    position = (position == null ? "": position);
+    position = (position == null ? "" : position);
     uiPosition.setValue(position);
   }
-  
 }

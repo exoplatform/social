@@ -1,529 +1,544 @@
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+ 
 .UISpaceSettingPortlet {
-	border: 1px solid #e6e6e6;
-	padding: 1px;
-	background: white;
+  border: 1px solid #e6e6e6;
+  padding: 1px;
+  background: white;
 }
 
 .UISpaceSettingPortlet .UISpaceSetting .UITabPane{
-	padding: 0px 4px 4px 4px;
-	background: #f7f7f9;
+  padding: 0px 4px 4px 4px;
+  background: #f7f7f9;
 }
 
-
 .UISpaceSettingPortlet .UISpaceSetting .UITabPane .GrayTabContainer {
-    clear: both;
+  clear: both;
 }
 
 .UISpaceSettingPortlet .SpaceName {
-    border-bottom: 10px solid #F7F7F9;
+  border-bottom: 10px solid #F7F7F9;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs {
-    background:transparent url('background/NormalTabStyle.gif') repeat-x scroll center top;
-    padding:0 6px;
-    height:27px;
+  background:transparent url('background/NormalTabStyle.gif') repeat-x scroll center top;
+  padding:0 6px;
+  height:27px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab {
-    color:#307DCC;
-    line-height:27px;
-    margin-right:2px;
+  color:#307DCC;
+  line-height:27px;
+  margin-right:2px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .LeftTab {
-    background:transparent url('DefaultSkin/background/SelectedLeftTab.gif') no-repeat scroll left;
-    line-height:27px;
-    padding-left:6px;
+  background:transparent url('DefaultSkin/background/SelectedLeftTab.gif') no-repeat scroll left;
+  line-height:27px;
+  padding-left:6px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .RightTab {
-    background:transparent url('DefaultSkin/background/SelectedRightTab.gif') no-repeat scroll right;
-    line-height:27px;
-    padding-right:6px;
+  background:transparent url('DefaultSkin/background/SelectedRightTab.gif') no-repeat scroll right;
+  line-height:27px;
+  padding-right:6px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .MiddleTab {
-    background:transparent url('DefaultSkin/background/SelectedMiddleTab.gif') repeat-x scroll center;
-    color: #202020;
-    cursor:pointer;
-    font-weight: bold;
-    line-height:27px;
-    padding:0 8px;
+  background:transparent url('DefaultSkin/background/SelectedMiddleTab.gif') repeat-x scroll center;
+  color: #202020;
+  cursor:pointer;
+  font-weight: bold;
+  line-height:27px;
+  padding:0 8px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab {
-    margin-right: 2px;
+  margin-right: 2px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .LeftTab {
-    background:transparent url('DefaultSkin/background/NormalLeftTab.gif') no-repeat scroll left;
-    line-height:26px;
-    padding-left:5px;
+  background:transparent url('DefaultSkin/background/NormalLeftTab.gif') no-repeat scroll left;
+  line-height:26px;
+  padding-left:5px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .RightTab {
-    background:transparent url('DefaultSkin/background/NormalRightTab.gif') no-repeat scroll right;
-    line-height:26px;
-    padding-right:5px;
+  background:transparent url('DefaultSkin/background/NormalRightTab.gif') no-repeat scroll right;
+  line-height:26px;
+  padding-right:5px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .MiddleTab {
-    background:transparent url('DefaultSkin/background/NormalMiddleTab.gif') repeat-x scroll center;
-    color: #202020;
-    cursor:pointer;
-    font-weight:normal;
-    line-height:26px;
-    padding:0 8px;
+  background:transparent url('DefaultSkin/background/NormalMiddleTab.gif') repeat-x scroll center;
+  color: #202020;
+  cursor:pointer;
+  font-weight:normal;
+  line-height:26px;
+  padding:0 8px;
 }
 
 .UISpaceSettingPortlet .UITabPane .UITabContentContainer {
-    background:white none repeat scroll 0 0;
-    border: 1px solid #d6d6d6;
-    border-top: none;
+  background:white none repeat scroll 0 0;
+  border: 1px solid #d6d6d6;
+  border-top: none;
 }
 
 .UISpaceSettingPortlet .UITabContentContainer .UITabContent {
-    background:#fbfbfb;
-    padding:10px;
+  background:#fbfbfb;
+  padding:10px;
 }
 
-
 .UISpaceSettingPortlet .UIAction {
-    padding:15px 0px 15px 0px;
+  padding:15px 0px 15px 0px;
 }
 
 .UISpaceSettingPortlet .UIAction .ActionContainer {
-    margin:auto;
-    width:auto;
+  margin:auto;
+  width:auto;
 }
 
 .UISpaceSettingPortlet .UIAction .ActionButton {
-    cursor:pointer;
-    display:block;
-    float:left;
-    margin:0 3px;
+  cursor:pointer;
+  display:block;
+  float:left;
+  margin:0 3px;
 }
 
 .UISpaceSettingPortlet .UIAction .ButtonLeft {
-    background:transparent url('DefaultSkin/background/SimpleButtonLeft.gif') no-repeat left;
-    padding:0 0 0 2px;
+  background:transparent url('DefaultSkin/background/SimpleButtonLeft.gif') no-repeat left;
+  padding:0 0 0 2px;
 }
 
 .UISpaceSettingPortlet .UIAction .ButtonRight {
-    background:transparent url('DefaultSkin/background/SimpleButtonRight.gif') no-repeat right;
-    padding:0 2px 0 0;
+  background:transparent url('DefaultSkin/background/SimpleButtonRight.gif') no-repeat right;
+  padding:0 2px 0 0;
 }
 
 .UISpaceSettingPortlet .UIAction .ButtonMiddle {
-    background:transparent url('DefaultSkin/background/SimpleButtonMiddle.gif') repeat-x center bottom;
-    line-height:23px;
-    padding:0 12px;
-    text-align:center;
-    white-space:nowrap;
+  background:transparent url('DefaultSkin/background/SimpleButtonMiddle.gif') repeat-x center bottom;
+  line-height:23px;
+  padding:0 12px;
+  text-align:center;
+  white-space:nowrap;
 }
 
 .UISpaceSettingPortlet .UIAction a {
-    color:black;
-    text-decoration:none;
+  color:black;
+  text-decoration:none;
 }
 
 /********************************UI Space Member********************************/
 .UISpaceSettingPortlet .UISpaceMember .AddInviteContent {
-	padding: 12px 0px 0px 8px;
-	height: 50px;
+  padding: 12px 0px 0px 8px;
+  height: 50px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .AddInvite {
-	float: left;
-	margin-left: 110px;
+  float: left;
+  margin-left: 110px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .AddInvite input {
-	width: 270px;
+  width: 270px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .UIActionContainer {
-	padding: 8px 0px;
-	margin-left: 320px;
-	line-height: 28px;
-	border-left: 2px solid #eeeeee;
-	width: 70px;
+  padding: 8px 0px;
+  margin-left: 320px;
+  line-height: 28px;
+  border-left: 2px solid #eeeeee;
+  width: 70px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .UIActionContainer .CenterButton {
-	background: url('DefaultSkin/background/ButtonSpaces.gif') no-repeat left center;
-	height: 16px;
-	margin: 5px 7px;
-	width: 15px;
+  background: url('DefaultSkin/background/ButtonSpaces.gif') no-repeat left center;
+  height: 16px;
+  margin: 5px 7px;
+  width: 15px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .UIActionContainer .IconButton {
-	background: url('DefaultSkin/background/AddInvite.gif') no-repeat right;
-	line-height: 27px;
-	padding-right: 20px;
-	cursor: pointer;
+  background: url('DefaultSkin/background/AddInvite.gif') no-repeat right;
+  line-height: 27px;
+  padding-right: 20px;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchAddMemberIcon {
-	background: url('DefaultSkin/background/InviteUserButton.png') no-repeat right;
-	width: 17px;
-	height: 16px;
-	margin: 5px 7px;
-	cursor: pointer;
+  background: url('DefaultSkin/background/InviteUserButton.png') no-repeat right;
+  width: 17px;
+  height: 16px;
+  margin: 5px 7px;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .UIActionContainer .InviteButton {
-	background: url('DefaultSkin/background/SearchAddMember.png') no-repeat right 13px;
-	width: 20px;
-	height: 34px;
-	margin: auto;
-	cursor: pointer;
+  background: url('DefaultSkin/background/SearchAddMember.png') no-repeat right 13px;
+  width: 20px;
+  height: 34px;
+  margin: auto;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleBar {
-	background: url('DefaultSkin/background/TitleBar.gif') repeat-x ;
-	line-height: 21px;
-	font-weight: bold;
-	padding-left: 20px;
-	color: #000000;
-	margin-top: 6px;
+  background: url('DefaultSkin/background/TitleBar.gif') repeat-x ;
+  line-height: 21px;
+  font-weight: bold;
+  padding-left: 20px;
+  color: #000000;
+  margin-top: 6px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer {
-	background: #dfdfdf ;
+  background: #dfdfdf ;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContent {
-	height: 24px;
-	border-bottom: 1px solid #777777;
-	padding: 5px 0px;
+  height: 24px;
+  border-bottom: 1px solid #777777;
+  padding: 5px 0px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .Title {
-	Float: left;
-	font-weight: bold;
-	padding-left: 20px;
-	color: #2b2f30;
-	line-height: 24px;
+  float: left;
+  font-weight: bold;
+  padding-left: 20px;
+  color: #2b2f30;
+  line-height: 24px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .UIGrid a {
-	color: #058ee6;
-	text-decoration: underline;
+  color: #058ee6;
+  text-decoration: underline;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .UIGrid a:hover {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .AddInviteButton {
-	padding: 0px 12px;
-	float: right;
+  padding: 0px 12px;
+  float: right;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .ManageMemButtonSub {
-	background: url('DefaultSkin/background/ManageMemButtonSub.gif') no-repeat left top;
-	width: 14px;
-	height: 14px;
-	margin: 4px 120px;
-	cursor: pointer;
+  background: url('DefaultSkin/background/ManageMemButtonSub.gif') no-repeat left top;
+  width: 14px;
+  height: 14px;
+  margin: 4px 120px;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .ManageMemButtonAdd {
-	background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat left top;
-	height: 14px;
-	margin: 0 120px;
-	width: 14px;
-	cursor: pointer;
+  background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat left top;
+  height: 14px;
+  margin: 0 120px;
+  width: 14px;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .DeleteMemberButton {
-	background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
-	width: 15px; 
-	height: 16px;
-	cursor: pointer;
-	margin: 0px 120px;
-	display: block;
+  background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
+  width: 15px; 
+  height: 16px;
+  cursor: pointer;
+  margin: 0px 120px;
+  display: block;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .RevokeInvitedButton {
-	background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
-	width: 15px; 
-	height: 16px;
-	cursor: pointer;
-	margin: 0px 41px;
+  background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
+  width: 15px; 
+  height: 16px;
+  cursor: pointer;
+  margin: 0px 41px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .ValidateButton {
-	background: url('DefaultSkin/background/ValidateButton.gif') no-repeat left top;
-	height: 15px;
-	margin: 2px 2px 2px 33px;
-	width: 17px;
-	cursor: pointer;
-	float: left;
+  background: url('DefaultSkin/background/ValidateButton.gif') no-repeat left top;
+  height: 15px;
+  margin: 2px 2px 2px 33px;
+  width: 17px;
+  cursor: pointer;
+  float: left;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .DeclineButton {
-	background: url('DefaultSkin/background/DeclineButton.gif') no-repeat left top;
-	width: 14px;
-	height: 15px;
-	cursor: pointer;
-	float: left;
-	margin: 2px 10px 2px 2px;
+  background: url('DefaultSkin/background/DeclineButton.gif') no-repeat left top;
+  width: 14px;
+  height: 15px;
+  cursor: pointer;
+  float: left;
+  margin: 2px 10px 2px 2px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchInviteButton {
-	float: left;
+  float: left;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .IconButton {
-	background: url('DefaultSkin/background/MemberIcon.gif') no-repeat left center;
-	width: 15px;
-	height: 16px;
-	margin: 5px 7px;
-	cursor: pointer;
+  background: url('DefaultSkin/background/MemberIcon.gif') no-repeat left center;
+  width: 15px;
+  height: 16px;
+  margin: 5px 7px;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .InviteSocialLeft {
-	background: url('DefaultSkin/background/InviteSocialLeft.gif') no-repeat left center;
-	padding-left: 9px;
+  background: url('DefaultSkin/background/InviteSocialLeft.gif') no-repeat left center;
+  padding-left: 9px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .InviteSocialRight {
-	background: url('DefaultSkin/background/InviteSocialRight.gif') no-repeat right center;
-	padding-right: 9px;
+  background: url('DefaultSkin/background/InviteSocialRight.gif') no-repeat right center;
+  padding-right: 9px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .InviteSocialCenter {
-	background: url('DefaultSkin/background/InviteSocialCenter.gif') repeat-x center;
-	height: 48px;
+  background: url('DefaultSkin/background/InviteSocialCenter.gif') repeat-x center;
+  height: 48px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchInviteForm {
-	padding:4px 16px;
-	margin: 8px 8px 0px 0px;
-	float: left;
-	width: 590px;
+  padding:4px 16px;
+  margin: 8px 8px 0px 0px;
+  float: left;
+  width: 590px;
 }
 /***********************UI Space Application********************************/
 .UISpaceSettingPortlet .LabelSpace {
-	color: #53515c;
-	line-height: 35px;
-	font-size: 14px;
-	font-family: tahoma;
-	font-weight: bold;
+  color: #53515c;
+  line-height: 35px;
+  font-size: 14px;
+  font-family: tahoma;
+  font-weight: bold;
 }
 
 .UISpaceSettingPortlet .EmptyData {
-	text-align: center;
-	color: red;
+  text-align: center;
+  color: red;
 }
 
 .UISpaceSettingPortlet .ContainerSpace{
-	background: #f5f5f5;
-	border: 1px solid #c7c7c7;
-	padding: 8px;
+  background: #f5f5f5;
+  border: 1px solid #c7c7c7;
+  padding: 8px;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .ContentSpace{
-	background: white;
-	border:1px solid #c7c7c7;
-	padding: 8px;
-	margin-bottom:4px;
-	height: 80px;
+  background: white;
+  border:1px solid #c7c7c7;
+  padding: 8px;
+  margin-bottom:4px;
+  height: 80px;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .ApplicationIcon{
-	background: url('DefaultSkin/background/ApplicationIcon.gif') no-repeat left;
-	width: 73px; height: 80px;
-	float: left;
-	margin-left: 8px;
+  background: url('DefaultSkin/background/ApplicationIcon.gif') no-repeat left;
+  width: 73px; height: 80px;
+  float: left;
+  margin-left: 8px;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .ApplicationContent {
-	margin: 10px 0 0 76px;
-	padding-left:16px;
+  margin: 10px 0 0 76px;
+  padding-left:16px;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .ApplicationName {
-	color: #0b4da3;
-	font-weight: bold;
-	height: 20px;
-	margin-bottom: 5px;
+  color: #0b4da3;
+  font-weight: bold;
+  height: 20px;
+  margin-bottom: 5px;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .DeleteIcon {
-	background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
-	width: 15px; 
-	height: 16px;
-	margin-right: 10px;
-	cursor: pointer;
+  background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
+  width: 15px; 
+  height: 16px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .CommunityContainer{
-	padding-left: 16px;
-	margin: 10px 0 0 76px;
+  padding-left: 16px;
+  margin: 10px 0 0 76px;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .Line{
-	border-bottom:1px solid #B7B7B7;
+  border-bottom:1px solid #B7B7B7;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .Text{
-	line-height: 16px;
+  line-height: 16px;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .TagsName{
-	color: #b7b7b7;
-	line-height: 16px;
+  color: #b7b7b7;
+  line-height: 16px;
 }
 
 .UISpaceSettingPortlet .ContainerSpace .CommunityMane{
-	color: #0d6e8f;
-	height: 20px;
-	font-size: 12px;
-	font-family: tahoma;
-	font-weight: bold;
+  color: #0d6e8f;
+  height: 20px;
+  font-size: 12px;
+  font-family: tahoma;
+  font-weight: bold;
 }
 
 
 .UISpaceSettingPortlet .LabelBrown{
-	color: #a6a6a6;
-	line-height: 16px;
-	font-size: 11px;
-	font-family: tahoma;
+  color: #a6a6a6;
+  line-height: 16px;
+  font-size: 11px;
+  font-family: tahoma;
 }
 
 .UISpaceSettingPortlet .SpaceAction {
-	float: right;
-	font-weight: normal;
-	color: #393939;
-	cursor: pointer;
-	margin-right: 3px;
+  float: right;
+  font-weight: normal;
+  color: #393939;
+  cursor: pointer;
+  margin-right: 3px;
 }
 
 .UISpaceSettingPortlet .LeftButton {
-	background: none;
-	padding-left: 3px;
+  background: none;
+  padding-left: 3px;
 }
 
 .UISpaceSettingPortlet .RightButton {
-	background: none;
-	padding-right: 3px;
+  background: none;
+  padding-right: 3px;
 }
 
 .UISpaceSettingPortlet .SpaceAction .RemoveButton {
-	background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left top;
-	width: 15px;
-	height: 16px;
-	line-height: 18px;
-	padding: 0px;
-	color: #7f7a77;
-	font-size: 11px;
+  background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left top;
+  width: 15px;
+  height: 16px;
+  line-height: 18px;
+  padding: 0px;
+  color: #7f7a77;
+  font-size: 11px;
 }
 
 .UISpaceSettingPortlet .InstallApplicationButton {
-	background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat left top;
-	width: 15px;
-	height: 16px;
-	line-height: 18px;
-	padding: 0px;
-	color: #7f7a77;
-	font-size: 11px;
-	cursor: pointer;
+  background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat left top;
+  width: 15px;
+  height: 16px;
+  line-height: 18px;
+  padding: 0px;
+  color: #7f7a77;
+  font-size: 11px;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton {
-	width: 100px;
-	margin: auto;
+  width: 100px;
+  margin: auto;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .LeftButton {
-	background: url('DefaultSkin/background/LeftButton3x26.gif') no-repeat left center;
-	padding-left: 3px;
-	margin: 10px;
+  background: url('DefaultSkin/background/LeftButton3x26.gif') no-repeat left center;
+  padding-left: 3px;
+  margin: 10px;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .RightButton {
-	background: url('DefaultSkin/background/RightButton3x26.gif') no-repeat right center;
-	padding-right: 3px;
+  background: url('DefaultSkin/background/RightButton3x26.gif') no-repeat right center;
+  padding-right: 3px;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .CenterButton {
-	background: url('DefaultSkin/background/CenterButton1x26.gif') repeat-x center;
-	line-height: 26px;
-	padding: 0px 20px;
+  background: url('DefaultSkin/background/CenterButton1x26.gif') repeat-x center;
+  line-height: 26px;
+  padding: 0px 20px;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .IconButton {
-	background: url('DefaultSkin/background/AddInvite.gif') no-repeat left 10px;
-	line-height: 27px;
-	font-weight: bold;
-	padding-left: 10px;
-	color: #5d757f;
-	cursor: pointer;
+  background: url('DefaultSkin/background/AddInvite.gif') no-repeat left 10px;
+  line-height: 27px;
+  font-weight: bold;
+  padding-left: 10px;
+  color: #5d757f;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .RevokeButton {
-	background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left top;
-	width: 15px;
-	height: 16px;
-	cursor: pointer;
+  background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left top;
+  width: 15px;
+  height: 16px;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .AplicationButton {
-	float: right;
-	margin: 0px 10px 8px 0px;
+  float: right;
+  margin: 0px 10px 8px 0px;
 }
 
 .UISpaceSettingPortlet .AplicationButton .AplicationButtonL {
-	background: url('DefaultSkin/background/ButtonSpaces.gif') no-repeat left top ;
-	padding-left: 3px;
+  background: url('DefaultSkin/background/ButtonSpaces.gif') no-repeat left top ;
+  padding-left: 3px;
 }
 
 .UISpaceSettingPortlet .AplicationButton .AplicationButtonR {
-	background: url('DefaultSkin/background/ButtonSpaces.gif') no-repeat right top;
-	padding-right: 3px;
+  background: url('DefaultSkin/background/ButtonSpaces.gif') no-repeat right top;
+  padding-right: 3px;
 }
 
 .UISpaceSettingPortlet .AplicationButton .AplicationButtonC {
-	background: url('DefaultSkin/background/ButtonSpaces.gif') repeat-x left -18px;
-	line-height: 18px;
-	padding: 0px 10px;
-	color: #7F7A77;
+  background: url('DefaultSkin/background/ButtonSpaces.gif') repeat-x left -18px;
+  line-height: 18px;
+  padding: 0px 10px;
+  color: #7F7A77;
 }
 
 /*==============SPACE NAME===============================*/
 .UISpaceSettingPortlet .SpaceName {
   background: #559bc1;
   padding: 0px 15px;
-	margin: auto;
-	line-height: 40px;
+  margin: auto;
+  line-height: 40px;
 }
 
 .UISpaceSettingPortlet .SpaceName .Name {
   background: url('DefaultSkin/background/NameTitle.gif') no-repeat left center;
   padding-left: 40px;
-	overflow: hidden;
-	white-space: nowrap;
-	color: #fff;
-	font-size: 14px;
-	font-weight: bold;
-	margin: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  margin: auto;
 }
 
 /*=========================Add Application Space==============================*/
 
 .UIAddApplicationSpace {
   background: #fff url('DefaultSkin/background/SpaceContent2.gif') repeat-x;
-	margin: 1px;
-	padding-top: 25px;
+  margin: 1px;
+  padding-top: 25px;
 }
 
 .UIAddApplicationSpace .ContainerSpace{
-	background: none;
-	border:none;
-	padding: 8px;
+  background: none;
+  border:none;
+  padding: 8px;
 }
 
 .UIManageSpacesPortlet .SelectUserIcon {
@@ -533,30 +548,30 @@
 
 /*==============BUTTON BACK===============================*/
 .UISpaceSettingPortlet .BackButton {
-	float: right;
-	cursor: pointer;
+  float: right;
+  cursor: pointer;
 }
 
 .UISpaceSettingPortlet .BackButton .BackButtonL {
-	background: url('DefaultSkin/background/BackButtonL.gif') no-repeat left center;
-	padding-left: 8px;
+  background: url('DefaultSkin/background/BackButtonL.gif') no-repeat left center;
+  padding-left: 8px;
 }
 
 .UISpaceSettingPortlet .BackButton .BackButtonR {
-	background: url('DefaultSkin/background/BackButtonR.gif') no-repeat right center;
-	padding-right: 8px;
+  background: url('DefaultSkin/background/BackButtonR.gif') no-repeat right center;
+  padding-right: 8px;
 }
 
 .UISpaceSettingPortlet .BackButton .BackButtonC {
-	background: url('DefaultSkin/background/BackButtonC.gif') repeat-x center;
-	line-height: 24px;
-	padding: 0px 10px;
+  background: url('DefaultSkin/background/BackButtonC.gif') repeat-x center;
+  line-height: 24px;
+  padding: 0px 10px;
 }
 
 .UISpaceSettingPortlet .BackButton .BackButtonIcon {
-	background: url('DefaultSkin/background/BackButtonIcon.gif') no-repeat left ;
-	padding-left: 24px;
-	line-height: 24px;
+  background: url('DefaultSkin/background/BackButtonIcon.gif') no-repeat left ;
+  padding-left: 24px;
+  line-height: 24px;
 }
 
 .ApplicationTDContainer .WorkingAreaWithHelp {
@@ -566,179 +581,176 @@
 
 /*============= =============*/
 .UISpaceSettingPortlet .UIHorizontalTabs .MessageTabDialog .SelectedTab .MiddleTab {
-	background: url('/eXoResources/skin/DefaultSkin/webui/component/UITabSystem/UITabs/background/MessageTabDialog.gif') repeat-x center -156px;
-	color:#058EE6;
-	cursor:pointer;
-	font-weight:normal;
-	line-height:31px;
-	padding:0px 8px 5px 4px;
+  background: url('/eXoResources/skin/DefaultSkin/webui/component/UITabSystem/UITabs/background/MessageTabDialog.gif') repeat-x center -156px;
+  color:#058EE6;
+  cursor:pointer;
+  font-weight:normal;
+  line-height:31px;
+  padding:0px 8px 5px 4px;
 }
 
 .UIHorizontalTabs .MessageTabDialog .DisabledTab .MiddleTab {
-	color:gray;
-	cursor:pointer;
-	font-weight:normal;
-	line-height:31px;
-	padding:0px 8px 5px 4px;
+  color:gray;
+  cursor:pointer;
+  font-weight:normal;
+  line-height:31px;
+  padding:0px 8px 5px 4px;
 }
 
 /* =============left column - space setting===============*/
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft {
-	background: url('DefaultSkin/background/BGSettingAvatar.gif') no-repeat left top;
-	float: left;
-	height: 146px;
-	width: 131px;
-	margin: 15px 40px;
-	_margin: 15px 15px 15px 20px;
+  background: url('DefaultSkin/background/BGSettingAvatar.gif') no-repeat left top;
+  float: left;
+  height: 146px;
+  width: 131px;
+  margin: 15px 40px;
 }
 
 .UISpaceInfo .SpaceContainer table {
-	margin: 15px 0 0 225px;
+  margin: 15px 0 0 225px;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .AvatarSpace {
-	background: url('DefaultSkin/background/InfoAvatarBG.gif') no-repeat left top;
-	height: 80px;
-	margin: 26px 27px 10px 26px;
+  background: url('DefaultSkin/background/InfoAvatarBG.gif') no-repeat left top;
+  height: 80px;
+  margin: 26px 27px 10px 26px;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .AvaBorder {
-	padding: 7px;
+  padding: 7px;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .AvaBorder .Image {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .ChangeAvaButton { 
-	margin: 0 10px;
-	cursor: pointer;
-	text-align:center;
+  margin: 0 10px;
+  cursor: pointer;
+  text-align:center;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .LeftButton { 
-	background: url('DefaultSkin/background/ChangeAvaButton.png') no-repeat left top;
-	padding-left: 8px;
+  background: url('DefaultSkin/background/ChangeAvaButton.png') no-repeat left top;
+  padding-left: 8px;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .RightButton { 
-	background: url('DefaultSkin/background/ChangeAvaButton.png') no-repeat right top;
-	padding-right: 8px;
+  background: url('DefaultSkin/background/ChangeAvaButton.png') no-repeat right top;
+  padding-right: 8px;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .MiddleButton { 
-	background: url('DefaultSkin/background/ChangeAvaButton.png') repeat-x left -17px;
-	height: 17px;
+  background: url('DefaultSkin/background/ChangeAvaButton.png') repeat-x left -17px;
+  height: 17px;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .Arrow {
-	background: url('DefaultSkin/background/Arrow.gif') no-repeat right 5px;
-	line-height: 15px;
-	padding: 0px 12px 0px 5px;
-	font-size: 11px;
+  background: url('DefaultSkin/background/Arrow.gif') no-repeat right 5px;
+  line-height: 15px;
+  padding: 0px 12px 0px 5px;
+  font-size: 11px;
 }
 
 .UISpaceSettingPortlet .UISpaceInfo .UIAction {
-	padding: 5px 0px 20px 0px;
+  padding: 5px 0px 20px 0px;
 }
 
 .UIAvatarUploader .HorizontalLayout {
-	border: none;
-	padding: 10px;
+  border: none;
+  padding: 10px;
 }
 
 .UIAvatarUploader .InfoMessage {
-	padding: 5px 0px;
-	text-align: center;
+  padding: 5px 0px;
+  text-align: center;
 }
 
 .UIAvatarUploader .InfoMessage {
-	padding: 5px;
-	text-align: center;
+  padding: 5px;
+  text-align: center;
 }
 
 .UIAvatarUploader .ErrorMessage {
-	padding: 5px;
-	text-align: center;
-	background: #ffe2e2;
+  padding: 5px;
+  text-align: center;
+  background: #ffe2e2;
 }
 
 .UIAvatarUploader .HorizontalLayout input {
-	border: 1px solid #e2e2e2;
-	height: 20px;
+  border: 1px solid #e2e2e2;
+  height: 20px;
 }
 
 .UIAvatarUploader .UIFormGrid td.FieldLabel {
-	font-weight: normal;
-	color: gray;
+  font-weight: normal;
+  color: gray;
 }
 
 .UIAvatarUploader .UIAction .ButtonLeft {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
-	padding-left: 4px;
-	height: 21px;
+  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
+  padding-left: 4px;
+  height: 21px;
 }
 
 .UIAvatarUploader .UIAction .ButtonRight {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
-	padding-right: 4px;
-	height: 21px;
+  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
+  padding-right: 4px;
+  height: 21px;
 }
 
 .UIAvatarUploader .UIAction .ButtonMiddle {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
-	line-height: 21px;
-	padding: 0px 14px;
+  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
+  line-height: 21px;
+  padding: 0px 14px;
 }
 
-
-
 .UIAvatarUploadContent .InfoTitle {
-	background: #e2e2e2;
-	color: #878787;
-	line-height: 24px;
-	font-size: 12px;
-	font-weight: bold;
-	padding: 0px 10px;
+  background: #e2e2e2;
+  color: #878787;
+  line-height: 24px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0px 10px;
 }
 
 .UIAvatarUploadContent .AvatarInfo {
-	padding: 15px;
+  padding: 15px;
 }
 
 .UIAvatarUploadContent .AvatarInfo div {
-	margin-left: 135px;
-	line-height: 20px;
+  margin-left: 135px;
+  line-height: 20px;
 }
 
 .UIAvatarUploadContent .AvatarInfo span {
-	color: gray;
+  color: gray;
 }
 
 .UIAvatarUploadContent .ImageAvatar {
-	float: left;
-	width: 110px;
-	background: #fff;
-	padding: 5px;
-	border: 1px solid #e5e5e5;
+  float: left;
+  width: 110px;
+  background: #fff;
+  padding: 5px;
+  border: 1px solid #e5e5e5;
 }
 
 .UIAvatarUploadContent .ImageAvatar img {
-	width: 110px;
+  width: 110px;
 }
 
 .UIAvatarUploadContent .UIAction .ButtonLeft {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
-	padding-left: 4px;
+  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
+  padding-left: 4px;
 }
 
 .UIAvatarUploadContent .UIAction .ButtonRight {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
-	padding-right: 4px;
+  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
+  padding-right: 4px;
 }
 
 .UIAvatarUploadContent .UIAction .ButtonMiddle {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
-	line-height: 21px;
-	padding: 0px 14px;
+  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
+  line-height: 21px;
+  padding: 0px 14px;
 }

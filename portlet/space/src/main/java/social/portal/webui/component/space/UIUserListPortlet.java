@@ -288,7 +288,7 @@ public class UIUserListPortlet extends UIPortletApplication {
    * @throws Exception
    */
   private void update() throws Exception {
-    int n = iterator_.getCurrentPage();
+    //int n = iterator_.getCurrentPage();
     //TODO dang.tung 3.0
     //PageList pageList = new ObjectPageList(memberList, ITEMS_PER_PAGE);
     //iterator_.setPageList(pageList);

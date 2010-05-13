@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -21,13 +22,12 @@
     <type>org.exoplatform.portal.webui.application.UIGroovyPortlet</type>
     <lifecycle>org.exoplatform.groovy.webui.component.lifecycle.UIGroovyPortletLifecycle</lifecycle>
   </ui-component-config>
-
-  <application> 
+  
+  <application>
     <ui-component-root>org.exoplatform.portal.webui.application.UIGroovyPortlet</ui-component-root>
     <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
-
-    <application-lifecycle-listeners>       
-      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>       
-    </application-lifecycle-listeners>     
+    <application-lifecycle-listeners>
+      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>
+    </application-lifecycle-listeners>
   </application>
 </webui-configuration>

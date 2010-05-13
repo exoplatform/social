@@ -55,15 +55,14 @@ import org.exoplatform.webui.event.Event.Phase;
  *
  */
 @ComponentConfig(
-    template = "app:/groovy/portal/webui/component/UIDisplayProfileList.gtmpl",
-    events = {
-            @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
-            @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),
-            @EventConfig(listeners = UIDisplayProfileList.DenyContactActionListener.class),
-            @EventConfig(listeners = UIDisplayProfileList.SearchActionListener.class, phase = Phase.DECODE)
-    }
+  template = "app:/groovy/portal/webui/component/UIDisplayProfileList.gtmpl",
+  events = {
+    @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.DenyContactActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.SearchActionListener.class, phase = Phase.DECODE)
+  }
 )
-            
 public class UIDisplayProfileList extends UIContainer {
   /** Label for display invoke action */
   private static final String INVITATION_REVOKED_INFO = "UIDisplayProfileList.label.RevokedInfo";
@@ -94,7 +93,9 @@ public class UIDisplayProfileList extends UIContainer {
    * 
    * @return one list of identity.
    */
-  public List<Identity> getIdentityList() { return identityList; }
+  public List<Identity> getIdentityList() {
+    return identityList;
+  }
 
   /**
    * Sets list identity.
@@ -102,14 +103,18 @@ public class UIDisplayProfileList extends UIContainer {
    * @param identityList
    *        Identities for setting to list.
    */
-  public void setIdentityList(List<Identity> identityList) { this.identityList = identityList; }
+  public void setIdentityList(List<Identity> identityList) {
+    this.identityList = identityList;
+  }
   
   /**
    * Gets iterator for display.
    * 
    * @return an iterator contains information for display.
    */
-  public UIPageIterator getUIPageIterator() { return iterator;}
+  public UIPageIterator getUIPageIterator() {
+    return iterator;
+  }
   
   /**
    * Initializes all components for the first time.
@@ -141,7 +146,6 @@ public class UIDisplayProfileList extends UIContainer {
     } else if (pageCount < currentPage) {
       iterator.setCurrentPage(currentPage - 1);
     }
-    
     return iterator.getCurrentPageData();
   }
 
@@ -155,7 +159,6 @@ public class UIDisplayProfileList extends UIContainer {
   public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList portlet = event.getSource();
-      
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
       String currUserId = portlet.getCurrentUserName();
       IdentityManager im = portlet.getIdentityManager();
@@ -163,7 +166,6 @@ public class UIDisplayProfileList extends UIContainer {
       Identity requestedIdentity = im.getIdentity(userId);
       RelationshipManager rm = portlet.getRelationshipManager();
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-      
       // Check if invitation is established by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
       Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
@@ -171,10 +173,8 @@ public class UIDisplayProfileList extends UIContainer {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      
       if (rel == null) {
         rel = rm.invite(currIdentity, requestedIdentity);
-
       } else {
         rm.confirm(rel);
       }
@@ -198,11 +198,8 @@ public class UIDisplayProfileList extends UIContainer {
       IdentityManager im = portlet.getIdentityManager();
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
-
       Identity requestedIdentity = im.getIdentity(userId);
-
       RelationshipManager rm = portlet.getRelationshipManager();
-
       // Check if invitation is revoked or deleted by another user
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
@@ -224,18 +221,13 @@ public class UIDisplayProfileList extends UIContainer {
   public static class DenyContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList portlet = event.getSource();
-
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
       String currUserId = portlet.getCurrentUserName();
-
       IdentityManager im = portlet.getIdentityManager();
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                        currUserId);
-
       Identity requestedIdentity = im.getIdentity(userId);
-
       RelationshipManager rm = portlet.getRelationshipManager();
-
       // Check if invitation is revoked or deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
       Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
@@ -243,10 +235,10 @@ public class UIDisplayProfileList extends UIContainer {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
-      if (rel != null)
+      if (rel != null) {
         rm.remove(rel);
+      }
     }
   }
 
@@ -447,7 +439,6 @@ public class UIDisplayProfileList extends UIContainer {
     for (Identity identity : allIds) {
       allUserContactName.add((identity.getProfile()).getFullName());
     }
-    
     return allUserContactName;
   }
   
@@ -457,8 +448,8 @@ public class UIDisplayProfileList extends UIContainer {
    * @return an object that is instance of relationship manager.
    */
   private RelationshipManager getRelationshipManager() {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      return (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    return (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
   }
 
 }

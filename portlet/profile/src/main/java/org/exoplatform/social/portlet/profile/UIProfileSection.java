@@ -17,7 +17,6 @@
 package org.exoplatform.social.portlet.profile;
 
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -33,8 +32,8 @@ import org.exoplatform.webui.form.UIForm;
  */
 
 @ComponentConfig(
-	    lifecycle = UIFormLifecycle.class
-	    )
+  lifecycle = UIFormLifecycle.class
+)
 public abstract class UIProfileSection extends UIForm {
   /** The isEditMode is used for check the view mode. */
   private boolean isEditMode;
@@ -143,7 +142,6 @@ public abstract class UIProfileSection extends UIForm {
   public static class SaveActionListener extends EventListener<UIProfileSection> {
 
     public void execute(Event<UIProfileSection> event) throws Exception {
-      WebuiRequestContext requestContext = event.getRequestContext();
       UIProfileSection sect = event.getSource();
       sect.setEditMode(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
@@ -158,9 +156,7 @@ public abstract class UIProfileSection extends UIForm {
 
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
-
       sect.setEditMode(false);
-
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
     }
   }

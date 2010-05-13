@@ -32,7 +32,7 @@ import org.exoplatform.webui.core.UIPortletApplication;
 @ComponentConfig()
 public class UIGroovyPortlet extends UIPortletApplication {
   
-  private String DEFAULT_TEMPLATE = "app:/groovy/groovy/webui/component/UIGroovyPortlet.gtmpl" ;  
+  private String DEFAULT_TEMPLATE = "app:/groovy/groovy/webui/component/UIGroovyPortlet.gtmpl";
   private String template_ ;
   private String windowId ;
   

@@ -56,9 +56,7 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
   public String getName() {
     return NAME;
   }
-
- 
-
+  
   @Override
   public Identity populateIdentity(Space space) {
     Identity identity = new Identity(NAME, space.getId());
@@ -69,7 +67,4 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
     profile.setProperty(Profile.URL, space.getImageSource());
     return identity;
   }
-  
-
-
 }

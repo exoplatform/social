@@ -16,66 +16,62 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
+<nodeTypes
+  xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+  xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+  xmlns:jcr="http://www.jcp.org/jcr/1.0">
   <nodeType name="exo:space" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-  	<supertypes>
-  		<supertype>nt:base</supertype>
-  	</supertypes>
-  	<propertyDefinitions>
-  		<propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:groupId" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:pendingUsers" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:invitedUsers" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:app" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:parent" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:description" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:tag" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:type" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:url" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:visibility" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:registration" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-  			<valueConstraints/>
-  		</propertyDefinition>
-  		<propertyDefinition name="exo:priority" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+    <supertypes>
+      <supertype>nt:base</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:groupId" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:pendingUsers" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:invitedUsers" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:app" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:parent" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:description" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:tag" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:type" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:url" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:visibility" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:registration" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="exo:priority" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
          <valueConstraints/>
       </propertyDefinition>
-  	</propertyDefinitions>
-  	<childNodeDefinitions>
+    </propertyDefinitions>
+    <childNodeDefinitions>
       <childNodeDefinition name="*" defaultPrimaryType="nt:file" autoCreated="false" mandatory="false"
         onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
           <requiredPrimaryType>nt:file</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
-    </childNodeDefinitions>			
+    </childNodeDefinitions>
   </nodeType>
-</nodeTypes>  
-  
-   
-  
-
-
-
-  
+</nodeTypes>

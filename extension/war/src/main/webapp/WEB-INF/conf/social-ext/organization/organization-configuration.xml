@@ -73,7 +73,7 @@
                     <field  name="name"><string>platform</string></field>
                     <field  name="parentId"><string></string></field>
                     <field  name="description"><string>the /platform group</string></field>
-                    <field  name="label"><string>Platform</string></field>                    
+                    <field  name="label"><string>Platform</string></field>
                   </object>
                 </value>
                 <value>
@@ -187,7 +187,7 @@
                     <field  name="description"><string>the /customers group</string></field>
                     <field  name="label"><string>Customers</string></field>
                   </object>
-                </value>                
+                </value>
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
                     <field  name="name"><string>partners</string></field>
@@ -206,12 +206,12 @@
                 </value>
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>developer</string></field>
+                    <field  name="name"><string>developers</string></field>
                     <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the /developer group</string></field>
-                    <field  name="label"><string>Developer</string></field>
+                    <field  name="description"><string>the /developers group</string></field>
+                    <field  name="label"><string>Developers</string></field>
                   </object>
-                </value>                
+                </value>
               </collection>
             </field>
 
@@ -271,7 +271,7 @@
                       <string>member:/platform/guests,member:/platform/users</string>
                     </field>
                   </object>
-                </value>                       
+                </value>
               </collection>
             </field>
           </object>

@@ -22,13 +22,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 /**
- * Util.java: utility class for rest <br />
+ * Util.java: utility class for rest <br />.
  * Created by The eXo Platform SEA
  * @author hoatle <hoatlevan at gmail dot com>
  * @since  Jan 5, 2009
  */
-public class Util {
-  
+public final class Util {
+  /**
+   * Prevent construction.
+   */
+  private Util() {
+  }
   /**
    * gets response constructed from provided params.
    * @param entity

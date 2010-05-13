@@ -37,7 +37,9 @@ public class IdentityListAccess implements ListAccess<Identity> {
    * @param list
    *        List using for accessing.
    */
-  public IdentityListAccess(List<Identity> list) { this.list = list;}
+  public IdentityListAccess(List<Identity> list) {
+    this.list = list;
+  }
 
   /**
    * Implements load method of ListAccess interfaces for load all initial variables.<br>

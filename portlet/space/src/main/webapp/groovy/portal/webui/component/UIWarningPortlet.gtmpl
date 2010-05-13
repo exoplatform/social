@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -16,14 +18,16 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+*/
+%>
 <div class="UIWarningPortlet" id="uicomponent.id">
-	<div class="UIWarningPortletLeft">
-		<div class="UIWarningPortletRight">
-			<div class="UIWarningPortletCenter">
-				<div class="UIWarningPortletIcon">
-					<%= _ctx.appRes(uicomponent.getId() + ".title.description")%>						
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="UIWarningPortletLeft">
+    <div class="UIWarningPortletRight">
+      <div class="UIWarningPortletCenter">
+        <div class="UIWarningPortletIcon">
+          <%= _ctx.appRes(uicomponent.getId() + ".title.description")%>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

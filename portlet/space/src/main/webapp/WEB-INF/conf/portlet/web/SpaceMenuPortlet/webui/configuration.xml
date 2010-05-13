@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -16,12 +17,12 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<webui-configuration>  
-  <application>     
+<webui-configuration>
+  <application>
     <ui-component-root>social.portal.webui.component.space.UISpaceMenuPortlet</ui-component-root>
-    <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
-    <application-lifecycle-listeners>       
-      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>       
+      <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
+    <application-lifecycle-listeners>
+      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>
     </application-lifecycle-listeners>
   </application>
 </webui-configuration>

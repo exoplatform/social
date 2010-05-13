@@ -120,8 +120,8 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    * @throws Exception
    */
   private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-    return rService.getCurrentRepository().getConfiguration().getName() ;
+    RepositoryService rService = getApplicationComponent(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName();
   }
   
   /**
@@ -129,7 +129,8 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    * 
    * @return the rest context
    */
-	private String getRestContext() {
-	  return PortalContainer.getInstance().getRestContextName();
-	}
+  private String getRestContext() {
+    return PortalContainer.getInstance().getRestContextName();
+  }
 }
+

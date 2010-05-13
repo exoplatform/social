@@ -22,72 +22,70 @@
 
 <gatein-resources
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_0 http://www.gatein.org/xml/ns/gatein_resources_1_0"
-    xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_0">
-
-	<!-- GadgetPortlet skins -->
-
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>profile</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIProfilePortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>connection</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIRelationPortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>invitation</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIInvitationPortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>requests</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIRequestPortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>profilenavigationportlet</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIProfileNavigation/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>connectionnav</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIRelationNavigation/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-			
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>PeoplePortlet</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIPeoplePortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>SocialLogoPortlet</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UISocialLogoPortlet/DefaultStylesheet.css</css-path>
-	</portlet-skin>
-	
-	<portlet-skin>
-		<application-name>profile</application-name>
-		<portlet-name>myconnectionnav</portlet-name>
-		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIMyRelationNavigation/DefaultStylesheet.css</css-path>
-	</portlet-skin>
+  xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_0 http://www.gatein.org/xml/ns/gatein_resources_1_0"
+  xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_0">
+  
+  <portlet-skin>
+    <application-name>profile</application-name>
+    <portlet-name>ProfilePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UIProfilePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>profile</application-name>
+    <portlet-name>ConnectionsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UIConnectionsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>profile</application-name>
+    <portlet-name>InvitationsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UIInvitationsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>profile</application-name>
+    <portlet-name>RequestsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UIRequestsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>profile</application-name>
+    <portlet-name>ProfileNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UIProfileNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>profile</application-name>
+    <portlet-name>ConnectionsNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UIConnectionsNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>profile</application-name>
+    <portlet-name>PeoplePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UIPeoplePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>profile</application-name>
+    <portlet-name>SocialLogoPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UISocialLogoPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+  <application-name>profile</application-name>
+  <portlet-name>MyConnectionsNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/portal/webui/component/UIMyConnectionsNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
 </gatein-resources>
-

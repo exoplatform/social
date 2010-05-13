@@ -16,20 +16,12 @@
  */
 package org.exoplatform.social.portlet.profile;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * Portlet manages profile.<br> 
+ * Provides links for People Directory and User's connections<br> 
  *
  */
 @ComponentConfig(
@@ -38,30 +30,11 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UIPeopleToolBarPortlet extends UIPortletApplication {
 
-  public UIPeopleToolBarPortlet() throws Exception {
-  }
-  
-  public User getUser() throws Exception {
-	  OrganizationService service = getApplicationComponent(OrganizationService.class);
-      String userName = Util.getPortalRequestContext().getRemoteUser();
-      User user = service.getUserHandler().findUserByName(userName);
-      return user;
-  }
-
   /**
-   * gets navigation page list
-   * @return navigation page list
+   * Constructor
    * @throws Exception
    */
-  public List<PageNavigation> getNavigations() throws Exception {
-    List<PageNavigation> result = new ArrayList<PageNavigation>();
-    UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
-    List<PageNavigation> navigations = uiPortalApp.getNavigations();
+  public UIPeopleToolBarPortlet() throws Exception {
     
-	for (PageNavigation pageNavigation : navigations) {
-		if(pageNavigation.getOwnerType().equals("portal"))
-			result.add(pageNavigation);
-	  }
-    return result;
   }
 }

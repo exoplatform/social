@@ -115,6 +115,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
+      space.setName(space.getName().trim());
       if (space.getDescription() == null) {
         space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
       }
@@ -160,13 +161,6 @@ public class UISpaceAddForm extends UIFormTabPane {
       }
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
-      
-      // Reset navigation after creating (SOC-674)
-//      PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
-//      SpaceUtils.setNavigation(spaceNavigation);
-      SpaceUtils.reloadNavigation();
-      //TODO: don't need to update working workspace
-      //      just group tool bar portlet.
       UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
       uiPortalApp.localizeNavigations();
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);

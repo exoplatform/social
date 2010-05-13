@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <container template="system:/groovy/portal/webui/container/UIContainer.gtmpl">	
-	<container template="system:/groovy/portal/webui/container/UIToolbarContainer.gtmpl">
-	  <access-permissions>*:/platform/users; *:/organization/management/executive-board</access-permissions>
-		
-		<container id="StarToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <portlet-application>
+  <container template="system:/groovy/portal/webui/container/UIToolbarContainer.gtmpl">
+    <access-permissions>*:/platform/users</access-permissions>
+    <container id="StarToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <portlet-application>
         <portlet>
           <application-ref>exoadmin</application-ref>
           <portlet-ref>StarToolbarPortlet</portlet-ref>
         </portlet>
-	      <access-permissions>Everyone</access-permissions>
-		    <show-info-bar>false</show-info-bar>
-		  </portlet-application>
-		</container>
-		
-		<container id="SocialDemoUserToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-			<portlet-application>
-			  <portlet>
-			    <application-ref>profile</application-ref>
-			    <portlet-ref>UserToolBarPortlet</portlet-ref>
-			  </portlet>
-			  <access-permissions>Everyone</access-permissions>
-			  <show-info-bar>false</show-info-bar>
-			</portlet-application>
-		</container>
-		
-		<container id="PeopleToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+        </portlet-application>
+      </container>
+      
+      <container id="DemoUserProfileToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+        <portlet-application>
+          <portlet>
+            <application-ref>profile</application-ref>
+            <portlet-ref>UserProfileToolBarPortlet</portlet-ref>
+          </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+    
+    <container id="PeopleToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
           <application-ref>profile</application-ref>
@@ -44,10 +43,10 @@
         </portlet>
         <access-permissions>Everyone</access-permissions>
         <show-info-bar>false</show-info-bar>
-      </portlet-application>  
+      </portlet-application>
     </container>
-		
-		<container id="UserToolBarDashboardPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+    
+    <container id="UserToolBarDashboardPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
           <application-ref>exoadmin</application-ref>
@@ -59,17 +58,18 @@
     </container>
     
     <container id="AdminToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-		  <portlet-application>
+      <portlet-application>
         <portlet>
           <application-ref>exoadmin</application-ref>
           <portlet-ref>AdminToolbarPortlet</portlet-ref>
         </portlet>
-		   <access-permissions>*:/platform/administrators</access-permissions>
-		    <show-info-bar>false</show-info-bar>
-		  </portlet-application>
-		</container>
-    
-	</container>
-
-	<site-body/>
+        <access-permissions>*:/platform/administrators</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+      </container>
+      
+    </container>
+  
+  <site-body/>
+  
 </container>

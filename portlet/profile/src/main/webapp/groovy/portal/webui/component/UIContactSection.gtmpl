@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -16,6 +18,8 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+*/
+%>
 <%
   import org.exoplatform.social.portlet.profile.Utils;
   import org.exoplatform.social.portlet.profile.UITitleBar;
@@ -36,7 +40,7 @@
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
 
-	def gender = profile.getPropertyValue("gender");
+  def gender = profile.getPropertyValue("gender");
   def phones = profile.getPropertyValue("phones");
   def ims = profile.getPropertyValue("ims");
   def urls = profile.getPropertyValue("urls");
@@ -75,86 +79,78 @@
   }
 %>
 <div class="UIContactSection"> 
-<% uiform.begin() %>
-		<% uicomponent.renderChild(UITitleBar.class); %>
-	<div class="PortletContent">
-	<% if(noContactInfo && !isEdit) {%> 
-	    <% if(isEditable) {%>
-		    <div class="NoContactInformation">$noContactCurrent</div>
-		  <% } else { %>
-		  	<div class="NoContactInformation">$currentUser $noContact</div>
-		  <% } %>
-	<% } else {%>
-		<table class="UIFormGrid">
-		  <tbody>
-		  <% if (isEditable) {%>
-			  <tr>
-			  <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%> :</td>
-			  <td class="FieldComponent">
-			  <%
-			    if (isEdit) { %>
-	      		<%uiform.renderField(genderChild);%>						
-		      <%
-		      }	else {
-		      %>
-			       <% if ((gender != null) && (gender != "")) {%>
-							    <%=gender %>
-						 <% }  else {%>
-									$noGenderLabel
-						 <% } %>
-				<% } %>
-				</td>    
-				</tr>		    
-			<% } else { // isEditable 
-			%> 
-			  <% if((gender != null) && (gender != "")) { %>
-			  <tr>
-		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%> :</td>
-		      <td class="FieldComponent">
-		      <%=gender %>
-		      </td>
-		    </tr>
-  			<% } %> 
-      <% } %>     
-		   <!--              phones          -->
-		    <% if (isEditable) {%>
-			    <tr>
-			      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%> :</td>
-			      <td class="FieldComponent">
-			        <%
-								if (isEdit) { %>
-					          <%			      	
-					          if (phoneCount > 0) {		            								     
-						           	for (i in 0..phoneCount-1) {			           	
-						           		if (phoneChilds.get(i).isRendered()) {
-							           			uiform.renderField(phoneChilds.get(i));
-							           			%>
-							           			  <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a>
-							           			  <% if (i != phoneCount - 1) { %>
-					           				        <br />
-					           				    <% } %>
-							           			<%
-							         		}
-						         		}
-						        } // end if phoneCount > 0
-						        if (phoneCount == 0) {
-						        
-						           %>
-						           $noPhoneLabel
-						      <%}%>			            
-			          <% } else { %>
-					          <%if (phoneSize > 0) {
-						            phones.each {
-						              def phone = it.get("value");
-					              
-					          %>
-					          			<%=phone%><br>
-					          <%	}
-					             } else { %> 
-												$noPhoneLabel             
-					          <%}%>
-			          <% } %>	
-			      <%
+  <% uiform.begin() %>
+  <% uicomponent.renderChild(UITitleBar.class); %>
+  <div class="PortletContent">
+  <% if(noContactInfo && !isEdit) { %> 
+    <% if(isEditable) { %>
+    <div class="NoContactInformation">$noContactCurrent</div>
+    <% } else { %>
+    <div class="NoContactInformation">$currentUser $noContact</div>
+    <% } %>
+  <% } else { %>
+    <table class="UIFormGrid">
+      <tbody>
+      <% if (isEditable) { %>
+        <tr>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%> :</td>
+          <td class="FieldComponent">
+          <%
+            if (isEdit) { %>
+            <% uiform.renderField(genderChild); %>
+          <%
+            } else {
+               if ((gender != null) && (gender != "")) { %>
+                 <%=gender %>
+            <% } else { %>
+                $noGenderLabel
+            <% } %>
+          <% } %>
+          </td>
+        </tr>
+      <% } else { // isEditable
+             if((gender != null) && (gender != "")) { %>
+        <tr>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%> :</td>
+          <td class="FieldComponent">
+            <%=gender %>
+          </td>
+        </tr>
+      <% } %>
+    <% } %>
+    <!--              phones          -->
+    <% if (isEditable) { %>
+        <tr>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%> :</td>
+          <td class="FieldComponent">
+          <% if (isEdit) {
+               if (phoneCount > 0) {
+                 for (i in 0..phoneCount-1) {
+                   if (phoneChilds.get(i).isRendered()) {
+                     uiform.renderField(phoneChilds.get(i));
+                     %>
+            <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a>
+                     <% if (i != phoneCount - 1) { %>
+              <br />
+                     <% }
+                   }
+                 }
+               } // end if phoneCount > 0
+               if (phoneCount == 0) { %>
+             $noPhoneLabel
+             <% } %>
+          <% } else { %>
+               <% if (phoneSize > 0) {
+                    phones.each {
+                      def phone = it.get("value");
+                %>
+                    <%=phone%><br>
+                 <% }
+                  } else { %>
+                    $noPhoneLabel
+                <% } %>
+              <% } %>	
+            <%
 			      if (isEdit) {
 			      %>
 				        <a class="AddIcon" onclick="<%=uicomponent.event("Add", "phone")%>">&nbsp</a>

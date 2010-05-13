@@ -24,11 +24,11 @@ import org.exoplatform.social.services.rest.AbstractResourceTest;
 import org.exoplatform.social.services.rest.opensocial.ActivitiesRestService;
 
 /**
- * ActivitiesRestServiceTest.java
+ * ActivitiesRestServiceTest.java.
  *
  * @author <a href="http://hoatle.net">hoatle</a>
- * @since	 Mar 4, 2010
- * @copyright eXo Platform SAS 
+ * @since  Mar 4, 2010
+ * @copyright eXo Platform SAS
  */
 public class ActivitiesRestServiceTest extends AbstractResourceTest {
   static private ActivitiesRestService activitiesRestService;

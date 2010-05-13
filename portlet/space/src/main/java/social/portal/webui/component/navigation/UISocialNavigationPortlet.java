@@ -51,7 +51,7 @@ public class UISocialNavigationPortlet extends UIPortletApplication {
     PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance();
     PortletRequest prequest = context.getRequest();
     PortletPreferences prefers = prequest.getPreferences() ;
-    String template =  prefers.getValue("template", "app:/groovy/portal/webui/navigation/UISocialNavigationPortlet.gtmpl");
+    //String template =  prefers.getValue("template", "app:/groovy/portal/webui/navigation/UISocialNavigationPortlet.gtmpl");
     UISocialNavigation portalNavigation = addChild(UISocialNavigation.class, "UIHorizontalNavigation", null);
     portalNavigation.setUseAjax(Boolean.valueOf(prefers.getValue("useAJAX", "true")));
     //TODO dang.tung 3.0

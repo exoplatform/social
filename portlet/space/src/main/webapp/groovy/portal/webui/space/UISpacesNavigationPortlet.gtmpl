@@ -1,0 +1,75 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.space.SpaceUtils
+  def pcontext = Util.getPortalRequestContext();
+  def portalURI = pcontext.getPortalURI();
+  def uicomponentId = uicomponent.id
+  def mySpaceURL = portalURI + "spaces";
+  def invitationsURL = portalURI + "invitationSpace";
+  def pendingsURL = portalURI + "pendingSpace";
+  def publicsURL = portalURI + "publicSpace";
+  def selectedNode = uicomponent.getSelectedNode();
+  def labelSpace = _ctx.appRes("${uicomponentId}.label.Space");
+  def labelMySpace = _ctx.appRes("${uicomponentId}.label.MySpace");
+  def labelInvitation = _ctx.appRes("${uicomponentId}.label.Invitation");
+  def labelPending = _ctx.appRes("${uicomponentId}.label.Pending");
+  def labelPublic = _ctx.appRes("${uicomponentId}.label.Public");
+%>
+<div class="$uicomponent.id" id="$uicomponent.id">
+  <div class="ProfTitle">$labelSpace</div>
+  <a class="Avartar">
+    <img height="65px" width="65px" alt="" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif"/>
+  </a>
+  <div class="UIVerclTab">
+  <% if (selectedNode == "spaces") { %>
+    <div class="SelectedTab Tab">
+  <% } else  {%>
+    <div class="NormalTab Tab">
+  <% } %>
+      <a href="$mySpaceURL" class="MySpaceIcon">$labelMySpace</a>
+    </div>
+  <% if (selectedNode == "invitationSpace") { %>
+    <div class="SelectedTab Tab">
+  <% } else  {%>
+    <div class="NormalTab Tab">
+  <% } %>
+      <a href="$invitationsURL" class="InvitationIcon">$labelInvitation</a>
+    </div>
+  <% if (selectedNode == "pendingSpace") { %>
+    <div class="SelectedTab Tab">
+  <% } else  {%>
+    <div class="NormalTab Tab">
+  <% } %>
+      <a href="$pendingsURL" class="PendingIcon">$labelPending</a>
+    </div>
+  <% if (selectedNode == "publicSpace") { %>
+    <div class="SelectedTab Tab">
+  <% } else  {%>
+    <div class="NormalTab Tab">
+  <% } %>
+      <a href="$publicsURL" class="PublicIcon">$labelPublic</a>
+    </div>
+  </div>
+</div>

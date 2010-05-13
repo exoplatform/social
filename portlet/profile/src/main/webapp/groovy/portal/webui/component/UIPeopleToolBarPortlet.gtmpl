@@ -1,64 +1,47 @@
 <%
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.web.application.JavascriptManager;
 
-def rcontext = _ctx.getRequestContext() ;
-JavascriptManager jsmanager = rcontext.getJavascriptManager();
-jsmanager.importJavascript('eXo.portal.UIPortalNavigation') ;
-jsmanager.importJavascript('eXo.portal.UIAdminToolbar') ;
-jsmanager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
+def labelPeople    = _ctx.appRes("UIPeopleToolBarPortlet.label.People");
+def labelDirectory = _ctx.appRes("UIPeopleToolBarPortlet.label.Directory");
+def labelConnections = _ctx.appRes("UIPeopleToolBarPortlet.label.Connections");
+
+def requestContext = _ctx.getRequestContext();
+def jsManager = requestContext.getJavascriptManager();
+jsManager.importJavascript('eXo.portal.UIPortalNavigation');
+jsManager.importJavascript('eXo.portal.UIAdminToolbar');
+jsManager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
 
 def portalURI = Util.getPortalRequestContext().getPortalURI();
 def peopleLink = portalURI + "people";
+def remoteUser = Util.getPortalRequestContext().getRemoteUser();
 
-void renderRelationsLink() {
-    def remoteUser = Util.getPortalRequestContext().getRemoteUser();
-		def portalURI = Util.getPortalRequestContext().getPortalURI();
-		def labelDirectory = _ctx.appRes("UIPeopleToolBarPortlet.label.Directory");
-		def labelRelations = _ctx.appRes("UIPeopleToolBarPortlet.label.Relations");
-		def directoryLink = portalURI + "people";
-		def relationsLink = portalURI + "connections/myConnections/" + remoteUser;
-
- 		String clazz = "";
- 		
-			print """
-						<div style="position: absolute; display:none" class="MenuItemContainer">
-							<div class="SubBlock">
-				""";
-				
-			 print """
-						<div class="MenuItem">
-							<div class="$clazz">						
-								<a href="$directoryLink" class="ToolBarDirectoryIcon">$labelDirectory</a>
-							</div>
-						</div>
-					""";
-				print """
-						<div class="MenuItem">
-							<div class="$clazz">						
-								<a href="$relationsLink" class="ToolBarRelationIcon">$labelRelations</a>
-							</div>
-						</div>
-					""";
-			  print """
-						</div>
-					</div>
-				""";
-	}
+def directoryLink = portalURI + "people";
+def connectionsLink = portalURI + "connections/myConnections/" + remoteUser;
 %>
 <div class="UIPeopleToolBarPortlet" id="$uicomponent.id">
-    <div class="UIHorizontalTabs">
-        <div class="TabsContainer" style="position: relative">
-            <div class="UITab NormalToolbarTab">
-                <div class="">
-                            <a class="SocialPeopleToolBarIcon TBIcon" href="<%= peopleLink %>">
-                                    <%=_ctx.appRes("UIPeopleToolBarPortlet.label.People")%>
-                            </a>
-                </div>
-                <% renderRelationsLink() %>
-            </div>
+  <div class="UIHorizontalTabs">
+    <div class="TabsContainer" style="position: relative">
+      <div class="UITab NormalToolbarTab">
+        <div>
+          <a class="SocialPeopleToolBarIcon TBIcon" href="$peopleLink">
+            $labelPeople
+          </a>
         </div>
+        <div style="position: absolute; display:none" class="MenuItemContainer">
+          <div class="SubBlock">
+            <div class="MenuItem">
+              <div>
+                <a href="$directoryLink" class="ToolBarDirectoryIcon">$labelDirectory</a>
+              </div>
+            </div>
+            <div class="MenuItem">
+              <div>
+                <a href="$connectionsLink" class="ToolBarRelationIcon">$labelConnections</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

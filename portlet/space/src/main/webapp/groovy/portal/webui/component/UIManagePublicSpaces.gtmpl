@@ -43,88 +43,89 @@
 <div class="UIManageSpaces" id="$uicomponent.id">
   <% uicomponent.renderChild(UISpaceSearch.class); %>
   <div class="BoxSpaceList">
-  	<div class="CenterTitleBox">
-  		<div class="LeftTitleBox">
-  			<div class="RightTitleBox">$labelSpaceListing</div>
-  		</div>
-  	</div>
-  <%if (publicSpaces.size() == 0) {%>
-	<div class="NormalBox">
-	  <div class="NotYet">$labelNoPublic</div>
-	</div>
-  <%}%>
-      <%for (space in publicSpaces) {
-            def requestJoinAction = uicomponent.event("RequestJoin", space.id) + "; false"
-            def visibility = space.visibility
-            def registration = space.registration
-            def isPublic = false
-            def isClose = false
-            def hasEditPermission = false
+    <div class="CenterTitleBox">
+      <div class="LeftTitleBox">
+        <div class="RightTitleBox">$labelSpaceListing</div>
+      </div>
+    </div>
+    <%if (publicSpaces.size() == 0) {%>
+    <div class="NormalBox">
+      <div class="NotYet">$labelNoPublic</div>
+    </div>
+    <%}%>
+    <%for (space in publicSpaces) {
+        def requestJoinAction = uicomponent.event("RequestJoin", space.id) + "; false"
+        def visibility = space.visibility
+        def registration = space.registration
+        def isPublic = false
+        def isClose = false
+        def hasEditPermission = false
             
-            //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
-            if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true
-            if (registration.equals(Space.CLOSE)) isClose = true
-            def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
-            //Temporary use private as visible
-            if (visibility.equals(Space.PRIVATE)) visibility = "visible"
-            def status = visibleStatus + " "
-            if (registration.equals("open")) {
-                status += openStatus
-            } else if (registration.equals("validation")) {
-                status += validationStatus
-            } else {
-                status += closeStatus
-            }
-            def imageSource = uicomponent.getImageSource(space);
-            publicSpaceIdx += 1;
+        //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
+        if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true
+        if (registration.equals(Space.CLOSE)) isClose = true
+        def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+        //Temporary use private as visible
+        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
+        def status = visibleStatus + " "
+        if (registration.equals("open")) {
+          status += openStatus
+        } else if (registration.equals("validation")) {
+          status += validationStatus
+        } else {
+          status += closeStatus
+        }
+        def imageSource = uicomponent.getImageSource(space);
+        publicSpaceIdx += 1;
       %>
       <% if (publicSpaceIdx % 2 == 0) { %>
-		  	<div class="GrayBox">
-		  <% } else { %>
-		  	<div class="NormalBox">
-		  <% } %>
-		  		<% if (isPublic) { %>
-		  		<a href="$spaceUrl" class="AvatarSpace">
-					<% if (imageSource == null) { %>
-		  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
-		  		<% } else { %>
-		  				<img alt="#" src="$imageSource" />
-		  		<%}%>
-					</a>
-		  		<%} else { %>
-		  		<div class="AvatarSpace">
-					<% if (imageSource == null) { %>
-		  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
-		  		<% } else { %>
-		  				<img alt="#" src="$imageSource" />
-		  		<%}%>
-					</div>
-		  		<%} %>
-		  		
-		 		<div class="ContentBox">
-		 			<div class="TitleContent">
-		 			  <% if (!isClose) {%>
-		 				<a href="#" onclick="$requestJoinAction" title="$labelActionRequestToJoin" class="Icon IconAdd"><span></span></a>
-		 				<%}%>
-		 				<% if (uicomponent.hasEditPermission(space)) {%>
-		 				<div class="Text"><a href="$spaceUrl">$space.name</a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </span></div>
-		 				<% } else { %>
-		 				<div class="Text"><span>$space.name</span> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </span></div>
-		 				<% } %>
-		 				<div class="ClearBoth"><span></span></div>
-		 			</div>
-		 			<div class="Content">
-						$space.description<br/>
-						<span class="SpaceStatus">$status</span>
-		 			</div>
-		 		</div>
-		 		<div class="ClearBoth"><span></span></div>
-		 	</div>
+        <div class="GrayBox">
+        <% } else { %>
+        <div class="NormalBox">
+        <% } %>
+        <% if (isPublic) { %>
+          <a href="$spaceUrl" class="AvatarSpace">
+          <% if (imageSource == null) { %>
+            <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+          <% } else { %>
+            <img alt="#" src="$imageSource" />
+          <%}%>
+          </a>
+        <%} else { %>
+          <div class="AvatarSpace">
+            <% if (imageSource == null) { %>
+              <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+            <% } else { %>
+              <img alt="#" src="$imageSource" />
+            <%}%>
+          </div>
+        <%} %>
+        
+        <div class="ContentBox">
+          <div class="TitleContent">
+          <% if (!isClose) {%>
+            <a href="#" onclick="$requestJoinAction" title="$labelActionRequestToJoin" class="Icon IconAdd"><span></span></a>
+          <%}%>
+          <% if (uicomponent.hasEditPermission(space)) {%>
+            <div class="Text"><a href="$spaceUrl">$space.name</a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </span></div>
+          <% } else { %>
+            <div class="Text"><span>$space.name</span> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </span></div>
+          <% } %>
+            <div class="ClearBoth"><span></span></div>
+          </div>
+          <div class="Content">
+            $space.description<br/>
+            <span class="SpaceStatus">$status</span>
+          </div>
+        </div>
+        <div class="ClearBoth"><span></span></div>
+      </div>
       <%}%>
+    </div>
     <%
-        if (iterator.getAvailablePage() > 1) {
-            _ctx.renderUIComponent(iterator)
-        }
+      if (iterator.getAvailablePage() > 1) {
+        _ctx.renderUIComponent(iterator)
+      }
     %>
-	</div>
+    </div>
 </div>

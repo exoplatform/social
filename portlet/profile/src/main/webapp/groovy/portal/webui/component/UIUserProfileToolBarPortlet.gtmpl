@@ -1,0 +1,69 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+import org.exoplatform.portal.webui.util.Util;
+
+def requestContext = _ctx.getRequestContext();
+def jsManager = requestContext.getJavascriptManager();
+jsManager.importJavascript('eXo.portal.UIPortalNavigation');
+jsManager.importJavascript('eXo.portal.UIAdminToolbar');
+jsManager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
+
+def accountSettingsLink = "javascript:if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'AccountSettings', true));";
+def user = uicomponent.getUser();
+def portalURI = Util.getPortalRequestContext().getPortalURI();
+def labelActivities = _ctx.appRes("UIUserToolBarPortlet.label.activities");
+def labelProfile = _ctx.appRes("UIUserToolBarPortlet.label.profile");
+def activitiesLink = portalURI + "activities";
+//TODO hoatle hard-coded; use LinkProvider
+def profileLink = portalURI + "profile/" + user.userName;
+
+%>
+
+<div class="UIUserToolBarPortlet" id="$uicomponent.id">
+  <div class="UIHorizontalTabs">
+    <div class="TabsContainer" style="position: relative">
+      <div class="UITab NormalToolbarTab">
+        <div>
+          <a class="SocialUserToolBarIcon TBIcon" href="$accountSettingsLink">
+            ${user.fullName}
+          </a>
+        </div>
+        <div style="position: absolute; display:none" class="MenuItemContainer">
+          <div class="SubBlock">
+            <div class="MenuItem">
+              <div>
+                <a href="$activitiesLink" class="ToolBarActivityIcon">$labelActivities</a>
+              </div>
+            </div>
+            <div class="MenuItem">
+              <div>
+                <a href="$profileLink" class="ToolBarProfileIcon">$labelProfile</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

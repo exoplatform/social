@@ -24,8 +24,7 @@
   <priority>1</priority>
 
   <page-nodes>
-	 
-   
+  
    <node>
     <uri>activities</uri>
     <name>activities</name>
@@ -48,82 +47,82 @@
     <label>#{portal.classic.connections}</label>
     <visibility>SYSTEM</visibility>
     <node>
-	    <uri>connections/myConnections</uri>
-	    <name>myConnections</name>
-	    <label>#{portal.classic.yours}</label>
-	    <page-reference>portal::classic::myConnections</page-reference>
+      <uri>connections/myConnections</uri>
+      <name>myConnections</name>
+      <label>#{portal.classic.yours}</label>
+      <page-reference>portal::classic::myConnections</page-reference>
     </node>
     <node>
-	    <uri>connections/myInvitations</uri>
-	    <name>myInvitations</name>
-	    <label>#{portal.classic.invitations}</label>
-	    <page-reference>portal::classic::myInvitations</page-reference>
+      <uri>connections/myInvitations</uri>
+      <name>myInvitations</name>
+      <label>#{portal.classic.invitations}</label>
+      <page-reference>portal::classic::myInvitations</page-reference>
     </node>
     <node>
-	    <uri>connections/myRequests</uri>
-	    <name>myRequests</name>
-	    <label>#{portal.classic.requests}</label>
-	    <page-reference>portal::classic::myRequests</page-reference>
+      <uri>connections/myRequests</uri>
+      <name>myRequests</name>
+      <label>#{portal.classic.requests}</label>
+      <page-reference>portal::classic::myRequests</page-reference>
     </node>
-	  <node>
-	    <uri>connections/yours</uri>
-	    <name>yours</name>
-	    <label>#{portal.classic.yours}</label>
-	    <page-reference>portal::classic::connections</page-reference>
-	   </node>
-	   <node>
-	    <uri>connections/invitations</uri>
-	    <name>invitations</name>
-	    <label>#{portal.classic.invitations}</label>
-	    <page-reference>portal::classic::invitations</page-reference>
-	   </node>
-	   <node>
-	    <uri>connections/requests</uri>
-	    <name>requests</name>
-	    <label>#{portal.classic.requests}</label>
-	    <page-reference>portal::classic::requests</page-reference>
-	   </node>
-   </node>
- 
-	 <node>
+    <node>
+      <uri>connections/yours</uri>
+      <name>yours</name>
+      <label>#{portal.classic.yours}</label>
+      <page-reference>portal::classic::connections</page-reference>
+    </node>
+    <node>
+      <uri>connections/invitations</uri>
+      <name>invitations</name>
+      <label>#{portal.classic.invitations}</label>
+      <page-reference>portal::classic::invitations</page-reference>
+    </node>
+    <node>
+      <uri>connections/requests</uri>
+      <name>requests</name>
+      <label>#{portal.classic.requests}</label>
+      <page-reference>portal::classic::requests</page-reference>
+    </node>
+  </node>
+  
+  <node>
     <uri>people</uri>
     <name>people</name>
     <label>#{portal.classic.people}</label>
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::people</page-reference>
-	 </node>
-	 
-	 <node>
+  </node>
+  
+  <node>
     <uri>spaces</uri>
     <name>spaces</name>
     <label>#{portal.classic.spaces}</label>
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::spaces</page-reference>
-   </node>
-   
-   <node>
+  </node>
+  
+  <node>
     <uri>invitationSpace</uri>
     <name>invitationSpace</name>
     <label>#{portal.classic.invitationSpace}</label>
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::invitationSpace</page-reference>
-   </node>
-   
-   <node>
+  </node>
+  
+  <node>
     <uri>pendingSpace</uri>
     <name>pendingSpace</name>
     <label>#{portal.classic.pendingSpace}</label>
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::pendingSpace</page-reference>
-   </node>
-   
-   <node>
-    <uri>publicSpace</uri>
-    <name>publicSpace</name>
-    <label>#{portal.classic.publicSpace}</label>
-    <visibility>SYSTEM</visibility>
-    <page-reference>portal::classic::publicSpace</page-reference>
-   </node>
-   
+  </node>
+  
+  <node>
+   <uri>publicSpace</uri>
+   <name>publicSpace</name>
+   <label>#{portal.classic.publicSpace}</label>
+   <visibility>SYSTEM</visibility>
+   <page-reference>portal::classic::publicSpace</page-reference>
+  </node>
+  
   </page-nodes>
 </node-navigation>

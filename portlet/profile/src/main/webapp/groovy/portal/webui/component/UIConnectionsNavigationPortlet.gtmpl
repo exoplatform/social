@@ -1,0 +1,84 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.portlet.profile.Utils;
+  import org.exoplatform.portal.application.PortalRequestContext;
+  def uicomponentId = uicomponent.id;
+  def labelRelationTitle = _ctx.appRes("${uicomponentId}.label.RelationTitle")
+  def labelInvitationTitle = _ctx.appRes("${uicomponentId}.label.InvitationTitle")
+  def labelRequestTitle = _ctx.appRes("${uicomponentId}.label.RequestTitle")
+  def pcontext = Util.getPortalRequestContext();
+  def portalURI = pcontext.getPortalURI();
+  def currIdentity = Utils.getCurrentIdentity();
+  def viewerId = uicomponent.getViewerId();
+  def ownerId = currIdentity.getRemoteId();
+  def myfriendsURL = "${portalURI}connections/yours/${ownerId}";
+  def invitationsURL = "${portalURI}connections/invitations/${ownerId}";
+  def requestsURL = "${portalURI}connections/requests/${ownerId}";
+  def selectedNode = uicomponent.getSelectedNode();
+  def isOwner = false;
+  if (ownerId.equals(viewerId)) {
+    isOwner = true;
+  } else {
+    def jsManager = pcontext.getJavascriptManager();
+    jsManager.addOnLoadJavascript("hideUIRelationNavigation");
+  }
+%>
+<% if (!isOwner) {%>
+  <script type="text/javascript">
+    function hideUIRelationNavigation() {
+      var tdProfileRelation = document.getElementById('UIContainer-ProfileRelation').parentNode;
+      tdProfileRelation.style.display='none';
+    }
+  </script>
+<%}%>
+<div class="$uicomponent.id" id="$uicomponent.id">
+  <div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.My-Relations")%></div>
+  <div class="UIVerclTab">
+    <% if (selectedNode == "yours")  {%>
+    <div class="SelectedTab Tab">
+    <% } else  {%>
+    <div class="NormalTab Tab">
+    <%}%>
+      <a href="${myfriendsURL}" title="$labelRelationTitle" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
+    </div>
+  <% if (isOwner == true) { %>
+    <% if (selectedNode == "invitations") { %>
+    <div class="SelectedTab Tab">
+    <% } else  { %>
+    <div class="NormalTab Tab">
+    <% } %>
+      <a href="${invitationsURL}" title="$labelInvitationTitle" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
+    </div>
+    <% if (selectedNode == "requests")  { %>
+    <div class="SelectedTab Tab">
+    <% } else { %>
+    <div class="NormalTab Tab">
+    <% } %>
+      <a href="${requestsURL}" title="$labelRequestTitle" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
+    </div>
+  <% } %> 
+  </div>
+</div>
+

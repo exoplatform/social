@@ -25,7 +25,7 @@ import org.exoplatform.webui.core.UIComponent;
  *
  */
 @ComponentConfig(
-    template =  "app:/groovy/portal/webui/component/UITitleBar.gtmpl"
+  template =  "app:/groovy/portal/webui/component/UITitleBar.gtmpl"
 )
 
 public class UITitleBar extends UIComponent {

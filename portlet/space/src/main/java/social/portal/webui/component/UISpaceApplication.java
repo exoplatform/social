@@ -17,7 +17,6 @@
 package social.portal.webui.component;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +50,12 @@ import org.exoplatform.webui.form.UIForm;
  */
 
 @ComponentConfig(
-    lifecycle = UIFormLifecycle.class,
-    template =  "app:/groovy/portal/webui/uiform/UISpaceApplication.gtmpl",
-    events = {
-        @EventConfig(listeners = UISpaceApplication.AddApplicationActionListener.class),
-        @EventConfig(listeners = UISpaceApplication.RemoveApplicationActionListener.class)
-      }
+  lifecycle = UIFormLifecycle.class,
+  template =  "app:/groovy/portal/webui/uiform/UISpaceApplication.gtmpl",
+  events = {
+    @EventConfig(listeners = UISpaceApplication.AddApplicationActionListener.class),
+    @EventConfig(listeners = UISpaceApplication.RemoveApplicationActionListener.class)
+  }
 )
 public class UISpaceApplication extends UIForm {
 

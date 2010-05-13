@@ -36,39 +36,39 @@
 %>
 
 <div id="$uicomponent.id" class="UIAvatarUploadContent">
-	<div class="AvatarInfo">
-		<a class="ImageAvatar"><img src="$imageSource" /></a>
-		<div><span>$lalbelFileName</span></span> <%= profileAttachment.fileName %></div>
-		<div><span>$labelFileType</span> <%= profileAttachment.mimeType %></div>
-		<div><span>$labelImageSize</span> <%= profileAttachment.size %></div>
-		<div class="ClearLeft"><span></span></div>
-	</div>
-	<div class="UIAction">
-		<table class="ActionContainer">
-			<tr>
-				<td>
-					<div onclick="$saveAction" class="ActionButton LightBlueStyle">
-						<div class="ButtonLeft">
-							<div class="ButtonRight">
-								<div class="ButtonMiddle">
-									<a href="#save">$labelSave</a>
-								</div>
-							</div>
-						</div>
-					</div>			
-				</td>
-				<td>
-					<div onclick="$abortAction" class="ActionButton LightBlueStyle">
-						<div class="ButtonLeft">
-							<div class="ButtonRight">
-								<div class="ButtonMiddle">
-									<a href="#abort">$labelAbort</a>
-								</div>
-							</div>
-						</div>
-					</div>			
-				</td>
-			</tr>	
-		</table>
-	</div>
+  <div class="AvatarInfo">
+    <a class="ImageAvatar"><img src="$imageSource" /></a>
+    <div><span>$lalbelFileName</span></span> <%= profileAttachment.fileName %></div>
+    <div><span>$labelFileType</span> <%= profileAttachment.mimeType %></div>
+    <div><span>$labelImageSize</span> <%= profileAttachment.size %></div>
+    <div class="ClearLeft"><span></span></div>
+  </div>
+  <div class="UIAction">
+    <table class="ActionContainer">
+      <tr>
+        <td>
+          <div onclick="$saveAction" class="ActionButton LightBlueStyle">
+            <div class="ButtonLeft">
+              <div class="ButtonRight">
+                <div class="ButtonMiddle">
+                  <a href="#save">$labelSave</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div onclick="$abortAction" class="ActionButton LightBlueStyle">
+            <div class="ButtonLeft">
+              <div class="ButtonRight">
+                <div class="ButtonMiddle">
+                  <a href="#abort">$labelAbort</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
 </div>

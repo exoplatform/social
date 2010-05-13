@@ -21,6 +21,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+   
   <external-component-plugins>
     <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
     <component-plugin>
@@ -28,12 +29,12 @@
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.services.organization.OrganizationDatabaseInitializer</type>
       <description>this listener populate organization data for the first launch</description>
-      <init-params>      
+      <init-params>
         <value-param>
           <name>checkDatabaseAlgorithm</name>
           <description>check database</description>
           <value>entry</value>
-        </value-param>      
+        </value-param>
         <value-param>
           <name>printInformation</name>
           <description>Print information init database</description>
@@ -43,7 +44,6 @@
           <name>configuration</name>
           <description>description</description>
           <object type="org.exoplatform.services.organization.OrganizationConfig">
-            
             <field  name="group">
               <collection type="java.util.ArrayList">
                 <value>
@@ -56,25 +56,23 @@
                 </value>
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>developer</string></field>
+                    <field  name="name"><string>developers</string></field>
                     <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the /developer group</string></field>
-                    <field  name="label"><string>Developer</string></field>
+                    <field  name="description"><string>the /developers group</string></field>
+                    <field  name="label"><string>Developers</string></field>
                   </object>
-                </value>                 
+                </value>
               </collection>
             </field>
-
           </object>
         </object-param>
       </init-params>
     </component-plugin>
-		
+    
     <component-plugin>
       <name>MembershipUpdateListener</name>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.services.organization.impl.MembershipUpdateListener</type>
     </component-plugin>
-		
   </external-component-plugins>
 </configuration>

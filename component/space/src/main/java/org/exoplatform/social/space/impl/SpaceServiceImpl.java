@@ -355,7 +355,7 @@ public class SpaceServiceImpl implements SpaceService {
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_USER, e);
     }
-    spaceLifeCycle.memberJoigned(space, userId);
+    spaceLifeCycle.memberJoined(space, userId);
   }
   
   /**
@@ -672,12 +672,12 @@ public class SpaceServiceImpl implements SpaceService {
 //    if (appStatus != null) {
 //      if (appStatus.equals(Space.ACTIVE_STATUS)) return;
 //    }
-	String appName = null;
-	if (SpaceUtils.isInstalledApp(space, appId)) {
-		appName = appId + System.currentTimeMillis();
-	} else {
-		appName = appId;
-	}
+    String appName = null;
+    if (SpaceUtils.isInstalledApp(space, appId)) {
+      appName = appId + System.currentTimeMillis();
+    } else {
+      appName = appId;
+    }
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     setApp(space, appId, appName, SpaceUtils.isRemovableApp(space, appId), Space.ACTIVE_STATUS);
     appHandler.activateApplication(space, appId, appName);

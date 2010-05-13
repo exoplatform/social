@@ -55,23 +55,23 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
  *
  */
 
-@ComponentConfigs ({ 
-  @ComponentConfig (
-      lifecycle = UIFormLifecycle.class,
-      template =  "app:/groovy/portal/webui/component/UIExperienceSection.gtmpl",
-      events = {
-        @EventConfig(listeners = UIExperienceSection.EditActionListener.class, phase=Phase.DECODE),
-        @EventConfig(listeners = UIExperienceSection.SaveActionListener.class),
-        @EventConfig(listeners = UIExperienceSection.AddActionListener.class),
-        @EventConfig(listeners = UIExperienceSection.RemoveActionListener.class, confirm = "UIExperienceSection.msg.confirmDeleteExp", phase=Phase.DECODE),
-        @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE)
-      }
+@ComponentConfigs({
+  @ComponentConfig(
+    lifecycle = UIFormLifecycle.class,
+    template =  "app:/groovy/portal/webui/component/UIExperienceSection.gtmpl",
+    events = {
+      @EventConfig(listeners = UIExperienceSection.EditActionListener.class, phase=Phase.DECODE),
+      @EventConfig(listeners = UIExperienceSection.SaveActionListener.class),
+      @EventConfig(listeners = UIExperienceSection.AddActionListener.class),
+      @EventConfig(listeners = UIExperienceSection.RemoveActionListener.class, confirm = "UIExperienceSection.msg.confirmDeleteExp", phase=Phase.DECODE),
+      @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE)
+    }
   ),
   @ComponentConfig(
-     type = UIFormCheckBoxInput.class,
-     id = "UIFormCheckBoxEndDate",
-     events = @EventConfig(phase = Phase.DECODE, listeners = UIExperienceSection.ShowHideEndDateActionListener.class)
- )
+    type = UIFormCheckBoxInput.class,
+    id = "UIFormCheckBoxEndDate",
+    events = @EventConfig(phase = Phase.DECODE, listeners = UIExperienceSection.ShowHideEndDateActionListener.class)
+  )
 })
 public class UIExperienceSection extends UIProfileSection {
   /** COMPANY. */

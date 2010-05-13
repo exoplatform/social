@@ -19,8 +19,13 @@
 
 package social.portal.webui.component.space;
 
-import org.exoplatform.portal.config.model.PageNode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import org.exoplatform.portal.config.model.PageNavigation;
+import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.Visibility;
 import org.exoplatform.portal.webui.navigation.PageNavigationUtils;
@@ -29,115 +34,97 @@ import org.exoplatform.services.resources.ResourceBundleManager;
 import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
-import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 /**
  * Created by The eXo Platform SAS
- * Author : Pham Thanh Tung
- *          thanhtungty@gmail.com
- * May 26, 2009  
  */
-@ComponentConfig(lifecycle = UIApplicationLifecycle.class, template = "app:/groovy/portal/webui/component/UISocialUserToolBarGroupPortlet.gtmpl")
-public class UISocialUserToolBarGroupPortlet extends UIPortletApplication
-{
-   SpaceService spaceService;
-   public UISocialUserToolBarGroupPortlet() throws Exception
-   {
-   }
+@ComponentConfig(
+  lifecycle = UIApplicationLifecycle.class,
+  template = "app:/groovy/portal/webui/component/UISocialUserToolBarGroupPortlet.gtmpl")
+public class UISocialUserToolBarGroupPortlet extends UIPortletApplication {
+  SpaceService spaceService;
 
-   public List<PageNavigation> getGroupNavigations() throws Exception
-   {
-      String remoteUser = Util.getPortalRequestContext().getRemoteUser();
-      List<PageNavigation> allNavigations = Util.getUIPortalApplication().getNavigations();
-      List<PageNavigation> navigations = new ArrayList<PageNavigation>();
-      SpaceService spaceSrv = getSpaceService();
-      List<Space> spaces = spaceSrv.getAllSpaces();
-      
-      for (PageNavigation navigation : allNavigations)
-      {
-	         if (navigation.getOwnerType().equals(PortalConfig.GROUP_TYPE))
-	         {
-	            navigations.add(PageNavigationUtils.filter(navigation, remoteUser));
-	         }
+  public UISocialUserToolBarGroupPortlet() throws Exception {
+  }
+
+  public List<PageNavigation> getGroupNavigations() throws Exception {
+    String remoteUser = Util.getPortalRequestContext().getRemoteUser();
+    List<PageNavigation> allNavigations = Util.getUIPortalApplication().getNavigations();
+    List<PageNavigation> navigations = new ArrayList<PageNavigation>();
+    SpaceService spaceSrv = getSpaceService();
+    List<Space> spaces = spaceSrv.getAllSpaces();
+
+    for (PageNavigation navigation : allNavigations) {
+      if (navigation.getOwnerType().equals(PortalConfig.GROUP_TYPE)) {
+        navigations.add(PageNavigationUtils.filter(navigation, remoteUser));
       }
-      
-      for (Space space : spaces) 
- 	  {
-	      for (PageNavigation navigation : navigations)
-	      {
-	    	  if (navigation.getOwnerType().equals(space.getGroupId()))
-	          {
-	    		navigations.remove(navigation);
-	            break;
-	          }
-    	 }
+    }
+
+    for (Space space : spaces) {
+      for (PageNavigation navigation : navigations) {
+        if (navigation.getOwnerId().equals(space.getGroupId())) {
+          navigations.remove(navigation);
+          break;
+        }
       }
-      
-      for (PageNavigation navi : navigations) {
-	  	 List<PageNode> nodes = navi.getNodes();
-	  	 for (PageNode node : nodes) {
-	  		 if (!isRender(node)) { 
-	  			 node.setVisibility(Visibility.HIDDEN);
-	  		 }
-	  	 }
-	  }
+    }
 
-      return navigations;
-      
-   }
-
-   public PageNode getSelectedPageNode() throws Exception
-   {
-      return Util.getUIPortal().getSelectedNode();
-   }
-   
-   protected void localizePageNavigation(PageNavigation nav)
-   {
-	  Locale locale = Util.getUIPortalApplication().getLocale();
-      ResourceBundleManager mgr = getApplicationComponent(ResourceBundleManager.class);
-      if (nav.getOwnerType().equals(PortalConfig.USER_TYPE))
-         return;
-      ResourceBundle res = mgr.getNavigationResourceBundle(locale.getLanguage(), nav.getOwnerType(), nav.getOwnerId());
-      for (PageNode node : nav.getNodes())
-      {
-         resolveLabel(res, node);
+    for (PageNavigation navi : navigations) {
+      List<PageNode> nodes = navi.getNodes();
+      for (PageNode node : nodes) {
+        if (!isRender(node)) {
+          node.setVisibility(Visibility.HIDDEN);
+        }
       }
-   }
+    }
 
-   private void resolveLabel(ResourceBundle res, PageNode node)
-   {
-      node.setResolvedLabel(res);
-      if (node.getChildren() == null)
-         return;
-      for (PageNode childNode : node.getChildren())
-      {
-         resolveLabel(res, childNode);
-      }
-   }
-   
-   private boolean isRender(PageNode node) throws SpaceException {
-	   SpaceService spaceSrv = getSpaceService();
-	   List<Space> spaces = spaceSrv.getAllSpaces();
-	   for (Space space : spaces) {
-		   if (space.getName().equals(node.getUri())) return false;
-	   }
-	   return true;
-   }
+    return navigations;
+  }
 
+  public PageNode getSelectedPageNode() throws Exception {
+    return Util.getUIPortal().getSelectedNode();
+  }
 
-   private SpaceService getSpaceService() {
-	   if (spaceService == null) {
-		  spaceService = getApplicationComponent(SpaceService.class);
-	   }
-	   return spaceService;
-   }
-   
+  protected void localizePageNavigation(PageNavigation nav) {
+    Locale locale = Util.getUIPortalApplication().getLocale();
+    ResourceBundleManager mgr = getApplicationComponent(ResourceBundleManager.class);
+    if (nav.getOwnerType().equals(PortalConfig.USER_TYPE))
+      return;
+    ResourceBundle res = mgr.getNavigationResourceBundle(locale.getLanguage(),
+                                                         nav.getOwnerType(),
+                                                         nav.getOwnerId());
+    for (PageNode node : nav.getNodes()) {
+      resolveLabel(res, node);
+    }
+  }
+
+  private void resolveLabel(ResourceBundle res, PageNode node) {
+    node.setResolvedLabel(res);
+    if (node.getChildren() == null)
+      return;
+    for (PageNode childNode : node.getChildren()) {
+      resolveLabel(res, childNode);
+    }
+  }
+
+  private boolean isRender(PageNode node) throws SpaceException {
+    SpaceService spaceSrv = getSpaceService();
+    List<Space> spaces = spaceSrv.getAllSpaces();
+    for (Space space : spaces) {
+      if (space.getName().equals(node.getUri()))
+        return false;
+    }
+    return true;
+  }
+
+  private SpaceService getSpaceService() {
+    if (spaceService == null) {
+      spaceService = getApplicationComponent(SpaceService.class);
+    }
+    return spaceService;
+  }
+
 }

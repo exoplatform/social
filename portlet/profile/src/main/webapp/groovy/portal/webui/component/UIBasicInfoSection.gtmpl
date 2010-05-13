@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -16,73 +18,73 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<% import org.exoplatform.services.organization.User;
-	 import org.exoplatform.services.security.ConversationState;
-	 import org.exoplatform.web.CacheUserProfileFilter;
-   import org.exoplatform.webui.core.UIPopupWindow;
-   import org.exoplatform.social.portlet.profile.Utils;
-   import org.exoplatform.social.portlet.profile.UITitleBar;
+*/
 %>
 <%
-	def isEdit = uicomponent.isEditMode();
-	def isEditable = uicomponent.isEditable();
-	def user = uicomponent.getViewUser();
-	def userName = user.getUserName();
-	def firstName = user.getFirstName();
-	def lastName = user.getLastName();
-	def email = user.getEmail();
-	def childs = uicomponent.getChilds();
+  import org.exoplatform.services.organization.User;
+  import org.exoplatform.services.security.ConversationState;
+  import org.exoplatform.web.CacheUserProfileFilter;
+  import org.exoplatform.webui.core.UIPopupWindow;
+  import org.exoplatform.social.portlet.profile.Utils;
+  import org.exoplatform.social.portlet.profile.UITitleBar;
+
+  def isEdit = uicomponent.isEditMode();
+  def isEditable = uicomponent.isEditable();
+  def user = uicomponent.getViewUser();
+  def userName = user.getUserName();
+  def firstName = user.getFirstName();
+  def lastName = user.getLastName();
+  def email = user.getEmail();
+  def childs = uicomponent.getChilds();
 %>
 <div class="UIBasicInfoSection">
-<% uiform.begin() %>
-<% uicomponent.renderChild(UITitleBar.class); %>
-	<div class="PortletContent">
-	
-		<table class="UIFormGrid">
-			<tbody>
-			<tr>
-	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%> :</td>
-	      <td class="FieldComponent">
-	        <% if (isEdit && isEditable) {
-	           uiform.renderField(childs.get(1));
-	           } else {%>
-  	        <%=userName %>
-	        <% } %>
-	      </td>
-	    </tr>
-	    
-			<tr>
-	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%> :</td>
-	      <td class="FieldComponent">
-	      <% if (isEdit && isEditable) {
-	           uiform.renderField(childs.get(2));
-	         } else {%>
-	      <%=firstName %>
-	        <% } %>
-	      </td>
-	    </tr>
-	    <tr>
-	      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%> :</td>
-	      <td class="FieldComponent">
-	      <% if (isEdit && isEditable) {
-	           uiform.renderField(childs.get(3));
-	         } else {%>
-	      <%=lastName %>
-	        <% } %>
-	      </td>
-	    </tr>
-			<tr>
-		      <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%> :</td>
-		      <td class="FieldComponent">
-		      <% if (isEdit && isEditable) {
-	           uiform.renderField(childs.get(4));
-	           } else {%>
-		      <%=email%>
-	        <% } %>
-		      </td>
-		  </tr>
-			</tbody>	
-		</table>
-	</div>
-<% uiform.end() %>
+  <% uiform.begin() %>
+  <% uicomponent.renderChild(UITitleBar.class); %>
+  <div class="PortletContent">
+    <table class="UIFormGrid">
+      <tbody>
+        <tr>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%> :</td>
+          <td class="FieldComponent">
+          <% if (isEdit && isEditable) {
+              uiform.renderField(childs.get(1));
+             } else {%>
+               <%=userName %>
+          <% } %>
+          </td>
+        </tr>
+        <tr>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%> :</td>
+          <td class="FieldComponent">
+          <% if (isEdit && isEditable) {
+               uiform.renderField(childs.get(2));
+             } else { %>
+               <%=firstName %>
+          <% } %>
+          </td>
+        </tr>
+        <tr>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%> :</td>
+          <td class="FieldComponent">
+            <% if (isEdit && isEditable) {
+                 uiform.renderField(childs.get(3));
+               } else { %>
+                 <%=lastName %>
+            <% } %>
+          </td>
+        </tr>
+        <tr>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%> :</td>
+          <td class="FieldComponent">
+            <% if (isEdit && isEditable) {
+              uiform.renderField(childs.get(4));
+               } else { %>
+               <%=email%>
+            <% } %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <% uiform.end() %>
 </div>

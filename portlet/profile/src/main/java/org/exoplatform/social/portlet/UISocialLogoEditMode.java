@@ -38,42 +38,39 @@ import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 
 /** Created by The eXo Platform SAS Author : eXoPlatform October 2, 2009 */
-@ComponentConfig(lifecycle = UIFormLifecycle.class, template = "system:/groovy/webui/form/UIFormWithTitle.gtmpl", events = {@EventConfig(listeners = UISocialLogoEditMode.SaveActionListener.class)})
-public class UISocialLogoEditMode extends UIForm
-{
+@ComponentConfig(
+                   lifecycle = UIFormLifecycle.class, template = "system:/groovy/webui/form/UIFormWithTitle.gtmpl", events = { @EventConfig(listeners = UISocialLogoEditMode.SaveActionListener.class) })
+public class UISocialLogoEditMode extends UIForm {
 
-   final static private String FIELD_URL = "logoUrl";
+  final static private String FIELD_URL = "logoUrl";
 
-   public UISocialLogoEditMode() throws Exception
-   {
-      PortletRequestContext pcontext = (PortletRequestContext)WebuiRequestContext.getCurrentInstance();
-      PortletPreferences pref = pcontext.getRequest().getPreferences();
-      addUIFormInput(new UIFormStringInput(FIELD_URL, FIELD_URL, pref.getValue("url", "")));
-   }
+  public UISocialLogoEditMode() throws Exception {
+    PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+    PortletPreferences pref = pcontext.getRequest().getPreferences();
+    addUIFormInput(new UIFormStringInput(FIELD_URL, FIELD_URL, pref.getValue("url", "")));
+  }
 
-   static public class SaveActionListener extends EventListener<UISocialLogoEditMode>
-   {
-      public void execute(Event<UISocialLogoEditMode> event) throws Exception
-      {
-         UISocialLogoEditMode uiForm = event.getSource();
-         String url = uiForm.getUIStringInput(FIELD_URL).getValue();
-         if ((url == null || url.trim().length() == 0) || (!url.trim().matches(URLValidator.URL_REGEX)))
-         {
-            UISocialLogoPortlet uiPortlet = uiForm.getParent();
-            uiForm.getUIStringInput(FIELD_URL).setValue(uiPortlet.getURL());
-            Object[] args = {FIELD_URL, "URL"};
-            throw new MessageException(new ApplicationMessage("ExpressionValidator.msg.value-invalid", args));
-         }
-         PortletRequestContext pcontext = (PortletRequestContext)WebuiRequestContext.getCurrentInstance();
-         PortletPreferences pref = pcontext.getRequest().getPreferences();
-         pref.setValue("url", uiForm.getUIStringInput(FIELD_URL).getValue());
-         pref.store();
-
-         UIPortalApplication portalApp = Util.getUIPortalApplication();
-         if (portalApp.getModeState() == UIPortalApplication.NORMAL_MODE)
-         {
-            pcontext.setApplicationMode(PortletMode.VIEW);
-         }
+  static public class SaveActionListener extends EventListener<UISocialLogoEditMode> {
+    public void execute(Event<UISocialLogoEditMode> event) throws Exception {
+      UISocialLogoEditMode uiForm = event.getSource();
+      String url = uiForm.getUIStringInput(FIELD_URL).getValue();
+      if ((url == null || url.trim().length() == 0)
+          || (!url.trim().matches(URLValidator.URL_REGEX))) {
+        UISocialLogoPortlet uiPortlet = uiForm.getParent();
+        uiForm.getUIStringInput(FIELD_URL).setValue(uiPortlet.getURL());
+        Object[] args = { FIELD_URL, "URL" };
+        throw new MessageException(new ApplicationMessage("ExpressionValidator.msg.value-invalid",
+                                                          args));
       }
-   }
+      PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+      PortletPreferences pref = pcontext.getRequest().getPreferences();
+      pref.setValue("url", uiForm.getUIStringInput(FIELD_URL).getValue());
+      pref.store();
+
+      UIPortalApplication portalApp = Util.getUIPortalApplication();
+      if (portalApp.getModeState() == UIPortalApplication.NORMAL_MODE) {
+        pcontext.setApplicationMode(PortletMode.VIEW);
+      }
+    }
+  }
 }

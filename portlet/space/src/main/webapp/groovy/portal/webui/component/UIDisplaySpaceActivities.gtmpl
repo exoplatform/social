@@ -29,16 +29,16 @@
  %>
 
 <div class="UIDisplaySpaceActivities" id="$uicomponent.id">
-    <div class="ATitleBarL">
-        <div class="ATitleBarR">
-          <div class="ATitleBarM">
-            <div class="ATitleBarC">
-              <span class="SpaceName">$labelActivityStreamOfSpace</span>
-            </div>
-          </div>
+  <div class="ATitleBarL">
+    <div class="ATitleBarR">
+      <div class="ATitleBarM">
+        <div class="ATitleBarC">
+          <span class="SpaceName">$labelActivityStreamOfSpace</span>
         </div>
+      </div>
     </div>
-    <% uicomponent.renderChildren(); %>
+  </div>
+  <% uicomponent.renderChildren(); %>
 </div>
 <% if (!uicomponent.hasChildren()) {%>
   <div class="EmptyList">labelEmptyActivityList</div>

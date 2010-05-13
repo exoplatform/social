@@ -16,7 +16,6 @@
  */
 package social.portal.webui.component;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,8 +44,8 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "app:/groovy/portal/webui/component/UISpaceApplicationList.gtmpl",
   events = {
-      @EventConfig(listeners = UISpaceApplicationList.SelectCategoryActionListener.class),
-      @EventConfig(listeners = UISpaceApplicationList.InstallApplicationActionListener.class)
+    @EventConfig(listeners = UISpaceApplicationList.SelectCategoryActionListener.class),
+    @EventConfig(listeners = UISpaceApplicationList.InstallApplicationActionListener.class)
   }
 )
 public class UISpaceApplicationList extends UIContainer implements UIPopupComponent {
@@ -86,6 +85,10 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
    * @param categoryName
    */
   public void setSelectedCategory(String categoryName) {
+   if (selectedCategory.equals(categoryName)) { //enable toggle
+     selectedCategory = null;
+     return;
+   }
    Iterator<ApplicationCategory> categoryItr = appStore.keySet().iterator();
    while (categoryItr.hasNext()) {
      ApplicationCategory category = categoryItr.next();
@@ -111,22 +114,8 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
       Entry<ApplicationCategory, List<Application>> entrySet = entrySetItr.next();
       appCategory = entrySet.getKey();
       appList = entrySet.getValue();
-      Iterator<Application> appItr = appList.iterator();
-      List<Application> tempAppList = new ArrayList<Application>();
-      while (appItr.hasNext()) {
-        Application app = appItr.next();
-        String appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
-//        if (appStatus != null) {
-//          if (!appStatus.equals(Space.ACTIVE_STATUS)) {
-//            tempAppList.add(app);
-//          }
-//        } else {
-//          tempAppList.add(app);
-//        }
-        tempAppList.add(app);
-      }
-      if (tempAppList.size() > 0) {
-        appStore.put(appCategory, tempAppList);
+      if (appList.size() > 0) {
+        appStore.put(appCategory, appList);
       }
     }
   }
@@ -174,7 +163,6 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
       SpaceService spaceService = uiSpaceAppList.getApplicationComponent(SpaceService.class);
       spaceService.installApplication(uiSpaceAppList.space, appId);
       spaceService.activateApplication(uiSpaceAppList.space, appId);
-      uiSpaceAppList.setSpace(uiSpaceAppList.space);
       UISpaceApplication uiSpaceApp = (UISpaceApplication) uiSpaceAppList.getAncestorOfType(UISpaceApplication.class);
       uiSpaceApp.setValue(uiSpaceAppList.space);
       SpaceUtils.updateWorkingWorkSpace();

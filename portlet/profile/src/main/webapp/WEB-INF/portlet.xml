@@ -17,126 +17,97 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<!--portlet-app version="1.0" xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"-->
-<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<portlet-app
+  xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
-             
- <portlet>
-   <description xml:lang="EN">People Portlet</description>
-   <portlet-name>PeoplePortlet</portlet-name>
-   <display-name xml:lang="EN">People Portlet</display-name>
-   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-   
-   <init-param>
-     <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/PeoplePortlet/webui/configuration.xml</value>
-   </init-param>    
-
-   <expiration-cache>0</expiration-cache>
-   <supports>
-     <mime-type>text/html</mime-type>
-     <portlet-mode>help</portlet-mode>
-   </supports>
-   <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.web.PeoplePortlet</resource-bundle>
-   <portlet-info>
-     <title>People Portlet</title>
-     <short-title>People Portlet</short-title>
-     <keywords>Profile</keywords>
-   </portlet-info>
-   
-   <security-role-ref>
-     <role-name>admin</role-name>
-     <role-link>admin</role-link>
-   </security-role-ref>
- </portlet>
-
- <portlet>
-   <description xml:lang="EN">Profile Navigation Portlet</description>
-   <portlet-name>profilenavigationportlet</portlet-name>
-   <display-name xml:lang="EN">Profile Navigation Portlet</display-name>
-   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-   
-   <init-param>
-     <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/ProfileNavigationPortlet/webui/configuration.xml</value>
-   </init-param>    
-
-   <expiration-cache>0</expiration-cache>
-   <supports>
-     <mime-type>text/html</mime-type>
-     <portlet-mode>help</portlet-mode>
-   </supports>
-   <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.web.ProfileNavigationPortlet</resource-bundle>
-   <portlet-info>
-     <title>Profile Navigation Portlet</title>
-     <short-title>Profile Navigation Portlet</short-title>
-     <keywords>Profile</keywords>
-   </portlet-info>
-   
-   <security-role-ref>
-     <role-name>admin</role-name>
-     <role-link>admin</role-link>
-   </security-role-ref>
- </portlet>
- <portlet>
-   <description xml:lang="EN">Connection Navigation Portlet</description>
-   <portlet-name>connectionnav</portlet-name>
-   <display-name xml:lang="EN">Connection Navigation Portlet</display-name>
-   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-   
-   <init-param>
-     <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/RelationNavigationPortlet/webui/configuration.xml</value>
-   </init-param>    
-
-   <expiration-cache>0</expiration-cache>
-   <supports>
-     <mime-type>text/html</mime-type>
-     <portlet-mode>help</portlet-mode>
-   </supports>
-   <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.web.RelationNavigationPortlet</resource-bundle>
-   <portlet-info>
-     <title>Connection Navigation Portlet</title>
-     <short-title>Connection Navigation Portlet</short-title>
-     <keywords>Profile</keywords>
-   </portlet-info>
-   
-   <security-role-ref>
-     <role-name>admin</role-name>
-     <role-link>admin</role-link>
-   </security-role-ref>
- </portlet>
- 
- <portlet>
-    <description xml:lang="EN">Profile Portlet</description>
-    <portlet-name>profile</portlet-name>
-    <display-name xml:lang="EN">Profile Display</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
+  
+  <portlet>
+    <description xml:lang="EN">People Directory Portlet</description>
+    <portlet-name>PeoplePortlet</portlet-name>
+    <display-name xml:lang="EN">People Directory</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/ProfilePortlet/webui/configuration.xml</value>
-    </init-param>    
-
+      <value>/WEB-INF/conf/portlet/web/PeoplePortlet/webui/configuration.xml</value>
+    </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.PeoplePortlet</resource-bundle>
+    <portlet-info>
+      <title>People Directory Portlet</title>
+      <short-title>People Directory</short-title>
+      <keywords>Profile</keywords>
+    </portlet-info>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Profile Navigation Portlet</description>
+    <portlet-name>ProfileNavigationPortlet</portlet-name>
+    <display-name xml:lang="EN">Profile Navigation</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/ProfileNavigationPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.web.ProfileNavigationPortlet</resource-bundle>
+    <portlet-info>
+      <title>Profile Navigation Portlet</title>
+      <short-title>Profile Navigation</short-title>
+      <keywords>Profile</keywords>
+    </portlet-info>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Connections Navigation Portlet</description>
+    <portlet-name>ConnectionsNavigationPortlet</portlet-name>
+    <display-name xml:lang="EN">Connections Navigation</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   <init-param>
+     <name>webui.configuration</name>
+     <value>/WEB-INF/conf/portlet/web/ConnectionsNavigationPortlet/webui/configuration.xml</value>
+   </init-param>
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.web.ConnectionsNavigationPortlet</resource-bundle>
+   <portlet-info>
+     <title>Connections Navigation Portlet</title>
+     <short-title>Connections Navigation</short-title>
+     <keywords>Profile</keywords>
+   </portlet-info>
+  </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Profile Portlet</description>
+    <portlet-name>ProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/ProfilePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
     <resource-bundle>locale.portlet.web.ProfilePortlet</resource-bundle>
-    
     <portlet-info>
       <title>Profile Portlet</title>
       <short-title>Profile Portlet</short-title>
       <keywords>Profile</keywords>
-    </portlet-info>     
-
+    </portlet-info>
     <portlet-preferences>
       <preference>
         <name>template</name>
@@ -147,130 +118,112 @@
   </portlet>
   
   <portlet>
-    <description xml:lang="EN">Connection Portlet</description>
-    <portlet-name>connection</portlet-name>
-    <display-name xml:lang="EN">Connection Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
+    <description xml:lang="EN">Connections Portlet</description>
+    <portlet-name>ConnectionsPortlet</portlet-name>
+    <display-name xml:lang="EN">Connections Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/RelationPortlet/webui/configuration.xml</value>
-    </init-param>    
-
+      <value>/WEB-INF/conf/portlet/web/ConnectionsPortlet/webui/configuration.xml</value>
+    </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.RelationPortlet</resource-bundle>
-    
+    <resource-bundle>locale.portlet.web.ConnectionsPortlet</resource-bundle>
     <portlet-info>
-      <title>Connection Portlet</title>
-      <short-title>Connection Portlet</short-title>
+      <title>Connections Portlet</title>
+      <short-title>Connections Portlet</short-title>
       <keywords>Profile</keywords>
-    </portlet-info>     
+    </portlet-info>
   </portlet>
   
   <portlet>
-    <description xml:lang="EN">Invitation Portlet</description>
-    <portlet-name>invitation</portlet-name>
-    <display-name xml:lang="EN">Invitation Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
+    <description xml:lang="EN">Invitations Portlet</description>
+    <portlet-name>InvitationsPortlet</portlet-name>
+    <display-name xml:lang="EN">Invitations Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/InvitationPortlet/webui/configuration.xml</value>
-    </init-param>    
-
+      <value>/WEB-INF/conf/portlet/web/InvitationsPortlet/webui/configuration.xml</value>
+    </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.InvitationPortlet</resource-bundle>
-    
+    <resource-bundle>locale.portlet.web.InvitationsPortlet</resource-bundle>
     <portlet-info>
-      <title>Invitation Portlet</title>
+      <title>Invitations Portlet</title>
       <short-title>Invitation Portlet</short-title>
       <keywords>Profile</keywords>
-    </portlet-info>     
+    </portlet-info>
   </portlet>
   
   <portlet>
-    <description xml:lang="EN">Request Portlet</description>
-    <portlet-name>requests</portlet-name>
-    <display-name xml:lang="EN">Request Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
+    <description xml:lang="EN">Requests Portlet</description>
+    <portlet-name>RequestsPortlet</portlet-name>
+    <display-name xml:lang="EN">Requests Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/RequestPortlet/webui/configuration.xml</value>
-    </init-param>    
-
+      <value>/WEB-INF/conf/portlet/web/RequestsPortlet/webui/configuration.xml</value>
+    </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.RequestPortlet</resource-bundle>
-    
+    <resource-bundle>locale.portlet.web.RequestsPortlet</resource-bundle>
     <portlet-info>
-      <title>Request Portlet</title>
-      <short-title>Request Portlet</short-title>
+      <title>Requests Portlet</title>
+      <short-title>Requests Portlet</short-title>
       <keywords>Profile</keywords>
-    </portlet-info>     
+    </portlet-info>
   </portlet>
 
   <portlet>
-    <description xml:lang="EN">user profile portlet</description>
+    <description xml:lang="EN">User Profile Portlet</description>
     <portlet-name>UserProfilePortlet</portlet-name>
     <display-name xml:lang="EN">User Profile</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-
     <init-param>
       <name>webui.configuration</name>
       <value>/WEB-INF/conf/portlet/web/UserProfilePortlet/webui/configuration.xml</value>
     </init-param>
-
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
     </supports>
-
     <portlet-info>
       <title>User Profile Portlet</title>
       <short-title>User Profile Portlet</short-title>
       <keywords>Profile</keywords>
     </portlet-info>
-    
   </portlet>
   
   <portlet>
-    <description xml:lang="EN">User Toolbar Portlet</description>
-    <portlet-name>UserToolBarPortlet</portlet-name>
-    <display-name xml:lang="EN">User Toolbar Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
+    <description xml:lang="EN">User Profile Toolbar Portlet</description>
+    <portlet-name>UserProfileToolBarPortlet</portlet-name>
+    <display-name xml:lang="EN">User Profile Toolbar Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/UserToolBarPortlet/webui/configuration.xml</value>
-    </init-param>    
-
+      <value>/WEB-INF/conf/portlet/web/UserProfileToolBarPortlet/webui/configuration.xml</value>
+    </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.UserToolBarPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.web.UserProfileToolBarPortlet</resource-bundle>
     <portlet-info>
-      <title>User Toolbar Portlet</title>
-      <short-title>User Toolbar Portlet</short-title>
+      <title>User Profile Toolbar Portlet</title>
+      <short-title>User Profile Toolbar Portlet</short-title>
       <keywords>Profile</keywords>
-    </portlet-info>    
+    </portlet-info>
   </portlet>
   
   <portlet>
@@ -278,12 +231,10 @@
     <portlet-name>PeopleToolbarPortlet</portlet-name>
     <display-name xml:lang="EN">People Toolbar Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
     <init-param>
       <name>webui.configuration</name>
       <value>/WEB-INF/conf/portlet/web/PeopleToolbarPortlet/webui/configuration.xml</value>
-    </init-param>    
-
+    </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
@@ -294,7 +245,7 @@
       <title>People Toolbar Portlet</title>
       <short-title>People Toolbar Portlet</short-title>
       <keywords>Profile</keywords>
-    </portlet-info>    
+    </portlet-info>
   </portlet>
   
   <portlet>
@@ -302,55 +253,43 @@
     <portlet-name>SocialLogoPortlet</portlet-name>
     <display-name xml:lang="EN">Social Logo Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
-    
     <init-param>
       <name>webui.configuration</name>
       <value>/WEB-INF/conf/portlet/web/SocialLogoPortlet/webui/configuration.xml</value>
-    </init-param>    
-
+    </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
     <resource-bundle>locale.portlet.web.SocialLogoPortlet</resource-bundle>
-    
     <portlet-info>
       <title>Social Logo Portlet</title>
       <short-title>Social Logo Portlet</short-title>
       <keywords>Profile</keywords>
-    </portlet-info>     
+    </portlet-info>
   </portlet>
   
   <portlet>
-   <description xml:lang="EN">My Relation Navigation Portlet</description>
-   <portlet-name>myconnectionnav</portlet-name>
-   <display-name xml:lang="EN">My Relation Navigation Portlet</display-name>
+   <description xml:lang="EN">My Connections Navigation Portlet</description>
+   <portlet-name>MyConnectionsNavigationPortlet</portlet-name>
+   <display-name xml:lang="EN">My Connections Navigation Portlet</display-name>
    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-   
    <init-param>
      <name>webui.configuration</name>
-     <value>/WEB-INF/conf/portlet/web/MyRelationNavigationPortlet/webui/configuration.xml</value>
-   </init-param>    
-
+     <value>/WEB-INF/conf/portlet/web/MyConnectionsNavigationPortlet/webui/configuration.xml</value>
+   </init-param>
    <expiration-cache>0</expiration-cache>
    <supports>
      <mime-type>text/html</mime-type>
-     <portlet-mode>help</portlet-mode>
    </supports>
    <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.web.MyRelationNavigationPortlet</resource-bundle>
+   <resource-bundle>locale.portlet.web.MyConnectionsNavigationPortlet</resource-bundle>
    <portlet-info>
      <title>My Connections Navigation Portlet</title>
      <short-title>My Connections Navigation Portlet</short-title>
      <keywords>Profile</keywords>
    </portlet-info>
-   
-   <security-role-ref>
-     <role-name>admin</role-name>
-     <role-link>admin</role-link>
-   </security-role-ref>
  </portlet>
  
 </portlet-app>

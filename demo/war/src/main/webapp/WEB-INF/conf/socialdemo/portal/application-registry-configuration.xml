@@ -656,7 +656,7 @@
                                                     </value>
                                                 </collection>
                                             </field>
-                                        </object>
+                                        </object>false
                                     </value>
                                     <value>
                                         <object type="org.exoplatform.application.registry.Application">

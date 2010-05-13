@@ -21,14 +21,14 @@
 */
 %>
 <% 
-	import org.exoplatform.portal.webui.util.Util
-	import org.exoplatform.webui.core.UIPageIterator
-	import org.exoplatform.social.space.Space
-	import org.exoplatform.social.space.SpaceUtils
-	import social.portal.webui.component.UIManageMySpaces
-	import org.exoplatform.social.webui.UISpaceSearch
-	
-	def uicomponentId = uicomponent.id
+  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.webui.core.UIPageIterator
+  import org.exoplatform.social.space.Space
+  import org.exoplatform.social.space.SpaceUtils
+  import social.portal.webui.component.UIManageMySpaces
+  import org.exoplatform.social.webui.UISpaceSearch
+  
+  def uicomponentId = uicomponent.id
   def labelSpaceSetting = _ctx.appRes("${uicomponentId}.label.SpaceListing")
   def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.NoSpace")
   def labelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
@@ -39,58 +39,56 @@
 %>
 <div class="UIManageInvitationSpaces" id="$uicomponent.id">
   <% uicomponent.renderChild(UISpaceSearch.class); %>
-	<div class="BoxSpaceList">
-		<div class="CenterTitleBox">
-			<div class="LeftTitleBox">
-				<div class="RightTitleBox">$labelSpaceSetting</div>
-			</div>
-		</div>
-  <%if ((pendingSpaces.size() == 0)) {%>
-			<div class="NormalBox">
-				<div class="NotYet">$labelNoSpaces</div>
-			</div>
-  <%}%>
-	  <%for (space in pendingSpaces) {
-	      def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false"
-	      def visibility = space.visibility
-	      //hack, temporary use private as visible
-        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
-	      def imageSource = uicomponent.getImageSource(space);
-				mySpaceIdx += 1;
-	  %>
-	  
-	  <% if (mySpaceIdx % 2 == 0) { %>
-	  <div class="GrayBox">
-	  <% } else { %>
-	  <div class="NormalBox">
-	  <% } %>
-			<div class="AvatarSpace">
-			<% if (imageSource == null) { %>
-  				<img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
-  		<% } else { %>
-  				<img alt="#" src="$imageSource" />
-  		<%}%>
-			</div>
-			<div class="ContentBox">
-				<div class="TitleContent">
-					<a href="#" onclick="<%= revokeSpaceAction %>" title="Revoke" class="Icon IconEditSpace"><span></span></a>
-					<div class="Text"><span><%= space.name %></span><span class="MembersCount"> - $visibility - $labelMembers <%= SpaceUtils.countMembers(space)%></span></div>
-					<div class="ClearBoth"><span></span></div>
-				</div>
-				<div class="Content">
-					$space.description
-				</div>
-			</div>
-			<div class="ClearBoth"><span></span></div>
-			</div>
+  <div class="BoxSpaceList">
+    <div class="CenterTitleBox">
+      <div class="LeftTitleBox">
+        <div class="RightTitleBox">$labelSpaceSetting</div>
+      </div>
+    </div>
+    <%if ((pendingSpaces.size() == 0)) {%>
+    <div class="NormalBox">
+      <div class="NotYet">$labelNoSpaces</div>
+    </div>
     <%}%>
-	<div>
-    <%
-        if (iterator.getAvailablePage() > 1) {
-            _ctx.renderUIComponent(iterator)
-        }
+    <%for (space in pendingSpaces) {
+        def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false"
+        def visibility = space.visibility
+        //trick, temporary use private as visible
+        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
+        def imageSource = uicomponent.getImageSource(space);
+        mySpaceIdx += 1;
     %>
+    
+    <% if (mySpaceIdx % 2 == 0) { %>
+    <div class="GrayBox">
+    <% } else { %>
+    <div class="NormalBox">
+    <% } %>
+      <div class="AvatarSpace">
+      <% if (imageSource == null) { %>
+        <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+      <% } else { %>
+        <img alt="#" src="$imageSource" />
+      <%}%>
+      </div>
+      <div class="ContentBox">
+        <div class="TitleContent">
+          <a href="#" onclick="<%= revokeSpaceAction %>" title="Revoke" class="Icon IconEditSpace"><span></span></a>
+          <div class="Text"><span><%= space.name %></span><span class="MembersCount"> - $visibility - $labelMembers <%= SpaceUtils.countMembers(space)%></span></div>
+          <div class="ClearBoth"><span></span></div>
+        </div>
+        <div class="Content">
+          $space.description
+        </div>
+      </div>
+      <div class="ClearBoth"><span></span></div>
+    </div>
+  <%}%>
+  <div>
+  <%
+    if (iterator.getAvailablePage() > 1) {
+      _ctx.renderUIComponent(iterator)
+    }
+  %>
   </div>
-  
-	</div>
 </div>

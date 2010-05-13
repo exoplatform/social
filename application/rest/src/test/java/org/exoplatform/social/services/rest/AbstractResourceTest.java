@@ -38,7 +38,6 @@ import javax.ws.rs.core.MultivaluedMap;
 /**
  * AbstractResourceTest.java <br />
  * Provides <code>service</code> method to test rest service.
- * 
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since Mar 3, 2010
  */

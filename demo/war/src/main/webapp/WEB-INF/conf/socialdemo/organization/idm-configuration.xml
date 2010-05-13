@@ -23,9 +23,7 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
                xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
-   
-
-
+  
   <component>
     <key>org.exoplatform.services.organization.idm.PicketLinkIDMService</key>
     <type>org.exoplatform.services.organization.idm.PicketLinkIDMServiceImpl</type>
@@ -33,7 +31,6 @@
       <value-param>
         <name>config</name>
         <value>war:/conf/socialdemo/organization/picketlink-idm/picketlink-idm-config.xml</value>
-
         <!--Sample LDAP config-->
         <!--<value>war:/conf/organization/picketlink-idm/picketlink-idm-ldap-config.xml</value>-->
       </value-param>
@@ -41,8 +38,6 @@
         <name>portalRealm</name>
         <value>realm${container.name.suffix}</value>
       </value-param>
-
     </init-params>
   </component>
-
 </configuration>

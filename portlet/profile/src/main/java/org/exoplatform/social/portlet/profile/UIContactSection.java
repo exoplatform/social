@@ -51,15 +51,15 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
  * Aug 18, 2009          
  */
 @ComponentConfig(
-    lifecycle = UIFormLifecycle.class,
-    template =  "app:/groovy/portal/webui/component/UIContactSection.gtmpl",
-    events = {
-        @EventConfig(listeners = UIContactSection.EditActionListener.class, phase=Phase.DECODE),
-        @EventConfig(listeners = UIContactSection.SaveActionListener.class),
-        @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE),
-        @EventConfig(listeners = UIContactSection.AddActionListener.class),
-        @EventConfig(listeners = UIContactSection.RemoveActionListener.class, phase=Phase.DECODE)
-    }
+  lifecycle = UIFormLifecycle.class,
+  template =  "app:/groovy/portal/webui/component/UIContactSection.gtmpl",
+  events = {
+    @EventConfig(listeners = UIContactSection.EditActionListener.class, phase=Phase.DECODE),
+    @EventConfig(listeners = UIContactSection.SaveActionListener.class),
+    @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE),
+    @EventConfig(listeners = UIContactSection.AddActionListener.class),
+    @EventConfig(listeners = UIContactSection.RemoveActionListener.class, phase=Phase.DECODE)
+  }
 )
 public class UIContactSection extends UIProfileSection {
   /** EMAILS. */

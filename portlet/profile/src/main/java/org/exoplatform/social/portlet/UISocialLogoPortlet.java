@@ -48,142 +48,126 @@ import javax.portlet.PortletPreferences;
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform October 2, 2009
  */
-@ComponentConfig(lifecycle = UIApplicationLifecycle.class, template = "app:/groovy/portal/webui/component/UISocialLogoPortlet.gtmpl")
-public class UISocialLogoPortlet extends UIPortletApplication
-{
-   private Profile profile;
-   private static IdentityManager im;
-   
-   public UISocialLogoPortlet() throws Exception
-   {
-      //addChild(UILogoEditMode.class, null, null);
-   }
+@ComponentConfig(
+  lifecycle = UIApplicationLifecycle.class,
+  template = "app:/groovy/portal/webui/component/UISocialLogoPortlet.gtmpl"
+)
+public class UISocialLogoPortlet extends UIPortletApplication {
+  private Profile                profile;
 
-   public String getURL()
-   {
-      PortletRequestContext pcontext = (PortletRequestContext)WebuiRequestContext.getCurrentInstance();
-      PortletPreferences pref = pcontext.getRequest().getPreferences();
-      String imageSource = null;
-      try {
-		imageSource = getImageSource();
-      } catch (Exception e) {
-		e.printStackTrace();
-      }
-	  
-      if (imageSource == null) 
-      {
-        return pref.getValue("url", ""); //url /eXoResourcesSocial/skin/ShareImages/Avartar.gif
-      } 
-       else 
-	  { 
-	    return imageSource; 
-	  }
-   }
+  private static IdentityManager im;
 
-   public String getNavigationTitle() throws Exception
-   {
-      PageNavigation navigation = Util.getUIPortal().getSelectedNavigation();
-      if (navigation.getOwnerType().equals(PortalConfig.GROUP_TYPE))
-      {
-         return OrganizationUtils.getGroupLabel(navigation.getOwnerId());
-      }
-      else if (navigation.getOwnerType().equals(PortalConfig.USER_TYPE))
-      {
-         ConversationState state = ConversationState.getCurrent();
-         User user = (User)state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
-         return user.getFullName();
-      }
-      return "";
-   }
-   
-   /**
-    * gets profile with forceReload.
-    * @param forceReload
-    * @return
-    * @throws Exception
-    */
-   public Profile getProfile(boolean forceReload) throws Exception {
-     if (forceReload == true || profile == null) {
-       Identity id = getIdentity();
-       profile = id.getProfile();
-     }
-     return profile;
-   }
-   
-   /**
-    * Gets the source of image.
-    * 
-    * @return imageSource link
-    */
-   protected String getImageSource() throws Exception {
-     Profile p = getProfile(true);
-     ProfileAttachment att = (ProfileAttachment) p.getProperty(Profile.AVATAR);
-     if (att != null) {
-       return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
-               + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-     }
-     return null;
-   }
-   
-   /**
-    * Gets the current portal name.<br>
-    * 
-    * @return name of current portal.
-    * 
-    */
-   private String getPortalName() {
-     PortalContainer pcontainer =  PortalContainer.getInstance() ;
-     return pcontainer.getPortalContainerInfo().getContainerName() ;  
-   }
-   
-   /**
-    * Gets the current repository.<br>
-    * 
-    * @return current repository through repository service.
-    * 
-    * @throws Exception
-    */
-   private String getRepository() throws Exception {
-     RepositoryService rService = getApplicationComponent(RepositoryService.class) ;    
-     return rService.getCurrentRepository().getConfiguration().getName() ;
-   }
-   
-   /**
-    * Gets the rest context.
-    * 
-    * @return the rest context
-    */
-    private String getRestContext() {
-      return PortalContainer.getInstance().getRestContextName();
+  public UISocialLogoPortlet() throws Exception {
+    // addChild(UILogoEditMode.class, null, null);
+  }
+
+  public String getURL() {
+    PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+    PortletPreferences pref = pcontext.getRequest().getPreferences();
+    String imageSource = null;
+    try {
+      imageSource = getImageSource();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-   
-   /**
-    * Gets current identity of login user.<br>
-    * 
-    * @return current identity.
-    * 
-    * @throws Exception
-    */
-   private Identity getIdentity() throws Exception {
-     if (im == null) {
-       ExoContainer container = ExoContainerContext.getCurrentContainer();
-       im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-     }
-     return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentProfileID());
-   }
-   
-   /**
-    * Gets current profile Id.<br>
-    * 
-    * @return id of current profile.
-    */
-   private String getCurrentProfileID() {
-     String username = URLUtils.getCurrentUser();
-     if(username != null)
-       return username;
 
-     // if we are not on the page of a user, we display the profile of the current user
-     RequestContext context = RequestContext.getCurrentInstance();
-     return context.getRemoteUser();
-   }
+    if (imageSource == null) {
+      return pref.getValue("url", ""); // url
+      // /eXoResourcesSocial/skin/ShareImages/Avartar.gif
+    } else {
+      return imageSource;
+    }
+  }
+
+  public String getNavigationTitle() throws Exception {
+    PageNavigation navigation = Util.getUIPortal().getSelectedNavigation();
+    if (navigation.getOwnerType().equals(PortalConfig.GROUP_TYPE)) {
+      return OrganizationUtils.getGroupLabel(navigation.getOwnerId());
+    } else if (navigation.getOwnerType().equals(PortalConfig.USER_TYPE)) {
+      ConversationState state = ConversationState.getCurrent();
+      User user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+      return user.getFullName();
+    }
+    return "";
+  }
+
+  /**
+   * gets profile with forceReload.
+   * 
+   * @param forceReload
+   * @return
+   * @throws Exception
+   */
+  public Profile getProfile(boolean forceReload) throws Exception {
+    if (forceReload == true || profile == null) {
+      Identity id = getIdentity();
+      profile = id.getProfile();
+    }
+    return profile;
+  }
+
+  /**
+   * Gets the source of image.
+   * 
+   * @return imageSource link
+   */
+  protected String getImageSource() throws Exception {
+    Profile p = getProfile(true);
+    ProfileAttachment att = (ProfileAttachment) p.getProperty(Profile.AVATAR);
+    if (att != null) {
+      return "/" + getRestContext() + "/jcr/" + getRepository() + "/" + att.getWorkspace()
+          + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+    }
+    return null;
+  }
+
+  /**
+   * Gets the current repository.<br>
+   * 
+   * @return current repository through repository service.
+   * @throws Exception
+   */
+  private String getRepository() throws Exception {
+    RepositoryService rService = getApplicationComponent(RepositoryService.class);
+    return rService.getCurrentRepository().getConfiguration().getName();
+  }
+
+  /**
+   * Gets the rest context.
+   * 
+   * @return the rest context
+   */
+  private String getRestContext() {
+    return PortalContainer.getInstance().getRestContextName();
+  }
+
+  /**
+   * Gets current identity of login user.<br>
+   * 
+   * @return current identity.
+   * @throws Exception
+   */
+  private Identity getIdentity() throws Exception {
+    if (im == null) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentProfileID());
+  }
+
+  /**
+   * Gets current profile Id.<br>
+   * 
+   * @return id of current profile.
+   */
+  private String getCurrentProfileID() {
+    String username = URLUtils.getCurrentUser();
+    if (username != null) {
+      return username;
+    }
+    // if we are not on the page of a user, we display the profile of the
+    // current user
+    RequestContext context = RequestContext.getCurrentInstance();
+    return context.getRemoteUser();
+  }
 }

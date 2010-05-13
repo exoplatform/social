@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -16,63 +18,64 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+*/
 <%
-	import org.exoplatform.webui.core.UIPageIterator;
-	import org.exoplatform.application.registry.Application;
-	
-	UIPageIterator iterator = uicomponent.getUIPageIterator();
-	List<Application> applications = uicomponent.getApplications();
+  import org.exoplatform.webui.core.UIPageIterator;
+  import org.exoplatform.application.registry.Application;
+  
+  UIPageIterator iterator = uicomponent.getUIPageIterator();
+  List<Application> applications = uicomponent.getApplications();
+  def labelClose = _ctx.appRes("${uicomponent.id}.label.Close");
 %>
-
-<div class="UIAddApplicationSpace">
-	<% uiform.begin() %>
-	<div class="ContainerSpace">
-		<% if(applications.size() > 0) { %>
-		<% for(app in applications)  {%>
-			<div class="ContentSpace">
-				<div class="ApplicationIcon"><span/></div>
-				<div class="CommunityContainer">
-					<div class="CommunityMane Line">
-						<div style="float: left;" class="CommunityName"><%= app.getDisplayName() %></div>
-						<div class="SpaceAction">
-							<div class="LeftButton">
-						    <div class="RightButton">
-									<% String installAction = uicomponent.event("Install",app.getApplicationName()) + "; return false;"%>
-						      <div class="InstallAppButton" onclick="$installAction"><span></span></div>
-						    </div>
-						  </div>
-						</div>
-						<div style="clear: both;"><span/></div>
-					</div>
-					<div class="Text"><%= app.getDescription() %></div>
-				</div>
-				<div style="clear: left;"><span/></div>
-			</div>
-		<% } %>
-		<% } else { %>
-		<div class= "EmptyData" style="background: white; border: 1px solid #b7b7b7; padding: 50px 0px;"><%= uiform.getLabel('empty'); %></div>
-		<% } %>
-	</div>
-	<% if(uicomponent.getUIPageIterator().getAvailablePage() > 1) { %>
-	<div><%_ctx.renderUIComponent(iterator) ;%></div>
-	<% } %>
-	<table style="width: auto; margin: auto">
-		<tr>
-			<td>
-				<div class="AplicationButton" style="padding: 10px;">
-						<a class="ActionButton" href="<%= uicomponent.event("Close") %>">
-						  <div class="AplicationButtonL">
-							  <div class="AplicationButtonR">
-							    <div class="AplicationButtonC">
-						       		Close
-							    </div>
-						    </div>
-						</div>
-					</a>
-			 	</div>
- 			</td>
- 		</tr>
- 	</table>
- 	<div style="clear: right;"><span/></div>
-	<% uiform.end() %>
+<div class="$uicomponent.id">
+  <% uiform.begin() %>
+  <div class="ContainerSpace">
+  <% if(applications.size() > 0) { %>
+    <% for(app in applications) {%>
+      <div class="ContentSpace">
+        <div class="ApplicationIcon"><span/></div>
+        <div class="CommunityContainer">
+          <div class="CommunityMane Line">
+            <div style="float: left;" class="CommunityName"><%= app.getDisplayName() %></div>
+            <div class="SpaceAction">
+              <div class="LeftButton">
+                <div class="RightButton">
+                  <% def installAction = uicomponent.event("Install",app.getApplicationName()) + "; return false;"%>
+                  <div class="InstallAppButton" onclick="$installAction"><span></span></div>
+                </div>
+              </div>
+            </div>
+            <div style="clear: both;"><span/></div>
+          </div>
+          <div class="Text"><%= app.getDescription() %></div>
+        </div>
+      <div style="clear: left;"><span/></div>
+    </div>
+    <% } %>
+  <% } else { %>
+    <div class= "EmptyData" style="background: white; border: 1px solid #b7b7b7; padding: 50px 0px;"><%= uiform.getLabel('empty'); %></div>
+  <% } %>
+  </div>
+  <% if(uicomponent.getUIPageIterator().getAvailablePage() > 1) { %>
+  <div><%_ctx.renderUIComponent(iterator) ;%></div>
+  <% } %>
+  <table style="width: auto; margin: auto">
+    <tr>
+      <td>
+        <div class="AplicationButton" style="padding: 10px;">
+          <a class="ActionButton" href="<%= uicomponent.event("Close") %>">
+            <div class="AplicationButtonL">
+              <div class="AplicationButtonR">
+                <div class="AplicationButtonC">
+                  $labelClose
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <div style="clear: right;"><span/></div>
+    <% uiform.end() %>
 </div>

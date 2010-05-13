@@ -119,7 +119,7 @@
    //hides diplayPeopleBG
    listPeopleBGClass = "DisplayNone";
   }
-
+  
   activityContentBody = activity.body;
   activityPrettyTime = uicomponent.toPrettyTime(activity.postedTime);
   activityUserName = uicomponent.getUserFullName(activity.userId);
@@ -209,7 +209,7 @@
           //TODO hoatle handle photo, video
         }
       }%>
-
+      
       <div class="NewsDate">
         $activityPrettyTime
       </div>
@@ -267,22 +267,22 @@
     def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
     def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
    %>
-			<div class="CommentBlock">
-			  <div class="CommentContent">
-			    <div class="CommentBorder">
-			    <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
-              <a onclick="$showAllCommentsAction" href="#show-all-comments">
-                    $labelShowAllComments
-              </a>
-          <% } else if (commentListStatus.getStatus().equals("all")) { %>
-              <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
-                    $labelHideAllComments
-              </a>
-          <% } %>
-			    </div>
-			  </div>
-			</div>
-	<% } %>
+    <div class="CommentBlock">
+      <div class="CommentContent">
+        <div class="CommentBorder">
+        <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
+          <a onclick="$showAllCommentsAction" href="#show-all-comments">
+            $labelShowAllComments
+          </a>
+        <% } else if (commentListStatus.getStatus().equals("all")) { %>
+          <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
+            $labelHideAllComments
+          </a>
+        <% } %>
+        </div>
+      </div>
+    </div>
+  <% } %>
   </div>
   <div class="CommentListBlock">
   <% 
@@ -304,43 +304,43 @@
     commentMessage = StringEscapeUtils.escapeHtml(it.body);
     commentPrettyTime = uicomponent.toPrettyTime(it.postedTime);
   %>
-		<div id="CommentBlock${activity.id}" class="CommentBlock">
-		  <div class="$commentContentClass">
-		    <div class="CommentBorder">
-		      <div class="CommentActivitiesContent">
-		        <a class="link AvatarPeopleBG" title="$commenterFullName" href="$commenterProfileUri">
-		          <img width="47px" height="47px" src="$commenterImageSource" />
-		        </a>
-		        <div class="Content">
-		          <div style="height: 24px;" class="Titlecontent">
-		            <div class="UserName">
-		              <a class="link" href="$commenterProfileUri">
-		                $commenterFullName
-		              </a>
-		            </div>
-		            <div class="ActionContent">
-		              <a href="#action-delete" class="ActionDeleteButton" id="DeleteCommentButton">
-		                &nbsp;
-		              </a>
-		            </div>
-		            <div style="clear: both; height: 0px;">
-		              <span></span>
-		            </div>
-		          </div>
-		          <div class="Content">
-		            $commentMessage
-		          </div>
-		          <div class="NewsDate">
-		            $commentPrettyTime
-		          </div>
-		        </div>
-		        <div class="ClearLeft">
-		          <span></span>
-		        </div>
-		      </div>
-		    </div>
-		  </div>
-		</div>
+    <div id="CommentBlock${activity.id}" class="CommentBlock">
+      <div class="$commentContentClass">
+        <div class="CommentBorder">
+          <div class="CommentActivitiesContent">
+            <a class="link AvatarPeopleBG" title="$commenterFullName" href="$commenterProfileUri">
+              <img width="47px" height="47px" src="$commenterImageSource" />
+            </a>
+            <div class="Content">
+              <div style="height: 24px;" class="Titlecontent">
+                <div class="UserName">
+                  <a class="link" href="$commenterProfileUri">
+                    $commenterFullName
+                  </a>
+                </div>
+                <div class="ActionContent">
+                  <a href="#action-delete" class="ActionDeleteButton" id="DeleteCommentButton">
+                    &nbsp;
+                  </a>
+                </div>
+                <div style="clear: both; height: 0px;">
+                  <span></span>
+                </div>
+              </div>
+              <div class="Content">
+                $commentMessage
+              </div>
+              <div class="NewsDate">
+                $commentPrettyTime
+              </div>
+            </div>
+            <div class="ClearLeft">
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   <% }) %>
   </div>
   <div class="CommentFormBlock $commentFormBlockClass" id="CommentFormBlock${activity.id}">

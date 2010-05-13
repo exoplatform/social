@@ -1,202 +1,211 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
 <% 
   import org.exoplatform.portal.config.model.PageNode;
   import org.exoplatform.portal.config.model.PageNavigation;
-  import org.exoplatform.web.application.JavascriptManager;
   import org.exoplatform.portal.webui.util.Util;
   
   def rcontext = _ctx.getRequestContext();
-	JavascriptManager jsmanager = rcontext.getJavascriptManager();
-	jsmanager.importJavascript('eXo.webui.UIHorizontalTabs');
-	jsmanager.importJavascript('eXo.portal.UIPortalNavigation');
-	jsmanager.addOnLoadJavascript('eXo.portal.UIPortalNavigation.onLoad');
-	
-	jsmanager.addOnLoadJavascript('eXo.portal.UIPortalNavigation.loadScroll');
-	//jsmanager.addOnResizeJavascript('eXo.portal.UIPortalNavigation.initScroll');
-
+  def jsManager = rcontext.getJavascriptManager();
+  jsManager.importJavascript('eXo.webui.UIHorizontalTabs');
+  jsManager.importJavascript('eXo.portal.UIPortalNavigation');
+  jsManager.addOnLoadJavascript('eXo.portal.UIPortalNavigation.onLoad');
+  jsManager.addOnLoadJavascript('eXo.portal.UIPortalNavigation.loadScroll');
+  //jsmanager.addOnResizeJavascript('eXo.portal.UIPortalNavigation.initScroll');
+  
   navigations = uicomponent.getNavigations();
-	
+  
   public void renderChildrenContainer(PageNavigation nav, PageNode node) {
-  	print """
-  		<div class="MenuItemContainer" style="display: none;">
-  			<div class="MenuItemDecorator">
-  				<div class="LeftTopMenuDecorator">
-  					<div class="RightTopMenuDecorator">
-  						<div class="CenterTopMenuDecorator"><span></span></div>
-  					</div>
-  				</div>
-  				
-  				<div class="LeftMiddleMenuDecorator">
-  					<div class="RightMiddleMenuDecorator">
-  						<div class="CenterMiddleMenuDecorator">
-  	""" ;
-					  		for(child in node.getChildren()) {
-						   		renderChildNode(nav, child) ;
-					    	}
-  	print """
-  						</div>
-  					</div>
-  				</div>
-  				<div class="LeftBottomMenuDecorator">
-  					<div class="RightBottomMenuDecorator">
-  						<div class="CenterBottomMenuDecorator"><span></span></div>
-  					</div>
-  				</div>
-  				
-  			</div>
-  		</div>
-  	""" ;
+    print """
+      <div class="MenuItemContainer" style="display: none;">
+        <div class="MenuItemDecorator">
+         <div class="LeftTopMenuDecorator">
+           <div class="RightTopMenuDecorator">
+             <div class="CenterTopMenuDecorator"><span></span></div>
+           </div>
+         </div>
+         <div class="LeftMiddleMenuDecorator">
+           <div class="RightMiddleMenuDecorator">
+             <div class="CenterMiddleMenuDecorator">
+     """;
+             for(child in node.getChildren()) {
+               renderChildNode(nav, child);
+             }
+    print """
+             </div>
+           </div>
+         </div>
+         <div class="LeftBottomMenuDecorator">
+           <div class="RightBottomMenuDecorator">
+             <div class="CenterBottomMenuDecorator"><span></span></div>
+           </div>
+         </div>
+       </div>
+     </div>
+    """;
   }
   
   public void renderChildNode(PageNavigation nav, PageNode node) {
-    PageNode selectedNode = uicomponent.getSelectedPageNode() ;
-    PageNavigation selectedNav = uicomponent.getSelectedNavigation() ;
-  	String tabStyleNavigation = "NormalItem" ; // OverItem
-  	if(selectedNode != null &&  selectedNav != null &&
-  	   selectedNav.getId () == nav.getId() &&
-  	   node.getUri() == selectedNode.getUri()) {
-  	   
-			tabStyleNavigation = "SelectedItem" ;
-		}
-		
-  	String icon = node.getIcon();
+    PageNode selectedNode = uicomponent.getSelectedPageNode();
+    PageNavigation selectedNav = uicomponent.getSelectedNavigation();
+    String tabStyleNavigation = "NormalItem" ; // OverItem
+    if(selectedNode != null &&  selectedNav != null &&
+       selectedNav.getId () == nav.getId() &&
+       node.getUri() == selectedNode.getUri()) {
+      
+      tabStyleNavigation = "SelectedItem" ;
+    }
+    def icon = node.getIcon();
     if(icon == null) icon = "DefaultPageIcon"; 
-    String arrowIcon = "";
-    if (node.getChildren() != null && node.getChildren().size() > 0) arrowIcon = "ArrowIcon"; 
-
-    String label = node.resolvedLabel;
-    String title = "";
+    def arrowIcon = "";
+    if (node.getChildren() != null && node.getChildren().size() > 0) {
+      arrowIcon = "ArrowIcon";
+    }
+    def label = node.resolvedLabel;
+    def title = "";
     if(label.length() > 40) {
-    	title = label;
-    	label = label.substring(0,37) + "...";
+      title = label;
+      label = label.substring(0,37) + "...";
     }
     
-    String pageURI = Util.getPortalRequestContext().getPortalURI() + node.getUri() ;
+    def pageURI = Util.getPortalRequestContext().getPortalURI() + node.getUri();
     if(node.pageReference != null) {
-	  	if(uicomponent.isUseAjax()) {
-	      String onclickEvt = uicomponent.event("SelectNode",  nav.getId() + "::" + node.getUri()) + ";return false;" ;
-		  	print """
-		  			<div class="MenuItem $tabStyleNavigation" >
-		  				<div class="$arrowIcon" title="$title">
-								<div class="ItemIcon $icon">
-									<a href="$pageURI" onclick="$onclickEvt">$label</a>
-								</div>
-							</div>
-				""" ;
-			} else {
-		  	print """
-		  			<div class="MenuItem $tabStyleNavigation" >
-							<div class="$arrowIcon" title="$title">
-								<div class="ItemIcon $icon">
-									<a href="$pageURI">$label</a>
-								</div>
-							</div>
-				""" ;
-			}
-		} else {
-			print """
-	  			<div class="MenuItem $tabStyleNavigation" >
-						<div class="$arrowIcon" title="$title">
-							<div class="ItemIcon $icon">
-								<a href="$pageURI">$label</a>
-							</div>
-						</div>
-			""" ;
-		}
-		
-    if (node.getChildren() != null && node.getChildren().size() > 0) {
-    	renderChildrenContainer(nav, node) ;
+      if(uicomponent.isUseAjax()) {
+        def onclickEvt = uicomponent.event("SelectNode",  nav.getId() + "::" + node.getUri()) + ";return false;";
+        print """
+          <div class="MenuItem $tabStyleNavigation">
+            <div class="$arrowIcon" title="$title">
+              <div class="ItemIcon $icon">
+                <a href="$pageURI" onclick="$onclickEvt">$label</a>
+              </div>
+            </div>
+        """;
+      } else {
+        print """
+          <div class="MenuItem $tabStyleNavigation">
+            <div class="$arrowIcon" title="$title">
+              <div class="ItemIcon $icon">
+                <a href="$pageURI">$label</a>
+              </div>
+            </div>
+        """;
+      }
+    } else {
+        print """
+          <div class="MenuItem $tabStyleNavigation">
+            <div class="$arrowIcon" title="$title">
+              <div class="ItemIcon $icon">
+                <a href="$pageURI">$label</a>
+              </div>
+            </div>
+        """;
     }
-		
-		print "</div>";
-			    
+    if (node.getChildren() != null && node.getChildren().size() > 0) {
+      renderChildrenContainer(nav, node) ;
+    }
+   print "</div>";
   }
-
 %>
-<div class="UINavigationPortlet">  
-	<div class="UINavigationBar">
-	  <div class="LeftNavigationBar">
-		  <div class="RightNavigationBar">
-		    <div class="MiddleNavigationBar">
-			    <div class="UIHorizontalTabs">
-		        <div class="TabsContainer">
-			        <%
-			          if(navigations != null) {
-			            for(nav in navigations) {
-	  		            PageNavigation selectedNav = uicomponent.getSelectedNavigation() ;
-	  		            PageNode selectedNode = uicomponent.getSelectedPageNode() ;
-			              def pageNodes = nav.getNodes() ;
-			              for(PageNode node in pageNodes) {
-			                String tabStyleNavigation = "NormalNavigationTab" ;
-			                if(selectedNode != null && selectedNav != null &&
-			                   selectedNav.getId() == nav.getId() &&
-			                   node.getUri() == selectedNode.getUri()) {
-			                  tabStyleNavigation = "SelectedNavigationTab" ;
-			                }
-			                String icon = node.getIcon();
-									    if(icon == null) icon = "DefaultPageIcon";
-			        %>      
-			        
-					            <div class="UITab">
-					              <div class="$tabStyleNavigation">
-					                <div class="LeftTab">
-					                  <div class="RightTab">
-					                    <div class="MiddleTab">
-					                      <div class="TabIcon">
-					                        <%
-																		String arrowIcon = "";
-																		if (node.getChildren() != null && node.getChildren().size() > 0) {
-																		  arrowIcon = "DropDownArrowIcon";
-																		}
-																		String iconType = node.getIcon();
-																		if(iconType == null) iconType = "DefaultPageIcon";
-																	%>
-							                   	<div class="$arrowIcon">
-							                   	  <%
-							                   	  	String pageURI = Util.getPortalRequestContext().getPortalURI() + node.getUri() ;
-							                   	  	String label = node.resolvedLabel ;
-							                   	  	if(label.length() > 30) label = label.substring(0,29) + "..." ;
-							                   	  	if(node.pageReference != null) {
-							                   	    	if(uicomponent.isUseAjax()) {
-							                   	      	String onclickEvt = uicomponent.event("SelectNode",  nav.getId() + "::" + node.getUri()) + ";return false;" ;
-							                   	  %>
-									                   	  	<a class="TabLabel ${iconType}" onclick="$onclickEvt" href="$pageURI">$label</a>
-									                  <%
-									                    	} else {
-									                  %>
-									                      	<a class="TabLabel ${iconType}" href="$pageURI">$label</a>
-									                  <%	}
-									                  	} else {%>
-								                  			<a class="TabLabel ${iconType}">$label</a>
-									                  <%}%>
-							                   	</div>
-					                      </div>
-					                    </div>
-					                  </div>
-					                </div>
-						             
-					              </div>
-					              <%
-					                /*Render Popup Menu*/
-					                if (node.getChildren() != null && node.getChildren().size() > 0) {
-											     	renderChildrenContainer(nav, node) ;
-										      }
-				                %>
-	                    </div>
-						        
-	            <%
-	                  }
-	                }
-	              }
-		          %>
-			      	<div class="ScrollButtons">
-			      		<div class="ScrollLeftButton" title="Previous">
-			      			<div class="ScrollRightButton" title="Next"><span></span></div>
-			      		</div>
-			      	</div>
-			      </div>
-			    </div>
-			  </div>
-	    </div>
-	  </div>  
-	</div>
+<div class="UINavigationPortlet">
+  <div class="UINavigationBar">
+    <div class="LeftNavigationBar">
+      <div class="RightNavigationBar">
+        <div class="MiddleNavigationBar">
+          <div class="UIHorizontalTabs">
+            <div class="TabsContainer">
+            <%
+            if(navigations != null) {
+              for(nav in navigations) {
+                PageNavigation selectedNav = uicomponent.getSelectedNavigation();
+                PageNode selectedNode = uicomponent.getSelectedPageNode();
+                def pageNodes = nav.getNodes();
+                for(PageNode node in pageNodes) {
+                  def tabStyleNavigation = "NormalNavigationTab";
+                  if(selectedNode != null && selectedNav != null &&
+                     selectedNav.getId() == nav.getId() &&
+                     node.getUri() == selectedNode.getUri()) {
+                       tabStyleNavigation = "SelectedNavigationTab";
+                  }
+                  def icon = node.getIcon();
+                  if(icon == null) icon = "DefaultPageIcon";
+            %>
+              <div class="UITab">
+                <div class="$tabStyleNavigation">
+                  <div class="LeftTab">
+                    <div class="RightTab">
+                      <div class="MiddleTab">
+                        <div class="TabIcon">
+                        <%
+                          def arrowIcon = "";
+                          if (node.getChildren() != null && node.getChildren().size() > 0) {
+                            arrowIcon = "DropDownArrowIcon";
+                          }
+                          def iconType = node.getIcon();
+                          if(iconType == null) iconType = "DefaultPageIcon";
+                        %>
+                          <div class="$arrowIcon">
+                          <%
+                          def pageURI = Util.getPortalRequestContext().getPortalURI() + node.getUri();
+                          def label = node.resolvedLabel;
+                          if(label.length() > 30) { label = label.substring(0,29) + "...";}
+                          if(node.pageReference != null) {
+                            if(uicomponent.isUseAjax()) {
+                              def onclickEvt = uicomponent.event("SelectNode",  nav.getId() + "::" + node.getUri()) + ";return false;";
+                          %>
+                            <a class="TabLabel ${iconType}" onclick="$onclickEvt" href="$pageURI">$label</a>
+                          <%
+                            } else {
+                          %>
+                            <a class="TabLabel ${iconType}" href="$pageURI">$label</a>
+                         <% }
+                          } else { %>
+                            <a class="TabLabel ${iconType}">$label</a>
+                        <%}%>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <%
+              /*Render Popup Menu*/
+              if (node.getChildren() != null && node.getChildren().size() > 0) {
+                renderChildrenContainer(nav, node) ;
+              }%>
+              </div>
+            <%
+            }
+          }
+        } %>
+              <div class="ScrollButtons">
+                <div class="ScrollLeftButton" title="Previous">
+                 <div class="ScrollRightButton" title="Next"><span></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

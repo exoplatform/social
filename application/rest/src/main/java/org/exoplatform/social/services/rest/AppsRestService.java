@@ -90,7 +90,7 @@ public class AppsRestService implements ResourceContainer {
           appList.addApp(app);
         }
       }
-    } catch(Exception ex) {
+    } catch (Exception ex) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
     return appList;
@@ -180,7 +180,7 @@ public class AppsRestService implements ResourceContainer {
   private ApplicationRegistryService getApplicationRegistryService() {
     if (_applicationRegistryService == null) {
       PortalContainer portalContainer = PortalContainer.getInstance();
-      _applicationRegistryService = (ApplicationRegistryService)portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+      _applicationRegistryService = (ApplicationRegistryService) portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
     }
     return _applicationRegistryService;
   }

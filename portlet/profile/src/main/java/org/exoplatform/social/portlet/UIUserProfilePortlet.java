@@ -27,30 +27,29 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * Manages user profile information. Uses to get user information. 
- *
+ * Manages user profile information. Uses to get user information.
  */
-@ComponentConfig(lifecycle = UIApplicationLifecycle.class, template = "app:/groovy/portal/webui/component/UIUserProfilePortlet.gtmpl")
-public class UIUserProfilePortlet extends UIPortletApplication
-{
+@ComponentConfig(
+  lifecycle = UIApplicationLifecycle.class,
+  template = "app:/groovy/portal/webui/component/UIUserProfilePortlet.gtmpl"
+)
+public class UIUserProfilePortlet extends UIPortletApplication {
 
   /**
    * Default Constructor.<br>
    * 
    * @throws Exception
    */
-   public UIUserProfilePortlet() throws Exception
-   {
-   }
+  public UIUserProfilePortlet() throws Exception {
+  }
 
-   /**
-    * Gets user.
-    * 
-    * @return user.
-    */
-   public User getUser()
-   {
-      ConversationState state = ConversationState.getCurrent();
-      return (User)state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
-   }
+  /**
+   * Gets user.
+   * 
+   * @return user.
+   */
+  public User getUser() {
+    ConversationState state = ConversationState.getCurrent();
+    return (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+  }
 }

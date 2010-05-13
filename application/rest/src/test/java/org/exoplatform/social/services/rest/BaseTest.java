@@ -46,7 +46,7 @@ import org.exoplatform.services.security.Identity;
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since Mar 3, 2010
  */
-@ConfiguredBy( {
+@ConfiguredBy({
     @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
     @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml"),
     @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration1.xml"),

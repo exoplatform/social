@@ -75,7 +75,7 @@ import org.exoplatform.webui.event.Event.Phase;
     events = {
       @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class), 
       @EventConfig(listeners = UIManageMySpaces.EditSpaceNavigationActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpace.msg.confirm_space_delete"),
+      @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpaces.msg.confirm_space_delete"),
       @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.AddSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.SearchActionListener.class , phase = Phase.DECODE)
@@ -308,7 +308,7 @@ public class UIManageMySpaces extends UIContainer {
       PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
       
       if (groupNav == null) {
-	    uiApp.addMessage(new ApplicationMessage(NAVIGATION_REMOVED_INFO, null, ApplicationMessage.INFO));
+        uiApp.addMessage(new ApplicationMessage(NAVIGATION_REMOVED_INFO, null, ApplicationMessage.INFO));
         return;
       }
       
@@ -580,14 +580,6 @@ public class UIManageMySpaces extends UIContainer {
     }
     
     return allSpacesNames;
-  } 
-  
-  /**
-   * gets current portal name
-   * @return current portal name
-   */
-  private String getPortalName() {
-    return PortalContainer.getCurrentPortalContainerName();
   }
   
   /**
