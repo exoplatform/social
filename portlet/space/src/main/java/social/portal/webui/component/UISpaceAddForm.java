@@ -18,7 +18,6 @@ package social.portal.webui.component;
 
 import java.util.ResourceBundle;
 
-import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -41,6 +40,7 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
+import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormTabPane;
 import org.exoplatform.webui.organization.account.UIGroupSelector;
 
@@ -56,7 +56,9 @@ import org.exoplatform.webui.organization.account.UIGroupSelector;
   template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceAddForm.CreateActionListener.class),
-    @EventConfig(listeners = UISpaceAddForm.ToggleUseGroupActionListener.class, phase = Phase.DECODE)
+    @EventConfig(listeners = UISpaceAddForm.ToggleUseGroupActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UISpaceAddForm.ChangePriorityActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UISpaceAddForm.ChangeOptionActionListener.class, phase = Phase.DECODE)
   }
 )
 
@@ -73,7 +75,8 @@ public class UISpaceAddForm extends UIFormTabPane {
   static private final String MSG_ERROR_SPACE_ALREADY_EXIST       = "UISpaceAddForm.msg.error_space_already_exist";
   private final String        SPACE_SETTINGS                      = "UISpaceSettings";
   private final String        SPACE_VISIBILITY                    = "UISpaceVisibility";
-
+  private final String        CHANGE_PRIORITY                     = "ChangePriority";
+  
   /**
    * Constructor: add 3 UI component to this UIFormTabPane:
    * 
@@ -88,9 +91,12 @@ public class UISpaceAddForm extends UIFormTabPane {
   public UISpaceAddForm() throws Exception {
     super("UISpaceAddForm");
     UIFormInputSet uiSpaceSettings = new UISpaceSettings(SPACE_SETTINGS);
+    UIFormSelectBox uiSelectBox = uiSpaceSettings.getChild(UIFormSelectBox.class);
+    uiSelectBox.setOnChange(CHANGE_PRIORITY);
     addChild(uiSpaceSettings);
 
     UIFormInputSet uiSpaceVisibility = new UISpaceVisibility(SPACE_VISIBILITY);
+    
     addChild(uiSpaceVisibility);
 
     addChild(UISpaceGroupBound.class, null, null);
@@ -191,6 +197,79 @@ public class UISpaceAddForm extends UIFormTabPane {
       } else {
         UIFormInputInfo uiFormInputInfo = uiSpaceGroupBound.getChild(UIFormInputInfo.class);
         uiFormInputInfo.setValue(null);
+      }
+    }
+  }
+  
+  static public class ChangePriorityActionListener extends EventListener<UISpaceAddForm> {
+	private final String HIGH_PRIORITY_LABEL         = "UISpaceSettings.label.HighPrio";
+	private final String INTERMEDIATE_PRIORITY_LABEL = "UISpaceSettings.label.InterMePrio";
+    private final String LOW_PRIORITY_LABEL          = "UISpaceSettings.label.lowPrio";
+    
+    @Override
+    public void execute(Event<UISpaceAddForm> event) throws Exception {
+      UISpaceAddForm uiSpaceAddForm = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
+      
+      String highPrio = resApp.getString(HIGH_PRIORITY_LABEL);
+      String interMePrio = resApp.getString(INTERMEDIATE_PRIORITY_LABEL);
+      String lowPrio = resApp.getString(LOW_PRIORITY_LABEL);
+      
+      Space space = new Space();
+      uiSpaceAddForm.invokeSetBindingBean(space);
+      UIFormInputSet uiSpaceSettings = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_SETTINGS);
+      UIFormInputInfo uiFormInfo = uiSpaceSettings.getChild(UIFormInputInfo.class);
+      int selectedValue = Integer.parseInt(space.getPriority());
+      switch (selectedValue) {
+	    case 1: uiFormInfo.setValue(highPrio);
+		break;
+	    case 2: uiFormInfo.setValue(interMePrio);
+	    break;
+	    case 3: uiFormInfo.setValue(lowPrio);
+	    break;
+	    default:
+		break;
+	  }
+    }
+  }
+  
+  static public class ChangeOptionActionListener extends EventListener<UISpaceAddForm> {
+	private final String VISIBLE_OPEN_SPACE          = "UISpaceVisibility.label.VisibleAndOpenSpace";
+	private final String VISIBLE_VALIDATION_SPACE    = "UISpaceVisibility.label.VisibleAndValidationSpace";
+    private final String VISIBLE_CLOSE_SPACE         = "UISpaceVisibility.label.VisibleAndCloseSpace";
+    private final String HIDDEN_SPACE                = "UISpaceVisibility.label.HiddenSpace";
+    
+    @Override
+    public void execute(Event<UISpaceAddForm> event) throws Exception {
+      UISpaceAddForm uiSpaceAddForm = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
+      
+      String visibleAndOpenSpace = resApp.getString(VISIBLE_OPEN_SPACE);
+      String visibleAndValidationSpace = resApp.getString(VISIBLE_VALIDATION_SPACE);
+      String visibleAndCloseSpace = resApp.getString(VISIBLE_CLOSE_SPACE);
+      String hiddenSpace = resApp.getString(HIDDEN_SPACE);
+      
+      Space space = new Space();
+      uiSpaceAddForm.invokeSetBindingBean(space);
+      UIFormInputSet uiSpaceVisibility = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_VISIBILITY);
+      UIFormInputInfo uiFormInfo = uiSpaceVisibility.getChild(UIFormInputInfo.class);
+      
+      String currentVisibility = space.getVisibility();
+      String currentRegistration = space.getRegistration();
+      boolean isPrivate = Space.PRIVATE.equals(currentVisibility);
+      boolean isOpen = Space.OPEN.equals(currentRegistration);
+      boolean isValidation = Space.VALIDATION.equals(currentRegistration);
+      boolean isClose = Space.CLOSE.equals(currentRegistration);
+      if (isPrivate && isOpen) {
+    	  uiFormInfo.setValue(visibleAndOpenSpace);
+      } else if (isPrivate && isValidation) {
+    	  uiFormInfo.setValue(visibleAndValidationSpace);
+      } else if (isPrivate && isClose) {
+    	  uiFormInfo.setValue(visibleAndCloseSpace);
+      } else {
+    	  uiFormInfo.setValue(hiddenSpace);
       }
     }
   }

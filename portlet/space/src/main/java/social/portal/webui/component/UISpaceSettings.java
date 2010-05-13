@@ -18,9 +18,12 @@ package social.portal.webui.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.social.space.Space;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.model.SelectItemOption;
+import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
@@ -86,6 +89,12 @@ public class UISpaceSettings extends UIFormInputSet {
                                                          SPACE_PRIORITY,
                                                          priorityList);
     addUIFormInput(selectPriority);
+    UIFormInputInfo priorityInfo = new UIFormInputInfo("Priority", null, null);
+    WebuiRequestContext webReqCtx = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resApp = webReqCtx.getApplicationResourceBundle();
+    String interMePrio = resApp.getString("UISpaceSettings.label.InterMePrio");
+    priorityInfo.setValue(interMePrio);
+    addUIFormInput(priorityInfo);
     addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null).
                    addValidator(StringLengthValidator.class, 0,255));
   }
