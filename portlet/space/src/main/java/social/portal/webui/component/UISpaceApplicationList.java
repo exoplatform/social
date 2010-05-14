@@ -85,10 +85,6 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
    * @param categoryName
    */
   public void setSelectedCategory(String categoryName) {
-   if (selectedCategory.equals(categoryName)) { //enable toggle
-     selectedCategory = null;
-     return;
-   }
    Iterator<ApplicationCategory> categoryItr = appStore.keySet().iterator();
    while (categoryItr.hasNext()) {
      ApplicationCategory category = categoryItr.next();
