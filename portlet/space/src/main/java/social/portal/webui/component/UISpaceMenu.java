@@ -352,10 +352,12 @@ public class UISpaceMenu extends UIContainer {
    * @return true if input name is valid. false if not.
    */
   private boolean isValidAppName(String appName) {
+    appName = appName.trim();
+    
     if (appName == null || appName.length() < 1) {
        return false;
     }
-    appName = appName.trim();
+
     if (Character.isDigit(appName.charAt(0)) || appName.charAt(0) == '-') {
        return false;
     }
