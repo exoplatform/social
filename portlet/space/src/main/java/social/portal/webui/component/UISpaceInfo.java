@@ -82,7 +82,8 @@ public class UISpaceInfo extends UIForm {
     
     addUIFormInput(new UIFormStringInput("name","name",null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}]+$", "UISpaceInfo.msg.name-invalid").
+                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\- \\d]+$", "ResourceValidator.msg.Invalid-char").
+                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}][\\p{L}]+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30));
     
     addUIFormInput(new UIFormTextAreaInput("description","description",null).
@@ -138,8 +139,7 @@ public class UISpaceInfo extends UIForm {
    *
    * @author hoatle
    */
-  static public class SaveActionListener extends EventListener<UISpaceInfo> {
-    
+  static public class SaveActionListener extends EventListener<UISpaceInfo> {    
     public void execute(Event<UISpaceInfo> event) throws Exception {
       UISpaceInfo uiSpaceInfo = event.getSource();
       SpaceService spaceService = uiSpaceInfo.getSpaceService();
