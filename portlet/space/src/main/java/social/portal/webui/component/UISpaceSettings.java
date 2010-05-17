@@ -63,11 +63,11 @@ public class UISpaceSettings extends UIFormInputSet {
    */
   public UISpaceSettings(String name) throws Exception {
     super(name);
-    addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null)
-       .addValidator(MandatoryValidator.class)
-       .addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\- \\d]+$", "ResourceValidator.msg.Invalid-char")
-       .addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}]+$", MSG_INVALID_SPACE_NAME)
-       .addValidator(StringLengthValidator.class, 3, 30));
+    addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null).
+                   addValidator(MandatoryValidator.class).
+                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\- \\d]+$", "ResourceValidator.msg.Invalid-char").
+                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}][\\p{L}]+$", MSG_INVALID_SPACE_NAME).
+                   addValidator(StringLengthValidator.class, 3, 30));
                   
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
     SelectItemOption<String> pHight = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
