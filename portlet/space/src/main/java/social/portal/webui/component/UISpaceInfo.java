@@ -16,9 +16,6 @@
  */
 package social.portal.webui.component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfig;
@@ -40,8 +37,8 @@ import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
@@ -49,6 +46,9 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * UISpaceInfo.java used for managing space's name, description, priority...<br />
@@ -82,8 +82,8 @@ public class UISpaceInfo extends UIForm {
     
     addUIFormInput(new UIFormStringInput("name","name",null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\- \\d]+$", "ResourceValidator.msg.Invalid-char").
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}][\\p{L}]+$", "UISpaceInfo.msg.name-invalid").
+                   addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
+                   addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30));
     
     addUIFormInput(new UIFormTextAreaInput("description","description",null).

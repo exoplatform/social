@@ -16,21 +16,17 @@
  */
 package social.portal.webui.component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import org.exoplatform.social.space.Space;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.model.SelectItemOption;
-import org.exoplatform.webui.form.UIFormInputInfo;
-import org.exoplatform.webui.form.UIFormInputSet;
-import org.exoplatform.webui.form.UIFormSelectBox;
-import org.exoplatform.webui.form.UIFormStringInput;
-import org.exoplatform.webui.form.UIFormTextAreaInput;
+import org.exoplatform.webui.form.*;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * This UI is used in UIAddSpaceForm. <br />
@@ -72,8 +68,8 @@ public class UISpaceSettings extends UIFormInputSet {
     super(name);
     addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\- \\d]+$", "ResourceValidator.msg.Invalid-char").
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}][\\p{L}]+$", MSG_INVALID_SPACE_NAME).
+                   addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
+                   addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
                    addValidator(StringLengthValidator.class, 3, 30));
 
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
