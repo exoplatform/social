@@ -36,95 +36,79 @@ import org.exoplatform.webui.core.UITree;
   events = @EventConfig(listeners = UITree.ChangeNodeActionListener.class)
 )
 @Serialized
-public class UIFilterableTree extends UITree
-{
+public class UIFilterableTree extends UITree {
 
-   private TreeNodeFilter nodeFilter;
-   
-   public UIFilterableTree() throws Exception
-   {
-      super();
-   }
-   
-   public boolean displayThisNode(Object nodeObject, WebuiRequestContext context)
-   {
-      if(nodeFilter == null)
-      {
-         return true;
-      }
-      return !nodeFilter.filterThisNode(nodeObject, context);
-   }
+	private TreeNodeFilter nodeFilter;
 
-   /**
-    * Method returns index ( relative to unfiltered list of sibblings ) of most right displayed node. The index
-    * is needed for a fine UI
-    *  
-    * @param sibblings
-    * @param context
-    * @return
-    */
-   public int getRightMostDisplayedNodeIndex(List<Object> sibblings, WebuiRequestContext context)
-   {
-      if(sibblings == null)
-      {
-         return -1;
-      }
-      int numberOfSibblings = sibblings.size();
-      if (nodeFilter == null)
-      {
-         return (numberOfSibblings - 1);
-      }
-      else
-      {
-         for (int i = (numberOfSibblings - 1); i >= 0; i--)
-         {
-            if (!nodeFilter.filterThisNode(sibblings.get(i), context))
-            {
-               return i;
-            }
-         }
-         return -1;
-      }
-   }
+	public UIFilterableTree() throws Exception {
+		super();
+	}
 
-   /**
-    * Method returns index ( relative to unfiltered list of sibblings ) of most left displayed node.
-    *  
-    * @param sibblings
-    * @param context
-    * @return
-    */
-   public int getLeftMostDisplayedNodeIndex(List<Object> sibblings, WebuiRequestContext context)
-   {
-      if(sibblings == null)
-      {
-         return -1;
-      }
-      int numberOfSibblings = sibblings.size();
-      if (nodeFilter == null)
-      {
-         return 0;
-      }
-      else
-      {
-         for (int i = 0; i < numberOfSibblings; i++)
-         {
-            if (!nodeFilter.filterThisNode(sibblings.get(i), context))
-            {
-               return i;
-            }
-         }
-         return numberOfSibblings;
-      }
-   }
+	public boolean displayThisNode(Object nodeObject,
+			WebuiRequestContext context) {
+		if (nodeFilter == null) {
+			return true;
+		}
+		return !nodeFilter.filterThisNode(nodeObject, context);
+	}
 
-   public void setTreeNodeFilter(TreeNodeFilter _nodeFilter)
-   {
-      this.nodeFilter = _nodeFilter;
-   }
+	/**
+	 * Method returns index ( relative to unfiltered list of sibblings ) of most right displayed node. The index
+	 * is needed for a fine UI
+	 *  
+	 * @param sibblings
+	 * @param context
+	 * @return
+	 */
+	public int getRightMostDisplayedNodeIndex(List<Object> sibblings,
+			WebuiRequestContext context) {
+		if (sibblings == null) {
+			return -1;
+		}
+		int numberOfSibblings = sibblings.size();
+		if (nodeFilter == null) {
+			return (numberOfSibblings - 1);
+		} else {
+			for (int i = (numberOfSibblings - 1); i >= 0; i--) {
+				if (!nodeFilter.filterThisNode(sibblings.get(i), context)) {
+					return i;
+				}
+			}
+			return -1;
+		}
+	}
 
-   public static interface TreeNodeFilter
-   {
-      public boolean filterThisNode(Object nodeObject, WebuiRequestContext context);
-   }
+	/**
+	 * Method returns index ( relative to unfiltered list of sibblings ) of most left displayed node.
+	 *  
+	 * @param sibblings
+	 * @param context
+	 * @return
+	 */
+	public int getLeftMostDisplayedNodeIndex(List<Object> sibblings,
+			WebuiRequestContext context) {
+		if (sibblings == null) {
+			return -1;
+		}
+		int numberOfSibblings = sibblings.size();
+		if (nodeFilter == null) {
+			return 0;
+		} else {
+			for (int i = 0; i < numberOfSibblings; i++) {
+				if (!nodeFilter.filterThisNode(sibblings.get(i), context)) {
+					return i;
+				}
+			}
+			return numberOfSibblings;
+		}
+	}
+
+	public void setTreeNodeFilter(TreeNodeFilter _nodeFilter) {
+		this.nodeFilter = _nodeFilter;
+	}
+
+	public static interface TreeNodeFilter {
+		public boolean filterThisNode(Object nodeObject,
+				WebuiRequestContext context);
+	}
 }
