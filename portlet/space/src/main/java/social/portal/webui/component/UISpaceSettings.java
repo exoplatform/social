@@ -65,8 +65,8 @@ public class UISpaceSettings extends UIFormInputSet {
     super(name);
     addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\- \\d]+$", "ResourceValidator.msg.Invalid-char").
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}][\\p{L}]+$", MSG_INVALID_SPACE_NAME).
+                   addValidator(ExpressionValidator.class, "^[\p{L}\s\d]+$", "ResourceValidator.msg.Invalid-char").
+                   addValidator(ExpressionValidator.class, "^([\p{L}\d]+[\s]?)+$", MSG_INVALID_SPACE_NAME).
                    addValidator(StringLengthValidator.class, 3, 30));
                   
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);

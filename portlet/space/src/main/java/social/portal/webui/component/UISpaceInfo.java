@@ -80,8 +80,8 @@ public class UISpaceInfo extends UIForm {
 
     addUIFormInput(new UIFormStringInput("name", "name", null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\- \\d]+$", "ResourceValidator.msg.Invalid-char").
-                   addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{ASCII}][\\p{L}]+$", "UISpaceInfo.msg.name-invalid").
+                   addValidator(ExpressionValidator.class, "^[\p{L}\s\d]+$", "ResourceValidator.msg.Invalid-char").
+                   addValidator(ExpressionValidator.class, "^([\p{L}\d]+[\s]?)+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30));
 
     addUIFormInput(new UIFormTextAreaInput("description","description",null).
