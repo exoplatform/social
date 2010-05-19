@@ -17,6 +17,7 @@
 package social.portal.webui.component;
 
 import org.exoplatform.services.organization.Group;
+import org.exoplatform.social.webui.UISocialGroupSelector;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -28,7 +29,6 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
-import org.exoplatform.webui.organization.account.UIGroupSelector;
 /**
  * This UI component is used for setting space's bound to a group <br />
  * 
@@ -88,11 +88,11 @@ public class UISpaceGroupBound extends UIContainer {
   /**
    * triggers this action when user clicks on select group on UIGroupSelector
    */
-  static public class SelectGroupActionListener extends EventListener<UIGroupSelector> {
-    public void execute(Event<UIGroupSelector> event) throws Exception {
+  static public class SelectGroupActionListener extends EventListener<UISocialGroupSelector> {
+    public void execute(Event<UISocialGroupSelector> event) throws Exception {
       WebuiRequestContext context = event.getRequestContext();
       String groupId = context.getRequestParameter(OBJECTID);
-      UIGroupSelector uiGroupSelector = event.getSource();
+      UISocialGroupSelector uiGroupSelector = event.getSource();
       UISpaceGroupBound uiGroupBound = uiGroupSelector.getAncestorOfType(UISpaceGroupBound.class);
       UIFormInputInfo uiFormInputInfo = uiGroupBound.getChild(UIFormInputInfo.class);
       uiFormInputInfo.setValue(groupId);
@@ -110,7 +110,7 @@ public class UISpaceGroupBound extends UIContainer {
     public void execute(Event<UIPopupWindow> event) throws Exception {
       UIPopupWindow uiPopup = event.getSource();
       UISpaceGroupBound uiGroupBound = uiPopup.getAncestorOfType(UISpaceGroupBound.class);
-      UIGroupSelector uiGroupSelector = (UIGroupSelector)uiPopup.getUIComponent();
+      UISocialGroupSelector uiGroupSelector = (UISocialGroupSelector)uiPopup.getUIComponent();
       Group group = uiGroupSelector.getCurrentGroup();
       if (group == null) {
         UIFormCheckBoxInput<Boolean> uiUseExisting = uiGroupBound.getChild(UIFormCheckBoxInput.class);
