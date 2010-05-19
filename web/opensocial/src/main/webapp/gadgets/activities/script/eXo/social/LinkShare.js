@@ -655,8 +655,9 @@ eXo.social.LinkShare.prototype.save = function(status, callback) {
 	};
 	body.comment = status;
 	//body.comment = status;
-	params[opensocial.Activity.Field.TITLE] = Locale.getMsg('user_shared_a_link', [viewerName]);
-	params[opensocial.Activity.Field.BODY] = gadgets.json.stringify(body);
+	//params[opensocial.Activity.Field.TITLE] = Locale.getMsg('user_shared_a_link', [viewerName]);
+	params[opensocial.Activity.Field.TITLE] = gadgets.json.stringify(body);
+	//params[opensocial.Activity.Field.BODY] = gadgets.json.stringify(body);
 	//debug.info(params[opensocial.Activity.Field.BODY]);
 	//thumbnail
 //	if (eXo.social.LinkShare.data.noThumbnail == false) {

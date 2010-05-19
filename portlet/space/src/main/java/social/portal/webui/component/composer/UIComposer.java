@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -61,7 +60,7 @@ public class UIComposer extends UIForm {
   private int minChactersRequired_ = 0;
   private int maxCharactersAllowed_ = 0;
   private UIFormTextAreaInput composerInput_;
-  private String bodyData_ = null;
+  private String titleData_ = null;
   /**
    * Constructor
    * @throws Exception
@@ -98,12 +97,12 @@ public class UIComposer extends UIForm {
     return getChild(UIFormTextAreaInput.class).getValue();
   }
   
-  public void setBodyData(String bodyData) {
-    bodyData_ = bodyData;
+  public void setTitleData(String titleData) {
+    titleData_ = titleData;
   }
   
-  public String getBodyData() {
-    return bodyData_;
+  public String getTitleData() {
+    return titleData_;
   }
   
   /**
@@ -130,21 +129,21 @@ public class UIComposer extends UIForm {
           Extension extension = entry.getKey();
           JSONObject attachedData = entry.getValue();
           if (Extension.LINK == extension) {
-            JSONObject dataBody = new JSONObject();
-            dataBody.put(EXTENSION_KEY, Extension.LINK.getExtension());
-            dataBody.put(DATA_KEY, attachedData);
-            dataBody.put(COMMENT_KEY, message);
-            uiComposer.setBodyData(dataBody.toString());
-          } else if (Extension.PHOTO == extension) {
+            JSONObject titleData = new JSONObject();
+            titleData.put(EXTENSION_KEY, Extension.LINK.getExtension());
+            titleData.put(DATA_KEY, attachedData);
+            titleData.put(COMMENT_KEY, message);
+            uiComposer.setTitleData(titleData.toString());
+          } /*else if (Extension.PHOTO == extension) {
             
           } else if (Extension.VIDEO == extension) {
             
-          }
+          }*/
         }
         uiComposerExtensionContainer.setExtensionAttached(false);
         uiComposerExtensionContainer.setData(null);
       } else {
-        uiComposer.setBodyData(message);
+        uiComposer.setTitleData(message);
       }
       uiComposerExtensionContainer.setCurrentExtension(null);
       event.getSource().getParent().broadcast(event, event.getExecutionPhase());

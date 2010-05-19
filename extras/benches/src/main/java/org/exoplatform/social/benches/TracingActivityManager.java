@@ -31,12 +31,12 @@ public class TracingActivityManager extends ActivityManager {
     this.activityManager = new ActivityManager (dataLocation, identityManager);
   }
 
-  public List<Activity> getActivities(Identity identity) throws Exception  {
+  public List<Activity> getActivities(Identity identity) throws Exception {
     long t1 = System.currentTimeMillis();
     try {
       return activityManager.getActivities(identity);
-       } finally {
+    } finally {
       LOG.info("getActivities() : " + (System.currentTimeMillis() - t1) + "ms");
-  }
+    }
   }
 }

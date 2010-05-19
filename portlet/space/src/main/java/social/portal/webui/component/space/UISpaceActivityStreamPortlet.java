@@ -106,8 +106,8 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
       UIComposer uiComposer = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApplication = requestContext.getUIApplication();
-      String bodyData = uiComposer.getBodyData();
-      if (bodyData.equals("")) {
+      String titleData = uiComposer.getTitleData();
+      if (titleData.equals("")) {
         uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
                                                         null,
                                                         ApplicationMessage.ERROR));
@@ -127,8 +127,8 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
                                                                   member);
       Activity activity = new Activity(userIdentity.getId(),
                                        SpaceService.SPACES_APP_ID,
-                                       space.getName(),
-                                       bodyData);
+                                       titleData,
+                                       null);
       activityManager.saveActivity(spaceIdentity, activity);
       uiDisplaySpaceActivities.setSpace(space);
     }

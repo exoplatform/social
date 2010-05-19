@@ -46,7 +46,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       String user1 = "@" + id1.getRemoteId();
       String user2 = "@" + id2.getRemoteId();
 
-      Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user1, "I am now connected to " + user2);
+      Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, "I am now connected to " + user2, null);
       activity.setTitleId("CONNECTION_CONFIRMED");
       Map<String,String> params = new HashMap<String,String>();
       params.put("Requester", user1);
@@ -54,13 +54,13 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       activity.setTemplateParams(params);
       activityManager.saveActivity(id1, activity);
       
-      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, user2, "I am now connected to " +  user1);
+      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, "I am now connected to " +  user1, null);
       activity2.setTitleId("CONNECTION_CONFIRMED");
       Map<String,String> params2 = new HashMap<String,String>();
       params2.put("Requester", user2);
       params2.put("Accepter", user1);
       activity2.setTemplateParams(params2);
-      activityManager.saveActivity(id2, activity2);      
+      activityManager.saveActivity(id2, activity2);
       
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
@@ -100,14 +100,14 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       reloadIfNeeded(id2);
       String user1 = "@" + id1.getRemoteId();
       String user2 = "@" + id2.getRemoteId();
-
-      Activity activity2 = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, user2, user1 + " has invited " +  user2 + " to connect");
+      //TODO hoatle a quick fix for activities gadget to allow deleting this activity
+      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, user1 + " has invited " +  user2 + " to connect", null);
       activity2.setTitleId("CONNECTION_REQUESTED");
       Map<String,String> params2 = new HashMap<String,String>();
       params2.put("Requester", user1);
       params2.put("Invited", user2);
       activity2.setTemplateParams(params2);
-      activityManager.saveActivity(id2, activity2);      
+      activityManager.saveActivity(id2, activity2);
       
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());

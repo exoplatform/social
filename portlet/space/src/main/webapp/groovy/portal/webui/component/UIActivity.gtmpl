@@ -21,8 +21,6 @@
 */
 %>
 <%
-  import org.apache.commons.lang.StringEscapeUtils;
-  
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   
@@ -120,7 +118,7 @@
    listPeopleBGClass = "DisplayNone";
   }
   
-  activityContentBody = activity.body;
+  activityContentTitle = activity.title;
   activityPrettyTime = uicomponent.toPrettyTime(activity.postedTime);
   activityUserName = uicomponent.getUserFullName(activity.userId);
   activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
@@ -170,7 +168,7 @@
       </div>
       <% if (!hasAttachedExtension) { %>
       <div class="ContentArea">
-        $activityContentBody
+        $activityContentTitle
       </div>
       <%} else {
         def extension = uicomponent.getAttachedExtensionType();
@@ -301,7 +299,7 @@
     if (!commenterImageSource) {
       commenterImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
     }
-    commentMessage = StringEscapeUtils.escapeHtml(it.body);
+    commentMessage = it.title;
     commentPrettyTime = uicomponent.toPrettyTime(it.postedTime);
   %>
     <div id="CommentBlock${activity.id}" class="CommentBlock">

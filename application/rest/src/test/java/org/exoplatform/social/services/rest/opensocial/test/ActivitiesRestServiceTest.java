@@ -19,7 +19,6 @@ package org.exoplatform.social.services.rest.opensocial.test;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activitystream.ActivityManager;
-import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.services.rest.AbstractResourceTest;
 import org.exoplatform.social.services.rest.opensocial.ActivitiesRestService;
 

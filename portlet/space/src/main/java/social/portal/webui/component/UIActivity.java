@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.Validate;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
@@ -57,7 +58,7 @@ import social.portal.webui.component.composer.UIComposerLinkExtension;
  * Displays activity
  * </p>
  * @author    <a href="http://hoatle.net">hoatle</a>
- * @since 	  Apr 12, 2010
+ * @since     Apr 12, 2010
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
@@ -76,7 +77,7 @@ public class UIActivity extends UIForm {
   static public int LATEST_COMMENTS_SIZE = 2;
   private int commentMinCharactersAllowed_ = 0;
   private int commentMaxCharactersAllowed_ = 0;
-  private JSONObject dataBody_;
+  private JSONObject titleData_;
   static public enum Status {
     LATEST("latest"),
     ALL("all"),
@@ -333,7 +334,8 @@ public class UIActivity extends UIForm {
   
   public boolean hasAttachedExtension() {
     try {
-      dataBody_ = new JSONObject(activity_.getBody());
+      Validate.notNull(activity_.getTitle(), "activity_.getTitle() must not be null.");
+      titleData_ = new JSONObject(activity_.getTitle());
       return true;
     } catch (org.json.JSONException je) {
       return false;
@@ -341,43 +343,43 @@ public class UIActivity extends UIForm {
   }
   
   public String getAttachedExtensionType() throws JSONException {
-    if (dataBody_ != null) {
-      return dataBody_.getString(UIComposer.EXTENSION_KEY);
+    if (titleData_ != null) {
+      return titleData_.getString(UIComposer.EXTENSION_KEY);
     }
     return null;
   }
   
   public String getLinkTitle() throws JSONException {
-    if (dataBody_ != null) {
-      return ((JSONObject)dataBody_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.TITLE_PARAM);
+    if (titleData_ != null) {
+      return ((JSONObject)titleData_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.TITLE_PARAM);
     }
     return "";
   }
   
   public String getLinkImage() throws JSONException {
-    if (dataBody_ != null) {
-      return ((JSONObject)dataBody_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.IMAGE_PARAM);
+    if (titleData_ != null) {
+      return ((JSONObject)titleData_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.IMAGE_PARAM);
     }
     return "";
   }
   
   public String getLinkSource() throws JSONException {
-    if (dataBody_ != null) {
-      return ((JSONObject)dataBody_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.LINK_PARAM);
+    if (titleData_ != null) {
+      return ((JSONObject)titleData_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.LINK_PARAM);
     }
     return "";
   }
   
   public String getLinkComment() throws JSONException {
-    if (dataBody_ != null) {
-      return dataBody_.getString(UIComposer.COMMENT_KEY);
+    if (titleData_ != null) {
+      return titleData_.getString(UIComposer.COMMENT_KEY);
     }
     return "";
   }
   
   public String getLinkDescription() throws JSONException {
-    if (dataBody_ != null) {
-      return ((JSONObject)dataBody_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.DESCRIPTION_PARAM);
+    if (titleData_ != null) {
+      return ((JSONObject)titleData_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.DESCRIPTION_PARAM);
     }
     return "";
   }
@@ -454,7 +456,7 @@ public class UIActivity extends UIForm {
     activityManager_ = getActivityManager();
     identityManager_ = getIdentityManager();
     Identity userIdentity = identityManager_.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
-    Activity comment = new Activity(userIdentity.getId(), SpaceService.SPACES_APP_ID, remoteUser, message);
+    Activity comment = new Activity(userIdentity.getId(), SpaceService.SPACES_APP_ID, message, null);
     activityManager_.saveComment(getActivity(), comment);
     comments_ = activityManager_.getComments(getActivity());
     setCommentListStatus(Status.ALL);

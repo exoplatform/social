@@ -376,8 +376,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       }
     }
     String contentId = app.getContentId();
-    if (contentId == null)
+    if (contentId == null) {
       contentId = app.getCategoryName() + "/" + app.getApplicationName();
+    }
     String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + contentId
         + "/" + app.getApplicationName() + System.currentTimeMillis();
     org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication = null;

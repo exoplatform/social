@@ -55,14 +55,14 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
   
   private void publish(ProfileLifeCycleEvent event, String message) {
     try {
-      String username = event.getUsername();
+      //String username = event.getUsername();
       Profile profile = event.getProfile();
       Identity identity = profile.getIdentity();
       reloadIfNeeded(identity);
       activityManager.recordActivity(identity,
                                      PeopleService.PEOPLE_APP_ID,
-                                     "",
-                                     message);
+                                     message,
+                                     null);
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
     }

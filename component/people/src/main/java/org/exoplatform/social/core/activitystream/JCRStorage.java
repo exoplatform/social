@@ -32,6 +32,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.Validate;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -227,10 +228,11 @@ public class JCRStorage {
   public Activity save(Identity owner, Activity activity) throws Exception {
     Node activityNode;
     LOG.info("storing activity for owner " + owner + " by " + activity.getUserId());
-    checkMandatory(activity.getUpdated(), "Activity.getUpdated()");
-    checkMandatory(activity.getPostedTime(), "Activity.getPostedTime()");
-
-
+    Validate.notNull(activity.getUpdated(), "Activity.getUpdated() must not be null.");
+    Validate.notNull(activity.getPostedTime(), "Activity.getPostedTime() must not be null.");
+    //TODO hoatle: we force title is mandatory; the spec says that if title is not available, titleId must
+    // be available. We haven't processed titleId yet, so leave title is mandatory
+    Validate.notNull(activity.getTitle(), "Activity.getTitle() must not be null.");
     Node activityHomeNode = getPublishedActivityServiceHome(owner);
     try {
       Session session = sessionManager.openSession();
@@ -242,7 +244,10 @@ public class JCRStorage {
       }
       
       setStreamInfo(activity, activityNode);
-
+      activityNode.setProperty(TITLE, activity.getTitle());
+      if (activity.getTitleId() != null) {
+        activityNode.setProperty(TITLE_TEMPLATE, activity.getTitleId());
+      }
       activityNode.setProperty(UPDATED_TIMESTAMP, activity.getUpdatedTimestamp());
       activityNode.setProperty(POSTED_TIME, activity.getPostedTime());
       
@@ -283,17 +288,6 @@ public class JCRStorage {
       sessionManager.closeSession();
     }
     return activity;
-  }
-
-  /**
-   * verify that a field is not empty
-   * @param value
-   * @param name name of the field
-   */
-  private void checkMandatory(Object value, String name) {
-    if (value == null) {
-      throw new IllegalStateException("field " + name + " is mandatory");
-    }
   }
 
   /**
