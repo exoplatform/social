@@ -49,7 +49,7 @@ public class TestProfileUpdatesPublisher extends  AbstractJCRTestCase {
     // check that the activity was created and that it contains what we expect
     List<Activity> activities = activityManager.getActivities(identity);
     assertEquals(1, activities.size());
-    assertTrue(activities.get(0).getBody().contains("basic"));
+    assertTrue(activities.get(0).getTitle().contains("basic"));
     
   }
 }

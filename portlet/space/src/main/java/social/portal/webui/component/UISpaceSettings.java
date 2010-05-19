@@ -38,7 +38,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
  *        - Name <br />
  *        - Priority <br />
  *        - Description <br />
- *        
+ *
  * Created by The eXo Platform SAS
  * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since Jul 1, 2009
@@ -48,12 +48,12 @@ public class UISpaceSettings extends UIFormInputSet {
   private final String SPACE_NAME = "name";
   private final String SPACE_PRIORITY = "priority";
   private final String SPACE_DESCRIPTION = "description";
-  
+
   //These priority variables should be set in Space.java model
   private final String PRIORITY_HIGH = "high";
   private final String PRIORITY_INTERMEDIATE = "intermediate";
   private final String PRIORITY_LOW = "low";
-  
+
   //Message
   private final String MSG_INVALID_SPACE_NAME = "UISpaceSettings.msg.invalid_space_name";
   /**
@@ -65,10 +65,10 @@ public class UISpaceSettings extends UIFormInputSet {
     super(name);
     addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\p{L}\s\d]+$", "ResourceValidator.msg.Invalid-char").
-                   addValidator(ExpressionValidator.class, "^([\p{L}\d]+[\s]?)+$", MSG_INVALID_SPACE_NAME).
+                   addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
+                   addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
                    addValidator(StringLengthValidator.class, 3, 30));
-                  
+
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
     SelectItemOption<String> pHight = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
     SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_INTERMEDIATE, Space.INTERMEDIATE_PRIORITY);
@@ -77,7 +77,7 @@ public class UISpaceSettings extends UIFormInputSet {
     priorityList.add(pImmediate);
     priorityList.add(pLow);
     pImmediate.setSelected(true);
-        
+
     UIFormSelectBox selectPriority = new UIFormSelectBox(SPACE_PRIORITY, SPACE_PRIORITY, priorityList);
     addUIFormInput(selectPriority);
     UIFormInputInfo priorityInfo = new UIFormInputInfo("Priority", null, null);

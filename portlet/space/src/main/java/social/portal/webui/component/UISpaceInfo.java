@@ -80,13 +80,13 @@ public class UISpaceInfo extends UIForm {
 
     addUIFormInput(new UIFormStringInput("name", "name", null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\p{L}\s\d]+$", "ResourceValidator.msg.Invalid-char").
-                   addValidator(ExpressionValidator.class, "^([\p{L}\d]+[\s]?)+$", "UISpaceInfo.msg.name-invalid").
+                   addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
+                   addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30));
 
     addUIFormInput(new UIFormTextAreaInput("description","description",null).
                    addValidator(StringLengthValidator.class, 0, 255));
-    
+
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
     SelectItemOption<String> pHigh = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
     SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_IMMEDIATE, Space.INTERMEDIATE_PRIORITY);
@@ -98,12 +98,12 @@ public class UISpaceInfo extends UIForm {
     addUIFormInput(selectPriority);
     //temporary disable tag
     addUIFormInput((UIFormStringInput)new UIFormStringInput("tag","tag",null).setRendered(false));
-    
+
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
     uiPopup.setWindowSize(500, 0);
     addChild(uiPopup);
   }
-  
+
   /**
    * Sets space for this ui component to work with.
    * @param space
@@ -111,7 +111,7 @@ public class UISpaceInfo extends UIForm {
    */
   public void setValue(Space space) throws Exception {
     invokeGetBindingBean(space);
-    //TODO: have to find the way to don't need the line code below. 
+    //TODO: have to find the way to don't need the line code below.
     getUIStringInput("tag").setValue(space.getTag());
   }
 
@@ -126,7 +126,7 @@ public class UISpaceInfo extends UIForm {
     Space space = spaceService.getSpaceById(id);
     return space.getImageSource();
   }
-  
+
   /**
    * Triggers this action when user click on the Save button.
    * Creating a space from existing group or creating new group for this space.
@@ -196,11 +196,11 @@ public class UISpaceInfo extends UIForm {
           }
         }
         dataStorage.save(spaceNavigation);
-        
+
         uiPortal.setSelectedNode(selectedNode);
         SpaceUtils.setNavigation(spaceNavigation);
       }
-      
+
       uiSpaceInfo.invokeSetBindingBean(space);
       spaceService.saveSpace(space, false);
       if (nameChanged) {
@@ -212,7 +212,7 @@ public class UISpaceInfo extends UIForm {
       }
     }
   }
-  
+
   /**
    * Triggers this action for editing avatar. An UIAvatarUploader popup should be displayed.
    * @author hoatle
@@ -229,7 +229,7 @@ public class UISpaceInfo extends UIForm {
       uiPopup.setShow(true);
     }
   }
-  
+
   /**
    * Gets spaceService
    * @return spaceService
@@ -241,7 +241,7 @@ public class UISpaceInfo extends UIForm {
     }
     return spaceService;
   }
-  
+
   /**
    * Gets organizationService
    * @return organizationService
@@ -249,7 +249,7 @@ public class UISpaceInfo extends UIForm {
   public OrganizationService getOrganizationService() {
      return getApplicationComponent(OrganizationService.class);
   }
-  
+
   /**
    * Gets dataSource
    * @return

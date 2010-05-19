@@ -111,7 +111,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * show list of like by activityId
+   * Shows list of like by activityId
    * @param activityId  
    * @return
    * @throws Exception
@@ -134,7 +134,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * updates like of an activity
+   * Updates like of an activity
    * @param activityId
    * @param like
    * @throws Exception
@@ -288,7 +288,8 @@ public class ActivitiesRestService implements ResourceContainer {
   
   
   /**
-   * shows comment list by activityId
+   * Shows comment list of an activity from its activityId.
+   * 
    * @param activityId
    * @return commentList
    * @see CommentList
@@ -317,7 +318,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * updates comment by activityId
+   * Creates or updates comment to an activity by its activityId
    * @param activityId
    * @param comment
    * @return commentList
@@ -335,13 +336,13 @@ public class ActivitiesRestService implements ResourceContainer {
     if (comment.getUserId() == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    comment.setPostedTime(System.currentTimeMillis());
-    comment.setReplyToId(Activity.IS_COMMENT);
     try {
       Identity commenter = getIdentityManager().getIdentity(comment.getUserId());
       comment = _activityManager.saveActivity(commenter, comment);
       String rawCommentIds = activity.getReplyToId();
-      if (rawCommentIds == null) rawCommentIds = "";
+      if (rawCommentIds == null) {
+        rawCommentIds = "";
+      }
       rawCommentIds += "," + comment.getId();
       activity.setReplyToId(rawCommentIds);
       Identity user = getIdentityManager().getIdentity(activity.getUserId());
@@ -354,7 +355,8 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * destroys comment by activityId and commentId
+   * Destroys a comment (by its commentId) from an activity (by its activityId).
+   * 
    * @param activityId
    * @param commentId
    * @return commentList

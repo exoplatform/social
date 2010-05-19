@@ -86,7 +86,7 @@ public class Activity  {
   
   
   /**
-   * Instantiates a new activity based on userId, type, title and his body.
+   * Instantiates a new activity based on userId, type, title and its body.
    * 
    * @param userId the user id
    * @param type the type

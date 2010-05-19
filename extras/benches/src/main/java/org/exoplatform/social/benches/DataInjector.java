@@ -133,7 +133,7 @@ public class DataInjector {
     if (id1 != null) {
       try {
         int idx = activityCount.getAndIncrement();
-        activity = generateRandomActvity();
+        activity = generateRandomActivity();
         activity.setExternalId("benches:"+ idx);
         activityManager.saveActivity(id1, activity);
         LOG.info("created activity " + activity.getExternalId());
@@ -150,7 +150,7 @@ public class DataInjector {
     return generateActivity(id1);  
   }
 
-  private Activity generateRandomActvity() {
+  private Activity generateRandomActivity() {
     Activity activity = new Activity();
     LoremIpsum4J lorem = new LoremIpsum4J();
     activity.setBody(lorem.getWords(10));

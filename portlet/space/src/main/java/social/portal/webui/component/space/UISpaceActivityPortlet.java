@@ -16,11 +16,8 @@
  */
 package social.portal.webui.component.space;
 
-import javax.portlet.PortletPreferences;
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -32,7 +29,6 @@ import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.social.space.impl.SpaceIdentityProvider;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
@@ -106,8 +102,8 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
       UIComposer uiComposer = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApplication = requestContext.getUIApplication();
-      String bodyData  = uiComposer.getBodyData();
-      if (bodyData.equals("")) {
+      String titleData  = uiComposer.getTitleData();
+      if (titleData.equals("")) {
         uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.ERROR));
         return;
       }
@@ -120,10 +116,9 @@ public class UISpaceActivityPortlet extends UIPortletApplication {
       IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
       Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, member);
-      Activity activity = new Activity(userIdentity.getId(), SpaceService.SPACES_APP_ID, space.getName(), bodyData);
+      Activity activity = new Activity(userIdentity.getId(), SpaceService.SPACES_APP_ID, titleData, null);
       activityManager.saveActivity(spaceIdentity, activity);
       uiDisplaySpaceActivities.setSpace(space);
     }
-    
   }
 }

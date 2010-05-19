@@ -24,6 +24,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.Validate;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
@@ -57,7 +58,7 @@ public class ActivityManager {
    * @see org.exoplatform.social.space.impl.SoscialDataLocation.
    * @throws Exception exception when can't instantiates tree node.
    */
-  public ActivityManager(SocialDataLocation dataLocation, IdentityManager identityManager) throws Exception {
+  public ActivityManager(SocialDataLocation dataLocation, IdentityManager identityManager) {
     this.storage = new JCRStorage(dataLocation);
     this.processors = new TreeSet<ActivityProcessor>(processorComparator());
     this.identityManager = identityManager;
@@ -103,13 +104,15 @@ public class ActivityManager {
   }
   
   /**
-   * Gets the latest activities by identity
+   * Gets the latest activities by identity, specifying start offset index and limit
    * 
    * @param identity the identity
+   * @param start offset index
+   * @param limit
    * @return the activities
    * @throws Exception the exception
    */
-  private List<Activity> getActivities(Identity identity, long start, long limit) throws Exception {
+  public List<Activity> getActivities(Identity identity, long start, long limit) throws Exception {
     List<Activity> activities = storage.getActivities(identity, start, limit);
     for (Activity activity : activities) {
       processActivitiy(activity);
@@ -128,9 +131,7 @@ public class ActivityManager {
    */
   public Activity saveActivity(Identity owner, Activity activity) throws Exception {
     // TODO: check the security
-    if (owner == null)
-      return null;
-
+    Validate.notNull(owner, "owner must not be null.");
     // posted now
     long now = System.currentTimeMillis();
     if (activity.getId() == null) {
@@ -147,13 +148,15 @@ public class ActivityManager {
   }
 
   /**
-   * Saves activity into the stream for the activity's userId
+   * Saves activity into the stream for the activity's userId.
+   * 
    * @see Activity#getUserId()
    * @param activity the activity to save
    * @return the activity
    * @see #saveActivity(Identity, Activity)
    */
   public Activity saveActivity(Activity activity) throws Exception {
+    Validate.notNull(activity.getUserId(), "activity.getUserId() must not be null.");
     Identity owner = identityManager.getIdentity(activity.getUserId());
     return saveActivity(owner, activity);
   }
@@ -161,13 +164,16 @@ public class ActivityManager {
   
   /**
    * Save new or updates comment to an activity comment is an instance of
-   * Activity with mandatory properties: userId, body.
+   * Activity with mandatory properties: userId, title.
    * 
    * @param activity
    * @param comment
    * @throws Exception
    */
   public void saveComment(Activity activity, Activity comment) throws Exception {
+    Validate.notNull(activity, "activity must not be null.");
+    Validate.notNull(comment.getUserId(), "comment.getUserId() must not be null.");
+    Validate.notNull(comment.getTitle(), "comment.getTitle() must not be null.");
     if (comment.getId() != null) { // allows users to edit its comment?
       comment.setUpdatedTimestamp(System.currentTimeMillis());
     } else {
@@ -177,14 +183,17 @@ public class ActivityManager {
     comment.setReplyToId(Activity.IS_COMMENT);
     comment = saveActivity(comment);
     String rawCommentIds = activity.getReplyToId();
-    if (rawCommentIds == null)
+    if (rawCommentIds == null) {
       rawCommentIds = "";
+    }
     rawCommentIds += "," + comment.getId();
     activity.setReplyToId(rawCommentIds);
     saveActivity(activity);
   }
 
   /**
+   * Saves an identity who likes an activity
+   * 
    * @param activity
    * @param identity
    * @throws Exception
@@ -212,7 +221,6 @@ public class ActivityManager {
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());
       activity.setLikeIdentityIds(identityIds);
-   
       saveActivity(activity);
     } else {
       LOG.warn("activity is not liked by identity: " + identity);
@@ -246,12 +254,24 @@ public class ActivityManager {
    * @param type the type of activity (freeform)
    * @param title the title
    * @param body the body
-   * @return the activity
+   * @return the stored activity
    * @throws Exception the exception
    */
   public Activity recordActivity(Identity owner, String type, String title, String body) throws Exception {
     String userId = owner.getId();
     Activity activity = new Activity(userId, type, title, body);
+    return saveActivity(owner, activity);
+  }
+  
+  /**
+   * Saves an activity
+   * 
+   * @param owner
+   * @param activity
+   * @return the stored activity
+   * @throws Exception
+   */
+  public Activity recordActivity(Identity owner, Activity activity) throws Exception {
     return saveActivity(owner, activity);
   }
   /**

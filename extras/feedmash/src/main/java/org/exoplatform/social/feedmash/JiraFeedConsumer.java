@@ -50,8 +50,8 @@ public class JiraFeedConsumer extends AbstractFeedRepubJob {
 
       ActivityManager activityManager = getExoComponent(ActivityManager.class);
       Activity activity = new Activity();
-      activity.setTitle("");
-      activity.setBody(entry.getTitle());
+      activity.setTitle(entry.getTitle());
+      activity.setBody("");
       activity.setAppId("feedmash:" + getClass());
       activity.setUserId(jira.getId());
       activityManager.saveActivity(targetStream, activity);

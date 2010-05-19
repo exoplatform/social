@@ -89,8 +89,8 @@ public class HudsonFeedConsumer extends AbstractFeedRepubJob {
       Identity hudson = getHudsonIdentity();
       message = message(currentStatus,entry.getLink(), entry.getTitle()); 
       Activity activity = new Activity();
-      activity.setTitle("");
-      activity.setBody(message);
+      activity.setTitle(message);
+      //activity.setBody(message);
       activity.setAppId("feedmash:" + getClass());
       activity.setUserId(hudson.getId());
       activityManager.saveActivity(targetStream, activity);
