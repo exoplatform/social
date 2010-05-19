@@ -160,7 +160,7 @@ public class UISpaceMenu extends UIContainer {
       }
       UIApplication uiApp = context.getUIApplication();
       if (!spaceMenu.isValidAppName(newSpaceAppName)) {
-        uiApp.addMessage(new ApplicationMessage(INVALID_APPLICATION_NAME_MSG, null, ApplicationMessage.ERROR));
+        uiApp.addMessage(new ApplicationMessage(INVALID_APPLICATION_NAME_MSG, null, ApplicationMessage.WARNING));
         prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
         return;
       }
