@@ -17,11 +17,11 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<page-set 
+<page-set
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_0 http://www.gatein.org/xml/ns/gatein_objects_1_0"
-    xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_0">  
-  
+    xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_0">
+
   <page>
     <name>people</name>
     <title>Manage People</title>
@@ -34,10 +34,10 @@
       </portlet>
       <title>Manage People</title>
       <access-permissions>*:/platform/users</access-permissions>
-      <show-info-bar>false</show-info-bar>      
+      <show-info-bar>false</show-info-bar>
     </portlet-application>
   </page>
-  
+
   <page>
     <name>activities</name>
     <title>Activities</title>
@@ -45,42 +45,42 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	  		<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>profilenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Profile Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
-	 		<container id="ProfileActivity" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		   <access-permissions>*:/platform/users</access-permissions>
-	 				<portlet-application>
-			     <portlet>
-			       <application-ref>dashboard</application-ref>
-			       <portlet-ref>GadgetPortlet</portlet-ref>
-			       <preferences>
-		          <preference>
-		            <name>url</name>
-				        <value>http://localhost:8080/rest/jcr/repository/portal-system/production/app:gadgets/app:StatusUpdate/app:data/app:resources/activities.xml</value>
-				        <read-only>false</read-only>
-		          </preference>
-		        </preferences>
-			     </portlet>
-			     <title>Gadget Portlet</title>
-			     <access-permissions>*:/platform/users</access-permissions>
-			     <show-info-bar>false</show-info-bar>
-			     <show-application-state>true</show-application-state>      
-		   		</portlet-application>
-	 		</container>
-		</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>profilenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Profile Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="ProfileActivity" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+          <access-permissions>*:/platform/users</access-permissions>
+           <portlet-application>
+           <portlet>
+             <application-ref>dashboard</application-ref>
+             <portlet-ref>GadgetPortlet</portlet-ref>
+             <preferences>
+              <preference>
+                <name>url</name>
+                <value>http://localhost:8080/rest/jcr/repository/portal-system/production/app:gadgets/app:StatusUpdate/app:data/app:resources/activities.xml</value>
+                <read-only>false</read-only>
+              </preference>
+            </preferences>
+           </portlet>
+           <title>Gadget Portlet</title>
+           <access-permissions>*:/platform/users</access-permissions>
+           <show-info-bar>false</show-info-bar>
+           <show-application-state>true</show-application-state>
+           </portlet-application>
+       </container>
+    </container>
   </page>
-  
+
   <page>
     <name>profile</name>
     <title>Profile</title>
@@ -88,35 +88,35 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
- 			<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
- 			  <access-permissions>*:/platform/users</access-permissions>
- 				<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>profilenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Profile Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
- 			<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
- 			  <access-permissions>*:/platform/users</access-permissions>
- 				<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>profile</portlet-ref>
-		     </portlet>
-		     <title>Profile</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
- 		</container>
-	</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>profilenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Profile Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>profile</portlet-ref>
+         </portlet>
+         <title>Profile</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+     </container>
+  </container>
   </page>
-  
+
   <page>
     <name>myConnections</name>
     <title>My Connections</title>
@@ -124,35 +124,35 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-				<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>myconnectionnav</portlet-ref>
-		     </portlet>
-		     <title>Connection Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-	 		<container id="ProfileRelations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	 			<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>connection</portlet-ref>
-		     </portlet>
-		     <title>my connections</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-		</container>
+       <container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>myconnectionnav</portlet-ref>
+         </portlet>
+         <title>Connection Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+       <container id="ProfileRelations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>connection</portlet-ref>
+         </portlet>
+         <title>my connections</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+    </container>
   </page>
-  
+
   <page>
     <name>myInvitations</name>
     <title>My Invitations</title>
@@ -160,35 +160,35 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout"  template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-				<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>myconnectionnav</portlet-ref>
-		     </portlet>
-		     <title>Connection Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-	 		<container id="Invitations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	 			<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>invitation</portlet-ref>
-		     </portlet>
-		     <title>Invitations</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-		</container>
+       <container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>myconnectionnav</portlet-ref>
+         </portlet>
+         <title>Connection Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+       <container id="Invitations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>invitation</portlet-ref>
+         </portlet>
+         <title>Invitations</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+    </container>
   </page>
-  
+
   <page>
     <name>myRequests</name>
     <title>My Requests</title>
@@ -196,35 +196,35 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-				<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>myconnectionnav</portlet-ref>
-		     </portlet>
-		     <title>Connection Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-	 		<container id="Requests" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	 			<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>requests</portlet-ref>
-		     </portlet>
-		     <title>Requests</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-		</container>
+       <container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>myconnectionnav</portlet-ref>
+         </portlet>
+         <title>Connection Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+       <container id="Requests" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>requests</portlet-ref>
+         </portlet>
+         <title>Requests</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+    </container>
   </page>
-  
+
   <page>
     <name>connections</name>
     <title>Connections</title>
@@ -232,48 +232,48 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	  		<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>profilenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Profile Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
-	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-				<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>connectionnav</portlet-ref>
-		     </portlet>
-		     <title>Connection Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-	 		<container id="ProfileRelations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	 			<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>connection</portlet-ref>
-		     </portlet>
-		     <title>my connections</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-		</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>profilenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Profile Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>connectionnav</portlet-ref>
+         </portlet>
+         <title>Connection Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+       <container id="ProfileRelations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>connection</portlet-ref>
+         </portlet>
+         <title>my connections</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+    </container>
   </page>
-  
+
   <page>
     <name>invitations</name>
     <title>Invitations</title>
@@ -281,48 +281,48 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout"  template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	  		<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>profilenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Profile Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
-	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-				<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>connectionnav</portlet-ref>
-		     </portlet>
-		     <title>Connection Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-	 		<container id="Invitations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	 			<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>invitation</portlet-ref>
-		     </portlet>
-		     <title>Invitations</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-		</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>profilenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Profile Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>connectionnav</portlet-ref>
+         </portlet>
+         <title>Connection Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+       <container id="Invitations" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>invitation</portlet-ref>
+         </portlet>
+         <title>Invitations</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+    </container>
   </page>
-  
+
   <page>
     <name>requests</name>
     <title>Requests</title>
@@ -330,49 +330,49 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	  		<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>profilenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Profile Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
-	 		<container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-				<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>connectionnav</portlet-ref>
-		     </portlet>
-		     <title>Connection Navigation</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-	 		<container id="Requests" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	 			<portlet-application>
-		     <portlet>
-		       <application-ref>profile</application-ref>
-		       <portlet-ref>requests</portlet-ref>
-		     </portlet>
-		     <title>Requests</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	 		</container>
-		</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>profilenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Profile Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="ProfileRelation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>connectionnav</portlet-ref>
+         </portlet>
+         <title>Connection Navigation</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+       <container id="Requests" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>profile</application-ref>
+           <portlet-ref>requests</portlet-ref>
+         </portlet>
+         <title>Requests</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+    </container>
   </page>
-  
-  
+
+
   <page>
     <name>spaces</name>
     <title>Spaces</title>
@@ -380,35 +380,35 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	  		<portlet-application>
-		     <portlet>
-		       <application-ref>space</application-ref>
-		       <portlet-ref>spacenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Space Navigation Portlet</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
-	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
- 				<portlet-application>
-		     <portlet>
-		       <application-ref>space</application-ref>
-		       <portlet-ref>MySpacePortlet</portlet-ref>
-		     </portlet>
-		     <title>MySpacePortlet</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
- 		  </container>
-		</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>space</application-ref>
+           <portlet-ref>spacenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Space Navigation Portlet</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>space</application-ref>
+           <portlet-ref>MySpacePortlet</portlet-ref>
+         </portlet>
+         <title>MySpacePortlet</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+       </container>
+    </container>
   </page>
-  
+
   <page>
     <name>invitationSpace</name>
     <title>Invitation Space</title>
@@ -416,35 +416,35 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	  		<portlet-application>
-		     <portlet>
-		       <application-ref>space</application-ref>
-		       <portlet-ref>spacenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Space Navigation Portlet</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
-	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
- 				<portlet-application>
-		     <portlet>
-		       <application-ref>space</application-ref>
-		       <portlet-ref>InvitationSpacePortlet</portlet-ref>
-		     </portlet>
-		     <title>InvitationSpacePortlet</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
- 		</container>
-		</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>space</application-ref>
+           <portlet-ref>spacenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Space Navigation Portlet</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>space</application-ref>
+           <portlet-ref>InvitationSpacePortlet</portlet-ref>
+         </portlet>
+         <title>InvitationSpacePortlet</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+     </container>
+    </container>
   </page>
-  
+
   <page>
     <name>pendingSpace</name>
     <title>Pending Space</title>
@@ -452,35 +452,35 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	  		<portlet-application>
-		     <portlet>
-		       <application-ref>space</application-ref>
-		       <portlet-ref>spacenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Space Navigation Portlet</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
-	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
- 				<portlet-application>
-		     <portlet>
-		       <application-ref>space</application-ref>
-		       <portlet-ref>PendingSpacePortlet</portlet-ref>
-		     </portlet>
-		     <title>PendingSpacePortlet</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
- 		</container>
-		</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>space</application-ref>
+           <portlet-ref>spacenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Space Navigation Portlet</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+         <portlet-application>
+         <portlet>
+           <application-ref>space</application-ref>
+           <portlet-ref>PendingSpacePortlet</portlet-ref>
+         </portlet>
+         <title>PendingSpacePortlet</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+     </container>
+    </container>
   </page>
-  
+
   <page>
     <name>publicSpace</name>
     <title>Public Space</title>
@@ -488,35 +488,35 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <container id="sociallayout" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
       <access-permissions>*:/platform/users</access-permissions>
-	 		<container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
-	  		<portlet-application>
-		     <portlet>
-		       <application-ref>space</application-ref>
-		       <portlet-ref>spacenavigationportlet</portlet-ref>
-		     </portlet>
-		     <title>Space Navigation Portlet</title>
-		     <access-permissions>*:/platform/users</access-permissions>
-		     <show-info-bar>false</show-info-bar>
-		     <show-application-state>true</show-application-state>      
-		   </portlet-application>
-	  	</container>
-	 		<container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-	 		  <access-permissions>*:/platform/users</access-permissions>
- 		     <portlet-application>
-		       <portlet>
-		         <application-ref>space</application-ref>
-		         <portlet-ref>PublicSpacePortlet</portlet-ref>
-		       </portlet>
-		       <title>PublicSpacePortlet</title>
-		       <access-permissions>*:/platform/users</access-permissions>
-		       <show-info-bar>false</show-info-bar>
-		       <show-application-state>true</show-application-state>      
-		     </portlet-application>
- 		  </container>
-		</container>
+       <container id="ProfileNavigation" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+        <portlet-application>
+         <portlet>
+           <application-ref>space</application-ref>
+           <portlet-ref>spacenavigationportlet</portlet-ref>
+         </portlet>
+         <title>Space Navigation Portlet</title>
+         <access-permissions>*:/platform/users</access-permissions>
+         <show-info-bar>false</show-info-bar>
+         <show-application-state>true</show-application-state>
+       </portlet-application>
+      </container>
+       <container id="Profile" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+         <access-permissions>*:/platform/users</access-permissions>
+          <portlet-application>
+           <portlet>
+             <application-ref>space</application-ref>
+             <portlet-ref>PublicSpacePortlet</portlet-ref>
+           </portlet>
+           <title>PublicSpacePortlet</title>
+           <access-permissions>*:/platform/users</access-permissions>
+           <show-info-bar>false</show-info-bar>
+           <show-application-state>true</show-application-state>
+         </portlet-application>
+       </container>
+    </container>
   </page>
- 
+
   <page>
     <name>spacetemplate</name>
     <title>Space Template</title>

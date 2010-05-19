@@ -1,0 +1,4 @@
+--- demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developers_fr.properties	(revision 47602)
++++ demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developers_fr.properties	(working copy)
+@@ -1 +1 @@
+-developer.canvas=Canvas+developers.canvas=Canvas

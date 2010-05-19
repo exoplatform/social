@@ -28,24 +28,24 @@
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.services.organization.OrganizationDatabaseInitializer</type>
       <description>this listener populate organization data for the first launch</description>
-      <init-params>      
+      <init-params>
         <value-param>
           <name>checkDatabaseAlgorithm</name>
           <description>check database</description>
           <value>entry</value>
-        </value-param>      
+        </value-param>
         <value-param>
           <name>printInformation</name>
           <description>Print information init database</description>
           <value>false</value>
-        </value-param> 
+        </value-param>
         <object-param>
           <name>configuration</name>
           <description>description</description>
           <object type="org.exoplatform.services.organization.OrganizationConfig">
             <field  name="membershipType">
               <collection type="java.util.ArrayList">
-              	<value>
+                <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$MembershipType">
                     <field  name="type"><string>manager</string></field>
                     <field  name="description"><string>manager membership type</string></field>
@@ -56,7 +56,7 @@
                     <field  name="type"><string>member</string></field>
                     <field  name="description"><string>member membership type</string></field>
                   </object>
-                </value>                
+                </value>
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$MembershipType">
                     <field  name="type"><string>validator</string></field>
@@ -67,13 +67,13 @@
             </field>
 
             <field  name="group">
-              <collection type="java.util.ArrayList">             
+              <collection type="java.util.ArrayList">
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
                     <field  name="name"><string>platform</string></field>
                     <field  name="parentId"><string></string></field>
                     <field  name="description"><string>the /platform group</string></field>
-                    <field  name="label"><string>Platform</string></field>                    
+                    <field  name="label"><string>Platform</string></field>
                   </object>
                 </value>
                 <value>
@@ -187,7 +187,7 @@
                     <field  name="description"><string>the /customers group</string></field>
                     <field  name="label"><string>Customers</string></field>
                   </object>
-                </value>                
+                </value>
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
                     <field  name="name"><string>partners</string></field>
@@ -206,12 +206,12 @@
                 </value>
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>developer</string></field>
+                    <field  name="name"><string>developers</string></field>
                     <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the /developer group</string></field>
-                    <field  name="label"><string>Developer</string></field>
+                    <field  name="description"><string>the /developers group</string></field>
+                    <field  name="label"><string>Developers</string></field>
                   </object>
-                </value>                
+                </value>
               </collection>
             </field>
 
@@ -226,13 +226,13 @@
                     <field  name="email"><string>root@localhost</string></field>
                     <field  name="groups">
                       <string>
-                      	manager:/platform/administrators,member:/platform/users,
-                      	member:/organization/management/executive-board
+                        manager:/platform/administrators,member:/platform/users,
+                        member:/organization/management/executive-board
                       </string>
                     </field>
                   </object>
                 </value>
-                
+
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$User">
                     <field  name="userName"><string>john</string></field>
@@ -242,12 +242,12 @@
                     <field  name="email"><string>john@localhost</string></field>
                     <field  name="groups">
                       <string>
-                      	member:/platform/administrators,member:/platform/users,
-                      	manager:/organization/management/executive-board
+                        member:/platform/administrators,member:/platform/users,
+                        manager:/organization/management/executive-board
                       </string>
                     </field>
                   </object>
-                </value>                                                        
+                </value>
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$User">
                     <field  name="userName"><string>mary</string></field>
@@ -271,14 +271,14 @@
                       <string>member:/platform/guests,member:/platform/users</string>
                     </field>
                   </object>
-                </value>                       
+                </value>
               </collection>
             </field>
           </object>
         </object-param>
       </init-params>
     </component-plugin>
-           
+
     <component-plugin>
       <name>new.user.event.listener</name>
       <set-method>addListenerPlugin</set-method>
@@ -296,7 +296,7 @@
                     <field  name="groupId"><string>/platform/users</string></field>
                     <field  name="membership"><string>member</string></field>
                   </object>
-                </value>               
+                </value>
               </collection>
             </field>
             <field  name="ignoredUser">
@@ -313,66 +313,66 @@
     </component-plugin>
 
 <!--
-	  <component-plugin>
-	    <name>ecm.new.user.event.listener</name>
-	    <set-method>addListenerPlugin</set-method>
-	    <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NewUserListener</type>
-	    <description>description</description>
-	    <init-params>
-	      <object-param>
-	        <name>configuration</name>
-	        <description>description</description>
-	        <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig">
-          	<field  name="repository"><string>repository</string></field>
-           	<field name="workspaces">
-             	<collection type="java.util.ArrayList">
-              	<value><string>portal-system</string></value>              	              
-              </collection>              	
-            </field>            
+    <component-plugin>
+      <name>ecm.new.user.event.listener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NewUserListener</type>
+      <description>description</description>
+      <init-params>
+        <object-param>
+          <name>configuration</name>
+          <description>description</description>
+          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig">
+            <field  name="repository"><string>repository</string></field>
+             <field name="workspaces">
+               <collection type="java.util.ArrayList">
+                <value><string>portal-system</string></value>
+              </collection>
+            </field>
             <field  name="jcrPaths">
-             	<collection type="java.util.ArrayList">
-                <value>              	
-		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">              	 	
-		             		<field name="alias"><string>userApplicationData</string></field>
-		                <field name="path"><string>ApplicationData</string></field>
-		                <field name="nodeType"><string>nt:unstructured</string></field>
-		                <field name="permissions">
-				              <collection type="java.util.ArrayList">               
-				                <value>                            
-				                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
-				                    <field name="identity"><string>*:/platform/administrators</string></field>
-				                    <field name="read"><string>true</string></field>                
-				                    <field name="addNode"><string>true</string></field>                
-				                    <field name="setProperty"><string>true</string></field>                
-				                    <field name="remove"><string>true</string></field>                
-				                  </object>  
-				                </value>			                  
-			                </collection>
-			              </field>
-			              <field name="mixinTypes">
-			                <collection type="java.util.ArrayList">
-			                </collection>
-			              </field>   			               
-	              	</object>
-              	</value>
-             	</collection>
-            </field>	          
-	        </object>
-	      </object-param>
-	    </init-params>
-	  </component-plugin>
+               <collection type="java.util.ArrayList">
+                <value>
+                   <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
+                     <field name="alias"><string>userApplicationData</string></field>
+                    <field name="path"><string>ApplicationData</string></field>
+                    <field name="nodeType"><string>nt:unstructured</string></field>
+                    <field name="permissions">
+                      <collection type="java.util.ArrayList">
+                        <value>
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">
+                            <field name="identity"><string>*:/platform/administrators</string></field>
+                            <field name="read"><string>true</string></field>
+                            <field name="addNode"><string>true</string></field>
+                            <field name="setProperty"><string>true</string></field>
+                            <field name="remove"><string>true</string></field>
+                          </object>
+                        </value>
+                      </collection>
+                    </field>
+                    <field name="mixinTypes">
+                      <collection type="java.util.ArrayList">
+                      </collection>
+                    </field>
+                  </object>
+                </value>
+               </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
 -->
-		<component-plugin>
+    <component-plugin>
       <name>MembershipUpdateListener</name>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.services.organization.impl.MembershipUpdateListener</type>
     </component-plugin>
-    
+
     <component-plugin>
       <name>SocialGroupEventListenerImpl</name>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.social.application.impl.SocialGroupEventListenerImpl</type>
     </component-plugin>
-    
+
   </external-component-plugins>
 </configuration>
