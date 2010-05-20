@@ -21,37 +21,39 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_0 http://www.gatein.org/xml/ns/gadgets_1_0"
     xmlns="http://www.gatein.org/xml/ns/gadgets_1_0">
-	<gadget name="SocialHelloWorld">
-		<path>/gadgets/SocialHelloWorld.xml</path>
-	</gadget>
-	<gadget name="StatusUpdate">
-		<path>/gadgets/activities/activities.xml</path>
-	</gadget>
 
-	<!-- 
-	<gadget name="ComplianceTest08">
-		<url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>
-	</gadget>
-	-->
+  <gadget name="SocialHelloWorld">
+    <path>/gadgets/SocialHelloWorld/SocialHelloWorld.xml</path>
+  </gadget>
+  <gadget name="Activities">
+    <path>/gadgets/Activities/Activities.xml</path>
+  </gadget>
+  <!--
+  <gadget name="ComplianceTest08">
+    <url>http://opensocial-resources.googlecode.com/svn/tests/trunk/suites/0.8/compliance/reference.xml</url>
+  </gadget>
+  -->
   <gadget name="CodeSharer">
-		<path>/gadgets/codeSharer.xml</path>
-	</gadget>
+    <path>/gadgets/CodeSharer/CodeSharer.xml</path>
+  </gadget>
   <gadget name="ApplicationList">
-		<path>/gadgets/applicationReg.xml</path>
-	</gadget>
-	<gadget name="viewerFriends">
-		<path>/gadgets/viewerFriends/viewerFriends.xml</path>
-	</gadget>
-	<gadget name="rssFetch">
-		<path>/gadgets/rssFetch/rssFetch.xml</path>
-	</gadget><!--	
-	<gadget name="userSpaceRestService">
-		<path>/gadgets/userSpaceRestService.xml</path>
-	</gadget>
-	--><gadget name="codeRunner">
-		<path>/gadgets/codeRunner.xml</path>
-	</gadget>
-	<gadget name="clock">
-		<path>/gadgets/clock/clock.xml</path>
-	</gadget>
+    <path>/gadgets/ApplicationList/ApplicationList.xml</path>
+  </gadget>
+  <gadget name="ViewerFriends">
+    <path>/gadgets/ViewerFriends/ViewerFriends.xml</path>
+  </gadget>
+  <gadget name="RSSFetch">
+    <path>/gadgets/RSSFetch/RSSFetch.xml</path>
+  </gadget>
+  <!--
+  <gadget name="UserSpaces">
+    <path>/gadgets/UserSpaces/UserSpaces.xml</path>
+  </gadget>
+  -->
+  <gadget name="CodeRunner">
+    <path>/gadgets/CodeRunner/CodeRunner.xml</path>
+  </gadget>
+  <gadget name="Clock">
+    <path>/gadgets/Clock/Clock.xml</path>
+  </gadget>
 </gadgets>

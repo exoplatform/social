@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Copyright (C) 2003-2007 eXo Platform SAS. This program is free
+  software; you can redistribute it and/or modify it under the terms of
+  the GNU Affero General Public License as published by the Free
+  Software Foundation; either version 3 of the License, or (at your
+  option) any later version. This program is distributed in the hope
+  that it will be useful, but WITHOUT ANY WARRANTY; without even the
+  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+  PURPOSE. See the GNU General Public License for more details. You
+  should have received a copy of the GNU General Public License along
+  with this program; if not, see<http://www.gnu.org/licenses/>.
+-->
+<!--
+  **
+  * Created by The eXo Platform SARL
+  * Author : hoat_le
+  *          hoatlevan@gmail.com
+  * Jun 17, 2009
+  *
+-->
+<Module>
+  <ModulePrefs author="eXoPlatform"
+    description="Gadget for displaying viewer's friends" directory_title="Viewer Friends Gadgets"
+    title="Viewer Friends Gadgets" title_url="http://www.google.com.vn">
+    <Require feature="setprefs" />
+    <Require feature="opensocial-0.7" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <UserPref datatype="enum" default_value="5"
+    display_name="Friends displayed per page" name="itemsPerPage">
+    <EnumValue display_value="5" value="5" />
+    <EnumValue display_value="6" value="6" />
+    <EnumValue display_value="7" value="7" />
+    <EnumValue display_value="8" value="8" />
+    <EnumValue display_value="9" value="9" />
+    <EnumValue display_value="10" value="10" />
+  </UserPref>
+  <Content type="html">
+  <![CDATA[
+    <link rel="stylesheet" type="text/css" href="style.css"></link>
+    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript">
+      var viewerFriends = new ViewerFriend();
+      gadgets.util.registerOnLoadHandler(viewerFriends.init());
+    </script>
+    <div id="viewerFriend">
+      <div>Viewer: <span id="viewer"></span></div>
+      <p>Viewer's friends:</p>
+      <div id="friends"></div>
+      <div id="paging" class="UIPageIterator">
+        <div id="page"></div>
+      </div>
+    </div>
+  ]]>
+  </Content>
+</Module>
