@@ -40,6 +40,7 @@ import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.application.SpaceApplicationHandler;
@@ -52,6 +53,7 @@ import org.exoplatform.social.space.SpaceUtils;
 import org.exoplatform.social.space.lifecycle.SpaceLifecycle;
 import org.exoplatform.social.space.lifecycle.SpaceListenerPlugin;
 import org.exoplatform.social.space.spi.SpaceLifeCycleListener;
+import org.exoplatform.web.application.RequestContext;
 
 /**
  * Created by The eXo Platform SARL
@@ -256,24 +258,43 @@ public class SpaceServiceImpl implements SpaceService {
   }
   
   /**
-   * {@inheritDoc}
-   */
-  public Space createSpace(Space space, String creator, String groupId) throws SpaceException {
-    if (groupId == null) { // Create new space by creating new group
-      groupId = SpaceUtils.createGroup(space.getName(), creator);
-    } else { // Create new space from an existing group
-      if (SpaceUtils.isSpaceNameExisted(space.getName())) {
-        throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
+	 * {@inheritDoc}
+	 */
+  public Space createSpace(Space space, String creator, String invitedGroupId) throws SpaceException {
+    RequestContext reqCtx = RequestContext.getCurrentInstance();
+    String remoteUser = reqCtx.getRemoteUser();
+
+    // Creates new space by creating new group
+    String groupId = SpaceUtils.createGroup(space.getName(), creator);
+
+    if (invitedGroupId != null) { // Invites user in group join to new created space.
+      // Gets users in group and then invites user to join into space.
+      OrganizationService org = getOrgService();
+      List<User> allUsers = null;
+      try {
+        allUsers = org.getUserHandler().findUsers(new Query()).getAll();
+        Collection<?> memberships = null;
+        String userId = null;
+        for (User user : allUsers) {
+          memberships = org.getMembershipHandler()
+                           .findMembershipsByUserAndGroup(user.getUserName(), invitedGroupId);
+          if ((((List) memberships).size() != 0) && (!user.getUserName().equals(remoteUser))) {
+            userId = user.getUserName();
+            space.setInvitedUsers(addItemToArray(space.getInvitedUsers(), userId));
+          }
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
       }
-      SpaceUtils.addCreatorToGroup(creator, groupId);
     }
+
     space.setGroupId(groupId);
     space.setUrl(SpaceUtils.cleanString(space.getName()));
     saveSpace(space, true);
     spaceLifeCycle.spaceCreated(space, creator);
     return space;
   }
-  
+
   /**
    * {@inheritDoc}
    */
