@@ -26,6 +26,7 @@ import org.exoplatform.social.space.Space;
 import org.exoplatform.social.space.SpaceException;
 import org.exoplatform.social.space.SpaceService;
 import org.exoplatform.social.space.SpaceUtils;
+import org.exoplatform.social.webui.UISocialGroupSelector;
 import org.exoplatform.social.webui.UISpaceSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -42,7 +43,6 @@ import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormTabPane;
-import org.exoplatform.webui.organization.account.UIGroupSelector;
 
 /**
  * UIAddSpaceForm to create new space. By using this UIForm, user can create a
@@ -188,7 +188,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIFormCheckBoxInput<Boolean> uiUseExistingGroup = uiSpaceGroupBound.getChild(UIFormCheckBoxInput.class);
       if (uiUseExistingGroup.isChecked()) {
         UIPopupWindow uiPopup = uiSpaceGroupBound.getChild(UIPopupWindow.class);
-        UIGroupSelector uiGroupSelector = uiSpaceAddForm.createUIComponent(UIGroupSelector.class,
+        UISocialGroupSelector uiGroupSelector = uiSpaceAddForm.createUIComponent(UISocialGroupSelector.class,
                                                                            null,
                                                                            null);
         uiPopup.setUIComponent(uiGroupSelector);
