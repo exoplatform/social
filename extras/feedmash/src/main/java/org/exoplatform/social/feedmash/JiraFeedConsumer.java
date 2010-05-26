@@ -6,26 +6,78 @@ import java.util.List;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.application.Application;
-import org.exoplatform.social.core.activitystream.ActivityManager;
-import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.quartz.JobDataMap;
 
 import com.sun.syndication.feed.synd.SyndCategoryImpl;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 
-public class JiraFeedConsumer extends AbstractFeedRepubJob {
+/**
+ * Republishes some entries selected from a JIRA feed as activities into an activity stream.
+ * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
+ * @version $Revision$
+ */
+public class JiraFeedConsumer extends AbstractFeedmashJob {
 
   private static final Log LOG = ExoLogger.getLogger(JiraFeedConsumer.class);
   private String jiraLogo = "http://www.meta-inf.hu/images/atlassian/logo-jira.gif";
+  private String baseUrl;
+  private String project;
+  
   
   public JiraFeedConsumer() {
   }
 
-  private String baseUrl;
 
-  private String project;
+  /**
+   * A feed entry is accepted if its title matches "categoryMatch".
+   */
+  @SuppressWarnings("unchecked")
+  protected boolean accept(SyndEntryImpl entry) {
 
+    // skipping entries already read
+    if (alreadyChecked(entry.getUpdatedDate())) {
+      return false; 
+    }
+
+    // find match by category
+    List<SyndCategoryImpl> cats = entry.getCategories();
+    for (SyndCategoryImpl category : cats) {
+      if (category.getName().matches(categoryMatch))
+        return true;
+    }
+
+    return false; 
+  }
+
+  /**
+   * Publish the entry title as an activity on the 'targetActivityStream'
+   */
+  protected void handle(SyndEntryImpl entry) {
+    try {
+      LOG.debug("republishing jira activity on : " + targetActivityStream + " stream, entry uri: " + entry.getLink());
+      
+      Identity jira = getJiraIdentity();
+
+      Identity space = getIdentity(targetActivityStream);
+      if (space == null) {
+        return;
+      }
+      
+      String message = entry.getTitle();
+      
+      publishActivity(message, jira, space);
+      
+      saveState(LAST_CHECKED, new Date());
+    } catch (Exception e) {
+      LOG.error("failed to republish jira activity: " + e.getMessage(), e);
+    }
+  }
+
+  
+
+  
+  
   @Override
   public void beforeJobExecute(JobDataMap dataMap) {
     baseUrl = getStringParam(dataMap, "baseURL", null);
@@ -35,31 +87,7 @@ public class JiraFeedConsumer extends AbstractFeedRepubJob {
     }
     categoryMatch = dataMap.getString("categoryMatch");
   }
-
-  protected void handle(SyndEntryImpl entry) {
-    try {
-      String id = targetUser;
-      LOG.debug("republishing jira activity on : " + id + "'s stream, entry uri: "
-          + entry.getLink());
-      Identity targetStream = getIdentity(targetUser);
-      if (targetStream == null) {
-        return;
-      }
-
-      Identity jira = getJiraIdentity();
-
-      ActivityManager activityManager = getExoComponent(ActivityManager.class);
-      Activity activity = new Activity();
-      activity.setTitle(entry.getTitle());
-      activity.setBody("");
-      activity.setAppId("feedmash:" + getClass());
-      activity.setUserId(jira.getId());
-      activityManager.saveActivity(targetStream, activity);
-      saveState(LAST_CHECKED, new Date());
-    } catch (Exception e) {
-      LOG.error("failed to republish jira activity: " + e.getMessage(), e);
-    }
-  }
+  
 
   private Identity getJiraIdentity() throws Exception {
     Application jiraApp = jiraApp();
@@ -77,22 +105,6 @@ public class JiraFeedConsumer extends AbstractFeedRepubJob {
     return application;
   }
 
-  protected boolean accept(SyndEntryImpl entry) {
-
-    if (alreadyChecked(entry.getUpdatedDate())) {
-      return false; // skipping entries already read
-    }
-
-    // find match by category
-    List<SyndCategoryImpl> cats = entry.getCategories();
-    for (SyndCategoryImpl category : cats) {
-      if (category.getName().matches(categoryMatch))
-        return true;
-    }
-
-    return false; // (entry.getTitle().contains("created") ||
-                  // entry.getTitle().equals("resolved"));
-
-  }
+ 
 
 }
