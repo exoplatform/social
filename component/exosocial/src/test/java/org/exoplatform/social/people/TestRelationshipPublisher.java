@@ -2,11 +2,12 @@ package org.exoplatform.social.people;
 
 import java.util.List;
 
-import org.exoplatform.commons.testing.jcr.AbstractJCRTestCase;
 import org.exoplatform.commons.testing.mock.SimpleMockOrganizationService;
+import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
@@ -16,20 +17,21 @@ import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.RelationshipManager;
 import org.exoplatform.social.relationship.spi.RelationshipEvent;
 import org.exoplatform.social.relationship.spi.RelationshipEvent.Type;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
 
-@ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.exosocial.configuration.xml")})
-public class TestRelationshipPublisher extends  AbstractJCRTestCase {
+@ConfiguredBy({
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.exosocial.configuration.xml")
+})
+public class TestRelationshipPublisher extends  AbstractKernelTest {
 
   
-  @Test
-  public void confirmed() throws Exception {
-    ActivityManager activityManager = super.getComponent(ActivityManager.class);
-    IdentityManager identityManager =  super.getComponent(IdentityManager.class);
-    RelationshipManager relationshipManager =  super.getComponent(RelationshipManager.class);
-    SimpleMockOrganizationService organizationService = super.getComponent(OrganizationService.class);
+  public void testConfirmed() throws Exception {
+    
+    PortalContainer container = super.getContainer();
+    ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
+    IdentityManager identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    SimpleMockOrganizationService organizationService = (SimpleMockOrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    RelationshipManager relationshipManager = (RelationshipManager)container.getComponentInstanceOfType(RelationshipManager.class);
     
     // register users against the fake org service
     organizationService.addMemberships("mary", "*:/platform/users"); 

@@ -4,11 +4,12 @@ package org.exoplatform.social.people;
 
 import java.util.List;
 
-import org.exoplatform.commons.testing.jcr.AbstractJCRTestCase;
 import org.exoplatform.commons.testing.mock.SimpleMockOrganizationService;
+import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.activitystream.model.Activity;
@@ -17,20 +18,20 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.spi.ProfileLifeCycleEvent;
 import org.exoplatform.social.core.identity.spi.ProfileLifeCycleEvent.Type;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
 
-@ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.exosocial.configuration.xml")})
-public class TestProfileUpdatesPublisher extends  AbstractJCRTestCase {
+@ConfiguredBy({
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/jcr/jcr-configuration.xml"),
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.exosocial.configuration.xml")
+  })
+public class TestProfileUpdatesPublisher extends  AbstractKernelTest {
 
   
-  @Test
-  public void publishActivity() throws Exception {
+  public void testPublishActivity() throws Exception {
     
-    ActivityManager activityManager = super.getComponent(ActivityManager.class);
-    IdentityManager identityManager =  super.getComponent(IdentityManager.class);
-    SimpleMockOrganizationService organizationService = super.getComponent(OrganizationService.class);
+    PortalContainer container = super.getContainer();
+    ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
+    IdentityManager identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    SimpleMockOrganizationService organizationService = (SimpleMockOrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
     
     organizationService.addMemberships("root", "*:/platform/users"); // register root against the fake org service
     
