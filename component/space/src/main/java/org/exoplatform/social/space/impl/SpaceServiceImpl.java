@@ -167,16 +167,8 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public List<Space> getSpaces(String userId) throws SpaceException {
-    
-    List<Space> userSpaces = getAllSpaces();
-    Iterator<Space> itr = userSpaces.iterator();
-    while(itr.hasNext()) {
-      Space space = itr.next();
-      if(!isMember(space, userId)){
-        itr.remove();
-      }
-    }
-    return userSpaces;
+    List<Space> accessibleSpaces = getAccessibleSpaces(userId);
+    return accessibleSpaces;
   }
   
   /**
@@ -261,8 +253,6 @@ public class SpaceServiceImpl implements SpaceService {
 	 * {@inheritDoc}
 	 */
   public Space createSpace(Space space, String creator, String invitedGroupId) throws SpaceException {
-    RequestContext reqCtx = RequestContext.getCurrentInstance();
-    String remoteUser = reqCtx.getRemoteUser();
 
     // Creates new space by creating new group
     String groupId = SpaceUtils.createGroup(space.getName(), creator);
@@ -278,7 +268,7 @@ public class SpaceServiceImpl implements SpaceService {
         for (User user : allUsers) {
           memberships = org.getMembershipHandler()
                            .findMembershipsByUserAndGroup(user.getUserName(), invitedGroupId);
-          if ((((List) memberships).size() != 0) && (!user.getUserName().equals(remoteUser))) {
+          if ((((List) memberships).size() != 0) && (!user.getUserName().equals(creator))) {
             userId = user.getUserName();
             space.setInvitedUsers(addItemToArray(space.getInvitedUsers(), userId));
           }
