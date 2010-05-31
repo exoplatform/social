@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.feedmash;
 
 import java.net.URL;
@@ -27,9 +43,9 @@ import com.sun.syndication.io.XmlReader;
 public abstract class AbstractFeedmashJob implements Job {
 
   private static final Log LOG = ExoLogger.getLogger(AbstractFeedmashJob.class);
-  
+
   protected static final String LAST_CHECKED = "lastChecked";
-  
+
   protected String  categoryMatch;
 
   protected String  targetActivityStream;
@@ -39,7 +55,7 @@ public abstract class AbstractFeedmashJob implements Job {
   protected String  feedUrl;
 
   protected Integer rampup = 5;
-  
+
   protected String pluginName;
 
   /**
@@ -50,7 +66,7 @@ public abstract class AbstractFeedmashJob implements Job {
   public void execute(JobExecutionContext context) throws JobExecutionException {
     try {
       JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-      
+
       // read job settings
       init(dataMap);
 
@@ -58,7 +74,7 @@ public abstract class AbstractFeedmashJob implements Job {
       if (severIsStarting(dataMap)) {
         return;
       }
- 
+
       // let subclass do something before proceeding
       beforeJobExecute(dataMap);
 
@@ -66,7 +82,7 @@ public abstract class AbstractFeedmashJob implements Job {
       SyndFeedInput input = new SyndFeedInput();
       SyndFeed feed = input.build(new XmlReader(new URL(feedUrl)));
       List<SyndEntryImpl> entries = feed.getEntries();
-      
+
       // process what we are interested in
       for (SyndEntryImpl entry : entries) {
         if (accept(entry)) {
@@ -106,7 +122,7 @@ public abstract class AbstractFeedmashJob implements Job {
     return pluginName+ "."+ key;
   }
 
-  protected boolean alreadyChecked(Date date) {    
+  protected boolean alreadyChecked(Date date) {
     Date lastChecked = (Date) getState(LAST_CHECKED);
     if (lastChecked == null) {
       return false; // case never checked
@@ -115,7 +131,7 @@ public abstract class AbstractFeedmashJob implements Job {
     }
   }
 
-  
+
   @SuppressWarnings("unchecked")
   protected <T> T getExoComponent(Class<T> type) {
     ExoContainer container = ExoContainerContext.getContainerByName(portalContainer);
@@ -124,7 +140,7 @@ public abstract class AbstractFeedmashJob implements Job {
   }
 
   /**
-   * Publish an activity 
+   * Publish an activity
    * @param message body of the activity
    * @param from owner of the activity
    * @param to target of the activity
@@ -137,13 +153,13 @@ public abstract class AbstractFeedmashJob implements Job {
     activity.setBody(message);
     activity.setAppId("feedmash:" + getClass());
     activity.setUserId(from.getId());
-    
-    
+
+
     ActivityManager activityManager = getExoComponent(ActivityManager.class);
     activityManager.saveActivity(to, activity);
 
   }
-  
+
   protected Identity getIdentity(String targetUser) {
     Identity identity = null;
     try {
@@ -154,12 +170,12 @@ public abstract class AbstractFeedmashJob implements Job {
     }
     return identity;
   }
-  
+
   protected String getStringParam(JobDataMap dataMap, String name, String defaultValue) {
     String value = dataMap.getString(name);
     return (value == null) ? defaultValue : value;
   }
- 
+
 
   protected Identity getAppIdentity( Application app) throws Exception {
 
@@ -185,9 +201,9 @@ public abstract class AbstractFeedmashJob implements Job {
     }
     return exists;
   }
-  
-  
-  
+
+
+
 
   private void init(JobDataMap dataMap) {
     pluginName = dataMap.getString("pluginName");
@@ -196,8 +212,8 @@ public abstract class AbstractFeedmashJob implements Job {
     feedUrl = dataMap.getString("feedURL");
   }
 
-   
-  
+
+
   private boolean severIsStarting(JobDataMap dataMap) {
     // hack to before actually starting working otherwise picketlink fails
     // starting...
@@ -209,10 +225,10 @@ public abstract class AbstractFeedmashJob implements Job {
       dataMap.put("rampup", --rampup);
       LOG.debug("waiting #" + rampup);
       return true;
-    }    
-    
+    }
+
     return false;
   }
 
-  
+
 }

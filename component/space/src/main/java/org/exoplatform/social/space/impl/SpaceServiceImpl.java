@@ -59,14 +59,14 @@ import org.exoplatform.web.application.RequestContext;
  * Created by The eXo Platform SARL
  * Author : dang.tung
  *          tungcnw@gmail.com
- * August 29, 2008          
+ * August 29, 2008
  */
 public class SpaceServiceImpl implements SpaceService {
   private static Log logger = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
   final static public String SPACE_PARENT = "/spaces";
   final static public String MEMBER = "member";
   final static public String MANAGER = "manager";
-  
+
   private String homeNodeApp;
   private List<String> apps = null;
   private JCRStorage storage;
@@ -75,7 +75,7 @@ public class SpaceServiceImpl implements SpaceService {
   private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
   private SpaceLifecycle spaceLifeCycle = new SpaceLifecycle();
 
-  
+
   /**
    * SpaceServiceImpl constructor
    * Initialize <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
@@ -98,7 +98,7 @@ public class SpaceServiceImpl implements SpaceService {
       }
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -111,10 +111,10 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
-   * @throws Exception 
+   * @throws Exception
    */
   public List<Space> getSpacesByName(String spaceName, boolean isFirstCharOfSpaceName) throws SpaceException {
     List<Space> spaces;
@@ -124,11 +124,11 @@ public class SpaceServiceImpl implements SpaceService {
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
-    
+
     Iterator<Space> itr = spaces.iterator();
     if (!isFirstCharOfSpaceName) {
       while(itr.hasNext()) {
-        Space space = itr.next(); 
+        Space space = itr.next();
         if (!space.getName().toLowerCase().matches(nameForSearch.toLowerCase())) itr.remove();
       }
     } else {
@@ -137,10 +137,10 @@ public class SpaceServiceImpl implements SpaceService {
         if(!space.getName().toLowerCase().startsWith(nameForSearch.toLowerCase())) itr.remove();
       }
     }
-    
+
     return spaces;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -151,7 +151,7 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -162,15 +162,22 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public List<Space> getSpaces(String userId) throws SpaceException {
-    List<Space> accessibleSpaces = getAccessibleSpaces(userId);
-    return accessibleSpaces;
+    List<Space> userSpaces = getAllSpaces();
+    Iterator<Space> itr = userSpaces.iterator();
+    while(itr.hasNext()) {
+      Space space = itr.next();
+      if(!isMember(space, userId)){
+        itr.remove();
+      }
+    }
+    return userSpaces;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -183,7 +190,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return accessiableSpaces;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -196,7 +203,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return editableSpaces;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -211,7 +218,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return spaces;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -224,9 +231,9 @@ public class SpaceServiceImpl implements SpaceService {
         itr.remove();
       }
     }
-    return spaces;    
+    return spaces;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -241,19 +248,18 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return spaces;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public Space createSpace(Space space, String creator) throws SpaceException {
     return createSpace(space, creator, null);
   }
-  
-  /**
-	 * {@inheritDoc}
-	 */
-  public Space createSpace(Space space, String creator, String invitedGroupId) throws SpaceException {
 
+  /**
+   * {@inheritDoc}
+   */
+  public Space createSpace(Space space, String creator, String invitedGroupId) throws SpaceException {
     // Creates new space by creating new group
     String groupId = SpaceUtils.createGroup(space.getName(), creator);
 
@@ -295,7 +301,7 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
- 
+
   /**
    * {@inheritDoc}
    */
@@ -310,23 +316,23 @@ public class SpaceServiceImpl implements SpaceService {
       UserACL acl = getUserACL();
       GroupHandler groupHandler= orgService.getGroupHandler();
       Group deletedGroup = groupHandler.findGroupById(space.getGroupId());
-      
+
       List<String> mandatories = acl.getMandatoryGroups();
       if (!isMandatory(groupHandler, deletedGroup, mandatories))
       {
         SpaceUtils.removeGroup(space);
       }
-      
+
     } catch(Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_DELETE_SPACE, e);
     }
     spaceLifeCycle.spaceRemoved(space, null);
   }
-  
+
   public void deleteSpace(String spaceId) throws SpaceException {
     deleteSpace(getSpaceById(spaceId));
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -350,7 +356,7 @@ public class SpaceServiceImpl implements SpaceService {
       setApp(space, splited[0], splited[0], isRemovable, Space.ACTIVE_STATUS);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -368,14 +374,14 @@ public class SpaceServiceImpl implements SpaceService {
     }
     spaceLifeCycle.memberJoined(space, userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void addMember(String spaceId, String userId) throws SpaceException {
     addMember(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -403,14 +409,14 @@ public class SpaceServiceImpl implements SpaceService {
     }
     spaceLifeCycle.memberLeft(space, userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void removeMember(String spaceId, String userId) throws SpaceException {
     removeMember(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -418,7 +424,7 @@ public class SpaceServiceImpl implements SpaceService {
     space.setPendingUsers(addItemToArray(space.getPendingUsers(), userId));
     return space;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -426,7 +432,7 @@ public class SpaceServiceImpl implements SpaceService {
     space.setPendingUsers(removeItemFromArray(space.getPendingUsers(), userId));
     return space;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -434,7 +440,7 @@ public class SpaceServiceImpl implements SpaceService {
     space.setInvitedUsers(addItemToArray(space.getInvitedUsers(), userId));
     return space;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -442,7 +448,7 @@ public class SpaceServiceImpl implements SpaceService {
     space.setInvitedUsers(removeItemFromArray(space.getInvitedUsers(), userId));
     return space;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -465,14 +471,14 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public List<String> getMembers(String spaceId) throws SpaceException {
     return getMembers(getSpaceById(spaceId));
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -498,19 +504,19 @@ public class SpaceServiceImpl implements SpaceService {
     } catch (Exception e) {
         throw new SpaceException(SpaceException.Code.ERROR_SETTING_LEADER_STATUS, e);
     }
-    if (isLeader) 
+    if (isLeader)
       spaceLifeCycle.grantedLead(space, userId);
     else
       spaceLifeCycle.revokedLead(space, userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void setLeader(String spaceId, String userId, boolean isLeader) throws SpaceException {
     setLeader(getSpaceById(spaceId), userId, isLeader);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -522,17 +528,17 @@ public class SpaceServiceImpl implements SpaceService {
       return(memberShipHandler.findMembershipByUserGroupAndType(userId, space.getGroupId(), MANAGER) != null);
 
     } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e); 
+      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public boolean isLeader(String spaceId, String userId) throws SpaceException {
     return isLeader(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -552,14 +558,14 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return isOnlyLeader;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public boolean isOnlyLeader(String spaceId, String userId) throws SpaceException {
     return isOnlyLeader(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -574,30 +580,30 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public boolean isMember(String spaceId, String userId) throws SpaceException {
     return isMember(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public boolean hasAccessPermission(Space space, String userId) throws SpaceException {
     if (userId.equals(getUserACL().getSuperUser())) return true;
-    if (isMember(space, userId)) return true;    
+    if (isMember(space, userId)) return true;
     return false;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public boolean hasAccessPermission(String spaceId, String userId) throws SpaceException {
     return hasAccessPermission(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -606,14 +612,14 @@ public class SpaceServiceImpl implements SpaceService {
     if (isLeader(space, userId)) return true;
     return false;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public boolean hasEditPermission(String spaceId, String userId) throws SpaceException {
     return hasEditPermission(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -626,14 +632,14 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return false;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public boolean isInvited(String spaceId, String userId) throws SpaceException {
     return isInvited(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -646,21 +652,21 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return false;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public boolean isPending(String spaceId, String userId) throws SpaceException {
     return isPending(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void installApplication(String spaceId, String appId) throws SpaceException {
-    installApplication(getSpaceById(spaceId), appId);  
+    installApplication(getSpaceById(spaceId), appId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -674,7 +680,7 @@ public class SpaceServiceImpl implements SpaceService {
 //    setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.INSTALL_STATUS);
     spaceLifeCycle.addApplication(space, appId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -694,14 +700,14 @@ public class SpaceServiceImpl implements SpaceService {
     appHandler.activateApplication(space, appId, appName);
     spaceLifeCycle.activateApplication(space, appId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void activateApplication(String spaceId, String appId) throws SpaceException {
     activateApplication(getSpaceById(spaceId), appId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -709,7 +715,7 @@ public class SpaceServiceImpl implements SpaceService {
     String appStatus = SpaceUtils.getAppStatus(space, appId);
     if (appStatus == null) {
       logger.warn("appStatus is null!");
-      return; 
+      return;
     }
     if (appStatus.equals(Space.DEACTIVE_STATUS)) return;
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
@@ -717,14 +723,14 @@ public class SpaceServiceImpl implements SpaceService {
     setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.DEACTIVE_STATUS);
     spaceLifeCycle.deactivateApplication(space, appId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void deactivateApplication(String spaceId, String appId) throws SpaceException {
     deactivateApplication(getSpaceById(spaceId), appId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -736,21 +742,21 @@ public class SpaceServiceImpl implements SpaceService {
     removeApp(space, appId, appName);
     spaceLifeCycle.removeApplication(space, appId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void removeApplication(String spaceId, String appId, String appName) throws SpaceException {
     removeApplication(getSpaceById(spaceId), appId, appName);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void requestJoin(String spaceId, String userId) throws SpaceException {
     requestJoin(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -775,7 +781,7 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.UNABLE_REQUEST_TO_JOIN);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -785,14 +791,14 @@ public class SpaceServiceImpl implements SpaceService {
       saveSpace(space, false);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void revokeRequestJoin(String spaceId, String userId) throws SpaceException {
     revokeRequestJoin(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -820,9 +826,9 @@ public class SpaceServiceImpl implements SpaceService {
     } else {
       space = addInvited(space, userId);
     }
-    
+
     saveSpace(space, false);
-    
+
 
     // we'll sent a email to invite user
     //TODO: This should be done in a Service in a separated thread
@@ -851,7 +857,7 @@ public class SpaceServiceImpl implements SpaceService {
   public void inviteMember(String spaceId, String userId) throws SpaceException {
     inviteMember(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -863,14 +869,14 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.USER_NOT_INVITED);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void revokeInvitation(String spaceId, String userId) throws SpaceException {
     revokeInvitation(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -883,21 +889,21 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.USER_NOT_INVITED);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void acceptInvitation(String spaceId, String userId) throws SpaceException {
     acceptInvitation(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void denyInvitation(String spaceId, String userId) throws SpaceException {
     denyInvitation(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -909,7 +915,7 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.USER_NOT_INVITED);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -918,14 +924,14 @@ public class SpaceServiceImpl implements SpaceService {
     saveSpace(space, false);
     addMember(space, userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void validateRequest(String spaceId, String userId) throws SpaceException {
     validateRequest(getSpaceById(spaceId), userId);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -933,7 +939,7 @@ public class SpaceServiceImpl implements SpaceService {
     space = removePending(space, userId);
     saveSpace(space, false);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -954,16 +960,16 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void unregisterSpaceLifeCycleListener(SpaceLifeCycleListener listener) {
     spaceLifeCycle.removeListener(listener);
-  }  
-  
+  }
+
   public void addSpaceListener(SpaceListenerPlugin plugin) {
     registerSpaceLifeCycleListener(plugin);
   }
-  
-    
+
+
   /**
    * Gets OrganizationService
-   * 
+   *
    * @return organizationService
    */
   private OrganizationService getOrgService() {
@@ -973,10 +979,10 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return orgService;
   }
-  
+
   /**
    * Gets UserACL
-   * 
+   *
    * @return userACL
    */
   private UserACL getUserACL() {
@@ -986,7 +992,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return userACL;
   }
-  
+
   /**
    * Gets space application handlers
    * @return
@@ -1002,7 +1008,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return this.spaceApplicationHandlers;
   }
-  
+
   /**
    * Gets space application handler
    * @param space
@@ -1015,7 +1021,7 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.UNKNOWN_SPACE_TYPE);
     return appHandler;
   }
-  
+
   /**
    * an application status is composed with the form of: [appId:isRemovableString:status].
    * And space app properties is the combined of application statuses separated by a comma (,).
@@ -1048,13 +1054,13 @@ public class SpaceServiceImpl implements SpaceService {
 //        }
 //        apps = apps.replaceFirst(oldApplicationStatus, applicationStatus);
 //      } else {
-        apps += "," + applicationStatus; 
+        apps += "," + applicationStatus;
 //      }
     }
     space.setApp(apps);
     saveSpace(space, false);
   }
-  
+
   /**
    * Removes application from a space
    * @param space
@@ -1062,7 +1068,7 @@ public class SpaceServiceImpl implements SpaceService {
    * @throws SpaceException
    */
   private void removeApp(Space space, String appId, String appName) throws SpaceException {
-	String apps = space.getApp();
+  String apps = space.getApp();
     StringBuffer remainApp = new StringBuffer();
     String[] listApp = apps.split(",");
     String[] appPart;
@@ -1075,11 +1081,11 @@ public class SpaceServiceImpl implements SpaceService {
         remainApp.append(app);
       }
     }
-    
+
     space.setApp(remainApp.toString());
     saveSpace(space, false);
   }
-  
+
   /**
    * Removes an item from an array
    * @param arrays
@@ -1093,7 +1099,7 @@ public class SpaceServiceImpl implements SpaceService {
     if(list.size() > 0) return list.toArray(new String[list.size()]);
     else return null;
   }
-  
+
   /**
    * Adds an item to an array
    * @param arrays
@@ -1108,7 +1114,7 @@ public class SpaceServiceImpl implements SpaceService {
       return list.toArray(new String[list.size()]);
     } else return new String[] {str};
   }
-  
+
 
   private class SpaceComparator implements Comparator<Space> {
     /**
@@ -1119,7 +1125,7 @@ public class SpaceServiceImpl implements SpaceService {
       return space1.getName().compareToIgnoreCase(space2.getName());
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   private boolean isMandatory(GroupHandler groupHandler, Group group, List<String> mandatories) throws Exception
   {
@@ -1141,5 +1147,5 @@ public class SpaceServiceImpl implements SpaceService {
   public void setStorage(JCRStorage storage) {
     this.storage = storage;
   }
-  
+
 }

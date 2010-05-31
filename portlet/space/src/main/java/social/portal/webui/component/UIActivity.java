@@ -87,10 +87,10 @@ public class UIActivity extends UIForm {
     }
     private Status(String status) {
       status_ = status;
-    } 
+    }
     private String status_;
   }
-  
+
   private Activity activity_;
   private List<Activity> comments_;
   private String[] identityLikes_;
@@ -103,12 +103,12 @@ public class UIActivity extends UIForm {
   private boolean commentFormFocused_ = false;
   /**
    * Constructor
-   * @throws Exception 
+   * @throws Exception
    */
   public UIActivity() throws Exception {
     setSubmitAction("return false;");
   }
-  
+
   public UIActivity setActivity(Activity activity) {
     activity_ = activity;
     if (activity_ == null) {
@@ -117,70 +117,70 @@ public class UIActivity extends UIForm {
     init();
     return this;
   }
-  
+
   public Activity getActivity() {
     return activity_;
   }
-  
+
   public void setCommentMinCharactersAllowed(int num) {
     commentMinCharactersAllowed_ = num;
   }
-  
+
   public int getCommentMinCharactersAllowed() {
     return commentMinCharactersAllowed_;
   }
-  
+
   public void setCommentMaxCharactersAllowed(int num) {
     commentMaxCharactersAllowed_ = num;
   }
-  
+
   public int getCommentMaxCharactersAllowed() {
     return commentMaxCharactersAllowed_;
   }
-  
+
   public void setCommentFormDisplayed(boolean commentFormDisplayed) {
     commentFormDisplayed_ = commentFormDisplayed;
   }
-  
+
   public boolean isCommentFormDisplayed() {
     return commentFormDisplayed_;
   }
-  
+
   public void setLikesDisplayed(boolean likesDisplayed) {
     likesDisplayed_ = likesDisplayed;
   }
-  
+
   public boolean isLikesDisplayed() {
     return likesDisplayed_;
   }
-  
+
   public void setAllCommentsHidden(boolean allCommentsHidden) {
     allCommentsHidden_ = allCommentsHidden;
   }
-  
+
   public boolean isAllCommentsHidden() {
     return allCommentsHidden_;
   }
-  
+
   public void setCommentFormFocused(boolean commentFormFocused) {
     commentFormFocused_ = commentFormFocused;
   }
-  
+
   public boolean isCommentFormFocused() {
     return commentFormFocused_;
   }
-  
+
   public void setCommentListStatus(Status status) {
     commentListStatus_ = status;
     if (status == Status.ALL) {
       commentFormDisplayed_ = true;
     }
   }
-  
+
   public Status getCommentListStatus() {
     return commentListStatus_;
   }
-  
+
   public boolean commentListToggleable() {
     return comments_.size() > LATEST_COMMENTS_SIZE;
   }
@@ -208,15 +208,15 @@ public class UIActivity extends UIForm {
   public List<Activity> getAllComments() {
     return comments_;
   }
-  
+
   public String[] getIdentityLikes() {
     return identityLikes_;
   }
-  
+
   /**
    * removes currently viewing userId if he liked this activity
    * @return
-   * @throws Exception 
+   * @throws Exception
    */
   public String[] getDisplayedIdentityLikes() throws Exception {
     identityManager_ = getIdentityManager();
@@ -226,11 +226,11 @@ public class UIActivity extends UIForm {
     }
     return identityLikes_;
   }
-  
+
   public void setIdenityLikes(String[] identityLikes) {
     identityLikes_ = identityLikes;
   }
-  
+
   /**
    * Gets user's full name by its userIdentityId
    * @param userIdentityId
@@ -246,7 +246,7 @@ public class UIActivity extends UIForm {
     Profile userProfile = userIdentity.getProfile();
     return userProfile.getFullName();
   }
-  
+
   /**
    * Gets user profile uri
    * @param userIdentityId
@@ -272,7 +272,7 @@ public class UIActivity extends UIForm {
       return "#";
     }
   }
-  
+
   /**
    * Gets user's avatar image source by userIdentityId
    * @param userIdentityId
@@ -287,7 +287,7 @@ public class UIActivity extends UIForm {
     Profile userProfile = userIdentity.getProfile();
     return userProfile.getAvatarImageSource();
   }
-  
+
   public boolean isSpaceActivity(String id) {
     try {
       identityManager_ = getIdentityManager();
@@ -299,7 +299,7 @@ public class UIActivity extends UIForm {
       return false;
     }
   }
-  
+
   public boolean isUserActivity(String id) throws Exception {
     try {
       identityManager_ = getIdentityManager();
@@ -313,12 +313,12 @@ public class UIActivity extends UIForm {
       return false;
     }
   }
-  
+
   public Space getSpace() throws SpaceException {
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     return spaceService.getSpaceByUrl(SpaceUtils.getSpaceUrl());
   }
-  
+
   public String event(String name, String callback, boolean updateForm) throws Exception {
     if (updateForm) {
       return super.url(name);
@@ -330,8 +330,8 @@ public class UIActivity extends UIForm {
     b.append("true").append(")");
     return b.toString();
   }
-  
-  
+
+
   public boolean hasAttachedExtension() {
     try {
       Validate.notNull(activity_.getTitle(), "activity_.getTitle() must not be null.");
@@ -341,49 +341,49 @@ public class UIActivity extends UIForm {
       return false;
     }
   }
-  
+
   public String getAttachedExtensionType() throws JSONException {
     if (titleData_ != null) {
       return titleData_.getString(UIComposer.EXTENSION_KEY);
     }
     return null;
   }
-  
+
   public String getLinkTitle() throws JSONException {
     if (titleData_ != null) {
       return ((JSONObject)titleData_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.TITLE_PARAM);
     }
     return "";
   }
-  
+
   public String getLinkImage() throws JSONException {
     if (titleData_ != null) {
       return ((JSONObject)titleData_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.IMAGE_PARAM);
     }
     return "";
   }
-  
+
   public String getLinkSource() throws JSONException {
     if (titleData_ != null) {
       return ((JSONObject)titleData_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.LINK_PARAM);
     }
     return "";
   }
-  
+
   public String getLinkComment() throws JSONException {
     if (titleData_ != null) {
       return titleData_.getString(UIComposer.COMMENT_KEY);
     }
     return "";
   }
-  
+
   public String getLinkDescription() throws JSONException {
     if (titleData_ != null) {
       return ((JSONObject)titleData_.get(UIComposer.DATA_KEY)).getString(UIComposerLinkExtension.DESCRIPTION_PARAM);
     }
     return "";
   }
-  
+
   /**
    * Gets prettyTime by timestamp
    * @param timestamp
@@ -431,7 +431,7 @@ public class UIActivity extends UIForm {
       }
     }
   }
-  
+
   private String getFormId() {
      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
      if (context instanceof PortletRequestContext) {
@@ -439,7 +439,7 @@ public class UIActivity extends UIForm {
      }
      return getId();
   }
-  
+
   /**
    * Initialize activity's comments; activity's identityId likes list
    */
@@ -451,7 +451,7 @@ public class UIActivity extends UIForm {
       identityLikes_ = activity_.getLikeIdentityIds();
     }
   }
-  
+
   private void saveComment(String remoteUser, String message) throws Exception {
     activityManager_ = getActivityManager();
     identityManager_ = getIdentityManager();
@@ -461,7 +461,7 @@ public class UIActivity extends UIForm {
     comments_ = activityManager_.getComments(getActivity());
     setCommentListStatus(Status.ALL);
   }
-  
+
   private void setLike(boolean isLiked, String remoteUser) throws Exception {
     activityManager_ = getActivityManager();
     identityManager_ = getIdentityManager();
@@ -474,17 +474,17 @@ public class UIActivity extends UIForm {
     activity_ = activityManager_.getActivity(activity_.getId());
     setIdenityLikes(activity_.getLikeIdentityIds());
   }
-  
+
   /**
    * Checks if this activity is liked by the remote user
    * @return
-   * @throws Exception 
+   * @throws Exception
    */
   public boolean isLiked() throws Exception {
     identityManager_ = getIdentityManager();
     return ArrayUtils.contains(identityLikes_, identityManager_.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getRemoteUser()).getId());
   }
-  
+
   /**
    * refresh, regets all like, comments of this activity
    */
@@ -498,13 +498,13 @@ public class UIActivity extends UIForm {
     comments_ = activityManager_.getComments(activity_);
     identityLikes_ = activity_.getLikeIdentityIds();
   }
-  
-  
+
+
   private String getRemoteUser() {
     PortalRequestContext requestContext = Util.getPortalRequestContext();
     return requestContext.getRemoteUser();
   }
-  
+
   /**
    * Gets activityManager
    * @return
@@ -512,7 +512,7 @@ public class UIActivity extends UIForm {
   private ActivityManager getActivityManager() {
     return getApplicationComponent(ActivityManager.class);
   }
-  
+
   /**
    * Gets identityManager
    * @return
@@ -520,8 +520,8 @@ public class UIActivity extends UIForm {
   private IdentityManager getIdentityManager() {
     return getApplicationComponent(IdentityManager.class);
   }
-  
-  
+
+
   static public class ToggleDisplayLikesActionListener extends EventListener<UIActivity> {
 
     @Override
@@ -535,9 +535,9 @@ public class UIActivity extends UIForm {
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
     }
-    
+
   }
-  
+
   static public class LikeActivityActionListener extends EventListener<UIActivity> {
 
     @Override
@@ -550,9 +550,9 @@ public class UIActivity extends UIForm {
       uiActivity.setLike(isLiked, requestContext.getRemoteUser());
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
     }
-    
+
   }
-  
+
   static public class SetCommentListStatusActionListener extends EventListener<UIActivity> {
 
     @Override
@@ -574,7 +574,7 @@ public class UIActivity extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
     }
   }
-  
+
   static public class ToggleDisplayCommentFormActionListener extends EventListener<UIActivity> {
 
     @Override
@@ -603,7 +603,7 @@ public class UIActivity extends UIForm {
       uiActivity.saveComment(requestContext.getRemoteUser(), message);
       uiActivity.setCommentFormFocused(true);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
-      
+
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
   }

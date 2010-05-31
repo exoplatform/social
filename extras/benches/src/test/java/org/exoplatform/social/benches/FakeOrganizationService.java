@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.benches;
 
 import java.util.Date;
@@ -17,7 +33,6 @@ import org.exoplatform.services.organization.UserEventListener;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.organization.UserProfileHandler;
 
-
 @SuppressWarnings("deprecation")
 public class FakeOrganizationService implements OrganizationService {
 
@@ -25,7 +40,7 @@ public class FakeOrganizationService implements OrganizationService {
   public FakeOrganizationService() {
     userHandler = new FakeUserHandler();
   }
-  
+
   public void addListenerPlugin(ComponentPlugin listener) throws Exception {
     // TODO Auto-generated method stub
 
@@ -54,18 +69,18 @@ public class FakeOrganizationService implements OrganizationService {
     // TODO Auto-generated method stub
     return null;
   }
-  
-  
+
+
   class FakeUserHandler implements UserHandler {
     Map<String,User> map;
-    
+
     public FakeUserHandler() {
       map = new HashMap<String, User>();
     }
-    
+
     public void addUserEventListener(UserEventListener listener) {
       // TODO Auto-generated method stub
-      
+
     }
 
     public boolean authenticate(String username, String password) throws Exception {
@@ -81,7 +96,7 @@ public class FakeOrganizationService implements OrganizationService {
       createUser(user, true);
       return user;
     }
-    
+
     public User createUserInstance() {
       // TODO Auto-generated method stub
       return null;
@@ -97,7 +112,7 @@ public class FakeOrganizationService implements OrganizationService {
     }
 
     public User findUserByName(String userName) throws Exception {
- 
+
       return map.get(userName);
     }
 
@@ -133,12 +148,12 @@ public class FakeOrganizationService implements OrganizationService {
 
     public void saveUser(User user, boolean broadcast) throws Exception {
       // TODO Auto-generated method stub
-      
+
     }
-    
-    
-  
-    
+
+
+
+
   }
   public class SimpleUser implements User {
     String userName = null;
@@ -159,11 +174,11 @@ public class FakeOrganizationService implements OrganizationService {
       User other = (User) obj;
       return (userName.equals(other.getUserName()));
     }
-    
+
     public int hashCode() {
       return super.hashCode();
     }
-    
+
     public String toString() {
       return getFullName();
     }
@@ -172,7 +187,7 @@ public class FakeOrganizationService implements OrganizationService {
       return new Date();
     }
 
-   
+
 
     public String getFullName() {
       return firstName + " " + lastName;
@@ -182,7 +197,7 @@ public class FakeOrganizationService implements OrganizationService {
       return new Date();
     }
 
- 
+
     public String getOrganizationId() {
       return userName;
     }
@@ -251,7 +266,7 @@ public class FakeOrganizationService implements OrganizationService {
     }
 
 
-  } 
-  
+  }
+
 
 }

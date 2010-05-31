@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -92,7 +92,7 @@
             <preferences>
               <preference>
                 <name>url</name>
-                <value>http://localhost:8080/rest-socialdemo/jcr/repository/portal-system/production/app:gadgets/app:Activities/app:data/app:resources/Activities.xml</value>
+                <value>local://Activities</value>
                 <read-only>false</read-only>
               </preference>
             </preferences>

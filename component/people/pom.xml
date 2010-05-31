@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.social</groupId>
@@ -14,52 +35,53 @@
   <url>http://www.exoplatform.org</url>
   <dependencies>
 
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <version>${javax.jcr.version}</version>
+    </dependency>
 
-
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>com.google.collections</groupId>
       <artifactId>google-collections</artifactId>
       <version>1.0-rc2</version>
       <scope>provided</scope>
-    </dependency>  
+    </dependency>
+
+    <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
       <scope>provided</scope>
-    </dependency>  
-    
-     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
       <scope>provided</scope>
-    </dependency>     
+    </dependency>
 
     <dependency>
       <groupId>org.exoplatform.core</groupId>
-      <artifactId>exo.core.component.security.core</artifactId>
+      <artifactId>exo.core.component.organization.api</artifactId>
       <scope>provided</scope>
-    </dependency>  
-    
-   <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>5.10</version>
-      <scope>provided</scope>
-      <classifier>jdk15</classifier>
-    </dependency>     
+    </dependency>
 
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.common</artifactId>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.component.core</artifactId>
       <scope>provided</scope>
-    </dependency>  
-
-    <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
@@ -67,89 +89,43 @@
       <artifactId>exo.social.component.common</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
-    </dependency>  
-    <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.ext</artifactId>
-      <scope>provided</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.container</artifactId>
-      <scope>provided</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
-    
-    <!-- 
+
     <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.component.common</artifactId>
-      <version>${org.exoplatform.kernel.version}</version>
-      <scope>provided</scope>
+      <groupId>org.gatein.common</groupId>
+      <artifactId>common-logging</artifactId>
+      <scope>test</scope>
     </dependency>
-     -->
-    <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.core</groupId>
-      <artifactId>exo.core.component.organization.api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!-- 
+
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.webui.portal</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
-      <scope>provided</scope>
+      <artifactId>exo.portal.component.portal</artifactId>
+      <scope>test</scope>
     </dependency>
-     -->
-     <!-- 
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.space</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
+
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.test.core</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.test.jcr</artifactId>
       <scope>test</scope>
     </dependency>
 
-	<dependency>
-      <groupId>org.exoplatform.platform</groupId>
-      <artifactId>exo.platform.commons.testing</artifactId>
-	  <scope>test</scope>
-	</dependency>   
-	<!--      
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.test.organization</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
       <scope>test</scope>
     </dependency>
-    -->
-    <dependency>
-      <groupId>org.gatein.shindig</groupId>
-      <artifactId>shindig-social-api</artifactId>
-      <version>${org.shindig.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <!-- 
-        <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.core</artifactId>
-      <version>${version.chromattic}</version>
-      <scope>test</scope>
-    </dependency>
-    -->
-</dependencies>
+
+  </dependencies>
 </project>

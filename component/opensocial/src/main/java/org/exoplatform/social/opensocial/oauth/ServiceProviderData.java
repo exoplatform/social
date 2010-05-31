@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.opensocial.oauth;
 
 /**
@@ -12,29 +28,29 @@ public class ServiceProviderData {
    * name of the service provider, I.e the application whose data eXo will be accessing
    */
   private String name;
-  
+
   /**
-   * 
+   *
    */
   private String description;
-  
+
   /**
-   * The key assigned to eXo by this service provider. 
+   * The key assigned to eXo by this service provider.
    * The format of this key is determined by the service provider
    */
   private String consumerKey;
-  
+
   /**
-   * The consumer secret assigned to eXo by the service provider. 
+   * The consumer secret assigned to eXo by the service provider.
    * his secret is used to digitally sign all the requests from your application to the service provider.
    */
   private String sharedSecret;
-  
+
   /**
    * The callback url
    */
   private String callbackUrl;
-  
+
   public ServiceProviderData(String name, String description, String consumerKey, String sharedSecret, String callbackUrl) {
     this.name = name;
     this.description = description;
@@ -82,5 +98,5 @@ public class ServiceProviderData {
   public void setCallbackUrl(String callbackUrl) {
     this.callbackUrl = callbackUrl;
   }
-  
+
 }

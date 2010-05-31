@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -17,7 +17,10 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<configuration>
+<configuration
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
+  xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
 
     <component>
         <key>org.exoplatform.application.registry.ApplicationRegistryService</key>
@@ -154,56 +157,56 @@
                             </field>
                         </object>
                     </object-param>
-                    
+
                     <object-param>
-						          <name>dashboard</name>
-						          <description>description</description>
-						          <object type="org.exoplatform.application.registry.ApplicationCategory">
-						            <field name="name"><string>dashboard</string></field>
-						            <field name="displayName"><string>Dashboard</string></field> 
-						            <field name="description"><string>Dashboard</string></field>
-					              <field name="accessPermissions">
-									        <collection type="java.util.ArrayList" item-type="java.lang.String">													
-														<value><string>*:/platform/users</string></value>													
-									        </collection>
-							          </field>                 	             
-						            <field  name="applications">
-							            <collection type="java.util.ArrayList">
-						                <value>                 
-							                <object type="org.exoplatform.application.registry.Application">                     
-							                  <field name="categoryName"><string>dashboard</string></field>
-							                  <field name="applicationName"><string>DashboardPortlet</string></field>
-											          <field name="displayName"><string>Dashboard Portlet</string></field>
-											          <field name="description"><string>Dashboard Portlet</string></field>
-							                  <field name="applicationType"><string>portlet</string></field>
-							                  <field name="applicationGroup"><string>dashboard</string></field>
-							                  <field name="accessPermissions">
-													        <collection type="java.util.ArrayList" item-type="java.lang.String">													
-																		<value><string>*:/platform/users</string></value>													
-													        </collection>
-											          </field>                 
-							                </object>
-						                </value>
-						                <value>                 
-							                <object type="org.exoplatform.application.registry.Application">                     
-							                  <field name="categoryName"><string>dashboard</string></field>
-							                  <field name="applicationName"><string>GadgetPortlet</string></field>
-											          <field name="displayName"><string>Gadget Wrapper Portlet</string></field>
-											          <field name="description"><string>Gadget Wrapper Portlet</string></field>
-							                  <field name="applicationType"><string>portlet</string></field>
-							                  <field name="applicationGroup"><string>dashboard</string></field>
-							                  <field name="accessPermissions">
-													        <collection type="java.util.ArrayList" item-type="java.lang.String">													
-																		<value><string>*:/platform/users</string></value>													
-													        </collection>
-											          </field>                 
-							                </object>
-						                </value>
-							            </collection>                               
-						            </field> 
-						          </object>        
-						        </object-param>
-                    
+                      <name>dashboard</name>
+                      <description>description</description>
+                      <object type="org.exoplatform.application.registry.ApplicationCategory">
+                        <field name="name"><string>dashboard</string></field>
+                        <field name="displayName"><string>Dashboard</string></field>
+                        <field name="description"><string>Dashboard</string></field>
+                        <field name="accessPermissions">
+                          <collection type="java.util.ArrayList" item-type="java.lang.String">
+                            <value><string>*:/platform/users</string></value>
+                          </collection>
+                        </field>
+                        <field  name="applications">
+                          <collection type="java.util.ArrayList">
+                            <value>
+                              <object type="org.exoplatform.application.registry.Application">
+                                <field name="categoryName"><string>dashboard</string></field>
+                                <field name="applicationName"><string>DashboardPortlet</string></field>
+                                <field name="displayName"><string>Dashboard Portlet</string></field>
+                                <field name="description"><string>Dashboard Portlet</string></field>
+                                <field name="applicationType"><string>portlet</string></field>
+                                <field name="applicationGroup"><string>dashboard</string></field>
+                                <field name="accessPermissions">
+                                  <collection type="java.util.ArrayList" item-type="java.lang.String">
+                                    <value><string>*:/platform/users</string></value>
+                                  </collection>
+                                </field>
+                              </object>
+                            </value>
+                            <value>
+                              <object type="org.exoplatform.application.registry.Application">
+                                <field name="categoryName"><string>dashboard</string></field>
+                                <field name="applicationName"><string>GadgetPortlet</string></field>
+                                <field name="displayName"><string>Gadget Wrapper Portlet</string></field>
+                                <field name="description"><string>Gadget Wrapper Portlet</string></field>
+                                <field name="applicationType"><string>portlet</string></field>
+                                <field name="applicationGroup"><string>dashboard</string></field>
+                                <field name="accessPermissions">
+                                  <collection type="java.util.ArrayList" item-type="java.lang.String">
+                                    <value><string>*:/platform/users</string></value>
+                                  </collection>
+                                </field>
+                              </object>
+                            </value>
+                          </collection>
+                        </field>
+                      </object>
+                    </object-param>
+
                     <object-param>
                         <name>web</name>
                         <description>description</description>
@@ -607,7 +610,7 @@
                             </field>
                         </object>
                     </object-param>
-										<object-param>
+                    <object-param>
                         <name>space</name>
                         <description>description</description>
                         <object type="org.exoplatform.application.registry.ApplicationCategory">
@@ -691,7 +694,7 @@
                             </field>
                         </object>
                     </object-param>
-										
+
                 </init-params>
             </component-plugin>
         </component-plugins>

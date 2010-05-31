@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -39,35 +39,35 @@
       </values-param>
     </init-params>
   </component>
-  
+
   <component>
     <key>org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler</key>
     <type>org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler</type>
   </component>
-  
+
   <component>
     <type>org.exoplatform.social.space.impl.SpaceIdentityProvider</type>
   </component>
-  
+
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>
-     <component-plugin> 
+     <component-plugin>
       <name>SpaceIdentityProvider plugin</name>
       <set-method>registerIdentityProviders</set-method>
-      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type> 
+      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
       <init-params>
         <values-param>
-	      <name>providers</name>
+        <name>providers</name>
           <description></description>
-          <value>org.exoplatform.social.space.impl.SpaceIdentityProvider</value> 
+          <value>org.exoplatform.social.space.impl.SpaceIdentityProvider</value>
         </values-param>
       </init-params>
-    </component-plugin> 
+    </component-plugin>
   </external-component-plugins>
-  
+
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
-    <component-plugin> 
+    <component-plugin>
       <name>add.contact.nodeType</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
@@ -80,5 +80,5 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
- 
+
 </configuration>

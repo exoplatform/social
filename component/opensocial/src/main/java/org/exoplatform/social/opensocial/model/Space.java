@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.opensocial.model;
 
 import org.apache.shindig.protocol.model.Exportablebean;
@@ -9,7 +25,7 @@ import com.google.inject.ImplementedBy;
  * Created by The eXo Platform SARL
  * Author : dang.tung
  *          tungcnw@gmail.com
- * Jan 08, 2009          
+ * Jan 08, 2009
  */
 @ImplementedBy(SpaceImpl.class)
 @Exportablebean
@@ -46,13 +62,13 @@ public interface Space {
       return this.jsonString;
     }
   }
-  
+
   public void setId(String id);
-  
+
   public String getId();
-  
+
   public void setDisplayName(String displayName);
-  
+
   public String getDisplayName();
 
 }

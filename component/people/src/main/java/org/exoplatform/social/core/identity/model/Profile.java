@@ -16,54 +16,50 @@
  */
 package org.exoplatform.social.core.identity.model;
 
-
 import java.util.Map;
 import java.util.HashMap;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 
-
 /**
  * The Class Profile.
  */
 public class Profile {
-  
 
-  
   public static final String USERNAME = "username";
 
   public static final String FIRST_NAME = "firstName";
-  
+
   public static final String LAST_NAME = "lastName";
 
   /**
    * property of type {@link ProfileAttachment} that contains the avatar
    */
   public static String AVATAR = "avatar";
-  
+
   /**
    * url of the avatar (can be used instead of {@link #AVATAR})
    */
   public static final String AVATAR_URL = "avatarUrl";
-  
+
   /**
    * An optional url for this profile
    */
   public static final String URL = "Url";
-  
+
   /** The properties. */
   private Map<String, Object> properties = new HashMap<String, Object>();
-  
+
   /** The identity. */
   private Identity identity;
-  
+
   /** The id. */
   private String id;
 
   /**
    * Instantiates a new profile.
-   * 
+   *
    * @param id the id
    */
   public Profile(Identity id) {
@@ -72,7 +68,7 @@ public class Profile {
 
   /**
    * Gets the identity.
-   * 
+   *
    * @return the identity
    */
   public Identity getIdentity() {
@@ -81,7 +77,7 @@ public class Profile {
 
   /**
    * Gets the id.
-   * 
+   *
    * @return the id
    */
   public String getId() {
@@ -90,7 +86,7 @@ public class Profile {
 
   /**
    * Sets the id.
-   * 
+   *
    * @param id the new id
    */
   public void setId(String id) {
@@ -99,7 +95,7 @@ public class Profile {
 
   /**
    * Gets the property.
-   * 
+   *
    * @param name the name
    * @return the property
    */
@@ -109,7 +105,7 @@ public class Profile {
 
   /**
    * Sets the property.
-   * 
+   *
    * @param name the name
    * @param value the value
    */
@@ -119,17 +115,17 @@ public class Profile {
 
   /**
    * Contains.
-   * 
+   *
    * @param name the name
    * @return true, if successful
    */
   public boolean contains(String name) {
-    return properties.containsKey(name);  
+    return properties.containsKey(name);
   }
 
   /**
    * Gets the properties.
-   * 
+   *
    * @return the properties
    */
   public Map<String, Object> getProperties() {
@@ -138,7 +134,7 @@ public class Profile {
 
   /**
    * Removes the property.
-   * 
+   *
    * @param name the name
    */
   public void removeProperty(String name) {
@@ -147,7 +143,7 @@ public class Profile {
 
   /**
    * Gets the property value.
-   * 
+   *
    * @param name the name
    * @return the property value
    * @deprecated
@@ -159,7 +155,7 @@ public class Profile {
 
   /**
    * Gets the full name.
-   * 
+   *
    * @return the full name
    */
   public String getFullName() {
@@ -169,11 +165,11 @@ public class Profile {
     all += (last != null) ? " " + last : "";
     return all;
   }
-  
+
   /**
    * Gets user's avatar image source by specifying a PortalContainer instance
    * @return null or an url if available
-   * @throws Exception 
+   * @throws Exception
    */
   public String getAvatarImageSource(PortalContainer portalContainer) {
     try {
@@ -192,7 +188,7 @@ public class Profile {
     }
     return null;
   }
-  
+
   /**
    * Get this profile URL
    * @return
@@ -200,7 +196,7 @@ public class Profile {
   public String getUrl() {
     return (String) getProperty(URL);
   }
-  
+
   /**
    * Gets user's avatar image source from current portal container.
    * uses the {@link #AVATAR_URL} if specified or loads the {@link ProfileAttachment} from the {@link #AVATAR} property
@@ -210,10 +206,10 @@ public class Profile {
   public String getAvatarImageSource() {
     return getAvatarImageSource(PortalContainer.getInstance());
   }
-  
+
   /**
    * Gets repository name by specifying a PortalContainer instance
-   * 
+   *
    * @return repository name
    * @throws Exception
    */
@@ -221,7 +217,7 @@ public class Profile {
     RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
     return rService.getCurrentRepository().getConfiguration().getName();
   }
-  
+
   /**
    * Gets current repository name
    * @return

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.benches;
 
 import java.util.HashMap;
@@ -18,7 +34,7 @@ import org.picocontainer.Startable;
 
 /**
  * Startable component that can inject social data based on its init-params
- * 
+ *
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
  *         Lamarque</a>
  * @version $Revision$
@@ -31,14 +47,14 @@ public class StartupInjectionConfig implements Startable {
   private long             relations  = 0;
 
   private long             activities = 0;
-  
+
   private Map<String, Long> userActivities = new HashMap<String,Long>();
 
   private DataInjector     injector;
 
   /**
    * Example init-params :
-   * 
+   *
    * <pre>
    * &lt;init-params&gt;
    *   &lt;properties-param&gt;
@@ -49,7 +65,7 @@ public class StartupInjectionConfig implements Startable {
    *   &lt;/properties-param&gt;
    * &lt;/init-params&gt;
    * </pre>
-   * 
+   *
    * @param params
    * @param injector
    */
@@ -76,9 +92,9 @@ public class StartupInjectionConfig implements Startable {
           userActivities.put(user, longValue);
         }
       }
-        
 
-      
+
+
     }
   }
 
@@ -132,7 +148,7 @@ public class StartupInjectionConfig implements Startable {
       LOG.info("\t> about to inject " + activities + " activities.");
       injector.generateActivities(activities);
     }
-    
+
     if(! userActivities.isEmpty()) {
       Set<Entry<String,Long>> entries = userActivities.entrySet();
       for (Entry<String, Long> entry : entries) {
@@ -143,8 +159,8 @@ public class StartupInjectionConfig implements Startable {
       }
 
     }
-    
-    
+
+
     if (nothingWasDone) {
       LOG.info("nothing to inject.");
     }

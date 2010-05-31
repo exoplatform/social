@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.identity;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Created by The eXo Platform SARL
@@ -44,73 +43,73 @@ public class ProfileFiler {
   /* filer by user profile gender*/
   /** The gender. */
   private String gender;
-  
+
   /**
    * Gets the position.
-   * 
+   *
    * @return the position
    */
   public String getPosition() { return position; }
-  
+
   /**
    * Sets the position.
-   * 
+   *
    * @param position the new position
    */
   public void setPosition(String position) { this.position = position; }
-  
+
   /**
    * Gets the company.
-   * 
+   *
    * @return the company
    */
   public String getCompany() { return company; }
-  
+
   /**
    * Sets the company.
-   * 
+   *
    * @param company the new company
    */
   public void setCompany(String company) { this.company = company; }
-  
+
   /**
    * Gets the skills.
-   * 
+   *
    * @return the skills
    */
   public String getSkills() { return skills;}
-  
+
   /**
    * Sets the skills.
-   * 
+   *
    * @param skills the new skills
    */
   public void setSkills(String skills) { this.skills = skills;}
-  
+
   /**
    * Gets the gender.
-   * 
+   *
    * @return the gender
    */
   public String getGender() { return gender; }
-  
+
   /**
    * Sets the gender.
-   * 
+   *
    * @param gender the new gender
    */
   public void setGender(String gender) { this.gender = gender; }
-  
+
   /**
    * Sets the name.
-   * 
+   *
    * @param name the new name
    */
   public void setName(String name) { this.name = name; }
-  
+
   /**
    * Gets the name.
-   * 
+   *
    * @return the name
    */
   public String getName() { return name; }

@@ -1,5 +1,23 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<container template="system:/groovy/portal/webui/container/UIContainer.gtmpl">	
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<container template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
   <container template="system:/groovy/portal/webui/container/UIToolbarContainer.gtmpl">
     <access-permissions>*:/platform/users</access-permissions>
     <container id="StarToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
@@ -12,7 +30,7 @@
         <show-info-bar>false</show-info-bar>
         </portlet-application>
       </container>
-      
+
       <container id="DemoUserProfileToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
         <portlet-application>
           <portlet>
@@ -23,7 +41,7 @@
         <show-info-bar>false</show-info-bar>
       </portlet-application>
     </container>
-    
+
     <container id="PeopleToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
@@ -34,7 +52,7 @@
         <show-info-bar>false</show-info-bar>
       </portlet-application>
     </container>
-    
+
     <container id="SpacesToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
@@ -45,7 +63,7 @@
         <show-info-bar>false</show-info-bar>
       </portlet-application>
     </container>
-    
+
     <container id="UserToolBarDashboardPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
@@ -56,7 +74,7 @@
         <show-info-bar>false</show-info-bar>
       </portlet-application>
     </container>
-    
+
     <container id="AdminToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
@@ -67,9 +85,9 @@
         <show-info-bar>false</show-info-bar>
       </portlet-application>
       </container>
-      
+
     </container>
-  
+
   <site-body/>
-  
+
 </container>

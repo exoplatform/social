@@ -34,60 +34,59 @@ public class ActivitiesRestServiceTest extends AbstractResourceTest {
   static private PortalContainer container;
   static private ActivityManager activityManager;
   static private String activityId;
-  
+
   public void setUp() throws Exception {
     super.setUp();
-    
+
     activitiesRestService = new ActivitiesRestService();
     registry(activitiesRestService);
     container = PortalContainer.getInstance();
     activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
     populateData();
-    startSessionAs("root");
+//    startSessionAs("root");
   }
-  
+
   public void tearDown() throws Exception {
     super.tearDown();
-    
+
     unregistry(activitiesRestService);
   }
-  
+
   public void testDestroyActivity() throws Exception {
     ContainerResponse response = service("POST", "/portal/social/activities/destroy/123.json", "", null, null);
     assertEquals(404, response.getStatus());
-    
+
     response = service("POST", "/portal/social/activities/destroy/123.xml", "", null, null);
     assertEquals(404, response.getStatus());
   }
-  
+
   public void testShowLikes() throws Exception {
-    
-    
+
   }
-  
+
   public void testUpdateLike() throws Exception {
-    
+
   }
-  
+
   public void testDestroyLike() throws Exception {
-    
+
   }
-  
+
   public void testShowComments() throws Exception {
-    
+
   }
-  
+
   public void testUpdateComment() throws Exception {
-    
-    
+
+
   }
-  
+
   public void testDestroyComment() throws Exception {
-    
+
   }
-  
-  
+
+
   private void populateData() throws Exception {
-    
+
   }
 }

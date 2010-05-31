@@ -33,17 +33,17 @@ import org.exoplatform.social.space.SpaceService;
  *
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since	 Mar 4, 2010
- * @copyright eXo Platform SAS 
+ * @copyright eXo Platform SAS
  */
 public class SpacesRestServiceTest extends AbstractResourceTest {
   static private PortalContainer container;
   static private SpaceService spaceService;
   static private SpacesRestService spacesRestService;
   static private SpaceList rootSpaceList, rootPendingSpaceList;
-  
+
   public void setUp() throws Exception {
     super.setUp();
-    startSessionAs("root");
+    //startSessionAs("root");
     spacesRestService = new SpacesRestService();
     registry(spacesRestService);
     container = PortalContainer.getInstance();
@@ -51,13 +51,13 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
     rootSpaceList = getMySpaceList("root");
     rootPendingSpaceList = getPendingSpaceList("root");
   }
-  
+
   public void tearDown() throws Exception {
     super.tearDown();
-    
+
     unregistry(spacesRestService);
   }
-  
+
   public void testJsonShowMySpaceList() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
     ContainerResponse response = service("GET", "/portal/social/spaces/root/mySpaces/show.json", "", null, null, writer);
@@ -66,7 +66,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
     assertEquals("application/json", response.getContentType().toString());
     assertEquals(rootSpaceList.getSpaces().size(), spaceList.getSpaces().size());
   }
-  
+
   public void testJsonShowPendingSpaceList() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
     ContainerResponse response = service("GET", "/portal/social/spaces/root/pendingSpaces/show.json", "", null, null, writer);
@@ -75,7 +75,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
     SpaceList spaceList = (SpaceList) response.getEntity();
     assertEquals(rootPendingSpaceList.getSpaces().size(), spaceList.getSpaces().size());
   }
-  
+
   public void testXmlShowMySpaceList() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
     ContainerResponse response = service("GET", "/portal/social/spaces/root/mySpaces/show.xml", "", null, null, writer);
@@ -84,7 +84,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
     SpaceList spaceList = (SpaceList) response.getEntity();
     assertEquals(rootSpaceList.getSpaces().size(), spaceList.getSpaces().size());
   }
-  
+
   public void testXmlShowPendingSpaceList() throws Exception {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
     ContainerResponse response = service("GET", "/portal/social/spaces/root/pendingSpaces/show.xml", "", null, null, writer);
@@ -93,7 +93,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
     SpaceList spaceList = (SpaceList) response.getEntity();
     assertEquals(rootPendingSpaceList.getSpaces().size(), spaceList.getSpaces().size());
   }
-  
+
   private SpaceList getMySpaceList(String userId) throws Exception {
     SpaceList spaceList = new SpaceList();
     List<Space> mySpaces;
@@ -105,7 +105,7 @@ public class SpacesRestServiceTest extends AbstractResourceTest {
     spaceList.setSpaces(mySpaces);
     return spaceList;
   }
-  
+
   private SpaceList getPendingSpaceList(String userId) throws Exception {
     SpaceList spaceList = new SpaceList();
     List<Space> pendingSpaces;

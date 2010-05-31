@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2003-2007 eXo Platform SAS.
+    Copyright (C) 2003-2010 eXo Platform SAS.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU Affero General Public License
@@ -26,9 +26,9 @@
   <properties>
     <entry key="sessionAlive">onDemand</entry>
   </properties>
-    
- 	<portal-layout>
-	  <portlet-application>
+
+   <portal-layout>
+    <portlet-application>
       <portlet>
         <application-ref>web</application-ref>
         <portlet-ref>BannerPortlet</portlet-ref>
@@ -41,30 +41,30 @@
         </preferences>
       </portlet>
       <access-permissions>Everyone</access-permissions>
-	    <show-info-bar>false</show-info-bar>
-	  </portlet-application>
-	  
-		<portlet-application>
+      <show-info-bar>false</show-info-bar>
+    </portlet-application>
+
+    <portlet-application>
       <portlet>
         <application-ref>web</application-ref>
         <portlet-ref>NavigationPortlet</portlet-ref>
       </portlet>
       <access-permissions>Everyone</access-permissions>
-	    <show-info-bar>false</show-info-bar>
-	  </portlet-application>
-		
-		<portlet-application>
+      <show-info-bar>false</show-info-bar>
+    </portlet-application>
+
+    <portlet-application>
       <portlet>
         <application-ref>web</application-ref>
         <portlet-ref>BreadcumbsPortlet</portlet-ref>
       </portlet>
       <access-permissions>Everyone</access-permissions>
-	    <show-info-bar>false</show-info-bar>
-	  </portlet-application>
-	    
-	  <page-body> </page-body>
-	  
-	  <portlet-application>
+      <show-info-bar>false</show-info-bar>
+    </portlet-application>
+
+    <page-body> </page-body>
+
+    <portlet-application>
        <portlet>
          <application-ref>web</application-ref>
          <portlet-ref>FooterPortlet</portlet-ref>
@@ -80,5 +80,5 @@
        <show-info-bar>false</show-info-bar>
      </portlet-application>
   </portal-layout>
-  
+
 </portal-config>

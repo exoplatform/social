@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2009 eXo Platform SAS.
+    Copyright (C) 2003-2010 eXo Platform SAS.
 
-    This is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Lesser General Public License as
-    published by the Free Software Foundation; either version 2.1 of
-    the License, or (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
 
-    This software is distributed in the hope that it will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-    Lesser General Public License for more details.
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this software; if not, write to the Free
-    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -31,87 +29,103 @@
   <name>eXo Social Demo EAR</name>
   <description>eXo Social Demo EAR</description>
   <dependencies>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.config</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.application.rest</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.common</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.opensocial</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.exosocial</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.portlet.profile</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.portlet.space</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.web.opensocial</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.web.socialResources</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.webui.social</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.jar</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.war</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.rest-war</artifactId>
        <version>${project.version}</version>
       <type>war</type>
     </dependency>
+
   </dependencies>
   <build>
     <finalName>socialdemo</finalName>

@@ -14,30 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * UISpaceMenuPortlet class
  * - Show/ hide UISpaceMenuPortlet
  */
 function UISpaceMenuPortlet() {
-	
+
 }
 
 UISpaceMenuPortlet.init = function() {
 	var Util = eXo.social.Util,
 		shown = true,
 		uiSpaceMenuPortlet = document.getElementById('UISpaceMenuPortlet'),
-		uiContainerMenu = document.getElementById('UIContainer-Menu'),
+		uiContainerMenu = document.getElementById('Menu');
 		menuTdContainer = uiContainerMenu.parentNode,
 		tdToggleElement = document.createElement('td');
-		
+
 	tdToggleElement.setAttribute('id', 'ToggleElement');
 	tdToggleElement.setAttribute('class', 'ToggleElement');
 	tdToggleElement.setAttribute('className', 'ToggleElement');
-	
+
 	Util.insertAfter(tdToggleElement, menuTdContainer);
 	tdToggleElement.innerHTML = '<div class="CloseSpaceMenuPortlet"><span>&nbsp;</span></div>';
-	
+
 	//set event handler
 	Util.addEventListener(tdToggleElement, 'click', function() {
 		if (shown) { //hide
@@ -52,7 +52,7 @@ UISpaceMenuPortlet.init = function() {
 			tdToggleElement.innerHTML = '<div class="CloseSpaceMenuPortlet"><span>&nbsp;</span></div>';
 		}
 	});
-	
+
 }
 
 eXo.social = eXo.social || {};

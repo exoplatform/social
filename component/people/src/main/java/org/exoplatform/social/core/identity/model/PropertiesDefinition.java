@@ -19,13 +19,11 @@ package org.exoplatform.social.core.identity.model;
 import java.util.Map;
 import java.util.HashMap;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class PropertiesDefinition.
  */
 public class PropertiesDefinition {
-  
+
   /** The properties def. */
   private Map<String, String> propertiesDef = new HashMap<String, String>();
 
@@ -40,14 +38,14 @@ public class PropertiesDefinition {
 
     // multi value: List<String>
     propertiesDef.put("emails", "emails");
-    
+
     propertiesDef.put("username", "username");
 
   }
 
   /**
    * Gets the.
-   * 
+   *
    * @param name the name
    * @return the string
    */

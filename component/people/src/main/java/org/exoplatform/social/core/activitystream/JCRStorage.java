@@ -49,75 +49,75 @@ import com.google.common.collect.Lists;
  * @see org.exoplatform.social.core.activitystream.ActivityManager
  */
 public class JCRStorage {
-  
+
   private static final Log LOG = ExoLogger.getLogger(JCRStorage.class);
-  
+
   /** The Constant PUBLISHED_NODE. */
   final private static String PUBLISHED_NODE = "published".intern();
-  
+
   /** The Constant NT_UNSTRUCTURED. */
   final private static String NT_UNSTRUCTURED = "nt:unstructured".intern();
-  
+
   /** The Constant ACTIVITY_NODETYPE. */
   private static final String ACTIVITY_NODETYPE =  "exo:activity".intern();
 
   /** The Constant BODY. */
   private static final String BODY =  "exo:body".intern();
-  
+
   /** The Constant BODY. */
   private static final String BODY_TEMPLATE =  "exo:bodyTemplate".intern();
-  
+
   /** The Constant EXTERNAL_ID. */
   private static final String EXTERNAL_ID =  "exo:externalId".intern();
-  
+
   /** The Constant ID. */
   private static final String ID =  "exo:id".intern();
-  
+
   /** The Constant UPDATED. */
   private static final String UPDATED_TIMESTAMP =  "exo:updatedTimestamp".intern();
-  
+
   /** The Constant POSTED_TIME. */
   private static final String POSTED_TIME =  "exo:postedTime".intern();
-  
+
   /** The Constant PRIORITY. */
   private static final String PRIORITY =  "exo:priority".intern();
-  
+
   /** The Constant TITLE. */
   private static final String TITLE =  "exo:title".intern();
-  
+
   /** The Constant TITLE_TEMPLATE. */
   private static final String TITLE_TEMPLATE =  "exo:titleTemplate".intern();
-  
+
   /** The Constant URL. */
   private static final String URL =  "exo:url".intern();
-  
+
   /** The Constant USER_ID. */
   private static final String USER_ID =  "exo:userId".intern();
-  
+
   /** The Constant TYPE. */
   private static final String TYPE =  "exo:type".intern();
-  
+
   private static final String REPLY_TO_ID = "exo:replyToId".intern();
-  
+
   /** The Constant HIDDEN. */
   private static final String HIDDEN =  "exo:hidden".intern();
-  
+
   /** The Constant LIKE_IDENTITY_IDS. */
   private static final String LIKE_IDENTITY_IDS = "exo:likeIdentityIds".intern();
-  
+
   /** The Constant LIKE_IDENTITY_IDS. */
   private static final String PARAMS = "exo:params";
-  
+
   //new change
   /** The data location. */
   private SocialDataLocation dataLocation;
-  
+
   /** The session manager. */
   private JCRSessionManager sessionManager;
 
   /**
    * Instantiates a new JCR storage base on SocialDataLocation
-   * 
+   *
    * @param dataLocation the data location.
    * @see 	org.exoplatform.social.space.impl.SoscialDataLocation.
    */
@@ -128,7 +128,7 @@ public class JCRStorage {
 
   /**
    * Gets the activity service home node.
-   * 
+   *
    * @param session the session
    * @return the activity service home
    * @throws Exception the exception
@@ -140,18 +140,19 @@ public class JCRStorage {
 
   /**
    * Gets the user activity service home node.
-   * 
+   *
    * @param owner the owner of the stream
    * @return the user activity service home
    */
   private Node getStreamLocation(Identity owner) {
-    
+
     String type = owner.getProviderId();
     String id = owner.getRemoteId();
-    
+    //TODO hoatle bug if id = uuid, username refers to the same identity
+    //If then, do not create new stream location, use existing location.
     if(type != null && id != null) {
       return getStreamsLocationByType(type, id);
-    } 
+    }
     else {
       // default location for stream without a prefix
       LOG.warn("attempting to get a stream for non prefixed owner : " + id);
@@ -159,7 +160,7 @@ public class JCRStorage {
     }
 
   }
-  
+
   private Node getStreamsLocationByType(String type, String username) {
     Session session = sessionManager.openSession();
     try {
@@ -173,7 +174,7 @@ public class JCRStorage {
         typeHome = activityHomeNode.addNode(type, NT_UNSTRUCTURED);
         activityHomeNode.save();
       }
-      
+
       // now get or create the node for the owner. Ex: /activities/organization/root
       if (typeHome.hasNode(username)){
         return typeHome.getNode(username);
@@ -181,9 +182,9 @@ public class JCRStorage {
         Node streamNode = typeHome.addNode(username, NT_UNSTRUCTURED);
         typeHome.save();
         return streamNode;
-      }     
-      
-      
+      }
+
+
     } catch (Exception e) {
       LOG.error("failed to locate stream owner node for " +username, e);
       return null;
@@ -195,7 +196,7 @@ public class JCRStorage {
 
   /**
    * Gets the published activity service home node.
-   * 
+   *
    * @param owner the owner of the stream
    * @return the published activity service home
    */
@@ -214,12 +215,12 @@ public class JCRStorage {
       LOG.error("Failed to get published activity service location for " + owner, e);
       return null;
     }
-   
+
   }
 
   /**
    * Saves an activity into a stream
-   * 
+   *
    * @param owner owner of the stream where this activity is bound. Ususally a user or space identity
    * @param activity the activity to save
    * @return the activity
@@ -242,7 +243,7 @@ public class JCRStorage {
       } else {
         activityNode = session.getNodeByUUID(activity.getId());
       }
-      
+
       setStreamInfo(activity, activityNode);
       activityNode.setProperty(TITLE, activity.getTitle());
       if (activity.getTitleId() != null) {
@@ -250,12 +251,12 @@ public class JCRStorage {
       }
       activityNode.setProperty(UPDATED_TIMESTAMP, activity.getUpdatedTimestamp());
       activityNode.setProperty(POSTED_TIME, activity.getPostedTime());
-      
+
       if(activity.getBody() != null)
         activityNode.setProperty(BODY, activity.getBody());
       if(activity.getExternalId() != null)
         activityNode.setProperty(EXTERNAL_ID, activity.getExternalId());
-       
+
       if(activity.getPriority() != null)
         activityNode.setProperty(PRIORITY, activity.getPriority());
       if(activity.getTitle() != null)
@@ -267,20 +268,20 @@ public class JCRStorage {
       if (activity.getReplyToId() != null)
         activityNode.setProperty(REPLY_TO_ID, activity.getReplyToId());
       if(activity.getUrl() != null) {
-        activityNode.setProperty(URL, activity.getUrl());  
+        activityNode.setProperty(URL, activity.getUrl());
       }
       activityNode.setProperty(LIKE_IDENTITY_IDS, activity.getLikeIdentityIds());
       activityNode.setProperty(HIDDEN, activity.isHidden());
       activityNode.setProperty(TITLE_TEMPLATE, activity.getTitleId());
       activityNode.setProperty(BODY_TEMPLATE, activity.getBodyId());
       activityNode.setProperty(PARAMS, mapToArray(activity.getTemplateParams()));
-      
+
       if (activity.getId() == null) {
         activityHomeNode.save();
         activity.setId(activityNode.getUUID());
       } else {
         activityNode.save();
-      } 
+      }
     } catch (Exception e) {
       // TODO: handle exception
       LOG.error("Failed to save activity", e);
@@ -307,7 +308,7 @@ public class JCRStorage {
       activity.setStreamId(activityNode.getParent().getUUID());
     }
   }
-  
+
   /**
    * transforms a map into a string array where values are in the form key=value
    * @param templateParams
@@ -328,13 +329,13 @@ public class JCRStorage {
 
   /**
    * Deletes activity by its id.
-   * 
+   *
    * @param activityId the activity id
    * @throws Exception the exception
    */
   public void deleteActivity(String activityId) throws Exception {
     deleteActivityComments(activityId);
-    
+
     Session session = sessionManager.openSession();
     Node activityNode = null;
     try {
@@ -348,12 +349,12 @@ public class JCRStorage {
     } finally {
       sessionManager.closeSession();
     }
-    
+
   }
 
   /**
    * Load activity by its id.
-   * 
+   *
    * @param activityId the id of the activity. An UUID.
    * @return the activity
    */
@@ -373,7 +374,7 @@ public class JCRStorage {
 
   /**
    * Loads an activity object by node from jcr.
-   * 
+   *
    * @param activityNode the node
    * @return the activity
    * @throws Exception the exception
@@ -384,7 +385,7 @@ public class JCRStorage {
 
     activity.setStreamId(activityNode.getParent().getUUID());
     activity.setStreamOwner(activityNode.getParent().getParent().getName());
-    
+
     if (activityNode.hasProperty(BODY))
       activity.setBody(activityNode.getProperty(BODY).getString());
     if (activityNode.hasProperty(EXTERNAL_ID))
@@ -400,7 +401,7 @@ public class JCRStorage {
     if (activityNode.hasProperty(TYPE))
       activity.setType(activityNode.getProperty(TYPE).getString());
     if (activityNode.hasProperty(REPLY_TO_ID))
-      activity.setReplyToId(activityNode.getProperty(REPLY_TO_ID).getString());    
+      activity.setReplyToId(activityNode.getProperty(REPLY_TO_ID).getString());
     if (activityNode.hasProperty(UPDATED_TIMESTAMP))
       activity.setUpdatedTimestamp(activityNode.getProperty(UPDATED_TIMESTAMP).getLong());
     if (activityNode.hasProperty(URL))
@@ -423,7 +424,7 @@ public class JCRStorage {
   }
 
   /**
-   * transforms an array {@link Value} into a map of string. The values are expected to be of string type and in the form key=value 
+   * transforms an array {@link Value} into a map of string. The values are expected to be of string type and in the form key=value
    * @param values
    * @return
    */
@@ -447,7 +448,7 @@ public class JCRStorage {
 
   /**
    * Gets the activities by identity.
-   * 
+   *
    * @param identity the identity
    * @return the activities
    * @throws Exception the exception
@@ -461,19 +462,19 @@ public class JCRStorage {
     try {
       Session session = sessionManager.getOrOpenSession();
 
-    
+
     QueryManager qm = session.getWorkspace().getQueryManager();
-    String query = "select * from exo:activity where jcr:path like '" + path + "[%]/exo:activity[%]'" //+ " and exo:replyToId <> '" + Activity.IS_COMMENT +"'" 
+    String query = "select * from exo:activity where jcr:path like '" + path + "[%]/exo:activity[%]'" //+ " and exo:replyToId <> '" + Activity.IS_COMMENT +"'"
     + " order by exo:updatedTimestamp desc";
     QueryImpl impl = (QueryImpl) qm.createQuery(query, Query.SQL);
     impl.setLimit(limit);
     impl.setOffset(offset);
     QueryResult result = impl.execute();
-    
+
     NodeIterator nodes = result.getNodes();//n.getNodes();
-    
+
     //NodeIterator nodes  = n.getNodes();
-    
+
     String replyToId;
     while (nodes.hasNext()) {
       Node node = nodes.nextNode();
@@ -488,17 +489,17 @@ public class JCRStorage {
     }
 
     } catch (Exception e) {
-      
+
     LOG.error("Failed to retrieve activities for owner", e);
     } finally {
         sessionManager.closeSession();
     }
     return activities;
   }
-  
+
   /**
    * Gets the activities by identity.
-   * 
+   *
    * @param identity the identity
    * @return the activities
    * @throws Exception the exception
@@ -515,14 +516,14 @@ public class JCRStorage {
         if (!replyToId.equals(Activity.IS_COMMENT)) {
           activities.add(load(node));
         }
-      } else {   
+      } else {
         activities.add(load(node));
       }
     }
     return activities;
   }
-  
-  
+
+
   /**
    * Delete an activity's comments
    * All the comment ids are stored in an activity's replytoId
@@ -534,7 +535,7 @@ public class JCRStorage {
     //rawCommentIds can be: null || ,a,b,c,d
     if (rawCommentIds != null) {
       if (rawCommentIds.equals(Activity.IS_COMMENT)) return;
-      
+
       String[] commentIds = rawCommentIds.split(",");
       //remove the first empty element
       commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
@@ -548,10 +549,10 @@ public class JCRStorage {
       }
     }
   }
-  
+
   /**
    * Values to strings.
-   * 
+   *
    * @param Val the jcr value
    * @return the string[]
    * @throws Exception the exception

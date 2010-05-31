@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.benches;
 
 import java.util.ArrayList;
@@ -24,7 +40,7 @@ import org.exoplatform.social.space.SpaceService;
 
 /**
  * Injects variable amounts of social key data.
- * 
+ *
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
  *         Lamarque</a>
  * @version $Revision$
@@ -49,7 +65,7 @@ public class DataInjector {
   private AtomicInteger       relationshipCount;
   private AtomicInteger       activityCount;
   private AtomicInteger       spaceCount;
-  
+
   private NameGenerator nameGenerator;
 
   public DataInjector(ActivityManager activityManager,
@@ -72,7 +88,7 @@ public class DataInjector {
 
   /**
    * Generate a variable amount of people
-   * 
+   *
    * @param count
    * @return identities created
    */
@@ -97,8 +113,8 @@ public class DataInjector {
     }
     return relationships;
   }
-  
-  
+
+
   public Collection<Activity> generateActivities(long count) {
     Collection<Activity> activities = new ArrayList<Activity>();
     for (int i = 0; i < count; i++) {
@@ -109,7 +125,7 @@ public class DataInjector {
     }
     return activities;
   }
-  
+
   public Collection<Activity> generateActivities(String user, long count) {
     Collection<Activity> activities = new ArrayList<Activity>();
     try {
@@ -127,7 +143,7 @@ public class DataInjector {
     return activities;
   }
 
-  
+
   private Activity generateActivity(Identity id1) {
     Activity activity = null;
     if (id1 != null) {
@@ -142,12 +158,12 @@ public class DataInjector {
       }
 
     }
-    return activity;    
+    return activity;
   }
-  
+
   private Activity generateActivity() {
     Identity id1 = selectRandomUser(null);
-    return generateActivity(id1);  
+    return generateActivity(id1);
   }
 
   private Activity generateRandomActivity() {
@@ -220,7 +236,7 @@ public class DataInjector {
 
   /**
    * Generate a new user
-   * 
+   *
    * @return
    */
   private Identity generateUser() {
@@ -231,7 +247,7 @@ public class DataInjector {
 
   /**
    * Generate or get an identity for the given user
-   * 
+   *
    * @param user
    * @return
    */
@@ -253,7 +269,7 @@ public class DataInjector {
    * generate a new or user with name as bench.userXXX where XXX is an internal
    * counter. The method checks if the user exists and will attempt to find a
    * new name by incrementing the counter
-   * 
+   *
    * @return
    */
   private User generateOrgUser() {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -17,20 +17,26 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
-   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+<configuration
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
+  xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+
+  <component>
+    <key>org.exoplatform.social.core.LinkProvider</key>
+    <type>org.exoplatform.social.core.LinkProvider</type>
+  </component>
 
   <component>
     <key>org.exoplatform.social.core.identity.IdentityManager</key>
     <type>org.exoplatform.social.core.identity.IdentityManager</type>
   </component>
 
-
   <component>
     <key>org.exoplatform.social.core.activitystream.ActivityManager</key>
     <type>org.exoplatform.social.core.activitystream.ActivityManager</type>
     <component-plugins>
-      <component-plugin> 
+      <component-plugin>
         <name>OSHtmlSanitizer</name>
         <set-method>addProcessorPlugin</set-method>
         <type>org.exoplatform.social.core.activitystream.OSHtmlSanitizerProcessor</type>
@@ -51,15 +57,10 @@
             <value>img</value>
           </values-param>
         </init-params>
-      </component-plugin>    
+      </component-plugin>
     </component-plugins>
   </component>
-  
-  
-  <component>
-    <type>org.exoplatform.social.core.LinkProvider</type>
-  </component> 
-  
+
   <component>
     <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
     <type>org.exoplatform.social.core.identity.model.PropertiesDefinition</type>
@@ -74,15 +75,9 @@
     <key>org.exoplatform.social.core.identity.IdentityProvider</key>
     <type>org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider</type>
   </component>
-  
   <component>
-    <key>org.exoplatform.social.core.identity.impl.organization.GroupIdentityProvider</key>
-    <type>org.exoplatform.social.core.identity.impl.organization.GroupIdentityProvider</type>
-  </component>  
-
-   <component>
-      <key>org.exoplatform.social.core.identity.JCRStorage</key>
-      <type>org.exoplatform.social.core.identity.JCRStorage</type>
+    <key>org.exoplatform.social.core.identity.JCRStorage</key>
+    <type>org.exoplatform.social.core.identity.JCRStorage</type>
   </component>
 
   <component>
@@ -128,23 +123,21 @@
     <key>org.exoplatform.social.core.identity.ProfileMapper</key>
     <type>org.exoplatform.social.core.identity.ProfileMapper</type>
   </component>
-  
-  
-  <external-component-plugins>
-	  <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>      
-	  <component-plugin> 
-	    <name>add.social.nodeType</name>
-	    <set-method>addPlugin</set-method>
-	    <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-	    <init-params>
-	      <values-param>
-	        <name>autoCreatedInNewRepository</name>
-	        <description>Node types configuration file</description>
-	        <value>jar:/conf/portal/social-nodetypes.xml</value>
-	      </values-param>
-	    </init-params>
-	  </component-plugin>
-	</external-component-plugins>
 
-<!--  <remove-configuration>org.exoplatform.services.scheduler.JobSchedulerService</remove-configuration> -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+    <component-plugin>
+      <name>add.social.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Node types configuration file</description>
+          <value>jar:/conf/portal/people-nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
 </configuration>

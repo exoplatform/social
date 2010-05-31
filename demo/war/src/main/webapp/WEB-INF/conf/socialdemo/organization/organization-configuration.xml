@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -21,7 +21,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
-   
+
   <external-component-plugins>
     <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
     <component-plugin>
@@ -39,7 +39,7 @@
           <name>printInformation</name>
           <description>Print information init database</description>
           <value>false</value>
-        </value-param> 
+        </value-param>
         <object-param>
           <name>configuration</name>
           <description>description</description>
@@ -68,7 +68,7 @@
         </object-param>
       </init-params>
     </component-plugin>
-    
+
     <component-plugin>
       <name>MembershipUpdateListener</name>
       <set-method>addListenerPlugin</set-method>

@@ -41,7 +41,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since Mar 3, 2010
  */
-public abstract class AbstractResourceTest extends BaseTest {
+public abstract class AbstractResourceTest extends AbstractRestTest {
 
   /**
    * gets response with provided writer
@@ -61,12 +61,14 @@ public abstract class AbstractResourceTest extends BaseTest {
                                    byte[] data,
                                    ContainerResponseWriter writer) throws Exception {
 
-    if (headers == null)
+    if (headers == null) {
       headers = new MultivaluedMapImpl();
+    }
 
     ByteArrayInputStream in = null;
-    if (data != null)
+    if (data != null) {
       in = new ByteArrayInputStream(data);
+    }
 
     EnvironmentContext envctx = new EnvironmentContext();
     HttpServletRequest httpRequest = new MockHttpServletRequest("",
@@ -102,7 +104,5 @@ public abstract class AbstractResourceTest extends BaseTest {
                                    MultivaluedMap<String, String> headers,
                                    byte[] data) throws Exception {
     return service(method, requestURI, baseURI, headers, data, new DummyContainerResponseWriter());
-
   }
-
 }

@@ -16,30 +16,28 @@
  */
 package org.exoplatform.social.core.activitystream.model;
 
-
-
 /**
  * Sequence of activities
  */
 public class Stream {
-  
+
   /** The favicon url. */
   private String faviconUrl;
-  
+
   /** The source url. */
   private String sourceUrl;
-  
+
   /** The title. */
   private String title;
-  
+
   /** The url. */
   private String url;
-  
+
   /**
    * internal uuid for this stream
    */
   private String streamId = null;
-  
+
   /**
    * internal uuid for this stream owner
    */
@@ -47,7 +45,7 @@ public class Stream {
 
   /**
    * Gets the favicon url.
-   * 
+   *
    * @return the favicon url
    */
   public String getFaviconUrl() {
@@ -56,7 +54,7 @@ public class Stream {
 
   /**
    * Sets the favicon url.
-   * 
+   *
    * @param faviconUrl the new favicon url
    */
   public void setFaviconUrl(String faviconUrl) {
@@ -65,7 +63,7 @@ public class Stream {
 
   /**
    * Gets the source url.
-   * 
+   *
    * @return the source url
    */
   public String getSourceUrl() {
@@ -74,7 +72,7 @@ public class Stream {
 
   /**
    * Sets the source url.
-   * 
+   *
    * @param sourceUrl the new source url
    */
   public void setSourceUrl(String sourceUrl) {
@@ -83,7 +81,7 @@ public class Stream {
 
   /**
    * Gets the title.
-   * 
+   *
    * @return the title
    */
   public String getTitle() {
@@ -92,7 +90,7 @@ public class Stream {
 
   /**
    * Sets the title.
-   * 
+   *
    * @param title the new title
    */
   public void setTitle(String title) {
@@ -101,7 +99,7 @@ public class Stream {
 
   /**
    * Gets the url.
-   * 
+   *
    * @return the url
    */
   public String getUrl() {
@@ -110,7 +108,7 @@ public class Stream {
 
   /**
    * Sets the url.
-   * 
+   *
    * @param url the new url
    */
   public void setUrl(String url) {

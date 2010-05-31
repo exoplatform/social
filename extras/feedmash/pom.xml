@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.social</groupId>
@@ -7,33 +29,48 @@
     <version>1.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.extras.feedmash</artifactId>
-
   <packaging>jar</packaging>
   <name>eXo Social - Extras - Feed Masher</name>
   <description>a service capable of republishing feeds into activity streams</description>
- 
-   <dependencies>
-   <dependency>
+  <dependencies>
+
+    <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+      <scope>compile</scope>
+      <version>1.5.2</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
-       <artifactId>exo.kernel.component.common</artifactId>
-      <version>${org.exoplatform.kernel.version}</version>
-   </dependency>
-	<dependency>
-	  <groupId>rome</groupId>
-	  <artifactId>rome</artifactId>
-	  <version>0.9</version>
-	</dependency>
-   <dependency>
-    <groupId>org.exoplatform.social</groupId>
-    <artifactId>exo.social.component.people</artifactId>
-    <version>${project.version}</version>
-  </dependency>
-   </dependencies>
+      <artifactId>exo.kernel.commons</artifactId>
+      <scope>compile</scope>
+    </dependency>
 
-   <build>
- 
-   </build>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
+    <dependency>
+      <groupId>rome</groupId>
+      <artifactId>rome</artifactId>
+      <version>0.9</version>
+      <scope>provided</scope>
+    </dependency>
 
- 
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.component.common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.people</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+  </dependencies>
 </project>

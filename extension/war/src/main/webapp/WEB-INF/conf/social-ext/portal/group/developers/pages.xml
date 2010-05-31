@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2009 eXo Platform SAS.
@@ -37,7 +37,7 @@
         <preferences>
           <preference>
             <name>url</name>
-            <value>http://localhost:8080/rest/jcr/repository/portal-system/production/app:gadgets/app:CodeRunner/app:data/app:resources/CodeRunner.xml</value>
+            <value>local://CodeRunner</value>
             <read-only>false</read-only>
           </preference>
         </preferences>

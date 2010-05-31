@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2003-2010 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -50,109 +50,109 @@ import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * Searches users in profile by user name and some other filter condition.<br>
- *   - Search action is listened and information for search user is processed.<br> 
+ *   - Search action is listened and information for search user is processed.<br>
  *   - After users is requested is returned, the search process is completed,
  *   - Search event is broadcasted to the form that added search form as child.<br>
- * 
+ *
  * Author : hanhvi
  *          hanhvq@gmail.com
- * Sep 25, 2009  
+ * Sep 25, 2009
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "system:/groovy/social/webui/component/UIProfileUserSearch.gtmpl",
   events = {
-    @EventConfig(listeners = UIProfileUserSearch.SearchActionListener.class) 
+    @EventConfig(listeners = UIProfileUserSearch.SearchActionListener.class)
   }
 )
 public class UIProfileUserSearch extends UIForm {
   /** USER CONTACT. */
   final public static String USER_CONTACT = "name";
-  
+
   /** SKILLS. */
   final public static String SKILLS = "skills";
-  
+
   /** POSITION. */
   final public static String POSITION = "position";
-  
+
   /** GENDER. */
   final public static String GENDER = "gender";
-  
+
   /** SEARCH. */
   final public static String SEARCH = "Search";
-  
+
   /** EXPERIENCE. */
   final public static String EXPERIENCE = "experiences";
-  
+
   /** DEFAULT GENDER. */
   final public static String GENDER_DEFAULT = "Gender";
-  
+
   /** MALE. */
   final public static String MALE = "male";
-  
+
   /** FEMALE. */
   final public static String FEMALE = "female";
-  
+
   /**REGEX FOR SPLIT STRING */
   final public static String REG_FOR_SPLIT = "[^_A-Za-z0-9-.\\s[\\n]]";
-  
+
   /** PATTERN FOR CHECK RIGHT INPUT VALUE */
   final static String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
-  
+
   /** REGEX EXPRESSION OF POSITION FIELD. */
   final public static String POSITION_REGEX_EXPRESSION = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
-  
+
   /** ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING */
   final static String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
-  
+
   /** The im is used for stores IdentityManager instance. */
   IdentityManager        im           = null;
-  
+
   /** The rm is used for stores RelationshipManager instance. */
   RelationshipManager    rm           = null;
-  
+
   /** Stores current identity. */
   Identity               currIdentity = null;
-  
+
   /** List used for identities storage. */
   private List<Identity> identityList = null;
-  
+
   /** Stores selected character when search by alphabet */
   String selectedChar = null;
-  
+
   /** Used stores filter information. */
   ProfileFiler profileFiler = null;
-  
+
   /**Stores all user name for auto suggestion. */
   List<String> allUserContactName = null;
-  
+
   /**
    * Sets list identity.
-   * 
-   * @param identityList 
+   *
+   * @param identityList
    *        <code>List</code>
    */
   public void setIdentityList(List<Identity> identityList) { this.identityList = identityList;}
-  
+
   /**
    * Gets identity list result search.
-   * 
+   *
    * @return List of identity.
-   * 
-   * @throws Exception 
+   *
+   * @throws Exception
    */
   public List<Identity> getIdentityList() throws Exception { return identityList;}
 
   /**
    * Gets selected character when search by alphabet.
-   * 
+   *
    * @return The selected character.
    */
   public String getSelectedChar() { return selectedChar;}
 
   /**
    * Sets selected character to variable.
-   * 
+   *
    * @param selectedChar
    *        <code>char</code>
    */
@@ -160,24 +160,24 @@ public class UIProfileUserSearch extends UIForm {
 
   /**
    * Gets filter object.
-   * 
+   *
    * @return The object that contain filter information.
    */
-  public ProfileFiler getProfileFiler() { return profileFiler;} 
-  
+  public ProfileFiler getProfileFiler() { return profileFiler;}
+
   /**
    * Sets filter object.
-   * 
+   *
    * @param profileFiler
-   *        <code>Object<code> 
+   *        <code>Object<code>
    */
   public void setProfileFiler(ProfileFiler profileFiler) { this.profileFiler = profileFiler;}
 
   /**
    * Gets all users for searching suggestion.
-   * 
+   *
    * @return all contact name of each relation
-   * @throws Exception 
+   * @throws Exception
    */
   public List<String> getAllContactName() throws Exception {
     return allUserContactName;
@@ -185,7 +185,7 @@ public class UIProfileUserSearch extends UIForm {
 
   /**
    * Sets all user contact name for auto-suggestion.
-   * 
+   *
    * @param allUserContactName
    *        <code>List</code>
    */
@@ -196,38 +196,38 @@ public class UIProfileUserSearch extends UIForm {
   /**
    * Initializes user search form fields.
    * Initials and adds components as children to search form.
-   * 
+   *
    * @throws Exception
    */
-  public UIProfileUserSearch() throws Exception { 
+  public UIProfileUserSearch() throws Exception {
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
     options.add(new SelectItemOption<String>(GENDER_DEFAULT));
     options.add(new SelectItemOption<String>(MALE));
     options.add(new SelectItemOption<String>(FEMALE));
-    
+
     addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, USER_CONTACT));
     addUIFormInput(new UIFormStringInput(POSITION, POSITION, POSITION));
     addUIFormInput(new UIFormStringInput(SKILLS, SKILLS, SKILLS));
     addUIFormInput(new UIFormSelectBox(GENDER, GENDER, options));
   }
-  
+
   /**
    * Gets current identity.
-   * 
+   *
    * @return identity of current user.
-   * 
+   *
    * @throws Exception
    */
   public Identity getCurrentIdentity() throws Exception {
       IdentityManager im = getIdentityManager();
       return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
   }
-  
+
   /**
    * Gets current viewer identity.
-   * 
+   *
    * @return the identity of person who is viewed by another.
-   * 
+   *
    * @throws Exception
    */
   public Identity getCurrentViewerIdentity() throws Exception {
@@ -237,26 +237,26 @@ public class UIProfileUserSearch extends UIForm {
     if (identity == null) {
       return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
     }
-      
+
     return identity;
   }
-  
+
   /**
    * Get current user name.
-   * 
+   *
    * @return
    */
   public String getCurrentUserName() {
     RequestContext context = RequestContext.getCurrentInstance();
     return context.getRemoteUser();
   }
-  
+
   /**
    * Listens to search event from search form, then processes search condition
    * and set search result to the result variable.<br>
    *    - Gets user name and other filter information from request.<br>
    *    - Searches user that matches the condition.<br>
-   *    - Sets matched users into result list.<br> 
+   *    - Sets matched users into result list.<br>
    */
   static public class SearchActionListener extends EventListener<UIProfileUserSearch> {
     @Override
@@ -270,7 +270,7 @@ public class UIProfileUserSearch extends UIForm {
       ProfileFiler filter = new ProfileFiler();
       uiSearch.invokeSetBindingBean(filter);
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
-      
+
       String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
       String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
       String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
@@ -288,7 +288,7 @@ public class UIProfileUserSearch extends UIForm {
           if ("All".equals(charSearch)) {
             filter.setName("");
           }
-          
+
           identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME, filter);
           uiSearch.setIdentityList(identitiesSearchResult);
         } else {
@@ -307,14 +307,14 @@ public class UIProfileUserSearch extends UIForm {
 	        if (filter.getGender().equals(defaultGenderVal)) {
 	          filter.setGender("");
 	        }
-	        
+
 	        String skills = null;
-	        
+
 //		        uiSearch.setSelectedChar(charSearch);
-	        
+
 	        identitiesSearchResult = idm.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter);
 	        uiSearch.setIdentityList(identitiesSearchResult);
-	        
+
 	        // Using regular expression for search
 	        skills = filter.getSkills();
 	        if (skills.length() > 0) {
@@ -340,10 +340,10 @@ public class UIProfileUserSearch extends UIForm {
 
     /**
      * Checks input values follow regular expression.
-     * 
+     *
      * @param input
      *        <code>Object</code>
-     *        
+     *
      * @return true if the input is properly to regular expression else return false.
      */
     private boolean isValidInput(ProfileFiler input) {
@@ -358,32 +358,32 @@ public class UIProfileUserSearch extends UIForm {
         contactNameForCheck =  PREFIX_ADDED_FOR_CHECK + contactNameForCheck;
         if (!contactNameForCheck.matches(RIGHT_INPUT_PATTERN)) return false;
       }
-      
+
       // Check position
       String position = input.getPosition();
       // Eliminate '*' and '%' character in string for checking
       String positionForCheck = null;
-      if (position != null) { 
+      if (position != null) {
         positionForCheck = position.trim().replace("*", "");
         positionForCheck = positionForCheck.replace("%", "");
         // Make sure string for checking is started by alphabet character
         positionForCheck =  PREFIX_ADDED_FOR_CHECK + positionForCheck;
         if (!positionForCheck.matches(POSITION_REGEX_EXPRESSION)) return false;
       }
-      
+
       return true;
     }
   }
-  
+
   /**
    * Filter identity follow skills information.
-   * 
+   *
    * @param skills
    *        <code>String</code>
-   *        
+   *
    * @param identities
    *        <code>Object</code>
-   *        
+   *
    * @return List of identities that has skills information match.
    */
   @SuppressWarnings("unchecked")
@@ -392,9 +392,9 @@ public class UIProfileUserSearch extends UIForm {
       String prof = null;
       ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
       String skill = skills.trim().toLowerCase();
-      
+
       if (identities.size() == 0) return identityLst;
-    
+
       for (Identity id : identities) {
         Profile profile = id.getProfile();
         experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(EXPERIENCE);
@@ -405,20 +405,20 @@ public class UIProfileUserSearch extends UIForm {
           Pattern p = Pattern.compile(REG_FOR_SPLIT);
           String[] items = p.split(prof);
           for(String item : items) {
-              if (item.toLowerCase().matches(skill)) { 
+              if (item.toLowerCase().matches(skill)) {
                 identityLst.add(id);
                 break;
               }
           }
         }
       }
-      
+
       return GetUniqueIdentities(identityLst);
   }
-  
+
   /**
    * Get identity manager.
-   * 
+   *
    * @return an IdentityManager instance.
    */
   private IdentityManager getIdentityManager() {
@@ -428,30 +428,30 @@ public class UIProfileUserSearch extends UIForm {
     }
     return im;
   }
-  
+
   /**
    * Gets current viewer user name.
-   * 
+   *
    * @return the name of user who viewed by another.
    */
   private String getCurrentViewerUserName() {
     String username = URLUtils.getCurrentUser();
     if(username != null)
       return username;
-    
+
     PortalRequestContext portalRequest = Util.getPortalRequestContext();
     return portalRequest.getRemoteUser();
   }
-  
+
   /**
    * Unions to collection to make one collection.
-   * 
+   *
    * @param identities1
    *        <code>Object</code>
-   *        
+   *
    * @param identities2
    *        <code>Object</code>
-   *        
+   *
    * @return One new collection that the union result of two input collection.
    */
   private static Collection<Identity> Union(Collection<Identity> identities1, Collection<Identity> identities2)
@@ -460,13 +460,13 @@ public class UIProfileUserSearch extends UIForm {
       identities.addAll(new HashSet<Identity>(identities2));
       return new ArrayList<Identity>(identities);
   }
-  
+
   /**
    * Gets unique identities from one collection of identities.
-   * 
+   *
    * @param identities
    *        <code>Object</code>
-   *        
+   *
    * @return one list that contains unique identities.
    */
   private static ArrayList<Identity> GetUniqueIdentities(Collection<Identity> identities)

@@ -16,28 +16,26 @@
  */
 package org.exoplatform.social.core.activitystream.model;
 
-
-
 /**
  * The Class MediaItem represent MediaItem in opensocial.
  */
 public class MediaItem implements org.apache.shindig.social.opensocial.model.MediaItem {
-  
+
   /** The mime type. */
   private String mimeType;
-  
+
   /** The type. */
   private Type type;
-  
+
   /** The url. */
   private String url;
 
   private String thumbnailUrl;
-  
+
 
   /**
    * Gets the mime type.
-   * 
+   *
    * @return the mime type
    */
   public String getMimeType() {
@@ -46,7 +44,7 @@ public class MediaItem implements org.apache.shindig.social.opensocial.model.Med
 
   /**
    * Sets the mime type.
-   * 
+   *
    * @param mimeType the new mime type
    */
   public void setMimeType(String mimeType) {
@@ -55,7 +53,7 @@ public class MediaItem implements org.apache.shindig.social.opensocial.model.Med
 
   /**
    * Gets the type.
-   * 
+   *
    * @return the type
    */
   public Type getType() {
@@ -64,7 +62,7 @@ public class MediaItem implements org.apache.shindig.social.opensocial.model.Med
 
   /**
    * Sets the type.
-   * 
+   *
    * @param type the new type
    */
   public void setType(Type type) {
@@ -73,7 +71,7 @@ public class MediaItem implements org.apache.shindig.social.opensocial.model.Med
 
   /**
    * Gets the url.
-   * 
+   *
    * @return the url
    */
   public String getUrl() {
@@ -82,7 +80,7 @@ public class MediaItem implements org.apache.shindig.social.opensocial.model.Med
 
   /**
    * Sets the url.
-   * 
+   *
    * @param url the new url
    */
   public void setUrl(String url) {

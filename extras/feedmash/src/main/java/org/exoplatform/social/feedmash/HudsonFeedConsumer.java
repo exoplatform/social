@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.feedmash;
 
 import java.util.Date;
@@ -15,18 +31,18 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
 
   private static final Log LOG = ExoLogger.getLogger(HudsonFeedConsumer.class);
   private static final String HUDSON_STATUS = "status";
-  
+
   private String successIcon = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/GreenFlag.gif";
   private String failureIcon = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/RedFlag.gif";
   private String hudsonLogo = "http://wiki.hudson-ci.org/download/attachments/2916393/banner-100.png?version=1&modificationDate=1185846429000";
   private String baseUrl;
 
   private String project;
-  
+
   enum BuildStatus {
     FAILURE, SUCCESS
   };
-  
+
 
 
   @Override
@@ -50,7 +66,7 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
   }
 
   @Override
-  protected void handle(SyndEntryImpl entry) { 
+  protected void handle(SyndEntryImpl entry) {
     try {
 
       Identity targetStream = getIdentity(targetActivityStream);
@@ -59,11 +75,11 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
       }
 
       String currentStatus = currentStatus(entry);
-      LOG.debug("Publishing "+ currentStatus+" on : "+ targetStream.getRemoteId() + " stream");   
-      String message = message(currentStatus,entry.getLink(), entry.getTitle()); 
-      
+      LOG.debug("Publishing "+ currentStatus+" on : "+ targetStream.getRemoteId() + " stream");
+      String message = message(currentStatus,entry.getLink(), entry.getTitle());
+
       Identity hudson = getHudsonIdentity();
-      
+
       publishActivity(message, hudson, targetStream);
 
       saveState(HUDSON_STATUS, currentStatus);
@@ -71,11 +87,11 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
 
     } catch (Exception e) {
       LOG.error("failed to publish hudson activity: " + e.getMessage(), e);
-      
+
     }
   }
 
-  
+
   @Override
   public void beforeJobExecute(JobDataMap dataMap) {
     successIcon = getStringParam(dataMap, "successIcon", successIcon);
@@ -87,7 +103,7 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
     }
   }
 
-  
+
 
   private String currentStatus(SyndEntryImpl entry) {
     String currentStatus;
@@ -102,7 +118,7 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
 
   private String message(String status, String link, String title) {
     String icon = (status == BuildStatus.SUCCESS.name()) ? successIcon : failureIcon;
-    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;<a href=\""+ link+"\">" + title + "</a>"; 
+    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;<a href=\""+ link+"\">" + title + "</a>";
   }
 
   private Identity getHudsonIdentity() throws Exception {

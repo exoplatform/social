@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.people;
 
 import java.util.HashMap;
@@ -53,7 +69,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       params.put("Accepter", user2);
       activity.setTemplateParams(params);
       activityManager.saveActivity(id1, activity);
-      
+
       Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, "I am now connected to " +  user1, null);
       activity2.setTitleId("CONNECTION_CONFIRMED");
       Map<String,String> params2 = new HashMap<String,String>();
@@ -61,7 +77,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       params2.put("Accepter", user1);
       activity2.setTemplateParams(params2);
       activityManager.saveActivity(id2, activity2);
-      
+
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
     }
@@ -85,7 +101,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
 
   public void denied(RelationshipEvent event) {
     ;// void on purpose
-    
+
   }
 
   /**
@@ -108,7 +124,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       params2.put("Invited", user2);
       activity2.setTemplateParams(params2);
       activityManager.saveActivity(id2, activity2);
-      
+
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
     }

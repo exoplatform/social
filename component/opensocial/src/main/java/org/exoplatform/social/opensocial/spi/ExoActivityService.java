@@ -196,10 +196,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                      SecurityToken token) throws SocialSpiException {
     try {
       activity.setAppId(appId); //groupId = new GroupId(GroupId.Type.groupId, "space:qsdsqd")
-      
+
       org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity, fields);
-      
-      
+
+
       if (token instanceof AnonymousSecurityToken) {
         throw new ProtocolException(HttpServletResponse.SC_UNAUTHORIZED, " a non anonymous security token is expected");
       }
@@ -209,28 +209,28 @@ public class ExoActivityService extends ExoService implements ActivityService {
       IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
       String user = userId.getUserId(token); // can be organization:name or organization:UUID
-      Identity userIdentity = identityManager.getIdentity(user); 
-      
+      Identity userIdentity = identityManager.getIdentity(user);
+
       // identity for the stream to post on
       Identity targetStream = userIdentity;
-      
+
       /// someone posting for a space ?
       if (groupId.getType() == GroupId.Type.groupId) {
         String group = groupId.getGroupId(); // can be space:name or space:UUID
-        targetStream = identityManager.getIdentity(group); 
+        targetStream = identityManager.getIdentity(group);
         // TODO : check that member is allowed to post on group or throw SC_UNAUTHORIZED
-      } 
+      }
 
       // we need to know where to post
       if (targetStream == null) {
         throw new ProtocolException(HttpServletResponse.SC_FORBIDDEN, user + " is an unknown identity");
       }
-      
+
       // Define activity user if not already set
       String activityUser = exoActivity.getUserId();
       if (activityUser == null) {
-        exoActivity.setUserId(userIdentity.getId());  
-      
+        exoActivity.setUserId(userIdentity.getId());
+
         // making sure it resolves to a valid identity
       } else {
         Identity activityUserIdentity = identityManager.getIdentity(activityUser);
@@ -238,9 +238,9 @@ public class ExoActivityService extends ExoService implements ActivityService {
           throw new ProtocolException(HttpServletResponse.SC_FORBIDDEN, activityUser + " is an unknown identity");
         }
       }
-      
+
       am.saveActivity(targetStream, exoActivity);
-      
+
       return ImmediateFuture.newInstance(null);
     } catch (Throwable e) {
       if (e instanceof ProtocolException) {
@@ -252,7 +252,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
   /**
    * Convert from os activity.
-   * 
+   *
    * @param activity the activity
    * @param fields the fields
    * @return the org.exoplatform.social.core.activitystream.model. activity
@@ -367,7 +367,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
   /**
    * Convert to os activity.
-   * 
+   *
    * @param exoActivity the exo activity
    * @param fields the fields
    * @return the activity
@@ -481,7 +481,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
   /**
    * Convert to os activities.
-   * 
+   *
    * @param activities the activities
    * @param fields the fields
    * @return the list
@@ -497,7 +497,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
   /**
    * Sort a list in increase order of posted time.<br>
-   * 
+   *
    * @param lstActivities List for sorting.
    * @return A sorted array in increase order.
    */
@@ -514,7 +514,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
     /**
      * Compare 2 activity by posted time.
-     * 
+     *
      * @param act1 the act1
      * @param act2 the act2
      * @return the int
