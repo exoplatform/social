@@ -237,9 +237,6 @@ public class SpaceUtils {
     PortletInvoker portletInvoker = (PortletInvoker) container.getComponentInstance(PortletInvoker.class);
     Set<Portlet> portlets = portletInvoker.getPortlets();
     ApplicationRegistryService appRegistryService = getApplicationRegistryService();
-    String remoteUser = Util.getPortalRequestContext().getRemoteUser();
-    if (remoteUser == null || remoteUser.equals(""))
-      return null;
     for (Portlet portlet : portlets) {
       PortletInfo info = portlet.getInfo();
       String portletApplicationName = info.getApplicationName();
@@ -494,6 +491,9 @@ public class SpaceUtils {
    */
   static public void setNavigation(PageNavigation nav) {
     if (nav == null)
+      return;
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    if (context == null)
       return;
     UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
     try {
