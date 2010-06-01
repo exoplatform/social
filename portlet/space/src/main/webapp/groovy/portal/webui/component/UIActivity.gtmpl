@@ -126,7 +126,10 @@
   activityImageSource = uicomponent.getUserAvatarImageSource(activity.userId);
    if (!activityImageSource)  {
      if (uicomponent.isSpaceActivity(activity.userId)) {
-       activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";  
+       activityImageSource = uicomponent.getSpaceImageSource();
+       if (!activityImageSource) {
+         activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";  
+       }
      } else if (uicomponent.isUserActivity(activity.userId)) {   
        activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/AvatarPeople.gif";
      } else {

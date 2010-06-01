@@ -288,6 +288,18 @@ public class UIActivity extends UIForm {
     return userProfile.getAvatarImageSource();
   }
 
+  /**
+   * Gets space's avatar.
+   * 
+   * @return
+   * @throws SpaceException
+   */
+  public String getSpaceImageSource () throws SpaceException {
+    Space space = getSpace();
+    return space.getImageSource();
+  }
+
+  
   public boolean isSpaceActivity(String id) {
     try {
       identityManager_ = getIdentityManager();
