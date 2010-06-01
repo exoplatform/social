@@ -39,7 +39,7 @@
 }
 
 .TRContainer .ApplicationTDContainer .UITabPane .TabPaneContent {
-  padding: 4px 0px 0px 0px; 
+  padding: 4px 0px 0px 0px;
 }
 
 
@@ -60,7 +60,7 @@
 .ClearFix {
   !display: inline-block;
   !zoom: 1;
-  !display: block; 
+  !display: block;
 }
 
 .TRContainer .MenuTDContainer {
@@ -101,6 +101,10 @@
 }
 
 /*---------------------------------------------------------------------*/
+
+#UISpaceMenuPortlet {
+  background: #ededed;
+}
 
 .MenuTDContainer .UISpaceMenuPortlet .Home{
   background: none;
