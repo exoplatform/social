@@ -16,9 +16,7 @@
     <Require feature="dynamic-height" />
     <Require feature="opensocial-0.7" />
     <Require feature="tabs" />
-    <Require feature="setprefs"/>
   </ModulePrefs>
-  <UserPref name="selectedTab" datatype="hidden"/>
   <Content type="html">
   <![CDATA[
     <style type="text/css">
@@ -30,10 +28,8 @@
       }
 
       var tabs = new gadgets.TabSet(__MODULE_ID__);
-      var prefs = new _IG_Prefs(__MODULE_ID__);
 
       SpaceList.prototype.initTab = function() {
-        var seldTab = prefs.getInt("selectedTab");
 
         tabs.addTab("MySpace", {
             contentContainer: document.getElementById("myspace_id"),
@@ -48,17 +44,12 @@
         });
 
         tabs.alignTabs('left');
-        tabs.setSelectedTab(seldTab);
+        tabs.setSelectedTab(0);
       }
 
       SpaceList.prototype.init = function(tabId) {
         var req = opensocial.newDataRequest();
         var opts = {};
-        if (tabId == 'pendingspace_id') {
-           prefs.set("selectedTab", 1);
-        } else {
-          prefs.set("selectedTab", 0);
-        }
 
         opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = [
             opensocial.Person.Field.PROFILE_URL,

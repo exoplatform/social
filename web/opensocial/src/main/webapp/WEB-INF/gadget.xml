@@ -45,11 +45,9 @@
   <gadget name="RSSFetch">
     <path>/gadgets/RSSFetch/RSSFetch.xml</path>
   </gadget>
-  <!--
   <gadget name="UserSpaces">
     <path>/gadgets/UserSpaces/UserSpaces.xml</path>
   </gadget>
-  -->
   <gadget name="CodeRunner">
     <path>/gadgets/CodeRunner/CodeRunner.xml</path>
   </gadget>
