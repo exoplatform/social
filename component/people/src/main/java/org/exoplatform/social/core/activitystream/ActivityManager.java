@@ -96,7 +96,7 @@ public class ActivityManager {
    * @throws Exception the exception
    */
   public List<Activity> getActivities(Identity identity) throws Exception {
-    List<Activity> activities = storage.getActivities(identity, 0, 20);
+    List<Activity> activities = storage.getActivities(identity);
     for (Activity activity : activities) {
       processActivitiy(activity);
     }
@@ -132,7 +132,6 @@ public class ActivityManager {
   public Activity saveActivity(Identity owner, Activity activity) throws Exception {
     // TODO: check the security
     Validate.notNull(owner, "owner must not be null.");
-
     // posted now
     long now = System.currentTimeMillis();
     if (activity.getId() == null) {

@@ -31,7 +31,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
@@ -41,6 +40,9 @@ import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.jcr.JCRSessionManager;
 import org.exoplatform.social.jcr.SocialDataLocation;
+
+import com.google.common.collect.Lists;
+
 
 /**
  * The Class JCRStorage represents storage for activity manager
@@ -460,19 +462,32 @@ public class JCRStorage {
     try {
       Session session = sessionManager.getOrOpenSession();
 
-      QueryManager queryManager = session.getWorkspace().getQueryManager();
-      String queryStr = "select * from exo:activity where jcr:path like '" + path + "[%]/exo:activity[%]' and exo:replyToId='"+Activity.IS_COMMENT +"' order by exo:updatedTimestamp desc";
-      QueryImpl query = (QueryImpl) queryManager.createQuery(queryStr, Query.SQL);
-      query.setOffset(offset);
-      query.setLimit(limit);
 
-      QueryResult result = query.execute();
-      NodeIterator nodes = result.getNodes();
+    QueryManager qm = session.getWorkspace().getQueryManager();
+    String query = "select * from exo:activity where jcr:path like '" + path + "[%]/exo:activity[%]'" //+ " and exo:replyToId <> '" + Activity.IS_COMMENT +"'"
+    + " order by exo:updatedTimestamp desc";
+    QueryImpl impl = (QueryImpl) qm.createQuery(query, Query.SQL);
+    impl.setLimit(limit);
+    impl.setOffset(offset);
+    QueryResult result = impl.execute();
 
-      while (nodes.hasNext()) {
-        Node node = nodes.nextNode();
+    NodeIterator nodes = result.getNodes();//n.getNodes();
+
+    //NodeIterator nodes  = n.getNodes();
+
+    String replyToId;
+    while (nodes.hasNext()) {
+      Node node = nodes.nextNode();
+      if (node.hasProperty(REPLY_TO_ID)) {
+        replyToId = node.getProperty(REPLY_TO_ID).getString();
+        if (!replyToId.equals(Activity.IS_COMMENT)) {
+          activities.add(load(node));
+        }
+      } else {
         activities.add(load(node));
       }
+    }
+
     } catch (Exception e) {
 
     LOG.error("Failed to retrieve activities for owner", e);
