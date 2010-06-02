@@ -18,10 +18,14 @@ package org.exoplatform.social.core.activitystream;
 
 import org.exoplatform.social.core.activitystream.model.Activity;
 
-public interface ActivityProcessor {
 
-  public void processActivity(Activity activity);
+  /**
+   * An activity processor is responsible to pre-process an activity before it is returned by the {@link ActivityManager}
+   */
+  public interface ActivityProcessor {
 
-  public int getPriority();
+    void processActivity(Activity activity);
+    
+    int getPriority();
 
 }

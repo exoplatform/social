@@ -16,11 +16,8 @@
  */
 package org.exoplatform.social.core.activitystream;
 
-import java.util.Comparator;
-
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.container.xml.ObjectParameter;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
@@ -45,15 +42,6 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin  i
     catch (Exception e) {
       LOG.warn("an <value-param> 'priority' of type int is recommanded for component " + getClass());
     }
-    /**
-    ObjectParameter objectParam = params.getObjectParam("processor");
-    if (objectParam == null) {
-      throw new RuntimeException("an <object-param> 'processor' of type " + ActivityProcessor.class
-          + " is mandatory for component " + getClass());
-    }
-
-    processor = (ActivityProcessor) objectParam.getObject();
-*/
   }
 
 

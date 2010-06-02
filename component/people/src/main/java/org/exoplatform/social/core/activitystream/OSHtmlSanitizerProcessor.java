@@ -76,10 +76,10 @@ public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
     Pattern pattern = Pattern.compile(startTag + "|"  + endTag);
     Matcher matcher = pattern.matcher(content);
 
-    // Replace all occurrences of pattern in input
     StringBuffer buf = new StringBuffer();
-    boolean found = false;
-    while ((found = matcher.find())) {
+    
+    // Replace all occurrences of pattern in input
+    while ((matcher.find())) {
       // Get the match result
       String replaceStr = matcher.group();
 
