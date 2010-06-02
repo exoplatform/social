@@ -42,19 +42,22 @@ public class ApplicationsIdentityProvider extends IdentityProvider<Application> 
   }
 
   @Override
-  public Identity populateIdentity(Application app) {
+  public Identity createIdentity(Application app) {
     Identity identity = new Identity(NAME, app.getId());
-    Profile profile = identity.getProfile();
-    profile.setProperty(Profile.USERNAME, app.getName());
-    profile.setProperty(Profile.FIRST_NAME, app.getName());
-    profile.setProperty(Profile.AVATAR_URL, app.getIcon());
-    profile.setProperty(Profile.URL, app.getUrl());
     return identity;
   }
 
 
   public void addApplication(Application app) {
     appsByUrl.put(app.getId(), app);
+  }
+
+  @Override
+  public void populateProfile(Profile profile, Application app) {
+    profile.setProperty(Profile.USERNAME, app.getName());
+    profile.setProperty(Profile.FIRST_NAME, app.getName());
+    profile.setProperty(Profile.AVATAR_URL, app.getIcon());
+    profile.setProperty(Profile.URL, app.getUrl());
   }
 
 }

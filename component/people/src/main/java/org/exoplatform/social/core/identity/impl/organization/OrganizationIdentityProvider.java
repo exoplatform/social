@@ -128,9 +128,13 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   }
 
   @Override
-  public Identity populateIdentity(User user) {
+  public Identity createIdentity(User user) {
     Identity identity = new Identity(NAME, user.getUserName());
-    Profile profile = identity.getProfile();
+  return identity;
+  }
+
+  @Override
+  public void populateProfile(Profile profile, User user) {
     profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
     profile.setProperty(Profile.LAST_NAME, user.getLastName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
@@ -148,6 +152,5 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       profile.setProperty("emails", emails);
     }
     
-  return identity;
   }
 }   

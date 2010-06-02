@@ -19,6 +19,7 @@ package org.exoplatform.social.core.identity;
 import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 
 /**
  * An identity provider represent a service that can serve identity
@@ -43,18 +44,41 @@ public abstract class IdentityProvider<T> {
       return null;
     }
     
-    Identity identity = populateIdentity(target);
+    Identity identity = createIdentity(target);
+    Profile profile = new Profile(identity);
+    populateProfile(profile, target);
+    identity.setProfile(profile);
 
     return identity;
   }
 	
 
+  /**
+   * Name for this provider. Must be unique among the registered providers.
+   * @return
+   */
   public abstract String getName();
   
+  /**
+   * Finds the remote object for an identity by ID.
+   * @param remoteId id of the remote object
+   * @return
+   */
 	public abstract T findByRemoteId(String remoteId);
 	
-	public abstract Identity populateIdentity(T user);
-	
+	/**
+	 * Creates a new identity for a given remote object
+	 * @param remoteObject the remote object for the identity holding the profile
+	 * @return an new Identity object with name and remote id set
+	 */
+	public abstract Identity createIdentity(T remoteObject);
+
+	/**
+	 * Populate an identity profile for a given remote object
+	 * @param profile the profile to be populated
+	 * @param remoteObject the remote object for the identity holding the profile
+	 */
+	public abstract void populateProfile(Profile profile, T remoteObject);
 
 	
 	/**

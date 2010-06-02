@@ -65,12 +65,15 @@ public class GroupIdentityProvider extends IdentityProvider<Group> {
   }
 
   @Override
-  public Identity populateIdentity(Group group) {
+  public Identity createIdentity(Group group) {
     Identity identity = new Identity(NAME, group.getId());
-    Profile profile = identity.getProfile();
+    return identity;
+  }
+
+  @Override
+  public void populateProfile(Profile profile, Group group) {
     profile.setProperty(Profile.FIRST_NAME, group.getLabel());
     profile.setProperty(Profile.USERNAME, group.getGroupName());
-    return identity;
   }
 
 }

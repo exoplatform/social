@@ -74,13 +74,16 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
   }
 
   @Override
-  public Identity populateIdentity(Space space) {
+  public Identity createIdentity(Space space) {
     Identity identity = new Identity(NAME, space.getId());
-    Profile profile = identity.getProfile();
+    return identity;
+  }
+
+  @Override
+  public void populateProfile(Profile profile, Space space) {
     profile.setProperty(Profile.FIRST_NAME, space.getName());
     profile.setProperty(Profile.USERNAME, space.getGroupId());
     profile.setProperty(Profile.AVATAR_URL, space.getImageSource());
     profile.setProperty(Profile.URL, space.getImageSource());
-    return identity;
   }
 }
