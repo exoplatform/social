@@ -25,7 +25,7 @@
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>
     <component-plugin>
-      <name>UsernameProcessor</name>
+      <name>MentionsProcessor</name>
       <set-method>addProcessorPlugin</set-method>
       <type>org.exoplatform.social.activity.MentionsProcessor</type>
       <init-params>
