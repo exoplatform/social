@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
 
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
 
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
                  "http://java.sun.com/dtd/web-app_2_3.dtd">
@@ -54,6 +71,26 @@
     <filter-class>org.exoplatform.web.CacheUserProfileFilter</filter-class>
   </filter>
 
+  <filter>
+    <filter-name>RememberMeFilter</filter-name>
+    <filter-class>org.exoplatform.web.login.RememberMeFilter</filter-class>
+  </filter>
+
+   <filter>
+    <filter-name>ClusteredSSOFilter</filter-name>
+    <filter-class>org.exoplatform.web.login.ClusteredSSOFilter</filter-class>
+  </filter>
+
+   <filter-mapping>
+     <filter-name>RememberMeFilter</filter-name>
+     <url-pattern>/public/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+    <filter-name>ClusteredSSOFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <filter-mapping>
     <filter-name>GenericFilter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -99,10 +136,10 @@
     <url-pattern>/rest/*</url-pattern>
   </filter-mapping>
 
-  <filter-mapping>
-    <filter-name>ThreadLocalSessionProviderInitializedFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
+<!--  <filter-mapping>-->
+<!--    <filter-name>ThreadLocalSessionProviderInitializedFilter</filter-name>-->
+<!--    <url-pattern>/*</url-pattern>-->
+<!--  </filter-mapping>-->
 
   <!-- ================================================================== -->
   <!--           LISTENER                                                 -->
@@ -166,7 +203,25 @@
     <load-on-startup>0</load-on-startup>
   </servlet>
 
+   <servlet>
+      <servlet-name>StickyCaptcha</servlet-name>
+      <servlet-class>org.exoplatform.web.security.CaptchaServlet</servlet-class>
+      <init-param>
+         <param-name>width</param-name>
+         <param-value>200</param-value>
+      </init-param>
+      <init-param>
+         <param-name>height</param-name>
+         <param-value>75</param-value>
+      </init-param>
+   </servlet>
+
   <!--  =================================================================  -->
+  <servlet-mapping>
+    <servlet-name>StickyCaptcha</servlet-name>
+    <url-pattern>/captcha</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>InitiateLoginServlet</servlet-name>
     <url-pattern>/initiatelogin</url-pattern>
@@ -205,7 +260,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RestServer</servlet-name>
-    <url-pattern>/rest/*</url-pattern>
+    <url-pattern>/rest-socialdemo/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
