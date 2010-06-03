@@ -16,9 +16,9 @@
  */
 package org.exoplatform.social.core.activitystream;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.exoplatform.social.AbstractPeopleTest;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.JCRStorage;
@@ -28,68 +28,163 @@ import org.exoplatform.social.jcr.SocialDataLocation;
 
 public class JCRStorageTest extends AbstractPeopleTest {
 
-  public void testGetStreamInfo() throws Exception {
+  private SocialDataLocation dataLocation;
+  private JCRStorage identityStorage;
+  private org.exoplatform.social.core.activitystream.JCRStorage activityStorage;
+  private ArrayList<String> activityIds = new ArrayList<String>();
 
-    SocialDataLocation dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
-    org.exoplatform.social.core.activitystream.JCRStorage storage = new org.exoplatform.social.core.activitystream.JCRStorage(dataLocation);
-    JCRStorage identityStorage = new JCRStorage(dataLocation);
+  @Override
+  protected void setUp() throws Exception {
+    dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
+    activityStorage = new org.exoplatform.social.core.activitystream.JCRStorage(dataLocation);
+    identityStorage = new JCRStorage(dataLocation);
+
+    begin();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    for (int i = 0, j = activityIds.size(); i < j; i++) {
+      String id = activityIds.get(i);
+      activityStorage.deleteActivity(id);
+    }
+
+    dataLocation = null;
+    identityStorage = null;
+    activityStorage = null;
+
+    end();
+  }
+
+  public void testGetStreamInfo() throws Exception {
+    Identity root = new Identity(OrganizationIdentityProvider.NAME, "root");
+    identityStorage.saveIdentity(root);
+
     // root save on john's stream
     Activity activity = new Activity();
     activity.setTitle("blabla");
     activity.setUserId("root");
     activity.setUpdated(new Date());
-    Identity root = new Identity(OrganizationIdentityProvider.NAME, "root");
-    identityStorage.saveIdentity(root);
-    storage.save(root, activity);
+    activityStorage.save(root, activity);
+
+    //for teardown func
+    activityIds.add(activity.getId());
 
     String streamId = activity.getStreamId();
     assertNotNull(streamId);
     assertEquals(activity.getStreamOwner(), "root");
 
-    List<Activity> activities = storage.getActivities(root);
+    List<Activity> activities = activityStorage.getActivities(root);
     assertEquals(1, activities.size());
     assertEquals(activities.get(0).getStreamOwner(), "root");
     assertEquals(activities.get(0).getStreamId(), streamId);
 
-    Activity loaded = storage.load(activity.getId());
+    Activity loaded = activityStorage.load(activity.getId());
     assertEquals(loaded.getStreamOwner(), "root");
     assertEquals(loaded.getStreamId(), streamId);
   }
 
-  public void testGetActivities() throws Exception {
+  public void testGetAllActivities() throws Exception {
+    int totalActivityCount = 5;
 
-    SocialDataLocation dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
-    org.exoplatform.social.core.activitystream.JCRStorage storage = new org.exoplatform.social.core.activitystream.JCRStorage(dataLocation);
-    JCRStorage identityStorage = new JCRStorage(dataLocation);
-    // root save on john's stream
-    Activity activity = new Activity();
-    activity.setTitle("blabla");
-    activity.setUserId("root");
-    activity.setUpdated(new Date());
     Identity john = new Identity(OrganizationIdentityProvider.NAME, "john");
     identityStorage.saveIdentity(john);
     assertNotNull(identityStorage.findIdentityById(john.getId()));
-    storage.save(john, activity);
 
-    Activity comment = new Activity();
-    comment.setTitle("re:title");
-    comment.setUserId("root");
-    comment.setUpdated(new Date());
-    comment.setReplyToId(Activity.IS_COMMENT);
-    storage.save(john, comment);
+    for (int i = 0; i < totalActivityCount; i++) {
+      // root save on john's stream
+      Activity activity = new Activity();
+      activity.setTitle("blabla");
+      activity.setUserId("root");
+      activity.setUpdated(new Date());
 
-    String streamId = activity.getStreamId();
-    assertNotNull(streamId);
-    assertEquals(activity.getStreamOwner(), "john");
+      //save activity
+      activityStorage.save(john, activity);
 
-    List<Activity> activities = storage.getActivities(john, 0, 20);
-    assertEquals(1, activities.size());
-    assertEquals(activities.get(0).getStreamOwner(), "john");
-    assertEquals(activities.get(0).getStreamId(), streamId);
+      //for teardown cleanup
+      activityIds.add(activity.getId());
 
-    Activity loaded = storage.load(activity.getId());
-    assertEquals(loaded.getStreamOwner(), "john");
-    assertEquals(loaded.getStreamId(), streamId);
+      //test activity has been created
+      String streamId = activity.getStreamId();
+      assertNotNull(streamId);
+      assertEquals(activity.getStreamOwner(), "john");
+
+      Activity comment = new Activity();
+      comment.setTitle("this is activity " + i);
+      comment.setUserId("root");
+      comment.setUpdated(new Date());
+      comment.setReplyToId(Activity.IS_COMMENT);
+      activityStorage.save(john, comment);
+      activityIds.add(comment.getId());
+    }
+
+    List<Activity> activities = activityStorage.getActivities(john);
+    assertEquals(totalActivityCount, activities.size());
   }
 
+
+  public void testGetActivitiesByPagingWithoutCreatingComments() throws Exception {
+    final int totalActivityCount = 9;
+    final int retrievedCount = 7;
+
+    Identity john = new Identity(OrganizationIdentityProvider.NAME, "john");
+    identityStorage.saveIdentity(john);
+    assertNotNull(identityStorage.findIdentityById(john.getId()));
+
+    for (int i = 0; i < totalActivityCount; i++) {
+      // root save on john's stream
+      Activity activity = new Activity();
+      activity.setTitle("blabla");
+      activity.setUserId("root");
+      activity.setUpdated(new Date());
+
+      //save activity
+      activityStorage.save(john, activity);
+
+      //for teardown cleanup
+      activityIds.add(activity.getId());
+    }
+
+    List<Activity> activities = activityStorage.getActivities(john, 0, retrievedCount);
+    assertEquals(retrievedCount, activities.size());
+  }
+
+  public void testGetActivitiesByPagingWithCreatingComments() throws Exception {
+    final int totalActivityCount = 2;
+    final int retrievedCount = 1;
+
+    Identity john = new Identity(OrganizationIdentityProvider.NAME, "john");
+    identityStorage.saveIdentity(john);
+    assertNotNull(identityStorage.findIdentityById(john.getId()));
+
+    for (int i = 0; i < totalActivityCount; i++) {
+      // root save on john's stream
+      Activity activity = new Activity();
+      activity.setTitle("blabla");
+      activity.setUserId("root");
+      activity.setUpdated(new Date());
+
+      //save activity
+      activityStorage.save(john, activity);
+
+      //for teardown cleanup
+      activityIds.add(activity.getId());
+
+      //test activity has been created
+      String streamId = activity.getStreamId();
+      assertNotNull(streamId);
+      assertEquals(activity.getStreamOwner(), "john");
+
+      Activity comment = new Activity();
+      comment.setTitle("this is comment " + i);
+      comment.setUserId("root");
+      comment.setUpdated(new Date());
+      comment.setReplyToId(Activity.IS_COMMENT);
+      activityStorage.save(john, comment);
+      activityIds.add(comment.getId());
+    }
+
+    List<Activity> activities = activityStorage.getActivities(john, 0, retrievedCount);
+    assertEquals(retrievedCount, activities.size());
+  }
 }

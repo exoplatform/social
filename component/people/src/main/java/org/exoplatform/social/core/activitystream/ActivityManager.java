@@ -96,11 +96,7 @@ public class ActivityManager {
    * @throws Exception the exception
    */
   public List<Activity> getActivities(Identity identity) throws Exception {
-    List<Activity> activities = storage.getActivities(identity);
-    for (Activity activity : activities) {
-      processActivitiy(activity);
-    }
-    return activities;
+    return storage.getActivities(identity, 0, 20);
   }
   
   /**

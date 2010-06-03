@@ -462,37 +462,23 @@ public class JCRStorage {
     try {
       Session session = sessionManager.getOrOpenSession();
 
+      QueryManager queryManager = session.getWorkspace().getQueryManager();
+      String queryStr = "select * from exo:activity where jcr:path like '" + path + "[%]/exo:activity[%]' and NOT exo:replyToId='"+Activity.IS_COMMENT +"' order by exo:updatedTimestamp desc";
+      QueryImpl query = (QueryImpl) queryManager.createQuery(queryStr, Query.SQL);
+      query.setOffset(offset);
+      query.setLimit(limit);
+      QueryResult result = query.execute();
 
-    QueryManager qm = session.getWorkspace().getQueryManager();
-    String query = "select * from exo:activity where jcr:path like '" + path + "[%]/exo:activity[%]'" //+ " and exo:replyToId <> '" + Activity.IS_COMMENT +"'"
-    + " order by exo:updatedTimestamp desc";
-    QueryImpl impl = (QueryImpl) qm.createQuery(query, Query.SQL);
-    impl.setLimit(limit);
-    impl.setOffset(offset);
-    QueryResult result = impl.execute();
+      NodeIterator nodes = result.getNodes();
 
-    NodeIterator nodes = result.getNodes();//n.getNodes();
-
-    //NodeIterator nodes  = n.getNodes();
-
-    String replyToId;
-    while (nodes.hasNext()) {
-      Node node = nodes.nextNode();
-      if (node.hasProperty(REPLY_TO_ID)) {
-        replyToId = node.getProperty(REPLY_TO_ID).getString();
-        if (!replyToId.equals(Activity.IS_COMMENT)) {
-          activities.add(load(node));
-        }
-      } else {
+      while (nodes.hasNext()) {
+        Node node = nodes.nextNode();
         activities.add(load(node));
       }
-    }
-
     } catch (Exception e) {
-
-    LOG.error("Failed to retrieve activities for owner", e);
+      LOG.error("Failed to retrieve activities for owner", e);
     } finally {
-        sessionManager.closeSession();
+      sessionManager.closeSession();
     }
     return activities;
   }
