@@ -35,7 +35,7 @@ import org.exoplatform.social.jcr.SocialDataLocation;
 /**
  * This class represents an Activity Manager, also can configure as service in
  * social platform.
- * 
+ *
  * @see org.exoplatform.social.core.activitystream.model.Activity
  * @see org.exoplatform.social.core.activitystream.JCRStorage
  */
@@ -43,16 +43,16 @@ public class ActivityManager {
 
   /** The storage. */
   private JCRStorage storage;
- 
+
   private static final Log LOG = ExoLogger.getLogger(ActivityManager.class);
-  
+
   private SortedSet<ActivityProcessor> processors;
 
   private IdentityManager identityManager;
-  
+
   /**
    * Instantiates a new activity manager.
-   * 
+   *
    * @param dataLocation the data location of activity manager it will
    *          instantiates tree node for this services.
    * @see org.exoplatform.social.space.impl.SoscialDataLocation.
@@ -68,7 +68,7 @@ public class ActivityManager {
   // TODO should also filter by appID
   /**
    * Gets the activity by activity Id.
-   * 
+   *
    * @param activityId the activity id
    * @return the activity
    */
@@ -80,7 +80,7 @@ public class ActivityManager {
 
   /**
    * delete activity by its id.
-   * 
+   *
    * @param activityId the activity id
    * @throws Exception the exception
    */
@@ -90,7 +90,7 @@ public class ActivityManager {
 
   /**
    * Gets the lastest activities by identity
-   * 
+   *
    * @param identity the identity
    * @return the activities
    * @throws Exception the exception
@@ -98,10 +98,10 @@ public class ActivityManager {
   public List<Activity> getActivities(Identity identity) throws Exception {
     return storage.getActivities(identity, 0, 20);
   }
-  
+
   /**
    * Gets the latest activities by identity, specifying start offset index and limit
-   * 
+   *
    * @param identity the identity
    * @param start offset index
    * @param limit
@@ -119,7 +119,7 @@ public class ActivityManager {
   /**
    * Saves an activity to the stream of a owner.<br/>
    * Note that the Activity.userId will be set to the owner identity if not already set.
-   * 
+   *
    * @param owner owner of the activity stream. Usually a user or space
    * @param activity the activity to save
    * @return the activity saved
@@ -145,7 +145,7 @@ public class ActivityManager {
 
   /**
    * Saves activity into the stream for the activity's userId.
-   * 
+   *
    * @see Activity#getUserId()
    * @param activity the activity to save
    * @return the activity
@@ -157,11 +157,11 @@ public class ActivityManager {
     return saveActivity(owner, activity);
   }
 
-  
+
   /**
    * Save new or updates comment to an activity comment is an instance of
    * Activity with mandatory properties: userId, title.
-   * 
+   *
    * @param activity
    * @param comment
    * @throws Exception
@@ -189,7 +189,7 @@ public class ActivityManager {
 
   /**
    * Saves an identity who likes an activity
-   * 
+   *
    * @param activity
    * @param identity
    * @throws Exception
@@ -207,7 +207,7 @@ public class ActivityManager {
 
   /**
    * Removes activity like, if this activity liked, remove; else does nothing
-   * 
+   *
    * @param activity
    * @param identity user that unlikes the activity
    * @throws Exception
@@ -225,7 +225,7 @@ public class ActivityManager {
 
   /**
    * Gets an activity's commentList
-   * 
+   *
    * @param activity
    * @return
    */
@@ -245,7 +245,7 @@ public class ActivityManager {
 
   /**
    * Records an activity
-   * 
+   *
    * @param owner the owner of the target stream for this activity
    * @param type the type of activity (freeform)
    * @param title the title
@@ -258,10 +258,10 @@ public class ActivityManager {
     Activity activity = new Activity(userId, type, title, body);
     return saveActivity(owner, activity);
   }
-  
+
   /**
    * Saves an activity
-   * 
+   *
    * @param owner
    * @param activity
    * @return the stored activity
@@ -278,7 +278,7 @@ public class ActivityManager {
     processors.add(processor);
     LOG.info("added activity processor " + processor.getClass());
   }
-  
+
   /**
    * adds a new processor plugin
    * @param plugin
@@ -286,8 +286,8 @@ public class ActivityManager {
   public void addProcessorPlugin(BaseActivityProcessorPlugin plugin) {
     addProcessor(plugin);
   }
-  
-  
+
+
   /**
    * Comparator used to order the processors by priority
    * @return
@@ -303,10 +303,10 @@ public class ActivityManager {
       }
     };
   }
-  
+
   /**
    * Pass an activity through the chain of processors
-   * 
+   *
    * @param activity
    */
   void processActivitiy(Activity activity) {

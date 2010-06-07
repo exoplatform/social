@@ -78,19 +78,11 @@ public class ExoActivityService extends ExoService implements ActivityService {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
       for (Identity id : idSet) {
         // TODO filter by appID
-        List<org.exoplatform.social.core.activitystream.model.Activity> activities = am.getActivities(id);
+        List<org.exoplatform.social.core.activitystream.model.Activity> activities = am.getActivities(id, options.getFirst(), options.getMax());
         result.addAll(convertToOSActivities(activities, fields));
-
       }
-      // last time go first.
-      // Collections.reverse(result);
-      sortActivity(result);
-      // Add for applying paging.
-      int totalSize = result.size();
-      int last = options.getFirst() + options.getMax();
-      result = result.subList(options.getFirst(), Math.min(last, totalSize));
 
-      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, totalSize));
+      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, result.size()));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
@@ -124,7 +116,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
       String user = userId.getUserId(token);
       Identity id = getIdentity(user, token);
 
-      List<org.exoplatform.social.core.activitystream.model.Activity> exoActivities = am.getActivities(id);
+      List<org.exoplatform.social.core.activitystream.model.Activity> exoActivities = am.getActivities(id, options.getFirst(), options.getMax());
 
       // TODO : this is not efficient, this should be done by the JCR
       for (org.exoplatform.social.core.activitystream.model.Activity exoActivity : exoActivities) {
@@ -135,12 +127,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
         }
       }
 
-      // Add for applying paging.
-      int totalSize = result.size();
-      int last = options.getFirst() + options.getMax();
-      result = result.subList(options.getFirst(), Math.min(last, totalSize));
-
-      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, totalSize));
+      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, result.size()));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
@@ -493,35 +480,6 @@ public class ExoActivityService extends ExoService implements ActivityService {
       res.add(convertToOSActivity(activity, fields));
     }
     return res;
-  }
-
-  /**
-   * Sort a list in increase order of posted time.<br>
-   *
-   * @param lstActivities List for sorting.
-   * @return A sorted array in increase order.
-   */
-  private List<Activity> sortActivity(List<Activity> lstActivities) {
-    Collections.sort(lstActivities, new ActivityComparator());
-    return lstActivities;
-  }
-
-  /**
-   * Implement ActivityComparator class for sorting in increase order of posted
-   * time.<br>
-   */
-  private class ActivityComparator implements Comparator<Activity> {
-
-    /**
-     * Compare 2 activity by posted time.
-     *
-     * @param act1 the act1
-     * @param act2 the act2
-     * @return the int
-     */
-    public int compare(Activity act1, Activity act2) {
-      return (int) (act2.getPostedTime() - act1.getPostedTime());
-    }
   }
 
 }
