@@ -13,9 +13,9 @@
   <name>eXo Social</name>
   
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0.0-GA</connection>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.0.0-GA</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/projects/social/tags/1.0.0-GA</url>
+    <connection>scm:svn:http://svn.exoplatform.org/projects/social/branches/1.0.x</connection>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/branches/1.0.x</developerConnection>
+    <url>http://fisheye.exoplatform.org/browse/social/branches/1.0.x</url>
   </scm>
   
   <properties>
