@@ -24,6 +24,8 @@ import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
+
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
@@ -41,18 +43,20 @@ import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 
-import com.google.common.collect.Lists;
-
 /**
  * The Class ExoActivityService.
  */
 public class ExoActivityService extends ExoService implements ActivityService {
 
-  /** The Constant OPENSOCIAL_PREFIX. */
-  public final static String OPENSOCIAL_PREFIX        = "opensocial:";
+  /**
+   * The Constant OPENSOCIAL_PREFIX.
+   */
+  public final static String OPENSOCIAL_PREFIX = "opensocial:";
 
-  /** The Constant OPENSOCIAL_PREFIX_LENGTH. */
-  public final static int    OPENSOCIAL_PREFIX_LENGTH = OPENSOCIAL_PREFIX.length();
+  /**
+   * The Constant OPENSOCIAL_PREFIX_LENGTH.
+   */
+  public final static int OPENSOCIAL_PREFIX_LENGTH = OPENSOCIAL_PREFIX.length();
 
   /*
    * (non-Javadoc)
@@ -63,6 +67,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * org.apache.shindig.social.opensocial.spi.CollectionOptions,
    * org.apache.shindig.auth.SecurityToken)
    */
+
   public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds,
                                                            GroupId groupId,
                                                            String appId,
@@ -78,19 +83,11 @@ public class ExoActivityService extends ExoService implements ActivityService {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
       for (Identity id : idSet) {
         // TODO filter by appID
-        List<org.exoplatform.social.core.activitystream.model.Activity> activities = am.getActivities(id);
+        List<org.exoplatform.social.core.activitystream.model.Activity> activities = am.getActivities(id, options.getFirst(), options.getMax());
         result.addAll(convertToOSActivities(activities, fields));
-
       }
-      // last time go first.
-      // Collections.reverse(result);
-      sortActivity(result);
-      // Add for applying paging.
-      int totalSize = result.size();
-      int last = options.getFirst() + options.getMax();
-      result = result.subList(options.getFirst(), Math.min(last, totalSize));
 
-      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, totalSize));
+      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, result.size()));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
@@ -105,6 +102,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * java.util.Set, org.apache.shindig.social.opensocial.spi.CollectionOptions,
    * java.util.Set, org.apache.shindig.auth.SecurityToken)
    */
+
   public Future<RestfulCollection<Activity>> getActivities(UserId userId,
                                                            GroupId groupId,
                                                            String appId,
@@ -124,23 +122,17 @@ public class ExoActivityService extends ExoService implements ActivityService {
       String user = userId.getUserId(token);
       Identity id = getIdentity(user, token);
 
-      List<org.exoplatform.social.core.activitystream.model.Activity> exoActivities = am.getActivities(id);
+      List<org.exoplatform.social.core.activitystream.model.Activity> exoActivities = am.getActivities(id, options.getFirst(), options.getMax());
 
       // TODO : this is not efficient, this should be done by the JCR
       for (org.exoplatform.social.core.activitystream.model.Activity exoActivity : exoActivities) {
         if (exoActivity.getType() != null && exoActivity.getType().startsWith(OPENSOCIAL_PREFIX)) {
-          if (activityIds.contains(exoActivity.getType().substring(OPENSOCIAL_PREFIX_LENGTH)))
-            ;
-          result.add(convertToOSActivity(exoActivity, fields));
+          if (activityIds.contains(exoActivity.getType().substring(OPENSOCIAL_PREFIX_LENGTH)));
+            result.add(convertToOSActivity(exoActivity, fields));
         }
       }
 
-      // Add for applying paging.
-      int totalSize = result.size();
-      int last = options.getFirst() + options.getMax();
-      result = result.subList(options.getFirst(), Math.min(last, totalSize));
-
-      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, totalSize));
+      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, result.size()));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
@@ -154,6 +146,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String,
    * java.util.Set, java.lang.String, org.apache.shindig.auth.SecurityToken)
    */
+
   public Future<Activity> getActivity(UserId userId,
                                       GroupId groupId,
                                       String appId,
@@ -171,6 +164,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * org.apache.shindig.social.opensocial.spi.GroupId, java.lang.String,
    * java.util.Set, org.apache.shindig.auth.SecurityToken)
    */
+
   public Future<Void> deleteActivities(UserId userId,
                                        GroupId groupId,
                                        String appId,
@@ -188,6 +182,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * java.util.Set, org.apache.shindig.social.opensocial.model.Activity,
    * org.apache.shindig.auth.SecurityToken)
    */
+
   public Future<Void> createActivity(UserId userId,
                                      GroupId groupId,
                                      String appId,
@@ -196,10 +191,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                      SecurityToken token) throws SocialSpiException {
     try {
       activity.setAppId(appId); //groupId = new GroupId(GroupId.Type.groupId, "space:qsdsqd")
-      
+
       org.exoplatform.social.core.activitystream.model.Activity exoActivity = convertFromOSActivity(activity, fields);
-      
-      
+
+
       if (token instanceof AnonymousSecurityToken) {
         throw new ProtocolException(HttpServletResponse.SC_UNAUTHORIZED, " a non anonymous security token is expected");
       }
@@ -209,28 +204,28 @@ public class ExoActivityService extends ExoService implements ActivityService {
       IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
       String user = userId.getUserId(token); // can be organization:name or organization:UUID
-      Identity userIdentity = identityManager.getIdentity(user); 
-      
+      Identity userIdentity = identityManager.getIdentity(user);
+
       // identity for the stream to post on
       Identity targetStream = userIdentity;
-      
+
       /// someone posting for a space ?
       if (groupId.getType() == GroupId.Type.groupId) {
         String group = groupId.getGroupId(); // can be space:name or space:UUID
-        targetStream = identityManager.getIdentity(group); 
+        targetStream = identityManager.getIdentity(group);
         // TODO : check that member is allowed to post on group or throw SC_UNAUTHORIZED
-      } 
+      }
 
       // we need to know where to post
       if (targetStream == null) {
         throw new ProtocolException(HttpServletResponse.SC_FORBIDDEN, user + " is an unknown identity");
       }
-      
+
       // Define activity user if not already set
       String activityUser = exoActivity.getUserId();
       if (activityUser == null) {
-        exoActivity.setUserId(userIdentity.getId());  
-      
+        exoActivity.setUserId(userIdentity.getId());
+
         // making sure it resolves to a valid identity
       } else {
         Identity activityUserIdentity = identityManager.getIdentity(activityUser);
@@ -238,13 +233,13 @@ public class ExoActivityService extends ExoService implements ActivityService {
           throw new ProtocolException(HttpServletResponse.SC_FORBIDDEN, activityUser + " is an unknown identity");
         }
       }
-      
+
       am.saveActivity(targetStream, exoActivity);
-      
+
       return ImmediateFuture.newInstance(null);
     } catch (Throwable e) {
       if (e instanceof ProtocolException) {
-        throw (ProtocolException)e;
+        throw (ProtocolException) e;
       }
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
@@ -252,9 +247,9 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
   /**
    * Convert from os activity.
-   * 
+   *
    * @param activity the activity
-   * @param fields the fields
+   * @param fields   the fields
    * @return the org.exoplatform.social.core.activitystream.model. activity
    */
   private org.exoplatform.social.core.activitystream.model.Activity convertFromOSActivity(Activity activity,
@@ -367,9 +362,9 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
   /**
    * Convert to os activity.
-   * 
+   *
    * @param exoActivity the exo activity
-   * @param fields the fields
+   * @param fields      the fields
    * @return the activity
    */
   private Activity convertToOSActivity(org.exoplatform.social.core.activitystream.model.Activity exoActivity,
@@ -481,9 +476,9 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
   /**
    * Convert to os activities.
-   * 
+   *
    * @param activities the activities
-   * @param fields the fields
+   * @param fields     the fields
    * @return the list
    */
   private List<Activity> convertToOSActivities(List<org.exoplatform.social.core.activitystream.model.Activity> activities,
@@ -497,7 +492,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
   /**
    * Sort a list in increase order of posted time.<br>
-   * 
+   *
    * @param lstActivities List for sorting.
    * @return A sorted array in increase order.
    */
@@ -514,7 +509,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
     /**
      * Compare 2 activity by posted time.
-     * 
+     *
      * @param act1 the act1
      * @param act2 the act2
      * @return the int
