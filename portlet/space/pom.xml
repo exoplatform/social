@@ -59,7 +59,6 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <scope>provided</scope>
-      <version>20070829</version>
     </dependency>
 
     <dependency>
@@ -137,28 +136,24 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.webui.social</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.application.rest</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 

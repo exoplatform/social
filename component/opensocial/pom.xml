@@ -44,7 +44,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>${javax.servlet.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -63,21 +62,18 @@
     <dependency>
       <groupId>net.oauth.core</groupId>
       <artifactId>oauth</artifactId>
-      <version>20090531</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-common</artifactId>
-      <version>${org.shindig.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
-      <version>${org.shindig.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -126,21 +122,18 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.common</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 

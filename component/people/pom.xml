@@ -38,7 +38,6 @@
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-      <version>${javax.jcr.version}</version>
     </dependency>
 
     <dependency>
@@ -50,7 +49,6 @@
     <dependency>
       <groupId>com.google.collections</groupId>
       <artifactId>google-collections</artifactId>
-      <version>1.0-rc2</version>
       <scope>provided</scope>
     </dependency>
 
@@ -87,7 +85,6 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.common</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 

@@ -46,31 +46,28 @@
       <scope>provided</scope>
     </dependency>
 
-     <dependency>
-      <groupId>org.exoplatform.platform</groupId>
-      <artifactId>exo.platform.commons.testing</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.common</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.people</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.space</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
+    </dependency>
+
+     <dependency>
+      <groupId>org.exoplatform.platform</groupId>
+      <artifactId>exo.platform.commons.testing</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
