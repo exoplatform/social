@@ -22,14 +22,15 @@ import java.util.Map;
 
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.social.services.rest.opensocial.LinkShare;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import social.portal.webui.component.composer.UIComposerExtensionContainer.Extension;
@@ -57,59 +58,55 @@ public class UIComposerLinkExtension extends UIContainer {
   public static final String IMAGE_PARAM = "image";
   public static final String TITLE_PARAM = "title";
   public static final String DESCRIPTION_PARAM = "description";
-  
-  static private final String HTTP = "http://";
-  static private final String HTTPS = "https://";
+
+  private static final String MSG_ERROR_ATTACH_LINK = "UIComposerLinkExtension.msg.error.Attach_Link";
+  private static final String HTTP = "http://";
+  private static final String HTTPS = "https://";
   private LinkShare linkShare_;
   private boolean linkInfoDisplayed_ = false;
   private JSONObject dataLink_;
-  
+
   /**
    * constructor
    */
   public UIComposerLinkExtension() {
     addChild(new UIFormStringInput("InputLink", "InputLink", null));
   }
-  
+
   public void setLinkInfoDisplayed(boolean displayed) {
     linkInfoDisplayed_ = displayed;
   }
-  
+
   public boolean isLinkInfoDisplayed() {
     return linkInfoDisplayed_;
   }
-  
+
   public void setDataLink(JSONObject dataLink) {
     dataLink_ = dataLink;
   }
-  
+
   public JSONObject getDataLink() {
     return dataLink_;
   }
-  
+
   public void clearLinkShare() {
     linkShare_ = null;
   }
-  
+
   public LinkShare getLinkShare() {
     return linkShare_;
   }
-  
+
   /**
    * sets link url to gets content
    * @param url
-   * @throws JSONException
+   * @throws Exception
    */
-  private void setLink(String url) throws JSONException {
+  private void setLink(String url) throws Exception {
     if (!(url.contains(HTTP) || url.contains(HTTPS))) {
       url = HTTP + url;
     }
-    try {
-      linkShare_ = LinkShare.getInstance(url);
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    linkShare_ = LinkShare.getInstance(url);
     dataLink_ = new JSONObject();
     dataLink_.put(LINK_PARAM, linkShare_.getLink());
     String image = "";
@@ -129,19 +126,25 @@ public class UIComposerLinkExtension extends UIContainer {
     }
     setLinkInfoDisplayed(true);
   }
-  
+
   static public class AttachActionListener extends EventListener<UIComposerLinkExtension> {
 
     @Override
     public void execute(Event<UIComposerLinkExtension> event) throws Exception {
       WebuiRequestContext requestContext = event.getRequestContext();
+      UIApplication uiApplication = requestContext.getUIApplication();
       UIComposerLinkExtension uiComposerLinkExtension = event.getSource();
       String url = requestContext.getRequestParameter(OBJECTID);
-      uiComposerLinkExtension.setLink(url);
+      try {
+        uiComposerLinkExtension.setLink(url);
+      } catch (Exception e) {
+        uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.ERROR));
+        return;
+      }
       requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
     }
   }
-  
+
   static public class ChangeLinkContentActionListener extends EventListener<UIComposerLinkExtension> {
 
     @Override
