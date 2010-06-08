@@ -26,31 +26,26 @@ import org.exoplatform.services.log.Log;
 /**
  * This class is meant to be the starting for any data storage access in Social.<br/>
  * Provides all JCR pathes usable in Social JCR data storage. <br/>
- * A {@link JCRSessionManager} accessible by {@link #getSessionManager()} is configured on the appropriate repository and workspace.<br/> 
+ * A {@link JCRSessionManager} accessible by {@link #getSessionManager()} is configured on the appropriate repository and workspace.<br/>
  * Relies on {@link NodeHierarchyCreator} to initialize the structure and provide pathes aliases.
- * 
+ *
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
  * @version $Revision$
  */
 public class SocialDataLocation {
-  
+
   private static final Log log = ExoLogger.getLogger(SocialDataLocation.class);
-  
-  /**
-   * Parameter name use to designate the name of the repository where the data is stored. Should be passed in constructor's {@link InitParams}
-   */
-  public static final String REPOSITORY_PARAM = "repository";
-  
+
   /**
    * Parameter name use to designate the name of the workspace in the repository where the data is stored. Should be passed in constructor's {@link InitParams}
    */
   public static final String WORKSPACE_PARAM = "workspace";
-  
+
   /**
    * Default repository name used if none is specified
    */
   public static final String DEFAULT_REPOSITORY_NAME = "repository";
-  
+
   /**
    * Default workspace name used if none is specified
    */
@@ -62,24 +57,22 @@ public class SocialDataLocation {
   private String socialIdentityHome;
   private String socialProfileHome;
   private String socialRelationshipHome;
-  
+
   private NodeHierarchyCreator creator;
-  private String repository;
   private String workspace;
   private JCRSessionManager sessionManager;
   private RepositoryService repositoryService;
-  
+
   /**
    * Creates a new {@link SocialDataLocation} and initializes pathes.
-   * @param params {@link #REPOSITORY_PARAM} and {@link #WORKSPACE_PARAM} are expected as value-param 
+   * @param params {@link #REPOSITORY_PARAM} and {@link #WORKSPACE_PARAM} are expected as value-param
    * @param creator used to resolve path names. It is also declared here to ensure that the data structure has been initalized before.
    */
   public SocialDataLocation(InitParams params, NodeHierarchyCreator creator, RepositoryService repositoryService) {
     this.creator = creator;
-    this.repository = getParam(params, REPOSITORY_PARAM, DEFAULT_REPOSITORY_NAME);
     this.workspace = getParam(params, WORKSPACE_PARAM, DEFAULT_WORKSPACE_NAME);
     this.repositoryService = repositoryService;
-    this.sessionManager = new JCRSessionManager(repository, workspace, repositoryService);
+    this.sessionManager = new JCRSessionManager(workspace, repositoryService);
     initPathes();
   }
 
@@ -94,29 +87,28 @@ public class SocialDataLocation {
      socialProfileHome = getPath(Locations.SOCIAL_PROFILE_HOME);
      socialRelationshipHome = getPath(Locations.SOCIAL_RELATIONSHIP_HOME);
   }
-  
+
   /**
    * Change the storage location. Note that pathes are not reset
    * @param plugin plugin defining repository and workspace location for the data storage
    */
   public void setLocation(DataLocationPlugin plugin) {
-    this.repository = plugin.getRepository();
     this.workspace = plugin.getWorkspace();
-    this.sessionManager = new JCRSessionManager(repository, workspace, repositoryService);
-  } 
-  
+    this.sessionManager = new JCRSessionManager(workspace, repositoryService);
+  }
+
   /**
    * Get a jcr path by location name.
    * @param locationName name of the location such a defined in {@link Locations}
-   * @return jcr path corresponding the alias name in {@link NodeHierarchyCreator}. 
-   * If the creator was not set, returns the locationName. 
+   * @return jcr path corresponding the alias name in {@link NodeHierarchyCreator}.
+   * If the creator was not set, returns the locationName.
    * The path returned is relative to root (no leading '/')
    */
   protected String getPath(String locationName) {
     if (creator == null) {
       return locationName;
     }
-    
+
     String path = creator.getJcrPath(locationName);
     if (path != null) {
       path = path.substring(1);
@@ -138,10 +130,6 @@ public class SocialDataLocation {
     return result;
   }
 
-  public String getRepository() {
-    return repository;
-  }
-
   public String getWorkspace() {
     return workspace;
   }
@@ -151,37 +139,37 @@ public class SocialDataLocation {
   }
 
   /**
-   * 
+   *
    * @return root path for Social Space data
    */
   public String getSocialSpaceRoot() {
     return socialSpaceRoot;
   }
-  
+
   /**
-   * 
+   *
    * @return root path for Space data
    */
   public String getSocialSpaceHome() {
     return socialSpaceHome;
   }
-  
+
   public String getSocialActivitiesHome() {
     return socialActivitiesHome;
   }
-  
+
   public String getSocialIdentityHome() {
     return socialIdentityHome;
   }
-  
+
   public String getSocialProfileHome() {
     return socialProfileHome;
   }
-  
+
   public String getSocialRelationshipHome() {
     return socialRelationshipHome;
   }
-  
+
   /**
    * Location names for Social data storage
    * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
@@ -197,5 +185,5 @@ public class SocialDataLocation {
     public static final String SOCIAL_RELATIONSHIP_HOME = "socialRelationshipHome";
     public static final String DEFAULT_APPS_LOCATION = "exo:applications";
   }
-  
+
 }

@@ -19,41 +19,27 @@ package org.exoplatform.social.jcr;
 import org.exoplatform.container.xml.InitParams;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DataLocationPlugin.
  */
 public class DataLocationPlugin extends ManagedPlugin {
-  
-  /** The repository. */
-  private String repository;
 
   /** The workspace. */
   private String workspace;
 
   /**
    * Instantiates a new data location plugin.
-   * 
+   *
    * @param params the params
    * @throws Exception the exception
    */
   public DataLocationPlugin(InitParams params) throws Exception {
-    this.repository = params.getValueParam("repository").getValue();
     this.workspace = params.getValueParam("workspace").getValue();
   }
 
   /**
-   * Gets the repository.
-   * 
-   * @return the repository
-   */
-  public String getRepository() {
-    return repository;
-  }
-
-  /**
    * Gets the workspace.
-   * 
+   *
    * @return the workspace
    */
   public String getWorkspace() {

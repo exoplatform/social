@@ -41,9 +41,9 @@ import org.exoplatform.social.space.SpaceAttachment;
 
 
 public class JCRStorage {
-  
+
   private static final Log LOG = ExoLogger.getLogger(JCRStorage.class);
-  
+
   final static private String SPACE_NODETYPE = "exo:space".intern();
   final static private String SPACE_NAME = "exo:name".intern();
   final static private String SPACE_GROUPID = "exo:groupId".intern();
@@ -62,13 +62,11 @@ public class JCRStorage {
   //new change
   private SocialDataLocation dataLocation;
   private JCRSessionManager sessionManager;
-  private String repository;
   private String workspace;
 
   public JCRStorage(SocialDataLocation dataLocation) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
-    this.repository = dataLocation.getRepository();
     this.workspace = dataLocation.getWorkspace();
   }
 
@@ -77,17 +75,13 @@ public class JCRStorage {
     return session.getRootNode().getNode(path);
   }
 
-  public String getRepository() throws Exception {
-     return repository;
-  }
-  
   public String getWorkspace() throws Exception {
      return workspace;
   }
-  
+
   /**
    * Gets the all spaces.
-   * 
+   *
    * @return the all spaces
    */
   public List<Space> getAllSpaces() {
@@ -123,7 +117,7 @@ public class JCRStorage {
       QueryResult queryResult = query.execute();
       NodeIterator nodeIterator = queryResult.getNodes();
       Node identityNode = null;
-      
+
       if (nodeIterator.getSize() == 1) {
         identityNode = (Node) nodeIterator.next();
       } else {
@@ -137,11 +131,11 @@ public class JCRStorage {
     }
     return null;
   }
-  
+
   public Space getSpaceByUrl(String url) {
     try {
       Session session = sessionManager.openSession();
-      
+
       Node spaceHomeNode = getSpaceHome(session);
       NodeIterator iter = spaceHomeNode.getNodes();
       Space space;
@@ -157,7 +151,7 @@ public class JCRStorage {
     }
     return null;
   }
-  
+
   public void deleteSpace(String id) {
     Session session = sessionManager.openSession();
     try {
@@ -176,7 +170,7 @@ public class JCRStorage {
   public void saveSpace(Space space, boolean isNew) {
     try {
       Session session = sessionManager.openSession();
-      
+
       Node spaceHomeNode = getSpaceHome(session);
       saveSpace(spaceHomeNode, space, isNew, session);
     } catch (Exception e) {
@@ -216,11 +210,11 @@ public class JCRStorage {
         if (extNode.canAddMixin("exo:privilegeable")) extNode.addMixin("exo:privilegeable");
         String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE} ;
         extNode.setPermission(SystemIdentity.ANY, arrayPers) ;
-        List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;   
+        List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;
         for(AccessControlEntry accessControlEntry : permsList) {
-          extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;      
-        } 
-        
+          extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;
+        }
+
         if (attachment.getFileName() != null) {
           Node nodeFile = null ;
           try {
@@ -236,7 +230,7 @@ public class JCRStorage {
           }
           long lastModified = attachment.getLastModified();
           long lastSaveTime = 0;
-          if (nodeContent.hasProperty("jcr:lastModified")) 
+          if (nodeContent.hasProperty("jcr:lastModified"))
             lastSaveTime = nodeContent.getProperty("jcr:lastModified").getLong();
           if ((lastModified != 0) && (lastModified != lastSaveTime)) {
             nodeContent.setProperty("jcr:mimeType", attachment.getMimeType()) ;
@@ -297,7 +291,7 @@ public class JCRStorage {
     }
     return space;
   }
-  
+
   private String [] ValuesToStrings(Value[] Val) throws Exception {
     if(Val.length == 1) return new String[]{Val[0].getString()};
     String[] Str = new String[Val.length];

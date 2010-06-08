@@ -26,30 +26,28 @@ import org.exoplatform.services.jcr.ext.common.SessionProvider;
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
  *          exo@exoplatform.com
- * Oct 16, 2009  
+ * Oct 16, 2009
  */
 public class JCRSessionManager {
 
   /** . */
   private static final ThreadLocal<Session> currentSession = new ThreadLocal<Session>();
-  
-  
+
+
   String workspaceName = "portal-system";
-  String repositoryName = "repository";
   RepositoryService repositoryService;
- 
+
   /**
    * Constructor
    * @param repository
    * @param workspace
    * @param repositoryService
    */
-  public JCRSessionManager(String repository, String workspace, RepositoryService repositoryService) {
+  public JCRSessionManager(String workspace, RepositoryService repositoryService) {
     this.workspaceName = workspace;
-    this.repositoryName = repository;
     this.repositoryService = repositoryService;
   }
-  
+
   /**
    * Gets workSpaceName
    * @return
@@ -67,32 +65,15 @@ public class JCRSessionManager {
   }
 
   /**
-   * Gets repositoryName
-   * @return
-   */
-  public String getRepositoryName() {
-    return repositoryName;
-  }
-
-  /**
-   * Sets repositoryName
-   * @param repositoryName
-   */
-  public void setRepositoryName(String repositoryName) {
-    this.repositoryName = repositoryName;
-  }
-
-  /**
    * <p>Returns the session currently associated with the current thread of execution.<br/>
    * The current session is set with {@link #openSession()} </p>
    *
    * @return the current session if exists, null otherwhise
    */
-  public static Session getCurrentSession()
-  {
+  public static Session getCurrentSession() {
      return currentSession.get();
   }
-  
+
   /**
    * Gets session
    * @param sessionProvider
@@ -101,7 +82,7 @@ public class JCRSessionManager {
   public Session getSession(SessionProvider sessionProvider) {
     Session session = null;
     try {
-     ManageableRepository repository = repositoryService.getRepository(repositoryName);
+     ManageableRepository repository = repositoryService.getCurrentRepository();
      session = sessionProvider.getSession(workspaceName, repository);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -120,13 +101,12 @@ public class JCRSessionManager {
      if (session == null) {
        session = createSession();
        currentSession.set(session);
-     }
-     else { 
+     } else {
        throw new IllegalStateException("A session is already opened.");
      }
      return session;
   }
-  
+
   public Session getOrOpenSession() {
     Session session = getCurrentSession();
     if (session == null) {
@@ -142,7 +122,7 @@ public class JCRSessionManager {
   private Session createSession() {
     Session session = null;
     try {
-     ManageableRepository repository = repositoryService.getRepository(repositoryName);
+     ManageableRepository repository = repositoryService.getCurrentRepository();
      session = repository.getSystemSession(workspaceName);
     } catch (Exception e) {
       throw new RuntimeException(e);

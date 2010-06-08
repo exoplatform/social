@@ -32,11 +32,6 @@
     <type>org.exoplatform.social.jcr.SocialDataLocation</type>
     <init-params>
       <value-param>
-        <name>repository</name>
-        <description>JCR repository for Social data</description>
-        <value>repository</value>
-      </value-param>
-      <value-param>
         <name>workspace</name>
         <description>workspace for Social data</description>
         <value>portal-test</value>
