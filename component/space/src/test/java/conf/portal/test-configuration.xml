@@ -9,19 +9,14 @@
       <type>org.exoplatform.social.jcr.SocialDataLocation</type>
       <init-params>
         <value-param>
-          <name>repository</name>
-          <description>JCR repository for Social data</description>
-          <value>repository</value>
-        </value-param>
-        <value-param>
           <name>workspace</name>
           <description>workspace for Social data</description>
           <value>social</value>
-        </value-param>      
+        </value-param>
       </init-params>
   </component>
 
-  
+
   <component>
     <key>org.exoplatform.services.log.LogConfigurationInitializer</key>
     <type>org.exoplatform.services.log.LogConfigurationInitializer</type>
@@ -57,7 +52,7 @@
       </properties-param>
     </init-params>
   </component>
-  
+
 	<component>
 		<type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
 	</component>
@@ -73,12 +68,12 @@
         </value-param>
       </init-params>
   </component>
-  
+
   <component>
     <key>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</key>
     <type>org.exoplatform.services.jcr.ext.hierarchy.impl.NodeHierarchyCreatorImpl</type>
-  </component>  
-  
+  </component>
+
   <component>
 	  <type>org.exoplatform.services.jcr.ext.registry.RegistryService</type>
 	  <init-params>
@@ -88,7 +83,7 @@
 	    </properties-param>
 	  </init-params>
 	</component>
-  
+
   <component>
     <key>org.exoplatform.services.jcr.RepositoryService</key>
     <type>org.exoplatform.services.jcr.impl.RepositoryServiceImpl</type>
@@ -116,13 +111,13 @@
          <values-param>
            <name>autoCreatedInNewRepository</name>
            <description>Node types configuration file</description>
-           <value>jar:/conf/portal/test-space-nodetypes.xml</value>	            
+           <value>jar:/conf/portal/test-space-nodetypes.xml</value>
          </values-param>
        </init-params>
       </component-plugin>
     </component-plugins>
   </component>
-  
+
   <component>
     <key>org.exoplatform.services.jcr.config.RepositoryServiceConfiguration</key>
     <type>org.exoplatform.services.jcr.impl.config.RepositoryServiceConfigurationImpl</type>
@@ -134,7 +129,7 @@
       </value-param>
     </init-params>
   </component>
-  
+
   <external-component-plugins>
    <target-component>org.exoplatform.services.naming.InitialContextInitializer</target-component>
    <component-plugin>
@@ -163,9 +158,9 @@
          <property name="password" value=""/>
        </properties-param>
      </init-params>
-    </component-plugin>        
+    </component-plugin>
   </external-component-plugins>
-  
+
   <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
     <component-plugin>
@@ -174,7 +169,7 @@
       <type>org.exoplatform.services.organization.auth.MembershipListener</type>
     </component-plugin>
   </external-component-plugins>
-  
+
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</target-component>
     <component-plugin>
@@ -222,12 +217,12 @@
 			              </field>
 	              	</object>
               	</value>
-             		
+
              		<value>
 		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
 		             		<field  name="alias"><string>socialSpaceRoot</string></field>
 		                <field  name="path"><string>/exo:applications/Social_Space</string></field>
-		                <field  name="nodeType"><string>nt:unstructured</string></field> 
+		                <field  name="nodeType"><string>nt:unstructured</string></field>
 		                <field name="permissions">
 				              <collection type="java.util.ArrayList">
 				                <value>
@@ -252,12 +247,12 @@
 			              </field>
 	              	</object>
               	</value>
-              	
+
               	<value>
 		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
 		             		<field  name="alias"><string>socialSpaceHome</string></field>
 		                <field  name="path"><string>/exo:applications/Social_Space/Space</string></field>
-		                <field  name="nodeType"><string>nt:unstructured</string></field> 
+		                <field  name="nodeType"><string>nt:unstructured</string></field>
 		                <field name="permissions">
 				              <collection type="java.util.ArrayList">
 				                <value>
@@ -282,12 +277,12 @@
 			              </field>
 	              	</object>
               	</value>
-              	
+
               	<value>
 		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
 		             		<field  name="alias"><string>socialActivitiesHome</string></field>
 		                <field  name="path"><string>/exo:applications/Social_Activity</string></field>
-		                <field  name="nodeType"><string>nt:unstructured</string></field> 
+		                <field  name="nodeType"><string>nt:unstructured</string></field>
 		                <field name="permissions">
 				              <collection type="java.util.ArrayList">
 				                <value>
@@ -312,12 +307,12 @@
 			              </field>
 	              	</object>
               	</value>
-             
+
              		<value>
 		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
 		             		<field  name="alias"><string>socialIdentityHome</string></field>
 		                <field  name="path"><string>/exo:applications/Social_Identity</string></field>
-		                <field  name="nodeType"><string>nt:unstructured</string></field> 
+		                <field  name="nodeType"><string>nt:unstructured</string></field>
 		                <field name="permissions">
 				              <collection type="java.util.ArrayList">
 				                <value>
@@ -342,12 +337,12 @@
 			              </field>
 	              	</object>
               	</value>
-             
+
              		<value>
 		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
 		             		<field  name="alias"><string>socialProfileHome</string></field>
 		                <field  name="path"><string>/exo:applications/Social_Profile</string></field>
-		                <field  name="nodeType"><string>nt:unstructured</string></field> 
+		                <field  name="nodeType"><string>nt:unstructured</string></field>
 		                <field name="permissions">
 				              <collection type="java.util.ArrayList">
 				                <value>
@@ -372,12 +367,12 @@
 			              </field>
 	              	</object>
               	</value>
-             
+
              		<value>
 		             	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">
 		             		<field  name="alias"><string>socialRelationshipHome</string></field>
 		                <field  name="path"><string>/exo:applications/Social_Relationship</string></field>
-		                <field  name="nodeType"><string>nt:unstructured</string></field> 
+		                <field  name="nodeType"><string>nt:unstructured</string></field>
 		                <field name="permissions">
 				              <collection type="java.util.ArrayList">
 				                <value>
@@ -402,7 +397,7 @@
 			              </field>
 	              	</object>
               	</value>
-             
+
 	          	</collection>
 	          </field>
 	        </object>
@@ -410,8 +405,8 @@
 	    </init-params>
 	  </component-plugin>
 	</external-component-plugins>
-	
+
   <remove-configuration>org.exoplatform.portal.application.PortalStatisticService</remove-configuration>
   <remove-configuration>org.exoplatform.portal.gadget.core.GadgetTokenInfoService</remove-configuration>
-  <remove-configuration>org.exoplatform.services.transaction.ExoTransactionService</remove-configuration>  
+  <remove-configuration>org.exoplatform.services.transaction.ExoTransactionService</remove-configuration>
 </configuration>
