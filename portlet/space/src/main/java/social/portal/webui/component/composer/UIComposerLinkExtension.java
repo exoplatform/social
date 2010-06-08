@@ -138,7 +138,7 @@ public class UIComposerLinkExtension extends UIContainer {
       try {
         uiComposerLinkExtension.setLink(url);
       } catch (Exception e) {
-        uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.ERROR));
+        uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.WARNING));
         return;
       }
       requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
