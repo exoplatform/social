@@ -47,7 +47,7 @@ import org.exoplatform.webui.form.UIFormTabPane;
 /**
  * UIAddSpaceForm to create new space. By using this UIForm, user can create a
  * brand new space or a space from an existing group
- * 
+ *
  * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since Jun 29, 2009
  */
@@ -76,16 +76,16 @@ public class UISpaceAddForm extends UIFormTabPane {
   private final String        SPACE_SETTINGS                      = "UISpaceSettings";
   private final String        SPACE_VISIBILITY                    = "UISpaceVisibility";
   private final String        CHANGE_PRIORITY                     = "ChangePriority";
-  
+
   /**
    * Constructor: add 3 UI component to this UIFormTabPane:
-   * 
+   *
    * <pre>
    * {@link UISpaceSettings}
    * {@link UISpaceVisibility}
    * {@link UISpaceGroupBound}
    * </pre>
-   * 
+   *
    * @throws Exception
    */
   public UISpaceAddForm() throws Exception {
@@ -96,7 +96,7 @@ public class UISpaceAddForm extends UIFormTabPane {
     addChild(uiSpaceSettings);
 
     UIFormInputSet uiSpaceVisibility = new UISpaceVisibility(SPACE_VISIBILITY);
-    
+
     addChild(uiSpaceVisibility);
 
     addChild(UISpaceGroupBound.class, null, null);
@@ -129,7 +129,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       try {
         // Checks user is still existing or not.
         SpaceUtils.checkUserExisting(ctx.getRemoteUser());
-        
+
         if (selectedGroup != null) {// create space from an existing group
           space = spaceService.createSpace(space, creator, selectedGroup);
         } else { // Create new space
@@ -149,6 +149,8 @@ public class UISpaceAddForm extends UIFormTabPane {
         //se.printStackTrace();
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
           msg = MSG_ERROR_SPACE_ALREADY_EXIST;
+          uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.WARNING));
+          return;
         } else if (se.getCode() == SpaceException.Code.UNABLE_TO_ADD_CREATOR) {
           msg = MSG_ERROR_UNABLE_TO_ADD_CREATOR;
         } else if (se.getCode() == SpaceException.Code.ERROR_DATASTORE) {
@@ -200,22 +202,22 @@ public class UISpaceAddForm extends UIFormTabPane {
       }
     }
   }
-  
+
   static public class ChangePriorityActionListener extends EventListener<UISpaceAddForm> {
 	private final String HIGH_PRIORITY_LABEL         = "UISpaceSettings.label.HighPrio";
 	private final String INTERMEDIATE_PRIORITY_LABEL = "UISpaceSettings.label.InterMePrio";
     private final String LOW_PRIORITY_LABEL          = "UISpaceSettings.label.lowPrio";
-    
+
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
       UISpaceAddForm uiSpaceAddForm = event.getSource();
       WebuiRequestContext ctx = event.getRequestContext();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
-      
+
       String highPrio = resApp.getString(HIGH_PRIORITY_LABEL);
       String interMePrio = resApp.getString(INTERMEDIATE_PRIORITY_LABEL);
       String lowPrio = resApp.getString(LOW_PRIORITY_LABEL);
-      
+
       Space space = new Space();
       uiSpaceAddForm.invokeSetBindingBean(space);
       UIFormInputSet uiSpaceSettings = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_SETTINGS);
@@ -233,29 +235,29 @@ public class UISpaceAddForm extends UIFormTabPane {
 	  }
     }
   }
-  
+
   static public class ChangeOptionActionListener extends EventListener<UISpaceAddForm> {
 	private final String VISIBLE_OPEN_SPACE          = "UISpaceVisibility.label.VisibleAndOpenSpace";
 	private final String VISIBLE_VALIDATION_SPACE    = "UISpaceVisibility.label.VisibleAndValidationSpace";
     private final String VISIBLE_CLOSE_SPACE         = "UISpaceVisibility.label.VisibleAndCloseSpace";
     private final String HIDDEN_SPACE                = "UISpaceVisibility.label.HiddenSpace";
-    
+
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
       UISpaceAddForm uiSpaceAddForm = event.getSource();
       WebuiRequestContext ctx = event.getRequestContext();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
-      
+
       String visibleAndOpenSpace = resApp.getString(VISIBLE_OPEN_SPACE);
       String visibleAndValidationSpace = resApp.getString(VISIBLE_VALIDATION_SPACE);
       String visibleAndCloseSpace = resApp.getString(VISIBLE_CLOSE_SPACE);
       String hiddenSpace = resApp.getString(HIDDEN_SPACE);
-      
+
       Space space = new Space();
       uiSpaceAddForm.invokeSetBindingBean(space);
       UIFormInputSet uiSpaceVisibility = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_VISIBILITY);
       UIFormInputInfo uiFormInfo = uiSpaceVisibility.getChild(UIFormInputInfo.class);
-      
+
       String currentVisibility = space.getVisibility();
       String currentRegistration = space.getRegistration();
       boolean isPrivate = Space.PRIVATE.equals(currentVisibility);
