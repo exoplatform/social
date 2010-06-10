@@ -132,6 +132,58 @@ public class JCRStorage {
     return null;
   }
 
+  /**
+   * Gets all spaces that have name or description match input condition.
+   * 
+   * @param identityProvider the identity provider
+   * @param profileFilter the profile filter
+   * @return the identities by profile filter
+   * @throws Exception the exception
+   */
+  public List<Space> getSpacesBySearchCondition(String condition) throws Exception {
+    Session session = sessionManager.openSession();
+    Node spaceHomeNode = getSpaceHome(session);
+    List<Space> listSpace = new ArrayList<Space>();
+    NodeIterator nodeIterator = null;
+    
+    try {
+      QueryManager queryManager = session.getWorkspace().getQueryManager() ;
+      StringBuffer queryString = new StringBuffer("/").append(spaceHomeNode.getPath())
+          .append("/").append(SPACE_NODETYPE);
+      
+      if (condition.length() != 0) {
+        queryString.append("[");
+        
+        if(condition.indexOf("*")<0){
+          if(condition.charAt(0) != '*') condition = "*" + condition;
+          if(condition.charAt(condition.length()-1) != '*') condition += "*";
+        }
+        queryString.append("(jcr:contains(@exo:name, ").append("'").append(condition).append("'))");
+        queryString.append(" or (jcr:contains(@exo:description, '").append(condition).append("'))");
+        
+        queryString.append("]");
+      }
+      Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
+      QueryResult queryResult = query.execute();
+      nodeIterator = queryResult.getNodes();
+    } catch (Exception e) {
+      LOG.warn("error while filtering identities: " + e.getMessage());
+      return (new ArrayList<Space>());
+    } finally { 
+      sessionManager.closeSession();
+    }
+    
+    Space space;
+    Node spaceNode;
+    while (nodeIterator.hasNext()) {
+        spaceNode = nodeIterator.nextNode();
+        space = getSpace(spaceNode, session);
+        listSpace.add(space);
+    }
+    
+    return listSpace;
+  }
+  
   public Space getSpaceByUrl(String url) {
     try {
       Session session = sessionManager.openSession();

@@ -50,6 +50,15 @@ public interface SpaceService {
   List<Space> getSpacesByName(String spaceName, boolean isFirstCharOfSpaceName) throws SpaceException;
   
   /**
+   * Gets all spaces has name or description that match input condition.
+   * 
+   * @param condition
+   * @return
+   * @throws Exception
+   */
+  public List<Space> getSpacesBySearchCondition(String condition) throws Exception;
+  
+  /**
    * Get a space by its id
    * @param spaceId Id of that space
    * @return space with id specified

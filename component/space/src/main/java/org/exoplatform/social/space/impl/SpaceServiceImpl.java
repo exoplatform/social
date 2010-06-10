@@ -142,6 +142,20 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   /**
+   * Gets all spaces has name or description that match input condition.
+   */
+  public List<Space> getSpacesBySearchCondition(String condition) throws Exception {
+    List<Space> listSpace = new ArrayList<Space>();
+    try {
+     listSpace = storage.getSpacesBySearchCondition(condition);
+    } catch (Exception e) {
+     e.printStackTrace();
+    }
+     
+    return listSpace;
+  }
+  
+  /**
    * {@inheritDoc}
    */
   public Space getSpaceById(String id) throws SpaceException {

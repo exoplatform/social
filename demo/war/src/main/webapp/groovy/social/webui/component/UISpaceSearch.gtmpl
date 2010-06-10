@@ -30,7 +30,7 @@ jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/eXoResource
 jsmanager.importJavascript('eXo.social.webui.UISpaceSearch','/eXoResourcesSocial/javascript');
 jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceSearch.onLoad("' + uicomponentId + '","' + allSpaceName + '");');
     
-def defaultSpaceName = _ctx.appRes("${uicomponentId}.label.SpaceName");
+def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
 def spaceDirectoryLabel = _ctx.appRes("${uicomponentId}.label.SpaceDirectory");
@@ -41,13 +41,6 @@ PortalRequestContext pcontext = Util.getPortalRequestContext();
 def portalURI = pcontext.getPortalURI();
 def childs = uicomponent.getChildren();
 def searchAction = uicomponent.event('Search');
-def moreSearchId = "MoreSearch";
-def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreLabel");
-def hideLabel = _ctx.appRes("${uicomponentId}.label.HideLabel");
-def defaultDescription = _ctx.appRes("${uicomponentId}.label.Description");
-def filterByLabel = _ctx.appRes("${uicomponentId}.label.FilterBy");
-def hideMoreSearchId = "HideMoreSearch";
-def filterId = "Filter";
 
 %>
 <div class="UISpaceSearch">
@@ -64,17 +57,8 @@ def filterId = "Filter";
                       <div class="SearchIcon" title="Search" onclick="$searchAction"><span></span></div>
                       </div>
                       
-                      <input id="defaultSpaceName" type="hidden" value="$defaultSpaceName">
+                      <input id="defaultSpaceNameAndDesc" type="hidden" value="$defaultSpaceNameAndDesc">
                 </div>
-                <div id="$moreSearchId" class="AdvanceSpaceSearchLable" onclick="eXo.social.webui.UISpaceSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
-                <div class="ClearLeft"><span /></span></div>
-                <div class="Filter" id="$filterId">
-			            <div class="Lable">${filterByLabel} :</div>
-			            <div class="FilterInput"><% uiform.renderField(childs.get(1))%></div>
-
-			            <input id="defaultDescription" type="hidden" value="$defaultDescription">
-			            <div id="$hideMoreSearchId" class="HideAdvanceSpaceSearchLable" onclick="eXo.social.webui.UISpaceSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</div>
-			          </div>
       
                 <div class="ClearBoth"><span/></div>
             </div>
