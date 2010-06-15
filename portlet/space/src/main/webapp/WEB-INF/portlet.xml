@@ -163,19 +163,19 @@
   
   <portlet>
     <description xml:lang="EN">Members Portlet</description>
-    <portlet-name>UserListPortlet</portlet-name>
+    <portlet-name>MembersPortlet</portlet-name>
     <display-name xml:lang="EN">Members</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/UserListPortlet/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/web/MembersPortlet/webui/configuration.xml</value>
     </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.web.UserListPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.web.MembersPortlet</resource-bundle>
     <portlet-info>
       <title>Members Portlet</title>
       <short-title>Members Portlet</short-title>

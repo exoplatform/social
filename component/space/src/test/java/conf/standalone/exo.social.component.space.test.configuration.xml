@@ -35,7 +35,7 @@
         <name>space.apps</name>
         <value>DashboardPortlet:true</value>
         <value>SpaceSettingPortlet:false</value>
-        <value>UserListPortlet:true</value>
+        <value>MembersPortlet:true</value>
       </values-param>
     </init-params>
   </component>

@@ -52,7 +52,7 @@ import org.exoplatform.webui.event.Event.Phase;
 import social.portal.webui.component.UserListAccess;
 
 /**
- * {@link UIUserListPortlet} used as a portlet displaying space members.<br />
+ * {@link UIMembersPortlet} used as a portlet displaying space members.<br />
  * 
  * Created by The eXo Platform SARL
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
@@ -62,14 +62,14 @@ import social.portal.webui.component.UserListAccess;
 @ComponentConfigs ({
   @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class, 
-    template = "app:/groovy/portal/webui/space/UIUserListPortlet.gtmpl",
+    template = "app:/groovy/portal/webui/space/UIMembersPortlet.gtmpl",
     events = {
       @EventConfig(
-         listeners=UIUserListPortlet.SearchActionListener.class, phase=Phase.DECODE)
+         listeners=UIMembersPortlet.SearchActionListener.class, phase=Phase.DECODE)
     }
   )
 })
-public class UIUserListPortlet extends UIPortletApplication {
+public class UIMembersPortlet extends UIPortletApplication {
   private UIPageIterator iterator_;
   private List<User> memberList;
   private List<User> leaderList;
@@ -98,7 +98,7 @@ public class UIUserListPortlet extends UIPortletApplication {
    * constructor
    * @throws Exception
    */
-  public UIUserListPortlet() throws Exception {
+  public UIMembersPortlet() throws Exception {
     initMember();
     initLeader();
     iterator_ = createUIComponent(UIPageIterator.class, null, null);
@@ -109,7 +109,6 @@ public class UIUserListPortlet extends UIPortletApplication {
     addChild(iteratorMembers);
     uiSearchMemberOfSpace = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     addChild(uiSearchMemberOfSpace);
-//    addChild(UISpaceUserSearch.class,null , null);
   }
   /**
    * sets member list
@@ -359,16 +358,16 @@ public class UIUserListPortlet extends UIPortletApplication {
   
   /**
    * Get the userList from UISpaceUserSearch
-   * and then update UIUserListPortlet
+   * and then update UIMembersPortlet
    */
-//  static public class SearchActionListener extends EventListener<UIUserListPortlet> {
+//  static public class SearchActionListener extends EventListener<UIMembersPortlet> {
 //    @Override
-//    public void execute(Event<UIUserListPortlet> event) throws Exception {
-//      UIUserListPortlet uiUserListPortlet = event.getSource();
-//      UISpaceUserSearch uiUserSearch = uiUserListPortlet.getChild(UISpaceUserSearch.class);
-//      uiUserListPortlet.setMemberList(uiUserSearch.getUserList());
+//    public void execute(Event<UIMembersPortlet> event) throws Exception {
+//      UIMembersPortlet uiMembersPortlet = event.getSource();
+//      UISpaceUserSearch uiUserSearch = uiMembersPortlet.getChild(UISpaceUserSearch.class);
+//      uiMembersPortlet.setMemberList(uiUserSearch.getUserList());
 //      /////// Check .....
-//      uiUserListPortlet.setLeaderList(uiUserSearch.getUserList());
+//      uiMembersPortlet.setLeaderList(uiUserSearch.getUserList());
 //    }
 //    
 //  }
@@ -376,13 +375,13 @@ public class UIUserListPortlet extends UIPortletApplication {
   /**
    * triggers this action when user clicks on search button
    */
-  public static class SearchActionListener extends EventListener<UIUserListPortlet> {
+  public static class SearchActionListener extends EventListener<UIMembersPortlet> {
     @Override
-    public void execute(Event<UIUserListPortlet> event) throws Exception {
-      UIUserListPortlet uiUserListPortlet = event.getSource();
-      UIProfileUserSearch uiProfileUserSearch = uiUserListPortlet.getChild(UIProfileUserSearch.class);
+    public void execute(Event<UIMembersPortlet> event) throws Exception {
+      UIMembersPortlet uiMembersPortlet = event.getSource();
+      UIProfileUserSearch uiProfileUserSearch = uiMembersPortlet.getChild(UIProfileUserSearch.class);
       List<Identity> identityList = uiProfileUserSearch.getIdentityList();
-      uiUserListPortlet.setIdentityList(identityList);
+      uiMembersPortlet.setIdentityList(identityList);
     }
   }
   

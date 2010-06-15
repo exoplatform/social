@@ -1039,7 +1039,7 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * an application status is composed with the form of: [appId:isRemovableString:status].
    * And space app properties is the combined of application statuses separated by a comma (,).
-   * For example: space.getApp() = "SpaceSettingPortlet:SpaceSettingPortletName:false:active,UserListPortlet:UserListPortlet:true:active";
+   * For example: space.getApp() = "SpaceSettingPortlet:SpaceSettingPortletName:false:active,MembersPortlet:MembersPortlet:true:active";
    * @param space
    * @param appId
    * @param appName

@@ -27,7 +27,7 @@
   def spaceUrl = SpaceUtils.getSpaceUrl();
   def appSelected = uicomponent.getAppSelected();
   def imageSource = uicomponent.getImageSource();
-  def spaceUserListName = "UserListPortlet";
+  def spaceUserListName = "MembersPortlet";
   def spaceSettingName = "SpaceSettingPortlet";
   
   public String getFitString(String nodeLabel, int maxLen) {

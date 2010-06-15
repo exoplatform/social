@@ -57,9 +57,9 @@
   
   <portlet-skin>
     <application-name>space</application-name>
-    <portlet-name>UserListPortlet</portlet-name>
+    <portlet-name>MembersPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/portal/webui/component/UIUserListPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/portal/webui/component/UIMembersPortlet/DefaultStylesheet.css</css-path>
   </portlet-skin>
   
   <portlet-skin>

@@ -101,7 +101,7 @@ public class SpaceUtils {
   static private ApplicationRegistryService appService                           = null;
 
   static public String[]                    PORTLETS_SPACE_URL_PREFERENCE_NEEDED = {
-      "SpaceActivityStreamPortlet", "SpaceSettingPortlet", "UserListPortlet"    };
+      "SpaceActivityStreamPortlet", "SpaceSettingPortlet", "MembersPortlet"    };
 
   private static final String               REMOTE_CATEGORY_NAME                 = "remote";
 

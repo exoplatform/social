@@ -635,7 +635,7 @@
                                     <value>
                                         <object type="org.exoplatform.application.registry.Application">
                                             <field name="applicationName">
-                                                <string>UserListPortlet</string>
+                                                <string>MembersPortlet</string>
                                             </field>
                                             <field name="categoryName">
                                                 <string>space</string>
