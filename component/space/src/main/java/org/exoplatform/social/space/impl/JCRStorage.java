@@ -142,7 +142,7 @@ public class JCRStorage {
       while (iter.hasNext()) {
         Node spaceNode = iter.nextNode();
         space = getSpace(spaceNode, session);
-        if(space.getUrl().equals(spaceName)) return space;
+        if(space.getName().equals(spaceName)) return space;
       }
     }catch (Exception e) {
       return null;
