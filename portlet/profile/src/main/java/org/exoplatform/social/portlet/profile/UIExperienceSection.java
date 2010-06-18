@@ -31,11 +31,13 @@ import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
@@ -429,7 +431,8 @@ public class UIExperienceSection extends UIProfileSection {
     Date eDate = null;
     Date today = new Date();
     
-    UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    UIApplication uiApplication = context.getUIApplication();
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     Profile p = getProfile(true);
@@ -469,7 +472,7 @@ public class UIExperienceSection extends UIProfileSection {
       sDate = stringToDate(startDate);
       eDate = stringToDate(endDate);
       if (sDate.after(today)) {
-        uiPortalApplication.addMessage(new ApplicationMessage(DATE_AFTER_TODAY, null));
+        uiApplication.addMessage(new ApplicationMessage(DATE_AFTER_TODAY, null));
         return 2;
       }
       
@@ -478,11 +481,11 @@ public class UIExperienceSection extends UIProfileSection {
       
       if (!isCurrent) {
         if (eDate.after(today)) {
-          uiPortalApplication.addMessage(new ApplicationMessage(DATE_AFTER_TODAY, null));
+          uiApplication.addMessage(new ApplicationMessage(DATE_AFTER_TODAY, null));
           return 2;
         }
         if (sDate.after(eDate)) {
-          uiPortalApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null));
+          uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null));
           return 1;
         }
       } else {
