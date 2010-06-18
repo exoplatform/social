@@ -21,14 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -470,26 +466,19 @@ public class UISpaceMember extends UIForm {
           return;
       }
       
-      if (!useAjax) {
+      if (!useAjax) { // self remove.
         prContext = Util.getPortalRequestContext();
         prContext.setResponseComplete(true);
-        prContext.getResponse().sendRedirect(uiSpaceMember.getManageSpacesUrl());
-        return;
-      } else {
-        if(!uiSpaceMember.isSuperUser() && userName.equals(currentUser)) {
-          UIPortal uiPortal = Util.getUIPortal();
-          ExoContainer container = ExoContainerContext.getCurrentContainer();
-          DataStorage dataStorage = (DataStorage)container.getComponentInstance(DataStorage.class);
-          PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.PORTAL_TYPE, Util.getPortalRequestContext().getPortalOwner());;
-  
-          String uri = nav.getId() + "::spaces"; 
-          PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
-              PageNodeEvent.CHANGE_PAGE_NODE,
-              uri);
-          uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+        StringBuffer url = new StringBuffer(Util.getPortalRequestContext().getPortalURI());
+        if(uiSpaceMember.isSuperUser()) {
+          url.append(space.getUrl()).append("/SpaceSettingPortlet");
         } else {
-          requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
+          url.append("spaces");
         }
+        prContext.getResponse().sendRedirect(url.toString());
+        return;
+      } else { // remove other and use ajax to update.
+        requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
       }
     }
   }
