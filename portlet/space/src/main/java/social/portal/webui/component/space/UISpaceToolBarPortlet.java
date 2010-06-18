@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -73,27 +74,31 @@ public class UISpaceToolBarPortlet extends UIPortletApplication {
   }
   
   
-  public List<PageNavigation> getSpaceNavigations() throws Exception
-  {
-	String remoteUser = Util.getPortalRequestContext().getRemoteUser();
-	SpaceService spaceSrv = getSpaceService();
-    List<Space> spaces = spaceSrv.getAllSpaces();
+  public List<PageNavigation> getSpaceNavigations() throws Exception {
+    String remoteUser = getUserId();
+    List<Space> spaces = getSpaceService().getAccessibleSpaces(remoteUser);
+    UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
+    List<PageNavigation> allNavigations = userPortalConfig.getNavigations();
     List<PageNavigation> navigations = new ArrayList<PageNavigation>();
-    for (Space space : spaces) {
-	    PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
-	    List<PageNode> nodes = spaceNavigation.getNodes();
-	    Iterator<PageNode> itr = nodes.iterator();
-	    PageNode spaceNode;
-	    String nodeName;
-	    String spaceName = space.getName();
-	    while (itr.hasNext()) {
-	      spaceNode = itr.next();
-	      nodeName = spaceNode.getName();
-	      if (!nodeName.equals(spaceName)) itr.remove();
-	    }
-	    
-	    navigations.add(PageNavigationUtils.filter(spaceNavigation, remoteUser));
+    // Copy to another list to fix Concurency error
+    for (PageNavigation navi : allNavigations) {
+      navigations.add(navi);
     }
+    Iterator<PageNavigation> navigationItr = navigations.iterator();
+    String ownerId;
+    String[] navigationParts;
+    Space space;
+    while (navigationItr.hasNext()) {
+      ownerId = navigationItr.next().getOwnerId();
+      if (ownerId.startsWith("/spaces")) {
+        navigationParts = ownerId.split("/");
+        space = spaceService.getSpaceByUrl(navigationParts[2]);
+        if (!navigationParts[1].equals("spaces") && !spaces.contains(space)) navigationItr.remove();
+      } else { // not spaces navigation
+        navigationItr.remove();
+      }
+    }
+    
     return navigations;
   }
   
