@@ -194,7 +194,7 @@ public class UISpaceSearch extends UIForm {
           uiSpaceSearch.setSpaceList(spaceSearchResult);
         }
       } else { // is searching by alphabet
-        List<Space> spaceSearchResult = spaceService.getSpacesByName(searchCondition, true );
+        List<Space> spaceSearchResult = spaceService.getSpacesByFirstCharacterOfName(searchCondition);
         uiSpaceSearch.setSpaceList(spaceSearchResult);
       }
 
