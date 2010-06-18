@@ -18,7 +18,7 @@
 	overflow: auto;
 }
 .UIBannerPortlet .LogoBlock {
-  background: url('DefaultSkin/background/LogoSocial.gif') no-repeat left bottom;
+  background: url('DefaultSkin/background/SocialLogo.png') no-repeat left bottom;
 	display: block;
 	float: left;
 	height: 43px;
@@ -89,7 +89,7 @@
   font-size: 10px;
   display: block;
 }
- 
+
 .UIBannerPortlet .MiddleLoginContainer .Language {
   background: none;
   cursor: pointer;
@@ -101,9 +101,9 @@
 }
 
 .UIBannerPortlet .MiddleLoginContainer .Register {
-	margin-right: 15px;	
+	margin-right: 15px;
 	cursor: pointer;
-	float: left;	 	
+	float: left;
 	font-weight: bold;
 	display: block;
 	line-height: 17px;
