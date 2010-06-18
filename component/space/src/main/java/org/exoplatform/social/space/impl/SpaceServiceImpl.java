@@ -110,32 +110,32 @@ public class SpaceServiceImpl implements SpaceService {
     }
   }
   
+  public Space getSpaceByName(String spaceName) throws SpaceException {
+    try {
+      return storage.getSpaceByName(spaceName);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+  
   /**
    * {@inheritDoc}
-   * @throws Exception 
+   * @throws Exception
    */
-  public List<Space> getSpacesByName(String spaceName, boolean isFirstCharOfSpaceName) throws SpaceException {
+  public List<Space> getSpacesByFirstCharacterOfName(String firstCharacterOfName) throws SpaceException {
     List<Space> spaces;
-    String nameForSearch = spaceName.trim();
     try {
       spaces = storage.getAllSpaces();
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
-    
+
     Iterator<Space> itr = spaces.iterator();
-    if (!isFirstCharOfSpaceName) {
-      while(itr.hasNext()) {
-        Space space = itr.next(); 
-        if (!space.getName().toLowerCase().matches(nameForSearch.toLowerCase())) itr.remove();
-      }
-    } else {
       while(itr.hasNext()) {
         Space space = itr.next();
-        if(!space.getName().toLowerCase().startsWith(nameForSearch.toLowerCase())) itr.remove();
-      }
+        if(!space.getName().toLowerCase().startsWith(firstCharacterOfName.toLowerCase())) itr.remove();
     }
-    
+
     return spaces;
   }
   
@@ -159,6 +159,20 @@ public class SpaceServiceImpl implements SpaceService {
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
+  }
+  
+  /**
+   * Gets all spaces has name or description that match input condition.
+   */
+  public List<Space> getSpacesBySearchCondition(String condition) throws Exception {
+    List<Space> listSpace = new ArrayList<Space>();
+    try {
+     listSpace = storage.getSpacesBySearchCondition(condition);
+    } catch (Exception e) {
+     e.printStackTrace();
+    }
+     
+    return listSpace;
   }
   
   /**

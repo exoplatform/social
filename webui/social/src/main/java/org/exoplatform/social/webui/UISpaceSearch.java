@@ -205,7 +205,7 @@ public class UISpaceSearch extends UIForm {
           spaceName = (spaceName.charAt(spaceName.length()-1) != '*') ? spaceName += "*" : spaceName;
           spaceName = (spaceName.indexOf("*") >= 0) ? spaceName.replace("*", ".*") : spaceName;
           spaceName = (spaceName.indexOf("%") >= 0) ? spaceName.replace("%", ".*") : spaceName;
-          List<Space> spacesSearchByName = spaceService.getSpacesByName(spaceName, false);
+          List<Space> spacesSearchByName = spaceService.getSpacesBySearchCondition(spaceName);
           List<Space> spaceSearchResult = new ArrayList<Space>();
           if (spaceDesc == null) {
         	  uiSpaceSearch.setSpaceList(spacesSearchByName);
@@ -215,7 +215,7 @@ public class UISpaceSearch extends UIForm {
           }
         }
       } else { // is searching by alphabet
-        List<Space> spaceSearchResult = spaceService.getSpacesByName(spaceName, true );
+        List<Space> spaceSearchResult = spaceService.getSpacesByFirstCharacterOfName(spaceName);
         uiSpaceSearch.setSpaceList(spaceSearchResult);  
       }
       

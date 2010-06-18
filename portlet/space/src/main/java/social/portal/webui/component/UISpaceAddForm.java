@@ -137,14 +137,6 @@ public class UISpaceAddForm extends UIFormTabPane {
         }
         space.setType(DefaultSpaceApplicationHandler.NAME);
         spaceService.initApp(space);
-        // Apply search condition into the new created space if has.
-        UIPopupWindow uiPopup = uiAddForm.getAncestorOfType(UIPopupWindow.class);
-        UIManageMySpaces uiMySpace = uiPopup.getParent();
-        UISpaceSearch uiSpaceSearch = uiMySpace.getChild(UISpaceSearch.class);
-        String spaceName = uiSpaceSearch.getSpaceNameSearch();
-        String selectedChar = uiSpaceSearch.getSelectedChar();
-        if (spaceName != null)
-          uiMySpace.setSpaces(spaceService.getSpacesByName(spaceName, (selectedChar == null) ? false : true ));
       } catch (SpaceException se) {
         //se.printStackTrace();
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
