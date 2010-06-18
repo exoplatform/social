@@ -201,10 +201,6 @@ public class UISpaceSearch extends UIForm {
         if (!isValidInput(spaceName)) {
           uiSpaceSearch.setSpaceList(new ArrayList<Space>());
         } else {
-          spaceName = (spaceName.charAt(0) != '*') ? "*" + spaceName : spaceName;
-          spaceName = (spaceName.charAt(spaceName.length()-1) != '*') ? spaceName += "*" : spaceName;
-          spaceName = (spaceName.indexOf("*") >= 0) ? spaceName.replace("*", ".*") : spaceName;
-          spaceName = (spaceName.indexOf("%") >= 0) ? spaceName.replace("%", ".*") : spaceName;
           List<Space> spacesSearchByName = spaceService.getSpacesBySearchCondition(spaceName);
           List<Space> spaceSearchResult = new ArrayList<Space>();
           if (spaceDesc == null) {
