@@ -184,6 +184,26 @@ public class JCRStorage {
     return listSpace;
   }
   
+  public Space getSpaceByName(String spaceName) {
+    try {
+      Session session = sessionManager.openSession();
+
+      Node spaceHomeNode = getSpaceHome(session);
+      NodeIterator iter = spaceHomeNode.getNodes();
+      Space space;
+      while (iter.hasNext()) {
+        Node spaceNode = iter.nextNode();
+        space = getSpace(spaceNode, session);
+        if(space.getName().equals(spaceName)) return space;
+      }
+    }catch (Exception e) {
+      return null;
+    } finally {
+      sessionManager.closeSession();
+    }
+    return null;
+  }
+  
   public Space getSpaceByUrl(String url) {
     try {
       Session session = sessionManager.openSession();

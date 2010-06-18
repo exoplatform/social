@@ -56,10 +56,7 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
           name = spaceId.split(":")[1];
         }
 
-        List<Space> spaces = spaceService.getSpacesByName(name, false);
-        if (spaces != null && spaces.size()>0) {
-          return spaces.get(0); // first match
-        }
+        return spaceService.getSpaceByName(name);
       }
     } catch (Exception e) {
       LOG.error("Could not find space " + spaceId, e);
