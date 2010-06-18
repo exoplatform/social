@@ -60,16 +60,16 @@
     <quartz.version>1.5.2</quartz.version>
 
     <org.exoplatform.common.version>3.0.0-Alpha03</org.exoplatform.common.version>
-    <org.exoplatform.kernel.version>2.2.2-CR1</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.3.2-CR1</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.1.2-CR1</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.12.2-CR1</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.1.0-CR01</org.exoplatform.portal.version>
+    <org.exoplatform.kernel.version>2.2.2-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.3.2-GA</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.1.2-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.12.2-GA</org.exoplatform.jcr.version>
+    <org.exoplatform.portal.version>3.1.0-GA</org.exoplatform.portal.version>
     <org.gatein.common.version>2.0.2-GA</org.gatein.common.version>
     <org.gatein.wci.version>2.0.1-GA</org.gatein.wci.version>
     <org.gatein.pc.version>2.1.1-GA</org.gatein.pc.version>
     <org.gatein.wsrp.version>1.1.1-GA</org.gatein.wsrp.version>
-    <org.gatein.mop.version>1.0.3-CR01</org.gatein.mop.version>
+    <org.gatein.mop.version>1.0.3-GA</org.gatein.mop.version>
     <org.shindig.version>1.0-r790473-Patch02</org.shindig.version>
     <org.slf4j.version>1.5.6</org.slf4j.version>
     <org.json.version>20070829</org.json.version>
