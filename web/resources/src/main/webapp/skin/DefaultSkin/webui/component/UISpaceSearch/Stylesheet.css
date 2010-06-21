@@ -69,7 +69,7 @@ a:ACTIVE {
   line-height: 18px;
   cursor: pointer;
   float: left;
-  padding: 0px;
+  padding: 0 0 0 6px;
 }
 
 .UISpaceSearch .Filter {
@@ -78,10 +78,11 @@ a:ACTIVE {
 
 .UISpaceSearch .Filter .Lable {
   float: left;
-  padding: 4px 4px 4px 46px;
-  width: 100px;
+  line-height: 22px;
+  width: 20%;
   text-align: right;
   color: black;
+  margin-right: 5px;
 }
 
 .UISpaceSearch .FilterInput {
@@ -95,7 +96,7 @@ a:ACTIVE {
 
 .UISpaceSearch .FilterInput input {
   height: 12px;
-  width: 270px;
+  width: 268px;
   font-size:11px;
   color: #C7C7C7;
   border: 1px solid white;
