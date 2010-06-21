@@ -27,7 +27,6 @@ import org.exoplatform.social.core.identity.model.Profile;
  */
 public abstract class IdentityProvider<T> {
 
-
 	/**
 	 * The identifier can be the URL of the profile
 	 * or if it's a CS contact manager contact, it will be the UID of the contact
@@ -91,12 +90,8 @@ public abstract class IdentityProvider<T> {
 	    return;
 	}
 
-
-
   public List<String> getAllUserId(){
     throw new RuntimeException("getAllUserId() is not implemented for " + getClass());
   }
-
-
 }
 

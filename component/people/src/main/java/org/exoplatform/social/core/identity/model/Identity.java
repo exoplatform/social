@@ -34,8 +34,6 @@ public class Identity {
     /** The profile. */
     Profile profile;
 
-
-
     /**
      * Instantiates a new identity.
      * 

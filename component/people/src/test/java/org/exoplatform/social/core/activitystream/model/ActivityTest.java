@@ -24,8 +24,6 @@ import java.util.GregorianCalendar;
 import junit.framework.TestCase;
 
 public class ActivityTest extends TestCase {
-
-
   public void testOpenSocialCompatibility() {
 
     Activity activity = new Activity();
@@ -63,7 +61,6 @@ public class ActivityTest extends TestCase {
     activity.setUpdatedTimestamp(date.getTime());
     assertEquals(activity.getUpdated().getTime(), date.getTime());
 
-
     assertNull(activity.getStreamFaviconUrl());
     assertNull(activity.getStreamSourceUrl());
     assertNull(activity.getStreamTitle());
@@ -81,14 +78,13 @@ public class ActivityTest extends TestCase {
     assertEquals(stream.getTitle(),activity.getStreamTitle());
     assertEquals(stream.getUrl(),activity.getStreamUrl());
 
-
     assertNull(activity.getTitle());
     assertNull(activity.getTitleId());
+
     activity.setTitle("foo bar");
     assertEquals("foo bar", activity.getTitle());
+
     activity.setTitleId("FOO_BAR");
     assertEquals("FOO_BAR", activity.getTitleId());
-
   }
-
 }

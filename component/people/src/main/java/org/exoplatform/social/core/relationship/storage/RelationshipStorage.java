@@ -16,20 +16,29 @@
  */
 package org.exoplatform.social.core.relationship.storage;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.Session;
+
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.relationship.*;
+import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.jcr.JCRSessionManager;
 import org.exoplatform.social.jcr.SocialDataLocation;
-
-import javax.jcr.*;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * The Class JCRStorage.
  */
-public class JCRStorage {
+public class RelationshipStorage {
+  private static final Log LOG = ExoLogger.getLogger(RelationshipStorage.class);
 
   /** The identity manager. */
   private IdentityManager identityManager;
@@ -41,38 +50,37 @@ public class JCRStorage {
   private JCRSessionManager sessionManager;
 
   /** The Constant RELATION_NODETYPE. */
-  final private static String RELATION_NODETYPE = "exo:relationship".intern();
+  final public static String RELATION_NODETYPE = "exo:relationship".intern();
 
-  //final private static String IDENTITY_ID = "exo:id".intern();
   /** The Constant PROPERTY_ISSYMETRIC. */
-  final private static String PROPERTY_ISSYMETRIC = "exo:isSymetric".intern();
+  final public static String PROPERTY_ISSYMETRIC = "exo:isSymetric".intern();
 
   /** The Constant PROPERTY_STATUS. */
-  final private static String PROPERTY_STATUS = "exo:status".intern();
+  final public static String PROPERTY_STATUS = "exo:status".intern();
 
   /** The Constant PROPERTY_NAME. */
-  final private static String PROPERTY_NAME = "exo:name".intern();
+  final public static String PROPERTY_NAME = "exo:name".intern();
 
   /** The Constant PROPERTY_INITIATOR. */
-  final private static String PROPERTY_INITIATOR = "exo:initiator".intern();
+  final public static String PROPERTY_INITIATOR = "exo:initiator".intern();
 
   /** The Constant PROPERTY_NODETYPE. */
-  final private static String PROPERTY_NODETYPE = "exo:relationshipProperty".intern();
+  final public static String PROPERTY_NODETYPE = "exo:relationshipProperty".intern();
 
+  /** The Constant RELATION_SENDER. */
+  final public static String RELATION_SENDER = "exo:identity1Id".intern();
 
-  /** The Constant RELATION_IDENTITY1. */
-  final private static String RELATION_IDENTITY1 = "exo:identity1Id".intern();
+  /** The Constant RELATION_RECEIVER. */
+  final public static String RELATION_RECEIVER = "exo:identity2Id".intern();
 
-  /** The Constant RELATION_IDENTITY2. */
-  final private static String RELATION_IDENTITY2 = "exo:identity2Id".intern();
-
+  public final static String REFERENCEABLE_TYPE = "mix:referenceable";
   /**
    * Instantiates a new jCR storage.
    *
    * @param dataLocation the data location
    * @param identityManager the identity manager
    */
-  public JCRStorage(SocialDataLocation dataLocation, IdentityManager identityManager) {
+  public RelationshipStorage(SocialDataLocation dataLocation, IdentityManager identityManager) {
     this.dataLocation = dataLocation;
     this.identityManager = identityManager;
     this.sessionManager = dataLocation.getSessionManager();
@@ -87,22 +95,21 @@ public class JCRStorage {
   public void saveRelationship(Relationship relationship) throws Exception {
     Session session = sessionManager.openSession();
     Node relationshipNode = null;
+
     try {
       Node relationshipHomeNode = getRelationshipServiceHome(session);
 
       if (relationship.getId() == null) {
         relationshipNode = relationshipHomeNode.addNode(RELATION_NODETYPE, RELATION_NODETYPE);
-        relationshipNode.addMixin("mix:referenceable");
-        //relationshipHomeNode.save();
+        relationshipNode.addMixin(REFERENCEABLE_TYPE);
       } else {
         relationshipNode = session.getNodeByUUID(relationship.getId());
       }
-      Node id1Node = session.getNodeByUUID(relationship.getIdentity1().getId());
-      Node id2Node = session.getNodeByUUID(relationship.getIdentity2().getId());
+      Node id1Node = session.getNodeByUUID(relationship.getSender().getId());
+      Node id2Node = session.getNodeByUUID(relationship.getReceiver().getId());
 
-
-      relationshipNode.setProperty(RELATION_IDENTITY1, id1Node);
-      relationshipNode.setProperty(RELATION_IDENTITY2, id2Node);
+      relationshipNode.setProperty(RELATION_SENDER, id1Node);
+      relationshipNode.setProperty(RELATION_RECEIVER, id2Node);
       relationshipNode.setProperty(PROPERTY_STATUS, relationship.getStatus().toString());
 
       updateProperties(relationship, relationshipNode, session);
@@ -115,10 +122,12 @@ public class JCRStorage {
         relationshipNode.save();
       }
     } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
-      loadProperties(relationship, relationshipNode);
+    
+    loadProperties(relationship, relationshipNode);
   }
 
   /**
@@ -134,7 +143,7 @@ public class JCRStorage {
       relationshipNode.remove();
       relationshipHomeNode.save();
     } catch (Exception e) {
-      // TODO: handle exception
+      LOG.error(e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
@@ -155,6 +164,7 @@ public class JCRStorage {
       relationshipNode = session.getNodeByUUID(uuid);
     }
     catch (ItemNotFoundException e) {
+      LOG.error(e.getMessage(), e);
       return null;
     } finally {
       sessionManager.closeSession();
@@ -162,13 +172,13 @@ public class JCRStorage {
 
     Relationship relationship = new Relationship(relationshipNode.getUUID());
 
-    Node idNode = relationshipNode.getProperty(RELATION_IDENTITY1).getNode();
+    Node idNode = relationshipNode.getProperty(RELATION_SENDER).getNode();
     Identity id = identityManager.getIdentity(idNode.getUUID());
-    relationship.setIdentity1(id);
+    relationship.setSender(id);
 
-    idNode = relationshipNode.getProperty(RELATION_IDENTITY2).getNode();
+    idNode = relationshipNode.getProperty(RELATION_RECEIVER).getNode();
     id = identityManager.getIdentity(idNode.getUUID());
-    relationship.setIdentity2(id);
+    relationship.setReceiver(id);
 
     relationship.setStatus(Relationship.Type.valueOf(relationshipNode.getProperty(PROPERTY_STATUS).getString()));
 
@@ -210,14 +220,14 @@ public class JCRStorage {
       Node identityNode = session.getNodeByUUID(identityId);
       refNodes = identityNode.getReferences();
     } catch (Exception e) {
-      // TODO: handle exception
+      LOG.error(e.getMessage(), e);
       return null;
     } finally {
       sessionManager.closeSession();
     }
 
     while (refNodes.hasNext()) {
-      javax.jcr.Property property = (javax.jcr.Property) refNodes.next();
+      Property property = (Property) refNodes.next();
       Node node = property.getParent();
       if (node.isNodeType(RELATION_NODETYPE)) {
         results.add(getRelationship(node.getUUID()));
@@ -253,31 +263,28 @@ public class JCRStorage {
     }
 
     while (refNodes.hasNext()) {
-        javax.jcr.Property property = (javax.jcr.Property) refNodes.next();
-        Node node = property.getParent();
-        if (node.isNodeType(RELATION_NODETYPE)) {
-            Node relationshipNode;
-            try {
-              relationshipNode = session.getNodeByUUID(node.getUUID());
-            }
-            catch (ItemNotFoundException e) {
-                continue;
-            }
-
-            Node idNode = relationshipNode.getProperty(RELATION_IDENTITY1).getNode();
-            String sId = idNode.getUUID();
-
-            if (!sId.equals(identity.getId()))
-                results.add(identityManager.getIdentity(idNode.getUUID()));
-            else {
-
-                idNode = relationshipNode.getProperty(RELATION_IDENTITY2).getNode();
-                results.add(identityManager.getIdentity(idNode.getUUID()));
-            }
-
+      Property property = (Property) refNodes.next();
+      Node node = property.getParent();
+      if (node.isNodeType(RELATION_NODETYPE)) {
+        Node relationshipNode;
+        try {
+          relationshipNode = session.getNodeByUUID(node.getUUID());
         }
-    }
+        catch (ItemNotFoundException e) {
+          continue;
+        }
 
+        Node idNode = relationshipNode.getProperty(RELATION_SENDER).getNode();
+        String sId = idNode.getUUID();
+
+        if (!sId.equals(identity.getId()))
+          results.add(identityManager.getIdentity(idNode.getUUID()));
+        else {
+          idNode = relationshipNode.getProperty(RELATION_RECEIVER).getNode();
+          results.add(identityManager.getIdentity(idNode.getUUID()));
+        }
+      }
+    }
     return results;
   }
 
@@ -360,7 +367,7 @@ public class JCRStorage {
       Node propertyNode;
       if (property.getId() == null) {
         propertyNode = relationshipNode.addNode(PROPERTY_NODETYPE, PROPERTY_NODETYPE);
-        propertyNode.addMixin("mix:referenceable");
+        propertyNode.addMixin(REFERENCEABLE_TYPE);
         //relationshipNode.save();
         //property.setId(propertyNode.getUUID());
       } else {

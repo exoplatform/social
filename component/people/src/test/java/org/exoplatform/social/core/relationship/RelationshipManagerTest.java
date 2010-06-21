@@ -16,97 +16,210 @@
  */
 package org.exoplatform.social.core.relationship;
 
+import java.util.List;
+
+import javax.jcr.Node;
+import javax.jcr.Session;
+
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.AbstractPeopleTest;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.storage.RelationshipStorage;
+import org.exoplatform.social.jcr.JCRSessionManager;
+import org.exoplatform.social.utils.QueryBuilder;
 
 public class RelationshipManagerTest extends AbstractPeopleTest {
-
   RelationshipManager relationshipManager;
+  IdentityManager identityManager;
+  JCRSessionManager sessionManager;
 
-  IdentityManager     identityManager;
-
-  public void testInit() throws Exception {
+  @Override
+  protected void beforeRunBare() throws Exception {
+    super.beforeRunBare();
     relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
-    assertNotNull("relationshipManager must not be null", relationshipManager);
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+
+    RepositoryService repositoryService = (RepositoryService) getContainer().getComponentInstanceOfType(RepositoryService.class);
+    sessionManager = new JCRSessionManager("portal-test", repositoryService);
+    assertNotNull("relationshipManager must not be null", relationshipManager);
     assertNotNull("identityManager must not be null", identityManager);
-    init();
   }
 
-  private void init() throws Exception {
+  @Override
+  protected void afterRunBare() {
+    super.afterRunBare();
+  }
 
-    Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                             "john");
-    identityManager.saveIdentity(identity1);
-    assertNotNull(identity1.getId());
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
 
-    Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                             "james");
-    assertNotNull(identity2.getId());
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    try {
+      Session session = sessionManager.openSession();
+      final List<Node> nodes = new QueryBuilder(session)
+        .select(RelationshipStorage.RELATION_NODETYPE).exec();
 
-    Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                             "root");
-    assertNotNull(identity3.getId());
+      for (Node node : nodes) {
+        node.remove();
+      }
 
-    Relationship relationship = relationshipManager.invite(identity1, identity2);
+      session.save();
+    } finally {
+      sessionManager.closeSession();
+    }
+  }
+
+  public void testGetRelationshipByIdentityId() throws Exception {
+    String providerId = OrganizationIdentityProvider.NAME;
+
+    Identity sender = identityManager.getOrCreateIdentity(providerId,"john");
+    identityManager.saveIdentity(sender);
+    assertNotNull(sender.getId());
+
+    Identity receiver = identityManager.getOrCreateIdentity(providerId,"james");
+    assertNotNull(receiver.getId());
+
+    relationshipManager.invite(sender, receiver);
+    List<Relationship> senderRelationships = relationshipManager.getAllRelationships(sender);
+    List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(receiver);
+
+    assertEquals(1, senderRelationships.size());
+    assertEquals(1, receiverRelationships.size());
+  }
+
+  public void testGetManyRelationshipsByIdentityId() throws Exception {
+    String providerId = OrganizationIdentityProvider.NAME;
+
+    Identity sender = identityManager.getOrCreateIdentity(providerId,"john");
+    identityManager.saveIdentity(sender);
+    assertNotNull(sender.getId());
+
+    Identity receiver = identityManager.getOrCreateIdentity(providerId,"james");
+    assertNotNull(receiver.getId());
+
+    int total = 20;
+    for (int i = 0; i < total; i++) {
+      relationshipManager.invite(sender, receiver);
+    }
+
+    List<Relationship> senderRelationships = relationshipManager.getAllRelationships(sender);
+    List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(receiver);
+
+    assertEquals(total, senderRelationships.size());
+    assertEquals(total, receiverRelationships.size());
+  }
+
+  public void testInviteRelationship() throws Exception {
+    String providerId = OrganizationIdentityProvider.NAME;
+
+    Identity sender = identityManager.getOrCreateIdentity(providerId,"john");
+    identityManager.saveIdentity(sender);
+    assertNotNull(sender.getId());
+
+    Identity receiver = identityManager.getOrCreateIdentity(providerId,"james");
+    assertNotNull(receiver.getId());
+
+    Relationship relationship = relationshipManager.invite(sender, receiver);
     assertNotNull(relationship.getId());
     assertEquals(Relationship.Type.PENDING, relationship.getStatus());
+
+    List<Relationship> senderRelationships = relationshipManager.getAllRelationships(sender);
+    List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(receiver);
+
+    assertEquals(1, senderRelationships.size());
+    assertEquals(1, receiverRelationships.size());
+  }
+
+  public void testConfirmRelationship() throws Exception {
+    String providerId = OrganizationIdentityProvider.NAME;
+
+    Identity sender = identityManager.getOrCreateIdentity(providerId,"john");
+    identityManager.saveIdentity(sender);
+    assertNotNull(sender.getId());
+
+    Identity receiver = identityManager.getOrCreateIdentity(providerId,"james");
+    assertNotNull(receiver.getId());
+
+    Relationship relationship = relationshipManager.invite(sender, receiver);
     relationshipManager.confirm(relationship);
+    assertNotNull(relationship.getId());
     assertEquals(Relationship.Type.CONFIRM, relationship.getStatus());
+
+    List<Relationship> senderRelationships = relationshipManager.getAllRelationships(sender);
+    List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(receiver);
+
+    assertEquals(1, senderRelationships.size());
+    assertEquals(1, receiverRelationships.size());
   }
 
-  public void testSave() throws Exception {
-    /*
-     * RelationshipManager relationshipManager = (RelationshipManager)
-     * StandaloneContainer
-     * .getInstance().getComponentInstanceOfType(RelationshipManager.class);
-     * assertNotNull(relationshipManager); init(); Relationship relationshipBis
-     * = relationshipManager.getById(relationship.getId());
-     * assertEquals(relationship.getId(), relationshipBis.getId());
-     * assertEquals(relationship.getIdentity1().getId(),
-     * relationshipBis.getIdentity1().getId());
-     * assertEquals(relationship.getIdentity2().getId(),
-     * relationshipBis.getIdentity2().getId());
-     * assertEquals(relationship.getProperties().size(),
-     * relationshipBis.getProperties().size()); for (Property prop :
-     * relationshipBis.getProperties()) { if
-     * (!((prop.getName().equals("friend")) ||
-     * (prop.getName().equals("co-worker")))) { fail("wrong property"); } }
-     * Relationship relationship2Bis =
-     * relationshipManager.getById(relationship2.getId());
-     * assertEquals(relationship2.getId(), relationship2Bis.getId());
-     * assertEquals(relationship2.getIdentity1().getId(),
-     * relationship2Bis.getIdentity1().getId());
-     * assertEquals(relationship2.getIdentity2().getId(),
-     * relationship2Bis.getIdentity2().getId());
-     * assertEquals(relationship2.getProperties().size(),
-     * relationship2Bis.getProperties().size()); for (Property prop :
-     * relationship2Bis.getProperties()) { if
-     * (!((prop.getName().equals("friend")) ||
-     * (prop.getName().equals("relative")))) { fail("wrong property"); } }
-     */
+  public void testRemoveRelationship() throws Exception {
+    String providerId = OrganizationIdentityProvider.NAME;
+
+    Identity sender = identityManager.getOrCreateIdentity(providerId,"john");
+    identityManager.saveIdentity(sender);
+    assertNotNull(sender.getId());
+
+    Identity receiver = identityManager.getOrCreateIdentity(providerId,"james");
+    assertNotNull(receiver.getId());
+
+    Relationship relationship = relationshipManager.invite(sender, receiver);
+    relationshipManager.confirm(relationship);
+    relationshipManager.remove(relationship);
+
+    List<Relationship> senderRelationships = relationshipManager.getAllRelationships(sender);
+    List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(receiver);
+
+    assertEquals(0, senderRelationships.size());
+    assertEquals(0, receiverRelationships.size());
   }
 
-  public void testGet() throws Exception {
-    /*
-     * RelationshipManager relationshipManager = (RelationshipManager)
-     * StandaloneContainer
-     * .getInstance().getComponentInstanceOfType(RelationshipManager.class);
-     * assertNotNull(relationshipManager); init(); List<Relationship> rels =
-     * relationshipManager.get(relationship.getIdentity1());
-     * assertNotNull(rels); assertEquals(2, rels.size()); rels =
-     * relationshipManager.get(relationship2.getIdentity2());
-     * assertNotNull(rels); assertEquals(1, rels.size());
-     * assertEquals(relationship2.getIdentity2().getId(),
-     * rels.get(0).getIdentity2().getId());
-     * assertEquals(relationship2.getIdentity1().getId(),
-     * rels.get(0).getIdentity1().getId()); String idRel = rels.get(0).getId();
-     * rels = relationshipManager.get(relationship2.getIdentity2());
-     * assertNotNull(rels); assertEquals(1, rels.size());assertEquals(
-     * "the relationship id should be the same as the previous since it's about the same relation"
-     * , idRel, rels.get(0).getId());
-     */
+  public void testIgnoreRelationship() throws Exception {
+    String providerId = OrganizationIdentityProvider.NAME;
+
+    Identity sender = identityManager.getOrCreateIdentity(providerId,"john");
+    identityManager.saveIdentity(sender);
+    assertNotNull(sender.getId());
+
+    Identity receiver = identityManager.getOrCreateIdentity(providerId,"james");
+    assertNotNull(receiver.getId());
+
+    Relationship relationship = relationshipManager.invite(sender, receiver);
+    relationshipManager.ignore(relationship);
+    assertNotNull(relationship.getId());
+    assertEquals(Relationship.Type.IGNORE, relationship.getStatus());
+
+    List<Relationship> senderRelationships = relationshipManager.getAllRelationships(sender);
+    List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(receiver);
+
+    assertEquals(1, senderRelationships.size());
+    assertEquals(1, receiverRelationships.size());
+  }
+
+  public void testGetPendingRelationships() throws Exception {
+    String providerId = OrganizationIdentityProvider.NAME;
+
+    Identity sender = identityManager.getOrCreateIdentity(providerId,"john");
+    identityManager.saveIdentity(sender);
+    assertNotNull(sender.getId());
+
+    Identity receiver = identityManager.getOrCreateIdentity(providerId,"james");
+    assertNotNull(receiver.getId());
+
+    int total = 20;
+    for (int i = 0; i < total; i++) {
+      relationshipManager.invite(sender, receiver);
+    }
+
+    List<Relationship> senderRelationships = relationshipManager.getPendingRelationships(sender);
+    List<Relationship> receiverRelationships = relationshipManager.getPendingRelationships(receiver);
+
+    assertEquals(total, senderRelationships.size());
+    assertEquals(total, receiverRelationships.size());
   }
 }

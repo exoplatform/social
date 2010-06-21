@@ -21,10 +21,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import junit.framework.TestCase;
 
 public class IdentityTest extends TestCase {
-
-  public void testToString() {
+  public void test_identity_to_string() {
     Identity id = new Identity("organization", "root");
     assertEquals(id.toString(), "organization:root");
   }
-
 }

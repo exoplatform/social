@@ -27,7 +27,6 @@ import org.exoplatform.social.core.activitystream.model.Activity;
 
 public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
 
-
   /**
    * html tags allowed in title and body by OpenSocial spec
    */
@@ -98,15 +97,10 @@ public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
           tag = replaceStr.trim().substring(1, replaceStr.length() -1);
         }
 
-
-
-
         if (!Arrays.asList(allowedTags).contains(tag)) {
           replaceStr = "&lt;" + replaceStr.substring(1, replaceStr.length() - 1) + "&gt;";
         }
       }
-
-
 
       // Insert replacement
       matcher.appendReplacement(buf, replaceStr);
@@ -123,5 +117,4 @@ public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
   public void setAllowedTags(String[] allowedTags) {
     this.allowedTags = allowedTags;
   }
-
 }

@@ -21,12 +21,14 @@ import org.exoplatform.social.core.identity.model.Identity;
 import junit.framework.TestCase;
 
 public class RelationshipTest extends TestCase {
-
   public void testToString() {
-    Identity id1 = new Identity("organization", "root");
-    Identity id2 = new Identity("organization", "john");
-    Relationship relationship = new Relationship(id1, id2);
+    //invitor
+    Identity sender = new Identity("organization", "root");
+    //invitee
+    Identity receiver = new Identity("organization", "john");
+
+    //create relationship
+    Relationship relationship = new Relationship(sender, receiver);
     assertEquals("organization:root--[PENDING]--organization:john", relationship.toString());
   }
-
 }

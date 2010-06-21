@@ -28,9 +28,7 @@ import org.exoplatform.social.core.activitystream.model.Activity;
  * @version $Revision$
  */
 public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin  implements ActivityProcessor {
-
   protected int               priority;
-
 
   private static final Log LOG = ExoLogger.getLogger(BaseActivityProcessorPlugin.class);
 
@@ -44,8 +42,6 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin  i
     }
   }
 
-
-
   public int getPriority() {
     return priority;
   }
@@ -54,9 +50,5 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin  i
     this.priority = priority;
   }
 
-
-
-
   public abstract void processActivity(Activity activity);
-
 }

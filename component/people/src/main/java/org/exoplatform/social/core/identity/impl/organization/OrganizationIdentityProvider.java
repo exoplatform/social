@@ -36,9 +36,7 @@ import org.exoplatform.social.core.identity.model.Profile;
  * The Class OrganizationIdentityProvider.
  */
 public class OrganizationIdentityProvider extends IdentityProvider<User> {
-  
 
-  
   /** The organization service. */
   private OrganizationService organizationService;
   
@@ -52,7 +50,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   /**
    * Instantiates a new organization identity provider.
    * 
-   * @param storage the storage
    * @param organizationService the organization service
    */
   public OrganizationIdentityProvider(OrganizationService organizationService) {
@@ -63,9 +60,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public String getName() {
     return NAME;
   }
-
-
-
 
   /* (non-Javadoc)
    * @see org.exoplatform.social.core.identity.IdentityProvider#getAllUserId()
@@ -130,7 +124,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   @Override
   public Identity createIdentity(User user) {
     Identity identity = new Identity(NAME, user.getUserName());
-  return identity;
+    return identity;
   }
 
   @Override
@@ -151,6 +145,5 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       emails.add(email);
       profile.setProperty("emails", emails);
     }
-    
   }
 }   

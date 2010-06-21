@@ -22,35 +22,30 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
-import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activitystream.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.jcr.JCRSessionManager;
 import org.exoplatform.social.jcr.SocialDataLocation;
+import org.exoplatform.social.utils.QueryBuilder;
 
 import com.google.common.collect.Lists;
-
 
 /**
  * The Class JCRStorage represents storage for activity manager
  * @see org.exoplatform.social.core.activitystream.ActivityManager
  */
-public class JCRStorage {
+public class ActivityStorage {
 
-  private static final Log LOG = ExoLogger.getLogger(JCRStorage.class);
+  private static final Log LOG = ExoLogger.getLogger(ActivityStorage.class);
 
   /** The Constant PUBLISHED_NODE. */
   final private static String PUBLISHED_NODE = "published".intern();
@@ -117,11 +112,9 @@ public class JCRStorage {
 
   /**
    * Instantiates a new JCR storage base on SocialDataLocation
-   *
    * @param dataLocation the data location.
-   * @see 	org.exoplatform.social.space.impl.SoscialDataLocation.
    */
-  public JCRStorage(SocialDataLocation dataLocation) {
+  public ActivityStorage(SocialDataLocation dataLocation) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
   }
@@ -144,11 +137,11 @@ public class JCRStorage {
    * @param owner the owner of the stream
    * @return the user activity service home
    */
+  //TODO hoatle bug if id = uuid, username refers to the same identity
   private Node getStreamLocation(Identity owner) {
-
     String type = owner.getProviderId();
     String id = owner.getRemoteId();
-    //TODO hoatle bug if id = uuid, username refers to the same identity
+
     //If then, do not create new stream location, use existing location.
     if(type != null && id != null) {
       return getStreamsLocationByType(type, id);
@@ -158,16 +151,14 @@ public class JCRStorage {
       LOG.warn("attempting to get a stream for non prefixed owner : " + id);
       return getStreamsLocationByType("default", id);
     }
-
   }
 
   private Node getStreamsLocationByType(String type, String username) {
     Session session = sessionManager.openSession();
     try {
-
       // first get or create the node for type. Ex: /activities/organization
       Node activityHomeNode = getActivityServiceHome(session);
-      Node typeHome = null;
+      Node typeHome;
       if (activityHomeNode.hasNode(type)){
         typeHome = activityHomeNode.getNode(type);
       } else {
@@ -183,8 +174,6 @@ public class JCRStorage {
         typeHome.save();
         return streamNode;
       }
-
-
     } catch (Exception e) {
       LOG.error("failed to locate stream owner node for " +username, e);
       return null;
@@ -192,7 +181,6 @@ public class JCRStorage {
       sessionManager.closeSession();
     }
   }
-
 
   /**
    * Gets the published activity service home node.
@@ -215,7 +203,6 @@ public class JCRStorage {
       LOG.error("Failed to get published activity service location for " + owner, e);
       return null;
     }
-
   }
 
   /**
@@ -226,16 +213,20 @@ public class JCRStorage {
    * @return the activity
    * @throws Exception the exception
    */
-  public Activity save(Identity owner, Activity activity) throws Exception {
-    Node activityNode;
+  //TODO hoatle: we force title is mandatory; the spec says that if title is not
+  // available, titleId must be available. We haven't processed titleId yet, so leave title is mandatory
+  public Activity save(Identity owner, Activity activity) throws Exception {    
+
     LOG.info("storing activity for owner " + owner + " by " + activity.getUserId());
     Validate.notNull(activity.getUpdated(), "Activity.getUpdated() must not be null.");
-    Validate.notNull(activity.getPostedTime(), "Activity.getPostedTime() must not be null.");
-    //TODO hoatle: we force title is mandatory; the spec says that if title is not available, titleId must
-    // be available. We haven't processed titleId yet, so leave title is mandatory
+    Validate.notNull(activity.getPostedTime(), "Activity.getPostedTime() must not be null.");     
     Validate.notNull(activity.getTitle(), "Activity.getTitle() must not be null.");
+
     Node activityHomeNode = getPublishedActivityServiceHome(owner);
+
     try {
+      Node activityNode;
+
       Session session = sessionManager.openSession();
       if (activity.getId() == null) {
         activityNode = activityHomeNode.addNode(ACTIVITY_NODETYPE, ACTIVITY_NODETYPE);
@@ -245,6 +236,7 @@ public class JCRStorage {
       }
 
       setStreamInfo(activity, activityNode);
+
       activityNode.setProperty(TITLE, activity.getTitle());
       if (activity.getTitleId() != null) {
         activityNode.setProperty(TITLE_TEMPLATE, activity.getTitleId());
@@ -337,9 +329,8 @@ public class JCRStorage {
     deleteActivityComments(activityId);
 
     Session session = sessionManager.openSession();
-    Node activityNode = null;
     try {
-      activityNode = session.getNodeByUUID(activityId);
+      Node activityNode = session.getNodeByUUID(activityId);
       if (activityNode != null) {
         activityNode.remove();
         session.save();
@@ -349,7 +340,6 @@ public class JCRStorage {
     } finally {
       sessionManager.closeSession();
     }
-
   }
 
   /**
@@ -449,63 +439,62 @@ public class JCRStorage {
   /**
    * Gets the activities by identity.
    *
-   * @param identity the identity
+   * @param owner the identity
    * @return the activities
    * @throws Exception the exception
    */
   public List<Activity> getActivities(Identity owner, long offset, long limit) throws Exception {
-    List<Activity> activities = Lists.newArrayList();
-
     Node n = getPublishedActivityServiceHome(owner);
     String path = n.getPath();
 
+    List<Activity> activities = Lists.newArrayList();
     try {
       Session session = sessionManager.getOrOpenSession();
+      List<Node> nodes = new QueryBuilder(session)
+        .select(ACTIVITY_NODETYPE, offset, limit)
+        .like("jcr:path", path + "[%]/exo:activity[%]")
+        .and()
+        .not().equal(REPLY_TO_ID,Activity.IS_COMMENT)
+        .orderBy("exo:updatedTimestamp", QueryBuilder.DESC).exec();
 
-      QueryManager queryManager = session.getWorkspace().getQueryManager();
-      String queryStr = "select * from exo:activity where jcr:path like '" + path + "[%]/exo:activity[%]' and NOT exo:replyToId='"+Activity.IS_COMMENT +"' order by exo:updatedTimestamp desc";
-      QueryImpl query = (QueryImpl) queryManager.createQuery(queryStr, Query.SQL);
-      query.setOffset(offset);
-      query.setLimit(limit);
-      QueryResult result = query.execute();
-
-      NodeIterator nodes = result.getNodes();
-
-      while (nodes.hasNext()) {
-        Node node = nodes.nextNode();
+      for (Node node : nodes) {
         activities.add(load(node));
       }
-    } catch (Exception e) {
-      LOG.error("Failed to retrieve activities for owner", e);
     } finally {
       sessionManager.closeSession();
     }
+
     return activities;
   }
 
   /**
    * Gets the activities by identity.
    *
-   * @param identity the identity
+   * @param owner the identity
    * @return the activities
    * @throws Exception the exception
    */
   public List<Activity> getActivities(Identity owner) throws Exception {
+    Node publishingNode = getPublishedActivityServiceHome(owner);
+    //here is path of activity of john  :/exo:applications/Social_Activity/organization/john/published
+    // we will query activities of owner via the way : jcr:path of activity will contains owner's remoteid and providerid(/organization/john/)
     List<Activity> activities = Lists.newArrayList();
-    Node n = getPublishedActivityServiceHome(owner);
-    NodeIterator nodes = n.getNodes();
-    String replyToId;
-    while (nodes.hasNext()) {
-      Node node = nodes.nextNode();
-      if (node.hasProperty(REPLY_TO_ID)) {
-        replyToId = node.getProperty(REPLY_TO_ID).getString();
-        if (!replyToId.equals(Activity.IS_COMMENT)) {
-          activities.add(load(node));
-        }
-      } else {
+    Session session = sessionManager.getOrOpenSession();
+    try {
+      String path = publishingNode.getPath();
+      List<Node> nodes = new QueryBuilder(session)
+        .select(ACTIVITY_NODETYPE)
+        .like("jcr:path", path + "[%]/exo:activity[%]")
+        .and()
+        .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).exec();
+
+      for (Node node : nodes) {
         activities.add(load(node));
       }
+    } finally {
+      sessionManager.closeSession();
     }
+
     return activities;
   }
 

@@ -37,12 +37,12 @@ import org.exoplatform.social.jcr.SocialDataLocation;
  * social platform.
  *
  * @see org.exoplatform.social.core.activitystream.model.Activity
- * @see org.exoplatform.social.core.activitystream.JCRStorage
+ * @see ActivityStorage
  */
 public class ActivityManager {
 
   /** The storage. */
-  private JCRStorage storage;
+  private ActivityStorage storage;
 
   private static final Log LOG = ExoLogger.getLogger(ActivityManager.class);
 
@@ -55,11 +55,11 @@ public class ActivityManager {
    *
    * @param dataLocation the data location of activity manager it will
    *          instantiates tree node for this services.
-   * @see org.exoplatform.social.space.impl.SoscialDataLocation.
+   * @link org.exoplatform.social.space.impl.SoscialDataLocation.
    * @throws Exception exception when can't instantiates tree node.
    */
   public ActivityManager(SocialDataLocation dataLocation, IdentityManager identityManager) {
-    this.storage = new JCRStorage(dataLocation);
+    this.storage = new ActivityStorage(dataLocation);
     this.processors = new TreeSet<ActivityProcessor>(processorComparator());
     this.identityManager = identityManager;
   }

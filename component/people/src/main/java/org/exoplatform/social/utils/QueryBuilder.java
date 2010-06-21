@@ -12,7 +12,6 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
-import org.exoplatform.social.jcr.JCRSessionManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,13 +24,13 @@ public class QueryBuilder {
   private StringBuilder queryBuilder;
   private long limit = -1;
   private long offset= -1;
-  private JCRSessionManager sessionManager;
+  private Session session;
   private final String WHERE = " WHERE";
   public static final String DESC = "DESC";
   public static final String ASC = "ASC";
 
-  public QueryBuilder(JCRSessionManager sessionManager) {
-    this.sessionManager = sessionManager;
+  public QueryBuilder(Session session) {
+    this.session = session;
   }
 
   public QueryBuilder select(String selector) {
@@ -56,26 +55,20 @@ public class QueryBuilder {
     assert queryBuilder != null;
 
     List<Node> nodes = new ArrayList<Node>();
-    try {
-      Session session = sessionManager.openSession();
-      QueryManager queryManager = session.getWorkspace().getQueryManager();
+    QueryManager queryManager = session.getWorkspace().getQueryManager();
+    QueryImpl query = (QueryImpl) queryManager.createQuery(getSQL(), Query.SQL);
 
-      QueryImpl query = (QueryImpl) queryManager.createQuery(getSQL(), Query.SQL);
+    //set paging
+    if(offset != -1 & limit != -1){
+      query.setOffset(offset);
+      query.setLimit(limit);
+    }
 
-      //set paging
-      if(offset != -1 & limit != -1){
-        query.setOffset(offset);
-        query.setLimit(limit);
-      }
+    QueryResult result = query.execute();
+    NodeIterator nodeIterator = result.getNodes();
 
-      QueryResult result = query.execute();
-      NodeIterator nodeIterator = result.getNodes();
-
-      while (nodeIterator.hasNext()){
-        nodes.add(nodeIterator.nextNode());
-      }
-    } finally {
-      sessionManager.closeSession();
+    while (nodeIterator.hasNext()){
+      nodes.add(nodeIterator.nextNode());
     }
 
     return nodes;

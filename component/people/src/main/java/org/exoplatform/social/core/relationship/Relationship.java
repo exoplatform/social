@@ -32,11 +32,11 @@ public class Relationship {
   /** The properties. */
   private List<Property> properties;
 
-  /** The identity1. */
-  private Identity       identity1;
+  /** The sender. */
+  private Identity       sender;
 
-  /** The identity2. */
-  private Identity       identity2;
+  /** The receiver. */
+  private Identity       receiver;
 
   /** The status. */
   private Type           status = Type.PENDING;
@@ -64,23 +64,23 @@ public class Relationship {
   /**
    * Instantiates a new relationship.
    * 
-   * @param identity1 the identity1
-   * @param identity2 the identity2
+   * @param sender the sender
+   * @param receiver the receiver
    */
-  public Relationship(Identity identity1, Identity identity2) {
-    this(identity1, identity2, new ArrayList<Property>());
+  public Relationship(Identity sender, Identity receiver) {
+    this(sender, receiver, new ArrayList<Property>());
   }
 
   /**
    * Instantiates a new relationship.
    * 
-   * @param identity1 the identity1
-   * @param identity2 the identity2
+   * @param sender the sender
+   * @param receiver the receiver
    * @param properties the properties
    */
-  public Relationship(Identity identity1, Identity identity2, List<Property> properties) {
-    this.identity1 = identity1;
-    this.identity2 = identity2;
+  public Relationship(Identity sender, Identity receiver, List<Property> properties) {
+    this.sender = sender;
+    this.receiver = receiver;
     this.properties = properties;
   }
 
@@ -95,39 +95,39 @@ public class Relationship {
   }
 
   /**
-   * Gets the identity1.
+   * Gets the sender.
    * 
-   * @return the identity1
+   * @return the sender
    */
-  public Identity getIdentity1() {
-    return identity1;
+  public Identity getSender() {
+    return sender;
   }
 
   /**
-   * Gets the identity2.
+   * Gets the receiver.
    * 
-   * @return the identity2
+   * @return the receiver
    */
-  public Identity getIdentity2() {
-    return identity2;
+  public Identity getReceiver() {
+    return receiver;
   }
 
   /**
-   * Sets the identity1.
+   * Sets the sender.
    * 
-   * @param identity1 the new identity1
+   * @param sender the new sender
    */
-  public void setIdentity1(Identity identity1) {
-    this.identity1 = identity1;
+  public void setSender(Identity sender) {
+    this.sender = sender;
   }
 
   /**
-   * Sets the identity2.
+   * Sets the receiver.
    * 
-   * @param identity2 the new identity2
+   * @param receiver the new receiver
    */
-  public void setIdentity2(Identity identity2) {
-    this.identity2 = identity2;
+  public void setReceiver(Identity receiver) {
+    this.receiver = receiver;
   }
 
   /**
@@ -210,7 +210,6 @@ public class Relationship {
   }
 
   public String toString() {
-    return identity1 + "--[" + status + "]--" + identity2;
+    return sender + "--[" + status + "]--" + receiver;
   }
-
 }

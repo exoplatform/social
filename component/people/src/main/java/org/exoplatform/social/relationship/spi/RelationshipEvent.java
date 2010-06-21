@@ -38,8 +38,8 @@ public class RelationshipEvent extends LifeCycleEvent<RelationshipManager, Relat
   }
 
   public String toString() {
-    return payload.getIdentity1().getProfile().getFullName() + " " + type + " "
-        + payload.getIdentity2().getProfile().getFullName();
+    return payload.getSender().getProfile().getFullName() + " " + type + " "
+        + payload.getReceiver().getProfile().getFullName();
   }
 
 }

@@ -21,16 +21,22 @@ import org.exoplatform.social.core.identity.impl.organization.OrganizationIdenti
 import org.exoplatform.social.core.identity.model.Identity;
 
 public class IdentityManagerTest extends AbstractPeopleTest {
+  private IdentityManager identityManager;
 
-  public IdentityManagerTest() throws Exception {
-    super();
+  @Override
+  protected void beforeRunBare() throws Exception {
+    super.beforeRunBare();
+    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
   }
 
-  private IdentityManager identityManager;
+  @Override
+  protected void afterRunBare() {
+    super.afterRunBare();
+  }
 
   public void setUp() throws Exception {
     super.setUp();
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+
     begin();
   }
 
@@ -38,76 +44,82 @@ public class IdentityManagerTest extends AbstractPeopleTest {
     end();
   }
 
-  // protected void afterContainerStart() {
-  // identityManager = (IdentityManager)
-  // getContainer().getComponentInstanceOfType(IdentityManager.class);
-  // SimpleMockOrganizationService organizationService =
-  // (SimpleMockOrganizationService)
-  // getContainer().getComponentInstanceOfType(OrganizationService.class);
-  // organizationService.addMemberships("john", "member:/platform/users");
-  // organizationService.addMemberships("demo", "member:/platform/users");
-  // organizationService.addMemberships("mary", "member:/platform/users");
-  // }
-
-  public void testIdentityManager() {
+  public void testIdentityManagerNotNull() {
     assertNotNull(identityManager);
   }
 
   public void testGetIdentityByRemoteId() throws Exception {
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+    String remoteId = "zuanoc";
+    String providerId = OrganizationIdentityProvider.NAME;
+
+    Identity identity = identityManager.getOrCreateIdentity(providerId, remoteId);
     assertNotNull(identity);
 
     identityManager.saveIdentity(identity);
-    assertNotNull(identity.getId());
+    String identityId = identity.getId();
+    assertNotNull(identityId);
 
-    // check if we load it a second time if we get the ID
-    identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+    //check if we load it a second time if we get the ID
+    identity = identityManager.getOrCreateIdentity(providerId, remoteId);
+
     assertNotNull(identity);
     assertNotNull("This object should have an id since it has been saved", identity.getId());
-
-    String id = identity.getId();
-    identityManager.saveIdentity(identity);
-    assertTrue("The id should not change after having been saved", identity.getId().equals(id));
+    assertEquals("The id should not change after having been saved",identityId, identity.getId());
   }
 
   public void testGetIdentityById() throws Exception {
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
+    String remoteId = "mary";
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId);
     assertNotNull(identity);
-
-    assertNotNull(identity.getId());
-    identityManager.saveIdentity(identity);
     assertNotNull(identity.getId());
 
     String oldId = identity.getId();
-    identity = identityManager.getIdentity(identity.getId());
-    assertNotNull(identity);
-    log.info("new id = " + identity.getId());
+    Identity newIdentity = identityManager.getIdentity(oldId);
+    assertNotNull(newIdentity);
 
-    String retrievedId = identity.getId();
-    System.out.println(retrievedId);
-    assertTrue("this id should still be the same", retrievedId.equals(oldId));
-
+    assertEquals("this id should still be the same",oldId, newIdentity.getId());
   }
 
-  public void testGetIdentityByIdWithGlobalId() throws Exception {
-    Identity demo = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+  public void testGetIdentityByGlobalId() throws Exception {
+    String remoteId = "demo";
+    String providerId = OrganizationIdentityProvider.NAME;
+    String globalId = providerId + ":" + remoteId;
+    
+    Identity demo = identityManager.getOrCreateIdentity(providerId, remoteId);
     identityManager.saveIdentity(demo);
+
     String demoId = demo.getId();
-
-    Identity identity = identityManager.getIdentity("organization:demo");
-    assertNotNull(identity);
-    String id = identity.getId();
-    assertNotNull(id);
-    assertTrue("ids should be identical", id.equals(demoId));
-
-    identity = identityManager.getIdentity(identity.getId());
+    Identity identityByGlobalId = identityManager.getIdentity(globalId);
+    assertNotNull(identityByGlobalId);
+    assertNotNull(identityByGlobalId.getId());
+    assertEquals("ids should be identical",demoId, identityByGlobalId.getId());
   }
 
   public void testGetWrongId() throws Exception {
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "jack");
+    String remoteId = "jack";
+    String providerId = OrganizationIdentityProvider.NAME;
+    Identity identity = identityManager.getOrCreateIdentity(providerId, remoteId);
     assertNotNull(identity);
 
     identity = identityManager.getIdentity("wrongID");
     assertNull(identity);
+  }
+
+  public void testIsExistUser_false(){
+    String remoteId = "zuanoc";
+    String providerId = OrganizationIdentityProvider.NAME;
+    final boolean isExist = identityManager.identityExisted(providerId, remoteId);
+    assertFalse(isExist);
+  }
+
+  public void testIsExistUserTrue() throws Exception {
+    //NOTE : we use root as remoteId here because root user is created in portal user system
+    // and IdentityManager.identityExisted() just check a portal's user either exist or not..
+    // ATTENTION : IdentityManager.identityExisted() is not depend on IdentityStorage, but only
+    // on portal.
+    String remoteId = "root";
+    String providerId = OrganizationIdentityProvider.NAME;
+    final boolean isExist = identityManager.identityExisted(providerId, remoteId);
+    assertTrue(isExist);
   }
 }

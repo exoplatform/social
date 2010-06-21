@@ -16,11 +16,15 @@
  */
 package org.exoplatform.social.core.identity;
 
-import org.exoplatform.social.core.identity.model.Profile;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-
-import java.util.*;
+import org.exoplatform.social.core.identity.model.Profile;
 
 
 // TODO: Auto-generated Javadoc
@@ -43,7 +47,6 @@ public class ProfileMapper {
    */
   public void copy(Map infos, Profile profile) throws Exception {
     Iterator it = infos.keySet().iterator();
-
 
     //remove the fields we are editing
     while(it.hasNext()) {
@@ -153,6 +156,4 @@ public class ProfileMapper {
     }
     return config;
   }
-
-
 }

@@ -373,7 +373,7 @@ public class Activity  {
   /**
    * Sets the replyto id.
    * 
-   * @param replytoId the new replyto id
+   * @param replyToId the new replyto id
    */
   public void setReplyToId(String replyToId) {
       this.replyToId = replyToId;

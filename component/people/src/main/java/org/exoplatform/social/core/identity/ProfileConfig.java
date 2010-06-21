@@ -41,7 +41,7 @@ public class ProfileConfig {
   private Map<String, String> nodeTypes = new HashMap<String, String>();
   
   /** The storage. */
-  private JCRStorage storage = null;
+  private IdentityStorage storage = null;
 
   /**
    * Instantiates a new profile config.
@@ -140,6 +140,4 @@ public class ProfileConfig {
 
     return "String";
   }
-
-
 }

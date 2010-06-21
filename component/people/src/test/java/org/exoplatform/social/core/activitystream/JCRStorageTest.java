@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import org.exoplatform.social.AbstractPeopleTest;
 import org.exoplatform.social.core.activitystream.model.Activity;
-import org.exoplatform.social.core.identity.JCRStorage;
+import org.exoplatform.social.core.identity.IdentityStorage;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.jcr.SocialDataLocation;
@@ -29,15 +29,15 @@ import org.exoplatform.social.jcr.SocialDataLocation;
 public class JCRStorageTest extends AbstractPeopleTest {
 
   private SocialDataLocation dataLocation;
-  private JCRStorage identityStorage;
-  private org.exoplatform.social.core.activitystream.JCRStorage activityStorage;
+  private IdentityStorage identityStorage;
+  private ActivityStorage activityStorage;
   private ArrayList<String> activityIds = new ArrayList<String>();
 
   @Override
   protected void setUp() throws Exception {
     dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
-    activityStorage = new org.exoplatform.social.core.activitystream.JCRStorage(dataLocation);
-    identityStorage = new JCRStorage(dataLocation);
+    activityStorage = new ActivityStorage(dataLocation);
+    identityStorage = new IdentityStorage(dataLocation);
 
     begin();
   }
@@ -60,7 +60,7 @@ public class JCRStorageTest extends AbstractPeopleTest {
     Identity root = new Identity(OrganizationIdentityProvider.NAME, "root");
     identityStorage.saveIdentity(root);
 
-    // root save on john's stream
+    // root save on root's stream
     Activity activity = new Activity();
     activity.setTitle("blabla");
     activity.setUserId("root");
@@ -85,10 +85,11 @@ public class JCRStorageTest extends AbstractPeopleTest {
   }
 
   public void testGetAllActivities() throws Exception {
-    int totalActivityCount = 5;
+    int totalActivityCount = 27;
 
     Identity john = new Identity(OrganizationIdentityProvider.NAME, "john");
     identityStorage.saveIdentity(john);
+
     assertNotNull(identityStorage.findIdentityById(john.getId()));
 
     for (int i = 0; i < totalActivityCount; i++) {

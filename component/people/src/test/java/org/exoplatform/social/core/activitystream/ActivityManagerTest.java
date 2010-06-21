@@ -140,8 +140,10 @@ public class ActivityManagerTest extends AbstractPeopleTest {
     activityManager.addProcessor(new FakeProcessor(10));
     activityManager.addProcessor(new FakeProcessor(2));
     activityManager.addProcessor(new FakeProcessor(1));
+
     Activity activity = new Activity();
     activityManager.processActivitiy(activity);
+
     // just verify that we run in priority order
     assertEquals("null-1-2-10", activity.getTitle());
   }

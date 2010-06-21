@@ -27,7 +27,7 @@ package org.exoplatform.social.core.identity;
 /**
  * This class using for filter profile of identity
  */
-public class ProfileFiler {
+public class ProfileFilter {
   /* filer by user profile name*/
   /** The name. */
   private String name;

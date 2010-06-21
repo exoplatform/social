@@ -75,5 +75,4 @@ public class GroupIdentityProvider extends IdentityProvider<Group> {
     profile.setProperty(Profile.FIRST_NAME, group.getLabel());
     profile.setProperty(Profile.USERNAME, group.getGroupName());
   }
-
 }

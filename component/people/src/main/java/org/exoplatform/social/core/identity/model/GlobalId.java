@@ -22,7 +22,6 @@ package org.exoplatform.social.core.identity.model;
  * @version $Revision$
  */
 public class GlobalId {
-
   /**
    * the ':' separator character
    */
@@ -85,5 +84,4 @@ public class GlobalId {
     }
     return new GlobalId(providerId + SEPARATOR + remoteId);
   }
-
 }

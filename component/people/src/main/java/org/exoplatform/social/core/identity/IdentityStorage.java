@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.identity;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,9 +39,6 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionException;
 
 import org.exoplatform.container.PortalContainer;
@@ -61,35 +57,36 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.jcr.JCRSessionManager;
 import org.exoplatform.social.jcr.SocialDataLocation;
+import org.exoplatform.social.utils.QueryBuilder;
 
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class JCRStorage for identity and profile.
  */
-public class JCRStorage {
-
-
+public class IdentityStorage {
   /** The Constant IDENTITY_NODETYPE. */
-  final private static String IDENTITY_NODETYPE = "exo:identity".intern();
+  final public static String IDENTITY_NODETYPE = "exo:identity".intern();
   
   /** The Constant PROFILE_NODETYPE. */
-  final private static String PROFILE_NODETYPE = "exo:profile".intern();
+  final public static String PROFILE_NODETYPE = "exo:profile".intern();
 
   /** The Constant IDENTITY_REMOTEID. */
-  final private static String IDENTITY_REMOTEID = "exo:remoteId".intern();
+  final public static String IDENTITY_REMOTEID = "exo:remoteId".intern();
   
   /** The Constant IDENTITY_PROVIDERID. */
-  final private static String IDENTITY_PROVIDERID = "exo:providerId".intern();
+  final public static String IDENTITY_PROVIDERID = "exo:providerId".intern();
 
   /** The Constant PROFILE_IDENTITY. */
-  final private static String PROFILE_IDENTITY = "exo:identity".intern();
+  final public static String PROFILE_IDENTITY = "exo:identity".intern();
   
   /** The Constant PROFILE_AVATAR. */
-  final private static String PROFILE_AVATAR = "avatar".intern();
+  final public static String PROFILE_AVATAR = "avatar".intern();
   
   /** The Constant JCR_UUID. */
-  final private static String JCR_UUID = "jcr:uuid".intern();
+  final public static String JCR_UUID = "jcr:uuid".intern();
+
+  public static final String REFERENCEABLE_NODE = "mix:referenceable";
   
   /** The config. */
   private ProfileConfig config = null;
@@ -100,18 +97,17 @@ public class JCRStorage {
   /** The session manager. */
   private JCRSessionManager sessionManager;
   
-  private static final Log LOG = ExoLogger.getExoLogger(JCRStorage.class);
+  private static final Log LOG = ExoLogger.getExoLogger(IdentityStorage.class);
 
   /**
    * Instantiates a new jCR storage.
    * 
    * @param dataLocation the data location
    */
-  public JCRStorage(SocialDataLocation dataLocation) {
+  public IdentityStorage(SocialDataLocation dataLocation) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
   }
-
 
   /**
    * Gets the identity service home.
@@ -163,7 +159,7 @@ public class JCRStorage {
 
       if (identity.getId() == null) {
         identityNode = identityHomeNode.addNode(IDENTITY_NODETYPE, IDENTITY_NODETYPE);
-        identityNode.addMixin("mix:referenceable");
+        identityNode.addMixin(REFERENCEABLE_NODE);
       } else {
         identityNode = session.getNodeByUUID(identity.getId());
       }
@@ -241,22 +237,20 @@ public class JCRStorage {
    */
   public Identity findIdentity(String providerId, String remoteId) throws Exception {
     Session session = sessionManager.openSession();
+    Node identityHomeNode = getIdentityServiceHome(session);
     Identity identity = null;
     try {
-      Node identityHomeNode = getIdentityServiceHome(session);
-  
-      StringBuffer queryString = new StringBuffer("/").append(identityHomeNode.getPath())
-          .append("/").append(IDENTITY_NODETYPE).append("[(@")
-          .append(IDENTITY_PROVIDERID).append("='").append(providerId).append("' and @")
-          .append(IDENTITY_REMOTEID).append("='").append(remoteId.replaceAll("'", "''")).append("')]");
-      
-      QueryManager queryManager = session.getWorkspace().getQueryManager();
-      Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
-      QueryResult queryResult = query.execute();
-      NodeIterator nodeIterator = queryResult.getNodes();
-  
-      if (nodeIterator.getSize() == 1) {
-        Node identityNode = (Node) nodeIterator.next();
+      List<Node> nodes = new QueryBuilder(session)
+        .select(IDENTITY_NODETYPE)
+        .like("jcr:path", identityHomeNode.getPath()+"/%")                       
+        .and()
+        .equal(IDENTITY_PROVIDERID, providerId)
+        .and()
+        .equal(IDENTITY_REMOTEID, remoteId)
+        .exec();
+
+      if (nodes.size() == 1) {
+        Node identityNode = nodes.get(0);
         identity = new Identity(identityNode.getUUID());
         identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
         identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
@@ -268,6 +262,7 @@ public class JCRStorage {
     } finally {
       sessionManager.closeSession();
     }
+
     return identity;
   }
   
@@ -279,97 +274,67 @@ public class JCRStorage {
    * @throws Exception the exception
    */
   public Identity getIdentity(Node identityNode) throws Exception {
-    Identity identity = null;
-    identity = new Identity(identityNode.getUUID());
+    Identity identity = new Identity(identityNode.getUUID());
+
     identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
     identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
+
     Profile profile = new Profile(identity);
     loadProfile(profile);
     identity.setProfile(profile);
+
     return identity;
   }
-  
+    
   /**
    * Gets the identities by profile filter.
    * 
    * @param identityProvider the identity provider
    * @param profileFilter the profile filter
+   * @param offset the result offset
+   * @param limit the result limit
    * @return the identities by profile filter
    * @throws Exception the exception
    */
-  public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFiler profileFilter) throws Exception {
+  public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFilter profileFilter,long offset, long limit) throws Exception {
     Session session = sessionManager.openSession();
     Node profileHomeNode = getProfileServiceHome(session);
+
     List<Identity> listIdentity = new ArrayList<Identity>();
-    NodeIterator nodeIterator = null;
-    String userName = null;
+    List<Node> nodes = null;
     try {
-      QueryManager queryManager = session.getWorkspace().getQueryManager() ;
-      StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
-          .append("/").append(PROFILE_NODETYPE);
-      userName = profileFilter.getName().trim();
-      String position = profileFilter.getPosition().trim();
+      QueryBuilder queryBuilder = new QueryBuilder(session)
+        .select(PROFILE_NODETYPE, offset, limit)
+        .like("jcr:path", profileHomeNode.getPath() + "[%]/" + PROFILE_NODETYPE + "[%]");
+
+      String position = addPositionSearchPattern(profileFilter.getPosition().trim());
       String gender = profileFilter.getGender().trim();
       
-      if (userName.length() > 0) {
-        userName = ((userName == "") || (userName.length() == 0)) ? "*" : userName;
-        userName = (userName.charAt(0) != '*') ? "*" + userName : userName;
-        userName = (userName.charAt(userName.length()-1) != '*') ? userName += "*" : userName;
-        userName = (userName.indexOf("*") >= 0) ? userName.replace("*", ".*") : userName;
-        userName = (userName.indexOf("%") >= 0) ? userName.replace("%", ".*") : userName;
-        Pattern.compile(userName);
+      if (position.length() != 0){
+        queryBuilder.and().contains("position", position);
       }
-      
-      if ((position.length() != 0) || (gender.length() != 0)) {
-        queryString.append("[");
+      if(gender.length() != 0){
+        queryBuilder.and().equal("gender", gender);
       }
-  
-      if (position.length() != 0) {
-        if(position.indexOf("*")<0){
-          if(position.charAt(0) != '*') position = "*" + position;
-          if(position.charAt(position.length()-1) != '*') position += "*";
-        }
-        queryString.append("jcr:contains(@position, ").append("'").append(position).append("')");
-      }
-  
-      if (gender.length() != 0) {
-        if (position.length() != 0) {
-          queryString.append(" and (@gender ").append("= '").append(gender).append("')");
-        } else {
-          queryString.append(" @gender ").append("= '").append(gender).append("'");
-        }
-      }
-      
-      if ((position.length() != 0) || (gender.length() != 0)) {
-        queryString.append("]");
-      }
-      
-      Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
-      QueryResult queryResult = query1.execute();
-      nodeIterator = queryResult.getNodes();
+
+      nodes = queryBuilder.exec();
     } catch (Exception e) {
       LOG.warn("error while filtering identities: " + e.getMessage());
       return (new ArrayList<Identity>());
     } finally { 
       sessionManager.closeSession();
     }
+
+    String userName = processUsernameSearchPattern(profileFilter.getName().trim());
     
-    Node profileNode = null;
-    Node identityNode = null;
-    Identity identity = null;
-    String fullUserName = null;
-    String fullNameLC = null;
-    String userNameLC = null;
-    
-    while (nodeIterator.hasNext()) {
-      profileNode = (Node) nodeIterator.next();
-      identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
-      identity = getIdentity(identityNode);
+    for (Node profileNode : nodes) {
+      Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
+      Identity identity = getIdentity(identityNode);
       if(!identity.getProviderId().equals(identityProvider)) continue;
       if (userName.length() != 0) {
-        fullUserName = identity.getProfile().getFullName();
-        fullNameLC = fullUserName.toLowerCase();
-        userNameLC = userName.toLowerCase();
+        String fullUserName = identity.getProfile().getFullName();
+        String fullNameLC = fullUserName.toLowerCase();
+        String userNameLC = userName.toLowerCase();
         if ((userNameLC.length() != 0) && fullNameLC.matches(userNameLC)) {
           listIdentity.add(identity);
         }
@@ -381,6 +346,27 @@ public class JCRStorage {
     return listIdentity;
   }
 
+  private String addPositionSearchPattern(String position) {
+    if (position.length() != 0) {
+      if(position.indexOf("*")==-1){
+        return "*" + position+ "*";
+      }
+      return position;
+    } return ""; 
+  }
+
+  private String processUsernameSearchPattern(String userName) {
+    if (userName.length() > 0) {
+      userName = ((userName == "") || (userName.length() == 0)) ? "*" : userName;
+      userName = (userName.charAt(0) != '*') ? "*" + userName : userName;
+      userName = (userName.charAt(userName.length()-1) != '*') ? userName += "*" : userName;
+      userName = (userName.indexOf("*") >= 0) ? userName.replace("*", ".*") : userName;
+      userName = (userName.indexOf("%") >= 0) ? userName.replace("%", ".*") : userName;
+      Pattern.compile(userName);
+    }
+    return userName;
+  }
+
   /**
    * Gets the identities filter by alpha bet.
    * 
@@ -389,47 +375,35 @@ public class JCRStorage {
    * @return the identities filter by alpha bet
    * @throws Exception the exception
    */
-  public List<Identity> getIdentitiesFilterByAlphaBet(String identityProvider, ProfileFiler profileFilter) throws Exception {
-    Session session = sessionManager.openSession();
-    Node profileHomeNode = getProfileServiceHome(session);
+  public List<Identity> getIdentitiesFilterByAlphaBet(String identityProvider, ProfileFilter profileFilter, long offset, long limit) throws Exception {
     List<Identity> listIdentity = new ArrayList<Identity>();
-    NodeIterator nodeIterator = null;
-    try {
-      QueryManager queryManager = session.getWorkspace().getQueryManager() ;
-      StringBuffer queryString = new StringBuffer("/").append(profileHomeNode.getPath())
-          .append("/").append(PROFILE_NODETYPE);
-      String userName = profileFilter.getName();
-  
-      if (userName.length() != 0) {
-        queryString.append("[");
-      }
+    try{
+      Session session = sessionManager.openSession();
+      Node profileHomeNode = getProfileServiceHome(session);
       
+      QueryBuilder queryBuilder = new QueryBuilder(session);
+      queryBuilder
+        .select(PROFILE_NODETYPE, offset, limit)
+        .like("jcr:path", profileHomeNode.getPath()+"/%");
+
+      String userName = profileFilter.getName();
       if (userName.length() != 0) {
         userName += "*" ;
-          
-        queryString.append("(jcr:contains(@firstName, ").append("'").append(userName).append("'))");
+        queryBuilder.and().contains(Profile.FIRST_NAME, userName);
       }
-      
-      if (userName.length() != 0) {
-        queryString.append("]");
+
+      final List<Node> nodes = queryBuilder.exec();
+      for (Node profileNode : nodes) {
+        Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
+        Identity identity = getIdentity(identityNode);
+        if(!identity.getProviderId().equals(identityProvider)) continue;
+        listIdentity.add(identity);
       }
-      
-      Query query1 = queryManager.createQuery(queryString.toString(), Query.XPATH);
-      QueryResult queryResult = query1.execute();
-      nodeIterator = queryResult.getNodes();
     } catch (Exception e) {
       LOG.warn("Failed to filter identities by alphabet" + e.getMessage());
       return null;
     } finally {
       sessionManager.closeSession();
-    }
-    
-    while (nodeIterator.hasNext()) {
-      Node profileNode = (Node) nodeIterator.next();
-      Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
-      Identity identity = getIdentity(identityNode);
-      if(!identity.getProviderId().equals(identityProvider)) continue;
-      listIdentity.add(identity);
     }
     
     return listIdentity;
@@ -438,42 +412,40 @@ public class JCRStorage {
   /**
    * Save profile.
    * 
-   * @param p the profile
+   * @param profile the profile
    * @throws Exception the exception
    */
-  public void saveProfile(Profile p) throws Exception {
+  public void saveProfile(Profile profile) throws Exception {
     try {
       Session session = sessionManager.openSession();
       Node profileHomeNode = getProfileServiceHome(session);
-      if (p.getIdentity().getId() == null) {
+      if (profile.getIdentity().getId() == null) {
         throw new Exception("the identity has to be saved before saving the profile");
       }
   
       Node profileNode;
-      if(p.getId() == null) {
+      if(profile.getId() == null) {
         profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
-        profileNode.addMixin("mix:referenceable");
+        profileNode.addMixin(REFERENCEABLE_NODE);
   
-        Node identityNode = session.getNodeByUUID(p.getIdentity().getId());
-  
+        Node identityNode = session.getNodeByUUID(profile.getIdentity().getId());
         profileNode.setProperty(PROFILE_IDENTITY, identityNode);
       }
       else {
-        profileNode = session.getNodeByUUID(p.getId());
+        profileNode = session.getNodeByUUID(profile.getId());
       }
   
-      saveProfile(p, profileNode, session);
+      saveProfile(profile, profileNode, session);
   
-  
-      if (p.getId() == null) {
-        LOG.debug("About to create a new profile...");
+      if (profile.getId() == null) {
+        //create a new profile...
         profileHomeNode.save();
-        p.setId(profileNode.getUUID());
+        profile.setId(profileNode.getUUID());
       } else {
         profileNode.save();
       }
     } catch (Exception e) {
-      LOG.error("Failed to save profile " + p, e);
+      LOG.error("Failed to save profile " + profile, e);
     } finally {
       sessionManager.closeSession();
     }
@@ -482,90 +454,92 @@ public class JCRStorage {
   /**
    * Save profile.
    * 
-   * @param p the profile
-   * @param n the node
+   * @param profile the profile
+   * @param profileNode the node
    * @param session the session
    * @throws Exception the exception
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  protected void saveProfile(Profile p, Node n, Session session) throws Exception, IOException {
-    Map<String,Object> props = p.getProperties();
+  protected void saveProfile(Profile profile, Node profileNode, Session session) throws Exception, IOException {
+    Map<String,Object> props = profile.getProperties();
 
     Iterator<String> it = props.keySet().iterator();
 
-    //first we remove the nodes that have to be removed
-
     it = props.keySet().iterator();
     while(it.hasNext()) {
-      String name = (String) it.next();
+      String name = it.next();
 
       //we skip all the property that are jcr related
-      if (name.contains(":"))
-        continue;
+      if (name.contains(":")) continue;
 
       Object propValue = props.get(name);
-
-      //n.getProperty(name).remove();
 
       if(isForcedMultiValue(name)) {
         //if it's a String, we convert it to string array to be able to store it
         if(propValue instanceof String) {
-          String[] arr = new String[1];
-          arr[0] = (String) propValue;
-          propValue = arr;
+          propValue = new String[]{(String) propValue};
         }
-        setProperty(name, (String[]) propValue, n);
+        setProperty(name, (String[]) propValue, profileNode);
       }
       else if (propValue instanceof String) {
-        n.setProperty(name, (String) propValue);
-        //System.out.println("setting the prop " + name + " = " + propValue);
+        profileNode.setProperty(name, (String) propValue);
       }
       else if (propValue instanceof Double) {
-        n.setProperty(name, (Double) propValue);
-        //System.out.println("setting the prop " + name + " = " + propValue);
+        profileNode.setProperty(name, (Double) propValue);
       }
       else if (propValue instanceof Boolean) {
-        n.setProperty(name, (Boolean) propValue);
-        //System.out.println("setting the prop " + name + " = " + propValue);
+        profileNode.setProperty(name, (Boolean) propValue);
       }
       else if (propValue instanceof Long) {
-        n.setProperty(name, (Long) propValue);
-        //System.out.println("setting the prop " + name + " = " + propValue);
+        profileNode.setProperty(name, (Long) propValue);
       }
-      else if ((propValue instanceof String[] && ((String[])propValue).length == 1)) {
-        n.setProperty(name, ((String[])propValue)[0]);
-        //System.out.println("setting the prop " + name + " = " + propValue);
-      }
-      else if (propValue instanceof String[]) {
-        setProperty(name, (String[]) propValue, n);
+      else if (propValue instanceof String[]){
+        final String[] strings = (String[]) propValue;
+        if (strings.length == 1) {
+          profileNode.setProperty(name, strings[0]);
+        } else {
+          setProperty(name, strings, profileNode);
+        }
       }
       else if (propValue instanceof List) {
-        setProperty(name, (List<Map<String,Object>>) propValue, n);
+        setProperty(name, (List<Map<String,Object>>) propValue, profileNode);
       }
       else if (propValue instanceof ProfileAttachment) {
         //fix id6 load
-        ExtendedNode extNode = (ExtendedNode)n ;
-        if (extNode.canAddMixin("exo:privilegeable")) extNode.addMixin("exo:privilegeable");
-        String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE} ;
-        extNode.setPermission(SystemIdentity.ANY, arrayPers) ;
+        ExtendedNode extNode = (ExtendedNode) profileNode;
+        if (extNode.canAddMixin("exo:privilegeable")) {
+          extNode.addMixin("exo:privilegeable");
+        }
+
+        String[] arrayPers = {
+          PermissionType.READ,
+          PermissionType.ADD_NODE,
+          PermissionType.SET_PROPERTY,
+          PermissionType.REMOVE
+        };
+
+        extNode.setPermission(SystemIdentity.ANY, arrayPers);
+
         List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;   
         for(AccessControlEntry accessControlEntry : permsList) {
           extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;      
         }
         ProfileAttachment profileAtt = (ProfileAttachment) propValue;
         if(profileAtt.getFileName() != null) {
-          Node nodeFile = null ;
+          Node nodeFile;
           try {
-            nodeFile = n.getNode(name) ;
+            nodeFile = profileNode.getNode(name) ;
           } catch (PathNotFoundException ex) {
-            nodeFile = n.addNode(name, "nt:file");
+            nodeFile = profileNode.addNode(name, "nt:file");
           }
-          Node nodeContent = null ;
+
+          Node nodeContent;
           try {
             nodeContent = nodeFile.getNode("jcr:content") ;
           } catch (PathNotFoundException ex) {
             nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
           }
+
           long lastModified = profileAtt.getLastModified();
           long lastSaveTime = 0;
           if (nodeContent.hasProperty("jcr:lastModified"))
@@ -577,9 +551,8 @@ public class JCRStorage {
           }
         }
         else {
-          if(n.hasNode(name)) {
-            n.getNode(name).remove() ;
-            // Add 29DEC. need review
+          if(profileNode.hasNode(name)) {
+            profileNode.getNode(name).remove() ;
             session.save();
           }
         }
@@ -597,9 +570,7 @@ public class JCRStorage {
    * @throws ConstraintViolationException the constraint violation exception
    * @throws VersionException the version exception
    */
-  private void setProperty(String name, List<Map<String,Object>> props, Node n) throws Exception, ConstraintViolationException, VersionException {
-    //System.out.println("setting the List prop " + name + " = " + props);
-
+  private void setProperty(String name, List<Map<String,Object>> props, Node n) throws Exception, VersionException {
     String ntName = getNodeTypeName(name);
     if (ntName == null) {
       throw new Exception("no nodeType is defined for " + name);
@@ -619,27 +590,22 @@ public class JCRStorage {
 
       Iterator<String> itKey = prop.keySet().iterator();
       while (itKey.hasNext()) {
-        String key = (String) itKey.next();
+        String key = itKey.next();
         Object propValue = prop.get(key);
 
         if (propValue instanceof String) {
           propNode.setProperty(key, (String) propValue);
-          //System.out.println("setting the prop String " + key + " = " + propValue);
         }
         else if (propValue instanceof Double) {
           propNode.setProperty(key, (Double) propValue);
-          //System.out.println("setting the prop Double" + key + " = " + propValue);
         }
         else if (propValue instanceof Boolean) {
           propNode.setProperty(key, (Boolean) propValue);
-          //System.out.println("setting the prop Boolean" + key + " = " + propValue);
         }
         else if (propValue instanceof Long) {
           propNode.setProperty(key, (Long) propValue);
-//          System.out.println("setting the prop Long" + key + " = " + propValue);
         }
       }
-
     }
   }
 
@@ -659,7 +625,6 @@ public class JCRStorage {
     for (String value : propValue) {
       if(value != null && value.length() > 0) {
         values.add(new StringValue(value));
-//        System.out.println("setting the multi prop " + name + " = " + value);
       }
     }
     n.setProperty(name, values.toArray(new Value[values.size()]));
@@ -668,57 +633,40 @@ public class JCRStorage {
   /**
    * Load profile.
    * 
-   * @param p the profile
+   * @param profile the profile
    * @throws Exception the exception
    */
-  public void loadProfile(Profile p) throws Exception {
-    if (p.getIdentity().getId() == null) {
+  public void loadProfile(Profile profile) throws Exception {
+    if (profile.getIdentity().getId() == null) {
       throw new Exception("the identity has to be saved before loading the profile");
     }
+
+    Node identityNode;
+    String workspaceName;
+
+    Session session = sessionManager.getOrOpenSession();
     try {
-      Session session = sessionManager.getOrOpenSession();
-      
-      Node idNode = session.getNodeByUUID(p.getIdentity().getId());
-      PropertyIterator it = idNode.getReferences();
-  
-      while (it.hasNext()) {
-        Property prop = (Property) it.next();
-        if (prop.getParent().isNodeType(PROFILE_NODETYPE)) {
-          Node n = prop.getParent();
-          p.setId(n.getUUID());
-          loadProfile(p, n, session);
-          return;
-        }
-      }
-      if(it.getSize() < 1) {
-        LOG.debug("Lazily initializing a new Profile...");
-        Node profileHomeNode = getProfileServiceHome(session);
-          Node profileNode;
-          if(p.getId() == null) {
-            profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
-            profileNode.addMixin("mix:referenceable");
-      
-            Node identityNode = session.getNodeByUUID(p.getIdentity().getId());
-      
-            profileNode.setProperty(PROFILE_IDENTITY, identityNode);
-          }
-          else {
-            profileNode = session.getNodeByUUID(p.getId());
-          }
-      
-          saveProfile(p, profileNode, session);
-          
-          if (p.getId() == null) {
-            profileHomeNode.save();
-            p.setId(profileNode.getUUID());
-          } else {
-            profileNode.save();
-          }
-      }
-    } catch (Exception e) {
-      LOG.error("Failed to load Profile " + p, e);
+      identityNode = session.getNodeByUUID(profile.getIdentity().getId());
+      workspaceName = session.getWorkspace().getName();
     } finally {
       sessionManager.closeSession();
+    }
+
+    PropertyIterator references = identityNode.getReferences();
+    if(references.getSize() == 0){
+      //there is no profile node referencing to this identity node -> create new profile node
+      //Lazily initializing a new Profile...
+      saveProfile(profile);
+    } else {
+      //profile node for this identity was created then load profile from that node
+      while (references.hasNext()) {
+        Property nodeReferencedProperty = (Property) references.next();
+        if (nodeReferencedProperty.getParent().isNodeType(PROFILE_NODETYPE)) {
+          Node profileNode = nodeReferencedProperty.getParent();
+          profile.setId(profileNode.getUUID());
+          loadProfile(profile, profileNode, workspaceName);
+        }
+      }
     }
   }
 
@@ -745,22 +693,18 @@ public class JCRStorage {
   /**
    * Load profile.
    * 
-   * @param p the p
-   * @param n the n
-   * @param session the session
+   * @param profile the p
+   * @param profileNode the n
+   * @param workspaceName the workspace name 
    * @throws RepositoryException the repository exception
    */
-  protected void loadProfile(Profile p, Node n, Session session) throws RepositoryException {
-    //System.out.println("Loading the profile");
-    PropertyIterator props = n.getProperties();
+  protected void loadProfile(Profile profile, Node profileNode, String workspaceName) throws RepositoryException {
+    PropertyIterator props = profileNode.getProperties();
+    copyPropertiesToMap(props, profile.getProperties());
 
-    copyPropertiesToMap(props, p.getProperties());
-    //System.out.println("finished to load the props");
-
-    NodeIterator it = n.getNodes();
+    NodeIterator it = profileNode.getNodes();
     while(it.hasNext()) {
       Node node = it.nextNode();
-      //System.out.println("Loading the node:" + node.getName());
       if(node.getName().equals(PROFILE_AVATAR)) {
         if (node.isNodeType("nt:file")) {
           ProfileAttachment file = new ProfileAttachment();
@@ -769,18 +713,18 @@ public class JCRStorage {
           try {
             file.setInputStream(node.getNode("jcr:content").getProperty("jcr:data").getValue().getStream());
           } catch (Exception e) {
-            LOG.warn("Failed to load data for avatar of " + p + ": " + e.getMessage());
+            LOG.warn("Failed to load data for avatar of " + profile + ": " + e.getMessage());
           }
           file.setLastModified(node.getNode("jcr:content").getProperty("jcr:lastModified").getLong());
           file.setFileName(node.getName());
-          file.setWorkspace(session.getWorkspace().getName());
-          p.setProperty(node.getName(), file);
+          file.setWorkspace(workspaceName);
+          profile.setProperty(node.getName(), file);
         }
       } else {
-        List l = (List) p.getProperty(node.getName());
+        List l = (List) profile.getProperty(node.getName());
         if(l == null) {
-          p.setProperty(node.getName(), new ArrayList());
-          l = (List) p.getProperty(node.getName());
+          profile.setProperty(node.getName(), new ArrayList());
+          l = (List) profile.getProperty(node.getName());
         }
         l.add(copyPropertiesToMap(node.getProperties(), new HashMap()));
       }
@@ -813,16 +757,13 @@ public class JCRStorage {
           map.put(prop.getName(), v.getDouble());
         else if (v instanceof BooleanValue)
           map.put(prop.getName(), v.getBoolean());
-        //System.out.println("loading " + prop.getName() + " = " + v.getString());
       }
       catch (ValueFormatException e) {
-        //System.out.println("trying multivalue");
         Value[] values = prop.getValues();
         List<String> res = new ArrayList<String>();
           
         for(Value v : values) {
           res.add(v.getString());
-          //System.out.println("loading multi" + prop.getName() + " = " + v.getString());
         }
         map.put(prop.getName(), res.toArray(new String[res.size()]));
       }

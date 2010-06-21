@@ -35,14 +35,13 @@ import org.exoplatform.social.jcr.SocialDataLocation;
  * The Class IdentityManager.
  */
 public class IdentityManager {
-
   private static final Log LOG = ExoLogger.getExoLogger(IdentityManager.class);
 
   /** The identity providers. */
   private Map<String, IdentityProvider<?>> identityProviders = new HashMap<String, IdentityProvider<?>>();
 
   /** The storage. */
-  private JCRStorage identityStorage;
+  private IdentityStorage identityStorage;
 
   /**
    * lifecycle for profile
@@ -57,7 +56,7 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public IdentityManager(SocialDataLocation dataLocation, IdentityProvider<?> defaultIdentityProvider) throws Exception {
-    this.identityStorage = new JCRStorage(dataLocation);
+    this.identityStorage = new IdentityStorage(dataLocation);
     this.addIdentityProvider(defaultIdentityProvider);
   }
 
@@ -78,7 +77,7 @@ public class IdentityManager {
   /**
    * Gets the identity by id and also loads his profile
    *
-   * @param can be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
+   * @param id ID can be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
    * @return null if nothing is found, or the Identity object
    * @see #getIdentity(String, boolean)
    */
@@ -89,7 +88,7 @@ public class IdentityManager {
   /**
    * Gets the identity by id optionnaly loading his profile
    *
-   * @param can be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
+   * @param id ID be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
    * @param loadProfile the load profile true if load and false if doesn't
    * @return null if nothing is found, or the Identity object
    */
@@ -108,7 +107,6 @@ public class IdentityManager {
     if (identity == null) {
       identity = identityStorage.findIdentityById(id);
     }
-
 
     if (identity == null)
       return null;
@@ -154,8 +152,12 @@ public class IdentityManager {
    * @return the identities by profile filter
    * @throws Exception the exception
    */
-  public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFiler profileFilter) throws Exception {
-    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter);
+  public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter) throws Exception {
+    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, 0, 20);
+  }
+
+  public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception {
+    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset, limit);
   }
 
   /**
@@ -165,10 +167,13 @@ public class IdentityManager {
    * @return the identities by profile filter
    * @throws Exception the exception
    */
-  public List<Identity> getIdentitiesByProfileFilter(ProfileFiler profileFilter) throws Exception {
-    return getIdentitiesByProfileFilter(null, profileFilter);
+  public List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter) throws Exception {
+    return getIdentitiesByProfileFilter(null, profileFilter, 0, 20);
   }
 
+  public List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter, long offset, long limit) throws Exception {
+    return getIdentitiesByProfileFilter(null, profileFilter, offset, limit);
+  }
   /**
    * Gets the identities filter by alpha bet.
    *
@@ -177,8 +182,8 @@ public class IdentityManager {
    * @return the identities filter by alpha bet
    * @throws Exception the exception
    */
-  public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFiler profileFilter) throws Exception {
-    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter);
+  public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFilter profileFilter) throws Exception {
+    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, 0, 20);
   }
 
   /**
@@ -188,7 +193,7 @@ public class IdentityManager {
    * @return the identities filter by alpha bet
    * @throws Exception the exception
    */
-  public List<Identity> getIdentitiesFilterByAlphaBet(ProfileFiler profileFilter) throws Exception {
+  public List<Identity> getIdentitiesFilterByAlphaBet(ProfileFilter profileFilter) throws Exception {
     return getIdentitiesFilterByAlphaBet(null, profileFilter);
   }
 
@@ -254,7 +259,6 @@ public class IdentityManager {
    * Checks if identity existed or not
    * @param providerId
    * @param remoteId
-   * @param loadProfile
    * @return
    */
   public boolean identityExisted(String providerId, String remoteId) {
@@ -309,7 +313,6 @@ public class IdentityManager {
     return getIdentities(providerId, true);
   }
 
-
   /**
    * Gets the identities.
    *
@@ -334,11 +337,11 @@ public class IdentityManager {
    *
    * @return the storage
    */
-  protected JCRStorage getStorage() {
+  protected IdentityStorage getStorage() {
     return this.identityStorage;
   }
 
-  public void setIdentityStorage(JCRStorage identityStorage) {
+  public void setIdentityStorage(IdentityStorage identityStorage) {
     this.identityStorage = identityStorage;
   }
 
@@ -372,7 +375,7 @@ public class IdentityManager {
     registerProfileListener(plugin);
   }
 
-  public JCRStorage getIdentityStorage() {
+  public IdentityStorage getIdentityStorage() {
     return identityStorage;
   }
 }
