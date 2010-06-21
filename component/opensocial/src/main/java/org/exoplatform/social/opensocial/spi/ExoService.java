@@ -103,10 +103,10 @@ public class ExoService {
       List<Identity> ids = new ArrayList<Identity>();
 
       for(Relationship rel : rels) {
-        if (rel.getIdentity1().getId().equals(id.getId()))
-          ids.add(rel.getIdentity2());
+        if (rel.getSender().getId().equals(id.getId()))
+          ids.add(rel.getReceiver());
         else
-          ids.add(rel.getIdentity1());
+          ids.add(rel.getSender());
       }
 
       return ids;

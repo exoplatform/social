@@ -30,7 +30,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.IdentityManager;
-import org.exoplatform.social.core.identity.ProfileFiler;
+import org.exoplatform.social.core.identity.ProfileFilter;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -121,7 +121,7 @@ public class UIProfileUserSearch extends UIForm {
   String selectedChar = null;
 
   /** Used stores filter information. */
-  ProfileFiler profileFiler = null;
+  ProfileFilter profileFilter = null;
 
   /**Stores all user name for auto suggestion. */
   List<String> allUserContactName = null;
@@ -163,15 +163,15 @@ public class UIProfileUserSearch extends UIForm {
    *
    * @return The object that contain filter information.
    */
-  public ProfileFiler getProfileFiler() { return profileFiler;}
+  public ProfileFilter getProfileFilter() { return profileFilter;}
 
   /**
    * Sets filter object.
    *
-   * @param profileFiler
+   * @param profileFilter
    *        <code>Object<code>
    */
-  public void setProfileFiler(ProfileFiler profileFiler) { this.profileFiler = profileFiler;}
+  public void setProfileFilter(ProfileFilter profileFilter) { this.profileFilter = profileFilter;}
 
   /**
    * Gets all users for searching suggestion.
@@ -267,7 +267,7 @@ public class UIProfileUserSearch extends UIForm {
       List<Identity> identitiesSearchResult = new ArrayList<Identity>();
       List<Identity> identities = new ArrayList<Identity>();
       IdentityManager idm = uiSearch.getIdentityManager();
-      ProfileFiler filter = new ProfileFiler();
+      ProfileFilter filter = new ProfileFilter();
       uiSearch.invokeSetBindingBean(filter);
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
 
@@ -346,7 +346,7 @@ public class UIProfileUserSearch extends UIForm {
      *
      * @return true if the input is properly to regular expression else return false.
      */
-    private boolean isValidInput(ProfileFiler input) {
+    private boolean isValidInput(ProfileFilter input) {
       //Check contact name
       String contactName = input.getName();
       // Eliminate '*' and '%' character in string for checking

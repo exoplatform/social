@@ -322,11 +322,11 @@ public class UIInvitations extends UIContainer {
     RelationshipManager relm = getRelationshipManager();
     Identity currentIdentity = getCurrentViewerIdentity();
     List<Identity> allInvitedIdentities = new ArrayList<Identity>();
-    List<Relationship> allInviteds = relm.getPending(currentIdentity, false);
+    List<Relationship> allInviteds = relm.getPendingRelationships(currentIdentity, false);
     Identity id = null;
     Identity currIdentity = getCurrentIdentity();
     for(Relationship rel : allInviteds) {
-      id = (currIdentity.getId() == (rel.getIdentity1()).getId()) ? rel.getIdentity2() : rel.getIdentity1();
+      id = (currIdentity.getId() == (rel.getSender()).getId()) ? rel.getReceiver() : rel.getSender();
       allInvitedIdentities.add(id);
     }
     
@@ -353,10 +353,10 @@ public class UIInvitations extends UIContainer {
     List<Identity> matchIdentities = getIdentityList();
     
     if (matchIdentities == null) {
-      return relm.getPending(currentIdentity, false);
+      return relm.getPendingRelationships(currentIdentity, false);
     }
     
-    return relm.getPending(currentIdentity, matchIdentities, false);
+    return relm.getPendingRelationships(currentIdentity, matchIdentities, false);
   }
   
   /**

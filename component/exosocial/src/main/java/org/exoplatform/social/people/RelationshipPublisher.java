@@ -55,9 +55,9 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   public void confirmed(RelationshipEvent event) {
     Relationship relationship = event.getPayload();
     try {
-      Identity id1 = relationship.getIdentity1();
+      Identity id1 = relationship.getSender();
       reloadIfNeeded(id1);
-      Identity id2 = relationship.getIdentity2();
+      Identity id2 = relationship.getReceiver();
       reloadIfNeeded(id2);
       String user1 = "@" + id1.getRemoteId();
       String user2 = "@" + id2.getRemoteId();
@@ -110,9 +110,9 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   public void requested(RelationshipEvent event) {
     Relationship relationship = event.getPayload();
     try {
-      Identity id1 = relationship.getIdentity1();
+      Identity id1 = relationship.getSender();
       reloadIfNeeded(id1);
-      Identity id2 = relationship.getIdentity2();
+      Identity id2 = relationship.getReceiver();
       reloadIfNeeded(id2);
       String user1 = "@" + id1.getRemoteId();
       String user2 = "@" + id2.getRemoteId();

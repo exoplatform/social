@@ -295,11 +295,11 @@ public class UIPendingRelation extends UIContainer {
     RelationshipManager relm = getRelationshipManager();
     Identity currentIdentity = getCurrentViewerIdentity();
     List<Identity> allPendingIdentities = new ArrayList<Identity>();
-    List<Relationship> allPendings = relm.getPending(currentIdentity, true);
+    List<Relationship> allPendings = relm.getPendingRelationships(currentIdentity, true);
     Identity id = null;
     Identity currIdentity = getCurrentIdentity();
     for(Relationship rel : allPendings) {
-      id = (currIdentity.getId() == (rel.getIdentity1()).getId()) ? rel.getIdentity2() : rel.getIdentity1();
+      id = (currIdentity.getId() == (rel.getSender()).getId()) ? rel.getReceiver() : rel.getSender();
       allPendingIdentities.add(id);
     }
     
@@ -324,10 +324,10 @@ public class UIPendingRelation extends UIContainer {
     List<Identity> matchIdentities = getIdentityList();
     
     if (matchIdentities == null) {
-      return relm.getPending(currentIdentity, true);
+      return relm.getPendingRelationships(currentIdentity, true);
     }
     
-    return relm.getPending(currentIdentity, matchIdentities, true);
+    return relm.getPendingRelationships(currentIdentity, matchIdentities, true);
   }
   
   /**

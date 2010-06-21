@@ -96,8 +96,8 @@
   </component>
 
    <component>
-      <key>org.exoplatform.social.core.identity.JCRStorage</key>
-      <type>org.exoplatform.social.core.identity.JCRStorage</type>
+      <key>org.exoplatform.social.core.identity.IdentityStorage</key>
+      <type>org.exoplatform.social.core.identity.IdentityStorage</type>
   </component>
 
   <component>

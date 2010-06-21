@@ -291,7 +291,7 @@ public class UIMyConnections extends UIContainer {
     Identity id = null;
     Identity currIdentity = getCurrentIdentity();
     for(Relationship rel : allRelations) {
-      id = (currIdentity.getId() == (rel.getIdentity1()).getId()) ? rel.getIdentity2() : rel.getIdentity1();
+      id = (currIdentity.getId() == (rel.getSender()).getId()) ? rel.getReceiver() : rel.getSender();
       allRelationIdentities.add(id);
     }
     
