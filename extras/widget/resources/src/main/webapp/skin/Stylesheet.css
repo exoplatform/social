@@ -1,0 +1,23 @@
+
+.exoSpacesContainer {
+    position:relative;
+    display:inline-block;
+    border:solid 1px #848484;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+    padding: 2px;
+}
+
+.espInfoBox {
+    border:solid 2px #848484;
+    position:absolute;
+    background-color:white;
+    padding:5px;
+}
+
+.exoSpacesLink {
+    background:url("../img/icon.png") no-repeat scroll 0 0 #FFF;
+    padding-left:16px;
+    font-family:Lucida Sans Unicode;
+}

@@ -14,5 +14,6 @@
    <module>benches</module>
    <module>feedmash</module>
    <module>samples</module>
+   <module>widget</module>
  </modules>
  </project>
