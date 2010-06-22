@@ -37,7 +37,7 @@ import org.exoplatform.webui.event.EventListener;
  * UIDisplaySpaceActivities.java
  * <p>
  * Displays space activities and its member's activities
- * 
+ *
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since Apr 6, 2010
  * @copyright eXo Platform SAS
@@ -52,12 +52,12 @@ import org.exoplatform.webui.event.EventListener;
 public class UIDisplaySpaceActivities extends UIContainer {
   static private final Log LOG = ExoLogger.getLogger(UIDisplaySpaceActivities.class);
   private Space           space_;
-  
+
   private List<Activity> activityList_;
 
   /**
    * Constructor
-   * 
+   *
    * @throws Exception
    */
   public UIDisplaySpaceActivities() throws Exception {
@@ -66,7 +66,7 @@ public class UIDisplaySpaceActivities extends UIContainer {
   /**
    * Sets space to work with
    * @param space
-   * @throws Exception 
+   * @throws Exception
    */
   public void setSpace(Space space) throws Exception {
     space_ = space;
@@ -80,7 +80,7 @@ public class UIDisplaySpaceActivities extends UIContainer {
   public Space getSpace() {
     return space_;
   }
-  
+
   /**
    * initialize
    * @throws Exception
@@ -93,7 +93,6 @@ public class UIDisplaySpaceActivities extends UIContainer {
     setChildren(null); //TODO hoatle handle this for better performance
     Identity spaceIdentity = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space_.getId());
     activityList_ = getActivityManager().getActivities(spaceIdentity);
-    if (activityList_ != null) Collections.reverse(activityList_); //TODO sort by postedTime needed
     addChild(UIActivitiesContainer.class, null, null).setActivityList(activityList_).setIndex(0);
   }
 
@@ -112,17 +111,17 @@ public class UIDisplaySpaceActivities extends UIContainer {
   private ActivityManager getActivityManager() {
     return getApplicationComponent(ActivityManager.class);
   }
-  
+
   static public class UpdateNewActionListener extends EventListener<UIDisplaySpaceActivities> {
 
     @Override
     public void execute(Event<UIDisplaySpaceActivities> event) throws Exception {
       // TODO Auto-generated method stub
-      
+
     }
-    
+
   }
-  
+
   /**
    * If any older activities available, populates uiActivityList for a new UIActivitiesContainer.
    * @author hoatle
@@ -132,17 +131,17 @@ public class UIDisplaySpaceActivities extends UIContainer {
 
     @Override
     public void execute(Event<UIDisplaySpaceActivities> event) throws Exception {
-      
+
     }
-    
+
   }
-  
+
   static public class PostCommentActionListener extends EventListener<UIActivity> {
 
     @Override
     public void execute(Event<UIActivity> event) throws Exception {
-      
+
     }
-    
+
   }
 }
