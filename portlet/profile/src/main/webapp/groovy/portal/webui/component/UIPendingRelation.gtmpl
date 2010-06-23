@@ -61,10 +61,10 @@
 			
 			<%	for(relation in list) {
 					def identity = null;
-					if (currIdentity.id == relation.identity1.id) {
-				  	identity = relation.identity2;
+					if (currIdentity.id == relation.sender.id) {
+				  	identity = relation.receiver;
 				  } else {
-			  	  identity = relation.identity1;
+			  	  identity = relation.sender;
 				  }
 			    def activitiesURL = portalURI + "activities/" + identity.getRemoteId();
 			    def fullName = identity.profile.fullName;

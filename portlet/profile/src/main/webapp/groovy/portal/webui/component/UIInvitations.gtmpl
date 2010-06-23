@@ -47,7 +47,7 @@
 			
 		<%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>  
 			<% for(invitation in myInvitations) {
-						def identity = invitation.identity1;
+						def identity = invitation.sender;
 					  profileURL = portalURI + "activities/" + identity.getRemoteId();
 				    fullName = identity.profile.fullName;
 				    position = identity.profile.getPropertyValue("position");

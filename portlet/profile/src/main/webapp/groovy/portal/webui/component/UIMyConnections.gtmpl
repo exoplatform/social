@@ -78,10 +78,10 @@
 		  
 			<% for(relation in myRelation) {
 				def id = null;
-				if (currIdentity.id == relation.identity1.id) {
-			  	id = relation.identity2;
+				if (currIdentity.id == relation.sender.id) {
+			  	id = relation.receiver;
 			  } else {
-		  	  id = relation.identity1;
+		  	  id = relation.sender;
 			  }
 			  profileURL = portalURI + "activities/" + id.getRemoteId();
 		    fullName = id.profile.fullName;
