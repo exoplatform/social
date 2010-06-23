@@ -45,7 +45,7 @@ import org.exoplatform.social.services.rest.Util;
 
 /**
  * ActivitiesRestService.java <br />
- * 
+ *
  * Provides rest services for activity gadget: like/unlike; comment; delete activity. <br />
  * apis: <br />
  * GET:  /restContextName/social/activities/{activityId}/likes/show.{format} <br />
@@ -53,7 +53,7 @@ import org.exoplatform.social.services.rest.Util;
  * POST: /restContextName/social/activities/{activityId}/likes/destroy/{identity}.{format} <br />
  * ... <br />
  * See methods for more api details.
- * 
+ *
  *
  * @author     hoatle <hoatlevan at gmail dot com>
  * @since      Dec 29, 2009
@@ -68,8 +68,8 @@ public class ActivitiesRestService implements ResourceContainer {
    * constructor
    */
   public ActivitiesRestService() {}
-  
-  
+
+
   /**
    * destroys activity by activityId
    * if detects any comments of that activity, destroys these comments, too.
@@ -89,12 +89,12 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return activity;
   }
-  
+
   /**
    * destroys activity and gets json/xml return format
    * @param uriInfo
    * @param activityId
-   * @param format 
+   * @param format
    * @return response
    * @throws Exception
    */
@@ -109,10 +109,10 @@ public class ActivitiesRestService implements ResourceContainer {
     Activity activity = destroyActivity(activityId);
     return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * Shows list of like by activityId
-   * @param activityId  
+   * @param activityId
    * @return
    * @throws Exception
    */
@@ -132,7 +132,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return likeList;
   }
-  
+
   /**
    * Updates like of an activity
    * @param activityId
@@ -175,9 +175,9 @@ public class ActivitiesRestService implements ResourceContainer {
     likeList.setLikes(getLikes(identityIds));
     return likeList;
   }
-  
+
   /**
-   * destroys like from an activity 
+   * destroys like from an activity
    * @param activityId
    * @param identityId
    */
@@ -217,12 +217,12 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return likeList;
   }
-  
+
   /**
    * shows list of like by activityId and returns json/xml format
    * @param uriInfo
    * @param activityId
-   * @param format 
+   * @param format
    * @return response
    * @throws Exception
    */
@@ -238,15 +238,15 @@ public class ActivitiesRestService implements ResourceContainer {
     likeList = showLikes(activityId);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * updates like by json/xml format
    * @param uriInfo
    * @param activityId
-   * @param format 
+   * @param format
    * @param like
    * @return response
-   * @throws Exception 
+   * @throws Exception
    */
   @POST
   @Path("{activityId}/likes/update.{format}")
@@ -262,13 +262,13 @@ public class ActivitiesRestService implements ResourceContainer {
     likeList = updateLike(activityId, like);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * destroys like by identityId and gets json/xml return format
    * @param uriInfo
    * @param activityId
    * @param identityId
-   * @param format 
+   * @param format
    * @return response
    * @throws Exception
    */
@@ -285,11 +285,11 @@ public class ActivitiesRestService implements ResourceContainer {
     likeList = destroyLike(activityId, identityId);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
-  
-  
+
+
   /**
    * Shows comment list of an activity from its activityId.
-   * 
+   *
    * @param activityId
    * @return commentList
    * @see CommentList
@@ -316,7 +316,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return commentList;
   }
-  
+
   /**
    * Creates or updates comment to an activity by its activityId
    * @param activityId
@@ -337,26 +337,17 @@ public class ActivitiesRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     try {
-      Identity commenter = getIdentityManager().getIdentity(comment.getUserId());
-      comment = _activityManager.saveActivity(commenter, comment);
-      String rawCommentIds = activity.getReplyToId();
-      if (rawCommentIds == null) {
-        rawCommentIds = "";
-      }
-      rawCommentIds += "," + comment.getId();
-      activity.setReplyToId(rawCommentIds);
-      Identity user = getIdentityManager().getIdentity(activity.getUserId());
-      _activityManager.saveActivity(user, activity);
-    } catch(Exception ex) {
+      _activityManager.saveComment(activity, comment);
+    } catch (Exception e) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
     commentList.addComment(comment);
     return commentList;
   }
-  
+
   /**
    * Destroys a comment (by its commentId) from an activity (by its activityId).
-   * 
+   *
    * @param activityId
    * @param commentId
    * @return commentList
@@ -383,7 +374,7 @@ public class ActivitiesRestService implements ResourceContainer {
         commentId = "," + commentId;
         rawCommentIds = rawCommentIds.replace(commentId, "");
         activity.setReplyToId(rawCommentIds);
-        
+
         Identity user = getIdentityManager().getIdentity(activity.getUserId());
         _activityManager.saveActivity(user, activity);
       } else {
@@ -394,13 +385,13 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return commentList;
   }
-  
+
 
   /**
    * shows comment list by json/xml format
    * @param uriInfo
    * @param activityId
-   * @param format 
+   * @param format
    * @return response
    * @throws Exception
    */
@@ -416,12 +407,12 @@ public class ActivitiesRestService implements ResourceContainer {
     commentList = showComments(activityId);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * updates comment by json/xml format
    * @param uriInfo
    * @param activityId
-   * @param format 
+   * @param format
    * @param comment
    * @return response
    * @throws Exception
@@ -440,13 +431,13 @@ public class ActivitiesRestService implements ResourceContainer {
     commentList = updateComment(activityId, comment);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * destroys comments and returns json/xml format
    * @param uriInfo
    * @param activityId
    * @param commentId
-   * @param format 
+   * @param format
    * @return response
    * @throws Exception
    */
@@ -463,7 +454,7 @@ public class ActivitiesRestService implements ResourceContainer {
     commentList = destroyComment(activityId, commentId);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * LikeList model
    * @author hoatle
@@ -493,7 +484,7 @@ public class ActivitiesRestService implements ResourceContainer {
     public void setLikes(List<Like> likes) {
       _likes = likes;
     }
-    
+
     /**
      * gets like list
      * @return like list
@@ -501,7 +492,7 @@ public class ActivitiesRestService implements ResourceContainer {
     public List<Like> getLikes() {
       return _likes;
     }
-    
+
     /**
      * adds like to like list
      * @param like
@@ -513,7 +504,7 @@ public class ActivitiesRestService implements ResourceContainer {
       _likes.add(like);
     }
   }
-  
+
   /**
    * CommentList model
    * @author hoatle
@@ -562,7 +553,7 @@ public class ActivitiesRestService implements ResourceContainer {
       _comments.add(activity);
     }
   }
-  
+
   /**
    * gets activityManager
    * @return activityManager
@@ -578,7 +569,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return _activityManager;
   }
-  
+
   /**
    * gets identityManger
    * @return
@@ -594,7 +585,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return _identityManager;
   }
-  
+
   /**
    * gets like list
    * @param identityIds
@@ -626,7 +617,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return likes;
   }
-  
+
   /**
    * removes an item from an array
    * @param arrays
@@ -640,7 +631,7 @@ public class ActivitiesRestService implements ResourceContainer {
     if(list.size() > 0) return list.toArray(new String[list.size()]);
     else return null;
   }
-  
+
   /**
    * adds an item to an array
    * @param array
