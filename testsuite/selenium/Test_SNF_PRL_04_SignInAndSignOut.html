@@ -17,12 +17,17 @@
 	<td></td>
 </tr>
 <tr>
+	<td>windowMaximize</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>-SignInOut-</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -42,8 +47,8 @@
 	<td>gtn</td>
 </tr>
 <tr>
-	<td>clickAt</td>
-	<td>xpath=//div[@id='UIPortalLoginFormAction']//a</td>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -52,18 +57,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Sign in</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>link=Sign in</td>
 	<td></td>
 </tr>
 

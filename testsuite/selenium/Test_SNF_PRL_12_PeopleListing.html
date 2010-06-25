@@ -12,13 +12,13 @@
 <tr><td rowspan="1" colspan="3">Test_SNF_PRL_12_PeopleListing</td></tr>
 </thead><tbody>
 <tr>
-	<td>pause</td>
-	<td>1000</td>
+	<td>open</td>
+	<td>/portal/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>/portal/public/classic/</td>
+	<td>windowMaximize</td>
+	<td></td>
 	<td></td>
 </tr>
 <tr>
@@ -27,7 +27,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -47,7 +47,7 @@
 	<td>gtn</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
@@ -57,7 +57,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Directory</td>
 	<td></td>
 </tr>
@@ -72,7 +72,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@class='ContainerSpace']/div[5]//a[@class='AddIcon']</td>
 	<td></td>
 </tr>
@@ -87,7 +87,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Connections</td>
 	<td></td>
 </tr>
@@ -99,6 +99,11 @@
 <tr>
 	<td>clickAt</td>
 	<td>link=Outgoing</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -122,7 +127,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
@@ -137,7 +142,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -157,7 +162,7 @@
 	<td>gtn</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
@@ -167,7 +172,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Connections</td>
 	<td></td>
 </tr>
@@ -179,6 +184,11 @@
 <tr>
 	<td>clickAt</td>
 	<td>link=Incoming</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -192,7 +202,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>waitForElementPresent</td>
+	<td>//a[@class='SelectIcon']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>//a[@class='SelectIcon']</td>
 	<td></td>
 </tr>
@@ -212,6 +227,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>link=Root Root</td>
 	<td></td>
@@ -227,7 +247,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
@@ -242,7 +262,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -262,7 +282,7 @@
 	<td>gtn</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
@@ -277,6 +297,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>link=Mary Kelly</td>
 	<td></td>
@@ -287,7 +312,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//a[@class='DeleteIcon']</td>
 	<td></td>
 </tr>
@@ -307,7 +332,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>

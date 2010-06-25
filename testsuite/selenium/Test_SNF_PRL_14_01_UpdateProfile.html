@@ -17,12 +17,17 @@
 	<td></td>
 </tr>
 <tr>
+	<td>windowMaximize</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>-- Update Profile</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -42,17 +47,12 @@
 	<td>gtn</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>link=New Staff</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=New Staff</td>
 	<td></td>
 </tr>
@@ -69,7 +69,7 @@
 <tr>
 	<td>type</td>
 	<td>username</td>
-	<td>test_user_14</td>
+	<td>test_user_14_1</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -97,7 +97,12 @@
 	<td>test_user_14@gmail.com</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>waitForElementPresent</td>
+	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>link=Save</td>
 	<td></td>
 </tr>
@@ -107,12 +112,17 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@id='UIAccountPortlet']//div[@class='UIPopupWindow UIDragObject']//a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
@@ -122,17 +132,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
 	<td>echo</td>
 	<td>-- Update Profile</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -144,7 +149,7 @@
 <tr>
 	<td>type</td>
 	<td>username</td>
-	<td>test_user_14</td>
+	<td>test_user_14_1</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -152,7 +157,7 @@
 	<td>test_pwd_14</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
@@ -162,7 +167,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Profile</td>
 	<td></td>
 </tr>
@@ -177,7 +182,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Edit</td>
 	<td></td>
 </tr>
@@ -192,7 +197,12 @@
 	<td>eXo Tester</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>waitForElementPresent</td>
+	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>link=Save</td>
 	<td></td>
 </tr>
@@ -207,7 +217,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@class='UIContactSection']//a</td>
 	<td></td>
 </tr>
@@ -227,7 +237,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@class='UIContactSection']//table[@class='UIFormGrid']/tbody/tr[2]//a</td>
 	<td></td>
 </tr>
@@ -257,6 +267,11 @@
 	<td>eXo_Test_14</td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@class='UIContactSection']//table[@class='UIFormGrid']/tbody/tr[4]//a</td>
+	<td></td>
+</tr>
+<tr>
 	<td>clickAt</td>
 	<td>//div[@class='UIContactSection']//table[@class='UIFormGrid']/tbody/tr[4]//a</td>
 	<td></td>
@@ -264,6 +279,11 @@
 <tr>
 	<td>waitForElementPresent</td>
 	<td>rlu2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -277,7 +297,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@class='UIContactSection']//a[@class='SaveIcon']</td>
 	<td></td>
 </tr>
@@ -287,13 +307,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTextPresent</td>
-	<td>Gender : male</td>
+	<td>pause</td>
+	<td>10000</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Gender : male</td>
+	<td>waitForTextPresent</td>
+	<td>Phone : 123456789</td>
 	<td></td>
 </tr>
 <tr>
@@ -302,13 +322,38 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
 	<td>Gtalk: eXo_Test_14</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
+	<td>Gtalk: eXo_Test_14</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
 	<td>Urls : http://www.google.com</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Urls : http://www.google.com</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -322,7 +367,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@class='experience']//a</td>
 	<td></td>
 </tr>
@@ -332,7 +377,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@class='experience']//table[@class='UIFormGrid']//a</td>
 	<td></td>
 </tr>
@@ -367,8 +412,18 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@class='experience']//a[@class='SaveIcon']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Verify experience updated</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -392,7 +447,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
@@ -407,7 +462,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -427,7 +482,7 @@
 	<td>gtn</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
@@ -437,7 +492,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Users and groups management</td>
 	<td></td>
 </tr>
@@ -457,17 +512,22 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>xpath=//div[@class='UIListUsers']//tbody/tr[5]//img[@class='DeleteUserIcon']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure you want to delete test_user_14 user?</td>
+	<td>Are you sure you want to delete test_user_14_1 user?</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>

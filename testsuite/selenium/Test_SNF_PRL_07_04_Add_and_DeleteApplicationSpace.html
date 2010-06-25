@@ -12,13 +12,13 @@
 <tr><td rowspan="1" colspan="3">Test_SNF_PRL_07_04_Add_and_DeleteApplicationSpace</td></tr>
 </thead><tbody>
 <tr>
-	<td>pause</td>
-	<td>1000</td>
+	<td>open</td>
+	<td>/portal/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>/portal/public/classic/</td>
+	<td>windowMaximize</td>
+	<td></td>
 	<td></td>
 </tr>
 <tr>
@@ -27,7 +27,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -47,7 +47,7 @@
 	<td>gtn</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
@@ -57,7 +57,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
@@ -98,7 +98,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>5000</td>
+	<td>12000</td>
 	<td></td>
 </tr>
 <tr>
@@ -132,18 +132,18 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
+	<td>echo</td>
+	<td>-- Add Application</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
 	<td>link=Space Setting</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAt</td>
 	<td>link=Space Setting</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- Add Application</td>
 	<td></td>
 </tr>
 <tr>
@@ -172,7 +172,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@class='UIVerticalSlideTabs']/div[3]//a</td>
 	<td></td>
 </tr>
@@ -182,7 +182,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@title='IFrame']//div[@class='AplicationButton InstallApplicationButton']</td>
 	<td></td>
 </tr>
@@ -232,6 +232,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>//div[@class='CenterButton RemoveButton']</td>
 	<td></td>
@@ -252,17 +257,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
 	<td>echo</td>
 	<td>-- Delete Space created</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
@@ -272,7 +272,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//a[@title='Delete Space']</td>
 	<td></td>
 </tr>
@@ -282,22 +282,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementNotPresent</td>
-	<td>link=Space07</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementNotPresent</td>
-	<td>link=Space07</td>
-	<td></td>
-</tr>
-<tr>
 	<td>waitForElementPresent</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>

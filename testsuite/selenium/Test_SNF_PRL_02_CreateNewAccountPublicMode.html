@@ -17,7 +17,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>windowMaximize</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
 </tr>
@@ -37,7 +42,7 @@
 	<td>gtn</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
@@ -47,12 +52,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>link=New Staff</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=New Staff</td>
 	<td></td>
 </tr>
@@ -68,6 +68,11 @@
 </tr>
 <tr>
 	<td>type</td>
+	<td>firstName</td>
+	<td>test_name_first_02</td>
+</tr>
+<tr>
+	<td>type</td>
 	<td>password</td>
 	<td>test_pwd_02</td>
 </tr>
@@ -75,11 +80,6 @@
 	<td>type</td>
 	<td>Confirmpassword</td>
 	<td>test_pwd_02</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>firstName</td>
-	<td>test_name_first_02</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -92,7 +92,12 @@
 	<td>test_user_02@gmail.com</td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>waitForElementPresent</td>
+	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>link=Save</td>
 	<td></td>
 </tr>
@@ -102,7 +107,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>//div[@id='UIAccountPortlet']//div[@class='UIPopupWindow UIDragObject']//a</td>
 	<td></td>
 </tr>
@@ -117,7 +122,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>clickAndWait</td>
 	<td>link=Users and groups management</td>
 	<td></td>
 </tr>
@@ -138,12 +143,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>xpath=//div[@class='UIListUsers']//tbody/tr[5]//img[@class='DeleteUserIcon']</td>
+	<td>//tr[5]/td[5]/div/img[2]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
-	<td>xpath=//div[@class='UIListUsers']//tbody/tr[5]//img[@class='DeleteUserIcon']</td>
+	<td>click</td>
+	<td>//tr[5]/td[5]/div/img[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -152,7 +157,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
