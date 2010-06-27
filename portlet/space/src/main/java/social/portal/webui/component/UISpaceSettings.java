@@ -36,7 +36,7 @@ import java.util.ResourceBundle;
  * - Description <br />
  * <p/>
  * Created by The eXo Platform SAS
- * 
+ *
  * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since Jul 1, 2009
  */
@@ -60,7 +60,7 @@ public class UISpaceSettings extends UIFormInputSet {
 
   /**
    * constructor
-   * 
+   *
    * @param name
    * @throws Exception
    */
@@ -68,7 +68,7 @@ public class UISpaceSettings extends UIFormInputSet {
     super(name);
     addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
+                   //addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
                    addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
                    addValidator(StringLengthValidator.class, 3, 30));
 

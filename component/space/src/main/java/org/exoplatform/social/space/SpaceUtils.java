@@ -108,7 +108,7 @@ public class SpaceUtils {
   /**
    * Creates a new group from an existing group. This new group will get all
    * data from existing group except for group name
-   * 
+   *
    * @param parentGroup
    * @param existingGroup
    * @param name
@@ -141,7 +141,7 @@ public class SpaceUtils {
 
   /**
    * Gets applications that a group have right to access
-   * 
+   *
    * @param groupId
    * @return applications
    * @throws Exception
@@ -179,7 +179,7 @@ public class SpaceUtils {
    * list of applications. appStore is filter by access permission from that
    * group; filter by application category access permission and filtered by
    * application permission.
-   * 
+   *
    * @param space
    * @return appStore
    * @throws Exception
@@ -217,7 +217,7 @@ public class SpaceUtils {
   /**
    * Gets application from portal container. This is used to get application
    * when get application by applicationRegistry return null.
-   * 
+   *
    * @param appId
    * @return An application has name match input appId.
    * @throws Exception
@@ -335,7 +335,7 @@ public class SpaceUtils {
 
   /**
    * Utility for cleaning space name
-   * 
+   *
    * @param str
    * @return cleaned string
    */
@@ -386,7 +386,7 @@ public class SpaceUtils {
 
   /**
    * Gets spaceName by portletPreference.
-   * 
+   *
    * @return
    */
   static public String getSpaceUrl() {
@@ -398,7 +398,7 @@ public class SpaceUtils {
   /**
    * change spaceUrl preferences for all applications in a pageNode. This
    * pageNode is the clonedPage of spacetemplate.
-   * 
+   *
    * @param spacePageNode
    * @param space
    * @throws Exception
@@ -456,7 +456,7 @@ public class SpaceUtils {
 
   /**
    * Finds container by id
-   * 
+   *
    * @param childs
    * @param id
    * @return
@@ -486,7 +486,7 @@ public class SpaceUtils {
   /**
    * Utility for setting navigation. Set pageNavigation, if existed in portal
    * navigations, reset; if not, added to portal navigations.
-   * 
+   *
    * @param nav
    */
   static public void setNavigation(PageNavigation nav) {
@@ -523,7 +523,7 @@ public class SpaceUtils {
 
   /**
    * Utility for removing portal navigation.
-   * 
+   *
    * @param nav
    * @throws Exception
    */
@@ -566,7 +566,7 @@ public class SpaceUtils {
   /**
    * Reload all portal navigations synchronizing navigations and stores in
    * currentAccessibleSpaces BUG: SOC-406, SOC-134
-   * 
+   *
    * @throws Exception
    */
   public static void reloadNavigation() throws Exception {
@@ -634,7 +634,7 @@ public class SpaceUtils {
 
   /**
    * Gets space by groupId TODO: Move to SpaceService?
-   * 
+   *
    * @param groupId
    * @return
    * @throws SpaceException
@@ -670,7 +670,7 @@ public class SpaceUtils {
 
   /**
    * Creates new group in /Spaces node and return groupId
-   * 
+   *
    * @param spaceName String
    * @param creator String
    * @return groupId String
@@ -715,7 +715,7 @@ public class SpaceUtils {
 
   /**
    * Removes a group owning a space
-   * 
+   *
    * @param space
    * @throws SpaceException
    */
@@ -732,7 +732,7 @@ public class SpaceUtils {
 
   /**
    * Checks if a space exists
-   * 
+   *
    * @param spaceName
    * @return boolean if existed return true, else return false
    * @throws SpaceException with code INTERNAL_SERVER_ERROR
@@ -743,7 +743,7 @@ public class SpaceUtils {
     List<Space> spaces = spaceService.getAllSpaces();
     // Checks whether spaceName has existed yet
     for (Space space : spaces) {
-      if (space.getName().equalsIgnoreCase(spaceName))
+      if (cleanString(space.getName()).equalsIgnoreCase(cleanString(spaceName)))
         return true;
     }
     return false;
@@ -752,7 +752,7 @@ public class SpaceUtils {
   /**
    * When user chooses an existing group, that user will be added to that group
    * as a manager
-   * 
+   *
    * @param creator String
    * @param groupId String
    * @throws SpaceException with code UNABLE_TO_ADD_CREATOR
@@ -780,7 +780,7 @@ public class SpaceUtils {
   /**
    * Creates group navigation if not existed or return existing group navigation
    * based on groupId
-   * 
+   *
    * @param groupId String
    * @return spaceNav PageNavigation
    * @throws SpaceException
@@ -808,7 +808,7 @@ public class SpaceUtils {
 
   /**
    * Removes group navigations.
-   * 
+   *
    * @param groupId
    * @throws SpaceException
    */
@@ -836,7 +836,7 @@ public class SpaceUtils {
 
   /**
    * Gets pageNavigation by a space's groupId
-   * 
+   *
    * @param groupId
    * @return pageNavigation
    * @throws Exception
@@ -851,7 +851,7 @@ public class SpaceUtils {
   /**
    * This related to a bug from portal. When this bug is resolved, use
    * pageNavigation.getNode(space.getUrl());
-   * 
+   *
    * @param pageNavigation
    * @param spaceUrl
    * @return
@@ -873,7 +873,7 @@ public class SpaceUtils {
 
   /**
    * Sorts spaces list by priority and alphabet order
-   * 
+   *
    * @param spaces
    * @return ordered spaces list
    */
@@ -905,7 +905,7 @@ public class SpaceUtils {
 
   /**
    * Utility for counting the number of members in a space
-   * 
+   *
    * @param space
    * @return the number of members
    * @throws SpaceException
@@ -923,7 +923,7 @@ public class SpaceUtils {
 
   /**
    * Gets app status in a space
-   * 
+   *
    * @param space
    * @param appId
    * @return appStatus
@@ -941,7 +941,7 @@ public class SpaceUtils {
 
   /**
    * Gets appNodeName in a space by its appId
-   * 
+   *
    * @param space
    * @param appId
    * @return
@@ -959,7 +959,7 @@ public class SpaceUtils {
 
   /**
    * Checks if an application is removable or not. Default will return true.
-   * 
+   *
    * @param space
    * @param appId
    * @return-
@@ -977,7 +977,7 @@ public class SpaceUtils {
 
   /**
    * Gets all application id from a space
-   * 
+   *
    * @param space
    * @return
    */
@@ -999,7 +999,7 @@ public class SpaceUtils {
 
   /**
    * Utility for getting absolute url
-   * 
+   *
    * @return absolute url
    * @throws SpaceException
    */
@@ -1012,7 +1012,7 @@ public class SpaceUtils {
 
   /**
    * Checks if a user is removed or not.<br>
-   * 
+   *
    * @param userName User name for checking.
    * @throws SpaceEception if user is removed.
    */
@@ -1032,7 +1032,7 @@ public class SpaceUtils {
 
   /**
    * Check an application is installed or not yet.
-   * 
+   *
    * @param space
    * @param appId
    * @return
@@ -1054,7 +1054,7 @@ public class SpaceUtils {
 
   /**
    * Gets appStatusPattern: [appId:appNodeName:isRemovableString:status]
-   * 
+   *
    * @param installedApps
    * @param appId
    * @return
@@ -1080,7 +1080,7 @@ public class SpaceUtils {
 
   /**
    * Checks if a group can have access to an application
-   * 
+   *
    * @param app
    * @param groupId
    * @return
@@ -1099,7 +1099,7 @@ public class SpaceUtils {
 
   /**
    * Gets Organization Service
-   * 
+   *
    * @return
    */
   static public OrganizationService getOrganizationService() {
@@ -1109,7 +1109,7 @@ public class SpaceUtils {
 
   /**
    * Gets dataStorage
-   * 
+   *
    * @return
    */
   static public DataStorage getDataStorage() {
@@ -1119,7 +1119,7 @@ public class SpaceUtils {
 
   /**
    * Checks if a group have access permission to an application category
-   * 
+   *
    * @param app
    * @param groupId
    * @return true if that group has access permission; otherwise, false
@@ -1139,7 +1139,7 @@ public class SpaceUtils {
 
   /**
    * Checks view permission
-   * 
+   *
    * @param expPerm
    * @param groupId
    * @return
@@ -1160,7 +1160,7 @@ public class SpaceUtils {
 
   /**
    * Gets localized string value
-   * 
+   *
    * @param localizedString
    * @param portletName
    * @return
@@ -1175,7 +1175,7 @@ public class SpaceUtils {
 
   /**
    * Gets application registry service
-   * 
+   *
    * @return
    */
   private static ApplicationRegistryService getApplicationRegistryService() {
