@@ -82,6 +82,6 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>NavigationCleanupServlet</servlet-name>
-    <url-pattern>invalidationsession</url-pattern>
+    <url-pattern>/invalidationsession</url-pattern>
   </servlet-mapping>
 </web-app>
