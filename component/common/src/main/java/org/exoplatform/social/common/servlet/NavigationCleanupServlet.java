@@ -74,10 +74,9 @@ public class NavigationCleanupServlet extends AbstractHttpServlet {
       String remoteUser = context.getRemoteUser();
       UserPortalConfigService service_ = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
       pApp.setUserPortalConfig(service_.getUserPortalConfig(portalSite, remoteUser));
-      res.sendRedirect(url);
     } catch (Exception e) {
-
     } finally {
+      res.sendRedirect(url);
       RequestLifeCycle.end();
     }
   }
