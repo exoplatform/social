@@ -216,10 +216,21 @@
       </init-param>
    </servlet>
 
+   <servlet>
+      <servlet-name>NavigationCleanupServlet</servlet-name>
+      <servlet-class>org.exoplatform.social.common.servlet.NavigationCleanupServlet</servlet-class>
+      <load-on-startup>0</load-on-startup>
+   </servlet>
+
   <!--  =================================================================  -->
   <servlet-mapping>
     <servlet-name>StickyCaptcha</servlet-name>
     <url-pattern>/captcha</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>NavigationCleanupServlet</servlet-name>
+    <url-pattern>invalidationsession</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
