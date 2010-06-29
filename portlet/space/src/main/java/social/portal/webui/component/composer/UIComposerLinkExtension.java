@@ -136,7 +136,7 @@ public class UIComposerLinkExtension extends UIContainer {
       UIComposerLinkExtension uiComposerLinkExtension = event.getSource();
       String url = requestContext.getRequestParameter(OBJECTID);
       try {
-        uiComposerLinkExtension.setLink(url);
+        uiComposerLinkExtension.setLink(url.trim());
       } catch (Exception e) {
         uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.WARNING));
         return;
