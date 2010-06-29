@@ -1,5 +1,5 @@
 =====================================================
-    Release Notes - eXo Social - Version 1.0.0 GA    
+    Release Notes - eXo Social - Version 1.0.1
 =====================================================
 
 ===============
@@ -14,28 +14,31 @@ eXo Social is composed of 2 modules :
 				- Search by skills and experience
 				- Activity status updates
 				- Opensocial API support
-			
+
     * eXo Spaces: add communities to your work and enable a collaborative work. It's the communities workgroups.
 	    	- Let dormant communities reveal themselves
 				- Open community management
 				- Activity streams to aggregate knowledge
 				- Easily deploy custom applications
-				- User friendly interface 
+				- User friendly interface
 
 
 =============
 2 What's new?
 =============
 
+- Speed improvement for creating a new space by using template instead of page node to
+  create a new space's navigation.
+- Enhance usability in space: message type, input validation, contextual message when
+  selecting options in space creation form.
+- New space name navigation: allows only alphabet, digit and space characters only.
+- Change the way of creating a space bound to an existing group.
+- Use portlet preference to get space context instead of getting space context via Uri.
+- Properly organize gadgets for speeding up server startup time.
+- Make possible to create space via REST service.
 
-* French translation
-* Enhanced Space Activities
-* Several usability enhancements
+  * Find the latest release notes here : http://wiki.exoplatform.com/xwiki/bin/view/Social/Release+Notes
 
-          
-          
-    * Find the latest release notes here : http://wiki.exoplatform.com/xwiki/bin/view/Social/Release+Notes            
-          
 =========
 3 INSTALL
 =========
@@ -45,29 +48,29 @@ Find the latest install guide here : http://wiki.exoplatform.com/xwiki/bin/view/
 - System Requirements
         Web Browser: IE6, IE7, FF2, FF3 (recommended), Safari.
         JVM: version 1.6.0_0 or higher
-        Application Server : tomcat-6.0 and up 
+        Application Server : tomcat-6.0 and up
         Building Tools: Maven 2.2.1 and up
 
 - Social quick start guide
   Social have 1 server need to run to use:
-    +) tomcat: this is main tomcat server include Social web applications and all dependencies.     
+    +) tomcat: this is main tomcat server include Social web applications and all dependencies.
 
 Need to set the JAVA_HOME variable for run Social servers.
 +) How to start Social:
    * First thing first you need to give all script files the executable permission if you are in unix family environment.
    Use command: "chmod +x *.sh" (without quote) to have execute permission on these files.
-   
+
    * NOTE for cygwin's user: the JAVA_HOME must be in MS Windows format like: "C:\Program Files\JDK 1.5"
     Example use: export JAVA_HOME=`cygpath -w "$JAVA_HOME"`; to convert unix like format to MS Windows format.
-   
-   
-   
+
+
+
    * Start tomcat server
-   
+
      +) On the Windows platform
        Open a DOS prompt command, go to tomcat/bin and type the command:
         "gatein.bat run" for production
-        "gatein-dev.bat run" for development 
+        "gatein-dev.bat run" for development
 
 
      +) On Unix/Linux/cygwin
@@ -79,7 +82,7 @@ Need to set the JAVA_HOME variable for run Social servers.
 
 
 * Enter one of the following addresses into your browser address bar:
-   Social demo portal  
+   Social demo portal
       http://localhost:8080/socialdemo
    Classic :
       http://localhost:8080/portal
@@ -87,11 +90,11 @@ Need to set the JAVA_HOME variable for run Social servers.
 
 
 * Direct link to access applications in Social :
-    +) Spaces application: http://localhost:8080/socialdemo/private/classic/spaces     
-    +) People application: http://localhost:8080/socialdemo/private/classic/people     
+    +) Spaces application: http://localhost:8080/socialdemo/private/classic/spaces
+    +) People application: http://localhost:8080/socialdemo/private/classic/people
     +) Activity stream application: http://localhost:8080/socialdemo/private/classic/activities
-    +) Profile of user: http://localhost:8080/socialdemo/private/classic/profile     
-    
+    +) Profile of user: http://localhost:8080/socialdemo/private/classic/profile
+
   You will get login form if you are not yet logged in to Social.
 
 
@@ -109,13 +112,80 @@ All those accounts have the default password "gtn".
      Company site        http://www.exoplatform.com
      Community JIRA      http://jira.exoplatform.org
      Community site      http://www.exoplatform.org
-     Community gatein    http://www.jboss.org/gatein/ 
+     Community gatein    http://www.jboss.org/gatein/
      Developers wiki     http://wiki.exoplatform.org
 
 
 ===========
 5 CHANGELOG
 ===========
+-  1.0.1
+
+Bug
+    * [SOC-563] - IE6: Error UI in Social Navigation
+    * [SOC-588] - Error displaying in Avatar upload form when have long of name of picture in space setting
+    * [SOC-657] - Can't rename application by double click on the name when drag & drop 2 application
+    * [SOC-695] - Show message wrong when edit space has some special chars
+    * [SOC-696] - Still keep wrong name of space after edit name
+    * [SOC-700] - Unkown error when delete page(node) of space
+    * [SOC-707] - Have problem when create new space but delete space template in Manage page
+    * [SOC-711] - Lose Information in menu item of User ToolBar Group portlet when have some spaces page
+    * [SOC-715] - Show wrong page(node) of space when click switch view mode in edit node's pagge
+    * [SOC-720] - Nothing happen when click Expand All in Sitemap page when add application to Space menu portlet
+    * [SOC-810] - Owner Id is not changed after edit page properties/edit permission
+    * [SOC-811] - Some html tag has no effect
+    * [SOC-812] - Error when edit page in special case
+    * [SOC-813] - screen is blinked continuously when add  Space List Gadget
+    * [SOC-820] - In profile, the error message says "...field 'fone1' must be..." (demo2)
+    * [SOC-821] - NPE when click name of space which is space members
+    * [SOC-848] - Activity title is not displayed in streams
+    * [SOC-853] - The Add New Space form does not close automatically after a new space is created
+    * [SOC-856] - Can not remember my login
+    * [SOC-857] - Space tab disappears when other user is creating space
+    * [SOC-862] - Do not let non 'manager' of a group bind a space to that group
+    * [SOC-863] - error deleting a space
+    * [SOC-865] - After accepting an invitation to a space, the menu at the top of the page don't display their submenu
+    * [SOC-867] - removing yourself from the admin of a space break the UI
+    * [SOC-870] - Activities retrieval is unlimited
+    * [SOC-872] - Unknown error occurs when trying to rename a application portlet with Space characters
+    * [SOC-876] - Space characters should not allowed when posting an activity
+    * [SOC-879] - Change the message type
+    * [SOC-881] - Need to a space between text in alert message
+    * [SOC-882] - Edit space: special characters are accpeted
+    * [SOC-900] -  Show error message when adding an invalid link in Attach Link (Space)
+    * [SOC-952] - [Space] show Javascript when share link on Activities portlet on Space
+    * [SOC-955] - Validate Space Name
+    * [SOC-957] - multiple javascript alerts SyntaxError: unterminated string literal
+
+Delivery Item
+    * [SOC-771] - Social logo
+
+Feedback
+    * [SOC-750] - space priority is not self explanatory
+    * [SOC-751] - Space visibility options are not self explanatory
+    * [SOC-753] - Space navigation should match navigation order
+    * [SOC-828] - Database configuration should not use macros/variables
+    * [SOC-844] - rename "spacename - SpaceSettingsPortlet" to "spacename - space settings"
+    * [SOC-869] - creating a space take around 45sec
+
+New Feature
+    * [SOC-740] - Space page template
+
+Task
+    * [SOC-892] - make possible to create a space by a rest service
+    * [SOC-896] - Config "developers" group instead of "developer"
+    * [SOC-897] - Properly organize gadgets
+    * [SOC-910] - apply new brand
+    * [SOC-913] - Allows multi-tenancy
+    * [SOC-920] - make isFirstCharOfSpaceName an optional parameter of getSpacesByName
+    * [SOC-950] - Check and fix bug for preparing to release social branch 1.0.1
+
+Sub-task
+    * [SOC-951] - [Bug] Gadget loads comments as activities to user activity stream
+    * [SOC-959] - Update EXO-README.txt for 1.0.1
+    * [SOC-960] - Update release notes on public wiki
+    * [SOC-961] - Update French resource bundle changes
+
 
 -  1.0.0 GA
 
@@ -123,7 +193,7 @@ Bug
     * [SOC-589] - Show exception when delete user who invited
     * [SOC-671] - Session timeout when delete user in member tab of space which used to create this space
     * [SOC-697] - Duplicate Space's group in Application registry portlet
-    * [SOC-702] - Show wrong in Popup My Space after created new node 
+    * [SOC-702] - Show wrong in Popup My Space after created new node
     * [SOC-704] - Lose page's title of request page in Manage Page
     * [SOC-712] - IE6: Error displaying in Search invited form when don't any user is invited
     * [SOC-814] - Error when go to Activity page with Ubuntu
