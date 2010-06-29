@@ -22,7 +22,7 @@
 %>
 <%
   import org.exoplatform.webui.form.UIFormStringInput;
-  
+
   def removeAllNewLines(def str) {
     if (str) {
       return str.replaceAll("\r\n|\n\r|\n|\r", "");
@@ -30,12 +30,12 @@
       return "";
     }
   }
-  
+
   def uicomponentId = uicomponent.id;
   def labelAttachLink = _ctx.appRes("UIComposerExtensionContainer.label.Attach_Link");
   def labelAttach = _ctx.appRes("UIComposerExtensionContainer.label.Attach");
   labelAttachLink = labelAttachLink.replace(":", "");
-  
+
   def linkInfoDisplayed = uicomponent.isLinkInfoDisplayed();
   uicomponent.setLinkInfoDisplayed(false);
   def requestContext = _ctx.getRequestContext();
@@ -43,11 +43,11 @@
   jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
   jsManager.importJavascript("eXo.social.PortalHttpRequest", "/eXoResourcesSocial/javascript");
   jsManager.importJavascript("eXo.social.webui.UIComposerLinkExtension", "/eXoResourcesSocial/javascript");
-  
+
   def noThumbnail = _ctx.appRes("${uicomponentId}.msg.No_Thumbnail"),
       previousImage = _ctx.appRes("${uicomponentId}.msg.Previous_Image"),
       nextImage = _ctx.appRes("${uicomponentId}.msg.Next_Image");
-  
+
   def linkShare = uicomponent.getLinkShare();
   def link, images, title, description, linkData;
   if (linkShare) {
@@ -60,28 +60,33 @@
     title = removeAllNewLines(linkShare.getTitle());
     description = removeAllNewLines(linkShare.getDescription());
     linkData = "{"+
-                  "link: '$link',"+
-                  "image: '$image',"+
-                  "title: '$title',"+
-                  "description: '$description'"+
+                  "\"link\":\"$link\","+
+                  "\"image\":\"$image\","+
+                  "\"title\":\"$title\","+
+                  "\"description\":\"$description\""+
                 "}";
   } else {
     linkInfoDisplayed = false;
   }
-  
+
   def params = "{"+
-                  "linkInfoDisplayed: $linkInfoDisplayed,"+
-                  "inputLinkId: 'InputLink',"+
-                  "attachButtonId: 'AttachButton',"+
-                  "attachUrl: '${uicomponent.url("Attach")}',"+
-                  "changeLinkContentUrl: '${uicomponent.url("ChangeLinkContent")}',"+
-                  "linkData: $linkData"+
+                  "\"linkInfoDisplayed\":$linkInfoDisplayed,"+
+                  "\"inputLinkId\":\"InputLink\","+
+                  "\"attachButtonId\":\"AttachButton\","+
+                  "\"attachUrl\":\"${uicomponent.url("Attach")}\","+
+                  "\"changeLinkContentUrl\":\"${uicomponent.url("ChangeLinkContent")}\","+
+                  "\"linkData\":$linkData"+
                 "}";
-  jsManager.addOnLoadJavascript("new eXo.social.webui.UIComposerLinkExtension($params)");
-  
+  jsManager.addOnLoadJavascript("initUIComposerLinkExtension");
+
 %>
 <div id="$uicomponentId">
-<% if (linkInfoDisplayed) { 
+<script type="text/javascript">
+  function initUIComposerLinkExtension() {
+    new eXo.social.webui.UIComposerLinkExtension($params);
+  }
+</script>
+<% if (linkInfoDisplayed) {
      uicomponent.clearLinkShare();
                            %>
   <div class="UILinkShareDisplay">
@@ -89,11 +94,11 @@
     <% if (images.size() > 0) { %>
       <div id="UIThumbnailDisplay">
         <div id="Thumbnails">
-          <% 
+          <%
             def thumbnailClass = "ThumbnailShown";
             images.each({ %>
              <img src="$it" class="$thumbnailClass" />
-            <% 
+            <%
               thumbnailClass = "ThumbnailHidden";
             })%>
         </div>
