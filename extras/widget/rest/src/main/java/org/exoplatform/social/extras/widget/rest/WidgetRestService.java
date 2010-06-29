@@ -36,6 +36,8 @@ import org.exoplatform.social.core.activitystream.ActivityManager;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.container.ExoContainerContext;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+
 import org.exoplatform.social.space.Space;
 import org.exoplatform.services.security.ConversationState;
 
@@ -84,13 +86,21 @@ public class WidgetRestService  implements ResourceContainer {
                     }
                 }
             }
+
+            URI spaceURL = UriBuilder.fromPath("/{portalName}/private/classic/{spaceURL}").build(portalName, space.getUrl());
+
+            //We need to cleanup the session
+            //The parameter portal is not really the portal name but the site name inside the portal
+            URI cleanupURL = UriBuilder.fromPath("/{portalName}/invalidationsession")
+                    .queryParam("portal", "classic")
+                    .queryParam("url", "{url}")
+                    .build(portalName, spaceURL);
+
+
             //We could move the "classic" to configuration
-            return Response.temporaryRedirect(new URI("/" + portalName + "/private/classic/" + space.getUrl())).build();
+            return Response.temporaryRedirect(cleanupURL).build();
         } catch (SpaceException e) {
             log.error("Error redirecting to a space", e);
-            return Response.status(500).build();
-        } catch (URISyntaxException e) {
-            log.error(e);
             return Response.status(500).build();
         } finally {
             RequestLifeCycle.end();

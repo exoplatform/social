@@ -7,13 +7,20 @@
         </script>
     </head>
     <body>
-        blah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blah <div class="exoSpacesContainer"><a href="#" id="exoSpacesLink" class="exoSpacesLink" target="_blank">Space</a></div>
+
+        <div style="position:absolute;right:100px;top:200px;">
+        blah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blahblah blah <div class="exoSpacesContainer"><a href="#" id="exoSpacesLink" class="exoSpacesLink" target="_blank">Space</a></div><script src="/socialWidgetResources/javascript/space.js"></script>
+        <script>
+            spaces.setServerURL("http://192.168.2.100:8080");
+            spaces.createPopup("exoSpacesLink", "My cool new space", "my cool description");
+        </script>
         adsfadsf
         asdf
         asd
         fas
         dfasd
-        <script>
+        </div>
+        <!--script>
           //We add in an array the configuration
           var _esp = _esp || [];
           _esp.push(['createPopup', 'exoSpacesLink', 'abb', 'description of me']);
@@ -25,7 +32,7 @@
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(tag, s);
           })();
-        </script>
+        </script-->
         
         
     </body>

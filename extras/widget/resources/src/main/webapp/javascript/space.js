@@ -6,16 +6,17 @@
         //By default we use the URL as spaceID
         spaceName: document.location.toString(),
         //Do not include a trailing /
-        serverURL: "http://192.168.2.100:8080",
-        //start by a /
-        spaceServicePath: "/rest/private/spaces/portal/",
+        serverURL: "http://127.0.0.1:8080",
+        //start and end by a /
+        spaceServicePath: "/rest/private/spaces/",
+        portalName: "socialdemo",
         linkElId: "exoSpacesLink",
         spaceInfoTmpl: '<div style="height:200px;overflow:hidden;width:220px;border:medium none;"><a href="javascript:void(0)" rel="close" style="float:right;">Close</a><br /><%= iframe %></div>'
     },
     templateRenderer;
     
     function getIframe(spaceName, description) {
-        return '<iframe  scrolling="no" height="180" frameborder="no" width="220" src="' + configuration.serverURL + configuration.spaceServicePath + "space_info?spaceName=" + encodeURIComponent(spaceName) + '&description=' + encodeURIComponent(description) + '"></iframe>'
+        return '<iframe  scrolling="no" height="180" frameborder="no" width="220" src="' + configuration.serverURL + configuration.spaceServicePath + configuration.portalName + "/space_info?spaceName=" + encodeURIComponent(spaceName) + '&description=' + encodeURIComponent(description) + '"></iframe>'
     }
     
     function createSpaceBox(container, spaceName, description) {
@@ -65,8 +66,7 @@
     function showInfo(link, spaceName, description) {
         var html = [],
             infoEl = document.getElementById("espInfoBox_" + encodeURIComponent(spaceName));
-        //console.log("infoEl", infoEl);
-        
+    
         if (!infoEl) {
             
             if (!templateRenderer) {
@@ -116,7 +116,7 @@
         
         
         if (link.tagName === "A") {
-            link.href = configuration.serverURL + configuration.spaceServicePath + "go_to_space?spaceName=" + encodeURIComponent(spaceName) + '&description=' + encodeURIComponent(description);
+            link.href = configuration.serverURL + configuration.spaceServicePath + configuration.portalName + "/go_to_space?spaceName=" + encodeURIComponent(spaceName) + '&description=' + encodeURIComponent(description);
         }
         
         link.onclick = function(e) {
@@ -153,9 +153,20 @@
             }
         }
     }
+
+    //We expose the space object outside of this scope.
+    var spaces = window.spaces = window.spaces || {};
+    spaces.createSpaceBox = createSpaceBox;
+    spaces.createPopup = createPopup;
+    spaces.setServerURL = function(value) {
+        configuration["serverURL"] = value;
+    };
+    spaces.setSpaceServicePath = function(value) {
+        configuration["spaceServicePath"] = value;    
+    };
+    spaces.setPortalName = function(value) {
+        configuration["portalName"] = value;    
+    };
     
-    window.spaces = window.spaces || {};
-    window.spaces.createSpaceBox = createSpaceBox;
-    window.spaces.createPopup = createPopup;
     initialize();
 }());
