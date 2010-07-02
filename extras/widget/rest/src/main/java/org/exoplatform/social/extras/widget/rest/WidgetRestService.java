@@ -115,7 +115,6 @@ public class WidgetRestService  implements ResourceContainer {
                             @QueryParam("spaceName") String spaceName,
                             @QueryParam("description") String description) {
         ExoContainer pc = ExoContainerContext.getContainerByName(portalName);
-        RequestLifeCycle.begin(pc);
         try {
             SpaceService service = (SpaceService) pc.getComponentInstanceOfType(SpaceService.class);
             IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
@@ -130,7 +129,7 @@ public class WidgetRestService  implements ResourceContainer {
                     .append("</head><body><h1>eXo Social</h1>");
 
             Space space = service.getSpaceByName(spaceName);
-            response.append("<h3 class=\"space_name\"><a href=\"/rest/private/spaces/").append(portalName)
+            response.append("<h3 class=\"space_name\"><a href=\"/rest-").append(portalName).append("/private/spaces/").append(portalName)
                     .append("/go_to_space?spaceName=").append(spaceName)
                     .append("&description=").append(description)
                     .append("\" target=\"_blank\">").append(spaceName).append("</a></h3>");
@@ -158,8 +157,6 @@ public class WidgetRestService  implements ResourceContainer {
         } catch (Exception e) {
             log.error(e);
             return "An error occurred.";
-        } finally {
-            RequestLifeCycle.end();
         }
     }
 }

@@ -3,12 +3,10 @@
 (function () {
     //We set default configuration values
     var configuration = {
-        //By default we use the URL as spaceID
-        spaceName: document.location.toString(),
         //Do not include a trailing /
-        serverURL: "http://127.0.0.1:8080",
+        serverURL: "http://localhost:8080",
         //start and end by a /
-        spaceServicePath: "/rest/private/spaces/",
+        spaceServicePath: "/rest-socialdemo/private/spaces/",
         portalName: "socialdemo",
         linkElId: "exoSpacesLink",
         spaceInfoTmpl: '<div style="height:200px;overflow:hidden;width:220px;border:medium none;"><a href="javascript:void(0)" rel="close" style="float:right;">Close</a><br /><%= iframe %></div>'
