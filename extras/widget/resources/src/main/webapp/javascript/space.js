@@ -61,9 +61,12 @@
         }
     }
     
-    function showInfo(link, spaceName, description) {
+    function showInfo(event, link, spaceName, description) {
         var html = [],
-            infoEl = document.getElementById("espInfoBox_" + encodeURIComponent(spaceName));
+            infoEl = document.getElementById("espInfoBox_" + encodeURIComponent(spaceName)),
+            xCoordinate = event.clientX,
+            yCoordinate = event.clientY,
+            isIE = document.all?true:false;
     
         if (!infoEl) {
             
@@ -74,14 +77,23 @@
             infoEl = document.createElement('div');
             infoEl.className = "espInfoBox";
             infoEl.id = "espInfoBox_" + encodeURIComponent(spaceName);
-            infoEl.style.top = "26px";
-            infoEl.style.left = "-4px";
+            
             infoEl.style["z-index"] = "10001";
+            
+            
+
+            if(isIE) {
+                xCoordinate = xCoordinate + document.body.scrollLeft;
+                yCoordinate = yCoordinate + document.body.scrollTop;
+            }
+            
+            infoEl.style.top = yCoordinate + "px";
+            infoEl.style.left = xCoordinate + "px";
             
             infoEl.innerHTML = templateRenderer({
                 iframe: getIframe(spaceName, description)
             });
-            link.parentNode.insertBefore(infoEl, link.nextSibling);
+            document.body.appendChild(infoEl);
             
             els = infoEl.getElementsByTagName("*");
             for (i = 0, len = els.length; i < len; i += 1) {
@@ -118,11 +130,13 @@
         }
         
         link.onclick = function(e) {
-            showInfo(link, spaceName, description);
             
             if (!e) { 
                 e = window.event;
             }
+            
+            showInfo(e, link, spaceName, description);
+            
             e.cancelBubble = true;
             if (e.stopPropagation) {
                 e.stopPropagation();
