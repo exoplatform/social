@@ -263,7 +263,22 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    */
   public Identity getCurrentViewerIdentity() throws Exception {
     IdentityManager im = getIdentityManager();
-    return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, URLUtils.getCurrentUser());
+    return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
+  }
+  
+  /**
+   * Gets currents name of user that is viewed by another.<br>
+   * 
+   * @return name of user who is viewed.
+   */
+  private String getCurrentViewerUserName() {
+    String username = URLUtils.getCurrentUser();
+    if(username != null)
+      return username;
+    
+    PortalRequestContext portalRequest = Util.getPortalRequestContext();
+    
+    return portalRequest.getRemoteUser();
   }
   
   /**
