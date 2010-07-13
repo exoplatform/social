@@ -172,11 +172,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>--select Member tab--</td>
-	<td></td>
-</tr>
-<tr>
 	<td>verifyValue</td>
 	<td>//input[@name='Visibility' and @value='hidden']</td>
 	<td>on</td>
@@ -189,6 +184,11 @@
 <tr>
 	<td>click</td>
 	<td>//div[@id='UITabPane']/div[1]/div/div[3]/div/div/div/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--select Member tab--</td>
 	<td></td>
 </tr>
 <tr>
