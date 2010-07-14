@@ -19,17 +19,14 @@ package org.exoplatform.social.opensocial;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.SecurityTokenDecoder;
-import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
 import org.apache.shindig.protocol.DataServiceServletFetcher;
 import org.apache.shindig.protocol.conversion.BeanConverter;
 import org.apache.shindig.protocol.conversion.BeanJsonConverter;
 import org.apache.shindig.protocol.conversion.BeanXStreamConverter;
 import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
-import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
 import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
@@ -47,10 +44,8 @@ import org.exoplatform.social.opensocial.oauth.EXoOAuthDataStore;
 import org.exoplatform.social.opensocial.spi.ExoActivityService;
 import org.exoplatform.social.opensocial.spi.ExoPeopleService;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
-import com.google.inject.ImplementedBy;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
@@ -90,19 +85,19 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
         BeanJsonConverter.class);
     bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
         BeanXStreamAtomConverter.class);
-    
+
     bind(SecurityTokenDecoder.class).annotatedWith(Names.named("exo.auth.decoder")).to(ExoSecurityTokenDecoder.class);
+    bind(OAuthAuthenticationHandler.class).annotatedWith(Names.named("exo.auth.handler")).to(ExoOAuthAuthenticationHandler.class);
     //bind(UrlParameterAuthenticationHandler.class).annotatedWith(Names.named("exo.auth.handlers.url")).to(ExoUrlAuthenticationHandler.class);
-    
+
     bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(ExoAuthenticationHandlerProvider.class);
 
     bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.social.handlers"))
     .toInstance(getHandlers());
-    
-    
+
     bind(String.class).annotatedWith(Names.named("shindig.canonical.json.db"))
     .toInstance("sampledata/canonicaldb.json");
-    
+
     //TODO dang.tung - for exo social
     bind(PersonService.class).to(ExoPeopleService.class);
     bind(AppDataService.class).to(ExoPeopleService.class);
@@ -110,9 +105,8 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
 
     bind(Person.class).to(ExoPersonImpl.class);
     bind(OAuthDataStore.class).to(EXoOAuthDataStore.class);
-    
   }
-  
+
 
 
   /**
@@ -122,6 +116,5 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
   protected Set<Object> getHandlers() {
     return ImmutableSet.<Object>of(ActivityHandler.class, AppDataHandler.class,
         PersonHandler.class, MessageHandler.class);
-  }
-  
+  }  
 }
