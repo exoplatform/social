@@ -1,0 +1,89 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+
+<%
+  import org.exoplatform.webui.form.UIFormTextAreaInput;
+  import org.exoplatform.social.webui.composer.UIComposerExtensionContainer;
+  def requestContext = _ctx.getRequestContext();
+
+  //trick here, uiform does not keep submitAction for second render, portal bug?
+  uicomponent.setSubmitAction("return false;");
+
+  def defaultInput = _ctx.appRes("${uicomponent.id}.Default_Input_Write_Something");
+  def labelShare = _ctx.appRes("${uicomponent.id}.label.Share")
+  def jsManager = requestContext.getJavascriptManager();
+  jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIComposer", "/eXoResourcesSocial/javascript");
+  def params = """
+    {
+      composerId: '${uicomponent.getChild(UIFormTextAreaInput.class).getId()}',
+      defaultInput: '$defaultInput',
+      minCharactersRequired: ${uicomponent.getMinCharactersRequired()},
+      maxCharactersAllowed: ${uicomponent.getMaxCharactersAllowed()},
+      focusColor: null,
+      blurColor: null,
+      minHeight: null,
+      maxHeight: null,
+      focusHeight: null,
+      focusCallback: null,
+      blurCallback: null,
+      keypressCallback: null,
+      postMessageCallback: null
+    }
+  """
+
+  jsManager.addOnLoadJavascript("new eXo.social.webui.UIComposer($params)");
+%>
+  <div class="$uicomponent.id">
+    <% uiform.begin() %>
+    <div id="UIStatusInput" class="StatusComponent">
+      <div class="StatusInput">
+        <div class="StatusInputTL">
+          <div class="StatusInputTR">
+            <div class="StatusInputTM"><span></span></div>
+          </div>
+        </div>
+        <div class="StatusInputL">
+          <div class="StatusInputML">
+            <div class="StatusInputR">
+              <div class="StatusInputM">
+                <div style="height: 2px;"><span></span></div>
+                <% uicomponent.renderChild(UIFormTextAreaInput.class) %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="MyStatusInputBL">
+          <div class="MyStatusInputBR">
+            <div class="MyStatusInputBM"><span></span></div>
+          </div>
+        </div>
+      </div>
+      <% uicomponent.renderChild(UIComposerExtensionContainer.class) %>
+      <div class="StatusShare FloatRight">
+        <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage"); %>" value="$labelShare"></input>
+      </div>
+      <div class="ClearBoth"><span></span></div>
+    </div>
+    <% uiform.end() %>
+  </div>

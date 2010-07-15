@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<configuration
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+
+  <component>
+    <key>org.exoplatform.social.opensocial.model.ServiceProviderStore</key>
+    <type>org.exoplatform.social.opensocial.model.ServiceProviderStore</type>
+    <!--
+    <init-params>
+      <properties-param>
+        <name>sample-provider</name>
+        <description>sample service provider. </description>
+        <property name="consumerKey" value="key" />
+        <property name="sharedSecret" value="secret" />
+        <property name="callbackUrl" value="http://example.org/auth/callback" />
+      </properties-param>
+    </init-params>
+    -->
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.opensocial.service.ExoPeopleService</key>
+    <type>org.exoplatform.social.opensocial.service.ExoPeopleService</type>
+  </component>
+
+</configuration>

@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<portlet-app
+  xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
+
+  <portlet>
+    <description xml:lang="EN">Banner Portlet</description>
+    <portlet-name>BannerPortlet</portlet-name>
+    <display-name xml:lang="EN">Banner Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/BannerPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.BannerPortlet</resource-bundle>
+    <portlet-info>
+      <title>Banner Portlet</title>
+      <short-title>Banner Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/social/portlet/UIBannerPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Warning Portlet</description>
+    <portlet-name>WarningPortlet</portlet-name>
+    <display-name xml:lang="EN">Warning Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/WarningPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.WarningPortlet</resource-bundle>
+    <portlet-info>
+      <title>Warning Portlet</title>
+      <short-title>Warning Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/social/portlet/UIWarningPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Home Page Portlet</description>
+    <portlet-name>HomePagePortlet</portlet-name>
+    <display-name xml:lang="EN">Home Page Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/HomePagePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.HomePagePortlet</resource-bundle>
+    <portlet-info>
+      <title>Home Page Portlet</title>
+      <short-title>Home Page Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/social/portlet/UIHomePagePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Social Navigation Portlet</description>
+    <portlet-name>SocialNavigationPortlet</portlet-name>
+    <display-name xml:lang="EN">Social Navigation</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SocialNavigationPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SocialNavigationPortlet</resource-bundle>
+    <portlet-info>
+      <title>Social Navigation Portlet</title>
+      <short-title>Social Navigation Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Home Space Portlet</description>
+    <portlet-name>HomeSpacePortlet</portlet-name>
+    <display-name xml:lang="EN">Home Space</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/HomeSpacePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.HomeSpacePortlet</resource-bundle>
+    <portlet-info>
+      <title>Home Space Portlet</title>
+      <short-title>Home Space Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/social/portlet/UIHomeSpacePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Members Portlet</description>
+    <portlet-name>MembersPortlet</portlet-name>
+    <display-name xml:lang="EN">Members</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/MembersPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.MembersPortlet</resource-bundle>
+    <portlet-info>
+      <title>Members Portlet</title>
+      <short-title>Members Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Space Menu Portlet</description>
+    <portlet-name>SpaceMenuPortlet</portlet-name>
+    <display-name xml:lang="EN">Space Menu</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SpaceMenuPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SpaceMenuPortlet</resource-bundle>
+    <portlet-info>
+      <title>Space Menu</title>
+      <short-title>Space Menu</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Space Setting Portlet</description>
+    <portlet-name>SpaceSettingPortlet</portlet-name>
+    <display-name xml:lang="EN">Space Setting</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SpaceSettingPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SpaceSettingPortlet</resource-bundle>
+    <portlet-info>
+      <title>Space Setting</title>
+      <short-title>Space Setting</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Spaces Navigation Portlet</description>
+    <portlet-name>SpacesNavigationPortlet</portlet-name>
+    <display-name xml:lang="EN">Spaces Navigation Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SpacesNavigationPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SpacesNavigationPortlet</resource-bundle>
+    <portlet-info>
+      <title>Space Navigation Portlet</title>
+      <short-title>Space Navigation Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">My Spaces Portlet</description>
+    <portlet-name>MySpacesPortlet</portlet-name>
+    <display-name xml:lang="EN">My Spaces Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/MySpacesPortlet/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.MySpacesPortlet</resource-bundle>
+    <portlet-info>
+      <title>My Spaces Portlet</title>
+      <short-title>My Spaces</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Invitation Spaces Portlet</description>
+    <portlet-name>InvitationSpacesPortlet</portlet-name>
+    <display-name xml:lang="EN">Invitation Spaces Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/InvitationSpacesPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.InvitationSpacesPortlet</resource-bundle>
+    <portlet-info>
+      <title>Invitation Spaces Portlet</title>
+      <short-title>Invitation Spaces</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Pending Spaces Portlet</description>
+    <portlet-name>PendingSpacesPortlet</portlet-name>
+    <display-name xml:lang="EN">Pending Spaces Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/PendingSpacesPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.PendingSpacesPortlet</resource-bundle>
+    <portlet-info>
+      <title>Pending Spaces Portlet</title>
+      <short-title>Pending Spaces</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Public Spaces Portlet</description>
+    <portlet-name>PublicSpacesPortlet</portlet-name>
+    <display-name xml:lang="EN">Public Spaces Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/PublicSpacesPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.PublicSpacesPortlet</resource-bundle>
+    <portlet-info>
+      <title>Public Spaces Portlet</title>
+      <short-title>Public Spaces</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Spaces ToolBar Portlet</description>
+    <portlet-name>SpacesToolbarPortlet</portlet-name>
+    <display-name xml:lang="EN">Spaces ToolBar Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SpacesToolbarPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SpacesToolBarPortlet</resource-bundle>
+    <portlet-info>
+      <title>Spaces ToolBar</title>
+      <short-title>Spaces ToolBar</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Social Demo Navigation Portlet</description>
+    <portlet-name>SocialDemoNavigationPortlet</portlet-name>
+    <display-name xml:lang="EN">Social Demo Navigation Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SocialDemoNavigationPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <portlet-info>
+      <title>Social Demo Navigation Portlet</title>
+      <short-title>Social Demo Navigation</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/social/portlet/UISocialDemoNavigationPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Social User ToolBar Group Portlet</description>
+    <portlet-name>SocialUserToolBarGroupPortlet</portlet-name>
+    <display-name xml:lang="EN">Social User ToolBar Group Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/web/SocialUserToolBarGroupPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SocialUserToolBarGroupPortlet</resource-bundle>
+    <portlet-info>
+      <title>Social User ToolBar Group Portlet</title>
+      <short-title>Social User ToolBar Group Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Footer Portlet</description>
+    <portlet-name>FooterPortlet</portlet-name>
+    <display-name xml:lang="EN">Footer Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/FooterPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.FooterPortlet</resource-bundle>
+    <portlet-info>
+      <title>Footer Portlet</title>
+      <short-title>Footer Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/social/portlet/UIFooterPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Space Activity Stream Portlet</description>
+    <portlet-name>SpaceActivityStreamPortlet</portlet-name>
+    <display-name xml:lang="EN">Space Activity Stream</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SpaceActivityStreamPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SpaceActivityStreamPortlet</resource-bundle>
+    <portlet-info>
+      <title>Space Activity Stream Portlet</title>
+      <short-title>Space Activity Stream</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+<!-- People, Profile Portlets -->
+  <portlet>
+    <description xml:lang="EN">People Directory Portlet</description>
+    <portlet-name>PeoplePortlet</portlet-name>
+    <display-name xml:lang="EN">People Directory</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/PeoplePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.PeoplePortlet</resource-bundle>
+    <portlet-info>
+      <title>People Directory Portlet</title>
+      <short-title>People Directory</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Profile Navigation Portlet</description>
+    <portlet-name>ProfileNavigationPortlet</portlet-name>
+    <display-name xml:lang="EN">Profile Navigation</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/ProfileNavigationPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.ProfileNavigationPortlet</resource-bundle>
+    <portlet-info>
+      <title>Profile Navigation Portlet</title>
+      <short-title>Profile Navigation</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Connections Navigation Portlet</description>
+    <portlet-name>ConnectionsNavigationPortlet</portlet-name>
+    <display-name xml:lang="EN">Connections Navigation</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   <init-param>
+     <name>webui.configuration</name>
+     <value>/WEB-INF/conf/portlet/ConnectionsNavigationPortlet/webui/configuration.xml</value>
+   </init-param>
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.ConnectionsNavigationPortlet</resource-bundle>
+   <portlet-info>
+     <title>Connections Navigation Portlet</title>
+     <short-title>Connections Navigation</short-title>
+     <keywords>social</keywords>
+   </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Profile Portlet</description>
+    <portlet-name>ProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/ProfilePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.ProfilePortlet</resource-bundle>
+    <portlet-info>
+      <title>Profile Portlet</title>
+      <short-title>Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>app:/groovy/social/portlet/UIProfilePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Connections Portlet</description>
+    <portlet-name>ConnectionsPortlet</portlet-name>
+    <display-name xml:lang="EN">Connections Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/ConnectionsPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.ConnectionsPortlet</resource-bundle>
+    <portlet-info>
+      <title>Connections Portlet</title>
+      <short-title>Connections Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Invitations Portlet</description>
+    <portlet-name>InvitationsPortlet</portlet-name>
+    <display-name xml:lang="EN">Invitations Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/InvitationsPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.InvitationsPortlet</resource-bundle>
+    <portlet-info>
+      <title>Invitations Portlet</title>
+      <short-title>Invitation Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Requests Portlet</description>
+    <portlet-name>RequestsPortlet</portlet-name>
+    <display-name xml:lang="EN">Requests Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/RequestsPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.RequestsPortlet</resource-bundle>
+    <portlet-info>
+      <title>Requests Portlet</title>
+      <short-title>Requests Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">User Profile Portlet</description>
+    <portlet-name>UserProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">User Profile</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/UserProfilePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <portlet-info>
+      <title>User Profile Portlet</title>
+      <short-title>User Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">User Profile Toolbar Portlet</description>
+    <portlet-name>UserProfileToolBarPortlet</portlet-name>
+    <display-name xml:lang="EN">User Profile Toolbar Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/UserProfileToolBarPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.UserProfileToolBarPortlet</resource-bundle>
+    <portlet-info>
+      <title>User Profile Toolbar Portlet</title>
+      <short-title>User Profile Toolbar Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">People Toolbar Portlet</description>
+    <portlet-name>PeopleToolbarPortlet</portlet-name>
+    <display-name xml:lang="EN">People Toolbar Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/PeopleToolbarPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.PeopleToolBarPortlet</resource-bundle>
+    <portlet-info>
+      <title>People Toolbar Portlet</title>
+      <short-title>People Toolbar Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Social Logo Portlet</description>
+    <portlet-name>SocialLogoPortlet</portlet-name>
+    <display-name xml:lang="EN">Social Logo Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SocialLogoPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SocialLogoPortlet</resource-bundle>
+    <portlet-info>
+      <title>Social Logo Portlet</title>
+      <short-title>Social Logo Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+   <description xml:lang="EN">My Connections Navigation Portlet</description>
+   <portlet-name>MyConnectionsNavigationPortlet</portlet-name>
+   <display-name xml:lang="EN">My Connections Navigation Portlet</display-name>
+   <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+   <init-param>
+     <name>webui.configuration</name>
+     <value>/WEB-INF/conf/portlet/MyConnectionsNavigationPortlet/webui/configuration.xml</value>
+   </init-param>
+   <expiration-cache>0</expiration-cache>
+   <supports>
+     <mime-type>text/html</mime-type>
+   </supports>
+   <supported-locale>en</supported-locale>
+   <resource-bundle>locale.portlet.MyConnectionsNavigationPortlet</resource-bundle>
+   <portlet-info>
+     <title>My Connections Navigation</title>
+     <short-title>My Connections</short-title>
+     <keywords>social</keywords>
+   </portlet-info>
+ </portlet>
+</portlet-app>

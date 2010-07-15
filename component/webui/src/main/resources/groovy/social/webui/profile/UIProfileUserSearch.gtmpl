@@ -1,0 +1,118 @@
+<!--
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+
+<%
+import org.exoplatform.web.application.JavascriptManager;
+
+def uicomponentId = uicomponent.id;
+
+def rcontext = _ctx.getRequestContext() ;
+def allContactName = uicomponent.getAllContactName().toString();
+JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', '/eXoResourcesSocial/javascript');
+jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/eXoResourcesSocial/javascript');
+jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UIProfileUserSearch.onLoad("' + uicomponentId + '","' + allContactName + '");');
+    
+def findContactLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
+def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
+def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreLabel");
+def hideLabel = _ctx.appRes("${uicomponentId}.label.HideLabel");
+def filterByLabel = _ctx.appRes("${uicomponentId}.label.FilterBy");
+def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
+def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
+def femaleLabel = _ctx.appRes("${uicomponentId}.label.FeMale");
+def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
+def skillsDefaultVal = _ctx.appRes("${uicomponentId}.label.Skills");
+def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
+def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
+def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
+def filterId = "Filter";
+def searchId = "Search";
+def moreSearchId = "MoreSearch";
+def hideMoreSearchId = "HideMoreSearch";
+def positionId = "position";
+def skillsId = "skills";
+def genderId = "gender";
+def selectedStartChar = uicomponent.getSelectedChar();
+def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+def childs = uicomponent.getChildren();
+%>
+<div class="UIProfileUserSearch">
+<% uiform.begin() %>
+ <div class="SearchSpaces" name="SearchSpaces">
+    <div class="SearchSpacesR ClearFix">
+      <div class="Lable">${findContactLabel} :</div>
+      <div class="Search"><% uiform.renderField(childs.get(0))%>
+      <div class="SearchIcon" title="Search" onclick="eXo.social.webui.UIProfileUserSearch.clickSearch('${uicomponentId}');"></div>
+      </div>
+      <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
+      
+      <div style="clear: left; height: 0px;"><span></span></div> 
+      <div class="Filter" id="$filterId">
+            <div class="Lable">${filterByLabel} :</div>
+            <div class="FilterInput"><% uiform.renderField(childs.get(1))%></div>
+            <div class="FilterInput"><% uiform.renderField(childs.get(2))%></div>
+            <div class="FilterGender"><% uiform.renderField(childs.get(3))%></div>
+            
+            <input id="defaultUserContact" type="hidden" value="$nameDefaultVal">
+            <input id="defaultPos" type="hidden" value="$positionDefaultVal">
+            <input id="defaultSkills" type="hidden" value="$skillsDefaultVal">
+            <input id="defaultGender" type="hidden" value="$allGenderLabel">
+            <input id="searchAll" type="hidden" value="$searchAll">
+            <div id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</div>
+      </div>
+    </div>
+ </div>
+    <div class="ATitleBarL">
+        <div class="ATitleBarR">
+            <div class="ATitleBarM">
+                <div class="ATitleBarC">
+                ${relationDirectory}
+                </div>
+            </div>
+        </div>
+    </div>
+ <div class="DirectorySpaces" id="DirectorySpaces">
+    <ul class="LetterList">
+     
+        <% for (ch in alphabets) { %>
+    <li>
+        <% 
+                if ((selectedStartChar != null) && (selectedStartChar == ch)) {
+        %>
+                    <a href="#$ch" class="selected" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+        <%} else {%>
+                    <a href="#$ch" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+        <% } %>
+     </li>
+        <% } %>
+        <% if (uicomponentId == "UIPeopleSearch") {%>
+            <li>
+     <% } else {%>
+            <li  style="width: 25px">
+     <% } %>
+        <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
+                    <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+         <%} else {%>
+                    <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+         <% } %>
+     </li>
+    </ul>
+ </div>
+ <% uiform.end() %>
+</div>

@@ -1,0 +1,586 @@
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:usr="http://streams.atlassian.com/syndication/username/1.0"
+	xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:thr="http://purl.org/syndication/thread/1.0">
+	<title>eXo Platform JIRA - Activity Stream</title>
+	<id>http://jira.exoplatform.org</id>
+	<updated>2010-03-30T15:05:16Z</updated>
+	<dc:date>2010-03-30T15:05:16Z</dc:date>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; changed the Fix Version/s to 'next (S12)' on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-716"&gt;SOC-716&lt;/a&gt;
+			(Show exception when switch view mode Manage Spaces page in Manage
+			page)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-716" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:06a56d93-6170-3c0e-adea-2e7d44367d5b</id>
+		<updated>2010-03-30T14:26:10Z</updated>
+		<published>2010-03-30T14:26:10Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; changed the Fix Version/s to 'next (S12)' on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-716"&gt;SOC-716&lt;/a&gt;
+			(Show exception when switch view mode Manage Spaces page in Manage
+			page)</summary>
+		<dc:date>2010-03-30T14:26:10Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; commented on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-716"&gt;SOC-716&lt;/a&gt;
+			(Show exception when switch view mode Manage Spaces page in Manage
+			page)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-716" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<category term="comment" />
+		<author>
+			<name>Nguyen Hang</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen
+			</uri>
+			<email>tigon6182@gmail.com</email>
+			<usr:username>hangnguyen</usr:username>
+		</author>
+		<id>urn:uuid:da9fe2fe-a3c6-32af-9e76-97069a233843</id>
+		<updated>2010-03-30T10:29:13Z</updated>
+		<published>2010-03-30T10:29:13Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; commented on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-716"&gt;SOC-716&lt;/a&gt;
+			(Show exception when switch view mode Manage Spaces page in Manage
+			page) saying: &lt;div
+			class="activity-item-description"&gt;&lt;p&gt;Should check all page
+			of social ( Activities, Invitation, Profile...)&lt;/p&gt;&lt;/div&gt;
+		</summary>
+		<dc:date>2010-03-30T10:29:13Z</dc:date>
+		<thr:in-reply-to ref="urn:uuid:c9c89408-dfa0-3fdc-b869-65ca05e2a53c" />
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-716"&gt;SOC-716&lt;/a&gt;
+			(Show exception when switch view mode Manage Spaces page in Manage
+			page)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-716" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<category term="created" />
+		<author>
+			<name>Nguyen Hang</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen
+			</uri>
+			<email>tigon6182@gmail.com</email>
+			<usr:username>hangnguyen</usr:username>
+		</author>
+		<id>urn:uuid:c9c89408-dfa0-3fdc-b869-65ca05e2a53c</id>
+		<updated>2010-03-30T10:27:41Z</updated>
+		<published>2010-03-30T10:27:41Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-716"&gt;SOC-716&lt;/a&gt;
+			(Show exception when switch view mode Manage Spaces page in Manage
+			page)</summary>
+		<dc:date>2010-03-30T10:27:41Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated 2 fields of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-715"&gt;SOC-715&lt;/a&gt;
+			(Show wrong page(node) of space when click switch view mode in edit
+			node's pagge)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-715" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:e70436d4-1e18-3fbe-bd96-413e11bb3849</id>
+		<updated>2010-03-30T08:48:34Z</updated>
+		<published>2010-03-30T08:48:34Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated 2 fields of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-715"&gt;SOC-715&lt;/a&gt;
+			(Show wrong page(node) of space when click switch view mode in edit
+			node's pagge)</summary>
+		<dc:date>2010-03-30T08:48:34Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; reopened &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-609"&gt;SOC-609&lt;/a&gt;
+			(Make social SocialDemo more focused)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-609" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<category term="reopened" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:8326161c-eb66-3ad4-b1ad-57b5db49b3a0</id>
+		<updated>2010-03-30T08:47:14Z</updated>
+		<published>2010-03-30T08:47:14Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; reopened &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-609"&gt;SOC-609&lt;/a&gt;
+			(Make social SocialDemo more focused) saying: &lt;div
+			class="activity-item-description"&gt;&lt;p&gt;More improvements
+			included in sociademo-review3003-1.png :&lt;/p&gt;
+
+			&lt;ol&gt;
+			&lt;li&gt;Remove the Site menu : we don't want this in /socialdemo because it's for
+			portal&lt;/li&gt;
+			&lt;li&gt;Reuse icons for Activities / Profile /Relations&lt;/li&gt;
+			&lt;li&gt;Gatein Logo : Use eXo Social Logo&lt;/li&gt;
+			&lt;li&gt;Navigation menu : space space by removing me nu entries,
+			just keep a think rounded blue border for aesthetics&lt;/li&gt;
+			&lt;li&gt;Remove Red Hat reference from footer&lt;/li&gt;
+			&lt;/ol&gt;
+			&lt;/div&gt;</summary>
+		<dc:date>2010-03-30T08:47:14Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-715"&gt;SOC-715&lt;/a&gt;
+			(Show wrong page(node) of space when click switch view mode in edit
+			node's pagge)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-715" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<category term="created" />
+		<author>
+			<name>Nguyen Hang</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen
+			</uri>
+			<email>tigon6182@gmail.com</email>
+			<usr:username>hangnguyen</usr:username>
+		</author>
+		<id>urn:uuid:c0df12a8-35fb-3b8f-b70e-aaef0c60e5f1</id>
+		<updated>2010-03-30T08:42:17Z</updated>
+		<published>2010-03-30T08:42:17Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-715"&gt;SOC-715&lt;/a&gt;
+			(Show wrong page(node) of space when click switch view mode in edit
+			node's pagge)</summary>
+		<dc:date>2010-03-30T08:42:17Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated the Description of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-714" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:aba30d4c-aff8-3a66-b1bb-17f442317e70</id>
+		<updated>2010-03-30T08:37:58Z</updated>
+		<published>2010-03-30T08:37:58Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated the Description of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations) saying: &lt;div
+			class="activity-item-description"&gt;&lt;p&gt;Note : However we keep
+			the "relation" entry in the "Me" column of User screen as it will be
+			used to discover other's relations (preserving networking
+			virality).&lt;/p&gt;&lt;/div&gt;</summary>
+		<dc:date>2010-03-30T08:37:58Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; commented on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-714" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<category term="comment" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:953fec86-5368-33e1-8789-66764ed1df9e</id>
+		<updated>2010-03-30T08:36:55Z</updated>
+		<published>2010-03-30T08:36:55Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; commented on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations) saying: &lt;div
+			class="activity-item-description"&gt;&lt;p&gt;Added UI Mockup:
+			&amp;lt;toolbar&amp;gt;&lt;/p&gt;&lt;/div&gt;</summary>
+		<dc:date>2010-03-30T08:36:55Z</dc:date>
+		<thr:in-reply-to ref="urn:uuid:d859577c-36cd-3ad0-acec-d3724ed276de" />
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated the Description of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-714" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:daea6e25-6612-3ef2-91e3-e6452a247e11</id>
+		<updated>2010-03-30T08:34:55Z</updated>
+		<published>2010-03-30T08:34:55Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated the Description of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations)</summary>
+		<dc:date>2010-03-30T08:34:55Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; changed the Link to 'This issue is related to
+			SOC-714' on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-609"&gt;SOC-609&lt;/a&gt;
+			(Make social SocialDemo more focused)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-609" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:389fe51d-3d00-3158-a58e-d1fadf43a664</id>
+		<updated>2010-03-30T08:32:07Z</updated>
+		<published>2010-03-30T08:32:07Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; changed the Link to 'This issue is related to
+			SOC-714' on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-609"&gt;SOC-609&lt;/a&gt;
+			(Make social SocialDemo more focused)</summary>
+		<dc:date>2010-03-30T08:32:07Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; changed the Link to 'This issue is related to
+			SOC-609' on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-714" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:a01bb1f4-e9d2-3b92-80f4-0b2efeb5bd48</id>
+		<updated>2010-03-30T08:32:07Z</updated>
+		<published>2010-03-30T08:32:07Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; changed the Link to 'This issue is related to
+			SOC-609' on &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations) saying: &lt;div
+			class="activity-item-description"&gt;&lt;p&gt;For the "My Relations"
+			menu from toolbar, please use same icon as "relations" entry shown
+			myrelations-mockup.png&lt;/p&gt;&lt;/div&gt;</summary>
+		<dc:date>2010-03-30T08:32:07Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-714" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<category term="created" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:d859577c-36cd-3ad0-acec-d3724ed276de</id>
+		<updated>2010-03-30T08:28:57Z</updated>
+		<published>2010-03-30T08:28:57Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-714"&gt;SOC-714&lt;/a&gt;
+			(My Relations)</summary>
+		<dc:date>2010-03-30T08:28:57Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-713"&gt;SOC-713&lt;/a&gt;
+			(Change config when delete group which is not mandatory in user and
+			group management)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-713" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/task.gif" />
+		<category term="created" />
+		<author>
+			<name>Nguyen Hang</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen
+			</uri>
+			<email>tigon6182@gmail.com</email>
+			<usr:username>hangnguyen</usr:username>
+		</author>
+		<id>urn:uuid:324dfa42-99c0-3346-93fc-935ab40d6cef</id>
+		<updated>2010-03-30T07:33:51Z</updated>
+		<published>2010-03-30T07:33:51Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-713"&gt;SOC-713&lt;/a&gt;
+			(Change config when delete group which is not mandatory in user and
+			group management)</summary>
+		<dc:date>2010-03-30T07:33:51Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; attached one file to &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-609"&gt;SOC-609&lt;/a&gt;
+			(Make social SocialDemo more focused)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-609" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:865e662e-b842-3d5a-85f7-df3dc150e1ca</id>
+		<updated>2010-03-30T07:20:19Z</updated>
+		<published>2010-03-30T07:20:19Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; attached one file to &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-609"&gt;SOC-609&lt;/a&gt;
+			(Make social SocialDemo more focused): &lt;div
+			class="activity-item-description"&gt;&lt;div
+			class="thunmbnails"&gt;&lt;a
+			href="http://jira.exoplatform.org/secure/attachment/21422/21422_sociademo-review3003-1.png"
+			&gt;&lt;img
+			src="http://jira.exoplatform.org/secure/thumbnail/21422/21422_sociademo-review3003-1.png"
+			width="168" height="100" alt=""
+			/&gt;&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</summary>
+		<dc:date>2010-03-30T07:20:19Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hanh.vi'&gt;Vi
+			Quoc Hanh&lt;/a&gt; resolved &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-609"&gt;SOC-609&lt;/a&gt;
+			(Make social SocialDemo more focused)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-609" />
+		<link rel="http://streams.atlassian.com/syndication/icon"
+			href="http://jira.exoplatform.org/images/icons/improvement.gif" />
+		<category term="resolved" />
+		<author>
+			<name>Vi Quoc Hanh</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hanh.vi
+			</uri>
+			<email>hanh.vi@exoplatform.com</email>
+			<usr:username>hanh.vi</usr:username>
+		</author>
+		<id>urn:uuid:3e8b123b-bd9a-3a9b-8208-da5514c2ece9</id>
+		<updated>2010-03-30T07:08:34Z</updated>
+		<published>2010-03-30T07:08:34Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hanh.vi'&gt;Vi
+			Quoc Hanh&lt;/a&gt; resolved &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-609"&gt;SOC-609&lt;/a&gt;
+			(Make social SocialDemo more focused)</summary>
+		<dc:date>2010-03-30T07:08:34Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated 2 fields of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-712"&gt;SOC-712&lt;/a&gt;
+			(IE6: Error displaying in Search invited form when don't any user is
+			invited)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-712" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:23ebea09-179e-3ef9-bb3c-9f98893d725e</id>
+		<updated>2010-03-30T05:42:33Z</updated>
+		<published>2010-03-30T05:42:33Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated 2 fields of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-712"&gt;SOC-712&lt;/a&gt;
+			(IE6: Error displaying in Search invited form when don't any user is
+			invited)</summary>
+		<dc:date>2010-03-30T05:42:33Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated 3 fields of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-711"&gt;SOC-711&lt;/a&gt;
+			(Lose Information in menu item of User ToolBar Group portlet when
+			have some spaces page)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-711" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:c4c14ce0-0128-33b2-af0a-af3c333b783b</id>
+		<updated>2010-03-30T05:41:43Z</updated>
+		<published>2010-03-30T05:41:43Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated 3 fields of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-711"&gt;SOC-711&lt;/a&gt;
+			(Lose Information in menu item of User ToolBar Group portlet when
+			have some spaces page)</summary>
+		<dc:date>2010-03-30T05:41:43Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated 2 fields of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-710"&gt;SOC-710&lt;/a&gt;
+			(Show message when edit basic infor of user with FN/LN has number )
+		</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-710" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<author>
+			<name>Patrice Lamarque</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque
+			</uri>
+			<email>patrice.lamarque@exoplatform.com</email>
+			<usr:username>patrice_lamarque</usr:username>
+		</author>
+		<id>urn:uuid:5738aed1-4038-3a6f-b8e8-9c539fb07e56</id>
+		<updated>2010-03-30T05:40:44Z</updated>
+		<published>2010-03-30T05:40:44Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=patrice_lamarque'&gt;Patrice
+			Lamarque&lt;/a&gt; updated 2 fields of &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-710"&gt;SOC-710&lt;/a&gt;
+			(Show message when edit basic infor of user with FN/LN has number )
+		</summary>
+		<dc:date>2010-03-30T05:40:44Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-712"&gt;SOC-712&lt;/a&gt;
+			(IE6: Error displaying in Search invited form when don't any user is
+			invited)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-712" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<category term="created" />
+		<author>
+			<name>Nguyen Hang</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen
+			</uri>
+			<email>tigon6182@gmail.com</email>
+			<usr:username>hangnguyen</usr:username>
+		</author>
+		<id>urn:uuid:66484659-209a-386c-bd28-54698375f428</id>
+		<updated>2010-03-30T04:45:30Z</updated>
+		<published>2010-03-30T04:45:30Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-712"&gt;SOC-712&lt;/a&gt;
+			(IE6: Error displaying in Search invited form when don't any user is
+			invited)</summary>
+		<dc:date>2010-03-30T04:45:30Z</dc:date>
+	</entry>
+	<entry>
+		<title type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-711"&gt;SOC-711&lt;/a&gt;
+			(Lose Information in menu item of User ToolBar Group portlet when
+			have some spaces page)</title>
+		<link rel="alternate" href="http://jira.exoplatform.org/browse/SOC-711" />
+		<link rel="http://streams.atlassian.com/syndication/icon" href="http://jira.exoplatform.org/images/icons/bug.gif" />
+		<category term="created" />
+		<author>
+			<name>Nguyen Hang</name>
+			<uri>http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen
+			</uri>
+			<email>tigon6182@gmail.com</email>
+			<usr:username>hangnguyen</usr:username>
+		</author>
+		<id>urn:uuid:3856be4f-bfc8-37a1-b443-0ff11ebb1176</id>
+		<updated>2010-03-30T04:13:30Z</updated>
+		<published>2010-03-30T04:13:30Z</published>
+		<summary type="html">&lt;a
+			href='http://jira.exoplatform.org/secure/ViewProfile.jspa?name=hangnguyen'&gt;Nguyen
+			Hang&lt;/a&gt; created &lt;a
+			href="http://jira.exoplatform.org/browse/SOC-711"&gt;SOC-711&lt;/a&gt;
+			(Lose Information in menu item of User ToolBar Group portlet when
+			have some spaces page)</summary>
+		<dc:date>2010-03-30T04:13:30Z</dc:date>
+	</entry>
+</feed>

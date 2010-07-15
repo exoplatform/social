@@ -1,0 +1,87 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<div class="UISocialHomepage" id="$uicomponent.id">
+  <div class="LeftSocialHomepage">
+    <div class="HomeBackground">
+      <div class="HomeBackgroundText"><%=_ctx.appRes("UIHomePagePortlet.title.product")%></div>
+    </div>
+    <div class="LeftBoxDecorator">
+      <div class="RightBoxDecorator">
+        <div class="CenterBoxDecorator">
+          <div class="BoxLeft">
+            <div class="TitBoxLeft">
+              <div class="TitBoxLeftL"><%=_ctx.appRes("UIHomePagePortlet.title.people")%></div>
+              <div class="TitBoxLeftR"><%=_ctx.appRes("UIHomePagePortlet.label.addSocial")%></div>
+              <div class="ClearBoth"><span></span></div>
+            </div>
+            <div class="ContentBoxLeft">
+              <a class="PeopleIcon IconBoxleft"><span></span></a>
+              <div class="TxtBoxLeft"><%=_ctx.appRes("UIHomePagePortlet.info.people1")%>
+                <br/><%=_ctx.appRes("UIHomePagePortlet.info.people2")%>
+                <br/><%=_ctx.appRes("UIHomePagePortlet.info.people3")%>
+                <br/><%=_ctx.appRes("UIHomePagePortlet.info.people4")%>
+                <br/><%=_ctx.appRes("UIHomePagePortlet.info.people5")%>
+              </div>
+            <div class="ClearBoth"><span></span></div>
+          </div>
+        </div>
+          <div class="BoxLeft LineBoxLeft">
+            <div class="TitBoxLeft">
+              <div class="TitBoxLeftL"><%=_ctx.appRes("UIHomePagePortlet.title.spaces")%></div>
+              <div class="TitBoxLeftR"><%=_ctx.appRes("UIHomePagePortlet.label.addCommunities")%></div>
+              <div class="ClearBoth"><span></span></div>
+            </div>
+            <div class="ContentBoxLeft">
+              <a class="SpaceIcon IconBoxleft"><span></span></a>
+                <div class="TxtBoxLeft"><%=_ctx.appRes("UIHomePagePortlet.info.spaces1")%>
+                  <br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces2")%>
+                  <br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces3")%>
+                  <br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces4")%>
+                  <br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces5")%>
+                </div>
+              <div class="ClearBoth"><span></span></div>
+            </div>
+          </div>
+          <div class="ClearBoth"><span></span></div>
+        </div> 
+      </div>
+    </div>
+  </div>
+  <div class="RightSocialHomepage">
+    <div class="BoxRight">
+      <div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.download")%></div>
+        <a href="https://sourceforge.net/projects/exo-social/" class="ImgBoxRight ImgDownload"><span></span></a>
+      </div>
+    <div class="LineBoxRight"><span></span></div>
+    <div class="BoxRight">
+      <div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.feedback")%></div>
+      <a href="http://spreadsheets.google.com/viewform?formkey=dERsbWp1NWl3eGs0ekZEV3NpWi1Sa0E6MA" class="ImgBoxRight ImgFeedBack"><span></span></a>
+    </div>
+    <div class="LineBoxRight"><span></span></div>
+    <div class="BoxRight">
+      <div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.contact")%></div>
+      <a href="mailto:exo-sc@exoplatform.com" class="ImgBoxRight ImgContact"><span></span></a>
+    </div>
+  </div>
+  <div class="ClearBoth"><span></span></div>
+</div>

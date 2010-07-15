@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<container template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+  <container template="system:/groovy/portal/webui/container/UIToolbarContainer.gtmpl">
+    <access-permissions>*:/platform/users; *:/organization/management/executive-board</access-permissions>
+    <container id="StarToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <application>
+        <instance-id>portal#classic:/exoadmin/StarToolbarPortlet/starportlet</instance-id>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </application>
+    </container>
+
+    <container id="UserToolBarSitePortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <portlet-application>
+        <portlet>
+          <application-ref>exoadmin</application-ref>
+          <portlet-ref>UserToolbarSitePortlet</portlet-ref>
+        </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+
+    <container id="PeopleToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <portlet-application>
+        <portlet>
+          <application-ref>social-portlet</application-ref>
+          <portlet-ref>PeopleToolbarPortlet</portlet-ref>
+        </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+
+
+    <container id="SpacesToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+       <portlet-application>
+        <portlet>
+          <application-ref>social-portlet</application-ref>
+          <portlet-ref>SpacesToolbarPortlet</portlet-ref>
+        </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+
+    <container id="UserToolBarDashboardPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <portlet-application>
+        <portlet>
+          <application-ref>exoadmin</application-ref>
+          <portlet-ref>UserToolbarDashboardPortlet</portlet-ref>
+        </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+
+    <container id="AdminToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <portlet-application>
+        <portlet>
+          <application-ref>exoadmin</application-ref>
+          <portlet-ref>AdminToolbarPortlet</portlet-ref>
+        </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+
+    <container id="UserInfoPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <portlet-application>
+        <portlet>
+          <application-ref>social-portlet</application-ref>
+          <portlet-ref>UserProfilePortlet</portlet-ref>
+        </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+  </container>
+
+  <site-body/>
+</container>

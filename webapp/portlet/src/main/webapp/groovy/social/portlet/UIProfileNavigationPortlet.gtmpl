@@ -1,0 +1,71 @@
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<%
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.portal.application.PortalRequestContext;
+
+  PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def portalURI = pcontext.getPortalURI();
+  def currIdentity = Utils.getCurrentIdentity();
+  def currentUser = currIdentity.profile.getPropertyValue("firstName");;
+  def actititesURL = portalURI + "activities/" + currIdentity.getRemoteId();
+  def profileURL = portalURI + "profile/" + currIdentity.getRemoteId();
+  def relationURL = portalURI + "connections/yours/" + currIdentity.getRemoteId();
+  def selectedNode = uicomponent.getSelectedNode();
+  def imageSource = uicomponent.getImageSource();
+  def isMe = uicomponent.isMe();
+  if(imageSource == null) imageSource = "/eXoResourcesSocial/skin/ShareImages/Avartar.gif";
+%>
+<div class="UIProfileNavigationPortlet" id="$uicomponent.id">
+  <div class="ProfTitle">
+   <%if ((isMe == null) || isMe) { %>
+    <%=_ctx.appRes(uicomponent.getId() + ".label.Me")%>
+  <% } else {%>
+    ${currentUser}
+  <% } %>
+  </div>
+
+  <a class="Avartar">
+    <img height="65" width="65" alt="" src="$imageSource"/>
+  </a>
+  <div class="UIVerclTab">
+    <% if (selectedNode == "activities")  {%>
+    <div class="SelectedTab Tab">
+    <% } else  {%>
+    <div class="NormalTab Tab">
+    <%}%>
+        <a href="${actititesURL}" class="ActivityIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Activity")%></a>
+    </div>
+    <% if (selectedNode == "profile")  {%>
+    <div class="SelectedTab Tab">
+    <% } else  {%>
+    <div class="NormalTab Tab">
+    <%}%>
+        <a href="${profileURL}" class="ProfileIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a>
+    </div>
+    <% if (selectedNode == "connections")  {%>
+    <div class="SelectedTab Tab">
+    <% } else  {%>
+    <div class="NormalTab Tab">
+    <%}%>
+        <a href="${relationURL}" class="RelationIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,139 @@
+<%
+  import org.exoplatform.portal.webui.util.Util ;
+  import org.exoplatform.webui.core.UIPageIterator;
+  import org.exoplatform.webui.core.UIVirtualList;
+  import org.exoplatform.social.core.identity.model.ProfileAttachment;
+  import org.exoplatform.social.core.identity.model.Profile;
+  import org.exoplatform.portal.application.PortalRequestContext;
+  import org.exoplatform.social.webui.profile.UIProfileUserSearch;
+
+  def isEditable = uicomponent.isEditable();
+  def myRelation = uicomponent.getMyRelation();
+  def currIdentity = uicomponent.getCurrentIdentity();
+  def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
+  UIPageIterator iteratorContact = uicomponent.getUIPageIteratorContact();
+  PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def portalURI = pcontext.getPortalURI();
+  def relationIdx = 0;
+  def isOwner = false;
+  if (currIdentity.getRemoteId().equals(uicomponent.getCurrentUserName())) {
+    isOwner = true;
+  }
+%>
+<div class="UIMyRelations" id="$uicomponent.id">
+  <div class="UITabPane">
+    <div class="ActivitiesTitleBarM">
+     <% if (isOwner) {%>
+        <%=_ctx.appRes(uicomponent.id + ".label.MyRelationsList")%>
+     <%} else {
+        def userRelationList = _ctx.appRes(uicomponent.id + ".label.UserRelationList");
+        userRelationList = userRelationList.replace("{0}", currIdentity.profile.getPropertyValue("firstName"));
+     %>
+      <%= userRelationList %>
+
+     <%}%>
+
+    </div>
+    <div class="ContainerSpace">
+      <% uicomponent.renderChild(UIProfileUserSearch.class); %>
+
+       <div class="ATitleBarL">
+        <div class="ATitleBarR">
+          <div class="ATitleBarM">
+            <div class="ATitleBarC">
+            <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
+        <div class="ContentSpace">
+            <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
+            <% def peopleURL = portalURI + "people" %>
+            </div>
+        <div class="UIAction">
+            <table class="ActionContainer">
+              <tbody>
+                <tr>
+                   <td>
+                      <div  class="ActionButton LightBlueStyle">
+                        <div class="ButtonLeft">
+                          <div class="ButtonRight">
+                            <div class="ButtonMiddle">
+                              <a href="<%=peopleURL%>"><%=_ctx.appRes(uicomponent.getId() + ".label.AddConnections")%>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                   </td>
+                </tr>
+              </tbody>
+            </table>
+         </div>
+            <div style="clear: left;"><span></span></div>
+         </div>
+      <%}%>
+
+      <%if ((myRelation != null) && (myRelation.size() > 0)) {%>
+
+      <% for(relation in myRelation) {
+        def id = null;
+        if (currIdentity.id == relation.sender.id) {
+          id = relation.receiver;
+        } else {
+          id = relation.sender;
+        }
+        profileURL = portalURI + "activities/" + id.getRemoteId();
+        fullName = id.profile.fullName;
+        position = id.profile.getPropertyValue("position");
+        def actionLink = uicomponent.event("Remove",id.getId());
+        position = id.profile.getPropertyValue("position");
+        relationIdx += 1;
+        if (!position)
+          position = "";
+
+        String imageSource = "/eXoResourcesSocial/skin/ShareImages/Avartar.gif";
+        ProfileAttachment att = id.profile.getProperty(Profile.AVATAR);
+        if (att != null) {
+          try {
+            imageSource = "/" + uicomponent.getPortalName()+"/rest/jcr/" + uicomponent.getRepository() + "/" + att.getWorkspace();
+            imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+          } catch (Exception e) {}
+        }
+     %>
+
+        <% if (relationIdx % 2 == 0) { %>
+          <div class="ContentSpaceGray ClearFix">
+        <% } else {%>
+          <div class="ContentSpace ClearFix">
+        <% }%>
+        <div class="AvartarPeopleBG">
+             <img height="47px" width="47px" src="$imageSource"/>
+          </div>
+        <div class="CommunityContainer">
+          <div class="CommunityMane Line">
+              <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
+            <% if (isEditable) {%>
+              <a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
+            <% } %>
+              <div style="clear: both;"><span/></div>
+          </div>
+            <% if(position.length() > 0) { %>
+              <div class="CommunityContent" style="padding: 4px;">
+                <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+              </div>
+            <%  } %>
+
+        </div>
+        <div style="clear: left;"><span></span></div>
+      </div>
+    <% } %>
+    <%}%>
+    <%
+         if (iteratorContact.getAvailablePage() > 1) {
+           uicomponent.renderUIComponent(iteratorContact) ;
+         }
+     %>
+    </div>
+  </div>
+</div>

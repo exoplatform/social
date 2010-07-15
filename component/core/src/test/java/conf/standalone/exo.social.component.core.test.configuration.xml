@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<configuration
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
+  xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+
+  <component>
+    <key>org.exoplatform.social.core.service.LinkProvider</key>
+    <type>org.exoplatform.social.core.service.LinkProvider</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.manager.ActivityManager</key>
+    <type>org.exoplatform.social.core.manager.ActivityManager</type>
+    <component-plugins>
+      <component-plugin>
+        <name>OSHtmlSanitizer</name>
+        <set-method>addProcessorPlugin</set-method>
+        <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+        <init-params>
+          <values-param>
+            <name>allowedTags</name>
+            <value>b</value>
+            <value>i</value>
+            <value>a</value>
+            <value>span</value>
+            <value>em</value>
+            <value>strong</value>
+            <value>p</value>
+            <value>ol</value>
+            <value>ul</value>
+            <value>li</value>
+            <value>br</value>
+            <value>img</value>
+          </values-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
+    <type>org.exoplatform.social.core.identity.model.PropertiesDefinition</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.manager.RelationshipManager</key>
+    <type>org.exoplatform.social.core.manager.RelationshipManager</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.identity.IdentityProvider</key>
+    <type>org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.manager.IdentityManager</key>
+    <type>org.exoplatform.social.core.manager.IdentityManager</type>
+    <component-plugins>
+      <component-plugin>
+        <name>SpaceIdentityProvider plugin</name>
+        <set-method>registerIdentityProviders</set-method>
+        <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
+        <init-params>
+          <values-param>
+          <name>providers</name>
+            <description>Identity Providers</description>
+            <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
+          </values-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.IdentityStorage</key>
+    <type>org.exoplatform.social.core.storage.IdentityStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.service.ProfileConfig</key>
+    <type>org.exoplatform.social.core.service.ProfileConfig</type>
+    <init-params>
+      <values-param>
+        <name>nodetype.emails</name>
+        <value>exo:profileKeyValue</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.phones</name>
+        <value>exo:profileKeyValue</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.ims</name>
+        <value>exo:profileKeyValue</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.urls</name>
+        <value>exo:profileKeyValue</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.address</name>
+        <value>exo:profileAddress</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.experiences</name>
+        <value>exo:profileExperience</value>
+      </values-param>
+      <values-param>
+        <name>nodetype.education</name>
+        <value>exo:profileEducation</value>
+      </values-param>
+      <values-param>
+        <name>forceMultiValue</name>
+        <value>xxxxxxxxxxxx</value>
+      </values-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.profile.ProfileMapper</key>
+    <type>org.exoplatform.social.core.profile.ProfileMapper</type>
+  </component>
+
+  <!-- Space Configuration -->
+
+  <component>
+    <key>org.exoplatform.social.core.space.spi.SpaceService</key>
+    <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
+    <init-params>
+      <!-- Configure the applications to install in a space -->
+      <values-param>
+        <name>space.homeNodeApp</name>
+        <value>SpaceActivityStreamPortlet</value>
+      </values-param>
+      <!-- Configure removable application or not <value>Application:removable</value> -->
+      <values-param>
+        <name>space.apps</name>
+        <value>DashboardPortlet:true</value>
+        <value>SpaceSettingPortlet:false</value>
+        <value>MembersPortlet:true</value>
+      </values-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.space.spi.SpaceApplicationHandler</key>
+    <type>org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.processor.MentionsProcessor</key>
+    <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.application.ProfileUpdatesPublisher</key>
+    <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
+    <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
+    <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
+  </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+    <component-plugin>
+      <name>UsernameProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower are executed first)</description>
+          <value>5</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <!--
+    <component-plugin>
+      <name>GoogleMapProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.activity.GoogleMapProcessor</type>
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower are executed first)</description>
+          <value>1</value>
+        </value-param>
+        <value-param>
+          <name>key</name>
+          <description>your google map API key</description>
+          <value>xxx</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    -->
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
+    <component-plugin>
+      <name>ProfileUpdatesPublisher</name>
+      <set-method>addProfileListener</set-method>
+      <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
+    </component-plugin>
+  </external-component-plugins>
+<!--
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
+    <component-plugin>
+      <name>RelationshipPublisher</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
+    </component-plugin>
+  </external-component-plugins>
+-->
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+    <component-plugin>
+      <name>add.social.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Node types configuration file</description>
+          <value>jar:/conf/portal/core-nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+</configuration>

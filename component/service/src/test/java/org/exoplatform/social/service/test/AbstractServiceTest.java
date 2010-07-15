@@ -1,0 +1,133 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+package org.exoplatform.social.service.test;
+
+import org.exoplatform.component.test.AbstractKernelTest;
+import org.exoplatform.component.test.ConfigurationUnit;
+import org.exoplatform.component.test.ConfiguredBy;
+import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.services.jcr.ext.app.SessionProviderService;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.services.rest.impl.ApplicationContextImpl;
+import org.exoplatform.services.rest.impl.ProviderBinder;
+import org.exoplatform.services.rest.impl.RequestHandlerImpl;
+import org.exoplatform.services.rest.impl.ResourceBinder;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.Identity;
+
+/**
+ * AbstractServiceTest.java
+ *
+ * @author  <a href="http://hoatle.net">hoatle</a>
+ * @since   May 27, 2010 3:26:01 PM
+ */
+@ConfiguredBy({
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.portal-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.service.test.configuration.xml")
+})
+public abstract class AbstractServiceTest extends AbstractKernelTest {
+  protected static Log log = ExoLogger.getLogger(AbstractServiceTest.class.getName());
+  protected SessionProvider sessionProvider;
+  protected ProviderBinder providerBinder;
+  protected ResourceBinder resourceBinder;
+  protected RequestHandlerImpl requestHandler;
+  private static SessionProviderService sessionProviderService = null;
+
+  protected void setUp() throws Exception {
+    resourceBinder = (ResourceBinder) getContainer().getComponentInstanceOfType(ResourceBinder.class);
+    requestHandler = (RequestHandlerImpl) getContainer().getComponentInstanceOfType(RequestHandlerImpl.class);
+    // Reset providers to be sure it is clean
+    ProviderBinder.setInstance(new ProviderBinder());
+    providerBinder = ProviderBinder.getInstance();
+    ApplicationContextImpl.setCurrent(new ApplicationContextImpl(null, null, providerBinder));
+    resourceBinder.clear();
+    begin();
+  }
+
+  protected void tearDown() throws Exception {
+    end();
+  }
+
+  /**
+   * registry resource object
+   *
+   * @param resource
+   * @return
+   * @throws Exception
+   */
+  public boolean registry(Object resource) throws Exception {
+    // container.registerComponentInstance(resource);
+    return resourceBinder.bind(resource);
+  }
+  /**
+   * registry resource class
+   *
+   * @param resourceClass
+   * @return
+   * @throws Exception
+   */
+  public boolean registry(Class<?> resourceClass) throws Exception {
+    // container.registerComponentImplementation(resourceClass.getName(),
+    // resourceClass);
+    return resourceBinder.bind(resourceClass);
+  }
+
+  /**
+   * unregistry resource object
+   *
+   * @param resource
+   * @return
+   */
+  public boolean unregistry(Object resource) {
+    // container.unregisterComponentByInstance(resource);
+    return resourceBinder.unbind(resource.getClass());
+  }
+
+  /**
+   * unregistry resource class
+   *
+   * @param resourceClass
+   * @return
+   */
+  public boolean unregistry(Class<?> resourceClass) {
+    // container.unregisterComponent(resourceClass.getName());
+    return resourceBinder.unbind(resourceClass);
+  }
+
+  protected void startSystemSession() {
+    sessionProvider = sessionProviderService.getSystemSessionProvider(null);
+  }
+
+  protected void startSessionAs(String user) {
+    Identity identity = new Identity(user);
+    ConversationState state = new ConversationState(identity);
+    sessionProviderService.setSessionProvider(null, new SessionProvider(state));
+    sessionProvider = sessionProviderService.getSessionProvider(null);
+  }
+
+  protected void endSession() {
+    sessionProviderService.removeSessionProvider(null);
+    startSystemSession();
+  }
+
+}

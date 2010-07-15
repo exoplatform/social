@@ -1,0 +1,17 @@
+<%	
+	import org.exoplatform.services.organization.User;
+	import org.exoplatform.portal.webui.util.Util;
+		
+	def rcontext = _ctx.getRequestContext();
+	def userProfilePage = Util.getPortalRequestContext().getPortalURI() + "activities";
+	
+%>
+<div class="UIUserProfilePortlet" id="$uicomponent.id">
+	<div class="Name">
+	<% if(rcontext.getRemoteUser() != null) { %>
+		<a href="$userProfilePage"><%=uicomponent.getUser().getFullName()%></a>
+	<%} else {%>
+		<span></span>
+	<%}%>
+	</div>
+</div>

@@ -1,0 +1,105 @@
+<%
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.core.relationship.model.Relationship;
+  import org.exoplatform.social.core.identity.model.ProfileAttachment;
+  import org.exoplatform.container.PortalContainer;
+  import org.exoplatform.services.jcr.RepositoryService;
+  import org.exoplatform.portal.application.PortalRequestContext;
+  import org.exoplatform.webui.core.UIPageIterator;
+  import org.exoplatform.social.webui.profile.UIProfileUserSearch;
+
+  PortalContainer portalContainer = PortalContainer.getInstance();
+  String portalName = portalContainer.getPortalContainerInfo().getContainerName();
+
+  RepositoryService rService = uicomponent.getApplicationComponent(RepositoryService.class) ;
+  String repository = rService.getCurrentRepository().getConfiguration().getName() ;
+
+  def isEditable = uicomponent.isEditable();
+  def myInvitations = uicomponent.getInvitation();
+  def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
+  UIPageIterator iteratorInvitation = uicomponent.getUIPageIteratorInvitation();
+  PortalRequestContext pcontext = Util.getPortalRequestContext();
+  def portalURI = pcontext.getPortalURI();
+  def invitationRelationIdx = 0
+%>
+<div class="ActivitiesTitleBarM">
+  <%=_ctx.appRes(uicomponent.getId() + ".label.MyInvitationsList")%>
+</div>
+<div class="UIInvitationRelation" id="$uicomponent.id">
+  <div class="UITabPane">
+    <div class="ContainerSpace">
+      <% uicomponent.renderChild(UIProfileUserSearch.class); %>
+      <div class="ATitleBarL">
+        <div class="ATitleBarR">
+          <div class="ATitleBarM">
+            <div class="ATitleBarC">
+              <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%if (myInvitations.size() == 0) {%>
+        <div class="ContentSpace">
+            <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+            <div style="clear: left;"><span></span></div>
+         </div>
+      <%}%>
+
+    <%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>
+      <% for(invitation in myInvitations) {
+            def identity = invitation.sender;
+            profileURL = portalURI + "activities/" + identity.getRemoteId();
+            fullName = identity.profile.fullName;
+            position = identity.profile.getPropertyValue("position");
+            actionAccept = uicomponent.event("Accept",identity.getId());
+            actionDeny = uicomponent.event("Deny",identity.getId());
+            position = identity.profile.getPropertyValue("position");
+            invitationRelationIdx += 1;
+            if (!position)
+              position = "";
+
+            String imageSource = "/profile/skin/portal/webui/component/UIInvitationsPortlet/background/BLAvatar.gif";
+            ProfileAttachment att = identity.profile.getProperty("avatar");
+            if (att != null) {
+              try {
+                imageSource = "/" + portalName + "/rest/jcr/" + repository + "/" + att.getWorkspace();
+                imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
+                } catch (Exception e) {}
+            }
+   %>
+    <% if (invitationRelationIdx % 2 == 0) { %>
+       <div class="ContentSpaceGray ClearFix">
+    <% } else {%>
+       <div class="ContentSpace ClearFix">
+    <% }%>
+        <div class="AvartarPeopleBG">
+       <img height="47px" width="47px" src="$imageSource"/>
+    </div>
+      <div class="CommunityContainer">
+      <div class="CommunityMane Line">
+              <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
+            <% if (isEditable) {%>
+          <a href="#" class="StopIcon" title="Deny" onclick="$actionDeny" >&nbsp;</a>
+          <a href="#" class="SelectIcon" title="Accept" onclick="$actionAccept" >&nbsp;</a>
+
+            <% } %>
+              <div style="clear: both;"><span/></div>
+          </div>
+          <% if(position.length() > 0) { %>
+          <div class="CommunityContent" style="padding: 4px;">
+            <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+          </div>
+          <%  } %>
+      </div>
+      <div style="clear: left;"><span></span></div>
+    </div>
+  <% } %>
+    <% } %>
+    <%
+         if (iteratorInvitation.getAvailablePage() > 1) {
+           uicomponent.renderUIComponent(iteratorInvitation) ;
+         }
+     %>
+    </div>
+  </div>
+</div>
