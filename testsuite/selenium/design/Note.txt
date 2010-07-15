@@ -1,6 +1,0 @@
-Test cases can not be recorded by Selenium:
-
-- PEO_02.006_The both users send friend requests
-- PEO_02.007_Deny invitation user
-- PEO_03.002_Check when invitation is deleted by another
-
