@@ -40,7 +40,7 @@
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="ProfTitle">$labelSpace</div>
   <a class="Avartar">
-    <img height="65px" width="65px" alt="" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif"/>
+    <img height="65px" width="65px" alt="" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif"/>
   </a>
   <div class="UIVerclTab">
   <% if (selectedNode == "spaces") { %>

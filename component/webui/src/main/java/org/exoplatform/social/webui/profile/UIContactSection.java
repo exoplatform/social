@@ -52,7 +52,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template =  "classpath:/groovy/social/webui/profile/UIContactSection.gtmpl",
+  template =  "classpath:groovy/social/webui/profile/UIContactSection.gtmpl",
   events = {
     @EventConfig(listeners = UIContactSection.EditActionListener.class, phase=Phase.DECODE),
     @EventConfig(listeners = UIContactSection.SaveActionListener.class),

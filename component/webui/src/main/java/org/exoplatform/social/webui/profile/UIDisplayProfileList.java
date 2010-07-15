@@ -54,7 +54,7 @@ import org.exoplatform.webui.event.Event.Phase;
  *
  */
 @ComponentConfig(
-  template = "classpath:/groovy/social/webui/profile/UIDisplayProfileList.gtmpl",
+  template = "classpath:groovy/social/webui/profile/UIDisplayProfileList.gtmpl",
   events = {
     @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
     @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),

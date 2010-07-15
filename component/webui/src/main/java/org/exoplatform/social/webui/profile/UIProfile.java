@@ -49,7 +49,7 @@ import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "classpath:/groovy/social/webui/profile/UIProfile.gtmpl",
+  template = "classpath:groovy/social/webui/profile/UIProfile.gtmpl",
   events = {
     @EventConfig(listeners=UIProfile.ChangeAvatarActionListener.class)
   }
