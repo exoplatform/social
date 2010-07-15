@@ -49,7 +49,7 @@ import org.exoplatform.webui.event.Event.Phase;
  * @since Jun 23, 2009
  */
 @ComponentConfig(
-  template = "app:/groovy/portal/webui/component/UIManagePendingSpaces.gtmpl",
+  template = "classpath:groovy/social/webui/space/UIManagePendingSpaces.gtmpl",
   events = {
       @EventConfig(listeners = UIManagePendingSpaces.RevokePendingActionListener.class),
       @EventConfig(listeners = UIManagePendingSpaces.SearchActionListener.class , phase = Phase.DECODE)

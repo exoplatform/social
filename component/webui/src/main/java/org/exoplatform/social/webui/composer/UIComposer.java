@@ -46,7 +46,7 @@ import org.json.JSONObject;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:/groovy/social/webui/composer/UIComposer.gtmpl",
+  template = "classpath:groovy/social/webui/composer/UIComposer.gtmpl",
   events = {
     @EventConfig(listeners = UIComposer.PostMessageActionListener.class)
   }

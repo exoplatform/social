@@ -66,7 +66,7 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
 @ComponentConfigs ( {
   @ComponentConfig(
      lifecycle = UIFormLifecycle.class,
-     template =  "classpath:/groovy/social/webui/space/UISpaceMember.gtmpl",
+     template =  "classpath:groovy/social/webui/space/UISpaceMember.gtmpl",
      events = {
        @EventConfig(listeners = UISpaceMember.InviteActionListener.class),
        @EventConfig(listeners = UISpaceMember.SearchUserActionListener.class, phase=Phase.DECODE),

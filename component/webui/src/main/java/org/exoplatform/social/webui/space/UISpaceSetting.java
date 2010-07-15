@@ -40,7 +40,7 @@ import org.exoplatform.webui.event.EventListener;
  */
 @ComponentConfigs({
   @ComponentConfig(
-    template = "classpath:/groovy/social/webui/space/UISpaceSetting.gtmpl"
+    template = "classpath:groovy/social/webui/space/UISpaceSetting.gtmpl"
   ),
   @ComponentConfig(
     type = UITabPane.class,

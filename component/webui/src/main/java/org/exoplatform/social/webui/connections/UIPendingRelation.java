@@ -55,7 +55,7 @@ import org.exoplatform.webui.event.Event.Phase;
  * Aug 25, 2009
  */
 @ComponentConfig(
-  template =  "classpath:/groovy/social/webui/connections/UIPendingRelation.gtmpl",
+  template =  "classpath:groovy/social/webui/connections/UIPendingRelation.gtmpl",
   events = {
     @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class),
     @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE)

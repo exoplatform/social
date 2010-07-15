@@ -41,7 +41,7 @@ import org.exoplatform.webui.form.UIForm;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template =  "classpath:/groovy/social/webui/space/UIAddApplicationSpace.gtmpl",
+  template =  "classpath:groovy/social/webui/space/UIAddApplicationSpace.gtmpl",
   events = {
     @EventConfig(listeners = UIAddApplicationSpace.CloseActionListener.class),
     @EventConfig(listeners = UIAddApplicationSpace.InstallActionListener.class)

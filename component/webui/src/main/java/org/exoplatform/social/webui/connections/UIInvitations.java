@@ -59,7 +59,7 @@ import org.exoplatform.webui.event.Event.Phase;
  */
 @ComponentConfigs({
   @ComponentConfig(
-    template =  "classpath:/groovy/social/webui/connections/UIInvitations.gtmpl",
+    template =  "classpath:groovy/social/webui/connections/UIInvitations.gtmpl",
     events = {
       @EventConfig(listeners = UIInvitations.AcceptActionListener.class),
       @EventConfig(listeners = UIInvitations.DenyActionListener.class),

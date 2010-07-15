@@ -51,7 +51,7 @@ import org.exoplatform.webui.event.Event.Phase;
  */
 
 @ComponentConfig(
-  template="classpath:/groovy/social/webui/space/UIManageInvitationSpaces.gtmpl",
+  template="classpath:groovy/social/webui/space/UIManageInvitationSpaces.gtmpl",
   events = {
     @EventConfig(listeners = UIManageInvitationSpaces.AcceptActionListener.class),
     @EventConfig(listeners = UIManageInvitationSpaces.DenyActionListener.class),

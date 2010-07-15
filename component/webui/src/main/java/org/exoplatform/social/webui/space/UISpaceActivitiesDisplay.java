@@ -44,7 +44,7 @@ import org.exoplatform.webui.event.EventListener;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "classpath://groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl",
+  template = "classpath:groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceActivitiesDisplay.UpdateNewActionListener.class),
     @EventConfig(listeners = UISpaceActivitiesDisplay.MoreActionListener.class)

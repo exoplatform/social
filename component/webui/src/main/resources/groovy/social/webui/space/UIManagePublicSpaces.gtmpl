@@ -1,0 +1,131 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.webui.core.UIPageIterator
+  import org.exoplatform.social.core.space.model.Space
+  import org.exoplatform.social.core.space.SpaceUtils
+  import org.exoplatform.social.webui.UISpaceSearch;
+
+  def uicomponentId = uicomponent.id
+  def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
+  def labelActionRequestToJoin = _ctx.appRes("${uicomponentId}.label.action_request_to_join")
+  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
+  def visibleStatus = _ctx.appRes("${uicomponentId}.status.visible")
+  def openStatus = _ctx.appRes("${uicomponentId}.status.open")
+  def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
+  def closeStatus = _ctx.appRes("${uicomponentId}.status.close")
+  def labelNoPublic = _ctx.appRes("${uicomponentId}.label.no_public")
+  def iterator = uicomponent.getUIPageIterator()
+  def publicSpaces = uicomponent.getPublicSpaces()
+  def publicSpaceIdx = 0
+%>
+<div class="UIManageSpaces" id="$uicomponent.id">
+  <% uicomponent.renderChild(UISpaceSearch.class); %>
+  <div class="BoxSpaceList">
+    <div class="CenterTitleBox">
+      <div class="LeftTitleBox">
+        <div class="RightTitleBox">$labelSpaceListing</div>
+      </div>
+    </div>
+    <%if (publicSpaces.size() == 0) {%>
+    <div class="NormalBox">
+      <div class="NotYet">$labelNoPublic</div>
+    </div>
+    <%}%>
+    <%for (space in publicSpaces) {
+        def requestJoinAction = uicomponent.event("RequestJoin", space.id) + "; false"
+        def visibility = space.visibility
+        def registration = space.registration
+        def isPublic = false
+        def isClose = false
+        def hasEditPermission = false
+
+        //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
+        if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true
+        if (registration.equals(Space.CLOSE)) isClose = true
+        def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+        //Temporary use private as visible
+        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
+        def status = visibleStatus + " "
+        if (registration.equals("open")) {
+          status += openStatus
+        } else if (registration.equals("validation")) {
+          status += validationStatus
+        } else {
+          status += closeStatus
+        }
+        def imageSource = uicomponent.getImageSource(space);
+        publicSpaceIdx += 1;
+      %>
+      <% if (publicSpaceIdx % 2 == 0) { %>
+        <div class="GrayBox">
+        <% } else { %>
+        <div class="NormalBox">
+        <% } %>
+        <% if (isPublic) { %>
+          <a href="$spaceUrl" class="AvatarSpace">
+          <% if (imageSource == null) { %>
+            <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+          <% } else { %>
+            <img alt="#" src="$imageSource" />
+          <%}%>
+          </a>
+        <%} else { %>
+          <div class="AvatarSpace">
+            <% if (imageSource == null) { %>
+              <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+            <% } else { %>
+              <img alt="#" src="$imageSource" />
+            <%}%>
+          </div>
+        <%} %>
+
+        <div class="ContentBox">
+          <div class="TitleContent">
+          <% if (!isClose) {%>
+            <a href="#" onclick="$requestJoinAction" title="$labelActionRequestToJoin" class="Icon IconAdd"><span></span></a>
+          <%}%>
+          <% if (uicomponent.hasEditPermission(space)) {%>
+            <div class="Text"><a href="$spaceUrl">$space.name</a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </span></div>
+          <% } else { %>
+            <div class="Text"><span>$space.name</span> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </span></div>
+          <% } %>
+            <div class="ClearBoth"><span></span></div>
+          </div>
+          <div class="Content">
+            $space.description<br/>
+            <span class="SpaceStatus">$status</span>
+          </div>
+        </div>
+        <div class="ClearBoth"><span></span></div>
+      </div>
+      <%}%>
+    </div>
+    <%
+      if (iterator.getAvailablePage() > 1) {
+        _ctx.renderUIComponent(iterator)
+      }
+    %>
+    </div>
+</div>

@@ -18,9 +18,9 @@
 -->
 <%
   import org.exoplatform.portal.webui.util.Util;
-  import org.exoplatform.social.portlet.profile.Utils;
+  import org.exoplatform.social.webui.Utils;
   import org.exoplatform.portal.application.PortalRequestContext;
-	def uicomponentId = uicomponent.id;
+  def uicomponentId = uicomponent.id;
   def labelRelationTitle = _ctx.appRes("${uicomponentId}.label.RelationTitle")
   def labelInvitationTitle = _ctx.appRes("${uicomponentId}.label.InvitationTitle")
   def labelRequestTitle = _ctx.appRes("${uicomponentId}.label.RequestTitle")
@@ -35,34 +35,34 @@
   def selectedNode = uicomponent.getSelectedNode();
   def isOwner = false;
   if (ownerId.equals(viewerId)) {
-  	isOwner = true;
+    isOwner = true;
   }
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-	<div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Relation")%></div>
-	<div class="UIVerclTab">
-	  <% if (selectedNode == "myConnections")  {%>
-	  <div class="SelectedTab Tab">
-	  <% } else  {%>
-	  <div class="NormalTab Tab">
-	  <%}%>
+  <div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Relation")%></div>
+  <div class="UIVerclTab">
+    <% if (selectedNode == "myConnections")  {%>
+    <div class="SelectedTab Tab">
+    <% } else  {%>
+    <div class="NormalTab Tab">
+    <%}%>
         <a href="${myRelationsURL}" title="$labelRelationTitle" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
-	  </div>
+    </div>
   <%if (isOwner == true) {%>
-	  <% if (selectedNode == "myInvitations")  {%>
-	  <div class="SelectedTab Tab">
-	  <% } else  {%>
-	  <div class="NormalTab Tab">
-	  <%}%>
+    <% if (selectedNode == "myInvitations")  {%>
+    <div class="SelectedTab Tab">
+    <% } else  {%>
+    <div class="NormalTab Tab">
+    <%}%>
         <a href="${invitationsURL}" title="$labelInvitationTitle" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
-	  </div>
-	  <% if (selectedNode == "myRequests")  {%>
-	  <div class="SelectedTab Tab">
-	  <% } else  {%>
-	  <div class="NormalTab Tab">
-	  <%}%>
+    </div>
+    <% if (selectedNode == "myRequests")  {%>
+    <div class="SelectedTab Tab">
+    <% } else  {%>
+    <div class="NormalTab Tab">
+    <%}%>
         <a href="${requestsURL}" title="$labelRequestTitle" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
-	  </div>
-  <%}%> 
-	</div>
+    </div>
+  <%}%>
+  </div>
 </div>

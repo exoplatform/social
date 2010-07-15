@@ -42,7 +42,7 @@ import org.exoplatform.webui.event.EventListener;
  * @since Nov 09, 2009
  */
 @ComponentConfig(
-  template = "classpath:/groovy/social/webui/space/UISpaceApplicationList.gtmpl",
+  template = "classpath:groovy/social/webui/space/UISpaceApplicationList.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceApplicationList.SelectCategoryActionListener.class),
     @EventConfig(listeners = UISpaceApplicationList.InstallApplicationActionListener.class)

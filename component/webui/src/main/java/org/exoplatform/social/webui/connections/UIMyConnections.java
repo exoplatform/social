@@ -59,7 +59,7 @@ import org.exoplatform.webui.event.Event.Phase;
  */
 @ComponentConfigs({
   @ComponentConfig(
-    template =  "classpath:/groovy/social/webui/connections/UIMyConnections.gtmpl",
+    template =  "classpath:groovy/social/webui/connections/UIMyConnections.gtmpl",
     events = {
       @EventConfig(listeners = UIMyConnections.RemoveActionListener.class),
       @EventConfig(listeners = UIMyConnections.SearchActionListener.class, phase = Phase.DECODE)

@@ -34,7 +34,7 @@ import org.exoplatform.webui.event.EventListener;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "classpath:/groovy/social/webui/UIActivitiesContainer.gtmpl",
+  template = "classpath:groovy/social/webui/UIActivitiesContainer.gtmpl",
   events = {
     @EventConfig(listeners = UIActivitiesContainer.PostCommentActionListener.class)
   }

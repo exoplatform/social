@@ -41,7 +41,7 @@ import org.exoplatform.webui.form.UIFormInputInfo;
  */
 @ComponentConfigs({
   @ComponentConfig(
-    template = "classpath:/groovy/social/webui/space/UISpaceGroupBound.gtmpl",
+    template = "classpath:groovy/social/webui/space/UISpaceGroupBound.gtmpl",
     events = {@EventConfig(listeners = UISpaceGroupBound.SelectGroupActionListener.class, phase=Phase.DECODE) }
   ),
   @ComponentConfig(

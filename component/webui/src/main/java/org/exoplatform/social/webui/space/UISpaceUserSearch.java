@@ -48,7 +48,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:/groovy/social/webui/space/UISpaceUserSearch.gtmpl",
+  template = "classpath:groovy/social/webui/space/UISpaceUserSearch.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceUserSearch.SearchActionListener.class)
   }

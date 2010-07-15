@@ -47,7 +47,7 @@ import org.exoplatform.webui.form.UIFormUploadInput;
 @ComponentConfigs ({
   @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
-    template = "classpath:/groovy/social/webui/UIAvatarUploader.gtmpl",
+    template = "classpath:groovy/social/webui/UIAvatarUploader.gtmpl",
     events = {
       @EventConfig(listeners = UIAvatarUploader.ConfirmActionListener.class),
       @EventConfig(listeners = UIAvatarUploader.CancelActionListener.class)

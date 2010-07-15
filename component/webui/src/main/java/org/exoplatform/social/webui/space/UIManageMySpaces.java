@@ -69,7 +69,7 @@ import org.exoplatform.webui.event.Event.Phase;
  */
 @ComponentConfigs({
   @ComponentConfig(
-    template="app:/groovy/portal/webui/component/UIManageMySpaces.gtmpl",
+    template="classpath:groovy/social/webui/space/UIManageMySpaces.gtmpl",
     events = {
       @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.EditSpaceNavigationActionListener.class),
