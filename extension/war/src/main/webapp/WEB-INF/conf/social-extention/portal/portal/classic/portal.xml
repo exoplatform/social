@@ -71,7 +71,7 @@
          <preferences>
            <preference>
              <name>template</name>
-             <value>par:/groovy/groovy/webui/component/UIFooterPortlet.gtmpl</value>
+             <value>par:/groovy/social/portlet/UIFooterPortlet.gtmpl</value>
              <read-only>false</read-only>
            </preference>
          </preferences>

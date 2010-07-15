@@ -29,7 +29,7 @@
     <edit-permission>manager:/platform/administrators</edit-permission>
     <portlet-application>
       <portlet>
-        <application-ref>profile</application-ref>
+        <application-ref>social-portlet</application-ref>
         <portlet-ref>PeoplePortlet</portlet-ref>
       </portlet>
       <title>People Directory</title>
@@ -49,7 +49,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ProfileNavigationPortlet</portlet-ref>
           </portlet>
           <title>Profile Navigation</title>
@@ -92,7 +92,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ProfileNavigationPortlet</portlet-ref>
           </portlet>
           <title>Profile Navigation</title>
@@ -105,7 +105,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ProfilePortlet</portlet-ref>
           </portlet>
           <title>Profile</title>
@@ -128,7 +128,7 @@
       <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>MyConnectionsNavigationPortlet</portlet-ref>
           </portlet>
           <title>Connections Navigation</title>
@@ -141,7 +141,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ConnectionsPortlet</portlet-ref>
           </portlet>
           <title>My Connections</title>
@@ -164,7 +164,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>MyConnectionsNavigationPortlet</portlet-ref>
           </portlet>
           <title>Connection Navigation</title>
@@ -177,7 +177,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>InvitationsPortlet</portlet-ref>
           </portlet>
           <title>Invitations</title>
@@ -200,7 +200,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>MyConnectionsNavigationPortlet</portlet-ref>
           </portlet>
           <title>Connection Navigation</title>
@@ -213,7 +213,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>RequestsPortlet</portlet-ref>
           </portlet>
           <title>Requests</title>
@@ -236,7 +236,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ProfileNavigationPortlet</portlet-ref>
           </portlet>
           <title>Profile Navigation</title>
@@ -249,7 +249,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ConnectionsNavigationPortlet</portlet-ref>
           </portlet>
           <title>Connection Navigation</title>
@@ -262,7 +262,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ConnectionsPortlet</portlet-ref>
           </portlet>
           <title>My Connections</title>
@@ -285,7 +285,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ProfileNavigationPortlet</portlet-ref>
           </portlet>
           <title>Profile Navigation</title>
@@ -298,7 +298,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ConnectionsNavigationPortlet</portlet-ref>
           </portlet>
           <title>Connections Navigation</title>
@@ -311,7 +311,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>InvitationsPortlet</portlet-ref>
           </portlet>
           <title>Invitations</title>
@@ -334,7 +334,7 @@
           <access-permissions>*:/platform/users</access-permissions>
           <portlet-application>
             <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ProfileNavigationPortlet</portlet-ref>
           </portlet>
           <title>Profile Navigation</title>
@@ -347,7 +347,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>ConnectionsNavigationPortlet</portlet-ref>
           </portlet>
           <title>Connections Navigation</title>
@@ -360,7 +360,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>profile</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>RequestsPortlet</portlet-ref>
           </portlet>
           <title>Requests</title>
@@ -383,7 +383,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>space</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>SpacesNavigationPortlet</portlet-ref>
           </portlet>
           <title>Spaces Navigation Portlet</title>
@@ -396,7 +396,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>space</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>MySpacesPortlet</portlet-ref>
           </portlet>
           <title>My Spaces</title>
@@ -419,7 +419,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>space</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>SpacesNavigationPortlet</portlet-ref>
           </portlet>
           <title>Spaces Navigation Portlet</title>
@@ -432,7 +432,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>space</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>InvitationSpacesPortlet</portlet-ref>
           </portlet>
           <title>Invitation Spaces Portlet</title>
@@ -455,7 +455,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>space</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>SpacesNavigationPortlet</portlet-ref>
           </portlet>
           <title>Spaces Navigation Portlet</title>
@@ -468,7 +468,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>space</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>PendingSpacesPortlet</portlet-ref>
           </portlet>
           <title>Pending Spaces</title>
@@ -491,7 +491,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>space</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>SpacesNavigationPortlet</portlet-ref>
           </portlet>
           <title>Spaces Navigation Portlet</title>
@@ -504,7 +504,7 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>space</application-ref>
+            <application-ref>social-portlet</application-ref>
             <portlet-ref>PublicSpacesPortlet</portlet-ref>
           </portlet>
           <title>Public Spaces</title>

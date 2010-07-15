@@ -46,7 +46,7 @@
     <container id="SocialUserToolBarGroupPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
-          <application-ref>space</application-ref>
+          <application-ref>social-portlet</application-ref>
           <portlet-ref>SocialUserToolBarGroupPortlet</portlet-ref>
         </portlet>
         <access-permissions>Everyone</access-permissions>
@@ -57,7 +57,7 @@
     <container id="PeopleToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
-          <application-ref>profile</application-ref>
+          <application-ref>social-portlet</application-ref>
           <portlet-ref>PeopleToolbarPortlet</portlet-ref>
         </portlet>
         <access-permissions>Everyone</access-permissions>
@@ -68,7 +68,7 @@
     <container id="SpacesToolbarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
-          <application-ref>space</application-ref>
+          <application-ref>social-portlet</application-ref>
           <portlet-ref>SpacesToolbarPortlet</portlet-ref>
         </portlet>
         <access-permissions>Everyone</access-permissions>
@@ -102,7 +102,7 @@
     <container id="UserProfileToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
-          <application-ref>profile</application-ref>
+          <application-ref>social-portlet</application-ref>
           <portlet-ref>UserProfileToolBarPortlet</portlet-ref>
         </portlet>
         <access-permissions>Everyone</access-permissions>
