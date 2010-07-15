@@ -55,7 +55,7 @@ public class NameGenerator {
   ArrayList<String> mid = new ArrayList<String>();
   ArrayList<String> sur = new ArrayList<String>();
   
-  private static char[] vocals = {'a', 'e', 'i', 'o', 'u', 'ï¿½', 'ï¿½', 'ï¿½', 'ï¿½', 'y'};
+  private static char[] vocals = {'a', 'e', 'i', 'o', 'u', '›', 'Š', 'š', 'Ÿ', 'y'};
   private static char[] consonants = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y'};
   
   private static final String ROMAN_SYLLABES = "-a\n-al\n-au +c\n-an\n-ba\n-be\n-bi\n-br +v\n-da\n-di\n-do\n-du\n-e\n-eu +c\n-fa\nbi\nbe\nbo\nbu\nnul +v\ngu\nda\nau +c -c\nfri\ngus\n+tus\n+lus\n+lius\n+nus\n+es\n+ius -c\n+cus\n+tor\n+cio\n+tin";
