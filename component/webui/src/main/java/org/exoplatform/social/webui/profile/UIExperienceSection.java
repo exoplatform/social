@@ -58,7 +58,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 @ComponentConfigs({
   @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
-    template =  "app:/groovy/portal/webui/component/UIExperienceSection.gtmpl",
+    template =  "classpath:/groovy/social/webui/profile/UIExperienceSection.gtmpl",
     events = {
       @EventConfig(listeners = UIExperienceSection.EditActionListener.class, phase=Phase.DECODE),
       @EventConfig(listeners = UIExperienceSection.SaveActionListener.class),

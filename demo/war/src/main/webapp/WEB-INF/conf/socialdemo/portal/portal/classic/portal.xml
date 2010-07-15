@@ -34,7 +34,7 @@
     <portlet-application>
       <portlet>
         <application-ref>social-portlet</application-ref>
-        <portlet-ref>BannerPortlet</portlet-ref>
+        <portlet-ref>SocialBannerPortlet</portlet-ref>
         <preferences>
           <preference>
             <name>template</name>

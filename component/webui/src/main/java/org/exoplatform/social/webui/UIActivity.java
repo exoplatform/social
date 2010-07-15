@@ -62,7 +62,7 @@ import org.json.JSONObject;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath://groovy/social/webui/UIActivity.gtmpl",
+  template = "classpath:/groovy/social/webui/UIActivity.gtmpl",
   events = {
     @EventConfig(listeners = UIActivity.ToggleDisplayLikesActionListener.class),
     @EventConfig(listeners = UIActivity.ToggleDisplayCommentFormActionListener.class),

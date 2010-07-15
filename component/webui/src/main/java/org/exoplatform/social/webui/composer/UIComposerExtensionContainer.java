@@ -39,7 +39,7 @@ import org.json.JSONObject;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "classpath://groovy/social/webui/composer/UIComposerExtensionContainer.gtmpl",
+  template = "classpath:/groovy/social/webui/composer/UIComposerExtensionContainer.gtmpl",
   events = {
    @EventConfig(listeners = UIComposerExtensionContainer.InvokeExtensionActionListener.class),
    @EventConfig(listeners = UIComposerExtensionContainer.CloseExtensionActionListener.class),

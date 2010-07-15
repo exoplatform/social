@@ -30,7 +30,7 @@
     <portlet-application>
       <portlet>
         <application-ref>social-portlet</application-ref>
-        <portlet-ref>HomePagePortlet</portlet-ref>
+        <portlet-ref>SocialHomePagePortlet</portlet-ref>
         <preferences>
           <preference>
             <name>template</name>

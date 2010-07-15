@@ -46,7 +46,7 @@ import org.json.JSONObject;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "classpath://groovy/social/webui/composer/UIComposerLinkExtension.gtmpl",
+  template = "classpath:/groovy/social/webui/composer/UIComposerLinkExtension.gtmpl",
   events = {
     @EventConfig(listeners = UIComposerLinkExtension.AttachActionListener.class),
     @EventConfig(listeners = UIComposerLinkExtension.ChangeLinkContentActionListener.class)

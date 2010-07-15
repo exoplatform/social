@@ -1,0 +1,197 @@
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<%
+  import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.social.webui.profile.UITitleBar;
+
+  def profile = uicomponent.getProfile(false);
+  def isEdit = uicomponent.isEditMode();
+  def isEditable = uicomponent.isEditable();
+  def childs = uicomponent.getChilds();
+  def childSize = childs.size();
+
+  def exp = profile.getPropertyValue("experiences");
+  def pastExp = uicomponent.getPastExperience();
+  def currentExp = uicomponent.getCurrentExperience();
+  def currentUser = profile.getPropertyValue("firstName");
+%>
+<div class="experience">
+<%uiform.begin()%>
+  <% uicomponent.renderChild(UITitleBar.class); %>
+  <div class="PortletContent">
+    <%if (isEdit && isEditable) {%>
+      <%if (childSize > 1) {%>
+         <%for (int i=1; i < childSize; i +=7) {
+             def removeExperience = uicomponent.event("Remove", uicomponent.id, "" + i) + "; return false";
+             def addExperience = uicomponent.event("Add") + "; return false";
+         %>
+
+          <div class="Experience" style="background:#efefef none; margin:4px; padding: 8px;">
+            <table class="UIFormGrid">
+              <tbody>
+              <tr>
+                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></td>
+                <td class="FieldComponent">
+                  <%if (childs.get(i).isRendered()) {
+                    uiform.renderField(childs.get(i));
+                  }%>
+                </td>
+                <% if ((i + 7) >= childSize) {%>
+                  <td width="15%">&nbsp</td>
+                  <td class="FieldComponent">
+                    <a class="DeleteIcon" href="#" onclick="<%= removeExperience%>">&nbsp</a>
+                     <a class="AddIcon" href="#" onclick="<%= addExperience%>">&nbsp</a>
+                  </td>
+                <% } else {%>
+                  <td width="19%">&nbsp</td>
+                  <td class="FieldComponent">
+                    <a class="DeleteIcon" href="#" onclick="<%= removeExperience%>">&nbsp</a>
+                  </td>
+                <% } %>
+              </tr>
+              <tr>
+                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></td>
+                <td class="FieldComponent">
+                <%if (childs.get(i + 1).isRendered()) {
+                  uiform.renderField(childs.get(i + 1));
+                }%>
+                </td>
+              </tr>
+              <tr>
+                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
+                <td class="FieldComponent">
+                <%if (childs.get(i + 2).isRendered()) {
+                  uiform.renderField(childs.get(i + 2));
+                }%>
+                </td>
+              </tr>
+              <tr>
+                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.skills")%></td>
+                <td class="FieldComponent">
+                <%if (childs.get(i + 3).isRendered()) {
+                  uiform.renderField(childs.get(i + 3));
+                }%>
+                </td>
+              </tr>
+              <tr>
+                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
+                <td class="FieldComponent">
+                <%if (childs.get(i + 4).isRendered()) {
+                  uiform.renderField(childs.get(i + 4));
+                }%>
+                </td>
+              </tr>
+              <tr>
+                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
+                <td class="FieldComponent">
+                  <%if (childs.get(i + 5).isRendered()) {
+                    uiform.renderField(childs.get(i + 5)); %>
+                    <br />
+                  <%}%>
+                  <%if (childs.get(i + 6).isRendered()) {%>
+                  <%uiform.renderField(childs.get(i + 6));%>&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%>
+                  <%}%>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+   <%} //end for
+     } else {
+  %>
+    <table class="UIFormGrid">
+      <tbody>
+        <tr>
+          <td width="40%">&nbsp</td>
+          <td class="FieldComponent">
+            <%=_ctx.appRes(uicomponent.getId() + ".label.noneExperience")%>
+            <a class="AddIcon" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
+          </td>
+        </tr>
+       </tbody>
+    </table>
+    <% } %>
+  <% } else { %>
+    <%if (exp != null) {%>
+    <%if (currentExp.size() != 0) { %>
+    <div class="CurrentExperience" style="background:#efefef none; padding-left: 8px;">
+    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Current")%></b></div>
+    <%  currentExp.each {
+          def company = it.get("company");
+          def position = it.get("position");
+          def skills = it.get("skills");
+          def startDate = it.get("startDate");
+          def endDate = it.get("endDate");
+          def isCurrent = it.get("isCurrent");
+          def description = it.get("description");
+          def endDateMonth = uicomponent.getMonth(endDate);
+          def endDateYear = uicomponent.getYear(endDate);
+          def startDateMonth = uicomponent.getMonth(startDate);
+          def startDateYear = uicomponent.getYear(startDate);
+          def startDateDate = uicomponent.getDate(startDate);
+          def endDateDate = uicomponent.getDate(endDate);
+    %>  <div class="Experience">
+          <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br />
+          <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
+          <%if(description != null) {%>${description} <%}%><br>
+           <%if(skills != null) {%>${skills} <%}%><br>
+        </div>
+    <%  } %>
+    </div>
+    <% } %>
+    <%if (pastExp.size() != 0) { %>
+    <div class="PassExperience" style="background:#d5d5d5 none; padding-left: 8px;">
+    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Past")%></b></div>
+    <%  pastExp.each {
+          def company = it.get("company");
+          def position = it.get("position");
+          def skills = it.get("skills");
+          def startDate = it.get("startDate");
+          def endDate = it.get("endDate");
+          def isCurrent = it.get("isCurrent");
+          def description = it.get("description");
+          def endDateMonth = uicomponent.getMonth(endDate);
+          def endDateYear = uicomponent.getYear(endDate);
+          def startDateMonth = uicomponent.getMonth(startDate);
+          def startDateYear = uicomponent.getYear(startDate);
+          def startDateDate = uicomponent.getDate(startDate);
+          def endDateDate = uicomponent.getDate(endDate);
+      %>
+        <div class="Experience">
+          <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br/>
+          <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
+          <%if(description != null) {%>${description} <%}%>
+          <%if(skills != null) {%>${skills} <%}%><br>
+        </div>
+        <%}%>
+        </div>
+      <%}%>
+    <%} else {%>
+        <% if(isEditable) {%>
+        <div class="NoneExperience"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
+        <% } else {%>
+        <div class="NoneExperience">$currentUser <%=_ctx.appRes(uicomponent.getName() + ".label.noneExperienceOther")%></div>
+        <% } %>
+    <%}%>
+  <%} //end if else
+  %>
+  </div>
+  <% uiform.end() %>
+</div>
