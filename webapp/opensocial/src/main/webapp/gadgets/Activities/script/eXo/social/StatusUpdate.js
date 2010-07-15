@@ -1034,9 +1034,9 @@ eXo.social.StatusUpdate.prototype.getPerson = function(userId) {
  * @param	userId
  */
 eXo.social.StatusUpdate.prototype.getAvatar = function(userId, isMyAvartar) {
-  var avatarUrl = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+  var avatarUrl = "/social-resources/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
   if (isMyAvartar) {
-    avatarUrl = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif";
+    avatarUrl = "/social-resources/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif";
   }
   var person = null;
   if (userId === this.owner.getId()) {

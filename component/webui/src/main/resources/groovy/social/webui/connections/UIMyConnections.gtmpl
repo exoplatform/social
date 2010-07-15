@@ -92,7 +92,7 @@
         if (!position)
           position = "";
 
-        String imageSource = "/eXoResourcesSocial/skin/ShareImages/Avartar.gif";
+        String imageSource = "/social-resources/skin/ShareImages/Avartar.gif";
         ProfileAttachment att = id.profile.getProperty(Profile.AVATAR);
         if (att != null) {
           try {

@@ -32,8 +32,8 @@
   def defaultInput = _ctx.appRes("${uicomponent.id}.Default_Input_Write_Something");
   def labelShare = _ctx.appRes("${uicomponent.id}.label.Share")
   def jsManager = requestContext.getJavascriptManager();
-  jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
-  jsManager.importJavascript("eXo.social.webui.UIComposer", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIComposer", "/social-resources/javascript");
   def params = """
     {
       composerId: '${uicomponent.getChild(UIFormTextAreaInput.class).getId()}',

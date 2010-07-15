@@ -59,7 +59,7 @@
                 <tr>
                   <td width='45'>
                     <a id="UIOwnerAvatar" href="#OwnerAvatar" target="_parent" class="MyStatusAvatarBG">
-                      <img id="ImgOwnerAvatar" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+                      <img id="ImgOwnerAvatar" src="/social-resources/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
                     </a>
                 </td>
                   <td width='100%'>
@@ -161,7 +161,7 @@
                 <tr>
                   <td width='45'>
                     <a id="UIOwnerAvatar" href="#OwnerAvatar" target="_parent" class="MyStatusAvatarBG">
-                      <img id="ImgOwnerAvatar" src="/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+                      <img id="ImgOwnerAvatar" src="/social-resources/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
                     </a>
                   </td>
                   <td width='100%'>

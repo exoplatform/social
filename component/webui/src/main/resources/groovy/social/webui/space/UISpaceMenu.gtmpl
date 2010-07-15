@@ -62,9 +62,9 @@
   def spaceNameDisplay = getFitString(spaceName, 20);
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
- 	jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
- 	jsManager.importJavascript("eXo.social.webui.UISpaceMenuPortlet", "/eXoResourcesSocial/javascript");
- 	jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition","/eXoResourcesSocial/javascript");
+ 	jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
+ 	jsManager.importJavascript("eXo.social.webui.UISpaceMenuPortlet", "/social-resources/javascript");
+ 	jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition","/social-resources/javascript");
  	jsManager.addOnLoadJavascript("eXo.social.webui.UISpaceMenuPortlet.init");
 %>
 
@@ -74,7 +74,7 @@
     <div class="ProfTitle" title="$spaceName"><%= spaceNameDisplay %></div>
     <a class="Avartar">
     <% if(imageSource == null) { %>
-      <img width="65" height="65" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt="" />
+      <img width="65" height="65" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt="" />
     <% } else { %>
       <img src="$imageSource" height="65px" width="65px" />
     <% } %>

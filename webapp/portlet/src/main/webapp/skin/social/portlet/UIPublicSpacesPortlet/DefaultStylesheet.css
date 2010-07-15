@@ -2,7 +2,7 @@
  * UIPublicSpacesPortlet style
  */
  
- @import url('/eXoResourcesSocial/skin/portal/webui/component/UISpaceSearch/default/style.css');
+ @import url('/social-resources/skin/portal/webui/component/UISpaceSearch/default/style.css');
  
 .UIPublicSpacesPortlet {
   padding: 0px 10px 20px;

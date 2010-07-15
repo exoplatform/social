@@ -71,7 +71,7 @@ public class UISocialLogoPortlet extends UIPortletApplication {
 
     if (imageSource == null) {
       return pref.getValue("url", ""); // url
-      // /eXoResourcesSocial/skin/ShareImages/Avartar.gif
+      // /social-resources/skin/ShareImages/Avartar.gif
     } else {
       return imageSource;
     }

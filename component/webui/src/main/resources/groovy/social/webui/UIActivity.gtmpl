@@ -32,10 +32,10 @@
 
 <% if (activity) { //process if not null
 
-  jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
-  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/eXoResourcesSocial/javascript");
-  jsManager.importJavascript("eXo.social.webui.UIForm", "/eXoResourcesSocial/javascript");
-  jsManager.importJavascript("eXo.social.webui.UIActivity", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIForm", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIActivity", "/social-resources/javascript");
   
   def labelComment = _ctx.appRes("UIActivity.label.Comment");
   def labelLike = _ctx.appRes("UIActivity.label.Like");
@@ -128,12 +128,12 @@
      if (uicomponent.isSpaceActivity(activity.userId)) {
        activityImageSource = uicomponent.getSpaceImageSource();
        if (!activityImageSource) {
-         activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";  
+         activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";  
        }
      } else if (uicomponent.isUserActivity(activity.userId)) {   
-       activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/AvatarPeople.gif";
+       activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/AvatarPeople.gif";
      } else {
-       activityImageSource = "/eXoResourcesSocial/skin/ShareImages/SpaceImages/ApplicationDefaultLogo48x48.png";     
+       activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/ApplicationDefaultLogo48x48.png";     
      }
    }
 
@@ -249,7 +249,7 @@
           personLikeProfileUri = uicomponent.getUserProfileUri(it);
           personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
           if (!personLikeAvatarImageSource) {
-            personLikeAvatarImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+            personLikeAvatarImageSource = "/social-resources/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
           }
         %>
           <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
@@ -300,7 +300,7 @@
     commenterProfileUri = uicomponent.getUserProfileUri(it.userId);
     commenterImageSource = uicomponent.getUserAvatarImageSource(it.userId);
     if (!commenterImageSource) {
-      commenterImageSource = "/eXoResourcesSocial/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+      commenterImageSource = "/social-resources/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
     }
     commentMessage = it.title;
     commentPrettyTime = uicomponent.toPrettyTime(it.postedTime);

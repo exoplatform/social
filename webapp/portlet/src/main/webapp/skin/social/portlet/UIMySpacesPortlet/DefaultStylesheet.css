@@ -2,7 +2,7 @@
  * UIMySpacesPortlet.css
  */
  
- @import url('/eXoResourcesSocial/skin/portal/webui/component/UISpaceSearch/default/style.css');
+ @import url('/social-resources/skin/portal/webui/component/UISpaceSearch/default/style.css');
  
 .UIMySpacesPortlet {
   padding: 0px 10px 20px;

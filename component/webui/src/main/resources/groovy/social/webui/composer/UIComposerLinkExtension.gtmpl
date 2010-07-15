@@ -40,9 +40,9 @@
   uicomponent.setLinkInfoDisplayed(false);
   def requestContext = _ctx.getRequestContext();
   def jsManager = requestContext.getJavascriptManager();
-  jsManager.importJavascript("eXo.social.Util", "/eXoResourcesSocial/javascript");
-  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/eXoResourcesSocial/javascript");
-  jsManager.importJavascript("eXo.social.webui.UIComposerLinkExtension", "/eXoResourcesSocial/javascript");
+  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIComposerLinkExtension", "/social-resources/javascript");
   
   def noThumbnail = _ctx.appRes("${uicomponentId}.msg.No_Thumbnail"),
       previousImage = _ctx.appRes("${uicomponentId}.msg.Previous_Image"),

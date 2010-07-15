@@ -21,7 +21,7 @@
 	import org.exoplatform.web.application.JavascriptManager;
 	def rcontext = _ctx.getRequestContext();
 	JavascriptManager jsmanager = rcontext.getJavascriptManager();
-	jsmanager.importJavascript('eXo.social.webui.UIVerticalTabs','/eXoResourcesSocial/javascript');
+	jsmanager.importJavascript('eXo.social.webui.UIVerticalTabs','/social-resources/javascript');
 	
   //jsmanager.importJavascript('eXo.social.webui.UIVerticalTabs');
   //rcontext.getJavascriptManager().addCustomizedOnLoadScript('eXo.social.webui.UIVerticalTabs.init();');

@@ -67,7 +67,7 @@
     <% } %>
       <div class="AvatarSpace">
       <% if (imageSource == null) { %>
-        <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+        <img alt="#" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
       <% } else { %>
         <img alt="#" src="$imageSource" />
       <%}%>

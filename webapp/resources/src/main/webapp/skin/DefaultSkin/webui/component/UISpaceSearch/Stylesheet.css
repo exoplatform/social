@@ -53,7 +53,7 @@ a:ACTIVE {
 .UISpaceSearch .CenterContentSearchInput .SpaceSearchInput .SearchIcon {
   width: 14px;
   float: left;
-  background: white url( "/eXoResourcesSocial/skin/DefaultSkin/webui/component/UISpaceSearch//background/IconSearch.gif" ) no-repeat right center;
+  background: white url( "/social-resources/skin/DefaultSkin/webui/component/UISpaceSearch//background/IconSearch.gif" ) no-repeat right center;
   font-size: 11px;
   cursor: pointer;
 }
