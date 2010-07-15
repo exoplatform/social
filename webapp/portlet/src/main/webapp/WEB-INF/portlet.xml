@@ -83,7 +83,7 @@
 
   <portlet>
     <description xml:lang="EN">Social Home Page Portlet</description>
-    <portlet-name>Social HomePagePortlet</portlet-name>
+    <portlet-name>SocialHomePagePortlet</portlet-name>
     <display-name xml:lang="EN">Social Home Page Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
@@ -95,7 +95,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.HomePagePortlet</resource-bundle>
+    <resource-bundle>locale.portlet.SocialHomePagePortlet</resource-bundle>
     <portlet-info>
       <title>Home Page Portlet</title>
       <short-title>Home Page Portlet</short-title>
@@ -411,13 +411,13 @@
   </portlet>
 
   <portlet>
-    <description xml:lang="EN">Footer Portlet</description>
-    <portlet-name>FooterPortlet</portlet-name>
+    <description xml:lang="EN">Social Footer Portlet</description>
+    <portlet-name>SocialFooterPortlet</portlet-name>
     <display-name xml:lang="EN">Footer Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/FooterPortlet/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/SocialFooterPortlet/webui/configuration.xml</value>
     </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
@@ -425,7 +425,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.FooterPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.SocialFooterPortlet</resource-bundle>
     <portlet-info>
       <title>Footer Portlet</title>
       <short-title>Footer Portlet</short-title>

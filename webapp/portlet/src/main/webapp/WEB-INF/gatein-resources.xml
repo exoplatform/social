@@ -27,7 +27,7 @@
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
-    <portlet-name>BannerPortlet</portlet-name>
+    <portlet-name>SocialBannerPortlet</portlet-name>
     <skin-name>Default</skin-name>
     <css-path>/skin/social/portlet/UIBannerPortlet/DefaultStylesheet.css</css-path>
   </portlet-skin>
@@ -126,7 +126,7 @@
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
-    <portlet-name>FooterPortlet</portlet-name>
+    <portlet-name>SocialFooterPortlet</portlet-name>
     <skin-name>Default</skin-name>
     <css-path>/skin/social/portlet/UIFooterPortlet/DefaultStylesheet.css</css-path>
   </portlet-skin>

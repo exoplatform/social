@@ -26,7 +26,8 @@ function getModule(params) {
   new Project("org.exoplatform.social", "exo.social.component.core","jar", module.version);
 
   module.component.service =
-  new Project("org.exoplatform.social", "exo.social.component.service","jar", module.version);
+  new Project("org.exoplatform.social", "exo.social.component.service","jar", module.version).
+    addDependency(ws.frameworks.json);
 
   module.component.opensocial =
   new Project("org.exoplatform.social", "exo.social.component.opensocial","jar", module.version);
@@ -37,7 +38,11 @@ function getModule(params) {
 
   module.webapp = {};
 
-  module.webapp.opensocial = new Project("org.exoplatform.social", "exo.social.webapp.opensocial", "war", module.version);
+  module.webapp.opensocial = new Project("org.exoplatform.social", "exo.social.webapp.opensocial", "war", module.version).
+    addDependency(new Project("commons-betwixt", "commons-betwixt", "jar", "0.8")).
+    addDependency(new Project("net.sf.json-lib", "json-lib", "jar", "2.2")).
+    addDependency(new Project("org.gatein.shindig", "shindig-social-api", "jar", shindigVersion)).
+    addDependency(new Project("org.apache.geronimo.specs", "geronimo-stax-api_1.0_spec", "jar", "1.0.1"));
   module.webapp.opensocial.deployName = "social";
 
   module.webapp.portlet = new Project("org.exoplatform.social", "exo.social.webapp.portlet", "war", module.version);
