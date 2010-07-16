@@ -137,5 +137,55 @@
     <skin-name>Default</skin-name>
     <css-path>/skin/social/portlet/UISpaceActivityStreamPortlet/DefaultStylesheet.css</css-path>
   </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>PeoplePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIPeoplePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>ProfilePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIProfilePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>MyConnectionsNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIMyConnectionsNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>  
+  
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>ConnectionsNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIConnectionsNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>  
+  
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>ConnectionsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIConnectionsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>  
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>RequestsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIRequestsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>InvitationsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIInvitationsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>  
+  
 </gatein-resources>
 

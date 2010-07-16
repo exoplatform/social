@@ -1,0 +1,499 @@
+/**
+ * Copyright (C) 2003-2007 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+/*
+  need to find a better way of doing than the import from another portlet
+*/
+
+.ClearFix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.ClearFix {
+	!display: inline-block;
+  !zoom: 1;
+  !display: block; 
+}
+
+.UIProfileListPortlet {
+	zoom: 100%;
+}
+
+.UIProfile {
+	padding: 8px;
+	font-family: tahoma;
+	font-size: 11px;
+	background: white;
+	zoom: 100%;
+}
+
+.UIProfile .AvatarSpace{
+  background: url(DefaultSkin/background/AvatarContainer.gif) no-repeat left;
+  width: 173px; height: 217px;
+  padding:16px 0px 0px 8px;
+  curdor: pointer;
+}
+
+.UIProfile .LeftColumn {
+  width: 173px;
+  float: left;
+}
+
+.UIProfile .AvatarSpace .Image {
+}
+
+.UIProfile .AvatarSpace .HiddenAvatarChangeLink {
+  display: none;
+}
+
+.UIProfile .AvatarSpace .ShowedAvatarChangeLink {
+  display: inline;
+}
+
+.UIProfile .ContainerSpace {
+	margin-left: 200px;
+}
+
+.UIProfile .ContainerSpace .LeftContainer{
+	background: url(DefaultSkin/background/LeftContainerPortlet.gif) repeat-y left;
+	padding-left: 7px;
+}
+
+.UIProfile .ContainerSpace .RightContainer{
+	background: url(DefaultSkin/background/RightContainerPortlet.gif) repeat-y right;
+	padding-right: 7px;
+}
+
+.UIProfile .ContainerSpace .CenterContainer{
+	background: #f2f8fa;
+	padding: 10px;
+}
+
+.UIProfile .ContainerSpace .PortletContent {
+	background: #f5f9fb;
+	border: 1px solid #d3d3d3;
+	padding: 8px;
+	height: 100%;
+}
+
+.UIProfile .ContainerSpace .ActionBar .CenterButton .SaveIcon{
+	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
+	line-height: 18px; width: auto;
+	padding-left: 20px;
+}
+
+.UITabPane .ContainerSpace .ActionBar .CenterButton .SaveIcon{
+	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
+	line-height: 18px; width: auto;
+	padding-left: 20px;
+}
+
+.UIProfile .ContainerSpace .ActionBar .CenterButton .EditIcon{
+	background: url('DefaultSkin/background/EditIcon.gif') no-repeat left;
+	line-height: 18px;
+	padding-left: 20px;
+	height: auto; width: auto;
+}
+
+.UIProfile .ContainerSpace .ActionBar .CenterButton .DeleteIcon{
+	background: url('DefaultSkin/background/DeleteIconButton.gif') no-repeat left;
+	line-height: 18px; width: auto;
+	padding-left: 20px;
+}
+
+.UIProfile .ContainerSpace .PortletContent .DeleteIcon{
+	background: url(DefaultSkin/background/DeleteIcon.gif) no-repeat center;
+	padding: 5px 11px;
+}
+
+.UIProfile .ContainerSpace .PortletContent .AddIcon{
+	background: url(DefaultSkin/background/AddIcon.gif) no-repeat center;
+	display: block;
+	width: 22px;
+	height: 22px;
+}
+
+.UIProfile h2{
+	font-weight: bold;
+	font-size: 16px;
+	color: #406a80;
+	line-height: 30px;
+  margin-bottom:0px;
+  height: 30px;
+}
+
+.UIProfile h3{
+	font-size: 11px;
+	font-weight: bold;
+	color: #8c8c8e;
+  margin-top:0px;
+  margin-left:5px;
+  height: 20px;
+}
+
+.UIProfile .SendPosition {
+	font-size: 11px;
+	font-weight: bold;
+	color: #8c8c8e;
+	margin-top:0px;
+  margin-left:5px;
+}
+
+.UIProfile .ContainerSpace .TitleBar{
+	font-size: 11px;
+	font-weight: bold;
+	color: #466c83;
+	line-height: 20px;
+	background: #d6e4ed;
+	margin: 10px 0px 0px 0px;
+	padding-left: 6px;
+	height: 24px;
+	overflow: hidden;
+}
+
+.UIProfile .ContainerSpace .TitleBar h4{
+  float: left;
+  margin: 0px;
+}
+
+.profileTemplate {
+  display:none;
+}
+
+/**
+       FORM
+ */
+
+.UIProfile .UIFormGrid {
+  padding: 8px 0px 0px 30px;
+  margin-bottom:0;
+  margin-left:30px;
+  margin-right:0;
+  margin-top:8px;
+}
+
+.UIProfile .ContainerSpace .FieldLabel {
+	text-align: right;
+	padding: 4px;
+	color: #406c80;
+	font-weight: bold;
+	width: 120px;
+}
+
+.UIProfile .ContainerSpace .FieldComponent {
+	padding: 4px;
+}
+
+.UIProfile .ContainerSpace .FieldError{
+	color: red;
+}
+
+.UIProfile .ContainerSpace .FieldComponent ul{
+	margin: 0px;
+  padding-left:0;
+  list-style:none;
+}
+
+.UIProfile .ContainerSpace .FieldComponent .LV_invalid_field {
+  border:3px solid #CC0000;
+}
+
+.UIProfile .ContainerSpace .FieldComponent .LV_invalid {
+  margin-left: 4px;
+  color: #CC0000;
+}
+
+ .ContainerSpace .ActionBar {
+	float: right;
+	margin: 3px 4px 0px 0px;
+	cursor: pointer;
+}
+
+ .ActionBar .LeftButton {
+	background: url('DefaultSkin/background/LeftButton3x18.gif') no-repeat left;
+	padding-left: 3px;
+}
+
+ .ActionBar .RightButton {
+	background: url('DefaultSkin/background/RightButton3x18.gif') no-repeat right;
+	padding-right: 3px;
+}
+
+ .ActionBar .CenterButton {
+	background: url('DefaultSkin/background/CenterButton1x18.gif') repeat-x ;
+	line-height: 18px;
+	padding: 0px 10px;
+}
+
+.UIProfile .ContainerSpace .UIAction{
+	padding: 8px 0px;
+}
+
+.UIProfile .ContainerSpace .ButtonLeft{
+	background: url("DefaultSkin/background/LeftButton.gif") no-repeat left;
+	padding-left: 4px;
+  cursor: pointer;
+}
+
+.UIProfile .ContainerSpace .ButtonRight{
+	background: url( "DefaultSkin/background/RightButton.gif" ) no-repeat right;
+	padding-right: 4px;
+  cursor: pointer;
+}
+
+.UIProfile .ContainerSpace .ButtonMiddle{
+	background: url( "DefaultSkin/background/CenterButton.gif" ) repeat-x ;
+	line-height: 29px;
+	padding: 0px 16px;
+  cursor: pointer;
+}
+
+.UIProfile .ContainerSpace .EditButtons {
+  float:right;
+}
+.UIProfile .LeftColumn .UserActivitiesLink {
+	padding-left: 50px;
+}
+/**
+ * Refactor to share the css with Spaces
+ */
+.UITabPane .ContainerSpace{
+	padding:8px 24px 8px 28px;
+}
+
+.UITabPane .ATitleBarL {
+	background: url('DefaultSkin/background/ATitleBarL.gif') no-repeat left top;
+	padding-left: 4px;
+	margin-top: 8px;
+}
+
+.UITabPane .ATitleBarR {
+	background: url('DefaultSkin/background/ATitleBarR.gif') no-repeat right top;
+	padding-right: 4px;
+}
+
+.UITabPane .ATitleBarM {
+	background: url('DefaultSkin/background/ATitleBarM.gif') repeat-x;
+	padding-left: 4px;
+}
+
+.UITabPane .ATitleBarC {
+	background: url('DefaultSkin/background/ATitleBarC.gif') no-repeat left top;
+	height:25px;
+	color: white;
+	margin-left: 8px;
+	line-height: 20px;
+	font-weight: bold;
+}
+
+.UITabPane .AvartarPeopleBG{
+ background: url('DefaultSkin/background/AvartarPeopleBG.gif') no-repeat left top;
+ width: 52px;
+ height: 52px;
+ padding: 6px 0px 0px 6px;
+ float: left;
+ margin: 8px;
+}
+
+
+.ActivitiesTitleBarM{
+	background: #ebebeb;
+	height: 21px;
+	color: #7d7d7d;
+	line-height: 21px;
+	text-align: center;
+	font-weight: bold;
+}
+
+
+
+.UITabPane .ContainerSpace .ContentSpace {
+	background: white;
+	padding: 8px;
+	margin-bottom:4px;
+	background: #fbfbfb;
+}
+
+.UITabPane .ContainerSpace .ContentSpaceGray {
+	background: white;
+	padding: 8px;
+	margin-bottom:4px;
+	background: #f3f3f3;
+}
+
+.UITabPane .ContainerSpace .ActivityContentSpace {
+	background: white;
+	border:1px solid #c7c7c7;
+	padding: 8px;
+	margin-bottom:4px;
+	width: 928px;
+}
+
+.UITabPane .ContainerSpace .CommunityIcon {
+	float: left;
+}
+
+
+.UITabPane .ContainerSpace .CommunityContainer {
+	padding-left: 16px;
+	margin-left: 76px;
+}
+
+.ContainerSpace .CommunityContainer {
+	padding-left: 16px;
+	margin-left: 76px;
+}
+
+.UITabPane .ContainerSpace .Line {
+	border-bottom:1px solid #B7B7B7;
+}
+
+.UITabPane .ContainerSpace .Text {
+	line-height: 16px;
+}
+
+.UITabPane .ContainerSpace .TagsName {
+	color: #b7b7b7;
+	line-height: 16px;
+}
+
+.UITabPane .ContainerSpace .CommunityMane {
+	color: #0d6e8f;
+	height: 20px;
+	font-size: 12px;
+	font-family: tahoma;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.ContainerSpace .CommunityMane {
+	color: #0d6e8f;
+	height: 20px;
+	font-size: 12px;
+	font-family: tahoma;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.UITabPane .Title {
+    display:inline;
+}
+
+.UITabPane .waitingConfirmation {
+    padding-left:5px;
+}
+
+.UITabPane .noContact {
+    background:#F5F5F5 none repeat scroll 0 0;
+    padding:8px;
+    text-align:center;
+}
+
+.UITabPane .noContact .noContactMsg {
+    font-size:18px;
+}
+
+.UITabPane  .SocialHeader {
+	height: 40px;
+	border-bottom: 1px dotted #b7b7b7;
+}
+
+.UITabPane  .SocialHeader h2 {
+	margin: 0px;
+	height: 40px;
+	line-height: 40px;
+}
+.UITabPane .noContact .LeftNocontact{
+	background: url('DefaultSkin/background/LeftNocontact.gif') no-repeat left top;
+	padding-left: 9px; width: 60%;
+	margin: auto;
+}
+
+.UITabPane .noContact .RightNocontact{
+	background: url('DefaultSkin/background/RightNocontact.gif') no-repeat right top;
+	padding-right: 9px;
+}
+
+.UITabPane .noContact .CenterNocontact{
+	height: 108px;
+	background: url('DefaultSkin/background/CenterNocontact.gif') repeat-x ;
+	padding: 18px 6px 0px 6px;
+}
+
+.UITabPane .noContact .IconSafety{
+	background: url('DefaultSkin/background/IconSafety.gif') no-repeat left center ;
+	padding-left: 50px ; color:#2c6c90;
+}
+
+.UITabPane .noContact .LeftButton{
+	background: url('DefaultSkin/background/noContactBTL.gif') no-repeat left ;
+	padding-left: 3px ; width: 160px; margin: auto; cursor: pointer;
+}
+
+.UITabPane .noContact .RightButton{
+	background: url('DefaultSkin/background/noContactBTR.gif') no-repeat right ;
+	padding-right: 3px ;
+}
+
+.UITabPane .noContact .CenterButton{
+	background: url('DefaultSkin/background/noContactBTC.gif') repeat-x ;
+	height: 38px ;
+	text-align: center;
+	color:#426f8c;
+	line-height: 36px;
+	font-weight: bold;
+}
+
+input.hint, textarea.hint {
+  color:#999999 !important;
+}
+
+
+.UITabPane .ContainerSpace .WaitingConfirmation {
+	padding-left:5px;
+}
+
+.ContainerSpace .NotYet {
+	color:gray;
+	text-align:center;
+}
+
+.ContainerSpace .NoneExperience {
+	text-align:center;
+}
+
+.ContainerSpace .SearchSpaces .FilterBy {
+	color: #C7C7C7;
+}
+
+
+.UITabPane .StopIcon{
+	background: url('DefaultSkin/background/StopIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}
+
+.UITabPane .SelectIcon{
+	background: url('DefaultSkin/background/SelectIcon.gif') no-repeat left center ;
+	float: right;
+	padding: 5px 6px;
+	margin-left: 4px;
+}

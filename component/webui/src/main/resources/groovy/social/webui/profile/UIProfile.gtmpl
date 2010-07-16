@@ -34,7 +34,7 @@
      <div class="Image" onclick="$changeAvatar">
     <% } %>
         <% if(imageSource == null) { %>
-          <img src="/profile/skin/portal/webui/component/UIProfilePortlet/background/BLAvatar.gif" height="119px" width="119px" alt="">
+          <img src="/social-portlet/skin/social/portlet/UIProfilePortlet/DefaultSkin/background/BLAvatar.gif" height="119px" width="119px" alt="">
         <% } else { %>
           <img src="$imageSource" height="119px" width="119px">
         <% } %>

@@ -64,7 +64,7 @@
 
       if (!position) {  position = ""; }
 
-      String imageSource = "/profile/skin/portal/webui/component/UIPeoplePortlet/background/BLAvatar.gif";
+      String imageSource = "/social-portlet/skin/social/portlet/UIPeoplePortlet/DefaultSkin/background/BLAvatar.gif";
       ProfileAttachment att = identity.profile.getProperty("avatar");
       if (att != null) {
         try {
