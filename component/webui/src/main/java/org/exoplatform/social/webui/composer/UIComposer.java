@@ -57,6 +57,7 @@ public class UIComposer extends UIForm {
   private String postContext;
   private UIFormTextAreaInput messageInput;
   private UIActivityComposerContainer composerContainer;
+  private UIActivityComposerManager activityComposerManager;
   private List<UIActivityComposer> activityComposers;
   /**
    * Constructor
@@ -68,7 +69,7 @@ public class UIComposer extends UIForm {
     addUIFormInput(messageInput);
 
     //load UIActivityComposerManager via PortalContainer
-    UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
+    activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
     activityComposerManager.setDefaultActivityComposer();
 
     //TODO : get all the composers and load their icon
@@ -80,6 +81,13 @@ public class UIComposer extends UIForm {
       uiActivityComposer.setRendered(false);
       composerContainer.addChild(uiActivityComposer);
     }
+  }
+
+  public void setDefaultActivityComposer(){
+    for (UIActivityComposer uiActivityComposer : activityComposers) {
+      uiActivityComposer.setRendered(false);
+    }
+    activityComposerManager.setDefaultActivityComposer();
   }
 
   public UIActivityComposerContainer getComposerContainer() {

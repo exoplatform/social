@@ -25,6 +25,7 @@
    <key>org.exoplatform.portal.gadget.core.SecurityTokenGenerator</key>
    <type>org.exoplatform.social.opensocial.auth.ExoSocialSecurityTokenGenerator</type>
   </component>
+  
   <component>
       <key>org.exoplatform.social.common.jcr.SocialDataLocation</key>
       <type>org.exoplatform.social.common.jcr.SocialDataLocation</type>
@@ -40,26 +41,6 @@
   <component>
     <key>org.exoplatform.social.webui.activity.UIActivityFactory</key>
     <type>org.exoplatform.social.webui.activity.UIActivityFactory</type>
-    <init-params>
-      <values-param>
-        <name>default activity</name>
-        <value>DEFAULT_ACTIVITY</value>
-        <value>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</value>
-        <value>org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder</value>
-      </values-param>
-      <values-param>
-        <name>space auto-created activity</name>
-        <value>exosocial:spaces</value>
-        <value>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</value>
-        <value>org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder</value>
-      </values-param>
-      <values-param>
-        <name>for testing only</name>
-        <value>testType</value>
-        <value>org.exoplatform.social.webui.activity.link.UILinkActivity</value>
-        <value>org.exoplatform.social.webui.activity.link.UILinkActivityBuilder</value>
-      </values-param>
-    </init-params>
   </component>
 
   <component>
@@ -70,14 +51,68 @@
         <name>DEFAULT_ACTIVITY_COMPOSER</name>
         <value>org.exoplatform.social.portlet.composers.UIDefaultActivityComposer</value>
       </value-param>
-      <values-param>
-        <name>OTHER_ACTIVITY_COMPOSER</name>
-        <value>org.exoplatform.social.portlet.composers.UILinkActivityComposer</value>
-      </values-param>
-      <values-param>
-        <name>org.exoplatform.social.portlet.composers.UILinkActivityComposer</name>
-        <value>http://findicons.com/files/icons/1581/silk/16/chart_pie_link.png</value>
-      </values-param>
     </init-params>
   </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.webui.activity.UIActivityFactory</target-component>
+    <component-plugin>
+      <name>register.ui.activity</name>
+      <set-method>registerUIActivity</set-method>
+      <type>org.exoplatform.social.webui.activity.UIActivityPlugin</type>
+      <init-params>
+        <values-param>
+          <name>default activity</name>
+          <value>DEFAULT_ACTIVITY</value>
+          <value>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</value>
+          <value>org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>register.ui.activity</name>
+      <set-method>registerUIActivity</set-method>
+      <type>org.exoplatform.social.webui.activity.UIActivityPlugin</type>
+      <init-params>
+        <values-param>
+          <name>space auto-created activity</name>
+          <value>exosocial:spaces</value>
+          <value>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</value>
+          <value>org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>register.ui.activity</name>
+      <set-method>registerUIActivity</set-method>
+      <type>org.exoplatform.social.webui.activity.UIActivityPlugin</type>
+      <init-params>
+        <values-param>
+          <name>for testing only</name>
+          <value>testType</value>
+          <value>org.exoplatform.social.webui.activity.link.UILinkActivity</value>
+          <value>org.exoplatform.social.webui.activity.link.UILinkActivityBuilder</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.webui.composer.UIActivityComposerManager</target-component>
+    <component-plugin>
+      <name>register.activity.composer</name>
+      <set-method>registerActivityComposer</set-method>
+      <type>org.exoplatform.social.webui.composer.UIActivityComposerPlugin</type>
+      <init-params>
+        <value-param>
+          <name>ComposerClass</name>
+          <value>org.exoplatform.social.portlet.composers.UILinkActivityComposer</value>
+        </value-param>
+        <values-param>
+          <name>ComposerConfig</name>
+          <value>http://findicons.com/files/icons/1581/silk/16/chart_pie_link.png</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 </configuration>

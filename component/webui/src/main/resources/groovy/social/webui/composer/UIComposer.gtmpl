@@ -24,6 +24,10 @@
 <%
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   import org.exoplatform.social.webui.composer.UIActivityComposerContainer;
+
+  //set default composer after refreshing
+  uicomponent.setDefaultActivityComposer();
+  
   def requestContext = _ctx.getRequestContext();
   
   //trick here, uiform does not keep submitAction for second render, portal bug?

@@ -31,7 +31,7 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
   public UIActivityComposerManager(InitParams initParams) {
     try {
       loadDefaultActivityComposer(initParams);
-      loadOtherActivityComposers(initParams);
+//      loadOtherActivityComposers(initParams);
     } catch (Exception e) {
       LOG.error(e);
       e.printStackTrace();
@@ -49,32 +49,51 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
     setCurrentActivityComposer(defaultActivityComposer);
   }
 
-  private void loadOtherActivityComposers(InitParams initParams) throws Exception{
-    final ValuesParam valuesParam = initParams.getValuesParam(OTHER_ACTIVITY_COMPOSER);
-    final ArrayList<String> composerList = valuesParam.getValues();
+//  private void loadOtherActivityComposers(InitParams initParams) throws Exception{
+//    final ValuesParam valuesParam = initParams.getValuesParam(OTHER_ACTIVITY_COMPOSER);
+//    final ArrayList<String> composerList = valuesParam.getValues();
+//
+//    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//    UIForm uiComponentCreator = new UIForm();
+//    for (int i = 0; i < composerList.size(); i++) {
+//      //get java class
+//      final String composerClassStr = composerList.get(i);
+//      final Class<UIActivityComposer> composerClass = (Class<UIActivityComposer>) classLoader.loadClass(composerClassStr);
+//
+//      //create activity composer
+//      final UIActivityComposer uiActivityComposer = uiComponentCreator.addChild(composerClass,null,null);
+//      uiActivityComposer.setParent(null);
+//
+//      //load its config
+//      final ValuesParam config = initParams.getValuesParam(composerClassStr);
+//      if(config != null){
+//        uiActivityComposer.loadConfig(config);
+//      }
+//
+//      //register composer
+//      registerActivityComposer(uiActivityComposer);
+//    }
+//  }
 
+  public void registerActivityComposer(UIActivityComposerPlugin activityComposerPlugin) throws Exception {
     final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    final Class<UIActivityComposer> composerClass = (Class<UIActivityComposer>) classLoader.loadClass(activityComposerPlugin.getClazz());
+
+    //create activity composer
     UIForm uiComponentCreator = new UIForm();
-    for (int i = 0; i < composerList.size(); i++) {
-      //get java class 
-      final String composerClassStr = composerList.get(i);
-      final Class<UIActivityComposer> composerClass = (Class<UIActivityComposer>) classLoader.loadClass(composerClassStr);
+    final UIActivityComposer uiActivityComposer = uiComponentCreator.addChild(composerClass,null,null);
+    uiActivityComposer.setParent(null);
 
-      //create activity composer
-      final UIActivityComposer uiActivityComposer = uiComponentCreator.addChild(composerClass,null,null);
-      uiActivityComposer.setParent(null);
-      
-      //load its config
-      final ValuesParam config = initParams.getValuesParam(composerClassStr);
-      if(config != null){
-        uiActivityComposer.loadConfig(config);
-      }
-
-      //register composer
-      registerActivityComposer(uiActivityComposer);
+    //load its config
+    final ValuesParam config = activityComposerPlugin.getConfigs();
+    if(config != null){
+      uiActivityComposer.loadConfig(config);
     }
-  }
 
+    //register composer
+    registerActivityComposer(uiActivityComposer);
+  }
+  
   public void setDefaultActivityComposer(){
     currentActivityComposer = defaultActivityComposer;
   }

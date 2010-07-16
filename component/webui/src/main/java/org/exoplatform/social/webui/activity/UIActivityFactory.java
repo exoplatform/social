@@ -1,12 +1,8 @@
 package org.exoplatform.social.webui.activity;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.exoplatform.container.component.BaseComponentPlugin;
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
@@ -27,37 +23,49 @@ public class UIActivityFactory extends BaseComponentPlugin {
   private Hashtable<String, Class<?>> classes = new Hashtable<String, Class<?>>();
   private UIForm uiElementCreator = new UIForm();
 
-  public UIActivityFactory(InitParams params) {
-    try {
-        getConfigs(params);
-    } catch (Exception e) {
-      LOG.error(e);
-    }
+  public UIActivityFactory() {
+//    try {
+//        getConfigs(params);
+//    } catch (Exception e) {
+//      LOG.error(e);
+//    }
   }
 
-  private void getConfigs(InitParams initParams) throws Exception {
-    final Iterator<ValuesParam> iterator = initParams.getValuesParamIterator();
-    while(iterator.hasNext()){
+//  private void getConfigs(InitParams initParams) throws Exception {
+//    final Iterator<ValuesParam> iterator = initParams.getValuesParamIterator();
+//    while(iterator.hasNext()){
+//
+//      //get configs from xml
+//      final ValuesParam valuesParam = iterator.next();
+//      final ArrayList<String> values = valuesParam.getValues();
+//      final String[] strValues = values.toArray(new String[values.size()]);
+//
+//      //get string configs
+//      String activityType = strValues[0];
+//      String uiActivityClazzStr = strValues[1];
+//      String uiActivityBuilderClazzStr = strValues[2];
+//
+//      //get class instances
+//      final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//      final Class<BaseUIActivityBuilder> uiActivityBuilderClazz = (Class<BaseUIActivityBuilder>) classLoader.loadClass(uiActivityBuilderClazzStr);
+//      final Class<UIComponent> uiActivityClazz = (Class<UIComponent>) classLoader.loadClass(uiActivityClazzStr);
+//
+//      //registering
+//      registerBuilder(activityType, uiActivityBuilderClazz.newInstance());
+//      registerClass(activityType, uiActivityClazz);
+//    }
+//  }
 
-      //get configs from xml
-      final ValuesParam valuesParam = iterator.next();
-      final ArrayList<String> values = valuesParam.getValues();
-      final String[] strValues = values.toArray(new String[values.size()]);
-      
-      //get string configs
-      String activityType = strValues[0];
-      String uiActivityClazzStr = strValues[1];
-      String uiActivityBuilderClazzStr = strValues[2];
+  public void registerUIActivity(UIActivityPlugin activityPlugin) throws Exception {
+    //get class instances
+    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    final Class<BaseUIActivityBuilder> uiActivityBuilderClazz = (Class<BaseUIActivityBuilder>) classLoader.loadClass(activityPlugin.getBuilderClass());
+    final Class<UIComponent> uiActivityClazz = (Class<UIComponent>) classLoader.loadClass(activityPlugin.getActivityClass());
 
-      //get class instances
-      final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      final Class<BaseUIActivityBuilder> uiActivityBuilderClazz = (Class<BaseUIActivityBuilder>) classLoader.loadClass(uiActivityBuilderClazzStr);
-      final Class<UIComponent> uiActivityClazz = (Class<UIComponent>) classLoader.loadClass(uiActivityClazzStr);
-
-      //registering
-      registerBuilder(activityType, uiActivityBuilderClazz.newInstance());
-      registerClass(activityType, uiActivityClazz);
-    }
+    //registering
+    final String activityType = activityPlugin.getActivityType();
+    registerBuilder(activityType, uiActivityBuilderClazz.newInstance());
+    registerClass(activityType, uiActivityClazz);
   }
 
   public BaseUIActivity create(Activity activity) throws Exception {
