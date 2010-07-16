@@ -1,0 +1,185 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.webui.core.UIPageIterator
+  import org.exoplatform.webui.core.UIPopupWindow
+  import org.exoplatform.webui.core.UIVirtualList
+  import org.exoplatform.social.core.space.SpaceUtils
+  import org.exoplatform.social.webui.space.UIManageMySpaces
+  import org.exoplatform.social.webui.space.UISpaceSearch
+
+  def uicomponentId = uicomponent.id
+  def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
+  def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
+  def labelActionEditSpaceNavigation = _ctx.appRes("${uicomponentId}.label.action_edit_space_navigation")
+  def labelActionDeleteSpace = _ctx.appRes("${uicomponentId}.label.action_delete_space")
+  def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
+  def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.action_add_space")
+  def fieldLabelDescription = _ctx.appRes("${uicomponentId}.fieldLabel.description")
+  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
+  def fieldLabelStatus = _ctx.appRes("${uicomponentId}.fieldLabel.status")
+  def visibleStatus = _ctx.appRes("${uicomponentId}.status.visible")
+  def hiddenStatus = _ctx.appRes("${uicomponentId}.status.hidden")
+  def openStatus = _ctx.appRes("${uicomponentId}.status.open")
+  def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
+  def closeStatus = _ctx.appRes("${uicomponentId}.status.close")
+  def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
+  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
+  def iterator = uicomponent.getMySpacesUIPageIterator()
+  def userSpaces = uicomponent.getUserSpaces()
+  def mySpaceIdx = 0
+  def hasInvited = false
+  def style="display:none;"
+%>
+<div class="$uicomponent.id" id="$uicomponent.id">
+  <% uicomponent.renderChild(UISpaceSearch.class); %>
+  <div class="BoxSpaceList">
+    <div class="CenterTitleBox">
+      <div class="LeftTitleBox">
+        <div class="RightTitleBox">$labelSpaceListing</div>
+      </div>
+    </div>
+    <%if ((userSpaces.size() == 0)) {%>
+    <div class="NormalBox">
+      <div class="NotYet"><%= labelNoSpaces %></div>
+    </div>
+    <%}%>
+    <%for (space in userSpaces) {
+        def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
+        def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.id) + "; return false"
+        def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
+        def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
+        def role = uicomponent.getRole(space.id)
+        def hasMembership = uicomponent.hasMembership(space.id)
+        def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+        def editSpaceLink = spaceUrl + "/" + "SpaceSettingPortlet";
+        def visibility = space.visibility
+        if (visibility.equals("private")) visibility = "visible"
+        def status
+
+        if (visibility.equals("visible")) {
+         status = "${visibleStatus} "
+         def registration = space.registration
+         if (registration.equals("open")) {
+          status += openStatus
+         } else if (registration.equals("validation")) {
+          status += validationStatus
+         } else {
+           status += closeStatus
+         }
+        } else {
+         status = "${hiddenStatus}"
+        }
+        def imageSource = uicomponent.getImageSource(space);
+        mySpaceIdx += 1;
+    %>
+
+    <% if (mySpaceIdx % 2 == 0) { %>
+    <div class="GrayBox">
+    <% } else { %>
+    <div class="NormalBox">
+    <% } %>
+      <!-- Leader -->
+      <% if (role == 1) {%>
+        <a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
+        <% if (imageSource == null) { %>
+          <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+        <% } else { %>
+          <img alt="#" src="$imageSource" />
+        <%}%>
+        </a>
+        <div class="ContentBox">
+          <div class="TitleContent">
+            <a href="#" onclick="<%= deleteSpaceAction %>" title="<%= labelActionDeleteSpace %>" class="Icon IconDel"><span></span></a>
+            <% if (hasMembership) { %>
+            <a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeaveSpace" style="display:block;"><span></span></a>
+            <% } else { %>
+            <a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeaveSpace" style="display:none;"><span></span></a>
+            <% } %>
+            <a href="#" onclick="<%= editSpaceNavigationAction %>"  title="<%= labelActionEditSpaceNavigation %>" class="Icon IconEditSpaceNavigation"><span></span></a>
+            <a href="<%=uicomponent.url("EditSpace", space.id);%>" title="<%= labelActionEditSpace %>" class="Icon IconEditSpace"><span></span></a>
+            <div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </div>
+            <div class="ClearBoth"><span></span></div>
+          </div>
+          <div class="Content">
+            $space.description<br/>
+            <span class="SpaceStatus">$status</span>
+          </div>
+        </div>
+        <div class="ClearBoth"><span></span></div>
+      </div>
+      <% }%>
+      <!-- Member -->
+      <%if (role == 2) {%>
+        <a href="<%= spaceUrl %>" class="AvatarSpace">
+      <% if (imageSource == null) { %>
+          <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+      <% } else { %>
+          <img alt="#" src="$imageSource" />
+      <%}%>
+        </a>
+        <div class="ContentBox">
+          <div class="TitleContent">
+            <a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeaveSpace"><span></span></a>
+            <div class="Text"><a href="<%= spaceUrl %>">$space.name</a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </div>
+            <div class="ClearBoth"><span></span></div>
+          </div>
+          <div class="Content">
+            $space.description<br/>
+            <span class="SpaceStatus">$status</span>
+          </div>
+        </div>
+      <div class="ClearBoth"><span></span></div>
+    </div>
+    <%}%>
+  <%}%>
+    <div>
+  <%
+    if (iterator.getAvailablePage() > 1) {
+      _ctx.renderUIComponent(iterator)
+    }
+  %>
+    </div>
+    <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+    <div class="UIAction">
+      <table class="ActionContainer">
+        <tbody>
+          <tr>
+            <td>
+              <div class="ActionButton LightBlueStyle" onclick="<%= uicomponent.event("AddSpace") %>">
+                <div class="ButtonLeft">
+                  <div class="ButtonRight">
+                    <div class="ButtonMiddle">
+                      <a><%= labelActionAddSpace %></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

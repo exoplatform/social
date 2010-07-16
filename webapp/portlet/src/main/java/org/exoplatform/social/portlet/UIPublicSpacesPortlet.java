@@ -16,19 +16,25 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.social.webui.connections.UIMyConnections;
+import org.exoplatform.social.webui.space.UIManagePublicSpaces;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+/**
+ * {@link UIPublicSpacePortlet} used as a portlet containing {@link UIManagePublicSpaces}.
+ * @author hoatle
+ */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UIConnectionsPortlet.gtmpl"
+  template = "app:/groovy/social/portlet/UIPublicSpacesPortlet.gtmpl"
 )
-public class UIConnectionsPortlet extends UIPortletApplication {
-
-  public UIConnectionsPortlet() throws Exception {
-    addChild(UIMyConnections.class, null, null);
+public class UIPublicSpacesPortlet extends UIPortletApplication {
+  /**
+   * constructor
+   * @throws Exception
+   */
+  public UIPublicSpacesPortlet() throws Exception {
+    addChild(UIManagePublicSpaces.class, null, null);
   }
-
 }

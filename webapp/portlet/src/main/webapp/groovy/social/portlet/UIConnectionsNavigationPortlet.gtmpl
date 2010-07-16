@@ -22,7 +22,7 @@
 %>
 <%
   import org.exoplatform.portal.webui.util.Util;
-  import org.exoplatform.social.portlet.profile.Utils;
+  import org.exoplatform.social.webui.Utils;
   import org.exoplatform.portal.application.PortalRequestContext;
   def uicomponentId = uicomponent.id;
   def labelRelationTitle = _ctx.appRes("${uicomponentId}.label.RelationTitle")
@@ -78,7 +78,7 @@
     <% } %>
       <a href="${requestsURL}" title="$labelRequestTitle" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
     </div>
-  <% } %> 
+  <% } %>
   </div>
 </div>
 

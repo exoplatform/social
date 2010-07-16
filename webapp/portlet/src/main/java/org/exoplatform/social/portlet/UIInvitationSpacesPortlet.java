@@ -16,19 +16,26 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.social.webui.connections.UIMyConnections;
+import org.exoplatform.social.webui.space.UIManageInvitationSpaces;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+/**
+ * {@link UIInvitationSpacePortlet} used as a porltet for containing {@link UIManageInvitationSpaces}.
+ * @author hoatle
+ *
+ */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UIConnectionsPortlet.gtmpl"
+  template = "app:/groovy/social/portlet/UIInvitationSpacesPortlet.gtmpl"
 )
-public class UIConnectionsPortlet extends UIPortletApplication {
-
-  public UIConnectionsPortlet() throws Exception {
-    addChild(UIMyConnections.class, null, null);
+public class UIInvitationSpacesPortlet extends UIPortletApplication {
+  /**
+   * constructor
+   * @throws Exception
+   */
+  public UIInvitationSpacesPortlet() throws Exception {
+    addChild(UIManageInvitationSpaces.class, null, null);
   }
-
 }

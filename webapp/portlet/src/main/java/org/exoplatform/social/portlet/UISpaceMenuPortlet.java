@@ -16,19 +16,25 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.social.webui.connections.UIMyConnections;
+import org.exoplatform.social.webui.space.UISpaceMenu;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+/**
+ * {@link UISpaceMenuPortlet} used as a portlet displaying space menu. <br />
+ * Created by The eXo Platform SARL
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Dec 15, 2008
+ */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UIConnectionsPortlet.gtmpl"
+  template = "app:/groovy/social/portlet/UISpaceMenuPortlet.gtmpl"
 )
-public class UIConnectionsPortlet extends UIPortletApplication {
 
-  public UIConnectionsPortlet() throws Exception {
-    addChild(UIMyConnections.class, null, null);
+public class UISpaceMenuPortlet extends UIPortletApplication {
+
+  public UISpaceMenuPortlet() throws  Exception {
+    addChild(UISpaceMenu.class, null, null);
   }
-
 }

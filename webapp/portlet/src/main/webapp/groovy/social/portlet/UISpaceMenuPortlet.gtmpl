@@ -1,6 +1,8 @@
+<%
+/*
 <!--
 
-    Copyright (C) 2003-2010 eXo Platform SAS.
+    Copyright (C) 2003-2007 eXo Platform SAS.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU Affero General Public License
@@ -16,12 +18,8 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<webui-configuration>
-  <application>
-    <ui-component-root>org.exoplatform.social.portlet.UIInvitationSpacesPortlet</ui-component-root>
-    <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
-    <application-lifecycle-listeners>
-      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>
-    </application-lifecycle-listeners>
-  </application>
-</webui-configuration>
+*/
+%>
+<div class="$uicomponent.id" id="$uicomponent.id">
+  <% uicomponent.renderChildren(); %>
+</div>

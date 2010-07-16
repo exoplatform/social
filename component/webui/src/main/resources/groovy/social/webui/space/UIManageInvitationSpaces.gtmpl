@@ -23,10 +23,10 @@
 <%
   import org.exoplatform.portal.webui.util.Util
   import org.exoplatform.webui.core.UIPageIterator
-  import org.exoplatform.social.space.Space
-  import org.exoplatform.social.space.SpaceUtils
+  import org.exoplatform.social.core.space.model.Space
+  import org.exoplatform.social.core.space.SpaceUtils
   import org.exoplatform.social.webui.space.UIManageMySpaces
-  import org.exoplatform.social.webui.UISpaceSearch;
+  import org.exoplatform.social.webui.space.UISpaceSearch
 
   def uicomponentId = uicomponent.id
   def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")

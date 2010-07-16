@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.webui;
+package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/UISpaceSearch.gtmpl",
+  template = "classpath:groovy/social/webui/space/UISpaceSearch.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceSearch.SearchActionListener.class)
   }

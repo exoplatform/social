@@ -16,19 +16,27 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.social.webui.connections.UIMyConnections;
+import org.exoplatform.social.webui.space.UIManagePendingSpaces;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
+/**
+ * {@link UIPendingSpacePortlet} used as a portlet containing {@link UIManagePendingSpaces}.
+ * @author hoatle
+ *
+ */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UIConnectionsPortlet.gtmpl"
+  template = "app:/groovy/social/portlet/UIPendingSpacesPortlet.gtmpl"
 )
-public class UIConnectionsPortlet extends UIPortletApplication {
 
-  public UIConnectionsPortlet() throws Exception {
-    addChild(UIMyConnections.class, null, null);
+public class UIPendingSpacesPortlet extends UIPortletApplication {
+  /**
+   * constructor
+   * @throws Exception
+   */
+  public UIPendingSpacesPortlet() throws Exception {
+    addChild(UIManagePendingSpaces.class, null, null);
   }
-
 }

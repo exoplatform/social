@@ -30,7 +30,6 @@ import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.SpaceAttachment;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.UISpaceSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;

@@ -34,7 +34,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIBreadcumbs;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.UIFilterableTree;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UITree;
 import org.exoplatform.webui.core.UIBreadcumbs.LocalPath;
@@ -60,7 +59,7 @@ import org.exoplatform.webui.form.UIForm;
    @ComponentConfig(
      type = UIFilterableTree.class,
      id = "UITreeGroupSelector",
-     template = "classpath:groovy/exoplatform/social/webui/UIFilterableTree.gtmpl",
+     template = "classpath:groovy/social/webui/UIFilterableTree.gtmpl",
      events = @EventConfig(listeners = UIFilterableTree.ChangeNodeActionListener.class, phase = Phase.DECODE)
    ),
    @ComponentConfig(
