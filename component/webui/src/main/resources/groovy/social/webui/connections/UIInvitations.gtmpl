@@ -58,7 +58,7 @@
             if (!position)
               position = "";
 
-            String imageSource = "/profile/skin/portal/webui/component/UIInvitationsPortlet/background/BLAvatar.gif";
+            String imageSource = "/social-portlet/skin/social/portlet/UIInvitationsPortlet/DefaultSkin/background/BLAvatar.gif";
             ProfileAttachment att = identity.profile.getProperty("avatar");
             if (att != null) {
               try {
