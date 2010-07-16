@@ -23,9 +23,9 @@
 
 <%
   import org.exoplatform.webui.form.UIFormTextAreaInput;
-  import org.exoplatform.social.webui.composer.UIComposerExtensionContainer;
+  import org.exoplatform.social.webui.composer.UIActivityComposerContainer;
   def requestContext = _ctx.getRequestContext();
-
+  
   //trick here, uiform does not keep submitAction for second render, portal bug?
   uicomponent.setSubmitAction("return false;");
 
@@ -38,8 +38,6 @@
     {
       composerId: '${uicomponent.getChild(UIFormTextAreaInput.class).getId()}',
       defaultInput: '$defaultInput',
-      minCharactersRequired: ${uicomponent.getMinCharactersRequired()},
-      maxCharactersAllowed: ${uicomponent.getMaxCharactersAllowed()},
       focusColor: null,
       blurColor: null,
       minHeight: null,
@@ -79,11 +77,24 @@
           </div>
         </div>
       </div>
-      <% uicomponent.renderChild(UIComposerExtensionContainer.class) %>
+      <div class="ComposerIcons FloatLeft">
+        <%
+          for(acComposer in uicomponent.activityComposers){
+            %>
+              <a href="<%= acComposer.event("Activate")%>"><img src="<%=acComposer.getIcon()%>"/></a>
+            <%
+          }
+        %>
+      </div>
       <div class="StatusShare FloatRight">
         <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage"); %>" value="$labelShare"></input>
       </div>
       <div class="ClearBoth"><span></span></div>
+    </div>
+    <div id="ComposerContainer">
+      <%
+        uicomponent.renderChild(UIActivityComposerContainer.class)
+      %>
     </div>
     <% uiform.end() %>
   </div>

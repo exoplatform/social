@@ -16,13 +16,12 @@
  */
 package org.exoplatform.social.webui.composer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.exoplatform.social.webui.composer.UIComposerExtensionContainer.Extension;
+import java.util.List;
+
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
@@ -30,126 +29,121 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
-import org.exoplatform.webui.form.validator.StringLengthValidator;
-import org.json.JSONObject;
-
 
 /**
- * UIComposer.java
  *
- * <p>
- * Allows users to type messages and then postMessage is broadcasted to its parent.
- *
- * @author    <a href="http://hoatle.net">hoatle</a>
+ * @author    zun
  * @since 	  Apr 6, 2010
- * @copyright eXo Platform SAS
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/composer/UIComposer.gtmpl",
   events = {
-    @EventConfig(listeners = UIComposer.PostMessageActionListener.class)
+    @EventConfig(listeners = UIComposer.PostMessageActionListener.class),
+    @EventConfig(listeners = UIComposer.ActivateActionListener.class)
   }
 )
 public class UIComposer extends UIForm {
+
+  public static class PostContext{
+    public final static String SPACE = "SPACE";
+    public final static String PEOPLE = "PEOPLE";
+  }
+
   public static final String EXTENSION_KEY="extension";
   public static final String DATA_KEY = "data";
   public static final String COMMENT_KEY = "comment";
 
-  private int minChactersRequired_ = 0;
-  private int maxCharactersAllowed_ = 0;
-  private UIFormTextAreaInput composerInput_;
-  private String titleData_ = null;
+  private String postContext;
+  private UIFormTextAreaInput messageInput;
+  private UIActivityComposerContainer composerContainer;
+  private List<UIActivityComposer> activityComposers;
   /**
    * Constructor
    * @throws Exception
    */
   public UIComposer() throws Exception {
-    composerInput_ = new UIFormTextAreaInput("composerInput", "composerInput", null);
-    addUIFormInput(composerInput_);
-    List<Extension> enabledExtensionList = new ArrayList<Extension>();
-    enabledExtensionList.add(Extension.LINK);
-    addChild(UIComposerExtensionContainer.class, null, null).setEnabledExtensions(enabledExtensionList);
-  }
+    //add textbox for inputting message
+    messageInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
+    addUIFormInput(messageInput);
 
-  public void setStringLengthValidator(Integer minCharacters, Integer maxCharacters) throws Exception {
-    minCharacters = minCharacters > 0 ? minCharacters : 0;
-    maxCharacters = maxCharacters > 0 ? maxCharacters : 0;
+    //load UIActivityComposerManager via PortalContainer
+    UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
+    activityComposerManager.setDefaultActivityComposer();
 
-    minChactersRequired_ = minCharacters;
-    maxCharactersAllowed_ = maxCharacters;
-    if (maxCharactersAllowed_ < minChactersRequired_) {
-      throw new IllegalArgumentException("maxCharacters is smaller than minCharacters");
+    //TODO : get all the composers and load their icon
+    activityComposers = activityComposerManager.getAllComposers();
+
+    //add composer container
+    composerContainer = addChild(UIActivityComposerContainer.class, null, null);
+    for (UIActivityComposer uiActivityComposer : activityComposers) {
+      uiActivityComposer.setRendered(false);
+      composerContainer.addChild(uiActivityComposer);
     }
-    composerInput_.addValidator(StringLengthValidator.class, minChactersRequired_, maxCharactersAllowed_);
   }
 
-  public int getMinCharactersRequired() {
-    return minChactersRequired_;
-  }
-
-  public int getMaxCharactersAllowed() {
-    return maxCharactersAllowed_;
+  public UIActivityComposerContainer getComposerContainer() {
+    return composerContainer;
   }
 
   public String getMessage() {
     return getChild(UIFormTextAreaInput.class).getValue();
   }
 
-  public void setTitleData(String titleData) {
-    titleData_ = titleData;
+  public String getPostContext() {
+    return postContext;
   }
 
-  public String getTitleData() {
-    return titleData_;
+  public void setPostContext(String postContext) {
+    this.postContext = postContext;
   }
 
-  /**
-   * Listener for postMessage
-   * @author hoatle
-   *
-   */
+  public String getActivateEvent(String activityComposerId){
+    String activityComposerFormId;
+
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    if (context instanceof PortletRequestContext)
+    {
+      activityComposerFormId = ((PortletRequestContext)context).getWindowId() + "#" + activityComposerId;
+    } else{
+      activityComposerFormId = activityComposerId;
+    }
+
+    StringBuilder b = new StringBuilder();
+    b.append("javascript:eXo.webui.UIForm.submitForm('").append(activityComposerFormId).append("','");
+    b.append("Activate").append("',true)");
+    return b.toString();
+  }
+
   public static class PostMessageActionListener extends EventListener<UIComposer> {
-
     @Override
     public void execute(Event<UIComposer> event) throws Exception {
+      //get current context
       UIComposer uiComposer = event.getSource();
-      UIComposerExtensionContainer uiComposerExtensionContainer = uiComposer.getChild(UIComposerExtensionContainer.class);
+      final String postContext = uiComposer.getPostContext();
+
+      //get current activity composer
+      UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
+      final UIActivityComposer activityComposer = activityComposerManager.getCurrentActivityComposer();
+
+      //get posted message
       String message = uiComposer.getMessage().trim();
       String defaultInput = event.getRequestContext().getApplicationResourceBundle().getString(uiComposer.getId()+".Default_Input_Write_Something");
       if (message.equals(defaultInput)) {
         message = "";
       }
-      if (uiComposerExtensionContainer.isExtensionAttached()) {
-        Map<Extension, JSONObject> data = uiComposerExtensionContainer.getData();
-        Iterator<Entry<Extension, JSONObject>> itr = data.entrySet().iterator();
-        while (itr.hasNext()) {
-          Entry<Extension, JSONObject> entry = itr.next();
-          Extension extension = entry.getKey();
-          JSONObject attachedData = entry.getValue();
-          if (Extension.LINK == extension) {
-            JSONObject titleData = new JSONObject();
-            titleData.put(EXTENSION_KEY, Extension.LINK.getExtension());
-            titleData.put(DATA_KEY, attachedData);
-            titleData.put(COMMENT_KEY, message);
-            uiComposer.setTitleData(titleData.toString());
-          } /*else if (Extension.PHOTO == extension) {
 
-          } else if (Extension.VIDEO == extension) {
-
-          }*/
-        }
-        uiComposerExtensionContainer.setExtensionAttached(false);
-        uiComposerExtensionContainer.setData(null);
-      } else {
-        uiComposer.setTitleData(message);
-      }
-      uiComposerExtensionContainer.setCurrentExtension(null);
-      event.getSource().getParent().broadcast(event, event.getExecutionPhase());
+      //post activity via the current activity composer
+      WebuiRequestContext requestContext = event.getRequestContext();
+      activityComposer.postActivity(postContext, uiComposer, requestContext, message);
     }
   }
 
-  public String getUIFormTextAreaID() {
-    return getChild(UIFormTextAreaInput.class).getId();
+  public static class ActivateActionListener extends EventListener<UIActivityComposer> {
+    @Override
+    public void execute(Event<UIActivityComposer> event) throws Exception {
+      final UIComposer composer = event.getSource().getAncestorOfType(UIComposer.class);
+      event.getRequestContext().addUIComponentToUpdateByAjax(composer);
+    }
   }
 }

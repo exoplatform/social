@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.space;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.portal.webui.container.UIContainer;
@@ -27,12 +28,8 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.webui.UIActivitiesContainer;
-import org.exoplatform.social.webui.UIActivity;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 
 /**
  * UISpaceActivitiesDisplay.java
@@ -44,11 +41,7 @@ import org.exoplatform.webui.event.EventListener;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl",
-  events = {
-    @EventConfig(listeners = UISpaceActivitiesDisplay.UpdateNewActionListener.class),
-    @EventConfig(listeners = UISpaceActivitiesDisplay.MoreActionListener.class)
-  }
+  template = "classpath:groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl"
 )
 public class UISpaceActivitiesDisplay extends UIContainer {
   static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);
@@ -94,7 +87,9 @@ public class UISpaceActivitiesDisplay extends UIContainer {
     setChildren(null); //TODO hoatle handle this for better performance
     Identity spaceIdentity = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space_.getId());
     activityList_ = getActivityManager().getActivities(spaceIdentity);
-    addChild(UIActivitiesContainer.class, null, null).setActivityList(activityList_).setIndex(0);
+    if (activityList_ != null) Collections.reverse(activityList_); //TODO sort by postedTime needed
+    final UIActivitiesContainer uiActivitiesContainer = addChild(UIActivitiesContainer.class, null, null);
+    uiActivitiesContainer.setActivityList(activityList_);
   }
 
   /**
@@ -111,38 +106,5 @@ public class UISpaceActivitiesDisplay extends UIContainer {
    */
   private ActivityManager getActivityManager() {
     return getApplicationComponent(ActivityManager.class);
-  }
-
-  static public class UpdateNewActionListener extends EventListener<UISpaceActivitiesDisplay> {
-
-    @Override
-    public void execute(Event<UISpaceActivitiesDisplay> event) throws Exception {
-      // TODO Auto-generated method stub
-
-    }
-
-  }
-
-  /**
-   * If any older activities available, populates uiActivityList for a new UIActivitiesContainer.
-   * @author hoatle
-   *
-   */
-  static public class MoreActionListener extends EventListener<UISpaceActivitiesDisplay> {
-
-    @Override
-    public void execute(Event<UISpaceActivitiesDisplay> event) throws Exception {
-
-    }
-
-  }
-
-  static public class PostCommentActionListener extends EventListener<UIActivity> {
-
-    @Override
-    public void execute(Event<UIActivity> event) throws Exception {
-
-    }
-
   }
 }

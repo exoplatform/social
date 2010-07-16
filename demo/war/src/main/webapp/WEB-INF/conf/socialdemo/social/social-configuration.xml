@@ -36,53 +36,48 @@
         </value-param>
       </init-params>
   </component>
-  <!--component>
-    <key>org.exoplatform.services.jcr.ext.backup.BackupManager</key>
-    <type>org.exoplatform.services.jcr.ext.backup.impl.BackupManagerImpl</type>
+
+  <component>
+    <key>org.exoplatform.social.webui.activity.UIActivityFactory</key>
+    <type>org.exoplatform.social.webui.activity.UIActivityFactory</type>
     <init-params>
-      <properties-param>
-        <name>backup-properties</name>
-        <property name="default-incremental-job-period" value="3600" />
-        <property name="full-backup-type" value="org.exoplatform.services.jcr.ext.backup.impl.fs.FullBackupJob" />
-        <property name="incremental-backup-type" value="org.exoplatform.services.jcr.ext.backup.impl.fs.IncrementalBackupJob" />
-        <property name="backup-dir" value="target/backup" />
-      </properties-param>
+      <values-param>
+        <name>default activity</name>
+        <value>DEFAULT_ACTIVITY</value>
+        <value>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</value>
+        <value>org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder</value>
+      </values-param>
+      <values-param>
+        <name>space auto-created activity</name>
+        <value>exosocial:spaces</value>
+        <value>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</value>
+        <value>org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder</value>
+      </values-param>
+      <values-param>
+        <name>for testing only</name>
+        <value>testType</value>
+        <value>org.exoplatform.social.webui.activity.link.UILinkActivity</value>
+        <value>org.exoplatform.social.webui.activity.link.UILinkActivityBuilder</value>
+      </values-param>
     </init-params>
-  </component>
-  <component>
-    <type>org.exoplatform.services.jcr.ext.backup.server.HTTPBackupAgent</type>
-  </component>
-  <component>
-    <type>org.exoplatform.services.jcr.ext.resource.NodeRepresentationService</type>
-  </component>
-  <component>
-     <type>org.exoplatform.services.jcr.ext.resource.jcr.Handler</type>
-  </component>
-  <component>
-    <type>org.exoplatform.services.jcr.ext.resource.representation.NtFileNodeRepresentationFactory</type>
-  </component>
-  <component>
-    <type>org.exoplatform.services.jcr.ext.resource.representation.NtResourceNodeRepresentationFactory</type>
   </component>
 
   <component>
-    <type>org.exoplatform.services.jcr.ext.script.groovy.GroovyScript2RestLoader</type>
+    <key>org.exoplatform.social.webui.composer.UIActivityComposerManager</key>
+    <type>org.exoplatform.social.webui.composer.UIActivityComposerManager</type>
     <init-params>
-      <object-param>
-        <name>observation.config</name>
-        <object type="org.exoplatform.services.jcr.ext.script.groovy.ObservationListenerConfiguration">
-          <field name="repository">
-            <string>repository</string>
-          </field>
-          <field name="workspaces">
-            <collection type="java.util.ArrayList">
-              <value>
-            <string>portal-system</string>
-              </value>
-            </collection>
-          </field>
-        </object>
-      </object-param>
+      <value-param>
+        <name>DEFAULT_ACTIVITY_COMPOSER</name>
+        <value>org.exoplatform.social.portlet.composers.UIDefaultActivityComposer</value>
+      </value-param>
+      <values-param>
+        <name>OTHER_ACTIVITY_COMPOSER</name>
+        <value>org.exoplatform.social.portlet.composers.UILinkActivityComposer</value>
+      </values-param>
+      <values-param>
+        <name>org.exoplatform.social.portlet.composers.UILinkActivityComposer</name>
+        <value>http://findicons.com/files/icons/1581/silk/16/chart_pie_link.png</value>
+      </values-param>
     </init-params>
-  </component-->
+  </component>
 </configuration>

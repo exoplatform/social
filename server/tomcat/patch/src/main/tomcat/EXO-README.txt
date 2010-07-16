@@ -151,7 +151,7 @@ Task
     * [SOC-687] - social.ear for JBoss
     * [SOC-693] - Rename Invitation/Request listing
     * [SOC-737] - Data injector
-    * [SOC-763] - Fix the invalid gatein-resources.xml in ExoResourcesSocial
+    * [SOC-763] - Fix the invalid gatein-resources.xml in social-resources
     * [SOC-783] - french translation
     * [SOC-847] - Global wording review
 
@@ -231,7 +231,7 @@ Task
     * [SOC-693] - Rename Invitation/Request listing
     * [SOC-713] - Change config when delete group which is not mandatory in user and group management
     * [SOC-762] - Create and bundle release notes
-    * [SOC-763] - Fix the invalid gatein-resources.xml in ExoResourcesSocial
+    * [SOC-763] - Fix the invalid gatein-resources.xml in social-resources
     * [SOC-781] - add the ability to specify a space in an opensocial call by it's name and not only by it's ID
     * [SOC-782] - publishing a space activity using the notation : space:UUID
     * [SOC-783] - french translation

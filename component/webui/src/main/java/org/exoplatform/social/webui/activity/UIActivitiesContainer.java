@@ -14,17 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.webui;
+package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIActivitiesContainer.java
@@ -34,15 +32,10 @@ import org.exoplatform.webui.event.EventListener;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/UIActivitiesContainer.gtmpl",
-  events = {
-    @EventConfig(listeners = UIActivitiesContainer.PostCommentActionListener.class)
-  }
+  template = "classpath:groovy/social/webui/UIActivitiesContainer.gtmpl"
 )
 public class UIActivitiesContainer extends UIContainer {
-  private List<Activity> activityList_;
-  /* this index is used for UISpaceActivitiesDisplay to know and manage updates*/
-  private int index_;
+  private List<Activity> activityList;
   /**
    * constructor
    */
@@ -50,41 +43,25 @@ public class UIActivitiesContainer extends UIContainer {
   }
 
   public UIActivitiesContainer setActivityList(List<Activity> activityList) throws Exception {
-    activityList_ = activityList;
+    this.activityList = activityList;
     init();
     return this;
   }
-
-  public void setIndex(int index) {
-    index_ = index;
-  }
-
-  public int getIndex() {
-    return index_;
-  }
-
-  public int getSize() {
-    return activityList_.size();
-  }
-
 
   /**
    * initializes ui component child
    * @throws Exception
    */
   private void init() throws Exception {
-    //sort activity list needed ?
-    if (activityList_ == null) activityList_ = new ArrayList<Activity>();
-    for (Activity activity : activityList_) {
-      addChild(UIActivity.class, null, "UIActivity" + activity.getId()).setActivity(activity);
+    if (activityList == null) {
+      activityList = new ArrayList<Activity>();
     }
-  }
 
-  static public class PostCommentActionListener extends EventListener<UIActivity> {
-
-    @Override
-    public void execute(Event<UIActivity> event) throws Exception {
-
+    for (Activity activity : activityList) {
+      final PortalContainer portalContainer = PortalContainer.getInstance();
+      UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
+      final BaseUIActivity uiActivity = factory.create(activity);
+      addChild(uiActivity);
     }
   }
 }

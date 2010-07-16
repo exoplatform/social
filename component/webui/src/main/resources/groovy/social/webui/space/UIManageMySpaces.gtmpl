@@ -104,7 +104,7 @@
       <% if (role == 1) {%>
         <a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
         <% if (imageSource == null) { %>
-          <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+          <img alt="#" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
         <% } else { %>
           <img alt="#" src="$imageSource" />
         <%}%>
@@ -134,7 +134,7 @@
       <%if (role == 2) {%>
         <a href="<%= spaceUrl %>" class="AvatarSpace">
       <% if (imageSource == null) { %>
-          <img alt="#" src="/eXoResourcesSocial/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
+          <img alt="#" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
       <% } else { %>
           <img alt="#" src="$imageSource" />
       <%}%>
