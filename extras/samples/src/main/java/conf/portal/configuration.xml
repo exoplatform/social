@@ -55,4 +55,41 @@
     </component-plugin>
     -->
   </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.webui.activity.UIActivityFactory</target-component>
+    <component-plugin>
+      <name>register.ui.activity</name>
+      <set-method>registerUIActivity</set-method>
+      <type>org.exoplatform.social.webui.activity.UIActivityPlugin</type>
+      <init-params>
+        <values-param>
+          <name>emotion activity</name>
+          <value>EMOTION_ACTIVITY</value>
+          <value>org.exoplatform.social.extras.samples.activity.UIEmotionActivity</value>
+          <value>org.exoplatform.social.extras.samples.activity.UIEmotionActivityBuilder</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.webui.composer.UIActivityComposerManager</target-component>
+    <component-plugin>
+      <name>register.activity.composer</name>
+      <set-method>registerActivityComposer</set-method>
+      <type>org.exoplatform.social.webui.composer.UIActivityComposerPlugin</type>
+      <init-params>
+        <value-param>
+          <name>ComposerClass</name>
+          <value>org.exoplatform.social.extras.samples.activity.UIEmotionActivityComposer</value>
+        </value-param>
+        <values-param>
+          <name>ComposerConfig</name>
+          <value>http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/1.gif</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
 </configuration>

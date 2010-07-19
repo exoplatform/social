@@ -37,9 +37,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/portal/webui/space/UISpaceSettingPortlet.gtmpl"
+  template = "app:/groovy/social/portlet/UISpaceSettingPortlet.gtmpl"
 )
-
 public class UISpaceSettingPortlet extends UIPortletApplication {
   private static final Log LOG = ExoLogger.getLogger(UISpaceSettingPortlet.class);
   final private UISpaceSetting uiSpaceSetting;

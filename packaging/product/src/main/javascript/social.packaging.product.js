@@ -28,7 +28,7 @@ function getProduct(version) {
 
   // starter for social
   portal.starter = new Project("org.exoplatform.portal", "exo.portal.starter.war", "war", portal.version);
-  portal.starter.deployName = "starter";
+  portal.starter.deployName = "zzzstarter";
   product.addDependencies(portal.starter);
   product.addDependencies(social.component.common);
   product.addDependencies(social.component.core);

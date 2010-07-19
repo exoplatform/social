@@ -165,9 +165,91 @@
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler</key>
+    <key>org.exoplatform.social.core.space.spi.SpaceApplicationHandler</key>
     <type>org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler</type>
   </component>
+
+  <component>
+    <key>org.exoplatform.social.core.processor.MentionsProcessor</key>
+    <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.application.ProfileUpdatesPublisher</key>
+    <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
+    <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
+    <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
+  </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>
+    <component-plugin>
+      <name>MentionsProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.activity.MentionsProcessor</type>
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower are executed first)</description>
+          <value>2</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <!--
+    <component-plugin>
+      <name>GoogleMapProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.activity.GoogleMapProcessor</type>
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower are executed first)</description>
+          <value>1</value>
+        </value-param>
+        <value-param>
+          <name>key</name>
+          <description>your google map API key</description>
+          <value>xxx</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    -->
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.space.SpaceService</target-component>
+    <component-plugin>
+      <name>SpaceActivityPublisher</name>
+      <set-method>addSpaceListener</set-method>
+      <type>org.exoplatform.social.space.SpaceActivityPublisher</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>
+    <component-plugin>
+      <name>ProfileUpdatesPublisher</name>
+      <set-method>addProfileListener</set-method>
+      <type>org.exoplatform.social.people.ProfileUpdatesPublisher</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.relationship.RelationshipManager</target-component>
+    <component-plugin>
+      <name>RelationshipPublisher</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.social.people.RelationshipPublisher</type>
+    </component-plugin>
+  </external-component-plugins>
 
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>

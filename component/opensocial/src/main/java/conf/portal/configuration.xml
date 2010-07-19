@@ -39,6 +39,11 @@
   </component>
 
   <component>
+   <key>org.exoplatform.portal.gadget.core.SecurityTokenGenerator</key>
+   <type>org.exoplatform.social.opensocial.auth.ExoSocialSecurityTokenGenerator</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.opensocial.service.ExoPeopleService</key>
     <type>org.exoplatform.social.opensocial.service.ExoPeopleService</type>
   </component>
