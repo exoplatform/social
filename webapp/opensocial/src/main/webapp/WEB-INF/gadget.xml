@@ -54,4 +54,7 @@
   <gadget name="Clock">
     <path>/gadgets/Clock/Clock.xml</path>
   </gadget>
+  <gadget name="MySpaces">
+    <path>/gadgets/MySpaces/MySpaces.xml</path>
+  </gadget>
 </gadgets>
