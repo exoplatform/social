@@ -102,8 +102,10 @@ public class SpaceUtils {
 
   static private ApplicationRegistryService appService                           = null;
 
+  //TODO hoatle: Just for CT for fast integration, this will be moved to xml config
   static public String[]                    PORTLETS_SPACE_URL_PREFERENCE_NEEDED = {
-      "SpaceActivityStreamPortlet", "SpaceSettingPortlet", "MembersPortlet"    };
+      "SpaceActivityStreamPortlet", "SpaceSettingPortlet", "MembersPortlet",
+      "ForumPortlet", "AnswersPortlet", "CalendarPortlet", "ContactPortlet"     };
 
   private static final String               REMOTE_CATEGORY_NAME                 = "remote";
 
