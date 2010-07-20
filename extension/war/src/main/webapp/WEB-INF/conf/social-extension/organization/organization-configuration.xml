@@ -371,7 +371,7 @@
     <component-plugin>
       <name>SocialGroupEventListenerImpl</name>
       <set-method>addListenerPlugin</set-method>
-      <type>org.exoplatform.social.application.impl.SocialGroupEventListenerImpl</type>
+      <type>org.exoplatform.social.core.space.impl.SocialGroupEventListenerImpl</type>
     </component-plugin>
 
   </external-component-plugins>

@@ -395,7 +395,7 @@
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/web/SocialUserToolBarGroupPortlet/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/SocialUserToolBarGroupPortlet/webui/configuration.xml</value>
     </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
