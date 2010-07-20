@@ -62,11 +62,14 @@ public class IdentityRestService implements ResourceContainer {
       _identityManager = getIdentityManager(portalName);
       String id = null;
       String viewerId = Util.getViewerId(uriInfo);
-      Identity identity = getIdentityManager(portalName).getIdentity(viewerId);
-      if (identity == null) {
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      }
+      if (viewerId != null) {
+        Identity identity = getIdentityManager(portalName).getIdentity(viewerId);
+        if (identity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
 
+      }
+            
       try {
         id = _identityManager.getOrCreateIdentity("organization", username).getId();
       } catch(Exception ex) {

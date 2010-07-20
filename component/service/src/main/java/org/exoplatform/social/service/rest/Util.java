@@ -76,6 +76,7 @@ public final class Util {
   static public String getViewerId (UriInfo uriInfo) {
     URI uri = uriInfo.getRequestUri();
     String requestString = uri.getQuery();
+    if (requestString == null) return null;
     String[] queryParts = requestString.split("&");
     String viewerId = null;
     for (String queryPart : queryParts) {
