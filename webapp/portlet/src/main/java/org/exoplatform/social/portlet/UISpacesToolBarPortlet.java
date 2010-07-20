@@ -73,6 +73,7 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
       if (ownerId.startsWith("/spaces")) {
         navigationParts = ownerId.split("/");
         space = spaceService.getSpaceByUrl(navigationParts[2]);
+        if (space == null) navigationItr.remove();
         if (!navigationParts[1].equals("spaces") && !spaces.contains(space)) navigationItr.remove();
       } else { // not spaces navigation
         navigationItr.remove();
@@ -86,12 +87,15 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
 	 SpaceService spaceSrv = getSpaceService();
 	 String remoteUser = getUserId();
 	 String spaceUrl = spaceNode.getUri();
-     if (spaceUrl.contains("/")) {
-       spaceUrl = spaceUrl.split("/")[0];
-     }
+   if (spaceUrl.contains("/")) {
+     spaceUrl = spaceUrl.split("/")[0];
+   }
 
-     Space space = spaceSrv.getSpaceByUrl(spaceUrl);
+   Space space = spaceSrv.getSpaceByUrl(spaceUrl);
 
+   // space is deleted
+   if (space == null) return false;
+   
 	 if (spaceSrv.hasEditPermission(space, remoteUser)) return true;
 
 	 String appName = applicationNode.getName();
