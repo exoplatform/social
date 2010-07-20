@@ -194,5 +194,11 @@
     <css-path>/skin/social/portlet/UIProfileNavigationPortlet/DefaultStylesheet.css</css-path>
   </portlet-skin>    
   
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialLogoPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialLogoPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin> 
 </gatein-resources>
 
