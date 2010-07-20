@@ -1,0 +1,141 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.exoplatform.portal.config.model.PageNavigation;
+  import org.exoplatform.portal.config.model.PageNode;
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.webui.organization.OrganizationUtils;
+  import org.exoplatform.portal.mop.Visibility;
+
+  def requestContext = _ctx.getRequestContext() ;
+  def jsManager = requestContext.getJavascriptManager();
+  jsManager.importJavascript('eXo.portal.UIPortalNavigation');
+  jsManager.importJavascript('eXo.portal.UIAdminToolbar');
+  jsManager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
+
+  def labelGroup = _ctx.appRes("UISocialUserToolBarGroupPortlet.label.group");
+
+  def groupNavigations = uicomponent.getGroupNavigations();
+  def portalURI = Util.getPortalRequestContext().getPortalURI();
+
+  void renderGroupPageNavigation(PageNavigation navigation) {
+    nodes = navigation.getNodes() ;
+    if(nodes.size() < 1) return ;
+    def countVisibilityNode = 0;
+    for (int idx = 0; idx < nodes.size(); idx++) {
+      if (nodes.get(idx).getVisibility() == Visibility.HIDDEN) {
+        countVisibilityNode = countVisibilityNode + 1;
+      }
+    }
+    if (countVisibilityNode == nodes.size()) return;
+    String navTitle = _ctx.appRes("UIPageNavigation.label.titleBar");
+    navTitle = navTitle.replace("{0}", OrganizationUtils.getGroupLabel(navigation.ownerId));
+
+    print """
+      <div class="TitleBar">
+        <div style="width: 99%" title="$navigation.ownerId">$navTitle</div>
+      </div>
+      <div class="SubBlock">
+    """
+    for(int i = 0; i < nodes.size(); i++) {
+      def node = nodes.get(i);
+      if (node.getVisibility() != Visibility.HIDDEN) {
+        renderPageNode(node, i%2 == 0 )
+      }
+    }
+    print """
+      </div>
+    """
+  }
+
+
+  void renderPageNode(PageNode node, boolean flag) {
+    PageNode selectedNode = uicomponent.getSelectedPageNode();
+    String tabStyleNavigation = "";
+    if(selectedNode != null && node.getUri() == selectedNode.getUri()) {
+      tabStyleNavigation = "SelectedItem";
+    }
+
+    boolean hasChild = (node.getChildren() != null && node.getChildren().size() > 0);
+    String clazz = "";
+    if(hasChild) clazz = "ArrowIcon";
+    String href = Util.getPortalRequestContext().getPortalURI() + node.getUri();
+    String icon = node.getIcon();
+    if(icon == null) icon = "DefaultPageIcon";
+    boolean toolong = (node.resolvedLabel.length() > 60);
+    String label = (toolong ? node.resolvedLabel.substring(0, 57) + "..." : node.resolvedLabel);
+    String title = "";
+    if(toolong) title = "title='$node.resolvedLabel'";
+    else title = "";
+
+    print """
+      <div class="MenuItem $tabStyleNavigation">
+      <div class="$clazz">
+    """
+
+    if(node.pageReference != null) {
+      print """<a class="ItemIcon $icon" href="$href" $title>$label</a>""";
+    } else {
+      print """<a class="ItemIcon $icon" href="#" $title>$label</a>""";
+    }
+
+    print """
+      </div>
+    """
+    if(hasChild) {
+      print """
+        <div class="MenuItemContainer" style="position: absolute; display:none">
+          <div class="SubBlock">
+      """
+      for(int j = 0; j < node.getChildren().size(); j++) {
+        renderPageNode(node.getChildren().get(j), j%2 == 0);
+      }
+      print """
+        </div>
+      </div>
+      """;
+    }
+  print """
+    </div>
+  """;
+  }
+%>
+<div class="UIUserToolBarGroupPortlet" id="$uicomponent.id">
+  <div class="UIHorizontalTabs">
+    <div class="TabsContainer">
+      <div class="UITab NormalToolbarTab">
+        <div>
+          <a class="GroupIcon TBIcon" href="${portalURI}groupnavigation">$labelGroup</a>
+        </div>
+      <% if (!groupNavigations.isEmpty()) { %>
+        <div style="display:none" class="MenuItemContainer">
+        <% for(navigation in groupNavigations) {
+          uicomponent.localizePageNavigation(navigation);
+          renderGroupPageNavigation(navigation);
+        } %>
+        </div>
+      <% } %>
+      </div>
+    </div>
+  </div>
+</div>
