@@ -28,9 +28,9 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.webui.URLUtils;
@@ -111,7 +111,7 @@ public class UISocialLogoPortlet extends UIPortletApplication {
    */
   protected String getImageSource() throws Exception {
     Profile p = getProfile(true);
-    ProfileAttachment att = (ProfileAttachment) p.getProperty(Profile.AVATAR);
+    AvatarAttachment att = (AvatarAttachment) p.getProperty(Profile.AVATAR);
     if (att != null) {
       return "/" + getRestContext() + "/jcr/" + getRepository() + "/" + att.getWorkspace()
           + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();

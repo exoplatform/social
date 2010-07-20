@@ -40,7 +40,7 @@ import org.exoplatform.services.jcr.RepositoryService;
 /*
  * This class using for attachment profile of identity, such as image.
  */
-public class ProfileAttachment {
+public class AvatarAttachment {
 
   /** The id. */
   private String id ;

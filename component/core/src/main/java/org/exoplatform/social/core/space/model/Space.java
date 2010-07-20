@@ -18,6 +18,7 @@ package org.exoplatform.social.core.space.model;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
 
 
 // TODO: Auto-generated Javadoc
@@ -72,7 +73,7 @@ public class Space {
   private String priority;
   
   /** The space attachment. */
-  private SpaceAttachment spaceAttachment;
+  private AvatarAttachment avatarAttachment;
 
   /** The Constant ACTIVE_STATUS. */
   public final static String ACTIVE_STATUS = "active";
@@ -385,8 +386,8 @@ public class Space {
    * 
    * @param spaceAttachment the new space attachment
    */
-  public void setSpaceAttachment(SpaceAttachment spaceAttachment) {
-    this.spaceAttachment = spaceAttachment;
+  public void setAvatarAttachment(AvatarAttachment avatarAttachment) {
+    this.avatarAttachment = avatarAttachment;
   }
 
   /**
@@ -394,8 +395,8 @@ public class Space {
    * 
    * @return the space attachment
    */
-  public SpaceAttachment getSpaceAttachment() {
-    return spaceAttachment;
+  public AvatarAttachment getAvatarAttachment() {
+    return avatarAttachment;
   }
   
   /**
@@ -405,10 +406,10 @@ public class Space {
    */
   public String getImageSource()  {
     try {
-    SpaceAttachment spaceAttachment = getSpaceAttachment();
-    if (spaceAttachment != null) {
+    AvatarAttachment avatarAttachment = getAvatarAttachment();
+    if (avatarAttachment != null) {
       return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-      + spaceAttachment.getWorkspace() + spaceAttachment.getDataPath() + "/?rnd="
+      + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd="
       + System.currentTimeMillis();
     }
     } catch (Exception e) {

@@ -31,9 +31,9 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.common.UserListAccess;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -197,7 +197,7 @@ public class UIMembersPortlet extends UIPortletApplication {
   public String getUserAvatar(String userId) throws Exception {
     Identity identity = getIdentityManager().getOrCreateIdentity("organization", userId);
     Profile profile = identity.getProfile();
-    ProfileAttachment attach = (ProfileAttachment) profile.getProperty(Profile.AVATAR);
+    AvatarAttachment attach = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
     if (attach != null) {
       return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository()+ "/" + attach.getWorkspace()
               + attach.getDataPath() + "/?rnd=" + System.currentTimeMillis();

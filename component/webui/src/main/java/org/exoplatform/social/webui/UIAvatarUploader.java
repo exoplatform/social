@@ -19,7 +19,7 @@ package org.exoplatform.social.webui;
 import java.io.InputStream;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.core.identity.model.ProfileAttachment;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.upload.UploadResource;
 import org.exoplatform.upload.UploadService;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -149,22 +149,22 @@ public class UIAvatarUploader extends UIForm {
         uiApplication.addMessage(new ApplicationMessage(MSG_MIMETYPE_NOT_ACCEPTED, null, ApplicationMessage.ERROR));
         ctx.addUIComponentToUpdateByAjax(uiAvatarUploader);
       } else {
-        ProfileAttachment profileAtt = new ProfileAttachment();
-        profileAtt.setInputStream(uiAvatarUploadInput.getUploadDataAsStream());
-        profileAtt.setMimeType(uploadResource.getMimeType());
+        AvatarAttachment avatarAttachment = new AvatarAttachment();
+        avatarAttachment.setInputStream(uiAvatarUploadInput.getUploadDataAsStream());
+        avatarAttachment.setMimeType(uploadResource.getMimeType());
         if (newName == null) {
           newName = uploadResource.getFileName();
         } else {
           newName = newName + "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
         }
-        profileAtt.setFileName(newName);
-        profileAtt.setLastModified(System.currentTimeMillis());
+        avatarAttachment.setFileName(newName);
+        avatarAttachment.setLastModified(System.currentTimeMillis());
 
         UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
         uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
 
         UIAvatarUploadContent uiAvatarUploadContent = uiAvatarUploader.createUIComponent(UIAvatarUploadContent.class, null, null);
-        uiAvatarUploadContent.setProfileAttachment(profileAtt);
+        uiAvatarUploadContent.setAvatarAttachment(avatarAttachment);
         uiPopup.setUIComponent(uiAvatarUploadContent);
         ctx.addUIComponentToUpdateByAjax(uiAvatarUploader.getParent());
       }

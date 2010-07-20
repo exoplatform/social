@@ -55,9 +55,9 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.ProfileAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.ProfileConfig;
 
@@ -505,7 +505,7 @@ public class IdentityStorage {
       else if (propValue instanceof List) {
         setProperty(name, (List<Map<String,Object>>) propValue, profileNode);
       }
-      else if (propValue instanceof ProfileAttachment) {
+      else if (propValue instanceof AvatarAttachment) {
         //fix id6 load
         ExtendedNode extNode = (ExtendedNode) profileNode;
         if (extNode.canAddMixin("exo:privilegeable")) {
@@ -525,7 +525,7 @@ public class IdentityStorage {
         for(AccessControlEntry accessControlEntry : permsList) {
           extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;
         }
-        ProfileAttachment profileAtt = (ProfileAttachment) propValue;
+        AvatarAttachment profileAtt = (AvatarAttachment) propValue;
         if(profileAtt.getFileName() != null) {
           Node nodeFile;
           try {
@@ -708,7 +708,7 @@ public class IdentityStorage {
       Node node = it.nextNode();
       if(node.getName().equals(PROFILE_AVATAR)) {
         if (node.isNodeType("nt:file")) {
-          ProfileAttachment file = new ProfileAttachment();
+          AvatarAttachment file = new AvatarAttachment();
           file.setId(node.getPath());
           file.setMimeType(node.getNode("jcr:content").getProperty("jcr:mimeType").getString());
           try {

@@ -18,8 +18,6 @@ package org.exoplatform.social.webui;
 
 import java.io.ByteArrayInputStream;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.download.DownloadService;
 import org.exoplatform.download.InputStreamDownloadResource;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -27,12 +25,14 @@ import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.ProfileAttachment;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.profile.UIProfile;
+import org.exoplatform.social.webui.space.UISpaceInfo;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -53,8 +53,8 @@ import org.exoplatform.webui.event.EventListener;
 )
 public class UIAvatarUploadContent extends UIContainer {
 
-  /** ProfileAttachment instance. */
-  private ProfileAttachment profileAttachment;
+  /** AvatarAttachment instance. */
+  private AvatarAttachment avatarAttachment;
 
   /** Stores information of image storage. */
   private String imageSource;
@@ -70,36 +70,36 @@ public class UIAvatarUploadContent extends UIContainer {
   /**
    * Initializes object at the first run time.<br>
    *
-   * @param profileAttachment
+   * @param AvatarAttachment
    *        Information about attachment.
    *
    * @throws Exception
    */
-  public UIAvatarUploadContent(ProfileAttachment profileAttachment) throws Exception {
-    this.profileAttachment = profileAttachment;
-    setImageSource(profileAttachment.getImageBytes());
+  public UIAvatarUploadContent(AvatarAttachment avatarAttachment) throws Exception {
+    this.avatarAttachment = avatarAttachment;
+    setImageSource(avatarAttachment.getImageBytes());
   }
 
 
   /**
-   * Gets information of profileAttachment.<br>
+   * Gets information of AvatarAttachment.<br>
    *
-   * @return profileAttachment
+   * @return AvatarAttachment
    */
-  public ProfileAttachment getProfileAttachment() {
-    return profileAttachment;
+  public AvatarAttachment getAvatarAttachment() {
+    return avatarAttachment;
   }
 
   /**
-   * Sets information of profileAttachment.<br>
+   * Sets information of AvatarAttachment.<br>
    *
-   * @param profileAttachment
+   * @param AvatarAttachment
    *
    * @throws Exception
    */
-  public void setProfileAttachment(ProfileAttachment profileAttachment) throws Exception {
-    this.profileAttachment = profileAttachment;
-    setImageSource(profileAttachment.getImageBytes());
+  public void setAvatarAttachment(AvatarAttachment avatarAttachment) throws Exception {
+    this.avatarAttachment = avatarAttachment;
+    setImageSource(avatarAttachment.getImageBytes());
   }
 
   /**
@@ -132,15 +132,26 @@ public class UIAvatarUploadContent extends UIContainer {
     @Override
     public void execute(Event<UIAvatarUploadContent> event) throws Exception {
       UIAvatarUploadContent uiAvatarUploadContent = event.getSource();
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      UIProfile uiProfile = uiAvatarUploadContent.getAncestorOfType(UIProfile.class);
-      Profile p = uiProfile.getProfile(true);
-      p.setProperty(Profile.AVATAR, uiAvatarUploadContent.getProfileAttachment());
-      im.updateAvatar(p);
+      saveAvatar(uiAvatarUploadContent);
       UIPopupWindow uiPopup = uiAvatarUploadContent.getParent();
       uiPopup.setShow(false);
       updateWorkingWorkSpace();
+    }
+    
+    private void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent) throws Exception {
+      UIComponent parent =uiAvatarUploadContent.getParent();
+      while (parent != null) {
+         if (UIProfile.class.isInstance(parent)) {
+           ((UIProfile)parent).saveAvatar(uiAvatarUploadContent);
+         } else if (UISpaceInfo.class.isInstance(parent)) {
+           UISpaceInfo uiSpaceInfo = ((UISpaceInfo)parent);
+           SpaceService spaceService = uiSpaceInfo.getSpaceService();
+           String id = uiSpaceInfo.getUIStringInput("id").getValue();
+           Space space = spaceService.getSpaceById(id);
+           uiSpaceInfo.saveAvatar(uiAvatarUploadContent, space);
+         }
+         parent = parent.getParent();
+      }
     }
   }
 
@@ -170,7 +181,7 @@ public class UIAvatarUploadContent extends UIContainer {
     ByteArrayInputStream byteImage = new ByteArrayInputStream(imageBytes);
     DownloadService downloadService = getApplicationComponent(DownloadService.class);
     InputStreamDownloadResource downloadResource = new InputStreamDownloadResource(byteImage, "image");
-    downloadResource.setDownloadName(profileAttachment.getFileName());
+    downloadResource.setDownloadName(avatarAttachment.getFileName());
     imageSource = downloadService.getDownloadLink(downloadService.addDownloadResource(downloadResource));
   }
 }

@@ -34,7 +34,7 @@ public class Profile {
   public static final String LAST_NAME = "lastName";
 
   /**
-   * property of type {@link ProfileAttachment} that contains the avatar
+   * property of type {@link AvatarAttachment} that contains the avatar
    */
   public static String AVATAR = "avatar";
 
@@ -177,10 +177,10 @@ public class Profile {
       if (avatarUrl != null) {
         return avatarUrl;
       }
-      ProfileAttachment profileAttachment = (ProfileAttachment) getProperty(AVATAR);
-      if (profileAttachment != null) {
+      AvatarAttachment avatarAttachment = (AvatarAttachment) getProperty(AVATAR);
+      if (avatarAttachment != null) {
         return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-            + profileAttachment.getWorkspace() + profileAttachment.getDataPath() + "/?rnd="
+            + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd="
             + System.currentTimeMillis();
       }
     } catch (Exception e) {
@@ -199,7 +199,7 @@ public class Profile {
 
   /**
    * Gets user's avatar image source from current portal container.
-   * uses the {@link #AVATAR_URL} if specified or loads the {@link ProfileAttachment} from the {@link #AVATAR} property
+   * uses the {@link #AVATAR_URL} if specified or loads the {@link AvatarAttachment} from the {@link #AVATAR} property
    * @return null or an url if available
    * @throws Exception
    */

@@ -88,6 +88,19 @@
       <type>org.exoplatform.social.webui.activity.UIActivityPlugin</type>
       <init-params>
         <values-param>
+          <name>book flow</name>
+          <value>space:bookflow</value>
+          <value>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</value>
+          <value>org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>register.ui.activity</name>
+      <set-method>registerUIActivity</set-method>
+      <type>org.exoplatform.social.webui.activity.UIActivityPlugin</type>
+      <init-params>
+        <values-param>
           <name>for testing only</name>
           <value>testType</value>
           <value>org.exoplatform.social.webui.activity.link.UILinkActivity</value>

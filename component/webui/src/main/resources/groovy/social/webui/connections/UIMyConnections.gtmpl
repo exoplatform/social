@@ -2,7 +2,7 @@
   import org.exoplatform.portal.webui.util.Util ;
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.webui.core.UIVirtualList;
-  import org.exoplatform.social.core.identity.model.ProfileAttachment;
+  import org.exoplatform.social.core.identity.model.AvatarAttachment;
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
@@ -93,7 +93,7 @@
           position = "";
 
         String imageSource = "/social-resources/skin/ShareImages/Avartar.gif";
-        ProfileAttachment att = id.profile.getProperty(Profile.AVATAR);
+        AvatarAttachment att = id.profile.getProperty(Profile.AVATAR);
         if (att != null) {
           try {
             imageSource = "/" + uicomponent.getPortalName()+"/rest/jcr/" + uicomponent.getRepository() + "/" + att.getWorkspace();

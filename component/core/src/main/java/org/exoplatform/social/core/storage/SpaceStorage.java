@@ -36,6 +36,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.SpaceAttachment;
 
@@ -275,7 +276,7 @@ public class SpaceStorage {
       spaceNode.setProperty(SPACE_REGISTRATION, space.getRegistration());
       spaceNode.setProperty(SPACE_PRIORITY, space.getPriority());
       //  save image to contact
-      SpaceAttachment attachment = space.getSpaceAttachment();
+      AvatarAttachment attachment = space.getAvatarAttachment();
       if (attachment != null) {
       // fix load image on IE6 UI
         ExtendedNode extNode = (ExtendedNode)spaceNode;
@@ -346,7 +347,7 @@ public class SpaceStorage {
     if(spaceNode.hasNode("image")){
       Node image = spaceNode.getNode("image");
       if (image.isNodeType("nt:file")) {
-        SpaceAttachment file = new SpaceAttachment() ;
+        AvatarAttachment file = new AvatarAttachment() ;
         file.setId(image.getPath()) ;
         file.setMimeType(image.getNode("jcr:content").getProperty("jcr:mimeType").getString()) ;
         try {
@@ -358,7 +359,7 @@ public class SpaceStorage {
         file.setFileName(image.getName()) ;
         file.setLastModified(image.getNode("jcr:content").getProperty("jcr:lastModified").getLong());
         file.setWorkspace(session.getWorkspace().getName()) ;
-        space.setSpaceAttachment(file) ;
+        space.setAvatarAttachment(file) ;
       }
     }
     return space;

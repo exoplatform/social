@@ -25,6 +25,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -262,7 +263,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
+    AvatarAttachment spaceAtt = (AvatarAttachment) space.getAvatarAttachment();
     if (spaceAtt != null) {
       return "/"+ getRestContext() + "/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
               + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();

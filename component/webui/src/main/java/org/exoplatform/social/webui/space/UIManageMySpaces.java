@@ -37,6 +37,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -232,7 +233,7 @@ public class UIManageMySpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    SpaceAttachment spaceAtt = (SpaceAttachment) space.getSpaceAttachment();
+    AvatarAttachment spaceAtt = (AvatarAttachment) space.getAvatarAttachment();
     if (spaceAtt != null) {
       return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
               + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();

@@ -19,6 +19,8 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfig;
@@ -28,9 +30,12 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.UIAvatarUploadContent;
 import org.exoplatform.social.webui.UIAvatarUploader;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -120,6 +125,13 @@ public class UISpaceInfo extends UIForm {
     getUIStringInput("tag").setValue(space.getTag());
   }
 
+  public void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent, Space space) throws Exception {
+    SpaceService spaceService = getSpaceService();
+    
+    space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
+    spaceService.saveSpace(space, false);
+  }
+  
   /**
    * Gets image source url
    *
