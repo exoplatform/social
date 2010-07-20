@@ -404,6 +404,7 @@ eXo.social.Util.makeRequest = function(url, callback, opt_refreshInterval, opt_m
 
   url = [ url, sep, "nocache=", ts ].join("");
   var params = {};
+  params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.SIGNED;
   params[gadgets.io.RequestParameters.METHOD] = method;
   params[gadgets.io.RequestParameters.CONTENT_TYPE] = contentType;
   if (postData) {

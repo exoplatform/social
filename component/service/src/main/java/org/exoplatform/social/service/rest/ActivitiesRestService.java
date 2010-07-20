@@ -36,9 +36,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 
@@ -323,7 +325,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @return commentList
    * @see CommentList
    */
-  private CommentList updateComment(String activityId, Activity comment) {
+  private CommentList updateComment(String activityId, Activity comment, UriInfo uriInfo, String portalName) {
     CommentList commentList = new CommentList();
     commentList.setActivityId(activityId);
     Activity activity = _activityManager.getActivity(activityId);
@@ -332,9 +334,36 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     _activityManager = getActivityManager();
     //TODO hoatle set current userId from authentication context instead of getting userId from comment
-    if (comment.getUserId() == null) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+//    if (comment.getUserId() == null) {
+//      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+//    }
+    ConversationState state = ConversationState.getCurrent();
+    String userId = null;
+    if (state != null) {
+      userId = state.getIdentity().getUserId();
+    } else {
+      try {
+        userId = getRemoteId(uriInfo, portalName);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
+    Identity identity = null;
+    try {
+      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
+    } catch (Exception e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+     //TODO hoatle set current userId from authentication context instead of getting userId from comment
+     if (comment.getUserId() == null) {
+       throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    } else {
+      comment.setUserId(identity.getId());
+    }
+
+         
     try {
       _activityManager.saveComment(activity, comment);
     } catch (Exception e) {
@@ -344,6 +373,25 @@ public class ActivitiesRestService implements ResourceContainer {
     return commentList;
   }
 
+  private String getRemoteId(UriInfo uriInfo, String portalName) throws Exception {
+    String viewerId = Util.getViewerId(uriInfo);
+    Identity identity = getIdentityManager(portalName).getIdentity(viewerId);
+    return identity.getRemoteId();
+  }
+
+  /**
+     * gets identityManager
+     * @return
+     */
+    private IdentityManager getIdentityManager(String portalName) {
+      if (_identityManager == null) {
+        PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
+        _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+      }
+      return _identityManager;
+    }
+
+  
   /**
    * Destroys a comment (by its commentId) from an activity (by its activityId).
    *
@@ -427,7 +475,7 @@ public class ActivitiesRestService implements ResourceContainer {
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
     CommentList commentList = null;
-    commentList = updateComment(activityId, comment);
+    commentList = updateComment(activityId, comment, uriInfo, portalName);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
 

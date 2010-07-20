@@ -51,7 +51,7 @@
             
             var moreSpaceEl = _gel("more_spaces");
             moreSpaceEl.innerHTML = '<b>My Spaces</b><a href="' + this.moreSpaces + '" target="_parent" style="margin-left: 160px;">' + 'more</a>';
-            var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/" + userId + '/mySpaces/show.json';
+            var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/mySpaces/show.json";
             mySpaces.makeRequest(siteUrl, mySpaces.displayValue);
           }
         }
@@ -59,6 +59,7 @@
 
       MySpaces.prototype.makeRequest = function(url, callback) {
         var params = {};
+        params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.SIGNED;
         params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
         params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
         mySpaces.makeCachedRequest(url, callback, params, 0);

@@ -69,9 +69,9 @@
             var portalName = this.viewer.getField('portalName');
             var restContext = this.viewer.getField('restContextName');
             if (tabId == 'myspace_id') {
-              var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/" + userId + '/mySpaces/show.json';
+              var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/mySpaces/show.json";
             } else {
-              var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/" + userId + '/pendingSpaces/show.json';
+              var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/pendingSpaces/show.json";
             }
 
             spaceList.makeRequest(siteUrl,spaceList.displayValue);
@@ -81,6 +81,7 @@
 
       SpaceList.prototype.makeRequest = function(url, callback) {
         var params = {};
+        params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.SIGNED;
         params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
         params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
         spaceList.makeCachedRequest(url, callback, params, 0);

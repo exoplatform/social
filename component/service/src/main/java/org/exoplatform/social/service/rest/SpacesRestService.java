@@ -29,10 +29,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -54,6 +56,8 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 @Path("{portalName}/social/spaces")
 public class SpacesRestService implements ResourceContainer {
   private SpaceService _spaceService;
+  private IdentityManager _identityManager;
+
   /**
    * constructor
    */
@@ -105,12 +109,19 @@ public class SpacesRestService implements ResourceContainer {
    * @throws Exception
    */
   @GET
-  @Path("{userId}/mySpaces/show.{format}")
+  @Path("mySpaces/show.{format}")
   public Response showMySpaceList(@Context UriInfo uriInfo,
-		  						  @PathParam("portalName") String portalName,
-                                  @PathParam("userId") String userId,
+		  						                @PathParam("portalName") String portalName,
                                   @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    ConversationState state = ConversationState.getCurrent();
+    String userId = null;
+    if (state != null) {
+      userId = state.getIdentity().getUserId();
+    } else {
+      userId = getRemoteId(uriInfo, portalName);
+    }
+
     SpaceList mySpaceList = showMySpaceList(userId, portalName);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
@@ -124,12 +135,16 @@ public class SpacesRestService implements ResourceContainer {
    * @throws Exception
    */
   @GET
-  @Path("{userId}/pendingSpaces/show.{format}")
+  @Path("pendingSpaces/show.{format}")
   public Response showPendingSpaceList(@Context UriInfo uriInfo,
-		  							   @PathParam("portalName") String portalName,
-                                       @PathParam("userId") String userId,
+		  							                   @PathParam("portalName") String portalName,
                                        @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    String userId = ConversationState.getCurrent().getIdentity().getUserId();
+    String remoteId = getRemoteId(uriInfo, portalName);
+    if (!userId.equals(remoteId)) {
+      return null;
+    }
     SpaceList pendingSpaceList = showPendingSpaceList(userId, portalName);
     return Util.getResponse(pendingSpaceList, uriInfo, mediaType, Response.Status.OK);
   }
@@ -172,5 +187,23 @@ public class SpacesRestService implements ResourceContainer {
   private SpaceService getSpaceService(String portalName) {
     PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
     return (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+  }
+  
+  private String getRemoteId(UriInfo uriInfo, String portalName) throws Exception {
+    String viewerId = Util.getViewerId(uriInfo);
+    Identity identity = getIdentityManager(portalName).getIdentity(viewerId);
+    return identity.getRemoteId();
+  }
+
+  /**
+   * gets identityManager
+   * @return
+   */
+  private IdentityManager getIdentityManager(String portalName) {
+    if (_identityManager == null) {
+      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
+      _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return _identityManager;
   }
 }

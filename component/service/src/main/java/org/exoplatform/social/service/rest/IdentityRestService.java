@@ -21,12 +21,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 
 /**
@@ -53,10 +56,17 @@ public class IdentityRestService implements ResourceContainer {
   @GET
   @Path("show.json")
   @Produces({MediaType.APPLICATION_JSON})
-  public UserId getId(@PathParam("username") String username,
+  public UserId getId(@Context UriInfo uriInfo,
+                      @PathParam("username") String username,
                       @PathParam("portalName") String portalName) throws Exception {
       _identityManager = getIdentityManager(portalName);
       String id = null;
+      String viewerId = Util.getViewerId(uriInfo);
+      Identity identity = getIdentityManager(portalName).getIdentity(viewerId);
+      if (identity == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+
       try {
         id = _identityManager.getOrCreateIdentity("organization", username).getId();
       } catch(Exception ex) {

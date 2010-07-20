@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.net.URI;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -64,4 +66,26 @@ public final class Util {
     }
     throw new WebApplicationException(Response.Status.BAD_REQUEST);
   }
+  
+  /**
+   * Get viewerId from servlet request data information.
+   *  
+   * @param uriInfo
+   * @return
+   */
+  static public String getViewerId (UriInfo uriInfo) {
+    URI uri = uriInfo.getRequestUri();
+    String requestString = uri.getQuery();
+    String[] queryParts = requestString.split("&");
+    String viewerId = null;
+    for (String queryPart : queryParts) {
+      if (queryPart.startsWith("opensocial_viewer_id")) {
+        viewerId = queryPart.substring(queryPart.indexOf("=") + 1, queryPart.length());
+        break;
+      }
+    }
+    
+    return viewerId;
+  }
+
 }
