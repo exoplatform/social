@@ -113,7 +113,7 @@
 }
 
 .UITabPane .ContainerSpace .ActionBar .CenterButton .SaveIcon {
-	background: url('background/SaveIcon.gif') no-repeat left;
+	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
 	line-height: 18px;
 	width: auto;
 	padding-left: 20px;
@@ -135,13 +135,13 @@
 }
 
 .UIProfile .ContainerSpace .PortletContent .DeleteIcon {
-	background: url(background/DeleteIcon.gif) no-repeat center;
+	background: url(DefaultSkin/background/DeleteIcon.gif) no-repeat center;
 	padding: 5px 6px;
 	margin-left: 4px;
 }
 
 .UIProfile .ContainerSpace .PortletContent .AddIcon {
-	background: url(background/AddIcon.gif) no-repeat center;
+	background: url(DefaultSkin/background/AddIcon.gif) no-repeat center;
 	width: 22px;
 	height: 22px;
 	padding: 5px 6px;
@@ -265,7 +265,7 @@
 }
 
 .UIProfile .ContainerSpace .FieldComponent .selectbox {
-	font-size: 11px;
+	font-size: 14px;
 }
 
 .UIProfile .ContainerSpace .FieldComponent .LV_invalid_field {
@@ -288,19 +288,19 @@
 }
 
 .UIProfile .ContainerSpace .ButtonLeft {
-	background: url("background/LeftButton.gif") no-repeat left;
+	background: url("DefaultSkin/background/LeftButton.gif") no-repeat left;
 	padding-left: 4px;
 	cursor: pointer;
 }
 
 .UIProfile .ContainerSpace .ButtonRight {
-	background: url( "background/RightButton.gif" ) no-repeat right;
+	background: url( "DefaultSkin/background/RightButton.gif" ) no-repeat right;
 	padding-right: 4px;
 	cursor: pointer;
 }
 
 .UIProfile .ContainerSpace .ButtonMiddle {
-	background: url( "background/CenterButton.gif" ) repeat-x;
+	background: url( "DefaultSkin/background/CenterButton.gif" ) repeat-x;
 	line-height: 29px;
 	padding: 0px 16px;
 	cursor: pointer;
@@ -448,8 +448,8 @@ input.hint,textarea.hint {
 }
 
 .UIProfile .Experience input {
-	height: 14px;
-	width: 203px;
+	height: 16px;
+	width: 208px;
 }
 
 .UIProfile .Experience .checkbox {
@@ -477,11 +477,11 @@ input.hint,textarea.hint {
 }
 
 .UIProfile .UIHeaderSection input {
-	height: 14px;
+	height: 16px;
 }
 
 .UIProfile .UIContactSection input {
-	height: 14px;
+	height: 16px;
 }
 
 .UIProfile .UIContactSection .UIForm td.FieldComponent {
