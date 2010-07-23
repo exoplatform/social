@@ -15,8 +15,7 @@
   </ModulePrefs>
   <Content type="html" view="home">
   <![CDATA[
-    <style type="text/css">
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css" />
     
     <script type="text/javascript">
       function MySpaces() {
@@ -112,15 +111,27 @@
       gadgets.util.registerOnLoadHandler(mySpaces.init);
     </script>
     
-    <div id="more_spaces" style="overflow: auto;"></div>
-    <div id="myspaces_id" style="overflow: auto;"></div>
+
+
+	<!-- MySpace -->
+	<div class="UIGadgetThemes UIYellowThemes">
+		<div class="TitGad ClearFix">
+			<a href="#demo" class="IconDropDown">more</a>
+			<div class="ContTit">My Spaces</div>
+		</div>
+		<div class="GadCont MySpace">
+			<a href="#demo" class="IconLink">FR Employees</a>
+			<a href="#demo" class="IconLink">Product Managers</a>
+			<a href="#demo" class="IconLink">Consulting</a>
+			<a href="#demo" class="IconLink">Support</a>
+		</div>
+	</div>
     
   ]]>
   </Content>
     <Content type="html" view="canvas">
   <![CDATA[
-    <style type="text/css">
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css" />
     
     <script type="text/javascript">
       function MySpaces() {
@@ -215,9 +226,21 @@
       gadgets.util.registerOnLoadHandler(mySpaces.init);
     </script>
     
-    <div id="more_spaces" style="overflow: auto;"></div>
-    <div id="myspaces_id" style="overflow: auto;"></div>
-    
+
+
+	<!-- MySpace -->
+	<div class="UIGadgetThemes UIYellowThemes">
+		<div class="TitGad ClearFix">
+			<a href="#demo" class="IconDropDown">more</a>
+			<div class="ContTit">My Spaces</div>
+		</div>
+		<div class="GadCont MySpace">
+			<a href="#demo" class="IconLink">FR Employees</a>
+			<a href="#demo" class="IconLink">Product Managers</a>
+			<a href="#demo" class="IconLink">Consulting</a>
+			<a href="#demo" class="IconLink">Support</a>
+		</div>
+	</div>
   ]]>
   </Content>
 </Module>
