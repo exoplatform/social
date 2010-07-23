@@ -21,12 +21,13 @@ import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
 import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class ExoAuthenticationHandlerProvider extends AuthenticationHandlerProvider {
 
   @Inject
   public ExoAuthenticationHandlerProvider(ExoUrlAuthenticationHandler urlParam,
-                                          OAuthAuthenticationHandler threeLeggedOAuth,
+                                          @Named("exo.auth.handler")OAuthAuthenticationHandler threeLeggedOAuth,
                                           AnonymousAuthenticationHandler anonymous) {
 
     super(urlParam, threeLeggedOAuth, anonymous);

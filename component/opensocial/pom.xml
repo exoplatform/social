@@ -17,7 +17,6 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-
 <project
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -140,6 +139,5 @@
       <artifactId>exo.portal.component.test.organization</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 </project>
