@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIContainer;
 
 /**
  * UIActivitiesContainer.java
@@ -57,11 +57,10 @@ public class UIActivitiesContainer extends UIContainer {
       activityList = new ArrayList<Activity>();
     }
 
-    for (Activity activity : activityList) {
-      final PortalContainer portalContainer = PortalContainer.getInstance();
-      UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
-      final BaseUIActivity uiActivity = factory.create(activity);
-      addChild(uiActivity);
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
+    for (Activity activity : activityList) {      
+      factory.addChild(activity, this);
     }
   }
 }

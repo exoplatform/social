@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -41,16 +39,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   template = "app:/groovy/social/portlet/UISpaceActivityStreamPortlet.gtmpl"
 )
 public class UISpaceActivityStreamPortlet extends UIPortletApplication {
-  static private final Log         LOG                     = ExoLogger.getLogger(UISpaceActivityStreamPortlet.class);
-
-  private Space                    space_;
-
-  private UISpaceActivitiesDisplay uiDisplaySpaceActivities_;
-
-  // TODO hoatle need to specify reasonable characters length here
-  private static final int         MIN_CHARACTERS_REQUIRED = 0;
-
-  private static final int         MAX_CHARACTERS_ALLOWED  = 500;
+  private Space space;
+  private UISpaceActivitiesDisplay uiDisplaySpaceActivities;
 
   /**
    * constructor
@@ -59,10 +49,11 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
     UIComposer uiComposer = addChild(UIComposer.class, null, null);
     uiComposer.setPostContext(UIComposer.PostContext.SPACE);
 
-//    uiComposer.setStringLengthValidator(MIN_CHARACTERS_REQUIRED, MAX_CHARACTERS_ALLOWED);
-    uiDisplaySpaceActivities_ = addChild(UISpaceActivitiesDisplay.class, null, null);
-    space_ = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
-    uiDisplaySpaceActivities_.setSpace(space_);
+    uiDisplaySpaceActivities = addChild(UISpaceActivitiesDisplay.class, null, null);
+    space = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
+    uiDisplaySpaceActivities.setSpace(space);
+    
+    uiComposer.setActivityDisplay(uiDisplaySpaceActivities);
   }
 
   public SpaceService getSpaceService() {
@@ -70,11 +61,11 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
   }
 
   public Space getSpace() {
-    return space_;
+    return space;
   }
 
   public void setSpace(Space space) {
-    space_ = space;
+    this.space = space;
   }
 
   /**
@@ -83,6 +74,6 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void refresh() throws Exception {
-    uiDisplaySpaceActivities_.setSpace(space_);
+    uiDisplaySpaceActivities.setSpace(space);
   }
 }

@@ -2,12 +2,15 @@ package org.exoplatform.social.webui.activity;
 
 import java.util.Hashtable;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.BaseComponentPlugin;
+import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.webui.core.UIComponent;
-import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.social.webui.activity.default_.UIDefaultActivity;
+import org.exoplatform.webui.ext.UIExtension;
+import org.exoplatform.webui.ext.UIExtensionManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,67 +21,28 @@ import org.exoplatform.webui.form.UIForm;
  */
 public class UIActivityFactory extends BaseComponentPlugin {
   private static final Log LOG = ExoLogger.getLogger(UIActivityFactory.class);
-
   private Hashtable<String, BaseUIActivityBuilder> builders = new Hashtable<String, BaseUIActivityBuilder>();
-  private Hashtable<String, Class<?>> classes = new Hashtable<String, Class<?>>();
-  private UIForm uiElementCreator = new UIForm();
 
   public UIActivityFactory() {
-//    try {
-//        getConfigs(params);
-//    } catch (Exception e) {
-//      LOG.error(e);
-//    }
   }
 
-//  private void getConfigs(InitParams initParams) throws Exception {
-//    final Iterator<ValuesParam> iterator = initParams.getValuesParamIterator();
-//    while(iterator.hasNext()){
-//
-//      //get configs from xml
-//      final ValuesParam valuesParam = iterator.next();
-//      final ArrayList<String> values = valuesParam.getValues();
-//      final String[] strValues = values.toArray(new String[values.size()]);
-//
-//      //get string configs
-//      String activityType = strValues[0];
-//      String uiActivityClazzStr = strValues[1];
-//      String uiActivityBuilderClazzStr = strValues[2];
-//
-//      //get class instances
-//      final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//      final Class<BaseUIActivityBuilder> uiActivityBuilderClazz = (Class<BaseUIActivityBuilder>) classLoader.loadClass(uiActivityBuilderClazzStr);
-//      final Class<UIComponent> uiActivityClazz = (Class<UIComponent>) classLoader.loadClass(uiActivityClazzStr);
-//
-//      //registering
-//      registerBuilder(activityType, uiActivityBuilderClazz.newInstance());
-//      registerClass(activityType, uiActivityClazz);
-//    }
-//  }
-
-  public void registerUIActivity(UIActivityPlugin activityPlugin) throws Exception {
-    //get class instances
-    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    final Class<BaseUIActivityBuilder> uiActivityBuilderClazz = (Class<BaseUIActivityBuilder>) classLoader.loadClass(activityPlugin.getBuilderClass());
-    final Class<UIComponent> uiActivityClazz = (Class<UIComponent>) classLoader.loadClass(activityPlugin.getActivityClass());
-
-    //registering
-    final String activityType = activityPlugin.getActivityType();
-    registerBuilder(activityType, uiActivityBuilderClazz.newInstance());
-    registerClass(activityType, uiActivityClazz);
+  public BaseUIActivity addChild(Activity activity, UIContainer parent) throws Exception {
+    final String type = activity.getType();
+    if(type!=null){
+      return buildActivity(activity, parent, type);
+    } else {
+      return buildActivity(activity, parent, UIDefaultActivity.ACTIVITY_TYPE);
+    }
   }
 
-  public BaseUIActivity create(Activity activity) throws Exception {
-    final Class<UIComponent> uiClazz = (Class<UIComponent>) getClass(activity.getType());
+  private BaseUIActivity buildActivity(Activity activity, UIContainer parent, String type) throws Exception {
+    UIExtensionManager extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
+    UIExtension activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), type);
+    BaseUIActivity uiActivity = (BaseUIActivity) extensionManager.addUIExtension(activityExtension, null, parent);
 
-    //create uiActivity via form and its class for fully created instance
-    final BaseUIActivity uiActivity = (BaseUIActivity) uiElementCreator.addChild(uiClazz, null, uiClazz.getSimpleName() + activity.getId());
-
-    //remove uiActivity from the creator immediately     (MUST-HAVE)
-    uiElementCreator.removeChildById(uiActivity.getId());
+    uiActivity.setId(uiActivity.getId()+"_"+uiActivity.hashCode());
 
     //populate data for this uiActivity
-    final String type = activity.getType();
     BaseUIActivityBuilder builder = getBuilder(type);
     return builder.populateData(uiActivity, activity);
   }
@@ -91,27 +55,13 @@ public class UIActivityFactory extends BaseComponentPlugin {
     return builder;
   }
 
-  public void registerBuilder(String activityType, BaseUIActivityBuilder builder){
+  public void registerBuilder(ActivityBuilderPlugin activityBuilderPlugin){
+    String activityType = activityBuilderPlugin.getActivityType();
+    
     if(builders.contains(activityType)){
       builders.remove(activityType);
     }
 
-    builders.put(activityType, builder);
-  }
-
-  public void registerClass(String activityType, Class<?> clazz){
-    if(classes.contains(activityType)){
-      classes.remove(activityType);
-    }
-
-    classes.put(activityType, clazz);
-  }
-
-  private Class<?> getClass(String activityType) {
-    Class<?> clazz = classes.get(activityType);
-    if(clazz == null){
-      throw new IllegalArgumentException("No builder is registered for type :" +activityType);
-    }
-    return clazz;
+    builders.put(activityType, activityBuilderPlugin.getActivityBuilder());
   }
 }

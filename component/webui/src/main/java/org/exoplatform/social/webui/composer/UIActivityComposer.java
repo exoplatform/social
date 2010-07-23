@@ -17,9 +17,9 @@
 package org.exoplatform.social.webui.composer;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -33,20 +33,18 @@ import org.exoplatform.webui.event.EventListener;
  * @copyright eXo Platform SAS
  */
 public abstract class UIActivityComposer extends UIComponent {
-  protected String icon;
-  
+  private UIContainer activityDisplay;
   public abstract void postActivity(String postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception;
   protected abstract void onClose(Event<UIActivityComposer> event);
   protected abstract void onSubmit(Event<UIActivityComposer> event);
   protected abstract void onActivate(Event<UIActivityComposer> event);
-  protected abstract void loadConfig(ValuesParam configs);
 
-  public String getIcon() {
-    return icon;
+  public void setActivityDisplay(UIContainer activityDisplay) {
+    this.activityDisplay = activityDisplay;
   }
 
-  public void setIcon(String icon) {
-    this.icon = icon;
+  public UIContainer getActivityDisplay() {
+    return activityDisplay;
   }
 
   public static class CloseActionListener extends EventListener<UIActivityComposer> {

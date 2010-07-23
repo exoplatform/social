@@ -33,7 +33,8 @@ function getModule(params) {
   new Project("org.exoplatform.social", "exo.social.component.opensocial","jar", module.version);
 
   module.component.webui =
-  new Project("org.exoplatform.social", "exo.social.component.webui","jar", module.version);
+  new Project("org.exoplatform.social", "exo.social.component.webui","jar", module.version).
+      addDependency(new Project("org.exoplatform.ecms", "exo-ecms-core-ext", "jar", "2.0.0-GA"));
 
 
   module.webapp = {};

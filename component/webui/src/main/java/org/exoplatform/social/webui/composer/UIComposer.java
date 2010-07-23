@@ -20,6 +20,7 @@ package org.exoplatform.social.webui.composer;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -27,6 +28,8 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.ext.UIExtension;
+import org.exoplatform.webui.ext.UIExtensionManager;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 
@@ -44,15 +47,10 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
   }
 )
 public class UIComposer extends UIForm {
-
   public static class PostContext{
     public final static String SPACE = "SPACE";
     public final static String PEOPLE = "PEOPLE";
   }
-
-  public static final String EXTENSION_KEY="extension";
-  public static final String DATA_KEY = "data";
-  public static final String COMMENT_KEY = "comment";
 
   private String postContext;
   private UIFormTextAreaInput messageInput;
@@ -68,21 +66,43 @@ public class UIComposer extends UIForm {
     messageInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
     addUIFormInput(messageInput);
 
-    //load UIActivityComposerManager via PortalContainer
-    activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
-    activityComposerManager.setDefaultActivityComposer();
-
-    //TODO : get all the composers and load their icon
-    activityComposers = activityComposerManager.getAllComposers();
-
     //add composer container
     composerContainer = addChild(UIActivityComposerContainer.class, null, null);
-    for (UIActivityComposer uiActivityComposer : activityComposers) {
-      uiActivityComposer.setRendered(false);
-      composerContainer.addChild(uiActivityComposer);
+    
+    //load UIActivityComposerManager via PortalContainer
+    activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
+    if(!activityComposerManager.isInitialized()){
+      initActivityComposerManager();
     }
+
+    activityComposers = activityComposerManager.getAllComposers();
   }
 
+  private void initActivityComposerManager() throws Exception {
+    UIExtensionManager uiExtensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
+    final List<UIExtension> extensionList = uiExtensionManager.getUIExtensions(UIActivityComposer.class.getName());
+
+    for (int i = 0, j = extensionList.size(); i < j; i++) {
+      final UIExtension composerExtension = extensionList.get(i);
+      if(composerExtension.getName().equals(UIActivityComposerManager.DEFAULT_ACTIVITY_COMPOSER)){
+        UIActivityComposer uiDefaultComposer = (UIActivityComposer) uiExtensionManager.addUIExtension(composerExtension, null, composerContainer);
+        composerContainer.removeChildById(uiDefaultComposer.getId());
+        uiDefaultComposer.setRendered(false);
+        activityComposerManager.setDefaultActivityComposer(uiDefaultComposer);
+      } else{
+        UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.addUIExtension(composerExtension, null, composerContainer);
+        uiActivityComposer.setRendered(false);
+        activityComposerManager.registerActivityComposer(uiActivityComposer);
+      }
+    }
+
+    activityComposerManager.setInitialized();
+  }
+
+  public void setActivityDisplay(UISpaceActivitiesDisplay uiDisplaySpaceActivities) {
+    activityComposerManager.setActivityDisplay(uiDisplaySpaceActivities);
+  }
+  
   public void setDefaultActivityComposer(){
     for (UIActivityComposer uiActivityComposer : activityComposers) {
       uiActivityComposer.setRendered(false);
@@ -92,6 +112,11 @@ public class UIComposer extends UIForm {
 
   public UIActivityComposerContainer getComposerContainer() {
     return composerContainer;
+  }
+
+  public List<UIActivityComposer> getActivityComposers() {
+    
+    return activityComposers;
   }
 
   public String getMessage() {

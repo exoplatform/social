@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.portal.webui.container.UIContainer;
@@ -45,10 +44,11 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 )
 public class UISpaceActivitiesDisplay extends UIContainer {
   static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);
-  private Space           space_;
 
-  private List<Activity> activityList_;
-
+  private Space space;
+  private List<Activity> activityList;
+  private UIActivitiesContainer uiActivitiesContainer;
+  
   /**
    * Constructor
    *
@@ -63,7 +63,7 @@ public class UISpaceActivitiesDisplay extends UIContainer {
    * @throws Exception
    */
   public void setSpace(Space space) throws Exception {
-    space_ = space;
+    this.space = space;
     init();
   }
 
@@ -72,7 +72,7 @@ public class UISpaceActivitiesDisplay extends UIContainer {
    * @return
    */
   public Space getSpace() {
-    return space_;
+    return space;
   }
 
   /**
@@ -80,16 +80,17 @@ public class UISpaceActivitiesDisplay extends UIContainer {
    * @throws Exception
    */
   private void init() throws Exception {
-    if (space_ == null) {
+    if (space == null) {
       LOG.warn("space_ is null! Can not display spaceActivites");
       return;
     }
-    setChildren(null); //TODO hoatle handle this for better performance
-    Identity spaceIdentity = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space_.getId());
-    activityList_ = getActivityManager().getActivities(spaceIdentity);
-    if (activityList_ != null) Collections.reverse(activityList_); //TODO sort by postedTime needed
-    final UIActivitiesContainer uiActivitiesContainer = addChild(UIActivitiesContainer.class, null, null);
-    uiActivitiesContainer.setActivityList(activityList_);
+    
+    Identity spaceIdentity = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId());
+    activityList = getActivityManager().getActivities(spaceIdentity);
+
+    removeChild(UIActivitiesContainer.class);
+    uiActivitiesContainer = addChild(UIActivitiesContainer.class, null, null);
+    uiActivitiesContainer.setActivityList(activityList);
   }
 
   /**

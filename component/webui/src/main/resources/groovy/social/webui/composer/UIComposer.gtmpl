@@ -83,9 +83,9 @@
       </div>
       <div class="ComposerIcons FloatLeft">
         <%
-          for(acComposer in uicomponent.activityComposers){
+          for(acComposer in uicomponent.getActivityComposers()){
             %>
-              <a href="<%= acComposer.event("Activate")%>"><img src="<%=acComposer.getIcon()%>"/></a>
+              <a class="<%=acComposer.getClass().getSimpleName()%>" href="<%= acComposer.event("Activate")%>"><%=acComposer.getClass().getSimpleName()%></a>
             <%
           }
         %>
