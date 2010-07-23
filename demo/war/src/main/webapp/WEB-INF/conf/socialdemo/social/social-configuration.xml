@@ -25,7 +25,7 @@
    <key>org.exoplatform.portal.gadget.core.SecurityTokenGenerator</key>
    <type>org.exoplatform.social.opensocial.auth.ExoSocialSecurityTokenGenerator</type>
   </component>
-  
+
   <component>
       <key>org.exoplatform.social.common.jcr.SocialDataLocation</key>
       <type>org.exoplatform.social.common.jcr.SocialDataLocation</type>
@@ -42,78 +42,78 @@
     <key>org.exoplatform.social.webui.composer.UIActivityComposerManager</key>
     <type>org.exoplatform.social.webui.composer.UIActivityComposerManager</type>
   </component>
-  
+
   <component>
     <key>org.exoplatform.social.webui.activity.UIActivityFactory</key>
     <type>org.exoplatform.social.webui.activity.UIActivityFactory</type>
   </component>
 
   <component>
-		<key>org.exoplatform.webui.ext.UIExtensionManager</key>
-		<type>org.exoplatform.webui.ext.impl.UIExtensionManagerImpl</type>
-	</component>
+    <key>org.exoplatform.webui.ext.UIExtensionManager</key>
+    <type>org.exoplatform.webui.ext.impl.UIExtensionManagerImpl</type>
+  </component>
 
   <external-component-plugins>
-		<target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
-		<component-plugin>
-			<name>add.action</name>
-			<set-method>registerUIExtensionPlugin</set-method>
-			<type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
-			<init-params>
-				<object-param>
-					<name>Default Activity</name>
-					<object type="org.exoplatform.webui.ext.UIExtension">
-						<field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-						<field name="name"><string>DEFAULT_ACTIVITY</string></field>
-						<field name="component"><string>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</string></field>
-					</object>
-				</object-param>
-				<object-param>
-					<name>Space Auto-created Activity</name>
-					<object type="org.exoplatform.webui.ext.UIExtension">
-						<field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-						<field name="name"><string>exosocial:spaces</string></field>
-						<field name="component"><string>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</string></field>
-					</object>
-				</object-param>
+    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
+    <component-plugin>
+      <name>add.action</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+      <init-params>
         <object-param>
-					<name>Link Activity</name>
-					<object type="org.exoplatform.webui.ext.UIExtension">
-						<field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-						<field name="name"><string>LINK_ACTIVITY</string></field>
-						<field name="component"><string>org.exoplatform.social.webui.activity.link.UILinkActivity</string></field>
-					</object>
-				</object-param>
-			</init-params>
-		</component-plugin>
-	</external-component-plugins>
+          <name>Default Activity</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+            <field name="name"><string>DEFAULT_ACTIVITY</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Space Auto-created Activity</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+            <field name="name"><string>exosocial:spaces</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Link Activity</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+            <field name="name"><string>LINK_ACTIVITY</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.activity.link.UILinkActivity</string></field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 
   <external-component-plugins>
-		<target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
-		<component-plugin>
-			<name>add.action</name>
-			<set-method>registerUIExtensionPlugin</set-method>
-			<type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
-			<init-params>
-				<object-param>
-					<name>Default Composer</name>
-					<object type="org.exoplatform.webui.ext.UIExtension">
-						<field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
-						<field name="name"><string>DEFAULT_ACTIVITY_COMPOSER</string></field>
-						<field name="component"><string>org.exoplatform.social.webui.composer.composers.UIDefaultActivityComposer</string></field>
-					</object>
-				</object-param>
-				<object-param>
-					<name>Space Auto-created Activity</name>
-					<object type="org.exoplatform.webui.ext.UIExtension">
-						<field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
-						<field name="name"><string>LINK_COMPOSER</string></field>
-						<field name="component"><string>org.exoplatform.social.webui.composer.composers.UILinkActivityComposer</string></field>
-					</object>
-				</object-param>
-			</init-params>
-		</component-plugin>
-	</external-component-plugins>
+    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
+    <component-plugin>
+      <name>add.action</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+      <init-params>
+        <object-param>
+          <name>Default Composer</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
+            <field name="name"><string>DEFAULT_ACTIVITY_COMPOSER</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.composer.composers.UIDefaultActivityComposer</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Space Auto-created Activity</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
+            <field name="name"><string>LINK_COMPOSER</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.composer.composers.UILinkActivityComposer</string></field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 
   <external-component-plugins>
     <target-component>org.exoplatform.social.webui.activity.UIActivityFactory</target-component>
@@ -128,7 +128,7 @@
         </value-param>
         <object-param>
           <name>ACTIVITY_BUILDER</name>
-          <object type="org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder">            
+          <object type="org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder">
           </object>
         </object-param>
       </init-params>
