@@ -4,135 +4,185 @@
  
  @import url('/social-resources/skin/portal/webui/component/UISpaceSearch/default/style.css');
  
-.UIMySpacesPortlet {
-  padding: 0px 10px 20px;
+ .clearfix:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
 }
 
-.UIMySpacesPortlet .TitleBar {
-  height: 22px;
-  color: #7d7d7d;
-  line-height: 22px;
-  text-align: center;
-  font-weight: bold;
-  padding-bottom: 5px;
-  background: #EBEBEB none repeat scroll 0 0;
-}
+.clearfix {display: inline-block;}
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */ 
+	
  
-.UIMySpacesPortlet .CenterTitleBox {
-  background: url('DefaultSkin/background/TitleBox.gif') repeat-x left -52px;
-  height: 26px;
+.UIMySpacesPortlet {
+  padding: 10px 10px 20px 10px;
+  font-family: lucida sans;
 }
 
-.UIMySpacesPortlet .LeftTitleBox {
-  background: url('DefaultSkin/background/TitleBox.gif') no-repeat left top;
-  padding-left: 15px;
+.UIMySpacesPortlet .JiraUpgrade{
+	border: 1px solid #f2e9d9;
+	background: #fffbe6;
+	padding: 4px 15px;
+	color: #f58220;
 }
 
-.UIMySpacesPortlet .RightTitleBox {
-  background: url('DefaultSkin/background/TitleBox.gif') no-repeat right -26px;
-  padding-right: 4px;
-  color: #fff;
-  line-height: 18px;
-  height: 26px;
-  font-weight: bold;
+.UIMySpacesPortlet .CautionIcon{
+	background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -264px;
+	padding-left: 25px;
+	line-height: 16px;
+	font-size: 12px;
+	font-weight: bold;
 }
 
-.UIMySpacesPortlet .NormalBox {
-  background: #fbfbfb;
-  padding: 8px 15px;
-  color: #3a3a3a;
-  margin-bottom: 1px;
+.UIMySpacesPortlet .BlastContainer {
+	background:#EAE6D7;
+	border:1px solid #EBE8D9;
+	margin-top:5px;
+	padding: 8px;
 }
 
-.UIMySpacesPortlet .GrayBox {
-  background: #f2f2f2;
-  padding: 8px 15px;
-  color: #3a3a3a;
-  margin-bottom: 1px;
+.UIMySpacesPortlet .BlastContainer .BlastInput{
+	padding: 0px 4px 4px 45px;
+	margin-bottom: 4px;
+	background: url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll 5px -194px;
 }
 
-.UIMySpacesPortlet .BoxSpaceList .Image {
-  float: left;
-  width: 58px;
-  display: block;
+.UIMySpacesPortlet .BlastContainer .BlastShare{
+	padding: 0px 0px 0px 5px;
+}
+
+.UIMySpacesPortlet .BlastContainer .Input{
+	width: 710px;
+	height: 26px;
+	line-height: 26px;
+	border: 1px solid #d6d0b4;
+}
+
+.UIMySpacesPortlet .BlastContainer .BlastShare .AttachMents{
+	float: left;
+}
+
+
+.UIMySpacesPortlet .BlastContainer .Attach1{
+	padding: 4px 7px;
+	background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -282px;
+	margin-right: 8px;
+}
+
+.UIMySpacesPortlet .BlastContainer .Attach2{
+	padding: 4px 6px;
+	background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -301px;
+	margin-right: 8px;
+}
+
+.UIMySpacesPortlet .BlastContainer .BlastShare .Button{
+	border: 1px solid #d6cfb4;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	background: white;
+	padding: 2px 10px;
+	float: right;
+	cursor: pointer;
+	margin-right: 5px;
+}
+
+.UIMySpacesPortlet .UIAction .LightBlueStyle .ButtonLeft{
+	background: none;
+}
+
+.UIMySpacesPortlet .UIAction .LightBlueStyle .ButtonRight{
+	background: none;
+}
+
+.UIMySpacesPortlet .UIAction .LightBlueStyle .ButtonMiddle{
+	background: url('DefaultSkin/background/SocIntranetBG.png') repeat-x center -233px;
+	height: 26px;
+	color: #484848;
 }
 
 .UIMySpacesPortlet .BoxSpaceList .AvatarSpace {
-  background:transparent url(DefaultSkin/background/BgProfAvartar.gif) no-repeat scroll left top;
-  float:left;
-  height:51px;
-  padding-left:4px;
-  padding-top:4px;
-  width:51px;
+	background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll left -78px;
+	float:left;
+	height:60px;
+	padding-left:4px;
+	padding-top:4px;
+	width:60px;
 }
 
-.UIMySpacesPortlet .BoxSpaceList .AvatarSpace img {
-  width: 48px;
-  height: 48px;
+.UIMySpacesPortlet .BoxSpaceList .AvatarCM {
+	background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll left -143px transparent;
+	float:left;
+	height:40px;
+	padding-left:3px;
+	padding-top:3px;
+	width:42px;
 }
 
-.UIMySpacesPortlet .BoxSpaceList .Image img {
-  width: 58px;
-  height: 58px;
+.UIMySpacesPortlet .BoxSpaceList .DownIconCM {
+	background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll 20px -323px;
+	margin-left: 74px;
+	height: 5px;
+}
+
+.UIMySpacesPortlet .BoxSpaceList .NormalBox {
+	padding: 4px 0px;
+	border-bottom: 1px solid #e2ddc7;
+}
+
+.UIMySpacesPortlet .BoxSpaceList .CommentBox {
+	padding: 4px;
+	background: #f0ede2;
+	margin: 0px 0px 2px 74px;
 }
 
 .UIMySpacesPortlet .BoxSpaceList .ContentBox {
-  padding: 0px 0px 0px 80px;
+	padding:0 0 0 74px;
+}
+
+.UIMySpacesPortlet .BoxSpaceList .CommentBox .ContentBox {
+	padding:0 0 0 54px;
 }
 
 .UIMySpacesPortlet .BoxSpaceList .ContentBox .TitleContent {
-  height: 24px;
-  border-bottom: 1px solid #ededed;
+	height:24px;
+	color: #f68a2f;
 }
 
-.UIMySpacesPortlet .BoxSpaceList .TitleContent .Icon {
-  width: 20px;
-  height: 20px;
-  float: right;
-  display: block;
-  margin-left: 5px;
+.UIMySpacesPortlet .BoxSpaceList .ContentBox .LinkCM {
+	margin: 4px 0px;
+}
+
+.UIMySpacesPortlet .BoxSpaceList .ContentBox .LinkCM .DateTime {
+	height:20px;
+	color: #808080;
+}
+
+.UIMySpacesPortlet .BoxSpaceList .ContentBox .LinkCM .LinkCM {
+	height:20px;
+	color: #28175a;
+	margin: 0px 3px;
 }
 
 .UIMySpacesPortlet .BoxSpaceList .TitleContent .Text {
-  margin-right: 50px;
-  font-weight: bold;
-  line-height: 24px;
+	font-weight:bold;
+	line-height:24px;
+	margin-right:50px;
 }
 
-.UIMySpacesPortlet .BoxSpaceList .TitleContent .Text .MembersCount{
-  margin-right: 50px;
-  font-weight: normal;
-  line-height: 24px;
-}
 
-.UIMySpacesPortlet .BoxSpaceList .ContentBox .Content {
-  line-height: 16px;
-  padding-top: 5px;
-}
 
-.UIMySpacesPortlet .BoxSpaceList .ContentBox .Content .SpaceStatus {
-  font-weight: smaller;
-  font-style: italic;
-  color:#aaaaaa
-}
 
-.UIMySpacesPortlet .IconDel {
-  background: url('DefaultSkin/background/IconDel.gif') no-repeat left top;
-}
 
-.UIMySpacesPortlet .IconEditSpaceNavigation {
-  background: url('DefaultSkin/background/IconEditSpaceNavigation.gif') no-repeat left top;
-}
 
-.UIMySpacesPortlet .IconEditSpace {
-  background: url('DefaultSkin/background/IconEditSpace.gif') no-repeat left top;
-}
 
-.UIMySpacesPortlet .IconLeaveSpace {
-  background: url('DefaultSkin/background/IconLeaveSpace.png') no-repeat left top;
-}
 
-.UIMySpacesPortlet .NotYet {
-  color:gray;
-  text-align:center;
-}
+
+
+
+

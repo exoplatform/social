@@ -24,6 +24,159 @@
   def labelMySpaceList = _ctx.appRes("${uicomponent.id}.label.MySpaceList")
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-  <div class="TitleBar">$labelMySpaceList</div>
-  <% uicomponent.renderChildren(); %>
+  <div class="JiraUpgrade">
+	<div class="CautionIcon">Jira upgrade: <span style="font-weight: normal;"> Jira will be down  for  upgrade on  12/6 between  9 and 10pm GMT</span></div>
+  </div>
+  <div class="BlastContainer">
+	<div class="BlastInput">
+		<input class="Input" type="text"/>
+	</div>
+	<div class="BlastShare clearfix">
+		<div class="AttachMents">Attach: <a href="" class="Attach1">&nbsp;</a><a href="" class="Attach2">&nbsp;</a></div>
+		<div class="Button">share</div>
+	</div>
+	
+  </div>
+  <div class="UIAction">
+	  <table class="ActionContainer">
+		<tbody>
+		  <tr>
+			<td>
+			  <div onclick="" class="ActionButton LightBlueStyle">
+				<div class="ButtonLeft">
+				  <div class="ButtonRight">
+					<div class="ButtonMiddle">
+					  <a>Conections</a>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			  <div onclick="" class="ActionButton LightBlueStyle">
+				<div class="ButtonLeft">
+				  <div class="ButtonRight">
+					<div class="ButtonMiddle">
+					  <a>Spaces </a>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			  <div onclick="" class="ActionButton LightBlueStyle">
+				<div class="ButtonLeft">
+				  <div class="ButtonRight">
+					<div class="ButtonMiddle">
+					  <a> My Status</a>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			</td>
+		  </tr>
+		</tbody>
+	  </table>
+	</div>
+	<div class="BoxSpaceList">
+		<div class="NormalBox clearfix">
+		
+		  <!-- Leader -->
+		  
+			<a class="AvatarSpace" href="">
+			
+			  <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+			
+			</a>
+			<div class="ContentBox">
+			  <div class="TitleContent">
+				<div class="Text">John Smith</div>
+			  </div>
+			  <div class="Content">
+				Amost finished the user manual review. Taking a short break....<br>
+			  </div>
+			  <div class="LinkCM">
+				<span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Comment</a>|<a class="LinkCM" href="">Like</a>
+			  </div>
+			</div>
+			<div class="DownIconCM"><span></span></div>
+		  <div class="CommentBox clearfix">
+		
+		  <!-- Leader -->
+		  
+			<a class="AvatarCM" href="">
+			
+			  <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+			
+			</a>
+			<div class="ContentBox">
+			  <div class="Content">
+				Amost finished the user manual review. Taking a short break....<br>
+			  </div>
+			  <div class="LinkCM">
+				<span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Like</a>
+			  </div>
+			</div>
+		  </div>
+		  
+		  <div class="CommentBox clearfix">
+		
+		  <!-- Leader -->
+		  
+			<a class="AvatarCM" href="">
+			
+			  <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+			
+			</a>
+			<div class="ContentBox">
+			  <div class="Content">
+				Amost finished the user manual review. Taking a short break....<br>
+			  </div>
+			  <div class="LinkCM">
+				<span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Like</a>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+		<div class="NormalBox clearfix">
+		
+		  <!-- Leader -->
+		  
+			<a class="AvatarSpace" href="">
+			
+			  <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+			
+			</a>
+			<div class="ContentBox">
+			  <div class="TitleContent">
+				<div class="Text">John Smith</div>
+			  </div>
+			  <div class="Content">
+				Amost finished the user manual review. Taking a short break....<br>
+			  </div>
+			  <div class="LinkCM">
+				<span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Comment</a>|<a class="LinkCM" href="">Like</a>
+			  </div>
+			</div>
+		</div>
+		
+		<div class="NormalBox clearfix">
+		
+		  <!-- Leader -->
+		  
+			<a class="AvatarSpace" href="">
+			
+			  <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+			
+			</a>
+			<div class="ContentBox">
+			  <div class="TitleContent">
+				<div class="Text">John Smith</div>
+			  </div>
+			  <div class="Content">
+				Amost finished the user manual review. Taking a short break....<br>
+			  </div>
+			  <div class="LinkCM">
+				<span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Comment</a>|<a class="LinkCM" href="">Like</a>
+			  </div>
+			</div>
+		</div>
+	</div>
 </div>
