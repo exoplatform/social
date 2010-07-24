@@ -31,10 +31,15 @@
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extras.widget.resources</artifactId>
   <packaging>war</packaging>
-  <name>Widget Resources</name>
+  <version>1.1.0-SNAPSHOT</version>
+  <name>eXo Social Widget (Resources)</name>
+  <description>eXo Social Widget (Resources)</description>
+
   <build>
     <finalName>socialWidgetResources</finalName>
   </build>
+
 </project>

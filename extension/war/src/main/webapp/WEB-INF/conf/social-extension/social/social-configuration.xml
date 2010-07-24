@@ -116,15 +116,7 @@
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
             <field name="name"><string>DEFAULT_ACTIVITY</string></field>
-            <field name="component"><string>org.exoplatform.social.webui.activity..UIDefaultActivity</string></field>
-          </object>
-        </object-param>
-        <object-param>
-          <name>Link Activity</name>
-          <object type="org.exoplatform.webui.ext.UIExtension">
-            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-            <field name="name"><string>LINK_ACTIVITY</string></field>
-            <field name="component"><string>org.exoplatform.social.webui.activity.link.UILinkActivity</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.activity.UIDefaultActivity</string></field>
           </object>
         </object-param>
       </init-params>
@@ -146,14 +138,6 @@
             <field name="component"><string>org.exoplatform.social.webui.composer.UIDefaultActivityComposer</string></field>
           </object>
         </object-param>
-        <object-param>
-          <name>Link Activity Composer</name>
-          <object type="org.exoplatform.webui.ext.UIExtension">
-            <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
-            <field name="name"><string>LINK_ACTIVITY_COMPOSER</string></field>
-            <field name="component"><string>org.exoplatform.social.webui.composer.UILinkActivityComposer</string></field>
-          </object>
-        </object-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>
@@ -172,22 +156,6 @@
         <object-param>
           <name>activity.builder</name>
           <object type="org.exoplatform.social.webui.activity.DefaultUIActivityBuilder">
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>register.ui.activity.builder</name>
-      <set-method>registerBuilder</set-method>
-      <type>org.exoplatform.social.webui.activity.ActivityBuilderPlugin</type>
-      <init-params>
-        <value-param>
-          <name>activity.type</name>
-          <value>LINK_ACTIVITY</value>
-        </value-param>
-        <object-param>
-          <name>activity.builder</name>
-          <object type="org.exoplatform.social.webui.activity.link.UILinkActivityBuilder">
           </object>
         </object-param>
       </init-params>

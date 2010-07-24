@@ -43,7 +43,7 @@ public class UIActivityFactory extends BaseComponentPlugin {
 
   public BaseUIActivity addChild(Activity activity, UIContainer parent) throws Exception {
     final String type = activity.getType();
-    if(type!=null){
+    if(type != null) {
       return buildActivity(activity, parent, type);
     } else {
       return buildActivity(activity, parent, UIDefaultActivity.ACTIVITY_TYPE);
@@ -53,9 +53,12 @@ public class UIActivityFactory extends BaseComponentPlugin {
   private BaseUIActivity buildActivity(Activity activity, UIContainer parent, String type) throws Exception {
     UIExtensionManager extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
     UIExtension activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), type);
+    if (activityExtension == null) {
+      activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), UIDefaultActivity.ACTIVITY_TYPE);
+    }
     BaseUIActivity uiActivity = (BaseUIActivity) extensionManager.addUIExtension(activityExtension, null, parent);
 
-    uiActivity.setId(uiActivity.getId()+"_"+uiActivity.hashCode());
+    uiActivity.setId(uiActivity.getId() + "_" + uiActivity.hashCode());
 
     //populate data for this uiActivity
     BaseUIActivityBuilder builder = getBuilder(type);
@@ -65,7 +68,8 @@ public class UIActivityFactory extends BaseComponentPlugin {
   private BaseUIActivityBuilder getBuilder(String activityType) {
     BaseUIActivityBuilder builder = builders.get(activityType);
     if(builder == null){
-      throw new IllegalArgumentException("No builder is registered for type :" +activityType);
+      builder = builders.get(UIDefaultActivity.ACTIVITY_TYPE);
+      //throw new IllegalArgumentException("No builder is registered for type :" +activityType);
     }
     return builder;
   }

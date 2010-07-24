@@ -190,11 +190,11 @@
   </component>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>
+    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
     <component-plugin>
       <name>MentionsProcessor</name>
       <set-method>addProcessorPlugin</set-method>
-      <type>org.exoplatform.social.activity.MentionsProcessor</type>
+      <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
       <init-params>
         <value-param>
           <name>priority</name>
@@ -225,29 +225,29 @@
   </external-component-plugins>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.social.space.SpaceService</target-component>
+    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
     <component-plugin>
       <name>SpaceActivityPublisher</name>
       <set-method>addSpaceListener</set-method>
-      <type>org.exoplatform.social.space.SpaceActivityPublisher</type>
+      <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
     </component-plugin>
   </external-component-plugins>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>
+    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
     <component-plugin>
       <name>ProfileUpdatesPublisher</name>
       <set-method>addProfileListener</set-method>
-      <type>org.exoplatform.social.people.ProfileUpdatesPublisher</type>
+      <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
     </component-plugin>
   </external-component-plugins>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.social.core.relationship.RelationshipManager</target-component>
+    <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
     <component-plugin>
       <name>RelationshipPublisher</name>
       <set-method>addListenerPlugin</set-method>
-      <type>org.exoplatform.social.people.RelationshipPublisher</type>
+      <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
     </component-plugin>
   </external-component-plugins>
 
