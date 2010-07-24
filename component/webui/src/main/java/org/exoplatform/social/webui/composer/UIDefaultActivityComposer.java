@@ -1,4 +1,4 @@
-package org.exoplatform.social.webui.composer.composers;
+package org.exoplatform.social.webui.composer;
 
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -8,9 +8,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.activity.default_.UIDefaultActivity;
-import org.exoplatform.social.webui.composer.UIActivityComposer;
-import org.exoplatform.social.webui.composer.UIComposer;
+import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;

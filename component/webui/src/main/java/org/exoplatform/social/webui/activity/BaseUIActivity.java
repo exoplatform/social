@@ -41,9 +41,9 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 
 /**
- * UIActivity.java
+ * BaseUIActivity.java
  * <p>
- * Displays activity
+ * Displays base activity
  * </p>
  * @author    <a href="http://hoatle.net">hoatle</a>
  * @since     Apr 12, 2010

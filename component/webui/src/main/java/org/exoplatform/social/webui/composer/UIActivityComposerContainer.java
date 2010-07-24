@@ -23,7 +23,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
  * UIActivitiesContainer.java
  *
  * @author    <a href="http://hoatle.net">hoatle</a>
- * @since 	  Apr 12, 2010
+ * @since     Apr 12, 2010
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(

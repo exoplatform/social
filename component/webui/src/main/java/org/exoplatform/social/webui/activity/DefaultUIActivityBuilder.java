@@ -19,22 +19,14 @@ package org.exoplatform.social.webui.activity;
 import org.exoplatform.social.core.activity.model.Activity;
 
 /**
- * BaseUIActivityBuilder.java
+ * DefaultUIActivityBuilder.java
  *
  * @author    zun
- * @since     Jul 22, 2010
+ * @since     Jul 28, 2010
  * @copyright eXo Platform SAS
  */
-public abstract class BaseUIActivityBuilder {
-  public BaseUIActivity populateData(BaseUIActivity uiActivity, Activity activity){
-    initBaseUIActivity(uiActivity, activity);
-    extendUIActivity(uiActivity, activity);
-    return uiActivity;
+public class DefaultUIActivityBuilder extends BaseUIActivityBuilder {
+  @Override
+  protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
   }
-
-  private void initBaseUIActivity(BaseUIActivity uiActivity, Activity activity) {
-    uiActivity.setActivity(activity);
-  }
-
-  protected abstract void extendUIActivity(BaseUIActivity uiActivity, Activity activity);
 }

@@ -17,6 +17,7 @@ function getModule(params) {
   module.name = "social";
 
   var shindigVersion = "${org.shindig.version}";
+  var platformCommonsVersion = "${org.exoplatform.commons.version}";
 
   module.component = {} ;
   module.component.common =
@@ -34,16 +35,18 @@ function getModule(params) {
 
   module.component.webui =
   new Project("org.exoplatform.social", "exo.social.component.webui","jar", module.version).
-      addDependency(new Project("org.exoplatform.ecms", "exo-ecms-core-ext", "jar", "2.0.0-GA"));
+      addDependency(new Project("org.exoplatform.commons", "exo.platform.commons.webui.ext", "jar", platformCommonsVersion));
 
 
   module.webapp = {};
 
-  module.webapp.opensocial = new Project("org.exoplatform.social", "exo.social.webapp.opensocial", "war", module.version).
+  module.webapp.opensocial = new Project("org.exoplatform.social", "exo.social.webapp.opensocial", "war", module.version);
+  /*
     addDependency(new Project("commons-betwixt", "commons-betwixt", "jar", "0.8")).
     addDependency(new Project("net.sf.json-lib", "json-lib", "jar", "2.2")).
     addDependency(new Project("org.gatein.shindig", "shindig-social-api", "jar", shindigVersion)).
     addDependency(new Project("org.apache.geronimo.specs", "geronimo-stax-api_1.0_spec", "jar", "1.0.1"));
+  */
   module.webapp.opensocial.deployName = "social";
 
   module.webapp.portlet = new Project("org.exoplatform.social", "exo.social.webapp.portlet", "war", module.version);

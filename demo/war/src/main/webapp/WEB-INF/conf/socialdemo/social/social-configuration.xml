@@ -65,15 +65,7 @@
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
             <field name="name"><string>DEFAULT_ACTIVITY</string></field>
-            <field name="component"><string>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</string></field>
-          </object>
-        </object-param>
-        <object-param>
-          <name>Space Auto-created Activity</name>
-          <object type="org.exoplatform.webui.ext.UIExtension">
-            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-            <field name="name"><string>exosocial:spaces</string></field>
-            <field name="component"><string>org.exoplatform.social.webui.activity.default_.UIDefaultActivity</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.activity.UIDefaultActivity</string></field>
           </object>
         </object-param>
         <object-param>
@@ -100,15 +92,15 @@
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
             <field name="name"><string>DEFAULT_ACTIVITY_COMPOSER</string></field>
-            <field name="component"><string>org.exoplatform.social.webui.composer.composers.UIDefaultActivityComposer</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.composer.UIDefaultActivityComposer</string></field>
           </object>
         </object-param>
         <object-param>
-          <name>Space Auto-created Activity</name>
+          <name>Link Activity Composer</name>
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
-            <field name="name"><string>LINK_COMPOSER</string></field>
-            <field name="component"><string>org.exoplatform.social.webui.composer.composers.UILinkActivityComposer</string></field>
+            <field name="name"><string>LINK_ACTIVITY_COMPOSER</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.composer.UILinkActivityComposer</string></field>
           </object>
         </object-param>
       </init-params>
@@ -123,12 +115,12 @@
       <type>org.exoplatform.social.webui.activity.ActivityBuilderPlugin</type>
       <init-params>
         <value-param>
-          <name>ACTIVITY_TYPE</name>
+          <name>activity.type</name>
           <value>DEFAULT_ACTIVITY</value>
         </value-param>
         <object-param>
-          <name>ACTIVITY_BUILDER</name>
-          <object type="org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder">
+          <name>activity.builder</name>
+          <object type="org.exoplatform.social.webui.activity.DefaultUIActivityBuilder">
           </object>
         </object-param>
       </init-params>
@@ -139,27 +131,11 @@
       <type>org.exoplatform.social.webui.activity.ActivityBuilderPlugin</type>
       <init-params>
         <value-param>
-          <name>ACTIVITY_TYPE</name>
-          <value>exosocial:spaces</value>
-        </value-param>
-        <object-param>
-          <name>ACTIVITY_BUILDER</name>
-          <object type="org.exoplatform.social.webui.activity.default_.DefaultUIActivityBuilder">
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>register.ui.activity.builder</name>
-      <set-method>registerBuilder</set-method>
-      <type>org.exoplatform.social.webui.activity.ActivityBuilderPlugin</type>
-      <init-params>
-        <value-param>
-          <name>ACTIVITY_TYPE</name>
+          <name>activity.type</name>
           <value>LINK_ACTIVITY</value>
         </value-param>
         <object-param>
-          <name>ACTIVITY_BUILDER</name>
+          <name>activity.builder</name>
           <object type="org.exoplatform.social.webui.activity.link.UILinkActivityBuilder">
           </object>
         </object-param>

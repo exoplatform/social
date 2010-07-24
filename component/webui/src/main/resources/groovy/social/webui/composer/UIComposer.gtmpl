@@ -85,20 +85,20 @@
         <%
           for(acComposer in uicomponent.getActivityComposers()){
             %>
-              <a class="<%=acComposer.getClass().getSimpleName()%>" href="<%= acComposer.event("Activate")%>"><%=acComposer.getClass().getSimpleName()%></a>
+              <div class="ComposerExtension <%=acComposer.getClass().getSimpleName()%>" onclick="<%= acComposer.event("Activate")%>"><%=acComposer.getClass().getSimpleName()%></div>
             <%
           }
+        %>
+      </div>
+      <div id="ComposerContainer" class="ClearLeft">
+        <%
+          uicomponent.renderChild(UIActivityComposerContainer.class)
         %>
       </div>
       <div class="StatusShare FloatRight">
         <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage"); %>" value="$labelShare"></input>
       </div>
       <div class="ClearBoth"><span></span></div>
-    </div>
-    <div id="ComposerContainer">
-      <%
-        uicomponent.renderChild(UIActivityComposerContainer.class)
-      %>
     </div>
     <% uiform.end() %>
   </div>

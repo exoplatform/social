@@ -26,10 +26,10 @@ import org.exoplatform.webui.event.EventListener;
 /**
  * UIComposerExtention.java
  * <p>
- * This ui component contains action links to invoke corresponding uiextension (link, photo, video...) 
+ * This ui component contains action links to invoke corresponding ui extension (link, photo, video...)
  * </p>
  * @author    <a href="http://hoatle.net">hoatle</a>
- * @since 	  Apr 19, 2010
+ * @since     Apr 19, 2010
  * @copyright eXo Platform SAS
  */
 public abstract class UIActivityComposer extends UIComponent {
@@ -59,7 +59,7 @@ public abstract class UIActivityComposer extends UIComponent {
       activityComposer.onClose(event);
     }
   }
-  
+
   public static class SubmitContentActionListener extends EventListener<UIActivityComposer> {
     @Override
     public void execute(Event<UIActivityComposer> event) throws Exception {
@@ -81,4 +81,4 @@ public abstract class UIActivityComposer extends UIComponent {
       activityComposer.onActivate(event);
     }
   }
-}                   
+}

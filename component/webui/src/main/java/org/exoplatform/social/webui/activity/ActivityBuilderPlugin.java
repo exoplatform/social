@@ -1,23 +1,39 @@
+/*
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.social.webui.activity;
 
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
 
 /**
- * Created by IntelliJ IDEA.
- * User: zun
- * Date: Jul 21, 2010
- * Time: 11:20:58 AM
- * To change this template use File | Settings | File Templates.
+ * ActivityBuilderPlugin.java
+ *
+ * @author    zun
+ * @since     Jul 21, 2010
+ * @copyright eXo Platform SAS
  */
 public class ActivityBuilderPlugin extends BaseComponentPlugin {
   private String activityType;
   private BaseUIActivityBuilder activityBuilder;
-  private static final String ACTIVITY_TYPE = "ACTIVITY_TYPE";
-  private static final String ACTIVITY_BUILDER = "ACTIVITY_BUILDER";
+  private static final String ACTIVITY_TYPE = "activity.type";
+  private static final String ACTIVITY_BUILDER = "activity.builder";
 
   public ActivityBuilderPlugin(InitParams params) {
-    activityType = params.getValueParam(ACTIVITY_TYPE).getValue();    
+    activityType = params.getValueParam(ACTIVITY_TYPE).getValue();
     activityBuilder = (BaseUIActivityBuilder) params.getObjectParam(ACTIVITY_BUILDER).getObject();
   }
 

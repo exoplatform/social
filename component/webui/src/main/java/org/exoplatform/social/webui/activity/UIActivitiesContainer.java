@@ -59,7 +59,7 @@ public class UIActivitiesContainer extends UIContainer {
 
     PortalContainer portalContainer = PortalContainer.getInstance();
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
-    for (Activity activity : activityList) {      
+    for (Activity activity : activityList) {
       factory.addChild(activity, this);
     }
   }

@@ -1,6 +1,5 @@
-package org.exoplatform.social.webui.composer.composers;
+package org.exoplatform.social.webui.composer;
 
-import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
