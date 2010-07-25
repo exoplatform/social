@@ -9,6 +9,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
+import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -27,7 +28,7 @@ import org.exoplatform.webui.event.Event;
 @ComponentConfig()
 public class UIDefaultActivityComposer extends UIActivityComposer {
   @Override
-  public void postActivity(String postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+  public void postActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
     if(postContext == UIComposer.PostContext.SPACE){
       UIApplication uiApplication = requestContext.getUIApplication();
       if (postedMessage.equals("")) {

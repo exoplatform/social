@@ -47,12 +47,13 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
   }
 )
 public class UIComposer extends UIForm {
-  public static class PostContext{
-    public final static String SPACE = "SPACE";
-    public final static String PEOPLE = "PEOPLE";
+
+  public enum PostContext {
+    SPACE,
+    PEOPLE
   }
 
-  private String postContext;
+  private PostContext postContext;
   private UIFormTextAreaInput messageInput;
   private UIActivityComposerContainer composerContainer;
   private UIActivityComposerManager activityComposerManager;
@@ -68,7 +69,7 @@ public class UIComposer extends UIForm {
 
     //add composer container
     composerContainer = addChild(UIActivityComposerContainer.class, null, null);
-    
+
     //load UIActivityComposerManager via PortalContainer
     activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
     if(!activityComposerManager.isInitialized()){
@@ -102,7 +103,7 @@ public class UIComposer extends UIForm {
   public void setActivityDisplay(UISpaceActivitiesDisplay uiDisplaySpaceActivities) {
     activityComposerManager.setActivityDisplay(uiDisplaySpaceActivities);
   }
-  
+
   public void setDefaultActivityComposer(){
     for (UIActivityComposer uiActivityComposer : activityComposers) {
       uiActivityComposer.setRendered(false);
@@ -115,7 +116,7 @@ public class UIComposer extends UIForm {
   }
 
   public List<UIActivityComposer> getActivityComposers() {
-    
+
     return activityComposers;
   }
 
@@ -123,11 +124,11 @@ public class UIComposer extends UIForm {
     return getChild(UIFormTextAreaInput.class).getValue();
   }
 
-  public String getPostContext() {
+  public PostContext getPostContext() {
     return postContext;
   }
 
-  public void setPostContext(String postContext) {
+  public void setPostContext(PostContext postContext) {
     this.postContext = postContext;
   }
 
@@ -153,7 +154,7 @@ public class UIComposer extends UIForm {
     public void execute(Event<UIComposer> event) throws Exception {
       //get current context
       UIComposer uiComposer = event.getSource();
-      final String postContext = uiComposer.getPostContext();
+      final PostContext postContext = uiComposer.getPostContext();
 
       //get current activity composer
       UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);

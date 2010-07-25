@@ -1,5 +1,6 @@
 package org.exoplatform.social.webui.composer;
 
+import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -26,8 +27,8 @@ import org.exoplatform.webui.event.Event;
 public class UILinkActivityComposer extends UIActivityComposer {
 
   @Override
-  public void postActivity(String postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
-    
+  public void postActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+
   }
 
   @Override

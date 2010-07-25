@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.composer;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIContainer;
@@ -34,7 +35,7 @@ import org.exoplatform.webui.event.EventListener;
  */
 public abstract class UIActivityComposer extends UIComponent {
   private UIContainer activityDisplay;
-  public abstract void postActivity(String postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception;
+  public abstract void postActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception;
   protected abstract void onClose(Event<UIActivityComposer> event);
   protected abstract void onSubmit(Event<UIActivityComposer> event);
   protected abstract void onActivate(Event<UIActivityComposer> event);
