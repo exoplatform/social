@@ -1,0 +1,171 @@
+
+.clearfix:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
+}
+
+.clearfix {display: inline-block;}
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
+
+
+.UIUserActivityStreamPortlet {
+  padding: 10px 10px 20px 10px;
+  font-family: lucida sans;
+}
+
+.UIUserActivityStreamPortlet .JiraUpgrade{
+  border: 1px solid #f2e9d9;
+  background: #fffbe6;
+  padding: 4px 15px;
+  color: #f58220;
+}
+
+.UIUserActivityStreamPortlet .CautionIcon{
+  background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -264px;
+  padding-left: 25px;
+  line-height: 16px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.UIUserActivityStreamPortlet .BlastContainer {
+  background:#EAE6D7;
+  border:1px solid #EBE8D9;
+  margin-top:5px;
+  padding: 8px;
+}
+
+.UIUserActivityStreamPortlet .BlastContainer .BlastInput{
+  padding: 0px 4px 4px 45px;
+  margin-bottom: 4px;
+  background: url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll 5px -194px;
+}
+
+.UIUserActivityStreamPortlet .BlastContainer .BlastShare{
+  padding: 0px 0px 0px 5px;
+}
+
+.UIUserActivityStreamPortlet .BlastContainer .Input{
+  width: 710px;
+  height: 26px;
+  line-height: 26px;
+  border: 1px solid #d6d0b4;
+}
+
+.UIUserActivityStreamPortlet .BlastContainer .BlastShare .AttachMents{
+  float: left;
+}
+
+
+.UIUserActivityStreamPortlet .BlastContainer .Attach1{
+  padding: 4px 7px;
+  background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -282px;
+  margin-right: 8px;
+}
+
+.UIUserActivityStreamPortlet .BlastContainer .Attach2{
+  padding: 4px 6px;
+  background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -301px;
+  margin-right: 8px;
+}
+
+.UIUserActivityStreamPortlet .BlastContainer .BlastShare .Button{
+  border: 1px solid #d6cfb4;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  background: white;
+  padding: 2px 10px;
+  float: right;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonLeft{
+  background: none;
+}
+
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonRight{
+  background: none;
+}
+
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonMiddle{
+  background: url('DefaultSkin/background/SocIntranetBG.png') repeat-x center -233px;
+  height: 26px;
+  color: #484848;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .AvatarSpace {
+  background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll left -78px;
+  float:left;
+  height:60px;
+  padding-left:4px;
+  padding-top:4px;
+  width:60px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .AvatarCM {
+  background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll left -143px transparent;
+  float:left;
+  height:40px;
+  padding-left:3px;
+  padding-top:3px;
+  width:42px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .DownIconCM {
+  background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll 20px -323px;
+  margin-left: 74px;
+  height: 5px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .NormalBox {
+  padding: 4px 0px;
+  border-bottom: 1px solid #e2ddc7;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .CommentBox {
+  padding: 4px;
+  background: #f0ede2;
+  margin: 0px 0px 2px 74px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .ContentBox {
+  padding:0 0 0 74px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .CommentBox .ContentBox {
+  padding:0 0 0 54px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .ContentBox .TitleContent {
+  height:24px;
+  color: #f68a2f;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .ContentBox .LinkCM {
+  margin: 4px 0px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .ContentBox .LinkCM .DateTime {
+  height:20px;
+  color: #808080;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .ContentBox .LinkCM .LinkCM {
+  height:20px;
+  color: #28175a;
+  margin: 0px 3px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .TitleContent .Text {
+  font-weight:bold;
+  line-height:24px;
+  margin-right:50px;
+}
