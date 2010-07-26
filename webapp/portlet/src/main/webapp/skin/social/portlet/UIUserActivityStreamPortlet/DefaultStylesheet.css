@@ -1,4 +1,7 @@
 
+/*UIComposer style*/
+@import url('/social-resources/skin/social/webui/UIComposer/DefaultSkin.css');
+
 .clearfix:after {
 content: ".";
 display: block;
@@ -20,89 +23,52 @@ visibility: hidden;
   font-family: lucida sans;
 }
 
-.UIUserActivityStreamPortlet .JiraUpgrade{
+.UIUserActivityStreamPortlet .JiraUpgrade {
   border: 1px solid #f2e9d9;
   background: #fffbe6;
   padding: 4px 15px;
   color: #f58220;
 }
 
-.UIUserActivityStreamPortlet .CautionIcon{
-  background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -264px;
+.UIUserActivityStreamPortlet .CautionIcon {
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -264px;
   padding-left: 25px;
   line-height: 16px;
   font-size: 12px;
   font-weight: bold;
+
 }
 
-.UIUserActivityStreamPortlet .BlastContainer {
-  background:#EAE6D7;
-  border:1px solid #EBE8D9;
-  margin-top:5px;
-  padding: 8px;
-}
-
-.UIUserActivityStreamPortlet .BlastContainer .BlastInput{
-  padding: 0px 4px 4px 45px;
-  margin-bottom: 4px;
-  background: url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll 5px -194px;
-}
-
-.UIUserActivityStreamPortlet .BlastContainer .BlastShare{
-  padding: 0px 0px 0px 5px;
-}
-
-.UIUserActivityStreamPortlet .BlastContainer .Input{
-  width: 710px;
-  height: 26px;
-  line-height: 26px;
-  border: 1px solid #d6d0b4;
-}
-
-.UIUserActivityStreamPortlet .BlastContainer .BlastShare .AttachMents{
-  float: left;
-}
-
-
-.UIUserActivityStreamPortlet .BlastContainer .Attach1{
-  padding: 4px 7px;
-  background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -282px;
-  margin-right: 8px;
-}
-
-.UIUserActivityStreamPortlet .BlastContainer .Attach2{
-  padding: 4px 6px;
-  background: url('DefaultSkin/background/SocIntranetBG.png') no-repeat left -301px;
-  margin-right: 8px;
-}
-
-.UIUserActivityStreamPortlet .BlastContainer .BlastShare .Button{
-  border: 1px solid #d6cfb4;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  background: white;
-  padding: 2px 10px;
-  float: right;
-  cursor: pointer;
-  margin-right: 5px;
-}
-
-.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonLeft{
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonLeft {
   background: none;
 }
 
-.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonRight{
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonRight {
   background: none;
 }
 
-.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonMiddle{
-  background: url('DefaultSkin/background/SocIntranetBG.png') repeat-x center -233px;
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonMiddle {
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') repeat-x center -233px;
   height: 26px;
   color: #484848;
 }
 
+.UIUserActivityStreamPortlet .UIAction .DarkBlueStyle .ButtonMiddle {
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') repeat-x center -338px;
+  height: 26px;
+  display:table-cell;
+  line-height:22px;
+  padding:0 12px;
+  text-align:center;
+  white-space:nowrap;
+}
+
+.UIUserActivityStreamPortlet .UIAction .DarkBlueStyle .ButtonMiddle a {
+  color: #bcbcbc;
+}
+
 .UIUserActivityStreamPortlet .BoxSpaceList .AvatarSpace {
-  background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll left -78px;
+  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll left -78px;
   float:left;
   height:60px;
   padding-left:4px;
@@ -111,7 +77,7 @@ visibility: hidden;
 }
 
 .UIUserActivityStreamPortlet .BoxSpaceList .AvatarCM {
-  background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll left -143px transparent;
+  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll left -143px transparent;
   float:left;
   height:40px;
   padding-left:3px;
@@ -120,7 +86,7 @@ visibility: hidden;
 }
 
 .UIUserActivityStreamPortlet .BoxSpaceList .DownIconCM {
-  background:url("DefaultSkin/background/SocIntranetBG.png") no-repeat scroll 20px -323px;
+  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll 20px -323px;
   margin-left: 74px;
   height: 5px;
 }
@@ -128,6 +94,29 @@ visibility: hidden;
 .UIUserActivityStreamPortlet .BoxSpaceList .NormalBox {
   padding: 4px 0px;
   border-bottom: 1px solid #e2ddc7;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .NormalBox .CommentForm {
+  border: 1px solid #e2ddc7;
+  background: white;
+
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .NormalBox .CommentBox textarea {
+  width: 99%;
+  height: 30px;
+  font-size: 11px;
+}
+
+.UIUserActivityStreamPortlet .BoxSpaceList .NormalBox .CommentBox .Button {
+  border: 1px solid #d6cfb4;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  background: white;
+  padding: 2px 10px;
+  float: right;
+  cursor: pointer;
+  margin-right: 5px;
 }
 
 .UIUserActivityStreamPortlet .BoxSpaceList .CommentBox {
@@ -169,3 +158,4 @@ visibility: hidden;
   line-height:24px;
   margin-right:50px;
 }
+

@@ -20,26 +20,20 @@
 -->
 */
 %>
+
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="JiraUpgrade">
     <div class="CautionIcon">Jira upgrade: <span style="font-weight: normal;"> Jira will be down  for  upgrade on  12/6 between  9 and 10pm GMT</span></div>
   </div>
-  <div class="BlastContainer">
-    <div class="BlastInput">
-        <input class="Input" type="text"/>
-    </div>
-    <div class="BlastShare clearfix">
-        <div class="AttachMents">Attach: <a href="" class="Attach1">&nbsp;</a><a href="" class="Attach2">&nbsp;</a></div>
-        <div class="Button">share</div>
-    </div>
 
-  </div>
+  <% uicomponent.renderChildren();%>
+
   <div class="UIAction">
       <table class="ActionContainer">
         <tbody>
           <tr>
             <td>
-              <div onclick="" class="ActionButton LightBlueStyle">
+              <div onclick="" class="ActionButton DarkBlueStyle">
                 <div class="ButtonLeft">
                   <div class="ButtonRight">
                     <div class="ButtonMiddle">
@@ -78,7 +72,7 @@
 
             <a class="AvatarSpace" href="">
 
-              <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+              <img width='56px' height='54px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
 
             </a>
             <div class="ContentBox">
@@ -99,7 +93,7 @@
 
             <a class="AvatarCM" href="">
 
-              <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+              <img width='38px' height='36px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
 
             </a>
             <div class="ContentBox">
@@ -107,9 +101,10 @@
                 Amost finished the user manual review. Taking a short break....<br>
               </div>
               <div class="LinkCM">
-                <span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Like</a>
+                <span class="DateTime">June 23 at 3:31pm  * </span>
               </div>
             </div>
+
           </div>
 
           <div class="CommentBox clearfix">
@@ -118,7 +113,7 @@
 
             <a class="AvatarCM" href="">
 
-              <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+              <img width='38px' height='36px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
 
             </a>
             <div class="ContentBox">
@@ -126,9 +121,13 @@
                 Amost finished the user manual review. Taking a short break....<br>
               </div>
               <div class="LinkCM">
-                <span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Like</a>
+                <span class="DateTime">June 23 at 3:31pm  * </span>
               </div>
             </div>
+          </div>
+          <div class="CommentBox clearfix">
+                <textarea class="CommentForm" name="Comment" wrap ="soft"></textarea>
+                <div class="Button">Comment</div>
           </div>
         </div>
 
@@ -138,7 +137,7 @@
 
             <a class="AvatarSpace" href="">
 
-              <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+              <img width='56px' height='54px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
 
             </a>
             <div class="ContentBox">
@@ -160,7 +159,7 @@
 
             <a class="AvatarSpace" href="">
 
-              <img src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
+              <img width='56px' height='54px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
 
             </a>
             <div class="ContentBox">

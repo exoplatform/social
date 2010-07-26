@@ -17,6 +17,7 @@
 package org.exoplatform.social.portlet;
 
 import org.exoplatform.social.webui.composer.UIComposer;
+import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -43,7 +44,8 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public UIUserActivityStreamPortlet() throws Exception {
-    //UIComposer uiComposer = addChild(UIComposer.class, null, null);
+    UIComposer uiComposer = addChild(UIComposer.class, null, null);
+    uiComposer.setPostContext(PostContext.PEOPLE);
   }
 
 }

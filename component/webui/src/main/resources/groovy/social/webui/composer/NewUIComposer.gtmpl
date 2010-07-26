@@ -1,0 +1,17 @@
+
+<div id="$uicomponent.id" class="$uicomponent.id">
+  <div class="BlastContainer">
+    <div class="BlastInput">
+      <input class="Input" type="text"/>
+    </div>
+    <div class="BlastShare clearfix">
+      <div class="AttachMents">Attach: <a href="" class="Image">&nbsp;</a><a href="" class="Document">&nbsp;</a></div>
+      <div class="LinkForm">
+        <div class="Button">x</div>
+        <div style="clear: right"><span></span></div>
+        <div class="AttackLink">gdhfg kdgdgh</div>
+      </div>
+      <div class="Button">share</div>
+    </div>
+  </div>
+</div>

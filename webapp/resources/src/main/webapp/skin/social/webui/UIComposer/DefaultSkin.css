@@ -1,0 +1,68 @@
+.UIComposer .BlastContainer {
+  background:#EAE6D7;
+  border:1px solid #EBE8D9;
+  margin-top:5px;
+  padding: 8px;
+}
+
+.UIComposer .BlastContainer .BlastInput {
+  padding: 0px 4px 4px 45px;
+  margin-bottom: 4px;
+  background: url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll 5px -194px;
+}
+
+
+.UIComposer .BlastContainer .BlastShare {
+  padding: 0px 0px 0px 5px;
+}
+
+.UIComposer .BlastContainer .Input  {
+  width: 100%;
+  height: 26px;
+  line-height: 26px;
+  border: 1px solid #d6d0b4;
+}
+
+
+.UIComposer .BlastContainer .Image {
+  padding: 4px 7px;
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -282px;
+  margin-right: 8px;
+}
+
+.UIComposer .BlastContainer .Document {
+  padding: 4px 6px;
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -301px;
+  margin-right: 8px;
+}
+
+.UIComposer .BlastContainer .BlastShare .Button {
+  border: 1px solid #d6cfb4;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  background: white;
+  padding: 2px 10px;
+  float: right;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.UIComposer .BlastContainer .LinkForm {
+  padding: 4px;
+  background:white;
+  border: 1px solid #d6d0b4;
+  margin: 4px 4px 4px 0px;
+}
+
+.UIComposer .BlastContainer .BlastShare .LinkForm .Button {
+  border: 1px solid #d6cfb4;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  background: white;
+  padding: 0px 4px;
+  float: right;
+  cursor: pointer;
+  line-height:8px;
+  margin-right:0;
+  padding:0 4px 4px;
+}
