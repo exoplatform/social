@@ -105,9 +105,6 @@ public class UIComposer extends UIForm {
   }
 
   public void setDefaultActivityComposer(){
-    for (UIActivityComposer uiActivityComposer : activityComposers) {
-      uiActivityComposer.setRendered(false);
-    }
     activityComposerManager.setDefaultActivityComposer();
   }
 

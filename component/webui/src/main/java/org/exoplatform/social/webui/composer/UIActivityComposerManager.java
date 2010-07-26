@@ -34,6 +34,9 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
   }
 
   public void setDefaultActivityComposer(){
+    for (UIActivityComposer uiActivityComposer : activityComposers) {
+      uiActivityComposer.setRendered(false);
+    }
     currentActivityComposer = defaultActivityComposer;
   }
 
@@ -41,8 +44,16 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
     return currentActivityComposer;
   }
 
-  public void setCurrentActivityComposer(UIActivityComposer currentActivityComposer) {
-    this.currentActivityComposer = currentActivityComposer;
+  public void setCurrentActivityComposer(UIActivityComposer activityComposer) {
+    for (UIActivityComposer uiActivityComposer : activityComposers) {
+      if(uiActivityComposer == activityComposer){
+       activityComposer.setRendered(true);
+      } else {
+        activityComposer.setRendered(false);
+      }
+    }
+
+    this.currentActivityComposer = activityComposer;
   }
 
   public void registerActivityComposer(UIActivityComposer activityComposer){

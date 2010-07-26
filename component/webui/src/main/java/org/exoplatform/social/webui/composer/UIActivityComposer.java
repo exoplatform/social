@@ -55,7 +55,6 @@ public abstract class UIActivityComposer extends UIComponent {
       final PortalContainer portalContainer = PortalContainer.getInstance();
       UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) portalContainer.getComponentInstanceOfType(UIActivityComposerManager.class);
       activityComposerManager.setDefaultActivityComposer();
-      activityComposer.setRendered(false);
 
       activityComposer.onClose(event);
     }
@@ -76,7 +75,6 @@ public abstract class UIActivityComposer extends UIComponent {
 
       final PortalContainer portalContainer = PortalContainer.getInstance();
       UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) portalContainer.getComponentInstanceOfType(UIActivityComposerManager.class);
-      activityComposer.setRendered(true);
       activityComposerManager.setCurrentActivityComposer(activityComposer);
 
       activityComposer.onActivate(event);
