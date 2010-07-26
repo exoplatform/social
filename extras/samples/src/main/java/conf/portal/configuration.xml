@@ -21,73 +21,95 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+
   <external-component-plugins>
-    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
-      <name>MentionsProcessor</name>
-      <set-method>addProcessorPlugin</set-method>
-      <type>org.exoplatform.social.activity.MentionsProcessor</type>
+      <name>add.action</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
       <init-params>
-        <value-param>
-          <name>priority</name>
-          <description>priority of this processor (lower are executed first)</description>
-          <value>10</value>
-        </value-param>
+        <object-param>
+          <name>Emotion Activity</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+            <field name="name"><string>EMOTION_ACTIVITY</string></field>
+            <field name="component"><string>org.exoplatform.social.extras.samples.activity.UIEmotionActivity</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Link Activity</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+            <field name="name"><string>LINK_ACTIVITY</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.activity.link.UILinkActivity</string></field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
-    <!--
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
-      <name>GoogleMapProcessor</name>
-      <set-method>addProcessorPlugin</set-method>
-      <type>org.exoplatform.social.activity.GoogleMapProcessor</type>
+      <name>add.action</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
       <init-params>
-        <value-param>
-          <name>priority</name>
-          <description>priority of this processor (lower are executed first)</description>
-          <value>1</value>
-        </value-param>
-        <value-param>
-          <name>key</name>
-          <description>your google map API key</description>
-          <value>xxx</value>
-        </value-param>
+        <object-param>
+          <name>Emotion Activity Composer Extension</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
+            <field name="rank"><int>10</int></field>
+            <field name="name"><string>EMOTION_ACTIVITY</string></field>
+            <field name="component"><string>org.exoplatform.social.extras.samples.activity.UIEmotionActivityComposer</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Link Activity Composer Extension</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
+            <field name="rank"><int>1</int></field>
+            <field name="name"><string>LINK_ACTIVITY</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.composer.UILinkActivityComposer</string></field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
-    -->
   </external-component-plugins>
 
   <external-component-plugins>
     <target-component>org.exoplatform.social.webui.activity.UIActivityFactory</target-component>
     <component-plugin>
-      <name>register.ui.activity</name>
-      <set-method>registerUIActivity</set-method>
-      <type>org.exoplatform.social.webui.activity.UIActivityPlugin</type>
-      <init-params>
-        <values-param>
-          <name>emotion activity</name>
-          <value>EMOTION_ACTIVITY</value>
-          <value>org.exoplatform.social.extras.samples.activity.UIEmotionActivity</value>
-          <value>org.exoplatform.social.extras.samples.activity.UIEmotionActivityBuilder</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.webui.composer.UIActivityComposerManager</target-component>
-    <component-plugin>
-      <name>register.activity.composer</name>
-      <set-method>registerActivityComposer</set-method>
-      <type>org.exoplatform.social.webui.composer.UIActivityComposerPlugin</type>
+      <name>register.ui.activity.builder</name>
+      <set-method>registerBuilder</set-method>
+      <type>org.exoplatform.social.webui.activity.ActivityBuilderPlugin</type>
       <init-params>
         <value-param>
-          <name>ComposerClass</name>
-          <value>org.exoplatform.social.extras.samples.activity.UIEmotionActivityComposer</value>
+          <name>activity.type</name>
+          <value>EMOTION_ACTIVITY</value>
         </value-param>
-        <values-param>
-          <name>ComposerConfig</name>
-          <value>http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/1.gif</value>
-        </values-param>
+        <object-param>
+          <name>activity.builder</name>
+          <object type="org.exoplatform.social.extras.samples.activity.EmotionUIActivityBuider">
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>register.ui.activity.builder</name>
+      <set-method>registerBuilder</set-method>
+      <type>org.exoplatform.social.webui.activity.ActivityBuilderPlugin</type>
+      <init-params>
+        <value-param>
+          <name>activity.type</name>
+          <value>LINK_ACTIVITY</value>
+        </value-param>
+        <object-param>
+          <name>activity.builder</name>
+          <object type="org.exoplatform.social.webui.activity.link.UILinkActivityBuilder">
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>
