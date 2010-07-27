@@ -4,26 +4,26 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Test_SOC_SPC_07.022_SocDemo_UserWhoIsNotMemberOfTheSpaceSendsRequest</title>
+<title>Test_SOC_SPC_07</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test_SOC_SPC_07.022_SocDemo_UserWhoIsNotMemberOfTheSpaceSendsRequest</td></tr>
+<tr><td rowspan="1" colspan="3">Test_SOC_SPC_07</td></tr>
 </thead><tbody>
 <tr>
 	<td>echo</td>
-	<td>--Test_SOC_SPC_07.022_SocDemo_UserWhoIsNotMemberOfTheSpaceSendsRequest--</td>
+	<td>--Test_SOC_SPC_07.003_InvitedUserDeniesInvitation--</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
+	<td>/portal/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- John sign in to create new space --</td>
+	<td>-- sign in to create space--</td>
 	<td></td>
 </tr>
 <tr>
@@ -53,12 +53,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- access space---</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Spaces</td>
+	<td>-- access space portlet --</td>
 	<td></td>
 </tr>
 <tr>
@@ -68,12 +63,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Add new space--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Add New Space</td>
+	<td>-- add new space--</td>
 	<td></td>
 </tr>
 <tr>
@@ -83,7 +73,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--enter name and Description--</td>
+	<td>--enter name and description for space---</td>
 	<td></td>
 </tr>
 <tr>
@@ -94,181 +84,26 @@
 <tr>
 	<td>type</td>
 	<td>name</td>
-	<td>UserSendRequest</td>
+	<td>DenySpace</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>description</td>
-	<td>user will send request</td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Create</td>
-	<td></td>
+	<td>this is space for user deny</td>
 </tr>
 <tr>
 	<td>click</td>
 	<td>link=Create</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- john sign out--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Sign out</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- Mary sign in to send joining request--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Sign in</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>username</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>username</td>
-	<td>mary</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>password</td>
-	<td>gtn</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='UIPortalLoginFormAction']/div/div/div/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- access space--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- access Public space list---</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Publics</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- send request--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UIManagePublicSpaces']/div[2]/div[2]/div[2]/div[1]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='UIManagePublicSpaces']/div[2]/div[2]/div[2]/div[1]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--access pending space list--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Pendings</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--verify Pending space--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- Mary Sign out--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='UIManagePendingSpaces']/div[2]/div[2]/div[2]/div[1]/div[1]/span[1]</td>
-	<td>UserSendRequest</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Sign out</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- John logs in to check Mary's sending request--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Sign in</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>username</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>username</td>
-	<td>john</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>password</td>
-	<td>gtn</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='UIPortalLoginFormAction']/div/div/div/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--access space --</td>
 	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Spaces</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- access created space---</td>
+	<td>--access space to send invitation for Mary</td>
 	<td></td>
 </tr>
 <tr>
@@ -283,7 +118,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- select Space setting portlet--</td>
+	<td>--access space setting--</td>
 	<td></td>
 </tr>
 <tr>
@@ -293,12 +128,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--select member tab--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UITabPane']/div[1]/div/div[3]/div/div/div/div</td>
+	<td>--access member tab--</td>
 	<td></td>
 </tr>
 <tr>
@@ -308,22 +138,107 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- verify Mary on Pending list--</td>
+	<td>-- select Mary--</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Pending</td>
+	<td>waitForElementPresent</td>
+	<td>//form[@id='UISpaceMember']/div[2]/div/div/div/div/div[2]/div/div</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
+	<td>click</td>
+	<td>//form[@id='UISpaceMember']/div[2]/div/div/div/div/div[2]/div/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>mary</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>mary</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- back to space page--</td>
+	<td>-- Click Add--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//form[@id='UIUserSelector']/div[2]/div[2]/table/tbody/tr/td/a[1]/div/div/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//form[@id='UIUserSelector']/div[2]/div[2]/table/tbody/tr/td/a[1]/div/div/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--send Invitation--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//form[@id='UISpaceMember']/div[2]/div/div/div/div/div[1]/div[2]/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//form[@id='UISpaceMember']/div[2]/div/div/div/div/div[1]/div[2]/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Jonh sign out--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--Mary sign in to deny invitation--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>mary</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']/div/div/div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- access space portlet --</td>
 	<td></td>
 </tr>
 <tr>
@@ -333,7 +248,102 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- delete space to clean data--</td>
+	<td>--access invitation space list--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Invitations</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--deny invitation--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UIManageInvitationSpaces']/div[2]/div[2]/div[2]/div[1]/a[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='UIManageInvitationSpaces']/div[2]/div[2]/div[2]/div[1]/a[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- access public space list</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Publics</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--verify space--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='UIManagePublicSpaces']/div[2]/div[2]/div[2]/div[1]/div[1]/span[1]</td>
+	<td>DenySpace</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='UIManagePublicSpaces']/div[2]/div[2]/div[2]/div[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--John login to delete for cleaning data--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>john</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']/div/div/div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Delete space to clean data</td>
 	<td></td>
 </tr>
 <tr>
@@ -344,11 +354,6 @@
 <tr>
 	<td>assertConfirmation</td>
 	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- John sign out--</td>
 	<td></td>
 </tr>
 <tr>
