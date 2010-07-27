@@ -79,10 +79,16 @@
                   "linkData: $linkData"+
                 "}";
                 
-  jsManager.addOnLoadJavascript("new eXo.social.webui.UIComposerLinkExtension($params)");
+
+  jsManager.addOnLoadJavascript("initComposerLinkExtension");
   
 %>
 <div id="$uicomponentId">
+<script type="text/javascript">
+	function initComposerLinkExtension() {
+  	new eXo.social.webui.UIComposerLinkExtension($params);
+  }
+</script>
 <% if (linkInfoDisplayed) { 
      uicomponent.clearLinkShare();
                            %>
