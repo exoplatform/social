@@ -47,7 +47,6 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
   }
 )
 public class UIComposer extends UIForm {
-
   public enum PostContext {
     SPACE,
     PEOPLE
@@ -113,7 +112,7 @@ public class UIComposer extends UIForm {
   }
 
   public List<UIActivityComposer> getActivityComposers() {
-
+    
     return activityComposers;
   }
 

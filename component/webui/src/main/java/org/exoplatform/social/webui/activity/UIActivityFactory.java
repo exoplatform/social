@@ -43,7 +43,7 @@ public class UIActivityFactory extends BaseComponentPlugin {
 
   public BaseUIActivity addChild(Activity activity, UIContainer parent) throws Exception {
     final String type = activity.getType();
-    if(type != null) {
+    if(type!=null){
       return buildActivity(activity, parent, type);
     } else {
       return buildActivity(activity, parent, UIDefaultActivity.ACTIVITY_TYPE);
@@ -57,7 +57,6 @@ public class UIActivityFactory extends BaseComponentPlugin {
       activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), UIDefaultActivity.ACTIVITY_TYPE);
     }
     BaseUIActivity uiActivity = (BaseUIActivity) extensionManager.addUIExtension(activityExtension, null, parent);
-
     uiActivity.setId(uiActivity.getId() + "_" + uiActivity.hashCode());
 
     //populate data for this uiActivity
