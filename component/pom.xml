@@ -44,6 +44,7 @@
     <module>service</module>
     <module>opensocial</module>
     <module>webui</module>
+    <module>plugin</module>
   </modules>
 
 </project>

@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.composer;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIContainer;
@@ -35,6 +34,8 @@ import org.exoplatform.webui.event.EventListener;
 
 public abstract class UIActivityComposer extends UIContainer {
   private UIContainer activityDisplay;
+  private UIActivityComposerManager activityComposerManager;
+  
   public abstract void postActivity(UIComposer.PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception;
   protected abstract void onClose(Event<UIActivityComposer> event);
   protected abstract void onSubmit(Event<UIActivityComposer> event);
@@ -48,12 +49,19 @@ public abstract class UIActivityComposer extends UIContainer {
     return activityDisplay;
   }
 
+  public void setActivityComposerManager(UIActivityComposerManager activityComposerManager) {
+    this.activityComposerManager = activityComposerManager;
+  }
+
+  public UIActivityComposerManager getActivityComposerManager() {
+    return activityComposerManager;
+  }
+
   public static class CloseActionListener extends EventListener<UIActivityComposer> {
     @Override
     public void execute(Event<UIActivityComposer> event) throws Exception {
       final UIActivityComposer activityComposer = event.getSource();
-      final PortalContainer portalContainer = PortalContainer.getInstance();
-      UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) portalContainer.getComponentInstanceOfType(UIActivityComposerManager.class);
+      final UIActivityComposerManager activityComposerManager = activityComposer.getActivityComposerManager();
       activityComposerManager.setDefaultActivityComposer();
 
       activityComposer.onClose(event);
@@ -72,9 +80,7 @@ public abstract class UIActivityComposer extends UIContainer {
     @Override
     public void execute(Event<UIActivityComposer> event) throws Exception {
       final UIActivityComposer activityComposer = event.getSource();
-
-      final PortalContainer portalContainer = PortalContainer.getInstance();
-      UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) portalContainer.getComponentInstanceOfType(UIActivityComposerManager.class);
+      final UIActivityComposerManager activityComposerManager = activityComposer.getActivityComposerManager();
       activityComposerManager.setCurrentActivityComposer(activityComposer);
 
       activityComposer.onActivate(event);

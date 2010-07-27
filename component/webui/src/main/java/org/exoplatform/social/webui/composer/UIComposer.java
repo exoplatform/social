@@ -56,7 +56,6 @@ public class UIComposer extends UIForm {
   private UIFormTextAreaInput messageInput;
   private UIActivityComposerContainer composerContainer;
   private UIActivityComposerManager activityComposerManager;
-  private List<UIActivityComposer> activityComposers;
   /**
    * Constructor
    * @throws Exception
@@ -70,12 +69,12 @@ public class UIComposer extends UIForm {
     composerContainer = addChild(UIActivityComposerContainer.class, null, null);
 
     //load UIActivityComposerManager via PortalContainer
-    activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
+    activityComposerManager = new UIActivityComposerManager();
     if(!activityComposerManager.isInitialized()){
       initActivityComposerManager();
     }
 
-    activityComposers = activityComposerManager.getAllComposers();
+    activityComposerManager.setDefaultActivityComposer();
   }
 
   private void initActivityComposerManager() throws Exception {
@@ -88,10 +87,12 @@ public class UIComposer extends UIForm {
         UIActivityComposer uiDefaultComposer = (UIActivityComposer) uiExtensionManager.addUIExtension(composerExtension, null, composerContainer);
         composerContainer.removeChildById(uiDefaultComposer.getId());
         uiDefaultComposer.setRendered(false);
+        uiDefaultComposer.setActivityComposerManager(activityComposerManager);
         activityComposerManager.setDefaultActivityComposer(uiDefaultComposer);
       } else{
         UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.addUIExtension(composerExtension, null, composerContainer);
         uiActivityComposer.setRendered(false);
+        uiActivityComposer.setActivityComposerManager(activityComposerManager);
         activityComposerManager.registerActivityComposer(uiActivityComposer);
       }
     }
@@ -111,9 +112,12 @@ public class UIComposer extends UIForm {
     return composerContainer;
   }
 
-  public List<UIActivityComposer> getActivityComposers() {
-    
-    return activityComposers;
+  public UIActivityComposerManager getActivityComposerManager() {
+    return activityComposerManager;
+  }
+
+  public List<UIActivityComposer> getActivityComposers() {    
+    return activityComposerManager.getAllComposers();
   }
 
   public String getMessage() {
@@ -150,11 +154,11 @@ public class UIComposer extends UIForm {
     public void execute(Event<UIComposer> event) throws Exception {
       //get current context
       UIComposer uiComposer = event.getSource();
-      final PostContext postContext = uiComposer.getPostContext();
+      UIActivityComposerManager activityComposerManager = uiComposer.getActivityComposerManager();
+      PostContext postContext = uiComposer.getPostContext();
 
       //get current activity composer
-      UIActivityComposerManager activityComposerManager = (UIActivityComposerManager) PortalContainer.getInstance().getComponentInstanceOfType(UIActivityComposerManager.class);
-      final UIActivityComposer activityComposer = activityComposerManager.getCurrentActivityComposer();
+      UIActivityComposer activityComposer = activityComposerManager.getCurrentActivityComposer();
 
       //get posted message
       String message = uiComposer.getMessage().trim();

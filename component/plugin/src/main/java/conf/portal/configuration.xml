@@ -53,6 +53,7 @@
 						<field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
 						<field name="name"><string>LINK_ACTIVITY</string></field>
 						<field name="component"><string>org.exoplatform.social.plugin.link.UILinkActivityComposer</string></field>
+            <field name="rank"><int>1</int></field>
 					</object>
 				</object-param>
 			</init-params>
