@@ -79,10 +79,7 @@
                   "linkData: $linkData"+
                 "}";
                 
-  def initComposerLinkExtension() {
-  	new eXo.social.webui.UIComposerLinkExtension($param);
-  }
-  jsManager.addOnLoadJavascript("initComposerLinkExtension");
+  jsManager.addOnLoadJavascript("new eXo.social.webui.UIComposerLinkExtension($params)");
   
 %>
 <div id="$uicomponentId">
