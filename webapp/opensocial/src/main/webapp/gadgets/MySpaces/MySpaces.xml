@@ -10,236 +10,32 @@
     directory_title="My Spaces Gadget"
     title_url="http://www.exoplatform.org"
     description="A simple Gadget that lists all spaces of current viewer.">
+    <Locale lang="en" messages="locale/en_ALL.xml" />
+    <Require feature="opensocial-0.8" />
     <Require feature="dynamic-height" />
-    <Require feature="opensocial-0.7" />
+    <Require feature="settitle" />
+    <Require feature="views" />
+    <Require feature="minimessage" />
   </ModulePrefs>
-  <Content type="html" view="home">
+  <Content type="html" view="default, home, profile">
   <![CDATA[
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    
-    <script type="text/javascript">
-      function MySpaces() {
-        this.viewer = null;
-        this.context = null;
-        this.moreSpaces = null;
-      }
-
-      MySpaces.prototype.init = function() {
-        var req = opensocial.newDataRequest();
-        var opts = {};
-        
-        opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = [
-            opensocial.Person.Field.PROFILE_URL,
-            "portalName",
-            "restContext",
-            "host"];
-
-        req.add(req.newFetchPersonRequest("VIEWER", opts), 'viewer');
-        req.send(onLoad);
-
-        function onLoad(data) {
-          if (!data.hadError()) {
-            this.viewer = data.get('viewer').getData();
-            var profile_url =  this.viewer.getField(opensocial.Person.Field.PROFILE_URL);
-            var userId = profile_url.substr(profile_url.lastIndexOf('/') + 1);
-            var hostName = this.viewer.getField('hostName');
-            var portalName = this.viewer.getField('portalName');
-            var restContext = this.viewer.getField('restContextName');
-            this.context = this.viewer.getField('hostName') + "/" + portalName + "/private/classic/";
-            this.moreSpaces = this.context + 'spaces';
-            
-            var moreSpaceEl = _gel("more_spaces");
-            moreSpaceEl.innerHTML = '<b>My Spaces</b><a href="' + this.moreSpaces + '" target="_parent" style="margin-left: 160px;">' + 'more</a>';
-            var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/mySpaces/show.json";
-            mySpaces.makeRequest(siteUrl, mySpaces.displayValue);
-          }
-        }
-      }
-
-      MySpaces.prototype.makeRequest = function(url, callback) {
-        var params = {};
-        params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.SIGNED;
-        params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
-        params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-        mySpaces.makeCachedRequest(url, callback, params, 0);
-      }
-
-      MySpaces.prototype.makeCachedRequest = function(url, callback, params, refreshInterval) {
-        gadgets.io.makeRequest(url, callback, params);
-      }
-
-      MySpaces.prototype.displayValue = function(resp) {
-
-        var mySpacesEl = _gel("myspaces_id");
-
-        while (mySpacesEl.hasChildNodes()) {
-          mySpacesEl.removeChild(mySpacesEl.firstChild);
-        }
-
-        if (!resp) {
-          //alert('response is invalid');
-        } else {
-          var spaceData = resp.data.spaces;
-
-          if ((spaceData == null) || (spaceData.length == 0)) {
-            var emptyItem = document.createElement('div');
-
-            //emptyItem.className = 'SpaceListSample';
-
-            emptyItem.innerHTML = 'Has no space yet';
-
-            mySpacesEl.appendChild(emptyItem);
-
-            return;
-          }
-
-          for (var i = 0; i < spaceData.length; i++) {
-            var space = spaceData[i];
-            var spaceItem = document.createElement('div');
-            var spaceDetail = this.context + space.url;
-            spaceItem.innerHTML = '> ' + '<a href="' + spaceDetail + '" target="_parent">' + space.name + '</a>';
-            //spaceItem.className = 'SpaceListSample';
-            mySpacesEl.appendChild(spaceItem);
-          }
-
-          gadgets.window.adjustHeight();
-        }
-      }
-
-      var mySpaces = new MySpaces();
-
-      gadgets.util.registerOnLoadHandler(mySpaces.init);
-    </script>
-    
-
-
-	<!-- MySpace -->
-	<div class="UIGadgetThemes UIYellowThemes">
-		<div class="TitGad ClearFix">
-			<a href="#demo" class="IconDropDown">more</a>
-			<div class="ContTit">My Spaces</div>
-		</div>
-		<div class="GadCont MySpace">
-			<a href="#demo" class="IconLink">FR Employees</a>
-			<a href="#demo" class="IconLink">Product Managers</a>
-			<a href="#demo" class="IconLink">Consulting</a>
-			<a href="#demo" class="IconLink">Support</a>
-		</div>
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <script type="text/javascript" src="script/myspaces.js"></script>
+  <script type="text/javascript" src="script/Locale.js"></script>
+  <div class="UIGadgetThemes UIYellowThemes">
+    <div id="more_spaces"></div>
+    <div id="myspaces_id"></div>
 	</div>
-    
   ]]>
   </Content>
     <Content type="html" view="canvas">
   <![CDATA[
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    
-    <script type="text/javascript">
-      function MySpaces() {
-        this.viewer = null;
-        this.context = null;
-        this.moreSpaces = null;
-      }
-
-      MySpaces.prototype.init = function() {
-        var req = opensocial.newDataRequest();
-        var opts = {};
-        
-        opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = [
-            opensocial.Person.Field.PROFILE_URL,
-            "portalName",
-            "restContext",
-            "host"];
-
-        req.add(req.newFetchPersonRequest("VIEWER", opts), 'viewer');
-        req.send(onLoad);
-
-        function onLoad(data) {
-          if (!data.hadError()) {
-            this.viewer = data.get('viewer').getData();
-            var profile_url =  this.viewer.getField(opensocial.Person.Field.PROFILE_URL);
-            var userId = profile_url.substr(profile_url.lastIndexOf('/') + 1);
-            var hostName = this.viewer.getField('hostName');
-            var portalName = this.viewer.getField('portalName');
-            var restContext = this.viewer.getField('restContextName');
-            this.context = this.viewer.getField('hostName') + "/" + portalName + "/private/classic/";
-            this.moreSpaces = this.context + 'spaces';
-            
-            var moreSpaceEl = _gel("more_spaces");
-            moreSpaceEl.innerHTML = '<b>My Spaces</b><a href="' + this.moreSpaces + '" target="_parent" style="margin-left: 160px;">' + 'more</a>';
-            var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/" + userId + '/mySpaces/show.json';
-            mySpaces.makeRequest(siteUrl, mySpaces.displayValue);
-          }
-        }
-      }
-
-      MySpaces.prototype.makeRequest = function(url, callback) {
-        var params = {};
-        params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
-        params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-        mySpaces.makeCachedRequest(url, callback, params, 0);
-      }
-
-      MySpaces.prototype.makeCachedRequest = function(url, callback, params, refreshInterval) {
-        gadgets.io.makeRequest(url, callback, params);
-      }
-
-      MySpaces.prototype.displayValue = function(resp) {
-
-        var mySpacesEl = _gel("myspaces_id");
-
-        while (mySpacesEl.hasChildNodes()) {
-          mySpacesEl.removeChild(mySpacesEl.firstChild);
-        }
-
-        if (!resp) {
-          //alert('response is invalid');
-        } else {
-          var spaceData = resp.data.spaces;
-
-          if ((spaceData == null) || (spaceData.length == 0)) {
-            var emptyItem = document.createElement('div');
-
-            emptyItem.className = 'SpaceListSample';
-
-            emptyItem.innerHTML = 'Has no space yet';
-
-            mySpacesEl.appendChild(emptyItem);
-
-            return;
-          }
-
-          for (var i = 0; i < spaceData.length; i++) {
-            var space = spaceData[i];
-            var spaceItem = document.createElement('div');
-            var spaceDetail = this.context + space.url;
-            spaceItem.innerHTML = '> ' + '<a href="' + spaceDetail + '" target="_parent">' + space.name + '</a>';
-            //spaceItem.className = 'SpaceListSample';
-            mySpacesEl.appendChild(spaceItem);
-          }
-
-          gadgets.window.adjustHeight();
-        }
-      }
-
-      var mySpaces = new MySpaces();
-
-      gadgets.util.registerOnLoadHandler(mySpaces.init);
-    </script>
-    
-
-
-	<!-- MySpace -->
-	<div class="UIGadgetThemes UIYellowThemes">
-		<div class="TitGad ClearFix">
-			<a href="#demo" class="IconDropDown">more</a>
-			<div class="ContTit">My Spaces</div>
-		</div>
-		<div class="GadCont MySpace">
-			<a href="#demo" class="IconLink">FR Employees</a>
-			<a href="#demo" class="IconLink">Product Managers</a>
-			<a href="#demo" class="IconLink">Consulting</a>
-			<a href="#demo" class="IconLink">Support</a>
-		</div>
+    <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <script type="text/javascript" src="script/myspaces.js"></script>
+  <script type="text/javascript" src="script/Locale.js"></script>
+  <div class="UIGadgetThemes UIYellowThemes">
+    <div id="more_spaces"></div>
+    <div id="myspaces_id"></div>
 	</div>
   ]]>
   </Content>
