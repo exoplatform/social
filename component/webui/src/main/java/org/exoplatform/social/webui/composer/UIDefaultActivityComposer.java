@@ -27,8 +27,13 @@ import org.exoplatform.webui.event.Event;
  */
 @ComponentConfig()
 public class UIDefaultActivityComposer extends UIActivityComposer {
+
+  public UIDefaultActivityComposer() {
+    setReadyForPostingActivity(true);
+  }
+
   @Override
-  public void postActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+  public void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
     if(postContext == UIComposer.PostContext.SPACE){
       UIApplication uiApplication = requestContext.getUIApplication();
       if (postedMessage.equals("")) {

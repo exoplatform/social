@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.plugin.link;
+package org.exoplatform.social.plugin.doc;
 
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -30,7 +30,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
-   template = "classpath:groovy/social/plugin/link/UILinkActivity.gtmpl",
+   template = "classpath:groovy/social/plugin/doc/UIDocActivity.gtmpl",
    events = {
      @EventConfig(listeners = BaseUIActivity.ToggleDisplayLikesActionListener.class),
      @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
@@ -39,43 +39,13 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
      @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class)
    }
  )
-public class UILinkActivity extends BaseUIActivity {
-  public static final String ACTIVITY_TYPE = "LINK_ACTIVITY";
-  
-  private String linkSource = "";
-  private String linkTitle = "";
-  private String linkImage = "";
-  private String linkDescription = "";
-  private String linkComment = "";
-  
-  public String getLinkComment() {
-    return linkComment;
-  }
-  public void setLinkComment(String linkComment) {
-    this.linkComment = linkComment;
-  }
-  public String getLinkDescription() {
-    return linkDescription;
-  }
-  public void setLinkDescription(String linkDescription) {
-    this.linkDescription = linkDescription;
-  }
-  public String getLinkImage() {
-    return linkImage;
-  }
-  public void setLinkImage(String linkImage) {
-    this.linkImage = linkImage;
-  }
-  public String getLinkSource() {
-    return linkSource;
-  }
-  public void setLinkSource(String linkSource) {
-    this.linkSource = linkSource;
-  }
-  public String getLinkTitle() {
-    return linkTitle;
-  }
-  public void setLinkTitle(String linkTitle) {
-    this.linkTitle = linkTitle;
-  }
+public class UIDocActivity extends BaseUIActivity {
+  public static final String ACTIVITY_TYPE = "DOC_ACTIVITY";
+  public static final String FULLPATH = "FULLPATH";
+  public static final String REFPATH = "REFPATH";
+  public static final String MESSAGE = "MESSAGE";
+
+  public String documentFullPath = "";
+  public String documentRefPath = "";
+  public String message;
 }

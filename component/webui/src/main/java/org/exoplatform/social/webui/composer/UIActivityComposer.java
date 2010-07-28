@@ -35,12 +35,16 @@ import org.exoplatform.webui.event.EventListener;
 public abstract class UIActivityComposer extends UIContainer {
   private UIContainer activityDisplay;
   private UIActivityComposerManager activityComposerManager;
-  
-  public abstract void postActivity(UIComposer.PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception;
-  protected abstract void onClose(Event<UIActivityComposer> event);
-  protected abstract void onSubmit(Event<UIActivityComposer> event);
-  protected abstract void onActivate(Event<UIActivityComposer> event);
+  private boolean isReady;
 
+  public boolean isReadyForPostingActivity(){
+    return isReady;
+  }
+
+  public void setReadyForPostingActivity(boolean isReady){
+    this.isReady = isReady;
+  }
+  
   public void setActivityDisplay(UIContainer activityDisplay) {
     this.activityDisplay = activityDisplay;
   }
@@ -57,6 +61,12 @@ public abstract class UIActivityComposer extends UIContainer {
     return activityComposerManager;
   }
 
+  public void postActivity(UIComposer.PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception{
+    onPostActivity(postContext, source, requestContext, postedMessage);
+    setReadyForPostingActivity(false);
+    activityComposerManager.setDefaultActivityComposer();
+  }
+  
   public static class CloseActionListener extends EventListener<UIActivityComposer> {
     @Override
     public void execute(Event<UIActivityComposer> event) throws Exception {
@@ -86,4 +96,9 @@ public abstract class UIActivityComposer extends UIContainer {
       activityComposer.onActivate(event);
     }
   }
+
+  protected abstract void onPostActivity(UIComposer.PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception;
+  protected abstract void onClose(Event<UIActivityComposer> event);
+  protected abstract void onSubmit(Event<UIActivityComposer> event);
+  protected abstract void onActivate(Event<UIActivityComposer> event);
 }

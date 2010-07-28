@@ -97,6 +97,25 @@
       </div>
       <div class="StatusShare FloatRight">
         <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage"); %>" value="$labelShare"></input>
+        <%
+          if(uicomponent.getActivityComposerManager().getCurrentActivityComposer().isReadyForPostingActivity()){
+            %>
+              <script type="text/javascript">
+                window.setTimeout(function(){
+                  document.getElementById("ShareButton").disabled = false;
+                },100);
+              </script>
+            <%
+          } else {
+            %>
+              <script type="text/javascript">
+                window.setTimeout(function(){
+                  document.getElementById("ShareButton").disabled = true;
+                },100);
+              </script>
+            <%
+          }
+        %>
       </div>
       <div class="ClearBoth"><span></span></div>
     </div>

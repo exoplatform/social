@@ -18,6 +18,19 @@ package org.exoplatform.social.plugin.link;
 
 import java.util.List;
 
+import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.service.rest.LinkShare;
+import org.exoplatform.social.webui.composer.UIActivityComposer;
+import org.exoplatform.social.webui.composer.UIComposer;
+import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -28,20 +41,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.json.JSONObject;
-import org.exoplatform.social.service.rest.LinkShare;
-import org.exoplatform.social.webui.composer.UIActivityComposer;
-import org.exoplatform.social.webui.composer.UIComposer;
-import org.exoplatform.social.webui.composer.UIComposer.PostContext;
-import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
-import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.space.SpaceUtils;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 /**
  * UIComposerLinkExtension.java
  * <p>
@@ -81,6 +80,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
    * constructor
    */
   public UILinkActivityComposer() {
+    setReadyForPostingActivity(false);
     addChild(new UIFormStringInput("InputLink", "InputLink", null));
   }
 
@@ -146,11 +146,11 @@ public class UILinkActivityComposer extends UIActivityComposer {
         return;
       }
       requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
+      event.getSource().setReadyForPostingActivity(true);
     }
   }
 
   static public class ChangeLinkContentActionListener extends EventListener<UILinkActivityComposer> {
-
     @Override
     public void execute(Event<UILinkActivityComposer> event) throws Exception {
       WebuiRequestContext requestContext = event.getRequestContext();
@@ -171,24 +171,19 @@ public class UILinkActivityComposer extends UIActivityComposer {
 
   @Override
   protected void onActivate(Event<UIActivityComposer> arg0) {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
   protected void onClose(Event<UIActivityComposer> arg0) {
-    // TODO Auto-generated method stub
-    
+    setReadyForPostingActivity(false);
   }
 
   @Override
   protected void onSubmit(Event<UIActivityComposer> arg0) {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
-  public void postActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+  public void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
     if(postContext == UIComposer.PostContext.SPACE){
       UIApplication uiApplication = requestContext.getUIApplication();
       final UIComposer uiComposer = (UIComposer) source;

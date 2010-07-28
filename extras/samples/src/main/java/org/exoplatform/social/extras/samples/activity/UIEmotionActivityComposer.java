@@ -61,7 +61,7 @@ public class UIEmotionActivityComposer extends UIActivityComposer {
 
 
   @Override
-  public void postActivity(PostContext postContext,
+  public void onPostActivity(PostContext postContext,
                            UIComponent source,
                            WebuiRequestContext requestContext,
                            String postedMessage) throws Exception {

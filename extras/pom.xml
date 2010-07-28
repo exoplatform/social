@@ -43,6 +43,7 @@
     <module>feedmash</module>
     <module>samples</module>
     <module>widget</module>
+    <module>document-composer-plugin</module>
   </modules>
 
 </project>
