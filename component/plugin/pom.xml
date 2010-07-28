@@ -97,6 +97,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.service</artifactId>
       <scope>provided</scope>

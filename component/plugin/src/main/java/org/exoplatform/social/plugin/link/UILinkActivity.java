@@ -16,14 +16,10 @@
  */
 package org.exoplatform.social.plugin.link;
 
-import org.apache.commons.lang.Validate;
-import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by The eXo Platform SAS
@@ -46,62 +42,41 @@ import org.json.JSONObject;
 public class UILinkActivity extends BaseUIActivity {
   public static final String ACTIVITY_TYPE = "LINK_ACTIVITY";
   
-  private JSONObject titleData;
-  private static final String DATA_KEY = "data";
-
-  public String getLinkSource() throws JSONException {
-    Activity activity = getActivity();
-    Validate.notNull(activity.getTitle(), "activity_.getTitle() must not be null.");
-    titleData = new JSONObject(activity.getTitle());
-
-    if (titleData != null) {
-      return titleData.getString(UILinkActivityComposer.LINK_PARAM);
-    }
-    return "";
-  }
   
-  public String getLinkTitle() throws JSONException {
-    Activity activity = getActivity();
-    Validate.notNull(activity.getTitle(), "activity_.getTitle() must not be null.");
-    titleData = new JSONObject(activity.getTitle());
-
-    if (titleData != null) {
-      return titleData.getString(UILinkActivityComposer.TITLE_PARAM);
-    }
-    return "";
-  }
+  private String linkSource = "";
+  private String linkTitle = "";
+  private String linkImage = "";
+  private String linkDescription = "";
+  private String linkComment = "";
   
-  public String getLinkImage() throws JSONException {
-    Activity activity = getActivity();
-    Validate.notNull(activity.getTitle(), "activity_.getTitle() must not be null.");
-    titleData = new JSONObject(activity.getTitle());
-
-    if (titleData != null) {
-      return titleData.getString(UILinkActivityComposer.IMAGE_PARAM);
-    }
-    return "";
+  public String getLinkComment() {
+    return linkComment;
   }
-  
-  public String getLinkDescription() throws JSONException {
-    Activity activity = getActivity();
-    Validate.notNull(activity.getTitle(), "activity_.getTitle() must not be null.");
-    titleData = new JSONObject(activity.getTitle());
-
-    if (titleData != null) {
-      return titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM);
-    }
-    return "";
+  public void setLinkComment(String linkComment) {
+    this.linkComment = linkComment;
   }
-  
-  public String getLinkComment() throws JSONException {
-    Activity activity = getActivity();
-    Validate.notNull(activity.getTitle(), "activity_.getTitle() must not be null.");
-    titleData = new JSONObject(activity.getTitle());
-
-    if (titleData != null) {
-      return titleData.getString(UILinkActivityComposer.COMMENT_PARAM);
-    }
-    return "";
+  public String getLinkDescription() {
+    return linkDescription;
   }
-
+  public void setLinkDescription(String linkDescription) {
+    this.linkDescription = linkDescription;
+  }
+  public String getLinkImage() {
+    return linkImage;
+  }
+  public void setLinkImage(String linkImage) {
+    this.linkImage = linkImage;
+  }
+  public String getLinkSource() {
+    return linkSource;
+  }
+  public void setLinkSource(String linkSource) {
+    this.linkSource = linkSource;
+  }
+  public String getLinkTitle() {
+    return linkTitle;
+  }
+  public void setLinkTitle(String linkTitle) {
+    this.linkTitle = linkTitle;
+  }
 }

@@ -16,9 +16,7 @@
  */
 package org.exoplatform.social.plugin.link;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -34,6 +32,7 @@ import org.exoplatform.social.service.rest.LinkShare;
 import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -43,7 +42,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.plugin.link.UIComposerExtensionContainer.Extension;
 /**
  * UIComposerLinkExtension.java
  * <p>
@@ -130,13 +128,6 @@ public class UILinkActivityComposer extends UIActivityComposer {
     dataLink_.put(IMAGE_PARAM, image);
     dataLink_.put(TITLE_PARAM, linkShare_.getTitle());
     dataLink_.put(DESCRIPTION_PARAM, linkShare_.getDescription());
-    UIComposerExtensionContainer uiComposerExtensionContainer = getAncestorOfType(UIComposerExtensionContainer.class);
-    if (uiComposerExtensionContainer != null) {
-      uiComposerExtensionContainer.setExtensionAttached(true);
-      Map<Extension, JSONObject> attachedData = new HashMap<Extension, JSONObject>();
-      attachedData.put(Extension.LINK, dataLink_);
-      uiComposerExtensionContainer.setData(attachedData);
-    }
     setLinkInfoDisplayed(true);
   }
 
@@ -212,10 +203,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
       } else {
         String member = requestContext.getRemoteUser();
         
-        SpaceService spaceSrv = uiComposer.getApplicationComponent(SpaceService.class);
-  //      UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
-        Space space = spaceSrv.getSpaceByUrl(SpaceUtils.getSpaceUrl());
-  //
+        UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
+        Space space = uiDisplaySpaceActivities.getSpace();
         ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
         IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
         Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,

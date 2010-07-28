@@ -16,9 +16,12 @@
  */
 package org.exoplatform.social.plugin.link;
 
+import org.apache.commons.lang.Validate;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by The eXo Platform SAS
@@ -27,8 +30,24 @@ import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
  * Jul 23, 2010  
  */
 public class LinkUIActivityBuilder extends BaseUIActivityBuilder {
+  
+  private JSONObject titleData;
+  
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
+    UILinkActivity uiLinkActivity = (UILinkActivity) uiActivity;
+    Validate.notNull(activity.getTitle(), "activity_.getTitle() must not be null.");
+    try {
+      titleData = new JSONObject(activity.getTitle());
+      if (titleData != null) {
+        uiLinkActivity.setLinkSource(titleData.getString(UILinkActivityComposer.LINK_PARAM));
+        uiLinkActivity.setLinkTitle(titleData.getString(UILinkActivityComposer.TITLE_PARAM));
+        uiLinkActivity.setLinkImage(titleData.getString(UILinkActivityComposer.IMAGE_PARAM));
+        uiLinkActivity.setLinkDescription(titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
+        uiLinkActivity.setLinkComment(titleData.getString(UILinkActivityComposer.COMMENT_PARAM));
+      } 
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
   }
-
 }
