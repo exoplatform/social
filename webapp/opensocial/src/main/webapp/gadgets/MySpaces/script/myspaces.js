@@ -32,7 +32,7 @@
 	      var moreSpaceEl = _gel("more_spaces");
 	      var titleContent = '';
 	      
-	      if (address.indexOf("classic")) {
+	      if (address.indexOf("classic") > 0) {
 		      this.context = this.viewer.getField('hostName') + "/" + portalName + "/private/classic/";
 	      } else {
 	      	this.context = this.viewer.getField('hostName') + "/" + portalName + "/private/office/";
@@ -60,6 +60,16 @@
 	}
 	
 	MySpaces.prototype.makeCachedRequest = function(url, callback, params, refreshInterval) {
+		var ts = new Date().getTime();
+    var sep = "?";
+    if (refreshInterval && refreshInterval > 0) {
+      ts = Math.floor(ts / (refreshInterval * 1000));
+    }
+    if (url.indexOf("?") > -1) {
+     sep = "&";
+    }
+
+    url = [ url, sep, "nocache=", ts ].join("");
 	  gadgets.io.makeRequest(url, callback, params);
 	}
 	
