@@ -46,13 +46,10 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
 
   public void setCurrentActivityComposer(UIActivityComposer activityComposer) {
     for (UIActivityComposer uiActivityComposer : activityComposers) {
-      if(uiActivityComposer == activityComposer){
-       activityComposer.setRendered(true);
-      } else {
-        activityComposer.setRendered(false);
-      }
+        uiActivityComposer.setRendered(false);
     }
 
+    activityComposer.setRendered(true);
     this.currentActivityComposer = activityComposer;
   }
 

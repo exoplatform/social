@@ -41,11 +41,9 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
  )
 public class UIDocActivity extends BaseUIActivity {
   public static final String ACTIVITY_TYPE = "DOC_ACTIVITY";
-  public static final String FULLPATH = "FULLPATH";
   public static final String REFPATH = "REFPATH";
   public static final String MESSAGE = "MESSAGE";
 
-  public String documentFullPath = "";
   public String documentRefPath = "";
   public String message;
 }

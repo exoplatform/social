@@ -71,7 +71,6 @@
   </build>
 
   <dependencies>
-
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
@@ -119,12 +118,5 @@
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.webui</artifactId>
     </dependency>
-<!--
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.service</artifactId>
-    </dependency>
- -->
-
   </dependencies>
 </project>

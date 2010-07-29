@@ -35,7 +35,6 @@ public class DocUIActivityBuilder extends BaseUIActivityBuilder {
     final String JSONdata = activity.getTitle();
     try {
       final JSONObject jsonObject = new JSONObject(JSONdata);
-      docActivity.documentFullPath = jsonObject.getString(UIDocActivity.FULLPATH);
       docActivity.documentRefPath = jsonObject.getString(UIDocActivity.REFPATH);
       docActivity.message = jsonObject.getString(UIDocActivity.MESSAGE);      
     } catch (JSONException e) {

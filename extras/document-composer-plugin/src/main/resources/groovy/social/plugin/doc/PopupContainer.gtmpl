@@ -21,22 +21,5 @@
 */
 %>
 <div id="<%=uicomponent.id%>">
-  <a href="<%= uicomponent.event("Close")%>">Close</a>
-  <%uicomponent.renderChildren()
-    if(uicomponent.isDocumentReady()){
-      %>
-        RefPath  : <%=uicomponent.getDocumentRefPath()%>
-        <script type="text/javascript">
-          try{document.getElementById("ShareButton").disabled = false}catch(e){}
-        </script>
-      <%
-    } else {
-      %>
-        <a href="<%= uicomponent.event("SelectDocument")%>">Select Document</a><br/>
-        <script type="text/javascript">
-          try{document.getElementById("ShareButton").disabled = true}catch(e){}
-        </script>
-      <%
-    }
-  %>
+  <%uicomponent.renderChildren();%>
 </div>

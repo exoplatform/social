@@ -127,7 +127,6 @@
   }
 
   def dMessage = uicomponent.message;
-  def dFullpath = uicomponent.documentFullPath;
   def dRefPath = uicomponent.documentRefPath;
 %>
 
@@ -163,8 +162,7 @@
       </div>
       <div class="ContentArea">
         $dMessage <br/>
-        <a class="ColorLink" target="_blank" href="#">$dFullpath</a><br/>
-        <a class="ColorLink" target="_blank" href="#">$dRefPath</a>
+        <a class="ColorLink" target="_blank" href="$dRefPath">$dRefPath</a>
       </div>
       <div class="NewsDate">
         $activityPostedTime
