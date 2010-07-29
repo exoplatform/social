@@ -23,6 +23,7 @@
 	  function onLoad(data) {
 	    if (!data.hadError()) {
 	      this.viewer = data.get('viewer').getData();
+	      var Locale = eXo.social.Locale;
 	      var profile_url =  this.viewer.getField(opensocial.Person.Field.PROFILE_URL);
 	      var userId = profile_url.substr(profile_url.lastIndexOf('/') + 1);
 	      var hostName = this.viewer.getField('hostName');
@@ -41,8 +42,8 @@
 	      this.moreSpaces = this.context + 'spaces';
 	      
 	      titleContent += '<div class="TitGad ClearFix">';
-	      titleContent += '<a href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + 'more</a>'
-	      titleContent += '<div class="ContTit">My Spaces</div>';
+	      titleContent += '<a href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + Locale.getMsg('more_link_label') + '</a>'
+	      titleContent += '<div class="ContTit">' + Locale.getMsg('my_spaces') + '</div>';
 	      titleContent += '</div>';
 	      moreSpaceEl.innerHTML = titleContent;
 	      var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/mySpaces/show.json";

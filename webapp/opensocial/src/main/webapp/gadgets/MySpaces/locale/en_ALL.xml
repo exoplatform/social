@@ -3,5 +3,7 @@
   Default message bundle
 -->
 <messageBundle>
+  <msg name="my_spaces">My Spaces</msg>
+  <msg name="more_link_label">more</msg>
   <msg name="has_no_space">Has no space yet.</msg>
 </messageBundle>
