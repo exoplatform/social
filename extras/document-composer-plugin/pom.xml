@@ -26,17 +26,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>exo.social.component</artifactId>
+    <artifactId>exo.social.extras</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>exo.social.component.document-composer-plugin</artifactId>
+  <artifactId>exo.social.extras.document-composer-plugin</artifactId>
   <version>1.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>eXo Social Document Composer Plugin</name>
-  <description>eXo Social Document Composer Plugin</description>
+  <name>eXo Social Extras - Document Composer Plugin</name>
+  <description>eXo Social Extras - Document Composer Plugin</description>
 
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
@@ -71,58 +71,16 @@
   </build>
 
   <dependencies>
-    
+
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>javax.portlet</groupId>
-      <artifactId>portlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.container</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.application-registry</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.portal</artifactId>
+      <artifactId>exo.jcr.component.ext</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -131,34 +89,42 @@
       <artifactId>exo.portal.component.web</artifactId>
       <scope>provided</scope>
     </dependency>
-    
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.core</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.webui</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.service</artifactId>
-    </dependency>
 
     <dependency>
-      <groupId>org.exoplatform.ecms</groupId>
-      <artifactId>exo-ecms-core-ext</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.core</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.exoplatform.ecms</groupId>
       <artifactId>exo-ecms-core-webui</artifactId>
       <version>2.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.ecms</groupId>
+      <artifactId>exo-ecms-core-services</artifactId>
+      <version>2.1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.webui</artifactId>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.service</artifactId>
+    </dependency>
+ -->
+
   </dependencies>
 </project>
