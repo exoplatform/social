@@ -234,6 +234,27 @@
   </external-component-plugins>
 
   <external-component-plugins>
+    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+    <component-plugin>
+      <name>portlets.prefs.required</name>
+      <set-method>setPortletsPrefsRequired</set-method>
+      <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
+	    <init-params>      
+	      <values-param>
+	        <name>portletsPrefsRequired</name>
+	        <value>SpaceActivityStreamPortlet</value>
+	        <value>SpaceSettingPortlet</value>
+	        <value>MembersPortlet</value>
+	        <value>ForumPortlet</value>
+	        <value>AnswersPortlet</value>
+	        <value>CalendarPortlet</value>
+	        <value>ContactPortlet</value>
+	      </values-param>
+	    </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
     <component-plugin>
       <name>ProfileUpdatesPublisher</name>

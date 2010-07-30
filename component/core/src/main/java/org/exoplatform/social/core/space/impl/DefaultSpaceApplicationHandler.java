@@ -53,6 +53,7 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
+import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
  * Created by The eXo Platform SARL Author : dang.tung tungcnw@gmail.com Oct 17,
@@ -71,6 +72,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   private ExoContainer                                       container              = ExoContainerContext.getCurrentContainer();
 
   private DataStorage                                        dataStorage            = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
+
+  private SpaceService                                       spaceService;
 
   private static Map<ApplicationCategory, List<Application>> appStoreCache          = null;
 
@@ -571,7 +574,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     String persistenceid = instanceId.substring(i1 + 2);
     String[] persistenceChunks = Utils.split("/", persistenceid);
     PortletBuilder pb = new PortletBuilder();
-    for (String appName : SpaceUtils.PORTLETS_SPACE_URL_PREFERENCE_NEEDED) {
+    SpaceService spaceSrv = getSpaceService();
+    String [] appNames = spaceSrv.getPortletsPrefsRequired();
+    for (String appName : appNames) {
       if (instanceId.contains(appName)) {
         pb.add(SpaceUtils.SPACE_URL, space.getUrl());
         break;
@@ -633,4 +638,11 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     return (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
   }
 
+  private SpaceService getSpaceService() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    if (spaceService == null)
+      spaceService = (SpaceService) container.getComponentInstance(SpaceService.class);
+
+    return spaceService;
+  }
 }

@@ -18,6 +18,8 @@ package org.exoplatform.social.core.space.spi;
 
 import java.util.List;
 
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 
@@ -623,4 +625,16 @@ public interface SpaceService {
    */
   public void unregisterSpaceLifeCycleListener(SpaceLifeCycleListener listener);
 
+  /**
+   * Set portlet preferences get from plug-in into local variable.
+   * @param portletPrefsRequiredPlugin
+   */
+  public void setPortletsPrefsRequired(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin);
+  
+  /**
+   * Get portlet preferences required for using in create portlet application.
+   * @return
+   */
+  public String [] getPortletsPrefsRequired();
+  
 }

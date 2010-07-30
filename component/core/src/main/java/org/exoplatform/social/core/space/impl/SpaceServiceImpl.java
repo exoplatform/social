@@ -44,6 +44,7 @@ import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceLifecycle;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
@@ -53,7 +54,6 @@ import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.SpaceStorage;
-import org.exoplatform.web.application.RequestContext;
 
 /**
  * Created by The eXo Platform SARL Author : dang.tung tungcnw@gmail.com August
@@ -82,6 +82,7 @@ public class SpaceServiceImpl implements SpaceService {
 
   private SpaceLifecycle                       spaceLifeCycle           = new SpaceLifecycle();
 
+  String []                                    portletPrefsRequired;
   /**
    * SpaceServiceImpl constructor Initialize
    * <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
@@ -1033,6 +1034,20 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   /**
+   * Set portlet preferences from plug-in into local variable. 
+   */
+  public void setPortletsPrefsRequired(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin) {
+    this.portletPrefsRequired = portletPrefsRequiredPlugin.getPrefs();
+  }
+
+  /**
+   * Get portlet preferences required for using in create portlet application. 
+   */
+  public String [] getPortletsPrefsRequired() {
+    return this.portletPrefsRequired;
+  }
+  
+  /**
    * Gets OrganizationService
    *
    * @return organizationService
@@ -1224,5 +1239,4 @@ public class SpaceServiceImpl implements SpaceService {
   public void setStorage(SpaceStorage storage) {
     this.storage = storage;
   }
-
 }
