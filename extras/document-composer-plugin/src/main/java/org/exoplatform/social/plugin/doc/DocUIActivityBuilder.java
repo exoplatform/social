@@ -26,17 +26,17 @@ import org.json.JSONObject;
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
  *          exo@exoplatform.com
- * Jul 23, 2010  
+ * Jul 23, 2010
  */
 public class DocUIActivityBuilder extends BaseUIActivityBuilder {
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
     UIDocActivity docActivity = (UIDocActivity) uiActivity;
-    final String JSONdata = activity.getTitle();
+    final String jsonData = activity.getTitle();
     try {
-      final JSONObject jsonObject = new JSONObject(JSONdata);
+      final JSONObject jsonObject = new JSONObject(jsonData);
       docActivity.documentRefPath = jsonObject.getString(UIDocActivity.REFPATH);
-      docActivity.message = jsonObject.getString(UIDocActivity.MESSAGE);      
+      docActivity.message = jsonObject.getString(UIDocActivity.MESSAGE);
     } catch (JSONException e) {
       e.printStackTrace();
     }

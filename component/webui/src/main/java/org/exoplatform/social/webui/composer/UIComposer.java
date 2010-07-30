@@ -25,6 +25,7 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -36,11 +37,11 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 /**
  *
  * @author    zun
- * @since 	  Apr 6, 2010
+ * @since   Apr 6, 2010
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/composer/UIComposer.gtmpl",
+  template = "classpath:groovy/social/webui/composer/NewUIComposer.gtmpl",
   events = {
     @EventConfig(listeners = UIComposer.PostMessageActionListener.class),
     @EventConfig(listeners = UIComposer.ActivateActionListener.class)
@@ -52,15 +53,18 @@ public class UIComposer extends UIForm {
     PEOPLE
   }
 
+  private final String POPUP_COMPOSER = "UIPopupComposer";
   private PostContext postContext;
   private UIFormTextAreaInput messageInput;
   private UIActivityComposerContainer composerContainer;
   private UIActivityComposerManager activityComposerManager;
+
   /**
    * Constructor
    * @throws Exception
    */
   public UIComposer() throws Exception {
+    addChild(UIPopupWindow.class, null, POPUP_COMPOSER);
     //add textbox for inputting message
     messageInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
     addUIFormInput(messageInput);
@@ -116,7 +120,7 @@ public class UIComposer extends UIForm {
     return activityComposerManager;
   }
 
-  public List<UIActivityComposer> getActivityComposers() {    
+  public List<UIActivityComposer> getActivityComposers() {
     return activityComposerManager.getAllComposers();
   }
 
@@ -162,7 +166,12 @@ public class UIComposer extends UIForm {
 
       //get posted message
       String message = uiComposer.getMessage().trim();
-      String defaultInput = event.getRequestContext().getApplicationResourceBundle().getString(uiComposer.getId()+".Default_Input_Write_Something");
+      String defaultInput = "";
+      if (uiComposer.getPostContext() == PostContext.SPACE) {
+        defaultInput = event.getRequestContext().getApplicationResourceBundle().getString(uiComposer.getId()+".input.Write_Something");
+      } else {
+        defaultInput = event.getRequestContext().getApplicationResourceBundle().getString(uiComposer.getId()+".input.What_Are_You_Working_On");
+      }
       if (message.equals(defaultInput)) {
         message = "";
       }

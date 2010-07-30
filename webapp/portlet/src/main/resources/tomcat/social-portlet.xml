@@ -16,5 +16,5 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<Context path="/social-portlet" docBase="../../../../../../../webapp/portlet/src/main/webapp"
+<Context path="/social-portlet" docBase="../../../../../webapp/portlet/src/main/webapp/"
          debug="0" reloadable="true" />

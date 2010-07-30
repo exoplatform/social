@@ -22,7 +22,7 @@
 %>
 <%
   import org.exoplatform.webui.form.UIFormStringInput;
-  
+
   def removeAllNewLines(def str) {
     if (str) {
       return str.replaceAll("\r\n|\n\r|\n|\r", "");
@@ -30,13 +30,13 @@
       return "";
     }
   }
-  
+
   def uicomponentId = uicomponent.id;
   def labelAttachLink = _ctx.appRes("UIComposerExtensionContainer.label.Attach_Link");
   def labelAttach = _ctx.appRes("UIComposerExtensionContainer.label.Attach");
   def labelCloseLinkComposer = _ctx.appRes("UIComposerExtensionContainer.label.Close");
   labelAttachLink = labelAttachLink.replace(":", "");
-  
+
   def linkInfoDisplayed = uicomponent.isLinkInfoDisplayed();
   uicomponent.setLinkInfoDisplayed(false);
   def requestContext = _ctx.getRequestContext();
@@ -44,11 +44,11 @@
   jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
   jsManager.importJavascript("eXo.social.PortalHttpRequest", "/social-resources/javascript");
   jsManager.importJavascript("eXo.social.webui.UIComposerLinkExtension", "/social-resources/javascript");
-  
+
   def noThumbnail = _ctx.appRes("${uicomponentId}.msg.No_Thumbnail"),
       previousImage = _ctx.appRes("${uicomponentId}.msg.Previous_Image"),
       nextImage = _ctx.appRes("${uicomponentId}.msg.Next_Image");
-  
+
   def linkShare = uicomponent.getLinkShare();
   def link, images, title, description, linkData;
   if (linkShare) {
@@ -69,7 +69,7 @@
   } else {
     linkInfoDisplayed = false;
   }
-  
+
   def params = "{"+
                   "linkInfoDisplayed: $linkInfoDisplayed,"+
                   "inputLinkId: 'InputLink',"+
@@ -78,18 +78,18 @@
                   "changeLinkContentUrl: '${uicomponent.url("ChangeLinkContent")}',"+
                   "linkData: $linkData"+
                 "}";
-                
+
 
   jsManager.addOnLoadJavascript("initComposerLinkExtension");
-  
+
 %>
 <div id="$uicomponentId">
 <script type="text/javascript">
-	function initComposerLinkExtension() {
-  	new eXo.social.webui.UIComposerLinkExtension($params);
+  function initComposerLinkExtension() {
+    new eXo.social.webui.UIComposerLinkExtension($params);
   }
 </script>
-<% if (linkInfoDisplayed) { 
+<% if (linkInfoDisplayed) {
      uicomponent.clearLinkShare();
                            %>
   <div class="UILinkShareDisplay">
@@ -97,11 +97,11 @@
     <% if (images.size() > 0) { %>
       <div id="UIThumbnailDisplay">
         <div id="Thumbnails">
-          <% 
+          <%
             def thumbnailClass = "ThumbnailShown";
             images.each({ %>
              <img src="$it" class="$thumbnailClass" />
-            <% 
+            <%
               thumbnailClass = "ThumbnailHidden";
             })%>
         </div>
@@ -141,13 +141,13 @@
   </div>
 <% } else { %>
   <div class="UIComposerExtensionContainer">
-	  <div class="UIComposerLinkExtension">
-	    <% uicomponent.renderChild(UIFormStringInput.class); %>
-	    <input id="AttachButton" class="AttachButton" type="submit" value="$labelAttach" />
-	    <div class="ClearBoth">
-	      <span></span>
-	    </div>
-	  </div>
+    <div class="UIComposerLinkExtension">
+      <% uicomponent.renderChild(UIFormStringInput.class); %>
+      <input id="AttachButton" class="AttachButton" type="submit" value="$labelAttach" />
+      <div class="ClearBoth">
+        <span></span>
+      </div>
+    </div>
   </div>
 <% } %>
 </div>

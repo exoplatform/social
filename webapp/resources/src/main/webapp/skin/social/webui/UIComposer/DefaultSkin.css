@@ -1,3 +1,7 @@
+
+/*UILinkComposerPlugin style*/
+@import url('/social-resources/skin/social/webui/UILinkComposerPlugin/DefaultSkin.css');
+
 .UIComposer .BlastContainer {
   background:#EAE6D7;
   border:1px solid #EBE8D9;
@@ -5,12 +9,20 @@
   padding: 8px;
 }
 
-.UIComposer .BlastContainer .BlastInput {
+.UIComposer .BlastContainer .BlastInputPeople {
   padding: 0px 4px 4px 45px;
   margin-bottom: 4px;
-  background: url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll 5px -194px;
+  background: url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll 5px -410px;
 }
 
+.UIComposer .BlastContainer .BlastInputSpace {
+  margin-bottom: 4px;
+}
+
+.UIComposer .BlastContainer textarea {
+  width: 100%;
+  border: 1px solid #d7d0b5;
+}
 
 .UIComposer .BlastContainer .BlastShare {
   padding: 0px 0px 0px 5px;
@@ -30,13 +42,19 @@
   margin-right: 8px;
 }
 
-.UIComposer .BlastContainer .Document {
+.UIComposer .BlastContainer .UILinkActivityComposer {
+  padding: 0px 7px;
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -361px;
+  margin-right: 0px;
+}
+
+.UIComposer .BlastContainer .UIDocActivityComposer {
   padding: 4px 6px;
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -301px;
   margin-right: 8px;
 }
 
-.UIComposer .BlastContainer .BlastShare .Button {
+.UIComposer .BlastContainer .BlastShare .ShareButton {
   border: 1px solid #d6cfb4;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -45,6 +63,7 @@
   float: right;
   cursor: pointer;
   margin-right: 5px;
+  font-size: 11px;
 }
 
 .UIComposer .BlastContainer .LinkForm {
@@ -54,7 +73,12 @@
   margin: 4px 4px 4px 0px;
 }
 
-.UIComposer .BlastContainer .BlastShare .LinkForm .Button {
+.UIComposer .BlastContainer .BlastShare .ComposerExtensionContainer {
+  border: 1px solid #d6cfb4;
+  margin-bottom: 3px;
+}
+
+.UIComposer .BlastContainer .BlastShare .ComposerExtensionContainer .Button {
   border: 1px solid #d6cfb4;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;

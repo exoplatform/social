@@ -22,10 +22,12 @@
 %>
 
 <div class="$uicomponent.id" id="$uicomponent.id">
+
+<!--
   <div class="JiraUpgrade">
     <div class="CautionIcon">Jira upgrade: <span style="font-weight: normal;"> Jira will be down  for  upgrade on  12/6 between  9 and 10pm GMT</span></div>
   </div>
-
+-->
   <% uicomponent.renderChildren();%>
 
   <div class="UIAction">
@@ -76,8 +78,9 @@
 
             </a>
             <div class="ContentBox">
-              <div class="TitleContent">
+              <div class="TitleContent clearfix">
                 <div class="Text">John Smith</div>
+                <div class="CloseContentBoxHilight"><span></span></div>
               </div>
               <div class="Content">
                 Amost finished the user manual review. Taking a short break....<br>
@@ -104,7 +107,7 @@
                 <span class="DateTime">June 23 at 3:31pm  * </span>
               </div>
             </div>
-
+            <div class="CloseCMContentHilight"><span></span></div>
           </div>
 
           <div class="CommentBox clearfix">
@@ -124,6 +127,7 @@
                 <span class="DateTime">June 23 at 3:31pm  * </span>
               </div>
             </div>
+            <div class="CloseCMContentNormal"><span></span></div>
           </div>
           <div class="CommentBox clearfix">
                 <textarea class="CommentForm" name="Comment" wrap ="soft"></textarea>
@@ -141,8 +145,9 @@
 
             </a>
             <div class="ContentBox">
-              <div class="TitleContent">
+              <div class="TitleContent clearfix">
                 <div class="Text">John Smith</div>
+                <div class="CloseContentBoxNormal"><span></span></div>
               </div>
               <div class="Content">
                 Amost finished the user manual review. Taking a short break....<br>
@@ -163,8 +168,9 @@
 
             </a>
             <div class="ContentBox">
-              <div class="TitleContent">
+              <div class="TitleContent clearfix">
                 <div class="Text">John Smith</div>
+                <div class="CloseContentBoxNormal"><span></span></div>
               </div>
               <div class="Content">
                 Amost finished the user manual review. Taking a short break....<br>

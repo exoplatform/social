@@ -65,18 +65,11 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   private final String repository = "repository";
   private final String workspace = "collaboration";
   private String rootpath;
-  private PopupContainer popupContainer;
   /**
    * constructor
    */
   public UIDocActivityComposer() {
     resetValues();
-
-    try {
-      popupContainer = addChild(PopupContainer.class, null, "PopupContainer");
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   private void resetValues() {
@@ -101,9 +94,9 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     showDocumentPopup(docActivityComposer);
   }
 
-  private void showDocumentPopup(UIDocActivityComposer docActivityComposer) {    
-    UIPopupWindow uiPopup = popupContainer.getPopupWindow();
-    uiPopup.setId("UIChildPopupWindow");
+  private void showDocumentPopup(UIDocActivityComposer docActivityComposer) {
+    UIComposer uiComposer = docActivityComposer.getAncestorOfType(UIComposer.class);
+    UIPopupWindow uiPopup = uiComposer.getChild(UIPopupWindow.class);
     uiPopup.setWindowSize(600, 600);
     UIOneNodePathSelector uiOneNodePathSelector;
     try {
@@ -114,7 +107,6 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
 
       uiPopup.setUIComponent(uiOneNodePathSelector);
       uiOneNodePathSelector.setSourceComponent(this, null);
-      uiPopup.setRendered(true);
       uiPopup.setShow(true);
       uiPopup.setResizable(true);
     } catch (Exception e) {
@@ -128,7 +120,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   }
 
   @Override
-  protected void onSubmit(Event<UIActivityComposer> event) {    
+  protected void onSubmit(Event<UIActivityComposer> event) {
   }
 
   @Override

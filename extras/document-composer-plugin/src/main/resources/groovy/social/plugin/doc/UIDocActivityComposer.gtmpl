@@ -21,7 +21,6 @@
 */
 %>
 <div id="<%=uicomponent.id%>">
-  <a href="<%= uicomponent.event("Close")%>">Close</a>
   <%uicomponent.renderChildren()
     if(uicomponent.isDocumentReady()){
       %>

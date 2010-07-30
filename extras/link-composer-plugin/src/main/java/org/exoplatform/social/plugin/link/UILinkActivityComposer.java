@@ -197,7 +197,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
                                                       ApplicationMessage.ERROR));
       } else {
         String member = requestContext.getRemoteUser();
-        
+
         UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
         Space space = uiDisplaySpaceActivities.getSpace();
         ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
@@ -213,6 +213,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
         activity.setType(UILinkActivity.ACTIVITY_TYPE);
         activityManager.saveActivity(spaceIdentity, activity);
       }
+    } else {
+      //TODO hanh.vi: With the context of People?
     }
   }
 }

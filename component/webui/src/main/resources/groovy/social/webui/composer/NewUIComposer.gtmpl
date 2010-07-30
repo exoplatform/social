@@ -1,0 +1,109 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.exoplatform.webui.core.UIPopupWindow;
+  import org.exoplatform.webui.form.UIFormTextAreaInput;
+  import org.exoplatform.social.webui.composer.UIComposer;
+  import org.exoplatform.social.webui.composer.UIActivityComposerContainer;
+  import org.exoplatform.social.webui.composer.UIDefaultActivityComposer;
+
+  def requestContext = _ctx.getRequestContext();
+
+  //trick here, uiform does not keep submitAction for second render, portal bug?
+  uicomponent.setSubmitAction("return false;");
+
+  def jsManager = requestContext.getJavascriptManager();
+  def defaultInput = _ctx.appRes("${uicomponent.id}.input.Write_Something");
+  def attachLabel = _ctx.appRes("${uicomponent.id}.label.Attach");
+  def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
+  def blastInput = "BlastInputSpace";
+  if (uicomponent.getPostContext() == UIComposer.PostContext.PEOPLE) {
+    defaultInput = _ctx.appRes("${uicomponent.id}.input.What_Are_You_Working_On");
+    blastInput = "BlastInputPeople";
+  }
+
+  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIComposer", "/social-resources/javascript");
+  def params = """
+    {
+      composerId: '${uicomponent.getChild(UIFormTextAreaInput.class).getId()}',
+      defaultInput: '$defaultInput',
+      focusColor: null,
+      blurColor: null,
+      minHeight: null,
+      maxHeight: null,
+      focusHeight: null,
+      focusCallback: null,
+      blurCallback: null,
+      keypressCallback: null,
+      postMessageCallback: null
+    }
+  """
+
+  jsManager.addOnLoadJavascript("initUIComposer");
+%>
+<div class="$uicomponent.id">
+<script type="text/javascript">
+  function initUIComposer() {
+    new eXo.social.webui.UIComposer($params);
+  }
+</script>
+  <% uiform.begin() %>
+  <div class="BlastContainer">
+    <div class="$blastInput">
+      <% uicomponent.renderChild(UIFormTextAreaInput.class) %>
+    </div>
+    <div class="BlastShare clearfix">
+      <div class="AttachMents">
+      $attachLabel:
+      <%
+        for(acComposer in uicomponent.getActivityComposers()) {
+      %>
+        <a href="#" title="<%=acComposer.getClass().getSimpleName()%>" class="<%=acComposer.getClass().getSimpleName()%>" onclick="<%= acComposer.event("Activate")%>" >&nbsp;</a>
+      <%
+        }
+      %>
+      </div>
+
+    <%
+      def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
+      if (!(currentActivityComposer instanceof UIDefaultActivityComposer)) {
+    %>
+      <div class="ComposerExtensionContainer">
+        <div class="Button" onclick="<%=currentActivityComposer.event("Close")%>">x</div>
+        <div style="clear:right"><span></span></div>
+        <div id="ComposerContainer" class="ClearLeft">
+          <%
+            uicomponent.renderChild(UIActivityComposerContainer.class);
+          %>
+        </div>
+      </div>
+    <%
+      }
+    %>
+      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage"); %>" value="$shareLabel"></input>
+    </div>
+  </div>
+  <% uiform.end() %>
+  <% uicomponent.renderChild(UIPopupWindow.class); %>
+</div>

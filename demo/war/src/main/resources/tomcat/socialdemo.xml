@@ -17,5 +17,5 @@
 
 -->
 
-<Context path="/social-resources" docBase="../../../../../webapp/resources/src/main/webapp/"
+<Context path="/socialdemo" docBase="../../../../../demo/war/src/main/webapp/"
          debug="0" reloadable="true" />

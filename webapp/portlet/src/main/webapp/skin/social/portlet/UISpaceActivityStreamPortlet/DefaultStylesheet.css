@@ -14,9 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
+
+/*UIComposer style*/
+@import url('/social-resources/skin/social/webui/UIComposer/DefaultSkin.css');
+
 /**
  * UISpaceActivityStream portlet style
  */
+
+.clearfix:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
+}
+
+.clearfix {display: inline-block;}
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
+
+
 .FloatLeft {
   float: left;
 }
@@ -44,7 +65,8 @@
 
 
 .UISpaceActivityStreamPortlet {
-  margin: 10px;
+  padding: 10px 10px 20px 10px;
+  font-family: lucida sans;
 }
 
 
@@ -73,180 +95,6 @@
   text-decoration: underline;
 }
 
-.UIActivity {
-  border-style:solid;
-  border-width:0 0 1px 0;
-  border-color:#E9E9E9;
-  padding-bottom:10px;
-  padding-top:10px;
-}
-
-
-.UIComposerExtensionContainer .LabelAttach {
-  border-bottom: 1px solid gray;
-  font-size: 12px;
-  padding-bottom: 1px;
-}
-
-.ActivitiesComponent {
-}
-
-.ActivitiesComponent  .ActivitiesComponentBT {
-  /*background: url('images/ActivitiesComponentBT.gif') no-repeat right bottom ;*/
-  /*height: 700px;*/
-}
-
-.ActivitiesComponent .ActivitiesTitleBarR {
-  background: url('images/ActivitiesComponentBTR.gif') no-repeat right top;
-  padding-right: 5px;
-}
-
-.ActivitiesComponent .ActivitiesTitleBarM {
-  background: url('images/ActivitiesComponentBTM.gif') repeat-x;
-  height: 22px;
-  color: #7d7d7d;
-  line-height: 22px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.ActivitiesComponent .ActivitiesContainer{
-  border-right: 1px solid #d6d6d6;
-  border-left: 1px solid #d6d6d6;
-  padding: 5px 20px 10px;
-  border-bottom: 1px solid #d6d6d6;
-}
-
-.StatusComponent {
-  background: #f0f0f0;
-  padding: 5px 15px 5px 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-}
-
-.StatusComponent table {
-  table-layout: fixed;
-  border: 0px;
-}
-
-.StatusComponent table td {
-  vertical-align: top;
-}
-
-.StatusAvatarBG {
-  background: url('images/MyStatusAvatarBG.gif') no-repeat left top;
-  width: 27px; height: 27px;
-  padding: 2px;
-  margin: 5px 0 5px 12px;
-  display: block;
-}
-
-.StatusInput {
-  padding: 0 0 10px;
-  width: 100%;
-}
-
-.StatusInputL {
-  background: url('images/MyStatusInputL.gif') repeat-y left;
-}
-
-.StatusInputML {
-  padding-left: 8px;
-}
-
-.StatusInputR  {
-  border-right:1px solid #d7d7d7;
-}
-
-.StatusInputM {
-  background: white;
-  min-height: 20px;
-  height: auto !important;
-  height: 20px;
-}
-
-.StatusInputTL {
-  background: url('images/MyStatusInputTL.gif') no-repeat left top;
-  padding-left: 8px;
-}
-
-.StatusInputTR  {
-  background: url('images/MyStatusInputTR.gif') no-repeat Right top;
-  padding-right: 2px;
-}
-
-.StatusInputTM {
-  background: white;
-  height: 1px;
-  border-top:1px solid #d7d7d7;
-}
-
-.StatusInputBL {
-  background: url('images/MyStatusInputBL.gif') no-repeat left bottom;
-  padding-left: 8px;
-}
-
-.StatusInputBR {
-  background: url('images/MyStatusInputBR.gif') no-repeat right bottom;
-  padding-right: 2px;
-}
-
-.StatusInputBM {
-  background: white;
-  height: 1px;
-  border-bottom:1px solid #d7d7d7;
-}
-
-.UISpaceActivityStreamPortlet .textarea {
-  border: 0px;
-  height: 30px;
-  max-height:60px;
-  overflow-x:hidden;
-  overflow-y:auto;
-  font-size: 11px;
-  width: 99%;
-}
-
-.UIComposer .ShareButton {
-  border: 1px solid gray;
-  width: 90px;
-  height: 25px;
-  font-size: 14px;
-}
-
-.UIComposer .UIComposerExtensionContainer {
-  margin-left: 10px;
-}
-
-.ExtensionInput {
-
-}
-
-.UIComposerExtensionContainer .Label {
-  float: left;
-  font-size: 12px;
-}
-
-.UIComposerExtensionContainer .AttachIcon {
-  float: left;
-  width: 16px;
-  height: 16px;
-  margin-left: 6px;
-  cursor: pointer;
-}
-
-.UIComposerExtensionContainer .ImageAttach {
-  background: url('images/ImageAttach.gif') no-repeat left center;
-}
-
-.UIComposerExtensionContainer .VideoAttach {
-  background: url('images/VideoAttach.gif') no-repeat left center;
-}
-
-.UIComposerExtensionContainer .LinkAttach {
-  background: url('images/LinkAttach.gif') no-repeat left center;
-  cursor: pointer;
-}
 
 .ATitleBarL {
   background: url('images/ATitleBarL.gif') no-repeat left top;
@@ -491,133 +339,3 @@
   font-size: 10px;
 }
 
-.UIComposerLinkExtension {
-  margin: 5px 0px;
-  background: white;
-  border: 1px solid #d7d7d7;
-  height: 23px;
-}
-
-.UIComposerLinkExtension .AddLink {
-  font-size: 12px;
-}
-
-.UIComposerLinkExtension #InputLink {
-  width: 85%;
-  height: 19px;
-  float: left;
-  border: 1px solid white;
-}
-
-.UIComposerLinkExtension .AttachButton {
-  border: 1px solid gray;
-  float: right;
-  height: 23px;
-}
-
-.UIComposerLinkExtension .ActionAdd {
-  float: right;
-}
-
-.UIComposerLinkExtension .ActionAdd a {
-  color: #0b4da3;
-}
-
-.UILinkShareDisplay {
-  margin-top: 5px;
-}
-
-.UILinkShareDisplay .ThumbnailLeft {
-  width: 165px;
-  float: left;
-}
-
-.UILinkShareDisplay .ThumbnailLeft .ThumbnailShown {
-  width: 150px;
-}
-
-.UILinkShareDisplay .ThumbnailLeft .ThumbnailHidden {
-  display: none;
-  width: 150px;
-}
-
-.UILinkShareDisplay .ThumbnailLeft .ThumbnailAction {
-  width: 100px; 
-}
-
-.UILinkShareDisplay .ThumbnailLeft .ThumbnailAction .BackIcon {
-  width: 9px; 
-  height: 16px;
-  float: left;
-  cursor: pointer;
-  background: url('images/BackIcon.gif') no-repeat left center;
-  margin-left: 35px;
-}
-
-.UILinkShareDisplay .ThumbnailLeft .ThumbnailAction .Stats {
-  float: left;
-  font-size: 8px;
-  margin-left: 9px;
-  background: none;
-}
-
-.UILinkShareDisplay .ThumbnailLeft .ThumbnailAction .NextIcon {
-  width: 9px; 
-  height: 16px;
-  float: right;
-  cursor: pointer;
-  background: url('images/NextIcon.gif') no-repeat right center;
-  margin-right: 15px;
-}
-
-.UILinkShareDisplayn .ThumbnailOption {
-  font-size: 9px;
-  height: 20px;
-  white-space: nowrap;
-}
-
-.UILinkShareDisplay .ContentRight {
-
-}
-
-.UILinkShareDisplay .ContentRight .InputTitle {
-  
-}
-
-.UILinkShareDisplay .ContentRight .InputDescription {
-  
-}
-
-
-.UILinkShareDisplay .ContentRight .Title {
-  color: #000000;
-  width: 550px;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.UILinkShareDisplay .ContentRight .Content {
-  color: #000000;
-  font-size: 10px;
-  margin: 3px 0px;
-  width: 550px;
-}
-
-.UILinkShareDisplay .ContentRight .Source {
-  color: #000000;
-  width: 550px;
-  font-size: 9px;
-}
-
-.UILinkShareDisplay .ContentRight .Source a {
-  color: #999999;
-}
-
-.LinkShare .Thumbnail {
-  float: left;
-  margin-right: 10px;
-}
-
-.LinkShare .Content {
-  margin-left: 110px;
-}

@@ -37,10 +37,6 @@ function getModule(params) {
   new Project("org.exoplatform.social", "exo.social.component.webui","jar", module.version).
       addDependency(new Project("org.exoplatform.commons", "exo.platform.commons.webui.ext", "jar", platformCommonsVersion));
 
-  module.component.plugin =
-  new Project("org.exoplatform.social", "exo.social.component.plugin","jar", module.version);
-
-
   module.webapp = {};
 
   module.webapp.opensocial = new Project("org.exoplatform.social", "exo.social.webapp.opensocial", "war", module.version);
@@ -60,6 +56,7 @@ function getModule(params) {
 
   module.extras = {};
   module.extras.feedmash = new Project("org.exoplatform.social", "exo.social.extras.feedmash", "jar", module.version);
+  module.extras.linkComposerPlugin = new Project("org.exoplatform.social", "exo.social.extras.link-composer-plugin", "jar", module.version);
 
   module.extension = {};
 
