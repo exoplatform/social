@@ -82,7 +82,8 @@ public class SpaceServiceImpl implements SpaceService {
 
   private SpaceLifecycle                       spaceLifeCycle           = new SpaceLifecycle();
 
-  String []                                    portletPrefsRequired;
+  String []                                    portletPrefsRequireds = null;
+  List<String>                                 portletPrefsRequired = null;
   /**
    * SpaceServiceImpl constructor Initialize
    * <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
@@ -1037,14 +1038,20 @@ public class SpaceServiceImpl implements SpaceService {
    * Set portlet preferences from plug-in into local variable. 
    */
   public void setPortletsPrefsRequired(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin) {
-    this.portletPrefsRequired = portletPrefsRequiredPlugin.getPrefs();
+    List<String> portletPrefs = portletPrefsRequiredPlugin.getPortletPrefs();
+    if (portletPrefsRequired == null) {
+      portletPrefsRequired = new ArrayList<String>();
+    }
+    portletPrefsRequired.addAll(portletPrefs);
+    
+    this.portletPrefsRequireds = portletPrefsRequired.toArray(new String [portletPrefsRequired.size()]);
   }
 
   /**
    * Get portlet preferences required for using in create portlet application. 
    */
   public String [] getPortletsPrefsRequired() {
-    return this.portletPrefsRequired;
+    return this.portletPrefsRequireds;
   }
   
   /**

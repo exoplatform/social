@@ -245,10 +245,6 @@
 	        <value>SpaceActivityStreamPortlet</value>
 	        <value>SpaceSettingPortlet</value>
 	        <value>MembersPortlet</value>
-	        <value>ForumPortlet</value>
-	        <value>AnswersPortlet</value>
-	        <value>CalendarPortlet</value>
-	        <value>ContactPortlet</value>
 	      </values-param>
 	    </init-params>
     </component-plugin>

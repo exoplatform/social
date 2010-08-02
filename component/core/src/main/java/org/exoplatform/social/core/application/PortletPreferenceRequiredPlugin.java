@@ -17,6 +17,8 @@
 package org.exoplatform.social.core.application;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
@@ -29,22 +31,36 @@ import org.exoplatform.container.xml.ValuesParam;
  * Jul 30, 2010  
  */
 public class PortletPreferenceRequiredPlugin extends BaseComponentPlugin {
-  private String [] portletPrefsRequired = {};
+
+  /**
+   * The initial parameter of this plugin
+   */
+  private final InitParams params;
+  
   public PortletPreferenceRequiredPlugin(InitParams params) {
-    portletPrefsRequired = autoSetValues(params);
+    this.params = params;
   }
   
-  public String [] autoSetValues(InitParams initParams) {
-    ValuesParam params = initParams.getValuesParam("portletsPrefsRequired");
-    ArrayList<String> values = params.getValues();
-    return  values.toArray(new String [values.size()]);
-  }
-
-  public String[] getPrefs() {
-    return portletPrefsRequired;
-  }
-
-  public void setPrefs(String[] prefs) {
-    this.portletPrefsRequired = prefs;
+  /**
+   * @return all the portlet preferences required that associated to this plugin 
+   */
+  public List<String> getPortletPrefs() {
+    Iterator<?> iterator = params.getValuesParamIterator();
+    List<String> prefs = null;
+    List values = new ArrayList();
+    if (iterator != null) {
+      while (iterator.hasNext()) {
+        ValuesParam valuesParam = (ValuesParam) iterator.next();
+        values = valuesParam.getValues();
+        for (Object value : values) {
+          if (prefs == null) {
+            prefs = new ArrayList<String>();
+          }
+          prefs.add((String)value);  
+        }
+      }
+    }
+    
+    return prefs;
   }
 }
