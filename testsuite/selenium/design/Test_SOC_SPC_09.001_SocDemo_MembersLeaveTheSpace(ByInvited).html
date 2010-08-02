@@ -4,16 +4,16 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Test_SOC_SPC_07.002_SocDemo_InvitedUserAcceptInvitation</title>
+<title>Test_SOC_SPC_09.001_SocDemo_MembersLeaveTheSpace(ByInvited)</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test_SOC_SPC_07.002_SocDemo_InvitedUserAcceptInvitation</td></tr>
+<tr><td rowspan="1" colspan="3">Test_SOC_SPC_09.001_SocDemo_MembersLeaveTheSpace(ByInvited)</td></tr>
 </thead><tbody>
 <tr>
 	<td>echo</td>
-	<td>--Test_SOC_SPC_07.002_SocDemo_InvitedUserAcceptInvitation</td>
+	<td>--Test_SOC_SPC_09.001_SocDemo_MembersLeaveTheSpace(ByInvited).html--</td>
 	<td></td>
 </tr>
 <tr>
@@ -147,11 +147,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
 	<td>echo</td>
 	<td>--click Add--</td>
 	<td></td>
@@ -262,13 +257,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>2000</td>
+	<td>clickAndWait</td>
+	<td>link=My Spaces</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=My Spaces</td>
+	<td>echo</td>
+	<td>-- access acepted space --</td>
 	<td></td>
 </tr>
 <tr>
@@ -282,13 +277,58 @@
 	<td></td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>--access space portlet--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- leave out Space--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- access public space list--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Publics</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--verify button send request to join---</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='UIManagePublicSpaces']/div[2]/div[2]/div[2]/div[1]/a</td>
+	<td></td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--Mary sign in to delete space for cleaning data--</td>
+	<td>-- Mary sign in to Delete space--</td>
 	<td></td>
 </tr>
 <tr>
@@ -318,48 +358,8 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--access space portlet--</td>
+	<td>-- access space portlet--</td>
 	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- access space--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/div[1]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/div[1]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--access user list portlet--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='UISpaceMenu']/div/div[4]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--verify user--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>link=John Anthony</td>
-	<td>John Anthony</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
