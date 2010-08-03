@@ -24,6 +24,7 @@ import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.space.SpaceException;
@@ -157,6 +158,12 @@ public class UIManagePublicSpaces extends UIContainer {
        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REQUEST_JOIN, null, ApplicationMessage.ERROR));
        return;
      }
+     
+     UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication().getChild(UIWorkingWorkspace.class);
+     
+     uiWorkingWS.updatePortletsByName("SpacesToolbarPortlet");
+     // portal
+     uiWorkingWS.updatePortletsByName("SocialUserToolBarGroupPortlet");
     }
   }
 

@@ -212,7 +212,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication()
                                            .getChild(UIWorkingWorkspace.class);
       uiWorkingWS.updatePortletsByName("profile");
-      uiWorkingWS.updatePortletsByName("UserToolBarPortlet");
+      uiWorkingWS.updatePortletsByName("UserProfileToolBarPortlet");
     }
   }
 }
