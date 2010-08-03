@@ -59,6 +59,8 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
         activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
         activityManager.saveActivity(spaceIdentity, activity);
       }
+    } else if(postContext == PostContext.PEOPLE){
+      
     }
   }
 

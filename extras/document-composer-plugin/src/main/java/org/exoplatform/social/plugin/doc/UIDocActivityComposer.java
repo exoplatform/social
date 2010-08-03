@@ -21,6 +21,8 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.ecm.webui.selector.UISelectable;
 import org.exoplatform.ecm.webui.tree.selectone.UIOneNodePathSelector;
 import org.exoplatform.portal.webui.util.SessionProviderFactory;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -59,17 +61,25 @@ import org.json.JSONObject;
   }
 )
 public class UIDocActivityComposer extends UIActivityComposer implements UISelectable {
+  private static final Log LOG = ExoLogger.getLogger(UIDocActivityComposer.class);
   private String documentRefPath;
   private boolean isDocumentReady;
 
   private final String repository = "repository";
   private final String workspace = "collaboration";
   private String rootpath;
+  private PopupContainer popupContainer;
+
   /**
    * constructor
    */
   public UIDocActivityComposer() {
     resetValues();
+    try {
+      popupContainer = addChild(PopupContainer.class, null, "PopupContainer");
+    } catch (Exception e) {
+      LOG.error(e);
+    }
   }
 
   private void resetValues() {
@@ -132,11 +142,11 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
         UIApplication uiApplication = requestContext.getUIApplication();
         final UIComposer uiComposer = (UIComposer) source;
 
-        JSONObject dataLink = new JSONObject();
-        dataLink.put(UIDocActivity.REFPATH, documentRefPath);
-        dataLink.put(UIDocActivity.MESSAGE, postedMessage);
+        JSONObject jsonData = new JSONObject();
+        jsonData.put(UIDocActivity.REFPATH, documentRefPath);
+        jsonData.put(UIDocActivity.MESSAGE, postedMessage);
 
-        String activityJSONData = dataLink.toString();
+        String activityJSONData = jsonData.toString();
         if (activityJSONData.equals("")) {
           uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
                                                         null,

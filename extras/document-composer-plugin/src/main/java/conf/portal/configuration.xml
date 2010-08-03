@@ -22,58 +22,35 @@
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
 
   <external-component-plugins>
-    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
-    <component-plugin>
-      <name>add.action</name>
-      <set-method>registerUIExtensionPlugin</set-method>
-      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
-      <init-params>
-        <object-param>
-          <name>Document Activity</name>
-          <object type="org.exoplatform.webui.ext.UIExtension">
-            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-            <field name="name"><string>DOC_ACTIVITY</string></field>
-            <field name="component"><string>org.exoplatform.social.plugin.doc.UIDocActivity</string></field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
-    <component-plugin>
-      <name>add.action</name>
-      <set-method>registerUIExtensionPlugin</set-method>
-      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
-      <init-params>
-        <object-param>
-          <name>Document Composer</name>
-          <object type="org.exoplatform.webui.ext.UIExtension">
-            <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
-            <field name="name"><string>DOC_ACTIVITY</string></field>
-            <field name="component"><string>org.exoplatform.social.plugin.doc.UIDocActivityComposer</string></field>
+		<target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
+		<component-plugin>
+			<name>add.action</name>
+			<set-method>registerUIExtensionPlugin</set-method>
+			<type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+			<init-params>
+				<object-param>
+					<name>Document Activity</name>
+					<object type="org.exoplatform.social.webui.activity.UIActivityExtension">
+						<field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+						<field name="name"><string>DOC_ACTIVITY</string></field>
+						<field name="component"><string>org.exoplatform.social.plugin.doc.UIDocActivity</string></field>
+            <field name="activityBuiderClass"><string>org.exoplatform.social.plugin.doc.DocUIActivityBuilder</string></field>
+					</object>
+				</object-param>
+			</init-params>
+		</component-plugin>
+		<component-plugin>
+			<name>add.action</name>
+			<set-method>registerUIExtensionPlugin</set-method>
+			<type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+			<init-params>
+				<object-param>
+					<name>Document Composer</name>
+					<object type="org.exoplatform.webui.ext.UIExtension">
+						<field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
+						<field name="name"><string>DOC_ACTIVITY</string></field>
+						<field name="component"><string>org.exoplatform.social.plugin.doc.UIDocActivityComposer</string></field>
             <field name="rank"><int>2</int></field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.webui.activity.UIActivityFactory</target-component>
-    <component-plugin>
-      <name>register.ui.activity.builder</name>
-      <set-method>registerBuilder</set-method>
-      <type>org.exoplatform.social.webui.activity.ActivityBuilderPlugin</type>
-      <init-params>
-        <value-param>
-          <name>activity.type</name>
-          <value>DOC_ACTIVITY</value>
-        </value-param>
-        <object-param>
-          <name>activity.builder</name>
-          <object type="org.exoplatform.social.plugin.doc.DocUIActivityBuilder">
           </object>
         </object-param>
       </init-params>

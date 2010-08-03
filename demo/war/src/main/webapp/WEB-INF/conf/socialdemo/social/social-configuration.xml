@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
     Copyright (C) 2003-2007 eXo Platform SAS.
 
     This program is free software; you can redistribute it and/or
@@ -15,7 +14,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see<http://www.gnu.org/licenses/>.
-
 -->
 <configuration
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -39,11 +37,6 @@
   </component>
 
   <component>
-    <key>org.exoplatform.social.webui.composer.UIActivityComposerManager</key>
-    <type>org.exoplatform.social.webui.composer.UIActivityComposerManager</type>
-  </component>
-
-  <component>
     <key>org.exoplatform.social.webui.activity.UIActivityFactory</key>
     <type>org.exoplatform.social.webui.activity.UIActivityFactory</type>
   </component>
@@ -62,18 +55,15 @@
       <init-params>
         <object-param>
           <name>Default Activity</name>
-          <object type="org.exoplatform.webui.ext.UIExtension">
+          <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
             <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
             <field name="name"><string>DEFAULT_ACTIVITY</string></field>
             <field name="component"><string>org.exoplatform.social.webui.activity.UIDefaultActivity</string></field>
+            <field name="activityBuiderClass"><string>org.exoplatform.social.webui.activity.DefaultUIActivityBuilder</string></field>
           </object>
         </object-param>
       </init-params>
     </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
       <name>add.action</name>
       <set-method>registerUIExtensionPlugin</set-method>
@@ -86,26 +76,6 @@
             <field name="name"><string>DEFAULT_ACTIVITY_COMPOSER</string></field>
             <field name="component"><string>org.exoplatform.social.webui.composer.UIDefaultActivityComposer</string></field>
             <field name="rank"><int>0</int></field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.webui.activity.UIActivityFactory</target-component>
-    <component-plugin>
-      <name>register.ui.activity.builder</name>
-      <set-method>registerBuilder</set-method>
-      <type>org.exoplatform.social.webui.activity.ActivityBuilderPlugin</type>
-      <init-params>
-        <value-param>
-          <name>activity.type</name>
-          <value>DEFAULT_ACTIVITY</value>
-        </value-param>
-        <object-param>
-          <name>activity.builder</name>
-          <object type="org.exoplatform.social.webui.activity.DefaultUIActivityBuilder">
           </object>
         </object-param>
       </init-params>

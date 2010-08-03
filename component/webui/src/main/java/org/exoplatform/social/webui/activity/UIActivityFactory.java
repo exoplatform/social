@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.activity;
 
 import java.util.Hashtable;
+import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.BaseComponentPlugin;
@@ -39,6 +40,15 @@ public class UIActivityFactory extends BaseComponentPlugin {
   private Hashtable<String, BaseUIActivityBuilder> builders = new Hashtable<String, BaseUIActivityBuilder>();
 
   public UIActivityFactory() {
+    UIExtensionManager extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
+    final List<UIExtension> extensions = extensionManager.getUIExtensions(BaseUIActivity.class.getName());
+    for (UIExtension extension : extensions) {
+      try {
+        registerBuilder((UIActivityExtension)extension);
+      } catch (Exception e) {
+        LOG.error(e);
+      }
+    }
   }
 
   public BaseUIActivity addChild(Activity activity, UIContainer parent) throws Exception {
@@ -73,13 +83,14 @@ public class UIActivityFactory extends BaseComponentPlugin {
     return builder;
   }
 
-  public void registerBuilder(ActivityBuilderPlugin activityBuilderPlugin){
-    String activityType = activityBuilderPlugin.getActivityType();
+  private void registerBuilder(UIActivityExtension activityExtension) throws Exception {
+    String activityType = activityExtension.getName();
 
     if(builders.contains(activityType)){
       builders.remove(activityType);
     }
 
-    builders.put(activityType, activityBuilderPlugin.getActivityBuilder());
+    final Class<BaseUIActivityBuilder> builderClass = (Class<BaseUIActivityBuilder>) Thread.currentThread().getContextClassLoader().loadClass(activityExtension.getActivityBuiderClass());
+    builders.put(activityType, builderClass.newInstance());
   }
 }

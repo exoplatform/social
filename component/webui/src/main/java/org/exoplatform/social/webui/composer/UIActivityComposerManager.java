@@ -65,10 +65,6 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
     return activityComposers;
   }
 
-//  public String getComposerName(UIActivityComposer activityComposer){
-//    return activityComposer.getClass().getSimpleName();
-//  }
-
   public void setActivityDisplay(UISpaceActivitiesDisplay uiDisplaySpaceActivities) {
     for (UIActivityComposer activityComposer : activityComposers) {
       activityComposer.setActivityDisplay(uiDisplaySpaceActivities);

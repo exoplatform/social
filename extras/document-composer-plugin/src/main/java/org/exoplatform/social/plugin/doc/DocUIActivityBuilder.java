@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.plugin.doc;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
@@ -29,6 +31,7 @@ import org.json.JSONObject;
  * Jul 23, 2010
  */
 public class DocUIActivityBuilder extends BaseUIActivityBuilder {
+  private static final Log LOG = ExoLogger.getLogger(DocUIActivityBuilder.class);
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
     UIDocActivity docActivity = (UIDocActivity) uiActivity;
@@ -38,7 +41,7 @@ public class DocUIActivityBuilder extends BaseUIActivityBuilder {
       docActivity.documentRefPath = jsonObject.getString(UIDocActivity.REFPATH);
       docActivity.message = jsonObject.getString(UIDocActivity.MESSAGE);
     } catch (JSONException e) {
-      e.printStackTrace();
+      LOG.error(e);
     }
   }
 }
