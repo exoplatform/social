@@ -171,6 +171,7 @@
              homeSpaceUrl = uicomponent.homeSpaceUrl;
            }
            def removeLeader = uicomponent.event("RemoveLeader", user) + "; return false;";
+           def selfRemoveLeader = uicomponent.url('RemoveLeader');
            def makeLeader = uicomponent.event("MakeLeader", user) + "; return false;";
            def removeAction = uicomponent.event("RemoveUser", user) + "; return false;";
            def removeOwnerAction = uicomponent.url('RemoveUser');
@@ -183,9 +184,13 @@
           <td class="text"><span class="label" id="label"><%= user %></span></td>
           <% if(isLeader) { %>
           <td class="text" style="text-align: center">
+          <% if(uicomponent.isCurrentUser(user)) { %>
+            <div class="ManageMemButtonSub" onclick="$selfRemoveLeader" title="$labelRemoveLeader"><span></span></div>
+          <% } else {%>
             <div class="ManageMemButtonSub" onclick="$removeLeader" title="$labelRemoveLeader">
               <a class="label" id="label" href="$homeSpaceUrl"><span></span></a>
             </div>
+          <% } %>
           </td>
           <% } else { %>
           <td class="text" style="text-align: center">

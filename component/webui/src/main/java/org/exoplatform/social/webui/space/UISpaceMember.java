@@ -517,26 +517,43 @@ public class UISpaceMember extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
-
+      PortalRequestContext prContext = Util.getPortalRequestContext();
+      String currentUser = requestContext.getRemoteUser();
+      boolean useAjax = prContext.useAjax();
       SpaceService spaceService = uiSpaceMember.getSpaceService();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      
+      if (!useAjax) userName = currentUser;
+      
       try {
         spaceService.setLeader(space, userName, false);
       } catch(SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_LEADER, null, ApplicationMessage.WARNING));
       }
-      if(!uiSpaceMember.isSuperUser() && userName.equals(requestContext.getRemoteUser())) {
-        UIPortal uiPortal = Util.getUIPortal();
-        PageNavigation nav = uiPortal.getSelectedNavigation();
-        PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
-        if (homeNode == null) {
-          throw new Exception("homeNode is null!");
+//      if(!uiSpaceMember.isSuperUser() && userName.equals(requestContext.getRemoteUser())) {
+//        UIPortal uiPortal = Util.getUIPortal();
+//        PageNavigation nav = uiPortal.getSelectedNavigation();
+//        PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
+//        if (homeNode == null) {
+//          throw new Exception("homeNode is null!");
+//        }
+//        String uri = nav.getId() + "::" + homeNode.getUri();
+//        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
+//            PageNodeEvent.CHANGE_PAGE_NODE,
+//            uri);
+//        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+//      } else {
+      if (!useAjax) { // self remove.
+        prContext = Util.getPortalRequestContext();
+        prContext.setResponseComplete(true);
+        StringBuffer url = new StringBuffer(Util.getPortalRequestContext().getPortalURI());
+        if(uiSpaceMember.isSuperUser()) {
+          url.append(space.getUrl()).append("/SpaceSettingPortlet");
+        } else {
+          url.append("spaces");
         }
-        String uri = nav.getId() + "::" + homeNode.getUri();
-        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
-            PageNodeEvent.CHANGE_PAGE_NODE,
-            uri);
-        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
+        prContext.getResponse().sendRedirect(url.toString());
+        return;
       } else {
         requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
       }
