@@ -5,5 +5,5 @@
 <messageBundle>
   <msg name="my_spaces">My Spaces</msg>
   <msg name="more_link_label">more</msg>
-  <msg name="has_no_space">Has no space yet.</msg>
+  <msg name="has_no_space">You do not have any spaces yet.</msg>
 </messageBundle>
