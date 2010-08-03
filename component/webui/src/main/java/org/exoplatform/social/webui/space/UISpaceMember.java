@@ -530,19 +530,6 @@ public class UISpaceMember extends UIForm {
       } catch(SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_LEADER, null, ApplicationMessage.WARNING));
       }
-//      if(!uiSpaceMember.isSuperUser() && userName.equals(requestContext.getRemoteUser())) {
-//        UIPortal uiPortal = Util.getUIPortal();
-//        PageNavigation nav = uiPortal.getSelectedNavigation();
-//        PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
-//        if (homeNode == null) {
-//          throw new Exception("homeNode is null!");
-//        }
-//        String uri = nav.getId() + "::" + homeNode.getUri();
-//        PageNodeEvent<UIPortal> pnevent = new PageNodeEvent<UIPortal>(uiPortal,
-//            PageNodeEvent.CHANGE_PAGE_NODE,
-//            uri);
-//        uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
-//      } else {
       if (!useAjax) { // self remove.
         prContext = Util.getPortalRequestContext();
         prContext.setResponseComplete(true);
