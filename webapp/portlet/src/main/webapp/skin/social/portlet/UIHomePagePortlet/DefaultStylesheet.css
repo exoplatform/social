@@ -14,145 +14,343 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-.UIWindow .UISocialHomepage {	
-	margin: 0px;
+
+.UIWorkingWorkspace {
+  background-color: #E4E4E4;
+  margin:auto;
+  width:100%;
+}
+
+div, table, tr, td, img, form{
+    font-family: Lucida Sans, arial, tahoma;
+    font-size: 12px;
+}
+
+p{
+    margin: 0px;
+    padding: 0px;
+}
+
+.UIWindow .UISocialHomepage {
+    margin: 0px;
 }
 
 .UISocialHomepage {
-  padding: 8px;
-  background: white;
+    width: 962px;
+    margin: 0 auto;
 }
 
 .LeftSocialHomepage {
-	float: left;
-	width: 712px;
+    float: left;
+    width: 746px;
+    color: #626262;
 }
 
 .RightSocialHomepage {
-	float: right;
-	width: 221px;
-	border: 1px solid #e4e4e4;
-	background: #f5f5f5;
+    float: right;
+    width: 207px;
+    color: #626262;
+    background: #fff;
+    margin-top: 10px;
+}
+
+.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage{
+    padding: 0px;
+}
+
+.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock{
+    background-color: #e4e4e4;
 }
 
 .UISocialHomepage .HomeBackground  {
-	background: url('DefaultSkin/background/HomeBackground.jpg') no-repeat left top;
-	height: 254px;
-	width: 712px;
-	margin-bottom: 10px;
+    background: url('DefaultSkin/background/HomeBackground.jpg') no-repeat left top;
+    height: 254px;
+    width: 712px;
+    margin-bottom: 10px;
 }
 
 .UISocialHomepage .HomeBackgroundText {
-	padding: 150px 0px 0px 50px;
-	color: #777777;
-	font-weight: bold;
-	font-size: 21px;
-	text-align: center;
-	font-family: arial;
+    padding: 150px 0px 0px 50px;
+    color: #777777;
+    font-weight: bold;
+    font-size: 21px;
+    text-align: center;
+    font-family: arial;
 }
 
-.UISocialHomepage .LeftBoxDecorator {
-	background: url('DefaultSkin/background/Decorator.gif') no-repeat left top;
-	padding-left: 5px;
-}
-
-.UISocialHomepage .RightBoxDecorator {
-	background: url('DefaultSkin/background/Decorator.gif') no-repeat right top;
-	padding-right: 5px;
-}
-
-.UISocialHomepage .CenterBoxDecorator {
-	background: url('DefaultSkin/background/Decorator.gif') repeat-x left -126px;
-	height: 126px;
-}
-
-.UISocialHomepage .CenterBoxDecorator .BoxLeft {
-	float: left;
-	width: 350px;
-}
-
-.UISocialHomepage .CenterBoxDecorator .LineBoxLeft {
-	background: url('DefaultSkin/background/LineBoxLeft.gif') no-repeat left 1px;
+.UISocialHomepage .BoxLeft {
+    float: left;
+    width: 368px;
+    background-color: #fff;
+    margin-top: 10px;
 }
 
 .UISocialHomepage .TitBoxLeft {
-	color: #6d6d6d;
-	line-height: 28px;
+    color: #6d6d6d;
+    line-height: 28px;
 }
 
 .UISocialHomepage .TitBoxLeftL {
-	float: left;
-	width: 110px;
-	text-align: center;
-	font-weight: bold;
+    float: left;
+    width: 360px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 34px;
+    padding-left: 88px;
 }
 
 .UISocialHomepage .TitBoxLeftR {
-	float: left;
+    float: left;
 }
 
 .UISocialHomepage .ContentBoxLeft {
-	padding: 16px 0px 0px 15px;
+    padding: 19px 0px 0px 16px;
+    border-left: solid 1px #dcdcdc;
+    border-right: solid 1px #dcdcdc;
 }
 
 .UISocialHomepage .ContentBoxLeft  .IconBoxleft {
-	display: block;
-	width: 70px;
-	height: 70px;
-	float: left;
-	margin-right: 15px;
+    display: block;
+    width: 65px;
+    height: 61px;
+    float: left;
+    margin-right: 16px;
+    margin-bottom: 25px;
 }
 
 .UISocialHomepage .ContentBoxLeft  .PeopleIcon {
-	background: url('DefaultSkin/background/IconBoxLeft.png') no-repeat left top;
+    background: url('DefaultSkin/background/IconBoxLeft.gif') no-repeat left -121px;
 }
 
 .UISocialHomepage .ContentBoxLeft .SpaceIcon {
-	background: url('DefaultSkin/background/IconBoxLeft.png') no-repeat left -130px;
+    background: url('DefaultSkin/background/IconBoxLeft.gif') no-repeat left -183px;
 }
 
-.UISocialHomepage .ContentBoxLeft  .TxtBoxLeft {
-	background: url('DefaultSkin/background/LineLabel.gif') repeat-y left top;
-	padding: 0px 0px 0px 20px;
-	float: left;
-	color: #777777;
+.UISocialHomepage .ContentBoxLeft .OpenSocialIcon {
+    background: url('DefaultSkin/background/IconBoxLeft.gif') no-repeat left top;
 }
 
-
-.UISocialHomepage .BoxRight {
-	background: url('DefaultSkin/background/BGBoxRight.gif') repeat-x left top;
-	height: 128px;
-	text-align: center;
+.UISocialHomepage .ContentBoxLeft .ActivityIcon {
+    background: url('DefaultSkin/background/IconBoxLeft.gif') no-repeat left -61px;
 }
 
-.UISocialHomepage .LineBoxRight {
-	background: url('DefaultSkin/background/LineBoxRight.gif') no-repeat center top;
-	height: 2px;
-	width: 220px;
+/**
+    Creat new 22-07-2010 by trung.nguyen
+ ****/
+
+.UIWorkingWorkspace .UIPageBody .UIBannerHomePage{
+    background: url('DefaultSkin/background/BgTopBannerHome.jpg') repeat-x left top;
+    height: 250px;
 }
 
-.UISocialHomepage .BoxRight .TitBoxRight {
-	font-weight: bold;
-	line-height: 24px;
-	color: #777777;
-	margin-bottom: 20px;
+.UIWorkingWorkspace .UIPageBody .BgBannerHomepage{
+    background: url('DefaultSkin/background/BannerHomepage.gif') no-repeat left top;
+    height: 250px;
+    margin: auto;
+    width: 962px;
 }
 
-.UISocialHomepage .BoxRight .ImgBoxRight {
-	width: 64px;
-	height: 70px;
-	margin: 0px auto;
-	display: block;
+.UIWorkingWorkspace .BgBannerHomepage .Title{
+    float: right;
+    margin-right: 11px;
+    text-align: right;
+    padding-top: 48px;
+    color: #8d4936;
 }
 
-.UISocialHomepage .BoxRight .ImgDownload {
-	background: url('DefaultSkin/background/ImgRightBox.gif') no-repeat left top;
+.UIWorkingWorkspace .BgBannerHomepage .Title p{
+    margin: 0px;
 }
 
-.UISocialHomepage .BoxRight .ImgFeedBack {
-	background: url('DefaultSkin/background/ImgRightBox.gif') no-repeat left -130px;
+.UIWorkingWorkspace .BgBannerHomepage .Title .TxtLarge{
+    font-size: 38px;
 }
 
-.UISocialHomepage .BoxRight .ImgContact {
-	background: url('DefaultSkin/background/ImgRightBox.gif') no-repeat left -264px;
+.UIWorkingWorkspace .BgBannerHomepage .Title .TxtSmall{
+    font-size: 26px;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button{
+    margin-top: 51px;
+    float: right;
+    margin-right: 6px;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BntLogin{
+    width: 210px;
+    float: left;
+
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BntRegister{
+    width: 223px;
+    margin-left: 15px;
+    float: left;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BgButtonLoginL{
+    background: url('DefaultSkin/background/BgButton.png') no-repeat left top;
+    padding-left: 44px;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BgButtonRegisterL{
+    background: url('DefaultSkin/background/BgButton.png') no-repeat left -42px;
+    padding-left: 44px;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BgButtonR{
+    background: url('DefaultSkin/background/BgButton.png') no-repeat right -84px;
+    padding-right: 13px;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BgButtonC{
+    background: url('DefaultSkin/background/BgButton.png') repeat-x left -126px;
+    height: 41px;
+    color: #20263f;
+    line-height:35px;
+    padding-left:6px;
+}
+
+.UISocialHomepage .LeftSocialHomepage .SpaceBoxLeft{
+    margin-left: 9px;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BgButtonC a{
+    color: #20263f;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BgButtonC .TxtBold {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.UIWorkingWorkspace .BgBannerHomepage .Button .BgButtonC .TxtSmall {
+    font-size: 11px;
+}
+
+.UISocialHomepage .BoxLeft .BgTL{
+    background: url('DefaultSkin/background/BgBox.gif') no-repeat left top;
+    padding-left: 10px;
+}
+
+.UISocialHomepage .BoxLeft .BgTR{
+    background: url('DefaultSkin/background/BgBox.gif') no-repeat right -34px;
+    padding-right: 10px;
+}
+
+.UISocialHomepage .BoxLeft .BgTC{
+    background: url('DefaultSkin/background/BgBox.gif') repeat-x left -68px;
+    height: 34px;
+}
+
+.UISocialHomepage .BoxLeft .BgBL{
+    background: url('DefaultSkin/background/BgBox.gif') no-repeat left -123px;
+    padding-left: 10px;
+}
+
+.UISocialHomepage .BoxLeft .BgBR{
+    background: url('DefaultSkin/background/BgBox.gif') no-repeat right -130px;
+    padding-right: 10px;
+}
+
+.UISocialHomepage .BoxLeft .BgBC{
+    background: url('DefaultSkin/background/BgBox.gif') repeat-x left -137px;
+    height: 7px;
+}
+
+.UISocialHomepage .LeftSocialHomepage .ContentBoxLeft ul{
+    margin: 0px;
+    padding: 0px;
+    float: left;
+    list-style:none;
+}
+
+.UISocialHomepage .LeftSocialHomepage .ContentBoxLeft ul li{
+    background: url('DefaultSkin/background/ArrowTxt.gif') no-repeat left top;
+    padding-left: 14px;
+    font-size: 12px;
+    text-align: left;
+    padding-bottom: 3px;
+}
+
+.UISocialHomepage .RightSocialHomepage .BgRightTL{
+    background: url('DefaultSkin/background/BgBox.gif') no-repeat left -102px;
+    padding-left: 10px;
+}
+
+.UISocialHomepage .RightSocialHomepage .BgRightTR{
+    background: url('DefaultSkin/background/BgBox.gif') no-repeat right -109px;
+    padding-right: 10px;
+}
+
+.UISocialHomepage .RightSocialHomepage .BgRightTC{
+    background: url('DefaultSkin/background/BgBox.gif') repeat-x left -116px;
+    height: 7px;
+}
+
+.UISocialHomepage .RightSocialHomepage .BgRightBL{
+    background: url('DefaultSkin/background/BgBox.gif') no-repeat left -123px;
+    padding-left: 10px;
+}
+
+.UISocialHomepage .RightSocialHomepage .BgRightBR{
+    background: url('DefaultSkin/background/BgBox.gif') no-repeat right -130px;
+    padding-right: 10px;
+}
+
+.UISocialHomepage .RightSocialHomepage .BgRightBC{
+    background: url('DefaultSkin/background/BgBox.gif') repeat-x left -137px;
+    height: 7px;
+}
+
+.UISocialHomepage .RightSocialHomepage .BgRightM{
+    background-color:#fff;
+    border-left: solid 1px #dcdcdc;
+    border-right: solid 1px #dcdcdc;
+    padding: 32px 8px 62px 18px;
+}
+
+.UISocialHomepage .RightSocialHomepage .Download{
+    border-bottom: solid 1px #cccccc;
+    padding-bottom: 28px;
+}
+
+.UISocialHomepage .RightSocialHomepage .IconDownload{
+    background: url('DefaultSkin/background/IconDownload.gif') no-repeat;
+    width: 57px;
+    height: 57px;
+    float: left;
+    margin-right: 9px;
+}
+
+.UISocialHomepage .RightSocialHomepage .TxtDownload{
+    padding-top: 10px;
+    font-size: 12px;
+}
+
+.UISocialHomepage .RightSocialHomepage .TxtPing{
+    font-size: 15px;
+    color: #f58220;
+    font-weight: bold;
+}
+
+.UISocialHomepage .RightSocialHomepage .TxtPing a{
+    color: #f58220;
+}
+
+.UISocialHomepage .RightSocialHomepage .FeedBack{
+    margin-top: 22px;
+}
+
+.UIWorkingWorkspace .UIPageBody .BLPagebody{
+    background: none;
+}
+
+.UIWorkingWorkspace .UIPageBody .BRPagebody{
+    background: none;
+}
+
+.UIWorkingWorkspace .UIPageBody .BMPagebody{
+    background: none;
 }

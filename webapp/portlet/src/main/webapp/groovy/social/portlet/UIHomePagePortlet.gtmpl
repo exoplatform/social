@@ -2,7 +2,7 @@
 /*
 <!--
 
-    Copyright (C) 2003-2007 eXo Platform SAS.
+    Copyright (C) 2003-2010 eXo Platform SAS.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU Affero General Public License
@@ -20,67 +20,173 @@
 -->
 */
 %>
-<div class="UISocialHomepage" id="$uicomponent.id">
-  <div class="LeftSocialHomepage">
-    <div class="HomeBackground">
-      <div class="HomeBackgroundText"><%=_ctx.appRes("UIHomePagePortlet.title.product")%></div>
+<%
+  import org.exoplatform.portal.application.PortalRequestContext;
+  import org.exoplatform.portal.webui.util.Util;
+
+  def prContext = _ctx.getRequestContext().getParentAppRequestContext();
+  String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));";
+  String portletId = uicomponent.getId();
+  String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";
+%>
+<div class="UIBannerHomePage">
+  <div class="BgBannerHomepage">
+    <div class="Title">
+      <p class="TxtLarge">eXo Social</p>
+      <p class="TxtSmall">An Extended Service of eXo Platform 3.0</p>
     </div>
-    <div class="LeftBoxDecorator">
-      <div class="RightBoxDecorator">
-        <div class="CenterBoxDecorator">
-          <div class="BoxLeft">
-            <div class="TitBoxLeft">
-              <div class="TitBoxLeftL"><%=_ctx.appRes("UIHomePagePortlet.title.people")%></div>
-              <div class="TitBoxLeftR"><%=_ctx.appRes("UIHomePagePortlet.label.addSocial")%></div>
-              <div class="ClearBoth"><span></span></div>
+    <div class="ClearBoth"><span></span></div>
+    <div class="Button">
+      <div class="BntLogin">
+        <div class="BgButtonLoginL">
+          <div class="BgButtonR">
+            <div class="BgButtonC">
+              <a href="#" onclick="$signInAction"><span class="TxtBold">Login</span><span class="TxtSmall"> | Start a session</span></a>
             </div>
-            <div class="ContentBoxLeft">
-              <a class="PeopleIcon IconBoxleft"><span></span></a>
-              <div class="TxtBoxLeft"><%=_ctx.appRes("UIHomePagePortlet.info.people1")%>
-                <br/><%=_ctx.appRes("UIHomePagePortlet.info.people2")%>
-                <br/><%=_ctx.appRes("UIHomePagePortlet.info.people3")%>
-                <br/><%=_ctx.appRes("UIHomePagePortlet.info.people4")%>
-                <br/><%=_ctx.appRes("UIHomePagePortlet.info.people5")%>
-              </div>
-            <div class="ClearBoth"><span></span></div>
           </div>
         </div>
-          <div class="BoxLeft LineBoxLeft">
-            <div class="TitBoxLeft">
-              <div class="TitBoxLeftL"><%=_ctx.appRes("UIHomePagePortlet.title.spaces")%></div>
-              <div class="TitBoxLeftR"><%=_ctx.appRes("UIHomePagePortlet.label.addCommunities")%></div>
-              <div class="ClearBoth"><span></span></div>
-            </div>
-            <div class="ContentBoxLeft">
-              <a class="SpaceIcon IconBoxleft"><span></span></a>
-                <div class="TxtBoxLeft"><%=_ctx.appRes("UIHomePagePortlet.info.spaces1")%>
-                  <br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces2")%>
-                  <br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces3")%>
-                  <br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces4")%>
-                  <br/><%=_ctx.appRes("UIHomePagePortlet.info.spaces5")%>
-                </div>
-              <div class="ClearBoth"><span></span></div>
+      </div>
+      <div class="BntRegister">
+        <div class="BgButtonRegisterL">
+          <div class="BgButtonR">
+            <div class="BgButtonC">
+              <a href="$registerURI"><span class="TxtBold">Register</span><span class="TxtSmall"> | Create an acount</span></a>
             </div>
           </div>
-          <div class="ClearBoth"><span></span></div>
-        </div> 
+        </div>
       </div>
     </div>
+    <div class="ClearBoth"><span></span></div>
+  </div>
+</div>
+<div class="UISocialHomepage" id="$uicomponent.id">
+  <div class="LeftSocialHomepage">
+    <div class="BoxLeft">
+      <div class="BgTL">
+        <div class="BgTR">
+          <div class="BgTC">
+              <div class="TitBoxLeftL">OpenSocial standard</div>
+              <div class="ClearBoth"><span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ContentBoxLeft">
+        <a class="OpenSocialIcon IconBoxleft"><span></span></a>
+        <ul>
+          <li>OpenSocial 0.8.1 support </li>
+          <li>OAuth support for remote access</li>
+          <li>OpenSocial REST service support</li>
+        </ul>
+        <div class="ClearBoth"><span></span></div>
+      </div>
+      <div class="BgBL">
+        <div class="BgBR">
+          <div class="BgBC"><span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="BoxLeft SpaceBoxLeft">
+      <div class="BgTL">
+        <div class="BgTR">
+          <div class="BgTC">
+              <div class="TitBoxLeftL">Activity Stream</div>
+              <div class="ClearBoth"><span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ContentBoxLeft">
+        <a class="ActivityIcon IconBoxleft"><span></span></a>
+        <ul>
+          <li>Update and share user's status</li>
+          <li>Get user's network activity stream</li>
+          <li>Custom share plugin</li>
+        </ul>
+        <div class="ClearBoth"><span></span></div>
+      </div>
+      <div class="BgBL">
+        <div class="BgBR">
+          <div class="BgBC"><span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="BoxLeft">
+      <div class="BgTL">
+        <div class="BgTR">
+          <div class="BgTC">
+              <div class="TitBoxLeftL">People Directory</div>
+              <div class="ClearBoth"><span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ContentBoxLeft">
+        <a class="PeopleIcon IconBoxleft"><span></span></a>
+        <ul>
+          <li>Turn your directory into a social network</li>
+          <li>Extensible profile to other networks</li>
+          <li>Search users by skills and experience</li>
+        </ul>
+        <div class="ClearBoth"><span></span></div>
+      </div>
+      <div class="BgBL">
+        <div class="BgBR">
+          <div class="BgBC"><span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="BoxLeft SpaceBoxLeft">
+      <div class="BgTL">
+        <div class="BgTR">
+          <div class="BgTC">
+              <div class="TitBoxLeftL">Space</div>
+              <div class="ClearBoth"><span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ContentBoxLeft">
+        <a class="SpaceIcon IconBoxleft"><span></span></a>
+        <ul>
+          <li>Collaborative workspaces for community</li>
+          <li>Group activity stream</li>
+          <li>Add custom applications</li>
+        </ul>
+        <div class="ClearBoth"><span></span></div>
+      </div>
+      <div class="BgBL">
+        <div class="BgBR">
+          <div class="BgBC"><span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ClearBoth"><span></span></div>
   </div>
   <div class="RightSocialHomepage">
-    <div class="BoxRight">
-      <div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.download")%></div>
-        <a href="https://sourceforge.net/projects/exo-social/" class="ImgBoxRight ImgDownload"><span></span></a>
+    <div class="BgRightTL">
+      <div class="BgRightTR">
+        <div class="BgRightTC"><span></span></div>
       </div>
-    <div class="LineBoxRight"><span></span></div>
-    <div class="BoxRight">
-      <div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.feedback")%></div>
-      <a href="http://spreadsheets.google.com/viewform?formkey=dERsbWp1NWl3eGs0ekZEV3NpWi1Sa0E6MA" class="ImgBoxRight ImgFeedBack"><span></span></a>
     </div>
-    <div class="LineBoxRight"><span></span></div>
-    <div class="BoxRight">
-      <div class="TitBoxRight"><%=_ctx.appRes("UIHomePagePortlet.label.contact")%></div>
-      <a href="mailto:exo-sc@exoplatform.com" class="ImgBoxRight ImgContact"><span></span></a>
+    <div class="BgRightM">
+      <div class="Download">
+        <a class="IconDownload" href="https://sourceforge.net/projects/exo-social/"></a>
+        <div class="TxtDownload">
+          <p class="TxtPing"><a href="https://sourceforge.net/projects/exo-social/">Download</a></p>
+          <p>Community version</p>
+        </div>
+        <div class="ClearBoth"><span></span></div>
+      </div>
+      <div class="FeedBack">
+        <p>Did you like it ?</p>
+        <p class="TxtPing"><a href="http://spreadsheets.google.com/viewform?formkey=dERsbWp1NWl3eGs0ekZEV3NpWi1Sa0E6MA">Send feedback</a></p>
+      </div>
+      <div class="FeedBack">
+        <p>join the community :</p>
+        <p class="TxtPing"><a href="mailto:exo-sc@exoplatform.com">wiki | forums</a></p>
+      </div>
+    </div>
+    <div class="BgRightBL">
+      <div class="BgRightBR">
+        <div class="BgRightBC"><span></span></div>
+      </div>
     </div>
   </div>
   <div class="ClearBoth"><span></span></div>

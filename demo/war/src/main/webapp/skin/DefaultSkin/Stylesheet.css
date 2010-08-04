@@ -15,4 +15,10 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-@import url(portal/webui/component/UIToolbarContainer/Stylesheet.css);
+ @import url(portal/webui/component/UIToolbarContainer/Stylesheet.css);
+
+#UIPortalApplication .UIWorkingWorkspace {
+  background-color: #E4E4E4;
+  margin:auto;
+  width:100%;
+}

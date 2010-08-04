@@ -38,11 +38,6 @@
   border-right: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIAdminToolbarPortlet .UIHorizontalTabs .UITab {
-  background:none;
-  padding:0;
-}
-
 .UIWorkingWorkspace .UIToolbarContainer .ToolbarContainer a {
   display: block;
   padding: 0px 10px;
@@ -65,8 +60,7 @@
 }
 
 .UIWorkingWorkspace .UIToolbarContainer .UIHorizontalTabs .TabsContainer {
-  position:relative;    margin:auto;
-    width:100%;
+  position:relative;
   height: 30px;
   float: left; /* orientation=lt */
   float: right; /* orientation=rt */

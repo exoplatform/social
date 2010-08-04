@@ -14,21 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
+
 .UIBannerPortlet {
-	overflow: auto;
+  overflow: auto;
+  height: 65px;
+  font-size: 12px;
+  background-color: #20263f;
+  font-family: Lucida Sans,Tahoma,Verdana,Arial,Helvetica,sans-serif;
 }
 .UIBannerPortlet .LogoBlock {
   background: url('DefaultSkin/background/SocialLogo.png') no-repeat left bottom;
-	display: block;
-	float: left;
-	height: 43px;
-	padding-left: 8px;
-	width:120px;
+  display: block;
+  float: left;
+  height: 40px;
+  margin-left: 58px;
+  width: 144px;
+  padding-top: 17px
 }
 
 .UIBannerPortlet .LeftBanner {
-  background: #b5b6b6;
-  border-top: 1px solid #a8a8ab;
+  background-color: #20263f;
   padding-left: 8px;
 }
 
@@ -42,30 +47,31 @@
 
 .UIBannerPortlet .LeftLoginContainer {
   float: right;
-  margin-right: 8px;
 }
 
 .UIBannerPortlet .RightLoginContainer {
 }
 
 .UIBannerPortlet .MiddleLoginContainer {
-  padding: 15px 10px 0 10px;
+  padding: 41px 0px 0px 0px;
+  margin-right: 61px;
+  color: #ffcb05;
 }
 
 .UIBannerPortlet .MiddleLoginContainer a {
-  color: #fff;
+  color: #ffcb05;
   display: block;
 }
 
 .UIBannerPortlet .MiddleLoginContainer a:hover {
-  color: #0b4da3;
+  color: #8c8c8c;
 }
 
 .UIBannerPortlet .MiddleLoginContainer .Name {
-	text-align: left;
-	color: #0d62af;
-	font-size: 10px;
-	margin-bottom: 6px;
+  text-align: left;
+  color: #0d62af;
+  font-size: 10px;
+  margin-bottom: 6px;
 }
 
 .UIBannerPortlet .MiddleLoginContainer .Logout {
@@ -93,22 +99,20 @@
 .UIBannerPortlet .MiddleLoginContainer .Language {
   background: none;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: none;
   float: left;
   display: block;
-  line-height: 17px;
-  font-size: 10px;
 }
 
 .UIBannerPortlet .MiddleLoginContainer .Register {
-	margin-right: 15px;
-	cursor: pointer;
-	float: left;
-	font-weight: bold;
-	display: block;
-	line-height: 17px;
-	background: none;
-	background:none;
+  margin-right: 15px;
+  cursor: pointer;
+  float: left;
+  font-weight: bold;
+  display: block;
+  line-height: 17px;
+  background: none;
+  background:none;
 }
 
 .SocialPeopleIcon {
@@ -118,5 +122,3 @@ background: url(/social-resources/skin/ShareImages/IconPeople_Space.gif) no-repe
 .SocialSpacesIcon {
 background: url(/social-resources/skin/ShareImages/IconPeople_Space.gif) no-repeat left -27px;
 }
-
-
