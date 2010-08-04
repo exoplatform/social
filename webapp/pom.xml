@@ -42,8 +42,6 @@
     <module>resources</module>
     <module>portlet</module>
     <module>opensocial</module>
-    <module>social-extension-skin</module>
-    <module>socialdemo-skin</module>
   </modules>
 
 </project>
