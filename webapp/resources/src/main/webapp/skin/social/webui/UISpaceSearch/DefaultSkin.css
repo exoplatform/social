@@ -14,20 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
- 
-/**
- * style for UISpaceSearch
- */
+
+div.suggestions {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid #cdcdc1;
+    border-top: 1px solid #b7b7b7;
+    position: absolute;
+    min-width: 276px;
+    *width: 278px;
+    background: white;
+    color: #3A3A3A;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-y: hidden;
+}
+
+div.suggestions div {
+    cursor: default;
+    padding: 0px 3px;
+}
+
+div.suggestions div.current {
+    background-color: #4169e1;
+    color: white;
+}
 
 .UISpaceSearch .LeftBoxInput {
-  background: #f3f3f3 url('images/BoxInput.gif') no-repeat left top;
+background: #f3f3f3 url('background/BoxInput.gif') no-repeat left top;
   padding-left: 6px;
   margin-bottom: 8px;
   margin-top: 3px;
 }
 
 .UISpaceSearch .RightBoxInput {
-  background: url('images/BoxInput.gif') no-repeat right top;
+background: url('background/BoxInput.gif') no-repeat right top;
   padding-right: 6px;
 }
 
@@ -44,7 +65,7 @@
   line-height: 22px;
 }
 
-.UISpaceSearch .CenterContentInput {
+.UISpaceSearch .CenterContentSearchInput {
   float: left;
   width: 42%;
   padding: 0px 10px;
@@ -56,14 +77,14 @@
   line-height: 22px;
 }
 
-.UISpaceSearch .CenterContentInput input {
+.UISpaceSearch .CenterContentSearchInput input {
   background: #fff;
   border: 1px solid #b8b8b8;
   color: #cbcbcb;
 }
 
-.UISpaceSearch .CenterContentInput .InputSearch {
-  background: #fff url('images/IconSearch.gif') no-repeat right top;
+.UISpaceSearch .CenterContentSearchInput .InputSearch {
+background: #fff url('background/IconSearch.gif') no-repeat right top;
   border:1px solid #B7B7B7;
   float:left;
   font-size:11px;
@@ -74,17 +95,17 @@
 }
 
 .UISpaceSearch .CenterTitleBox {
-  background: url('images/TitleBox.gif') repeat-x left -52px;
+background: url('background/TitleBox.gif') repeat-x left -52px;
   height: 26px;
 }
 
 .UISpaceSearch .LeftTitleBox {
-  background: url('images/TitleBox.gif') no-repeat left top;
+background: url('background/TitleBox.gif') no-repeat left top;
   padding-left: 15px;
 }
 
 .UISpaceSearch .RightTitleBox {
-  background: url('images/TitleBox.gif') no-repeat right -26px;
+background: url('background/TitleBox.gif') no-repeat right -26px;
   padding-right: 4px;
   color: #fff;
   line-height: 18px;

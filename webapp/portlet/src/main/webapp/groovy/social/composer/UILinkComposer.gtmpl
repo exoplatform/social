@@ -1,3 +1,0 @@
-This is link composer !!!
-<a href="<%= uicomponent.event("Close")%>">Close</a>
-<a href="<%= uicomponent.event("SubmitContent")%>">Submit</a>

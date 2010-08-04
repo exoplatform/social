@@ -1,9 +1,9 @@
 /**
- * UIMySpacesPortlet.css
+ * UIMySpacesPortlet stylesheet
  */
- 
- @import url('/social-resources/skin/portal/webui/component/UISpaceSearch/default/style.css');
- 
+
+@import url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin.css');
+
 .UIMySpacesPortlet {
   padding: 0px 10px 20px;
 }
@@ -17,7 +17,7 @@
   padding-bottom: 5px;
   background: #EBEBEB none repeat scroll 0 0;
 }
- 
+
 .UIMySpacesPortlet .CenterTitleBox {
   background: url('DefaultSkin/background/TitleBox.gif') repeat-x left -52px;
   height: 26px;

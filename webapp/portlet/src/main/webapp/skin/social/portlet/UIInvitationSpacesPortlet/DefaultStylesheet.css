@@ -1,9 +1,9 @@
 /**
  * UIInvitationSpacesPortlet style
  */
- 
-@import url('/social-resources/skin/portal/webui/component/UISpaceSearch/default/style.css');
- 
+
+@import url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin.css');
+
 .UIInvitationSpacesPortlet {
   padding: 0px 10px 20px;
 }
