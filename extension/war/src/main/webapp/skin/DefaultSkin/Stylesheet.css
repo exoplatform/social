@@ -44,3 +44,7 @@
 .UIPageBody .VIEW-PAGEBODY .UIPage{
 	padding: 0px;
 }
+
+body{
+	background-color: #eeeeee;
+}
