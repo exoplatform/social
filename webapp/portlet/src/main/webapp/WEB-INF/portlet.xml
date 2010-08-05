@@ -82,29 +82,87 @@
   </portlet>
 
   <portlet>
-    <description xml:lang="EN">Social Home Page Portlet</description>
-    <portlet-name>SocialHomePagePortlet</portlet-name>
-    <display-name xml:lang="EN">Social Home Page Portlet</display-name>
+    <description xml:lang="EN">Social Extension Logo Portlet</description>
+    <portlet-name>SocialExtensionLogoPortlet</portlet-name>
+    <display-name xml:lang="EN">Social Extension Logo Portlet</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/SocialHomePagePortlet/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/SocialExtensionLogoPortlet/webui/configuration.xml</value>
     </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialHomePagePortlet</resource-bundle>
+    <resource-bundle>locale.portlet.SocialExtensionLogoPortlet</resource-bundle>
     <portlet-info>
-      <title>Home Page Portlet</title>
-      <short-title>Home Page Portlet</short-title>
+      <title>Social Extension Logo Portlet</title>
+      <short-title>Social Extension Logo Portlet</short-title>
       <keywords>social</keywords>
     </portlet-info>
     <portlet-preferences>
       <preference>
         <name>template</name>
-        <value>par:/groovy/social/portlet/UIHomePagePortlet.gtmpl</value>
+        <value>par:/groovy/social/portlet/UISocialExtensionLogoPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Social Extension Home Page Portlet</description>
+    <portlet-name>SocialExtensionHomePagePortlet</portlet-name>
+    <display-name xml:lang="EN">Social Extension Home Page Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SocialExtensionHomePagePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SocialExtensionHomePagePortlet</resource-bundle>
+    <portlet-info>
+      <title>Extension Home Page Portlet</title>
+      <short-title>Extension Home Page Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/social/portlet/UISocialExtensionHomePagePortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Social Demo Home Page Portlet</description>
+    <portlet-name>SocialDemoHomePagePortlet</portlet-name>
+    <display-name xml:lang="EN">Social Demo Home Page Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SocialDemoHomePagePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.SocialDemoHomePagePortlet</resource-bundle>
+    <portlet-info>
+      <title>Social Demo Home Page Portlet</title>
+      <short-title>Social Demo Home Page Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>par:/groovy/social/portlet/UISocialDemoHomePagePortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>

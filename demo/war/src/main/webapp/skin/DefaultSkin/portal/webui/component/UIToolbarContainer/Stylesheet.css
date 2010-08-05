@@ -87,8 +87,8 @@
 .UIToolbarContainer .MenuItemContainer {
   position: absolute;
   border: 1px solid #9e9fa3;
-    display: none;
-    z-index: 1000;
+  display: none;
+  z-index: 1000;
 }
 
 .UIToolbarContainer .TitleBar {
@@ -111,6 +111,16 @@
 .UIToolbarContainer .MenuItem .ArrowIcon {
   background: url('background/ToolbarContainer.gif') no-repeat right bottom; /* orientation=lt */
   background: url('background/ToolbarContainer-rt.gif') no-repeat left bottom; /* orientation=rt */
+  padding-right: 10px; /* orientation=lt */
+  padding-left: 10px; /* orientation=rt */
+}
+
+.UIWorkingWorkspace .UIToolbarContainer .ToolbarContainer .MenuItemContainer .MenuItem a{
+  color:#AEADAD;
+  display:block;
+  font-weight:normal;
+  padding:0 10px;
+  white-space:nowrap;
 }
 
 .UIToolbarContainer .MenuItem a {
@@ -206,6 +216,12 @@
 .UIWorkingWorkspace .UIToolbarContainer .MenuItemContainer{
   border: none;
   margin-top: 1px;
+}
+
+
+.UIWorkingWorkspace .UIToolbarContainer .MenuItemContainer .MenuItem .MenuItemContainer{
+  border: none;
+  margin-top: 0px;
 }
 
 .UIWorkingWorkspace .UIToolbarContainer .MenuItem{

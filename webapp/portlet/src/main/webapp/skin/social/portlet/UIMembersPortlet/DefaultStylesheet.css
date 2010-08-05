@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
+
+@import url('/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin.css');
+
 .UIProfileSpace {
   padding: 8px;
   font-family: tahoma;
@@ -181,7 +184,7 @@
  float: left;
  margin: 8px;
 }
- 
+
 .UIProfileSpace .CommunityContainer {
   padding-left: 16px;
   margin-left: 76px;
@@ -212,7 +215,7 @@
 .UIProfileSpace .Title {
     display:inline;
 }
- 
+
 .UIUserListPortlet {
   padding:4px;
 }

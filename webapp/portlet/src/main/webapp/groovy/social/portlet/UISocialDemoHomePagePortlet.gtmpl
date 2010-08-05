@@ -28,20 +28,31 @@
   String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));";
   String portletId = uicomponent.getId();
   String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";
+  //Need to change this version value with each release
+  def version = "1.1.0-SNAPSHOT";
+  def uicomponentId = "UISocialDemoHomePagePortlet";
+  def labelAnExtendedServiceOfeXoPlatform = _ctx.appRes("${uicomponentId}.label.An_Extended_Service_Of_eXo_Platform");
+  def labelLogin = _ctx.appRes("${uicomponentId}.label.Login");
+  def labelStartASession = _ctx.appRes("${uicomponentId}.label.Start_A_Sesssion");
+  def labelRegister = _ctx.appRes("${uicomponentId}.label.Register");
+  def labelCreateAnAccount = _ctx.appRes("${uicomponentId}.label.Create_An_Account");
+
 %>
 <div class="UIBannerHomePage">
   <div class="BgBannerHomepage">
     <div class="Title">
-      <p class="TxtLarge">eXo Social</p>
-      <p class="TxtSmall">An Extended Service of eXo Platform 3.0</p>
+      <p class="TxtLarge">eXo Social <span class="version">$version</span></p>
+      <p class="TxtSmall">$labelAnExtendedServiceOfeXoPlatform</p>
     </div>
     <div class="ClearBoth"><span></span></div>
+
+  <% if (prContext.getRemoteUser() == null) { %>
     <div class="Button">
       <div class="BntLogin">
         <div class="BgButtonLoginL">
           <div class="BgButtonR">
             <div class="BgButtonC">
-              <a href="#" onclick="$signInAction"><span class="TxtBold">Login</span><span class="TxtSmall"> | Start a session</span></a>
+              <a href="#" onclick="$signInAction"><span class="TxtBold">$labelLogin</span><span class="TxtSmall"> | $labelStartASession</span></a>
             </div>
           </div>
         </div>
@@ -50,12 +61,13 @@
         <div class="BgButtonRegisterL">
           <div class="BgButtonR">
             <div class="BgButtonC">
-              <a href="$registerURI"><span class="TxtBold">Register</span><span class="TxtSmall"> | Create an acount</span></a>
+              <a href="$registerURI"><span class="TxtBold">$labelRegister</span><span class="TxtSmall"> | $labelCreateAnAccount</span></a>
             </div>
           </div>
         </div>
       </div>
     </div>
+  <%}%>
     <div class="ClearBoth"><span></span></div>
   </div>
 </div>

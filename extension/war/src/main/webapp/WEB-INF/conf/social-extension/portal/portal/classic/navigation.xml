@@ -24,7 +24,15 @@
   <priority>1</priority>
 
   <page-nodes>
-  
+
+    <node>
+      <uri>home</uri>
+      <name>home</name>
+      <label>#{portal.classic.home}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::classic::homepage</page-reference>
+    </node>
+
    <node>
     <uri>activities</uri>
     <name>activities</name>
@@ -32,7 +40,7 @@
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::activities</page-reference>
    </node>
-   
+
    <node>
     <uri>profile</uri>
     <name>profile</name>
@@ -40,7 +48,7 @@
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::profile</page-reference>
    </node>
-   
+
    <node>
     <uri>connections</uri>
     <name>connections</name>
@@ -83,7 +91,7 @@
       <page-reference>portal::classic::requests</page-reference>
     </node>
   </node>
-  
+
   <node>
     <uri>people</uri>
     <name>people</name>
@@ -91,7 +99,7 @@
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::people</page-reference>
   </node>
-  
+
   <node>
     <uri>spaces</uri>
     <name>spaces</name>
@@ -99,7 +107,7 @@
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::spaces</page-reference>
   </node>
-  
+
   <node>
     <uri>invitationSpace</uri>
     <name>invitationSpace</name>
@@ -107,7 +115,7 @@
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::invitationSpace</page-reference>
   </node>
-  
+
   <node>
     <uri>pendingSpace</uri>
     <name>pendingSpace</name>
@@ -115,7 +123,7 @@
     <visibility>SYSTEM</visibility>
     <page-reference>portal::classic::pendingSpace</page-reference>
   </node>
-  
+
   <node>
    <uri>publicSpace</uri>
    <name>publicSpace</name>
@@ -123,6 +131,6 @@
    <visibility>SYSTEM</visibility>
    <page-reference>portal::classic::publicSpace</page-reference>
   </node>
-  
+
   </page-nodes>
 </node-navigation>

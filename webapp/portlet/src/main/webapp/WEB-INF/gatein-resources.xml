@@ -41,9 +41,16 @@
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
-    <portlet-name>SocialHomePagePortlet</portlet-name>
+    <portlet-name>SocialExtensionHomePagePortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIHomePagePortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/social/portlet/UISocialExtensionHomePagePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialDemoHomePagePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialDemoHomePagePortlet/DefaultStylesheet.css</css-path>
   </portlet-skin>
 
   <portlet-skin>

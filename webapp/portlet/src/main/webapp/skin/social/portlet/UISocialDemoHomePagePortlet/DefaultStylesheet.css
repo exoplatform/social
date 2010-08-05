@@ -15,11 +15,6 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-.UIWorkingWorkspace {
-  background-color: #E4E4E4;
-  margin:auto;
-  width:100%;
-}
 
 div, table, tr, td, img, form{
     font-family: Lucida Sans, arial, tahoma;
@@ -69,6 +64,11 @@ p{
     margin-bottom: 10px;
 }
 
+.UIBannerHomePage .version {
+  color:#20263F;
+  font-size:17px;
+}
+
 .UISocialHomepage .HomeBackgroundText {
     padding: 150px 0px 0px 50px;
     color: #777777;
@@ -116,7 +116,7 @@ p{
     height: 61px;
     float: left;
     margin-right: 16px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 
 .UISocialHomepage .ContentBoxLeft  .PeopleIcon {
@@ -157,6 +157,7 @@ p{
     text-align: right;
     padding-top: 48px;
     color: #8d4936;
+    letter-spacing: -1px;
 }
 
 .UIWorkingWorkspace .BgBannerHomepage .Title p{
@@ -184,7 +185,7 @@ p{
 }
 
 .UIWorkingWorkspace .BgBannerHomepage .Button .BntRegister{
-    width: 223px;
+    width: 226px;
     margin-left: 15px;
     float: left;
 }
@@ -208,7 +209,7 @@ p{
     background: url('DefaultSkin/background/BgButton.png') repeat-x left -126px;
     height: 41px;
     color: #20263f;
-    line-height:35px;
+    line-height:38px;
     padding-left:6px;
 }
 
@@ -308,7 +309,7 @@ p{
     background-color:#fff;
     border-left: solid 1px #dcdcdc;
     border-right: solid 1px #dcdcdc;
-    padding: 32px 8px 62px 18px;
+    padding: 32px 8px 40px 18px;
 }
 
 .UISocialHomepage .RightSocialHomepage .Download{

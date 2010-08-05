@@ -16,39 +16,39 @@
  */
 
 div.suggestions {
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    border: 1px solid #cdcdc1;
-    border-top: 1px solid #b7b7b7;
-    position: absolute;
-    min-width: 276px;
-    *width: 278px;
-    background: white;
-    color: #3A3A3A;
-    max-height: 150px;
-    overflow-y: auto;
-    overflow-y: hidden;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #cdcdc1;
+  border-top: 1px solid #b7b7b7;
+  position: absolute;
+  min-width: 276px;
+  *width: 278px;
+  background: white;
+  color: #3A3A3A;
+  max-height: 150px;
+  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 div.suggestions div {
-    cursor: default;
-    padding: 0px 3px;
+  cursor: default;
+  padding: 0px 3px;
 }
 
 div.suggestions div.current {
-    background-color: #4169e1;
-    color: white;
+  background-color: #4169e1;
+  color: white;
 }
 
 .UISpaceSearch .LeftBoxInput {
-background: #f3f3f3 url('background/BoxInput.gif') no-repeat left top;
+  background: #f3f3f3 url('background/BoxInput.gif') no-repeat left top;
   padding-left: 6px;
   margin-bottom: 8px;
   margin-top: 3px;
 }
 
 .UISpaceSearch .RightBoxInput {
-background: url('background/BoxInput.gif') no-repeat right top;
+  background: url('background/BoxInput.gif') no-repeat right top;
   padding-right: 6px;
 }
 
@@ -77,17 +77,29 @@ background: url('background/BoxInput.gif') no-repeat right top;
   line-height: 22px;
 }
 
-.UISpaceSearch .CenterContentSearchInput input {
-  background: #fff;
-  border: 1px solid #b8b8b8;
-  color: #cbcbcb;
-}
-
-.UISpaceSearch .CenterContentSearchInput .InputSearch {
-background: #fff url('background/IconSearch.gif') no-repeat right top;
+.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput {
+  background-color: #fff;
   border:1px solid #B7B7B7;
   float:left;
   font-size:11px;
+  width:273px;
+}
+
+.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput input {
+  border:1px solid white;
+  color:#C7C7C7;
+  float:left;
+  font-size:11px;
+  height:14px;
+  width:253px;
+}
+
+.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput .SearchIcon {
+  background:url("background/IconSearch.gif") no-repeat scroll right center white;
+  cursor:pointer;
+  float:left;
+  font-size:11px;
+  width:14px;
 }
 
 .UISpaceSearch .BoxSpaceList {
@@ -95,17 +107,17 @@ background: #fff url('background/IconSearch.gif') no-repeat right top;
 }
 
 .UISpaceSearch .CenterTitleBox {
-background: url('background/TitleBox.gif') repeat-x left -52px;
+  background: url('background/TitleBox.gif') repeat-x left -52px;
   height: 26px;
 }
 
 .UISpaceSearch .LeftTitleBox {
-background: url('background/TitleBox.gif') no-repeat left top;
+  background: url('background/TitleBox.gif') no-repeat left top;
   padding-left: 15px;
 }
 
 .UISpaceSearch .RightTitleBox {
-background: url('background/TitleBox.gif') no-repeat right -26px;
+  background: url('background/TitleBox.gif') no-repeat right -26px;
   padding-right: 4px;
   color: #fff;
   line-height: 18px;
