@@ -32,14 +32,12 @@
 	      var address = window.top.location.href;
 	      var moreSpaceEl = _gel("more_spaces");
 	      var titleContent = '';
+	      var baseContext = hostName + "/" + portalName + "/";
+        var extensionContext = address.replace(baseContext, "");
+        var extensionParts = extensionContext.split("/");
+        this.context = baseContext + extensionParts[0] + "/" + extensionParts[1];
 	      
-	      if (address.indexOf("classic") > 0) {
-		      this.context = this.viewer.getField('hostName') + "/" + portalName + "/private/classic/";
-	      } else {
-	      	this.context = this.viewer.getField('hostName') + "/" + portalName + "/private/office/";
-	      }
-	      
-	      this.moreSpaces = this.context + 'spaces';
+	      this.moreSpaces = this.context + '/spaces';
 	      
 	      titleContent += '<div class="TitGad ClearFix">';
 	      titleContent += '<a href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + Locale.getMsg('more_link_label') + '</a>'
@@ -96,7 +94,7 @@
 	    for (var i = 0; i < spaceData.length; i++) {
 	      var space = spaceData[i];
 	      var spaceItem = document.createElement('div');
-	      var spaceDetail = this.context + space.url;
+	      var spaceDetail = this.context + "/" + space.url;
 	      spaceItem.innerHTML = '<a href="' + spaceDetail + '" target="_parent" class="IconLink">' + space.name + '</a>';
 	      mySpacesEl.appendChild(spaceItem);
 	    }
