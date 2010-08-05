@@ -28,20 +28,40 @@
   String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));";
   String portletId = uicomponent.getId();
   String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";
-  //Need to change this version value with each release
-  def version = "1.1.0-SNAPSHOT";
   def uicomponentId = "UISocialDemoHomePagePortlet";
   def labelAnExtendedServiceOfeXoPlatform = _ctx.appRes("${uicomponentId}.label.An_Extended_Service_Of_eXo_Platform");
   def labelLogin = _ctx.appRes("${uicomponentId}.label.Login");
   def labelStartASession = _ctx.appRes("${uicomponentId}.label.Start_A_Sesssion");
   def labelRegister = _ctx.appRes("${uicomponentId}.label.Register");
   def labelCreateAnAccount = _ctx.appRes("${uicomponentId}.label.Create_An_Account");
-
+  def labelOpenSocialStandard = _ctx.appRes("${uicomponentId}.label.OpenSocial_Standard");
+  def labelOpenSocialVersionSupport = _ctx.appRes("${uicomponentId}.label.OpenSocial_Version_Support");
+  def labelOAuthSupportForRemoteAccess = _ctx.appRes("${uicomponentId}.label.OAuth_Support_For_Remote_Access");
+  def labelOpenSocialRestServiceSupport = _ctx.appRes("${uicomponentId}.label.Open_Social_Rest_Service_Support");
+  def labelActivityStream = _ctx.appRes("${uicomponentId}.label.Activity_Stream");
+  def labelUpdateAndShareUserStatus=_ctx.appRes("${uicomponentId}.label.Update_And_Share_User_Status");
+  def labelGetUserNetworkActivityStream = _ctx.appRes("${uicomponentId}.label.Get_User_Network_Activity_Stream");
+  def labelCustomSharePlugin = _ctx.appRes("${uicomponentId}.label.Custom_Share_Plugin");
+  def labelPeopleDirectory = _ctx.appRes("${uicomponentId}.label.People_Directory");
+  def labelTurnYourDirectoryIntoASocialNetwork = _ctx.appRes("${uicomponentId}.label.Turn_Your_Directory_Into_A_Social_Network");
+  def labelExtensibleProfileToOtherNetworks = _ctx.appRes("${uicomponentId}.label.Extensible_Profile_To_Other_Networks");
+  def labelSearchUsersBySkillAndExperience = _ctx.appRes("${uicomponentId}.label.Search_Users_By_Skills_And_Experience");
+  def labelSpace = _ctx.appRes("${uicomponentId}.label.Space");
+  def labelCollaborativeWorkspacesForCommunity = _ctx.appRes("${uicomponentId}.label.Collaborative_Workspaces_For_Community");
+  def labelGroupActivityStream = _ctx.appRes("${uicomponentId}.label.Group_Activity_Stream");
+  def labelAddCustomApplications = _ctx.appRes("${uicomponentId}.label.Add_Custom_Applications");
+  def labelDownload = _ctx.appRes("${uicomponentId}.label.Download");
+  def labelCommunityVersion = _ctx.appRes("${uicomponentId}.label.Community_Version");
+  def labelDoYouLikeIt = _ctx.appRes("${uicomponentId}.label.Do_You_Like_It");
+  def labelSendFeedback = _ctx.appRes("${uicomponentId}.label.Send_Feedback");
+  def labelJoinTheCommunity = _ctx.appRes("${uicomponentId}.label.Join_The_Community");
+  def labelWiki = _ctx.appRes("${uicomponentId}.label.Wiki");
+  def labelForum = _ctx.appRes("${uicomponentId}.label.Forum");
 %>
 <div class="UIBannerHomePage">
   <div class="BgBannerHomepage">
     <div class="Title">
-      <p class="TxtLarge">eXo Social <span class="version">$version</span></p>
+      <p class="TxtLarge">eXo Social</p>
       <p class="TxtSmall">$labelAnExtendedServiceOfeXoPlatform</p>
     </div>
     <div class="ClearBoth"><span></span></div>
@@ -77,7 +97,7 @@
       <div class="BgTL">
         <div class="BgTR">
           <div class="BgTC">
-              <div class="TitBoxLeftL">OpenSocial standard</div>
+              <div class="TitBoxLeftL">$labelOpenSocialStandard</div>
               <div class="ClearBoth"><span></span></div>
           </div>
         </div>
@@ -85,9 +105,9 @@
       <div class="ContentBoxLeft">
         <a class="OpenSocialIcon IconBoxleft"><span></span></a>
         <ul>
-          <li>OpenSocial 0.8.1 support </li>
-          <li>OAuth support for remote access</li>
-          <li>OpenSocial REST service support</li>
+          <li>$labelOpenSocialVersionSupport</li>
+          <li>$labelOAuthSupportForRemoteAccess</li>
+          <li>$labelOpenSocialRestServiceSupport</li>
         </ul>
         <div class="ClearBoth"><span></span></div>
       </div>
@@ -101,7 +121,7 @@
       <div class="BgTL">
         <div class="BgTR">
           <div class="BgTC">
-              <div class="TitBoxLeftL">Activity Stream</div>
+              <div class="TitBoxLeftL">$labelActivityStream</div>
               <div class="ClearBoth"><span></span></div>
           </div>
         </div>
@@ -109,9 +129,9 @@
       <div class="ContentBoxLeft">
         <a class="ActivityIcon IconBoxleft"><span></span></a>
         <ul>
-          <li>Update and share user's status</li>
-          <li>Get user's network activity stream</li>
-          <li>Custom share plugin</li>
+          <li>$labelUpdateAndShareUserStatus</li>
+          <li>$labelGetUserNetworkActivityStream</li>
+          <li>$labelCustomSharePlugin</li>
         </ul>
         <div class="ClearBoth"><span></span></div>
       </div>
@@ -125,7 +145,7 @@
       <div class="BgTL">
         <div class="BgTR">
           <div class="BgTC">
-              <div class="TitBoxLeftL">People Directory</div>
+              <div class="TitBoxLeftL">$labelPeopleDirectory</div>
               <div class="ClearBoth"><span></span></div>
           </div>
         </div>
@@ -133,9 +153,9 @@
       <div class="ContentBoxLeft">
         <a class="PeopleIcon IconBoxleft"><span></span></a>
         <ul>
-          <li>Turn your directory into a social network</li>
-          <li>Extensible profile to other networks</li>
-          <li>Search users by skills and experience</li>
+          <li>$labelTurnYourDirectoryIntoASocialNetwork</li>
+          <li>$labelExtensibleProfileToOtherNetworks</li>
+          <li>$labelSearchUsersBySkillAndExperience</li>
         </ul>
         <div class="ClearBoth"><span></span></div>
       </div>
@@ -149,7 +169,7 @@
       <div class="BgTL">
         <div class="BgTR">
           <div class="BgTC">
-              <div class="TitBoxLeftL">Space</div>
+              <div class="TitBoxLeftL">$labelSpace</div>
               <div class="ClearBoth"><span></span></div>
           </div>
         </div>
@@ -157,9 +177,9 @@
       <div class="ContentBoxLeft">
         <a class="SpaceIcon IconBoxleft"><span></span></a>
         <ul>
-          <li>Collaborative workspaces for community</li>
-          <li>Group activity stream</li>
-          <li>Add custom applications</li>
+          <li>$labelCollaborativeWorkspacesForCommunity</li>
+          <li>$labelGroupActivityStream</li>
+          <li>$labelAddCustomApplications</li>
         </ul>
         <div class="ClearBoth"><span></span></div>
       </div>
@@ -181,18 +201,18 @@
       <div class="Download">
         <a class="IconDownload" href="https://sourceforge.net/projects/exo-social/"></a>
         <div class="TxtDownload">
-          <p class="TxtPing"><a href="https://sourceforge.net/projects/exo-social/">Download</a></p>
-          <p>Community version</p>
+          <p class="TxtPing"><a href="https://sourceforge.net/projects/exo-social/">$labelDownload</a></p>
+          <p>$labelCommunityVersion</p>
         </div>
         <div class="ClearBoth"><span></span></div>
       </div>
       <div class="FeedBack">
-        <p>Did you like it ?</p>
-        <p class="TxtPing"><a href="http://spreadsheets.google.com/viewform?formkey=dERsbWp1NWl3eGs0ekZEV3NpWi1Sa0E6MA">Send feedback</a></p>
+        <p>$labelDoYouLikeIt</p>
+        <p class="TxtPing"><a href="http://spreadsheets.google.com/viewform?formkey=dERsbWp1NWl3eGs0ekZEV3NpWi1Sa0E6MA">$labelSendFeedback</a></p>
       </div>
       <div class="FeedBack">
-        <p>join the community :</p>
-        <p class="TxtPing"><a href="mailto:exo-sc@exoplatform.com">wiki | forums</a></p>
+        <p>$labelJoinTheCommunity :</p>
+        <p class="TxtPing"><a href="http://wiki.exoplatform.org/xwiki/bin/view/Social/">$labelWiki</a> | <a href="http://forum.exoplatform.org/portal/public/classic/forum/forum/forum5aacbc9a0afb96bf0ba5d1a4aaa9947b">$labelForum</a></a></p>
       </div>
     </div>
     <div class="BgRightBL">

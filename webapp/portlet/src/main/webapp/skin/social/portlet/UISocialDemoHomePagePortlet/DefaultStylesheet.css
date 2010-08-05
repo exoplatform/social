@@ -17,13 +17,13 @@
 
 
 div, table, tr, td, img, form{
-    font-family: Lucida Sans, arial, tahoma;
-    font-size: 12px;
+  font-family: Lucida Sans, arial, tahoma;
+  font-size: 12px;
 }
 
 p{
-    margin: 0px;
-    padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 .UIWindow .UISocialHomepage {
@@ -31,51 +31,46 @@ p{
 }
 
 .UISocialHomepage {
-    width: 962px;
-    margin: 0 auto;
+  width: 962px;
+  margin: 0 auto;
 }
 
 .LeftSocialHomepage {
-    float: left;
-    width: 746px;
-    color: #626262;
+  float: left;
+  width: 746px;
+  color: #626262;
 }
 
 .RightSocialHomepage {
-    float: right;
-    width: 207px;
-    color: #626262;
-    background: #fff;
-    margin-top: 10px;
+  float: right;
+  width: 207px;
+  color: #626262;
+  background: #fff;
+  margin-top: 10px;
 }
 
 .UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage{
-    padding: 0px;
+  padding: 0px;
 }
 
 .UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock{
-    background-color: #e4e4e4;
+  background-color: #e4e4e4;
 }
 
 .UISocialHomepage .HomeBackground  {
-    background: url('DefaultSkin/background/HomeBackground.jpg') no-repeat left top;
-    height: 254px;
-    width: 712px;
-    margin-bottom: 10px;
-}
-
-.UIBannerHomePage .version {
-  color:#20263F;
-  font-size:17px;
+  background: url('DefaultSkin/background/HomeBackground.jpg') no-repeat left top;
+  height: 254px;
+  width: 712px;
+  margin-bottom: 10px;
 }
 
 .UISocialHomepage .HomeBackgroundText {
-    padding: 150px 0px 0px 50px;
-    color: #777777;
-    font-weight: bold;
-    font-size: 21px;
-    text-align: center;
-    font-family: arial;
+  padding: 150px 0px 0px 50px;
+  color: #777777;
+  font-weight: bold;
+  font-size: 21px;
+  text-align: center;
+  font-family: arial;
 }
 
 .UISocialHomepage .BoxLeft {
