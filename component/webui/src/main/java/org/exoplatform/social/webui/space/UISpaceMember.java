@@ -537,7 +537,7 @@ public class UISpaceMember extends UIForm {
         if(uiSpaceMember.isSuperUser()) {
           url.append(space.getUrl()).append("/SpaceSettingPortlet");
         } else {
-          url.append("spaces");
+          url.append(space.getUrl());
         }
         prContext.getResponse().sendRedirect(url.toString());
         return;
