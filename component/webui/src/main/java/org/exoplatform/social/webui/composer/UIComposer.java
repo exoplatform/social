@@ -20,11 +20,11 @@ package org.exoplatform.social.webui.composer;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -104,8 +104,8 @@ public class UIComposer extends UIForm {
     activityComposerManager.setInitialized();
   }
 
-  public void setActivityDisplay(UISpaceActivitiesDisplay uiDisplaySpaceActivities) {
-    activityComposerManager.setActivityDisplay(uiDisplaySpaceActivities);
+  public void setActivityDisplay(UIContainer uiContainer) {
+    activityComposerManager.setActivityDisplay(uiContainer);
   }
 
   public void setDefaultActivityComposer(){

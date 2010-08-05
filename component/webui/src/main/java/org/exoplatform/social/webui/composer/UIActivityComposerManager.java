@@ -6,7 +6,7 @@ import java.util.List;
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
+import org.exoplatform.webui.core.UIContainer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,12 +65,12 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
     return activityComposers;
   }
 
-  public void setActivityDisplay(UISpaceActivitiesDisplay uiDisplaySpaceActivities) {
+  public void setActivityDisplay(UIContainer uiContainer) {
     for (UIActivityComposer activityComposer : activityComposers) {
-      activityComposer.setActivityDisplay(uiDisplaySpaceActivities);
+      activityComposer.setActivityDisplay(uiContainer);
     }
 
-    defaultActivityComposer.setActivityDisplay(uiDisplaySpaceActivities);
+    defaultActivityComposer.setActivityDisplay(uiContainer);
   }
 
   public boolean isInitialized() {
