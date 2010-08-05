@@ -20,4 +20,59 @@
 -->
 */
 %>
-<div>abc</div>
+
+<div class="UIContenSocialExtan">
+	<div class="BgBannerHomepage">
+	    <span></span>
+	</div>
+	<div class="BgTL">
+		<div class="BgTR">
+			<div class="BgTC"><span></span></div>
+		</div>
+	</div>
+	<div class="BgML">
+		<div class="BgMR">
+			<div class="BgMC ClearFix">
+				<div class="ColsPeople FL">
+					<div class="TxtTile">People<span class="TxtPeople">Adding social networking to your work</span></div>
+					<ul>
+						<li>Create and develop Social Networks</li>
+						<li>Display relevant information to each user</li>
+						<li>Create a skills index</li>
+						<li>Help to find the relevant person to solve</li>
+						<li>User-friendly interface </li>
+					</ul>
+				</div>
+				<div class="ColsSpace FL">
+					<div class="TxtTile">Space<span class="TxtPeople">Adding communities to your work</span></div>
+					<ul>
+						<li>Regroup people around projects or interest</li>
+						<li>Information aggregation</li>
+						<li>Improve the knowledge sharing</li>
+						<li>Easy to use community management</li>
+						<li>User-friendly interface</li>
+					</ul>
+				</div>
+				<div class="ColsIconExtan FL">
+					<div class="BlockWebsite FL">
+						<a href="#" class="IconChatOnline"></a>
+						<p><a href="#" class="TxtLinkIcon">Live Chat</a></p>
+					</div>
+					<div class="BlockWebsite FL">
+						<a href="#" class="IconForum"></a>
+						<p><a href="#" class="TxtLinkIcon">eXo Forums</a></p>
+					</div>
+					<div class="BlockWebsite FL">
+						<a href="#" class="IconContact"></a>
+						<p><a href="#" class="TxtLinkIcon">Contact Us</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="BgBL">
+		<div class="BgBR">
+			<div class="BgBC"><span></span></div>
+		</div>
+	</div>
+</div>
