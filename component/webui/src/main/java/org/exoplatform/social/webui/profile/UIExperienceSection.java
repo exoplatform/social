@@ -522,12 +522,12 @@ public class UIExperienceSection extends UIProfileSection {
 
     addUIFormInput(new UIFormTextAreaInput(DESCRIPTION + expIdx, null, null));
     UIFormTextAreaInput uiDespcription = getChildById(DESCRIPTION + expIdx);
-    uiDespcription.setColumns(23);
+    uiDespcription.setColumns(28);
     uiDespcription.setRows(3);
 
     addUIFormInput(new UIFormTextAreaInput(SKILLS + expIdx, null, null));
     UIFormTextAreaInput uiFormTextAreaInput = getChildById(SKILLS + expIdx);
-    uiFormTextAreaInput.setColumns(23);
+    uiFormTextAreaInput.setColumns(28);
     uiFormTextAreaInput.setRows(3);
 
     addUIFormInput(new UIFormDateTimeInput(START_DATE + expIdx, null, null, false).

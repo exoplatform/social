@@ -449,7 +449,12 @@ input.hint,textarea.hint {
 
 .UIProfile .Experience input {
 	height: 16px;
-	width: 208px;
+  width: 208px;
+  font-size: 13px;
+}
+
+.UIProfile .Experience textarea {
+  font-size: 13px;
 }
 
 .UIProfile .Experience .checkbox {

@@ -119,7 +119,7 @@
     <table class="UIFormGrid">
       <tbody>
         <tr>
-          <td width="40%">&nbsp</td>
+          <td width="60%">&nbsp</td>
           <td class="FieldComponent">
             <%=_ctx.appRes(uicomponent.getId() + ".label.noneExperience")%>
             <a class="AddIcon" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>

@@ -176,3 +176,28 @@ a:ACTIVE {
 .DirectorySpaces ul.LetterList li a:active {
   outline: none;
 }
+
+div.suggestions {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #cdcdc1;
+  border-top: 1px solid #b7b7b7;
+  position: absolute;
+  min-width: 276px;
+  *width: 278px;
+  background: white;
+  color: #3A3A3A;
+  max-height: 150px;
+  overflow-y: auto;
+  overflow-y: hidden;
+}
+
+div.suggestions div {
+  cursor: default;
+  padding: 0px 3px;
+}
+
+div.suggestions div.current {
+  background-color: #4169e1;
+  color: white;
+}
