@@ -43,7 +43,7 @@
   padding:0;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .ToolbarContainer a {
+.UIToolbarContainer .ToolbarContainer a {
   display: block;
   padding: 0px 10px;
   white-space: nowrap;
@@ -52,7 +52,7 @@
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .ToolbarContainer .SubBlock a {
+.UIToolbarContainer .ToolbarContainer .SubBlock a {
   display: block;
   padding: 0px 10px;
   white-space: nowrap;
@@ -60,11 +60,11 @@
   font-weight: normal;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UITab a:hover {
+.UIToolbarContainer .UITab a:hover {
   color: #aeadad;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIHorizontalTabs .TabsContainer {
+.UIToolbarContainer .UIHorizontalTabs .TabsContainer {
   position:relative;    margin:auto;
     width:100%;
   height: 30px;
@@ -73,7 +73,7 @@
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .UIHorizontalTabs .UITab {
+.UIToolbarContainer .UIHorizontalTabs .UITab {
   line-height: 30px;
   float: left; /* orientation=lt */
   float: right; /* orientation=rt */
@@ -101,6 +101,7 @@
   white-space: nowrap;
   opacity: 0.9;
   filter: alpha(opacity=90);
+  cursor: default;
 }
 
 
@@ -115,7 +116,7 @@
   padding-left: 10px; /* orientation=rt */
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .ToolbarContainer .MenuItemContainer .MenuItem a{
+  .UIToolbarContainer .ToolbarContainer .MenuItemContainer .MenuItem a{
   color:#AEADAD;
   display:block;
   font-weight:normal;
@@ -171,7 +172,7 @@
 
 /************** Add style trung.nguyen   ********************/
 
-.UIWorkingWorkspace .UIToolbarContainer .SocialSpacesIcon {
+  .UIToolbarContainer .SocialSpacesIcon {
   background: none;
 }
 
@@ -185,15 +186,15 @@
   background: url('background/ToolbarContainer.gif') no-repeat right -64px; /* orientation=rt */
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .DashboardIcon{
+.UIToolbarContainer .DashboardIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .EditorIcon{
+.UIToolbarContainer .EditorIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet .UITab{
+  .UIToolbarContainer .UIStarToolBarPortlet .UITab{
   background: none;
 
 }
@@ -202,7 +203,7 @@
   float: right;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet{
+.UIToolbarContainer .UIStarToolBarPortlet{
   background: url('background/LogoToolBar.png') no-repeat left 5px; /* orientation=lt */
   background: url('background/LogoToolBar.png') no-repeat right 5px; /* orientation=rt */
   height:30px;
@@ -213,18 +214,18 @@
   width:44px;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .MenuItemContainer{
+.UIToolbarContainer .MenuItemContainer{
   border: none;
   margin-top: 1px;
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .MenuItemContainer .MenuItem .MenuItemContainer{
+.UIToolbarContainer .MenuItemContainer .MenuItem .MenuItemContainer{
   border: none;
   margin-top: 0px;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .MenuItem{
+.UIToolbarContainer .MenuItem{
   text-align: left;
   background: #363b52;
   border-bottom: solid 1px #4a4f68;
@@ -237,41 +238,41 @@
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .MenuItem:hover{
+.UIToolbarContainer .MenuItem:hover{
   text-align: left;
   background: #414c7c;
   border-bottom:1px solid #4A4F68;
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .AddPageIcon{
+.UIToolbarContainer .AddPageIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .EditPageIcon{
+.UIToolbarContainer .EditPageIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .EditSiteIcon{
+.UIToolbarContainer .EditSiteIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .DefaultPageIcon{
+.UIToolbarContainer .DefaultPageIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .ChangeLanguageIcon{
+.UIToolbarContainer .ChangeLanguageIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .ChangeSkinIcon{
+.UIToolbarContainer .ChangeSkinIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .SignOutIcon{
+.UIToolbarContainer .SignOutIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet a{
+.UIToolbarContainer .UIStarToolBarPortlet a{
   color: #aeadad;
 }

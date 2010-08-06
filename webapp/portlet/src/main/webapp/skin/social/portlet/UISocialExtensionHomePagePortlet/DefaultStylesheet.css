@@ -149,6 +149,7 @@ div, table, tr, td, img, form{
 	border-right: solid 1px #c5c5c5;
 	padding-right: 15px;
 	padding-left: 15px;
+	white-space: nowrap;
 }
 
 .UIContenSocialExtan .ColsSpace{
@@ -156,6 +157,7 @@ div, table, tr, td, img, form{
 	border-right: solid 1px #c5c5c5;
 	padding-right: 30px;
 	padding-left: 21px;
+	white-space: nowrap;
 }
 
 .UIContenSocialExtan .ColsIconExtan{
@@ -167,6 +169,7 @@ div, table, tr, td, img, form{
 	font-weight: bold;
 	font-size: 18px;
 	color: #f58220;
+	overflow: hidden;
 }
 
 .UIContenSocialExtan .TxtPeople{
