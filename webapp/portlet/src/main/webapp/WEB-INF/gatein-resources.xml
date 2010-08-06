@@ -41,6 +41,13 @@
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
+    <portlet-name>SocialExtensionLogoPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialExtensionLogoPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
     <portlet-name>SocialExtensionHomePagePortlet</portlet-name>
     <skin-name>Default</skin-name>
     <css-path>/skin/social/portlet/UISocialExtensionHomePagePortlet/DefaultStylesheet.css</css-path>
