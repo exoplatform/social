@@ -41,14 +41,14 @@ div.suggestions div.current {
 }
 
 .UISpaceSearch .LeftBoxInput {
-  background: #f3f3f3 url('background/BoxInput.gif') no-repeat left top;
+  background: #f3f3f3 url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/BoxInput.gif') no-repeat left top;
   padding-left: 6px;
   margin-bottom: 8px;
   margin-top: 3px;
 }
 
 .UISpaceSearch .RightBoxInput {
-  background: url('background/BoxInput.gif') no-repeat right top;
+  background: url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/BoxInput.gif') no-repeat right top;
   padding-right: 6px;
 }
 
@@ -95,7 +95,7 @@ div.suggestions div.current {
 }
 
 .UISpaceSearch .CenterContentSearchInput .SpaceSearchInput .SearchIcon {
-  background:url("background/IconSearch.gif") no-repeat scroll right center white;
+  background:url("/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/IconSearch.gif") no-repeat scroll right center white;
   cursor:pointer;
   float:left;
   font-size:11px;
@@ -107,17 +107,17 @@ div.suggestions div.current {
 }
 
 .UISpaceSearch .CenterTitleBox {
-  background: url('background/TitleBox.gif') repeat-x left -52px;
+  background: url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/TitleBox.gif') repeat-x left -52px;
   height: 26px;
 }
 
 .UISpaceSearch .LeftTitleBox {
-  background: url('background/TitleBox.gif') no-repeat left top;
+  background: url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/TitleBox.gif') no-repeat left top;
   padding-left: 15px;
 }
 
 .UISpaceSearch .RightTitleBox {
-  background: url('background/TitleBox.gif') no-repeat right -26px;
+  background: url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/TitleBox.gif') no-repeat right -26px;
   padding-right: 4px;
   color: #fff;
   line-height: 18px;

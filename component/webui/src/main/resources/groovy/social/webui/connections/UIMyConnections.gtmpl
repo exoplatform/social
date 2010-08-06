@@ -51,6 +51,7 @@
             <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
             <% def peopleURL = portalURI + "people" %>
             </div>
+        <% if (isOwner) {%>
         <div class="UIAction">
             <table class="ActionContainer">
               <tbody>
@@ -70,6 +71,7 @@
               </tbody>
             </table>
          </div>
+         <% } %>
             <div style="clear: left;"><span></span></div>
          </div>
       <%}%>

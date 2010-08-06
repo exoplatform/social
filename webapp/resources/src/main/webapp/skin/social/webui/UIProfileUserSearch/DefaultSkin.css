@@ -20,12 +20,12 @@ a:ACTIVE {
 }
 
 .UIProfileUserSearch .SearchSpaces {
-  background: url( "/social-resources/skin/DefaultSkin/webui/component/UIProfileUserSearch/background/SearchSpaces.gif" ) no-repeat left top;
+  background: url( "/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin/background/SearchSpaces.gif" ) no-repeat left top;
   padding-left: 7px;
 }
 
 .UIProfileUserSearch .SearchSpacesR {
-  background: #f3f3f3 url( "/social-resources/skin/DefaultSkin/webui/component/UIProfileUserSearch/background/SearchSpacesR.gif" ) no-repeat right top;
+  background: #f3f3f3 url( "/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin/background/SearchSpacesR.gif" ) no-repeat right top;
   padding: 10px 7px 8px 7px;
 }
 
@@ -68,7 +68,7 @@ a:ACTIVE {
 .UIProfileUserSearch .SearchSpaces .SearchIcon {
   width: 14px;
   float: left;
-  background: white url( "/social-resources/skin/DefaultSkin/webui/component/UIProfileUserSearch/background/SearchIcon.gif" ) no-repeat right center;
+  background: white url( "/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin/background/SearchIcon.gif" ) no-repeat right center;
   font-size: 11px;
   cursor: pointer;
 }
