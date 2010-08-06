@@ -20,7 +20,25 @@
 -->
 */
 %>
-
+<%
+  def uicomponentId = "UISocialExtensionHomePagePortlet";
+  def labelPeople = _ctx.appRes("${uicomponentId}.label.People");
+  def labelAddSocialNetworkingToYourWork = _ctx.appRes("${uicomponentId}.label.Add_Social_Networking_To_Your_Work");
+  def labelCreateAndDevelopSocialNetworks = _ctx.appRes("${uicomponentId}.label.Create_And_Develop_Social_Networks");
+  def labelDisplayRevelantInformationToEachUser = _ctx.appRes("${uicomponentId}.label.Display_Revelant_Information_To_Each_User");
+  def labelCreateASkillsIndex = _ctx.appRes("${uicomponentId}.label.Create_A_Skills_Index");
+  def labelHelpToFindTheRevelantPersonToSolveProblems = _ctx.appRes("${uicomponentId}.label.Help_To_Find_The_Revelant_Person_To_Solve_Problems");
+  def labelUserFriendlyInterface = _ctx.appRes("${uicomponentId}.label.User_Friendly_Interface");
+  def labelSpace = _ctx.appRes("${uicomponentId}.label.Space");
+  def labelAddCommunitiesToYourWork = _ctx.appRes("${uicomponentId}.label.Add_Communities_To_Your_Work");
+  def labelRegroupPeopleAroundProjectsOrInterest = _ctx.appRes("${uicomponentId}.label.Regroup_People_Around_Projects_Or_Interest");
+  def labelInformationAggregation = _ctx.appRes("${uicomponentId}.label.Information_Aggregation");
+  def labelImproveTheKnowledgeSharing = _ctx.appRes("${uicomponentId}.label.Improve_The_Knowledge_Sharing");
+  def labelEasyToUseCommunityManagement = _ctx.appRes("${uicomponentId}.label.Easy_To_Use_Community_Management");
+  def labelLiveChat = _ctx.appRes("${uicomponentId}.label.Live_Chat");
+  def labeleXoForums = _ctx.appRes("${uicomponentId}.label.eXo_Forums");
+  def labelContactUs = _ctx.appRes("${uicomponentId}.label.Contact_Us");
+%>
 <div class="UIContenSocialExtan">
   <div class="BgBannerHomepage">
       <span></span>
@@ -34,37 +52,37 @@
     <div class="BgMR">
       <div class="BgMC ClearFix">
         <div class="ColsPeople FL">
-          <div class="TxtTile">People<span class="TxtPeople">Adding social networking to your work</span></div>
+          <div class="TxtTile">$labelPeople<span class="TxtPeople">$labelAddSocialNetworkingToYourWork</span></div>
           <ul>
-            <li>Create and develop Social Networks</li>
-            <li>Display relevant information to each user</li>
-            <li>Create a skills index</li>
-            <li>Help to find the relevant person to solve</li>
-            <li>User-friendly interface </li>
+            <li>$labelCreateAndDevelopSocialNetworks</li>
+            <li>$labelDisplayRevelantInformationToEachUser</li>
+            <li>$labelCreateASkillsIndex</li>
+            <li>$labelHelpToFindTheRevelantPersonToSolveProblems</li>
+            <li>$labelUserFriendlyInterface</li>
           </ul>
         </div>
         <div class="ColsSpace FL">
-          <div class="TxtTile">Space<span class="TxtPeople">Adding communities to your work</span></div>
+          <div class="TxtTile">$labelSpace<span class="TxtPeople">$labelAddCommunitiesToYourWork</span></div>
           <ul>
-            <li>Regroup people around projects or interest</li>
-            <li>Information aggregation</li>
-            <li>Improve the knowledge sharing</li>
-            <li>Easy to use community management</li>
-            <li>User-friendly interface</li>
+            <li>$labelRegroupPeopleAroundProjectsOrInterest</li>
+            <li>$labelInformationAggregation</li>
+            <li>$labelImproveTheKnowledgeSharing</li>
+            <li>$labelEasyToUseCommunityManagement</li>
+            <li>$labelUserFriendlyInterface</li>
           </ul>
         </div>
         <div class="ColsIconExtan FL">
           <div class="BlockWebsite FL">
             <a href="#" class="IconChatOnline"></a>
-            <p><a href="#" class="TxtLinkIcon">Live Chat</a></p>
+            <p><a href="#" class="TxtLinkIcon">$labelLiveChat</a></p>
           </div>
           <div class="BlockWebsite FL">
-            <a href="http://forum.exoplatform.org/portal/public/classic/forum/forum/forum5aacbc9a0afb96bf0ba5d1a4aaa9947b" class="IconForum"></a>
-            <p><a href="http://forum.exoplatform.org/portal/public/classic/forum/forum/forum5aacbc9a0afb96bf0ba5d1a4aaa9947b" class="TxtLinkIcon">eXo Forums</a></p>
+            <a href="http://forum.exoplatform.org/portal/public/classic/" class="IconForum"></a>
+            <p><a href="http://forum.exoplatform.org/portal/public/classic/" class="TxtLinkIcon">$labeleXoForums</a></p>
           </div>
           <div class="BlockWebsite FL">
             <a href="http://www.exoplatform.com/company/public/website/company/contact-us" class="IconContact"></a>
-            <p><a href="http://www.exoplatform.com/company/public/website/company/contact-us" class="TxtLinkIcon">Contact Us</a></p>
+            <p><a href="http://www.exoplatform.com/company/public/website/company/contact-us" class="TxtLinkIcon">$labelContactUs</a></p>
           </div>
         </div>
       </div>

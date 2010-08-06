@@ -211,7 +211,7 @@
         <p class="TxtPing"><a href="http://spreadsheets.google.com/viewform?formkey=dERsbWp1NWl3eGs0ekZEV3NpWi1Sa0E6MA">$labelSendFeedback</a></p>
       </div>
       <div class="FeedBack">
-        <p>$labelJoinTheCommunity :</p>
+        <p>$labelJoinTheCommunity:</p>
         <p class="TxtPing"><a href="http://wiki.exoplatform.org/xwiki/bin/view/Social/">$labelWiki</a> | <a href="http://forum.exoplatform.org/portal/public/classic/forum/forum/forum5aacbc9a0afb96bf0ba5d1a4aaa9947b">$labelForum</a></a></p>
       </div>
     </div>
