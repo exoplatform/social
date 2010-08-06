@@ -19,6 +19,7 @@
 
 -->
 */
+  jsManager.addOnLoadJavascript("initUIComposer");
 %>
 <div id="<%=uicomponent.id%>">
   <%uicomponent.renderChildren()
@@ -26,14 +27,14 @@
       %>
         RefPath  : <%=uicomponent.getDocumentRefPath()%>
         <script type="text/javascript">
-          try{document.getElementById("ShareButton").disabled = false}catch(e){}
+          setShareButtonDisable(false);
         </script>
       <%
     } else {
       %>
         <a href="<%= uicomponent.event("SelectDocument")%>">Select Document</a><br/>
         <script type="text/javascript">
-          try{document.getElementById("ShareButton").disabled = true}catch(e){}
+          setShareButtonDisable(true);
         </script>
       <%
     }

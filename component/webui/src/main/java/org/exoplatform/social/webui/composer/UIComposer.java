@@ -25,7 +25,6 @@ import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -41,19 +40,20 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/composer/NewUIComposer.gtmpl",
+  template = "classpath:groovy/social/webui/composer/UIComposer.gtmpl",
   events = {
     @EventConfig(listeners = UIComposer.PostMessageActionListener.class),
     @EventConfig(listeners = UIComposer.ActivateActionListener.class)
   }
 )
 public class UIComposer extends UIForm {
+
   public enum PostContext {
     SPACE,
     PEOPLE
   }
 
-  private final String POPUP_COMPOSER = "UIPopupComposer";
+  private UIContainer optionContainer;
   private PostContext postContext;
   private UIFormTextAreaInput messageInput;
   private UIActivityComposerContainer composerContainer;
@@ -64,7 +64,7 @@ public class UIComposer extends UIForm {
    * @throws Exception
    */
   public UIComposer() throws Exception {
-    addChild(UIPopupWindow.class, null, POPUP_COMPOSER);
+    //addChild(UIPopupWindow.class, null, POPUP_COMPOSER);
     //add textbox for inputting message
     messageInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
     addUIFormInput(messageInput);
@@ -134,6 +134,14 @@ public class UIComposer extends UIForm {
 
   public void setPostContext(PostContext postContext) {
     this.postContext = postContext;
+  }
+
+  public void setOptionContainer(UIContainer optionContainer) {
+    this.optionContainer = optionContainer;
+  }
+
+  public UIContainer getOptionContainer() {
+    return optionContainer;
   }
 
   public String getActivateEvent(String activityComposerId){

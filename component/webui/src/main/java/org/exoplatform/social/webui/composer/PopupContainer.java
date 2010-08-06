@@ -1,4 +1,4 @@
-package org.exoplatform.social.plugin.doc;
+package org.exoplatform.social.webui.composer;
 
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -13,7 +13,7 @@ import org.exoplatform.webui.core.UIPopupWindow;
  * To change this template use File | Settings | File Templates.
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/plugin/doc/PopupContainer.gtmpl"
+  template = "classpath:groovy/social/webui/composer/PopupContainer.gtmpl"
 )
 public class PopupContainer extends UIContainer{
   private UIPopupWindow popupWindow;

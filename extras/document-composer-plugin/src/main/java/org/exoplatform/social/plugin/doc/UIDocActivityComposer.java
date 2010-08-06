@@ -41,6 +41,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -68,18 +69,13 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   private final String repository = "repository";
   private final String workspace = "collaboration";
   private String rootpath;
-  private PopupContainer popupContainer;
+  private final String POPUP_COMPOSER = "UIPopupComposer";
 
   /**
    * constructor
    */
   public UIDocActivityComposer() {
     resetValues();
-    try {
-      popupContainer = addChild(PopupContainer.class, null, "PopupContainer");
-    } catch (Exception e) {
-      LOG.error(e);
-    }
   }
 
   private void resetValues() {
@@ -106,7 +102,15 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
 
   private void showDocumentPopup(UIDocActivityComposer docActivityComposer) {
     UIComposer uiComposer = docActivityComposer.getAncestorOfType(UIComposer.class);
-    UIPopupWindow uiPopup = uiComposer.getChild(UIPopupWindow.class);
+    final UIContainer optionContainer = uiComposer.getOptionContainer();
+    optionContainer.removeChild(UIPopupWindow.class);
+
+    UIPopupWindow uiPopup = null;
+    try {
+      uiPopup = optionContainer.addChild(UIPopupWindow.class, null, POPUP_COMPOSER);
+    } catch (Exception e) {
+      LOG.error(e);
+    }
     uiPopup.setWindowSize(600, 600);
     UIOneNodePathSelector uiOneNodePathSelector;
     try {
