@@ -145,16 +145,16 @@ div, table, tr, td, img, form{
 }
 
 .UIContenSocialExtan .ColsPeople{
-	width: 300px;
+	width: 280px;
 	border-right: solid 1px #c5c5c5;
-	padding-right: 21px;
+	padding-right: 15px;
 	padding-left: 15px;
 }
 
 .UIContenSocialExtan .ColsSpace{
-	width: 265px;
+	width: 322px;
 	border-right: solid 1px #c5c5c5;
-	padding-right: 41px;
+	padding-right: 30px;
 	padding-left: 21px;
 }
 
@@ -193,7 +193,7 @@ div, table, tr, td, img, form{
 
 
 .ColsIconExtan .BlockWebsite{
-	width: 98px;
+	width: 90px;
 	text-align: center;
 	margin-top: 8px;
 }

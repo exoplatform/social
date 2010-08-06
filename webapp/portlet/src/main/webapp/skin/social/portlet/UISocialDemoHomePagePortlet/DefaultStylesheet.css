@@ -260,6 +260,9 @@ p{
     padding: 0px;
     float: left;
     list-style:none;
+    overflow:hidden;
+	white-space:nowrap;
+	width:257px;
 }
 
 .UISocialHomepage .LeftSocialHomepage .ContentBoxLeft ul li{

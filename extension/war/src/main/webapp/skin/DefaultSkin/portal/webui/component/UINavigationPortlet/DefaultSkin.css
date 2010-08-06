@@ -46,6 +46,7 @@
 
 #UISocialExtensionNavigationContainer .UINavigationPortlet .UIHorizontalTabs .UITab{
 	font-weight: normal;
+	margin-right: 28px;
 }
 
 #UISocialExtensionNavigationContainer .UINavigationPortlet .UITab .SelectedNavigationTab .TabIcon{

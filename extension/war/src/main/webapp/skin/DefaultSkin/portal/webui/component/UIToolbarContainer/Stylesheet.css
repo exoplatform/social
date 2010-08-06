@@ -59,6 +59,13 @@
   height: 30px;
 }
 
+.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet .UIHorizontalTabs .UITab{
+	background: none;
+}
+
+.UIWorkingWorkspace .UIToolbarContainer .UIAdminToolbarPortlet .UIHorizontalTabs .UITab{
+	background: none;
+}
 
 .UIWorkingWorkspace .UIToolbarContainer .UIHorizontalTabs .UITab {
   line-height: 30px;
@@ -225,6 +232,7 @@
 .UIToolbarContainer .MenuItem:hover{
   text-align: left;
   background: #414c7c;
+  border-bottom:1px solid #4A4F68;
 }
 
 
