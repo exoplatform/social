@@ -15,82 +15,48 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-.UIToolbarContainer {
-  padding: 0px;
-  height: auto;
-}
 /** BUG SOC-562 **/
 /*.UIToolbarContainer .AdminToolBarPortletTDContainer {*/
   /*float: right; */ /* orientation=lt */
   /* float: left; */ /* orientation=rt */
 /*}*/
 
-div, table, tr, td, img, form{
-	font-size: 12px;
-}
 
-.UIToolbarContainer .LAYOUT-CONTAINER {
-  overflow: hidden;
-}
-
-.UIToolbarContainer .LAYOUT-BLOCK .UIRowContainer {
-  height: auto;
-  min-height: inherit;
-  border: none;
-  background: none;
-}
-
-.UIToolbarContainer .ToolbarContainer .TRContainer {
-  height: 30px;
-}
-
-.UIToolbarContainer .UIContainer {
-  padding: 0px;
-}
-
-.UIToolbarContainer .UITableColumnContainer {
-  margin: 0px;
-}
-
-.UIWorkingWorkspace .UIToolbarContainer .NormalContainerBlock .ToolbarContainer {
-  background: #363b52;
+.UIToolbarContainer .NormalContainerBlock .ToolbarContainer {
+  background: #343a50;
   height: 30px;
   border-left: none;
   border-right: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIAdminToolbarPortlet .UIHorizontalTabs .UITab {
+.UIToolbarContainer .UIAdminToolbarPortlet .UIHorizontalTabs .UITab {
   background:none;
   padding:0;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .ToolbarContainer a {
-  display: block;
+.UIToolbarContainer .ToolbarContainer a {
   padding: 0px 10px;
-  white-space: nowrap;
   color: #ffd400;
   font-weight: normal;
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .ToolbarContainer .SubBlock a {
-  display: block;
+.UIToolbarContainer .ToolbarContainer .SubBlock a {
   padding: 0px 10px;
   white-space: nowrap;
   color: #aeadad;
   font-weight: normal;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UITab a:hover {
+.UIToolbarContainer .UITab a:hover {
   color: #aeadad;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIHorizontalTabs .TabsContainer {
-  position:relative;    margin:auto;
-    width:100%;
+.UIToolbarContainer .UIHorizontalTabs .TabsContainer {
+  position:relative;    
+  margin:auto;
+  width:100%;
   height: 30px;
-  float: left; /* orientation=lt */
-  float: right; /* orientation=rt */
 }
 
 
@@ -106,9 +72,7 @@ div, table, tr, td, img, form{
 /****************************/
 
 .UIToolbarContainer .MenuItemContainer {
-  position: absolute;
   border: 1px solid #9e9fa3;
-  display: none;
   z-index: 1000;
 }
 
@@ -118,8 +82,6 @@ div, table, tr, td, img, form{
   line-height: 23px;
   color: #20263f;
   font-weight: bold;
-  padding: 0px 5px;
-  white-space: nowrap;
   opacity: 1;
   filter: alpha(opacity=100);
   text-align: left;  /* orientation=lt */
@@ -194,7 +156,7 @@ div, table, tr, td, img, form{
 
 /************** Add style trung.nguyen   ********************/
 
-.UIWorkingWorkspace .UIToolbarContainer .SocialSpacesIcon {
+.UIToolbarContainer .SocialSpacesIcon {
   background: none;
 }
 
@@ -212,11 +174,11 @@ div, table, tr, td, img, form{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .EditorIcon{
+.UIToolbarContainer .EditorIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet .UITab{
+.UIToolbarContainer .UIStarToolBarPortlet .UITab{
   background: none;
 
 }
@@ -225,29 +187,29 @@ div, table, tr, td, img, form{
   float: right;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet{
+.UIToolbarContainer .UIStarToolBarPortlet{
   background: url('background/LogoToolBar.png') no-repeat left 5px; /* orientation=lt */
   background: url('background/LogoToolBar.png') no-repeat right 5px; /* orientation=rt */
   height:30px;
-  margin-left:58px; /* orientation=lt */
-  margin-right:58px; /* orientation=rt */
+  margin-left:30px; /* orientation=lt */
+  margin-right:30px; /* orientation=rt */
   margin-right: 37px; /* orientation=lt */
   margin-left: 37px; /* orientation=rt */
   width:44px;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .MenuItemContainer{
+.UIToolbarContainer .MenuItemContainer{
   border: none;
   margin-top: 1px;
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .MenuItemContainer .MenuItem .MenuItemContainer{
+.UIToolbarContainer .MenuItemContainer .MenuItem .MenuItemContainer{
   border: none;
   margin-top: 0px;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .MenuItem{
+.UIToolbarContainer .MenuItem{
   text-align: left;
   background: #363b52;
   border-bottom: solid 1px #4a4f68;
@@ -260,52 +222,52 @@ div, table, tr, td, img, form{
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .MenuItem:hover{
+.UIToolbarContainer .MenuItem:hover{
   text-align: left;
   background: #414c7c;
 }
 
 
-.UIWorkingWorkspace .UIToolbarContainer .AddPageIcon{
+.UIToolbarContainer .AddPageIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .EditPageIcon{
+.UIToolbarContainer .EditPageIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .EditSiteIcon{
+.UIToolbarContainer .EditSiteIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .DefaultPageIcon{
+.UIToolbarContainer .DefaultPageIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .ChangeLanguageIcon{
+.UIToolbarContainer .ChangeLanguageIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .ChangeSkinIcon{
+.UIToolbarContainer .ChangeSkinIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .SignOutIcon{
+.UIToolbarContainer .SignOutIcon{
   background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .SitesIcon{
+.UIToolbarContainer .SitesIcon{
 	background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .SiteIcon{
+.UIToolbarContainer .SiteIcon{
 	background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .GroupIcon{
+.UIToolbarContainer .GroupIcon{
 	background: none;
 }
 
-.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet a{
+.UIToolbarContainer .UIStarToolBarPortlet a{
   color: #aeadad;
 }

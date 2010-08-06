@@ -18,8 +18,18 @@
 @import url(portal/webui/component/UIToolbarContainer/Stylesheet.css);
 
 @import url(portal/webui/component/UIBannerPortlet/DefaultSkin.css);
+@import url(portal/webui/component/UINavigationPortlet/DefaultSkin.css);
 
-#UIPortalApplication .UIWorkingWorkspace {
+
+body{
+  background-color: #eeeeee;
+}
+
+div, table, tr, td, img, form{
+	font-size: 12px;
+}
+
+.UIWorkingWorkspace {
   background-color: #eeeeee;
   margin: auto;
   width: 100%;
@@ -38,7 +48,7 @@
   font-weight: normal;
 }
 
-.UIWorkingWorkspace .UIPageBody{
+.UIPageBody {
   width: 983px;
   margin: 0 auto;
 }
@@ -47,6 +57,3 @@
   padding: 0px;
 }
 
-body{
-  background-color: #eeeeee;
-}

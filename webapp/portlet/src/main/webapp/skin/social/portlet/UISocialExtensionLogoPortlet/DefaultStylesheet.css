@@ -16,3 +16,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+
+.UISocialExtensionLogoContainerTDContainer{
+	width: 175px;
+}
+ 
+.UISocialExtensionBannerAndNavigationContainerTDContainer{
+} 
+
+.UISocialExtensionLogoContainerTDContainer .UILogoSocialEx{
+	background: #20263f;
+	height: 52px;
+	padding: 22px 0 0 38px;
+}
+
+.UISocialExtensionLogoContainerTDContainer .UILogoSocialEx a{
+ 	background: url('DefaultSkin/background/LogoSocialEx.png') no-repeat left top;
+ 	height: 45px;
+ 	width: 144px;
+ 	display: block;
+ }

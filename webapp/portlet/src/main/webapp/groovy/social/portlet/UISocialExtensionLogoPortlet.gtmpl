@@ -20,6 +20,6 @@
 -->
 */
 %>
-<div>
-  Social Logo
+<div class="UILogoSocialEx">
+	<a href="#"></a>
 </div>

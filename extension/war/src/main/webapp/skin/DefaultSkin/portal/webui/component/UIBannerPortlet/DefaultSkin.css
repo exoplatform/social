@@ -16,5 +16,29 @@
  */
 
 .UIBannerPortlet .InlineContainer .RightBanner {
-  background: none;
+	background: none;
+}
+
+.UIBannerPortlet .InlineContainer .LeftBanner{
+	border: none;
+	padding-left: 0px;
+	background-color: #20263f;
+}
+
+.UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleBanner{
+	height: 42px;
+}
+
+.UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer {
+	padding: 13px 45px 1px 15px;
+}
+
+.UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer a {
+	height: 28px;
+	font-weight: normal;
+	color: #9f9e9e;
+}
+
+.UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer a:hover {
+	color: #ffd400;
 }
