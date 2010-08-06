@@ -85,6 +85,7 @@
 	    var spaceData = resp.data.spaces;
 	    if ((spaceData == null) || (spaceData.length == 0)) {
 	      var emptyItem = document.createElement('div');
+	      emptyItem.className = 'NoneSpace';
 	      emptyItem.innerHTML = eXo.social.Locale.getMsg('has_no_space');
 	      mySpacesEl.appendChild(emptyItem);
 	      gadgets.window.adjustHeight();

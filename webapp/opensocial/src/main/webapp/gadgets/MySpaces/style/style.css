@@ -39,3 +39,11 @@
 	color: #484848;
 	text-decoration: none;
 }
+
+.UIGadgetThemes .MySpace .NoneSpace {
+	padding-left: 10px;
+	margin-bottom: 5px;
+	color: #484848;
+	text-decoration: none;
+	display: block;
+}
