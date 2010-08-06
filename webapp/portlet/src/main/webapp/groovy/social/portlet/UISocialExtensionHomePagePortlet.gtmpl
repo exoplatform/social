@@ -27,7 +27,7 @@
   def labelCreateAndDevelopSocialNetworks = _ctx.appRes("${uicomponentId}.label.Create_And_Develop_Social_Networks");
   def labelDisplayRevelantInformationToEachUser = _ctx.appRes("${uicomponentId}.label.Display_Revelant_Information_To_Each_User");
   def labelCreateASkillsIndex = _ctx.appRes("${uicomponentId}.label.Create_A_Skills_Index");
-  def labelHelpToFindTheRevelantPersonToSolveProblems = _ctx.appRes("${uicomponentId}.label.Help_To_Find_The_Revelant_Person_To_Solve_Problems");
+  def labelFindPeopleWithExpertKnowledge = _ctx.appRes("${uicomponentId}.label.Find_People_With_Expert_Knowledge");
   def labelUserFriendlyInterface = _ctx.appRes("${uicomponentId}.label.User_Friendly_Interface");
   def labelSpace = _ctx.appRes("${uicomponentId}.label.Space");
   def labelAddCommunitiesToYourWork = _ctx.appRes("${uicomponentId}.label.Add_Communities_To_Your_Work");
@@ -57,7 +57,7 @@
             <li>$labelCreateAndDevelopSocialNetworks</li>
             <li>$labelDisplayRevelantInformationToEachUser</li>
             <li>$labelCreateASkillsIndex</li>
-            <li>$labelHelpToFindTheRevelantPersonToSolveProblems</li>
+            <li>$labelFindPeopleWithExpertKnowledge</li>
             <li>$labelUserFriendlyInterface</li>
           </ul>
         </div>
