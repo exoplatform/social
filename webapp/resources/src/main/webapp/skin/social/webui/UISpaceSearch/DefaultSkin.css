@@ -15,30 +15,7 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-div.suggestions {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  border: 1px solid #cdcdc1;
-  border-top: 1px solid #b7b7b7;
-  position: absolute;
-  min-width: 276px;
-  *width: 278px;
-  background: white;
-  color: #3A3A3A;
-  max-height: 150px;
-  overflow-y: auto;
-  overflow-y: hidden;
-}
-
-div.suggestions div {
-  cursor: default;
-  padding: 0px 3px;
-}
-
-div.suggestions div.current {
-  background-color: #4169e1;
-  color: white;
-}
+ @import url('/social-resources/skin/social/webui/UIAutoSuggestControl/DefaultSkin.css');
 
 .UISpaceSearch .LeftBoxInput {
   background: #f3f3f3 url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/BoxInput.gif') no-repeat left top;
