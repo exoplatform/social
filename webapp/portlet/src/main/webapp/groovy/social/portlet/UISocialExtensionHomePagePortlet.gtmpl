@@ -23,18 +23,18 @@
 <%
   def uicomponentId = "UISocialExtensionHomePagePortlet";
   def labelPeople = _ctx.appRes("${uicomponentId}.label.People");
-  def labelAddSocialNetworkingToYourWork = _ctx.appRes("${uicomponentId}.label.Add_Social_Networking_To_Your_Work");
-  def labelCreateAndDevelopSocialNetworks = _ctx.appRes("${uicomponentId}.label.Create_And_Develop_Social_Networks");
-  def labelDisplayRevelantInformationToEachUser = _ctx.appRes("${uicomponentId}.label.Display_Revelant_Information_To_Each_User");
-  def labelCreateASkillsIndex = _ctx.appRes("${uicomponentId}.label.Create_A_Skills_Index");
-  def labelFindPeopleWithExpertKnowledge = _ctx.appRes("${uicomponentId}.label.Find_People_With_Expert_Knowledge");
-  def labelUserFriendlyInterface = _ctx.appRes("${uicomponentId}.label.User_Friendly_Interface");
-  def labelSpace = _ctx.appRes("${uicomponentId}.label.Space");
-  def labelAddCommunitiesToYourWork = _ctx.appRes("${uicomponentId}.label.Add_Communities_To_Your_Work");
-  def labelRegroupPeopleAroundProjectsOrInterest = _ctx.appRes("${uicomponentId}.label.Regroup_People_Around_Projects_Or_Interest");
-  def labelInformationAggregation = _ctx.appRes("${uicomponentId}.label.Information_Aggregation");
-  def labelImproveTheKnowledgeSharing = _ctx.appRes("${uicomponentId}.label.Improve_The_Knowledge_Sharing");
-  def labelEasyToUseCommunityManagement = _ctx.appRes("${uicomponentId}.label.Easy_To_Use_Community_Management");
+  def labelYourOwnEnterpriseSocialNetwork = _ctx.appRes("${uicomponentId}.label.Your_Own_Enterprise_Social_Network");
+  def labelTurnYourDirectoryIntoASocialNetwork = _ctx.appRes("${uicomponentId}.label.Turn_Your_Directory_Into_A_Social_Network");
+  def labelUsersCanFillTheirProfile = _ctx.appRes("${uicomponentId}.label.Users_Can_Fill_Their_Profile");
+  def labelSearchBySkillsAndExperience = _ctx.appRes("${uicomponentId}.label.Search_By_Skills_And_Experience");
+  def labelActivityMicroBlogging = _ctx.appRes("${uicomponentId}.label.Activity_MicroBlogging");
+  def labelOpenSocialAPISupport = _ctx.appRes("${uicomponentId}.label.OpenSocial_API_Support");
+  def labelSpaces = _ctx.appRes("${uicomponentId}.label.Spaces");
+  def labelCollaborativeWorkspacesForCommunities = _ctx.appRes("${uicomponentId}.label.Collaborative_Workspaces_For_Communities");
+  def labelRevealDomantCommunities = _ctx.appRes("${uicomponentId}.label.Reveal_Domant_Communities");
+  def labelOpenCommunityManagement = _ctx.appRes("${uicomponentId}.label.Open_Community_Management");
+  def labelGroupActivityStream = _ctx.appRes("${uicomponentId}.label.Group_Activity_Stream");
+  def labelAddCustomApplications = _ctx.appRes("${uicomponentId}.label.Add_Custom_Applications");
   def labelLiveChat = _ctx.appRes("${uicomponentId}.label.Live_Chat");
   def labeleXoForums = _ctx.appRes("${uicomponentId}.label.eXo_Forums");
   def labelContactUs = _ctx.appRes("${uicomponentId}.label.Contact_Us");
@@ -52,23 +52,23 @@
     <div class="BgMR">
       <div class="BgMC ClearFix">
         <div class="ColsPeople FL">
-          <div class="TxtTile">$labelPeople<span class="TxtPeople">$labelAddSocialNetworkingToYourWork</span></div>
+          <div class="TxtTile">$labelPeople<span class="TxtPeople">$labelYourOwnEnterpriseSocialNetwork</span></div>
           <ul>
-            <li>$labelCreateAndDevelopSocialNetworks</li>
-            <li>$labelDisplayRevelantInformationToEachUser</li>
-            <li>$labelCreateASkillsIndex</li>
-            <li>$labelFindPeopleWithExpertKnowledge</li>
-            <li>$labelUserFriendlyInterface</li>
+            <li>$labelTurnYourDirectoryIntoASocialNetwork</li>
+            <li>$labelUsersCanFillTheirProfile</li>
+            <li>$labelSearchBySkillsAndExperience</li>
+            <li>$labelActivityMicroBlogging</li>
+            <li>$labelOpenSocialAPISupport</li>
           </ul>
         </div>
         <div class="ColsSpace FL">
-          <div class="TxtTile">$labelSpace<span class="TxtPeople">$labelAddCommunitiesToYourWork</span></div>
+          <div class="TxtTile">$labelSpaces<span class="TxtPeople">$labelCollaborativeWorkspacesForCommunities</span></div>
           <ul>
-            <li>$labelRegroupPeopleAroundProjectsOrInterest</li>
-            <li>$labelInformationAggregation</li>
-            <li>$labelImproveTheKnowledgeSharing</li>
-            <li>$labelEasyToUseCommunityManagement</li>
-            <li>$labelUserFriendlyInterface</li>
+            <li>$labelRevealDomantCommunities</li>
+            <li>$labelOpenCommunityManagement</li>
+            <li>$labelGroupActivityStream</li>
+            <li>$labelAddCustomApplications</li>
+            <li>$labelOpenSocialAPISupport</li>
           </ul>
         </div>
         <div class="ColsIconExtan FL">
