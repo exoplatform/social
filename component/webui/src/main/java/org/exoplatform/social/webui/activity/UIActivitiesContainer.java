@@ -22,7 +22,14 @@ import java.util.List;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIActivitiesContainer.java
@@ -36,6 +43,10 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 )
 public class UIActivitiesContainer extends UIContainer {
   private List<Activity> activityList;
+  private PostContext postContext;
+  //hold activities for user or space
+  private Space space;
+  private String ownerName;
   /**
    * constructor
    */
@@ -48,6 +59,31 @@ public class UIActivitiesContainer extends UIContainer {
     return this;
   }
 
+  public void setPostContext(PostContext postContext) {
+    this.postContext = postContext;
+  }
+
+  public PostContext getPostContext() {
+    return postContext;
+  }
+
+  public Space getSpace() {
+    return space;
+  }
+
+  public void setSpace(Space space) {
+    this.space = space;
+  }
+
+  public String getOwnerName() {
+    return ownerName;
+  }
+
+  public void setOwnerName(String ownerName) {
+    this.ownerName = ownerName;
+  }
+
+
   /**
    * initializes ui component child
    * @throws Exception
@@ -56,11 +92,11 @@ public class UIActivitiesContainer extends UIContainer {
     if (activityList == null) {
       activityList = new ArrayList<Activity>();
     }
-    
     PortalContainer portalContainer = PortalContainer.getInstance();
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
-    for (Activity activity : activityList) {      
+    for (Activity activity : activityList) {
       factory.addChild(activity, this);
     }
   }
+
 }

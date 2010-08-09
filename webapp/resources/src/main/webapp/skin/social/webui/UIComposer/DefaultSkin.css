@@ -22,6 +22,7 @@
 .UIComposer .BlastContainer textarea {
   width: 100%;
   border: 1px solid #d7d0b5;
+  font-size: 11px;
 }
 
 .UIComposer .BlastContainer .BlastShare {

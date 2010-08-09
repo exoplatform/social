@@ -45,6 +45,8 @@
     this.commentFormBlockId = 'CommentFormBlock' + this.activityId;
     this.commentTextareId = 'CommentTextarea' + this.activityId;
     this.commentButtonId = 'CommentButton' + this.activityId;
+    this.contentBoxId = 'ContextBox' + this.activityId;
+    this.deleteActivityButtonId = 'DeleteActivityButton' + this.activityId;
 
   }
 
@@ -54,6 +56,8 @@
     this.commentFormBlockEl = Util.getElementById(this.commentFormBlockId);
     this.commentTextareaEl = Util.getElementById(this.commentTextareId);
     this.commentButtonEl = Util.getElementById(this.commentButtonId);
+    this.contentBoxEl = Util.getElementById(this.contentBoxId);
+    this.deleteActivityButtonEl = Util.getElementById(this.deleteActivityButtonId);
 
     if (!(this.commentLinkEl && this.commentFormBlockEl && this.commentTextareaEl && this.commentButtonEl)) {
       alert('err: init uiActivity!');
@@ -86,6 +90,18 @@
         this.style.color = 'gray';
       }
     }, false);
+
+    if (this.deleteActivityButtonEl !== null) {
+      Util.addEventListener(this.contentBoxEl, 'mouseover', function(evt) {
+        uiActivity.deleteActivityButtonEl.class = 'CloseContentBoxHilight';
+        uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxHilight';
+      }, false);
+
+      Util.addEventListener(this.contentBoxEl, 'mouseout', function(evt) {
+        uiActivity.deleteActivityButtonEl.class = 'CloseContentBoxNormal';
+        uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxNormal';
+      }, false);
+    }
 
     if (this.commentFormDisplayed) {
       Util.showElement(this.commentFormBlockId);

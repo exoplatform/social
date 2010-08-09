@@ -37,10 +37,12 @@
   def attachLabel = _ctx.appRes("${uicomponent.id}.label.Attach");
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
   def blastInput = "BlastInputSpace";
-  if (uicomponent.getPostContext() == UIComposer.PostContext.PEOPLE) {
+
+  if (uicomponent.getPostContext().toString().equals("PEOPLE")) {
     defaultInput = _ctx.appRes("${uicomponent.id}.input.What_Are_You_Working_On");
     blastInput = "BlastInputPeople";
   }
+
 
   jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
   jsManager.importJavascript("eXo.social.webui.UIComposer", "/social-resources/javascript");

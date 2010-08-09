@@ -29,6 +29,7 @@ import javax.jcr.Value;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
@@ -36,6 +37,7 @@ import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.IdentityManager;
 
 import com.google.common.collect.Lists;
 
@@ -335,10 +337,44 @@ public class ActivityStorage {
         activityNode.remove();
         session.save();
       }
+      LOG.info("activity and its comments have been deleted, activityId:" + activityId);
     } catch(Exception ex) {
       LOG.error("Failed to delete activity", ex);
     } finally {
       sessionManager.closeSession();
+    }
+  }
+
+  /**
+   * Delete comment by its id.
+   *
+   * @param activityId
+   * @param commentId
+   */
+  public void deleteComment(String activityId, String commentId) {
+    Activity activity = load(activityId);
+    String rawCommentIds = activity.getReplyToId();
+    //rawCommentIds can be: null || ,a,b,c,d
+    if (rawCommentIds != null && rawCommentIds.contains(commentId)) {
+      Activity comment = load(commentId);
+      if (comment == null) {
+        LOG.warn("can not find comment with id: " + commentId);
+        return;
+      }
+      try {
+        deleteActivity(commentId);
+        commentId = "," + commentId;
+        rawCommentIds = rawCommentIds.replace(commentId, "");
+        activity.setReplyToId(rawCommentIds);
+        IdentityManager identityManager = (IdentityManager) PortalContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
+        Identity user = identityManager.getIdentity(activity.getUserId());
+        save(user, activity);
+      } catch (Exception e) {
+        LOG.warn("failed to delete comment with id: " + commentId);
+      }
+
+    } else {
+      LOG.warn("can't not find commentId: " + commentId + " in activity with activityId: " + activityId);
     }
   }
 

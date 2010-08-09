@@ -23,11 +23,6 @@
 
 <div class="$uicomponent.id" id="$uicomponent.id">
 
-<!--
-  <div class="JiraUpgrade">
-    <div class="CautionIcon">Jira upgrade: <span style="font-weight: normal;"> Jira will be down  for  upgrade on  12/6 between  9 and 10pm GMT</span></div>
-  </div>
--->
   <% uicomponent.renderChildren();%>
 
   <div class="UIAction">
@@ -167,7 +162,7 @@
               <img width='56px' height='54px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
 
             </a>
-            <div class="ContentBox">
+            <div class="ContentBox">ontentBoxNormal"><span></span></div>
               <div class="TitleContent clearfix">
                 <div class="Text">John Smith</div>
                 <div class="CloseContentBoxNormal"><span></span></div>

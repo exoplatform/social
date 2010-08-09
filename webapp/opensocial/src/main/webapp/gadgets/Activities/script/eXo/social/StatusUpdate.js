@@ -246,7 +246,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
           statusUpdate.viewerFriends = statusUpdate.ownerFriends;
           var req = opensocial.newDataRequest();
           var opts = {};
-          opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = 
+          opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
               [opensocial.Person.Field.ID,
                opensocial.Person.Field.NAME,
                opensocial.Person.Field.PROFILE_URL,
@@ -391,7 +391,7 @@ eXo.social.StatusUpdate.prototype.setDeleteActivity = function(activityId) {
   var Locale = eXo.social.Locale;
   var el = Util.getElementById('Delete'+activityId);
   var statusUpdate = this;
-  
+
   Util.addEventListener(el, 'click', function(evt) {
     if (confirm(Locale.getMsg('are_you_sure_to_delete_this_activity'))) {
       statusUpdate.deleteActivity(activityId);
@@ -583,7 +583,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
      * Using this result for allowing one person comment or like the activity.
      *  - If is friend then can comment or like;
      *  - If is not friend can view activity only.
-     *  
+     *
      * @param viewerId
      * @return
      */
@@ -597,7 +597,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
     }
     /**
      * Checks if the current viewer is the application owner
-     * 
+     *
      * @param viewerId
      * @return boolean
      */
@@ -704,7 +704,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         }
         if (jsonTitle.data.title.length === 0) {
           jsonTitle.data.title = jsonTitle.data.link;
-        } 
+        }
         html.push('</div>');
         html.push('<div class="LinkShare">')
           html.push('<div class="Thumbnail">');
@@ -828,7 +828,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
               Util.hideElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
             }
           }
-        } 
+        }
 
         if (statusUpdate.isOwnerActivityShown) {
           uiOwnerActivitiesShowHide.innerHTML='<div class="CollapseAllActivities">' + Locale.getMsg('collapse_all_activities') + '</div>';
@@ -1034,9 +1034,9 @@ eXo.social.StatusUpdate.prototype.getPerson = function(userId) {
  * @param	userId
  */
 eXo.social.StatusUpdate.prototype.getAvatar = function(userId, isMyAvartar) {
-  var avatarUrl = "/social-resources/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+  var avatarUrl = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
   if (isMyAvartar) {
-    avatarUrl = "/social-resources/skin/ShareImages/StatusUpdateImages/MyStatusAvatar.gif";
+    avatarUrl = "/social-resources/skin/ShareImages/activity/MyStatusAvatar.gif";
   }
   var person = null;
   if (userId === this.owner.getId()) {

@@ -32,7 +32,11 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.web.command.handler.GetApplicationHandler;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.event.Event;
@@ -161,6 +165,7 @@ public class BaseUIActivity extends UIForm {
   public boolean commentListToggleable() {
     return comments.size() > LATEST_COMMENTS_SIZE;
   }
+
 
   /**
    * Gets all the comments or latest comments or empty list comments
@@ -432,7 +437,44 @@ public class BaseUIActivity extends UIForm {
     }
   }
 
-    static public class ToggleDisplayLikesActionListener extends EventListener<BaseUIActivity> {
+  public boolean isActivityDeletable() throws SpaceException {
+    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
+    PostContext postContext = uiActivitiesContainer.getPostContext();
+    String remoteUser = getRemoteUser();
+    if (postContext == PostContext.SPACE) {
+      Space space = uiActivitiesContainer.getSpace();
+      SpaceService spaceService = getApplicationComponent(SpaceService.class);
+      return spaceService.isLeader(space, remoteUser);
+    } else if (postContext == PostContext.PEOPLE) {
+      return uiActivitiesContainer.getOwnerName().equals(remoteUser);
+    }
+    return false;
+  }
+
+  public boolean isCommentDeletable(String activityUserId) throws SpaceException {
+    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
+    PostContext postContext = uiActivitiesContainer.getPostContext();
+    IdentityManager identityManager = getApplicationComponent(IdentityManager.class);
+    try {
+      Identity remoteUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getRemoteUser(), false);
+
+      if (remoteUserIdentity.getId().equals(activityUserId)) {
+        return true;
+      }
+      if (postContext == PostContext.SPACE) {
+        Space space = uiActivitiesContainer.getSpace();
+        SpaceService spaceService = getApplicationComponent(SpaceService.class);
+        return spaceService.isLeader(space, getRemoteUser());
+      } else if (postContext == PostContext.PEOPLE) {
+        return uiActivitiesContainer.getOwnerName().equals(getRemoteUser());
+      }
+    } catch (Exception e) {
+      LOG.warn("can't not get remoteUserIdentity: remoteUser = " + getRemoteUser());
+    }
+    return false;
+  }
+
+  static public class ToggleDisplayLikesActionListener extends EventListener<BaseUIActivity> {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
@@ -508,5 +550,31 @@ public class BaseUIActivity extends UIForm {
 
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
+  }
+
+  public static class DeleteActivityActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      BaseUIActivity uiActivity = event.getSource();
+      uiActivity.refresh();
+      ActivityManager activityManager = uiActivity.getActivityManager();
+      activityManager.deleteActivity(uiActivity.getActivity().getId());
+    }
+  }
+
+
+  public static class DeleteCommentActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      BaseUIActivity uiActivity = event.getSource();
+      WebuiRequestContext requestContext = event.getRequestContext();
+      ActivityManager activityManager = uiActivity.getActivityManager();
+      activityManager.deleteComment(uiActivity.getActivity().getId(), requestContext.getRequestParameter(OBJECTID));
+      uiActivity.refresh();
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+    }
+
   }
 }

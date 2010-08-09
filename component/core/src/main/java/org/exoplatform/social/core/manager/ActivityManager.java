@@ -93,6 +93,17 @@ public class ActivityManager {
   }
 
   /**
+   * Delete comment by its id.
+   *
+   * @param activityId
+   * @param commentId
+   * @throws Exception
+   */
+  public void deleteComment(String activityId, String commentId) {
+    storage.deleteComment(activityId, commentId);
+  }
+
+  /**
    * Gets the lastest activities by identity
    *
    * @param identity the identity

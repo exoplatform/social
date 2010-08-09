@@ -158,8 +158,8 @@
           <span></span>
         </div>
       </div>
-      
-      
+
+
        <%
           def linkSource = uicomponent.getLinkSource();
           def linkTitle = uicomponent.getLinkTitle();
@@ -191,8 +191,8 @@
         </div>
         <div style="clear: both; height: 0px;"><span></span></div>
       </div>
-        
-        
+
+
       <div class="NewsDate">
         $activityPostedTime
       </div>
@@ -230,7 +230,7 @@
           personLikeProfileUri = uicomponent.getUserProfileUri(it);
           personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
           if (!personLikeAvatarImageSource) {
-            personLikeAvatarImageSource = "/social-resources/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+            personLikeAvatarImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
           }
         %>
           <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
@@ -281,7 +281,7 @@
     commenterProfileUri = uicomponent.getUserProfileUri(it.userId);
     commenterImageSource = uicomponent.getUserAvatarImageSource(it.userId);
     if (!commenterImageSource) {
-      commenterImageSource = "/social-resources/skin/ShareImages/StatusUpdateImages/AvatarPeople.gif";
+      commenterImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
     }
     commentMessage = it.title;
     commentPostedTime = uicomponent.getPostedTimeString(it.postedTime);

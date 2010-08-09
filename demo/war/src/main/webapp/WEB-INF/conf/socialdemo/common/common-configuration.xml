@@ -32,7 +32,8 @@
       <!-- The name of the method to call on the ResourceBundleService in order to register the ResourceBundles -->
       <set-method>addResourceBundle</set-method>
       <!-- The full qualified name of the BaseResourceBundlePlugin -->
-      <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type><init-params>
+      <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
+      <init-params>
         <!--values-param>
           <name>classpath.resources</name>
           <description>The resources that start with the following package name should be load from file system</description>

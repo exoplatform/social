@@ -363,7 +363,7 @@ public class ActivitiesRestService implements ResourceContainer {
       comment.setUserId(identity.getId());
     }
 
-         
+
     try {
       _activityManager.saveComment(activity, comment);
     } catch (Exception e) {
@@ -391,7 +391,7 @@ public class ActivitiesRestService implements ResourceContainer {
       return _identityManager;
     }
 
-  
+
   /**
    * Destroys a comment (by its commentId) from an activity (by its activityId).
    *
@@ -401,14 +401,20 @@ public class ActivitiesRestService implements ResourceContainer {
    * @see CommentList
    */
   private CommentList destroyComment(String activityId, String commentId) {
+
     CommentList commentList = new CommentList();
     commentList.setActivityId(activityId);
+
     _activityManager = getActivityManager();
 
     Activity activity = _activityManager.getActivity(activityId);
-    if (activity == null) {
+    Activity comment = _activityManager.getActivity(commentId);
+    if (activity == null || comment == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
+    commentList.addComment(comment);
+    _activityManager.deleteComment(activityId, commentId);
+    /*
     String rawCommentIds = activity.getReplyToId();
     try {
       if (rawCommentIds.contains(commentId)) {
@@ -430,6 +436,7 @@ public class ActivitiesRestService implements ResourceContainer {
     } catch(Exception e) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
+    */
     return commentList;
   }
 

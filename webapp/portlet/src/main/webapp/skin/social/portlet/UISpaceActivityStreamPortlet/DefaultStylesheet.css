@@ -18,6 +18,8 @@
 /*UIComposer style*/
 @import url('/social-resources/skin/social/webui/UIComposer/DefaultSkin.css');
 
+@import url('/social-resources/skin/social/webui/activity/UIDefaultActivity/DefaultSkin.css');
+
 /**
  * UISpaceActivityStream portlet style
  */
@@ -79,6 +81,7 @@ visibility: hidden;
   text-decoration: underline;
 }
 
+
 .UISpaceActivityStreamPortlet .UserName .link {
   color: #0065CC;
   text-decoration: none;
@@ -121,6 +124,7 @@ visibility: hidden;
   font-weight: bold;
 }
 
+
 .ADecoratorContainer .ActivitiesContent {
   background: white;/*#fbfbfb;*/
   padding: 8px 8px 13px;
@@ -131,6 +135,7 @@ visibility: hidden;
   padding: 8px 8px 13px;
   margin: 2px 0px;
 }
+
 
 .ListPeopleLike {
   background: url('images/ListPeopleLike.gif') no-repeat 50px top;

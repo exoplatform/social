@@ -16,8 +16,11 @@
  */
 package org.exoplatform.social.portlet;
 
+import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.social.webui.profile.UIUserActitivitiesDisplay;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -37,6 +40,9 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   template = "app:/groovy/social/portlet/UIUserActivityStreamPortlet.gtmpl"
 )
 public class UIUserActivityStreamPortlet extends UIPortletApplication {
+  private String ownerName;
+  private UIUserActitivitiesDisplay uiUserActivitiesDisplay;
+  private PopupContainer hiddenContainer;
 
   /**
    * constructor
@@ -44,8 +50,15 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public UIUserActivityStreamPortlet() throws Exception {
+    hiddenContainer = addChild(PopupContainer.class, null, "HiddenContainer");
     UIComposer uiComposer = addChild(UIComposer.class, null, null);
     uiComposer.setPostContext(PostContext.PEOPLE);
+    uiComposer.setOptionContainer(hiddenContainer);
+
+    uiUserActivitiesDisplay = addChild(UIUserActitivitiesDisplay.class, null, null);
+    ownerName = RequestContext.getCurrentInstance().getRemoteUser();
+    uiUserActivitiesDisplay.setOwnerName(ownerName);
+    uiComposer.setActivityDisplay(uiUserActivitiesDisplay);
   }
 
 }

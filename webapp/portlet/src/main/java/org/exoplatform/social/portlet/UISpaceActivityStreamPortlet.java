@@ -56,7 +56,6 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
     uiDisplaySpaceActivities = addChild(UISpaceActivitiesDisplay.class, null, null);
     space = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
     uiDisplaySpaceActivities.setSpace(space);
-    
     uiComposer.setActivityDisplay(uiDisplaySpaceActivities);
   }
 

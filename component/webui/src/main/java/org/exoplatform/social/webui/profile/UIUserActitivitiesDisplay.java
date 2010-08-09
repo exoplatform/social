@@ -14,87 +14,80 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.webui.space;
+package org.exoplatform.social.webui.profile;
 
 import java.util.List;
 
-import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIContainer;
 
 /**
- * UISpaceActivitiesDisplay.java
- * <p>
- * Displays space activities and its member's activities
+ * Displays user's activities
  *
- * @author <a href="http://hoatle.net">hoatle</a>
- * @since Apr 6, 2010
- * @copyright eXo Platform SAS
+ * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @since     Jul 30, 2010
+ * @copyright eXo SAS
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl"
+  template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl"
 )
-public class UISpaceActivitiesDisplay extends UIContainer {
-  static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);
+public class UIUserActitivitiesDisplay extends UIContainer {
 
-  private Space space;
+  static private final Log LOG = ExoLogger.getLogger(UIUserActitivitiesDisplay.class);
+
+  private String ownerName;
   private List<Activity> activityList;
   private UIActivitiesContainer uiActivitiesContainer;
-
   /**
-   * Constructor
-   *
-   * @throws Exception
+   * constructor
    */
-  public UISpaceActivitiesDisplay() throws Exception {
+  public UIUserActitivitiesDisplay() {
+
   }
 
   /**
-   * Sets space to work with
-   * @param space
-   * @param postContext
+   * sets activity stream owner (user remote Id)
+   *
+   * @param ownerName
    * @throws Exception
    */
-  public void setSpace(Space space) throws Exception {
-    this.space = space;
+  public void setOwnerName(String ownerName) throws Exception {
+    this.ownerName= ownerName;
     init();
   }
 
-  /**
-   * Returns current space to work with
-   * @return
-   */
-  public Space getSpace() {
-    return space;
+  public String getOwnerName() {
+    return ownerName;
   }
 
   /**
    * initialize
+   *
    * @throws Exception
    */
   private void init() throws Exception {
-    if (space == null) {
-      LOG.warn("space is null! Can not display spaceActivites");
+    if (ownerName == null) {
+      LOG.error("ownerName is null! Can not display userActivities");
       return;
     }
-
-    Identity spaceIdentity = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId());
-    activityList = getActivityManager().getActivities(spaceIdentity);
-
+    Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
+    activityList = getActivityManager().getActivities(ownerIdentity);
     removeChild(UIActivitiesContainer.class);
+
     uiActivitiesContainer = addChild(UIActivitiesContainer.class, null, null);
-    uiActivitiesContainer.setPostContext(PostContext.SPACE);
-    uiActivitiesContainer.setSpace(space);
+    uiActivitiesContainer.setPostContext(PostContext.PEOPLE);
+    uiActivitiesContainer.setOwnerName(this.ownerName);
     uiActivitiesContainer.setActivityList(activityList);
+
   }
 
   /**
