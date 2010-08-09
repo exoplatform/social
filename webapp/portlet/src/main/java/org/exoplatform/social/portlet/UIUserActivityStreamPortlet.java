@@ -20,8 +20,6 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
-import org.exoplatform.social.webui.profile.UIMyConnectionsActivitiesDisplay;
-import org.exoplatform.social.webui.profile.UIMySpacesActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
