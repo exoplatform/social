@@ -4,16 +4,16 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Test_SOC_SPC_10.003_SocDemo_RemoveApplicationFromTheSpace</title>
+<title>Test_SOC_SPC_10.004_RemoveSpaceSettingsPortlet</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test_SOC_SPC_10.003_SocDemo_RemoveApplicationFromTheSpace</td></tr>
+<tr><td rowspan="1" colspan="3">Test_SOC_SPC_10.004_RemoveSpaceSettingsPortlet</td></tr>
 </thead><tbody>
 <tr>
 	<td>echo</td>
-	<td>--Test_SOC_SPC_10.003_RemoveApplicationFromTheSpace.html--</td>
+	<td>--Test_SOC_SPC_10.004_RemoveSpaceSettingsPortlet.html--</td>
 	<td></td>
 </tr>
 <tr>
@@ -79,12 +79,12 @@
 <tr>
 	<td>type</td>
 	<td>name</td>
-	<td>RemoveApplication</td>
+	<td>RemoveSpaceSettingApplication</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>description</td>
-	<td>Remove app for space</td>
+	<td>Remove space setting app for space</td>
 </tr>
 <tr>
 	<td>clickAt</td>
@@ -133,132 +133,12 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>open add new application form</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//form[@id='UISpaceApplication']/div[4]/div/div/div/div</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//form[@id='UISpaceApplication']/div[4]/div/div/div/div</td>
+	<td>-- Current can not verify the displaying of remove icon of Space setting portlet--</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Select Web category--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UISpaceApplicationList']/div/div[1]/div/div/div/div/div[3]/div</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='UISpaceApplicationList']/div/div[1]/div/div/div/div/div[3]/div</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- add Iframe portlet--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='web/IFramePortlet']/div/div/div[1]/div[3]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='web/IFramePortlet']/div/div/div[1]/div[3]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--close add new app form--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='AddApplication']/div/div[1]/div/div/div/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--verify: Name of added app is display on space nav and menu--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@class='ApplicationAdd']/a[@title='IFrame']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@class='ApplicationAdd']/a[@title='IFrame']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- access IFrame portlet--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UISpaceMenu']/div/div[4]/a/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='UISpaceMenu']/div/div[4]/a/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- back to space page--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='UISpaceMenu']/div/div[6]/a/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=2</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--Remove app--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//form[@id='UISpaceApplication']/div[2]/div/div[2]/div[1]/div[2]/div/div/div</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//form[@id='UISpaceApplication']/div[2]/div/div[2]/div[1]/div[2]/div/div/div</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--verify: Name of added app is not display on menu--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementNotPresent</td>
-	<td>//div[@class='ApplicationAdd']/a[@title='IFrame']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementNotPresent</td>
-	<td>//div[@class='ApplicationAdd']/a[@title='IFrame']</td>
+	<td>--Back to space page--</td>
 	<td></td>
 </tr>
 <tr>
