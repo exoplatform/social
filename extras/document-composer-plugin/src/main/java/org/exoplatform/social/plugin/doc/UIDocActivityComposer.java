@@ -38,6 +38,7 @@ import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -154,17 +155,17 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
       if (activityJSONData.equals("")) {
         uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
                                                       null,
-                                                      ApplicationMessage.ERROR));
+                                                      ApplicationMessage.WARNING));
       } else if(postContext == UIComposer.PostContext.SPACE){
         postActivityToSpace(source, requestContext, activityJSONData);
-      } else if (postContext == UIComposer.PostContext.PEOPLE){
-        postToPeople(source, requestContext, activityJSONData);
+      } else if (postContext == UIComposer.PostContext.USER){
+        postActivityToUser(source, requestContext, activityJSONData);
       }
     }
     resetValues();
   }
 
-  private void postToPeople(UIComponent source, WebuiRequestContext requestContext, String jsonData) throws Exception {
+  private void postActivityToUser(UIComponent source, WebuiRequestContext requestContext, String jsonData) throws Exception {
     UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
 
     final UIComposer uiComposer = (UIComposer) source;
@@ -183,6 +184,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
                                      null);
     activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
     activityManager.saveActivity(ownerIdentity, activity);
+    uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
   }
 
   private void postActivityToSpace(UIComponent source, WebuiRequestContext requestContext, String jsonData) throws Exception {

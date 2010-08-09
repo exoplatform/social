@@ -53,7 +53,7 @@ public class UIComposer extends UIForm {
 
   public enum PostContext {
     SPACE,
-    PEOPLE
+    USER
   }
 
   private UIContainer optionContainer;

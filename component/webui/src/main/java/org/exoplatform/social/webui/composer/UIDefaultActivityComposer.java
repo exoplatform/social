@@ -9,9 +9,11 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -48,8 +50,8 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
     ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
     IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
-
-   if(postContext == UIComposer.PostContext.SPACE){
+    String ownerName = null;
+    if(postContext == UIComposer.PostContext.SPACE){
       UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
       Space space = uiDisplaySpaceActivities.getSpace();
 
@@ -62,16 +64,18 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                    null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       activityManager.saveActivity(spaceIdentity, activity);
-    } else if(postContext == PostContext.PEOPLE){
+    } else if(postContext == PostContext.USER){
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
-      String ownerName = uiUserActivitiesDisplay.getOwnerName();
-      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
+      ownerName = uiUserActivitiesDisplay.getOwnerName();
+      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                   ownerName);
       Activity activity = new Activity(userIdentity.getId(),
                                        PeopleService.PEOPLE_APP_ID,
                                        postedMessage,
                                        null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       activityManager.saveActivity(ownerIdentity, activity);
+      uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
     }
   }
 

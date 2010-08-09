@@ -20,6 +20,61 @@
 -->
 */
 %>
+<%
+  def labelConnections = _ctx.appRes("${uicomponent.id}.label.Connections");
+  def labelSpaces = _ctx.appRes("${uicomponent.id}.label.Spaces");
+  def labelMyStatus = _ctx.appRes("${uicomponent.id}.label.My_Status");
+
+  def selectedDisplayMode = uicomponent.getSelectedDisplayMode();
+  def connectionsDisplayModeStyle = "LightBlueStyle";
+  def mySpacesDisplayModeStyle = "LightBlueStyle";
+  def myStatusDisplayModeStyle = "LightBlueStyle";
+  if (selectedDisplayMode.toString().equals("CONNECTIONS")) {
+    connectionsDisplayModeStyle = "DarkBlueStyle";
+  } else if (selectedDisplayMode.toString().equals("SPACES")) {
+    mySpacesDisplayModeStyle = "DarkBlueStyle";
+  } else if (selectedDisplayMode.toString().equals("MY_STATUS")) {
+    myStatusDisplayModeStyle = "DarkBlueStyle";
+  }
+%>
 <div id="$uicomponent.id" class="$uicomponent.id">
+
+  <div class="UIAction">
+      <table class="ActionContainer">
+        <tbody>
+          <tr>
+            <td>
+              <div onclick="<%= uicomponent.event("ChangeDisplayMode", "CONNECTIONS");%>" class="ActionButton $connectionsDisplayModeStyle">
+                <div class="ButtonLeft">
+                  <div class="ButtonRight">
+                    <div class="ButtonMiddle">
+                      <a>$labelConnections</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div onclick="<%= uicomponent.event("ChangeDisplayMode", "SPACES");%>" class="ActionButton $mySpacesDisplayModeStyle">
+                <div class="ButtonLeft">
+                  <div class="ButtonRight">
+                    <div class="ButtonMiddle">
+                      <a>$labelSpaces</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div onclick="<%= uicomponent.event("ChangeDisplayMode", "MY_STATUS");%>" class="ActionButton $myStatusDisplayModeStyle">
+                <div class="ButtonLeft">
+                  <div class="ButtonRight">
+                    <div class="ButtonMiddle">
+                      <a>$labelMyStatus</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
   <% uicomponent.renderChildren(); %>
 </div>

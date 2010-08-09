@@ -32,6 +32,7 @@ import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -191,43 +192,45 @@ public class UILinkActivityComposer extends UIActivityComposer {
     IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
     String remoteUser = requestContext.getRemoteUser();
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
-    
+
     UIApplication uiApplication = requestContext.getUIApplication();
     JSONObject dataLink = getDataLink();
     dataLink.put(COMMENT_PARAM, postedMessage);
     setDataLink(dataLink);
     String titleData = dataLink.toString();
-    
+
     if (titleData.equals("")) {
       uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
                                                     null,
                                                     ApplicationMessage.WARNING));
       return;
-    } 
-    
-    if(postContext == UIComposer.PostContext.SPACE){
-        UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
-        Space space = uiDisplaySpaceActivities.getSpace();
-        
-        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                 space.getId(),
-                                                                 false);
-        Activity activity = new Activity(userIdentity.getId(),
-                                     SpaceService.SPACES_APP_ID,
-                                     titleData,
-                                     null);
-        activity.setType(UILinkActivity.ACTIVITY_TYPE);
-        activityManager.saveActivity(spaceIdentity, activity);
-    } else if(postContext == PostContext.PEOPLE) {         
-        UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
-        String ownerName = uiUserActivitiesDisplay.getOwnerName();
-        Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
-        Activity activity = new Activity(userIdentity.getId(),
-                                         PeopleService.PEOPLE_APP_ID,
-                                         titleData,
-                                         null);
-        activity.setType(UILinkActivity.ACTIVITY_TYPE);
-        activityManager.saveActivity(ownerIdentity, activity);
+    }
+
+    if (postContext == UIComposer.PostContext.SPACE) {
+      UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
+      Space space = uiDisplaySpaceActivities.getSpace();
+
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                   space.getId(),
+                                                                   false);
+      Activity activity = new Activity(userIdentity.getId(),
+                                       SpaceService.SPACES_APP_ID,
+                                       titleData,
+                                       null);
+      activity.setType(UILinkActivity.ACTIVITY_TYPE);
+      activityManager.saveActivity(spaceIdentity, activity);
+    } else if (postContext == PostContext.USER) {
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
+      String ownerName = uiUserActivitiesDisplay.getOwnerName();
+      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                   ownerName);
+      Activity activity = new Activity(userIdentity.getId(),
+                                       PeopleService.PEOPLE_APP_ID,
+                                       titleData,
+                                       null);
+      activity.setType(UILinkActivity.ACTIVITY_TYPE);
+      activityManager.saveActivity(ownerIdentity, activity);
+      uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
     }
   }
 }

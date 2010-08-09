@@ -16,11 +16,13 @@
  */
 package org.exoplatform.social.portlet;
 
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.social.webui.profile.UIMyConnectionsActivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIMySpacesActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -41,7 +43,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private String ownerName;
-  private UIUserActivitiesDisplay uiUserActivitiesDisplay;
+  private UIComposer uiComposer;
   private PopupContainer hiddenContainer;
 
   /**
@@ -50,17 +52,15 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public UIUserActivityStreamPortlet() throws Exception {
+    ownerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
     hiddenContainer = addChild(PopupContainer.class, null, "HiddenContainer");
-    UIComposer uiComposer = addChild(UIComposer.class, null, null);
-    uiComposer.setPostContext(PostContext.PEOPLE);
+    uiComposer = addChild(UIComposer.class, null, null);
+    uiComposer.setPostContext(PostContext.USER);
     uiComposer.setOptionContainer(hiddenContainer);
-
-    uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, null);
-    ownerName = RequestContext.getCurrentInstance().getRemoteUser();
+    UIUserActivitiesDisplay uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, null);
     uiUserActivitiesDisplay.setOwnerName(ownerName);
     uiComposer.setActivityDisplay(uiUserActivitiesDisplay);
   }
-
 
   /**
    * resets to reload all activities
@@ -68,7 +68,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void refresh() throws Exception {
-    uiUserActivitiesDisplay.setOwnerName(ownerName);
+
   }
 
 }

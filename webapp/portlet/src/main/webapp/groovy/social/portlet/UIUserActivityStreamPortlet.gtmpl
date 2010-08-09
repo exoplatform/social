@@ -23,49 +23,15 @@
 <%
   import org.exoplatform.social.webui.composer.PopupContainer;
   import org.exoplatform.social.webui.composer.UIComposer;
+  import org.exoplatform.social.webui.profile.UIMyConnectionsActivitiesDisplay;
+  import org.exoplatform.social.webui.profile.UIMySpacesActivitiesDisplay;
   import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 
   uicomponent.refresh();
+
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <% uicomponent.renderChild(PopupContainer.class); %>
   <% uicomponent.renderChild(UIComposer.class); %>
-  <div class="UIAction">
-      <table class="ActionContainer">
-        <tbody>
-          <tr>
-            <td>
-              <div onclick="" class="ActionButton LightBlueStyle">
-                <div class="ButtonLeft">
-                  <div class="ButtonRight">
-                    <div class="ButtonMiddle">
-                      <a>Conections</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div onclick="" class="ActionButton LightBlueStyle">
-                <div class="ButtonLeft">
-                  <div class="ButtonRight">
-                    <div class="ButtonMiddle">
-                      <a>Spaces </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div onclick="" class="ActionButton DarkBlueStyle">
-                <div class="ButtonLeft">
-                  <div class="ButtonRight">
-                    <div class="ButtonMiddle">
-                      <a> My Status</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   <% uicomponent.renderChild(UIUserActivitiesDisplay.class);%>
 </div>

@@ -36,6 +36,8 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.web.command.handler.GetApplicationHandler;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -445,8 +447,18 @@ public class BaseUIActivity extends UIForm {
       Space space = uiActivitiesContainer.getSpace();
       SpaceService spaceService = getApplicationComponent(SpaceService.class);
       return spaceService.isLeader(space, remoteUser);
-    } else if (postContext == PostContext.PEOPLE) {
-      return uiActivitiesContainer.getOwnerName().equals(remoteUser);
+    } else if (postContext == PostContext.USER) {
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+        //return uiActivitiesContainer.getOwnerName().equals(remoteUser);
+        return true;
+      } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
+        //currently displays only
+        return false;
+      } else {
+        //connections
+        return false;
+      }
     }
     return false;
   }
@@ -465,8 +477,16 @@ public class BaseUIActivity extends UIForm {
         Space space = uiActivitiesContainer.getSpace();
         SpaceService spaceService = getApplicationComponent(SpaceService.class);
         return spaceService.isLeader(space, getRemoteUser());
-      } else if (postContext == PostContext.PEOPLE) {
-        return uiActivitiesContainer.getOwnerName().equals(getRemoteUser());
+      } else if (postContext == PostContext.USER) {
+        UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+          return true;
+        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
+          return false;
+        } else {
+          //connections
+          return false;
+        }
       }
     } catch (Exception e) {
       LOG.warn("can't not get remoteUserIdentity: remoteUser = " + getRemoteUser());
