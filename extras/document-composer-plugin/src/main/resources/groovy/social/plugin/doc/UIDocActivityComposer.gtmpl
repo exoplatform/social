@@ -19,7 +19,6 @@
 
 -->
 */
-  jsManager.addOnLoadJavascript("initUIComposer");
 %>
 <div id="<%=uicomponent.id%>">
   <%uicomponent.renderChildren()

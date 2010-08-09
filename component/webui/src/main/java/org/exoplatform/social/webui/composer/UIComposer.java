@@ -67,7 +67,6 @@ public class UIComposer extends UIForm {
    * @throws Exception
    */
   public UIComposer() throws Exception {
-    //addChild(UIPopupWindow.class, null, POPUP_COMPOSER);
     //add textbox for inputting message
     messageInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
     addUIFormInput(messageInput);

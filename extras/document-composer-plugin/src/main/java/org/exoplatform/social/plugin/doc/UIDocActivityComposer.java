@@ -24,6 +24,7 @@ import org.exoplatform.portal.webui.util.SessionProviderFactory;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -32,9 +33,11 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -142,42 +145,65 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     if(!isDocumentReady){
       requestContext.getUIApplication().addMessage(new ApplicationMessage("You have to choose document first!!!", null, ApplicationMessage.INFO));
     } else {
-      if(postContext == UIComposer.PostContext.SPACE){
-        UIApplication uiApplication = requestContext.getUIApplication();
-        final UIComposer uiComposer = (UIComposer) source;
+      JSONObject jsonData = new JSONObject();
+      jsonData.put(UIDocActivity.REFPATH, documentRefPath);
+      jsonData.put(UIDocActivity.MESSAGE, postedMessage);
 
-        JSONObject jsonData = new JSONObject();
-        jsonData.put(UIDocActivity.REFPATH, documentRefPath);
-        jsonData.put(UIDocActivity.MESSAGE, postedMessage);
-
-        String activityJSONData = jsonData.toString();
-        if (activityJSONData.equals("")) {
-          uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
-                                                        null,
-                                                        ApplicationMessage.ERROR));
-        } else {
-          String member = requestContext.getRemoteUser();
-
-          SpaceService spaceSrv = uiComposer.getApplicationComponent(SpaceService.class);
-          Space space = spaceSrv.getSpaceByUrl(SpaceUtils.getSpaceUrl());
-
-          ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
-          IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
-          Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                 space.getId(),
-                                                                 false);
-          Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, member);
-          Activity activity = new Activity(userIdentity.getId(),
-                                       SpaceService.SPACES_APP_ID,
-                                       activityJSONData,
-                                       null);
-          activity.setType(UIDocActivity.ACTIVITY_TYPE);
-          activityManager.saveActivity(spaceIdentity, activity);
-        }
+      String activityJSONData = jsonData.toString();
+      UIApplication uiApplication = requestContext.getUIApplication();
+      if (activityJSONData.equals("")) {
+        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
+                                                      null,
+                                                      ApplicationMessage.ERROR));
+      } else if(postContext == UIComposer.PostContext.SPACE){
+        postActivityToSpace(source, requestContext, activityJSONData);
+      } else if (postContext == UIComposer.PostContext.PEOPLE){
+        postToPeople(source, requestContext, activityJSONData);
       }
     }
-
     resetValues();
+  }
+
+  private void postToPeople(UIComponent source, WebuiRequestContext requestContext, String jsonData) throws Exception {
+    UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
+
+    final UIComposer uiComposer = (UIComposer) source;
+    ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
+    IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
+
+    String ownerName = uiUserActivitiesDisplay.getOwnerName();
+    Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
+
+    String remoteUser = requestContext.getRemoteUser();
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+
+    Activity activity = new Activity(userIdentity.getId(),
+                                     PeopleService.PEOPLE_APP_ID,
+                                     jsonData,
+                                     null);
+    activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
+    activityManager.saveActivity(ownerIdentity, activity);
+  }
+
+  private void postActivityToSpace(UIComponent source, WebuiRequestContext requestContext, String jsonData) throws Exception {
+    final UIComposer uiComposer = (UIComposer) source;
+
+    SpaceService spaceSrv = uiComposer.getApplicationComponent(SpaceService.class);
+    Space space = spaceSrv.getSpaceByUrl(SpaceUtils.getSpaceUrl());
+
+    ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
+    IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                           space.getId(),
+                                                           false);
+    String remoteUser = requestContext.getRemoteUser();
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+    Activity activity = new Activity(userIdentity.getId(),
+                                 SpaceService.SPACES_APP_ID,
+                                 jsonData,
+                                 null);
+    activity.setType(UIDocActivity.ACTIVITY_TYPE);
+    activityManager.saveActivity(spaceIdentity, activity);
   }
 
   public void doSelect(String selectField, Object value) throws Exception {
