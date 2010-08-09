@@ -19,7 +19,7 @@ package org.exoplatform.social.portlet;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
-import org.exoplatform.social.webui.profile.UIUserActitivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
@@ -41,7 +41,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private String ownerName;
-  private UIUserActitivitiesDisplay uiUserActivitiesDisplay;
+  private UIUserActivitiesDisplay uiUserActivitiesDisplay;
   private PopupContainer hiddenContainer;
 
   /**
@@ -55,7 +55,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     uiComposer.setPostContext(PostContext.PEOPLE);
     uiComposer.setOptionContainer(hiddenContainer);
 
-    uiUserActivitiesDisplay = addChild(UIUserActitivitiesDisplay.class, null, null);
+    uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, null);
     ownerName = RequestContext.getCurrentInstance().getRemoteUser();
     uiUserActivitiesDisplay.setOwnerName(ownerName);
     uiComposer.setActivityDisplay(uiUserActivitiesDisplay);

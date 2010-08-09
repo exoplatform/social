@@ -11,7 +11,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
-import org.exoplatform.social.webui.profile.UIUserActitivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -63,7 +63,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       activityManager.saveActivity(spaceIdentity, activity);
     } else if(postContext == PostContext.PEOPLE){
-      UIUserActitivitiesDisplay uiUserActivitiesDisplay = (UIUserActitivitiesDisplay) getActivityDisplay();
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       String ownerName = uiUserActivitiesDisplay.getOwnerName();
       Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
       Activity activity = new Activity(userIdentity.getId(),

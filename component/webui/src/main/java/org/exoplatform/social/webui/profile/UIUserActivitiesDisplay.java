@@ -40,9 +40,9 @@ import org.exoplatform.webui.core.UIContainer;
 @ComponentConfig(
   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl"
 )
-public class UIUserActitivitiesDisplay extends UIContainer {
+public class UIUserActivitiesDisplay extends UIContainer {
 
-  static private final Log LOG = ExoLogger.getLogger(UIUserActitivitiesDisplay.class);
+  static private final Log LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
 
   private String ownerName;
   private List<Activity> activityList;
@@ -50,7 +50,7 @@ public class UIUserActitivitiesDisplay extends UIContainer {
   /**
    * constructor
    */
-  public UIUserActitivitiesDisplay() {
+  public UIUserActivitiesDisplay() {
 
   }
 
