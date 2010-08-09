@@ -15,6 +15,10 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
+.DisplayNone {
+  display: none;
+}
+
 .UIActivity {
 }
 
@@ -120,6 +124,23 @@
   font-weight: bold;
 }
 
+
+.ListPeopleLike {
+  background: url('background/ListPeopleLike.gif') no-repeat 50px top;
+  padding-top: 6px;
+}
+
+.ListPeopleContent {
+  border: 1px solid #e5e1e2;
+  border-top: none;
+  padding: 8px;
+}
+
+
+.CommentListInfo {
+  padding-top: 3px;
+}
+
 .UIActivity .ListPeopleLikeBG {
   background:url("background/ListPeopleLikeBG1.gif") repeat-x scroll center top transparent;
   margin-bottom:3px;
@@ -149,29 +170,33 @@
 
 .UIActivity .ContentBox .CloseContentBoxHilight {
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -204px;
-    float: right;
-    cursor: pointer;
-    width: 16px; height: 16px;
+  float: right;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
 }
 
 .UIActivity .ContentBox .CloseContentBoxNormal {
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -143px;
-    float: right;
-    cursor: pointer;
-    width: 16px; height: 16px;
+  float: right;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
 }
 
 .UIActivity .CommentBox .CloseCMContentHilight {
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -162px;
-    float: right;
-    cursor: pointer;
-    width: 16px; height: 16px;
+  float: right;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
 }
 
 .UIActivity .CommentBox .CloseCMContentNormal {
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -183px;
-    float: right;
-    cursor: pointer;
-    width: 16px; height: 16px;
+  float: right;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
 }
 

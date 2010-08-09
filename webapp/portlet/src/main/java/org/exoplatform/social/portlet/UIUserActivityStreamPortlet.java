@@ -61,4 +61,14 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     uiComposer.setActivityDisplay(uiUserActivitiesDisplay);
   }
 
+
+  /**
+   * resets to reload all activities
+   *
+   * @throws Exception
+   */
+  public void refresh() throws Exception {
+    uiUserActivitiesDisplay.setOwnerName(ownerName);
+  }
+
 }

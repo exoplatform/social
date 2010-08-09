@@ -61,11 +61,6 @@ visibility: hidden;
   height: 0px;
 }
 
-.DisplayNone {
-  display: none;
-}
-
-
 .UISpaceActivityStreamPortlet {
   padding: 10px 10px 20px 10px;
   font-family: lucida sans;
@@ -136,68 +131,6 @@ visibility: hidden;
   margin: 2px 0px;
 }
 
-
-.ListPeopleLike {
-  background: url('images/ListPeopleLike.gif') no-repeat 50px top;
-  padding-top: 6px;
-}
-
-.ListPeopleContent {
-  border: 1px solid #e5e1e2;
-  border-top: none;
-  padding: 8px;
-}
-
-.ListPeopleLikeBG {
-  background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
-  margin-left: 50px;
-  margin-bottom: 3px;
-}
-
-.ListPeopleLikeBG .ListPeopleLike .Title a {
-  color: #006cc6;
-}
-
-.CommentBlock {
-  background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
-  margin-left: 50px;
-  margin-bottom: 3px;
-}
-
-.CommentContent {
-  background: url('images/ListPeopleLike.gif') no-repeat 40px top;
-  padding-top: 6px;
-}
-
-.CommentListInfo {
-  padding-top: 3px;
-}
-
-.CommentBorder {
-  border: 1px solid #e5e1e2;
-  border-top: none;
-  padding: 2px;
-  background: #EEEEFF;
-}
-
-.CommentActivitiesContent {
-  background: #EEEEFF;
-  padding: 8px 8px 0px;
-  margin: 2px 0px;
-}
-
-
-.CommentActivitiesContent .Content .Content {
-  color:black;
-  line-height: 18px;
-  overflow-x: hidden;
-  width: 550px;
-  font-size: 13px;
-}
-
-.TitleContent {
-  font-color: #000000;
-}
 
 .UISpaceActivityStreamPortlet .NewsDate {
   color:#9e9e9e;

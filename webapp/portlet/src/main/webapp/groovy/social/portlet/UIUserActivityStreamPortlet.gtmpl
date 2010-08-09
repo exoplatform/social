@@ -2,7 +2,7 @@
 /*
 <!--
 
-    Copyright (C) 2003-2007 eXo Platform SAS.
+    Copyright (C) 2003-2010 eXo Platform SAS.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU Affero General Public License
@@ -20,17 +20,22 @@
 -->
 */
 %>
+<%
+  import org.exoplatform.social.webui.composer.PopupContainer;
+  import org.exoplatform.social.webui.composer.UIComposer;
+  import org.exoplatform.social.webui.profile.UIUserActitivitiesDisplay;
 
+  uicomponent.refresh();
+%>
 <div class="$uicomponent.id" id="$uicomponent.id">
-
-  <% uicomponent.renderChildren();%>
-
+  <% uicomponent.renderChild(PopupContainer.class); %>
+  <% uicomponent.renderChild(UIComposer.class); %>
   <div class="UIAction">
       <table class="ActionContainer">
         <tbody>
           <tr>
             <td>
-              <div onclick="" class="ActionButton DarkBlueStyle">
+              <div onclick="" class="ActionButton LightBlueStyle">
                 <div class="ButtonLeft">
                   <div class="ButtonRight">
                     <div class="ButtonMiddle">
@@ -48,7 +53,7 @@
                   </div>
                 </div>
               </div>
-              <div onclick="" class="ActionButton LightBlueStyle">
+              <div onclick="" class="ActionButton DarkBlueStyle">
                 <div class="ButtonLeft">
                   <div class="ButtonRight">
                     <div class="ButtonMiddle">
@@ -62,118 +67,5 @@
         </tbody>
       </table>
     </div>
-    <div class="BoxSpaceList">
-        <div class="NormalBox clearfix">
-
-          <!-- Leader -->
-
-            <a class="AvatarSpace" href="">
-
-              <img width='56px' height='54px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
-
-            </a>
-            <div class="ContentBox">
-              <div class="TitleContent clearfix">
-                <div class="Text">John Smith</div>
-                <div class="CloseContentBoxHilight"><span></span></div>
-              </div>
-              <div class="Content">
-                Amost finished the user manual review. Taking a short break....<br>
-              </div>
-              <div class="LinkCM">
-                <span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Comment</a>|<a class="LinkCM" href="">Like</a>
-              </div>
-            </div>
-            <div class="DownIconCM"><span></span></div>
-          <div class="CommentBox clearfix">
-
-          <!-- Leader -->
-
-            <a class="AvatarCM" href="">
-
-              <img width='38px' height='36px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
-
-            </a>
-            <div class="ContentBox">
-              <div class="Content">
-                Amost finished the user manual review. Taking a short break....<br>
-              </div>
-              <div class="LinkCM">
-                <span class="DateTime">June 23 at 3:31pm  * </span>
-              </div>
-            </div>
-            <div class="CloseCMContentHilight"><span></span></div>
-          </div>
-
-          <div class="CommentBox clearfix">
-
-          <!-- Leader -->
-
-            <a class="AvatarCM" href="">
-
-              <img width='38px' height='36px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
-
-            </a>
-            <div class="ContentBox">
-              <div class="Content">
-                Amost finished the user manual review. Taking a short break....<br>
-              </div>
-              <div class="LinkCM">
-                <span class="DateTime">June 23 at 3:31pm  * </span>
-              </div>
-            </div>
-            <div class="CloseCMContentNormal"><span></span></div>
-          </div>
-          <div class="CommentBox clearfix">
-                <textarea class="CommentForm" name="Comment" wrap ="soft"></textarea>
-                <div class="Button">Comment</div>
-          </div>
-        </div>
-
-        <div class="NormalBox clearfix">
-
-          <!-- Leader -->
-
-            <a class="AvatarSpace" href="">
-
-              <img width='56px' height='54px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
-
-            </a>
-            <div class="ContentBox">
-              <div class="TitleContent clearfix">
-                <div class="Text">John Smith</div>
-                <div class="CloseContentBoxNormal"><span></span></div>
-              </div>
-              <div class="Content">
-                Amost finished the user manual review. Taking a short break....<br>
-              </div>
-              <div class="LinkCM">
-                <span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Comment</a>|<a class="LinkCM" href="">Like</a>
-              </div>
-            </div>
-        </div>
-
-        <div class="NormalBox clearfix">
-
-          <!-- Leader -->
-
-            <a class="AvatarSpace" href="">
-
-              <img width='56px' height='54px' src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" alt="#">
-
-            </a>
-            <div class="ContentBox">ontentBoxNormal"><span></span></div>
-              <div class="TitleContent clearfix">
-                <div class="Text">John Smith</div>
-                <div class="CloseContentBoxNormal"><span></span></div>
-              </div>
-              <div class="Content">
-                Amost finished the user manual review. Taking a short break....<br>
-              </div>
-              <div class="LinkCM">
-                <span class="DateTime">June 23 at 3:31pm  * </span><a class="LinkCM" href="">Comment</a>|<a class="LinkCM" href="">Like</a>
-              </div>
-            </div>
-        </div>
-    </div>
+  <% uicomponent.renderChild(UIUserActitivitiesDisplay.class);%>
 </div>
