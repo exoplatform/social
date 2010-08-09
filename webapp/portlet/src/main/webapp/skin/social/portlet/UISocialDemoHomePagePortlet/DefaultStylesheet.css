@@ -180,7 +180,7 @@ p{
 }
 
 .UIWorkingWorkspace .BgBannerHomepage .Button .BntRegister{
-    width: 226px;
+    width: 230px;
     margin-left: 15px;
     float: left;
 }
@@ -206,6 +206,8 @@ p{
     color: #20263f;
     line-height:38px;
     padding-left:6px;
+    overflow: hidden;
+    white-space:nowrap;
 }
 
 .UISocialHomepage .LeftSocialHomepage .SpaceBoxLeft{
