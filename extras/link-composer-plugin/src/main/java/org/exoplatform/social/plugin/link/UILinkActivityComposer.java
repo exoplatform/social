@@ -19,6 +19,7 @@ package org.exoplatform.social.plugin.link;
 import java.util.List;
 
 import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -30,6 +31,7 @@ import org.exoplatform.social.service.rest.LinkShare;
 import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -184,37 +186,48 @@ public class UILinkActivityComposer extends UIActivityComposer {
 
   @Override
   public void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+    final UIComposer uiComposer = (UIComposer) source;
+    ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
+    IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
+    String remoteUser = requestContext.getRemoteUser();
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+    
+    UIApplication uiApplication = requestContext.getUIApplication();
+    JSONObject dataLink = getDataLink();
+    dataLink.put(COMMENT_PARAM, postedMessage);
+    setDataLink(dataLink);
+    String titleData = dataLink.toString();
+    
+    if (titleData.equals("")) {
+      uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
+                                                    null,
+                                                    ApplicationMessage.WARNING));
+      return;
+    } 
+    
     if(postContext == UIComposer.PostContext.SPACE){
-      UIApplication uiApplication = requestContext.getUIApplication();
-      final UIComposer uiComposer = (UIComposer) source;
-      JSONObject dataLink = getDataLink();
-      dataLink.put(COMMENT_PARAM, postedMessage);
-      setDataLink(dataLink);
-      String titleData = dataLink.toString();
-      if (titleData.equals("")) {
-        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
-                                                      null,
-                                                      ApplicationMessage.ERROR));
-      } else {
-        String member = requestContext.getRemoteUser();
-
         UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
         Space space = uiDisplaySpaceActivities.getSpace();
-        ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
-        IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
+        
         Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                  space.getId(),
                                                                  false);
-        Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, member);
         Activity activity = new Activity(userIdentity.getId(),
                                      SpaceService.SPACES_APP_ID,
                                      titleData,
                                      null);
         activity.setType(UILinkActivity.ACTIVITY_TYPE);
         activityManager.saveActivity(spaceIdentity, activity);
-      }
-    } else {
-      //TODO hanh.vi: With the context of People?
+    } else if(postContext == PostContext.PEOPLE) {         
+        UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
+        String ownerName = uiUserActivitiesDisplay.getOwnerName();
+        Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
+        Activity activity = new Activity(userIdentity.getId(),
+                                         PeopleService.PEOPLE_APP_ID,
+                                         titleData,
+                                         null);
+        activity.setType(UILinkActivity.ACTIVITY_TYPE);
+        activityManager.saveActivity(ownerIdentity, activity);
     }
   }
 }
