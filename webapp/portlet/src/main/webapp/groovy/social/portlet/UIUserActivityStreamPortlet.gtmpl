@@ -23,7 +23,7 @@
 <%
   import org.exoplatform.social.webui.composer.PopupContainer;
   import org.exoplatform.social.webui.composer.UIComposer;
-  import org.exoplatform.social.webui.profile.UIUserActitivitiesDisplay;
+  import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 
   uicomponent.refresh();
 %>
@@ -67,5 +67,5 @@
         </tbody>
       </table>
     </div>
-  <% uicomponent.renderChild(UIUserActitivitiesDisplay.class);%>
+  <% uicomponent.renderChild(UIUserActivitiesDisplay.class);%>
 </div>
