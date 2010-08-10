@@ -15,10 +15,7 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-@import url(portal/webui/component/UIToolbarContainer/Stylesheet.css);
-
-@import url(portal/webui/component/UIBannerPortlet/DefaultSkin.css);
-@import url(portal/webui/component/UINavigationPortlet/DefaultSkin.css);
+@import url(portal/webui/container/UIToolbarContainer/Stylesheet.css);
 
 
 body{

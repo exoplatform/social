@@ -27,6 +27,23 @@
     <skin-name>Default</skin-name>
     <skin-module>Social</skin-module>
     <css-path>/skin/DefaultSkin/Stylesheet.css</css-path>
+    <overwrite>true</overwrite>
   </portal-skin>
+
+  <portlet-skin>
+    <application-name>web</application-name>
+    <portlet-name>BannerPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>aaaa/skin/DefaultSkin/portal/webui/component/UIBannerPortlet/DefaultSkin.css</css-path>
+    <overwrite>true</overwrite>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>web</application-name>
+    <portlet-name>NavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/DefaultSkin/portal/webui/component/UINavigationPortlet/DefaultSkin.css</css-path>
+    <overwrite>true</overwrite>
+  </portlet-skin>
 
 </gatein-resources>
