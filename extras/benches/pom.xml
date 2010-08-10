@@ -28,12 +28,12 @@
   <parent>
     <artifactId>exo.social.extras</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0-CR01-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extras.benches</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.1.0-CR01-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Extras - Benches</name>
   <description>eXo Social Extras - Benches</description>

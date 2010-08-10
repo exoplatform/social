@@ -28,12 +28,12 @@
   <parent>
     <artifactId>exo.social.packaging</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0-CR01-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.packaging.pkg</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.1.0-CR01-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Packaging (pkg)</name>
   <description>eXo Social Packaging (pkg)</description>
