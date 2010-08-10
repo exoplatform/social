@@ -1,0 +1,70 @@
+/**
+ * Copyright (C) 2003-2010 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ */
+
+/*UIComposer style*/
+@import url('/social-resources/skin/social/webui/UIComposer/DefaultSkin.css');
+
+@import url('/social-resources/skin/social/webui/activity/UIDefaultActivity/DefaultSkin.css');
+
+.clearfix:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
+}
+
+.clearfix {display: inline-block;}
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
+
+
+.UIUserActivityStreamPortlet {
+  padding: 10px 10px 20px 10px;
+  font-family: lucida sans;
+}
+
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonLeft {
+  background: none;
+}
+
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonRight {
+  background: none;
+}
+
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonMiddle {
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') repeat-x center -233px;
+  height: 26px;
+  color: #484848;
+}
+
+.UIUserActivityStreamPortlet .UIAction .DarkBlueStyle .ButtonMiddle {
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') repeat-x center -327px;
+  height: 26px;
+  display:table-cell;
+  line-height:22px;
+  padding:0 12px;
+  text-align:center;
+  white-space:nowrap;
+}
+
+.UIUserActivityStreamPortlet .UIAction .DarkBlueStyle .ButtonMiddle a {
+  color: #bcbcbc;
+}

@@ -1,0 +1,96 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  def uicomponentId = "UISocialExtensionHomePagePortlet";
+  def labelPeople = _ctx.appRes("${uicomponentId}.label.People");
+  def labelYourOwnEnterpriseSocialNetwork = _ctx.appRes("${uicomponentId}.label.Your_Own_Enterprise_Social_Network");
+  def labelTurnYourDirectoryIntoASocialNetwork = _ctx.appRes("${uicomponentId}.label.Turn_Your_Directory_Into_A_Social_Network");
+  def labelUsersCanFillTheirProfile = _ctx.appRes("${uicomponentId}.label.Users_Can_Fill_Their_Profile");
+  def labelSearchBySkillsAndExperience = _ctx.appRes("${uicomponentId}.label.Search_By_Skills_And_Experience");
+  def labelActivityMicroBlogging = _ctx.appRes("${uicomponentId}.label.Activity_MicroBlogging");
+  def labelOpenSocialAPISupport = _ctx.appRes("${uicomponentId}.label.OpenSocial_API_Support");
+  def labelSpaces = _ctx.appRes("${uicomponentId}.label.Spaces");
+  def labelCollaborativeWorkspacesForCommunities = _ctx.appRes("${uicomponentId}.label.Collaborative_Workspaces_For_Communities");
+  def labelRevealDomantCommunities = _ctx.appRes("${uicomponentId}.label.Reveal_Domant_Communities");
+  def labelOpenCommunityManagement = _ctx.appRes("${uicomponentId}.label.Open_Community_Management");
+  def labelGroupActivityStream = _ctx.appRes("${uicomponentId}.label.Group_Activity_Stream");
+  def labelAddCustomApplications = _ctx.appRes("${uicomponentId}.label.Add_Custom_Applications");
+  def labelLiveChat = _ctx.appRes("${uicomponentId}.label.Live_Chat");
+  def labeleXoForums = _ctx.appRes("${uicomponentId}.label.eXo_Forums");
+  def labelContactUs = _ctx.appRes("${uicomponentId}.label.Contact_Us");
+%>
+<div class="UIContenSocialExtan">
+  <div class="BgBannerHomepage">
+      <span></span>
+  </div>
+  <div class="BgTL">
+    <div class="BgTR">
+      <div class="BgTC"><span></span></div>
+    </div>
+  </div>
+  <div class="BgML">
+    <div class="BgMR">
+      <div class="BgMC ClearFix">
+        <div class="ColsPeople FL">
+          <div class="TxtTile">$labelPeople<span class="TxtPeople">$labelYourOwnEnterpriseSocialNetwork</span></div>
+          <ul>
+            <li>$labelTurnYourDirectoryIntoASocialNetwork</li>
+            <li>$labelUsersCanFillTheirProfile</li>
+            <li>$labelSearchBySkillsAndExperience</li>
+            <li>$labelActivityMicroBlogging</li>
+            <li>$labelOpenSocialAPISupport</li>
+          </ul>
+        </div>
+        <div class="ColsSpace FL">
+          <div class="TxtTile">$labelSpaces<span class="TxtPeople">$labelCollaborativeWorkspacesForCommunities</span></div>
+          <ul>
+            <li>$labelRevealDomantCommunities</li>
+            <li>$labelOpenCommunityManagement</li>
+            <li>$labelGroupActivityStream</li>
+            <li>$labelAddCustomApplications</li>
+            <li>$labelOpenSocialAPISupport</li>
+          </ul>
+        </div>
+        <div class="ColsIconExtan FL">
+          <div class="BlockWebsite FL">
+            <a href="#" class="IconChatOnline"></a>
+            <p><a href="#" class="TxtLinkIcon">$labelLiveChat</a></p>
+          </div>
+          <div class="BlockWebsite FL">
+            <a href="http://forum.exoplatform.org/portal/public/classic/" class="IconForum"></a>
+            <p><a href="http://forum.exoplatform.org/portal/public/classic/" class="TxtLinkIcon">$labeleXoForums</a></p>
+          </div>
+          <div class="BlockWebsite FL">
+            <a href="http://www.exoplatform.com/company/public/website/company/contact-us" class="IconContact"></a>
+            <p><a href="http://www.exoplatform.com/company/public/website/company/contact-us" class="TxtLinkIcon">$labelContactUs</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="BgBL">
+    <div class="BgBR">
+      <div class="BgBC"><span></span></div>
+    </div>
+  </div>
+</div>

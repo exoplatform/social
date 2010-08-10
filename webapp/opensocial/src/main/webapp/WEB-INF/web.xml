@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="Shindig"
+         version="2.5">
+  <display-name>social</display-name>
+  <!-- configuration -->
+  <!-- If you have your own Guice module(s), put them here as a colon-separated list. -->
+  <context-param>
+    <param-name>guice-modules</param-name>
+    <param-value>
+      org.apache.shindig.common.PropertiesModule:
+      org.exoplatform.social.opensocial.ExoSocialApiGuiceModule:
+      org.apache.shindig.gadgets.DefaultGuiceModule:
+      <!-- org.apache.shindig.gadgets.servlet.AuthenticationModule: -->
+      org.exoplatform.portal.gadget.core.ExoOAuthModule:
+      org.apache.shindig.common.cache.ehcache.EhCacheModule:
+      org.exoplatform.portal.gadget.core.ExoModule
+    </param-value>
+  </context-param>
+
+  <filter>
+    <filter-name>authFilter</filter-name>
+    <filter-class>org.apache.shindig.auth.AuthenticationServletFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>authFilter</filter-name>
+    <url-pattern>/social/*</url-pattern>
+  </filter-mapping>
+
+  <listener>
+    <listener-class>org.apache.shindig.common.servlet.GuiceServletContextListener</listener-class>
+  </listener>
+
+  <!-- Serve social REST api -->
+  <servlet>
+    <servlet-name>socialRestapiServlet</servlet-name>
+    <servlet-class>
+      org.apache.shindig.protocol.DataServiceServlet
+    </servlet-class>
+    <init-param>
+      <param-name>handlers</param-name>
+      <param-value>org.apache.shindig.social.handlers</param-value>
+    </init-param>
+  </servlet>
+
+  <!-- Serve social RPC api -->
+  <servlet>
+    <servlet-name>socialJsonRpcServlet</servlet-name>
+    <servlet-class>
+      org.apache.shindig.protocol.JsonRpcServlet
+    </servlet-class>
+    <init-param>
+      <param-name>handlers</param-name>
+      <param-value>org.apache.shindig.social.handlers</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>socialRestapiServlet</servlet-name>
+    <url-pattern>/social/rest/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>socialJsonRpcServlet</servlet-name>
+    <url-pattern>/social/rpc/*</url-pattern>
+  </servlet-mapping>
+</web-app>

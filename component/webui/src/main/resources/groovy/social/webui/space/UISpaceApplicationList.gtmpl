@@ -1,0 +1,104 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2009 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+
+  def appStore = uicomponent.getAppStore();
+  def selectedCategory = uicomponent.getSelectedCategory();
+  def categories = appStore.keySet().toArray()
+  def labelInstall = _ctx.appRes("${uicomponent.id}.label.install")
+  def noneApp = _ctx.appRes("${uicomponent.id}.label.noneApp")
+  //for default selected category
+  if (!selectedCategory) {
+    selectedCategory = uicomponent.getDefaultSelectedCategory()
+  }
+%>
+<div class="UIOrganizerManagement" id="$uicomponent.id">
+  <div class="AppRegistryContainer">
+    <div class="AppRegistryControl">
+      <div class="ControlArea">
+        <div class="CategoryContent">
+        <% if (appStore.keySet().size() == 0) { %>
+          <div style="height: 70px; color: red; text-align: center; line-height: 70px">
+            <span><%=noneApp %></span>
+          </div>
+        <% } else { %>
+          <div class="ListContent">
+            <div class="UIVerticalSlideTabs">
+            <%
+            def cTab, cName, description, displayName;
+            def isSelected = false;
+            for(category in categories) {
+              cName   = category.getName()
+              displayName = category.getDisplayName()
+              if(displayName == null || displayName.length() < 1 ) displayName = cName;
+              if(selectedCategory != null && cName == selectedCategory.getName()) {
+                isSelected = true;
+                cTab = "SelectedTab";
+              } else {
+                isSelected = false;
+                cTab = "NormalTab";
+              }
+             %>
+               <div class="UIVTab VTabStyle4">
+                 <div style="cursor:pointer;" class="$cTab" onclick="<%= uicomponent.event("SelectCategory", cName) %>">
+                   <a class="TabLabel" title="<%= displayName %>">
+                     <%= displayName %>
+                   </a>
+                 </div>
+               <% if(isSelected) { %>
+                 <div class="UIVTabContent" style="display: block">
+                 <%
+                 for(application in appStore.get(category)) {
+                   def applicationLabel = application.getDisplayName()
+                   if(applicationLabel.length() > 30) applicationLabel = applicationLabel.substring(0, 27) + "..."
+                   def srcBG = "/" + application.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + application.getApplicationName() + ".png"
+                   def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"
+                   def installAction = uicomponent.event("InstallApplication", application.getApplicationName())
+                 %>
+                   <div style="cursor: default;" class="UIVTab VTabStyle3" id="<%= application.getId() %>">
+                     <div class="VTabContentBG">
+                       <div class="OverflowContainer">
+                         <img src="$srcBG" onError="src='$srcBGError'" alt=""/>
+                         <div class="ContentInfo" title="<%= application.getDisplayName() %>">
+                             <div class="LabelTab">$applicationLabel</div>
+                             <div class="LabelText"><%= application.getDescription() %></div>
+                             <div onclick="$installAction" class="AplicationButton InstallApplicationButton" title="$labelInstall"><span></span></div>
+                           </div>
+                         <div class="ClearLeft"><span></span></div>
+                       </div>
+                     </div>
+                   </div>
+                 <% } %> 
+                </div>
+              <% } %>
+              </div>
+            <% } %>
+            </div>
+          </div>
+        <% } %>
+        </div>
+      </div>
+    </div>
+    <div class="ClearLeft"><span></span></div>
+  </div>
+</div>

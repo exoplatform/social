@@ -1,0 +1,46 @@
+<%
+import org.exoplatform.webui.form.UIFormRadioBoxInput ;
+import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.webui.form.UIFormInputInfo;
+
+def uicomponentId = uicomponent.id;
+
+def rcontext = _ctx.getRequestContext() ;
+JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript('eXo.social.webui.UICustomizeControl', '/social-resources/javascript');
+jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UICustomizeControl.onLoad("' + uicomponentId + '");');
+%>
+<div class="$uicomponentId" id="$uicomponentId">
+	 <div class="UIFormInputSet">
+	  <div class="FormContainer">
+     <table class="UIFormGrid">
+		    <%
+		      for(inputEntry in uicomponent.getChildren()) {
+		        if(inputEntry.isRendered()) {
+		    %>
+          <tr >
+           <%
+            String label = _ctx.appRes(uicomponent.getName() + ".label." + inputEntry.getId()) ;
+            if(!label.equals(inputEntry.getId()) && (inputEntry instanceof UIFormRadioBoxInput)) {
+           %>
+             <td class="FieldLabel"><%=label%></td>
+           <%} %>
+            <td class="FieldComponent">
+	                <%
+	              if(inputEntry instanceof UIFormRadioBoxInput) {
+	                println "<div class=\"MultiRadioInput\">" ;
+	                  uicomponent.renderUIComponent(inputEntry) ;
+	                println "</div>" ;
+	              } else if (!(inputEntry instanceof UIFormInputInfo)) {
+	                uicomponent.renderUIComponent(inputEntry) ;
+	              }
+	              %>
+              </td>
+             </tr>
+	              <% }
+	      } %>
+       </table>
+       <table><tr><td align='center'><span><% uicomponent.renderChild(UIFormInputInfo.class); %></span></td></tr></table>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>social-trunk-ci all builds</title>
+	<link type="text/html"
+		href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/"
+		rel="alternate" />
+	<updated>2010-03-30T06:54:35Z</updated>
+	<author>
+		<name>Hudson Server</name>
+	</author>
+	<id>urn:uuid:903deee0-7bfa-11db-9fe1-0800200c9a66</id>
+	<entry>
+		<title>social-trunk-ci #1213 (FAILURE)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1213/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-30_06-54-35
+		</id>
+		<published>2010-03-30T06:54:35Z</published>
+		<updated>2010-03-30T06:54:35Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1212 (FAILURE)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1212/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-30_04-59-35
+		</id>
+		<published>2010-03-30T04:59:35Z</published>
+		<updated>2010-03-30T04:59:35Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1211 (FAILURE)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1211/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-30_04-24-35
+		</id>
+		<published>2010-03-30T04:24:35Z</published>
+		<updated>2010-03-30T04:24:35Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1210 (FAILURE)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1210/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-29_09-49-30
+		</id>
+		<published>2010-03-29T09:49:30Z</published>
+		<updated>2010-03-29T09:49:30Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1209 (FAILURE)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1209/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-29_08-54-31
+		</id>
+		<published>2010-03-29T08:54:31Z</published>
+		<updated>2010-03-29T08:54:31Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1208 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1208/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-29_07-59-08
+		</id>
+		<published>2010-03-29T07:59:08Z</published>
+		<updated>2010-03-29T07:59:08Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1207 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1207/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-29_07-54-10
+		</id>
+		<published>2010-03-29T07:54:10Z</published>
+		<updated>2010-03-29T07:54:10Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1206 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1206/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-29_07-49-08
+		</id>
+		<published>2010-03-29T07:49:08Z</published>
+		<updated>2010-03-29T07:49:08Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1205 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1205/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-29_02-29-09
+		</id>
+		<published>2010-03-29T02:29:09Z</published>
+		<updated>2010-03-29T02:29:09Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1204 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1204/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-29_02-19-09
+		</id>
+		<published>2010-03-29T02:19:09Z</published>
+		<updated>2010-03-29T02:19:09Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1203 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1203/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-29_01-54-10
+		</id>
+		<published>2010-03-29T01:54:10Z</published>
+		<updated>2010-03-29T01:54:10Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1202 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1202/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-26_02-59-10
+		</id>
+		<published>2010-03-26T02:59:10Z</published>
+		<updated>2010-03-26T02:59:10Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1201 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1201/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-26_01-59-17
+		</id>
+		<published>2010-03-26T01:59:17Z</published>
+		<updated>2010-03-26T01:59:17Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1200 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1200/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-25_09-49-12
+		</id>
+		<published>2010-03-25T09:49:12Z</published>
+		<updated>2010-03-25T09:49:12Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1199 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1199/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-25_09-39-41
+		</id>
+		<published>2010-03-25T09:39:41Z</published>
+		<updated>2010-03-25T09:39:41Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1198 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1198/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-25_08-39-12
+		</id>
+		<published>2010-03-25T08:39:12Z</published>
+		<updated>2010-03-25T08:39:12Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1197 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1197/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-25_07-54-09
+		</id>
+		<published>2010-03-25T07:54:09Z</published>
+		<updated>2010-03-25T07:54:09Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1196 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1196/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-25_04-09-11
+		</id>
+		<published>2010-03-25T04:09:11Z</published>
+		<updated>2010-03-25T04:09:11Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1195 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1195/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-25_02-34-10
+		</id>
+		<published>2010-03-25T02:34:10Z</published>
+		<updated>2010-03-25T02:34:10Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1194 (FAILURE)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1194/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-25_02-29-10
+		</id>
+		<published>2010-03-25T02:29:10Z</published>
+		<updated>2010-03-25T02:29:10Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1193 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1193/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-25_02-04-12
+		</id>
+		<published>2010-03-25T02:04:12Z</published>
+		<updated>2010-03-25T02:04:12Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1192 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1192/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-24_08-29-10
+		</id>
+		<published>2010-03-24T08:29:10Z</published>
+		<updated>2010-03-24T08:29:10Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1191 (FAILURE)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1191/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-24_07-54-14
+		</id>
+		<published>2010-03-24T07:54:14Z</published>
+		<updated>2010-03-24T07:54:14Z</updated>
+	</entry>
+	<entry>
+		<title>social-trunk-ci #1190 (SUCCESS)</title>
+		<link type="text/html"
+			href="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/1190/"
+			rel="alternate" />
+		<id>tag:hudson.dev.java.net,2010:social-trunk-ci:2010-03-24_07-34-10
+		</id>
+		<published>2010-03-24T07:34:10Z</published>
+		<updated>2010-03-24T07:34:10Z</updated>
+	</entry>
+</feed>

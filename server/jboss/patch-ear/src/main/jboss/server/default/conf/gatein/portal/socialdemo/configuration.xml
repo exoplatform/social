@@ -1,0 +1,9 @@
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+	xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+
+<!-- This is a placeholder file for kernel components customization.
+This file is loaded in last by socialdemo portal.
+You can override any kernel component or define any additional external-component-plugin.
+-->
+</configuration>

@@ -1,0 +1,6 @@
+Before running the scripts
+- Import All Applications
+Note: 
+- Test_SNF_SOC_02 and Test_SNF_SOC_11 can not be run on Googlechrome and safariproxy browsers due to keyPress problem
+- Test_SNF_SOC_26_ChangeUserProfile and Test_SNF_SOC_27_ViewUserProfile run very slow in IE brosers
+

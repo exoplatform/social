@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ **
+ * Created by The eXo Platform SARL
+ *
+-->
+<Module>
+  <ModulePrefs author="eXoPlatform"
+    title="My Spaces Gadget"
+    directory_title="My Spaces Gadget"
+    title_url="http://www.exoplatform.org"
+    description="A simple Gadget that lists all spaces of current viewer.">
+    <Locale lang="en" messages="locale/en_ALL.xml" />
+    <Require feature="opensocial-0.8" />
+    <Require feature="dynamic-height" />
+    <Require feature="settitle" />
+    <Require feature="views" />
+    <Require feature="minimessage" />
+  </ModulePrefs>
+  <Content type="html" view="default, home, profile">
+  <![CDATA[
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <script type="text/javascript" src="script/myspaces.js"></script>
+  <script type="text/javascript" src="script/Locale.js"></script>
+  <div class="UIGadgetThemes UIYellowThemes">
+    <div id="more_spaces"></div>
+    <div id="myspaces_id"></div>
+	</div>
+  ]]>
+  </Content>
+    <Content type="html" view="canvas">
+  <![CDATA[
+    <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <script type="text/javascript" src="script/myspaces.js"></script>
+  <script type="text/javascript" src="script/Locale.js"></script>
+  <div class="UIGadgetThemes UIYellowThemes">
+    <div id="more_spaces"></div>
+    <div id="myspaces_id"></div>
+	</div>
+  ]]>
+  </Content>
+</Module>

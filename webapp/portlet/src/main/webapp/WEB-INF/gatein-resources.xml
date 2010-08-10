@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+
+<gatein-resources
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_0 http://www.gatein.org/xml/ns/gatein_resources_1_0"
+  xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_0">
+
+  <!-- GadgetPortlet skins -->
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialBannerPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIBannerPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>WarningPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIWarningPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialExtensionLogoPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialExtensionLogoPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialExtensionHomePagePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialExtensionHomePagePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialDemoHomePagePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialDemoHomePagePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>MembersPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIMembersPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SpaceMenuPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISpaceMenuPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SpaceSettingPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISpaceSettingPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SpacesNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISpacesNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>MySpacesPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIMySpacesPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>InvitationSpacesPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIInvitationSpacesPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>PendingSpacesPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIPendingSpacesPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>PublicSpacesPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIPublicSpacesPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SpacesToolbarPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISpaceToolbarPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialDemoNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialDemoNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialFooterPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIFooterPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SpaceActivityStreamPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISpaceActivityStreamPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>UserActivityStreamPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIUserActivityStreamPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>PeoplePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIPeoplePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>ProfilePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIProfilePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>MyConnectionsNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIMyConnectionsNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>ConnectionsNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIConnectionsNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>ConnectionsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIConnectionsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>RequestsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIRequestsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>InvitationsPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIInvitationsPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>ProfileNavigationPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIProfileNavigationPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
+    <portlet-name>SocialLogoPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UISocialLogoPortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+</gatein-resources>
+

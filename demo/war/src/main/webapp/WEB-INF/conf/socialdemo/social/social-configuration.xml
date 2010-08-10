@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+-->
+<configuration
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+  <component>
+   <key>org.exoplatform.portal.gadget.core.SecurityTokenGenerator</key>
+   <type>org.exoplatform.social.opensocial.auth.ExoSocialSecurityTokenGenerator</type>
+  </component>
+
+  <component>
+      <key>org.exoplatform.social.common.jcr.SocialDataLocation</key>
+      <type>org.exoplatform.social.common.jcr.SocialDataLocation</type>
+      <init-params>
+        <value-param>
+          <name>workspace</name>
+          <description>workspace for Social data</description>
+          <value>social</value>
+        </value-param>
+      </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.webui.activity.UIActivityFactory</key>
+    <type>org.exoplatform.social.webui.activity.UIActivityFactory</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.webui.ext.UIExtensionManager</key>
+    <type>org.exoplatform.webui.ext.impl.UIExtensionManagerImpl</type>
+  </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
+    <component-plugin>
+      <name>add.action</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+      <init-params>
+        <object-param>
+          <name>Default Activity</name>
+          <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
+            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+            <field name="name"><string>DEFAULT_ACTIVITY</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.activity.UIDefaultActivity</string></field>
+            <field name="activityBuiderClass"><string>org.exoplatform.social.webui.activity.DefaultUIActivityBuilder</string></field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>add.action</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+      <init-params>
+        <object-param>
+          <name>Default Composer</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.social.webui.composer.UIActivityComposer</string></field>
+            <field name="name"><string>DEFAULT_ACTIVITY_COMPOSER</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.composer.UIDefaultActivityComposer</string></field>
+            <field name="rank"><int>0</int></field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+</configuration>
