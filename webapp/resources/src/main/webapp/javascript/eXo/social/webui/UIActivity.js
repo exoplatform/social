@@ -93,12 +93,10 @@
 
     if (this.deleteActivityButtonEl !== null) {
       Util.addEventListener(this.contentBoxEl, 'mouseover', function(evt) {
-        uiActivity.deleteActivityButtonEl.class = 'CloseContentBoxHilight';
         uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxHilight';
       }, false);
 
       Util.addEventListener(this.contentBoxEl, 'mouseout', function(evt) {
-        uiActivity.deleteActivityButtonEl.class = 'CloseContentBoxNormal';
         uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxNormal';
       }, false);
     }
