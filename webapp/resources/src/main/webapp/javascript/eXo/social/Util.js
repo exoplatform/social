@@ -44,7 +44,7 @@ eXo.social = eXo.social || {};
   */
  eXo.social.Util.getElementById = function(id) {
  	var el = document.getElementById(id);
- 	if (!el && console) console.info("can not find element with id: " + id);
+ 	if (!el) return null;
  	return el;
  }
  
@@ -57,7 +57,7 @@ eXo.social = eXo.social || {};
  eXo.social.Util.getElementsByTagName = function(tagName, parent) {
  	var parent = parent || document;
  	var els = parent.getElementsByTagName(tagName);
- 	if (!els && console) console.info("can not find elements with tagName: " + tagName);
+ 	if (!els) return null;
  	return els;
  }
  
