@@ -34,7 +34,7 @@
     <application-name>web</application-name>
     <portlet-name>BannerPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>aaaa/skin/DefaultSkin/portal/webui/component/UIBannerPortlet/DefaultSkin.css</css-path>
+    <css-path>/skin/DefaultSkin/portal/webui/component/UIBannerPortlet/DefaultSkin.css</css-path>
     <overwrite>true</overwrite>
   </portlet-skin>
 

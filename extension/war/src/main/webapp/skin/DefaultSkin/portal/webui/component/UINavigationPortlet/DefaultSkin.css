@@ -89,3 +89,7 @@
 #UISocialExtensionNavigationContainer .UINavigationPortlet .UITab .SelectedNavigationTab a{
 	color: #ffd400;
 }
+
+#UISocialExtensionNavigationContainer .UINavigationPortlet .UITab .TabIcon .DefaultPageIcon{
+	background: none;
+}

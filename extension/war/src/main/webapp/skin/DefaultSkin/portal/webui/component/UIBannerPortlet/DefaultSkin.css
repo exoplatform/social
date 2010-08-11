@@ -30,15 +30,22 @@
 }
 
 .UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer {
-	padding: 13px 45px 1px 15px;
+	padding: 20px 45px 1px 15px;
+	float: right;
 }
 
 .UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer a {
 	height: 28px;
 	font-weight: normal;
 	color: #9f9e9e;
+	padding: 0px 5px;
+	cursor: pointer;
 }
 
 .UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer a:hover {
 	color: #ffd400;
+}
+
+.UIBannerPortlet .MiddleLoginContainer .Login{
+	background: none;
 }
