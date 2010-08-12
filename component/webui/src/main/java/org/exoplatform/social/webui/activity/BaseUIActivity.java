@@ -72,7 +72,6 @@ public class BaseUIActivity extends UIForm {
     private String commentStatus;
   }
 
-  private String title;
   private String image;
   private Activity activity;
   private List<Activity> comments;
@@ -84,7 +83,7 @@ public class BaseUIActivity extends UIForm {
   private CommentStatus commentListStatus = CommentStatus.LATEST;
   private boolean allCommentsHidden = false;
   private boolean commentFormFocused = false;
-  private UIFormTextAreaInput commentInput;
+  private SpaceService spaceService;
   /**
    * Constructor
    * @throws Exception
@@ -401,10 +400,16 @@ public class BaseUIActivity extends UIForm {
    * @return
    * @throws Exception
    */
-  public String getSpaceAvatarImageSource() throws Exception {
-    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
-    Space space = uiActivitiesContainer.getSpace();
-    return space.getImageSource();
+  public String getSpaceAvatarImageSource(String spaceIdentityId) throws Exception {
+    Identity spaceIdentity = identityManager.getIdentity(spaceIdentityId, false);
+    String spaceId = spaceIdentity.getRemoteId();
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
+    if (space != null) {
+      return space.getImageSource();
+    }
+    
+    return null;
   }
   
   /**
@@ -423,6 +428,14 @@ public class BaseUIActivity extends UIForm {
     return getApplicationComponent(IdentityManager.class);
   }
 
+  /**
+   * Gets SpaceService
+   * @return
+   */
+  private SpaceService getSpaceService() {
+    return getApplicationComponent(SpaceService.class);
+  }
+  
   public boolean isSpaceActivity(String id) {
     try {
       identityManager = getIdentityManager();

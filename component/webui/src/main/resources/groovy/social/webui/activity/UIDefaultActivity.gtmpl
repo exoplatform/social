@@ -128,7 +128,7 @@
     activityImageSource = uicomponent.getUserAvatarImageSource(userId);
     if (!activityImageSource) activityImageSource= "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
   } else {
-    activityImageSource = uicomponent.getSpaceAvatarImageSource();
+    activityImageSource = uicomponent.getSpaceAvatarImageSource(userId);
     if (!activityImageSource) activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
   }
 %>
