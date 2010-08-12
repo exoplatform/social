@@ -42,7 +42,6 @@
 
 .UIActivity .DownIconCM {
   background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll 20px -323px;
-  margin-left: 74px;
   height: 4px;
 }
 
@@ -76,7 +75,7 @@
 .UIActivity .CommentBox {
   padding: 4px;
   background: #f0ede2;
-  margin: 0px 0px 2px 74px;
+  margin-bottom: 2px;
 }
 
 .UIActivity .ContentBox {
@@ -144,7 +143,6 @@
 .UIActivity .ListPeopleLikeBG {
   background:url("background/ListPeopleLikeBG1.gif") repeat-x scroll center top transparent;
   margin-bottom:3px;
-  margin-left:74px;
 }
 
 .UIActivity .CommentListInfo {
@@ -154,7 +152,6 @@
 .UIActivity .CommentBlock {
   background:url("background/ListPeopleLikeBG1.gif") repeat-x scroll center top green;
   margin-bottom:3px;
-  margin-left:74px;
 }
 .UIActivity .CommentContent {
   background:url("background/ListPeopleLike.gif") no-repeat scroll 40px top transparent;

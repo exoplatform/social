@@ -397,6 +397,17 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
+   * Gets space's avatar image source
+   * @return
+   * @throws Exception
+   */
+  public String getSpaceAvatarImageSource() throws Exception {
+    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
+    Space space = uiActivitiesContainer.getSpace();
+    return space.getImageSource();
+  }
+  
+  /**
    * Gets activityManager
    * @return
    */
