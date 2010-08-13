@@ -43,7 +43,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private String ownerName;
   private UIComposer uiComposer;
   private PopupContainer hiddenContainer;
-
+  UIUserActivitiesDisplay uiUserActivitiesDisplay;
   /**
    * constructor
    *
@@ -55,7 +55,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     uiComposer = addChild(UIComposer.class, null, null);
     uiComposer.setPostContext(PostContext.USER);
     uiComposer.setOptionContainer(hiddenContainer);
-    UIUserActivitiesDisplay uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, null);
+    uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, null);
     uiUserActivitiesDisplay.setOwnerName(ownerName);
     uiComposer.setActivityDisplay(uiUserActivitiesDisplay);
   }
@@ -66,7 +66,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void refresh() throws Exception {
-
+    uiUserActivitiesDisplay.setOwnerName(ownerName);
   }
 
 }

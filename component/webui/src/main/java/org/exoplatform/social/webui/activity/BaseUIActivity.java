@@ -83,7 +83,6 @@ public class BaseUIActivity extends UIForm {
   private CommentStatus commentListStatus = CommentStatus.LATEST;
   private boolean allCommentsHidden = false;
   private boolean commentFormFocused = false;
-  private SpaceService spaceService;
   /**
    * Constructor
    * @throws Exception
@@ -408,10 +407,10 @@ public class BaseUIActivity extends UIForm {
     if (space != null) {
       return space.getImageSource();
     }
-    
+
     return null;
   }
-  
+
   /**
    * Gets activityManager
    * @return
@@ -435,7 +434,7 @@ public class BaseUIActivity extends UIForm {
   private SpaceService getSpaceService() {
     return getApplicationComponent(SpaceService.class);
   }
-  
+
   public boolean isSpaceActivity(String id) {
     try {
       identityManager = getIdentityManager();
@@ -600,7 +599,6 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
-      uiActivity.refresh();
       ActivityManager activityManager = uiActivity.getActivityManager();
       activityManager.deleteActivity(uiActivity.getActivity().getId());
     }
