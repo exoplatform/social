@@ -72,7 +72,6 @@ public class BaseUIActivity extends UIForm {
     private String commentStatus;
   }
 
-  private String title;
   private String image;
   private Activity activity;
   private List<Activity> comments;
@@ -84,7 +83,7 @@ public class BaseUIActivity extends UIForm {
   private CommentStatus commentListStatus = CommentStatus.LATEST;
   private boolean allCommentsHidden = false;
   private boolean commentFormFocused = false;
-  private UIFormTextAreaInput commentInput;
+
   /**
    * Constructor
    * @throws Exception
