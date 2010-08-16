@@ -24,7 +24,7 @@
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("${uicomponent.id}.label.Not_Any_Updates_Posted_Yet");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-<% if (uicomponent.hasChildren()) {
+<% if (uicomponent.getChildren().size()> 1) {
      uicomponent.renderChildren();
    } else { %>
     <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>

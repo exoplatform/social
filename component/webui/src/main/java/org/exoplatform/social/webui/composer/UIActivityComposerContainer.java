@@ -20,11 +20,10 @@ import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 
 /**
- * UIActivitiesContainer.java
- *
- * @author    <a href="http://hoatle.net">hoatle</a>
- * @since     Apr 12, 2010
- * @copyright eXo Platform SAS
+ * Created by The eXo Platform SAS
+ * Author : Zun
+ *          exo@exoplatform.com
+ * Jul 23, 2010
  */
 @ComponentConfig(
   template = "classpath:groovy/social/webui/composer/UIActivityComposerContainer.gtmpl"

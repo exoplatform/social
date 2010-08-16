@@ -46,13 +46,10 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 
 /**
- * BaseUIActivity.java
- * <p>
- * Displays base activity
- * </p>
- * @author    <a href="http://hoatle.net">hoatle</a>
- * @since     Apr 12, 2010
- * @copyright eXo Platform SAS
+ * Created by The eXo Platform SAS
+ * Author : Zun
+ *          exo@exoplatform.com
+ * Jul 23, 2010
  */
 public class BaseUIActivity extends UIForm {
   static private final Log LOG = ExoLogger.getLogger(BaseUIActivity.class);

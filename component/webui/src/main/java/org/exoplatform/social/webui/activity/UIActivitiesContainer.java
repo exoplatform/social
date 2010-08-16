@@ -21,15 +21,13 @@ import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.core.UIPopupWindow;
 
 /**
  * UIActivitiesContainer.java
@@ -42,15 +40,28 @@ import org.exoplatform.webui.event.EventListener;
   template = "classpath:groovy/social/webui/UIActivitiesContainer.gtmpl"
 )
 public class UIActivitiesContainer extends UIContainer {
+  private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
+
   private List<Activity> activityList;
   private PostContext postContext;
   //hold activities for user or space
   private Space space;
   private String ownerName;
+  private UIPopupWindow popupWindow;
   /**
    * constructor
    */
   public UIActivitiesContainer() {
+    try {
+      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow");
+      popupWindow.setShow(false);
+    } catch (Exception e) {
+      LOG.error(e);
+    }
+  }
+
+  public UIPopupWindow getPopupWindow() {
+    return popupWindow;
   }
 
   public UIActivitiesContainer setActivityList(List<Activity> activityList) throws Exception {
