@@ -204,14 +204,6 @@
                     <field  name="label"><string>Spaces</string></field>
                   </object>
                 </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>developers</string></field>
-                    <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the /developers group</string></field>
-                    <field  name="label"><string>Developers</string></field>
-                  </object>
-                </value>
               </collection>
             </field>
 
