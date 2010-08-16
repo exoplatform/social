@@ -20,6 +20,7 @@ package org.exoplatform.social.plugin.doc;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.ecm.webui.selector.UISelectable;
 import org.exoplatform.ecm.webui.tree.selectone.UIOneNodePathSelector;
+import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.portal.webui.util.SessionProviderFactory;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -33,7 +34,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -52,7 +52,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.json.JSONObject;
 
 /**
- * @author    <a href="http://hoatle.net">hoatle</a>
+ * @author    Zun
  * @since     Apr 19, 2010
  * @copyright eXo Platform SAS
  */
@@ -67,13 +67,17 @@ import org.json.JSONObject;
 )
 public class UIDocActivityComposer extends UIActivityComposer implements UISelectable {
   private static final Log LOG = ExoLogger.getLogger(UIDocActivityComposer.class);
-  private String documentRefPath;
+  public static final String REPOSITORY = "repository";
+  public static final String WORKSPACE = "collaboration";
+  private final String POPUP_COMPOSER = "UIPopupComposer";
+  
+  private String documentRefLink;  
+  private String rootpath;
+  private String documentPath;
+  private String documentName;
+
   private boolean isDocumentReady;
 
-  private final String repository = "repository";
-  private final String workspace = "collaboration";
-  private String rootpath;
-  private final String POPUP_COMPOSER = "UIPopupComposer";
 
   /**
    * constructor
@@ -83,17 +87,17 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   }
 
   private void resetValues() {
-    documentRefPath = "";
+    documentRefLink = "";
     isDocumentReady = false;
     setReadyForPostingActivity(false);
   }
 
-  public String getDocumentRefPath() {
-    return documentRefPath;
-  }
-
   public boolean isDocumentReady() {
     return isDocumentReady;
+  }
+
+  public String getDocumentName() {
+    return documentName;
   }
 
   @Override
@@ -119,8 +123,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     UIOneNodePathSelector uiOneNodePathSelector;
     try {
       uiOneNodePathSelector = uiPopup.createUIComponent(UIOneNodePathSelector.class, null, null);
-
-      uiOneNodePathSelector.setRootNodeLocation(repository, workspace, rootpath);
+      uiOneNodePathSelector.setAcceptedNodeTypesInPathPanel(new String[] {Utils.NT_FILE});
+      uiOneNodePathSelector.setRootNodeLocation(REPOSITORY, WORKSPACE, rootpath);
       uiOneNodePathSelector.init(SessionProviderFactory.createSessionProvider());
 
       uiPopup.setUIComponent(uiOneNodePathSelector);
@@ -147,7 +151,11 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
       requestContext.getUIApplication().addMessage(new ApplicationMessage("You have to choose document first!!!", null, ApplicationMessage.INFO));
     } else {
       JSONObject jsonData = new JSONObject();
-      jsonData.put(UIDocActivity.REFPATH, documentRefPath);
+      jsonData.put(UIDocActivity.DOCNAME, documentName);
+      jsonData.put(UIDocActivity.DOCLINK, documentRefLink);
+      jsonData.put(UIDocActivity.DOCPATH, documentPath);
+      jsonData.put(UIDocActivity.REPOSITORY, REPOSITORY);
+      jsonData.put(UIDocActivity.WORKSPACE, WORKSPACE);
       jsonData.put(UIDocActivity.MESSAGE, postedMessage);
 
       String activityJSONData = jsonData.toString();
@@ -182,7 +190,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
                                      PeopleService.PEOPLE_APP_ID,
                                      jsonData,
                                      null);
-    activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
+    activity.setType(UIDocActivity.ACTIVITY_TYPE);
     activityManager.saveActivity(ownerIdentity, activity);
     uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
   }
@@ -209,32 +217,38 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   }
 
   public void doSelect(String selectField, Object value) throws Exception {
-    String documentPath = value.toString();
-    documentRefPath = documentPath.substring(documentPath.indexOf(":/") + 2);
-    documentRefPath = buildDocumentLink(documentRefPath);
+    String rawPath = value.toString();
+    rawPath = rawPath.substring(rawPath.indexOf(":/") + 2);
+    documentRefLink = buildDocumentLink(rawPath);
+    documentName = rawPath.substring(rawPath.lastIndexOf("/") + 1);
+    documentPath = buildDocumentPath(rawPath);
     isDocumentReady = true;
 
     setReadyForPostingActivity(true);
   }
 
-  private String buildDocumentLink(String documentPath) {
+  private String buildDocumentLink(String rawPath) {
     String portalContainerName = PortalContainer.getCurrentPortalContainerName();
     String restContextName = PortalContainer.getCurrentRestContextName();
     String restService = "jcr";
     return new StringBuilder().append("/").append(portalContainerName)
                                             .append("/").append(restContextName)
                                             .append("/").append(restService)
-                                            .append("/").append(repository)
-                                            .append("/").append(workspace)
-                                            .append(rootpath)
-                                            .append(documentPath).toString();
+                                            .append("/").append(REPOSITORY)
+                                            .append("/").append(WORKSPACE)
+                                            .append(rootpath)            
+                                            .append("/").append(rawPath).toString();
+  }
+
+  public String buildDocumentPath(String rawPath){
+    return new StringBuilder().append(rootpath).append("/").append(rawPath).toString();
   }
 
   public static class SelectDocumentActionListener  extends EventListener<UIDocActivityComposer> {
     @Override
     public void execute(Event<UIDocActivityComposer> event) throws Exception {
       final UIDocActivityComposer docActivityComposer = event.getSource();
-      docActivityComposer.rootpath = "/Users/"+ event.getRequestContext().getRemoteUser();
+      docActivityComposer.rootpath = new StringBuilder().append("/Users/").append(event.getRequestContext().getRemoteUser()).append("/").toString();
       docActivityComposer.showDocumentPopup(docActivityComposer);
     }
   }

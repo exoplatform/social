@@ -23,7 +23,9 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
-
+  import org.exoplatform.social.webui.composer.PopupContainer;
+  import org.exoplatform.social.plugin.doc.UIDocViewer;
+  
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
@@ -128,7 +130,11 @@
   }
 
   def dMessage = uicomponent.message;
-  def dRefPath = uicomponent.documentRefPath;
+  def dName = uicomponent.docName;
+  def dLink = uicomponent.docLink;
+
+  def downloadDocumentLabel = _ctx.appRes("UIComposerDocumentExtension.label.Download");
+  def viewDocumentLabel = _ctx.appRes("UIComposerDocumentExtension.label.View_Document");
 %>
 
 <div class="UIActivity">
@@ -153,8 +159,16 @@
       <%}%>
       </div>
       <div class="Content">
-        $dMessage <br/>
-        <a class="ColorLink" target="_blank" href="$dRefPath">$dRefPath</a>
+        <%
+          if (!dMessage.equals(null) && !dMessage.equals("")){
+            %>
+              <p>$dMessage</p>
+            <%
+          }
+        %>
+        <img src="/social-resources/skin/ShareImages/activity_file.png" alt="" style="padding: 0 4px 6px 10px;"/>$dName
+        <a class="ColorLink" target="_blank" href="$dLink">$downloadDocumentLabel</a>
+        <!--<a class="ColorLink" href="<%= uicomponent.event("ViewDocument", uicomponent.getId(), "")%>">$viewDocumentLabel</a><br/>-->
       </div>
       <div class="LinkCM">
         <span class="DateTime">$activityPostedTime *</span>

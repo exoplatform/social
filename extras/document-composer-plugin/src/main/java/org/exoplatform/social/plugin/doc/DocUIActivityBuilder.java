@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 /**
  * Created by The eXo Platform SAS
- * Author : eXoPlatform
+ * Author : Zun
  *          exo@exoplatform.com
  * Jul 23, 2010
  */
@@ -38,8 +38,17 @@ public class DocUIActivityBuilder extends BaseUIActivityBuilder {
     final String jsonData = activity.getTitle();
     try {
       final JSONObject jsonObject = new JSONObject(jsonData);
-      docActivity.documentRefPath = jsonObject.getString(UIDocActivity.REFPATH);
+      docActivity.docLink = jsonObject.getString(UIDocActivity.DOCLINK);
+      docActivity.docName = jsonObject.getString(UIDocActivity.DOCNAME); 
       docActivity.message = jsonObject.getString(UIDocActivity.MESSAGE);
+      docActivity.docPath = jsonObject.getString(UIDocActivity.DOCPATH);
+//      String repository = jsonObject.getString(UIDocActivity.REPOSITORY);
+//      String workspace = jsonObject.getString(UIDocActivity.WORKSPACE);
+
+
+//      NodeLocation nodeLocation = new NodeLocation(repository, workspace, docActivity.docPath);
+//      final Node docNode = NodeLocation.getNodeByLocation(nodeLocation);
+//      docActivity.setDocNode(docNode);
     } catch (JSONException e) {
       LOG.error(e);
     }

@@ -1,7 +1,6 @@
 <%
 /*
 <!--
-
     Copyright (C) 2003-2007 eXo Platform SAS.
 
     This program is free software; you can redistribute it and/or
@@ -16,22 +15,22 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see<http://www.gnu.org/licenses/>.
-
 -->
 */
+  def selectDocumentLabel = _ctx.appRes("UIComposerDocumentExtension.label.Select_Document");
 %>
 <div id="<%=uicomponent.id%>">
   <%uicomponent.renderChildren()
     if(uicomponent.isDocumentReady()){
       %>
-        RefPath  : <%=uicomponent.getDocumentRefPath()%>
+        <img src="/social-resources/skin/ShareImages/activity_file.png" alt="" style="padding: 0 4px 6px 10px;"/><%=uicomponent.getDocumentName()%>
         <script type="text/javascript">
           setShareButtonDisable(false);
         </script>
       <%
     } else {
       %>
-        <a href="<%= uicomponent.event("SelectDocument")%>">Select Document</a><br/>
+        <a class="ColorLink" href="<%= uicomponent.event("SelectDocument")%>">$selectDocumentLabel</a><br/>
         <script type="text/javascript">
           setShareButtonDisable(true);
         </script>
