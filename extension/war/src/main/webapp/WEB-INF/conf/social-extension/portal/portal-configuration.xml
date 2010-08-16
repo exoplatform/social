@@ -78,7 +78,6 @@
         <value>/organization/communication/press-and-media</value>
         <value>/organization/operations/sales</value>
         <value>/organization/operations/finances</value>
-        <value>/developers</value>
         <value>/spaces</value>
       </values-param>
 
@@ -115,25 +114,6 @@
             </field>
             <field name="ownerType">
               <string>portal</string>
-            </field>
-            <field name="templateLocation">
-              <string>war:/conf/social-extension/portal</string>
-            </field>
-          </object>
-        </object-param>
-        <object-param>
-          <name>group.configuration</name>
-          <description>description</description>
-          <object type="org.exoplatform.portal.config.NewPortalConfig">
-            <field name="predefinedOwner">
-              <collection type="java.util.HashSet">
-                <value>
-                  <string>developers</string>
-                </value>
-              </collection>
-            </field>
-            <field name="ownerType">
-              <string>group</string>
             </field>
             <field name="templateLocation">
               <string>war:/conf/social-extension/portal</string>
