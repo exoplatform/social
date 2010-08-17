@@ -61,7 +61,7 @@
     this.composer.style.height = this.minHeight;
     this.composer.style.color = this.blurColor;
     this.shareButton.style.background = 'white'
-    this.shareButton.disabled = false;
+    this.shareButton.disabled = true;
     var uiComposer = this;
     Util.addEventListener(this.composer, 'focus', function() {
       if (uiComposer.composer.value === uiComposer.defaultInput) {
@@ -80,7 +80,7 @@
         uiComposer.composer.style.height = uiComposer.minHeight;
         uiComposer.composer.style.color = uiComposer.blurColor;
         //uiComposer.shareButton.style.background = 'white';
-        //uiComposer.shareButton.disabled = true;
+        uiComposer.shareButton.disabled = true;
       }
       if (uiComposer.blurCallback) {
         uiComposer.blurCallback();

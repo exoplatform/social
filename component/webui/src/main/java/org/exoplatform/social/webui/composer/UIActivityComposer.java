@@ -35,7 +35,7 @@ import org.exoplatform.webui.event.EventListener;
 public abstract class UIActivityComposer extends UIContainer {
   private UIContainer activityDisplay;
   private UIActivityComposerManager activityComposerManager;
-  private boolean isReady;
+  private boolean isReady = false;
 
   public boolean isReadyForPostingActivity(){
     return isReady;

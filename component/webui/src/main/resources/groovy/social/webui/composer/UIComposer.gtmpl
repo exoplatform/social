@@ -38,7 +38,7 @@
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
   def blastInput = "BlastInputSpace";
 
-  if (uicomponent.getPostContext().toString().equals("PEOPLE")) {
+  if (uicomponent.getPostContext().toString().equals("USER")) {
     defaultInput = _ctx.appRes("${uicomponent.id}.input.What_Are_You_Working_On");
     blastInput = "BlastInputPeople";
   }
