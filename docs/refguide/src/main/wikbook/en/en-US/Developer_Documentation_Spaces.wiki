@@ -1,0 +1,5 @@
+{info:title=Velocity Template}
+The UWC detected velocity templates not surrounded by pre blocks in this page.
+If you would like it to attempt to convert it, re-run the conversion with the following converter from conf/converter.xwiki.properties commented out:
+Xwiki.0060.clean-velocity.class=com.atlassian.uwc.converters.xwiki.VelocityCleaner
+{info}

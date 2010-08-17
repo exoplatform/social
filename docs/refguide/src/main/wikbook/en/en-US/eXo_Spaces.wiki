@@ -1,0 +1,29 @@
+
+h1. eXo Spaces
+
+
+
+h1. Basic Concepts
+
+*# space* is an environment where people can interact with others who have the same interest, who do in the same project or in the same company, etc. A space provides different applications.
+
+*eXo Spaces* add communities to your works and relations. It allows regrouping people by interests or projects easily. It leverages any existing application such as Portlets or Gadgets to enable a collaborative work.
+
+
+*# space manager* is a user with special rights within a space. He can manage the members list, configure and install applications. When a user creates a space, he automatically becomes the manager of this space.
+
+
+
+
+
+
+
+h1. Main screen
+
+
+
+
+!SpacesPage.png!
+
+
+

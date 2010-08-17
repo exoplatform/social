@@ -1,0 +1,49 @@
+h1. How to remove socialdemo portal ?
+
+
+
+h1. Objective
+
+In this article, you will learn how to disable the demo portal that comes bundled with the community version of eXo Social.
+
+
+h1. Prerequisites
+
+* a working installation of eXo Social. See [InstallGuide].
+
+
+h1. Why would you want to do that ?
+
+When you get Social, you get a full-fledge GateIn portal server, augmented by social features. eXo Social was primarily designed as an extension of GateIn so that you can add social capabilities to your own portal project by using all the power of GateIn.
+
+The portal you see under http://localhost:8080/socialdemo is a customized portal streamline to showcase the eXo Social features. As its name states, it is a demo, it is not meant to be used as a product. In fact it is made to be deployed as an online sandbox demo at : http://social.demo.exoplatform.org
+
+Instead of starting from it, we expect you to build you own customized portal instance, or start from the default /portal instance.
+
+With this in mind, it is obvious that you don't need the social demo portal beyond evaluating the features.
+Once you want to roll social into your own portal, you will most likely want to remove the socialdemo portal.
+
+
+
+
+
+
+h1. Removing socialdemo portal
+
+First, make sure the server is stopped.
+
+To disable /socialdemo, a single step is required :
+* remove $SOCIAL_HOME/lib/exo.social.demo.config-1.0.0-GA.jar
+* remove $SOCIAL_HOME/webapps/socialdemo.war
+* remove $SOCIAL_HOME/webapps/rest-socialdemo.war
+* remove $SOCIAL_HOME/conf/Catalina/localhost/socialdemo.xml
+* remove $SOCIAL_HOME/conf/Catalina/localhost/socialdemo.xml
+
+
+That's it, no more needed. Restart and you'll immediately see that http://localhost:8080/socialdemo sends an HTTP 404. You did it, you removed the socialdemo.
+
+For the lazy-ones, place [^this script|remove-socialdemo.sh] in your $SOCIAL_HOME and run it (caution, there is no way back !).
+
+* To finish cleanup, you can edit $SOCIAL_HOME/conf/jaas.conf and remove the realm named _gatein-domain-socialdemo_.
+
+

@@ -1,0 +1,101 @@
+h1. Save and get space context from a portlet
+{info}
+Since eXo Social 1.0.1
+{info}
+
+
+
+h1. Why save portlet preference
+
+When working with space related portlet, we have make sure which space (space context) that portlet is working with to handle and display space's information. For example, {{SpaceActivityStreamPortlet}} has to know space context to display space's activity stream. Before (as of 1.0.0-GA), we rely on actual http address to gets space's url and then gets the current space, and that causes a bug here when edit that page node [SOC-715|http://jira.exoplatform.org/browse/SOC-715].
+
+h1. How to save space context
+
+If you want to register a portlet to be installed when creating a new space, write a portlet and set configuration in <tt>configuration.xml<tt> file of exo.social.component.space project. Just register your portlet here and it will be dynamically created a page with your portlet.
+
+{code:xml}
+  <component>
+    <key>org.exoplatform.social.space.SpaceService</key>
+    <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
+    <init-params>
+      <!-- Configure the applications to install in a space -->
+      <values-param>
+        <name>space.homeNodeApp</name>
+        <value>SpaceActivityStreamPortlet</value>
+      </values-param>
+      <!-- Configure removable application or not <value>Application:removable</value> -->
+      <values-param>
+        <name>space.apps</name>
+        <value>DashboardPortlet:true</value>
+        <value>SpaceSettingPortlet:false</value>
+        <value>UserListPortlet:true</value>
+        <value>YourPortletName:true</value>
+      </values-param>
+    </init-params>
+  </component>
+{code}
+
+Notice your portlet line configuration:
+{code:xml}<value>YourPortletName:true</value>{code}
+{{true}} or {{false}} means that portlet can be uninstalled or mandatory from application settings for space.
+
+If your portlet wants to save space context, register your portlet name in SpaceUtils (it should be configured via xml soon):
+
+{code:language=java}
+
+//SpaceUtils
+static public String\[] PORTLETS_SPACE_URL_PREFERENCE_NEEDED = {"SpaceActivityStreamPortlet", "SpaceSettingPortlet", "UserListPortlet","YourPortletName"};
+{code}
+
+That's it. Whenever creating a page containing your portlet, spaceUrl will be save as portlet preference.
+
+
+1 How to get space context via portlet preference
+
+Actually, we save a space's url to a portlet preference and by getting that space's url by using <tt>SpaceUtils</tt>:
+
+{code:language=java}
+
+  //SpaceUtils
+  /**
+   * Gets spaceName by portletPreference
+   * @return space's url
+   */
+  static public String getSpaceUrl() {
+    PortletRequestContext pcontext = (PortletRequestContext)WebuiRequestContext.getCurrentInstance();
+    PortletPreferences pref = pcontext.getRequest().getPreferences();
+    return pref.getValue(SPACE_URL, "");
+  }
+{code}
+
+and then gets {{Space}} instance by {{SpaceService}}.
+
+{code:language=java}
+
+  //SpaceService
+  /**
+   * Get a space by its url
+   * @param spaceUrl url of space
+   * @return Space space with string url specified
+   * @throws SpaceException
+   */
+  Space getSpaceByUrl(String spaceUrl) throws SpaceException;
+{code}
+
+Your portlet:
+
+{code:language=java}
+
+  //YourPortletName.java
+  /**
+   * constructor
+   */
+  public YourPortletName() throws Exception {
+    Space space = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
+  }
+
+
+  public SpaceService getSpaceService() {
+    return getApplicationComponent(SpaceService.class);
+  }
+{code}

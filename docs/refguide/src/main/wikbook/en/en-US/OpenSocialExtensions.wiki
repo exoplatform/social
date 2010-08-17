@@ -1,0 +1,23 @@
+|| Extension Name  || Status|| comments ||
+| analytics | De-activated | |
+| auth-refresh | Not Tested | |
+| caja | Not Tested | |
+| core | Not Tested | |
+| core.io | Not Tested | |
+|  [dynamic-height|http://wiki.opensocial.org/index.php?title=Gadgets.window_(v0.8)] | Tested | |
+| echo | Not Tested | |
+| flash | Not Tested | |
+| locked-domain | Not Tested | |
+| minimessage | Not Tested | |
+| opensocial-0.6 | Not Tested | |
+| opensocial-0.7 | Tested | |
+| opensocial-0.8 | Tested | |
+| opensocial-templates | Not Tested | |
+| pubsub | Not working | |
+| rpc | Not Tested | |
+|  [setprefs|http://wiki.opensocial.org/index.php?title=Gadgets.Prefs_(v0.8)] | Tested |  |
+|  [settitle|http://wiki.opensocial.org/index.php?title=Gadgets.window_(v0.8)] | Tested |  |
+| skins | Not Tested | |
+| tabs | Tested | |
+| target | Not Tested | |
+| views | Not Tested | |

@@ -1,0 +1,50 @@
+h1. eXo Social Installation Guide
+
+
+
+h1. Requirements
+
+h2. Server
+
+* You can use Windows but we recommended *Linux (2.6 Kernel)*.
+* We recommend to use the *JDK* version minimum *1.5* with the latest patches.
+* We recommend at least 1Gb of RAM and at least one 1.5 Ghz processor.
+* For optimal performance, we recommend to have *2Gb of Ram and 2 core*.
+* The default database is HSQLDB, it's there only for demonstration purpose, it should be changed to another database such as *MySQL*, PostgreSQL, Oracle...
+* For optimal performance, it's better to run the database on a *separate server*
+
+h2. Browser
+eXo Social is tested in  the following browsers :
+* Internet Explorer 6 and *7*
+* Firefox 2 and *3*
+
+
+h1. Setup
+
+
+h2. Install
+
+* [Download|https//sourceforge:net-projects-exo-social-] the latest version of eXo Social
+* Unzip it into any directory, we will call this directory $EXO_HOME
+
+
+h3. on Linux / MacOS
+* execute :
+{code}
+$ chmod +x $EXO_HOME/exo-tomcat/bin/*.sh
+$ $EXO_HOME/exo-tomcat/bin/gatein.sh run
+{code}
+
+h3. on Windows
+* execute :
+{code}
+$EXO_HOME/exo-tomcat/bin/gatein.bat run
+{code}
+
+
+h2. Launch
+Next point your browser to one of these :
+* http://localhost:8080/socialdemo : is a customized gatein portal demonstrating social
+* http://localhost:8080/portal : is a regular gatein simply extended with social (no customization)
+
+Note that both portals are completely separate.

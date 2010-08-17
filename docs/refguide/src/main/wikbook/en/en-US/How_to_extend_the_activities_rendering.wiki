@@ -1,0 +1,120 @@
+
+h1. How to extend the activities rendering
+
+
+
+h1. Objective
+In this article you will learn how you can implement a preprocessor for activities rendering.
+
+h1. Requirements
+You need to be familiar with the eXo Kernel component model and its xml configuration. You also need be able to program in java.
+
+
+h1. Why would you need to do this ?
+
+An simplistic activity is made of simple text.  We have created an extension point at the level of activities renderting for two cases :
+* support more html tags
+* support @mentions
+
+But you may want to support a special syntax like :
+* #hashtags to feel like twitter
+* smileys to look like skype
+* [Markdown|http://en.wikipedia.org/wiki/Markdown] to be as cool as Buzz ;-)
+
+You can imagine more sophisticated processing. And not only text-related because a processor actually has full access to the Activity. So you can very well process based on the owner, the app, mediaitem, etc..
+h1. Writing an ActivityProcessor
+eXo Social let's you pre-process an activity before it is returned by the ActivityManager. To do this you simply need to implement the interface ActivityProcessor :
+
+{code}
+/**
+ * An activity processor is responsible to pre-process an activity before it is returned by the {@link ActivityManager}
+ */
+public interface ActivityProcessor {
+
+  /**
+   * Process an activity
+   * @param activity the activity. It can be modified
+   */
+  void processActivity(Activity activity);
+
+  /**
+   * Priority of this processor.
+   * All activity processors will be executed in ascending priority order
+   * @return
+   */
+  int getPriority();
+
+}
+{code}
+
+
+For example let's implement a SmileyProcessor that will replace text smileys by icons :
+
+{code}
+public class SmileyProcessor implements ActivityProcessor {
+
+  String smiley =  "<img src='/images/smiley.gif'/>";
+
+  public void processActivity(Activity activity) {
+    String title = activity.getTitle();
+     activity.setTitle(title.replaceAll(":-\\)", smiley));
+  }
+
+  public int getPriority() {
+    return 100;
+  }
+
+}
+{code}
+
+h1. Configuring the processor
+
+Now that you have a nice procesor you need to hook it to the system.
+At runtime, processors can be attached to the ActivityManager via the method ActivityManageraddProcessor(ActivityProcessor processor).
+
+But there is also a component plugin hook for it :   public void addProcessorPlugin(BaseActivityProcessorPlugin plugin)
+
+So to make your processor easy to hook, you simply need to let him extend the BaseActivityProcessorPlugin.
+
+{code}
+public class SmileyProcessor extends BaseActivityProcessorPlugin {
+
+  String smiley =  "<img src='/images/smiley.gif'/>";
+
+  public SmileyProcessor(InitParams params) {
+    super(params);
+  }
+
+  public void processActivity(Activity activity) {
+    String title = activity.getTitle();
+      activity.setTitle(title.replaceAll(":-\\)", smiley));
+  }
+}
+{code}
+
+It will have the additional benefit to make the priority field configurable so you don't need to implement getPriorty().
+
+Then your processor can be configured as a component plugi like this :
+
+{code}
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>
+    <component-plugin>
+      <name>SmileyProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.example.SmileyProcessor</type>
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower are executed first)</description>
+          <value>2</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+{code}
+
+Restart, place the smiley gif on the server and you should see something like that  :
+
+
+!activity-smiley.png!

@@ -1,0 +1,133 @@
+
+h1. Social Manual
+
+
+
+
+
+
+This module depends on the [eXo Portal|Portal:WebHome], therefore you should also study the [Portal:Portal Manual].
+
+
+
+h1. Terms
+
+ [eXo Spaces|eXo Spaces], [Social:Access Right]
+
+
+
+
+h1. User Manual
+
+
+
+*Basic Portal Operations*
+* [Register new accounts]
+* [Sign In and Sign Out]
+* [Change Interface Language]
+
+
+
+*Spaces*
+* [Create Spaces]
+* [Space Settings]
+
+*People*
+* [Send Requests]
+* [User Profile]
+
+h1. Administration
+
+Please refer to the [Portal:Portal Manual#Administration].
+
+* [Administrate Spaces]
+* [Add Users]
+
+
+h1. Installation
+
+* [Quick Install Guide|InstallGuide] : for evaluators
+* [Production Deployment Tutorial] : for sysadmins for production installs
+
+
+
+h1. Configuration
+
+
+* [Social:Spaces Template Configuration] : Configure the default applications container in new spaces
+* [User Profile Fields]
+
+
+h1. Integration
+
+* [Connect to an LDAP Directory|LDAP Integration]
+* [Integrating 3rd party notifications in activity streams|Feedmash]
+* [How to disable socialdemo]
+
+
+
+
+
+
+h1. Release Notes and Dependencies
+
+
+[Release Notes]
+
+
+
+
+h1. Migration
+
+
+
+h1. Technical Foundations
+
+* [OpenSocial Implementation|OpenSocial]
+* [OpenSocial in eXo Social] : How eXo Social leverages the OpenSocial specification
+* [Save and get space context from a portlet|Space Portlet Preference]
+
+
+
+
+h1. Development
+
+
+See [Developer Documentation]
+
+h2. Additional Tutorials
+
+
+* [Developing Open Social Gadgets] : tutorial to  develop Gadgets
+* [OpenSocial for the java developer] : Tutorial to develop an opensocial application in java
+* [Using the Activity API] : How to call the REST Activity API
+* [Using the People API] :How to call the REST People API
+* [How to extend the activities rendering]
+* [How to listen to relationships]
+* [How to listen to profile updates]
+* [How to listen to space lifecycle]
+* [How to add custom profile attributes]
+* [How to republish an RSS feed into an activity stream]
+
+*External resources*
+* [Official OpenSocial Developer's Guide|http://code.google.com/apis/opensocial/docs/0.8/devguide.html] on Google Code
+* [How to deploy a remote OpenSocial Google Gadget made with GWT in eXo|http://laurentbois.com/2008/11/23/deploy-a-remote-opensocial-google-gadget-made-with-gwt-in-exo/] by [Laurent Bois|http://laurentbois.com]
+
+
+
+Also check this list of [useful RSS] feeds to follow.
+
+
+
+
+
+
+
+
+h1. Support
+
+* [FAQ]
+* [Forum|http//www.exoplatform.com/portal/public/website/community/forum?portal:componentId=forum&portal.type=action&portal.isSecure=false&uicomponent=UIBreadcumbs&op=ChangePath&objectId=forumab7b15a4c0a8020100f26f91e70ecd33]
+
+Professional support is available at http://www.exoplatform.com
+

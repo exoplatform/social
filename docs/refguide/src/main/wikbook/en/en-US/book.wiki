@@ -1,0 +1,60 @@
+
+
+
+h1. Configuration
+
+
+{include:document="Spaces_Template_Configuration.wiki"}
+* TODO User_Profile_Fields
+
+
+h1. Technical_Foundations
+
+h2. Informations
+{include:document="OpenSocialExtensions.wiki"}
+{include:document="Developing_Open_Social_Gadgets.wiki"}
+{include:document="Configuring_the_oauth_2_legged_scenario.wiki"}
+{include:document="Customizing_OpenSocial_implementation.wiki"}
+
+h2. Resources
+* Read the [API Documentation|http://code.google.com/apis/opensocial/docs/0.8/reference/]
+* Checkout [the Developer's guide|http://code.google.com/apis/opensocial/docs/0.8/devguide.html]
+* Look at [the articles on opensocial|http://code.google.com/apis/opensocial/articles/]
+* Watch the video explaining how to [deploy the gadgets|http://www.vimeo.com/2069512] and the [presentation in Bangkok|http://blog.exoplatform.org/2008/11/03/video-exo-introduces-exo-webos-15-beta-and-exo-social-preview-google-devfest-bangkok/]
+* Look at a sample of [integration between eXo and appengine (Python backend)|http://blog.exoplatform.org/2008/11/13/writing-application-for-exo-social-with-appengine-so-not-in-java-but-in-python/]
+* Checkout the existing [opensocial app developped for eXo|http://fisheye.exoplatform.org/browse/projects/social/trunk/web/opensocial/src/main/webapp/gadgets]
+* Have a look at the project [opensocial-resources on google code|http://code.google.com/p/opensocial-resources/]
+
+h2. Space Portlet Preferences
+
+{include:document="Space_Portlet_Preference.wiki"}
+
+
+h1. Development
+
+{include:document="Developer_Documentation_Activity_Stream.wiki"}
+{include:document="Developer_Documentation_OpenSocial.wiki"}
+{include:document="Developer_Documentation_People.wiki"}
+{include:document="Developer_Documentation_Spaces.wiki"}
+{include:document="Spaces_Developer_Documentation.wiki"}
+
+h2. Additional Tutorials
+
+
+{include:document="Developing_Open_Social_Gadgets.wiki"}
+
+{include:document="How_to_extend_the_activities_rendering.wiki"}
+
+
+*External_resources*
+*_[Official_OpenSocial_Developer's_Guide|http://code.google.com/apis/opensocial/docs/0.8/devguide.html]_on_Google_Code
+*_[How_to_deploy_a_remote_OpenSocial_Google_Gadget_made_with_GWT_in_eXo|http://laurentbois.com/2008/11/23/deploy-a-remote-opensocial-google-gadget-made-with-gwt-in-exo/]_by_[Laurent_Bois|http://laurentbois.com]
+
+* Also check this list of useful RSS feeds to follow.
+{include:document="useful_RSS.wiki"}
+
+
+h1. Support
+{include:document="FAQ.wiki"}
+
+

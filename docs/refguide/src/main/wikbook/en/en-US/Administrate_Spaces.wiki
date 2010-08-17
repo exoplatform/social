@@ -1,0 +1,39 @@
+
+h1. Administrate Spaces
+
+{info}
+You should first refer the *Portal Manual*
+{info}
+
+By default, applications aren't available for users in eXo Spaces. eXo Spaces leverages the rights on applications defined in the *Application Registry*. Every eXo Space has a group under the group */Spaces*.
+
+There are 2 configuration levels for applications:
+
+- Allow all space managers to install an application: Add the right on an application to the */Spaces* group with a *manager* membership.
+
+1\. Go to *Group* -> *Administration* -> *Application Registry* on the Administration toobar.
+
+
+2. Click on the application category on the left in order to select it:
+
+
+!ApplicationRegistry.png!
+
+
+3. Click on the *Add Permission* button to open the *Select Permission* form:
+
+
+!SelectPermissionForm.png!
+
+
+4. Select a group as *spaces* on the left pane and a membership on the right pane:
+
+
+!ApplicationRegistry1.png!
+
+
+
+
+
+- Allow a specific space to install an application: Add the right on an application to the */Spaces/SpaceName* group (where SpaceName is the name of the space that you want to allow installing the applications) with the *manager* membership.
+

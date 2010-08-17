@@ -1,0 +1,29 @@
+<bookinfo>
+  <title>eXo product title (see bookinfo.xml)</title>
+  <subtitle>${artifactId} - ${version}</subtitle>
+  <edition>${version}</edition>
+  <pubsnumber>1</pubsnumber>
+  <productname>${artifactId}</productname>
+  <productnumber>${version}</productnumber>
+  <copyright>
+    <year>2010</year>
+    <holder>eXo Platform</holder>
+  </copyright>
+  <authorgroup>
+    <author>
+      <firstname>John</firstname>
+      <surname>Doe</surname>
+      <affiliation>
+        <shortaffil>eXo Platform</shortaffil>
+      </affiliation>
+    </author>
+  </authorgroup>
+  <mediaobject>
+    <imageobject role="fo">
+      <imagedata align="center" fileref="exo-logo.png"/>
+    </imageobject>
+    <imageobject role="html">
+      <imagedata align="center" fileref="exo-logo.png"/>
+    </imageobject>
+  </mediaobject>
+</bookinfo>
