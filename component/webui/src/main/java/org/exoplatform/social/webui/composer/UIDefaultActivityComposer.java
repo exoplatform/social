@@ -47,7 +47,7 @@ import org.exoplatform.webui.event.Event;
 public class UIDefaultActivityComposer extends UIActivityComposer {
 
   public UIDefaultActivityComposer() {
-    setReadyForPostingActivity(true);
+    setReadyForPostingActivity(false);
   }
 
   @Override
