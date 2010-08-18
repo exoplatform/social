@@ -1,6 +1,6 @@
 <bookinfo>
-  <title>eXo product title (see bookinfo.xml)</title>
-  <subtitle>${artifactId} - ${version}</subtitle>
+  <title>eXo Social Reference Guide</title>
+  <subtitle>${artifactId} - ${project.version}</subtitle>
   <edition>${version}</edition>
   <pubsnumber>1</pubsnumber>
   <productname>${artifactId}</productname>
@@ -11,8 +11,8 @@
   </copyright>
   <authorgroup>
     <author>
-      <firstname>John</firstname>
-      <surname>Doe</surname>
+      <firstname>eXo</firstname>
+      <surname>Platform</surname>
       <affiliation>
         <shortaffil>eXo Platform</shortaffil>
       </affiliation>
@@ -20,10 +20,10 @@
   </authorgroup>
   <mediaobject>
     <imageobject role="fo">
-      <imagedata align="center" fileref="exo-logo.png"/>
+      <imagedata align="center" fileref="mylogohere.png" format="PNG" width="150mm"/>
     </imageobject>
     <imageobject role="html">
-      <imagedata align="center" fileref="exo-logo.png"/>
+      <imagedata align="center" fileref="mylogohere.png" format="PNG" scale="150"/>
     </imageobject>
   </mediaobject>
 </bookinfo>
