@@ -365,6 +365,11 @@
       <type>jar</type>
     </dependency><!-- 2.1.7-->
 
+    <dependency><groupId>org.gatein.wsrp</groupId><artifactId>wsrp-admin-gui</artifactId><version>${org.gatein.wsrp.version}</version><type>war</type></dependency>
+    <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-log4j12</artifactId><version>1.5.6</version><type>jar</type></dependency>
+    <dependency><groupId>org.gatein.wsrp</groupId><artifactId>wsrp-producer</artifactId><version>${org.gatein.wsrp.version}</version><type>war</type></dependency>
+
+
   </dependencies>
 
   <build>
