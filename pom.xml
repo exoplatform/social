@@ -14,7 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
+    along with this program; if not, see<http://www.gnu.org/licenses />.
 
 -->
 
@@ -52,36 +52,68 @@
     <javax.ws.rs.version>1.0</javax.ws.rs.version>
     <javax.xml.bind.version>2.1</javax.xml.bind.version>
 
+    <asm.version>1.5.3</asm.version>
+    <antlr.version>2.7.6rc1</antlr.version>
+    <cglib.version>2.2</cglib.version>
+    <bsh.version>2.0b1</bsh.version>
+    <c3p0.version>0.9.1.2</c3p0.version>
+    <cglib.version>2.2</cglib.version>
+    <commons-digester.version>1.7</commons-digester.version>
     <commons-lang.version>2.4</commons-lang.version>
     <commons-collections.version>3.2.1</commons-collections.version>
+    <commons-dbcp.version>1.2.1</commons-dbcp.version>
+    <commons-pool.version>1.2</commons-pool.version>
+    <findbugs.version>1.0.0</findbugs.version>
+    <html-parser.version>1.6</html-parser.version>
+    <ical4j.version>0.9.20</ical4j.version>
     <hsqldb.version>1.8.0.7</hsqldb.version>
     <junit.version>3.8.1</junit.version>
+    <javassist.version>3.4.GA</javassist.version>
     <mysql.version>5.1.6</mysql.version>
     <rome.version>0.9</rome.version>
+    <stax.version>1.0</stax.version>
     <xerces.version>2.9.1</xerces.version>
+    <xml-apis.version>1.3.04</xml-apis.version>
     <quartz.version>1.5.2</quartz.version>
     <picocontainer.version>1.1</picocontainer.version>
 
-    <org.exoplatform.kernel.version>2.2.3-GA-SNAPSHOT</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.3.3-GA-SNAPSHOT</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.1.3-GA-SNAPSHOT</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.12.3-GA-SNAPSHOT</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.1.1-plf-SNAPSHOT</org.exoplatform.portal.version>
-    <org.exoplatform.commons.version>1.0.0-CR01-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.kernel.version>2.2.4-GA-SNAPSHOT</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.3.4-GA-SNAPSHOT</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.1.4-GA-SNAPSHOT</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.12.4-GA-SNAPSHOT</org.exoplatform.jcr.version>
+    <org.exoplatform.portal.version>3.1.2-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.ecms.version>2.1.0-CR02-SNAPSHOT</org.exoplatform.ecms.version>
+    <org.exoplatform.commons.version>1.0.0-CR02-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.exopackage.version>1.1.0</org.exoplatform.exopackage.version>
+    <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
+
     <org.gatein.common.version>2.0.2-GA</org.gatein.common.version>
     <org.gatein.wci.version>2.0.1-GA</org.gatein.wci.version>
     <org.gatein.pc.version>2.1.1-GA</org.gatein.pc.version>
     <org.gatein.wsrp.version>1.1.1-GA</org.gatein.wsrp.version>
     <org.gatein.mop.version>1.0.3-GA</org.gatein.mop.version>
     <org.shindig.version>1.0-r790473-Patch02</org.shindig.version>
+    <org.chromattic.version>1.0.3</org.chromattic.version>
+
+    <org.fontbox.version>0.1.0</org.fontbox.version>
     <org.slf4j.version>1.5.6</org.slf4j.version>
     <org.json.version>20070829</org.json.version>
+    <org.jboss.version>2.2.9.GA</org.jboss.version>
+    <org.reflext.version>1.0.0</org.reflext.version>
+    <org.testng.version>5.10</org.testng.version>
+    <org.jvnet.jaxb2.maven2.version>0.1</org.jvnet.jaxb2.maven2.version>
+    <org.jsecurity.version>0.9.0</org.jsecurity.version>
+
     <net.oauth.core.version>20090531</net.oauth.core.version>
+    <net.oauth.version>20080621</net.oauth.version>
     <net.sourceforge.nekohtml.version>1.9.9</net.sourceforge.nekohtml.version>
 
     <com.google.collections.version>1.0-rc2</com.google.collections.version>
     <com.google.code.guice.version>2.0</com.google.code.guice.version>
     <com.ibm.icu.version>3.8</com.ibm.icu.version>
+    <com.sun.xml.bind.version>2.1.7</com.sun.xml.bind.version>
+
+
     <!-- ************** -->
     <!-- Build settings -->
     <!-- ************** -->
@@ -89,8 +121,7 @@
     <!-- maven-enforcer-plugin -->
     <jdk.min.version>1.6</jdk.min.version>
     <!-- maven-release-plugin -->
-    <arguments>-Prelease,java-api-compat,pkg-tomcat,arc-tomcat,pkg-jbossas,arc-jbossas,run-its
-      -Dgatein.working.dir=target</arguments>
+    <arguments>-Prelease,java-api-compat,run-its -Dgatein.working.dir=target</arguments>
   </properties>
 
   <modules>
@@ -808,8 +839,7 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
-                <copy failonerror="false"
-                  todir="${project.build.directory}/${project.build.finalName}/WEB-INF/classes">
+                <copy failonerror="false" todir="${project.build.directory}/${project.build.finalName}/WEB-INF/classes">
                   <fileset dir="${basedir}/src/main/webapp/WEB-INF/classes">
                     <include name="**/*_en.properties" />
                   </fileset>

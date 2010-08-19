@@ -14,7 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
+    along with this program; if not, see<http://www.gnu.org/licenses />.
 
 -->
 
@@ -33,7 +33,6 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.packaging.pkg</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Packaging (pkg)</name>
   <description>eXo Social Packaging (pkg)</description>
@@ -41,56 +40,354 @@
   <properties>
     <gatein.working.dir>${basedir}/target</gatein.working.dir>
   </properties>
+
   <dependencies>
+
     <dependency>
       <groupId>org.exoplatform.tool</groupId>
       <artifactId>exopackage</artifactId>
-      <version>1.1.0-Beta09</version>
+      <version>${org.exoplatform.exopackage.version}</version>
       <type>zip</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>kernel.packaging.module</artifactId>
       <version>${org.exoplatform.kernel.version}</version>
       <type>js</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>core.packaging.module</artifactId>
       <version>${org.exoplatform.core.version}</version>
       <type>js</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.ws</groupId>
       <artifactId>ws.packaging.module</artifactId>
       <version>${org.exoplatform.ws.version}</version>
       <type>js</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>jcr.packaging.module</artifactId>
       <version>${org.exoplatform.jcr.version}</version>
       <type>js</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>portal.packaging.module</artifactId>
       <version>${org.exoplatform.portal.version}</version>
       <type>js</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social.packaging.module</artifactId>
       <version>${project.version}</version>
       <type>js</type>
     </dependency>
+
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social.packaging.product</artifactId>
       <version>${project.version}</version>
       <type>js</type>
     </dependency>
+
+    <dependency>
+      <groupId>jcr</groupId>
+      <artifactId>jcr</artifactId>
+      <version>${javax.jcr.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0-->
+
+    <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>${asm.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.5.3-->
+
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>${antlr.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.7.6rc1-->
+
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>${cglib.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.2-->
+
+    <dependency>
+      <groupId>c3p0</groupId>
+      <artifactId>c3p0</artifactId>
+      <version>${c3p0.version}</version>
+      <type>jar</type>
+    </dependency><!-- 0.9.1.2-->
+
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>${commons-dbcp.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.2.1-->
+
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <version>${commons-pool.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.2-->
+
+    <dependency>
+      <groupId>findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <version>${findbugs.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0.0-->
+
+    <dependency>
+      <groupId>html-parser</groupId>
+      <artifactId>html-parser</artifactId>
+      <version>${html-parser.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.6-->
+
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>${javassist.version}</version>
+      <type>jar</type>
+    </dependency><!-- 3.4.GA-->
+
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax-api</artifactId>
+      <version>${stax.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0-->
+
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.core</artifactId>
+      <version>${org.chromattic.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0.3-->
+
+    <dependency>
+      <groupId>org.gatein.pc</groupId>
+      <artifactId>pc-controller</artifactId>
+      <version>${org.gatein.pc.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.1.1-GA-->
+
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-exo</artifactId>
+      <version>${org.gatein.wci.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.0.1-GA-->
+
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-tomcat</artifactId>
+      <version>${org.gatein.wci.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.0.1-GA-->
+
+    <dependency>
+      <groupId>org.exoplatform.tool</groupId>
+      <artifactId>exo.tool.webunit</artifactId>
+      <version>${org.exoplatform.tool.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0.0-->
+
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.component.remote</artifactId>
+      <version>${org.exoplatform.kernel.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.2.3-GA-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.ws</groupId>
+      <artifactId>exo.ws.frameworks.servlet</artifactId>
+      <version>${org.exoplatform.ws.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.1.3-GA-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.framework.command</artifactId>
+      <version>${org.exoplatform.jcr.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.12.3-GA-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.framework.web</artifactId>
+      <version>${org.exoplatform.jcr.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.12.3-GA-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.component.webdav</artifactId>
+      <version>${org.exoplatform.jcr.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.12.3-GA-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>gatein.portal.component.wsrp</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.management</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.gatein.wsrp</groupId>
+      <artifactId>wsrp-admin-gui</artifactId>
+      <version>${org.gatein.wsrp.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gatein.wsrp</groupId>
+      <artifactId>wsrp-producer</artifactId>
+      <version>${org.gatein.wsrp.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.portlet.exoadmin</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.portlet.web</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.gadgets-server</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.eXoGadgets</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.web.portal</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.web.rest</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.portlet.dashboard</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.web.eXoResources</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.server.tomcat.plugin</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.starter.war</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency><!-- 3.1.1-plf-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.server.tomcat.patch</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.1.0-CR01-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.reflext</groupId>
+      <artifactId>reflext.jlr</artifactId>
+      <version>${org.reflext.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0.0-->
+
+    <dependency>
+      <groupId>org.jvnet.jaxb2.maven2</groupId>
+      <artifactId>maven-jaxb2-plugin</artifactId>
+      <version>${org.jvnet.jaxb2.maven2.version}</version>
+      <type>jar</type>
+    </dependency><!-- 0.1-->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.6</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>net.oauth</groupId>
+      <artifactId>core</artifactId>
+      <version>${net.oauth.version}</version>
+      <type>jar</type>
+    </dependency><!-- 20080621-->
+
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>${com.sun.xml.bind.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.1.7-->
+
   </dependencies>
+
   <build>
     <plugins>
       <!-- needed for exobuild to call maven dependency:get -->
