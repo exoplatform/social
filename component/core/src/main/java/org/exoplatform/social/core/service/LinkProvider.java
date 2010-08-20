@@ -18,6 +18,7 @@ package org.exoplatform.social.core.service;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -48,7 +49,8 @@ public class LinkProvider {
       }
 
       String container = PortalContainer.getCurrentPortalContainerName();
-      String url = "/"+ container +"/private/classic/profile/" + identity.getRemoteId();
+      String portalOwner = Util.getPortalRequestContext().getPortalOwner();
+      String url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
 
       } catch (Exception e) {
