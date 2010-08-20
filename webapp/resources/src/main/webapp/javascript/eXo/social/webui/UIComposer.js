@@ -63,6 +63,9 @@
     this.shareButton.style.background = 'white'
     this.shareButton.disabled = true;
     var uiComposer = this;
+    var isReadyEl = document.getElementById("isReadyId");
+    var composerContainerEl = document.getElementById("ComposerContainer");
+   	var isReadyVal;
     Util.addEventListener(this.composer, 'focus', function() {
       if (uiComposer.composer.value === uiComposer.defaultInput) {
         uiComposer.composer.value = '';
@@ -81,6 +84,16 @@
         uiComposer.composer.style.color = uiComposer.blurColor;
         //uiComposer.shareButton.style.background = 'white';
         uiComposer.shareButton.disabled = true;
+        isReadyVal = isReadyEl.value;
+		    if (composerContainerEl == null) isReadyVal = false;
+		    if (isReadyVal == "true") {
+		     isReadyVal = true;
+		    } else {
+		    	isReadyVal = false;
+		    }
+        if ((composerContainerEl != null) && (isReadyVal)) {
+        	uiComposer.shareButton.disabled = false;
+        } 
       }
       if (uiComposer.blurCallback) {
         uiComposer.blurCallback();
@@ -88,6 +101,13 @@
     }, false);
 
     Util.addEventListener(this.composer, 'keypress', function() {
+      isReadyVal = isReadyEl.value;
+	    if (composerContainerEl == null) isReadyVal = false;
+	    if (isReadyVal == "true") {
+	     isReadyVal = true;
+	    } else {
+	    	isReadyVal = false;
+	    }
       if (uiComposer.minCharactersRequired !== 0) {
         //TODO hoatle handle backspace problem
         if (uiComposer.composer.value.length >= uiComposer.minCharactersRequired) {
@@ -100,6 +120,14 @@
       } else {
         uiComposer.shareButton.style.background = 'white';
         uiComposer.shareButton.disabled = false;
+      }
+      
+      if (composerContainerEl != null) {
+      	if (isReadyVal) {
+          uiComposer.shareButton.disabled = false;
+      	} else {
+          uiComposer.shareButton.disabled = true;
+      	}
       }
       
       if (uiComposer.maxCharactersAllowed !== 0) {

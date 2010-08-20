@@ -134,6 +134,15 @@
     }
   }
   
+  UIComposerLinkExtension.prototype.resetIsReady = function() {
+    
+    if (this.linkInfoDisplayed) {
+      
+    } else {
+
+    }
+  }
+  
   UIComposerLinkExtension.prototype.init = function() {
   
     function showThumbnail() {
@@ -149,8 +158,11 @@
     }
     
     var shareButton = Util.getElementById('ShareButton');
+    var isReadyEl = Util.getElementById('isReadyId');
+
     uiComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
+    	isReadyEl.value = true;
       //trick: enable share button
       if (shareButton) {
         shareButton.disabled = false;
@@ -209,8 +221,10 @@
       } else {
         this.images = [];
       }
-      
+
     } else {
+
+    	isReadyEl.value = false;
       if (shareButton) {
         shareButton.disabled = true;
       }
@@ -245,6 +259,7 @@
         var url = uiComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId='+ encodeURIComponent(inputLink.value) + '&ajaxRequest=true';
         ajaxGet(url);
       }, false);
+      
     }
   }
   

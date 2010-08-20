@@ -20,8 +20,6 @@ package org.exoplatform.social.webui.composer;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.webui.activity.UIActivitiesContainer;
-import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -34,7 +32,6 @@ import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
-import org.jboss.cache.commands.read.GetChildrenNamesCommand;
 
 /**
  *
