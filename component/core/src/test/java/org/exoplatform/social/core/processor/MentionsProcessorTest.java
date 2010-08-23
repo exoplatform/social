@@ -35,19 +35,18 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     assertNull(activity.getTitle());
     assertNull(activity.getBody());
     String root = "root", john = "john";
-    String rootLink = linkProvider.getProfileLink(root, null);
-    String johnLink = linkProvider.getProfileLink(john, null);
+    String rootLink = linkProvider.getProfileLink(root, "classic");
+    String johnLink = linkProvider.getProfileLink(john, "classic");
 
     activity.setTitle("single @root substitution");
     processor.processActivity(activity);
-    assertEquals(activity.getTitle(), "single " + rootLink + " substitution");
+    assertEquals("Single substitution : ",activity.getTitle(), "single " + rootLink + " substitution");
     assertNull(activity.getBody());
 
     activity.setTitle("@root and @john title");
     activity.setBody("body with @root and @john");
     processor.processActivity(activity);
-    assertEquals(activity.getTitle(), rootLink + " and " + johnLink + " title");
+    assertEquals("Multiple substitution : ",activity.getTitle(), rootLink + " and " + johnLink + " title");
     assertEquals(activity.getBody(), "body with " + rootLink + " and " + johnLink);
-
   }
 }
