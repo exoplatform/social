@@ -24,16 +24,17 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 public class LinkProviderTest extends AbstractCoreTest {
 
   public void testGetProfileLink() throws Exception {
+    final String portalOwner = "classic";
+
     IdentityManager identityManger = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     Identity rootIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
     String rootFullName = rootIdentity.getProfile().getFullName();
     assertNotNull("rootFullName must not be null.", rootFullName);
     LinkProvider provider = (LinkProvider) getContainer().getComponentInstanceOfType(LinkProvider.class);
     // but when we have the identity we generate a link
-    String actualLink = provider.getProfileLink(rootIdentity.getRemoteId());
-    String expected =  "<a href=\"/portal/private/classic/profile/" +
+    String actualLink = provider.getProfileLink(rootIdentity.getRemoteId(), portalOwner);
+    String expected =  "<a href=\"/portal/private/" + portalOwner + "/profile/" +
                         rootIdentity.getRemoteId()+"\" target=\"_parent\">"+rootFullName+"</a>";
     assertEquals(expected, actualLink);
   }
-
 }

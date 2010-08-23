@@ -18,6 +18,7 @@ package org.exoplatform.social.core.service;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -36,28 +37,28 @@ public class LinkProvider {
   }
 
   private void init(InitParams params) {
-
   }
 
-  public String getProfileLink(String username) {
-
+  public String getProfileLink(String username, String portalOwner) {
     String link = username;
-      try {
-        Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
+    try {
+      Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
       if (identity == null) {
         throw new RuntimeException("could not find a user identity for " + username);
       }
 
       String container = PortalContainer.getCurrentPortalContainerName();
-      String portalOwner = Util.getPortalRequestContext().getPortalOwner();
+
+      if(portalOwner == null){
+        PortalRequestContext context = Util.getPortalRequestContext();
+        portalOwner = context.getPortalOwner();
+      }
+      
       String url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
-
-      } catch (Exception e) {
-        LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
-      }
-
-      return link;
+    } catch (Exception e) {
+      LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
     }
-
+    return link;
+  }
 }
