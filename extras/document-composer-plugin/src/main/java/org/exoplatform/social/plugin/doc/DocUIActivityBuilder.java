@@ -16,8 +16,11 @@
  */
 package org.exoplatform.social.plugin.doc;
 
+import javax.jcr.Node;
+
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.wcm.core.NodeLocation;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
@@ -42,13 +45,13 @@ public class DocUIActivityBuilder extends BaseUIActivityBuilder {
       docActivity.docName = jsonObject.getString(UIDocActivity.DOCNAME); 
       docActivity.message = jsonObject.getString(UIDocActivity.MESSAGE);
       docActivity.docPath = jsonObject.getString(UIDocActivity.DOCPATH);
-//      String repository = jsonObject.getString(UIDocActivity.REPOSITORY);
-//      String workspace = jsonObject.getString(UIDocActivity.WORKSPACE);
+      String repository = jsonObject.getString(UIDocActivity.REPOSITORY);
+      String workspace = jsonObject.getString(UIDocActivity.WORKSPACE);
 
 
-//      NodeLocation nodeLocation = new NodeLocation(repository, workspace, docActivity.docPath);
-//      final Node docNode = NodeLocation.getNodeByLocation(nodeLocation);
-//      docActivity.setDocNode(docNode);
+      NodeLocation nodeLocation = new NodeLocation(repository, workspace, docActivity.docPath);
+      final Node docNode = NodeLocation.getNodeByLocation(nodeLocation);
+      docActivity.setDocNode(docNode);
     } catch (JSONException e) {
       LOG.error(e);
     }

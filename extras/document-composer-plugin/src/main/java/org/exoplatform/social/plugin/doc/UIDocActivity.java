@@ -21,8 +21,10 @@ import javax.jcr.Node;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -79,21 +81,21 @@ public class UIDocActivity extends BaseUIActivity {
   public static class ViewDocumentActionListener extends EventListener<UIDocActivity> {
     @Override
     public void execute(Event<UIDocActivity> event) throws Exception {
-//      final UIDocActivity docActivity = event.getSource();
-//      final UIActivitiesContainer activitiesContainer = docActivity.getParent();
-//      final UIPopupWindow popupWindow = activitiesContainer.getPopupWindow();
-//
-//      UIDocViewer docViewer = popupWindow.createUIComponent(UIDocViewer.class, null, "DocViewer");
-//      final Node docNode = docActivity.getDocNode();
-//      docViewer.setOriginalNode(docNode);
-//      docViewer.setNode(docNode);
-//
-//      popupWindow.setUIComponent(docViewer);
-//      popupWindow.setWindowSize(800, 600);
-//      popupWindow.setShow(true);
-//      popupWindow.setResizable(true);
-//
-//      event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
+      final UIDocActivity docActivity = event.getSource();
+      final UIActivitiesContainer activitiesContainer = docActivity.getParent();
+      final UIPopupWindow popupWindow = activitiesContainer.getPopupWindow();
+
+      UIDocViewer docViewer = popupWindow.createUIComponent(UIDocViewer.class, null, "DocViewer");
+      final Node docNode = docActivity.getDocNode();
+      docViewer.setOriginalNode(docNode);
+      docViewer.setNode(docNode);
+
+      popupWindow.setUIComponent(docViewer);
+      popupWindow.setWindowSize(800, 600);
+      popupWindow.setShow(true);
+      popupWindow.setResizable(true);
+
+      event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
     }
   }
 }

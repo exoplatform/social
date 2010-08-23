@@ -168,7 +168,7 @@
         %>
         <img src="/social-resources/skin/ShareImages/activity_file.png" alt="" style="padding: 0 4px 6px 10px;"/>$dName
         <a class="ColorLink" target="_blank" href="$dLink">$downloadDocumentLabel</a>
-        <!--<a class="ColorLink" href="<%= uicomponent.event("ViewDocument", uicomponent.getId(), "")%>">$viewDocumentLabel</a><br/>-->
+        <a class="ColorLink" href="<%= uicomponent.event("ViewDocument", uicomponent.getId(), "")%>">$viewDocumentLabel</a><br/>
       </div>
       <div class="LinkCM">
         <span class="DateTime">$activityPostedTime *</span>
@@ -185,7 +185,7 @@
       <% } else { %>
         <a onclick="$likeActivityAction" class="LinkCM" id="LikeLink${activity.id}" href="#like">
           $labelLike
-        </a>
+        </a>                                  
       <% }%>
       </div>
     </div>
