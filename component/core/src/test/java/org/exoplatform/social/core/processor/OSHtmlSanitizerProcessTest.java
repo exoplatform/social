@@ -27,7 +27,6 @@ import org.exoplatform.container.xml.ValuesParam;
 public class OSHtmlSanitizerProcessTest extends TestCase {
 
   public void testInitParams() {
-
     OSHtmlSanitizerProcessor processor = new OSHtmlSanitizerProcessor(null);
     String [] actual = processor.getAllowedTags();
     assertEquals(OSHtmlSanitizerProcessor.OS_ALLOWED_TAGS, actual);

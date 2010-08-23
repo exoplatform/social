@@ -41,6 +41,7 @@ public class LinkProvider {
 
   public String getProfileLink(String username, String portalOwner) {
     String link = username;
+
     try {
       Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
       if (identity == null) {
@@ -49,11 +50,11 @@ public class LinkProvider {
 
       String container = PortalContainer.getCurrentPortalContainerName();
 
-      if(portalOwner == null){
+      if(portalOwner == null || portalOwner.equals("")){
         PortalRequestContext context = Util.getPortalRequestContext();
         portalOwner = context.getPortalOwner();
       }
-      
+
       String url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
     } catch (Exception e) {

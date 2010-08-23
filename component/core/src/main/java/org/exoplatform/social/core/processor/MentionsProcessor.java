@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -61,14 +62,22 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
     // Replace all occurrences of pattern in input
     StringBuffer buf = new StringBuffer();
     while (matcher.find()) {
-        // Get the match result
-        String replaceStr = matcher.group().substring(1);
+      // Get the match result
+      String replaceStr = matcher.group().substring(1);
 
-        // Convert to uppercase
-        replaceStr = linkProvider.getProfileLink(replaceStr, null);
+      String portalOwner;
+      try{
+        portalOwner = Util.getPortalRequestContext().getPortalOwner();
+      } catch (Exception e){
+        //default value for testing and social
+        portalOwner = "classic";
+      }
 
-        // Insert replacement
-        matcher.appendReplacement(buf, replaceStr);
+      // Convert to uppercase
+      replaceStr = linkProvider.getProfileLink(replaceStr, portalOwner);
+
+      // Insert replacement
+      matcher.appendReplacement(buf, replaceStr);
     }
     matcher.appendTail(buf);
     return buf.toString();
