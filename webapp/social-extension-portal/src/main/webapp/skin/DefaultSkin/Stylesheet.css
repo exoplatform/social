@@ -15,30 +15,41 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-.UIBannerPortlet .InlineContainer .RightBanner {
-	background: none;
+@import url(portal/webui/container/UIToolbarContainer/Stylesheet.css);
+
+body{
+  background-color: #eeeeee;
 }
 
-.UIBannerPortlet .InlineContainer .LeftBanner{
-	border: none;
-	padding-left: 0px;
-	background-color: #20263f;
+div, table, tr, td, img, form{
+	font-size: 12px;
 }
 
-.UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleBanner{
-	height: 42px;
+.UIWorkingWorkspace {
+  background-color: #eeeeee;
+  margin: auto;
+  width: 100%;
 }
 
-.UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer {
-	padding: 13px 45px 1px 15px;
+.UIPortal .UIFooterPortlet{
+  background-color: #eeeeee;
 }
 
-.UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer a {
-	height: 28px;
-	font-weight: normal;
-	color: #9f9e9e;
+.UIPortal .UIFooterPortlet .CopyrightInfo {
+  color:#7b7b7b;
+  height:30px;
+  line-height:30px;
+  text-align:center;
+  font-size: 11px;
+  font-weight: normal;
 }
 
-.UISocialExtensionBannerAndNavigationContainerTDContainer .UIBannerPortlet .MiddleLoginContainer a:hover {
-	color: #ffd400;
+.UIPageBody {
+  width: 983px;
+  margin: 0 auto;
 }
+
+.UIPageBody .VIEW-PAGEBODY .UIPage{
+  padding: 0px;
+}
+

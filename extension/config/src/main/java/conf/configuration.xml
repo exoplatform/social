@@ -84,6 +84,9 @@
                 <value>
                   <string>social-extension</string>
                 </value>
+                <value>
+                  <string>social-extension-portal</string>
+                </value>
               </collection>
             </field>
           </object>

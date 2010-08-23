@@ -34,4 +34,9 @@
   <packaging>war</packaging>
   <name>eXo Social Extension WAR</name>
   <description>eXo Social Extension WAR</description>
+
+  <build>
+    <finalName>social-extension</finalName>
+  </build>
+
 </project>

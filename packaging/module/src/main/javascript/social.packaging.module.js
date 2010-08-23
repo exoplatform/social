@@ -54,6 +54,9 @@ function getModule(params) {
   module.webapp.resources = new Project("org.exoplatform.social", "exo.social.webapp.resources", "war", module.version);
   module.webapp.resources.deployName = "social-resources";
 
+  module.webapp.socialExtensionPortal = new Project("org.exoplatform.social", "exo.social.webapp.social-extension-portal", "war", module.version);
+  module.webapp.socialExtensionPortal.deployName = "social-extension-portal";
+
   module.extras = {};
   module.extras.feedmash = new Project("org.exoplatform.social", "exo.social.extras.feedmash", "jar", module.version);
   module.extras.linkComposerPlugin = new Project("org.exoplatform.social", "exo.social.extras.link-composer-plugin", "jar", module.version);
