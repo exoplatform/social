@@ -17,28 +17,11 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
+<configuration
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
 
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <import>war:/conf/social-extension/portal/portal-configuration.xml</import>
 
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <artifactId>exo.social.extension</artifactId>
-    <groupId>org.exoplatform.social</groupId>
-    <version>1.2.0-SNAPSHOT</version>
-  </parent>
-
-  <groupId>org.exoplatform.social</groupId>
-  <artifactId>exo.social.extension.war</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
-  <packaging>war</packaging>
-  <name>eXo Social Extension WAR</name>
-  <description>eXo Social Extension WAR</description>
-
-  <build>
-    <finalName>social-extension</finalName>
-  </build>
-</project>
+</configuration>
