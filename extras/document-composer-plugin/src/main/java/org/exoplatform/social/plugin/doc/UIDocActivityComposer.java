@@ -123,11 +123,11 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     UIOneNodePathSelector uiOneNodePathSelector;
     try {
       uiOneNodePathSelector = uiPopup.createUIComponent(UIOneNodePathSelector.class, null, null);
-      uiOneNodePathSelector.setAcceptedNodeTypesInPathPanel(new String[] {Utils.NT_FILE});
-      uiOneNodePathSelector.setRootNodeLocation(REPOSITORY, WORKSPACE, rootpath);
-      uiOneNodePathSelector.init(SessionProviderFactory.createSessionProvider());
       uiOneNodePathSelector.setIsDisable(WORKSPACE, true);
       uiOneNodePathSelector.setIsShowSystem(false);
+      uiOneNodePathSelector.setAcceptedNodeTypesInPathPanel(new String[] {Utils.NT_FILE});
+      uiOneNodePathSelector.setRootNodeLocation(REPOSITORY, WORKSPACE, rootpath);
+      uiOneNodePathSelector.init(SessionProviderFactory.createSessionProvider());     
       uiPopup.setUIComponent(uiOneNodePathSelector);
       uiOneNodePathSelector.setSourceComponent(this, null);
       uiPopup.setShow(true);
