@@ -35,8 +35,8 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     assertNull(activity.getTitle());
     assertNull(activity.getBody());
     String root = "root", john = "john";
-    String rootLink = linkProvider.getProfileLink(root);
-    String johnLink = linkProvider.getProfileLink(john);
+    String rootLink = linkProvider.getProfileLink(root, null);
+    String johnLink = linkProvider.getProfileLink(john, null);
 
     activity.setTitle("single @root substitution");
     processor.processActivity(activity);

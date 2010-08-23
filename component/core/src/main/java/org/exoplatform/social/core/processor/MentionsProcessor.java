@@ -65,7 +65,7 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
         String replaceStr = matcher.group().substring(1);
 
         // Convert to uppercase
-        replaceStr = linkProvider.getProfileLink(replaceStr);
+        replaceStr = linkProvider.getProfileLink(replaceStr, null);
 
         // Insert replacement
         matcher.appendReplacement(buf, replaceStr);
