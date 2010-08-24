@@ -6,7 +6,7 @@
   <fileSets>
    <fileSet>
     <directory>target/wikbook/output</directory>
-    <outputDirectory>exo.archetype.wikbook-1</outputDirectory>
+    <outputDirectory>org.exoplatform.social</outputDirectory>
     <includes>
       <include>**</include>
      </includes>
