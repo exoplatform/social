@@ -27,10 +27,7 @@
 }
 
 .TRContainer .ApplicationTDContainer {
-  border: 1px solid #d6d6d6;
-  border-left: none;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
+  border: none;
   background: white;
 }
 
@@ -64,10 +61,7 @@
 }
 
 .TRContainer .MenuTDContainer {
-  border: 1px solid #d6d6d6;
-  border-right: none;
-  -moz-border-radius-topleft: 3px;
-  -moz-border-radius-bottomleft: 3px;
+  border: none;
   width: 162px;
   background: #ededed;
 }
@@ -199,7 +193,7 @@
 .ToggleElement {
   width: 5px;
   cursor: pointer;
-  border-right: 1px solid gray;
+  border: none;
   vertical-align: middle;
 }
 
