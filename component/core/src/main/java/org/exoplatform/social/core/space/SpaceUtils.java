@@ -1052,6 +1052,19 @@ public class SpaceUtils {
   }
 
   /**
+   * Get display application name in formal.
+   * 
+   * @param appDisplayName
+   * @return
+   */
+  static public String getDisplayAppName (String appDisplayName) {
+    int len = appDisplayName.length() - 1;
+    if (appDisplayName.toLowerCase().endsWith("portlet")) return appDisplayName.substring(0, len - 7);
+    if (appDisplayName.toLowerCase().endsWith("gadget")) return appDisplayName.substring(0, len - 6);
+    return appDisplayName;
+  }
+  
+  /**
    * Gets appStatusPattern: [appId:appNodeName:isRemovableString:status]
    *
    * @param installedApps

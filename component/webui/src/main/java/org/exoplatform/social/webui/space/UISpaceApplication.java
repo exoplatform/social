@@ -207,9 +207,9 @@ public class UISpaceApplication extends UIForm {
     for (PageNode node : nodes) {
       String nodeUri = node.getUri();
       appNodeName = nodeUri.substring(nodeUri.indexOf("/") + 1);
-      if (appNodeName.equals(appName)) return node.getResolvedLabel();
+      if (appNodeName.equals(appName)) return SpaceUtils.getDisplayAppName(node.getResolvedLabel());
     }
-    return application.getDisplayName();
+    return SpaceUtils.getDisplayAppName(application.getDisplayName());
   }
 
   /**
