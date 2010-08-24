@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Default message bundle
+-->
+<messageBundle>
+  <msg name="my_spaces">My Spaces</msg>
+  <msg name="more_link_label">Show all</msg>
+  <msg name="has_no_space">You do not have any spaces yet.</msg>
+</messageBundle>
