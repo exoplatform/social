@@ -25,6 +25,7 @@
   import org.exoplatform.portal.config.model.PageNode;
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.organization.OrganizationUtils;
+  import org.exoplatform.social.core.space.SpaceUtils;
   
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
@@ -55,11 +56,12 @@
     def href = Util.getPortalRequestContext().getPortalURI() + node.getUri();
     def icon = node.getIcon();
     if(icon == null) icon = "DefaultPageIcon";
-    def toolong = (node.resolvedLabel.length() > 60);
-    def label = (toolong ? node.resolvedLabel.substring(0, 57) + "..." : node.resolvedLabel);
+    def displayAppName = SpaceUtils.getDisplayAppName(node.resolvedLabel);
+    def toolong = (displayAppName.length() > 60);
+    def label = (toolong ? displayAppName.substring(0, 57) + "..." : displayAppName);
     def title = "";
     if(toolong == true) { 
-      title = "title='$node.resolvedLabel'"; 
+      title = "title='$displayAppName'"; 
     } else {
       title = "";
     }

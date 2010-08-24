@@ -34,7 +34,7 @@
     def labelStr = "";
     def labelStrPrev = "";
     def appendLabel = " ...";
-    def fitStr = nodeLabel;
+    def fitStr = SpaceUtils.getDisplayAppName(nodeLabel);
     if (fitStr == null) {
       return "";
     }
