@@ -22,15 +22,16 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.model.SpaceAttachment;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -201,7 +202,17 @@ public class UIManageInvitationSpaces extends UIContainer {
        return;
      }
 
+     UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+     UserPortalConfig userPortalConfig = uiPortalApp.getUserPortalConfig();
+     List<PageNavigation> navigations = userPortalConfig.getNavigations();
      PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
+     for (PageNavigation navi : navigations) {
+      if ((navi.getOwner()).equals(spaceNavigation.getOwner())) {
+        spaceNavigation = navi;
+        break;
+      }
+     }
+     
      SpaceUtils.setNavigation(spaceNavigation);
      SpaceUtils.updateWorkingWorkSpace();
    }
