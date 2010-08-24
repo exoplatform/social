@@ -120,12 +120,16 @@
 
   activityContentTitle = activity.title;
   activityPostedTime = uicomponent.getPostedTimeString(activity.postedTime);
-  activityUserName = uicomponent.getUserFullName(activity.userId);
-  activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
+  def userId = activity.userId;
+  activityUserName = uicomponent.getUserFullName(userId);
+  activityUserProfileUri = uicomponent.getUserProfileUri(userId);
 
-  activityImageSource = uicomponent.getUserAvatarImageSource(activity.userId);
-  if (!activityImageSource)  {
-    activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+  if (uicomponent.isUserActivity(userId)) {
+    activityImageSource = uicomponent.getUserAvatarImageSource(userId);
+    if (!activityImageSource) activityImageSource= "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+  } else {
+    activityImageSource = uicomponent.getSpaceAvatarImageSource(userId);
+    if (!activityImageSource) activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
   }
 
 %>

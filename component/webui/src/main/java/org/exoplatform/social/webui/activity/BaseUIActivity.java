@@ -393,6 +393,31 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
+   * Gets space's avatar image source
+   * @return
+   * @throws Exception
+   */
+  public String getSpaceAvatarImageSource(String spaceIdentityId) throws Exception {
+    Identity spaceIdentity = identityManager.getIdentity(spaceIdentityId, false);
+    String spaceId = spaceIdentity.getRemoteId();
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
+    if (space != null) {
+      return space.getImageSource();
+    }
+
+    return null;
+  }
+  
+  /**
+   * Gets SpaceService
+   * @return
+   */
+  private SpaceService getSpaceService() {
+    return getApplicationComponent(SpaceService.class);
+  }
+  
+  /**
    * Gets activityManager
    * @return
    */
