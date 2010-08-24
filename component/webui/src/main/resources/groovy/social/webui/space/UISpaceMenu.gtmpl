@@ -63,9 +63,7 @@
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
  	jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
- 	jsManager.importJavascript("eXo.social.webui.UISpaceMenuPortlet", "/social-resources/javascript");
  	jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition","/social-resources/javascript");
- 	jsManager.addOnLoadJavascript("eXo.social.webui.UISpaceMenuPortlet.init");
 %>
 
 <div id="$uicomponent.id" class="$uicomponent.id">
