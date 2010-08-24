@@ -10,7 +10,9 @@
     directory_title="My Spaces Gadget"
     title_url="http://www.exoplatform.org"
     description="A simple Gadget that lists all spaces of current viewer.">
+    <Locale messages="locale/ALL_ALL.xml" />
     <Locale lang="en" messages="locale/en_ALL.xml" />
+    <Locale lang="fr" messages="locale/fr_ALL.xml" />
     <Require feature="opensocial-0.8" />
     <Require feature="dynamic-height" />
     <Require feature="settitle" />
@@ -20,6 +22,7 @@
   <Content type="html" view="default, home, profile">
   <![CDATA[
   <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <script type="text/javascript" src="script/debug.js"></script>
   <script type="text/javascript" src="script/myspaces.js"></script>
   <script type="text/javascript" src="script/Locale.js"></script>
   <div class="UIGadgetThemes UIYellowThemes">
@@ -30,7 +33,8 @@
   </Content>
     <Content type="html" view="canvas">
   <![CDATA[
-    <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <script type="text/javascript" src="script/debug.js"></script>    
   <script type="text/javascript" src="script/myspaces.js"></script>
   <script type="text/javascript" src="script/Locale.js"></script>
   <div class="UIGadgetThemes UIYellowThemes">
