@@ -149,8 +149,10 @@
     }
     
     var shareButton = Util.getElementById('ShareButton');
+    var isReadyEl = Util.getElementById('isReadyId');
     uiComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
+    	isReadyEl.value = true;
       //trick: enable share button
       if (shareButton) {
         shareButton.disabled = false;
@@ -211,6 +213,7 @@
       }
       
     } else {
+    	isReadyEl.value = false;
       if (shareButton) {
         shareButton.disabled = true;
       }
