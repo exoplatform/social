@@ -368,7 +368,7 @@ public class BaseUIActivity extends UIForm {
     }
 
     LinkProvider linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
-    return linkProvider.getProfileLink(userIdentity.getRemoteId(), null);      
+    return linkProvider.getProfileUri(userIdentity.getRemoteId(), null);      
   }
 
   /**
