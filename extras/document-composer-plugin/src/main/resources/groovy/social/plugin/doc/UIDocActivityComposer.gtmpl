@@ -25,14 +25,14 @@
       %>
         <img src="/social-resources/skin/ShareImages/activity_file.png" alt="" style="padding: 0 4px 6px 10px;"/><%=uicomponent.getDocumentName()%>
         <script type="text/javascript">
-          setShareButtonDisable(false);
+          document.getElementById("ShareButton").disabled = false;
         </script>
       <%
     } else {
       %>
         <a class="ColorLink" href="<%= uicomponent.event("SelectDocument")%>">$selectDocumentLabel</a><br/>
         <script type="text/javascript">
-          setShareButtonDisable(true);
+          document.getElementById("ShareButton").disabled = true;
         </script>
       <%
     }

@@ -38,7 +38,7 @@
   }
 %>
 <div id="$uicomponent.id" class="$uicomponent.id">
-
+<% if (uicomponent.isActivityStreamOwner()) { %>
   <div class="UIAction">
       <table class="ActionContainer">
         <tbody>
@@ -76,5 +76,6 @@
         </tbody>
       </table>
   </div>
+<% } %>
   <% uicomponent.renderChildren(); %>
 </div>

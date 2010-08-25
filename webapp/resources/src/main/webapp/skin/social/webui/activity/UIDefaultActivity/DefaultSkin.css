@@ -76,7 +76,7 @@
 .UIActivity .CommentBox {
   padding: 4px;
   background: #f0ede2;
-  margin: 0px 0px 2px 74px;
+  margin-bottom: 2px;
 }
 
 .UIActivity .ContentBox {
@@ -144,7 +144,6 @@
 .UIActivity .ListPeopleLikeBG {
   background:url("background/ListPeopleLikeBG1.gif") repeat-x scroll center top transparent;
   margin-bottom:3px;
-  margin-left:74px;
 }
 
 .UIActivity .CommentListInfo {
