@@ -118,7 +118,7 @@
   }
 
   activityContentTitle = activity.title;
-  activityPostedTime = uicomponent.getPostedTimeString(activity.postedTime);
+  activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
   activityUserName = uicomponent.getUserFullName(activity.userId);
   activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
 

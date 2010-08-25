@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.activity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -38,8 +39,10 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
+import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
@@ -236,42 +239,42 @@ public class BaseUIActivity extends UIForm {
 
   /**
    * Gets prettyTime by timestamp
+   * @param resourceBundle
    * @param postedTime
-   * @return
+   * @return String
    */
-  public String getPostedTimeString(long postedTime) {
-    //TODO use app resource
+  public String getPostedTimeString(WebuiBindingContext resourceBundle, long postedTime) throws Exception {
     long time = (new Date().getTime() - postedTime) / 1000;
-    long value = 0;
+    long value;
     if (time < 60) {
-      return "less than a minute ago";
+      return resourceBundle.appRes("UIActivity.label.Less_Than_A_Minute");
     } else {
       if (time < 120) {
-        return "about a minute ago";
+        return resourceBundle.appRes("UIActivity.label.About_A_Minute");
       } else {
         if (time < 3600) {
           value = Math.round(time / 60);
-          return "about " + value + " minutes ago";
+          return resourceBundle.appRes("UIActivity.label.About_?_Minutes").replaceFirst("\\{0\\}", String.valueOf(value));
         } else {
           if (time < 7200) {
-            return "about an hour ago";
+            return resourceBundle.appRes("UIActivity.label.About_An_Hour");
           } else {
             if (time < 86400) {
               value = Math.round(time / 3600);
-              return "about " + value + " hours ago";
+              return resourceBundle.appRes("UIActivity.label.About_?_Hours").replaceFirst("\\{0\\}", String.valueOf(value));
             } else {
               if (time < 172800) {
-                return "about a day ago";
+                return resourceBundle.appRes("UIActivity.label.About_A_Day");
               } else {
                 if (time < 2592000) {
                   value = Math.round(time / 86400);
-                  return "about " + value + " days ago";
+                  return resourceBundle.appRes("UIActivity.label.About_?_Days").replaceFirst("\\{0\\}", String.valueOf(value));
                 } else {
                   if (time < 5184000) {
-                    return "about a month ago";
+                    return resourceBundle.appRes("UIActivity.label.About_A_Month");
                   } else {
                     value = Math.round(time / 2592000);
-                    return "about " + value + " months ago";
+                    return resourceBundle.appRes("UIActivity.label.About_?_Months").replaceFirst("\\{0\\}", String.valueOf(value));
                   }
                 }
               }
