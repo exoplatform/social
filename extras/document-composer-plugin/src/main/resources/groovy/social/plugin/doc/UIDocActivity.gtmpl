@@ -168,6 +168,7 @@
         %>
         <img src="/social-resources/skin/ShareImages/activity_file.png" alt="" style="padding: 0 4px 6px 10px;"/>$dName
         <a class="ColorLink" target="_blank" href="$dLink">$downloadDocumentLabel</a>
+        &nbsp;|&nbsp;
         <a class="ColorLink" href="<%= uicomponent.event("ViewDocument", uicomponent.getId(), "")%>">$viewDocumentLabel</a><br/>
       </div>
       <div class="LinkCM">
