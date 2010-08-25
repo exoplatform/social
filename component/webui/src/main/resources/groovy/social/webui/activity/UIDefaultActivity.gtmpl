@@ -1,4 +1,3 @@
-
 <%
 /*
 <!--
@@ -119,7 +118,7 @@
   }
 
   activityContentTitle = activity.title;
-  activityPostedTime = uicomponent.getPostedTimeString(activity.postedTime);
+  activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
   def userId = activity.userId;
   activityUserName = uicomponent.getUserFullName(userId);
   activityUserProfileUri = uicomponent.getUserProfileUri(userId);
