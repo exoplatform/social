@@ -33,6 +33,9 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
@@ -78,6 +81,7 @@ public class BaseUIActivity extends UIForm {
   private String[] identityLikes;
   private ActivityManager activityManager;
   private IdentityManager identityManager;
+  private RelationshipManager relationshipManager;
   private boolean commentFormDisplayed = false;
   private boolean likesDisplayed = false;
   private CommentStatus commentListStatus = CommentStatus.LATEST;
@@ -366,9 +370,8 @@ public class BaseUIActivity extends UIForm {
     if (userIdentity == null) {
       throw new Exception("User " +userIdentityId +" is not exist");
     }
-
     LinkProvider linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
-    return linkProvider.getProfileUri(userIdentity.getRemoteId(), null);      
+    return linkProvider.getProfileUri(userIdentity.getRemoteId(), null);
   }
 
   /**
@@ -408,7 +411,10 @@ public class BaseUIActivity extends UIForm {
    * @return
    */
   private ActivityManager getActivityManager() {
-    return getApplicationComponent(ActivityManager.class);
+    if (activityManager == null) {
+      activityManager = getApplicationComponent(ActivityManager.class);
+    }
+    return activityManager;
   }
 
   /**
@@ -416,7 +422,21 @@ public class BaseUIActivity extends UIForm {
    * @return
    */
   private IdentityManager getIdentityManager() {
-    return getApplicationComponent(IdentityManager.class);
+    if (identityManager == null) {
+      identityManager = getApplicationComponent(IdentityManager.class);
+    }
+    return identityManager;
+  }
+
+  /**
+   * Gets relationshipManager
+   * @return
+   */
+  private RelationshipManager getRelationshipManager() {
+    if (relationshipManager == null) {
+      relationshipManager = getApplicationComponent(RelationshipManager.class);
+    }
+    return relationshipManager;
   }
 
   /**
@@ -463,18 +483,40 @@ public class BaseUIActivity extends UIForm {
       return spaceService.isLeader(space, remoteUser);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
-        //return uiActivitiesContainer.getOwnerName().equals(remoteUser);
-        return true;
-      } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
-        //currently displays only
-        return false;
-      } else {
-        //connections
-        return false;
+      if (uiUserActivitiesDisplay.isActivityStreamOwner()) {
+        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+          return true;
+        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
+          //currently displays only
+          return false;
+        } else {
+          //connections
+          return false;
+        }
       }
     }
     return false;
+  }
+
+  public boolean isActivityCommentAndLikable() throws Exception {
+    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
+    PostContext postContext = uiActivitiesContainer.getPostContext();
+    if (postContext == PostContext.USER) {
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+      if (!uiUserActivitiesDisplay.isActivityStreamOwner()) {
+        String ownerName = uiUserActivitiesDisplay.getOwnerName();
+        String viewerName = getRemoteUser();
+        Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
+        Identity viewerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName, false);
+        Relationship relationship = getRelationshipManager().getRelationship(ownerIdentity, viewerIdentity);
+        if (relationship == null) {
+          return false;
+        } else if (!(relationship.getStatus() == Type.CONFIRM)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   public boolean isCommentDeletable(String activityUserId) throws SpaceException {
@@ -493,13 +535,15 @@ public class BaseUIActivity extends UIForm {
         return spaceService.isLeader(space, getRemoteUser());
       } else if (postContext == PostContext.USER) {
         UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
-          return true;
-        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
-          return false;
-        } else {
-          //connections
-          return false;
+        if (uiUserActivitiesDisplay.isActivityStreamOwner()) {
+          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+            return true;
+          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
+            return false;
+          } else {
+            //connections
+            return false;
+          }
         }
       }
     } catch (Exception e) {

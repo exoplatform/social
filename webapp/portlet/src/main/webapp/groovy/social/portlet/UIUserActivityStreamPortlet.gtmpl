@@ -31,5 +31,5 @@
 <div class="$uicomponent.id" id="$uicomponent.id">
   <% uicomponent.renderChild(PopupContainer.class); %>
   <% uicomponent.renderChild(UIComposer.class); %>
-  <% uicomponent.renderChild(UIUserActivitiesDisplay.class);%>
+  <% uicomponent.renderChild(UIUserActivitiesDisplay.class); %>
 </div>

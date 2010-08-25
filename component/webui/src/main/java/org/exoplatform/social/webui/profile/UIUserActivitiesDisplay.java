@@ -24,6 +24,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
@@ -67,12 +68,14 @@ public class UIUserActivitiesDisplay extends UIContainer {
   public enum DisplayMode {
     CONNECTIONS,
     SPACES,
-    MY_STATUS
+    MY_STATUS,
+    OWNER_STATUS
   }
   private DisplayMode selectedDisplayMode = DisplayMode.CONNECTIONS;
 
   private String                ownerName;
-
+  private String                viewerName;
+  private boolean               isActivityStreamOwner = false;
   private SortedSet<Activity> sortedActivityList;
 
   private int displayedActivityItems = 20;
@@ -86,6 +89,10 @@ public class UIUserActivitiesDisplay extends UIContainer {
    */
   public UIUserActivitiesDisplay() {
 
+  }
+
+  public boolean isActivityStreamOwner() {
+    return isActivityStreamOwner;
   }
 
   public int getDisplayedActivityItems() {
@@ -116,6 +123,11 @@ public class UIUserActivitiesDisplay extends UIContainer {
    */
   public void setOwnerName(String ownerName) throws Exception {
     this.ownerName = ownerName;
+    viewerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
+    isActivityStreamOwner = viewerName.equals(ownerName);
+    if (!isActivityStreamOwner) {
+      selectedDisplayMode = DisplayMode.OWNER_STATUS;
+    }
     init();
   }
 
@@ -148,12 +160,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
    */
   public void init() throws Exception {
     Validate.notNull(ownerName, "ownerName must not be null.");
+    Validate.notNull(viewerName, "viewerName must not be null.");
     Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                       ownerName);
     activityList = new ArrayList<Activity>();
     sortedActivityList = new TreeSet<Activity>(Util.activityComparator());
 
-    if (getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+    if (getSelectedDisplayMode() == DisplayMode.MY_STATUS || getSelectedDisplayMode() == DisplayMode.OWNER_STATUS) {
       activityList = getActivityManager().getActivities(ownerIdentity);
     } else if (getSelectedDisplayMode() == DisplayMode.SPACES) {
       SpaceService spaceService = getApplicationComponent(SpaceService.class);
@@ -162,8 +175,9 @@ public class UIUserActivitiesDisplay extends UIContainer {
       try {
         List<Space> spaceList = spaceService.getAccessibleSpaces(ownerName);
         for (Space space : spaceList) {
-          Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId());
-          List<Activity> spaceActivityList =  activityManager.getActivities(spaceIdentity);
+          Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                       space.getId());
+          List<Activity> spaceActivityList = activityManager.getActivities(spaceIdentity);
           sortedActivityList.addAll(spaceActivityList);
         }
         Object[] activityArray = sortedActivityList.toArray();
@@ -181,12 +195,19 @@ public class UIUserActivitiesDisplay extends UIContainer {
     } else {
       List<Identity> connectionsList = getConnections();
       ActivityManager activityManager = getActivityManager();
+      String identityId;
       for (Identity identity : connectionsList) {
-        sortedActivityList.addAll(activityManager.getActivities(identity));
+        List<Activity> tempActivityList = activityManager.getActivities(identity);
+        identityId = identity.getId();
+        for (Activity activity : tempActivityList) {
+          if (activity.getUserId().equals(identityId)) {
+            sortedActivityList.add(activity);
+          }
+        }
       }
       Object[] activityArray = sortedActivityList.toArray();
       if (sortedActivityList.size() > displayedActivityItems) {
-        activityArray =  ArrayUtils.subarray(activityArray, 0, displayedActivityItems);
+        activityArray = ArrayUtils.subarray(activityArray, 0, displayedActivityItems);
       }
       for (Object obj : activityArray) {
         activityList.add((Activity) obj);

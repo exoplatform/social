@@ -58,6 +58,7 @@ public class UIComposer extends UIForm {
   private UIFormTextAreaInput messageInput;
   private UIActivityComposerContainer composerContainer;
   private UIActivityComposerManager activityComposerManager;
+  private boolean isActivityStreamOwner;
 
   /**
    * Constructor
@@ -78,6 +79,14 @@ public class UIComposer extends UIForm {
     }
 
     activityComposerManager.setDefaultActivityComposer();
+  }
+
+  public void isActivityStreamOwner(boolean isActivityStreamOwner) {
+    this.isActivityStreamOwner = isActivityStreamOwner;
+  }
+
+  public boolean isActivityStreamOwner() {
+    return isActivityStreamOwner;
   }
 
   private void initActivityComposerManager() throws Exception {

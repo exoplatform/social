@@ -17,6 +17,14 @@
 package org.exoplatform.social.portlet;
 
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -40,9 +48,12 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   template = "app:/groovy/social/portlet/UIUserActivityStreamPortlet.gtmpl"
 )
 public class UIUserActivityStreamPortlet extends UIPortletApplication {
+  private static final Log LOG = ExoLogger.getLogger(UIUserActivityStreamPortlet.class);
   private String ownerName;
+  private String viewerName;
   private UIComposer uiComposer;
   private PopupContainer hiddenContainer;
+  private boolean composerDisplayed = false;
   UIUserActivitiesDisplay uiUserActivitiesDisplay;
   /**
    * constructor
@@ -50,14 +61,21 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public UIUserActivityStreamPortlet() throws Exception {
-    ownerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
+    viewerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
+    ownerName = URLUtils.getCurrentUser();
+    if (ownerName == null) {
+      ownerName = viewerName;
+    }
     hiddenContainer = addChild(PopupContainer.class, null, "HiddenContainer");
     uiComposer = addChild(UIComposer.class, null, null);
     uiComposer.setPostContext(PostContext.USER);
     uiComposer.setOptionContainer(hiddenContainer);
     uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, null);
-    uiUserActivitiesDisplay.setOwnerName(ownerName);
     uiComposer.setActivityDisplay(uiUserActivitiesDisplay);
+  }
+
+  public boolean isComposerDisplayed() {
+    return composerDisplayed;
   }
 
   /**
@@ -66,6 +84,29 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void refresh() throws Exception {
+    viewerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
+    ownerName = URLUtils.getCurrentUser();
+    if (ownerName == null) {
+      ownerName = viewerName;
+    }
+    if (viewerName.equals(ownerName)) {
+      uiComposer.isActivityStreamOwner(true);
+      uiComposer.setRendered(true);
+    } else {
+      uiComposer.isActivityStreamOwner(false);
+      IdentityManager identityManager = getApplicationComponent(IdentityManager.class);
+      RelationshipManager relationshipManager = getApplicationComponent(RelationshipManager.class);
+      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
+      Identity viewerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName);
+
+      Relationship relationship = relationshipManager.getRelationship(ownerIdentity, viewerIdentity);
+
+      if (relationship != null && (relationship.getStatus() == Relationship.Type.CONFIRM)) {
+        uiComposer.setRendered(true);
+      } else {
+        uiComposer.setRendered(false);
+      }
+    }
     uiUserActivitiesDisplay.setOwnerName(ownerName);
   }
 

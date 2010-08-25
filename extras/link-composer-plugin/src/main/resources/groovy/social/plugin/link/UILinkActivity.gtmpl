@@ -29,6 +29,7 @@
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
+  def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
 %>
 
 <% if (activity) { //process if not null
@@ -84,7 +85,7 @@
     }
   """
   jsManager.addOnLoadJavascript("initUIActivity${activity.id}");
-  //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
+  //make sure commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def activityUserName, activityUserProfileUri, activityImageSource, activityContentBody, activityPostedTime;
   def commentFormBlockClass = "", listPeopleLikeBlockClass = "", listPeopleBGClass = "";
@@ -153,7 +154,6 @@
         <%}%>
       </div>
 
-
        <%
           def linkSource = uicomponent.getLinkSource();
           def linkTitle = uicomponent.getLinkTitle();
@@ -191,11 +191,12 @@
       <div class="LinkCM">
         <span class="DateTime">$activityPostedTime *</span>
       <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
-         def commentLink = "CommentLink";
+         def commentLink = "";
       %>
-      <a class="LinkCM $commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
-        $labelComment
-      </a> |
+     <% if (activityCommentAndLikable) { %>
+        <a class="LinkCM $commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
+          $labelComment
+        </a> |
       <% if (uicomponent.isLiked()) { %>
         <a onclick="$unlikeActivityAction" class="LinkCM" id="UnLikeLink${activity.id}" href="#unlike">
           $labelUnlike
@@ -205,7 +206,7 @@
           $labelLike
         </a>
       <% }%>
-      </div>
+     <% }%>
     </div>
     <div class="ListPeopleLikeBG $listPeopleBGClass">
 		  <div class="ListPeopleLike">
@@ -276,7 +277,7 @@
       commenterImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
     }
     commentMessage = it.title;
-    commentPostedTime = uicomponent.getPostedTimeString(it.postedTime);
+    commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
   %>
     <div id="CommentBlock${activity.id}" class="CommentBox clearfix">
       <a class="AvatarCM" title="$commenterFullName" href="$commenterProfileUri">
@@ -305,6 +306,7 @@
     </div>
   </div>
   <% uiform.end() %>
+  </div>
 </div>
 <% } else { %> <!-- activity deleted -->
 <div class="UIActivity Deleted">$labelActivityHasBeenDeleted</div>

@@ -25,12 +25,13 @@
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   import org.exoplatform.social.webui.composer.PopupContainer;
   //import org.exoplatform.social.plugin.doc.UIDocViewer;
-  
+
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
+  def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
 %>
 
 <% if (activity) { //process if not null
@@ -176,6 +177,7 @@
       <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
          def commentLink = "";
       %>
+     <% if (activityCommentAndLikable) { %>
         <a class="LinkCM $commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
           $labelComment
         </a> |
@@ -186,8 +188,9 @@
       <% } else { %>
         <a onclick="$likeActivityAction" class="LinkCM" id="LikeLink${activity.id}" href="#like">
           $labelLike
-        </a>                                  
+        </a>
       <% }%>
+     <% }%>
       </div>
     </div>
 
@@ -263,7 +266,7 @@
       commenterImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
     }
     commentMessage = it.title;
-    commentPostedTime = uicomponent.getPostedTimeString(it.postedTime);
+    commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
   %>
     <div id="CommentBlock${activity.id}" class="CommentBox clearfix">
       <a class="AvatarCM" title="$commenterFullName" href="$commenterProfileUri">
