@@ -39,6 +39,29 @@ public class LinkProvider {
   private void init(InitParams params) {
   }
 
+  public String getProfileUri(String username, String portalOwner) {
+    String url = username;
+    try {
+      Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
+      if (identity == null) {
+        throw new RuntimeException("could not find a user identity for " + username);
+      }
+
+      String container = PortalContainer.getCurrentPortalContainerName();
+
+      if(portalOwner == null || portalOwner.equals("")){
+        PortalRequestContext context = Util.getPortalRequestContext();
+        portalOwner = context.getPortalOwner();
+      }
+
+
+      url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
+    } catch (Exception e) {
+      LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
+    }
+    return url;
+  }
+
   public String getProfileLink(String username, String portalOwner) {
     String link = username;
 
