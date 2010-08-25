@@ -19,9 +19,9 @@ package org.exoplatform.social.webui.activity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
@@ -33,13 +33,13 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
@@ -361,22 +361,14 @@ public class BaseUIActivity extends UIForm {
    * @return
    * @throws Exception
    */
-  public String getUserProfileUri(String userIdentityId) {
-    try {
-      Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
-      if (userIdentity == null) {
-        return "#";
-      }
-
-      String url = userIdentity.getProfile().getUrl();
-      if (url != null) {
-        return url;
-      } else {
-        return "#";
-      }
-    } catch (Exception e) {
-      return "#";
+  public String getUserProfileUri(String userIdentityId) throws Exception {
+    Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
+    if (userIdentity == null) {
+      throw new Exception("User " +userIdentityId +" is not exist");
     }
+
+    LinkProvider linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
+    return linkProvider.getProfileLink(userIdentity.getRemoteId(), OrganizationIdentityProvider.NAME);      
   }
 
   /**
