@@ -33,7 +33,6 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.demo.ear</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
   <packaging>ear</packaging>
   <name>eXo Social Demo EAR</name>
   <description>eXo Social Demo EAR</description>
@@ -68,6 +67,11 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extras.feedmash</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.link-composer-plugin</artifactId>
     </dependency>
 
     <dependency>
@@ -112,7 +116,7 @@
 
   </dependencies>
   <build>
-    <finalName>socialdemo</finalName>
+    <finalName>exo-social-demo-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -172,6 +176,11 @@
               <artifactId>exo.social.extras.feedmash</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.webapp.portlet</artifactId>
@@ -181,8 +190,8 @@
             <webModule>
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.webapp.opensocial</artifactId>
-              <contextRoot>social-opensocial</contextRoot>
-              <bundleFileName>social-opensocial.war</bundleFileName>
+              <contextRoot>opensocial</contextRoot>
+              <bundleFileName>opensocial.war</bundleFileName>
             </webModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>

@@ -34,9 +34,167 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extension.ear</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
   <packaging>ear</packaging>
   <name>eXo Social Extension EAR</name>
   <description>eXo Social Extension EAR</description>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.opensocial</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.service</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.webui</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.feedmash</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extension.config</artifactId>
+    </dependency>
+-->
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extension.jar</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extension.war</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.webapp.portlet</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.webapp.opensocial</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.webapp.resources</artifactId>
+      <type>war</type>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <finalName>exo-social-extension-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-ear-plugin</artifactId>
+        <configuration>
+          <defaultLibBundleDir>lib</defaultLibBundleDir>
+          <modules>
+<!--
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extension.config</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+-->
+            <webModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extension.war</artifactId>
+              <contextRoot>social-extension</contextRoot>
+              <bundleFileName>social-extension.war</bundleFileName>
+            </webModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extension.jar</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.common</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.core</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.opensocial</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.service</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.component.webui</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extras.feedmash</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <webModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.webapp.portlet</artifactId>
+              <contextRoot>social-portlet</contextRoot>
+              <bundleFileName>social-portlet.war</bundleFileName>
+            </webModule>
+            <webModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.webapp.opensocial</artifactId>
+              <contextRoot>opensocial</contextRoot>
+              <bundleFileName>opensocial.war</bundleFileName>
+            </webModule>
+            <webModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.webapp.resources</artifactId>
+              <contextRoot>social-resources</contextRoot>
+              <bundleFileName>social-resources.war</bundleFileName>
+            </webModule>
+          </modules>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
