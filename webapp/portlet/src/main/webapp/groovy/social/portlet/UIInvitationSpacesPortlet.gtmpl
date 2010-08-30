@@ -25,6 +25,8 @@
   def labelInviSpaceList = _ctx.appRes("${uicomponentId}.label.InviSpaceList");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-  <div class="TitleBar">$labelInviSpaceList</div>
+  <div class="UITabPane">
+    <div class="TitleBar">$labelInviSpaceList</div>
     <% uicomponent.renderChildren(); %>
+  </div>
 </div>

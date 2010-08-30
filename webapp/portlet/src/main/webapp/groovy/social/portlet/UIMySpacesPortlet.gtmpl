@@ -24,6 +24,8 @@
   def labelMySpaceList = _ctx.appRes("${uicomponent.id}.label.MySpaceList")
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-  <div class="TitleBar">$labelMySpaceList</div>
-  <% uicomponent.renderChildren(); %>
+  <div class="UITabPane">
+    <div class="TitleBar">$labelMySpaceList</div>
+    <% uicomponent.renderChildren(); %>
+  </div>
 </div>
