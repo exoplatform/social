@@ -44,6 +44,11 @@
     <url>http://fisheye.exoplatform.org/browse/social/trunk</url>
   </scm>
 
+  <ciManagement>
+    <system>hudson</system>
+    <url>http://builder.exoplatform.org/hudson/job/social-trunk-ci/</url>
+  </ciManagement>
+
   <properties>
     <javax.resource.version>1.5</javax.resource.version>
     <javax.servlet.version>2.5</javax.servlet.version>
