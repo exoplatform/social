@@ -41,6 +41,11 @@
     <url>http://fisheye.exoplatform.org/browse/social/branches/1.1.x</url>
   </scm>
 
+  <ciManagement>
+    <system>hudson</system>
+    <url>http://builder.exoplatform.org/hudson/job/social-1.1.x-ci/</url>
+  </ciManagement>
+
   <properties>
     <javax.resource.version>1.5</javax.resource.version>
     <javax.servlet.version>2.5</javax.servlet.version>
