@@ -87,17 +87,10 @@
         <access-permissions>*:/platform/users</access-permissions>
         <portlet-application>
           <portlet>
-            <application-ref>dashboard</application-ref>
-            <portlet-ref>GadgetPortlet</portlet-ref>
-            <preferences>
-              <preference>
-                <name>url</name>
-                <value>local://Activities</value>
-                <read-only>false</read-only>
-              </preference>
-            </preferences>
+            <application-ref>social-portlet</application-ref>
+            <portlet-ref>UserActivityStreamPortlet</portlet-ref>
           </portlet>
-          <title>Gadget Portlet</title>
+          <title>User Activity Stream</title>
           <access-permissions>*:/platform/users</access-permissions>
           <show-info-bar>false</show-info-bar>
           <show-application-state>true</show-application-state>
