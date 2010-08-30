@@ -153,8 +153,8 @@
 .UIActivity .CommentBlock {
   background:url("background/ListPeopleLikeBG1.gif") repeat-x scroll center top green;
   margin-bottom:3px;
-  margin-left:74px;
 }
+
 .UIActivity .CommentContent {
   background:url("background/ListPeopleLike.gif") no-repeat scroll 40px top transparent;
   padding-top:6px;

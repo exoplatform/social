@@ -85,7 +85,7 @@
     }
   """
   jsManager.addOnLoadJavascript("initUIActivity${activity.id}");
-  //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
+  //make sure commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def activityUserName, activityUserProfileUri, activityImageSource, activityContentBody, activityPostedTime;
   def commentFormBlockClass = "", listPeopleLikeBlockClass = "", listPeopleBGClass = "";
@@ -120,10 +120,10 @@
 
   activityContentTitle = activity.title;
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
-  def userId = activity.userId;
-  activityUserName = uicomponent.getUserFullName(userId);
-  activityUserProfileUri = uicomponent.getUserProfileUri(userId);
+  activityUserName = uicomponent.getUserFullName(activity.userId);
+  activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
 
+  def userId = activity.userId;
   if (uicomponent.isUserActivity(userId)) {
     activityImageSource = uicomponent.getUserAvatarImageSource(userId);
     if (!activityImageSource) activityImageSource= "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
@@ -131,15 +131,14 @@
     activityImageSource = uicomponent.getSpaceAvatarImageSource(userId);
     if (!activityImageSource) activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
   }
-
 %>
 
 <div class="UIActivity">
-	<script type="text/javascript">
-		function initUIActivity${activity.id}() {
-			new eXo.social.webui.UIActivity($params);
-		}
-	</script>
+    <script type="text/javascript">
+        function initUIActivity${activity.id}() {
+            new eXo.social.webui.UIActivity($params);
+        }
+    </script>
   <% uiform.begin() %>
   <div class="NormalBox clearfix">
     <a class="Avatar" title="$activityUserName" href="$activityUserProfileUri">
@@ -209,24 +208,24 @@
      <% }%>
     </div>
     <div class="ListPeopleLikeBG $listPeopleBGClass">
-		  <div class="ListPeopleLike">
+          <div class="ListPeopleLike">
         <div class="ListPeopleContent">
         <% if (!labelLikes) labelLikes = ""; %>
-	        <div class="Title">$labelLikes</div>
-	 	 	 	 	<div class="$listPeopleLikeBlockClass">
-					<%
-					displayedIdentityLikes.each({
-						personLikeFullName = uicomponent.getUserFullName(it);
-						personLikeProfileUri = uicomponent.getUserProfileUri(it);
-						personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
-						if (!personLikeAvatarImageSource) {
-						personLikeAvatarImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
-					}
-					%>
-						<a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
-						<img width="47px" height="47px" src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
-						</a>
-					<% })%>
+            <div class="Title">$labelLikes</div>
+                    <div class="$listPeopleLikeBlockClass">
+                    <%
+                    displayedIdentityLikes.each({
+                        personLikeFullName = uicomponent.getUserFullName(it);
+                        personLikeProfileUri = uicomponent.getUserProfileUri(it);
+                        personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
+                        if (!personLikeAvatarImageSource) {
+                        personLikeAvatarImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+                    }
+                    %>
+                        <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
+                        <img width="47px" height="47px" src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
+                        </a>
+                    <% })%>
 
         </div>
         <div class="ClearLeft">

@@ -110,30 +110,45 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
 
   private void showDocumentPopup(UIDocActivityComposer docActivityComposer) {
     UIComposer uiComposer = docActivityComposer.getAncestorOfType(UIComposer.class);
-    final UIContainer optionContainer = uiComposer.getOptionContainer();
-    optionContainer.removeChild(UIPopupWindow.class);
+    UIContainer optionContainer = uiComposer.getOptionContainer();
 
-    UIPopupWindow uiPopup = null;
-    try {
-      uiPopup = optionContainer.addChild(UIPopupWindow.class, null, POPUP_COMPOSER);
-    } catch (Exception e) {
-      LOG.error(e);
+    UIPopupWindow uiPopup = optionContainer.getChild(UIPopupWindow.class);
+    if(uiPopup == null){
+      try {
+        uiPopup = optionContainer.addChild(UIPopupWindow.class, null, POPUP_COMPOSER);
+      } catch (Exception e) {
+        LOG.error(e);
+      }
     }
-    uiPopup.setWindowSize(600, 600);
-    UIOneNodePathSelector uiOneNodePathSelector;
-    try {
-      uiOneNodePathSelector = uiPopup.createUIComponent(UIOneNodePathSelector.class, null, null);
-      uiOneNodePathSelector.setIsDisable(WORKSPACE, true);
-      uiOneNodePathSelector.setIsShowSystem(false);
-      uiOneNodePathSelector.setAcceptedNodeTypesInPathPanel(new String[] {Utils.NT_FILE});
-      uiOneNodePathSelector.setRootNodeLocation(REPOSITORY, WORKSPACE, rootpath);
-      uiOneNodePathSelector.init(SessionProviderFactory.createSessionProvider());     
-      uiPopup.setUIComponent(uiOneNodePathSelector);
-      uiOneNodePathSelector.setSourceComponent(this, null);
-      uiPopup.setShow(true);
-      uiPopup.setResizable(true);
-    } catch (Exception e) {
-      e.printStackTrace();
+
+    final UIComponent child = uiPopup.getUIComponent();
+    if(child != null && child instanceof UIOneNodePathSelector){
+      try {
+        UIOneNodePathSelector uiOneNodePathSelector = (UIOneNodePathSelector) child;
+        uiOneNodePathSelector.init(SessionProviderFactory.createSessionProvider());
+        uiPopup.setShow(true);
+        uiPopup.setResizable(true);
+      } catch (Exception e) {
+        LOG.error(e);
+      }
+    }
+    else {
+      try {
+        uiPopup.setWindowSize(600, 600);
+
+        UIOneNodePathSelector uiOneNodePathSelector = uiPopup.createUIComponent(UIOneNodePathSelector.class, null, "UIOneNodePathSelector");
+        uiOneNodePathSelector.setIsDisable(WORKSPACE, true);
+        uiOneNodePathSelector.setIsShowSystem(false);
+        uiOneNodePathSelector.setAcceptedNodeTypesInPathPanel(new String[] {Utils.NT_FILE});
+        uiOneNodePathSelector.setRootNodeLocation(REPOSITORY, WORKSPACE, rootpath);
+        uiOneNodePathSelector.init(SessionProviderFactory.createSessionProvider());
+        uiPopup.setUIComponent(uiOneNodePathSelector);
+        uiOneNodePathSelector.setSourceComponent(this, null);
+        uiPopup.setShow(true);
+        uiPopup.setResizable(true);
+      } catch (Exception e) {
+        LOG.error(e);
+      }
     }
   }
 
@@ -225,6 +240,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     documentPath = buildDocumentPath(rawPath);
     isDocumentReady = true;
 
+    documentRefLink = documentRefLink.replace("//", "/");
+    documentPath = documentPath.replace("//", "/");
     setReadyForPostingActivity(true);
   }
 

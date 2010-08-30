@@ -17,7 +17,7 @@
 
 /**
  * UIComposer.js
- * 
+ *
  * Requires: eXo.social.Util
  *
  */
@@ -60,13 +60,12 @@
     this.composer.value = this.defaultInput;
     this.composer.style.height = this.minHeight;
     this.composer.style.color = this.blurColor;
-    this.shareButton.style.background = 'white';
+    this.shareButton.style.background = 'white'
     this.shareButton.disabled = true;
     var uiComposer = this;
     var isReadyEl = document.getElementById("isReadyId");
- 	 	var composerContainerEl = document.getElementById("ComposerContainer");
- 	 	var isReadyVal;
- 	 	
+    var composerContainerEl = document.getElementById("ComposerContainer");
+   	var isReadyVal;
     Util.addEventListener(this.composer, 'focus', function() {
       if (uiComposer.composer.value === uiComposer.defaultInput) {
         uiComposer.composer.value = '';
@@ -83,18 +82,7 @@
         uiComposer.composer.value = uiComposer.defaultInput;
         uiComposer.composer.style.height = uiComposer.minHeight;
         uiComposer.composer.style.color = uiComposer.blurColor;
-        //uiComposer.shareButton.style.background = 'white';
         uiComposer.shareButton.disabled = true;
-        isReadyVal = isReadyEl.value;
-		    if (composerContainerEl == null) isReadyVal = false;
-		    if (isReadyVal == "true") {
-		     isReadyVal = true;
-		    } else {
-		    	isReadyVal = false;
-		    }
-        if ((composerContainerEl != null) && (isReadyVal)) {
-        	uiComposer.shareButton.disabled = false;
-        }
       }
       if (uiComposer.blurCallback) {
         uiComposer.blurCallback();
@@ -102,35 +90,23 @@
     }, false);
 
     Util.addEventListener(this.composer, 'keypress', function() {
-    	isReadyVal = isReadyEl.value;
-	    if (composerContainerEl == null) isReadyVal = false;
-	    if (isReadyVal == "true") {
-	     isReadyVal = true;
-	    } else {
-	    	isReadyVal = false;
-	    }
       if (uiComposer.minCharactersRequired !== 0) {
         //TODO hoatle handle backspace problem
         if (uiComposer.composer.value.length >= uiComposer.minCharactersRequired) {
           uiComposer.shareButton.style.background = 'white';
-          uiComposer.shareButton.disabled = false;
+          if(document.getElementById("ComposerContainer") == null){
+            uiComposer.shareButton.disabled = false;
+          }
         } else {
           uiComposer.shareButton.style.background = '';
-          uiComposer.shareButton.disabled = true;
         }
       } else {
         uiComposer.shareButton.style.background = 'white';
-        uiComposer.shareButton.disabled = false;
-      }
-      
-      if (composerContainerEl != null) {
-      	if (isReadyVal) {
+        if(document.getElementById("ComposerContainer") == null){
           uiComposer.shareButton.disabled = false;
-      	} else {
-          uiComposer.shareButton.disabled = true;
-      	}
+        }
       }
-      
+
       if (uiComposer.maxCharactersAllowed !== 0) {
         if (uiComposer.composer.value.length >= uiComposer.maxCharactersAllowed) {
           //substitue it

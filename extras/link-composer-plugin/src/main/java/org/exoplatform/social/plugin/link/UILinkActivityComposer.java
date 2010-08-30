@@ -145,6 +145,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
       try {
         uiComposerLinkExtension.setLink(url.trim());
       } catch (Exception e) {
+        uiComposerLinkExtension.setReadyForPostingActivity(false);
         uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.WARNING));
         return;
       }
