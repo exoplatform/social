@@ -63,6 +63,7 @@
   """
 
   jsManager.addOnLoadJavascript("initUIComposer");
+  jsManager.addOnLoadJavascript("handleShareButton");
 %>
 <div class="$uicomponent.id">
 <script type="text/javascript">
@@ -105,6 +106,25 @@
     <%
       }
     %>
+      <script type="text/javascript">
+        function setShareButtonDisable(state){
+          document.getElementById("ShareButton").disabled = state;
+        }
+
+        function handleShareButton(){
+          <%
+            if(currentActivityComposer.isReadyForPostingActivity()){
+          %>
+              document.getElementById("ShareButton").disabled = false;
+          <%
+            } else {
+          %>
+            document.getElementById("ShareButton").disabled = true;
+          <%
+            }
+          %>
+        }
+      </script>
       <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage"); %>" value="$shareLabel"></input>
       <input id="isReadyId" type="hidden" value="$isReady">
     </div>

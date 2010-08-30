@@ -24,7 +24,7 @@
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   import org.exoplatform.social.webui.composer.PopupContainer;
-  //import org.exoplatform.social.plugin.doc.UIDocViewer;
+  import org.exoplatform.social.plugin.doc.UIDocViewer;
 
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();

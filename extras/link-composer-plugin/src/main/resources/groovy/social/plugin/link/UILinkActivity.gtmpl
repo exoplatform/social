@@ -187,7 +187,6 @@
         <div style="clear: both; height: 0px;"><span></span></div>
       </div>
 
-
       <div class="LinkCM">
         <span class="DateTime">$activityPostedTime *</span>
       <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
