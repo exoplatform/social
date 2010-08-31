@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>Test_SOC_SPC_12_002.001_CreateNewNodeInTheFirstLevel</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Test_SOC_SPC_12_002.001_CreateNewNodeInTheFirstLevel</td></tr>
+</thead><tbody>
+<tr>
+	<td>echo</td>
+	<td>--Test_SOC_SPC_12_002.001_CreateNewNodeInTheFirstLevel.html--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/portal/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>mary</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']/div/div/div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- access space page--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Add new space--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Add New Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name</td>
+	<td>AddNodeFisrtLevel</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Open manage navigation form of space--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- add new node for fisrt level by click on add new node button--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Add Node</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Add Node</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--enter name--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name</td>
+	<td>new_node</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- save add new node--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Save edit navigation space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- access group navigation page</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Group</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- View manage navigation form of new added space group--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Edit Navigation</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Edit Navigation</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--verify: new node is existed</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=a[title='new_node']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--close form</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[4]/div/div[1]/div/div/div/div[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--back to space page--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- delete space for clean data--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
