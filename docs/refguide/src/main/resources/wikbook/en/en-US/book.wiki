@@ -48,7 +48,7 @@ h4. Portlet.xml
       </preference>
     </portlet-preferences>
   </portlet>
-{/code}
+{code}
 
 h3. SocialExtensionLogoPortlet
 h4. Description: Display Social logo in portal.
@@ -86,7 +86,7 @@ h4. Portlet.xml
       </preference>
     </portlet-preferences>
   </portlet>
-{/code}
+{code}
 
 h3. SocialExtensionHomePagePortlet
 h4. Description
@@ -125,7 +125,7 @@ h4. Portlet.xml
       </preference>
     </portlet-preferences>
   </portlet>
-{/code}
+{code}
 
 h3. SocialDemoHomePagePortlet
 h4. Description
@@ -164,7 +164,7 @@ h4. Portlet.xml
       </preference>
     </portlet-preferences>
   </portlet>
-{/code}
+{code}
 
 h3. SocialFooterPortlet
 h4. Discription
@@ -204,7 +204,7 @@ h4. Portlet.xml
       </preference>
     </portlet-preferences>
   </portlet>
-{/code}
+{code}
 
 h3. SpaceMenuPortlet
 h4. Description
@@ -233,7 +233,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. MembersPortlet
 h4. Description
@@ -262,7 +262,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. SpaceSettingPortlet
 h4. Description
@@ -292,7 +292,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. MySpacesPortlet
 h4. Description
@@ -350,7 +350,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. PendingSpacesPortlet
 h4. Description
@@ -379,7 +379,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. PublicSpacesPortlet
 h4. Description
@@ -420,7 +420,7 @@ h4. Portlet.xml
       </preference>
     </portlet-preferences>
   </portlet>
-[code}
+{code}
 
 h3. SpacesToolbarPortlet
 h4. Description
@@ -449,7 +449,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. UserProfileToolBarPortlet
 h4. Description
@@ -477,7 +477,7 @@ h4. Porlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. PeopleToolbarPortlet
 h4. Description
@@ -505,7 +505,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. SocialUserToolBarGroupPortlet
 h4. Description 
@@ -534,7 +534,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. SpaceActivityStreamPortlet
 h4. Description
@@ -563,7 +563,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. UserActivityStreamPortlet
 h4. Description
@@ -592,7 +592,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. PeoplePortlet
 h4. Description
@@ -620,7 +620,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. ProfileNavigationPortlet
 h4. Description
@@ -647,7 +647,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. ConnectionsPortlet
 h4. Description
@@ -676,7 +676,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. ConnectionsNavigationPortlet
 h4. Description
@@ -703,7 +703,7 @@ h4. Portlet.xml
      <keywords>social</keywords>
    </portlet-info>
  </portlet>
-{/code}
+{code}
 
 h3. ProfilePortlet
 h4. Description
@@ -711,7 +711,7 @@ h4. Preferences
 - name: _template_
 - possible values: app:/groovy/social/portlet/UIProfilePortlet.gtmpl
 h4. Portlet.xml
-{code}
+{code:xml}
 <portlet>
     <description xml:lang="EN">Profile Portlet</description>
     <portlet-name>ProfilePortlet</portlet-name>
@@ -740,7 +740,7 @@ h4. Portlet.xml
       </preference>
     </portlet-preferences>
   </portlet>
-{/code}
+{code}
 
 
 h3. InvitationsPortlet
@@ -768,7 +768,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 
 
@@ -797,7 +797,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. UserProfilePortlet
 h4. Description
@@ -852,7 +852,7 @@ h4. Portlet.xml
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
-{/code}
+{code}
 
 h3. MyConnectionsNavigationPortlet
 h4. Description   
@@ -880,59 +880,59 @@ h4. Portlet.xml
    </portlet-info>
  </portlet>
 </portlet-app>
-{/code}
+{code}
 
 
 h2. List of Gadgets in Social
 All Social portlets are in opensocial.war
 h3. SocialHelloWorld
-*Description:* Gets all friends of owner and send 'Say Hello' to friend. 
-*Description of preferences:*
-*Links to used REST services*
+* *Description:* Gets all friends of owner and send 'Say Hello' to friend. 
+* *Description of preferences:*
+* *Links to used REST services*
 
 h3. Activities
-*Description:* Manages activities of users. Some kinds of activities such as: update status, like/unlike activities, comment activities, delete activities and delete comments. 
-*Description of preferences:* 
-*Links to used REST services*
+* *Description:* Manages activities of users. Some kinds of activities such as: update status, like/unlike activities, comment activities, delete activities and delete comments. 
+* *Description of preferences:* 
+* *Links to used REST services*
 
 h3. CodeSharer
-*Description:* Shares code and send shared code to http://codesharer.appspot.com/for sharing to friends for example or other. 
-*Description of preferences:*
-*Links to used REST services*
+* *Description:* Shares code and send shared code to http://codesharer.appspot.com/for sharing to friends for example or other. 
+* *Description of preferences:*
+* *Links to used REST services*
 
 h3. ApplicationList	
-*Description:* Gets information of all applications (portlet type) that is existing in Portal. This is gadget is used for demo rest service get application from portal container.  
-*Description of preferences:*
-*Links to used REST services*
+* *Description:* Gets information of all applications (portlet type) that is existing in Portal. This is gadget is used for demo rest service get application from portal container.  
+* *Description of preferences:*
+* *Links to used REST services*
 
 h3. ViewerFriends
-*Description:* Displays list viewer's friends of current user login.
-*Description of preferences:* Number of friend is viewed are 5 friends per page by default.
-*Links to used REST services*
+* *Description:* Displays list viewer's friends of current user login.
+* *Description of preferences:* Number of friend is viewed are 5 friends per page by default.
+* *Links to used REST services*
 
 h3. RSSFetch
-*Description:* Fetches and parses Rss information from specific url. 
-*Description of preferences:* Number of rss per page is 10 by default; Get rss from input url ( Default url is http://blog.exoplatform.org/feed/ ).
-*Links to used REST services*
+* *Description:* Fetches and parses Rss information from specific url. 
+* *Description of preferences:* Number of rss per page is 10 by default; Get rss from input url ( Default url is http://blog.exoplatform.org/feed/ ).
+* *Links to used REST services*
 
 h3. UserSpaces
-*Description of preferences:*
-*Links to used REST services*
+* *Description of preferences:*
+* *Links to used REST services*
 
 h3. CodeRunner
-*Description:* Opensocial developer gadgets. This is a good place to copy and paste code examples for experimenting with the OpenSocial API. 
-*Description of preferences:*
-*Links to used REST services*
+* *Description:* Opensocial developer gadgets. This is a good place to copy and paste code examples for experimenting with the OpenSocial API. 
+* *Description of preferences:*
+* *Links to used REST services*
 
 h3. Clock
-*Description:* Digital Clock using for demo of applying I18n (change time when you change language of portal). 
-*Description of preferences:*
-*Links to used REST services:*
+* *Description:* Digital Clock using for demo of applying I18n (change time when you change language of portal). 
+* *Description of preferences:*
+* *Links to used REST services:*
 
 h3. MySpaces
-*Description:* Gets information of space that is my space and pending space of current user login. This gadget is used for demo using tab in writing gadget. 
-*Description of preferences:*
-*Links to used REST services:*
+* *Description:* Gets information of space that is my space and pending space of current user login. This gadget is used for demo using tab in writing gadget. 
+* *Description of preferences:*
+* *Links to used REST services:*
 
 
 h1. Configuration
