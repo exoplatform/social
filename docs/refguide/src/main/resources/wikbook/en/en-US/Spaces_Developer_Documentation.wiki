@@ -1,5 +1,3 @@
-
-
 {info}
 Some changes updated for eXo Social 1.0.1
 {info}

@@ -1,9 +1,6 @@
 
 h1. How to deploy eXo Social in Production
 
-
-
-
 h1. Objective
 
 In this article you will learn how to install eXo Social on a production server in a typical 3-tier architecture (web server / app server / database server).

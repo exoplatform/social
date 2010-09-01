@@ -1,0 +1,54 @@
+All Social portlets are in opensocial.war
+h1. SocialHelloWorld
+* *Description:* Gets all friends of owner and send 'Say Hello' to friend. 
+* *Description of preferences:*
+* *Links to used REST services*
+
+h1. Activities
+* *Description:* Manages activities of users. Some kinds of activities such as: update status, like/unlike activities, comment activities, delete activities and delete comments. 
+* *Description of preferences:* 
+* *Links to used REST services* 
+Used REST services: ActivitiesRestServices
+
+h1. CodeSharer
+* *Description:* Shares code and send shared code to http://codesharer.appspot.com/for sharing to friends for example or other. 
+* *Description of preferences:*
+* *Links to used REST services*
+Used REST services: 
+
+h1. ApplicationList	
+* *Description:* Gets information of all applications (portlet type) that is existing in Portal. This is gadget is used for demo rest service get application from portal container.  
+* *Description of preferences:*
+* *Links to used REST services*
+Used REST services: AppsRestService
+
+h1. ViewerFriends
+* *Description:* Displays list viewer's friends of current user login.
+* *Description of preferences:* Number of friend is viewed are 5 friends per page by default.
+* *Links to used REST services*
+
+h1. RSSFetch
+* *Description:* Fetches and parses Rss information from specific url. 
+* *Description of preferences:* Number of rss per page is 10 by default; Get rss from input url ( Default url is http://blog.exoplatform.org/feed/ ).
+* *Links to used REST services*
+
+h1. UserSpaces
+* *Description of preferences:*
+* *Links to used REST services*
+Used REST Services:
+
+h1. CodeRunner
+* *Description:* Opensocial developer gadgets. This is a good place to copy and paste code examples for experimenting with the OpenSocial API. 
+* *Description of preferences:*
+* *Links to used REST services*
+
+h1. Clock
+* *Description:* Digital Clock using for demo of applying I18n (change time when you change language of portal). 
+* *Description of preferences:*
+* *Links to used REST services:*
+
+h1. MySpaces
+* *Description:* Gets information of space that is my space and pending space of current user login. This gadget is used for demo using tab in writing gadget. 
+* *Description of preferences:*
+* *Links to used REST services:* 
+Used REST Services: SpacesRestService
