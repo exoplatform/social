@@ -37,8 +37,16 @@ import org.exoplatform.social.core.relationship.model.Relationship;
  */
 public class RelationshipPublisher extends RelationshipListenerPlugin {
 
-  private static final Log LOG = ExoLogger.getLogger(RelationshipPublisher.class);
+  public static enum TitleId {
+    CONNECTION_REQUESTED,
+    CONNECTION_CONFIRMED
+  }
 
+  public static final String SENDER_PARAM = "SENDER";
+  public static final String RECEIVER_PARAM = "RECEIVER";
+  public static final String RELATIONSHIP_ACTIVITY_TYPE = "exosocial:relationship";
+
+  private static final Log LOG = ExoLogger.getLogger(RelationshipPublisher.class);
   private ActivityManager  activityManager;
 
   private IdentityManager identityManager;
@@ -59,22 +67,22 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       reloadIfNeeded(id1);
       Identity id2 = relationship.getReceiver();
       reloadIfNeeded(id2);
-      String user1 = "@" + id1.getRemoteId();
-      String user2 = "@" + id2.getRemoteId();
+      String user1 = id1.getRemoteId();
+      String user2 = id2.getRemoteId();
 
-      Activity activity = new Activity(id1.getId(), PeopleService.PEOPLE_APP_ID, "I am now connected to " + user2, null);
-      activity.setTitleId("CONNECTION_CONFIRMED");
+      Activity activity = new Activity(id1.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" + user2, null);
+      activity.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       Map<String,String> params = new HashMap<String,String>();
-      params.put("Requester", user1);
-      params.put("Accepter", user2);
+      params.put(SENDER_PARAM, user1);
+      params.put(RECEIVER_PARAM, user2);
       activity.setTemplateParams(params);
       activityManager.saveActivity(id1, activity);
 
-      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, "I am now connected to " +  user1, null);
-      activity2.setTitleId("CONNECTION_CONFIRMED");
+      Activity activity2 = new Activity(id2.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" +  user1, null);
+      activity2.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       Map<String,String> params2 = new HashMap<String,String>();
-      params2.put("Requester", user2);
-      params2.put("Accepter", user1);
+      params2.put(SENDER_PARAM, user2);
+      params2.put(RECEIVER_PARAM, user1);
       activity2.setTemplateParams(params2);
       activityManager.saveActivity(id2, activity2);
 
@@ -114,14 +122,14 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       reloadIfNeeded(id1);
       Identity id2 = relationship.getReceiver();
       reloadIfNeeded(id2);
-      String user1 = "@" + id1.getRemoteId();
-      String user2 = "@" + id2.getRemoteId();
+      String user1 = id1.getRemoteId();
+      String user2 = id2.getRemoteId();
       //TODO hoatle a quick fix for activities gadget to allow deleting this activity
-      Activity activity2 = new Activity(id2.getId(), PeopleService.PEOPLE_APP_ID, user1 + " has invited " +  user2 + " to connect", null);
-      activity2.setTitleId("CONNECTION_REQUESTED");
+      Activity activity2 = new Activity(id2.getId(), RELATIONSHIP_ACTIVITY_TYPE, "@" + user1 + " has invited @" +  user2 + " to connect", null);
+      activity2.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       Map<String,String> params2 = new HashMap<String,String>();
-      params2.put("Requester", user1);
-      params2.put("Invited", user2);
+      params2.put(SENDER_PARAM, user1);
+      params2.put(RECEIVER_PARAM, user2);
       activity2.setTemplateParams(params2);
       activityManager.saveActivity(id2, activity2);
 
