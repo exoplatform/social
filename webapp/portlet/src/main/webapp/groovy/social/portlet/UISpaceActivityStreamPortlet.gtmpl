@@ -22,7 +22,13 @@
 %>
 <%
   uicomponent.refresh();
+  def labelSpaceActivities = _ctx.appRes("${uicomponent.id}.label.SpaceActivities");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-  <% uicomponent.renderChildren(); %>
+  <div class="UITabPane">
+ 	 	<div class="TitleBar">$labelSpaceActivities</div>
+ 	  <div class="UISpaceActivitiesContainer">
+      <% uicomponent.renderChildren(); %>
+    </div>
+  </div>
 </div>

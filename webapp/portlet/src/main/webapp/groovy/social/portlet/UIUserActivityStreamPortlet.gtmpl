@@ -26,10 +26,15 @@
   import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 
   uicomponent.refresh();
-
+  def labelUserActivities = _ctx.appRes("${uicomponent.id}.label.UserActivities");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-  <% uicomponent.renderChild(PopupContainer.class); %>
-  <% uicomponent.renderChild(UIComposer.class); %>
-  <% uicomponent.renderChild(UIUserActivitiesDisplay.class); %>
+  <div class="UITabPane">
+ 	  <div class="TitleBar">$labelUserActivities</div>
+ 	 	<div class="UIUserActivitiesContainer">
+      <% uicomponent.renderChild(PopupContainer.class); %>
+      <% uicomponent.renderChild(UIComposer.class); %>
+      <% uicomponent.renderChild(UIUserActivitiesDisplay.class); %>
+    </div>
+  </div>  
 </div>

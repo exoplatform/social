@@ -25,7 +25,9 @@
   def labelPublicSpaceList = _ctx.appRes("${uicomponentId}.label.PublicSpaceList");
 %>
 <div class="$uicomponentId" id="$uicomponentId">
-  <div class="TitleBar">$labelPublicSpaceList</div>
-  <% uicomponent.renderChildren(); %>
+  <div class="UITabPane">
+    <div class="TitleBar">$labelPublicSpaceList</div>
+    <% uicomponent.renderChildren(); %>
+  </div>
 </div>
 

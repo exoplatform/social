@@ -5,6 +5,9 @@
 @import url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin.css');
 
 .UIPendingSpacesPortlet {
+}
+
+.UIManageInvitationSpaces {
   padding: 0px 10px 20px;
 }
 
@@ -14,7 +17,6 @@
   line-height: 22px;
   text-align: center;
   font-weight: bold;
-  padding-bottom: 5px;
   background: #EBEBEB none repeat scroll 0 0;
 }
 
