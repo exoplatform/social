@@ -1,0 +1,229 @@
+eXo Social provides a way to share status updates and activity information for users as well as spaces (aka Activity Streams). With the API, you can customize the activities or publish new ones.
+
+To manipulate activities, you will use the [ActivityManager|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]. To get an instance of this class, you will need to use the {{PortalContainer}}.
+
+h1. Create an activity
+
+There are two types of activities : activities for a user and activities for a space. The following examples will show you how to create an activity for each type.
+
+h1. Publish an activity for a user
+
+{code:java}
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.activitystream.ActivityManager;
+import org.exoplatform.social.core.activitystream.model.Activity;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+
+
+/**
+ * Created by The eXo Platform SAS
+ * Author : eXoPlatform
+ *          exo@exoplatform.com
+ * Jun 25, 2010
+ */
+//.....
+
+  public void createActivityForUser() {
+    String username = "zun";
+    // Get current container
+    PortalContainer container = PortalContainer.getInstance();
+
+    // Get IdentityManager to handle identity operation
+    IdentityManager identityManager = (IdentityManager) container.getComponentInstance(IdentityManager.class);
+
+    // Get ActivityManager to handle activity operation
+    ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
+
+    // Get existing user or create a new one
+    try {
+      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
+
+      // Create new activity for this user
+      Activity activity = new Activity();
+      activity.setUserId(userIdentity.getId());
+      activity.setTitle("Hello World!");
+      // Save activity into JCR using ActivityManager
+      activityManager.saveActivity(activity);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+{code}
+
+h1. Publish an activity for a space
+
+{code:java}
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.activitystream.ActivityManager;
+import org.exoplatform.social.core.activitystream.model.Activity;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.space.Space;
+import org.exoplatform.social.space.SpaceException;
+import org.exoplatform.social.space.SpaceService;
+import org.exoplatform.social.space.impl.SpaceIdentityProvider;
+
+//...
+
+  public void createActivityForSpace() {
+    //make sure a space with name "mySpace" is created.
+    String spaceName = "mySpace";
+    String username = "zun";
+    // Get current container
+    PortalContainer container = PortalContainer.getInstance();
+
+    // Get IdentityManager to handle identity operation
+    IdentityManager identityManager = (IdentityManager) container.getComponentInstance(IdentityManager.class);
+
+    // Get ActivityManager to handle activity operation
+    ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
+
+    // Get SpaceService to handle space operation
+    SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
+    try {
+      Space space = spaceService.getSpaceByName(spaceName);
+      if (space != null) {
+        // Get space identity via SpaceIdentityProvider
+        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceName);
+        // Get identity instance of the user who wants to create activity
+        Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
+        // Create new activity for this space
+        Activity activity =  new Activity();
+        activity.setUserId(userIdentity.getId());
+        activity.setTitle("An activity for space");
+        activityManager.saveActivity(spaceIdentity, activity);
+      }
+    } catch (SpaceException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+{code}
+
+h1. Useful functions
+
+* [ActivityManager#getActivity|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
+* [ActivityManager#getActivities|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
+* [ActivityManager#saveActivity|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
+* [ActivityManager#saveComment|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
+* [ActivityManager#saveLike|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
+* [ActivityManager#removeLike|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
+* [ActivityManager#getComments|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
+
+h2. Creating a custom activity processor
+
+Activity processor is used for modifying the content of activities before they are responsed and rendered at client's browser. For example, we will create an activity processor for replacing all the texts representing the smile face ":-)" in the activity title by the smiley icons.
+
+Firstly, we will create the {{SmileyProcessor}} class by extending the {{BaseActivityProcessorPlugin}}
+
+{code:java}
+package org.exoplatform.social.core.activitystream;
+
+public class SmileyProcessor extends BaseActivityProcessorPlugin {
+  public SmileyProcessor(InitParams params) {
+    super(params);
+  }
+
+  String smiley =  "<img src=\"http://www.tombraider4u.com/pictures/smiley.gif\"/>";
+
+  public void processActivity(Activity activity) {
+    String title = activity.getTitle();
+    activity.setTitle(title.replaceAll(":-
+)", smiley));
+  }
+}
+{code}
+
+And then, we have to register this processor by adding some XML configuration into the project configuration file (configuration.xml)
+
+{code:xml}
+<component>
+  <key>org.exoplatform.social.core.activitystream.ActivityManager</key>
+  <type>org.exoplatform.social.core.activitystream.ActivityManager</type>
+  <component-plugins>
+    <component-plugin>
+      <name>SmileyProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.core.activitystrea.SmileyProcessor</type>
+      <init-params>
+        <values-param>
+          <name>priority</name>
+          <value>1</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </component-plugins>
+</component>
+{code}
+
+"init-params" contains all the key-value data which a processor will use to initialize. At the above config, priority value indicates the order that this processor will be used. So with '1' value, this processor will be used before all remaining processors with lower priority.
+
+h1. Publish an rss feed with feedmash
+
+It's really easy to publish an rss feed to a space's activity stream. eXo Social already provides {{FeedmashJobPlugin}} for publishing rss feeds. As you can see in project {{exo.social.extras.feedmash}}, there are {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space: {{exosocial}} in a specifiportal container: {{socialdemo}} as in the configuration file:
+
+{code:xml}
+<external-component-plugins>
+   <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
+    <component-plugin>
+      <name>RepubSocialJiraActivityJob</name>
+      <set-method>addPeriodJob</set-method>
+      <type>org.exoplatform.social.feedmash.FeedmashJobPlugin</type>
+      <description></description>
+      <init-params>
+        <properties-param>
+          <name>mash.info</name>
+          <property name="feedURL" value="http://jira.exoplatform.org/plugins/servlet/streams?key=SOC"/>
+          <property name="categoryMatch" value="resolved|created"/>
+          <property name="targetActivityStream" value="space:exosocial"/>
+          <property name="portalContainer" value="socialdemo"/>
+        </properties-param>
+        <properties-param>
+          <name>job.info</name>
+          <description>save the monitor data  periodically</description>
+          <property name="jobName" value="JIRAFeedConsumer"/>
+          <property name="groupName" value="Feedmash"/>
+          <property name="job" value="org.exoplatform.social.feedmash.JiraFeedConsumer"/>
+          <property name="repeatCount" value="0"/>
+          <property name="period" value="60000"/>
+          <property name="startTime" value="+45"/>
+          <property name="endTime" value=""/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>WatchSocialBuildStatus</name>
+      <set-method>addPeriodJob</set-method>
+      <type>org.exoplatform.social.feedmash.FeedmashJobPlugin</type>
+      <description></description>
+      <init-params>
+        <properties-param>
+          <name>mash.info</name>
+           <property name="feedURL" value="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/rssAll"/>
+           <property name="targetActivityStream" value="space:exosocial"/>
+           <property name="portalContainer" value="socialdemo"/>
+        </properties-param>
+        <properties-param>
+          <name>job.info</name>
+          <description>save the monitor data  periodically</description>
+          <property name="jobName" value="HudsonFeedConsumer"/>
+          <property name="groupName" value="Feedmash"/>
+          <property name="job" value="org.exoplatform.social.feedmash.HudsonFeedConsumer"/>
+          <property name="repeatCount" value="0"/>
+          <property name="period" value="60000"/>
+          <property name="startTime" value="+100"/>
+          <property name="endTime" value=""/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+ </external-component-plugins>
+{code}
+
+When running eXo Social, login with http://localhost:8080/socialdemo and create a space named "exosocial". Done, all the feeds from jira and hudson for Social project will be automatically published to {{exosocial}} space.

@@ -1,0 +1,86 @@
+eXo Social is implementing the OpenSocial standard. So you can integrate OpenSocial Gadget in your dashboard and use the RPC or REST API to access to the social data.
+
+h1. Gadget
+
+Gadgets are web-based software components based on HTML, CSS, and JavaScript. They allow developers to easily write useful web applications that work anywhere on the web without modification. To know more, we suggest some links for detail information :
+
+[Gadgets Specification | http//code:google.com-apis-gadgets-docs-spec.html]
+
+[OpenSocial Core Gadget Specification 10 | http:--opensocial-resources.googlecode.com-svn-spec-1.0-Core-Gadget.xml]
+
+After getting acquainted with Gadget concept, we enter into the detail on how to create an opensocial gadget. However, the tutorials are done greatly in Opensocial official site so we refer you to read these tutorials at [that website|http://wiki.opensocial.org/index.php?title=Gadget_Developer's_Guide]
+
+We only note that in Opensocial gadgets only work in the dashboard in eXo Social.
+
+h2. Supported APIs
+
+As we have said above, eXo Social is implementing the OpenSocial standard. So every eXo Social implementations apply the Opensocial Specification generally or [Apache Shindig|http://shindig.apache.org/overview.html] specifically. Therefore, eXo Social uses and extends Apache Shindig APIs to compatible with the common Opensocial APIs which is supported by other big social networks like [Ning|http://www.ning.com], [Hi5|http://www.hi5.com], [Orkut|http://www.orkut.com] ...
+
+To get more detail about Supported APIs, we refer you to read [Opensocial Specs|http://www.opensocial.org/page/specs-1]
+
+
+
+
+
+h1. REST/RPC API
+If your eXo social server is running on http://localhost:8080/ the address of the API will be:
+
+REST API:
+http://localhost:8080/social/social/rest
+
+RPC API:
+http://localhost:8080/social/social/rpc
+
+To learn what you can do with this APIs, have a look at the [specification|http://opensocial-resources.googlecode.com/svn/spec/1.0/Social-Data.xml]. If you are developing in Java, you can use the [opensocial-java-client|http://code.google.com/p/opensocial-java-client/]
+
+
+h2. Configuring the security
+If you are using opensocial, there is good chance you are going to need to configure the oAuth authentication. To do this, you need to edit the configuration to add you oAuth key.
+
+Edit the file: gatein/conf/portal/portal/configuration.xml and add this component:
+{code}
+        <component>
+                <key>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</key>
+                <type>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</type>
+
+                <init-params>
+                        <properties-param>
+                                <name>grails-book-flow</name>
+                                <description>consmer key and secret for sample oauth provider. </description>
+                                <property name="consumerKey" value="YOUR_KEY_HERE" />
+
+                                <property name="sharedSecret" value="YOUR_SECRET_KEY_HERE" />
+                        </properties-param>
+
+                </init-params>
+        </component>
+{code}
+The consumerKey and sharedSecret are the key that need to be shared with the application that is doing the request.
+
+
+h2. Publishing an activity into a space
+
+eXo Social added  this functionality that is not available in the standard opensocial API. You can publish activities into a space using the opensocial API.
+
+To do this, instead of publishing your activity to the group @self as usual, publish it to the group "space:spaceID" or "space:spaceName".
+
+Using the opensocial java library and groovy, your code will look like this:
+{code}
+      def client = getOpenSocialClient()
+
+      //we create our new activity
+      Activity activity = new Activity()
+      activity.title = "BookFlow Purchase"
+      activity.body = "xx puchased the book xxx"
+
+      //We prepare the request that will create the activity
+      Request request = ActivitiesService.createActivity(activity);
+      //We specify that the creation of this new activity is for the space bookflow
+      request.groupId = "space:bookflow";
+
+      client.send(request);
+{code}
+As you can see in this example, we set the groupId to "space:bookflow", bookflow being the name of our space.
+
+h2. Tutorial
+* [Grails + eXo Social tutorial|http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/Content%20types/Tutorial/grails-exo-social]

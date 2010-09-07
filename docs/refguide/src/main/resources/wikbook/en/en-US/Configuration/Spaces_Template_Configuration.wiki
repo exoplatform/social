@@ -3,9 +3,6 @@
 Needs to be updated
 {note}
 
-h1. Spaces Template Configuration
-
-
 In eXo Spaces we will be able to have two type of space (classic and webos spaces). This is for the classic mode (it's the only one implemented now).
 
 

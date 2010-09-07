@@ -1,0 +1,205 @@
+eXo Social provides a way to add profile informations, relationships and connections between users: People. With the eXo People API, profile informations and relationship can be easily managed and customized.
+
+h1. Identity 
+
+h2. IdentityProvider 
+
+Creating your Identity Provider allows you to integrate people outside of your portal (for exemple customers) into your social network without having to create a portal account. You can also use this to populate the profile with data coming from other systems. Here is an example :
+
+{code:language=java}
+class SampleIdentityProvider extends OrganizationIdentityProvider{
+  public SampleIdentityProvider(OrganizationService organizationService) {
+    super(organizationService);
+  }
+
+  @Override
+  public void populateProfile(Profile profile, User user) {
+    profile.setProperty(Profile.FIRST_NAME, "this is first name");
+    profile.setProperty(Profile.LAST_NAME, "this is last name");
+    profile.setProperty(Profile.USERNAME, "this is user name");
+    profile.setProperty(Profile.URL, "/path/to/profile/");
+  }
+}
+{code}
+
+In this example, we created a SampleIdentityProvider class extending OrganizationIdentityProvider which is the IdentityProvider used to connect to the portal user's base. In this class, we overrided the populateProfile method and added some dummy data in the profile fields.
+
+h2. IdentityManager 
+
+The IdentityManager is the service used to manipulate the identity operations like creating, getting, deleting or finding a profile. We can get the IdentityManager via the ExoContainer. The following code will show how to get an IdentityManager instance and create a basic identity instance :
+
+{code:language=java}
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+
+//......
+
+String containerName = "portal";
+String username = "zun";
+
+//get container to get other registered components
+ExoContainer container = ExoContainerContext.getContainerByName(containerName);
+
+//get IdentityManager to handle identity operation
+IdentityManager identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+
+//get ActivityManager to handle activity operation
+ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
+
+//create new user with name Zun
+Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
+{code}
+
+
+h1. Notifications 
+
+The People API provides some notification interfaces which programmers can implement in order to create their own handlers for notifications like notifications() for profile modifications([ProfileListenerPlugin|(ProfileListenerPlugin--]]) or for relationship changes([RelationshipListenerPlugin|(RelationshipListenerPlugin--]]). The following example will guide you through implementing one of these interfaces and show you how to configure this plugin.
+
+We will create the class ProfileLoggerListener. Its tasks is to log all profile modifications of the systems. The abstract class ProfileListenerPlugin provides us the interface to implement this method.
+
+{code:language=java}
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.lifecycle.ProfileListenerPlugin;
+import org.exoplatform.social.core.identity.spi.ProfileLifeCycleEvent;
+
+
+public class ProfileLoggerListener extends ProfileListenerPlugin{
+  private static final Log logger = ExoLogger.getExoLogger(ProfileLoggerListener.class);
+  @Override
+  public void avatarUpdated(ProfileLifeCycleEvent event) {
+    logger.info("@" + event.getUsername() + " profile has updated his basic profile info.");
+  }
+
+  @Override
+  public void basicInfoUpdated(ProfileLifeCycleEvent event) {
+    logger.info("@" + event.getUsername() + " profile has updated his basic profile info.");
+  }
+
+  @Override
+  public void contactSectionUpdated(ProfileLifeCycleEvent event) {
+    logger.info("@" + event.getUsername() + " profile has updated his contact info.");
+  }
+
+  @Override
+  public void experienceSectionUpdated(ProfileLifeCycleEvent event) {
+    logger.info("@" + event.getUsername() + " profile has an updated experience section.");
+  }
+
+  @Override
+  public void headerSectionUpdated(ProfileLifeCycleEvent event) {
+    logger.info("@" + event.getUsername() + " has updated his header info.");
+  }
+}
+{code}
+
+After creating the ProfileLoggerListener class, we have to add some configurations for this class to the configuration.xml :
+
+{code:language=xml}
+<external-component-plugins>
+  <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>
+  <component-plugin>
+    <name>ProfileLoggerListener</name>
+    <set-method>addProfileListener</set-method>
+    <type>path.to.ProfileLoggerListener</type>
+  </component-plugin>
+</external-component-plugins>
+{code}
+
+Similarly, you can apply the above steps to implement the RelationshipListenerPlugin for relationship notifications.
+
+
+h1. Relationship
+
+Relationship is the bridge between two identities in eXo Social. There are many types of relationships defined in the Relationship class. With these types, a user can invite another user, confirm invitations or remove relationship.
+
+h2. Invite a user 
+
+The following code will show how to invite a user from a user :
+
+{code:language=java}
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.social.core.identity.IdentityManager;
+import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.Relationship;
+import org.exoplatform.social.core.relationship.RelationshipManager;
+
+public void inviteUser() throws Exception {
+  String containerName = "portal";
+  ExoContainer container = ExoContainerContext.getContainerByName(containerName);
+
+  IdentityManager identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+
+  Identity invitedIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "Hoat");
+  String invitedUserId = invitedIdentity.getId();
+
+  String currUserId = "Zun";
+  Identity currentIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,  currUserId);
+
+  RelationshipManager relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+  Relationship relationship = relationshipManager.invite( currentIdentity, invitedIdentity);
+}
+{code}
+
+
+h2. Notifications 
+
+Let's take a look at relationship notifications([RelationshipListenerPlugin|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-relationship-lifecycle-RelationshipListenerPlugin.html]). The following example will show you how to implement one of these interfaces and how to configure this plugin. The following step is similar to the Profile notifications implementation.
+
+{code:language=java}
+import org.exoplatform.social.core.relationship.Relationship;
+import org.exoplatform.social.core.relationship.lifecycle.RelationshipListenerPlugin;
+import org.exoplatform.social.relationship.spi.RelationshipEvent;
+
+public class RelationshipLoggerListener extends RelationshipListenerPlugin{
+  private static final Log logger = ExoLogger.getExoLogger(RelationshipLoggerListener.class);
+
+  @Override
+  public void confirmed(RelationshipEvent event) {
+    String[] names = getUserNamesFromEvent(event);
+    logger.info(names[0] +" confirmed the invitation of "+ names[1]);
+  }
+
+  @Override
+  public void ignored(RelationshipEvent event) {
+    String[] names = getUserNamesFromEvent(event);
+    logger.info(names[0] +" ignored the invitation of "+ names[1]);
+  }
+
+  @Override
+  public void removed(RelationshipEvent event) {
+    String[] names = getUserNamesFromEvent(event);
+    logger.info(names[0] +" removed the relationship with "+ names[1]);
+  }
+
+  private String[] getUserNamesFromEvent(RelationshipEvent event){
+    Relationship relationship = event.getPayload();
+
+    Identity id1 = relationship.getIdentity1();
+    Identity id2 = relationship.getIdentity2();
+
+    String user1 = "@" + id1.getRemoteId();
+    String user2 = "@" + id2.getRemoteId();
+
+    return new String[]{user1, user2 };
+  }
+}
+{code}
+
+After creating the RelationshipLoggerListener class, we have to add some configurations for this class to the configuration.xml :
+
+{code:language=xml}<external-component-plugins>
+  <target-component>org.exoplatform.social.core.relationship.RelationshipManager</target-component>
+  <component-plugin>
+    <name>RelationshipLoggerListener</name>
+    <set-method>addListenerPlugin</set-method>
+    <type>classpath.of.your.RelationshipLoggerListener</type>
+  </component-plugin>
+</external-component-plugins>
+{code}
+

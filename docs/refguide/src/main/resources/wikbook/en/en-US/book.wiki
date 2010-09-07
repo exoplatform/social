@@ -1,21 +1,15 @@
 
 h1. Prerequisites
-{warning}
-TO DO
-{warning}
 {include:document="Prerequisites.wiki"}
 
 h1. Applications
 h2. List of Portlets in Social
-{include:document="List_of_Portlets.wiki"}
+{include:document="Application/List_of_Portlets.wiki"}
 h2. List of Gadgets in Social
-{include:document="List_of_Gadgets.wiki"}
+{include:document="Application/List_of_Gadgets.wiki"}
 
 h1. Configuration
-{warning}
-TO DO
-{warning}
-
+{include:document="Configuration/Configuration.wiki"}
 h2. Spaces Template configuration
 {include:document="Configuration/Spaces_Template_Configuration.wiki"}
 h2. Configure the oauth 2 legged scenario
@@ -23,12 +17,17 @@ h2. Configure the oauth 2 legged scenario
 
 h1. Developers reference
 eXo Social provides many extension point to make it fit to your needs. Every part can be customized and/or automated.
-eam
-h2. Activity Pugin
-{include:document="DeveloperReference/Activity_Plugin.wiki"}
-
-{warning}
-TO DO
-{warning}
+h2. Spaces
+{include:document="DeveloperReference/Developer_Documentation_Spaces.wiki"}
+h2. People
+{include:document="DeveloperReference/Developer_Documentation_People.wiki"}
+h2. Activity Stream
+{include:document="DeveloperReference/Developer_Documentation_Activity_Stream.wiki"}
+h2. Activity Plugin
+{include:document="DeveloperReference/Developer_Documentation_Activity.wiki"}
+h2. Developing Open Social Gadgets
+{include:document="DeveloperReference/Developing_Open_Social_Gadgets.wiki"}
+h2. Open Social
+{include:document="DeveloperReference/Developer_Documentation_OpenSocial.wiki"}
 
 

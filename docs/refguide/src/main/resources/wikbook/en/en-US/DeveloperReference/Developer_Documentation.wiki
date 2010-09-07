@@ -1,0 +1,26 @@
+
+eXo Social provides many extension point to make it fit to your needs. Every part can be customized and/or automated.
+
+h2.  [Spaces|Developer Documentation Spaces ]
+eXo Social provides a way to create groups and to share data and applications: the space. A space has it's own activity stream in which applications or members can publish information. In each space, members share applications and an openSocial dashboard.
+With the API, you can create spaces, invite users, add applications be notified of events...
+
+[Read more::|Developer Documentation Spaces]
+
+
+h2.  [People|Developer Documentation People]
+eXo Social provides a way to add profile information, relationships and connections between users: People. With the API, profile information, relationship can be customized.
+
+[Read more::|Developer Documentation People]
+
+
+h2.  [Activity Stream|Developer Documentation Activity Stream]
+eXo Social provides a way to share status updates and activity informations for users as well as spaces: Activity Streams. With the API, you can customize the activities or publish new ones.
+
+[Read more::|Developer Documentation Activity Stream]
+
+
+h2.  [OpenSocial|Developer Documentation OpenSocial]
+eXo Social is implementing the OpenSocial standard. So you can integrate OpenSocial Gadget in your dashboard and use the RPC or REST API to access the social data.
+
+[Read more::|Developer Documentation OpenSocial]
