@@ -18,18 +18,19 @@ package org.exoplatform.social.webui.space;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.webui.activity.SpaceActivityListAccess;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIPageIterator;
 
 /**
  * UISpaceActivitiesDisplay.java
@@ -49,6 +50,8 @@ public class UISpaceActivitiesDisplay extends UIContainer {
   private Space space;
   private List<Activity> activityList;
   private UIActivitiesContainer uiActivitiesContainer;
+  private UIPageIterator pageIterator;
+  private static final int ACTIVITY_PER_PAGE = 5;
 
   /**
    * Constructor
@@ -61,7 +64,6 @@ public class UISpaceActivitiesDisplay extends UIContainer {
   /**
    * Sets space to work with
    * @param space
-   * @param postContext
    * @throws Exception
    */
   public void setSpace(Space space) throws Exception {
@@ -87,14 +89,29 @@ public class UISpaceActivitiesDisplay extends UIContainer {
       return;
     }
 
-    Identity spaceIdentity = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId());
-    activityList = getActivityManager().getActivities(spaceIdentity);
+    
+
+    removeChild(UIPageIterator.class);
+    pageIterator = addChild(UIPageIterator.class, null, "UIActivitiesPageIterator");
 
     removeChild(UIActivitiesContainer.class);
     uiActivitiesContainer = addChild(UIActivitiesContainer.class, null, null);
     uiActivitiesContainer.setPostContext(PostContext.SPACE);
     uiActivitiesContainer.setSpace(space);
-    uiActivitiesContainer.setActivityList(activityList);
+  }
+
+  private void bindDataToActivitiesContainer() throws Exception {
+      int currentPage = pageIterator.getCurrentPage();
+    LazyPageList<Activity> pageList = new LazyPageList<Activity>(new SpaceActivityListAccess(space), ACTIVITY_PER_PAGE);
+    pageIterator.setPageList(pageList);
+    int pageCount = pageIterator.getAvailablePage();
+    if (pageCount >= currentPage) {
+      pageIterator.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      pageIterator.setCurrentPage(currentPage - 1);
+    }
+
+    uiActivitiesContainer.setActivityList(pageIterator.getCurrentPageData());
   }
 
   /**

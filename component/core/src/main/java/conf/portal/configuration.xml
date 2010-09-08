@@ -270,7 +270,7 @@
 
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
-    <component-plugin>
+    <component-plugin>                            
       <name>add.social.nodeType</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>

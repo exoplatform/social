@@ -100,6 +100,10 @@ public class UIActivitiesContainer extends UIContainer {
    * @throws Exception
    */
   private void init() throws Exception {
+    while (getChild(BaseUIActivity.class) != null){
+      removeChild(BaseUIActivity.class);
+    }
+    
     if (activityList == null) {
       activityList = new ArrayList<Activity>();
     }
@@ -109,5 +113,4 @@ public class UIActivitiesContainer extends UIContainer {
       factory.addChild(activity, this);
     }
   }
-
 }

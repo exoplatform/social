@@ -43,7 +43,7 @@ import com.google.common.collect.Lists;
 
 /**
  * The Class JCRStorage represents storage for activity manager
- * @see org.exoplatform.social.core.activitystream.ActivityManager
+ * @see org.exoplatform.social.core.manager.ActivityManager
  */
 public class ActivityStorage {
 
@@ -575,5 +575,28 @@ public class ActivityStorage {
       Str[i] = Val[i].getString();
     }
     return Str;
+  }
+
+  public int getActivitiesCount(Identity owner) throws Exception {
+    int count = -1;
+
+    Node publishingNode = getPublishedActivityServiceHome(owner);
+    Session session = sessionManager.getOrOpenSession();
+    try {
+      String path = publishingNode.getPath();
+      List<Node> nodes = new QueryBuilder(session)
+        .select(ACTIVITY_NODETYPE)
+        .like("jcr:path", path + "[%]/exo:activity[%]")
+        .and()
+        .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).exec();
+
+      count = nodes.size();
+    } catch (Exception e){
+      LOG.error(e);
+    } finally {
+      sessionManager.closeSession();
+    }
+
+    return count;
   }
 }
