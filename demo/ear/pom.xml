@@ -190,8 +190,8 @@
             <webModule>
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.webapp.opensocial</artifactId>
-              <contextRoot>opensocial</contextRoot>
-              <bundleFileName>opensocial.war</bundleFileName>
+              <contextRoot>social</contextRoot>
+              <bundleFileName>social.war</bundleFileName>
             </webModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>
