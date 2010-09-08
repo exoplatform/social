@@ -110,5 +110,4 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     }
     uiUserActivitiesDisplay.setOwnerName(ownerName);
   }
-
 }

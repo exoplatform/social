@@ -21,6 +21,9 @@
 */
 %>
 <%
+  import org.exoplatform.social.webui.activity.UIActivitiesContainer;
+  import org.exoplatform.webui.core.UIPageIterator;
+
   def labelConnections = _ctx.appRes("${uicomponent.id}.label.Connections");
   def labelSpaces = _ctx.appRes("${uicomponent.id}.label.Spaces");
   def labelMyStatus = _ctx.appRes("${uicomponent.id}.label.My_Status");
@@ -36,6 +39,8 @@
   } else if (selectedDisplayMode.toString().equals("MY_STATUS")) {
     myStatusDisplayModeStyle = "DarkBlueStyle";
   }
+
+  uicomponent.bindDataToActivitiesContainer();
 %>
 <div id="$uicomponent.id" class="$uicomponent.id">
 <% if (uicomponent.isActivityStreamOwner()) { %>
@@ -77,5 +82,6 @@
       </table>
   </div>
 <% } %>
-  <% uicomponent.renderChildren(); %>
+  <% uicomponent.renderChild(UIActivitiesContainer.class);%>
+  <% uicomponent.renderChild(UIPageIterator.class);%>
 </div>

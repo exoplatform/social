@@ -16,35 +16,23 @@
  */
 package org.exoplatform.social.webui.profile;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.social.core.activity.model.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
+import org.exoplatform.social.webui.activity.UserActivityListAccess;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -64,6 +52,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
+  private static final int      ACTIVITY_PER_PAGE = 5;
 
   public enum DisplayMode {
     CONNECTIONS,
@@ -76,14 +65,9 @@ public class UIUserActivitiesDisplay extends UIContainer {
   private String                ownerName;
   private String                viewerName;
   private boolean               isActivityStreamOwner = false;
-  private SortedSet<Activity> sortedActivityList;
-
-  private int displayedActivityItems = 20;
-
-  private List<Activity>        activityList;
 
   private UIActivitiesContainer uiActivitiesContainer;
-
+  private UIPageIterator pageIterator;
   /**
    * constructor
    */
@@ -93,14 +77,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
   public boolean isActivityStreamOwner() {
     return isActivityStreamOwner;
-  }
-
-  public int getDisplayedActivityItems() {
-    return displayedActivityItems;
-  }
-
-  public void setDisplayedActivityItems(int itemsNumber) {
-    this.displayedActivityItems = itemsNumber;
   }
 
   public void setSelectedDisplayMode(DisplayMode displayMode) {
@@ -161,111 +137,29 @@ public class UIUserActivitiesDisplay extends UIContainer {
   public void init() throws Exception {
     Validate.notNull(ownerName, "ownerName must not be null.");
     Validate.notNull(viewerName, "viewerName must not be null.");
-    Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                      ownerName);
-    activityList = new ArrayList<Activity>();
-    sortedActivityList = new TreeSet<Activity>(Util.activityComparator());
 
-    if (getSelectedDisplayMode() == DisplayMode.MY_STATUS || getSelectedDisplayMode() == DisplayMode.OWNER_STATUS) {
-      activityList = getActivityManager().getActivities(ownerIdentity);
-    } else if (getSelectedDisplayMode() == DisplayMode.SPACES) {
-      SpaceService spaceService = getApplicationComponent(SpaceService.class);
-      ActivityManager activityManager = getActivityManager();
-      IdentityManager identityManager = getIdentityManager();
-      try {
-        List<Space> spaceList = spaceService.getAccessibleSpaces(ownerName);
-        for (Space space : spaceList) {
-          Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                       space.getId());
-          List<Activity> spaceActivityList = activityManager.getActivities(spaceIdentity);
-          sortedActivityList.addAll(spaceActivityList);
-        }
-        Object[] activityArray = sortedActivityList.toArray();
-        if (sortedActivityList.size() > displayedActivityItems) {
-          activityArray = ArrayUtils.subarray(activityArray, 0, displayedActivityItems);
-        }
-        for (Object obj : activityArray) {
-          activityList.add((Activity) obj);
-        }
-      } catch (SpaceException e) {
-        LOG.error("failed to get spaceList by userId: " + ownerName);
-      } catch (Exception e) {
-        LOG.error("failed to init() in UIMySpacesActivitiesDisplay");
-      }
-    } else {
-      List<Identity> connectionsList = getConnections();
-      ActivityManager activityManager = getActivityManager();
-      String identityId;
-      for (Identity identity : connectionsList) {
-        List<Activity> tempActivityList = activityManager.getActivities(identity);
-        identityId = identity.getId();
-        for (Activity activity : tempActivityList) {
-          if (activity.getUserId().equals(identityId)) {
-            sortedActivityList.add(activity);
-          }
-        }
-      }
-      Object[] activityArray = sortedActivityList.toArray();
-      if (sortedActivityList.size() > displayedActivityItems) {
-        activityArray = ArrayUtils.subarray(activityArray, 0, displayedActivityItems);
-      }
-      for (Object obj : activityArray) {
-        activityList.add((Activity) obj);
-      }
-    }
-
+    removeChild(UIPageIterator.class);
+    pageIterator = addChild(UIPageIterator.class, null, "UIActivitiesPageIterator");
+    
     removeChild(UIActivitiesContainer.class);
-
     uiActivitiesContainer = addChild(UIActivitiesContainer.class, null, null);
     uiActivitiesContainer.setPostContext(PostContext.USER);
     uiActivitiesContainer.setOwnerName(ownerName);
-    uiActivitiesContainer.setActivityList(activityList);
-
   }
 
-  /**
-   * Loads all existing identity connected to ownerName
-   *
-   * @return all existing identity
-   * @throws Exception
-   */
-  private List<Identity> getConnections() throws Exception {
-    List<Identity> connectionsList = getIdentityManager().getIdentities(OrganizationIdentityProvider.NAME);
-    Iterator<Identity> itr = connectionsList.iterator();
-    while (itr.hasNext()) {
-      Identity identity = itr.next();
-      if (getConnectionStatus(identity) != Relationship.Type.CONFIRM) {
-        itr.remove();
-      }
+  private void bindDataToActivitiesContainer() throws Exception {
+    int currentPage = pageIterator.getCurrentPage();
+    Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
+    LazyPageList<Activity> pageList = new LazyPageList<Activity>(new UserActivityListAccess(ownerIdentity,getSelectedDisplayMode()), ACTIVITY_PER_PAGE);
+    pageIterator.setPageList(pageList);
+    int pageCount = pageIterator.getAvailablePage();
+    if (pageCount >= currentPage) {
+      pageIterator.setCurrentPage(currentPage);
+    } else if (pageCount < currentPage) {
+      pageIterator.setCurrentPage(currentPage - 1);
     }
-    return connectionsList;
-  }
 
-  /**
-   * Gets contact status between current user and identity that is checked.<br>
-   *
-   * @param identity Object is checked status with current user.
-   * @return type of relationship status that equivalent the relationship.
-   * @throws Exception
-   */
-  private Relationship.Type getConnectionStatus(Identity identity) throws Exception {
-    if (identity.getId().equals(getOwnerIdentity().getId())) {
-      return Relationship.Type.SELF;
-    }
-    RelationshipManager relationshipManager = getRelationshipManger();
-    Relationship relationship = relationshipManager.getRelationship(identity, getOwnerIdentity());
-    return relationshipManager.getRelationshipStatus(relationship, getOwnerIdentity());
-  }
-
-  /**
-   * Gets owner's identity.<br>
-   *
-   * @return identity of ownerName.
-   * @throws Exception
-   */
-  private Identity getOwnerIdentity() throws Exception {
-    IdentityManager identityManger = getIdentityManager();
-    return identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
+    uiActivitiesContainer.setActivityList(pageIterator.getCurrentPageData());
   }
 
   /**
@@ -275,23 +169,5 @@ public class UIUserActivitiesDisplay extends UIContainer {
    */
   private IdentityManager getIdentityManager() {
     return getApplicationComponent(IdentityManager.class);
-  }
-
-  /**
-   * Gets activityManager
-   *
-   * @return
-   */
-  private ActivityManager getActivityManager() {
-    return getApplicationComponent(ActivityManager.class);
-  }
-
-  /**
-   * Gets relationshipManager
-   *
-   * @return
-   */
-  private RelationshipManager getRelationshipManger() {
-    return getApplicationComponent(RelationshipManager.class);
   }
 }

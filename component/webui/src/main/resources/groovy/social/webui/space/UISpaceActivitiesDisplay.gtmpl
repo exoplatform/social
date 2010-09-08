@@ -22,6 +22,10 @@
 %>
 
 <%
+  import org.exoplatform.social.webui.activity.UIActivitiesContainer;
+  import org.exoplatform.webui.core.UIPageIterator;
+  
+  uicomponent.bindDataToActivitiesContainer();
   def space = uicomponent.getSpace();
   def uicomponentId = uicomponent.id;
   def labelActivityStreamOfSpace = _ctx.appRes("${uicomponentId}.label.Activity_Stream_Of_Space").replace("{0}", space.name);
@@ -38,7 +42,8 @@
       </div>
     </div>
   </div>
-  <% uicomponent.renderChildren(); %>
+  <% uicomponent.renderChild(UIActivitiesContainer.class);%>
+  <% uicomponent.renderChild(UIPageIterator.class);%>
 </div>
 <% if (!uicomponent.hasChildren()) {%>
   <div class="EmptyList">labelEmptyActivityList</div>

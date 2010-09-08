@@ -17,8 +17,6 @@
 package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +38,7 @@ import org.exoplatform.social.core.storage.ActivityStorage;
  * This class represents an Activity Manager, also can configure as service in
  * social platform.
  *
- * @see org.exoplatform.social.core.activitystream.model.Activity
+ * @see org.exoplatform.social.core.activity.model.Activity
  * @see ActivityStorage
  */
 public class ActivityManager {
@@ -333,5 +331,9 @@ public class ActivityManager {
         LOG.warn("activity processing failed " + e.getMessage());
       }
     }
+  }
+
+  public int getActivitiesCount(Identity owner) throws Exception {
+    return storage.getActivitiesCount(owner);
   }
 }
