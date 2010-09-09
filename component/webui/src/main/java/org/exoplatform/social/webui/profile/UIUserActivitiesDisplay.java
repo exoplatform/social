@@ -52,7 +52,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
-  private static final int      ACTIVITY_PER_PAGE = 5;
+  private static final int      ACTIVITY_PER_PAGE = 10;
 
   public enum DisplayMode {
     CONNECTIONS,

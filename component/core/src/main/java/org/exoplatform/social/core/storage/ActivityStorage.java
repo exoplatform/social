@@ -584,13 +584,11 @@ public class ActivityStorage {
     Session session = sessionManager.getOrOpenSession();
     try {
       String path = publishingNode.getPath();
-      List<Node> nodes = new QueryBuilder(session)
+      count = (int) new QueryBuilder(session)
         .select(ACTIVITY_NODETYPE)
         .like("jcr:path", path + "[%]/exo:activity[%]")
         .and()
-        .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).exec();
-
-      count = nodes.size();
+        .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).count();
     } catch (Exception e){
       LOG.error(e);
     } finally {

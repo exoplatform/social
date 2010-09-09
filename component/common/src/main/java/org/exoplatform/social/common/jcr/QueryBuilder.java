@@ -67,6 +67,23 @@ public class QueryBuilder {
     return queryBuilder.toString();
   }
 
+  public long count() throws RepositoryException {
+    assert queryBuilder != null;
+
+    List<Node> nodes = new ArrayList<Node>();
+    QueryManager queryManager = session.getWorkspace().getQueryManager();
+    QueryImpl query = (QueryImpl) queryManager.createQuery(getSQL(), Query.SQL);
+
+    //set paging
+    if(offset != -1 & limit != -1){
+      query.setOffset(offset);
+      query.setLimit(limit);
+    }
+
+    QueryResult result = query.execute();
+    return result.getNodes().getSize();
+  }
+
   public List<Node> exec() throws RepositoryException {
     assert queryBuilder != null;
 
