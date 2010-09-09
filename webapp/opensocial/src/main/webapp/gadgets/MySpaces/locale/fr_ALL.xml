@@ -5,5 +5,5 @@
 <messageBundle>
   <msg name="my_spaces">Mes Espaces</msg>
   <msg name="more_link_label">Montrer Tout</msg>
-  <msg name="has_no_space">Vous n'Ãªtes membre d'aucun espace.</msg>
+  <msg name="has_no_space">Vous n'êtes membre d'aucun espace.</msg>
 </messageBundle>
