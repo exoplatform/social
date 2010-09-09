@@ -4,21 +4,21 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Test_SOC_SPC_12_02.001_CreateNewNodeInTheFirstLevel</title>
+<title>Test_SOC_SPC_12_007.001_SocDemo_ChangeOrderOfNode</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test_SOC_SPC_12_02.001_CreateNewNodeInTheFirstLevel</td></tr>
+<tr><td rowspan="1" colspan="3">Test_SOC_SPC_12_007.001_SocDemo_ChangeOrderOfNode</td></tr>
 </thead><tbody>
 <tr>
 	<td>echo</td>
-	<td>--Test_SOC_SPC_12_007.001_CreateNewNodeInTheFirstLevel.html--</td>
+	<td>--Test_SOC_SPC_12_007.001_SocDemo_ChangeOrderOfNode.html--</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>/portal/public/classic/</td>
+	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -34,7 +34,7 @@
 <tr>
 	<td>type</td>
 	<td>username</td>
-	<td>mary</td>
+	<td>john</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -58,7 +58,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Add new space--</td>
+	<td>--Add new Space--</td>
 	<td></td>
 </tr>
 <tr>
@@ -74,7 +74,7 @@
 <tr>
 	<td>type</td>
 	<td>name</td>
-	<td>AddNodeFisrtLevel</td>
+	<td>MoveOrderNode</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -83,7 +83,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Open manage navigation form of space--</td>
+	<td>-- Edit navigation of created Space--</td>
 	<td></td>
 </tr>
 <tr>
@@ -98,7 +98,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- add new node for fisrt level by click on add new node button--</td>
+	<td>-- Add root node by click on Add new node--</td>
 	<td></td>
 </tr>
 <tr>
@@ -113,7 +113,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--enter name--</td>
+	<td>-- enter name for new node--</td>
 	<td></td>
 </tr>
 <tr>
@@ -124,11 +124,11 @@
 <tr>
 	<td>type</td>
 	<td>name</td>
-	<td>new_node</td>
+	<td>NewNode1</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- save add new node--</td>
+	<td>--Save new node</td>
 	<td></td>
 </tr>
 <tr>
@@ -138,72 +138,97 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Save edit navigation space</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Save</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- access group navigation page</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Group</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- View manage navigation form of new added space group--</td>
+	<td>-- Add root node by click on Add new node--</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Edit Navigation</td>
+	<td>link=Add Node</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Edit Navigation</td>
+	<td>link=Add Node</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--verify: new node is existed</td>
+	<td>-- enter name for new node--</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>css=a[title='new_node']</td>
+	<td>waitForElementPresent</td>
+	<td>name</td>
 	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name</td>
+	<td>NewNode2</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--close form</td>
+	<td>--Save new node</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[4]/div/div[1]/div/div/div/div[2]</td>
+	<td>link=Save</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--back to space page--</td>
+	<td>--save Edit navigation space--</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
+	<td>click</td>
+	<td>link=Move Up</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Move Down</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--verify on space navigation--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
+	<td>mouseOver</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyVisible</td>
+	<td>link=NewNode1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyVisible</td>
+	<td>link=NewNode2</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
-	<td>-- delete space for clean data--</td>
+	<td>-- Delete space for clean data--</td>
 	<td></td>
 </tr>
 <tr>
