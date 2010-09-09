@@ -126,7 +126,7 @@
     <!-- maven-enforcer-plugin -->
     <jdk.min.version>1.6</jdk.min.version>
     <!-- maven-release-plugin -->
-    <arguments>-Prelease,java-api-compat,run-its -Dgatein.working.dir=target</arguments>
+    <arguments>-Prelease,java-api-compat,run-its,pkg-tomcat,arc-tomcat -Dgatein.working.dir=target</arguments>
   </properties>
 
   <modules>
