@@ -16,17 +16,15 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.List;
-
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.social.webui.activity.SpaceActivityListAccess;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.webui.activity.SpaceActivityListAccess;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -48,10 +46,9 @@ public class UISpaceActivitiesDisplay extends UIContainer {
   static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);
 
   private Space space;
-  private List<Activity> activityList;
   private UIActivitiesContainer uiActivitiesContainer;
   private UIPageIterator pageIterator;
-  private static final int ACTIVITY_PER_PAGE = 5;
+  private static final int ACTIVITY_PER_PAGE = 10;
 
   /**
    * Constructor

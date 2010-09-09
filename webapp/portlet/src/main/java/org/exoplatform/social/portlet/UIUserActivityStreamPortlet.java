@@ -55,7 +55,6 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private PopupContainer hiddenContainer;
   private boolean composerDisplayed = false;
   UIUserActivitiesDisplay uiUserActivitiesDisplay;
-
   /**
    * constructor
    *
@@ -71,7 +70,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     uiComposer = addChild(UIComposer.class, null, null);
     uiComposer.setPostContext(PostContext.USER);
     uiComposer.setOptionContainer(hiddenContainer);
-    uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, null);
+    uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, "UIUserActivitiesDisplay");
     uiComposer.setActivityDisplay(uiUserActivitiesDisplay);
   }
 
@@ -110,4 +109,5 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     }
     uiUserActivitiesDisplay.setOwnerName(ownerName);
   }
+
 }
