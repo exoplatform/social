@@ -60,12 +60,78 @@
         <values-param>
           <name>classpath.resources</name>
           <description>The resources that start with the following package name should be load from file system</description>
-          <value>locale.social.plugin.UIRelationshipActivity</value>
+          <value>locale.social.webui.UIActivitiesContainer</value>
+          <value>locale.social.webui.UIAvatarUploadContent</value>
+          <value>locale.social.webui.UIAvatarUploader</value>
+          <value>locale.social.webui.activity.UIDefaultActivity</value>
+          <value>locale.social.webui.composer.UIComposer</value>
+          <value>locale.social.webui.connections.UIInvitations</value>
+          <value>locale.social.webui.connections.UIMyConnections</value>
+          <value>locale.social.webui.connections.UIPendingRelation</value>
+          <value>locale.social.webui.profile.UIBasicInfoSection</value>
+          <value>locale.social.webui.profile.UIContactSection</value>
+          <value>locale.social.webui.profile.UIDisplayProfileList</value>
+          <value>locale.social.webui.profile.UIExperienceSection</value>
+          <value>locale.social.webui.profile.UIHeaderSection</value>
+          <value>locale.social.webui.profile.UIProfile</value>
+          <value>locale.social.webui.profile.UIProfileUserSearch</value>
+          <value>locale.social.webui.profile.UIUserActivitiesDisplay</value>
+          <value>locale.social.webui.space.UIAddApplicationSpace</value>
+          <value>locale.social.webui.space.UIManageInvitationSpaces</value>
+          <value>locale.social.webui.space.UIManageMySpaces</value>
+          <value>locale.social.webui.space.UIManagePendingSpaces</value>
+          <value>locale.social.webui.space.UIManagePublicSpaces</value>
+          <value>locale.social.webui.space.UISpaceActivitiesDisplay</value>
+          <value>locale.social.webui.space.UISpaceAddForm</value>
+          <value>locale.social.webui.space.UISpaceApplication</value>
+          <value>locale.social.webui.space.UISpaceApplicationList</value>
+          <value>locale.social.webui.space.UISpaceGroupBound</value>
+          <value>locale.social.webui.space.UISpaceInfo</value>
+          <value>locale.social.webui.space.UISpaceMember</value>
+          <value>locale.social.webui.space.UISpaceMenu</value>
+          <value>locale.social.webui.space.UISpacePermission</value>
+          <value>locale.social.webui.space.UISpaceSearch</value>
+          <value>locale.social.webui.space.UISpaceUserSearch</value>
+          <value>locale.social.webui.space.UISpaceVisibility</value>
+          <value>locale.social.webui.activity.plugin.UIRelationshipActivity</value>
         </values-param>
         <values-param>
           <name>portal.resource.names</name>
           <description>The resources that start with the following package name should be load from file system</description>
-          <value>locale.social.plugin.UIRelationshipActivity</value>
+          <value>locale.social.webui.UIActivitiesContainer</value>
+          <value>locale.social.webui.UIAvatarUploadContent</value>
+          <value>locale.social.webui.UIAvatarUploader</value>
+          <value>locale.social.webui.activity.UIDefaultActivity</value>
+          <value>locale.social.webui.composer.UIComposer</value>
+          <value>locale.social.webui.connections.UIInvitations</value>
+          <value>locale.social.webui.connections.UIMyConnections</value>
+          <value>locale.social.webui.connections.UIPendingRelation</value>
+          <value>locale.social.webui.profile.UIBasicInfoSection</value>
+          <value>locale.social.webui.profile.UIContactSection</value>
+          <value>locale.social.webui.profile.UIDisplayProfileList</value>
+          <value>locale.social.webui.profile.UIExperienceSection</value>
+          <value>locale.social.webui.profile.UIHeaderSection</value>
+          <value>locale.social.webui.profile.UIProfile</value>
+          <value>locale.social.webui.profile.UIProfileUserSearch</value>
+          <value>locale.social.webui.profile.UIUserActivitiesDisplay</value>
+          <value>locale.social.webui.space.UIAddApplicationSpace</value>
+          <value>locale.social.webui.space.UIManageInvitationSpaces</value>
+          <value>locale.social.webui.space.UIManageMySpaces</value>
+          <value>locale.social.webui.space.UIManagePendingSpaces</value>
+          <value>locale.social.webui.space.UIManagePublicSpaces</value>
+          <value>locale.social.webui.space.UISpaceActivitiesDisplay</value>
+          <value>locale.social.webui.space.UISpaceAddForm</value>
+          <value>locale.social.webui.space.UISpaceApplication</value>
+          <value>locale.social.webui.space.UISpaceApplicationList</value>
+          <value>locale.social.webui.space.UISpaceGroupBound</value>
+          <value>locale.social.webui.space.UISpaceInfo</value>
+          <value>locale.social.webui.space.UISpaceMember</value>
+          <value>locale.social.webui.space.UISpaceMenu</value>
+          <value>locale.social.webui.space.UISpacePermission</value>
+          <value>locale.social.webui.space.UISpaceSearch</value>
+          <value>locale.social.webui.space.UISpaceUserSearch</value>
+          <value>locale.social.webui.space.UISpaceVisibility</value>
+          <value>locale.social.webui.activity.plugin.UIRelationshipActivity</value>
         </values-param>
       </init-params>
     </component-plugin>

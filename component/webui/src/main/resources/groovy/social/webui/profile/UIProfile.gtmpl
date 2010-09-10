@@ -23,12 +23,14 @@
   def changeAvatar = "return false;";
   def isEditable = uicomponent.isEditable();
   if(isEditable) changeAvatar = uicomponent.event('ChangeAvatar');
+
+  def labelClickToChangeAvatar = _ctx.appRes("${uicomponent.id}.label.Click_To_Change_Avatar");
 %>
   <div class="UIProfile" id="$uicomponent.id">
     <div class="LeftColumn">
     <% if (isEditable) { %>
      <div class="AvatarSpace" style="cursor: pointer;">
-      <div class="Image" onclick="$changeAvatar" title="Click to chage avatar">
+      <div class="Image" onclick="$changeAvatar" title="$labelClickToChangeAvatar">
     <% } else { %>
      <div class="AvatarSpace">
      <div class="Image" onclick="$changeAvatar">
