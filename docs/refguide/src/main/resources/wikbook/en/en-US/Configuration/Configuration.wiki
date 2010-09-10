@@ -1,42 +1,158 @@
-h1.Components
-h2. ActivityManager
-|| Configuration name || Data type || Default Value || Description ||
-| allowedTags | {{String list}} | b, i, a, span, em, strong, p, ol, ul,li, br, img | html tags |
+h1. RelationshipManager
+Manipulate user relationships 
+h1. SpaceIdentityProvider
+The provider providing identity space instances 
+h1. SpaceApplicationHandler
+Handle all events that relate to creating and managing all the application spaces 
+h1. ExoPeopleService 
+Manipulate all data related to people in portal
+h1. Space Service
+h2. Description
+The service for managing spaces: Create spaces, install applications.
+h2. Configuration
 
-h2. SpaceService
-|| Configuration name || Data type || Default Value || Description ||
-| SpaceActivityStreamPortlet | {{String}} | SpaceActivityStreamPortlet |  |
-| space.apps | {{String list}} | {{DashboardPortlet:true}}, {{SpaceSettingPortlet:false}}, {{MembersPortlet:true}} |  |
+{code:xml}
+<component>
+    <key>org.exoplatform.social.core.space.spi.SpaceService</key>
+    <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
+    <init-params>
+      <!-- Configure the applications to install in a space -->
+      <values-param>
+        <name>space.homeNodeApp</name>
+        <value>SpaceActivityStreamPortlet</value>
+      </values-param>
+      <!-- Configure removable application or not <value>Application:removable</value> -->
+      <values-param>
+        <name>space.apps</name>
+        <value>DashboardPortlet:true</value>
+        <value>SpaceSettingPortlet:false</value>
+        <value>MembersPortlet:true</value>
+      </values-param>
+    </init-params>
+  </component>
+{code}
 
-h2. IdentityManager
-|| Configuration name || Data type || Default Value || Description ||
-| providers | {{String}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} |  |
+|| Configuration name || Data type || Default Value || Possible value || Description ||
+| *SpaceActivityStreamPortlet* | {{String}} | {{SpaceActivityStreamPortlet}} | N/A | The name of portlet displaying activities of spaces |
+| *space.apps* | {{String list}} | {{DashboardPortlet:true}}, {{SpaceSettingPortlet:false}}, {{MembersPortlet:true}} | {{Porlets' name: true/false }} |The list of configuration for portlets used as portlet applications |
 
-h2. ProfileConfig
-|| Configuration name || Data type || Default Value || Description ||
-| nodetype.emails | {{String}} | {{exo:profileKeyValue}} |  |
-| nodetype.phones | {{String}} | {{exo:profileKeyValue}} |  |
-| nodetype.ims | {{String}} |  {{exo:profileKeyValue}} |  |
-| nodetype.urls | {{String}} | {{exo:profileKeyValue}} |  |
-| nodetype.address | {{String}} | {{exo:profileAddress}} |  |
-| nodetype.experiences | {{String}} | {{exo:profileExperience}} |  |
-| nodetype.education | {{String}} |  {{exo:profileEducation}} |  |
-| forceMultiValue | {{String}} | xxxxxxxxxxxx |  |
+h2. External plugin configuration
+{code:xml}
+ <external-component-plugins>
+    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+    <component-plugin>
+      <name>portlets.prefs.required</name>
+      <set-method>setPortletsPrefsRequired</set-method>
+      <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
+	    <init-params>      
+	      <values-param>
+	        <name>portletsPrefsRequired</name>
+	        <value>SpaceActivityStreamPortlet</value>
+	        <value>SpaceSettingPortlet</value>
+	        <value>MembersPortlet</value>
+	      </values-param>
+	    </init-params>
+    </component-plugin>
+  </external-component-plugins>
+{code}
+
+|| Configuration name || Data type || Default Value || Possible value || Description ||
+| *portletsPrefsRequired* | {{String list}} | {{SpaceActivityStreamPortlet, SpaceSettingPortlet, MembersPortlet}} | {{Portler names}} | List of portlets needed to save and get space context name |
+
+h1. Activity Manager
+h2. Description
+Manipulate space and user activities
+h2. Component plugin configuration
+{code:xml}
+<component>
+    <key>org.exoplatform.social.core.manager.ActivityManager</key>
+    <type>org.exoplatform.social.core.manager.ActivityManager</type>
+    <component-plugins>
+      <component-plugin>
+        <name>OSHtmlSanitizer</name>
+        <set-method>addProcessorPlugin</set-method>
+        <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+        <init-params>
+          <values-param>
+            <name>allowedTags</name>
+            <value>b</value>
+            <value>i</value>
+            <value>a</value>
+            <value>span</value>
+            <value>em</value>
+            <value>strong</value>
+            <value>p</value>
+            <value>ol</value>
+            <value>ul</value>
+            <value>li</value>
+            <value>br</value>
+            <value>img</value>
+          </values-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
+  </component>
+{code}
 
 
-h2. ServiceProviderStore
-|| Configuration name || Data type || Default Value || Description ||
-| sample-provider | properties-params |  |  sample service provider |
+|| Configuration name || Data type || Default Value || Possible value || Description ||
+| *allowedTags* | {{String list}} | b, i, a, span, em, strong, p, ol, ul,li, br, img | {{html tags}} | process and render html tags in activity content(body) |
 
-h1. External component plugins 
-h2. MentionsProcessor
-|| Configuration name || Data type || Default Value || Description ||
-| priority | {{String}} | 2 | priority of this processor (lower are executed first) | 
+h2. External plugin configuration
 
-h2. PortletPreferenceRequiredPlugin
-|| Configuration name || Data type || Default Value || Description ||
-| portletsPrefsRequired | {{String list}} | {{SpaceActivityStreamPortlet, SpaceSettingPortlet, MembersPortlet}} | 
+{code:xml}
+<external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+    <component-plugin>
+      <name>MentionsProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower number will be executed first)</description>
+          <value>2</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+</external-component-plugins>
+{code}
 
-h2. AddNodeTypePlugin
-|| Configuration name || Data type || Default Value || Description ||
-| autoCreatedInNewRepository | {{String}} | {{jar:/conf/portal/core-nodetypes.xml}} | Node types configuration file |
+|| Configuration name || Data type || Default Value || Possible value || Description ||
+| *priority* | {{String}} | 2 | {{priority number}} | priority of this processor (lower will be executed first) |
+
+h1. Identity Manager
+h2. Description
+Manipulate space and identities
+h2. Component plugin configuration 
+{code:xml}
+<component>
+    <key>org.exoplatform.social.core.manager.IdentityManager</key>
+    <type>org.exoplatform.social.core.manager.IdentityManager</type>
+    <component-plugins>
+      <component-plugin>
+        <name>SpaceIdentityProvider plugin</name>
+        <set-method>registerIdentityProviders</set-method>
+        <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
+        <init-params>
+          <values-param>
+          <name>providers</name>
+            <description>Identity Providers</description>
+            <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
+          </values-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
+  </component>
+{code}
+
+|| Configuration name || Data type || Default Value || Possible value || Description ||
+| *providers* | {{String}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | {{Every other identity providers}} | Identity Provider instances for managing identities |
+
+
+
+
+
+
+
+

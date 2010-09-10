@@ -15,19 +15,17 @@ h2. Spaces Template configuration
 h2. Configure the oauth 2 legged scenario
 {include:document="Configuration/Configuring_the_oauth_2_legged_scenario.wiki"}
 
-h1. Developers reference
-eXo Social provides many extension point to make it fit to your needs. Every part can be customized and/or automated.
-h2. Spaces
-{include:document="DeveloperReference/Developer_Documentation_Spaces.wiki"}
-h2. People
-{include:document="DeveloperReference/Developer_Documentation_People.wiki"}
-h2. Activity Stream
-{include:document="DeveloperReference/Developer_Documentation_Activity_Stream.wiki"}
-h2. Activity Plugin
+h1. Developers References
+h2. UI Extensions
 {include:document="DeveloperReference/Developer_Documentation_Activity.wiki"}
-h2. Developing Open Social Gadgets
-{include:document="DeveloperReference/Developing_Open_Social_Gadgets.wiki"}
-h2. Open Social
-{include:document="DeveloperReference/Developer_Documentation_OpenSocial.wiki"}
-
+h2. Overrideable Components
+{include:document="DeveloperReference/Overrideable_components.wiki"}
+h2. Plugin SPI
+{include:document="DeveloperReference/Plugin_SPI.wiki"}
+h2. Public Java APIs
+{include:document="DeveloperReference/Java_APIs.wiki"}
+h2. Public REST APIs
+{include:document="DeveloperReference/REST_APIs.wiki"}
+h2. Public Javascript APIs
+{include:document="DeveloperReference/Javascript_APIs.wiki"}
 

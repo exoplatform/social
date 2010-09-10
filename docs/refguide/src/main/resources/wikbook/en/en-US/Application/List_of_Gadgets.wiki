@@ -1,4 +1,4 @@
-All Social Gadgets are in opensocial.war
+*All Social Gadgets are in {{opensocial.war}}*
 
 h1. Activities
 * *Description:* Manages activities of users. Some kinds of activities such as: update status, like/unlike activities, comment activities, delete activities and delete comments. 

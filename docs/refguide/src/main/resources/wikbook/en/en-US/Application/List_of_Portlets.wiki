@@ -1,21 +1,19 @@
-All the portlets are in social-portlet.war
+*All the portlets are in {{social-portlet.war}}*
 
 || Portlets name || Description ||
-| *Space Menu Portlet* | Display the menu on the right of a Space: Home, Dashboard, Members, SpaceSettings |
 | *Members Portlet* | Display MemberSpace where you can search for space members or list space members in alphabet |
-| *Space Setting Portlet* | Shows the settings of Space: Settings, Visibility, Members, Application. You can change the setting information of a space if you are the creator of that space or have the manager right on it. |
+| *Space Setting Portlet* | Shows the settings of Space: Settings, Visibility, Members, Application. You can change the setting information of a space if you are the creator of that space or have the manager right on it |
 | *My Spaces Portlet* | Displays your Space page where you can add new spaces, search for spaces or list spaces in alphabet  |
+| *Space Activity Stream Portlet* | Display spaces activities |
+| *Invitations Portlet* | List all people that invite user|
+| *Requests Portlet* | List all invitations that user request |
 | *Invitation Spaces Portlet* | Displays the *Space invitation* page where you can search for spaces, list spaces in alphabet and view all the Space invitations |
 | *Pending Spaces Portlet* | Displays the *Space requests to join* page where you can search for spaces, list spaces in alphabet and view all the pending request to join Spaces |
 | *Public Spaces Portlet* | Displays the *Public Spaces* page where you can search for spaces, list spaces by alphabet and view all available public spaces to join |
-| *Space Activity Stream Portlet* | Display spaces activities |
 | *User Activity Stream Portlet* | Update user's activities/status |
 | *People Portlet* | The People page where you can find people, display people name by alphabet |
-| *Profile Navigation Portlet* |  |
 | *Connections Portlet* | The Conections page where you can access to your network, invitations to connect or connection requests |
-| *Invitations Portlet* |  | 
-| *Requests Portlet* |  |
-| *User Profile Portlet* | Display user profile page where you can view/ edit user's basic information, contacts, experience or change avatar |
-| *My Connections Navigation Portlet* |  | 
+| *User Profile Portlet* | User profile page where user can view/ edit basic information, contacts, experience or change avatar |
+
 
   

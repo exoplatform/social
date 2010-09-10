@@ -1,0 +1,64 @@
+h1. Service name and description
+h2. Activities REST service
+||Name||Description||Service URL||
+| *ActivitiesRestService* | Provides rest services for activity gadget: like/unlike; comment; delete activity | $portalName/social/activities |
+
+* *API*:
+|| Name || Description || Service URL Endpoint ||
+| destroyActivity | destroys activity and gets json/xml return format | restContextName/social/activities/$activityId/likes/destroy/$identity.$format |
+| showLikes | shows list of likes by activityId and returns json/xml format | restContextName/social/activities/$activityId/likes/show.$format |
+| updateLike | updates like by json/xml format | restContextName/social/activities/$activityId/likes/update.$format |
+| destroyLike | destroys like by identityId and gets json/xml return format | restContextName/social/activities/$activityId/likes/destroy/$identity.$format |
+| showComments | shows comment list by json/xml format | restContextName/social/activities/$activityId/likes/show.$format |
+| updateComment | updates comment by json/xml format | restContextName/social/activities/$activityId/likes/update.$format |
+| destroyComment | destroys comments and returns json/xml format | restContextName/social/activities/$activityId/comments/destroy/$commentId.$format |
+
+|| Parameter || Expected values ||
+| {{format}} | {{xml/json}} |
+
+h2. Apps REST service
+||Name||Description||Service URL||
+| AppsRestService | Provides rest services for application registry gadget: shows application list |$restContextName/social/apps/show.$format |
+
+* *API*:
+|| Name || Description || Service URL Endpoint ||
+| showApps | shows apps by json/xml format | $restContextName/social/apps/show.$format |
+
+|| Parameter || Expected values ||
+| {{format}} | {{xml/json}} |
+
+h2. Identity REST service
+||Name||Description||Service URL||
+|IdentityRestService | gets identityId by username | $portalName/social/identity/$username/id |
+
+* *API*: 
+|| Name || Description || Service URL Endpoint ||
+| UserId getId | gets identity by username and return by json format | $portalName/social/identity/$username/show.json |
+
+h2. Linkshare REST service
+||Name||Description||Service URL||
+|  LinkshareRestService | gets information from a provided link | $restContextName/social/linkshare |
+
+* *API*:
+|| Name || Description || Service URL Endpoint
+| getLink | gets link content by posting with linkShare request as post data | $restContextName/social/linkshare/show.$format
+
+|| Parameter || Expected values ||
+| {{format}} | {{xml/json}} |
+
+h2. Spaces REST service
+||Name||Description||Service URL||
+|*SpacesRestService*|Provides rest services for space gadget to display user's spaces and pending spaces|  $portalName/social/spaces|
+
+* *API*:
+||Name||Description||Service URL Endpoint||
+|showMySpaceList|shows mySpaceList by json/xml format|restContextName/social/spaces/$userId/mySpaces/show.$format|
+|showPendingSpaceList|hows pendingSpaceList by json/xml format|restContextName/social/spaces/$userId/pendingSpaces/show.$format|
+
+|| Parameter || Expected values ||
+| {{format}} | {{xml/json}} |
+
+h1. Location
+* *Maven groupId*: org.exoplatform.social
+* *ArtifactId*: exo.social.component.service
+
