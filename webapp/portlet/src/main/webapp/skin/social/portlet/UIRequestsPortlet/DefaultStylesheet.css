@@ -480,9 +480,9 @@ input.hint, textarea.hint {
   color: #C7C7C7;
 }
 
-.UITabPane .RemoveIcon{
-  background: url('DefaultSkin/background/RemoveIcon.gif') no-repeat left center ;
+.UITabPane .WaitingIcon {
+  background: url('DefaultSkin/background/WaitingIcon.gif') no-repeat left center ;
   float: right;
-  padding: 5px 6px;
+  padding: 5px 8px 5px 6px;
   margin-left: 4px;
 }

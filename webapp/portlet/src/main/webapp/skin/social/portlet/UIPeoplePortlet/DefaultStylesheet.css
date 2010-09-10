@@ -498,6 +498,13 @@ input.hint, textarea.hint {
   margin-left: 4px;
 }
 
+.UIPeoplePortlet .WaitingIcon{
+  background: url('DefaultSkin/background/WaitingIcon.gif') no-repeat left center ;
+  float: right;
+  padding: 5px 6px;
+  margin-left: 4px;
+}
+
 .UIPeoplePortlet .RemoveIcon{
   background: url('DefaultSkin/background/RemoveIcon.gif') no-repeat left center ;
   float: right;
