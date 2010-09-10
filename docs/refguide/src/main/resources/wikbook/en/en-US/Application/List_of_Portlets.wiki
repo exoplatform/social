@@ -1,16 +1,15 @@
 *All the portlets are in {{social-portlet.war}}*
 
 || Portlets name || Description ||
-| *Members Portlet* | Display MemberSpace where you can search for space members or list space members in alphabet |
-| *Space Setting Portlet* | Shows the settings of Space: Settings, Visibility, Members, Application. You can change the setting information of a space if you are the creator of that space or have the manager right on it |
-| *My Spaces Portlet* | Displays your Space page where you can add new spaces, search for spaces or list spaces in alphabet  |
-| *Space Activity Stream Portlet* | Display spaces activities |
-| *Invitations Portlet* | List all people that invite user|
-| *Requests Portlet* | List all invitations that user request |
-| *Invitation Spaces Portlet* | Displays the *Space invitation* page where you can search for spaces, list spaces in alphabet and view all the Space invitations |
-| *Pending Spaces Portlet* | Displays the *Space requests to join* page where you can search for spaces, list spaces in alphabet and view all the pending request to join Spaces |
-| *Public Spaces Portlet* | Displays the *Public Spaces* page where you can search for spaces, list spaces by alphabet and view all available public spaces to join |
-| *User Activity Stream Portlet* | Update user's activities/status |
+| *Members Portlet* | The portlet that helps user search for Space members or list Space members in alphabet |
+| *My Spaces Portlet* | Displays your Space page where you can add new Spaces, search for Spaces or list Spaces in alphabet  |
+| *Space Activity Stream Portlet* | The portlet that's used to share Spaces activity information |
+| *Invitations Portlet* | The portlet used to list all people that invite user|
+| *Requests Portlet* | The portlet used to list all invitations that user request |
+| *Invitation Spaces Portlet* | The portlet that helps users search for Spaces, list spaces in alphabet and view all the Space invitations |
+| *Pending Spaces Portlet* | Displays the *Space requests to join* page where you can search for Spaces, list spaces in alphabet and view all the pending request to join Spaces |
+| *Public Spaces Portlet* | Displays the *Public Spaces* page where you can search for Spaces, list Spaces by alphabet and view all available public Spaces to join |
+| *User Activity Stream Portlet* | Update and share user's activities/status |
 | *People Portlet* | The People page where you can find people, display people name by alphabet |
 | *Connections Portlet* | The Conections page where you can access to your network, invitations to connect or connection requests |
 | *User Profile Portlet* | User profile page where user can view/ edit basic information, contacts, experience or change avatar |

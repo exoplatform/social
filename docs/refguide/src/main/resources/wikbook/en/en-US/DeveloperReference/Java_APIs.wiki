@@ -1,0 +1,471 @@
+h1. Activity Manager
+*getActivity*
+
+{{public Activity *getActivity*(java.lang.String activityId)}}
+* Desc: Gets the activity by activity Id
+* Parameters:
+{{activityId}} - the activity id
+* Returns:
+the activity
+
+*deleteActivity*
+
+{{public void *deleteActivity*(java.lang.String activityId)
+                    throws java.lang.Exception}}
+* Desc: delete activity by its id.
+* Parameters:
+{{activityId}} - the activity id
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*deleteComment*
+
+{{public void *deleteComment*(java.lang.String activityId,
+                          java.lang.String commentId)}}
+* Desc: Delete comment by its id.
+* Parameters:
+{{activityId}} -
+
+{{commentId}} -
+
+* *Throws:*
+{{java.lang.Exception}}
+
+*getActivities*
+
+{{public java.util.List<Activity> *getActivities*(Identity identity)
+                                       throws java.lang.Exception}}
+* Desc: Gets the lastest activities by identity
+* Parameters:
+{{identity}} - the identity
+* Returns:*
+the activities
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*getActivities*
+
+{{public java.util.List<Activity> *getActivities*(Identity identity,
+                                              long start,
+                                              long limit)
+                                              throws java.lang.Exception}}
+* Desc: Gets the latest activities by identity, specifying start offset index and limit
+* Parameters:
+{{identity}} - the identity
+
+{{start}} - offset index
+
+{{limit}} -
+* Returns:
+the activities
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*saveActivity*
+
+{{public Activity *saveActivity*(Identity owner,
+                             Activity activity)
+                             throws java.lang.Exception}}
+* Desc: Saves an activity to the stream of a owner.
+Note that the Activity.userId will be set to the owner identity if not already set.
+* Parameters:
+{{owner}} - owner of the activity stream. Usually a user or space
+
+{{activity}} - the activity to save
+* Returns:
+the activity saved
+* Throws:
+{{java.lang.Exception}} - the exception when error in storage
+
+*saveActivity*
+
+{{public Activity *saveActivity*(Activity activity)
+                      throws java.lang.Exception}}
+
+* Desc:Saves activity into the stream for the activity's userId.
+
+* Parameters:
+{{activity}} - the activity to save
+* Returns:
+the activity
+* Throws:
+{{java.lang.Exceptio}}n
+
+*SaveComment*
+
+{{public void *saveComment*(Activity activity,
+                        Activity comment)
+			throws java.lang.Exception}}
+
+* Desc: Save new or updates comment to an activity comment is an instance of Activity with mandatory properties: userId, title.
+* Parameters:
+{{activity}} -
+
+{{comment}} -
+* Throws:
+{{java.lang.Exception}}
+
+*saveLike*
+
+{{public void *saveLike*(Activity activity,
+                     Identity identity)
+                     throws java.lang.Exception}}
+* Desc: Saves an identity who likes an activity
+* Parameters:
+{{activity}} -
+
+{{identity}} -
+* Throws:
+{{java.lang.Exception}}
+
+*removeLike*
+
+{{public void *removeLike*(Activity activity,
+                       Identity identity)
+                       throws java.lang.Exception}}
+
+* Desc: Removes activity like, if this activity liked, remove; else does nothing
+* Parameters:
+{{activity}} -
+
+{{identity}} - user that unlikes the activity
+* Throws:
+{{java.lang.Exception}}
+
+*getComments*
+
+{{public java.util.List<Activity> *getComments*(Activity activity)}}
+* Desc: Gets an activity's commentList
+* Parameters:
+{{activity}} -
+
+*recordActivity*
+{{public Activity *recordActivity*(Identity owner,
+                               java.lang.String type,
+                               java.lang.String title,
+                               java.lang.String body)
+                        throws java.lang.Exception}}
+* Desc: Records an activity
+* Parameters:
+{{owner}} - the owner of the target stream for this activity
+
+{{type}} - the type of activity (freeform)
+
+{{title}} - the title
+
+{{body}} - the body
+* Returns:
+the stored activity
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*recordActivity*
+
+{{public Activity *recordActivity*(Identity owner,
+                               Activity activity)
+                        throws java.lang.Exception}}
+* Desc: Saves an activity
+* Parameters:
+{{owner}} -
+
+{{activity}} -
+* Returns:
+the stored activity
+* Throws:
+{{java.lang.Exception}}
+
+*addProcessor*
+
+{{public void *addProcessor*(ActivityProcessor processor)
+Adds a new processor}}
+* Parameters:
+{{processor}} -
+
+*addProcessorPlugin*
+
+{{public void *addProcessorPlugin*(BaseActivityProcessorPlugin plugin)}}
+* Desc: adds a new processor plugin
+* Parameters:
+{{plugin}} -
+
+*getActivitiesCount*
+
+{{public int *getActivitiesCount*(Identity owner)
+                       throws java.lang.Exception}}
+* Throws:
+{{java.lang.Exception}}
+
+h1. IdentityManager
+
+*getIdentity*
+
+{{public Identity *getIdentity*(java.lang.String id)
+                     throws java.lang.Exception}}
+* Desc: Gets the identity by id and also loads his profile
+* Parameters:
+{{id}} - ID can be a social GlobalId or a raw identity such as in Identity.getId()
+* Returns:
+null if nothing is found, or the Identity object
+* Throws:
+{{java.lang.Exception}}
+
+*getIdentity*
+
+{{public Identity *getIdentity*(java.lang.String id,
+                            boolean loadProfile)
+                     throws java.lang.Exception}}
+* Desc: Gets the identity by id optionnaly loading his profile
+* Parameters:
+{{id}} - ID be a social GlobalId or a raw identity such as in Identity.getId()
+
+{{loadProfile}} - the load profile true if load and false if doesn't
+* Returns:
+null if nothing is found, or the Identity object
+* Throws:
+{{java.lang.Exception}}
+
+
+*addIdentityProvider*
+
+{{public void *addIdentityProvider*(IdentityProvider<?> idProvider)}}
+* Desc: Adds the identity provider.
+* Parameters:
+{{idProvider}} - the id provider
+
+*getOrCreateIdentity*
+
+{{public Identity getOrCreateIdentity(java.lang.String providerId,
+                                    java.lang.String remoteId)
+                             throws java.lang.Exception}}
+* Desc: Gets the identity by remote id
+* Parameters:
+{{providerId}} - the provider id
+
+{{remoteId}} - the remote id
+* Returns:
+the identity
+* Throws:
+{{java.lang.Exception}} - the exception
+
+
+*getIdentitiesByProfileFilter*
+
+{{public java.util.List<Identity> *getIdentitiesByProfileFilter*(java.lang.String providerId,
+                                                             ProfileFilter profileFilter)
+                                                      throws java.lang.Exception}}
+* Desc: Gets the identities by profile filter.
+* Parameters:
+{{providerId}} - the provider id
+
+{{profileFilter}} - the profile filter
+* Returns:
+the identities by profile filter
+* Throws:
+{{java.lang.Exception}} - the exception
+
+
+*getIdentitiesByProfileFilter*
+
+{{public java.util.List<Identity> *getIdentitiesByProfileFilter*(java.lang.String providerId,
+                                                             ProfileFilter profileFilter,
+                                                             long offset,
+                                                             long limit)
+                                                      throws java.lang.Exception}}
+* Throws:
+{{java.lang.Exception}}
+*getIdentitiesByProfileFilter*
+
+{{public java.util.List<Identity> *getIdentitiesByProfileFilter*(ProfileFilter profileFilter)
+                                                      throws java.lang.Exception}}
+* Desc: Gets the identities by profile filter.
+* Parameters:
+{{profileFilter}} - the profile filter
+* Returns:
+the identities by profile filter
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*getIdentitiesByProfileFilter*
+
+{{public java.util.List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter,
+                                                             long offset,
+                                                             long limit)
+                                                      throws java.lang.Exception}}
+* Throws:
+{{java.lang.Exception}}
+
+*getIdentitiesFilterByAlphaBet*
+
+{{public java.util.List<Identity> *getIdentitiesFilterByAlphaBet*(java.lang.String providerId,
+                                                              ProfileFilter profileFilter)
+                                                       throws java.lang.Exception}}
+* Desc: Gets the identities filter by alpha bet.
+* Parameters:
+{{providerId}} - the provider id
+{{profileFilter}} - the profile filter
+* Returns:
+the identities filter by alpha bet
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*getIdentitiesFilterByAlphaBet*
+
+{{public java.util.List<Identity> *getIdentitiesFilterByAlphaBet*(ProfileFilter profileFilter)
+                                                       throws java.lang.Exception
+* Desc: Gets the identities filter by alpha bet.
+* Parameters:
+{{profileFilter}} - the profile filter
+* Returns:
+the identities filter by alpha bet
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*getOrCreateIdentity*
+
+{{public Identity getOrCreateIdentity(java.lang.String providerId,
+                                    java.lang.String remoteId,
+                                    boolean loadProfile)
+                             throws java.lang.Exception}}
+* Desc: This function return an Identity object that specific to a special type.
+For example if the type is Linked'In, the identifier will be the URL of the profile or if it's a CS contact manager contact, it will be the UID of the contact.
+A new identity is created if it does not exist.
+* Parameters:
+{{providerId}} - refering to the name of the Identity provider
+{{remoteId}} - the identifier that identify the identity in the specific identity provider
+{{loadProfile}} - true to load profile
+* Returns:
+null if nothing is found, or the Identity object TODO improve the performance by specifying what needs to be loaded
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*getIdentity*
+
+{{public Identity *getIdentity*(java.lang.String providerId,
+                            java.lang.String remoteId,
+                            boolean loadProfile)
+                     throws java.lang.Exception}}
+* Desc: Gets identity
+* Parameters:
+{{providerId}} -
+
+{{remoteId}} -
+
+{{loadProfile}} -
+* Returns:
+* Throws:
+{{java.lang.Exception}}
+
+*identityExisted*
+
+{{public boolean *identityExisted*(java.lang.String providerId,
+                               java.lang.String remoteId)}}
+* Desc: Checks if identity existed or not
+* Parameters:
+{{providerId}} -
+
+{{remoteId}} -
+* Returns:
+
+*saveIdentity*
+
+{{public void *saveIdentity*(Identity identity)
+                  throws java.lang.Exception}}
+* Desc: Save identity.
+* Parameters:
+{{identity}} - the identity
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*updateAvatar*
+
+{{public void *updateAvatar*(Profile p)
+                  throws java.lang.Exception}}
+* Throws:
+{{java.lang.Exception}}
+
+*updateBasicInfo*
+
+{{public void *updateBasicInfo*(Profile p)
+                     throws java.lang.Exception}}
+* Throws:
+{{java.lang.Exception}}
+
+updateContactSection
+
+{{public void *updateContactSection*(Profile p)
+                          throws java.lang.Exception}}
+* Throws:
+{{java.lang.Exception}}
+
+*updateExperienceSection*
+
+{{public void *updateExperienceSection*(Profile p)
+                             throws java.lang.Exception}}
+* Throws:
+{{java.lang.Exception}}
+
+*updateHeaderSection*
+
+{{public void *updateHeaderSection*(Profile p)
+                         throws java.lang.Exception}}
+* Throws:
+{{java.lang.Exception}}
+
+*getIdentities*
+
+{{public java.util.List<Identity> *getIdentities*(java.lang.String providerId)
+                                       throws java.lang.Exception}}
+* Desc: Gets the identities.
+* Parameters:
+{{providerId}} - the provider id
+* Returns:
+the identities
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*getIdentities*
+
+{{public java.util.List<Identity> *getIdentities*(java.lang.String providerId,
+                                              boolean loadProfile)
+                                       throws java.lang.Exception}}
+* Desc: Gets the identities.
+* Parameters:
+{{providerId}} - the provider id
+
+{{loadProfile}} - the load profile
+* Returns:
+the identities
+* Throws:
+{{java.lang.Exception}} - the exception
+
+*getStorage*
+
+{{public IdentityStorage *getStorage*()
+* Desc: Gets the storage.
+* Returns:
+the storage
+
+*setIdentityStorage*
+
+{{public void *setIdentityStorage*(IdentityStorage identityStorage)
+registerProfileListener}}
+
+{{public void *registerProfileListener*(ProfileListener listener)
+unregisterProfileListener}}
+
+{{public void *unregisterProfileListener*(ProfileListener listener)
+addProfileListener}}
+
+{{public void *addProfileListener*(ProfileListenerPlugin plugin)
+* Desc: Registers a profile listener component plugin
+* Parameters:
+{{plugin}} -
+
+*getIdentityStorage*
+
+{{public IdentityStorage getIdentityStorage()}}
+
+
+h1. Relationship Manager
+
+
