@@ -98,7 +98,7 @@
       <tr class="OddRow">
       <% } %>
         <td><%=pendingUser %></td>
-        <td width="40">
+        <td>
           <div class="ValidateButton" onclick="$validateAction" title="$labelValidateAction"><span></span></div>
           <div class="DeclineButton" onclick="$declineAction" title="$labelDeclineAction"><span></span></div>
           <div style="clear: left;"><span></span></div>

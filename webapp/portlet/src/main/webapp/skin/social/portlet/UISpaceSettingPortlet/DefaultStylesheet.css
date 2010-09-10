@@ -281,12 +281,12 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .DeclineButton {
-  background: url('DefaultSkin/background/DeclineButton.gif') no-repeat left top;
-  width: 14px;
-  height: 15px;
-  cursor: pointer;
-  float: left;
-  margin: 2px 10px 2px 2px;
+  background:url("/social-portlet/skin/social/portlet/UISpaceSettingPortlet/DefaultSkin/background/DeclineButton.gif") no-repeat scroll left top transparent;
+  cursor:pointer;
+  float:left;
+  height:15px;
+  margin:2px;
+  width:14px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchInviteButton {
