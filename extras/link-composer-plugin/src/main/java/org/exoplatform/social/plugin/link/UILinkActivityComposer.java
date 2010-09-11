@@ -139,14 +139,15 @@ public class UILinkActivityComposer extends UIActivityComposer {
     @Override
     public void execute(Event<UILinkActivityComposer> event) throws Exception {
       WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApplication = requestContext.getUIApplication();
+//      UIApplication uiApplication = requestContext.getUIApplication();
       UILinkActivityComposer uiComposerLinkExtension = event.getSource();
       String url = requestContext.getRequestParameter(OBJECTID);
       try {
         uiComposerLinkExtension.setLink(url.trim());
       } catch (Exception e) {
         uiComposerLinkExtension.setReadyForPostingActivity(false);
-        uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.WARNING));
+        // Comment this below line code for temporary fixing issue SOC-1091. Check later.
+//        uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.WARNING));
         return;
       }
       requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
