@@ -1,9 +1,8 @@
-In eXo Spaces we will be able to have two type of space (classic and webos spaces). This is for the classic mode (it's the only one implemented now).
+In the eXo Spaces, we may have two space types (classic and webos spaces). This is for the classic mode (it's the only one implemented now).
 
+For the classic space, we can pre-configure the template, meaning that you can set up where your *menu* will be displayed or where your *application* will be displayed.
 
-For classic space we can pre-configure template, it mean that you can set up where your *menu* will be display or where your *application* will be display.
-
-Here is an example of configuration file  that display the menu on the left. The Application will be inserted in the container with the id *Application*:
+Here is an example of configuration file that displays the menu on the left. The Application will be inserted in the container with the id *Application*:
 {code:xml}
 <page>
   <owner-type></owner-type>
@@ -26,11 +25,11 @@ Here is an example of configuration file  that display the menu on the left. The
 </page>
 {code}
 
-In this example the outer container contains 2 inner containers: one with id is *Menu* for your Menu and another with id is *Application* contains your applications
+In this example, the outer container contains two inner containers: one container has id as *Menu* for your Menu and another has id as *Application* containing your applications.
 
 !spaces.png!
 
-If you want your menu will be in right and your application in left you can swap two containers declared position:
+If you want to put your menu in right and your application in left, you can swap the declared position of two containers:
 
 {code:xml}
 <page>
@@ -54,9 +53,9 @@ If you want your menu will be in right and your application in left you can swap
 </page>
 {code}
 
-Here is the configure file in FishEye: http://fisheye.exoplatform.org/browse/social/trunk/extension/war/src/main/webapp/WEB-INF/conf/portal/template/pages/space/page.xml
+Here is the configure file in FishEye: http://fisheye.exoplatform.org/browse/social/trunk/extension/war/src/main/webapp/WEB-INF/conf/portal/template/pages/space/page.xml.
 
-In your tomcat, this configuration file is at _$EXO_TOMCAT/webapps/social-ext/WEB-INF/conf/portal/template/pages/space/page.xml_
+In your tomcat, this configuration file is at _$EXO_TOMCAT/webapps/social-ext/WEB-INF/conf/portal/template/pages/space/page.xml_.
 
 
 

@@ -1,14 +1,14 @@
-h1. About Activity Plugin
+h1. About Activity Plug-in
   
-Since Social 1.1.0, the activity plugin feature  was introduced  to allow using activity composer extension and use custom ui component for displaying activity by its type.
+Since the Social 1.1.0, the activity plug-in feature  was introduced to allow using activity composer extension and use custom ui component for displaying activity by its type.
 
-h1. How to create activity plugin
+h1. How to create activity plug-in
 
 You should have an idea about UI Extension Framework. If you have already worked with UI Extension Framework, it's really easy to create activity plugin. If no, you have chance to work with it now . You should have a look at [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework].
 
-h2. Create a custom ui component for displaying the activity based on its type.
+h2. Create a custom UI component for displaying the activity based on its type.
 
-When an activity is displayed, UIActivityFactory will look for its registered custom actvity display by activity's type. If not found, UIDefaultActivity will be called for displaying that activity.
+When an activity is displayed, UIActivityFactory will look for its registered custom activity display by activity's type. If not found, UIDefaultActivity will be called for displaying that activity.
 
 For example, in Social there's an activity of type "exosocial:spaces" created by SpaceActivityPublisher. And now we want to display it with out own ui component instead of default one.
 

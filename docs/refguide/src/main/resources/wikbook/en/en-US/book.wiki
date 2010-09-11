@@ -18,9 +18,9 @@ h2. Configure the oauth 2 legged scenario
 h1. Developers References
 h2. UI Extensions
 {include:document="DeveloperReference/Developer_Documentation_Activity.wiki"}
-h2. Overrideable Components
+h2. Overridable Components
 {include:document="DeveloperReference/Overrideable_components.wiki"}
-h2. Plugin SPI
+h2. Plug-in SPI
 {include:document="DeveloperReference/Plugin_SPI.wiki"}
 h2. Public Java APIs
 {include:document="DeveloperReference/Java_APIs.wiki"}
