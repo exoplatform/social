@@ -22,6 +22,7 @@ import java.util.List;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -63,7 +64,6 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
   }
 
   public void testConfirmed() throws Exception {
-    assertTrue(true);
 
     Identity mary = identityManager.getIdentity("organization:mary");
     Identity john = identityManager.getIdentity("organization:john");
@@ -73,16 +73,16 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
 
     assertEquals(1, maryActivities.size());
     tearDownActivityList.add(maryActivities.get(0));
-    assertTrue(maryActivities.get(0).getTitleId().equals("CONNECTION_CONFIRMED"));
-    assertTrue(maryActivities.get(0).getTemplateParams().get("Requester").contains("mary"));
-    assertTrue(maryActivities.get(0).getTemplateParams().get("Accepter").contains("john"));
+    assertTrue(maryActivities.get(0).getTitleId().equals(TitleId.CONNECTION_CONFIRMED.toString()));
+    assertTrue(maryActivities.get(0).getTemplateParams().get(RelationshipPublisher.SENDER_PARAM).contains("mary"));
+    assertTrue(maryActivities.get(0).getTemplateParams().get(RelationshipPublisher.RECEIVER_PARAM).contains("john"));
 
     List<Activity> johnActivities = activityManager.getActivities(john);
     assertEquals(1, johnActivities.size());
     tearDownActivityList.add(johnActivities.get(0));
-    assertTrue(johnActivities.get(0).getTitleId().equals("CONNECTION_CONFIRMED"));
-    assertTrue(johnActivities.get(0).getTemplateParams().get("Requester").contains("john"));
-    assertTrue(johnActivities.get(0).getTemplateParams().get("Accepter").contains("mary"));
+    assertTrue(johnActivities.get(0).getTitleId().equals(TitleId.CONNECTION_CONFIRMED.toString()));
+    assertTrue(johnActivities.get(0).getTemplateParams().get(RelationshipPublisher.SENDER_PARAM).contains("john"));
+    assertTrue(johnActivities.get(0).getTemplateParams().get(RelationshipPublisher.RECEIVER_PARAM).contains("mary"));
 
   }
 }

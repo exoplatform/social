@@ -39,6 +39,10 @@ public class LinkProvider {
   private void init(InitParams params) {
   }
 
+  public String getProfileUri(String username) {
+    return getProfileUri(username, null);
+  }
+
   public String getProfileUri(String username, String portalOwner) {
     String url = username;
     try {
@@ -60,6 +64,10 @@ public class LinkProvider {
       LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
     }
     return url;
+  }
+
+  public String getProfileLink(String username) {
+    return getProfileLink(username, null);
   }
 
   public String getProfileLink(String username, String portalOwner) {

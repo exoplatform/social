@@ -14,26 +14,23 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
+    along with this program; if not, see<http://www.gnu.org/licenses />.
 
 -->
 
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <artifactId>exo.social.component</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.1.0-GA-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.component.webui</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.1.0-GA-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Web UI Component</name>
   <description>eXo Social Web UI Component</description>
@@ -169,16 +166,22 @@
     </dependency>
 
     <dependency>
+      <groupId>org.exoplatform.ecms</groupId>
+      <artifactId>exo-ecms-core-ext</artifactId>
+      <version>${org.exoplatform.ecms.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.core</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.exoplatform.ecms</groupId>
-      <artifactId>exo-ecms-core-ext</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
 </project>

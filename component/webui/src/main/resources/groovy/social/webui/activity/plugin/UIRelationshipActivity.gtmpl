@@ -1,0 +1,298 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.webui.form.UIFormTextAreaInput;
+  import org.exoplatform.social.core.application.RelationshipPublisher;
+
+  def pcontext = Util.getPortalRequestContext();
+  def jsManager = pcontext.getJavascriptManager();
+  def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
+  def activity = uicomponent.getActivity();
+  def activityDeletable = uicomponent.isActivityDeletable();
+  def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
+
+  def isConnectionRequested = (uicomponent.getTitleId() == RelationshipPublisher.TitleId.CONNECTION_REQUESTED);
+  def isConnectionConfirmed = (uicomponent.getTitleId() == RelationshipPublisher.TitleId.CONNECTION_CONFIRMED);
+
+  def labelAccept = _ctx.appRes("UIRelationshipActivity.label.Accept");
+  def labelRefuse = _ctx.appRes("UIRelationshipActivity.label.Refuse");
+%>
+
+<% if (activity) { //process if not null
+
+  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIForm", "/social-resources/javascript");
+  jsManager.importJavascript("eXo.social.webui.UIActivity", "/social-resources/javascript");
+
+  def labelComment = _ctx.appRes("UIActivity.label.Comment");
+  def labelLike = _ctx.appRes("UIActivity.label.Like");
+  def labelUnlike = _ctx.appRes("UIActivity.label.Unlike");
+  def labelSource = _ctx.appRes("UIActivity.label.Source");
+  def inputWriteAComment = _ctx.appRes("UIActivity.input.Write_A_Comment");
+  def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
+  def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
+  def labelOnePersonLikeThis = _ctx.appRes("UIActivity.label.One_Person_Like_This");
+  def labelPeopleLikeThis = _ctx.appRes("UIActivity.label.People_Like_This");
+  def labelYouLikeThis = _ctx.appRes("UIActivity.label.You_Like_This");
+  def labelYouAndOnePersonLikeThis = _ctx.appRes("UIActivity.label.You_And_One_Person_Like_This");
+  def labelYouAndPeopleLikeThis = _ctx.appRes("UIActivity.label.You_And_People_Like_This");
+
+  def likeActivityAction = uicomponent.event("LikeActivity", "true");
+  def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
+
+  def commentList = uicomponent.getComments();
+  def allComments = uicomponent.getAllComments();
+  if (allComments) {
+    labelShowAllComments = labelShowAllComments.replace("{0}", allComments.size() + "");
+    labelHideAllComments = labelHideAllComments.replace("{0}", allComments.size() + "");
+
+  }
+  def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
+  def identityLikesNum = 0;
+  def labelLikes = null;
+  def toggleDisplayLikesAction = uicomponent.event("ToggleDisplayLikes");
+  def startTag = "<a onclick=\"$toggleDisplayLikesAction\" id=\"ToggleDisplayListPeopleLikes${activity.id}\" href=\"#ToggleDisplayListPeopleLikes\">";
+  def endTag = "</a>";
+  if (displayedIdentityLikes != null) {
+    identityLikesNum = displayedIdentityLikes.length;
+  }
+  def commentListStatus = uicomponent.getCommentListStatus();
+  def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
+  def likesDisplayed = uicomponent.isLikesDisplayed();
+  //params for init UIActivity javascript object
+  def params = """
+    {activityId: '${activity.id}',
+     inputWriteAComment: '$inputWriteAComment',
+     commentMinCharactersAllowed: ${uicomponent.getCommentMinCharactersAllowed()},
+     commentMaxCharactersAllowed: ${uicomponent.getCommentMaxCharactersAllowed()},
+     commentFormDisplayed: $commentFormDisplayed,
+     commentFormFocused: ${uicomponent.isCommentFormFocused()}
+    }
+  """
+  jsManager.addOnLoadJavascript("initUIActivity${activity.id}");
+  //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
+  uicomponent.setCommentFormFocused(false);
+  def activityUserName, activityUserProfileUri, activityImageSource, activityContentBody, activityPostedTime;
+  def commentFormBlockClass = "", listPeopleLikeBlockClass = "", listPeopleBGClass = "";
+  if (!commentFormDisplayed) {
+    commentFormBlockClass = "DisplayNone";
+  }
+
+  if (!likesDisplayed) {
+    listPeopleLikeBlockClass = "DisplayNone";
+  }
+
+  if (uicomponent.isLiked()) {
+    if (identityLikesNum > 1) {
+      labelLikes = labelYouAndPeopleLikeThis.replace("{start}", startTag).replace("{end}", endTag).replace("{0}", identityLikesNum + "");
+    } else if (identityLikesNum == 1) {
+      labelLikes = labelYouAndOnePersonLikeThis.replace("{start}", startTag).replace("{end}", endTag);
+    } else {
+      labelLikes = labelYouLikeThis;
+    }
+  } else {
+    if (identityLikesNum > 1) {
+        labelLikes = labelPeopleLikeThis.replace("{start}", startTag).replace("{end}", endTag).replace("{0}", identityLikesNum + "");
+    } else if (identityLikesNum == 1) {
+        labelLikes = labelOnePersonLikeThis.replace("{start}", startTag).replace("{end}", endTag);
+    }
+  }
+
+  if (!labelLikes) {
+   //hides diplayPeopleBG
+   listPeopleBGClass = "DisplayNone";
+  }
+
+  activityContentTitle = uicomponent.getActivityTitle(_ctx); //default activity.title;
+  activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
+  def userId = activity.userId;
+  activityUserName = uicomponent.getUserFullName(userId);
+  activityUserProfileUri = uicomponent.getUserProfileUri(userId);
+
+  if (uicomponent.isUserActivity(userId)) {
+    activityImageSource = uicomponent.getUserAvatarImageSource(userId);
+    if (!activityImageSource) activityImageSource= "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+  } else {
+    activityImageSource = uicomponent.getSpaceAvatarImageSource(userId);
+    if (!activityImageSource) activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+  }
+%>
+
+<div class="UIActivity">
+  <script type="text/javascript">
+    function initUIActivity${activity.id}() {
+      new eXo.social.webui.UIActivity($params);
+    }
+  </script>
+
+  <% uiform.begin() %>
+  <div class="NormalBox clearfix">
+    <a class="Avatar" title="$activityUserName" href="$activityUserProfileUri">
+      <img title="$activityUserName" src="$activityImageSource" alt="$activityUserName" height="54px" width="56px">
+    </a>
+    <div class="ContentBox" id="ContextBox${activity.id}">
+      <div class="TitleContent clearfix">
+        <div class="Text">
+          <a title="$activityUserName" href="$activityUserProfileUri">$activityUserName</a>
+        </div>
+      <% if (activityDeletable) {%>
+        <div onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"><span></span></div>
+      <%}%>
+      </div>
+      <div class="Content">
+        $activityContentTitle
+        <% if (isConnectionRequested && uicomponent.isActivityStreamOwner()) {%>
+          <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
+        <%}%>
+        <br />
+      </div>
+      <div class="LinkCM">
+        <span class="DateTime">$activityPostedTime *</span>
+      <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
+         def commentLink = "";
+      %>
+     <% if (activityCommentAndLikable) { %>
+        <a class="LinkCM $commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
+          $labelComment
+        </a> |
+      <% if (uicomponent.isLiked()) { %>
+        <a onclick="$unlikeActivityAction" class="LinkCM" id="UnLikeLink${activity.id}" href="#unlike">
+          $labelUnlike
+        </a>
+      <% } else { %>
+        <a onclick="$likeActivityAction" class="LinkCM" id="LikeLink${activity.id}" href="#like">
+          $labelLike
+        </a>
+      <% }%>
+     <% }%>
+      </div>
+
+      <div class="ListPeopleLikeBG $listPeopleBGClass">
+        <div class="ListPeopleLike">
+          <div class="ListPeopleContent">
+          <% if (!labelLikes) labelLikes = ""; %>
+            <div class="Title">$labelLikes</div>
+            <div class="$listPeopleLikeBlockClass">
+            <%
+            //def personLikeFullName, personLikeProfileUri, personLikeAvatarImageSource;
+
+            displayedIdentityLikes.each({
+              personLikeFullName = uicomponent.getUserFullName(it);
+              personLikeProfileUri = uicomponent.getUserProfileUri(it);
+              personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
+              if (!personLikeAvatarImageSource) {
+                personLikeAvatarImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+              }
+              %>
+                <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
+                  <img width="47px" height="47px" src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
+                </a>
+             <% })%>
+            </div>
+            <div class="ClearLeft">
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="CommentListInfo">
+      <% if (uicomponent.commentListToggleable()) {
+      def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
+      def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
+      %>
+        <div class="CommentBlock">
+          <div class="CommentContent">
+            <div class="CommentBorder">
+            <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
+              <a onclick="$showAllCommentsAction" href="#show-all-comments">
+                $labelShowAllComments
+              </a>
+            <% } else if (commentListStatus.getStatus().equals("all")) { %>
+              <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
+                $labelHideAllComments
+              </a>
+            <% } %>
+            </div>
+          </div>
+        </div>
+      <% } %>
+      </div>
+    <% if (allComments.size() > 0) { %>
+      <div class="DownIconCM"><span></span></div>
+    <% }%>
+
+    <%
+    def commenterFullName, commenterProfileUri, commenterImageSource, commentMessage, commentPostedTime;
+    def first = true, commentContentClass;
+    commentList.each({
+      if (first & !uicomponent.commentListToggleable()) {
+        commentContentClass = "CommentContent";
+        first = false;
+      } else {
+        commentContentClass = "";
+      }
+      commenterFullName = uicomponent.getUserFullName(it.userId);
+      commenterProfileUri = uicomponent.getUserProfileUri(it.userId);
+      commenterImageSource = uicomponent.getUserAvatarImageSource(it.userId);
+      if (!commenterImageSource) {
+        commenterImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+      }
+      commentMessage = it.title;
+      commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
+    %>
+      <div id="CommentBlock${activity.id}" class="CommentBox clearfix">
+        <a class="AvatarCM" title="$commenterFullName" href="$commenterProfileUri">
+          <img src="$commenterImageSource" alt="$commenterFullName" height="36px" width="38px">
+        </a>
+        <div class="ContentBox">
+          <div class="Content">
+            <a href="$commenterProfileUri"><span class="Commenter">$commenterFullName<span></a><br />
+              $commentMessage
+            <br/>
+          </div>
+          <div class="LinkCM">
+            <span class="DateTime">$commentPostedTime</span>
+          </div>
+        </div>
+      <%
+        if (uicomponent.isCommentDeletable(it.userId)) {
+      %>
+        <div onclick="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>" class="CloseCMContentHilight"><span></span></div>
+      <% } %>
+      </div>
+    <% }) %>
+
+      <div class="CommentBox $commentFormBlockClass clearfix" id="CommentFormBlock${activity.id}">
+        <% uicomponent.renderChild(UIFormTextAreaInput.class); %>
+        <input type="button" onclick="<%= uicomponent.event("PostComment") %>" value="$labelComment" class="CommentButton DisplayNone" id="CommentButton${activity.id}" />
+      </div>
+    </div>
+  </div>
+  <% uiform.end() %>
+</div>
+<% } else { %> <!-- activity deleted -->
+<div class="UIActivity Deleted">$labelActivityHasBeenDeleted</div>
+<% }%>
