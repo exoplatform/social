@@ -134,11 +134,11 @@
 %>
 
 <div class="UIActivity">
-	<script type="text/javascript">
-		function initUIActivity${activity.id}() {
-			new eXo.social.webui.UIActivity($params);
-		}
-	</script>
+    <script type="text/javascript">
+        function initUIActivity${activity.id}() {
+            new eXo.social.webui.UIActivity($params);
+        }
+    </script>
   <% uiform.begin() %>
   <div class="NormalBox clearfix">
     <a class="Avatar" title="$activityUserName" href="$activityUserProfileUri">
@@ -208,24 +208,24 @@
      <% }%>
     </div>
     <div class="ListPeopleLikeBG $listPeopleBGClass">
-		  <div class="ListPeopleLike">
+          <div class="ListPeopleLike">
         <div class="ListPeopleContent">
         <% if (!labelLikes) labelLikes = ""; %>
-	        <div class="Title">$labelLikes</div>
-	 	 	 	 	<div class="$listPeopleLikeBlockClass">
-					<%
-					displayedIdentityLikes.each({
-						personLikeFullName = uicomponent.getUserFullName(it);
-						personLikeProfileUri = uicomponent.getUserProfileUri(it);
-						personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
-						if (!personLikeAvatarImageSource) {
-						personLikeAvatarImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
-					}
-					%>
-						<a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
-						<img width="47px" height="47px" src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
-						</a>
-					<% })%>
+            <div class="Title">$labelLikes</div>
+                    <div class="$listPeopleLikeBlockClass">
+                    <%
+                    displayedIdentityLikes.each({
+                        personLikeFullName = uicomponent.getUserFullName(it);
+                        personLikeProfileUri = uicomponent.getUserProfileUri(it);
+                        personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
+                        if (!personLikeAvatarImageSource) {
+                        personLikeAvatarImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+                    }
+                    %>
+                        <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
+                        <img width="47px" height="47px" src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
+                        </a>
+                    <% })%>
 
         </div>
         <div class="ClearLeft">
