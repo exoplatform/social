@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+  xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
+    <component-plugin>
+      <name>Social UI Component Resource Bundle</name>
+      <set-method>addResourceBundle</set-method>
+      <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
+      <init-params>
+        <values-param>
+          <name>classpath.resources</name>
+          <description>The resources that start with the following package name should be load from file system</description>
+          <value>locale.social.webui.UIActivitiesContainer</value>
+          <value>locale.social.webui.UIAvatarUploadContent</value>
+          <value>locale.social.webui.UIAvatarUploader</value>
+          <value>locale.social.webui.activity.UIDefaultActivity</value>
+          <value>locale.social.webui.composer.UIComposer</value>
+          <value>locale.social.webui.connections.UIInvitations</value>
+          <value>locale.social.webui.connections.UIMyConnections</value>
+          <value>locale.social.webui.connections.UIPendingRelation</value>
+          <value>locale.social.webui.profile.UIBasicInfoSection</value>
+          <value>locale.social.webui.profile.UIContactSection</value>
+          <value>locale.social.webui.profile.UIDisplayProfileList</value>
+          <value>locale.social.webui.profile.UIExperienceSection</value>
+          <value>locale.social.webui.profile.UIHeaderSection</value>
+          <value>locale.social.webui.profile.UIProfile</value>
+          <value>locale.social.webui.profile.UIProfileUserSearch</value>
+          <value>locale.social.webui.profile.UIUserActivitiesDisplay</value>
+          <value>locale.social.webui.space.UIAddApplicationSpace</value>
+          <value>locale.social.webui.space.UIManageInvitationSpaces</value>
+          <value>locale.social.webui.space.UIManageMySpaces</value>
+          <value>locale.social.webui.space.UIManagePendingSpaces</value>
+          <value>locale.social.webui.space.UIManagePublicSpaces</value>
+          <value>locale.social.webui.space.UISpaceActivitiesDisplay</value>
+          <value>locale.social.webui.space.UISpaceAddForm</value>
+          <value>locale.social.webui.space.UISpaceApplication</value>
+          <value>locale.social.webui.space.UISpaceApplicationList</value>
+          <value>locale.social.webui.space.UISpaceGroupBound</value>
+          <value>locale.social.webui.space.UISpaceInfo</value>
+          <value>locale.social.webui.space.UISpaceMember</value>
+          <value>locale.social.webui.space.UISpaceMenu</value>
+          <value>locale.social.webui.space.UISpacePermission</value>
+          <value>locale.social.webui.space.UISpaceSearch</value>
+          <value>locale.social.webui.space.UISpaceUserSearch</value>
+          <value>locale.social.webui.space.UISpaceVisibility</value>
+        </values-param>
+        <values-param>
+          <name>portal.resource.names</name>
+          <description>The resources that start with the following package name should be load from file system</description>
+          <value>locale.social.webui.UIActivitiesContainer</value>
+          <value>locale.social.webui.UIAvatarUploadContent</value>
+          <value>locale.social.webui.UIAvatarUploader</value>
+          <value>locale.social.webui.activity.UIDefaultActivity</value>
+          <value>locale.social.webui.composer.UIComposer</value>
+          <value>locale.social.webui.connections.UIInvitations</value>
+          <value>locale.social.webui.connections.UIMyConnections</value>
+          <value>locale.social.webui.connections.UIPendingRelation</value>
+          <value>locale.social.webui.profile.UIBasicInfoSection</value>
+          <value>locale.social.webui.profile.UIContactSection</value>
+          <value>locale.social.webui.profile.UIDisplayProfileList</value>
+          <value>locale.social.webui.profile.UIExperienceSection</value>
+          <value>locale.social.webui.profile.UIHeaderSection</value>
+          <value>locale.social.webui.profile.UIProfile</value>
+          <value>locale.social.webui.profile.UIProfileUserSearch</value>
+          <value>locale.social.webui.profile.UIUserActivitiesDisplay</value>
+          <value>locale.social.webui.space.UIAddApplicationSpace</value>
+          <value>locale.social.webui.space.UIManageInvitationSpaces</value>
+          <value>locale.social.webui.space.UIManageMySpaces</value>
+          <value>locale.social.webui.space.UIManagePendingSpaces</value>
+          <value>locale.social.webui.space.UIManagePublicSpaces</value>
+          <value>locale.social.webui.space.UISpaceActivitiesDisplay</value>
+          <value>locale.social.webui.space.UISpaceAddForm</value>
+          <value>locale.social.webui.space.UISpaceApplication</value>
+          <value>locale.social.webui.space.UISpaceApplicationList</value>
+          <value>locale.social.webui.space.UISpaceGroupBound</value>
+          <value>locale.social.webui.space.UISpaceInfo</value>
+          <value>locale.social.webui.space.UISpaceMember</value>
+          <value>locale.social.webui.space.UISpaceMenu</value>
+          <value>locale.social.webui.space.UISpacePermission</value>
+          <value>locale.social.webui.space.UISpaceSearch</value>
+          <value>locale.social.webui.space.UISpaceUserSearch</value>
+          <value>locale.social.webui.space.UISpaceVisibility</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+</configuration>
