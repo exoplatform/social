@@ -52,36 +52,6 @@
   </portlet>
 
   <portlet>
-    <description xml:lang="EN">Warning Portlet</description>
-    <portlet-name>WarningPortlet</portlet-name>
-    <display-name xml:lang="EN">Warning Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/WarningPortlet/webui/configuration.xml</value>
-    </init-param>
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-      <portlet-mode>help</portlet-mode>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.WarningPortlet</resource-bundle>
-    <portlet-info>
-      <title>Warning Portlet</title>
-      <short-title>Warning Portlet</short-title>
-      <keywords>social</keywords>
-    </portlet-info>
-    <portlet-preferences>
-      <preference>
-        <name>template</name>
-        <value>par:/groovy/social/portlet/UIWarningPortlet.gtmpl</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences>
-  </portlet>
-
-  <portlet>
     <description xml:lang="EN">Social Extension Logo Portlet</description>
     <portlet-name>SocialExtensionLogoPortlet</portlet-name>
     <display-name xml:lang="EN">Social Extension Logo Portlet</display-name>
