@@ -505,6 +505,13 @@ input.hint, textarea.hint {
   margin-left: 4px;
 }
 
+.UIPeoplePortlet .WaitingIcon{
+  background: url('DefaultSkin/background/WaitingIcon.gif') no-repeat left center ;
+  float: right;
+  padding: 5px 6px;
+  margin-left: 4px;
+}
+
 .UIPeoplePortlet .AddIcon{
   background: url('DefaultSkin/background/AddIcon.gif') no-repeat left center ;
   float: right;

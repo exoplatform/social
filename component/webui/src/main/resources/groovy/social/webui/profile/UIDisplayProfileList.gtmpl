@@ -93,7 +93,7 @@
     <% } else if (contactStatus == Relationship.Type.ALIEN) { %>
               <a href="#" class="AddIcon" title="$inviteTitle" onclick="$addAction" >&nbsp;</a>
     <%  } else if (contactStatus == Relationship.Type.PENDING) { %>
-              <a href="#" class="RemoveIcon" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+              <a href="#" class="WaitingIcon" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
               <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
     <%  } else if (contactStatus == Relationship.Type.CONFIRM) { %>
               <a href="#" class="RemoveIcon" title="$removeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>

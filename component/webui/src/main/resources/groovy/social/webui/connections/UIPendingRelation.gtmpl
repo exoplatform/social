@@ -94,7 +94,7 @@
             <div class="CommunityMane Line ClearFix">
                 <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${activitiesURL}" style="color: #afafaf;">${fullName}</a></div>
                <% if (isEditable) {%>
-             <a href="#" class="RemoveIcon" title="Revoke" onclick="$actionLink" >&nbsp;</a>
+             <a href="#" class="WaitingIcon" title="Revoke" onclick="$actionLink" >&nbsp;</a>
              <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
               <% } %>
             </div>
