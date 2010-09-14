@@ -75,7 +75,6 @@ import org.exoplatform.webui.event.Event.Phase;
       @EventConfig(listeners = UIManageMySpaces.EditSpaceNavigationActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpaces.msg.confirm_space_delete"),
       @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.AddSpaceActionListener.class),
       @EventConfig(listeners = UIManageMySpaces.SearchActionListener.class , phase = Phase.DECODE)
     }
   ),
@@ -101,7 +100,7 @@ public class UIManageMySpaces extends UIContainer {
   private static final String MEMBERSHIP_REMOVED_INFO = "UIManageMySpaces.msg.MemberShipRemovedInfo";
   private static final String NAVIGATION_REMOVED_INFO = "UIManageMySpaces.msg.NavigationRemovedInfo";
 
-  private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
+  
   private UIPageIterator iterator;
   private final Integer SPACES_PER_PAGE = 4;
   private final String ITERATOR_ID = "UIIteratorMySpaces";
@@ -120,10 +119,6 @@ public class UIManageMySpaces extends UIContainer {
     uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
     addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
-    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
-    uiPopup.setShow(false);
-    uiPopup.setWindowSize(400, 0);
-    addChild(uiPopup);
   }
 
   /**
@@ -435,28 +430,6 @@ public class UIManageMySpaces extends UIContainer {
       }
       SpaceUtils.updateWorkingWorkSpace();
     }
-  }
-
-  /**
-   * This action is triggered when user clicks on AddSpace <br />
-   *
-   * UIAddSpaceForm will be displayed in a popup window
-   */
-  static public class AddSpaceActionListener extends EventListener<UIManageMySpaces> {
-
-    @Override
-    public void execute(Event<UIManageMySpaces> event) throws Exception {
-      UIManageMySpaces uiManageMySpaces = event.getSource();
-      UIPopupWindow uiPopup = uiManageMySpaces.getChild(UIPopupWindow.class);
-      UISpaceAddForm uiAddSpaceForm = uiManageMySpaces.createUIComponent(UISpaceAddForm.class,
-                                                                         null,
-                                                                         null);
-      uiPopup.setUIComponent(uiAddSpaceForm);
-      uiPopup.setWindowSize(500, 0);
-      uiPopup.setShow(true);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
-    }
-
   }
 
   /**

@@ -27,6 +27,7 @@
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="UITabPane">
     <div class="TitleBar">$labelInviSpaceList</div>
-    <% uicomponent.renderChildren(); %>
   </div>
+  <% uicomponent.renderChildren(); %>
+
 </div>

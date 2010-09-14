@@ -23,7 +23,6 @@
 <%
   import org.exoplatform.portal.webui.util.Util
   import org.exoplatform.webui.core.UIPageIterator
-  import org.exoplatform.webui.core.UIPopupWindow
   import org.exoplatform.webui.core.UIVirtualList
   import org.exoplatform.social.core.space.SpaceUtils
   import org.exoplatform.social.webui.space.UIManageMySpaces
@@ -161,25 +160,6 @@
     }
   %>
     </div>
-    <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
-    <div class="UIAction">
-      <table class="ActionContainer">
-        <tbody>
-          <tr>
-            <td>
-              <div class="ActionButton LightBlueStyle" onclick="<%= uicomponent.event("AddSpace") %>">
-                <div class="ButtonLeft">
-                  <div class="ButtonRight">
-                    <div class="ButtonMiddle">
-                      <a><%= labelActionAddSpace %></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    
   </div>
 </div>

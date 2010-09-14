@@ -26,9 +26,11 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 
@@ -46,6 +48,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/space/UISpaceSearch.gtmpl",
   events = {
+    @EventConfig(listeners = UISpaceSearch.AddSpaceActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UISpaceSearch.SearchActionListener.class)
   }
 )
@@ -68,6 +71,8 @@ public class UISpaceSearch extends UIForm {
   /** ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING */
   final static String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
 
+  private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
+  
   /** The spaceService is used for SpaceService instance storage. */
   SpaceService spaceService = null;
 
@@ -155,6 +160,10 @@ public class UISpaceSearch extends UIForm {
    */
   public UISpaceSearch() throws Exception {
     addUIFormInput(new UIFormStringInput(SPACE_SEARCH, null, DEFAULT_SPACE_NAME_SEARCH));
+    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
+    uiPopup.setShow(false);
+    uiPopup.setWindowSize(400, 0);
+    addChild(uiPopup);
   }
 
   /**
@@ -226,6 +235,27 @@ public class UISpaceSearch extends UIForm {
     }
   }
 
+  /**
+   * This action is triggered when user clicks on AddSpace <br />
+   *
+   * UIAddSpaceForm will be displayed in a popup window
+   */
+  static public class AddSpaceActionListener extends EventListener<UISpaceSearch> {
+
+    @Override
+    public void execute(Event<UISpaceSearch> event) throws Exception {
+      UISpaceSearch uiSpaceSearch = event.getSource();
+      UIPopupWindow uiPopup = uiSpaceSearch.getChild(UIPopupWindow.class);
+      UISpaceAddForm uiAddSpaceForm = uiSpaceSearch.createUIComponent(UISpaceAddForm.class,
+                                                                         null,
+                                                                         null);
+      uiPopup.setUIComponent(uiAddSpaceForm);
+      uiPopup.setWindowSize(500, 0);
+      uiPopup.setShow(true);
+    }
+
+  }
+  
   /**
    * Gets an instance of SpaceService. If the instance is still existed then return
    * else it is get from container.

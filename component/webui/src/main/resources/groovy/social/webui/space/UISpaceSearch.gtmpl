@@ -20,9 +20,10 @@
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.webui.core.UIPopupWindow;
 
 def uicomponentId = uicomponent.id;
-
+def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.AddNewSpace")
 def allSpaceName = uicomponent.getSpaceNameForAutoSuggest().toString();
 def rcontext = _ctx.getRequestContext() ;
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
@@ -44,6 +45,7 @@ def searchAction = uicomponent.event('Search');
 
 %>
 <div class="UISpaceSearch">
+
 <% uiform.begin() %>
     <!--search by name-->   
     <div class="LeftBoxInput">
@@ -56,9 +58,21 @@ def searchAction = uicomponent.event('Search');
                       <div class="SpaceSearchInput"><%uiform.renderField(childs.get(0)); %>
                       <div class="SearchIcon" title="Search" onclick="$searchAction"><span></span></div>
                       </div>
+                      
+                      <div class="UIAction">
+									      <div class="ActionButton LightBlueStyle" onclick="<%= uicomponent.event("AddSpace") %>">
+									        <div class="ButtonLeft">
+									          <div class="ButtonRight">
+									            <div class="ButtonMiddle">
+									              <a><%= labelActionAddSpace %></a>
+									            </div>
+									          </div>
+									        </div>
+									      </div>
+									    </div>
+						    
                       <input id="defaultSpaceNameAndDesc" type="hidden" value="$defaultSpaceNameAndDesc">
                 </div>
-      
                 <div class="ClearBoth"><span/></div>
             </div>
         </div>
@@ -94,4 +108,5 @@ def searchAction = uicomponent.event('Search');
             </div>
         </div>
         <% uiform.end() %>
+        <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

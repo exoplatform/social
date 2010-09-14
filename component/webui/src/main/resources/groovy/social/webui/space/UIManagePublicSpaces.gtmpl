@@ -121,7 +121,6 @@
         <div class="ClearBoth"><span></span></div>
       </div>
       <%}%>
-    </div>
     <%
       if (iterator.getAvailablePage() > 1) {
         _ctx.renderUIComponent(iterator)
