@@ -15,5 +15,14 @@
       <exclude>**/*.pdf</exclude>
     </excludes-->
    </fileSet>
+   <fileSet>
+    <directory>target/wikbook/tmp/images</directory>
+    <outputDirectory>org.exoplatform.social/images</outputDirectory>
+    <includes>
+      <include>**/*.png</include>
+      <include>**/*.gif</include>
+      <include>**/*.jpg</include>
+     </includes>
+   </fileSet>
   </fileSets>
 </assembly>
