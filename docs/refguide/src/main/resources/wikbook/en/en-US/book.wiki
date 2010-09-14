@@ -1,7 +1,4 @@
 
-h1. Prerequisites
-{include:document="Prerequisites.wiki"}
-
 h1. Applications
 h2. List of Portlets in Social
 {include:document="Application/List_of_Portlets.wiki"}
@@ -22,8 +19,6 @@ h2. Overridable Components
 {include:document="DeveloperReference/Overrideable_components.wiki"}
 h2. Plug-in SPI
 {include:document="DeveloperReference/Plugin_SPI.wiki"}
-h2. Public Java APIs
-{include:document="DeveloperReference/Java_APIs.wiki"}
 h2. Public REST APIs
 {include:document="DeveloperReference/REST_APIs.wiki"}
 h2. Public Javascript APIs

@@ -2,7 +2,7 @@ h1. Service name and description
 h2. Activities REST service
 
 || Name || Service URL || Description ||
-| *ActivitiesRestService* | $portalName/social/activities | To provide rest services for activity gadget: like/unlike; comment; delete activity. |
+| *ActivitiesRestService* | $portalName/social/activities | To provide rest services for activity applications: like/unlike; comment; delete activity. |
 
 * *API*:
 
@@ -11,12 +11,17 @@ h2. Activities REST service
 | *showLikes* | restContextName/social/activities/$activityId/likes/show.$format | To shows the list of likes by activityId and return the json/xml format. |
 | *updateLike* | restContextName/social/activities/$activityId/likes/update.$format | To update the list of likes by the json/xml format. |
 | *destroyLike* | restContextName/social/activities/$activityId/likes/destroy/$identity.$format | To destroy like by identityId and get the json/xml return format. |
-| *showComments* | restContextName/social/activities/$activityId/likes/show.$format | To show the comment list by the json/xml format.  |
+| *showComments* | restContextName/social/activities/$activityId/likes/show.$format | To show the comment list by the json/xml format. |
 | *updateComment* | restContextName/social/activities/$activityId/likes/update.$format | To update the comment by the json/xml format. |
-| *destroyComment* | restContextName/social/activities/$activityId/comments/destroy/$commentId.$format | To destroy comments and return the json/xml format.   |
+| *destroyComment* | restContextName/social/activities/$activityId/comments/destroy/$commentId.$format | To destroy comments and return the json/xml format. |
 
 || Parameter || Expected values ||
 | {{format}} | {{xml/json}} |
+
+Example: 
+
+- http://localhost:9090/rest/social/activities/s08d397dg6/likesdestroy/abc.xml
+- http://localhost:9090/rest/social/activities/s08d397dg6/likesdestroy/abc.json
 
 h2. Apps REST service
 || Name || Service URL || Description ||
@@ -29,13 +34,22 @@ h2. Apps REST service
 || Parameter || Expected values ||
 | {{format}} | {{xml/json}} |
 
+Example:
+
+http://localhost:9090/rest/apps/show.json
+
 h2. Identity REST service
 || Name || Service URL || Description ||
 | *IdentityRestService* | $portalName/social/identity/$username/id | To get identityId by the username. |
 
 * *API*: 
-|| Name || Service URL Endpoint || Description ||
+|| Name || Service URL Endpoint || Description || Example ||
 | *UserId getId* | $portalName/social/identity/$username/show.json | To get the identity by username and return by the json format. |
+
+Example: 
+
+http://localhost:9090/Socialdemo/social/identity/John/show.json
+
 
 h2. Linkshare REST service
 || Name || Service URL || Description ||
@@ -48,17 +62,25 @@ h2. Linkshare REST service
 || Parameter || Expected values ||
 | {{format}} | {{xml/json}} |
 
+Example: 
+
+http://localhost:9090/rest/social/linkshare/show.json
+
 h2. Spaces REST service
 || Name || Service URL || Description ||
 | *SpacesRestService* | $portalName/social/spaces| To provide rest services for space gadget to display user's spaces and pending spaces |
 
 * *API*:
 || Name || Service URL Endpoint || Description ||
-| *showMySpaceList* | restContextName/social/spaces/$userId/mySpaces/show.$format| To show mySpaceList by the json/xml format. |
-| *showPendingSpaceList* | restContextName/social/spaces/$userId/pendingSpaces/show.$format| To show pendingSpaceList by the json/xml format.|
+| *showMySpaceList* | $restContextName/social/spaces/$userId/mySpaces/show.$format| To show mySpaceList by the json/xml format. |
+| *showPendingSpaceList* | $restContextName/social/spaces/$userId/pendingSpaces/show.$format| To show pendingSpaceList by the json/xml format.|
 
 || Parameter || Expected values ||
 | {{format}} | {{xml/json}} |
+
+Example:
+
+http://localhost:8080/rest/social/spaces/s08d397dg6/mySpaces/show.xml
 
 h1. Location
 * *Maven groupId*: org.exoplatform.social
