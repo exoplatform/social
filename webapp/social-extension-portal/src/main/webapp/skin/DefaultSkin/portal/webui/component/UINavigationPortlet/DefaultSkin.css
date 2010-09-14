@@ -1,8 +1,11 @@
 /******* Create style by Trung.Nguyen  **********/
 
+
 #UISocialExtensionNavigationContainer .UINavigationPortlet{
 	background-color: #20263f;
+	padding-left: 10px;
 }
+
 
 #UISocialExtensionNavigationContainer .UINavigationPortlet .UINavigationBar .LeftNavigationBar{
 	background: none;
@@ -92,4 +95,11 @@
 
 #UISocialExtensionNavigationContainer .UINavigationPortlet .UITab .TabIcon .DefaultPageIcon{
 	background: none;
+}
+
+.UINavigationPortlet .ScrollButtons {
+  float: right; /* orientation=lt */
+  float: left; /* orientation=rt */
+  padding-top: 10px;
+  display: none;
 }

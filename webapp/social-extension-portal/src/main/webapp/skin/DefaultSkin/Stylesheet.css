@@ -53,3 +53,13 @@ div, table, tr, td, img, form{
   padding: 0px;
 }
 
+.UIPageBody .BLPagebody{
+    background: none;
+}
+
+.UIPageBody .BRPagebody{
+    background: none;
+}
+.UIPageBody .BMPagebody{
+    background: none;
+}
