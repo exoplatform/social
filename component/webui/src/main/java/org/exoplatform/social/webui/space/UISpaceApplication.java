@@ -83,6 +83,18 @@ public class UISpaceApplication extends UIForm {
     return iterator.getCurrentPageData();
   }
 
+
+  /**
+   * Gets the application name from the appName (applicationName:appId)
+   * @param appName
+   */
+  public String getApplicationName(String appName) {
+    int colonIndex = appName.indexOf(":");
+    if (colonIndex > 0) {
+      appName = appName.substring(0, colonIndex);
+    }
+    return appName;
+  }
   /**
    * Sets space to work with
    * @param space
