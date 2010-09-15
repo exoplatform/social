@@ -1,5 +1,5 @@
 =====================================================
-    Release Notes - eXo Social - Version 1.0.0 GA    
+    Release Notes - eXo Social - Version 1.1.0-GA
 =====================================================
 
 ===============
@@ -8,34 +8,46 @@
 
 eXo Social is composed of 2 modules :
 
-    * eXo People: brings Enterprise Social Networking to your work and allows you to organize your workforce in an efficient way through a better understanding of your people skills.
-    		- Turn your directory into a social network
-				- Users can fill their profile
-				- Search by skills and experience
-				- Activity status updates
-				- Opensocial API support
-			
-    * eXo Spaces: add communities to your work and enable a collaborative work. It's the communities workgroups.
-	    	- Let dormant communities reveal themselves
-				- Open community management
-				- Activity streams to aggregate knowledge
-				- Easily deploy custom applications
-				- User friendly interface 
+    * eXo People: brings Enterprise Social Networking to your work and allows you to organize your
+                  workforce in an efficient way through a better understanding of your people skills.
+        - Turn your directory into a social network
+        - Users can fill their profile
+        - Search by skills and experience
+        - Activity status updates
+        - OpenSocial API support
+
+    * eXo Spaces: add communities to your work and enable a collaborative work.
+                  It's the communities workgroups.
+        - Let dormant communities reveal themselves
+        - Open community management
+        - Activity streams to aggregate knowledge
+        - Easily deploy custom applications
+        - User friendly interface
 
 
 =============
 2 What's new?
 =============
 
+- Project cleanup: reorganize code, package and its artifactIds.
+- New look and feel for Social extension and demo.
+- Speed improvement for creating a new space by using template instead of page node to
+  create a new space's navigation.
+- Enhance usability in space: message type, input validation, contextual message when
+  selecting options in space creation form.
+- New space name navigation: allows only alphabet, digit and space characters only.
+- Change the way of creating a space bound to an existing group.
+- Use portlet preference to get space context instead of getting space context via Uri and use
+component plugin to define which portlets can have this when installing in a space.
+- Properly organize gadgets for speeding up server startup time.
+- Make possible to create space via REST service.
+- Reference guide added
+- New activity stream portlet for space and user and its activity composer extension mechanism:
+link composer plugin, relationship activity type...; replace user activity stream portlet on user
+activity gadget.
 
-* French translation
-* Enhanced Space Activities
-* Several usability enhancements
+  * Find the latest release notes here : http://wiki.exoplatform.com/xwiki/bin/view/Social/Release+Notes
 
-          
-          
-    * Find the latest release notes here : http://wiki.exoplatform.com/xwiki/bin/view/Social/Release+Notes            
-          
 =========
 3 INSTALL
 =========
@@ -45,29 +57,29 @@ Find the latest install guide here : http://wiki.exoplatform.com/xwiki/bin/view/
 - System Requirements
         Web Browser: IE6, IE7, FF2, FF3 (recommended), Safari.
         JVM: version 1.6.0_0 or higher
-        Application Server : tomcat-6.0 and up 
+        Application Server : tomcat-6.0 and up
         Building Tools: Maven 2.2.1 and up
 
 - Social quick start guide
   Social have 1 server need to run to use:
-    +) tomcat: this is main tomcat server include Social web applications and all dependencies.     
+    +) tomcat: this is main tomcat server include Social web applications and all dependencies.
 
 Need to set the JAVA_HOME variable for run Social servers.
 +) How to start Social:
    * First thing first you need to give all script files the executable permission if you are in unix family environment.
    Use command: "chmod +x *.sh" (without quote) to have execute permission on these files.
-   
+
    * NOTE for cygwin's user: the JAVA_HOME must be in MS Windows format like: "C:\Program Files\JDK 1.5"
     Example use: export JAVA_HOME=`cygpath -w "$JAVA_HOME"`; to convert unix like format to MS Windows format.
-   
-   
-   
+
+
+
    * Start tomcat server
-   
+
      +) On the Windows platform
        Open a DOS prompt command, go to tomcat/bin and type the command:
         "gatein.bat run" for production
-        "gatein-dev.bat run" for development 
+        "gatein-dev.bat run" for development
 
 
      +) On Unix/Linux/cygwin
@@ -77,29 +89,24 @@ Need to set the JAVA_HOME variable for run Social servers.
 
 -) How to access the eXo Social
 
-
 * Enter one of the following addresses into your browser address bar:
-   Social demo portal  
+   Social demo portal
       http://localhost:8080/socialdemo
    Classic :
       http://localhost:8080/portal
       http://localhost:8080/portal/public/classic
 
 
-* Direct link to access applications in Social :
-    +) Spaces application: http://localhost:8080/socialdemo/private/classic/spaces     
-    +) People application: http://localhost:8080/socialdemo/private/classic/people     
-    +) Activity stream application: http://localhost:8080/socialdemo/private/classic/activities
-    +) Profile of user: http://localhost:8080/socialdemo/private/classic/profile     
-    
-  You will get login form if you are not yet logged in to Social.
-
-
-
 You can log into the portal with the following accounts: root, john, marry, demo.
 All those accounts have the default password "gtn".
 
+* Direct link to access applications in Social :
+    +) Spaces application: http://localhost:8080/socialdemo/private/classic/spaces
+    +) People application: http://localhost:8080/socialdemo/private/classic/people
+    +) Activity stream application: http://localhost:8080/socialdemo/private/classic/activities
+    +) Profile of user: http://localhost:8080/socialdemo/private/classic/profile
 
+  You will get login form if you are not yet logged in to Social.
 
 
 ===========
@@ -109,7 +116,7 @@ All those accounts have the default password "gtn".
      Company site        http://www.exoplatform.com
      Community JIRA      http://jira.exoplatform.org
      Community site      http://www.exoplatform.org
-     Community gatein    http://www.jboss.org/gatein/ 
+     Community gatein    http://www.jboss.org/gatein/
      Developers wiki     http://wiki.exoplatform.org
 
 
@@ -117,13 +124,212 @@ All those accounts have the default password "gtn".
 5 CHANGELOG
 ===========
 
+- 1.1.0-GA
+
+** Bug
+    * [SOC-695] - Show message wrong when edit space has some special chars
+    * [SOC-699] - Unkown error when edit naviagation of space which was delete in Group Navigation
+    * [SOC-707] - Have problem when create new space but delete space template in Manage page
+    * [SOC-813] - screen is blinked continuously when add  Space List Gadget
+    * [SOC-848] - Activity title is not displayed in streams
+    * [SOC-857] - Space tab disappears when other user is creating space
+    * [SOC-863] - error deleting a space
+    * [SOC-865] - After accepting an invitation to a space, the menu at the top of the page don't display their submenu
+    * [SOC-867] - removing yourself from the admin of a space break the UI
+    * [SOC-870] - Activities retrieval is unlimited
+    * [SOC-872] - Unknown error occurs when trying to rename a application portlet with Space characters
+    * [SOC-876] - Space characters should not allowed when posting an activity
+    * [SOC-879] - Change the message type
+    * [SOC-889] - REST api is not secured
+    * [SOC-894] - after creating a space (the first one) you can't access it without logging out
+    * [SOC-900] - Show error message when adding an invalid link in Attach Link (Space)
+    * [SOC-949] - a navigation cache issue
+    * [SOC-952] - [Space] show Javascript when share link on Activities portlet on Space
+    * [SOC-955] - Validate Space Name
+    * [SOC-957] - multiple javascript alerts SyntaxError: unterminated string literal
+    * [SOC-963] - Exception when creating new space by widget
+    * [SOC-969] - Can't publish an activity for a space created in socialdemo by opensocial API
+    * [SOC-985] - Space avatar is not used in the activity stream
+    * [SOC-990] - [profile] Can not add more experience
+    * [SOC-1009] - User Activity does not display shared document properly
+    * [SOC-1010] - Bad link when sharing doc in activities
+    * [SOC-1013] - Comment on "Connections" and "Spaces" does not work
+    * [SOC-1014] - Javascript error occurs in space activity in IE 7
+    * [SOC-1015] - Canvas navigation should not be populated from extension
+    * [SOC-1016] - Activity is displayed in list after adding in case we switch acrossing 3 tabs 'Connections', 'Spaces' and 'My Status'
+    * [SOC-1017] - Some minor bugs occur in space activities
+    * [SOC-1021] - Have to click x twice to delete added activity
+    * [SOC-1023] - [Social] - Show error message when open a Space in IE browser
+    * [SOC-1025] - Can not upload new avatar for space and User on Social Branchs 1.1.x
+    * [SOC-1033] - Space avatar is not used in Space activities
+    * [SOC-1040] - [Social] User Activity Stream : Encoding problem
+    * [SOC-1041] - Bad Download link for  a document shared below the root of the drive
+    * [SOC-1051] - [Soc] Error with link of attached DMS document in added activity
+    * [SOC-1052] - Must disable 'Share' button when still not ready for posting activity
+    * [SOC-1061] - Document Share Plugin does not work well
+    * [SOC-1063] - A frenche label is not correctly spelled
+    * [SOC-1074] - Problem with encoding of that property file when change language to French in my space
+    * [SOC-1081] - Property missing for UIOneNodePathSelector
+    * [SOC-1086] - IE6 UI problems
+
+** Documentation
+    * [SOC-1070] - Reference Guide
+
+** Feedback
+    * [SOC-749] - search space should match terms from space description
+    * [SOC-750] - space priority is not self explanatory
+    * [SOC-753] - Space navigation should match navigation order
+    * [SOC-792] - Don't use a trash to remove a relation
+    * [SOC-869] - creating a space take around 45sec
+    * [SOC-1027] - Listing activities is slow, no pagination ?
+    * [SOC-1030] - Share document does not work well
+    * [SOC-1032] - UI for spaces is bad
+
+** Improvement
+    * [SOC-725] - socialdemo relooking
+    * [SOC-859] - Add the possibility to edit or delete an activity from the space activity stream
+    * [SOC-861] - Change the way of creating a space bound to an existing group
+    * [SOC-1034] - Do not display "Portlet" in application names
+    * [SOC-1045] - Document View for document share plugin
+
+** New Feature
+    * [SOC-656] - user in space without receive an invitation
+    * [SOC-740] - Space page template
+    * [SOC-755] - Add invite in Profile menu
+    * [SOC-852] - pluggable share action
+    * [SOC-932] - New Status Updates application
+    * [SOC-933] - My Spaces Gadget
+    * [SOC-941] - Extensible Actions for each type of Activity
+
+** Task
+    * [SOC-466] - Upgrade to Shindig 1.1
+    * [SOC-597] - cleanup root pom.xml
+    * [SOC-691] - Make a bundle with social extension ear deployed beside Gatein 3.0
+    * [SOC-860] - Refactor code in Space portlets
+    * [SOC-884] - Project cleanup
+    * [SOC-885] - Refactor and simplify UIUserListPortlet
+    * [SOC-891] - Reorganize ui components
+    * [SOC-892] - make possible to create a space by a rest service
+    * [SOC-897] - Properly organize gadgets
+    * [SOC-899] - Upgrade to GateIn 3.1 CR1
+    * [SOC-910] - apply new brand
+    * [SOC-913] - Allows multi-tenancy
+    * [SOC-920] - make isFirstCharOfSpaceName an optional parameter of getSpacesByName
+    * [SOC-942] - Study how to plugin, understand new features and how to implement
+    * [SOC-946] - Configuration for Pluggable Share
+    * [SOC-947] - BaseActivity
+    * [SOC-948] - UIDisplay for activities
+    * [SOC-962] - rename social-ext.war to social-extension.war
+    * [SOC-964] - new project layout and arfifactIds
+    * [SOC-1028] - Use UserActivityPortlet on user activities page
+    * [SOC-1062] - Social 1.1 JBoss EAR packaging
+    * [SOC-1073] - No distribution was uploaded with social 1.1.0-CR02
+    * [SOC-1088] - Do not duplicate resource bundle
+    * [SOC-1089] - Correct name: opensocial.war to social.war in EAR packaging
+    * [SOC-1092] - Release Social 1.1.0-GA
+
+** Sub-task
+    * [SOC-904] - Fix build failed for exo.social.component.exosocial
+    * [SOC-905] - Fix build failed for project: exo.social.component.opensocial
+    * [SOC-906] - Fix build failed for exo.social.component.people
+    * [SOC-907] - Fix build failed for project: exo.social.component.space
+    * [SOC-908] - Fix build failed for project: exo.social.extras.benches
+    * [SOC-909] - UI issues fixing
+    * [SOC-911] - Lost avatar in people portlet and not load changed avatar in space activity.
+    * [SOC-914] - Code coverage for people project
+    * [SOC-917] - Study how to render xml gadget to html gadget from shindig, applied in GateIn, Social
+    * [SOC-918] - Study how to serve a json-rpc, how to create and wire a sample service
+    * [SOC-919] - Study how features work and create a sample feature (eXo-Environment)
+    * [SOC-951] - [Bug] Gadget loads comments as activities to user activity stream
+    * [SOC-965] - New mockup for Activity (composer and activity stream)
+    * [SOC-976] - Translate label into French
+    * [SOC-1024] - Resource Bundle Needed for document share plugin
+    * [SOC-1093] - Update Release Notes
+
+-  1.1.0-CR03
+
+** Bug
+    * [SOC-1061] - Document Share Plugin does not work well
+    * [SOC-1087] - Revert bad rollback of release plugin execution (wrong dependencies versions declared)
+
+** Feedback
+    * [SOC-1065] - need to improve some inconsistent grey bars acrros Social
+
+** Improvement
+    * [SOC-1034] - Do not display "Portlet" in application names
+    * [SOC-1067] - Relationship activity type
+
+** Task
+    * [SOC-1062] - Social 1.1 JBoss EAR packaging
+    * [SOC-1076] - Remove jboss-web.xml from extension war
+    * [SOC-1085] - Release Social 1.1.0-CR03
+
+** Sub-task
+    * [SOC-1075] - Translate into French
+
+
+-  1.1.0-CR02
+
+** Bug
+    * [SOC-1029] - @mentions hardcode "classic" in the URL
+    * [SOC-1033] - Space avatar is not used in Space activities
+    * [SOC-1040] - [Social] User Activity Stream : Encoding problem
+    * [SOC-1043] - Social extension forces the creation of the 'classic' portal
+    * [SOC-1044] - Space name's validation is wrong
+    * [SOC-1049] - invited User can't access space #2
+    * [SOC-1051] - [Soc] Error with link of attached DMS document in added activity
+    * [SOC-1055] - DateTime message is hard-coded
+    * [SOC-1056] - Click on author in user activity title links to "classic"
+    * [SOC-1057] - Missing gadgets when english language is not selected
+
+** Feedback
+    * [SOC-1030] - Share document does not work well
+    * [SOC-1032] - UI for spaces is bad
+
+** Improvement
+    * [SOC-1045] - Document View for document share plugin
+
+** Task
+    * [SOC-1028] - Use UserActivityPortlet on user activities page
+    * [SOC-1072] - Release Social 1.1.0-CR02
+
+** Sub-task
+    * [SOC-1060] - Translate the time labels into French
+
+
+-  1.1.0-CR01
+
+** Bug
+    * [SOC-1009] - User Activity does not display shared document properly
+    * [SOC-1010] - Bad link when sharing doc in activities
+    * [SOC-1011] - Groovy Compilation error on User activity stream portlet
+    * [SOC-1013] - Comment on "Connections" and "Spaces" does not work
+    * [SOC-1014] - Javascript error occurs in space activity in IE 7
+    * [SOC-1015] - Canvas navigation should not be populated from extension
+    * [SOC-1019] - [Social] - Can share the activity without inputing any value in the text box
+    * [SOC-1021] - Have to click x twice to delete added activity
+    * [SOC-1023] - [Social] - Show error message when open a Space in IE browser
+    * [SOC-1031] - Impossible to share a document
+
+** Feedback
+    * [SOC-757] - activities page is too long
+
+** Task
+    * [SOC-988] - release social 1.1 CR01
+    * [SOC-1035] - base structure for eXo Social Reference Guide
+
+
+** Sub-task
+    * [SOC-1026] - Translate Resource Bundle into French
+
+===================================================================================================
 -  1.0.0 GA
 
 Bug
     * [SOC-589] - Show exception when delete user who invited
     * [SOC-671] - Session timeout when delete user in member tab of space which used to create this space
     * [SOC-697] - Duplicate Space's group in Application registry portlet
-    * [SOC-702] - Show wrong in Popup My Space after created new node 
+    * [SOC-702] - Show wrong in Popup My Space after created new node
     * [SOC-704] - Lose page's title of request page in Manage Page
     * [SOC-712] - IE6: Error displaying in Search invited form when don't any user is invited
     * [SOC-814] - Error when go to Activity page with Ubuntu
@@ -156,7 +362,7 @@ Task
     * [SOC-687] - social.ear for JBoss
     * [SOC-693] - Rename Invitation/Request listing
     * [SOC-737] - Data injector
-    * [SOC-763] - Fix the invalid gatein-resources.xml in social-resources
+    * [SOC-763] - Fix the invalid gatein-resources.xml in ExoResourcesSocial
     * [SOC-783] - french translation
     * [SOC-847] - Global wording review
 
@@ -236,7 +442,7 @@ Task
     * [SOC-693] - Rename Invitation/Request listing
     * [SOC-713] - Change config when delete group which is not mandatory in user and group management
     * [SOC-762] - Create and bundle release notes
-    * [SOC-763] - Fix the invalid gatein-resources.xml in social-resources
+    * [SOC-763] - Fix the invalid gatein-resources.xml in ExoResourcesSocial
     * [SOC-781] - add the ability to specify a space in an opensocial call by it's name and not only by it's ID
     * [SOC-782] - publishing a space activity using the notation : space:UUID
     * [SOC-783] - french translation
