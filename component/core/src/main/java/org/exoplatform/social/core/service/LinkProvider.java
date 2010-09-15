@@ -48,7 +48,8 @@ public class LinkProvider {
     try {
       Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
       if (identity == null) {
-        throw new RuntimeException("could not find a user identity for " + username);
+        LOG.warn("could not find a user identity for " + username);
+        return null;
       }
 
       String container = PortalContainer.getCurrentPortalContainerName();
@@ -60,7 +61,7 @@ public class LinkProvider {
 
       url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
     } catch (Exception e) {
-      LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
+      LOG.warn("failed to substitute username for " + username + ": " + e.getMessage());
     }
     return url;
   }
@@ -89,7 +90,7 @@ public class LinkProvider {
       String url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
     } catch (Exception e) {
-      LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
+      LOG.warn("failed to substitute username for " + username + ": " + e.getMessage());
       return null;
     }
     return link;
