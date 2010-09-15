@@ -131,6 +131,11 @@
   background: url('DefaultSkin/background/IconDel.gif') no-repeat left top;
 }
 
+.UIPendingSpacesPortlet .IconRevoke {
+  background: url('DefaultSkin/background/RevokeIcon.png') no-repeat left top;
+}
+
+
 .UIPendingSpacesPortlet .NotYet {
   color:gray;
   text-align:center;
