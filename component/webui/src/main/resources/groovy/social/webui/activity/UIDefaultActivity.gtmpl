@@ -123,7 +123,9 @@
   def userId = activity.userId;
   activityUserName = uicomponent.getUserFullName(userId);
   activityUserProfileUri = uicomponent.getUserProfileUri(userId);
-
+  if(activityUserProfileUri == null){
+    activityUserProfileUri = "#";
+  }
   if (uicomponent.isUserActivity(userId)) {
     activityImageSource = uicomponent.getUserAvatarImageSource(userId);
     if (!activityImageSource) activityImageSource= "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";

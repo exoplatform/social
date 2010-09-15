@@ -44,7 +44,7 @@ public class LinkProvider {
   }
 
   public String getProfileUri(String username, String portalOwner) {
-    String url = username;
+    String url = null;
     try {
       Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
       if (identity == null) {
