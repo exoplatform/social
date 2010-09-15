@@ -136,6 +136,7 @@
     <module>webapp</module>
     <module>extras</module>
     <module>server</module>
+    <module>docs</module>
     <module>packaging</module>
   </modules>
 
