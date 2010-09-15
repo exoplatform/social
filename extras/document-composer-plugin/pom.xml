@@ -25,12 +25,12 @@
   <parent>
     <artifactId>exo.social.extras</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.1.0-GA-SNAPSHOT</version>
+    <version>1.1.0-GA</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extras.document-composer-plugin</artifactId>
-  <version>1.1.0-GA-SNAPSHOT</version>
+  <version>1.1.0-GA</version>
   <packaging>jar</packaging>
   <name>eXo Social Extras - Document Composer Plugin</name>
   <description>eXo Social Extras - Document Composer Plugin</description>

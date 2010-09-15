@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>exo.social.docs</artifactId>
-    <version>1.1.0-GA-SNAPSHOT</version>
+    <version>1.1.0-GA</version>
   </parent>
   <artifactId>exo.social.docs.refguide</artifactId>
   <packaging>jar</packaging>
