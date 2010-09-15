@@ -27,7 +27,7 @@ public class LinkProviderTest extends AbstractCoreTest {
     final String portalOwner = "classic";
 
     IdentityManager identityManger = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    Identity rootIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
+    Identity rootIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");    
     String rootFullName = rootIdentity.getProfile().getFullName();
     assertNotNull("rootFullName must not be null.", rootFullName);
     LinkProvider provider = (LinkProvider) getContainer().getComponentInstanceOfType(LinkProvider.class);

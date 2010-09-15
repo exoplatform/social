@@ -24,6 +24,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -65,11 +66,14 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
 
   public void testConfirmed() throws Exception {
 
-    Identity mary = identityManager.getIdentity("organization:mary");
-    Identity john = identityManager.getIdentity("organization:john");
-    RelationshipEvent event = new RelationshipEvent(Type.CONFIRM, relationshipManager, new Relationship(mary, john));
+    IdentityManager identityManger = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    String mary = "mary", john = "john";
+    Identity maryIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, mary);
+    Identity johnIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, john);
+
+    RelationshipEvent event = new RelationshipEvent(Type.CONFIRM, relationshipManager, new Relationship(maryIdentity, johnIdentity));
     relationshipPublisher.confirmed(event);
-    List<Activity> maryActivities = activityManager.getActivities(mary);
+    List<Activity> maryActivities = activityManager.getActivities(maryIdentity);
 
     assertEquals(1, maryActivities.size());
     tearDownActivityList.add(maryActivities.get(0));
@@ -77,7 +81,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     assertTrue(maryActivities.get(0).getTemplateParams().get(RelationshipPublisher.SENDER_PARAM).contains("mary"));
     assertTrue(maryActivities.get(0).getTemplateParams().get(RelationshipPublisher.RECEIVER_PARAM).contains("john"));
 
-    List<Activity> johnActivities = activityManager.getActivities(john);
+    List<Activity> johnActivities = activityManager.getActivities(johnIdentity);
     assertEquals(1, johnActivities.size());
     tearDownActivityList.add(johnActivities.get(0));
     assertTrue(johnActivities.get(0).getTitleId().equals(TitleId.CONNECTION_CONFIRMED.toString()));

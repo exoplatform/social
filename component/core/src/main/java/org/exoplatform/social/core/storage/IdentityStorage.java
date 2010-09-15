@@ -152,15 +152,21 @@ public class IdentityStorage {
    *
    * @param identity the identity
    */
-  public void saveIdentity(Identity identity) {
+  public void saveIdentity(Identity identity) throws Exception {
+    Identity checkingIdentity = findIdentity(identity.getProviderId(), identity.getRemoteId());
+    
     Session session =  sessionManager.openSession();
     try {
       Node identityNode;
       Node identityHomeNode = getIdentityServiceHome(session);
 
       if (identity.getId() == null) {
-        identityNode = identityHomeNode.addNode(IDENTITY_NODETYPE, IDENTITY_NODETYPE);
-        identityNode.addMixin(REFERENCEABLE_NODE);
+        if(checkingIdentity == null){
+          identityNode = identityHomeNode.addNode(IDENTITY_NODETYPE, IDENTITY_NODETYPE);
+          identityNode.addMixin(REFERENCEABLE_NODE);          
+        } else {
+          identityNode = session.getNodeByUUID(checkingIdentity.getId());
+        }
       } else {
         identityNode = session.getNodeByUUID(identity.getId());
       }
@@ -183,18 +189,18 @@ public class IdentityStorage {
   /**
    * Gets the identity by his id.
    *
-   * @param identityId the id of identity
+   * @param nodeId the id of identity
    * @return the identity
    * @throws Exception the exception
    */
-  public Identity findIdentityById(String identityId) throws Exception {
+  public Identity findIdentityById(String nodeId) throws Exception {
     Session session = sessionManager.openSession();
     Node identityNode = null;
     try {
-      identityNode = session.getNodeByUUID(identityId);
+      identityNode = session.getNodeByUUID(nodeId);
       return getIdentity(identityNode);
     } catch (ItemNotFoundException e) {
-      LOG.warn("failed to load identity " + identityId);
+      LOG.warn("failed to load identity " + nodeId);
       return null;
     } finally {
       sessionManager.closeSession();

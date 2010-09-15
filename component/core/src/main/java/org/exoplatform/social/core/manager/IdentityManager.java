@@ -100,11 +100,12 @@ public class IdentityManager {
     Identity identity = null;
 
     // attempts to match a global id in the form "providerId:remoteId"
+
     if (GlobalId.isValid(id)) {
       GlobalId globalId = new GlobalId(id);
       String providerId = globalId.getDomain();
       String remoteId = globalId.getLocalId();
-      identity = getOrCreateIdentity(providerId, remoteId, loadProfile);
+      identity = identityStorage.findIdentity(providerId,remoteId);
     }
 
     // attempts to find a raw id
@@ -115,7 +116,6 @@ public class IdentityManager {
     if (identity == null)
       return null;
 
-    // TODO :suspicious
     if(loadProfile)
       identityStorage.loadProfile(identity.getProfile());
 

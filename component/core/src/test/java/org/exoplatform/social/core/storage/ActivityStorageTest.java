@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see<http://www.gnu.org/licenses/>.
- */
+* Copyright (C) 2003-2010 eXo Platform SAS.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Affero General Public License
+* as published by the Free Software Foundation; either version 3
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, see<http://www.gnu.org/licenses/>.
+*/
 package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
@@ -57,8 +57,11 @@ public class ActivityStorageTest extends AbstractCoreTest {
   }
 
   public void testGetStreamInfo() throws Exception {
-    Identity root = new Identity(OrganizationIdentityProvider.NAME, "root");
-    identityStorage.saveIdentity(root);
+    Identity root = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "root");
+    if(root == null){
+      root =new Identity(OrganizationIdentityProvider.NAME, "root");
+      identityStorage.saveIdentity(root);
+    }
 
     // root save on root's stream
     Activity activity = new Activity();
@@ -87,8 +90,11 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetAllActivities() throws Exception {
     int totalActivityCount = 27;
 
-    Identity john = new Identity(OrganizationIdentityProvider.NAME, "john");
-    identityStorage.saveIdentity(john);
+    Identity john = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "john");
+    if(john == null){
+      john =new Identity(OrganizationIdentityProvider.NAME, "john");
+      identityStorage.saveIdentity(john);
+    }
 
     assertNotNull(identityStorage.findIdentityById(john.getId()));
 
@@ -128,8 +134,12 @@ public class ActivityStorageTest extends AbstractCoreTest {
     final int totalActivityCount = 9;
     final int retrievedCount = 7;
 
-    Identity john = new Identity(OrganizationIdentityProvider.NAME, "john");
-    identityStorage.saveIdentity(john);
+    Identity john = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "john");
+    if(john == null){
+      john =new Identity(OrganizationIdentityProvider.NAME, "john");
+      identityStorage.saveIdentity(john);
+    }
+
     assertNotNull(identityStorage.findIdentityById(john.getId()));
 
     for (int i = 0; i < totalActivityCount; i++) {
@@ -154,8 +164,12 @@ public class ActivityStorageTest extends AbstractCoreTest {
     final int totalActivityCount = 2;
     final int retrievedCount = 1;
 
-    Identity john = new Identity(OrganizationIdentityProvider.NAME, "john");
-    identityStorage.saveIdentity(john);
+    Identity john = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "john");
+    if(john == null){
+      john =new Identity(OrganizationIdentityProvider.NAME, "john");
+      identityStorage.saveIdentity(john);
+    }
+
     assertNotNull(identityStorage.findIdentityById(john.getId()));
 
     for (int i = 0; i < totalActivityCount; i++) {
