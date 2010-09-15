@@ -1,0 +1,147 @@
+
+h1. How to deploy eXo Social in Production
+
+h1. Objective
+
+In this article you will learn how to install eXo Social on a production server in a typical 3-tier architecture (web server / app server / database server).
+We use the case of our own demo server at http://social.demo.exoplatform.org
+
+This tutorial is intended for sysadmins. If you are a casual evaluator and just want to run eXo Social on your own computer, the [Quick Install Guide|InstallGuide] should be enough for you.
+
+
+h1. Requirements
+
+This guide assumes that you have up and running apache and mysql instances and that you have basic knowledge on how to configure it.
+* [apache web server|http://www.apache.org] + mod_jk
+* [eXo Social package|https//sourceforge:net-projects-exo-social-files-] properly [installed|InstallGuide] on a server with Java6.
+* [mysql database server|http://www.mysql.org] and the corresponding [JDBC Driver|http://www.mysql.com/downloads/connector/j/]
+
+We assume that you have apache and mysql up and running and that you followed the steps of the [Quick Install Guide|InstallGuide] successfully.
+
+
+h1. Configure Apache
+
+To match our URL (http://social.demo.exoplatform.org), we need to configure an apache virtualhost.
+Here is what you need to define in apache configuration.
+
+{code}
+       <VirtualHost *:80>
+                ServerAdmin undisclosed@example.org
+                DocumentRoot /var/www/sites/social.demo.exoplatform.org
+                ServerName social.demo.exoplatform.org
+                ErrorLog logs/social.demo.exoplatform.org-error_log
+                CustomLog logs/social.demo.exoplatform.org-access_log combined
+                ErrorDocument   503     /503.html
+
+                RedirectMatch permanent "^/?$" "/socialdemo/"
+                JkUnMount       "/503.html"     WRK_SOCIAL
+                JkMount         "/*"            WRK_SOCIAL
+
+                SetOutputFilter DEFLATE
+
+                <Directory "/var/www/sites/social.demo.exoplatform.org">
+                        Options Indexes
+                        AllowOverride None
+                        Order Allow,Deny
+                        Allow from All
+                </Directory>
+        </VirtualHost>
+{code}
+
+* The virtualhost will answer on port 80 of social.demo.exoplatform.org.
+* The redirect allows us to serve only the /socialdemo portal which contains our demo
+* The JKMount instructions reference the mod_jk configuration
+
+{code}
+# ----
+# Connector to TomCat App Server
+# ----
+
+# Load mod_jk module
+LoadModule    jk_module  modules/mod_jk.so
+
+<IfModule jk_module>
+        # ---- Where to find workers.properties
+        JkWorkersFile   conf.d/workers.properties
+
+        # ----  Where to put jk shared memory
+        JkShmFile       logs/mod_jk.shm
+        JkShmSize       128k
+
+        # ---- Where to put jk logs
+        JkLogFile       logs/mod_jk.log
+
+        # ---- Set the jk log level [debug/error/info]
+        JkLogLevel    info
+
+        # ---- Select the timestamp log format
+        JkLogStampFormat "[%a %b %d %H:%M:%S %Y] "
+        # ---- Send everything for context /examples to worker named worker1 (ajp13)
+        JkMountFileReload       "0"
+</IfModule>
+{code}
+
+Here is the workers.properties that works with it :
+
+{code}
+worker.list=WRK_SOCIAL
+
+# WRK_SOCIAL
+worker.WRK_SOCIAL.type=ajp13
+worker.WRK_SOCIAL.host=localhost
+worker.WRK_SOCIAL.port=8106
+worker.WRK_SOCIAL.socket_timeout=10
+worker.WRK_SOCIAL.lbfactor=10
+worker.WRK_SOCIAL.socket_keepalive=true
+{code}
+
+{info}
+ you need set the same ports in workers.properties and in the tomcat/conf/server.xml for AJP port
+{info}
+
+
+h1. Configure MySQL
+
+We are using a dedicated schema for the demo called : demo_social.
+* First login to mysql shell :
+{code}mysql -u USER_NAME_WITH_PRIV_TO_CREATE_DB -p{code}
+* then create the schema
+{code}create database demo_social default charset latin1 collate latin1_general_cs;{code}
+
+h1. Configure eXo Social
+* Drop your mysql jdbc jar driver in $SOCIAL_HOME/lib
+* Edit database configuration in this file : $SOCIAL_HOME/gatein/conf/portal/socialdemo/socialdemo.properties
+{code}
+gatein.jcr.datasource.dialect=mysql-utf8
+gatein.jcr.datasource.driver=com.mysql.jdbc.Driver
+gatein.jcr.datasource.url=jdbc:mysql://localhost/demo_social
+gatein.jcr.datasource.username=XXX
+gatein.jcr.datasource.password=YYY
+gatein.idm.datasource.driver=com.mysql.jdbc.Driver
+gatein.idm.datasource.url=jdbc:mysql://localhost/demo_social
+{code}
+
+This file is dedicated to /socialdemo portal
+
+
+h1. Troubleshooting
+
+h2. 404 error on activity page
+
+On Activities page, you may see a 404 error instead of the activity stream.
+
+!activity-404.png!
+
+This is due to a [limitation|https//jira:jboss.org-jira-browse-GTNPORTAL-1060] of GateIn. The current workaround involves a few manual steps:
+* First login as root
+* In the toolbar, select Site Editor > Edit Page
+!editpage-menu.png!
+* Click on the edit button of the Gadget Wrapper box
+* Change the URL in the Preferences tab to replace localhost:8080 by you actual hostname (social.demo.exoplatform.org for us)
+!change-gadget-url.png!
+
+
+
+h1. Further Reading
+* Pointer to LDAP integration tutorial
+* Pointer to generic database configuration in gatein

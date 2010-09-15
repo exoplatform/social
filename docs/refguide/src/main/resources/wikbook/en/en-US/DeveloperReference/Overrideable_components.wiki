@@ -1,0 +1,30 @@
+There are 2 components in Social that can be overridden: Space Application Handler & Space Service
+* *Space Application Handler*
+{code:xml}
+<component>
+    <key>org.exoplatform.social.core.space.spi.SpaceApplicationHandler</key>
+    <type>org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler</type>
+  </component>
+{code}
+
+* *Space Service* 
+{code:xml}
+<component>
+    <key>org.exoplatform.social.core.space.spi.SpaceService</key>
+    <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
+    <init-params>
+      <!-- Configure the applications to install in a space -->
+      <values-param>
+        <name>space.homeNodeApp</name>
+        <value>SpaceActivityStreamPortlet</value>
+      </values-param>
+      <!-- Configure removable application or not <value>Application:removable</value> -->
+      <values-param>
+        <name>space.apps</name>
+        <value>DashboardPortlet:true</value>
+        <value>SpaceSettingPortlet:false</value>
+        <value>MembersPortlet:true</value>
+      </values-param>
+    </init-params>
+  </component>
+{code}

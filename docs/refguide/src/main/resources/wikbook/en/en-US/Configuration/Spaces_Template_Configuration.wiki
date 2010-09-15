@@ -1,0 +1,61 @@
+In the eXo Spaces, we may have two space types (classic and webos spaces). This is for the classic mode (it's the only one implemented now).
+
+For the classic space, we can pre-configure the template, meaning that you can set up where your *menu* will be displayed or where your *application* will be displayed.
+
+Here is an example of configuration file that displays the menu on the left. The Application will be inserted in the container with the id *Application*:
+{code:xml}
+<page>
+  <owner-type></owner-type>
+  <owner-id></owner-id>
+  <name></name>
+  <container id="SpacePage" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+    <container id="Menu" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <portlet-application>
+        <portlet>
+          <application-ref>space</application-ref>
+          <portlet-ref>SpaceMenuPortlet</portlet-ref>
+        </portlet>
+        <access-permissions>*:/platform/users</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+    <container id="Application" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+    </container>
+  </container>
+</page>
+{code}
+
+In this example, the outer container contains two inner containers: one container has id as *Menu* for your Menu and another has id as *Application* containing your applications.
+
+!spaces.png!
+
+If you want to put your menu in right and your application in left, you can swap the declared position of two containers:
+
+{code:xml}
+<page>
+  <owner-type></owner-type>
+  <owner-id></owner-id>
+  <name></name>
+  <container id="SpacePage" template="system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl">
+    <container id="Application" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+    <container id="Menu" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <portlet-application>
+        <portlet>
+          <application-ref>space</application-ref>
+          <portlet-ref>SpaceMenuPortlet</portlet-ref>
+        </portlet>
+        <access-permissions>*:/platform/users</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
+    </container>
+  </container>
+</page>
+{code}
+
+Here is the configure file in FishEye: http://fisheye.exoplatform.org/browse/social/trunk/extension/war/src/main/webapp/WEB-INF/conf/portal/template/pages/space/page.xml.
+
+In your tomcat, this configuration file is at _$EXO_TOMCAT/webapps/social-ext/WEB-INF/conf/portal/template/pages/space/page.xml_.
+
+
+

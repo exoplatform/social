@@ -1,0 +1,21 @@
+This is to explain how to configure the oAuth 2 legs scenario in openSocial.
+
+For more information about this, visit the website: [great article|http://sites.google.com/site/oauthgoog/2leggedoauth/2opensocialrestapi]
+h1. Generate the certificates
+
+To generate the key:
+
+{code}
+$ openssl req -newkey rsa:1024 -days 365 -nodes -x509 -keyout testkey.pem \
+     -out testkey.pem -subj '/CN=mytestkey'
+$ openssl pkcs8 -in testkey.pem -out oauthkey.pem -topk8 -nocrypt -outform PEM
+{code}
+
+h1. Configure the property file
+
+Edit container.js and change the following parameter to point to your private key and your key name.
+
+{code}
+"gadgets.signingKeyFile" : "oauth.pem",
+"gadgets.signingKeyName" : "oauthKey",
+{code}

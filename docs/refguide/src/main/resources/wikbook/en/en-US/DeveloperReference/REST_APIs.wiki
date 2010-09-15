@@ -1,0 +1,88 @@
+h1. Service name and description
+h2. Activities REST service
+
+|| Name || Service URL || Description ||
+| *ActivitiesRestService* | {noformat}{portalName}/social/activities{noformat} | To provide rest services for activity applications: like/unlike; comment; delete activity. |
+
+* *API*:
+
+|| Name || Service URL Endpoint || Description ||
+| *destroyActivity* | {noformat}{restContextName}/social/activities/{activityId}/likes/destroy/{identity}.{format}{noformat} | To destroy activity and get the json/xml format. |
+| *showLikes* | {noformat}{restContextName}/social/activities/{activityId}/likes/show.{format}{noformat} | To shows the list of likes by activityId and return the json/xml format. |
+| *updateLike* | {noformat}{restContextName}/social/activities/{activityId}/likes/update.{format}{noformat} | To update the list of likes by the json/xml format. |
+| *destroyLike* | {noformat}{restContextName}/social/activities/{activityId}/likes/destroy/{identity}.{format}{noformat} | To destroy like by identityId and get the json/xml return format. |
+| *showComments* | {noformat}{restContextName}/social/activities/{activityId}/likes/show.{format}{noformat} | To show the comment list by the json/xml format. |
+| *updateComment* | {noformat}{restContextName}/social/activities/{activityId}/likes/update.{format}{noformat} | To update the comment by the json/xml format. |
+| *destroyComment* | {noformat}{restContextName}/social/activities/{activityId}/comments/destroy/{commentId}.{format}{noformat} | To destroy comments and return the json/xml format. |
+
+|| Parameter || Expected values ||
+| {{format}} | {{xml/json}} |
+
+Example:
+
+- http://localhost:9090/rest/social/activities/s08d397dg6/likesdestroy/abc.xml
+- http://localhost:9090/rest/social/activities/s08d397dg6/likesdestroy/abc.json
+
+h2. Apps REST service
+|| Name || Service URL || Description ||
+| *AppsRestService* | {noformat}{restContextName}/social/apps/show.{format}{noformat} | To provide rest services for the application registry gadget: shows application list |
+
+* *API*:
+|| Name || Service URL Endpoint || Description ||
+| *showApps* | {noformat}{restContextName}/social/apps/show.{format}{noformat} | To show applications by the json/xml format. |
+
+|| Parameter || Expected values ||
+| {{format}} | {{xml/json}} |
+
+Example:
+
+http://localhost:9090/rest/social/apps/show.json
+
+h2. Identity REST service
+|| Name || Service URL || Description ||
+| *IdentityRestService* | {noformat}{portalName}/social/identity/{username}/id{noformat} | To get identityId by the username. |
+
+* *API*:
+|| Name || Service URL Endpoint || Description || Example ||
+| *UserId getId* | {noformat}{portalName}/social/identity/{username}/show.json{noformat} | To get the identity by username and return by the json format. |
+
+Example:
+
+http://localhost:9090/socialdemo/social/identity/john/show.json
+
+
+h2. Linkshare REST service
+|| Name || Service URL || Description ||
+|  *LinkshareRestService* | {noformat}{restContextName}/social/linkshare{noformat} | To get information from a provided link. |
+
+* *API*:
+|| Name || Service URL Endpoint || Description |
+| *getLink* | {noformat}{restContextName}/social/linkshare/show.{format}{noformat} | To get the link content by posting with linkShare request as post data |
+
+|| Parameter || Expected values ||
+| {{format}} | {{xml/json}} |
+
+Example:
+
+http://localhost:9090/rest/social/linkshare/show.json
+
+h2. Spaces REST service
+|| Name || Service URL || Description ||
+| *SpacesRestService* | {noformat}{portalName}/social/spaces{noformat}| To provide rest services for space gadget to display user's spaces and pending spaces |
+
+* *API*:
+|| Name || Service URL Endpoint || Description ||
+| *showMySpaceList* | {noformat}{restContextName}/social/spaces/{userId}/mySpaces/show.{format}{noformat}| To show mySpaceList by the json/xml format. |
+| *showPendingSpaceList* | {noformat}{restContextName}/social/spaces/{userId}/pendingSpaces/show.{format}| To show pendingSpaceList by the json/xml format.|
+
+|| Parameter || Expected values ||
+| {{format}} | {{xml/json}} |
+
+Example:
+
+http://localhost:8080/rest/social/spaces/s08d397dg6/mySpaces/show.xml
+
+h1. Location
+* *Maven groupId*: org.exoplatform.social
+* *ArtifactId*: exo.social.component.service
+

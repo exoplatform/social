@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.exoplatform.social</groupId>
+    <artifactId>exo.social.docs</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>exo.social.docs.refguide</artifactId>
+  <packaging>jar</packaging>
+
+
+  <name>Documentation module</name>
+
+  <properties>
+    <wikbook.version>0.9.28</wikbook.version>
+    <wikbook.sourceDirectory>${project.build.directory}/wikbook/tmp</wikbook.sourceDirectory>
+    <wikbook.syntaxId>confluence/1.0</wikbook.syntaxId><!-- xwiki/2.0 -->
+    <wikbook.validationMode>strict</wikbook.validationMode> <!-- lax/strick -->
+    <docbook.sourceDirectory>${project.build.directory}/wikbook/src</docbook.sourceDirectory>
+    <docbook.targetDirectory>${project.build.directory}/wikbook/output</docbook.targetDirectory>
+  </properties>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.wikbook</groupId>
+      <artifactId>wikbook.docbkxstyle</artifactId>
+      <version>${wikbook.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Copy resources filtering with maven properties -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>prepare</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${wikbook.sourceDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/wikbook</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+        The wikbook maven plugin generates the docbook document from the
+        wiki source
+      -->
+      <plugin>
+        <groupId>org.wikbook</groupId>
+        <artifactId>wikbook.maven</artifactId>
+        <version>${wikbook.version}</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>${wikbook.sourceDirectory}/en/en-US</sourceDirectory>
+          <sourceFileName>book.wiki</sourceFileName>
+          <destinationDirectory>${docbook.sourceDirectory}</destinationDirectory>
+          <destinationFileName>${project.artifactId}.xml</destinationFileName>
+          <beforeBookBodyXML><![CDATA[
+                 <xi:include href="bookinfo.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+                 <!--xi:include href="acknowledgements.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /-->
+           ]]></beforeBookBodyXML>
+          <validationMode>${wikbook.validationMode}</validationMode>
+          <syntaxId>${wikbook.syntaxId}</syntaxId>
+        </configuration>
+      </plugin>
+
+      <!-- Unpacks the docbook style resources for the docbkx plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <id>a</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.wikbook</includeGroupIds>
+              <includeArtifactIds>wikbook.docbkxstyle</includeArtifactIds>
+              <excludes>META-INF/**</excludes>
+              <outputDirectory>${docbook.sourceDirectory}/resources</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Dockbx plugin that generates content -->
+      <plugin>
+        <groupId>com.agilejava.docbkx</groupId>
+        <artifactId>docbkx-maven-plugin</artifactId>
+        <version>2.0.7</version>
+        <!--
+          not last generation due to incompatibilities with last docbook
+          format
+        -->
+        <executions>
+          <execution>
+            <id>Generate HTML</id>
+            <goals>
+              <goal>generate-html</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <htmlCustomization>${docbook.sourceDirectory}/resources/xsl/html.xsl</htmlCustomization>
+              <htmlStylesheet>css/html.css</htmlStylesheet>
+              <imgSrcPath>images/</imgSrcPath>
+              <admonGraphicsPath>images/admons/</admonGraphicsPath>
+            </configuration>
+          </execution>
+          <execution>
+            <id>Generate PDF</id>
+            <goals>
+              <goal>generate-pdf</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <foCustomization>${docbook.sourceDirectory}/resources/xsl/fopdf.xsl</foCustomization>
+              <imgSrcPath>${docbook.targetDirectory}/images/</imgSrcPath>
+              <admonGraphicsPath>${docbook.targetDirectory}/images/admons/</admonGraphicsPath>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>${docbook.sourceDirectory}</sourceDirectory>
+          <targetDirectory>${docbook.targetDirectory}</targetDirectory>
+          <includes>${project.artifactId}.xml</includes>
+
+          <!-- Highlight source code -->
+          <highlightSource>1</highlightSource>
+
+          <!-- We need to support xinclude -->
+          <xincludeSupported>true</xincludeSupported>
+
+          <!--
+            | See
+            http://www.sagehill.net/docbookxsl/AnnotateListing.html |
+            Callouts on imported text
+          -->
+          <useExtensions>1</useExtensions>
+          <calloutsExtension>1</calloutsExtension>
+
+          <!-- Copy any docbook XML -->
+          <preProcess>
+            <copy todir="${docbook.sourceDirectory}">
+              <fileset dir="${wikbook.sourceDirectory}/en/en-US">
+                <include name="**/*.xml" />
+              </fileset>
+            </copy>
+          </preProcess>
+
+          <!-- Copy the image for HTML-->
+          <postProcess>
+
+            <copy todir="${docbook.targetDirectory}/images">
+              <fileset dir="${wikbook.sourceDirectory}/images">
+                <include name="**" />
+              </fileset>
+            </copy>
+            <copy todir="${docbook.targetDirectory}/">
+              <fileset dir="${docbook.sourceDirectory}/resources/">
+                <include name="**/*.css" />
+                <include name="**/*.png" />
+                <include name="**/*.gif" />
+                <include name="**/*.jpg" />
+              </fileset>
+            </copy>
+
+          </postProcess>
+
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.docbook</groupId>
+            <artifactId>docbook-xml</artifactId>
+            <version>4.4</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <!-- html-zip packaging -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/html-zip.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Attach the doc to the pom in maven repo -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/main/resources</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${docbook.targetDirectory}/${project.artifactId}.pdf</file>
+                  <type>pdf</type>
+                </artifact>
+                <artifact>
+                  <file>target/${project.artifactId}-${project.version}.zip</file>
+                  <type>zip</type>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+

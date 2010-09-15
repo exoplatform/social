@@ -1,0 +1,192 @@
+h1. RelationshipManager
+The Service is used to manipulate user relationships.
+
+h1. SpaceIdentityProvider
+The provider is to give identity space instances.
+
+h1. SpaceApplicationHandler
+The service is to handle all events related to creating and managing all the application spaces.
+
+h1. ExoPeopleService
+The service is to manipulate all data related to people in the Portal.
+
+h1. Space Service
+
+h2. Description
+The service for spaces management includes creating spaces, and installing applications.
+
+h2. Components configuration
+
+|| Component name || Description ||
+| SpaceServiceImpl | Implementation class of Space Service. |
+
+{code:xml}
+<component>
+    <key>org.exoplatform.social.core.space.spi.SpaceService</key>
+    <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
+    <init-params>
+      <!-- Configure the applications to install in a space -->
+      <values-param>
+        <name>space.homeNodeApp</name>
+        <value>SpaceActivityStreamPortlet</value>
+      </values-param>
+      <!-- Configure removable application or not <value>Application:removable</value> -->
+      <values-param>
+        <name>space.apps</name>
+        <value>DashboardPortlet:true</value>
+        <value>SpaceSettingPortlet:false</value>
+        <value>MembersPortlet:true</value>
+      </values-param>
+    </init-params>
+  </component>
+{code}
+
+|| Configuration name || Data Type || Possible value || Default Value || Description ||
+| *SpaceActivityStreamPortlet* | {{String}} | N/A | {{SpaceActivityStreamPortlet}} | The name of portlet displaying activities of spaces |
+| *space.apps* | {{String list}} | {{Porlets' name: true/false }} | {{DashboardPortlet:true}}; {{SpaceSettingPortlet:false}}; {{MembersPortlet:true}} |The list of configurations for portlets used as portlet applications. |
+
+h2. External plug-in configuration
+{code:xml}
+ <external-component-plugins>
+    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+    <component-plugin>
+      <name>portlets.prefs.required</name>
+      <set-method>setPortletsPrefsRequired</set-method>
+      <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
+      <init-params>
+        <values-param>
+          <name>portletsPrefsRequired</name>
+          <value>SpaceActivityStreamPortlet</value>
+          <value>SpaceSettingPortlet</value>
+          <value>MembersPortlet</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+{code}
+
+In which:
+
+|| Name || Set-method || Type || Description  ||
+| *PortletPreferenceRequiredPlugin* | setPortletsPrefsRequired | org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin | Configure the list of portlet names which will have portlet preference of space context. |
+
+* Init-params:
+
+|| Name || Possible value || Default Value || Description ||
+| *portletsPrefsRequired* | {{Portlet names}} | {{SpaceActivityStreamPortlet; SpaceSettingPortlet; MembersPortlet}} | List of portlets which need to be saved and get the space context name. |
+
+h1. Activity Manager
+
+h2. Description
+
+The service is to manipulate space and user activities.
+
+h2. Component plug-in configuration
+
+{code:xml}
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+    <component-plugin>
+      <name>OSHtmlSanitizer</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+      <init-params>
+        <values-param>
+          <name>allowedTags</name>
+          <value>b</value>
+          <value>i</value>
+          <value>a</value>
+          <value>span</value>
+          <value>em</value>
+          <value>strong</value>
+          <value>p</value>
+          <value>ol</value>
+          <value>ul</value>
+          <value>li</value>
+          <value>br</value>
+          <value>img</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+{code}
+
+In which,
+
+|| Name || Set-method || Type || Description ||
+| *OSHtmlSanitizerProcessor* | addProcessorPlugin | org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor | The plugin that renders valid html tags appearing in the Activity body (content). |
+
+* Init-params:
+
+|| Name || Possible value  || Default Value || Description ||
+| *allowedTags* | {{html tags}} | b, i, a, span, em, strong, p, ol, ul,li, br, img | To process and render html tags in the activity content (body). |
+
+h2. External plug-in configuration
+
+{code:xml}
+<external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+    <component-plugin>
+      <name>MentionsProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <description>priority of this processor (lower number will be executed first)</description>
+          <value>2</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+</external-component-plugins>
+{code}
+
+In which:
+
+|| Name || Set-method || Type || Description ||
+| *MentionsProcessor* | addProcessorPlugin | org.exoplatform.social.core.processor.MentionsProcessor | A processor that substitutes @username expressions by a link on the user profile. |
+
+* Init-params:
+
+|| Name || Possible value || Default Value || Description ||
+| *priority* | {{priority number}} | 2 | Priority of this processor (The lower level will be executed first). |
+
+h1. Identity Manager
+
+h2. Description
+
+The service is to manipulate the identity operations like creating, getting, deleting or finding a profile.
+
+h2. Component plug-in configuration
+
+{code:xml}
+<component>
+    <key>org.exoplatform.social.core.manager.IdentityManager</key>
+    <type>org.exoplatform.social.core.manager.IdentityManager</type>
+    <component-plugins>
+      <component-plugin>
+        <name>SpaceIdentityProvider plugin</name>
+        <set-method>registerIdentityProviders</set-method>
+        <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
+        <init-params>
+          <values-param>
+          <name>providers</name>
+            <description>Identity Providers</description>
+            <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
+          </values-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
+  </component>
+{code}
+
+In which:
+
+|| Name || Set-method || Type || Description ||
+| *SpaceIdentityProvider* | registerIdentityProviders | org.exoplatform.social.core.identity.IdentityProviderPlugin | The plugin that provides identity for a space |
+
+* Init-params:
+
+|| Name || Possible value || Default Value || Description ||
+| *providers* | {{Every other identity providers}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | Identity Provider instances for managing identities. |
+

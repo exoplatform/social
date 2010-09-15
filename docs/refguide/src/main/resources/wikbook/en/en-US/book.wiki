@@ -1,0 +1,26 @@
+
+h1. Applications
+h2. List of Portlets in Social
+{include:document="Application/List_of_Portlets.wiki"}
+h2. List of Gadgets in Social
+{include:document="Application/List_of_Gadgets.wiki"}
+
+h1. Configuration
+{include:document="Configuration/Configuration.wiki"}
+h2. Spaces Template configuration
+{include:document="Configuration/Spaces_Template_Configuration.wiki"}
+h2. Configure the oauth 2 legged scenario
+{include:document="Configuration/Configuring_the_oauth_2_legged_scenario.wiki"}
+
+h1. Developers References
+h2. UI Extensions
+{include:document="DeveloperReference/Developer_Documentation_Activity_Plugin.wiki"}
+h2. Overridable Components
+{include:document="DeveloperReference/Overrideable_components.wiki"}
+h2. Plug-in SPI
+{include:document="DeveloperReference/Plugin_SPI.wiki"}
+h2. Public REST APIs
+{include:document="DeveloperReference/REST_APIs.wiki"}
+h2. Public Javascript APIs
+{include:document="DeveloperReference/Javascript_APIs.wiki"}
+

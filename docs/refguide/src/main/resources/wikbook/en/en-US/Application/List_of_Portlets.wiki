@@ -1,0 +1,16 @@
+All the portlets are in the file _social-portlet.war_
+
+|| Portlet name || Description ||
+| *Members Portlet* | To enable users to search for Space members or list Space members in the alphabet order. |
+| *My Spaces Portlet* | To display the Space page where you can add new Spaces, search for Spaces or list Spaces in the alphabet order. |
+| *Space Activity Stream Portlet* | To share Spaces activity information. |
+| *Invitations Portlet* | To list all people that invite users. |
+| *Requests Portlet* | To list all invitations that the user requests. |
+| *Invitation Spaces Portlet* | To enable users to search for Spaces, and list spaces in the alphabet order and view all the Space invitations. |
+| *Pending Spaces Portlet* | To display the *Space requests to join* page where you can search for Spaces, list spaces in the alphabet order and view all the pending requests to join Spaces. |
+| *Public Spaces Portlet* | To display the *Public Spaces* page where you can search for Spaces, list Spaces in the alphabet order and view all available public Spaces to join. |
+| *User Activity Stream Portlet* | To update and share user's activities and/or status. |
+| *People Portlet* | To display the People page where you can find people, display people names in the alphabet order. |
+| *Connections Portlet* | To display the Connections page where you can access your network, invitations to connect or connection requests. |
+| *User Profile Portlet* | To display the user profile page where users can view and/or edit basic information, contacts, experience or change their avatar. |
+

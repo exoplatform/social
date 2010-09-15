@@ -1,0 +1,1 @@
+All references for Opensocial Javascript APIs can be viewed [here|http://wiki.opensocial.org/index.php?title=JavaScript_API_Reference]
