@@ -31,7 +31,6 @@
   def uicomponentId = uicomponent.id
   def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
   def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
-  def labelActionEditSpaceNavigation = _ctx.appRes("${uicomponentId}.label.action_edit_space_navigation")
   def labelActionDeleteSpace = _ctx.appRes("${uicomponentId}.label.action_delete_space")
   def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
   def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.action_add_space")
@@ -66,7 +65,6 @@
     <%}%>
     <%for (space in userSpaces) {
         def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
-        def editSpaceNavigationAction = uicomponent.event("EditSpaceNavigation", space.id) + "; return false"
         def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
         def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
         def role = uicomponent.getRole(space.id)
@@ -116,7 +114,6 @@
             <% } else { %>
             <a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeaveSpace" style="display:none;"><span></span></a>
             <% } %>
-            <a href="#" onclick="<%= editSpaceNavigationAction %>"  title="<%= labelActionEditSpaceNavigation %>" class="Icon IconEditSpaceNavigation"><span></span></a>
             <a href="<%=uicomponent.url("EditSpace", space.id);%>" title="<%= labelActionEditSpace %>" class="Icon IconEditSpace"><span></span></a>
             <div class="Text"><a href="<%= spaceUrl %>"><%= space.name %></a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </div>
             <div class="ClearBoth"><span></span></div>
