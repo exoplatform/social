@@ -93,50 +93,63 @@
      uicomponent.clearLinkShare();
                            %>
   <div class="UILinkShareDisplay">
-    <div class="ThumbnailLeft">
-    <% if (images.size() > 0) { %>
-      <div id="UIThumbnailDisplay">
-        <div id="Thumbnails">
-          <%
-            def thumbnailClass = "ThumbnailShown";
-            images.each({ %>
-             <img src="$it" class="$thumbnailClass" />
-            <%
-              thumbnailClass = "ThumbnailHidden";
-            })%>
-        </div>
-        <div class="ThumbnailAction">
-          <div class="BackIcon" id="BackThumbnail">
-            <span></span>
+    <%
+      if(uicomponent.isImageLink(link)){
+        %>
+          <div>
+            <a href="$link" target="_blank"><img src="$link" alt=" " height="120"/></a> 
           </div>
-          <div id="Stats" class="Stats">
+        <%
+      }
+      else {
+        %>
+          <div class="ThumbnailLeft">
+          <% if (images.size() > 0) { %>
+            <div id="UIThumbnailDisplay">
+              <div id="Thumbnails">
+                <%
+                  def thumbnailClass = "ThumbnailShown";
+                  images.each({ %>
+                   <img src="$it" class="$thumbnailClass" />
+                  <%
+                    thumbnailClass = "ThumbnailHidden";
+                  })%>
+              </div>
+              <div class="ThumbnailAction">
+                <div class="BackIcon" id="BackThumbnail">
+                  <span></span>
+                </div>
+                <div id="Stats" class="Stats">
 
+                </div>
+                <div class="NextIcon" id="NextThumbnail">
+                  <span></span>
+                </div>
+                <div style="clear: both;">
+                  <span></span>
+                </div>
+              </div>
+            </div>
+            <div class="ThumbnailOption">
+              <input id="ThumbnailCheckbox" type="checkbox" />
+                $noThumbnail
+            </div>
+          <% } %>
           </div>
-          <div class="NextIcon" id="NextThumbnail">
-            <span></span>
+          <div class="ContentRight">
+            <div id="LinkTitle" class="Title Editable">
+              $title
+            </div>
+            <div id="LinkDescription" class="Content Editable">
+              $description
+            </div>
+            <div id="LinkUrl" class="Source">
+              $link
+            </div>
           </div>
-          <div style="clear: both;">
-            <span></span>
-          </div>
-        </div>
-      </div>
-      <div class="ThumbnailOption">
-        <input id="ThumbnailCheckbox" type="checkbox" />
-          $noThumbnail
-      </div>
-    <% } %>
-    </div>
-    <div class="ContentRight">
-      <div id="LinkTitle" class="Title Editable">
-        $title
-      </div>
-      <div id="LinkDescription" class="Content Editable">
-        $description
-      </div>
-      <div id="LinkUrl" class="Source">
-        $link
-      </div>
-    </div>
+        <%
+      }
+    %>
     <div class="ClearLeft"><span></span></div>
   </div>
 <% } else { %>

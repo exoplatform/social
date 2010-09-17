@@ -171,21 +171,35 @@
             link = "<img width=\"150px\" title=\"$linkTitle\" src=\"$linkImage\" />";
           }
         %>
-      <div class="Content">$linkComment<br>
-      </div>
-      <div class="LinkShare">
-        <div class="Thumbnail">
-            $link
-        </div>
-        <div class="$linkClass">
-          <div class="Title">
-            <a class="ColorLink" target="_blank" href="$linkSource">$linkTitle</a>
-          </div>
-          <div class="Description">$linkDescription</div>
-          <div class="Source">$labelSource : $linkSource</div>
-        </div>
-        <div style="clear: both; height: 0px;"><span></span></div>
-      </div>
+      <div class="Content">$linkComment<br></div>
+      <%
+        if(uicomponent.isImageLink(linkSource)){
+          %>
+            <div>
+              <a href="$linkSource" target="_blank"><img src="$linkSource" alt=" " height="120"/></a>
+            </div>
+          <%
+        }
+        else{
+          %>
+            <div class="LinkShare">
+              <div class="Thumbnail">
+                  $link
+              </div>
+              <div class="$linkClass">
+                <div class="Title">
+                  <a class="ColorLink" target="_blank" href="$linkSource">$linkTitle</a>
+                </div>
+                <div class="Description">$linkDescription</div>
+                <div class="Source">$labelSource : $linkSource</div>
+              </div>
+              <div style="clear: both; height: 0px;"><span></span></div>
+            </div>
+          <%
+        }
+      %>
+
+
 
       <div class="LinkCM">
         <span class="DateTime">$activityPostedTime *</span>

@@ -17,6 +17,7 @@
 package org.exoplatform.social.plugin.link;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.application.PeopleService;
@@ -134,12 +135,16 @@ public class UILinkActivityComposer extends UIActivityComposer {
     setLinkInfoDisplayed(true);
   }
 
+  private boolean isImageLink(String link){
+    Pattern pattern = Pattern.compile("(?-i)(\\.jpg|\\.gif|\\.jpeg|\\.bmp|\\.png|\\.tif)$");
+    return pattern.matcher(link).find();
+  }
+
   static public class AttachActionListener extends EventListener<UILinkActivityComposer> {
 
     @Override
     public void execute(Event<UILinkActivityComposer> event) throws Exception {
       WebuiRequestContext requestContext = event.getRequestContext();
-//      UIApplication uiApplication = requestContext.getUIApplication();
       UILinkActivityComposer uiComposerLinkExtension = event.getSource();
       String url = requestContext.getRequestParameter(OBJECTID);
       try {
