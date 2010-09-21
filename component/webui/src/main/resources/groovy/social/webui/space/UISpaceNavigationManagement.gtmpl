@@ -1,0 +1,81 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+
+<%  
+  import  org.exoplatform.portal.webui.page.UIPageBrowser;
+  import org.exoplatform.social.webui.space.UISpaceNavigationNodeSelector;
+  import org.exoplatform.webui.core.UIPopupWindow;
+%>
+<div class="UISpaceNavigationManagement" id="$uicomponent.id">
+  <div class="UISpaceNavigationManagement"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+	<div class="TopTitleBar">
+	  <div class="DecoratorBox">
+	    <div class="BarDecorator">
+	      <div class="TopLeftBar">
+	          <div class="TopCenterBar"><span></span></div>
+	      </div>
+	      <div class="MiddleLeftBar">
+	          <div class="MiddleCenterBar" style="background-image: none;">
+	          	<%= uicomponent.getOwner();%>
+	          </div>
+	      </div>
+	      <div class="BottomLeftBar">
+	          <div class="BottomCenterBar"><span></span></div>
+	      </div>
+	    </div>
+	  </div>
+	</div>	
+  <%
+  	uicomponent.renderChild(UISpaceNavigationNodeSelector.class);
+  %>
+  <div class="UIAction"> 
+    <table class="ActionContainer">
+	    <tr>
+
+	    	<td>
+		      <div onclick="<%=uicomponent.event("AddRootNode")%>" class="ActionButton LightBlueStyle">
+		        <div class="ButtonLeft">
+		          <div class="ButtonRight">
+		            <div class="ButtonMiddle">
+		              <a href="javascript:void(0);"><%=_ctx.appRes(uicomponent.getId() + ".action.addNode")%></a>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		    </td>
+	    	<td>
+		      <div onclick="<%=uicomponent.event("Save")%>" class="ActionButton LightBlueStyle">
+		        <div class="ButtonLeft">
+		          <div class="ButtonRight">
+		            <div class="ButtonMiddle">
+		              <a href="javascript:void(0);"><%=_ctx.appRes(uicomponent.getId() + ".action.Save")%></a>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		    </td>
+
+      </tr>
+ 	  </table>
+	</div>
+</div>

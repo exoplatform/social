@@ -160,6 +160,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       }
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
+      
       UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
       uiPortalApp.localizeNavigations();
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);
