@@ -24,7 +24,7 @@
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.application.registry.Application;
   import org.exoplatform.webui.core.UIPopupContainer;
-  
+
   UIPageIterator iterator = uicomponent.getUIPageIterator();
   List<Application> applications = uicomponent.getApplications();
 %>
@@ -36,9 +36,11 @@
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
          def appName = uicomponent.getAppName(app);
+         def srcBG = "/" + app.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + uicomponent.getApplicationName(app.getApplicationName()) + ".png";
+         def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
   %>
     <div class="ContentSpace">
-      <div class="ApplicationIcon"><span></span></div>
+      <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" alt=""/></div>
       <div class="CommunityContainer">
         <div class="CommunityMane Line">
           <div style="float: left;" class="CommunityName"><%= appName %></div>

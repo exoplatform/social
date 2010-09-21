@@ -84,6 +84,20 @@ public class UISpaceApplication extends UIForm {
   }
 
   /**
+   * Gets the application name from the appName (applicationName:appId)
+   *
+   * @param appName
+   * @return
+   */
+  public String getApplicationName(String appName) {
+    int colonIndex = appName.indexOf(":");
+    if (colonIndex > 0) {
+      appName = appName.substring(0, colonIndex);
+    }
+    return appName;
+  }
+
+  /**
    * Sets space to work with
    * @param space
    * @throws Exception
@@ -139,17 +153,17 @@ public class UISpaceApplication extends UIForm {
         application = installedAppList.get(idx);
         String temporalSpaceName = application.getApplicationName();
 
-    	//Application application = installedAppList.get(idx);
+      //Application application = installedAppList.get(idx);
 
-    	//appName = application.getApplicationName();
-    	appParts = listApp[index].split(":");
-    	spaceAppName = appParts[0];
-    	  if (temporalSpaceName.equals(spaceAppName)) {
-    		String newName = appParts[0] + ":" + appParts[1];
+      //appName = application.getApplicationName();
+      appParts = listApp[index].split(":");
+      spaceAppName = appParts[0];
+        if (temporalSpaceName.equals(spaceAppName)) {
+        String newName = appParts[0] + ":" + appParts[1];
 //    		application.setApplicationName(appParts[0] + ":" + appParts[1]);
-    		installedApps.add(setAppName(application, newName));
-    		break;
-    	  }
+        installedApps.add(setAppName(application, newName));
+        break;
+        }
       }
     }
     PageList pageList = new ObjectPageList(installedApps, 3);
@@ -243,10 +257,10 @@ public class UISpaceApplication extends UIForm {
       String appName = null;
       String[] removedApps = removedAppName.split(":");
       if (removedApps.length == 2) {
-    	appId = removedApps[0];
-    	appName = removedApps[1];
+      appId = removedApps[0];
+      appName = removedApps[1];
       } else {
-    	appId = removedAppName;
+      appId = removedAppName;
       }
 
       spaceService.removeApplication(uiSpaceApp.space.getId(), appId, appName);
@@ -288,22 +302,22 @@ public class UISpaceApplication extends UIForm {
    * @return
    */
   private Application setAppName(Application application, String appName) {
-	  Application app = new Application();
+    Application app = new Application();
 
-	  app.setCategoryName(application.getCategoryName());
-	  app.setDisplayName(application.getDisplayName());
-	  app.setDescription(application.getDescription());
-	  app.setCreatedDate(application.getCreatedDate());
-	  app.setModifiedDate(application.getModifiedDate());
-	  app.setAccessPermissions(application.getAccessPermissions());
-	  app.setApplicationName(appName);
-	  app.setType(application.getType());
-	  app.setStorageId(application.getStorageId());
-	  app.setId(application.getId());
-	  app.setIconURL(application.getIconURL());
-	  app.setContentId(application.getContentId());
+    app.setCategoryName(application.getCategoryName());
+    app.setDisplayName(application.getDisplayName());
+    app.setDescription(application.getDescription());
+    app.setCreatedDate(application.getCreatedDate());
+    app.setModifiedDate(application.getModifiedDate());
+    app.setAccessPermissions(application.getAccessPermissions());
+    app.setApplicationName(appName);
+    app.setType(application.getType());
+    app.setStorageId(application.getStorageId());
+    app.setId(application.getId());
+    app.setIconURL(application.getIconURL());
+    app.setContentId(application.getContentId());
 
-	  return app;
+    return app;
 
   }
 

@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
- 
+
  @import url('/social-resources/skin/social/webui/UIAutoSuggestControl/DefaultSkin.css');
- 
+
 .UISpaceSettingPortlet {
   border: 1px solid #e6e6e6;
   padding: 1px;
@@ -256,7 +256,7 @@
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .DeleteMemberButton {
   background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
-  width: 15px; 
+  width: 15px;
   height: 16px;
   cursor: pointer;
   margin: 0px 120px;
@@ -265,7 +265,7 @@
 
 .UISpaceSettingPortlet .UISpaceMember .RevokeInvitedButton {
   background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
-  width: 15px; 
+  width: 15px;
   height: 16px;
   cursor: pointer;
   margin: 0px 41px;
@@ -351,8 +351,6 @@
 }
 
 .UISpaceSettingPortlet .ContainerSpace .ApplicationIcon{
-  background: url('DefaultSkin/background/ApplicationIcon.gif') no-repeat left;
-  width: 73px; height: 80px;
   float: left;
   margin-left: 8px;
 }
@@ -371,7 +369,7 @@
 
 .UISpaceSettingPortlet .ContainerSpace .DeleteIcon {
   background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
-  width: 15px; 
+  width: 15px;
   height: 16px;
   margin-right: 10px;
   cursor: pointer;
@@ -626,23 +624,23 @@
   cursor: pointer;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .ChangeAvaButton { 
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .ChangeAvaButton {
   margin: 0 10px;
   cursor: pointer;
   text-align:center;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .LeftButton { 
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .LeftButton {
   background: url('DefaultSkin/background/ChangeAvaButton.png') no-repeat left top;
   padding-left: 8px;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .RightButton { 
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .RightButton {
   background: url('DefaultSkin/background/ChangeAvaButton.png') no-repeat right top;
   padding-right: 8px;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .MiddleButton { 
+.UISpaceInfo .SpaceContainer .SpaceInfoLeft .MiddleButton {
   background: url('DefaultSkin/background/ChangeAvaButton.png') repeat-x left -17px;
   height: 17px;
 }
