@@ -54,7 +54,14 @@
   </script>
 <%}%>
 <div class="$uicomponent.id" id="$uicomponent.id">
-  <div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.My-Relations")%></div>
+  <% if (isOwner == true) { %>
+    <div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.My-Relations")%></div>
+  <% } else {
+    def userConnection = _ctx.appRes(uicomponent.id + ".label.UserConnections");
+    userConnection = userConnection.replace("{0}", currIdentity.profile.getPropertyValue("firstName"));
+  %>
+    <div class="RelTitle"><%= userConnection%></div>
+  <% }%>
   <div class="UIVerclTab">
     <% if (selectedNode == "yours")  {%>
     <div class="SelectedTab Tab">
