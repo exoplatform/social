@@ -80,9 +80,12 @@
       <div class="AttachMents">
       $attachLabel:
       <%
+        def simpleName, labelSimpleName;
         for(acComposer in uicomponent.getActivityComposers()) {
+          simpleName = acComposer.getClass().getSimpleName();
+          labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
       %>
-        <a href="#" title="<%=acComposer.getClass().getSimpleName()%>" class="<%=acComposer.getClass().getSimpleName()%>" onclick="<%= acComposer.event("Activate")%>" >&nbsp;</a>
+        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("Activate")%>" >&nbsp;</a>
       <%
         }
       %>
