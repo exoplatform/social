@@ -40,11 +40,12 @@
   width: 20%;
   text-align: right;
   line-height: 22px;
+  margin-top: 8px;
 }
 
 .UISpaceSearch .CenterContentSearchInput {
   float: left;
-  width: 42%;
+  width: 60%;
   padding: 0px 10px;
 }
 
@@ -60,6 +61,7 @@
   float:left;
   font-size:11px;
   width:273px;
+  margin-top: 8px;
 }
 
 .UISpaceSearch .CenterContentSearchInput .SpaceSearchInput input {

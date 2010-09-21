@@ -26,6 +26,6 @@
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="UITabPane">
     <div class="TitleBar">$labelPendingSpaceList</div>
-    <% uicomponent.renderChildren(); %>
   </div>
+  <% uicomponent.renderChildren(); %>
 </div>
