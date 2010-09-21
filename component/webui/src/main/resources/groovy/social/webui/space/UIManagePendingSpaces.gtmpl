@@ -73,7 +73,7 @@
       </div>
       <div class="ContentBox">
         <div class="TitleContent">
-          <a href="#" onclick="<%= revokeSpaceAction %>" title="Revoke" class="Icon IconEditSpace"><span></span></a>
+          <a href="#" onclick="<%= revokeSpaceAction %>" title="Revoke" class="Icon IconRevoke"><span></span></a>
           <div class="Text"><span><%= space.name %></span><span class="MembersCount"> - $visibility - $labelMembers <%= SpaceUtils.countMembers(space)%></span></div>
           <div class="ClearBoth"><span></span></div>
         </div>
