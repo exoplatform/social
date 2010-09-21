@@ -1,0 +1,78 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+
+<% 
+  import org.exoplatform.webui.core.UITree ; 
+  import org.exoplatform.webui.core.UIDropDownControl;  
+  import org.exoplatform.webui.core.UIRightClickPopupMenu ;
+  import org.exoplatform.web.application.JavascriptManager;
+
+  UIRightClickPopupMenu uiPopupMenu = uicomponent.getChild(UIRightClickPopupMenu.class);
+  String popupMenu = "";
+%>
+<div id="UISpaceNavigationNodeSelector">
+<%
+  if(uiPopupMenu != null && uiPopupMenu.isRendered()) {
+    String id = uicomponent.getParent().getId();
+
+  	JavascriptManager jsmanager = _ctx.getRequestContext().getJavascriptManager();
+  	jsmanager.importJavascript('eXo.webui.UIRightClickPopupMenu') ;
+    if(uicomponent.getCopyNode()!= null) {
+      popupMenu = uiPopupMenu.getJSOnclickShowPopup("", "AddNode,PasteNode,EditNavigation,SaveNavigation,DeleteNavigation");
+    } else {
+      popupMenu = uiPopupMenu.getJSOnclickShowPopup("", "AddNode,EditNavigation,SaveNavigation,DeleteNavigation");
+    }
+  	jsmanager.addJavascript("eXo.webui.UIRightClickPopupMenu.disableContextMenu('"+id+"') ;");
+    uicomponent.renderUIComponent(uiPopupMenu) ;
+   
+  }
+%>
+	<div class="TopLeftContainerOptions">
+		<div class="TopRightContainerOptions">
+	  	<div class="TopCenterContainerOptions"><span></span></div>
+	  </div>
+	</div>
+	<div class="MiddleLeftContainerOptions" $popupMenu>
+		<div class="MiddleRightContainerOptions">
+			<div class="UINavigationNodeSelector" id="UISpaceNavigationNodeSelector">
+			  <%/*Begin PortalNodeSelectorContainer*/%>
+			  <div class="UIContainerConfigOptions ItemSelectorAncestor" style="margin: 0px;"> 
+				  <div class="ContainerConfigOptions">						
+						<div class="UIVerticalSlideTabs ItemList CategoryContainer" style="padding: 1px;">
+							<%
+								uicomponent.renderChild(UITree.class);
+							%>
+						</div>
+					</div>
+				</div>
+			</div>
+	  </div>
+	</div>
+	<div class="BottomLeftContainerOptions">
+		<div class="BottomRightContainerOptions">
+	  	<div class="BottomCenterContainerOptions"><span></span></div>
+	  </div>
+	</div> 
+</div>
+
+

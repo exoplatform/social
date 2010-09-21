@@ -46,13 +46,11 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupWindow;
-import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
@@ -66,30 +64,16 @@ import org.exoplatform.webui.event.Event.Phase;
  * @author hoatle <hoatlevan at gmail dot com>
  * @since Jun 29, 2009
  */
-@ComponentConfigs({
-  @ComponentConfig(
-    template="classpath:groovy/social/webui/space/UIManageMySpaces.gtmpl",
-    events = {
-      @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.EditSpaceNavigationActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpaces.msg.confirm_space_delete"),
-      @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.SearchActionListener.class , phase = Phase.DECODE)
-    }
-  ),
-  @ComponentConfig(
-    type = UIPageNodeForm.class,
-    lifecycle = UIFormLifecycle.class,
-    template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",
-    events = {
-      @EventConfig(listeners = UIPageNodeForm.SaveActionListener.class),
-      @EventConfig(listeners = UIManageMySpaces.BackActionListener.class, phase = Phase.DECODE),
-      @EventConfig(listeners = UIPageNodeForm.SwitchPublicationDateActionListener.class, phase = Phase.DECODE),
-      @EventConfig(listeners = UIPageNodeForm.ClearPageActionListener.class, phase = Phase.DECODE),
-      @EventConfig(listeners = UIPageNodeForm.CreatePageActionListener.class, phase = Phase.DECODE)
-    }
-  )
-})
+@ComponentConfig(
+  template="classpath:groovy/social/webui/space/UIManageMySpaces.gtmpl",
+  events = {
+    @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class),
+    @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpaces.msg.confirm_space_delete"),
+    @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
+    @EventConfig(listeners = UIManageMySpaces.SearchActionListener.class , phase = Phase.DECODE)
+  }
+)
+
 public class UIManageMySpaces extends UIContainer {
   static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
   static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
@@ -97,7 +81,6 @@ public class UIManageMySpaces extends UIContainer {
   static private final Integer LEADER = 1, MEMBER = 2;
   private static final String SPACE_DELETED_INFO = "UIManageMySpaces.msg.DeletedInfo";
   private static final String MEMBERSHIP_REMOVED_INFO = "UIManageMySpaces.msg.MemberShipRemovedInfo";
-  private static final String NAVIGATION_REMOVED_INFO = "UIManageMySpaces.msg.NavigationRemovedInfo";
 
   private UIPageIterator iterator;
   private final Integer SPACES_PER_PAGE = 4;
@@ -267,63 +250,6 @@ public class UIManageMySpaces extends UIContainer {
         prContext.getResponse().sendRedirect(spaceSettingUrl);
       }
     }
-  }
-
-  /**
-   * This action is triggered when user click on EditSpaceNavigation <br />
-   *
-   * A Navigation popup for user to edit space navigation.
-   *
-   */
-  static public class EditSpaceNavigationActionListener extends EventListener<UIManageMySpaces> {
-    @Override
-    public void execute(Event<UIManageMySpaces> event) throws Exception {
-      UIManageMySpaces uiMySpaces = event.getSource();
-      uiMySpaces.loadNavigations();
-      SpaceService spaceService = uiMySpaces.getSpaceService();
-      WebuiRequestContext ctx = event.getRequestContext();
-      UIApplication uiApp = ctx.getUIApplication();
-      Space space = spaceService.getSpaceById(ctx.getRequestParameter(OBJECTID));
-      String userId = uiMySpaces.getUserId();
-
-      if (space == null) {
-        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-
-      if (!spaceService.isMember(space, userId) && !spaceService.hasEditPermission(space, userId)) {
-        uiApp.addMessage(new ApplicationMessage(MEMBERSHIP_REMOVED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-
-      PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
-
-      if (groupNav == null) {
-        uiApp.addMessage(new ApplicationMessage(NAVIGATION_REMOVED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-
-      uiMySpaces.setSelectedNavigation(groupNav);
-      UIPopupWindow uiPopup = uiMySpaces.getChild(UIPopupWindow.class);
-      UINavigationManagement pageManager = uiPopup.createUIComponent(UINavigationManagement.class,
-                                                                   null,
-                                                                   null,
-                                                                   uiPopup);
-      pageManager.setOwner(groupNav.getOwnerId());
-      pageManager.setOwnerType(groupNav.getOwnerType());
-
-      UINavigationNodeSelector selector = pageManager.getChild(UINavigationNodeSelector.class);
-//      ArrayList<PageNavigation> list = new ArrayList<PageNavigation>();
-//      list.add(groupNav);
-//      selector.initNavigations(list);
-      selector.setEdittedNavigation(groupNav);
-      selector.initTreeData();
-      uiPopup.setUIComponent(pageManager);
-      uiPopup.setWindowSize(400, 400);
-      uiPopup.setShow(true);
-      ctx.addUIComponentToUpdateByAjax(uiMySpaces);
-    }
-
   }
 
   /**

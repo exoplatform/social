@@ -64,6 +64,7 @@ public class UISpaceSetting extends UIContainer {
     uiTabPane.addChild(UISpacePermission.class, null, null);
     uiTabPane.addChild(UISpaceMember.class, null, null);
     uiTabPane.addChild(UISpaceApplication.class, null, null);
+    uiTabPane.addChild(UISpaceNavigationManagement.class, null, null);
     uiTabPane.setSelectedTab(1);
   }
 
