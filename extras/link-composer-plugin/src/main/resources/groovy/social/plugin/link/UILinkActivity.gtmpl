@@ -171,7 +171,7 @@
             link = "<img width=\"150px\" title=\"$linkTitle\" src=\"$linkImage\" />";
           }
         %>
-      <div class="Content">$linkComment<br></div>
+      <div class="Content">$linkComment<br/><br/></div>
       <%
         if(uicomponent.isImageLink(linkSource)){
           %>
