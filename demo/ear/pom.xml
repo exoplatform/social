@@ -76,6 +76,17 @@
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.widget.rest</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.widget.resources</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.demo.config</artifactId>
     </dependency>
 
@@ -181,6 +192,17 @@
               <artifactId>exo.social.extras.link-composer-plugin</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extras.widget.rest</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <webModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extras.widget.resources</artifactId>
+              <contextRoot>socialWidgetResources</contextRoot>
+              <bundleFileName>socialWidgetResources.war</bundleFileName>
+            </webModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.webapp.portlet</artifactId>

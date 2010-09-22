@@ -716,6 +716,17 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.extras.widget.rest</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.extras.widget.resources</artifactId>
+        <type>war</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.webapp.opensocial</artifactId>
         <type>war</type>
         <version>${project.version}</version>
