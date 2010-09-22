@@ -40,11 +40,25 @@ public class LinkUIActivityBuilder extends BaseUIActivityBuilder {
     try {
       titleData = new JSONObject(activity.getTitle());
       if (titleData != null) {
-        uiLinkActivity.setLinkSource(titleData.getString(UILinkActivityComposer.LINK_PARAM));
-        uiLinkActivity.setLinkTitle(titleData.getString(UILinkActivityComposer.TITLE_PARAM));
-        uiLinkActivity.setLinkImage(titleData.getString(UILinkActivityComposer.IMAGE_PARAM));
-        uiLinkActivity.setLinkDescription(titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
-        uiLinkActivity.setLinkComment(titleData.getString(UILinkActivityComposer.COMMENT_PARAM));
+        if(!titleData.isNull(UILinkActivityComposer.LINK_PARAM)){
+          uiLinkActivity.setLinkSource(titleData.getString(UILinkActivityComposer.LINK_PARAM));
+        }
+
+        if(!titleData.isNull(UILinkActivityComposer.TITLE_PARAM)){
+          uiLinkActivity.setLinkTitle(titleData.getString(UILinkActivityComposer.TITLE_PARAM));
+        }
+
+        if(!titleData.isNull(UILinkActivityComposer.IMAGE_PARAM)){
+          uiLinkActivity.setLinkImage(titleData.getString(UILinkActivityComposer.IMAGE_PARAM));
+        }
+
+        if(!titleData.isNull(UILinkActivityComposer.DESCRIPTION_PARAM)){
+          uiLinkActivity.setLinkDescription(titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
+        }
+
+        if(!titleData.isNull(UILinkActivityComposer.COMMENT_PARAM)){
+          uiLinkActivity.setLinkComment(titleData.getString(UILinkActivityComposer.COMMENT_PARAM));
+        }
       } 
     } catch (JSONException e) {
       e.printStackTrace();

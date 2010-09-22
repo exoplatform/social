@@ -171,7 +171,7 @@
             link = "<img width=\"150px\" title=\"$linkTitle\" src=\"$linkImage\" />";
           }
         %>
-      <div class="Content">$linkComment<br></div>
+      <div class="Content">$linkComment<br/><br/></div>
       <%
         if(uicomponent.isImageLink(linkSource)){
           %>
@@ -198,9 +198,6 @@
           <%
         }
       %>
-
-
-
       <div class="LinkCM">
         <span class="DateTime">$activityPostedTime *</span>
       <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
