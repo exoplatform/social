@@ -39,6 +39,7 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
   private UIActivityComposer currentActivityComposer = null;
   private UIActivityComposer defaultActivityComposer = null;
   private boolean initialized;
+  private UIComposer uiComposer;
 
   public UIActivityComposerManager() {
   }
@@ -94,5 +95,13 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
 
   public void setInitialized() {
     initialized = true;
+  }
+
+  public UIComposer getUIComposer() {
+    return uiComposer;
+  }
+
+  public void setUiComposer(UIComposer uiComposer) {
+    this.uiComposer = uiComposer;
   }
 }

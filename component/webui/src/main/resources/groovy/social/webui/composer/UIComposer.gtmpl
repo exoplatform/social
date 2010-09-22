@@ -67,8 +67,30 @@
 %>
 <div class="$uicomponent.id">
 <script type="text/javascript">
+  var uicomposer = uicomposer || null;
   function initUIComposer() {
-    new eXo.social.webui.UIComposer($params);
+    if(uicomposer){
+    	//get current value before re-init uicomposer instance
+    	var value = uicomposer.composer.value;
+
+    	//re-init uicomposer
+    	uicomposer.init();
+
+    	//re-assign value for appropriate objects
+    	uicomposer.composer.value = value;
+    	document.getElementById("composerInput").value = value;
+        uicomposer.composer.style.color = uicomposer.focusColor;
+
+    	//this if clause used for enable Share button when there was text on composer input and the composer returns back to DefaultComposer
+    	if(value != "" && value != uicomposer.defaultInput){
+          if(document.getElementById("ComposerContainer") == null){
+            //must this timeout 'cause it will override the value set by server side
+            window.setTimeout( function(){uicomposer.shareButton.disabled = false;}, 200);
+          }
+    	}
+    } else {
+	  uicomposer = new eXo.social.webui.UIComposer($params);
+    }
   }
 </script>
   <% uiform.begin() %>
@@ -128,8 +150,7 @@
           %>
         }
       </script>
-      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage"); %>" value="$shareLabel"></input>
-      <input id="isReadyId" type="hidden" value="$isReady">
+      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; uicomposer.init();" value="$shareLabel"></input>
     </div>
   </div>
   <% uiform.end()%>
