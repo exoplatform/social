@@ -42,8 +42,7 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/composer/UIComposer.gtmpl",
   events = {
-    @EventConfig(listeners = UIComposer.PostMessageActionListener.class),
-    @EventConfig(listeners = UIComposer.ActivateActionListener.class)
+    @EventConfig(listeners = UIComposer.PostMessageActionListener.class)
   }
 )
 public class UIComposer extends UIForm {
@@ -109,6 +108,7 @@ public class UIComposer extends UIForm {
       }
     }
 
+    activityComposerManager.setUiComposer(this);
     activityComposerManager.setInitialized();
   }
 
@@ -196,14 +196,6 @@ public class UIComposer extends UIForm {
       //post activity via the current activity composer
       WebuiRequestContext requestContext = event.getRequestContext();
       activityComposer.postActivity(postContext, uiComposer, requestContext, message);
-    }
-  }
-
-  public static class ActivateActionListener extends EventListener<UIActivityComposer> {
-    @Override
-    public void execute(Event<UIActivityComposer> event) throws Exception {
-      final UIComposer composer = event.getSource().getAncestorOfType(UIComposer.class);
-      event.getRequestContext().addUIComponentToUpdateByAjax(composer);
     }
   }
 }

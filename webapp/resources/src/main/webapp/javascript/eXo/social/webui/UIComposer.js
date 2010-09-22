@@ -69,12 +69,12 @@
     Util.addEventListener(this.composer, 'focus', function() {
       if (uiComposer.composer.value === uiComposer.defaultInput) {
         uiComposer.composer.value = '';
-        uiComposer.composer.style.height = uiComposer.maxHeight;
-        uiComposer.composer.style.color = uiComposer.focusColor;
       }
       if (uiComposer.focusCallback) {
         uiComposer.focusCallback();
       }
+      uiComposer.composer.style.height = uiComposer.maxHeight;
+      uiComposer.composer.style.color = uiComposer.focusColor;     
     }, false);
 
     Util.addEventListener(this.composer, 'blur', function() {

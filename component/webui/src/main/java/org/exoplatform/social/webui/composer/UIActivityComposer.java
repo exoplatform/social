@@ -75,6 +75,9 @@ public abstract class UIActivityComposer extends UIContainer {
       activityComposerManager.setDefaultActivityComposer();
 
       activityComposer.onClose(event);
+
+      final UIComposer composer = activityComposerManager.getUIComposer();
+      event.getRequestContext().addUIComponentToUpdateByAjax(composer);
     }
   }
 
@@ -94,6 +97,9 @@ public abstract class UIActivityComposer extends UIContainer {
       activityComposerManager.setCurrentActivityComposer(activityComposer);
 
       activityComposer.onActivate(event);
+
+      final UIComposer composer = activityComposerManager.getUIComposer();
+      event.getRequestContext().addUIComponentToUpdateByAjax(composer);
     }
   }
 
