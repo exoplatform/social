@@ -82,10 +82,14 @@
         uiComposer.composer.value = uiComposer.defaultInput;
         uiComposer.composer.style.height = uiComposer.minHeight;
         uiComposer.composer.style.color = uiComposer.blurColor;
-        uiComposer.shareButton.disabled = true;
+
       }
       if (uiComposer.blurCallback) {
         uiComposer.blurCallback();
+      }
+
+      if(document.getElementById("ComposerContainer") == null){
+        uiComposer.shareButton.disabled = true;
       }
     }, false);
 
