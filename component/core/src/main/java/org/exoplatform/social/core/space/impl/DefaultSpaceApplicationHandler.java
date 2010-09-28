@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.core.space.impl;
 
-import org.exoplatform.portal.pom.config.Utils;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,13 +32,13 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
-import org.exoplatform.portal.config.model.Dashboard;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.TransientApplicationState;
+import org.exoplatform.portal.pom.config.Utils;
 import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.pom.spi.portlet.Portlet;
 import org.exoplatform.portal.pom.spi.portlet.PortletBuilder;
@@ -91,7 +89,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     try {
       PageNavigation spaceNav = SpaceUtils.createGroupNavigation(space.getGroupId());
       PageNode homeNode = createPageNodeFromApplication(space, homeNodeApp, null, true);
-
+      spaceService = getSpaceService();
       List<PageNode> childNodes = homeNode.getChildren();
       if (childNodes == null)
         childNodes = new ArrayList<PageNode>();
@@ -99,6 +97,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
         app = (app.trim()).split(":")[0];
         PageNode appNode = createPageNodeFromApplication(space, app, null, false);
         childNodes.add(appNode);
+        spaceService.installApplication(space, app);
       }
       // homeNode.setChildren((ArrayList<PageNode>) childNodes);
       spaceNav.addNode(homeNode);
