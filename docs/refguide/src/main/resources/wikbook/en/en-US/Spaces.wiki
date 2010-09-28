@@ -1,7 +1,0 @@
-h2. Introduction
-*eXo Spaces* add communities to your work. It allows to easily regroup people by interests or projects. It leverage any existing application such as Portlets or Gadgets to enable a collaborative work.
-
-* [Social:Spaces Template Configuration]
-
-* [Social:Access Right]
-

@@ -17,8 +17,6 @@ h2. UI Extensions
 {include:document="DeveloperReference/Developer_Documentation_Activity.wiki"}
 h2. Overridable Components
 {include:document="DeveloperReference/Overrideable_components.wiki"}
-h2. Plug-in SPI
-{include:document="DeveloperReference/Plugin_SPI.wiki"}
 h2. Public REST APIs
 {include:document="DeveloperReference/REST_APIs.wiki"}
 h2. Public Javascript APIs

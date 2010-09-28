@@ -1,4 +1,0 @@
-h2. Introduction
-*eXo People* brings *Enterprise Social Networking* to your work. It allows you to organize your workforce in an efficient way through a better understanding of your people skills. It implements the [OpenSocial specification version 08:1|OpenSocial] standard that simplifies the development of social applications and allows to reuse the *enterprise social graph* inside your organization by any other application.
-
-* [OpenSocial implementation|OpenSocial]
