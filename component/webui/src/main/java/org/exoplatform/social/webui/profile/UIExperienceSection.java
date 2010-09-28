@@ -98,8 +98,11 @@ public class UIExperienceSection extends UIProfileSection {
   /** EXPERIENCE. */
   final public static String EXPERIENCE = "experiences";
 
-  /** DATE AFTER TODAY. */
-  final public static String DATE_AFTER_TODAY = "UIExperienceSection.msg.DateAfterToday";
+  /** START DATE AFTER TODAY. */
+  final public static String START_DATE_AFTER_TODAY = "UIExperienceSection.msg.StartDateAfterToday";
+  
+  /** END DATE AFTER TODAY. */
+  final public static String END_DATE_AFTER_TODAY = "UIExperienceSection.msg.EndDateAfterToday";
 
   /** START DATE BEFORE END DATE. */
   final public static String STARTDATE_BEFORE_ENDDATE = "UIExperienceSection.msg.startDateBeforeEndDate";
@@ -470,7 +473,7 @@ public class UIExperienceSection extends UIProfileSection {
       sDate = stringToDate(startDate);
       eDate = stringToDate(endDate);
       if (sDate.after(today)) {
-        uiApplication.addMessage(new ApplicationMessage(DATE_AFTER_TODAY, null));
+        uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null));
         return 2;
       }
 
@@ -479,7 +482,7 @@ public class UIExperienceSection extends UIProfileSection {
 
       if (!isCurrent) {
         if (eDate.after(today)) {
-          uiApplication.addMessage(new ApplicationMessage(DATE_AFTER_TODAY, null));
+          uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null));
           return 2;
         }
         if (sDate.after(eDate)) {
