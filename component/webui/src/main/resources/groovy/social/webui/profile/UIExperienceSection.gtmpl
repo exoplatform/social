@@ -95,6 +95,7 @@
                 <%if (childs.get(i + 4).isRendered()) {
                   uiform.renderField(childs.get(i + 4));
                 }%>
+                *
                 </td>
               </tr>
               <tr>
@@ -102,7 +103,7 @@
                 <td class="FieldComponent">
                   <%if (childs.get(i + 5).isRendered()) {
                     uiform.renderField(childs.get(i + 5)); %>
-                    <br />
+                    *<br />
                   <%}%>
                   <%if (childs.get(i + 6).isRendered()) {%>
                   <%uiform.renderField(childs.get(i + 6));%>&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%>
