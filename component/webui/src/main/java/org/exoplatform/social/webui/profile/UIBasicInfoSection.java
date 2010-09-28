@@ -101,12 +101,12 @@ public class UIBasicInfoSection extends UIProfileSection {
     addUIFormInput(new UIFormStringInput("firstName", "firstName", useraccount.getFirstName()).
                    addValidator(MandatoryValidator.class).
                    addValidator(StringLengthValidator.class,3,45).
-                   addValidator(ExpressionValidator.class,Utils.FIRST_CHARACTER_NAME_VALIDATOR_REGEX, "FirstCharacterNameValidator.msg"));
+                   addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
 
     addUIFormInput(new UIFormStringInput("lastName", "lastName", useraccount.getLastName()).
                    addValidator(MandatoryValidator.class).
                    addValidator(StringLengthValidator.class, 3, 45).
-                   addValidator(ExpressionValidator.class, Utils.FIRST_CHARACTER_NAME_VALIDATOR_REGEX, "FirstCharacterNameValidator.msg"));
+                   addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
 
     addUIFormInput(new UIFormStringInput("email", "email", useraccount.getEmail()).
                    addValidator(MandatoryValidator.class).
