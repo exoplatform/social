@@ -84,8 +84,7 @@ The service is to manipulate space and user activities.
 h2. Component plug-in configuration
 
 {code:xml}
-    <component-plugins>
-      <component-plugin>
+  <component-plugin>
         <name>OSHtmlSanitizer</name>
         <set-method>addProcessorPlugin</set-method>
         <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
@@ -106,10 +105,9 @@ h2. Component plug-in configuration
             <value>img</value>
           </values-param>
         </init-params>
-      </component-plugin>
-    </component-plugins>
-  </component>
+  </component-plugin>
 {code}
+
 
 In which,
 
