@@ -46,9 +46,8 @@ RssFetch.prototype.share = function(i, link) {
   }
 
   var activity = opensocial.newActivity({ 'title' : title,
-  'body' : "share the link " + title + ": " + link,
-  'url': link});
-
+  'url': link, 'externalId' : "LINK_ACTIVITY"});
+  
    opensocial.requestCreateActivity(activity, "HIGH", this.shared);
 }
 

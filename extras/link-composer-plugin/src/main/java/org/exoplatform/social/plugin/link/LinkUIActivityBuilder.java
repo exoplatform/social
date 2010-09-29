@@ -17,6 +17,8 @@
 package org.exoplatform.social.plugin.link;
 
 import org.apache.commons.lang.Validate;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
@@ -27,41 +29,47 @@ import org.json.JSONObject;
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
  *          exo@exoplatform.com
- * Jul 23, 2010  
+ * Jul 23, 2010
  */
 public class LinkUIActivityBuilder extends BaseUIActivityBuilder {
-  
-  private JSONObject titleData;
-  
+  private static final Log LOG = ExoLogger.getLogger(LinkUIActivityBuilder.class);
+
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
     UILinkActivity uiLinkActivity = (UILinkActivity) uiActivity;
     Validate.notNull(activity.getTitle(), "activity_.getTitle() must not be null.");
     try {
-      titleData = new JSONObject(activity.getTitle());
-      if (titleData != null) {
-        if(!titleData.isNull(UILinkActivityComposer.LINK_PARAM)){
-          uiLinkActivity.setLinkSource(titleData.getString(UILinkActivityComposer.LINK_PARAM));
-        }
-
-        if(!titleData.isNull(UILinkActivityComposer.TITLE_PARAM)){
-          uiLinkActivity.setLinkTitle(titleData.getString(UILinkActivityComposer.TITLE_PARAM));
-        }
-
-        if(!titleData.isNull(UILinkActivityComposer.IMAGE_PARAM)){
-          uiLinkActivity.setLinkImage(titleData.getString(UILinkActivityComposer.IMAGE_PARAM));
-        }
-
-        if(!titleData.isNull(UILinkActivityComposer.DESCRIPTION_PARAM)){
-          uiLinkActivity.setLinkDescription(titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
-        }
-
-        if(!titleData.isNull(UILinkActivityComposer.COMMENT_PARAM)){
-          uiLinkActivity.setLinkComment(titleData.getString(UILinkActivityComposer.COMMENT_PARAM));
-        }
-      } 
+      getLinkDataFromJSON(activity, uiLinkActivity);
     } catch (JSONException e) {
-      e.printStackTrace();
+      uiLinkActivity.setLinkSource(activity.getUrl());
+      uiLinkActivity.setLinkTitle(activity.getTitle());
+    } catch (Exception e){
+      LOG.error(e);
+    }
+  }
+
+  private void getLinkDataFromJSON(Activity activity, UILinkActivity uiLinkActivity) throws JSONException {
+    JSONObject titleData = new JSONObject(activity.getTitle());
+    if (titleData != null) {
+      if(!titleData.isNull(UILinkActivityComposer.LINK_PARAM)){
+        uiLinkActivity.setLinkSource(titleData.getString(UILinkActivityComposer.LINK_PARAM));
+      }
+
+      if(!titleData.isNull(UILinkActivityComposer.TITLE_PARAM)){
+        uiLinkActivity.setLinkTitle(titleData.getString(UILinkActivityComposer.TITLE_PARAM));
+      }
+
+      if(!titleData.isNull(UILinkActivityComposer.IMAGE_PARAM)){
+        uiLinkActivity.setLinkImage(titleData.getString(UILinkActivityComposer.IMAGE_PARAM));
+      }
+
+      if(!titleData.isNull(UILinkActivityComposer.DESCRIPTION_PARAM)){
+        uiLinkActivity.setLinkDescription(titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
+      }
+
+      if(!titleData.isNull(UILinkActivityComposer.COMMENT_PARAM)){
+        uiLinkActivity.setLinkComment(titleData.getString(UILinkActivityComposer.COMMENT_PARAM));
+      }
     }
   }
 }

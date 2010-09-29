@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.opensocial.service;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -346,7 +344,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
       exoActivity.setUpdated(activity.getUpdated());
       exoActivity.setUrl(activity.getUrl());
       exoActivity.setUserId(activity.getUserId());
-
+      exoActivity.setType(activity.getExternalId());
     }
     return exoActivity;
 
