@@ -83,13 +83,14 @@
         uiComposer.composer.style.height = uiComposer.minHeight;
         uiComposer.composer.style.color = uiComposer.blurColor;
 
+        //if current composer is default composer then disable share button
+        if(document.getElementById("ComposerContainer") == null){
+          uiComposer.shareButton.disabled = true;
+        }
+
       }
       if (uiComposer.blurCallback) {
         uiComposer.blurCallback();
-      }
-
-      if(document.getElementById("ComposerContainer") == null){
-        uiComposer.shareButton.disabled = true;
       }
     }, false);
 
