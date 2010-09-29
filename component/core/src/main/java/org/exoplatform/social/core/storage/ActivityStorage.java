@@ -462,8 +462,9 @@ public class ActivityStorage {
     for (Value value : values) {
       try {
         String val = value.getString();
-        if (val.indexOf("=") > 0) {
-          result.put(val.split("=")[0], val.split("=")[1]);
+        int equalIndex = val.indexOf("=");
+        if (equalIndex > 0) {
+          result.put(val.split("=")[0], val.substring(equalIndex + 1));
         }
       } catch (Exception e) {
         ;// ignore

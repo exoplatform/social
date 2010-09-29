@@ -18,7 +18,9 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.activity.model.Activity;
@@ -201,5 +203,33 @@ public class ActivityStorageTest extends AbstractCoreTest {
 
     List<Activity> activities = activityStorage.getActivities(john, 0, retrievedCount);
     assertEquals(retrievedCount, activities.size());
+  }
+
+  public void testTemplateParams() throws Exception {
+    Identity root = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "root");
+    if(root == null){
+      root =new Identity(OrganizationIdentityProvider.NAME, "root");
+      identityStorage.saveIdentity(root);
+    }
+    final String URL_PARAMS = "URL";
+    // root save on root's stream
+    Activity activity = new Activity();
+    activity.setTitle("blabla");
+    activity.setUserId("root");
+    activity.setUpdated(new Date());
+
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put(URL_PARAMS, "http://xxxxxxxxxxxxxxxx/xxxx=xxxxx");
+    activity.setTemplateParams(templateParams);
+
+    activityStorage.save(root, activity);
+
+    //for teardown func
+    activityIds.add(activity.getId());
+
+    activity = activityStorage.getActivities(root).get(0);
+    assertNotNull("activity must not be null", activity);
+    assertNotNull("activity.getTemplateParams() must not be null", activity.getTemplateParams());
+    assertEquals("http://xxxxxxxxxxxxxxxx/xxxx=xxxxx", activity.getTemplateParams().get(URL_PARAMS));
   }
 }
