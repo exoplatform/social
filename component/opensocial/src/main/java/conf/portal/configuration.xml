@@ -21,33 +21,41 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
-
   <component>
     <key>org.exoplatform.social.opensocial.model.ServiceProviderStore</key>
     <type>org.exoplatform.social.opensocial.model.ServiceProviderStore</type>
-    <!--
-    <init-params>
-      <properties-param>
-        <name>sample-provider</name>
-        <description>sample service provider. </description>
-        <property name="consumerKey" value="key" />
-        <property name="sharedSecret" value="secret" />
-        <property name="callbackUrl" value="http://example.org/auth/callback" />
-      </properties-param>
-    </init-params>
-    -->
   </component>
 
-  <!--
-  <component>
-   <key>org.exoplatform.portal.gadget.core.SecurityTokenGenerator</key>
-   <type>org.exoplatform.social.opensocial.auth.ExoSocialSecurityTokenGenerator</type>
-  </component>
-  -->
-  
   <component>
     <key>org.exoplatform.social.opensocial.service.ExoPeopleService</key>
     <type>org.exoplatform.social.opensocial.service.ExoPeopleService</type>
   </component>
 
+  <component>
+    <key>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</key>
+    <type>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</type>
+    <init-params>
+      <value-param>
+        <name>rest-container-name</name>
+        <value>socialdemo</value>
+      </value-param>
+    </init-params>
+  </component>
+
+<!--
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</target-component>
+    <component-plugin>
+      <name>reset container name used for REST service</name>
+      <set-method>setRestContainerName</set-method>
+      <type>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</type>
+	    <init-params>
+        <value-param>
+          <name>rest-container-name</name>
+          <value>portal</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+-->
 </configuration>

@@ -9,6 +9,7 @@ import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.shindig.common.util.TimeSource;
 import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.monitor.jvm.J2EEServerInfo;
 
 import com.google.inject.Inject;
@@ -24,6 +25,8 @@ import com.google.inject.name.Named;
  */
 public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
 
+  private String portalContainerName;
+
   @Inject
   public ExoOAuthAuthenticationHandler(OAuthDataStore store, @Named("shindig.oauth.legacy-body-signing") boolean allowLegacyBodySigning) {
     super(store, allowLegacyBodySigning);
@@ -31,6 +34,15 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
 
   public String getName() {
     return super.getName();
+  }
+
+  public String getPortalContainerName() {
+    if(portalContainerName == null){
+      RestPortalContainerNameConfig containerNameConfigRest = (RestPortalContainerNameConfig) PortalContainer.getInstance().getComponentInstanceOfType(RestPortalContainerNameConfig.class);
+      portalContainerName = containerNameConfigRest.getContainerName();
+    }
+    
+    return portalContainerName;
   }
 
   public SecurityToken getSecurityTokenFromRequest(HttpServletRequest request) throws InvalidAuthenticationException {
@@ -44,7 +56,7 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
       crypter = new BasicBlobCrypter(new File(keyFile));
       crypter.timeSource = new TimeSource();
 
-      portalContainer = "socialdemo";
+      portalContainer = getPortalContainerName(); 
       domain = securityToken.getDomain();
     } catch (Exception e) {
       e.printStackTrace();
