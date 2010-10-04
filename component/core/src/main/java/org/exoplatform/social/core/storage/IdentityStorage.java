@@ -18,6 +18,8 @@ package org.exoplatform.social.core.storage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -99,6 +101,15 @@ public class IdentityStorage {
   private JCRSessionManager sessionManager;
 
   private static final Log LOG = ExoLogger.getExoLogger(IdentityStorage.class);
+
+  Comparator<Identity> identityComparator = new Comparator<Identity>() {
+    public int compare(Identity o1, Identity o2) {
+      String name1 = o1.getProfile().getProperties().get("firstName").toString();
+      String name2 = o2.getProfile().getProperties().get("firstName").toString();
+
+      return name1.compareToIgnoreCase(name2);
+    }
+  };
 
   /**
    * Instantiates a new jCR storage.
@@ -350,6 +361,8 @@ public class IdentityStorage {
       }
     }
 
+    Collections.sort(listIdentity, identityComparator);
+    
     return listIdentity;
   }
 
