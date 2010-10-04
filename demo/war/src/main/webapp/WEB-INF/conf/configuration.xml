@@ -28,4 +28,5 @@
   <import>war:/conf/socialdemo/social/component-plugins-configuration.xml</import>
   <import>war:/conf/socialdemo/portal/portal-configuration.xml</import>
   <import>war:/conf/socialdemo/social/social-configuration.xml</import>
+  <import>war:/conf/socialdemo/social/opensocial-rest-container-name.xml</import>
 </configuration>
