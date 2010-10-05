@@ -190,3 +190,40 @@ In which:
 || Name || Possible value || Default Value || Description ||
 | *providers* | {{Every other identity providers}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | Identity Provider instances for managing identities. |
 
+h1. OpenSocial Rest Context Configuration
+
+h2. Description
+
+The service is used to configure the portal container name when there is a OpenSocial REST API request. By configuring this service, we can make sure to to reach the right portal container.
+The default portal container is {{portal}}.
+
+h2. Component plug-in configuration
+
+This should be used when there is a portal container different than the default {{portal}} one.
+
+{code:xml}
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</target-component>
+    <component-plugin>
+      <name>set portal container name used for REST service</name>
+      <set-method>setRestContainerName</set-method>
+      <type>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</type>
+        <init-params>
+        <value-param>
+          <name>rest-container-name</name>
+          <value>socialdemo</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+{code}
+
+In which:
+
+|| Name || Set-method || Type || Description ||
+| *set portal container name used for REST service* | setRestContainerName | org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig | The plugin provided to set rest portal container name for OpenSocial REST API request |
+
+* Init-params:
+
+|| Name || Possible value || Default Value || Description ||
+| *rest-container-name* | {{any valid portal container name}} | {{N/A}} | Portal container name |
