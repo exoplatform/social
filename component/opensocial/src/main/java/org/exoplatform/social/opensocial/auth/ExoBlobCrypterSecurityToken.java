@@ -26,7 +26,7 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
 
   protected static final String PORTAL_CONTAINER_KEY = "p";
   protected static final String HOST_NAME="h";
-  protected static final String PORTAL_OWNER_KEY="o";
+  protected static final String PORTAL_OWNER_KEY="w";
 
   public ExoBlobCrypterSecurityToken(BlobCrypter crypter, String container, String domain) {
     super(crypter, container, domain);
