@@ -7,7 +7,7 @@ The provider is to give identity space instances.
 h1. SpaceApplicationHandler
 The service is to handle all events related to creating and managing all the application spaces.
 
-h1. ExoPeopleService 
+h1. ExoPeopleService
 The service is to manipulate all data related to people in the Portal.
 
 h1. Space Service
@@ -53,7 +53,7 @@ h2. External plug-in configuration
       <name>portlets.prefs.required</name>
       <set-method>setPortletsPrefsRequired</set-method>
       <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
-	    <init-params>      
+	    <init-params>
 	      <values-param>
 	        <name>portletsPrefsRequired</name>
 	        <value>SpaceActivityStreamPortlet</value>
@@ -139,7 +139,7 @@ h2. External plug-in configuration
 </external-component-plugins>
 {code}
 
-In which: 
+In which:
 
 || Name || Set-method || Type || Description ||
 | *MentionsProcessor* | addProcessorPlugin | org.exoplatform.social.core.processor.MentionsProcessor | A processor that substitutes @username expressions by a link on the user profile. |
@@ -155,7 +155,7 @@ h2. Description
 
 The service is to manipulate the identity operations like creating, getting, deleting or finding a profile.
 
-h2. Component plug-in configuration 
+h2. Component plug-in configuration
 
 {code:xml}
 <component>
@@ -178,19 +178,50 @@ h2. Component plug-in configuration
   </component>
 {code}
 
-In which: 
+In which:
 
 || Name || Set-method || Type || Description ||
-| *SpaceIdentityProvider* | registerIdentityProviders | org.exoplatform.social.core.identity.IdentityProviderPlugin | The plugin that provides identity for a space |
+| *SpaceIdentityProvider plugin* | registerIdentityProviders | org.exoplatform.social.core.identity.IdentityProviderPlugin | The plugin that provides identity for a space |
 
 * Init-params:
 
 || Name || Possible value || Default Value || Description ||
 | *providers* | {{Every other identity providers}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | Identity Provider instances for managing identities. |
 
+h1. OpenSocial Rest Context Configuration
 
+h2. Description
 
+The service is used to configure the portal container name when there is a OpenSocial REST API request. By configuring this service, we can make sure to to reach the right portal container.
+The default portal container is {{portal}}.
 
+h2. Component plug-in configuration
 
+This should be used when there is a portal container different than the default {{portal}} one.
 
+{code:xml}
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</target-component>
+    <component-plugin>
+      <name>set portal container name used for REST service</name>
+      <set-method>setRestContainerName</set-method>
+      <type>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</type>
+        <init-params>
+        <value-param>
+          <name>rest-container-name</name>
+          <value>socialdemo</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+{code}
 
+In which:
+
+|| Name || Set-method || Type || Description ||
+| *set portal container name used for REST service* | setRestContainerName | org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig | The plugin provided to set rest portal container name for OpenSocial REST API request |
+
+* Init-params:
+
+|| Name || Possible value || Default Value || Description ||
+| *rest-container-name* | {{any valid portal container name}} | {{N/A}} | Portal container name |
