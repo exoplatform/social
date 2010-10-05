@@ -87,6 +87,8 @@
             //must this timeout 'cause it will override the value set by server side
             window.setTimeout( function(){uicomposer.shareButton.disabled = false;}, 200);
           }
+    	} else {
+    	  uicomposer.composer.style.color = uicomposer.blurColor;
     	}
     } else {
 	  uicomposer = new eXo.social.webui.UIComposer($params);
