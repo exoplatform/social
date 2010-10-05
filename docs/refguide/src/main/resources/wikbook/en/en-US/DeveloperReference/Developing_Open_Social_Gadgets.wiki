@@ -1,5 +1,35 @@
 h1. Developing OpenSocial Gadgets
 
+
+
+h1. Introduction
+eXo Social with OpenSocial container based on apache shindig supports OpenSocial capability. So we can develop gadgets that use OpenSocial API to request OpenSocial data or deploy opensocial gadget using tool supported by portal.
+
+To develop your gadgets, you can use the tool that supported by portal.
+
+!createGadgets.png!
+
+
+h1. Development Parameters
+
+To be able to set this parameters, you have to be in the group _"/platform/administrators"_. So by default, only the root user has access to this functionality. If you want to change this group, you need to change the configuration of the service _GadgetRegistryService_.
+* Set _debug_ to *true* to not compress the javascript inside the gadget.
+* Set _nocache_ to *true* to not cache the rendering of your gadget.
+
+!Dashboard-2.jpg!
+
+{note}
+The settings are saved *just after clicking* on the checkbox. But you need to *refresh the page* to see the parameters activated.
+{note}
+
+
+
+h1. Using Webdav
+{note}
+TODO, but you can look at this [demonstration|http://www.vimeo.com/2069512]
+{note}
+h1. Developing OpenSocial Gadgets
+
 h1. Introduction
 eXo Social with OpenSocial container based on apache shindig supports OpenSocial capability. So we can develop gadgets that use OpenSocial API to request OpenSocial data or deploy opensocial gadget using tool supported by portal.
 

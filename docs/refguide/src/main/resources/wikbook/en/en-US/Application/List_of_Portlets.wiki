@@ -1,18 +1,39 @@
+All the portlets are in _social-portlet.war_
+
+|| Portlets name || Description ||
+| *SpaceMenuPortlet* | Display the menu on the right of a Space: Home, Dashboard, Members, SpaceSettings |
+| *MembersPortlet* | Display MemberSpace where you can search for space members or list space members in alphabet |
+| *SpaceSettingPortlet* | Shows the settings of Space: Settings, Visibility, Members, Application. You can change the setting information of a space if you are the creator of that space or have the manager right on it. |
+| *MySpacesPortlet* | Displays your Space page where you can add new spaces, search for spaces or list spaces in alphabet  |
+| *InvitationSpacesPortlet* | Displays the *Space invitation* page where you can search for spaces, list spaces in alphabet and view all the Space invitations |
+| *PendingSpacesPortlet* | Displays the *Space requests to join* page where you can search for spaces, list spaces in alphabet and view all the pending request to join Spaces |
+| *PublicSpaces Portlet* | Displays the *Public Spaces* page where you can search for spaces, list spaces by alphabet and view all available public spaces to join |
+| *SpaceActivityStreamPortlet* | Display spaces activities |
+| *UserActivityStreamPortlet* | Update user's activities/status |
+| *PeoplePortlet* | The People page where you can find people, display people name by alphabet |
+| *ProfileNavigationPortlet* |  |
+| *ConnectionsPortlet* | The Conections page where you can access to your network, invitations to connect or connection requests |
+| *InvitationsPortlet* |  |
+| *RequestsPortlet* |  |
+| *UserProfilePortlet* | Display user profile page where you can view/ edit user's basic information, contacts, experience or change avatar |
+| *MyConnectionsNavigationPortlet* |  |
+
+  
 All the portlets are in the file _social-portlet.war_
 
 || Portlet name || Description ||
-| *Members Portlet* | To enable users to search for Space members or list Space members in the alphabet order. |
-| *My Spaces Portlet* | To display the Space page where you can add new Spaces, search for Spaces or list Spaces in the alphabet order. |
-| *Space Activity Stream Portlet* | To share Spaces activity information. |
-| *Invitations Portlet* | To list all people that invite users. |
-| *Requests Portlet* | To list all invitations that the user requests. |
-| *Invitation Spaces Portlet* | To enable users to search for Spaces, and list spaces in the alphabet order and view all the Space invitations. |
-| *Pending Spaces Portlet* | To display the *Space requests to join* page where you can search for Spaces, list spaces in the alphabet order and view all the pending requests to join Spaces. |
-| *Public Spaces Portlet* | To display the *Public Spaces* page where you can search for Spaces, list Spaces in the alphabet order and view all available public Spaces to join. |
-| *User Activity Stream Portlet* | To update and share user's activities and/or status. |
+| *MembersPortlet* | To enable users to search for Space members or list Space members in the alphabet order. |
+| *MySpacesPortlet* | To display the Space page where you can add new Spaces, search for Spaces or list Spaces in the alphabet order. |
+| *SpaceActivityStreamPortlet* | To share Spaces activity information. |
+| *InvitationsPortlet* | To list all people that invite users. |
+| *RequestsPortlet* | To list all invitations that the user requests. |
+| *InvitationSpaces Portlet* | To enable users to search for Spaces, and list spaces in the alphabet order and view all the Space invitations. |
+| *PendingSpacePortlet* | To display the *Space requests to join* page where you can search for Spaces, list spaces in the alphabet order and view all the pending requests to join Spaces. |
+| *PublicSpacesPortlet* | To display the *Public Spaces* page where you can search for Spaces, list Spaces in the alphabet order and view all available public Spaces to join. |
+| *UserActivityStreamPortlet* | To update and share user's activities and/or status. |
 | *People Portlet* | To display the People page where you can find people, display people names in the alphabet order. |
-| *Connections Portlet* | To display the Connections page where you can access your network, invitations to connect or connection requests. |
-| *User Profile Portlet* | To display the user profile page where users can view and/or edit basic information, contacts, experience or change their avatar. |
+| *ConnectionsPortlet* | To display the Connections page where you can access your network, invitations to connect or connection requests. |
+| *UserProfilePortlet* | To display the user profile page where users can view and/or edit basic information, contacts, experience or change their avatar. |
 
 
   

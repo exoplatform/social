@@ -1,4 +1,3 @@
-
 h1. Applications
 h2. List of Portlets in Social
 {include:document="Application/List_of_Portlets.wiki"}
@@ -14,11 +13,20 @@ h2. Configure the oauth 2 legged scenario
 
 h1. Developers References
 h2. UI Extensions
-{include:document="DeveloperReference/Developer_Documentation_Activity.wiki"}
+{include:document="DeveloperReference/Developer_Documentation_Activity_Plugin.wiki"}
 h2. Overridable Components
 {include:document="DeveloperReference/Overrideable_components.wiki"}
 h2. Public REST APIs
 {include:document="DeveloperReference/REST_APIs.wiki"}
+h2. Sample code/tutorial
+h3, Activity Stream
+{include:document="DeveloperReference/Developer_Documentation_Activity_Stream.wiki"}
+h3. People 
+{include:document="DeveloperReference/Developer_Documentation_People.wiki"}
+h3. Spaces
+{include:document="DeveloperReference/Developer_Documentation_Spaces.wiki"}
+h3. Open Social
+{include:document="DeveloperReference/Developer_Documentation_OpenSocial.wiki"}
 h2. Public Javascript APIs
 {include:document="DeveloperReference/Javascript_APIs.wiki"}
 

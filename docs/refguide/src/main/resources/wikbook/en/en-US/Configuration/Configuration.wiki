@@ -1,3 +1,45 @@
+h1.Components
+h2. ActivityManager
+|| Configuration name || Data type || Default Value || Description ||
+| allowedTags | {{String list}} | b, i, a, span, em, strong, p, ol, ul,li, br, img | html tags |
+
+h2. SpaceService
+|| Configuration name || Data type || Default Value || Description ||
+| SpaceActivityStreamPortlet | {{String}} | SpaceActivityStreamPortlet |  |
+| space.apps | {{String list}} | {{DashboardPortlet:true}}, {{SpaceSettingPortlet:false}}, {{MembersPortlet:true}} |  |
+
+h2. IdentityManager
+|| Configuration name || Data type || Default Value || Description ||
+| providers | {{String}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} |  |
+
+h2. ProfileConfig
+|| Configuration name || Data type || Default Value || Description ||
+| nodetype.emails | {{String}} | {{exo:profileKeyValue}} |  |
+| nodetype.phones | {{String}} | {{exo:profileKeyValue}} |  |
+| nodetype.ims | {{String}} |  {{exo:profileKeyValue}} |  |
+| nodetype.urls | {{String}} | {{exo:profileKeyValue}} |  |
+| nodetype.address | {{String}} | {{exo:profileAddress}} |  |
+| nodetype.experiences | {{String}} | {{exo:profileExperience}} |  |
+| nodetype.education | {{String}} |  {{exo:profileEducation}} |  |
+| forceMultiValue | {{String}} | xxxxxxxxxxxx |  |
+
+
+h2. ServiceProviderStore
+|| Configuration name || Data type || Default Value || Description ||
+| sample-provider | properties-params |  |  sample service provider |
+
+h1. External component plugins 
+h2. MentionsProcessor
+|| Configuration name || Data type || Default Value || Description ||
+| priority | {{String}} | 2 | priority of this processor (lower are executed first) |
+
+h2. PortletPreferenceRequiredPlugin
+|| Configuration name || Data type || Default Value || Description ||
+| portletsPrefsRequired | {{String list}} | {{SpaceActivityStreamPortlet, SpaceSettingPortlet, MembersPortlet}} | 
+
+h2. AddNodeTypePlugin
+|| Configuration name || Data type || Default Value || Description ||
+| autoCreatedInNewRepository | {{String}} | {{jar:/conf/portal/core-nodetypes.xml}} | Node types configuration file |
 h1. RelationshipManager
 The Service is used to manipulate user relationships.
 

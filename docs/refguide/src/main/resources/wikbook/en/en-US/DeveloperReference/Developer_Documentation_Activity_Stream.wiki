@@ -7,6 +7,7 @@ h1. Create an activity
 There are two types of activities : activities for a user and activities for a space. The following examples will show you how to create an activity for each type.
 
 h1. Publish an activity for a user
+Users have activity streams. The code below shows you how to publish a nex activity into the public activity stream of a user.
 
 {code:java}
 import org.exoplatform.container.PortalContainer;
@@ -16,14 +17,6 @@ import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Jun 25, 2010
- */
-//.....
 
   public void createActivityForUser() {
     String username = "zun";
@@ -54,6 +47,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 {code}
 
 h1. Publish an activity for a space
+Spaces are also social objects and thus, they own an activity stream. The code below shows you how to publish activity into a space's stream
 
 {code:java}
 import org.exoplatform.container.PortalContainer;

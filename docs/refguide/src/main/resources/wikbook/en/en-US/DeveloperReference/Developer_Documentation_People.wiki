@@ -1,7 +1,7 @@
 eXo Social provides a way to add profile informations, relationships and connections between users: People. With the eXo People API, profile informations and relationship can be easily managed and customized.
 
 h1. Identity 
-
+The identity allows to identity uniquely a social object. Social objects can be persons, groups, applications, or whatever you think deserves social interactions like connecting, publishing an activity stream or holding a profile.
 h2. IdentityProvider 
 
 Creating your Identity Provider allows you to integrate people outside of your portal (for exemple customers) into your social network without having to create a portal account. You can also use this to populate the profile with data coming from other systems. Here is an example :
@@ -54,7 +54,7 @@ Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentity
 {code}
 
 
-h1. Notifications 
+h1. ProfileListener 
 
 The People API provides some notification interfaces which programmers can implement in order to create their own handlers for notifications like notifications() for profile modifications([ProfileListenerPlugin|(ProfileListenerPlugin--]]) or for relationship changes([RelationshipListenerPlugin|(RelationshipListenerPlugin--]]). The following example will guide you through implementing one of these interfaces and show you how to configure this plugin.
 
@@ -109,16 +109,14 @@ After creating the ProfileLoggerListener class, we have to add some configuratio
 </external-component-plugins>
 {code}
 
+h1. Relationships
 Similarly, you can apply the above steps to implement the RelationshipListenerPlugin for relationship notifications.
-
-
-h1. Relationship
 
 Relationship is the bridge between two identities in eXo Social. There are many types of relationships defined in the Relationship class. With these types, a user can invite another user, confirm invitations or remove relationship.
 
-h2. Invite a user 
+h2. Connecting users 
 
-The following code will show how to invite a user from a user :
+The following code will show how to invite a user to connect to another :
 
 {code:language=java}
 import org.exoplatform.container.ExoContainer;
@@ -147,9 +145,9 @@ public void inviteUser() throws Exception {
 {code}
 
 
-h2. Notifications 
+h2. RelationshipListener 
 
-Let's take a look at relationship notifications([RelationshipListenerPlugin|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-relationship-lifecycle-RelationshipListenerPlugin.html]). The following example will show you how to implement one of these interfaces and how to configure this plugin. The following step is similar to the Profile notifications implementation.
+Let's take a look at relationship Listener([RelationshipListenerPlugin|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-relationship-lifecycle-RelationshipListenerPlugin.html]). The following example will show you how to implement one of these interfaces and how to configure this plugin. The following step is similar to the Profile notifications implementation.
 
 {code:language=java}
 import org.exoplatform.social.core.relationship.Relationship;
