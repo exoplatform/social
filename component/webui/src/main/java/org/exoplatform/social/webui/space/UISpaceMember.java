@@ -94,6 +94,7 @@ public class UISpaceMember extends UIForm {
 
   static private final String MSG_ERROR_REMOVE_MEMBER  = "UISpaceMember.msg.error_remove_member";
   static private final String MSG_ERROR_REMOVE_LEADER  = "UISpaceMember.msg.error_remove_leader";
+  static private final String MSG_ERROR_SELF_REMOVE_LEADER  = "UISpaceMember.msg.error_self_remove_leader";
   static private final String MSG_ERROR_REVOKE_INVITED = "UISpaceMember.msg.error_revoke_invited";
   static private final String MSG_ERROR_DECLINE_USER   = "UISpaceMember.msg.error_decline_user";
   static private final String MSG_ERROR_VALIDATE_USER  = "UISpaceMember.msg.error_validate_user";
@@ -460,6 +461,11 @@ public class UISpaceMember extends UIForm {
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
       if (!useAjax) userName = currentUser;
 
+      if (spaceService.isOnlyLeader(space, userName)) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER, null, ApplicationMessage.WARNING));
+        return;
+      }
+      
       try {
           spaceService.removeMember(space, userName);
       } catch(SpaceException se) {
@@ -524,6 +530,11 @@ public class UISpaceMember extends UIForm {
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
       
       if (!useAjax) userName = currentUser;
+      
+      if (spaceService.isOnlyLeader(space, userName)) {
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER, null, ApplicationMessage.WARNING));
+        return;
+      }
       
       try {
         spaceService.setLeader(space, userName, false);
