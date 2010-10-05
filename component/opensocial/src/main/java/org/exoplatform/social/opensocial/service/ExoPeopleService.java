@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
@@ -52,6 +51,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -192,7 +192,11 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }
       else if(Person.Field.PROFILE_URL.toString().equals(field)) {
         //TODO use a url manager to manage this
-        p.setProfileUrl("/"+ getPortalContainer(st).getName() +"/private/classic/activities/" + identity.getRemoteId());
+        String portalOwner = getPortalOwner(st);
+        String portalName = getPortalContainer(st).getName();
+        String host = getHost(st);
+        LinkProvider linkProvider = (LinkProvider)(container.getComponentInstanceOfType(LinkProvider.class));
+        p.setProfileUrl(linkProvider.getAbsoluteProfileUrl(identity.getRemoteId(), portalName, portalOwner, host));
       }
       else if(Person.Field.GENDER.toString().equals(field)) {
         String gender = (String) pro.getProperty("gender");

@@ -26,6 +26,7 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
 
   protected static final String PORTAL_CONTAINER_KEY = "p";
   protected static final String HOST_NAME="h";
+  protected static final String PORTAL_OWNER_KEY="o";
 
   public ExoBlobCrypterSecurityToken(BlobCrypter crypter, String container, String domain) {
     super(crypter, container, domain);
@@ -33,6 +34,7 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
 
   protected String portalContainer;
   private String hostName;
+  private String portalOwner;
 
   public String getPortalContainer() {
     return portalContainer;
@@ -50,6 +52,14 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
 	return hostName;
   }
 
+  public String getPortalOwner() {
+    return portalOwner;
+  }
+
+  public void setPortalOwner(String portalOwner) {
+    this.portalOwner = portalOwner;
+  }
+
   @Override
   protected Map<String, String> buildValuesMap() {
     Map<String, String> map = super.buildValuesMap();
@@ -58,6 +68,9 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
     }
     if(hostName !=null) {
     	map.put(HOST_NAME, hostName);
+    }
+    if (portalOwner != null) {
+      map.put(PORTAL_OWNER_KEY, portalOwner);
     }
     return map;
   }
@@ -83,6 +96,7 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
     t.setPortalContainer(values.get(PORTAL_CONTAINER_KEY));
     t.setActiveUrl(activeUrl);
     t.setHostName(values.get(HOST_NAME));
+    t.setPortalOwner(values.get(PORTAL_OWNER_KEY));
     return t;
   }
 

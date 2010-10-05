@@ -64,6 +64,7 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
         String hostName = url.substring(0, url.indexOf(portalRequestContext.getRequestContextPath()));
         t.setPortalContainer(portalContainer);
         t.setHostName(hostName);
+        t.setPortalOwner(portalRequestContext.getPortalOwner());
         return t.encrypt();
     } catch (Exception e) {
       LOG.error("Failed to generate token for gadget " + gadgetURL + " for owner " + owner, e);

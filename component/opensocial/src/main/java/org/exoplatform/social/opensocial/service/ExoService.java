@@ -179,6 +179,14 @@ public class ExoService {
     	return host;
     }
 
+    protected String getPortalOwner(SecurityToken st) {
+      String owner = null;
+      if(st instanceof ExoBlobCrypterSecurityToken) {
+        owner = ((ExoBlobCrypterSecurityToken)st).getPortalOwner();
+      }
+      return owner;
+    }
+    
     protected QuerySpec toQuerySpec(CollectionOptions options) {
       QuerySpec query = new QuerySpec();
       query.setFirst(options.getFirst());

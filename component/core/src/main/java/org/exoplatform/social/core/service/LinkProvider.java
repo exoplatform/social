@@ -95,4 +95,19 @@ public class LinkProvider {
     }
     return link;
   }
+  
+  public String getAbsoluteProfileUrl(String userName, String portalName, String portalOwner, String host) {
+    String url = null;
+    try {
+      Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + userName, true);
+      if (identity == null) {
+        throw new RuntimeException("could not find a user identity for " + userName);
+      }
+
+      url = host + "/"+ portalName +"/private/" + portalOwner + "/profile/" + identity.getRemoteId();
+    } catch (Exception e) {
+      LOG.error("failed to substitute username for " + userName + ": " + e.getMessage());
+    }
+    return url;
+  }
 }
