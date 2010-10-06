@@ -212,13 +212,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    */
   protected String getImageSource() throws Exception {
     Identity currIdentity = Utils.getCurrentIdentity();
-    Profile p = currIdentity.getProfile();
-    AvatarAttachment att = (AvatarAttachment) p.getProperty(Profile.AVATAR);
-    if (att != null) {
-      return "/"+ getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
-              + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
+    return currIdentity.getProfile().getAvatarImageSource();
   }
   
   /**

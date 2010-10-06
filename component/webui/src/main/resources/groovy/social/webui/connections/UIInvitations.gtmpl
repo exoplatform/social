@@ -58,13 +58,9 @@
             if (!position)
               position = "";
 
-            String imageSource = "/social-portlet/skin/social/portlet/UIInvitationsPortlet/DefaultSkin/background/BLAvatar.gif";
-            AvatarAttachment att = identity.profile.getProperty("avatar");
-            if (att != null) {
-              try {
-                imageSource = "/" + portalName + "/rest/jcr/" + repository + "/" + att.getWorkspace();
-                imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-                } catch (Exception e) {}
+            String imageSource = identity.profile.getImageSource();
+            if (imageSource == null) {
+              imageSource = "/social-portlet/skin/social/portlet/UIInvitationsPortlet/DefaultSkin/background/BLAvatar.gif";
             }
    %>
     <% if (invitationRelationIdx % 2 == 0) { %>

@@ -180,8 +180,7 @@ public class Profile {
       AvatarAttachment avatarAttachment = (AvatarAttachment) getProperty(AVATAR);
       if (avatarAttachment != null) {
         return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-            + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd="
-            + System.currentTimeMillis();
+            + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd=" + avatarAttachment.getLastModified();
       }
     } catch (Exception e) {
 

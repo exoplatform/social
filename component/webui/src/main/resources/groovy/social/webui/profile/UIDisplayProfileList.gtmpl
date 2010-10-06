@@ -63,14 +63,9 @@
       peopleIdx += 1;
 
       if (!position) {  position = ""; }
-
-      String imageSource = "/social-portlet/skin/social/portlet/UIPeoplePortlet/DefaultSkin/background/BLAvatar.gif";
-      AvatarAttachment att = identity.profile.getProperty("avatar");
-      if (att != null) {
-        try {
-        imageSource = "/" + uicomponent.getRestContext()+"/jcr/" + uicomponent.getRepository() + "/" + att.getWorkspace();
-        imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-        } catch (Exception e) {}
+      String imageSource = identity.profile.getImageSource();
+      if (imageSource == null) {
+        imageSource = "/social-portlet/skin/social/portlet/UIPeoplePortlet/DefaultSkin/background/BLAvatar.gif";
       }
   %>
     <% if (peopleIdx % 2 == 0) { %>

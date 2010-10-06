@@ -128,13 +128,7 @@ public class UIProfile extends UIContainer {
    * @return imageSource link
    */
   public String getImageSource() throws Exception {
-    Profile p = getProfile(true);
-    AvatarAttachment att = (AvatarAttachment) p.getProperty(Profile.AVATAR);
-    if (att != null) {
-      return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
-              + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
+    return  getProfile(true).getAvatarImageSource();
   }
 
   public void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent) throws Exception {

@@ -274,12 +274,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    AvatarAttachment spaceAtt = (AvatarAttachment) space.getAvatarAttachment();
-    if (spaceAtt != null) {
-      return "/"+ getRestContext() + "/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
-              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
+    return space.getImageSource();
   }
 
   /**
