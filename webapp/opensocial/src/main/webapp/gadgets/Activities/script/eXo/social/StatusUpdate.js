@@ -645,7 +645,12 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
           }
             html.push('<div style="clear: both; height: 0px;"><span></span></div>');
           html.push('</div>');
-          html.push('<div class="ContentArea">' + title + '</div>');
+          if (url) {
+          	html.push('<div><a class="ColorLinkShared" href="' + url + '" target="_blank" title="' + title + '">' + title + '</a></div>');
+          	html.push('<div>' + Locale.getMsg('source') + ' : ' + url + '</div>');
+          } else {
+            html.push('<div class="ContentArea">' + title + '</div>');
+          }
           html.push('<div class="NewsDate">' + prettyTime + '</div>');
           html.push(getCommentLikeBlock());
         html.push('</div>');
