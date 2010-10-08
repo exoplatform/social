@@ -58,7 +58,7 @@
             if (!position)
               position = "";
 
-            String imageSource = identity.profile.getImageSource();
+            String imageSource = identity.profile.getAvatarImageSource();
             if (imageSource == null) {
               imageSource = "/social-portlet/skin/social/portlet/UIInvitationsPortlet/DefaultSkin/background/BLAvatar.gif";
             }

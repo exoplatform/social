@@ -94,7 +94,7 @@
         if (!position)
           position = "";
 
-        String imageSource = id.profile.getImageSource();
+        String imageSource = id.profile.getAvatarImageSource();
         if (imageSource == null) {
           imageSource = "/social-resources/skin/ShareImages/Avartar.gif"; 
         }
