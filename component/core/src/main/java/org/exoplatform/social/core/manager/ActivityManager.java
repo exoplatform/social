@@ -18,13 +18,17 @@ package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.exoplatform.services.cache.CacheService;
+import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
@@ -32,6 +36,7 @@ import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.storage.ActivityStorage;
 
 /**
@@ -42,15 +47,26 @@ import org.exoplatform.social.core.storage.ActivityStorage;
  * @see ActivityStorage
  */
 public class ActivityManager {
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(ActivityManager.class);
 
   /** The storage. */
   private ActivityStorage storage;
 
-  private static final Log LOG = ExoLogger.getLogger(ActivityManager.class);
-
+  /** the set of activity processors which will be called to process each activity before outputting */
   private SortedSet<ActivityProcessor> processors;
 
+  /** identityManager to get identity for saving and getting activities */
   private IdentityManager identityManager;
+
+  /** cache each activity by its id */
+  private ExoCache<String, Activity> activityCache;
+
+  /** cache list of activities by identityId and its segment */
+  private ExoCache<String, Map<Segment, List<Activity>>> activityListCache;
+
+  /** cache comments of an activity */
+  private ExoCache<String, List<Activity>> commentsCache;
 
   /**
    * Instantiates a new activity manager.
@@ -60,10 +76,13 @@ public class ActivityManager {
    * @link org.exoplatform.social.space.impl.SoscialDataLocation.
    * @throws Exception exception when can't instantiates tree node.
    */
-  public ActivityManager(SocialDataLocation dataLocation, IdentityManager identityManager) {
+  public ActivityManager(SocialDataLocation dataLocation, IdentityManager identityManager, CacheService cacheService) {
     this.storage = new ActivityStorage(dataLocation);
     this.processors = new TreeSet<ActivityProcessor>(processorComparator());
     this.identityManager = identityManager;
+    this.activityCache = cacheService.getCacheInstance(getClass().getName() + "activityCache");
+    this.activityListCache = cacheService.getCacheInstance(getClass().getName() + "activityListCache");
+    this.commentsCache = cacheService.getCacheInstance(getClass().getName() + "commentsCache");
   }
 
 
@@ -74,10 +93,16 @@ public class ActivityManager {
    * @param activityId the activity id
    * @return the activity
    */
+
   public Activity getActivity(String activityId) {
-    Activity activity = storage.load(activityId);
-    processActivitiy(activity);
-    return activity;
+    Activity cachedActivity = activityCache.get(activityId);
+    if (cachedActivity == null) {
+      cachedActivity = storage.load(activityId);
+      if (cachedActivity != null) {
+        activityCache.put(activityId, cachedActivity);
+      }
+    }
+    return cachedActivity;
   }
 
   /**
@@ -87,7 +112,12 @@ public class ActivityManager {
    * @throws Exception the exception
    */
   public void deleteActivity(String activityId) throws Exception {
-    storage.deleteActivity(activityId);
+    Activity activity = storage.load(activityId);
+    if (activity != null) {
+      Identity streamOwner = identityManager.getIdentity(OrganizationIdentityProvider.NAME, activity.getStreamOwner(), false);
+      storage.deleteActivity(activityId);
+      activityCache.remove(streamOwner.getId());
+    }
   }
 
   /**
@@ -99,10 +129,11 @@ public class ActivityManager {
    */
   public void deleteComment(String activityId, String commentId) {
     storage.deleteComment(activityId, commentId);
+    commentsCache.remove(activityId);
   }
 
   /**
-   * Gets the lastest activities by identity
+   * Gets the latest activities by identity
    *
    * @param identity the identity
    * @return the activities
@@ -122,11 +153,15 @@ public class ActivityManager {
    * @throws Exception the exception
    */
   public List<Activity> getActivities(Identity identity, long start, long limit) throws Exception {
-    List<Activity> activities = storage.getActivities(identity, start, limit);
-    for (Activity activity : activities) {
-      processActivitiy(activity);
+    Segment segment = new Segment(start, limit);
+    Map<Segment, List<Activity>> segments = activityListCache.get(identity.getId());
+    if (segments == null || segments.get(segment) == null) {
+      segments = new HashMap<Segment, List<Activity>>();
+      List<Activity> activityList = storage.getActivities(identity, start, limit);
+      segments.put(segment, activityList);
+      activityListCache.put(identity.getId(), segments);
     }
-    return activities;
+    return segments.get(segment);
   }
 
   /**
@@ -153,7 +188,11 @@ public class ActivityManager {
       activity.setUserId(owner.getId());
     }
 
-    return storage.save(owner, activity);
+    activity = storage.save(owner, activity);
+
+    activityListCache.remove(owner.getId());
+
+    return activity;
   }
 
   /**
@@ -198,6 +237,8 @@ public class ActivityManager {
     rawCommentIds += "," + comment.getId();
     activity.setReplyToId(rawCommentIds);
     saveActivity(activity);
+    activityCache.remove(activity.getId());
+    commentsCache.remove(activity.getId());
   }
 
   /**
@@ -216,6 +257,7 @@ public class ActivityManager {
     identityIds = (String[]) ArrayUtils.add(identityIds, identity.getId());
     activity.setLikeIdentityIds(identityIds);
     saveActivity(activity);
+    activityCache.remove(activity.getId());
   }
 
   /**
@@ -231,6 +273,7 @@ public class ActivityManager {
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());
       activity.setLikeIdentityIds(identityIds);
       saveActivity(activity);
+      activityCache.remove(activity.getId());
     } else {
       LOG.warn("activity is not liked by identity: " + identity);
     }
@@ -243,17 +286,23 @@ public class ActivityManager {
    * @return
    */
   public List<Activity> getComments(Activity activity) {
-    List<Activity> commentList = new ArrayList<Activity>();
-    String rawCommentIds = activity.getReplyToId();
-    // rawCommentIds can be: null || ,a,b,c,d
-    if (rawCommentIds != null) {
-      String[] commentIds = rawCommentIds.split(",");
-      commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
-      for (String commentId : commentIds) {
-        commentList.add(storage.load(commentId));
+    List<Activity> cachedComments = commentsCache.get(activity.getId());
+    if (cachedComments == null) {
+      cachedComments = new ArrayList<Activity>();
+      String rawCommentIds = activity.getReplyToId();
+      // rawCommentIds can be: null || ,a,b,c,d
+      if (rawCommentIds != null) {
+        String[] commentIds = rawCommentIds.split(",");
+        commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
+        for (String commentId : commentIds) {
+          cachedComments.add(storage.load(commentId));
+        }
+        if (cachedComments.size() > 0) {
+          commentsCache.put(activity.getId(), cachedComments);
+        }
       }
     }
-    return commentList;
+    return cachedComments;
   }
 
   /**
@@ -335,5 +384,66 @@ public class ActivityManager {
 
   public int getActivitiesCount(Identity owner) throws Exception {
     return storage.getActivitiesCount(owner);
+  }
+
+  /**
+   * Segment to indicate start and limit for activity list on activitiesCache
+   *
+   * @author hoatle
+   *
+   */
+  private class Segment {
+    private long start;
+    private long limit;
+
+    public Segment(long start, long limit) {
+      this.start = start;
+      this.limit = limit;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + getOuterType().hashCode();
+      result = prime * result + (int) (limit ^ (limit >>> 32));
+      result = prime * result + (int) (start ^ (start >>> 32));
+      return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (!(obj instanceof Segment)) {
+        return false;
+      }
+      Segment other = (Segment) obj;
+      if (!getOuterType().equals(other.getOuterType())) {
+        return false;
+      }
+      if (limit != other.limit) {
+        return false;
+      }
+      if (start != other.start) {
+        return false;
+      }
+      return true;
+    }
+
+    private ActivityManager getOuterType() {
+      return ActivityManager.this;
+    }
+
   }
 }

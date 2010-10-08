@@ -18,6 +18,7 @@ package org.exoplatform.social.extras.benches;
 
 import java.util.List;
 
+import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
@@ -42,9 +43,9 @@ public class TracingActivityManager extends ActivityManager {
   private static final Log LOG = ExoLogger.getExoLogger(TracingActivityManager.class);
 
   public TracingActivityManager(SocialDataLocation dataLocation,
-                                IdentityManager identityManager) throws Exception {
-    super(dataLocation, identityManager);
-    this.activityManager = new ActivityManager (dataLocation, identityManager);
+                                IdentityManager identityManager, CacheService cacheService) throws Exception {
+    super(dataLocation, identityManager, cacheService);
+    this.activityManager = new ActivityManager (dataLocation, identityManager, cacheService);
   }
 
   public List<Activity> getActivities(Identity identity) throws Exception {

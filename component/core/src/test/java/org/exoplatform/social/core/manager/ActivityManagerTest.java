@@ -19,9 +19,9 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -39,10 +39,9 @@ public class ActivityManagerTest extends AbstractCoreTest {
   @Override
   public void setUp() {
     begin();
-
-    SocialDataLocation dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
+    //SocialDataLocation dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    activityManager =  new ActivityManager(dataLocation, identityManager);
+    activityManager =  (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     tearDownActivityList = new ArrayList<Activity>();
     try {
       userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName);

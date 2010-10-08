@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.services.cache.CacheService;
+import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
@@ -41,12 +43,18 @@ import org.exoplatform.social.core.storage.IdentityStorage;
 public class IdentityManager {
   private static final Log LOG = ExoLogger.getExoLogger(IdentityManager.class);
 
+  private static final String SEPARATOR = ":";
+
   /** The identity providers. */
   private Map<String, IdentityProvider<?>> identityProviders = new HashMap<String, IdentityProvider<?>>();
 
   /** The storage. */
   private IdentityStorage identityStorage;
 
+  /**
+   * identityCache
+   */
+  private ExoCache<String, Identity> identityCache;
   /**
    * lifecycle for profile
    */
@@ -59,9 +67,10 @@ public class IdentityManager {
    * @param defaultIdentityProvider the builtin default identity provider to use when when no other  provider match
    * @throws Exception the exception
    */
-  public IdentityManager(SocialDataLocation dataLocation, IdentityProvider<?> defaultIdentityProvider) throws Exception {
+  public IdentityManager(SocialDataLocation dataLocation, IdentityProvider<?> defaultIdentityProvider, CacheService cacheService) throws Exception {
     this.identityStorage = new IdentityStorage(dataLocation);
     this.addIdentityProvider(defaultIdentityProvider);
+    this.identityCache = cacheService.getCacheInstance(getClass().getName());
   }
 
 
@@ -97,6 +106,10 @@ public class IdentityManager {
    * @return null if nothing is found, or the Identity object
    */
   public Identity getIdentity(String id, boolean loadProfile) throws Exception {
+    Identity cachedIdentity = identityCache.get(id);
+    if (cachedIdentity != null) {
+      return cachedIdentity;
+    }
     Identity identity = null;
 
     // attempts to match a global id in the form "providerId:remoteId"
@@ -119,6 +132,7 @@ public class IdentityManager {
     if(loadProfile)
       identityStorage.loadProfile(identity.getProfile());
 
+    identityCache.put(id, identity);
     return identity;
   }
 
@@ -217,6 +231,16 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) throws Exception {
+    final String cacheKey = providerId + SEPARATOR + remoteId;
+    Identity cachedIdentity = identityCache.get(cacheKey);
+
+    if (cachedIdentity != null) {
+      if (cachedIdentity.getProfile() == null) {
+        identityStorage.loadProfile(cachedIdentity.getProfile());
+      }
+      return cachedIdentity;
+    }
+
 
     IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
 
@@ -238,6 +262,7 @@ public class IdentityManager {
     } else if (loadProfile) {
       identityStorage.loadProfile(result.getProfile());
     }
+    identityCache.put(cacheKey, result);
     return result;
   }
 
@@ -250,12 +275,21 @@ public class IdentityManager {
    * @throws Exception
    */
   public Identity getIdentity(String providerId, String remoteId, boolean loadProfile) throws Exception {
+    final String cacheKey = providerId + SEPARATOR + remoteId;
+    Identity cachedIdentity = identityCache.get(cacheKey);
+    if (cachedIdentity != null) {
+      if (cachedIdentity.getProfile() != null) {
+        identityStorage.loadProfile(cachedIdentity.getProfile());
+      }
+      return cachedIdentity;
+    }
     IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
     Identity identity = identityProvider.getIdentityByRemoteId(remoteId);
     if (identity == null) return null;
     if (loadProfile) {
       identityStorage.loadProfile(identity.getProfile());
     }
+    identityCache.put(cacheKey, identity);
     return identity;
   }
 
@@ -284,26 +318,31 @@ public class IdentityManager {
   public void updateAvatar(Profile p) throws Exception {
     identityStorage.saveProfile(p);
     profileLifeCycle.avatarUpdated(p.getIdentity().getRemoteId(), p);
+    identityCache.remove(p.getIdentity().getProviderId() + SEPARATOR + p.getIdentity().getRemoteId());
   }
 
   public void updateBasicInfo(Profile p) throws Exception {
     identityStorage.saveProfile(p);
     profileLifeCycle.basicUpdated(p.getIdentity().getRemoteId(), p);
+    identityCache.remove(p.getIdentity().getProviderId() + SEPARATOR + p.getIdentity().getRemoteId());
   }
 
   public void updateContactSection(Profile p) throws Exception {
     identityStorage.saveProfile(p);
     profileLifeCycle.contactUpdated(p.getIdentity().getRemoteId(), p);
+    identityCache.remove(p.getIdentity().getProviderId() + SEPARATOR + p.getIdentity().getRemoteId());
   }
 
   public void updateExperienceSection(Profile p) throws Exception {
     identityStorage.saveProfile(p);
     profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), p);
+    identityCache.remove(p.getIdentity().getProviderId() + SEPARATOR + p.getIdentity().getRemoteId());
   }
 
   public void updateHeaderSection(Profile p) throws Exception {
     identityStorage.saveProfile(p);
     profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), p);
+    identityCache.remove(p.getIdentity().getProviderId() + SEPARATOR + p.getIdentity().getRemoteId());
   }
 
   /**
@@ -379,6 +418,11 @@ public class IdentityManager {
     registerProfileListener(plugin);
   }
 
+  /**
+   * Gets IdentityStorage
+   *
+   * @return
+   */
   public IdentityStorage getIdentityStorage() {
     return identityStorage;
   }
