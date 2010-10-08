@@ -82,7 +82,28 @@ Example:
 
 http://localhost:8080/rest/social/spaces/s08d397dg6/mySpaces/show.xml
 
+h2. Widget REST service
+|| Name || Service URL || Description ||
+| *WidgetRestService* | {noformat}{restContextName}/spaces/{portalName}{noformat}| To provide rest services for creating spaces or getting space's information. |
+
+* *API*:
+|| Name || Service URL Endpoint || Description ||
+| *goToSpace* | {noformat}{restContextName}/spaces/{portalName}/go_to_space{noformat}| To create (if not existing) or access a space. Two query parameters needed: {{spaceName}} and {{description}} |
+| *spaceInfo* | {noformat}{restContextName}/spaces/{portalName}/space_info{noformat}| To return the HTML page for displaying the information of space. Two query parameters needed: {{spaceName}} and {{description}} |
+
+|| Parameter || Expected values ||
+| {{portalName}} | {{portal/socialdemo}} |
+
+Example:
+
+http://localhost:8080/rest-socialdemo/spaces/socialdemo/go_to_space?name=Social&description=Social
+
+http://localhost:8080/rest-socialdemo/spaces/socialdemo/space_info?name=Social&description=Social
+
 h1. Location
 * *Maven groupId*: org.exoplatform.social
 * *ArtifactId*: exo.social.component.service
+
+
+
 

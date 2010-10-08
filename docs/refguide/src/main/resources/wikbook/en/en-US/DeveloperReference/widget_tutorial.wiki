@@ -1,0 +1,57 @@
+The eXo Social widget enables developers to add capabilities of eXo Social to external applications. Since the widget is hosted on your eXo Social server, it can display personalized information. An activity stream of the most recent user actions will display to the group's members.
+
+There are two options of the eXo Social widget that provide different levels of integration and information. 
+
+The basic version of this widget is an iFrame. The more advanced version is a button you can insert in a page; this will display a small pop-up with information about the space.
+
+h1. Basic version
+
+To insert the basic version, you need to have an iFrame to insert on your site.
+
+{code:html}
+<iframe  scrolling="no" height="180" frameborder="no" width="220" src="http://URL_OF_YOUR_EXO_INSTALLATION.COM/rest/private/spaces/portal/space_info?spaceName=NAME_OF_YOUR_SPACE&description=DESCRIPTION_OF_THE_SPACE"></iframe>
+{code}
+
+To install this version in your application, replace all the uppercase text below:
+* URL_OF_YOUR_EXO_INSTALLATION.COM - this is the URL of your eXo Social installation. If you are testing on your local computer, the URL may be _localhost:8080_
+* NAME_OF_YOUR_SPACE - this is the title of your space in eXo Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and "_", ".", "-" or ". "
+* DESCRIPTION_OF_THE_SPACE - this will be displayed in the list of spaces.
+
+h1. Advanced version
+
+To install an advanced version of the widget, you need to insert a code snippet in your page. This includes some HTMLs plus some JavaScripts. The necessary CSS will be added dynamically.
+
+Next, insert the following code at the position you want the button to be displayed:
+
+{code:html}
+<div class="exoSpacesContainer"><a href="javascript:void(0);" id="exoSpacesLink" class="exoSpacesLink" target="_blank">Space</a></div>
+<script src="/socialWidgetResources/javascript/space.js"></script>
+<script>spaces.createPopup("exoSpacesLink", "MyAppName - my social object", "my cool description");</script>
+{code}
+
+The important function here is:
+{code}
+spaces.createPopup(link, spaceName, description)
+{code}
+* link: link is the ID or the HTMLElement where the pop-up will be placed. If you copy and paste the code snippet provided above, you donot need to change this value.
+* spaceName: This is the name of space. It is also used to identify the space. We recommend you use the following format: "MyAppName - my social object"
+* description: This is the description of your space that will be displayed within eXo Spaces. It is used when a new space is created.
+
+h1. Configure
+
+* serverURL (Default: _"http://127.0.0.1:8080"_): The address of your eXo installation. To change it, use _spaces.setServerURL(...);
+* spaceServicePath (Default: _"/rest/private/spaces/"_): The path to the spaces service. It is rare you have to change it; but if needed, use _spaces.setSpaceServicePath(...);
+* portalName (Default: _"socialdemo"_): The name of portal you are using. To change it, use _spaces.setPortalName(...);
+
+If you want to change any part of this configuration, the best way is to change before creating the pop-up. For example:
+
+{code:html}
+<div class="exoSpacesContainer"><a href="#" id="exoSpacesLink" class="exoSpacesLink" target="_blank">Space</a></div>
+<script src="/socialWidgetResources/javascript/space.js"></script>
+<script>
+  spaces.setServerURL("http://192.168.2.100:8080");
+  spaces.createPopup("exoSpacesLink", "My cool new space", "my cool description");
+</script>
+{code}
+
+You can see an example of integration at: [http://localhost:8080/socialWidgetResources/test.html]

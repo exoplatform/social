@@ -27,6 +27,8 @@ h3. Spaces
 {include:document="DeveloperReference/Developer_Documentation_Spaces.wiki"}
 h3. Open Social
 {include:document="DeveloperReference/Developer_Documentation_OpenSocial.wiki"}
+h3. Space widget tutorial
+{include:document="DeveloperReference/widget_tutorial.wiki"}
 h2. Public Javascript APIs
 {include:document="DeveloperReference/Javascript_APIs.wiki"}
 
