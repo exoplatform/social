@@ -73,7 +73,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
   public static final String DESCRIPTION_PARAM = "description";
   public static final String COMMENT_PARAM = "comment";
 
-  private static final String MSG_ERROR_ATTACH_LINK = "UIComposerLinkExtension.msg.error.Attach_Link";
+  //private static final String MSG_ERROR_ATTACH_LINK = "UIComposerLinkExtension.msg.error.Attach_Link";
   private static final String HTTP = "http://";
   private static final String HTTPS = "https://";
   private LinkShare linkShare_;
@@ -150,7 +150,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
         uiComposerLinkExtension.setLink(url.trim());
       } catch (Exception e) {
         uiComposerLinkExtension.setReadyForPostingActivity(false);
-        // Comment this below line code for temporary fixing issue SOC-1091. Check later. 
+        // Comment this below line code for temporary fixing issue SOC-1091. Check later.
 //        uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.WARNING));
         return;
       }
