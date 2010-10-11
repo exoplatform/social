@@ -366,6 +366,11 @@
     <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-log4j12</artifactId><version>1.5.6</version><type>jar</type></dependency>
     <dependency><groupId>org.gatein.wsrp</groupId><artifactId>wsrp-producer</artifactId><version>${org.gatein.wsrp.version}</version><type>war</type></dependency>
 
+<dependency><groupId>org.exoplatform.social</groupId><artifactId>exo.social.demo.rest</artifactId><version>${project.version}</version><type>war</type></dependency><!-- 1.1.1-SNAPSHOT-->
+<dependency><groupId>org.exoplatform.social</groupId><artifactId>exo.social.demo.config</artifactId><version>${project.version}</version><type>jar</type></dependency><!-- 1.1.1-SNAPSHOT-->
+<dependency><groupId>org.exoplatform.social</groupId><artifactId>exo.social.demo.war</artifactId><version>${project.version}</version><type>war</type></dependency><!-- 1.1.1-SNAPSHOT-->
+<dependency><groupId>org.exoplatform.social</groupId><artifactId>exo.social.webapp.social-extension-portal</artifactId><version>${project.version}</version><type>war</type></dependency><!-- 1.1.1-SNAPSHOT-->
+<dependency><groupId>org.exoplatform.social</groupId><artifactId>exo.social.extension.config</artifactId><version>${project.version}</version><type>jar</type></dependency><!-- 1.1.1-SNAPSHOT-->
 
   </dependencies>
 
