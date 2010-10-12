@@ -99,6 +99,7 @@ public class ActivityManager {
     if (cachedActivity == null) {
       cachedActivity = storage.load(activityId);
       if (cachedActivity != null) {
+        processActivitiy(cachedActivity);
         activityCache.put(activityId, cachedActivity);
       }
     }
@@ -133,11 +134,12 @@ public class ActivityManager {
   }
 
   /**
-   * Gets the latest activities by identity
+   * Gets the latest activities by identity with the default limit of 20 latest activities.
    *
    * @param identity the identity
    * @return the activities
    * @throws Exception the exception
+   * @see #getActivities(Identity, long, long)
    */
   public List<Activity> getActivities(Identity identity) throws Exception {
     return storage.getActivities(identity, 0, 20);
@@ -158,6 +160,9 @@ public class ActivityManager {
     if (segments == null || segments.get(segment) == null) {
       segments = new HashMap<Segment, List<Activity>>();
       List<Activity> activityList = storage.getActivities(identity, start, limit);
+      for (Activity activity : activityList) {
+        processActivitiy(activity);
+      }
       segments.put(segment, activityList);
       activityListCache.put(identity.getId(), segments);
     }
