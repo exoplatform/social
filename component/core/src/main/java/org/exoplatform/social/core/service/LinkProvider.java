@@ -44,7 +44,7 @@ public class LinkProvider {
   }
 
   public String getProfileUri(String username, String portalOwner) {
-    String url = username;
+    String url = null;
     try {
       Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
       if (identity == null) {
@@ -71,12 +71,13 @@ public class LinkProvider {
   }
 
   public String getProfileLink(String username, String portalOwner) {
-    String link = username;
+    String link;
 
     try {
       Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
       if (identity == null) {
-        throw new RuntimeException("could not find a user identity for " + username);
+        LOG.warn("could not find a user identity for " + username);
+        return null;
       }
 
       String container = PortalContainer.getCurrentPortalContainerName();
@@ -90,6 +91,7 @@ public class LinkProvider {
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
     } catch (Exception e) {
       LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
+      return null;
     }
     return link;
   }
