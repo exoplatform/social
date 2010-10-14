@@ -368,11 +368,16 @@ public class BaseUIActivity extends UIForm {
   public String getUserProfileUri(String userIdentityId) throws Exception {
     Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
     if (userIdentity == null) {
-      throw new Exception("User " +userIdentityId +" is not exist");
+      throw new Exception("User " + userIdentityId +" is not exist");
     }
 
     LinkProvider linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
-    return linkProvider.getProfileUri(userIdentity.getRemoteId(), null);
+    String uri = linkProvider.getProfileUri(userIdentity.getRemoteId(), null);
+    if (uri == null) {
+      uri = "#";
+    }
+
+    return uri;
   }
 
   /**
