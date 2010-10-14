@@ -18,7 +18,29 @@
  @import url(portal/webui/component/UIToolbarContainer/Stylesheet.css);
 
 #UIPortalApplication .UIWorkingWorkspace {
-  background-color: #E4E4E4;
+  background-color: #eee;
   margin:auto;
   width:100%;
+}
+
+
+@font-face {
+	font-family: Hattori;
+	src: url("/social-resources/skin/DefaultSkin/fonts/HATTORHL.eot");
+}
+
+@font-face {
+	font-family: Hattori;
+	src: url("/social-resources/skin/DefaultSkin/fonts/HATTORHL.ttf");
+}
+
+@font-face {
+	font-family: Lucida;
+	src: url("/social-resources/skin/DefaultSkin/fonts/Lucida_Sans_Regular.eot");
+}
+
+@font-face {
+	font-family: Lucida;
+	src: url("/social-resources/skin/DefaultSkin/fonts/Lucida_Sans_Regular.ttf");
+	font-weight:normal;
 }
