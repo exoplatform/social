@@ -58,31 +58,30 @@
   def labelWiki = _ctx.appRes("${uicomponentId}.label.Wiki");
   def labelForum = _ctx.appRes("${uicomponentId}.label.Forum");
 %>
-<div class="UIBannerHomePage">
-  <div class="BgBannerHomepage">
-    <div class="ProductName">
-      <h2 class="TxtLarge">eXo Social</h2>
-      <h3 class="TxtSmall">$labelAnExtendedServiceOfeXoPlatform</h3>
-    </div>
-  </div>
-</div>
 
-<div class="ClearFix BoxButton">
-	<div  class="Container FL">
-		<div class="BoxDocument">
-			<h4>Community Members: </h4>
-			<a href="http://docs.exoplatform.org" class="ArrowBlue">Download eXo Social Documentation</a>
-		</div>
-	</div>
-	<div  class="Container FR">
-		<div class="BoxTry">
-			<h4>Enterprise or Production Use? </h4>
-			<a href="http://platform.demo.exoplatform.org/" class="ArrowBlue">Try eXo Platform 3</a>
-		</div>
-	</div>
-</div>
 
 <div class="UISocialHomepage ClearFix" id="$uicomponent.id">
+	<div class="UIBannerHomePage">
+		<div class="ProductName">
+		  <h2 class="TxtLarge">eXo Social</h2>
+		  <h3 class="TxtSmall">$labelAnExtendedServiceOfeXoPlatform</h3>
+		</div>
+	</div>
+
+	<div class="ClearFix BoxButton">
+		<div  class="Container FL">
+			<div class="BoxDocument">
+				<h4>Community Members: </h4>
+				<a href="http://docs.exoplatform.org" class="ArrowBlue">Download eXo Social Documentation</a>
+			</div>
+		</div>
+		<div  class="Container FR">
+			<div class="BoxTry">
+				<h4>Enterprise or Production Use? </h4>
+				<a href="http://platform.demo.exoplatform.org/" class="ArrowBlue">Try eXo Platform 3</a>
+			</div>
+		</div>
+	</div>
 	<div class="RightSocialHomepage DecorationContainer">
 		<div class="DecorationTL">
 			<div class="DecorationTR">
@@ -94,37 +93,36 @@
 		<div class="DecorationML">
 			<div class="DecorationMR">
 				<div class="DecorationMC">							
-						<div class="ClearFix">
-							<div class="BlockWebsite FL">
-								<a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon"></a>
-								<a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon">Contact Us</a>
-							</div>
-							<div class="BlockResource FL">
-								<a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon"></a>
-								<a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon">Resource Center</a>
-							</div>
+					<div class="ClearFix">
+						<div class="BlockWebsite FL">
+							<a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon"></a>
+							<a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon">Contact Us</a>
 						</div>
-						<div class="ClearFix">
-							<div class="BlockWebsite FL">
-								<a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon"> </a>										
-								<a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon">Support</a>
-							</div>
-							<div class="BlockResource FL">
-								<a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon"></a>											
-								<a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon">Training</a>
-							</div>
+						<div class="BlockResource FL">
+							<a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon"></a>
+							<a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon">Resource Center</a>
 						</div>
-						<div class="ClearFix">
-							<div class="BlockWebsite FL">
-								<a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon"> </a>
-								<a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon">Exo Blog</a>
-							</div>
-							<div class="BlockResource FL">
-								<a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon"> </a>
-								<a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon">Exo Website</a>
-							</div>
+					</div>
+					<div class="ClearFix">
+						<div class="BlockWebsite FL">
+							<a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon"> </a>										
+							<a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon">Support</a>
 						</div>
-					
+						<div class="BlockResource FL">
+							<a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon"></a>											
+							<a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon">Training</a>
+						</div>
+					</div>
+					<div class="ClearFix">
+						<div class="BlockWebsite FL">
+							<a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon"> </a>
+							<a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon">Exo Blog</a>
+						</div>
+						<div class="BlockResource FL">
+							<a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon"> </a>
+							<a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon">Exo Website</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

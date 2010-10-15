@@ -98,27 +98,27 @@ ul {
 	!display: block;
 }
 
-.UIWorkingWorkspace .UIPageBody .BgBannerHomepage{
+.UISocialHomepage .UIBannerHomePage{
     background: #eee url('DefaultSkin/background/BannerHomepage.jpg') no-repeat left top;
     height: 299px;
     margin: auto;
     width: 984px;
 }
 
-.UIWorkingWorkspace .BgBannerHomepage .ProductName {
+.UISocialHomepage .UIBannerHomePage .ProductName {
 	padding:66px 45px;
 	text-align:right;
 	margin-top: 5px;
 }
 
-.UIWorkingWorkspace .BgBannerHomepage .ProductName h2 {
+.UISocialHomepage .UIBannerHomePage .ProductName h2 {
 	font-size: 52px;
 	color: #FFF;
 	font-family: Hattori,Lucida,Tahoma,Verdana,Arial,Helvetica,sans-serif;
 	font-weight: normal;
 }
 
-.UIWorkingWorkspace .BgBannerHomepage .ProductName h3 {
+.UISocialHomepage .UIBannerHomePage .ProductName h3 {
 	font-size:35px;
 	color: #FFF;
 	font-family: Hattori,Lucida,Tahoma,Verdana,Arial,Helvetica,sans-serif;
