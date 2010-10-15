@@ -64,7 +64,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     }
   }
 
-  public void testSaveIdentity(){
+  public void testSaveIdentity() throws Exception {
     String providerId = "organization";
     String remoteId = "zun";
     Identity identity = new Identity(providerId, remoteId);
@@ -99,7 +99,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(identity.getId(), identitybyproviderIdandremoteId.getId());
   }
 
-  public void testGetAllIdentities(){
+  public void testGetAllIdentities() throws Exception {
     String providerId = "organization";
     String remoteId = "zun";
 
