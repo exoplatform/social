@@ -25,10 +25,10 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
-import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -78,6 +78,11 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                    null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       activityManager.saveActivity(spaceIdentity, activity);
+      
+      UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
+      activitiesContainer.addActivity(activity);
+      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+      requestContext.addUIComponentToUpdateByAjax(uiComposer);
     } else if(postContext == PostContext.USER){
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       ownerName = uiUserActivitiesDisplay.getOwnerName();
@@ -89,7 +94,18 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                        null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       activityManager.saveActivity(ownerIdentity, activity);
-      uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
+      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
+        UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
+        if (activitiesContainer.getChildren().size() == 1) {
+          uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+          requestContext.addUIComponentToUpdateByAjax(uiComposer);
+        } else {
+          activitiesContainer.addActivity(activity);
+          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+        }
+      } else{
+        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+      }
     }
   }
 

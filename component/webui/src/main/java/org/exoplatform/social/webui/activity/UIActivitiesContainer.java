@@ -53,7 +53,7 @@ public class UIActivitiesContainer extends UIContainer {
    */
   public UIActivitiesContainer() {
     try {
-      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow");
+      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow" + this.hashCode());
       popupWindow.setShow(false);
     } catch (Exception e) {
       LOG.error(e);
@@ -112,5 +112,13 @@ public class UIActivitiesContainer extends UIContainer {
     for (Activity activity : activityList) {
       factory.addChild(activity, this);
     }
+  }
+
+  public void addActivity(Activity activity) throws Exception {
+    ArrayList<Activity> list = new ArrayList<Activity>();
+    list.add(activity);
+    list.addAll(activityList);
+    activityList = list;
+    init();
   }
 }

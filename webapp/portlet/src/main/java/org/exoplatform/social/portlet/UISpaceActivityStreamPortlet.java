@@ -48,7 +48,7 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
    * constructor
    */
   public UISpaceActivityStreamPortlet() throws Exception {
-    hiddenContainer = addChild(PopupContainer.class, null, "HiddenContainer");
+    hiddenContainer = addChild(PopupContainer.class, null, "HiddenContainer_" + hashCode());
     UIComposer uiComposer = addChild(UIComposer.class, null, null);
     uiComposer.setPostContext(UIComposer.PostContext.SPACE);
     uiComposer.setOptionContainer(hiddenContainer);

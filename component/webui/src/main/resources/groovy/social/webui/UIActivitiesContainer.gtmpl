@@ -26,7 +26,6 @@
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (uicomponent.getChildren().size()> 1) {
      uicomponent.renderChildren();
-   } else { %>
-    <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
-<% } %>
+   }
+%>
 </div>

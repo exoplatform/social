@@ -34,11 +34,12 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
-import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
+import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -208,7 +209,18 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
                                      null);
     activity.setType(UIDocActivity.ACTIVITY_TYPE);
     activityManager.saveActivity(ownerIdentity, activity);
-    uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
+    if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
+      UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
+      if (activitiesContainer.getChildren().size() == 1) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+      } else {
+        activitiesContainer.addActivity(activity);
+        requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+        requestContext.addUIComponentToUpdateByAjax(uiComposer);
+      }
+    } else{
+      uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+    }
   }
 
   private void postActivityToSpace(UIComponent source, WebuiRequestContext requestContext, String jsonData) throws Exception {
@@ -230,6 +242,12 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
                                  null);
     activity.setType(UIDocActivity.ACTIVITY_TYPE);
     activityManager.saveActivity(spaceIdentity, activity);
+
+    UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
+    UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
+    activitiesContainer.addActivity(activity);
+    requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+    requestContext.addUIComponentToUpdateByAjax(uiComposer);
   }
 
   public void doSelect(String selectField, Object value) throws Exception {

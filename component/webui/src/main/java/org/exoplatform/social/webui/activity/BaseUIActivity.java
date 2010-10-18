@@ -643,6 +643,10 @@ public class BaseUIActivity extends UIForm {
       BaseUIActivity uiActivity = event.getSource();
       ActivityManager activityManager = uiActivity.getActivityManager();
       activityManager.deleteActivity(uiActivity.getActivity().getId());
+      UIActivitiesContainer activitiesContainer = uiActivity.getParent();
+      activitiesContainer.removeChildById(uiActivity.getId());
+
+      event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
     }
   }
 
