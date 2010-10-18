@@ -58,168 +58,144 @@
   def labelWiki = _ctx.appRes("${uicomponentId}.label.Wiki");
   def labelForum = _ctx.appRes("${uicomponentId}.label.Forum");
 %>
-<div class="UIBannerHomePage">
-  <div class="BgBannerHomepage">
-    <div class="Title">
-      <p class="TxtLarge">eXo Social</p>
-      <p class="TxtSmall">$labelAnExtendedServiceOfeXoPlatform</p>
-    </div>
-    <div class="ClearBoth"><span></span></div>
 
-  <% if (prContext.getRemoteUser() == null) { %>
-    <div class="Button">
-      <div class="BntLogin">
-        <div class="BgButtonLoginL">
-          <div class="BgButtonR">
-            <div class="BgButtonC">
-              <a href="#" onclick="$signInAction"><span class="TxtBold">$labelLogin</span><span class="TxtSmall"> | $labelStartASession</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="BntRegister">
-        <div class="BgButtonRegisterL">
-          <div class="BgButtonR">
-            <div class="BgButtonC">
-              <a href="$registerURI"><span class="TxtBold">$labelRegister</span><span class="TxtSmall"> | $labelCreateAnAccount</span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  <%}%>
-    <div class="ClearBoth"><span></span></div>
-  </div>
-</div>
-<div class="UISocialHomepage" id="$uicomponent.id">
-  <div class="LeftSocialHomepage">
-    <div class="BoxLeft">
-      <div class="BgTL">
-        <div class="BgTR">
-          <div class="BgTC">
-              <div class="TitBoxLeftL">$labelOpenSocialStandard</div>
-              <div class="ClearBoth"><span></span></div>
-          </div>
-        </div>
-      </div>
-      <div class="ContentBoxLeft">
-        <a class="OpenSocialIcon IconBoxleft"><span></span></a>
-        <ul>
-          <li>$labelOpenSocialVersionSupport</li>
-          <li>$labelOAuthSupportForRemoteAccess</li>
-          <li>$labelOpenSocialRestServiceSupport</li>
-        </ul>
-        <div class="ClearBoth"><span></span></div>
-      </div>
-      <div class="BgBL">
-        <div class="BgBR">
-          <div class="BgBC"><span></span></div>
-        </div>
-      </div>
-    </div>
-    <div class="BoxLeft SpaceBoxLeft">
-      <div class="BgTL">
-        <div class="BgTR">
-          <div class="BgTC">
-              <div class="TitBoxLeftL">$labelActivityStream</div>
-              <div class="ClearBoth"><span></span></div>
-          </div>
-        </div>
-      </div>
-      <div class="ContentBoxLeft">
-        <a class="ActivityIcon IconBoxleft"><span></span></a>
-        <ul>
-          <li>$labelUpdateAndShareUserStatus</li>
-          <li>$labelGetUserNetworkActivityStream</li>
-          <li>$labelCustomSharePlugin</li>
-        </ul>
-        <div class="ClearBoth"><span></span></div>
-      </div>
-      <div class="BgBL">
-        <div class="BgBR">
-          <div class="BgBC"><span></span></div>
-        </div>
-      </div>
-    </div>
-    <div class="BoxLeft">
-      <div class="BgTL">
-        <div class="BgTR">
-          <div class="BgTC">
-              <div class="TitBoxLeftL">$labelPeopleDirectory</div>
-              <div class="ClearBoth"><span></span></div>
-          </div>
-        </div>
-      </div>
-      <div class="ContentBoxLeft">
-        <a class="PeopleIcon IconBoxleft"><span></span></a>
-        <ul>
-          <li>$labelTurnYourDirectoryIntoASocialNetwork</li>
-          <li>$labelExtensibleProfileToOtherNetworks</li>
-          <li>$labelSearchUsersBySkillAndExperience</li>
-        </ul>
-        <div class="ClearBoth"><span></span></div>
-      </div>
-      <div class="BgBL">
-        <div class="BgBR">
-          <div class="BgBC"><span></span></div>
-        </div>
-      </div>
-    </div>
-    <div class="BoxLeft SpaceBoxLeft">
-      <div class="BgTL">
-        <div class="BgTR">
-          <div class="BgTC">
-              <div class="TitBoxLeftL">$labelSpace</div>
-              <div class="ClearBoth"><span></span></div>
-          </div>
-        </div>
-      </div>
-      <div class="ContentBoxLeft">
-        <a class="SpaceIcon IconBoxleft"><span></span></a>
-        <ul>
-          <li>$labelCollaborativeWorkspacesForCommunity</li>
-          <li>$labelGroupActivityStream</li>
-          <li>$labelAddCustomApplications</li>
-        </ul>
-        <div class="ClearBoth"><span></span></div>
-      </div>
-      <div class="BgBL">
-        <div class="BgBR">
-          <div class="BgBC"><span></span></div>
-        </div>
-      </div>
-    </div>
-    <div class="ClearBoth"><span></span></div>
-  </div>
-  <div class="RightSocialHomepage">
-    <div class="BgRightTL">
-      <div class="BgRightTR">
-        <div class="BgRightTC"><span></span></div>
-      </div>
-    </div>
-    <div class="BgRightM">
-      <div class="Download">
-        <a class="IconDownload" href="https://sourceforge.net/projects/exo-social/"></a>
-        <div class="TxtDownload">
-          <p class="TxtPing"><a href="https://sourceforge.net/projects/exo-social/">$labelDownload</a></p>
-          <p>$labelCommunityVersion</p>
-        </div>
-        <div class="ClearBoth"><span></span></div>
-      </div>
-      <div class="FeedBack">
-        <p>$labelDoYouLikeIt</p>
-        <p class="TxtPing"><a href="http://spreadsheets.google.com/viewform?formkey=dERsbWp1NWl3eGs0ekZEV3NpWi1Sa0E6MA">$labelSendFeedback</a></p>
-      </div>
-      <div class="FeedBack">
-        <p>$labelJoinTheCommunity:</p>
-        <p class="TxtPing"><a href="http://wiki.exoplatform.org/xwiki/bin/view/Social/">$labelWiki</a> | <a href="http://forum.exoplatform.org/portal/public/classic/forum/forum/forum5aacbc9a0afb96bf0ba5d1a4aaa9947b">$labelForum</a></a></p>
-      </div>
-    </div>
-    <div class="BgRightBL">
-      <div class="BgRightBR">
-        <div class="BgRightBC"><span></span></div>
-      </div>
-    </div>
-  </div>
-  <div class="ClearBoth"><span></span></div>
+
+<div class="UISocialHomepage ClearFix" id="$uicomponent.id">
+	<div class="UIBannerHomePage">
+		<div class="ProductName">
+		  <h2 class="TxtLarge">eXo Social</h2>
+		  <h3 class="TxtSmall">$labelAnExtendedServiceOfeXoPlatform</h3>
+		</div>
+	</div>
+
+	<div class="ClearFix BoxButton">
+		<div  class="Container FL">
+			<div class="BoxDocument">
+				<h4>Community Members: </h4>
+				<a href="http://docs.exoplatform.org" class="ArrowBlue">Download eXo Social Documentation</a>
+			</div>
+		</div>
+		<div  class="Container FR">
+			<div class="BoxTry">
+				<h4>Enterprise or Production Use? </h4>
+				<a href="http://platform.demo.exoplatform.org/" class="ArrowBlue">Try eXo Platform 3</a>
+			</div>
+		</div>
+	</div>
+	<div class="RightSocialHomepage DecorationContainer">
+		<div class="DecorationTL">
+			<div class="DecorationTR">
+				<div class="DecorationTC">
+					<span></span>
+				</div>
+			</div>
+		</div>	
+		<div class="DecorationML">
+			<div class="DecorationMR">
+				<div class="DecorationMC">							
+					<div class="ClearFix">
+						<div class="BlockWebsite FL">
+							<a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon"></a>
+							<a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon">Contact Us</a>
+						</div>
+						<div class="BlockResource FL">
+							<a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon"></a>
+							<a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon">Resource Center</a>
+						</div>
+					</div>
+					<div class="ClearFix">
+						<div class="BlockWebsite FL">
+							<a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon"> </a>										
+							<a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon">Support</a>
+						</div>
+						<div class="BlockResource FL">
+							<a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon"></a>											
+							<a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon">Training</a>
+						</div>
+					</div>
+					<div class="ClearFix">
+						<div class="BlockWebsite FL">
+							<a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon"> </a>
+							<a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon">Exo Blog</a>
+						</div>
+						<div class="BlockResource FL">
+							<a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon"> </a>
+							<a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon">Exo Website</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="DecorationBL">
+			<div class="DecorationBR">
+				<div class="DecorationBC"><span></span></div>
+			</div>
+		</div>
+	</div>
+	<div class="LeftSocialHomepage DecorationContainer">
+		<div class="DecorationTL">
+			<div class="DecorationTR">
+				<div class="DecorationTC">
+					<span></span>
+				</div>
+			</div>
+		</div>						
+		<div class="DecorationML">
+			<div class="DecorationMR">
+				<div class="DecorationMC">
+					<div class="RowContent BorderBottom"><p class="Introduction">New to eXo <span class="TextBold">Social?</span></p>
+							<p class="Introduction">Watch the <a href="http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/eXo-Social-GS" target="_blank" >Getting Started Guide</a>, or start exploring some of the key features:</p>
+						
+					</div>
+					<div class="RowContent ClearFix">
+						<div class="FL ColsPeople">
+							<h5 class="ProductTitle">People & Connections</h5>
+							<ul>
+								<li>Profiles: users can add work experience, job description and other details</li>
+								<li>LDAP integration: automatically populate a network from existing user accounts</li>
+								<li>Browse user profiles or search for connections based on selected critieria</li>
+								<li>Send, accept, reject or cancel connection requests</li>
+							</ul>
+						</div>
+						<div class="FL ColsCommunity">
+							<h5 class="ProductTitle">Community Management</h5>
+							<ul>
+								<li>Automatic creation of new spaces for groups</li>
+								<li>Control access and set registration requirements for joining a space</li>
+								<li>Add or remove members or applications from a space</li>
+								<li>Browse or search for existing spaces</li>
+							</ul>
+						</div>								
+					</div>
+					<div class="RowContent ClearFix">									
+						<div class="FL ColsActivity">
+							<h5 class="ProductTitle">Activity Streams</h5>
+							<ul>
+								<li>Publish and view user activities and status updates</li>
+								<li>Publish and view activities of applications</li>
+								<li>Share content and links within a stream</li>
+								<li>Comment and vote (like/don't like) on activities in real-time</li>
+							</ul>
+						</div>								
+						<div class="FL ColsGadgets">
+							<h5 class="ProductTitle">Built-in Social Gadgets</h5>
+							<ul>
+								<li>Status update: publish and view activity streams</li>
+								<li>RSS fetcher: fetch an RSS feed to share posts in activity streams</li>
+								<li>Connection viewer: view a list of a user's connections</li>
+								<li>Build custom gadgets using OpenSocial APIs</li>
+							</ul>
+						</div>
+					</div>								
+					<div class="RowContent ClearFix"><p class="Introduction Information">Start using eXo Social, <a href=""> login as Root</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="DecorationBL">
+			<div class="DecorationBR">
+				<div class="DecorationBC"><span></span></div>
+			</div>
+		</div>					
+	</div>					
 </div>

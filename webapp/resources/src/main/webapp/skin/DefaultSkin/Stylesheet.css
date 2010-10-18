@@ -16,3 +16,23 @@
  */
 
 
+@font-face {
+	font-family: Hattori;
+	src: url("/social-resources/skin/DefaultSkin/fonts/HATTORHL.eot");
+}
+
+@font-face {
+	font-family: Hattori;
+	src: url("/social-resources/skin/DefaultSkin/fonts/HATTORHL.TTF");
+}
+
+@font-face {
+	font-family: Lucida;
+	src: url("/social-resources/skin/DefaultSkin/fonts/Lucida_Sans_Regular.eot");
+}
+
+@font-face {
+	font-family: Lucida;
+	src: url("/social-resources/skin/DefaultSkin/fonts/Lucida_Sans_Regular.ttf");
+	font-weight:normal;
+}
