@@ -156,6 +156,7 @@ public class ActivityManager {
       storage.deleteActivity(activityId);
       try {
         activityCache.remove(streamOwner.getId());
+        activityListCache.remove(streamOwner.getId());
       } catch(Exception e) {
         //Do nothing; just ignore
       }
