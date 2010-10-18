@@ -8,6 +8,11 @@
   /* float: left; */ /* orientation=rt */
 /*}*/
 
+*,div, table, tr, td, img, form{
+	font-family:lucida,Tahoma,Verdana,Arial,Helvetica,sans-serif;
+	font-size:12px;
+}
+
 .UIToolbarContainer .LAYOUT-CONTAINER {
 	overflow: hidden;
 }
@@ -32,7 +37,7 @@
 }
 
 .UIWorkingWorkspace .UIToolbarContainer .NormalContainerBlock .ToolbarContainer {
-	background: #363b52;
+	background: #343a50;
 	height: 30px;
 	border-left: none;
 	border-right: none;

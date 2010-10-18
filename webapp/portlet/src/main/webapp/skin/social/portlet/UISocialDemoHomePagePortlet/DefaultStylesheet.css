@@ -301,7 +301,7 @@ ul {
 .UISocialHomepage  .LeftSocialHomepage .DecorationMC ul li {
 	background:url('DefaultSkin/background/IconList.gif') no-repeat left 7px; /* orientation=lt */
 	background:url('DefaultSkin/background/IconList-rt.gif') no-repeat right 7px; /* orientation=rt */
-	color:#626262;
+	color:#565759;
 	padding-left: 13px; /* orientation=lt */
 	padding-right: 13px; /* orientation=rt */
 	line-height: 18px;
