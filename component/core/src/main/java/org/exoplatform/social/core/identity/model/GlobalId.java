@@ -16,16 +16,26 @@
  */
 package org.exoplatform.social.core.identity.model;
 
+import java.io.Serializable;
+
+import org.exoplatform.services.cache.ExoCache;
+
 /**
  * A GlobalId according to the definition of OpenSocial.
+ * This class implements {@link Serializable} so that it can be used as key cache for {@link ExoCache}
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
  */
-public class GlobalId {
+public class GlobalId implements Serializable {
+  /**
+   * serialVersionUID
+   */
+  private static final long serialVersionUID = 1L;
+
   /**
    * the ':' separator character
    */
-  private static final String SEPARATOR = ":";
+  public static final String SEPARATOR = ":";
 
   /**
    * Domain-Name part
@@ -84,4 +94,50 @@ public class GlobalId {
     }
     return new GlobalId(providerId + SEPARATOR + remoteId);
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((domain == null) ? 0 : domain.hashCode());
+    result = prime * result + ((localId == null) ? 0 : localId.hashCode());
+    return result;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof GlobalId)) {
+      return false;
+    }
+    GlobalId other = (GlobalId) obj;
+    if (domain == null) {
+      if (other.domain != null) {
+        return false;
+      }
+    } else if (!domain.equals(other.domain)) {
+      return false;
+    }
+    if (localId == null) {
+      if (other.localId != null) {
+        return false;
+      }
+    } else if (!localId.equals(other.localId)) {
+      return false;
+    }
+    return true;
+  }
+
+
 }

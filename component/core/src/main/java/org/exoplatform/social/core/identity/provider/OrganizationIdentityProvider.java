@@ -23,13 +23,17 @@ import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.IdentityProvider;
+import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.manager.IdentityManager;
 
 
 /**
@@ -37,23 +41,27 @@ import org.exoplatform.social.core.identity.model.Profile;
  */
 public class OrganizationIdentityProvider extends IdentityProvider<User> {
 
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(OrganizationIdentityProvider.NAME);
+
   /** The organization service. */
   private OrganizationService organizationService;
-  
+
   /** The Constant NAME. */
   public final static String NAME = "organization";
- 
+
   //TODO: dang.tung: maybe we don't need it but it will fix the problem from portal - get user
   /** The user cache. */
   private Map<String, User> userCache = new HashMap<String, User>();
 
   /**
    * Instantiates a new organization identity provider.
-   * 
+   *
    * @param organizationService the organization service
    */
   public OrganizationIdentityProvider(OrganizationService organizationService) {
     this.organizationService = organizationService;
+
   }
 
   @Override
@@ -67,7 +75,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public List<String> getAllUserId() {
     try {
     PageList pl;
-   
+
       pl = organizationService.getUserHandler().findUsers(new Query());
 
     List<User> userList = pl.getAll();
@@ -81,27 +89,27 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       throw new RuntimeException("Failed to load all users");
     }
   }
-  
+
   /**
    * Gets the user from cache.
-   * 
+   *
    * @param userName the user name
    * @return the user from cache
    */
   private User getUserFromCache(String userName) {
     return userCache.get(userName);
   }
-  
+
   /**
    * Adds the user to cache.
-   * 
+   *
    * @param user the user
    */
   private void addUserToCache(User user) {
     if(getUserFromCache(user.getUserName()) == null)
       userCache.put(user.getUserName(), user);
   }
-  
+
   /**
    * Refresh cache.
    */
@@ -124,6 +132,9 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   @Override
   public Identity createIdentity(User user) {
     Identity identity = new Identity(NAME, user.getUserName());
+    //GlobalId globalId = new GlobalId(OrganizationIdentityProvider.NAME + GlobalId.SEPARATOR + user.getUserName());
+    //identity.setId(globalId.toString());
+    //identityManager.saveIdentity(identity);
     return identity;
   }
 
@@ -132,7 +143,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
     profile.setProperty(Profile.LAST_NAME, user.getLastName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
-    
+
     // TODO reuse linkprovider
     String url = "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/profile/" + user.getUserName();
     profile.setProperty(Profile.URL,  url);
@@ -145,5 +156,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       emails.add(email);
       profile.setProperty("emails", emails);
     }
+    //identityManager.saveProfile(profile);
   }
-}   
+}

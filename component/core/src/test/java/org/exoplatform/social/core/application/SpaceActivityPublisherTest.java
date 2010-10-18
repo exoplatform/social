@@ -23,6 +23,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -31,6 +32,10 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
+/**
+ * Unit Tests for {@link SpaceActivityPublisher}
+ * @author hoat_le
+ */
 public class SpaceActivityPublisherTest extends  AbstractCoreTest {
   private final Log LOG = ExoLogger.getLogger(SpaceActivityPublisherTest.class);
   private ActivityManager activityManager;
@@ -54,7 +59,6 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
 
   @Override
   public void tearDown() throws Exception {
-    super.tearDown();
     for (Activity activity : tearDownActivityList) {
       try {
         activityManager.deleteActivity(activity.getId());
@@ -62,17 +66,27 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
         LOG.warn("can not delete activity with id: " + activity.getId());
       }
     }
+    super.tearDown();
   }
 
+  /**
+   *
+   * @throws Exception
+   */
   public void testSpaceCreation() throws Exception {
-    assertTrue(true);
+    assert true;
     /*
+    Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
+
     Space space = new Space();
     space.setName("Toto");
+    space.setGroupId("/platform/users");
     spaceService.saveSpace(space, true);
     String spaceId = space.getId(); // set by storage
-    SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, "root", SpaceLifeCycleEvent.Type.SPACE_CREATED);
+    SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, rootIdentity.getRemoteId(), SpaceLifeCycleEvent.Type.SPACE_CREATED);
     spaceActivityPublisher.spaceCreated(event);
+
+    Thread.sleep(3000);
 
     Identity identity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceId);
     List<Activity> activities = activityManager.getActivities(identity);
@@ -82,6 +96,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
     assertTrue(activities.get(0).getTitle().contains("root"));
     //clean up
     spaceService.deleteSpace(space);
+    identityManager.deleteIdentity(rootIdentity);
     */
   }
 }

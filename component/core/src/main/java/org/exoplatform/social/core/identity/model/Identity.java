@@ -16,124 +16,123 @@
  */
 package org.exoplatform.social.core.identity.model;
 
-
 /**
  * Represents persons or objects relevant to the social system.
  */
 public class Identity {
-    
-    /** The id. */
-    String  id;
-    
-    /** The remote id. */
-    String  remoteId;
-    
-    /** The provider id. */
-    String  providerId;
-    
-    /** The profile. */
-    Profile profile;
 
-    /**
-     * Instantiates a new identity.
-     * 
-     * @param id the id
-     */
-    public Identity(String id) {
-        this.id = id;
-    }
-    
-    /**
-     * Instantiates a new identity
-     * @param providerId the provider id of identity
-     * @param remoteId the remote id of identity
-     */
-    public Identity(String providerId, String remoteId) {
-    	this.remoteId = remoteId;
-    	this.providerId = providerId;
-    }
+  /** The id. */
+  String  id;
 
+  /** The remote id. */
+  String  remoteId;
 
-    /**
-     * Gets the id.
-     * 
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
+  /** The provider id. */
+  String  providerId;
 
-    /**
-     * Sets the id.
-     * 
-     * @param id the new id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+  /** The profile. */
+  Profile profile;
 
+  /**
+   * Instantiates a new identity.
+   *
+   * @param id the id
+   */
+  public Identity(String id) {
+    this.id = id;
+  }
 
-    /**
-     * Gets the profile.
-     * 
-     * @return the profile
-     */
-    public Profile getProfile() {
-        if (profile == null)
-            profile = new Profile(this);
-        return profile;
-    }
+  /**
+   * Instantiates a new identity
+   *
+   * @param providerId the provider id of identity
+   * @param remoteId the remote id of identity
+   */
+  public Identity(String providerId, String remoteId) {
+    this.remoteId = remoteId;
+    this.providerId = providerId;
+  }
 
-    /**
-     * Sets the profile.
-     * 
-     * @param profile the new profile
-     */
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
+  public String getId() {
+    return id;
+  }
 
-    /**
-     * Gets the remote id.
-     * 
-     * @return the remote id
-     */
-    public String getRemoteId() {
-        return remoteId;
-    }
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    /**
-     * Sets the remote id.
-     * 
-     * @param remoteId the new remote id
-     */
-    public void setRemoteId(String remoteId) {
-        this.remoteId = remoteId;
+  /**
+   * Gets the profile.
+   *
+   * @return the profile
+   */
+  public Profile getProfile() {
+    if (profile == null) {
+      profile = new Profile(this);
     }
+    return profile;
+  }
 
-    /**
-     * Gets the provider id.
-     * 
-     * @return the provider id
-     */
-    public String getProviderId() {
-        return providerId;
-    }
+  /**
+   * Sets the profile.
+   *
+   * @param profile the new profile
+   */
+  public void setProfile(Profile profile) {
+    this.profile = profile;
+  }
 
-    /**
-     * Sets the provider id.
-     * 
-     * @param providerId the new provider id
-     */
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
-    }
-    
-    public String toString() {
-      return providerId + ":" + remoteId;
-    }
-    
-    public GlobalId getGlobalId() {
-      return GlobalId.create(providerId, remoteId);
-    }
+  /**
+   * Gets the remote id.
+   *
+   * @return the remote id
+   */
+  public String getRemoteId() {
+    return remoteId;
+  }
+
+  /**
+   * Sets the remote id.
+   *
+   * @param remoteId the new remote id
+   */
+  public void setRemoteId(String remoteId) {
+    this.remoteId = remoteId;
+  }
+
+  /**
+   * Gets the provider id.
+   *
+   * @return the provider id
+   */
+  public String getProviderId() {
+    return providerId;
+  }
+
+  /**
+   * Sets the provider id.
+   *
+   * @param providerId the new provider id
+   */
+  public void setProviderId(String providerId) {
+    this.providerId = providerId;
+  }
+
+  public String toString() {
+    return providerId + ":" + remoteId;
+  }
+
+  public GlobalId getGlobalId() {
+    return GlobalId.create(providerId, remoteId);
+  }
 }

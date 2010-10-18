@@ -18,8 +18,16 @@ package org.exoplatform.social.core.identity.model;
 
 import junit.framework.TestCase;
 
+/**
+ * Unit Tests for {@link Identity}
+ *
+ */
 public class IdentityTest extends TestCase {
-  public void test_identity_to_string() {
+
+  /**
+   *
+   */
+  public void testIdentityToString() {
     Identity id = new Identity("organization", "root");
     assertEquals(id.toString(), "organization:root");
   }

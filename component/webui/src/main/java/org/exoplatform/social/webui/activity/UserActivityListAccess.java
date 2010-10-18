@@ -16,13 +16,9 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -30,13 +26,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.activity.model.Util;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 
@@ -49,18 +40,20 @@ import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
  * @since Sep 7, 2010
  */
 public class UserActivityListAccess implements ListAccess<Activity> {
-  static private final Log LOG = ExoLogger.getLogger(SpaceActivityListAccess.class);
-  
+  static private final Log LOG = ExoLogger.getLogger(UserActivityListAccess.class);
+
   private Identity ownerIdentity;
   private UIUserActivitiesDisplay.DisplayMode displayMode;
-  private IdentityManager identityManager;
   private ActivityManager activityManager;
-  private SpaceService spaceService;
-  
+
+  /**
+   * @param ownerIdentity
+   * @param displayMode
+   */
   public UserActivityListAccess(Identity ownerIdentity, UIUserActivitiesDisplay.DisplayMode displayMode) {
-    identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
+    //identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
     activityManager = (ActivityManager) PortalContainer.getComponent(ActivityManager.class);
-    spaceService = (SpaceService) PortalContainer.getComponent(SpaceService.class);
+    //spaceService = (SpaceService) PortalContainer.getComponent(SpaceService.class);
 
     this.ownerIdentity = ownerIdentity;
     this.displayMode = displayMode;
@@ -71,14 +64,14 @@ public class UserActivityListAccess implements ListAccess<Activity> {
     if (displayMode == UIUserActivitiesDisplay.DisplayMode.MY_STATUS || displayMode == UIUserActivitiesDisplay.DisplayMode.OWNER_STATUS) {
       size = activityManager.getActivitiesCount(ownerIdentity);
     } else if (displayMode == UIUserActivitiesDisplay.DisplayMode.SPACES) {
-      size = getActivitiesOfUserSpaces().length;
+      size = activityManager.getActivitiesOfUserSpaces(ownerIdentity).size();
     } else {
-      size = getActivitiesOfConnections().length;
+      size = activityManager.getActivitiesOfConnections(ownerIdentity).size();
     }
 
     return size;
   }
-  
+
   public Activity[] load(int index, int length) throws Exception{
     List<Activity> activityList;
     if (displayMode == UIUserActivitiesDisplay.DisplayMode.MY_STATUS || displayMode == UIUserActivitiesDisplay.DisplayMode.OWNER_STATUS) {
@@ -89,9 +82,9 @@ public class UserActivityListAccess implements ListAccess<Activity> {
       activityList = getActivitiesOfConnections(index, length);
     }
 
-    return activityList.toArray(new Activity[activityList.size()]);    
+    return activityList.toArray(new Activity[activityList.size()]);
   }
-
+/*
   private Object[] getActivitiesOfConnections() throws Exception {
     List<Identity> connectionsList = getConnections();
     SortedSet<Activity> sortedActivityList = new TreeSet<Activity>(Util.activityComparator());
@@ -109,19 +102,15 @@ public class UserActivityListAccess implements ListAccess<Activity> {
 
     return sortedActivityList.toArray();
   }
-  
+*/
+
   private List<Activity> getActivitiesOfConnections(int index, int length) throws Exception {
-    Object[] activityArray = getActivitiesOfConnections();
-    activityArray = ArrayUtils.subarray(activityArray, index, index + length);
-
-    List<Activity> activityList = new ArrayList<Activity>();
-    for (Object obj : activityArray) {
-      activityList.add((Activity) obj);
-    }
-
-    return activityList;
+    //Object[] activityArray = getActivitiesOfConnections();
+    List<Activity> activityList = activityManager.getActivitiesOfConnections(ownerIdentity);
+    Collections.sort(activityList, Util.activityComparator());
+    return activityList.subList(index, index + length -1);
   }
-
+/*
   private Object[] getActivitiesOfUserSpaces() {
     SortedSet<Activity> sortedActivityList = new TreeSet<Activity>(Util.activityComparator());
 
@@ -138,36 +127,12 @@ public class UserActivityListAccess implements ListAccess<Activity> {
 
     return sortedActivityList.toArray();
   }
-
+*/
   private List<Activity> getActivitiesOfUserSpaces(int index, int length) {
-    Object[] activityArray = getActivitiesOfUserSpaces();
-    Object[] resultArray = ArrayUtils.subarray(activityArray, index, index + length);
-    List<Activity> activityList = new ArrayList<Activity>();
-    for (int i = 0; i < resultArray.length; i++) {
-      Object o = resultArray[i];
-      activityList.add((Activity) o);
-    }
-    return activityList;
+    //Object[] activityArray = getActivitiesOfUserSpaces();
+    List<Activity> activityList = activityManager.getActivitiesOfUserSpaces(ownerIdentity);
+    Collections.sort(activityList, Util.activityComparator());
+    return activityList.subList(index, index + length -1);
   }
 
-  private List<Identity> getConnections() throws Exception {
-    List<Identity> connectionsList = identityManager.getIdentities(OrganizationIdentityProvider.NAME);
-    Iterator<Identity> itr = connectionsList.iterator();
-    while (itr.hasNext()) {
-      Identity identity = itr.next();
-      if (getConnectionStatus(identity) != Relationship.Type.CONFIRM) {
-        itr.remove();
-      }
-    }
-    return connectionsList;
-  }
-
-  private Relationship.Type getConnectionStatus(Identity identity) throws Exception {
-    if (identity.getId().equals(ownerIdentity.getId())) {
-      return Relationship.Type.SELF;
-    }
-    RelationshipManager relationshipManager = (RelationshipManager) PortalContainer.getComponent(RelationshipManager.class);
-    Relationship relationship = relationshipManager.getRelationship(identity, ownerIdentity);
-    return relationshipManager.getRelationshipStatus(relationship, ownerIdentity);
-  }
 }
