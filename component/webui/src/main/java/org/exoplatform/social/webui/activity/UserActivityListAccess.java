@@ -84,55 +84,26 @@ public class UserActivityListAccess implements ListAccess<Activity> {
 
     return activityList.toArray(new Activity[activityList.size()]);
   }
-/*
-  private Object[] getActivitiesOfConnections() throws Exception {
-    List<Identity> connectionsList = getConnections();
-    SortedSet<Activity> sortedActivityList = new TreeSet<Activity>(Util.activityComparator());
-
-    String identityId;
-    for (Identity identity : connectionsList) {
-      List<Activity> tempActivityList = activityManager.getActivities(identity);
-      identityId = identity.getId();
-      for (Activity activity : tempActivityList) {
-        if (activity.getUserId().equals(identityId)) {
-          sortedActivityList.add(activity);
-        }
-      }
-    }
-
-    return sortedActivityList.toArray();
-  }
-*/
 
   private List<Activity> getActivitiesOfConnections(int index, int length) throws Exception {
-    //Object[] activityArray = getActivitiesOfConnections();
     List<Activity> activityList = activityManager.getActivitiesOfConnections(ownerIdentity);
     Collections.sort(activityList, Util.activityComparator());
-    return activityList.subList(index, index + length -1);
-  }
-/*
-  private Object[] getActivitiesOfUserSpaces() {
-    SortedSet<Activity> sortedActivityList = new TreeSet<Activity>(Util.activityComparator());
-
     try {
-      List<Space> spaceList = spaceService.getAccessibleSpaces(ownerIdentity.getRemoteId());
-      for (Space space : spaceList) {
-        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId());
-        List<Activity> spaceActivityList = activityManager.getActivities(spaceIdentity);
-        sortedActivityList.addAll(spaceActivityList);
-      }
+      return activityList.subList(index, index + length);
     } catch (Exception e) {
-      LOG.error(e);
+      return activityList.subList(index, activityList.size() - 1);
     }
 
-    return sortedActivityList.toArray();
   }
-*/
+
   private List<Activity> getActivitiesOfUserSpaces(int index, int length) {
-    //Object[] activityArray = getActivitiesOfUserSpaces();
     List<Activity> activityList = activityManager.getActivitiesOfUserSpaces(ownerIdentity);
     Collections.sort(activityList, Util.activityComparator());
-    return activityList.subList(index, index + length -1);
+    try {
+      return activityList.subList(index, index + length);
+    } catch(Exception e) {
+      return activityList.subList(index, activityList.size() - 1);
+    }
   }
 
 }

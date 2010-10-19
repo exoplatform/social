@@ -35,7 +35,8 @@ public class PopupContainer extends UIContainer{
 
   public PopupContainer() {
     try {
-      popupWindow = addChild(UIPopupWindow.class, null, "UIPopupWindow");
+      popupWindow = addChild(UIPopupWindow.class, null, "UIPopupWindow_" + hashCode());
+      
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -38,9 +38,9 @@ import org.exoplatform.webui.ext.UIExtensionManager;
 public class UIActivityFactory extends BaseComponentPlugin {
   private static final Log LOG = ExoLogger.getLogger(UIActivityFactory.class);
   private Hashtable<String, BaseUIActivityBuilder> builders = new Hashtable<String, BaseUIActivityBuilder>();
-
+  UIExtensionManager extensionManager;
   public UIActivityFactory() {
-    UIExtensionManager extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
+    extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
     final List<UIExtension> extensions = extensionManager.getUIExtensions(BaseUIActivity.class.getName());
     for (UIExtension extension : extensions) {
       try {
@@ -61,7 +61,7 @@ public class UIActivityFactory extends BaseComponentPlugin {
   }
 
   private BaseUIActivity buildActivity(Activity activity, UIContainer parent, String type) throws Exception {
-    UIExtensionManager extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
+    extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
     UIExtension activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), type);
     if (activityExtension == null) {
       activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), UIDefaultActivity.ACTIVITY_TYPE);

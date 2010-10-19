@@ -17,22 +17,19 @@
 package org.exoplatform.social.webui.profile;
 
 import org.apache.commons.lang.Validate;
-import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.webui.activity.UIActivitiesContainer;
+import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.activity.UserActivityListAccess;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -52,7 +49,8 @@ import org.exoplatform.webui.event.EventListener;
 public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
-  private static final int      ACTIVITY_PER_PAGE = 10;
+  private static final int      ACTIVITY_PER_PAGE = 20;
+
 
   public enum DisplayMode {
     CONNECTIONS,
@@ -61,18 +59,20 @@ public class UIUserActivitiesDisplay extends UIContainer {
     OWNER_STATUS
   }
   private DisplayMode selectedDisplayMode = DisplayMode.CONNECTIONS;
-
+  private UIActivitiesLoader activitiesLoader;
   private String                ownerName;
   private String                viewerName;
   private boolean               isActivityStreamOwner = false;
 
-  private UIActivitiesContainer uiActivitiesContainer;
-  private UIPageIterator pageIterator;
   /**
    * constructor
    */
   public UIUserActivitiesDisplay() {
 
+  }
+
+  public UIActivitiesLoader getActivitiesLoader() {
+    return activitiesLoader;
   }
 
   public boolean isActivityStreamOwner() {
@@ -112,7 +112,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
   }
 
   public static class ChangeDisplayModeActionListener extends EventListener<UIUserActivitiesDisplay> {
-
     @Override
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = event.getSource();
@@ -138,28 +137,14 @@ public class UIUserActivitiesDisplay extends UIContainer {
     Validate.notNull(ownerName, "ownerName must not be null.");
     Validate.notNull(viewerName, "viewerName must not be null.");
 
-    removeChild(UIPageIterator.class);
-    pageIterator = addChild(UIPageIterator.class, null, "UIActivitiesPageIterator");
-    
-    removeChild(UIActivitiesContainer.class);
-    uiActivitiesContainer = addChild(UIActivitiesContainer.class, null, null);
-    uiActivitiesContainer.setPostContext(PostContext.USER);
-    uiActivitiesContainer.setOwnerName(ownerName);
-  }
-
-  private void bindDataToActivitiesContainer() throws Exception {
-    int currentPage = pageIterator.getCurrentPage();
+    removeChild(UIActivitiesLoader.class);
+    activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
+    activitiesLoader.setPostContext(PostContext.USER);
+    activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
+    activitiesLoader.setOwnerName(ownerName);
     Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
-    LazyPageList<Activity> pageList = new LazyPageList<Activity>(new UserActivityListAccess(ownerIdentity,getSelectedDisplayMode()), ACTIVITY_PER_PAGE);
-    pageIterator.setPageList(pageList);
-    int pageCount = pageIterator.getAvailablePage();
-    if (pageCount >= currentPage) {
-      pageIterator.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      pageIterator.setCurrentPage(currentPage - 1);
-    }
-
-    uiActivitiesContainer.setActivityList(pageIterator.getCurrentPageData());
+    activitiesLoader.setActivityListAccess(new UserActivityListAccess(ownerIdentity,getSelectedDisplayMode()));
+    activitiesLoader.init();
   }
 
   /**
