@@ -41,7 +41,7 @@ public class UISpaceActivitiesDisplay extends UIContainer {
   static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);
 
   private Space space;
-  private static final int ACTIVITY_PER_PAGE = 5;
+  private static final int ACTIVITY_PER_PAGE = 20;
   private UIActivitiesLoader activitiesLoader;
 
   /**
