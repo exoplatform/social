@@ -61,7 +61,7 @@ public class LinkProvider {
 
       url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
     } catch (Exception e) {
-      LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
+      LOG.warn("failed to substitute username for " + username + ": " + e.getMessage());
     }
     return url;
   }
@@ -90,12 +90,12 @@ public class LinkProvider {
       String url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
     } catch (Exception e) {
-      LOG.error("failed to substitute username for " + username + ": " + e.getMessage());
+      LOG.warn("failed to substitute username for " + username + ": " + e.getMessage());
       return null;
     }
     return link;
   }
-  
+
   public String getAbsoluteProfileUrl(String userName, String portalName, String portalOwner, String host) {
     String url = null;
     try {
@@ -106,7 +106,7 @@ public class LinkProvider {
 
       url = host + "/"+ portalName +"/private/" + portalOwner + "/profile/" + identity.getRemoteId();
     } catch (Exception e) {
-      LOG.error("failed to substitute username for " + userName + ": " + e.getMessage());
+      LOG.warn("failed to substitute username for " + userName + ": " + e.getMessage());
     }
     return url;
   }

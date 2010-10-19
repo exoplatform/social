@@ -63,11 +63,12 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.ProfileConfig;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JCRStorage for identity and profile.
  */
 public class IdentityStorage {
+  private static final Log LOG = ExoLogger.getExoLogger(IdentityStorage.class);
+
   /** The Constant IDENTITY_NODETYPE. */
   final public static String IDENTITY_NODETYPE = "exo:identity".intern();
 
@@ -100,7 +101,7 @@ public class IdentityStorage {
   /** The session manager. */
   private JCRSessionManager sessionManager;
 
-  private static final Log LOG = ExoLogger.getExoLogger(IdentityStorage.class);
+
 
   Comparator<Identity> identityComparator = new Comparator<Identity>() {
     public int compare(Identity o1, Identity o2) {
@@ -110,7 +111,11 @@ public class IdentityStorage {
       return name1.compareToIgnoreCase(name2);
     }
   };
-  
+
+  private Node identityServiceHome;
+
+  private Node profileServiceHome;
+
   /**
    * Instantiates a new jCR storage.
    *
@@ -122,15 +127,24 @@ public class IdentityStorage {
   }
 
   /**
-   * Gets the identity service home.
+   * Gets the identity service home which is cached and lazy-loaded.
    *
    * @param session the session
    * @return the identity service home
    * @throws Exception the exception
    */
-  private Node getIdentityServiceHome(Session session) throws Exception {
-    String path = dataLocation.getSocialIdentityHome();
-    return session.getRootNode().getNode(path);
+  private Node getIdentityServiceHome(Session session) {
+    if (identityServiceHome == null) {
+      String path = dataLocation.getSocialIdentityHome();
+      try {
+        identityServiceHome =  session.getRootNode().getNode(path);
+      } catch (PathNotFoundException e) {
+        LOG.warn(e.getMessage(), e);
+      } catch (RepositoryException e) {
+        LOG.warn(e.getMessage(), e);
+      }
+    }
+    return identityServiceHome;
   }
 
   /**
@@ -147,15 +161,18 @@ public class IdentityStorage {
   }
 
   /**
-   * Gets the profile service home.
+   * Gets the profile service home which is cached and lazy-loaded.
    *
    * @param session the session
    * @return the profile service home
    * @throws Exception the exception
    */
   private Node getProfileServiceHome(Session session) throws Exception {
-    String path = dataLocation.getSocialProfileHome();
-    return session.getRootNode().getNode(path);
+    if (profileServiceHome == null) {
+      String path = dataLocation.getSocialProfileHome();
+      profileServiceHome = session.getRootNode().getNode(path);
+    }
+    return profileServiceHome;
   }
 
   /**
@@ -163,10 +180,15 @@ public class IdentityStorage {
    *
    * @param identity the identity
    */
-  public void saveIdentity(Identity identity) throws Exception {
-    Identity checkingIdentity = findIdentity(identity.getProviderId(), identity.getRemoteId());
-    
-    Session session =  sessionManager.openSession();
+  public void saveIdentity(Identity identity) {
+    Identity checkingIdentity = null;
+    try {
+      checkingIdentity = findIdentity(identity.getProviderId(), identity.getRemoteId());
+    } catch (Exception checkingException) {
+      LOG.warn("Problem when finding identity with providerId: " + identity.getProviderId() + "; remoteId: " + identity.getRemoteId(), checkingException);
+    }
+
+    Session session =  sessionManager.getOrOpenSession();
     try {
       Node identityNode;
       Node identityHomeNode = getIdentityServiceHome(session);
@@ -174,7 +196,7 @@ public class IdentityStorage {
       if (identity.getId() == null) {
         if(checkingIdentity == null){
           identityNode = identityHomeNode.addNode(IDENTITY_NODETYPE, IDENTITY_NODETYPE);
-          identityNode.addMixin(REFERENCEABLE_NODE);          
+          identityNode.addMixin(REFERENCEABLE_NODE);
         } else {
           identityNode = session.getNodeByUUID(checkingIdentity.getId());
         }
@@ -197,6 +219,50 @@ public class IdentityStorage {
     }
   }
 
+
+  /**
+   * Deletes an identity from JCR
+   *
+   * @param identity
+   */
+  public void deleteIdentity(Identity identity) {
+    Session session = sessionManager.getOrOpenSession();
+    try {
+      Node identityNode = session.getNodeByUUID(identity.getId());
+      if (identity.getProfile().getId() != null) {
+        deleteProfile(identity.getProfile());
+      }
+      identityNode.remove();
+      session.save();
+      LOG.info("Identity: [" + identity.toString() + "] deleted.");
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+    } finally {
+      sessionManager.closeSession();
+    }
+  }
+
+  /**
+   * Deletes a profile
+   *
+   * @param profile
+   * @since 1.1.1
+   */
+  public void deleteProfile(Profile profile) {
+    Session session = sessionManager.getOrOpenSession();
+    try {
+      Node profileNode = session.getNodeByUUID(profile.getId());
+      profileNode.remove();
+      session.save();
+    } catch (ItemNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
+    } finally {
+      sessionManager.closeSession();
+    }
+
+  }
   /**
    * Gets the identity by his id.
    *
@@ -204,18 +270,23 @@ public class IdentityStorage {
    * @return the identity
    * @throws Exception the exception
    */
-  public Identity findIdentityById(String nodeId) throws Exception {
-    Session session = sessionManager.openSession();
+  public Identity findIdentityById(String nodeId) {
+    Session session = sessionManager.getOrOpenSession();
+    Identity identity = null;
     Node identityNode = null;
     try {
       identityNode = session.getNodeByUUID(nodeId);
-      return getIdentity(identityNode);
+      identity =  getIdentity(identityNode);
     } catch (ItemNotFoundException e) {
       LOG.warn("failed to load identity " + nodeId);
-      return null;
+    } catch (RepositoryException e) {
+      LOG.warn("failed from repository", e);
+    } catch (Exception e) {
+      LOG.warn("failed getIdentity by identityNode:" + identityNode, e);
     } finally {
       sessionManager.closeSession();
     }
+    return identity;
   }
 
   /**
@@ -251,9 +322,8 @@ public class IdentityStorage {
    * @param providerId the identity provider
    * @param remoteId the id
    * @return the identity by remote id
-   * @throws Exception the exception
    */
-  public Identity findIdentity(String providerId, String remoteId) throws Exception {
+  public Identity findIdentity(String providerId, String remoteId) {
     Session session = sessionManager.openSession();
     Node identityHomeNode = getIdentityServiceHome(session);
     Identity identity = null;
@@ -269,9 +339,7 @@ public class IdentityStorage {
 
       if (nodes.size() == 1) {
         Node identityNode = nodes.get(0);
-        identity = new Identity(identityNode.getUUID());
-        identity.setProviderId(identityNode.getProperty(IDENTITY_PROVIDERID).getString());
-        identity.setRemoteId(identityNode.getProperty(IDENTITY_REMOTEID).getString());
+        identity = getIdentity(identityNode);
       } else {
         LOG.debug("No node found for identity  " + providerId + ":" + remoteId);
       }
@@ -303,6 +371,7 @@ public class IdentityStorage {
 
     return identity;
   }
+
 
   /**
    * Gets the identities by profile filter.
@@ -398,7 +467,7 @@ public class IdentityStorage {
   public List<Identity> getIdentitiesFilterByAlphaBet(String identityProvider, ProfileFilter profileFilter, long offset, long limit) throws Exception {
     List<Identity> listIdentity = new ArrayList<Identity>();
     try{
-      Session session = sessionManager.openSession();
+      Session session = sessionManager.getOrOpenSession();
       Node profileHomeNode = getProfileServiceHome(session);
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
@@ -435,12 +504,13 @@ public class IdentityStorage {
    * @param profile the profile
    * @throws Exception the exception
    */
-  public void saveProfile(Profile profile) throws Exception {
+  public void saveProfile(Profile profile) {
     try {
-      Session session = sessionManager.openSession();
+      Session session = sessionManager.getOrOpenSession();
       Node profileHomeNode = getProfileServiceHome(session);
       if (profile.getIdentity().getId() == null) {
-        throw new Exception("the identity has to be saved before saving the profile");
+        LOG.warn("the identity has to be saved before saving the profile");
+        return;
       }
 
       Node profileNode;
@@ -656,9 +726,10 @@ public class IdentityStorage {
    * @param profile the profile
    * @throws Exception the exception
    */
-  public void loadProfile(Profile profile) throws Exception {
+  public void loadProfile(Profile profile) {
     if (profile.getIdentity().getId() == null) {
-      throw new Exception("the identity has to be saved before loading the profile");
+      LOG.warn("Failed to load profile. The identity has to be saved before loading the profile");
+      return;
     }
 
     Node identityNode;
@@ -668,25 +739,28 @@ public class IdentityStorage {
     try {
       identityNode = session.getNodeByUUID(profile.getIdentity().getId());
       workspaceName = session.getWorkspace().getName();
-    } finally {
-      sessionManager.closeSession();
-    }
-
-    PropertyIterator references = identityNode.getReferences();
-    if(references.getSize() == 0){
-      //there is no profile node referencing to this identity node -> create new profile node
-      //Lazily initializing a new Profile...
-      saveProfile(profile);
-    } else {
-      //profile node for this identity was created then load profile from that node
-      while (references.hasNext()) {
-        Property nodeReferencedProperty = (Property) references.next();
-        if (nodeReferencedProperty.getParent().isNodeType(PROFILE_NODETYPE)) {
-          Node profileNode = nodeReferencedProperty.getParent();
-          profile.setId(profileNode.getUUID());
-          loadProfile(profile, profileNode, workspaceName);
+      PropertyIterator references = identityNode.getReferences();
+      if(references.getSize() == 0) {
+        //there is no profile node referencing to this identity node -> create new profile node
+        //Lazily initializing a new Profile...
+        saveProfile(profile);
+      } else {
+        //profile node for this identity was created then load profile from that node
+        while (references.hasNext()) {
+          Property nodeReferencedProperty = (Property) references.next();
+          if (nodeReferencedProperty.getParent().isNodeType(PROFILE_NODETYPE)) {
+            Node profileNode = nodeReferencedProperty.getParent();
+            profile.setId(profileNode.getUUID());
+            loadProfile(profile, profileNode, workspaceName);
+          }
         }
       }
+    } catch (ItemNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
+    } finally {
+      sessionManager.closeSession();
     }
   }
 
@@ -745,8 +819,8 @@ public class IdentityStorage {
         if(l == null) {
           profile.setProperty(node.getName(), new ArrayList());
           l = (List) profile.getProperty(node.getName());
+          l.add(copyPropertiesToMap(node.getProperties(), new HashMap()));
         }
-        l.add(copyPropertiesToMap(node.getProperties(), new HashMap()));
       }
     }
   }

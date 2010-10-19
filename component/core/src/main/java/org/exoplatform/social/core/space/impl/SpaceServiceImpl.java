@@ -92,8 +92,8 @@ public class SpaceServiceImpl implements SpaceService {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  public SpaceServiceImpl(InitParams params, SocialDataLocation dataLocation) throws Exception {
-    storage = new SpaceStorage(dataLocation);
+  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage) throws Exception {
+    storage = spaceStorage;
     Iterator<?> it = params.getValuesParamIterator();
     apps = new ArrayList<String>();
     while (it.hasNext()) {
@@ -1035,7 +1035,7 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   /**
-   * Set portlet preferences from plug-in into local variable. 
+   * Set portlet preferences from plug-in into local variable.
    */
   public void setPortletsPrefsRequired(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin) {
     List<String> portletPrefs = portletPrefsRequiredPlugin.getPortletPrefs();
@@ -1043,17 +1043,17 @@ public class SpaceServiceImpl implements SpaceService {
       portletPrefsRequired = new ArrayList<String>();
     }
     portletPrefsRequired.addAll(portletPrefs);
-    
+
     this.portletPrefsRequireds = portletPrefsRequired.toArray(new String [portletPrefsRequired.size()]);
   }
 
   /**
-   * Get portlet preferences required for using in create portlet application. 
+   * Get portlet preferences required for using in create portlet application.
    */
   public String [] getPortletsPrefsRequired() {
     return this.portletPrefsRequireds;
   }
-  
+
   /**
    * Gets OrganizationService
    *

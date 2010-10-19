@@ -27,16 +27,20 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorage;
 
 /**
@@ -45,6 +49,7 @@ import org.exoplatform.social.core.storage.ActivityStorage;
  *
  * @see org.exoplatform.social.core.activity.model.Activity
  * @see ActivityStorage
+ * @see IdentityManager
  */
 public class ActivityManager {
   /** Logger */
@@ -59,6 +64,11 @@ public class ActivityManager {
   /** identityManager to get identity for saving and getting activities */
   private IdentityManager identityManager;
 
+  /**
+   * spaceService
+   */
+  private SpaceService spaceService;
+
   /** cache each activity by its id */
   private ExoCache<String, Activity> activityCache;
 
@@ -70,19 +80,48 @@ public class ActivityManager {
 
   /**
    * Instantiates a new activity manager.
-   *
-   * @param dataLocation the data location of activity manager it will
-   *          instantiates tree node for this services.
-   * @link org.exoplatform.social.space.impl.SoscialDataLocation.
-   * @throws Exception exception when can't instantiates tree node.
+   * @param activityStorage
+   * @param identityManager
+   * @param cacheService
    */
-  public ActivityManager(SocialDataLocation dataLocation, IdentityManager identityManager, CacheService cacheService) {
-    this.storage = new ActivityStorage(dataLocation);
+  public ActivityManager(ActivityStorage activityStorage, IdentityManager identityManager, CacheService cacheService) {
+    this.storage = activityStorage;
     this.processors = new TreeSet<ActivityProcessor>(processorComparator());
     this.identityManager = identityManager;
     this.activityCache = cacheService.getCacheInstance(getClass().getName() + "activityCache");
     this.activityListCache = cacheService.getCacheInstance(getClass().getName() + "activityListCache");
     this.commentsCache = cacheService.getCacheInstance(getClass().getName() + "commentsCache");
+  }
+
+  /**
+   * Saves an activity to the stream of a owner.<br/>
+   * Note that the Activity.userId will be set to the owner identity if not already set.
+   *
+   * @param owner owner of the activity stream. Usually a user or space
+   * @param activity the activity to save
+   * @return the activity saved
+   */
+  public Activity saveActivity(Identity owner, Activity activity) {
+    // TODO: check the security
+    Validate.notNull(owner, "owner must not be null.");
+    Validate.notNull(owner.getId(), "owner.getId() must not be null");
+    // posted now
+    long now = System.currentTimeMillis();
+    if (activity.getId() == null) {
+      activity.setPostedTime(now);
+    }
+    activity.setUpdatedTimestamp(now);
+
+    // if not given, the activity is from the stream owner
+    if (activity.getUserId() == null) {
+      activity.setUserId(owner.getId());
+    }
+
+    activity = storage.saveActivity(owner, activity);
+
+    activityListCache.remove(owner.getId());
+
+    return activity;
   }
 
 
@@ -93,11 +132,10 @@ public class ActivityManager {
    * @param activityId the activity id
    * @return the activity
    */
-
   public Activity getActivity(String activityId) {
     Activity cachedActivity = activityCache.get(activityId);
     if (cachedActivity == null) {
-      cachedActivity = storage.load(activityId);
+      cachedActivity = storage.getActivity(activityId);
       if (cachedActivity != null) {
         processActivitiy(cachedActivity);
         activityCache.put(activityId, cachedActivity);
@@ -110,15 +148,29 @@ public class ActivityManager {
    * delete activity by its id.
    *
    * @param activityId the activity id
-   * @throws Exception the exception
    */
-  public void deleteActivity(String activityId) throws Exception {
-    Activity activity = storage.load(activityId);
+  public void deleteActivity(String activityId) {
+    Activity activity = storage.getActivity(activityId);
     if (activity != null) {
       Identity streamOwner = identityManager.getIdentity(OrganizationIdentityProvider.NAME, activity.getStreamOwner(), false);
       storage.deleteActivity(activityId);
-      activityCache.remove(streamOwner.getId());
+      try {
+        activityCache.remove(streamOwner.getId());
+      } catch(Exception e) {
+        //Do nothing; just ignore
+      }
     }
+  }
+
+  /**
+   * Deletes a stored activity (id != null)
+   *
+   * @param activity
+   * @since 1.1.1
+   */
+  public void deleteActivity(Activity activity) {
+    Validate.notNull("activity.getId() must not be null", activity.getId());
+    deleteActivity(activity.getId());
   }
 
   /**
@@ -126,7 +178,6 @@ public class ActivityManager {
    *
    * @param activityId
    * @param commentId
-   * @throws Exception
    */
   public void deleteComment(String activityId, String commentId) {
     storage.deleteComment(activityId, commentId);
@@ -138,10 +189,9 @@ public class ActivityManager {
    *
    * @param identity the identity
    * @return the activities
-   * @throws Exception the exception
    * @see #getActivities(Identity, long, long)
    */
-  public List<Activity> getActivities(Identity identity) throws Exception {
+  public List<Activity> getActivities(Identity identity) {
     return storage.getActivities(identity, 0, 20);
   }
 
@@ -152,9 +202,8 @@ public class ActivityManager {
    * @param start offset index
    * @param limit
    * @return the activities
-   * @throws Exception the exception
    */
-  public List<Activity> getActivities(Identity identity, long start, long limit) throws Exception {
+  public List<Activity> getActivities(Identity identity, long start, long limit) {
     Segment segment = new Segment(start, limit);
     Map<Segment, List<Activity>> segments = activityListCache.get(identity.getId());
     if (segments == null || segments.get(segment) == null) {
@@ -169,46 +218,81 @@ public class ActivityManager {
     return segments.get(segment);
   }
 
+
   /**
-   * Saves an activity to the stream of a owner.<br/>
-   * Note that the Activity.userId will be set to the owner identity if not already set.
+   * Gets activities of connections from an identity.
    *
-   * @param owner owner of the activity stream. Usually a user or space
-   * @param activity the activity to save
-   * @return the activity saved
-   * @throws Exception the exception when error in storage
+   * This is a not-yet-sorted list by time.
+   *
+   * Though by using cache, this still can be considered as the cause of the biggest performance problem.
+   *
+   * @param ownerIdentity
+   * @return activityList
+   * @since 1.1.1
    */
-  public Activity saveActivity(Identity owner, Activity activity) throws Exception {
-    // TODO: check the security
-    Validate.notNull(owner, "owner must not be null.");
-    // posted now
-    long now = System.currentTimeMillis();
-    if (activity.getId() == null) {
-      activity.setPostedTime(now);
+  //TODO Find way to improve its performance
+  public List<Activity> getActivitiesOfConnections(Identity ownerIdentity) {
+    List<Identity> connectionList = null;
+    try {
+      connectionList = identityManager.getConnections(ownerIdentity);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
     }
-    activity.setUpdatedTimestamp(now);
-
-    // if not given, the activity is from the stream owner
-    if (activity.getUserId() == null) {
-      activity.setUserId(owner.getId());
+    List<Activity> activityList = new ArrayList<Activity>();
+    String identityId;
+    for (Identity identity : connectionList) {
+      //default 20 activities each identity
+      List<Activity> tempActivityList = getActivities(identity);
+      identityId = identity.getId();
+      for (Activity activity : tempActivityList) {
+        if (activity.getUserId().equals(identityId)) {
+          activityList.add(activity);
+        }
+      }
     }
-
-    activity = storage.save(owner, activity);
-
-    activityListCache.remove(owner.getId());
-
-    return activity;
+    return activityList;
   }
 
   /**
-   * Saves activity into the stream for the activity's userId.
+   * Gets the activities from all user's spaces.
+   * By default, the activity list is composed of all spaces' activities.
+   * Each space's activity list contains 20 activities max
    *
-   * @see Activity#getUserId()
+   * @param ownerIdentity
+   * @return list of activities
+   * @since 1.1.1
+   */
+  public List<Activity> getActivitiesOfUserSpaces(Identity ownerIdentity) {
+    spaceService = getSpaceService();
+    List<Activity> activityList = new ArrayList<Activity>();
+    List<Space> accessibleSpaceList = null;
+    try {
+      accessibleSpaceList = spaceService.getAccessibleSpaces(ownerIdentity.getRemoteId());
+    } catch (SpaceException e1) {
+      LOG.warn(e1.getMessage(), e1);
+    }
+    for (Space space : accessibleSpaceList) {
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId());
+      try {
+        activityList.addAll(getActivities(spaceIdentity));
+      } catch (Exception e) {
+        LOG.warn(e.getMessage(), e);
+      }
+    }
+    return activityList;
+  }
+
+
+  /**
+   * Saves activity into the stream for the activity's userId.
+   * The userId must be set and this field is used to indicate the owner stream.
+   *
    * @param activity the activity to save
    * @return the activity
    * @see #saveActivity(Identity, Activity)
+   * @see Activity#getUserId()
    */
-  public Activity saveActivity(Activity activity) throws Exception {
+  public Activity saveActivity(Activity activity) {
     Validate.notNull(activity.getUserId(), "activity.getUserId() must not be null.");
     Identity owner = identityManager.getIdentity(activity.getUserId());
     return saveActivity(owner, activity);
@@ -221,27 +305,9 @@ public class ActivityManager {
    *
    * @param activity
    * @param comment
-   * @throws Exception
    */
-  public void saveComment(Activity activity, Activity comment) throws Exception {
-    Validate.notNull(activity, "activity must not be null.");
-    Validate.notNull(comment.getUserId(), "comment.getUserId() must not be null.");
-    Validate.notNull(comment.getTitle(), "comment.getTitle() must not be null.");
-    if (comment.getId() != null) { // allows users to edit its comment?
-      comment.setUpdatedTimestamp(System.currentTimeMillis());
-    } else {
-      comment.setPostedTime(System.currentTimeMillis());
-      comment.setUpdatedTimestamp(System.currentTimeMillis());
-    }
-    comment.setReplyToId(Activity.IS_COMMENT);
-    comment = saveActivity(comment);
-    String rawCommentIds = activity.getReplyToId();
-    if (rawCommentIds == null) {
-      rawCommentIds = "";
-    }
-    rawCommentIds += "," + comment.getId();
-    activity.setReplyToId(rawCommentIds);
-    saveActivity(activity);
+  public void saveComment(Activity activity, Activity comment) {
+    storage.saveComment(activity, comment);
     activityCache.remove(activity.getId());
     commentsCache.remove(activity.getId());
   }
@@ -251,9 +317,8 @@ public class ActivityManager {
    *
    * @param activity
    * @param identity
-   * @throws Exception
    */
-  public void saveLike(Activity activity, Identity identity) throws Exception {
+  public void saveLike(Activity activity, Identity identity) {
     String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       LOG.warn("activity is already liked by identity: " + identity);
@@ -270,9 +335,8 @@ public class ActivityManager {
    *
    * @param activity
    * @param identity user that unlikes the activity
-   * @throws Exception
    */
-  public void removeLike(Activity activity, Identity identity) throws Exception {
+  public void removeLike(Activity activity, Identity identity) {
     String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());
@@ -288,7 +352,7 @@ public class ActivityManager {
    * Gets an activity's commentList
    *
    * @param activity
-   * @return
+   * @return commentList
    */
   public List<Activity> getComments(Activity activity) {
     List<Activity> cachedComments = commentsCache.get(activity.getId());
@@ -300,7 +364,7 @@ public class ActivityManager {
         String[] commentIds = rawCommentIds.split(",");
         commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
         for (String commentId : commentIds) {
-          cachedComments.add(storage.load(commentId));
+          cachedComments.add(storage.getActivity(commentId));
         }
         if (cachedComments.size() > 0) {
           commentsCache.put(activity.getId(), cachedComments);
@@ -311,16 +375,15 @@ public class ActivityManager {
   }
 
   /**
-   * Records an activity
+   * Records an activity.
    *
    * @param owner the owner of the target stream for this activity
-   * @param type the type of activity (freeform)
+   * @param type the type of activity which will be used to use custom ui for rendering
    * @param title the title
    * @param body the body
    * @return the stored activity
-   * @throws Exception the exception
    */
-  public Activity recordActivity(Identity owner, String type, String title, String body) throws Exception {
+  public Activity recordActivity(Identity owner, String type, String title, String body) {
     String userId = owner.getId();
     Activity activity = new Activity(userId, type, title, body);
     return saveActivity(owner, activity);
@@ -333,6 +396,7 @@ public class ActivityManager {
    * @param activity
    * @return the stored activity
    * @throws Exception
+   * @deprecated use {@link #saveActivity(Identity, Activity)} instead. Will be removed by 1.2.x
    */
   public Activity recordActivity(Identity owner, Activity activity) throws Exception {
     return saveActivity(owner, activity);
@@ -371,12 +435,23 @@ public class ActivityManager {
     };
   }
 
+
+  /**
+   * Gets the number of activity from a stream owner.
+   *
+   * @param owner
+   * @return the number
+   */
+  public int getActivitiesCount(Identity owner) {
+    return storage.getActivitiesCount(owner);
+  }
+
   /**
    * Pass an activity through the chain of processors
    *
    * @param activity
    */
-  void processActivitiy(Activity activity) {
+  public void processActivitiy(Activity activity) {
     Iterator<ActivityProcessor> it = processors.iterator();
     while (it.hasNext()) {
       try {
@@ -387,8 +462,16 @@ public class ActivityManager {
     }
   }
 
-  public int getActivitiesCount(Identity owner) throws Exception {
-    return storage.getActivitiesCount(owner);
+  /**
+   * Gets spaceService
+   *
+   * @return spaceService
+   */
+  private SpaceService getSpaceService() {
+    if (spaceService == null) {
+      spaceService = (SpaceService) PortalContainer.getInstance().getComponentInstanceOfType(SpaceService.class);
+    }
+    return spaceService;
   }
 
   /**

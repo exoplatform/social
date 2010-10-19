@@ -21,11 +21,15 @@ import java.util.HashMap;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 
 /**
  * The Class Profile.
  */
 public class Profile {
+
+  private static final Log LOG = ExoLogger.getLogger(Profile.class);
 
   public static final String USERNAME = "username";
 
@@ -172,19 +176,19 @@ public class Profile {
    * @throws Exception
    */
   public String getAvatarImageSource(PortalContainer portalContainer) {
-    try {
       String avatarUrl = (String) getProperty(AVATAR_URL);
       if (avatarUrl != null) {
         return avatarUrl;
       }
       AvatarAttachment avatarAttachment = (AvatarAttachment) getProperty(AVATAR);
       if (avatarAttachment != null) {
-        return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-            + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd=" + avatarAttachment.getLastModified();
+        try {
+          return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
+              + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd=" + avatarAttachment.getLastModified();
+        } catch (Exception e) {
+          LOG.warn(e);
+        }
       }
-    } catch (Exception e) {
-
-    }
     return null;
   }
 

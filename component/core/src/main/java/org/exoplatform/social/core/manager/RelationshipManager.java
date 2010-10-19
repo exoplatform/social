@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.resource.NotSupportedException;
 
-import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.RelationshipLifeCycle;
 import org.exoplatform.social.core.relationship.RelationshipListener;
@@ -31,7 +30,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorage;
 
 /**
- * The Class RelationshipManager.
+ * The Class RelationshipManager to manage connectionType between identities.
  */
 public class RelationshipManager {
 
@@ -45,24 +44,21 @@ public class RelationshipManager {
 
   /**
    * Instantiates a new relationship manager.
-   *
-   * @param dataLocation the data location
-   * @param im the im
-   * @throws Exception the exception
+   * @param relationshipStorage
    */
-  public RelationshipManager(SocialDataLocation dataLocation, IdentityManager im) throws Exception {
-    this.storage = new RelationshipStorage(dataLocation, im);
+  public RelationshipManager(RelationshipStorage relationshipStorage) {
+    this.storage = relationshipStorage;
   }
 
   /**
-   * Gets the by id.
+   * Gets relationship the by id.
    *
    * @param id the id
    * @return the by id
    * @throws Exception the exception
    */
   public Relationship getRelationshipById(String id) throws Exception {
-    return this.storage.getRelationship(id);
+    return storage.getRelationship(id);
   }
 
   /**
@@ -95,6 +91,11 @@ public class RelationshipManager {
     lifeCycle.relationshipConfirmed(this, relationship);
   }
 
+  /**
+   *
+   * @param relationship
+   * @throws Exception
+   */
   public void deny(Relationship relationship) throws Exception {
     storage.removeRelationship(relationship);
     lifeCycle.relationshipDenied(this, relationship);
@@ -132,7 +133,6 @@ public class RelationshipManager {
    * @param identity the identity
    * @return the pending
    * @throws Exception the exception
-   * @return
    */
   public List<Relationship> getPendingRelationships(Identity identity) throws Exception {
     List<Relationship> relationships = getAllRelationships(identity);
@@ -157,7 +157,6 @@ public class RelationshipManager {
    * @param toConfirm the to confirm
    * @return the pending
    * @throws Exception the exception
-   * @return
    */
   public List<Relationship> getPendingRelationships(Identity identity, boolean toConfirm) throws Exception {
     List<Relationship> rels = getAllRelationships(identity);
@@ -186,7 +185,6 @@ public class RelationshipManager {
    * @param toConfirm the to confirm
    * @return the pending
    * @throws Exception the exception
-   * @return
    */
   public List<Relationship> getPendingRelationships(Identity currIdentity, List<Identity> identities, boolean toConfirm) throws Exception {
     List<Relationship> pendingRels = getPendingRelationships(currIdentity, true);
@@ -223,7 +221,6 @@ public class RelationshipManager {
    * @param identities the identities
    * @return the contacts
    * @throws Exception the exception
-   * @return
    */
   public List<Relationship> getContacts(Identity currIdentity, List<Identity> identities) throws Exception {
     List<Relationship> contacts = getContacts(currIdentity);
@@ -269,7 +266,6 @@ public class RelationshipManager {
    * @param identity the identity
    * @return the list
    * @throws Exception the exception
-   * @return
    */
   public List<Relationship> getAllRelationships(Identity identity) throws Exception {
     return this.storage.getRelationshipByIdentity(identity);
@@ -281,7 +277,6 @@ public class RelationshipManager {
    * @param id the id
    * @return the by identity id
    * @throws Exception the exception
-   * @return
    */
   public List<Relationship> getRelationshipsByIdentityId(String id) throws Exception {
     return this.storage.getRelationshipByIdentityId(id);
@@ -294,7 +289,6 @@ public class RelationshipManager {
    * @param id the id
    * @return the identities
    * @throws Exception the exception
-   * @return
    */
   public List<Identity> getIdentities(Identity id) throws Exception {
     return this.storage.getRelationshipIdentitiesByIdentity(id);
@@ -390,14 +384,40 @@ public class RelationshipManager {
     return Relationship.Type.CONFIRM;
   }
 
+
+  /**
+   * Gets connection status
+   * @param fromIdentity
+   * @param toIdentity
+   * @return relationshipType
+   * @throws Exception
+   * @since 1.1.1
+   */
+  public Relationship.Type getConnectionStatus(Identity fromIdentity, Identity toIdentity) throws Exception {
+    if (fromIdentity.getId().equals(toIdentity.getId())) {
+      return Relationship.Type.SELF;
+    }
+    Relationship relationship = getRelationship(fromIdentity, toIdentity);
+    return getRelationshipStatus(relationship, toIdentity);
+  }
+
+  /**
+   * @param listener
+   */
   public void registerListener(RelationshipListener listener) {
     lifeCycle.addListener(listener);
   }
 
+  /**
+   * @param listener
+   */
   public void unregisterListener(RelationshipListener listener) {
     lifeCycle.removeListener(listener);
   }
 
+  /**
+   * @param plugin
+   */
   public void addListenerPlugin(RelationshipListenerPlugin plugin) {
     registerListener(plugin);
   }

@@ -26,6 +26,7 @@ import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.storage.ActivityStorage;
 
 
 /**
@@ -38,17 +39,26 @@ import org.exoplatform.social.core.manager.IdentityManager;
  */
 public class TracingActivityManager extends ActivityManager {
 
-  private ActivityManager  activityManager;
-
   private static final Log LOG = ExoLogger.getExoLogger(TracingActivityManager.class);
 
-  public TracingActivityManager(SocialDataLocation dataLocation,
+  private ActivityManager  activityManager;
+
+
+  /**
+   * Constructor
+   *
+   * @param activityStorage
+   * @param identityManager
+   * @param cacheService
+   * @throws Exception
+   */
+  public TracingActivityManager(ActivityStorage activityStorage,
                                 IdentityManager identityManager, CacheService cacheService) throws Exception {
-    super(dataLocation, identityManager, cacheService);
-    this.activityManager = new ActivityManager (dataLocation, identityManager, cacheService);
+    super(activityStorage, identityManager, cacheService);
+    this.activityManager = new ActivityManager (activityStorage, identityManager, cacheService);
   }
 
-  public List<Activity> getActivities(Identity identity) throws Exception {
+  public List<Activity> getActivities(Identity identity) {
     long t1 = System.currentTimeMillis();
     try {
       return activityManager.getActivities(identity);
