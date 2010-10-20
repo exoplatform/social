@@ -28,10 +28,13 @@ eXo Social is composed of 2 modules :
 =============
 2 What's new?
 =============
-
+- Remove default "portal" portal container, keeping only "socialdemo" portal container.
+- New look and feel of Home Page
 - Focus more on Social's performance with ExoCache. Make avatar images are cached.
 - Make it configurable for OpenSocial Rest Context API.
 - UI enhancement: more incentive "Add New Space" button; move edit space navigation into space settings
+- Cache management for ActivityManager, IdentityManger, RelationshipManager for better performance
+- Remove pagination for activity stream and replace by "More" activities fetching.
 
 =========
 3 INSTALL
@@ -77,10 +80,6 @@ Need to set the JAVA_HOME variable for run Social servers.
 * Enter one of the following addresses into your browser address bar:
    Social demo portal
       http://localhost:8080/socialdemo
-   Classic :
-      http://localhost:8080/portal
-      http://localhost:8080/portal/public/classic
-
 
 You can log into the portal with the following accounts: root, john, marry, demo.
 All those accounts have the default password "gtn".
