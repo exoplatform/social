@@ -461,6 +461,8 @@ public class IdentityStorage {
    *
    * @param identityProvider the identity provider
    * @param profileFilter the profile filter
+   * @param offset
+   * @param limit
    * @return the identities filter by alpha bet
    * @throws Exception the exception
    */
