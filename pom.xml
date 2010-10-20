@@ -94,7 +94,7 @@
     <org.gatein.pc.version>2.1.1-GA</org.gatein.pc.version>
     <org.gatein.wsrp.version>1.1.1-GA</org.gatein.wsrp.version>
     <org.gatein.mop.version>1.0.3-GA</org.gatein.mop.version>
-    <org.shindig.version>1.0-r790473-Patch02</org.shindig.version>
+    <org.shindig.version>1.0-r790473-Patch04</org.shindig.version>
     <org.chromattic.version>1.0.3</org.chromattic.version>
 
     <org.fontbox.version>0.1.0</org.fontbox.version>
