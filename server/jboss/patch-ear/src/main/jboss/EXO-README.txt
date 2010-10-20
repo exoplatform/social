@@ -119,7 +119,6 @@ All those accounts have the default password "gtn".
 ** Bug
     * [SOC-817] - Internal Error when updating activities with very long message - All following messages, even short, give same error (demo2)
     * [SOC-819] - In profile, required fields are not marked as such (start and end date in "Experiences")(demo2)
-    * [SOC-824] - show exception when edit/create space
     * [SOC-1005] - [Space][activity] Disable Share button when attach some link
     * [SOC-1018] - [SOC]: Change message when edit FN/LN contain specical chars in Public Profile
     * [SOC-1042] - spaces and people selector font is not consistent with overall look and feel
