@@ -254,14 +254,14 @@
       <name>portlets.prefs.required</name>
       <set-method>setPortletsPrefsRequired</set-method>
       <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
-	    <init-params>
-	      <values-param>
-	        <name>portletsPrefsRequired</name>
-	        <value>SpaceActivityStreamPortlet</value>
-	        <value>SpaceSettingPortlet</value>
-	        <value>MembersPortlet</value>
-	      </values-param>
-	    </init-params>
+      <init-params>
+        <values-param>
+          <name>portletsPrefsRequired</name>
+          <value>SpaceActivityStreamPortlet</value>
+          <value>SpaceSettingPortlet</value>
+          <value>MembersPortlet</value>
+        </values-param>
+      </init-params>
     </component-plugin>
   </external-component-plugins>
 
@@ -280,6 +280,16 @@
       <name>RelationshipPublisher</name>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+    <component-plugin>
+      <name>new.user.event.listener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.social.core.identity.UserToIdentityEventListener</type>
+      <description>this listener is used to save or delete identity for each user in organization service</description>
     </component-plugin>
   </external-component-plugins>
 

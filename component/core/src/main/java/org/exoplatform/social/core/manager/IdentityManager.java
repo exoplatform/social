@@ -47,6 +47,8 @@ import org.exoplatform.social.core.storage.IdentityStorage;
 public class IdentityManager {
   /** Logger */
   private static final Log LOG = ExoLogger.getExoLogger(IdentityManager.class);
+  /** The limit search list to be returned for matching search criteria */
+  private static final long SEARCH_LIMIT = 500;
 
   /** The identity providers. */
   private Map<String, IdentityProvider<?>> identityProviders = new HashMap<String, IdentityProvider<?>>();
@@ -307,7 +309,20 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFilter profileFilter) throws Exception {
-    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, 0, 20);
+    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, 0, SEARCH_LIMIT);
+  }
+
+  /**
+   *
+   * @param providerId
+   * @param profileFilter
+   * @param offset
+   * @param limit
+   * @return the identitities list
+   * @throws Exception
+   */
+  public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception {
+    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, offset, limit);
   }
 
   /**

@@ -65,6 +65,10 @@ import org.exoplatform.webui.form.UIFormStringInput;
   }
 )
 public class UIProfileUserSearch extends UIForm {
+
+  /** The limit number of query for matching with search criteria */
+  private static final int SEARCH_LIMIT = 500;
+
   /** USER CONTACT. */
   final public static String USER_CONTACT              = "name";
 
@@ -292,9 +296,8 @@ public class UIProfileUserSearch extends UIForm {
           if ("All".equals(charSearch)) {
             filter.setName("");
           }
-
           identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME,
-                                                                     filter);
+                                                                     filter, 0, SEARCH_LIMIT);
           uiSearch.setIdentityList(identitiesSearchResult);
         } else {
           if (!isValidInput(filter)) { // is invalid condition input
