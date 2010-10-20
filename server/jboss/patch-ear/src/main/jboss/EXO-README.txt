@@ -28,10 +28,19 @@ eXo Social is composed of 2 modules :
 =============
 2 What's new?
 =============
-
-- Focus more on Social's performance with ExoCache. Make avatar images are cached.
+- Remove default "portal" portal container, keeping only "socialdemo" portal container.
+- New look and feel of Home Page
+- Focus more on Social's performance with ExoCache. Make avatar images cached by browsers.
 - Make it configurable for OpenSocial Rest Context API.
 - UI enhancement: more incentive "Add New Space" button; move edit space navigation into space settings
+- Cache management for ActivityManager, IdentityManger, RelationshipManager for better performance
+- Remove pagination for activity stream and replace by "More" activities fetching.
+- Introduce new APIs:
+  List<Identity> org.exoplatform.social.core.manager.IdentityManager.getConnections(Identity ownerIdentity) throws Exception;
+  void org.exoplatform.social.core.manager.ActivityManager.deleteActivity(Activity activity);
+  List<Activity> org.exoplatform.social.core.manager.ActivityManager.getActivitiesOfConnections(Identity ownerIdentity);
+  List<Activity> org.exoplatform.social.core.manager.ActivityManager.getActivitiesOfUserSpaces(Identity ownerIdentity);
+  Relationship.Type org.exoplatform.social.core.manager.RelationshipManager.getConnectionStatus(Identity fromIdentity, Identity toIdentity) throws Exception;
 
 =========
 3 INSTALL
@@ -77,10 +86,6 @@ Need to set the JAVA_HOME variable for run Social servers.
 * Enter one of the following addresses into your browser address bar:
    Social demo portal
       http://localhost:8080/socialdemo
-   Classic :
-      http://localhost:8080/portal
-      http://localhost:8080/portal/public/classic
-
 
 You can log into the portal with the following accounts: root, john, marry, demo.
 All those accounts have the default password "gtn".
@@ -114,7 +119,7 @@ All those accounts have the default password "gtn".
 ** Bug
     * [SOC-817] - Internal Error when updating activities with very long message - All following messages, even short, give same error (demo2)
     * [SOC-819] - In profile, required fields are not marked as such (start and end date in "Experiences")(demo2)
-    * [SOC-981] - Attaching an image to an activity stream of a space causes javascript misinterpretation
+    * [SOC-824] - show exception when edit/create space
     * [SOC-1005] - [Space][activity] Disable Share button when attach some link
     * [SOC-1018] - [SOC]: Change message when edit FN/LN contain specical chars in Public Profile
     * [SOC-1042] - spaces and people selector font is not consistent with overall look and feel
@@ -137,15 +142,17 @@ All those accounts have the default password "gtn".
     * [SOC-1136] - It is possible to remove last space leader
     * [SOC-1142] - Avatar images are not cached by browser
     * [SOC-1154] - Can't share links with images
+    * [SOC-1159] - Can't not tag @user and wrong link to created space on space activity stream
+    * [SOC-1183] - Can not search people from the search box [Find People] function
 
 ** Feedback
-    * [SOC-743] - SNF_PRL_03 fail : nothing gets translated
     * [SOC-866] - order the list of people by last name
 
 ** Improvement
     * [SOC-726] - Move edit space navigation into space settings
     * [SOC-1066] - More incentive "Add New Space" button
     * [SOC-1069] - Use applications icons
+    * [SOC-1170] - Remove pagination on activities list
 
 
 - 1.1.0-GA
