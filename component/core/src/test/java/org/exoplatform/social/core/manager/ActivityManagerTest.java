@@ -18,6 +18,7 @@ package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -147,6 +148,103 @@ public class ActivityManagerTest extends AbstractCoreTest {
       tearDownActivityList.addAll(rootActivities);
   }
 
+  /**
+   * Unit Test for:
+   * <p>
+   * {@link ActivityManager#deleteActivity(String)}
+   * {@link ActivityManager#deleteActivity(Activity)}
+   */
+  public void testDeleteActivity() {
+    assert true;
+  }
+
+  /**
+   * Unit Test for:
+   * <p>
+   * {@link ActivityManager#deleteComment(String, String)}
+   */
+  public void testDeleteComment() {
+    final String title = "Activity Title";
+    {
+      //FIXBUG: SOC-1194
+      //Case: a user create an activity in his stream, then give some comments on it.
+      //Delete comments and check
+      Activity activity1 = new Activity();
+      activity1.setUserId(demoIdentity.getId());
+      activity1.setTitle(title);
+      activityManager.saveActivity(demoIdentity, activity1);
+
+      final int numberOfComments = 10;
+      final String commentTitle = "Activity Comment";
+      for (int i = 0; i < numberOfComments; i++) {
+        Activity comment = new Activity();
+        comment.setUserId(demoIdentity.getId());
+        comment.setTitle(commentTitle + i);
+        activityManager.saveComment(activity1, comment);
+      }
+
+      List<Activity> storedCommentList = activityManager.getComments(activity1);
+
+      assertEquals("storedCommentList.size() must return: " + numberOfComments, numberOfComments, storedCommentList.size());
+
+      //delete random 2 comments
+      int index1 = new Random().nextInt(numberOfComments - 1);
+      int index2 = index1;
+      while (index2 == index1) {
+        index2 = new Random().nextInt(numberOfComments - 1);
+      }
+
+      Activity tobeDeletedComment1 = storedCommentList.get(index1);
+      Activity tobeDeletedComment2 = storedCommentList.get(index2);
+
+      activityManager.deleteComment(activity1.getId(), tobeDeletedComment1.getId());
+      activityManager.deleteComment(activity1.getId(), tobeDeletedComment2.getId());
+
+      List<Activity> afterDeletedCommentList = activityManager.getComments(activity1);
+
+      assertEquals("afterDeletedCommentList.size() must return: " + (numberOfComments - 2), numberOfComments - 2, afterDeletedCommentList.size());
+
+
+      tearDownActivityList.add(activity1);
+
+    }
+  }
+
+ /**
+  * Unit Test for:
+  * {@link ActivityManager#getActivities(Identity)}
+  * {@link ActivityManager#getActivities(Identity, long, long)}
+  */
+ public void testGetActivities() {
+   populateActivityMass(rootIdentity, 30);
+   List<Activity> activities = activityManager.getActivities(rootIdentity);
+   assertNotNull("activities must not be null", activities);
+   assertEquals(20, activities.size());
+
+   List<Activity> allActivities = activityManager.getActivities(rootIdentity, 0, 30);
+
+   assertEquals(30, allActivities.size());
+
+   tearDownActivityList.addAll(allActivities);
+ }
+
+ /**
+  * Unit Test for:
+  * <p>
+  * {@link ActivityManager#getActivitiesOfConnections(Identity)}
+  */
+ public void testGetActivitiesOfConnections() {
+   assert true;
+ }
+
+ /**
+  * Unit Test for:
+  * <p>
+  * {@link ActivityManager#getActivitiesOfUserSpaces(Identity)}
+  */
+ public void testGetActivitiesOfUserSpaces() {
+   assert true;
+ }
 
   /**
    *
@@ -173,22 +271,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
   /**
    *
    */
-  public void testGetActivities() {
-    populateActivityMass(rootIdentity, 30);
-    List<Activity> activities = activityManager.getActivities(rootIdentity);
-    assertNotNull("activities must not be null", activities);
-    assertEquals(20, activities.size());
-
-    List<Activity> allActivities = activityManager.getActivities(rootIdentity, 0, 30);
-
-    assertEquals(30, allActivities.size());
-
-    tearDownActivityList.addAll(allActivities);
-  }
-
-  /**
-   *
-   */
   public void testAddProviders() {
     activityManager.addProcessor(new FakeProcessor(10));
     activityManager.addProcessor(new FakeProcessor(2));
@@ -208,6 +290,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
       super.priority = priority;
     }
 
+    @Override
     public void processActivity(Activity activity) {
       activity.setTitle(activity.getTitle() + "-" + priority);
     }

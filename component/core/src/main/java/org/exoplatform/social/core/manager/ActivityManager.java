@@ -94,7 +94,7 @@ public class ActivityManager {
   }
 
   /**
-   * Saves an activity to the stream of a owner.<br/>
+   * Saves an activity to the stream of an owner.<br/>
    * Note that the Activity.userId will be set to the owner identity if not already set.
    *
    * @param owner owner of the activity stream. Usually a user or space
@@ -182,6 +182,7 @@ public class ActivityManager {
    */
   public void deleteComment(String activityId, String commentId) {
     storage.deleteComment(activityId, commentId);
+    activityCache.remove(activityId);
     commentsCache.remove(activityId);
   }
 
@@ -358,6 +359,8 @@ public class ActivityManager {
   public List<Activity> getComments(Activity activity) {
     List<Activity> cachedComments = commentsCache.get(activity.getId());
     if (cachedComments == null) {
+      //reload activity to make sure to have the most update activity
+      activity = getActivity(activity.getId());
       cachedComments = new ArrayList<Activity>();
       String rawCommentIds = activity.getReplyToId();
       // rawCommentIds can be: null || ,a,b,c,d
