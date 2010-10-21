@@ -16,6 +16,11 @@
  */
 package org.exoplatform.social.core.identity;
 
+import java.util.List;
+
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.User;
@@ -39,17 +44,27 @@ public class UserToIdentityEventListener extends UserEventListener {
 
   private IdentityManager identityManager;
 
+  private List<String> ignoredList;
+
   /**
    * constructor to init identityManager
-   * @param identityManager
+   * @param initParams
    */
-  public UserToIdentityEventListener(IdentityManager identityManager) {
-    this.identityManager = identityManager;
+  @SuppressWarnings("unchecked")
+  public UserToIdentityEventListener(InitParams initParams) {
+    ValuesParam valueParams = initParams.getValuesParam("ignored-list");
+    ignoredList = valueParams.getValues();
   }
 
   @Override
   public void postSave(User user, boolean isNew) {
     if (isNew) {
+      if (ignoredList.contains(user.getUserName())) {
+        return;
+      }
+      if(this.identityManager == null) {
+        this.identityManager = (IdentityManager)PortalContainer.getComponent(IdentityManager.class);
+      }
       identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
     }
   }
