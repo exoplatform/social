@@ -16,12 +16,14 @@ h2. UI Extensions
 {include:document="DeveloperReference/Developer_Documentation_Activity_Plugin.wiki"}
 h2. Overridable Components
 {include:document="DeveloperReference/Overrideable_components.wiki"}
+h2. Public Java APIs
+{include:document="DeveloperReference/Java_APIs.wiki"}
 h2. Public REST APIs
 {include:document="DeveloperReference/REST_APIs.wiki"}
 h2. Sample code/tutorial
 h3, Activity Stream
 {include:document="DeveloperReference/Developer_Documentation_Activity_Stream.wiki"}
-h3. People 
+h3. People
 {include:document="DeveloperReference/Developer_Documentation_People.wiki"}
 h3. Spaces
 {include:document="DeveloperReference/Developer_Documentation_Spaces.wiki"}
