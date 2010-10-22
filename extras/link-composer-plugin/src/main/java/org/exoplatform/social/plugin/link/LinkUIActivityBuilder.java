@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.plugin.link;
 
+import java.util.Map;
+
 import org.apache.commons.lang.Validate;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -43,6 +45,11 @@ public class LinkUIActivityBuilder extends BaseUIActivityBuilder {
     } catch (JSONException e) {
       uiLinkActivity.setLinkSource(activity.getUrl());
       uiLinkActivity.setLinkTitle(activity.getTitle());
+      Map<String,String> params = activity.getTemplateParams(); 
+      String des = params.get("description");
+      String status = params.get("status");
+      uiLinkActivity.setLinkDescription(des);
+      uiLinkActivity.setLinkComment(status);
     } catch (Exception e){
       LOG.error(e);
     }
@@ -64,7 +71,11 @@ public class LinkUIActivityBuilder extends BaseUIActivityBuilder {
       }
 
       if(!titleData.isNull(UILinkActivityComposer.DESCRIPTION_PARAM)){
-        uiLinkActivity.setLinkDescription(titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
+        String desp = titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM);
+        if ((desp == null) || (desp.length() == 0)) {
+          desp = activity.getTemplateParams().get("description"); 
+        }
+        uiLinkActivity.setLinkDescription(desp);
       }
 
       if(!titleData.isNull(UILinkActivityComposer.COMMENT_PARAM)){

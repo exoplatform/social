@@ -647,7 +647,7 @@ eXo.social.LinkShare.prototype.save = function(status, callback) {
   if (LinkShare.data.images.length > 0) {
     chosenImage = LinkShare.data.images[LinkShare.data.selectedImageIndex];
   }
-  body.data = {
+  body = {
     link: LinkShare.data.link,
     image: chosenImage,
     title: LinkShare.data.title,
@@ -670,7 +670,17 @@ eXo.social.LinkShare.prototype.save = function(status, callback) {
 //		mediaItems.push(mediaItem);
 //		params[opensocial.Activity.Field.MEDIA_ITEMS] = mediaItems;
 //	}
-  var activity = opensocial.newActivity(params);
+//  var activity = opensocial.newActivity(params);
+    var title = LinkShare.data.title;
+    var link = LinkShare.data.link;
+    var description = LinkShare.data.description;
+    var activity = opensocial.newActivity({ 'title' : title, 
+                                            'url': link, 
+                                            'externalId' : "LINK_ACTIVITY",
+                                            
+                                            'templateParams': 
+                                            	  {"status":status,"description":description}
+                                          });
   opensocial.requestCreateActivity(activity, opensocial.CreateActivityPriority.HIGH, callback);
   //resets
   this.displayAttach(LinkShare.config.LINKSHARE_OPTION_ID);
