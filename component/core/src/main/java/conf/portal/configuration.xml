@@ -289,7 +289,16 @@
       <name>new.user.event.listener</name>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.social.core.identity.UserToIdentityEventListener</type>
-      <description>this listener is used to save or delete identity for each user in organization service</description>
+      <init-params>
+        <values-param>
+          <name>ignored-list</name>
+          <description>ignored-list</description>
+          <value>root</value>
+          <value>john</value>
+          <value>mary</value>
+          <value>demo</value>
+        </values-param>
+      </init-params>
     </component-plugin>
   </external-component-plugins>
 
