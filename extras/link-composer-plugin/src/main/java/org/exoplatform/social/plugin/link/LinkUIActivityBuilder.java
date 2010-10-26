@@ -46,10 +46,10 @@ public class LinkUIActivityBuilder extends BaseUIActivityBuilder {
       uiLinkActivity.setLinkSource(activity.getUrl());
       uiLinkActivity.setLinkTitle(activity.getTitle());
       Map<String,String> params = activity.getTemplateParams(); 
-      String des = params.get("description");
-      String status = params.get("status");
-      uiLinkActivity.setLinkDescription(des);
-      uiLinkActivity.setLinkComment(status);
+      String description = params.get(UILinkActivityComposer.DESCRIPTION_PARAM);
+      String comment = params.get(UILinkActivityComposer.COMMENT_PARAM);
+      uiLinkActivity.setLinkDescription(description);
+      uiLinkActivity.setLinkComment(comment);
     } catch (Exception e){
       LOG.error(e);
     }
@@ -73,7 +73,7 @@ public class LinkUIActivityBuilder extends BaseUIActivityBuilder {
       if(!titleData.isNull(UILinkActivityComposer.DESCRIPTION_PARAM)){
         String desp = titleData.getString(UILinkActivityComposer.DESCRIPTION_PARAM);
         if ((desp == null) || (desp.length() == 0)) {
-          desp = activity.getTemplateParams().get("description"); 
+          desp = activity.getTemplateParams().get(UILinkActivityComposer.DESCRIPTION_PARAM); 
         }
         uiLinkActivity.setLinkDescription(desp);
       }

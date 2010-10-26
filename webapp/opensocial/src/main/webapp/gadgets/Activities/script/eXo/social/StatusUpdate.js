@@ -654,9 +654,9 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 
           if (url) {
             if (templateParams != undefined) {
-            	var stats = templateParams.status;
+            	var comment = templateParams.comment;
               var descripts = templateParams.description;
-              html.push('<div class="ContentArea">' + stats + '</div>');  
+              html.push('<div class="ContentArea">' + comment + '</div>');  
               html.push('<div><a class="ColorLinkShared" href="' + url + '" target="_blank" title="' + title + '">' + title + '</a></div>');          	
               html.push('<div class="Description">' + descripts + '</div>');
              	html.push('<div>' + Locale.getMsg('source') + ' : ' + url + '</div>');

@@ -632,7 +632,7 @@ eXo.social.LinkShare.prototype.constructContent = function() {
  * @param	callback function callback after sending activity
  */
 
-eXo.social.LinkShare.prototype.save = function(status, callback) {
+eXo.social.LinkShare.prototype.save = function(comment, callback) {
   var LinkShare = eXo.social.LinkShare,
       Locale = eXo.social.Locale,
       //create activity params
@@ -653,7 +653,7 @@ eXo.social.LinkShare.prototype.save = function(status, callback) {
     title: LinkShare.data.title,
     description: LinkShare.data.description
   };
-  body.comment = status;
+  body.comment = comment;
   //body.comment = status;
   //params[opensocial.Activity.Field.TITLE] = Locale.getMsg('user_shared_a_link', [viewerName]);
   params[opensocial.Activity.Field.TITLE] = gadgets.json.stringify(body);
@@ -679,7 +679,7 @@ eXo.social.LinkShare.prototype.save = function(status, callback) {
                                             'externalId' : "LINK_ACTIVITY",
                                             
                                             'templateParams': 
-                                            	  {"status":status,"description":description}
+                                            	  {"comment":comment,"description":description}
                                           });
   opensocial.requestCreateActivity(activity, opensocial.CreateActivityPriority.HIGH, callback);
   //resets
