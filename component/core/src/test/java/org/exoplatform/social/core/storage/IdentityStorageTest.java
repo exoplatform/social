@@ -26,9 +26,9 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
 
   public void setUp() throws Exception {
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    assertNotNull(identityStorage);
     super.setUp();
+    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    assertNotNull("identityStorage must not be null", identityStorage);
   }
 
   public void tearDown() throws Exception {

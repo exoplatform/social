@@ -182,11 +182,7 @@ public class IdentityStorage {
    */
   public void saveIdentity(Identity identity) {
     Identity checkingIdentity = null;
-    try {
-      checkingIdentity = findIdentity(identity.getProviderId(), identity.getRemoteId());
-    } catch (Exception checkingException) {
-      LOG.warn("Problem when finding identity with providerId: " + identity.getProviderId() + "; remoteId: " + identity.getRemoteId(), checkingException);
-    }
+    checkingIdentity = findIdentity(identity.getProviderId(), identity.getRemoteId());
 
     Session session =  sessionManager.getOrOpenSession();
     try {
@@ -234,7 +230,7 @@ public class IdentityStorage {
       }
       identityNode.remove();
       session.save();
-      LOG.info("Identity: [" + identity.toString() + "] deleted.");
+      //LOG.info("Identity: [" + identity.toString() + "] deleted.");
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     } finally {
@@ -268,7 +264,6 @@ public class IdentityStorage {
    *
    * @param nodeId the id of identity
    * @return the identity
-   * @throws Exception the exception
    */
   public Identity findIdentityById(String nodeId) {
     Session session = sessionManager.getOrOpenSession();
@@ -276,9 +271,11 @@ public class IdentityStorage {
     Node identityNode = null;
     try {
       identityNode = session.getNodeByUUID(nodeId);
-      identity =  getIdentity(identityNode);
+      if (identityNode != null) {
+        identity =  getIdentity(identityNode);
+      }
     } catch (ItemNotFoundException e) {
-      LOG.warn("failed to load identity " + nodeId);
+      LOG.warn("can not find identity with nodeId: " + nodeId);
     } catch (RepositoryException e) {
       LOG.warn("failed from repository", e);
     } catch (Exception e) {
@@ -340,11 +337,9 @@ public class IdentityStorage {
       if (nodes.size() == 1) {
         Node identityNode = nodes.get(0);
         identity = getIdentity(identityNode);
-      } else {
-        LOG.debug("No node found for identity  " + providerId + ":" + remoteId);
       }
     } catch (Exception e) {
-      LOG.error("failed to load identity by remote id : "+ providerId +":" + remoteId, e);
+      LOG.warn("failed to load identity by remote id : "+ providerId +":" + remoteId, e);
     } finally {
       sessionManager.closeSession();
     }

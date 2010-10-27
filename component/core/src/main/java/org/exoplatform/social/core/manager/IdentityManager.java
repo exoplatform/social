@@ -126,10 +126,9 @@ public class IdentityManager {
    *        when loadProfile is true, gets profile from JCR
    * @return null if nothing is found, or the Identity object
    */
-  //FIXME: Make it clear here when id=uuid vs id=providerId:remoteId
+  //FIXME: Make it clear here when id=uuid vs id=providerId:remoteId vs id=providerId:uuid
   public Identity getIdentity(String id, boolean loadProfile) {
     Identity cachedIdentity = null;
-
     // attempts to match a global id in the form "providerId:remoteId"
     if (GlobalId.isValid(id)) {
       GlobalId globalId = new GlobalId(id);
@@ -139,18 +138,30 @@ public class IdentityManager {
       if (cachedIdentity == null) {
         cachedIdentity = getIdentity(providerId, remoteId, loadProfile);
         if (cachedIdentity != null) {
+          /*
           if (loadProfile) {
             identityStorage.loadProfile(cachedIdentity.getProfile());
-          }
+          }*/
           identityCache.put(globalId, cachedIdentity);
+          return cachedIdentity;
+        }
+        //retry with providerId:nodeId
+        if (cachedIdentity == null) {
+          String tempId = globalId.getLocalId();
+          cachedIdentity = identityStorage.findIdentityById(tempId);
+          if (cachedIdentity != null) {
+            id = tempId;
+          }
         }
       }
+
     } else {
       cachedIdentity = identityCacheById.get(id);
       if (cachedIdentity == null) {
         cachedIdentity = identityStorage.findIdentityById(id);
       }
     }
+
     if (cachedIdentity != null) {
       if (loadProfile) {
         identityStorage.loadProfile(cachedIdentity.getProfile());

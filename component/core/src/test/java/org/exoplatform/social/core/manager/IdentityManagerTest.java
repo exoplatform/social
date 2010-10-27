@@ -107,6 +107,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
       // default (means saved).
       assertNotNull("gotIdentity.getProfile().getId() must not return: null",
                     gotIdentity.getProfile().getId());
+
     }
 
     // Gets Identity By providerId and remoteId
@@ -136,6 +137,14 @@ public class IdentityManagerTest extends AbstractCoreTest {
                    gotIdentity2.getRemoteId());
       assertNull("gotIdentity2.getProfile().getId() must return: null", gotIdentity2.getProfile()
                                                                                     .getId());
+    }
+
+    //Gets Identity by providerId and nodeId
+
+    {
+      GlobalId globalId = new GlobalId(OrganizationIdentityProvider.NAME + GlobalId.SEPARATOR + tobeSavedIdentity.getId());
+      Identity gotIdentity3 = identityManager.getIdentity(globalId.toString());
+      assertNotNull("gotIdentity3 must not be null", gotIdentity3);
     }
 
     tearDownIdentityList.add(identityManager.getIdentity(tobeSavedIdentity.getId()));
