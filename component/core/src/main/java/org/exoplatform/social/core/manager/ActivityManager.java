@@ -357,21 +357,25 @@ public class ActivityManager {
    * @return commentList
    */
   public List<Activity> getComments(Activity activity) {
-    List<Activity> cachedComments = commentsCache.get(activity.getId());
+    String activityId = activity.getId();
+    List<Activity> cachedComments = commentsCache.get(activityId);
     if (cachedComments == null) {
       //reload activity to make sure to have the most update activity
-      activity = getActivity(activity.getId());
+      activity = getActivity(activityId);
       cachedComments = new ArrayList<Activity>();
       String rawCommentIds = activity.getReplyToId();
       // rawCommentIds can be: null || ,a,b,c,d
       if (rawCommentIds != null) {
         String[] commentIds = rawCommentIds.split(",");
         commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
+
         for (String commentId : commentIds) {
-          cachedComments.add(storage.getActivity(commentId));
+          Activity comment = storage.getActivity(commentId);
+          processActivitiy(comment);
+          cachedComments.add(comment);
         }
         if (cachedComments.size() > 0) {
-          commentsCache.put(activity.getId(), cachedComments);
+          commentsCache.put(activityId, cachedComments);
         }
       }
     }

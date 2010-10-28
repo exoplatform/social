@@ -158,6 +158,70 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assert true;
   }
 
+  public  void testGetCommentWithHtmlContent(){
+    String htmlString = "<span><strong>foo</strong>bar<script>zed</script></span>";
+    String htmlRemovedString = "<span><strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;</span>";
+    
+    Activity activity = new Activity();
+    activity.setTitle("blah blah");
+    activityManager.saveActivity(rootIdentity, activity);
+
+    Activity comment = new Activity();
+    comment.setTitle(htmlString);
+    comment.setUserId(rootIdentity.getId());
+    comment.setBody(htmlString);
+    activityManager.saveComment(activity, comment);
+    assertNotNull("comment.getId() must not be null", comment.getId());
+
+    List<Activity> comments = activityManager.getComments(activity);
+    assertEquals(1, comments.size());
+    assertEquals(htmlRemovedString, comments.get(0).getBody());
+    assertEquals(htmlRemovedString, comments.get(0).getTitle());
+    tearDownActivityList.add(activity);    
+  }
+  
+  public  void testGetComment(){
+    Activity activity = new Activity();
+    activity.setTitle("blah blah");
+    activityManager.saveActivity(rootIdentity, activity);
+
+    Activity comment = new Activity();
+    comment.setTitle("comment blah blah");
+    comment.setUserId(rootIdentity.getId());
+
+    activityManager.saveComment(activity, comment);
+
+    assertNotNull("comment.getId() must not be null", comment.getId());
+
+    String[] commentsId = activity.getReplyToId().split(",");
+    assertEquals(comment.getId(), commentsId[1]);
+    tearDownActivityList.add(activity);
+  }
+
+  public  void testGetComments(){
+    Activity activity = new Activity();
+    activity.setTitle("blah blah");
+    activityManager.saveActivity(rootIdentity, activity);
+
+    List<Activity> comments = new ArrayList<Activity>();
+    for (int i = 0; i < 10; i++) {
+      Activity comment = new Activity();
+      comment.setTitle("comment blah blah");
+      comment.setUserId(rootIdentity.getId());
+      activityManager.saveComment(activity, comment);
+      assertNotNull("comment.getId() must not be null", comment.getId());
+
+      comments.add(comment);
+    }
+
+    Activity assertActivity = activityManager.getActivity(activity.getId());
+    String rawCommentIds = assertActivity.getReplyToId();
+    String[] commentIds = rawCommentIds.split(",");
+    for (int i = 1; i < commentIds.length; i++) {
+      assertEquals(comments.get(i - 1).getId(), commentIds[i]);
+    }
+    tearDownActivityList.add(activity);
+  }
   /**
    * Unit Test for:
    * <p>
