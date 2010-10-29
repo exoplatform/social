@@ -181,16 +181,19 @@ public class UIComposer extends UIForm {
       UIActivityComposer activityComposer = activityComposerManager.getCurrentActivityComposer();
 
       //get posted message
-      String message = uiComposer.getMessage().trim();
+      String message = (uiComposer.getMessage() == null)?"":uiComposer.getMessage();
+
       String defaultInput = "";
       if (uiComposer.getPostContext() == PostContext.SPACE) {
         defaultInput = event.getRequestContext().getApplicationResourceBundle().getString(uiComposer.getId()+".input.Write_Something");
       } else {
         defaultInput = event.getRequestContext().getApplicationResourceBundle().getString(uiComposer.getId()+".input.What_Are_You_Working_On");
       }
+
       if (message.equals(defaultInput)) {
         message = "";
       }
+      
       UIFormTextAreaInput messageInput = uiComposer.getChild(UIFormTextAreaInput.class);
       messageInput.setValue("");
       //post activity via the current activity composer

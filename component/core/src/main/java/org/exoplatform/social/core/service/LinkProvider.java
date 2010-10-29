@@ -71,7 +71,7 @@ public class LinkProvider {
   }
 
   public String getProfileLink(String username, String portalOwner) {
-    String link;
+    String link = null;
 
     try {
       Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
@@ -91,7 +91,6 @@ public class LinkProvider {
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
     } catch (Exception e) {
       LOG.warn("failed to substitute username for " + username + ": " + e.getMessage());
-      return null;
     }
     return link;
   }
