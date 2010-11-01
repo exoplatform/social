@@ -26,12 +26,12 @@
   <parent>
     <artifactId>social-project</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.1.1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extension</artifactId>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.1.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Extension</name>
   <description>eXo Social Extension</description>
