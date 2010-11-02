@@ -329,7 +329,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     List<Activity> activities = activityManager.getActivities(johnIdentity, 0, retrievedCount);
     assertEquals(retrievedCount, activities.size());
 
-    tearDownActivityList.addAll(activities);
+    tearDownActivityList.addAll(activityManager.getActivities(johnIdentity, 0, totalActivityCount));
   }
 
   /**

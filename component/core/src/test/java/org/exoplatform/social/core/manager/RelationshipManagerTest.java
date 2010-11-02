@@ -19,6 +19,9 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -29,6 +32,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  *
  */
 public class RelationshipManagerTest extends AbstractCoreTest {
+  private Log LOG = ExoLogger.getLogger(RelationshipManagerTest.class);
   private RelationshipManager relationshipManager;
   private IdentityManager identityManager;
 
@@ -82,6 +86,8 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     assertEquals(1, receiverRelationships.size());
 
     tearDownRelationshipList.addAll(senderRelationships);
+
+
 
   }
 

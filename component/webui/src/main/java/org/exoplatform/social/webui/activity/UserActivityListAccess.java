@@ -87,21 +87,23 @@ public class UserActivityListAccess implements ListAccess<Activity> {
 
   private List<Activity> getActivitiesOfConnections(int index, int length) throws Exception {
     List<Activity> activityList = activityManager.getActivitiesOfConnections(ownerIdentity);
-    Collections.sort(activityList, Util.activityComparator());
-    try {
-      return activityList.subList(index, index + length);
-    } catch (Exception e) {
-      return activityList.subList(index, activityList.size() - 1);
-    }
+    return getActivityList(index, length, activityList);
 
   }
 
   private List<Activity> getActivitiesOfUserSpaces(int index, int length) {
     List<Activity> activityList = activityManager.getActivitiesOfUserSpaces(ownerIdentity);
+    return getActivityList(index, length, activityList);
+  }
+
+  private List<Activity> getActivityList(int index, int length, List<Activity> activityList) {
     Collections.sort(activityList, Util.activityComparator());
+    if (activityList.size() < 1) {
+      return activityList;
+    }
     try {
       return activityList.subList(index, index + length);
-    } catch(Exception e) {
+    } catch (Exception e) {
       return activityList.subList(index, activityList.size() - 1);
     }
   }

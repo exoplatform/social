@@ -453,30 +453,18 @@ public class BaseUIActivity extends UIForm {
     return getApplicationComponent(SpaceService.class);
   }
 
-  public boolean isSpaceActivity(String id) {
-    try {
-      identityManager = getIdentityManager();
-      Identity identity = identityManager.getIdentity(id, false);
-      String remoteId = identity.getRemoteId();
-      boolean result = (identityManager.getIdentity(SpaceIdentityProvider.NAME, remoteId, false) != null);
-      return result;
-    } catch (Exception e) {
-      return false;
-    }
-  }
-
   public boolean isUserActivity(String id) throws Exception {
+    boolean isUserActivity = false;
     try {
       identityManager = getIdentityManager();
       Identity identity = identityManager.getIdentity(id, false);
-      String remoteId = identity.getRemoteId();
-      boolean result = (identityManager.getIdentity(OrganizationIdentityProvider.NAME,
-                                                     remoteId,
-                                                     false) != null);
-      return result;
+      if (identity != null) {
+        isUserActivity = (identity.getProviderId().equals(OrganizationIdentityProvider.NAME));
+      }
     } catch (Exception e) {
-      return false;
+      LOG.warn("Failed to check if an activity is of a user." + e.getMessage());
     }
+    return isUserActivity;
   }
 
   public boolean isActivityDeletable() throws SpaceException {

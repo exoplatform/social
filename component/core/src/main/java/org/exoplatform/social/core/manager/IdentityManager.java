@@ -357,18 +357,26 @@ public class IdentityManager {
    * @return identity
    */
   public Identity getIdentity(String providerId, String remoteId, boolean loadProfile) {
-    GlobalId globalIdCacheKey = new GlobalId(providerId+GlobalId.SEPARATOR+remoteId);
+    GlobalId globalIdCacheKey = new GlobalId(providerId + GlobalId.SEPARATOR + remoteId);
     Identity cachedIdentity = identityCache.get(globalIdCacheKey);
     if (cachedIdentity == null) {
       IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
       cachedIdentity = identityProvider.getIdentityByRemoteId(remoteId);
       if (cachedIdentity != null) {
-        if (loadProfile) {
-          identityStorage.loadProfile(cachedIdentity.getProfile());
+        Identity storedIdentity = identityStorage.findIdentity(providerId, remoteId);
+        if (storedIdentity != null) {
+          cachedIdentity.setId(storedIdentity.getId());
+          if (loadProfile) {
+            identityStorage.loadProfile(cachedIdentity.getProfile());
+          }
+        } else {
+          //save new identity
+          identityStorage.saveIdentity(cachedIdentity);
         }
-        identityCache.put(globalIdCacheKey, cachedIdentity);
       }
+      identityCache.put(globalIdCacheKey, cachedIdentity);
     }
+
     return cachedIdentity;
   }
 

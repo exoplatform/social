@@ -41,10 +41,10 @@ public class IdentityManagerTest extends AbstractCoreTest {
   private List<Identity>  tearDownIdentityList;
 
   public void setUp() throws Exception {
+    super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     assertNotNull(identityManager);
     tearDownIdentityList = new ArrayList<Identity>();
-    super.setUp();
   }
 
   public void tearDown() throws Exception {
@@ -72,15 +72,17 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
     assertNotNull(tobeSavedIdentity.getId());
 
-    final String updatedRemoteId = "identity-updated";
+    //final String updatedRemoteId = "identity-updated";
 
-    tobeSavedIdentity.setRemoteId(updatedRemoteId);
+    //tobeSavedIdentity.setRemoteId(updatedRemoteId);
 
-    identityManager.saveIdentity(tobeSavedIdentity);
+    //identityManager.saveIdentity(tobeSavedIdentity);
 
-    Identity gotIdentity = identityManager.getIdentity(tobeSavedIdentity.getId());
+    //Identity gotIdentity = identityManager.getIdentity(tobeSavedIdentity.getId());
 
-    assertEquals(updatedRemoteId, gotIdentity.getRemoteId());
+    //assertEquals(updatedRemoteId, gotIdentity.getRemoteId());
+
+    tearDownIdentityList.add(tobeSavedIdentity);
   }
 
   /**
@@ -120,8 +122,8 @@ public class IdentityManagerTest extends AbstractCoreTest {
       Identity gotIdentity2 = identityManager.getIdentity(globalId.toString());
       // "root" is found on OrganizationIdentityProvider (OrganizationService)
       assertNotNull("gotIdentity2 must not be null", gotIdentity2);
-      // "username" is not saved in JCR yet so its id should be null
-      assertNull("gotIdentity2.getId() must be null", gotIdentity2.getId());
+
+      assertNotNull("gotIdentity2.getId() must not be null", gotIdentity2.getId());
 
       // TODO hoatle: do this for 1.2.x
       // "username" is not saved in JCR yet so its id should be
@@ -135,7 +137,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
       assertEquals("gotIdentity2.getRemoteId() must return: " + username,
                    username,
                    gotIdentity2.getRemoteId());
-      assertNull("gotIdentity2.getProfile().getId() must return: null", gotIdentity2.getProfile()
+      assertNotNull("gotIdentity2.getProfile().getId() must not be null", gotIdentity2.getProfile()
                                                                                     .getId());
     }
 
@@ -185,7 +187,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
       Identity gotIdentity2 = identityManager.getIdentity(globalId.toString(), false);
       // "root" is found on OrganizationIdentityProvider (OrganizationService)
       assertNotNull("gotIdentity2 must not be null", gotIdentity2);
-      assertNull("gotIdentity2.getId() must be null", gotIdentity2.getId());
+      assertNotNull("gotIdentity2.getId() must not be null", gotIdentity2.getId());
       // assertEquals("gotIdentity2.getId() must be: " + globalId.toString(),
       // globalId.toString(), gotIdentity2.getId());
       assertEquals("gotIdentity2.getProviderId() must return: " + OrganizationIdentityProvider.NAME,
@@ -224,7 +226,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     Identity gotIdentity = identityManager.getIdentity(globalId.toString());
     assertNotNull("gotIdentity must not be null because " + username + " is in organizationService",
                   gotIdentity);
-    assertNull("gotIdentity.getId() must be null", gotIdentity.getId());
+    assertNotNull("gotIdentity.getId() must not be null", gotIdentity.getId());
     // assertEquals("gotIdentity.getId() must be: " + globalId.toString(),
     // globalId.toString(), gotIdentity.getId());
   }
@@ -253,6 +255,11 @@ public class IdentityManagerTest extends AbstractCoreTest {
       assertNotNull("gotIdentity1.getId() must not be null", gotIdentity1.getId());
       assertNotNull("gotIdentity1.getProfile().getId() must not be null", gotIdentity1.getProfile()
                                                                                       .getId());
+      Identity regotIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username1);
+
+      assertNotNull("regotIdentity.getId() must not be null", regotIdentity.getId());
+      assertNotNull("regotIdentity.getProfile().getId() must not be null", regotIdentity.getProfile().getId());
+      
     }
 
     // load profile = false
@@ -417,8 +424,6 @@ public class IdentityManagerTest extends AbstractCoreTest {
    * Test cache management
    */
   public void testCacheMangement() {
-    assert true;
-    /*
     Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                 "root");
     Identity johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
@@ -467,6 +472,5 @@ public class IdentityManagerTest extends AbstractCoreTest {
     } catch (InterruptedException e) {
       LOG.error(e.getMessage(), e);
     }
-    */
   }
 }

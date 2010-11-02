@@ -59,6 +59,12 @@ public class ActivityStorageTest extends AbstractCoreTest {
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+
+    assertNotNull("rootIdentity.getId() must not be null", rootIdentity.getId());
+    assertNotNull("johnIdentity.getId() must not be null", johnIdentity.getId());
+    assertNotNull("maryIdentity.getId() must not be null", maryIdentity.getId());                   
+    assertNotNull("demoIdentity.getId() must not be null", demoIdentity.getId());
+
     tearDownActivityList = new ArrayList<Activity>();
   }
 
