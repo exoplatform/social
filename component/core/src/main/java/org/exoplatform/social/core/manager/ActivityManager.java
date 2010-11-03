@@ -36,7 +36,6 @@ import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
@@ -152,7 +151,7 @@ public class ActivityManager {
   public void deleteActivity(String activityId) {
     Activity activity = storage.getActivity(activityId);
     if (activity != null) {
-      Identity streamOwner = identityManager.getIdentity(OrganizationIdentityProvider.NAME, activity.getStreamOwner(), false);
+      Identity streamOwner = identityManager.getIdentity(activity.getStreamOwner(), false);
       storage.deleteActivity(activityId);
       try {
         activityCache.remove(streamOwner.getId());
@@ -219,7 +218,6 @@ public class ActivityManager {
     }
     return segments.get(segment);
   }
-
 
   /**
    * Gets activities of connections from an identity.

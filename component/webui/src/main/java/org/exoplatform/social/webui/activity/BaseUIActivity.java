@@ -633,6 +633,7 @@ public class BaseUIActivity extends UIForm {
       activityManager.deleteActivity(uiActivity.getActivity().getId());
       UIActivitiesContainer activitiesContainer = uiActivity.getParent();
       activitiesContainer.removeChildById(uiActivity.getId());
+      activitiesContainer.removeActivity(uiActivity.getActivity());
 
       event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
     }

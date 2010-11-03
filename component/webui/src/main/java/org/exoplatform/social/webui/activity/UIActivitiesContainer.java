@@ -121,4 +121,8 @@ public class UIActivitiesContainer extends UIContainer {
     activityList = list;
     init();
   }
+
+  public void removeActivity(Activity activity) {
+    activityList.remove(activity);
+  }
 }
