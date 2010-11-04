@@ -122,7 +122,12 @@ public class UIActivitiesContainer extends UIContainer {
     init();
   }
 
-  public void removeActivity(Activity activity) {
-    activityList.remove(activity);
+  public void removeActivity(Activity removedActivity) {
+    for (Activity activity: activityList) {
+      if (activity.getId() == removedActivity.getId()) {
+        activityList.remove(activity);
+        break;
+      }
+    }
   }
 }
