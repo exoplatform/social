@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.SpaceException;
@@ -220,10 +222,7 @@ public class ActivityManager {
   }
 
   /**
-   * Gets activities of connections from an identity.
-   *
-   * This is a not-yet-sorted list by time.
-   *
+   * Gets activities of connections from an identity. The activities are sorted by time.
    * Though by using cache, this still can be considered as the cause of the biggest performance problem.
    *
    * @param ownerIdentity
@@ -250,13 +249,14 @@ public class ActivityManager {
         }
       }
     }
+    Collections.sort(activityList, Util.activityComparator());
     return activityList;
   }
 
   /**
    * Gets the activities from all user's spaces.
    * By default, the activity list is composed of all spaces' activities.
-   * Each space's activity list contains 20 activities max
+   * Each space's activity list contains 20 activities max and are sorted by time.
    *
    * @param ownerIdentity
    * @return list of activities
@@ -279,9 +279,29 @@ public class ActivityManager {
         LOG.warn(e.getMessage(), e);
       }
     }
+    Collections.sort(activityList, Util.activityComparator());
     return activityList;
   }
 
+  /**
+   * Gets the activity feed of an identity. This feed is the combination of all
+   * the activities of his own activities, his connections' activities and his
+   * spaces' activities which are sorted by time. The latest activity is the
+   * first item in the activity list.
+   * 
+   * @param identity
+   * @return all related activities of identity such as his activities, his
+   *         connections's activities, his spaces's activities
+   */
+  public List<Activity> getActivityFeed(Identity identity)
+  {
+    List<Activity> activityList = new ArrayList<Activity>();
+    activityList.addAll(getActivitiesOfConnections(identity));
+    activityList.addAll(getActivitiesOfUserSpaces(identity));
+    activityList.addAll(getActivities(identity));
+    Collections.sort(activityList, Util.activityComparator());
+    return activityList;
+  }
 
   /**
    * Saves activity into the stream for the activity's userId.
@@ -297,7 +317,6 @@ public class ActivityManager {
     Identity owner = identityManager.getIdentity(activity.getUserId());
     return saveActivity(owner, activity);
   }
-
 
   /**
    * Save new or updates comment to an activity comment is an instance of

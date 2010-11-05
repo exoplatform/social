@@ -17,9 +17,9 @@ h1. Activity Manager
 | *addProcessor*(ActivityProcessor processor, Adds a new processor}} | {{processor}}; {{addProcessorPlugin}} |  |  |
 | *addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} |  | To add a new processor plug-in. |
 | *getActivitiesCount*(Identity owner) |  |  |  |
-| *getActivitiesOfConnections*(Identity ownerIdentity)| {{ownerIdentity}}| List<Activity> | Gets activities of connections from an identity |
-| *getActivitiesOfUserSpaces*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activities from all user's spaces.|
-
+| *getActivitiesOfConnections*(Identity ownerIdentity)| {{ownerIdentity}}| List<Activity> | Gets activities of connections from an identity which is sorted by time.|
+| *getActivitiesOfUserSpaces*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activities from all user's spaces which is sorted by time.|
+| *getActivityFeed*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activity feed of an identity. This feed is the combination of all the activities of his own activities, his connections' activities and his spaces' activities which is sorted by time. The latest activity is the first item in the activity list.|
 
 h1. IdentityManager
 
