@@ -284,25 +284,6 @@
   </external-component-plugins>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
-    <component-plugin>
-      <name>new.user.event.listener</name>
-      <set-method>addListenerPlugin</set-method>
-      <type>org.exoplatform.social.core.identity.UserToIdentityEventListener</type>
-      <init-params>
-        <values-param>
-          <name>ignored-list</name>
-          <description>ignored-list</description>
-          <value>root</value>
-          <value>john</value>
-          <value>mary</value>
-          <value>demo</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
     <component-plugin>
       <name>add.social.nodeType</name>
