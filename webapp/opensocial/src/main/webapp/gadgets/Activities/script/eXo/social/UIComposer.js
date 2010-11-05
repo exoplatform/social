@@ -27,6 +27,7 @@ eXo.social.UIComposer = function(el) {
  *
  */
 eXo.social.UIComposer.prototype.focusInput = function(el) {
+  var SocialUtil = eXo.social.SocialUtil;
   var statusUpdate = this.statusUpdate;
   //BUG SOC-386
   var el = this.inputEl || el; //ie fix, el = window not dom element
@@ -42,15 +43,17 @@ eXo.social.UIComposer.prototype.focusInput = function(el) {
   if(el.value === this.DEFAULT_INPUT) {
     el.style.color="#000000";
     el.style.height="50px";
-    el.value = "";
-    el.appendChild(document.createElement('br'));
+    el.value = '';
   }
+  
+  SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
 }
 
 /**
  * element when onblur
  */
 eXo.social.UIComposer.prototype.blurInput = function(el) {
+  var SocialUtil = eXo.social.SocialUtil;
   var statusUpdate = this.statusUpdate;
   var el = this.inputEl || el;
   if (statusUpdate.currentView === 'home') {
@@ -79,6 +82,8 @@ eXo.social.UIComposer.prototype.blurInput = function(el) {
     this.inputTextContent = content;
     statusUpdate.shareable = true;
   }
+  
+  SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
 }
 
 /**
@@ -89,13 +94,14 @@ eXo.social.UIComposer.prototype.onKeyPress = function(evt) {
   var ENTER_KEY_NUM = 13;
   var BACK_SPACE_KEY_NUM = 8;
   var DELETE_KEY_NUM = 46;
+  var SocialUtil = eXo.social.SocialUtil;
   if(window.event) {// IE
       keyNum = evt.keyCode;
     } else if (evt.which) { // Netscape/Firefox/Opera
       keyNum = evt.which;
     }
     if ((ENTER_KEY_NUM == keyNum) || (BACK_SPACE_KEY_NUM == keyNum) || (DELETE_KEY_NUM == keyNum)){
-      gadgets.window.adjustHeight();
+      SocialUtil.adjustHeight(this.statusUpdate.contentForAdjustHeight);
     }
 }
 /**

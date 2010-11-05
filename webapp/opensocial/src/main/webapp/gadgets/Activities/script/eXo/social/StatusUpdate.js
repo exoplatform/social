@@ -31,6 +31,7 @@ eXo.social.StatusUpdate = function() {
   this.friendsMoreClickedTimes = 0;
   this.miniMessage = new gadgets.MiniMessage();
   this.isOwnerActivityShown = false;
+  this.contentForAdjustHeight;
 }
 
 /**
@@ -118,10 +119,14 @@ eXo.social.StatusUpdate.configEnvironment = function() {
  */
 eXo.social.StatusUpdate.main = function() {
   var Util = eXo.social.Util;
+  var SocialUtil = eXo.social.SocialUtil;
   Util.hideElement(eXo.social.StatusUpdate.config.ui.UI_STATUS_UPDATE);
-  //get full render from start BUG #SOC-375
-  gadgets.window.adjustHeight();
   var statusUpdate = new eXo.social.StatusUpdate();
+  
+  //get full render from start BUG #SOC-375
+  statusUpdate.contentForAdjustHeight = document.getElementById("ActivitiesContainer");
+  SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
+  
   statusUpdate.init();
   //create and use linkShare object
   var linkShare = eXo.social.linkShare = new eXo.social.LinkShare();
@@ -143,6 +148,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
   var Locale = eXo.social.Locale;
   var UIComposer = eXo.social.UIComposer;
   var Util = eXo.social.Util;
+  var SocialUtil = eXo.social.SocialUtil;
   var StatusUpdate = eXo.social.StatusUpdate;
   var config = StatusUpdate.config;
   var statusUpdate = this;
@@ -192,7 +198,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
       Util.showElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
     }
 
-    gadgets.window.adjustHeight();
+    SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
   }, false);
 
   //run to set viewer, owner, owner's friends
@@ -302,7 +308,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
         debug.warn('Can not get viewer, owner, ownerFriends!');
         debug.info(response);
         miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
-        gadgets.window.adjustHeight();
+        SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
         return;
       }
       statusUpdate.viewer = response.get('viewer').getData();
@@ -557,6 +563,7 @@ eXo.social.StatusUpdate.prototype.updateFriendsActivities = function() {
 eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, dataMode) {
   var Locale = eXo.social.Locale;
   var Util = eXo.social.Util;
+  var SocialUtil = eXo.social.SocialUtil;
   var Like = eXo.social.Like;
   var Comment = eXo.social.Comment;
   var StatusUpdate = eXo.social.StatusUpdate;
@@ -840,7 +847,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         } else {
           Util.getElementById(appendableRootId).innerHTML = '<div class="Empty">' + Locale.getMsg('displayName_do_not_have_update', [displayName]) + '</div>';
         }
-        gadgets.window.adjustHeight();
+        SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
         return;
       }
 
@@ -904,7 +911,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
       ajaxQueue();
       function ajaxQueue() {
       if (index === displayActivityNum) {
-        gadgets.window.adjustHeight();
+        SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
         displayActivitiesNext = true;
         return
       }

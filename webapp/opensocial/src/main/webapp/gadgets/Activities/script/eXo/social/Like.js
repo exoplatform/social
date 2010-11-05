@@ -89,6 +89,7 @@ eXo.social.Like.removeLikeId = function(activityId, userId, callback) {
  * @static
  */
 eXo.social.Like.displayLike = function(response) {
+	var SocialUtil = eXo.social.SocialUtil;
   var Util = eXo.social.Util;
   var Locale = eXo.social.Locale;
   var Like = eXo.social.Like;
@@ -129,7 +130,7 @@ eXo.social.Like.displayLike = function(response) {
     like.innerHTML = Locale.getMsg('like');
     like.onclick = function() { Like.setLikeId(activityId, viewerId, Like.displayLike); };
     listPeopleLike.style.display = 'none';
-    gadgets.window.adjustHeight();
+    SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
     return;
   }
   for (var i = 0, l = likes.length; i < l; i++) {
@@ -183,6 +184,7 @@ eXo.social.Like.displayLike = function(response) {
  * render like details
  */
 eXo.social.Like.renderListPeople = function(activityId, likes) {
+	var SocialUtil = eXo.social.SocialUtil;
   var Util = eXo.social.Util,
     Like = eXo.social.Like;
   if(!activityId) {
@@ -209,7 +211,7 @@ eXo.social.Like.renderListPeople = function(activityId, likes) {
     }
   }
   listPeople.innerHTML = html.join('');
-  gadgets.window.adjustHeight();
+  SocialUtil.adjustHeight(Like.ref.statusUpdate.contentForAdjustHeight);
 }
 
 /**
@@ -219,6 +221,7 @@ eXo.social.Like.renderListPeople = function(activityId, likes) {
  * @static
  */
 eXo.social.Like.toggleDisplayListPeople = function(activityId) {
+	var SocialUtil = eXo.social.SocialUtil;
   var Util = eXo.social.Util;
   var listPeople = Util.getElementById('ListPeople' + activityId);
   if (listPeople.style.display === 'none') {
@@ -226,5 +229,5 @@ eXo.social.Like.toggleDisplayListPeople = function(activityId) {
   } else {
     listPeople.style.display = 'none';
   }
-  gadgets.window.adjustHeight();
+  SocialUtil.adjustHeight(Like.ref.statusUpdate.contentForAdjustHeight);
 }
