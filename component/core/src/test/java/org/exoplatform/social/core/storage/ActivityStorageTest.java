@@ -246,8 +246,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
    *
    */
   public void testGetActivities() {
-    assert true;
-    /*
     final int totalNumber = 20;
     final String activityTitle = "activity title";
     //John posts activity to root's activity stream
@@ -294,15 +292,14 @@ public class ActivityStorageTest extends AbstractCoreTest {
       List<Activity> gotRootActivityList = activityStorage.getActivities(rootIdentity, 0, limit);
       assertEquals("gotRootActivityList.size() must return " + limit, limit, gotRootActivityList.size());
     }
-    */
+
   }
 
   /**
    * Test {@link ActivityStorage#getActivitiesCount(Identity)}
    */
   public void testGetActivitiesCount() {
-    assert true;
-    /*
+
     final int totalNumber = 20;
     //create 20 activities each for root, john, mary, demo.
     for (int i = 0; i < totalNumber; i++) {
@@ -342,7 +339,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("activityStorage.getActivitiesCount(johnIdentity) must return " + totalNumber, totalNumber, activityStorage.getActivitiesCount(johnIdentity));
     assertEquals("activityStorage.getActivitiesCount(maryIdentity) must return " + totalNumber, totalNumber, activityStorage.getActivitiesCount(maryIdentity));
     assertEquals("activityStorage.getActivitiesCount(demoIdentity) must return " + totalNumber, totalNumber, activityStorage.getActivitiesCount(demoIdentity));
-    */
+
   }
 
 
@@ -350,70 +347,29 @@ public class ActivityStorageTest extends AbstractCoreTest {
    *
    */
   public void testGetStreamInfo() {
-    final String username = "root";
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
 
     // root save on root's stream
     Activity activity = new Activity();
     activity.setTitle("blabla");
     activity.setUpdated(new Date());
-    activityStorage.saveActivity(identity, activity);
+    activityStorage.saveActivity(demoIdentity, activity);
 
     String streamId = activity.getStreamId();
     assertNotNull(streamId);
-    assertEquals(activity.getStreamOwner(), identity.getRemoteId());
+    assertEquals(activity.getStreamOwner(), demoIdentity.getRemoteId());
 
-    List<Activity> activities = activityStorage.getActivities(identity);
+    List<Activity> activities = activityStorage.getActivities(demoIdentity);
     assertEquals(1, activities.size());
-    assertEquals(identity.getRemoteId(), activities.get(0).getStreamOwner());
+    assertEquals(demoIdentity.getRemoteId(), activities.get(0).getStreamOwner());
     assertEquals(streamId, activities.get(0).getStreamId());
 
     Activity loaded = activityStorage.getActivity(activity.getId());
-    assertEquals(identity.getRemoteId(), loaded.getStreamOwner());
+    assertEquals(demoIdentity.getRemoteId(), loaded.getStreamOwner());
     assertEquals(streamId, loaded.getStreamId());
 
     tearDownActivityList.add(activity);
   }
 
-  /**
-   *
-   */
-  public void testGetAllActivities() {
-    assert true;
-    /*
-    final int totalActivityCount = 27;
-    final String username = "john";
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
-
-    for (int i = 0; i < totalActivityCount; i++) {
-      // root save on john's stream
-      Activity activity = new Activity();
-      activity.setTitle("blabla");
-      activity.setUserId("root");
-      activity.setUpdated(new Date());
-
-      //save activity
-      activityStorage.saveActivity(identity, activity);
-      tearDownActivityList.add(activity);
-      //test activity has been created
-      String streamId = activity.getStreamId();
-      assertNotNull(streamId);
-      assertEquals(identity.getRemoteId(), activity.getStreamOwner());
-
-      Activity comment = new Activity();
-      comment.setTitle("this is activity " + i);
-      comment.setUserId(identity.getRemoteId());
-      comment.setUpdated(new Date());
-      comment.setReplyToId(Activity.IS_COMMENT);
-      activityStorage.saveActivity(identity, comment);
-
-      tearDownActivityList.add(comment);
-    }
-
-    List<Activity> activities = activityStorage.getActivities(identity);
-    assertEquals(totalActivityCount, activities.size());
-    */
-  }
 
   /**
    *
@@ -421,17 +377,15 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetActivitiesByPagingWithoutCreatingComments() {
     final int totalActivityCount = 9;
     final int retrievedCount = 7;
-    final String spaceName = "spaceName";
-    Identity identity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceName);
 
     for (int i = 0; i < totalActivityCount; i++) {
       Activity activity = new Activity();
       activity.setTitle("blabla");
-      activityStorage.saveActivity(identity, activity);
+      activityStorage.saveActivity(demoIdentity, activity);
       tearDownActivityList.add(activity);
     }
 
-    List<Activity> activities = activityStorage.getActivities(identity, 0, retrievedCount);
+    List<Activity> activities = activityStorage.getActivities(demoIdentity, 0, retrievedCount);
     assertEquals(retrievedCount, activities.size());
 
   }
@@ -441,16 +395,14 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetActivitiesByPagingWithCreatingComments() {
     final int totalActivityCount = 2;
     final int retrievedCount = 1;
-    final String username = "john";
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
 
     for (int i = 0; i < totalActivityCount; i++) {
       // root save on john's stream
       Activity activity = new Activity();
       activity.setTitle("blabla");
-      activity.setUserId(identity.getId());
+      activity.setUserId(johnIdentity.getId());
 
-      activityStorage.saveActivity(identity, activity);
+      activityStorage.saveActivity(johnIdentity, activity);
 
       //for teardown cleanup
       tearDownActivityList.add(activity);
@@ -458,16 +410,16 @@ public class ActivityStorageTest extends AbstractCoreTest {
       //test activity has been created
       String streamId = activity.getStreamId();
       assertNotNull(streamId);
-      assertEquals(activity.getStreamOwner(), identity.getRemoteId());
+      assertEquals(activity.getStreamOwner(), johnIdentity.getRemoteId());
 
       Activity comment = new Activity();
       comment.setTitle("this is comment " + i);
-      comment.setUserId(identity.getId());
+      comment.setUserId(johnIdentity.getId());
       activityStorage.saveComment(activity, comment);
 
     }
 
-    List<Activity> activities = activityStorage.getActivities(identity, 0, retrievedCount);
+    List<Activity> activities = activityStorage.getActivities(johnIdentity, 0, retrievedCount);
     assertEquals(retrievedCount, activities.size());
 
   }
@@ -475,8 +427,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    */
   public void testTemplateParams() {
-    final String username = "root";
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
     final String URL_PARAMS = "URL";
     Activity activity = new Activity();
     activity.setTitle("blabla");
@@ -487,11 +437,11 @@ public class ActivityStorageTest extends AbstractCoreTest {
     templateParams.put(URL_PARAMS, "http://xxxxxxxxxxxxxxxx/xxxx=xxxxx");
     activity.setTemplateParams(templateParams);
 
-    activityStorage.saveActivity(identity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
 
     tearDownActivityList.add(activity);
 
-    activity = activityStorage.getActivities(identity).get(0);
+    activity = activityStorage.getActivities(rootIdentity).get(0);
     assertNotNull("activity must not be null", activity);
     assertNotNull("activity.getTemplateParams() must not be null", activity.getTemplateParams());
     assertEquals("http://xxxxxxxxxxxxxxxx/xxxx=xxxxx", activity.getTemplateParams().get(URL_PARAMS));

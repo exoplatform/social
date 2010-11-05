@@ -136,12 +136,8 @@ public class IdentityManager {
       String remoteId = globalId.getLocalId();
       cachedIdentity = identityCache.get(globalId);
       if (cachedIdentity == null) {
-        cachedIdentity = getIdentity(providerId, remoteId, loadProfile);
+        cachedIdentity = getOrCreateIdentity(providerId, remoteId, loadProfile);
         if (cachedIdentity != null) {
-          /*
-          if (loadProfile) {
-            identityStorage.loadProfile(cachedIdentity.getProfile());
-          }*/
           identityCache.put(globalId, cachedIdentity);
           return cachedIdentity;
         }
@@ -221,7 +217,12 @@ public class IdentityManager {
    * <p>
    * For example if the type is Linked'In, the identifier will be the URL of the profile
    * or if it's a CS contact manager contact, it will be the UID of the contact.</p>
-   *  A new identity is created if it does not exist.
+   *  A new identity is created if it is found by provider, if not null will be returned.
+   *
+   * If identity is found by provider and not stored, store it. If stored, return it.
+   *
+   * If identity is not found by provider, return null. If stored, delete that stored identity.
+   *
    *
    * @param providerId refering to the name of the Identity provider
    * @param remoteId   the identifier that identify the identity in the specific identity provider
@@ -244,15 +245,18 @@ public class IdentityManager {
           identityStorage.saveProfile(identity1.getProfile());
           result = identity1;
         } else {
-          //TODO Not found in provider, so why still save?
-          result = new Identity(providerId, remoteId);
-          saveIdentity(result);
-          if (loadProfile) {
-            identityStorage.loadProfile(result.getProfile());
-          }
+          //Not found in provider, so return null
+          return result;
         }
-      } else if (loadProfile) {
-        identityStorage.loadProfile(result.getProfile());
+      } else {
+        if (identity1 == null) {
+          //in the case: identity is stored but identity is not found from provider, delete that identity
+          identityStorage.deleteIdentity(result);
+          return null;
+        }
+        if (loadProfile) {
+          identityStorage.loadProfile(result.getProfile());
+        }
       }
       cachedIdentity = result;
       if (cachedIdentity.getId() != null) {

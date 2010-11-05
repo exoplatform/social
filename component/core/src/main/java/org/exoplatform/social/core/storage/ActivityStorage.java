@@ -599,8 +599,7 @@ public class ActivityStorage {
     Activity activity = new Activity();
     try {
       activity.setId(activityNode.getUUID());
-      activity.setStreamId(activityNode.getParent().getUUID());
-      activity.setStreamOwner(activityNode.getParent().getParent().getName());
+      setStreamInfo(activity, activityNode);
 
       if (activityNode.hasProperty(BODY)) {
         activity.setBody(activityNode.getProperty(BODY).getString());
