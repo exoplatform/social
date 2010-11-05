@@ -8,11 +8,6 @@
   /* float: left; */ /* orientation=rt */
 /*}*/
 
-*,div, table, tr, td, img, form{
-	font-family:lucida,Tahoma,Verdana,Arial,Helvetica,sans-serif;
-	font-size:12px;
-}
-
 .UIToolbarContainer .LAYOUT-CONTAINER {
 	overflow: hidden;
 }
@@ -54,6 +49,7 @@
 	white-space: nowrap;
 	color: #ffd400;
 	font-weight: normal;
+	font-size: 12px;
 }
 
 
@@ -67,6 +63,7 @@
 
 .UIWorkingWorkspace .UIToolbarContainer .UITab a:hover {
 	color: #aeadad;
+  font-size: 12px;
 }
 
 .UIWorkingWorkspace .UIToolbarContainer .UIHorizontalTabs .TabsContainer {
@@ -128,6 +125,7 @@
 	padding:0 10px 0 35px; /* orientation=lt */
 	padding:0 35px 0 10px; /* orientation=rt */
 	white-space:nowrap;
+  font-size: 12px;
 }
 
 .UIWorkingWorkspace .UIToolbarContainer .MenuItem a {

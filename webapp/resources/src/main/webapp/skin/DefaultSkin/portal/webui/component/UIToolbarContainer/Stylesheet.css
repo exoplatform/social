@@ -44,6 +44,7 @@
   white-space: nowrap;
   color: #ffd400;
   font-weight: normal;
+  font-size: 12px;
 }
 
 
@@ -57,6 +58,7 @@
 
 .UIWorkingWorkspace .UIToolbarContainer .UITab a:hover {
   color: #aeadad;
+  font-size: 12px;
 }
 
 .UIWorkingWorkspace .UIToolbarContainer .UIHorizontalTabs .TabsContainer {
