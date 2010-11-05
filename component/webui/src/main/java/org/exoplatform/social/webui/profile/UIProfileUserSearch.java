@@ -369,19 +369,6 @@ public class UIProfileUserSearch extends UIForm {
           return false;
       }
 
-      // Check position
-      String position = input.getPosition();
-      // Eliminate '*' and '%' character in string for checking
-      String positionForCheck = null;
-      if (position != null) {
-        positionForCheck = position.trim().replace("*", "");
-        positionForCheck = positionForCheck.replace("%", "");
-        // Make sure string for checking is started by alphabet character
-        positionForCheck = PREFIX_ADDED_FOR_CHECK + positionForCheck;
-        if (!positionForCheck.matches(POSITION_REGEX_EXPRESSION))
-          return false;
-      }
-
       return true;
     }
   }
