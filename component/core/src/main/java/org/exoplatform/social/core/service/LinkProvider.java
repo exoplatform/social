@@ -20,11 +20,13 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
 
 public class LinkProvider {
 
@@ -108,5 +110,24 @@ public class LinkProvider {
       LOG.warn("failed to substitute username for " + userName + ": " + e.getMessage());
     }
     return url;
+  }
+
+  /**
+   * @param avatarAttachment
+   * @return url to avatar
+   */
+  public static String buildAvatarUrl(AvatarAttachment avatarAttachment) {
+    String avatarUrl = null;
+    try {
+      String repository = ((RepositoryService) PortalContainer.getComponent(RepositoryService.class)).getCurrentRepository()
+                                                                                                                   .getConfiguration()
+                                                                                                                   .getName();
+      avatarUrl = "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + repository + "/"
+          + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd="
+          + avatarAttachment.getLastModified();
+    } catch (Exception e) {
+      LOG.warn("Failed to build avatar url from avatar attachment for: " + e.getMessage());
+    }
+    return avatarUrl;
   }
 }

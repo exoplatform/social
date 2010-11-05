@@ -20,9 +20,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -131,6 +129,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    *
    */
   public static class AddContactActionListener extends EventListener<UIProfileNavigationPortlet> {
+    @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
       Identity currIdentity = profileNavigationportlet.getCurrentIdentity();
@@ -159,6 +158,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    *   - Makes and Save the new relationship.<br>
    */
   public static class AcceptContactActionListener extends EventListener<UIProfileNavigationPortlet> {
+    @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
@@ -184,6 +184,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    *
    */
   public static class DenyContactActionListener extends EventListener<UIProfileNavigationPortlet> {
+    @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
       Identity currIdentity = profileNavigationportlet.getCurrentIdentity();

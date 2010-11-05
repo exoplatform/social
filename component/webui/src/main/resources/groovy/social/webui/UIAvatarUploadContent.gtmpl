@@ -21,7 +21,7 @@
 */
 %>
 <%
-  import org.exoplatform.social.core.identity.model.AvatarAttachment;
+  import org.exoplatform.social.core.model.AvatarAttachment;
   def avatarAttachment = uicomponent.avatarAttachment
   def uicomponentId = uicomponent.id
   def lalbelFileName = _ctx.appRes("${uicomponentId}.label.file_name")
@@ -51,7 +51,7 @@
             <div class="ButtonLeft">
               <div class="ButtonRight">
                 <div class="ButtonMiddle">
-                  <a href="#save">$labelSave</a>
+                  <a href="#save" onclick="return false;">$labelSave</a>
                 </div>
               </div>
             </div>
@@ -62,7 +62,7 @@
             <div class="ButtonLeft">
               <div class="ButtonRight">
                 <div class="ButtonMiddle">
-                  <a href="#abort">$labelAbort</a>
+                  <a href="#abort" onclick="return false;">$labelAbort</a>
                 </div>
               </div>
             </div>

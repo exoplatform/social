@@ -20,7 +20,7 @@
   import org.exoplatform.portal.webui.util.Util ;
   import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
-  import org.exoplatform.social.core.identity.model.AvatarAttachment;
+  import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.webui.core.UIPageIterator
 

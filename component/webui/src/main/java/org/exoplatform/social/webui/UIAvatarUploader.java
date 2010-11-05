@@ -18,8 +18,10 @@ package org.exoplatform.social.webui;
 
 import java.io.InputStream;
 
+import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
+import org.exoplatform.social.core.image.ImageUtils;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.upload.UploadResource;
 import org.exoplatform.upload.UploadService;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -54,7 +56,6 @@ import org.exoplatform.webui.form.UIFormUploadInput;
     }
   )
 })
-
 public class UIAvatarUploader extends UIForm {
   /** Message alert that image is not uploaded successfully. */
   static private final String MSG_IMG_NOT_UPLOADED = "UIAvatarUploader.msg.img_not_loaded";
@@ -72,13 +73,13 @@ public class UIAvatarUploader extends UIForm {
   private final String FIELD_UPLOADER = "Uploader";
 
   /** The limit size for upload image. */
-  private int uploadLimit = 2; //MB
+  private final int uploadLimit = 2; //MB
 
   /** List of accepted mimetype. */
-  private String[] acceptedMimeTypes = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
+  private final String[] acceptedMimeTypes = new String[] {"image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
 
   /** Stores UIFormUploadInput instance. */
-  private UIFormUploadInput uiAvatarUploadInput;
+  private final UIFormUploadInput uiAvatarUploadInput;
 
   /**
    * Initializes upload form.<br>\
@@ -107,25 +108,12 @@ public class UIAvatarUploader extends UIForm {
   }
 
   /**
-   * Gets mime extension from mimetype.<br>
-   * eg: image/gif => gif; image/jpg => jpg
-   *
-   * @param mimeType String
-   *
-   * @return file extension
-   */
-  private String getMimeExtension(String mimeType) {
-    int slashIndex = mimeType.lastIndexOf('/');
-    return mimeType.substring(slashIndex + 1);
-  }
-
-
-  /**
-   * Changes and displays avatar on the profile if upload successful,
-   * else inform user to upload image.
-   *
+   * Changes and displays avatar on the profile if upload successful, else
+   * inform user to upload image.
    */
   static public class ConfirmActionListener extends EventListener<UIAvatarUploader> {
+    // The width of resized avatar fix 200px like facebook avatar
+    private static final int WIDTH = 200;
 
     @Override
     public void execute(Event<UIAvatarUploader> event) throws Exception {
@@ -134,36 +122,58 @@ public class UIAvatarUploader extends UIForm {
       UIAvatarUploader uiAvatarUploader = event.getSource();
       UIFormUploadInput uiAvatarUploadInput = uiAvatarUploader.getChild(UIFormUploadInput.class);
       UIFormStringInput uiName = uiAvatarUploader.getChild(UIFormStringInput.class);
-      String newName = uiName.getValue();
       UIPopupWindow uiPopup = uiAvatarUploader.getParent();
-      InputStream input = uiAvatarUploadInput.getUploadDataAsStream();
-      if (input == null) {
-        uiApplication.addMessage(new ApplicationMessage(MSG_IMG_NOT_UPLOADED, null, ApplicationMessage.ERROR));
+      InputStream uploadedStream = uiAvatarUploadInput.getUploadDataAsStream();
+
+      if (uploadedStream == null) {
+        uiApplication.addMessage(new ApplicationMessage(MSG_IMG_NOT_UPLOADED,
+                                                        null,
+                                                        ApplicationMessage.ERROR));
         ctx.addUIComponentToUpdateByAjax(uiAvatarUploader);
         return;
       }
       UploadResource uploadResource = uiAvatarUploadInput.getUploadResource();
-      if (!uiAvatarUploader.isAcceptedMimeType(uploadResource.getMimeType())) {
-        UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
-        uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
-        uiApplication.addMessage(new ApplicationMessage(MSG_MIMETYPE_NOT_ACCEPTED, null, ApplicationMessage.ERROR));
+
+      String mimeType = uploadResource.getMimeType();
+      String uploadId = uiAvatarUploadInput.getUploadId();
+      if (!uiAvatarUploader.isAcceptedMimeType(mimeType)) {
+        UploadService uploadService = (UploadService) PortalContainer.getComponent(UploadService.class);
+        uploadService.removeUpload(uploadId);
+        uiApplication.addMessage(new ApplicationMessage(MSG_MIMETYPE_NOT_ACCEPTED,
+                                                        null,
+                                                        ApplicationMessage.ERROR));
         ctx.addUIComponentToUpdateByAjax(uiAvatarUploader);
       } else {
-        AvatarAttachment avatarAttachment = new AvatarAttachment();
-        avatarAttachment.setInputStream(uiAvatarUploadInput.getUploadDataAsStream());
-        avatarAttachment.setMimeType(uploadResource.getMimeType());
-        if (newName == null) {
-          newName = uploadResource.getFileName();
-        } else {
-          newName = newName + "." + uiAvatarUploader.getMimeExtension(uploadResource.getMimeType());
+        MimeTypeResolver mimeTypeResolver = new MimeTypeResolver();
+        String fileName = uiName.getValue();
+        if (fileName == null)
+          fileName = uploadResource.getFileName();
+        else
+          fileName = fileName + "." + mimeTypeResolver.getExtension(mimeType);
+
+        // Resize avatar to fixed width if can't(avatarAttachment == null) keep
+        // origin avatar
+        AvatarAttachment avatarAttachment = ImageUtils.createResizedAvatarAttachment(uploadedStream,
+                                                                                    WIDTH,
+                                                                                    0,
+                                                                                    null,
+                                                                                    fileName,
+                                                                                    mimeType,
+                                                                                    null);
+        if (avatarAttachment == null) {
+          avatarAttachment = new AvatarAttachment(null,
+                                                  fileName,
+                                                  mimeType,
+                                                  uploadedStream,
+                                                  null,
+                                                  System.currentTimeMillis());
         }
-        avatarAttachment.setFileName(newName);
-        avatarAttachment.setLastModified(System.currentTimeMillis());
 
-        UploadService uploadService = (UploadService)PortalContainer.getComponent(UploadService.class);
-        uploadService.removeUpload(uiAvatarUploadInput.getUploadId());
-
-        UIAvatarUploadContent uiAvatarUploadContent = uiAvatarUploader.createUIComponent(UIAvatarUploadContent.class, null, null);
+        UploadService uploadService = (UploadService) PortalContainer.getComponent(UploadService.class);
+        uploadService.removeUpload(uploadId);
+        UIAvatarUploadContent uiAvatarUploadContent = uiAvatarUploader.createUIComponent(UIAvatarUploadContent.class,
+                                                                                         null,
+                                                                                         null);
         uiAvatarUploadContent.setAvatarAttachment(avatarAttachment);
         uiPopup.setUIComponent(uiAvatarUploadContent);
         ctx.addUIComponentToUpdateByAjax(uiAvatarUploader.getParent());

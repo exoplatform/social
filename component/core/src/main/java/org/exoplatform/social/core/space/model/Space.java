@@ -18,7 +18,7 @@ package org.exoplatform.social.core.space.model;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
+import org.exoplatform.social.core.model.AvatarAttachment;
 
 
 // TODO: Auto-generated Javadoc

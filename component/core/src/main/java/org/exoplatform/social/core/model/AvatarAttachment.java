@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.core.identity.model;
+package org.exoplatform.social.core.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,7 +28,6 @@ import javax.jcr.Session;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 
-// TODO: Auto-generated Javadoc
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung
@@ -38,7 +37,8 @@ import org.exoplatform.services.jcr.RepositoryService;
  */
 
 /*
- * This class using for attachment profile of identity, such as image.
+ * This class using for attachment profile of identity or of space, such as
+ * image.
  */
 public class AvatarAttachment {
 
@@ -59,6 +59,32 @@ public class AvatarAttachment {
 
   /** The last modified. */
   private long lastModified;
+
+  public AvatarAttachment() {
+  }
+
+  /**
+   * @param id
+   * @param fileName
+   * @param mimeType
+   * @param inputStream
+   * @param workspace
+   * @param lastModified
+   * @throws Exception
+   */
+  public AvatarAttachment(String id,
+                          String fileName,
+                          String mimeType,
+                          InputStream inputStream,
+                          String workspace,
+                          long lastModified) throws Exception {
+    this.id = id;
+    this.fileName = fileName;
+    setInputStream(inputStream);
+    this.mimeType = mimeType;
+    this.workspace = workspace;
+    this.lastModified = lastModified;
+  }
 
   /**
    * Gets the data path by specifying a PortalContainer instance

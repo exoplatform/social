@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.jcr.ItemNotFoundException;
@@ -57,9 +58,9 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.ProfileConfig;
 
@@ -550,7 +551,29 @@ public class IdentityStorage {
   protected void saveProfile(Profile profile, Node profileNode, Session session) throws Exception, IOException {
     Map<String,Object> props = profile.getProperties();
 
-    Iterator<String> it = props.keySet().iterator();
+//    Iterator<String> it = props.keySet().iterator();
+
+    Profile oldProfile = new Profile(null);
+    loadProfile(oldProfile,profileNode,session.getWorkspace().getName());
+    Map<String,Object> oldProps = oldProfile.getProperties();
+
+    // We remove all the property that was deleted
+    Set<String> removedProps = oldProps.keySet();
+    removedProps.removeAll(props.keySet());
+    Iterator<String> it = removedProps.iterator();
+    while (it.hasNext()) {
+      String name = it.next();
+
+      // We skip all the property that are jcr related
+      if (name.contains(":"))
+        continue;
+      if (!props.containsKey(name)) {
+        if (profileNode.hasProperty(name))
+          profileNode.getProperty(name).remove();
+        else if (profileNode.hasNode(name))
+          profileNode.getNode(name).remove();
+      }
+    }
 
     it = props.keySet().iterator();
     while(it.hasNext()) {
@@ -796,7 +819,7 @@ public class IdentityStorage {
     NodeIterator it = profileNode.getNodes();
     while(it.hasNext()) {
       Node node = it.nextNode();
-      if(node.getName().equals(PROFILE_AVATAR)) {
+      if (node.getName().equals(PROFILE_AVATAR) || node.getName().startsWith(PROFILE_AVATAR + "_")) {
         if (node.isNodeType("nt:file")) {
           AvatarAttachment file = new AvatarAttachment();
           file.setId(node.getPath());
