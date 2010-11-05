@@ -160,6 +160,7 @@ eXo.social.LinkShare.prototype.displayAttach = function(id) {
     return;
   }
   //alias
+  var SocialUtil = eXo.social.SocialUtil;
   var Util = eXo.social.Util,
       LinkShare = eXo.social.LinkShare;
   LinkShare.clearMsg();
@@ -176,7 +177,7 @@ eXo.social.LinkShare.prototype.displayAttach = function(id) {
   } else if (id === LinkShare.config.LINKSHARE_DISPLAY_ID) {
     this.addAttachDisplay();
   }
-  gadgets.window.adjustHeight();
+  SocialUtil.adjustHeight(eXo.social.LinkShare.ref.statusUpdate.contentForAdjustHeight);
 }
 
 /**
