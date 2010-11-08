@@ -28,17 +28,6 @@
         </portlet>
         <access-permissions>Everyone</access-permissions>
         <show-info-bar>false</show-info-bar>
-        </portlet-application>
-      </container>
-
-      <container id="DemoUserProfileToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
-        <portlet-application>
-          <portlet>
-            <application-ref>social-portlet</application-ref>
-            <portlet-ref>UserProfileToolBarPortlet</portlet-ref>
-          </portlet>
-        <access-permissions>Everyone</access-permissions>
-        <show-info-bar>false</show-info-bar>
       </portlet-application>
     </container>
 
@@ -84,9 +73,20 @@
         <access-permissions>*:/platform/administrators</access-permissions>
         <show-info-bar>false</show-info-bar>
       </portlet-application>
-      </container>
-
     </container>
+
+		<container id="DemoUserProfileToolBarPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+			<portlet-application>
+				<portlet>
+					<application-ref>social-portlet</application-ref>
+					<portlet-ref>UserProfileToolBarPortlet</portlet-ref>
+				</portlet>
+				<access-permissions>Everyone</access-permissions>
+				<show-info-bar>false</show-info-bar>
+			</portlet-application>
+		</container>
+		
+  </container>
 
   <site-body/>
 

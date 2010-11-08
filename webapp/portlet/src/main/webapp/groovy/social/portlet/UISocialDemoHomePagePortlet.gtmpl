@@ -26,38 +26,30 @@
 %>
 
 <div class="UISocialHomepage ClearFix" id="$uicomponent.id">
-  <div class="UIBannerHomePage">
-    <div class="ProductName">
-      <h2 class="TxtLarge"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Social") %></h2>
-      <h3 class="TxtSmall"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.An_Extended_Service_Of_eXo_Platform") %></h3>
-    </div>
-  </div>
 
-  <div class="ClearFix BoxButton">
-    <div  class="Container FL">
-      <div class="BoxDocument">
-        <h4><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Community_Members") %></h4>
-        <a href="http://docs.exoplatform.org" class="ArrowBlue"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Download_eXo_Social_Documentation") %></a>
-      </div>
-    </div>
-    <div  class="Container FR">
-      <div class="BoxTry">
-        <h4><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Enterprise_Or_Production_Use") %></h4>
-        <a href="http://platform.demo.exoplatform.org/" class="ArrowBlue"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Try_eXo_Platform_3") %></a>
-      </div>
-    </div>
-  </div>
-  <div class="RightSocialHomepage DecorationContainer">
-    <div class="DecorationTL">
-      <div class="DecorationTR">
-        <div class="DecorationTC">
-          <span></span>
-        </div>
-      </div>
-    </div>
-    <div class="DecorationML">
-      <div class="DecorationMR">
-        <div class="DecorationMC">
+	<div class="ProductImage">
+		<h2><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Social") %></h2>
+		<h3><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.An_Extended_Service_Of_eXo_Platform") %></h3>
+	</div>
+
+  <div class="UIBox"><div class="BoxTop"><div class="BoxBottom ClearFix">
+		<div class="Container FL">
+			<div class="BoxDocument">
+				<h4><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Community_Members") %></h4>
+				<a href="http://docs.exoplatform.org" class="ArrowBlue"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Download_eXo_Social_Documentation") %></a>
+			</div>
+		</div>
+	  <div  class="Container FR">
+			<div class="BoxTry">
+				<h4><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Enterprise_Or_Production_Use") %></h4>
+				<a href="http://platform.demo.exoplatform.org/" class="ArrowBlue"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Try_eXo_Platform_3") %></a>
+			</div>
+	  </div>
+  </div></div></div>
+	
+	<div class="UIDecoration DecorationTop">
+		<div class="DecorationBottom"><div class="DecorationCenter ClearFix">
+        <div class="RightSocialHomepage">
           <div class="ClearFix">
             <div class="BlockWebsite FL">
               <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon"></a>
@@ -89,32 +81,12 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="DecorationBL">
-      <div class="DecorationBR">
-        <div class="DecorationBC"><span></span></div>
-      </div>
-    </div>
-  </div>
-  <div class="LeftSocialHomepage DecorationContainer">
-    <div class="DecorationTL">
-      <div class="DecorationTR">
-        <div class="DecorationTC">
-          <span></span>
-        </div>
-      </div>
-    </div>
-    <div class="DecorationML">
-      <div class="DecorationMR">
-        <div class="DecorationMC">
+     
+        <div class="LeftSocialHomepage">
           <div class="RowContent BorderBottom">
-            <p class="Introduction"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.New_To") %>
-              <span class="TextBold"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Social_Question") %></span>
-            </p>
+            <p class="Introduction TextBold"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.New_To_eXo_Social_Question") %></p>
             <p class="Introduction"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Watch_The") %>
-              <a href="http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/eXo-Social-GS" target="_blank" ><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Getting_Started_Guide") %></a>
-              <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Or_Start_Exploring_Some_Of_The_Key_Features") %>
+              <a href="http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/eXo-Social-GS" target="_blank" ><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Getting_Started_Guide") %></a><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Or_Start_Exploring_Some_Of_The_Key_Features") %>
             </p>
           </div>
           <div class="RowContent ClearFix">
@@ -169,12 +141,8 @@
             </p>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="DecorationBL">
-      <div class="DecorationBR">
-        <div class="DecorationBC"><span></span></div>
-      </div>
-    </div>
+     
+		</div></div>
   </div>
+	
 </div>
