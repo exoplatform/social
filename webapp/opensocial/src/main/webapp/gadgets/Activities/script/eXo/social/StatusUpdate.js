@@ -31,6 +31,7 @@ eXo.social.StatusUpdate = function() {
   this.friendsMoreClickedTimes = 0;
   this.miniMessage = new gadgets.MiniMessage();
   this.isOwnerActivityShown = false;
+  this.contentForAdjustHeight;
 }
 
 /**
@@ -118,10 +119,14 @@ eXo.social.StatusUpdate.configEnvironment = function() {
  */
 eXo.social.StatusUpdate.main = function() {
   var Util = eXo.social.Util;
+  var SocialUtil = eXo.social.SocialUtil;
   Util.hideElement(eXo.social.StatusUpdate.config.ui.UI_STATUS_UPDATE);
-  //get full render from start BUG #SOC-375
-  gadgets.window.adjustHeight();
   var statusUpdate = new eXo.social.StatusUpdate();
+  
+  //get full render from start BUG #SOC-375
+  statusUpdate.contentForAdjustHeight = document.getElementById("ActivitiesContainer");
+  SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
+  
   statusUpdate.init();
   //create and use linkShare object
   var linkShare = eXo.social.linkShare = new eXo.social.LinkShare();
@@ -143,6 +148,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
   var Locale = eXo.social.Locale;
   var UIComposer = eXo.social.UIComposer;
   var Util = eXo.social.Util;
+  var SocialUtil = eXo.social.SocialUtil;
   var StatusUpdate = eXo.social.StatusUpdate;
   var config = StatusUpdate.config;
   var statusUpdate = this;
@@ -192,7 +198,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
       Util.showElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
     }
 
-    gadgets.window.adjustHeight();
+    SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
   }, false);
 
   //run to set viewer, owner, owner's friends
@@ -302,7 +308,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
         debug.warn('Can not get viewer, owner, ownerFriends!');
         debug.info(response);
         miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
-        gadgets.window.adjustHeight();
+        SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
         return;
       }
       statusUpdate.viewer = response.get('viewer').getData();
@@ -557,6 +563,7 @@ eXo.social.StatusUpdate.prototype.updateFriendsActivities = function() {
 eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, dataMode) {
   var Locale = eXo.social.Locale;
   var Util = eXo.social.Util;
+  var SocialUtil = eXo.social.SocialUtil;
   var Like = eXo.social.Like;
   var Comment = eXo.social.Comment;
   var StatusUpdate = eXo.social.StatusUpdate;
@@ -612,6 +619,8 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
      * @return html
      */
     var getNormalActivityBlock = function(activity, isOwnerActivity) {
+    	var templateParams = activity.getField(opensocial.Activity.Field.TEMPLATE_PARAMS);
+
       if (!activity) {
         debug.error('getNormalActivityBlock: activity is null.');
         miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
@@ -637,7 +646,11 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         html.push('<a href="' + profileUrl + '" target="_parent" title="' + userName + '" class="AvatarPeopleBG">');
           html.push('<img height="47px" width="47px" src="' + avatarUrl + '" title="' + userName + '" />');
         html.push('</a>');
-        html.push('<div class="Content">');
+		    if (templateParams == undefined) {
+		      html.push('<div class="Content">');
+		    } else {
+		    	html.push('<div class="LinkShareContent">');
+		    }
           html.push('<div class="TitleContent" style="height: 24px;">');
             html.push('<div class="UserName"><a class="Link" href="' + profileUrl + '" target="_parent" title="' + userName + '">' + userName + '</a></div>');
           if (isOwnerActivity) {
@@ -645,9 +658,24 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
           }
             html.push('<div style="clear: both; height: 0px;"><span></span></div>');
           html.push('</div>');
-          html.push('<div class="ContentArea">' + title + '</div>');
-          html.push('<div class="NewsDate">' + prettyTime + '</div>');
-          html.push(getCommentLikeBlock());
+
+          if (url) {
+            if (templateParams != undefined) {
+            	var comment = templateParams.comment;
+              var descripts = templateParams.description;
+              html.push('<div class="ContentArea">' + comment + '</div>');  
+              html.push('<div><a class="ColorLinkShared" href="' + url + '" target="_blank" title="' + title + '">' + title + '</a></div>');          	
+              html.push('<div class="Description">' + descripts + '</div>');
+             	html.push('<div>' + Locale.getMsg('source') + ' : ' + url + '</div>');
+            } else {
+            	html.push('<div><a class="ColorLinkShared" href="' + url + '" target="_blank" title="' + title + '">' + title + '</a></div>');
+            	html.push('<div>' + Locale.getMsg('source') + ' : ' + url + '</div>');
+            }
+          } else {
+            html.push('<div class="ContentArea">' + title + '</div>');            	
+          }
+          html.push('<div class="NewsDate">' + prettyTime + '  ' + getCommentLikeBlock() + '</div>');
+//          html.push(getCommentLikeBlock());
         html.push('</div>');
         html.push('<div class="ClearLeft"><span></span></div>');
       html.push('</div>');
@@ -701,30 +729,34 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
             jsonTitle.comment = comment;
           }
           html.push(jsonTitle.comment);
+        } 
+        if (jsonTitle.title.length === 0) {
+          jsonTitle.title = jsonTitle.link;
         }
-        if (jsonTitle.data.title.length === 0) {
-          jsonTitle.data.title = jsonTitle.data.link;
-        }
+        var description;
+        if (jsonTitle.description) {
+        	description = jsonTitle.description;
+        } 
         html.push('</div>');
         html.push('<div class="LinkShare">')
           html.push('<div class="Thumbnail">');
-          if (jsonTitle.data.image !== '') {
-            html.push('<img width="100px" src="' + jsonTitle.data.image + '" title="' + jsonTitle.data.title + '" />');
+          if (jsonTitle.image !== '') {
+            html.push('<img width="100px" src="' + jsonTitle.image + '" title="' + jsonTitle.title + '" />');
           }
           html.push('</div>');
-        if (jsonTitle.data.image !== '') {
+        if (jsonTitle.image !== '') {
           html.push('<div class="Content">'); //margin-left is set
         } else {
           html.push('<div>'); //no margin-left is set
         }
-            html.push('<div class="Title"><a class="ColorLink" href="'+ jsonTitle.data.link +'" target="_blank">' + jsonTitle.data.title + '</a></div>');
-              html.push('<div class="Description">' + jsonTitle.data.description + '</div>');
-              html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonTitle.data.link + '</div>');
+            html.push('<div class="Title"><a class="ColorLinkShared" href="'+ jsonTitle.link +'" target="_blank">' + jsonTitle.title + '</a></div>');
+              html.push('<div class="Description">' + description + '</div>');
+              html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonTitle.link + '</div>');
             html.push('</div>');
             html.push('<div style="clear: both; height: 0px;"><span></span></div>');
           html.push('</div>');
-          html.push('<div class="NewsDate">' + prettyTime + '</div>');
-          html.push(getCommentLikeBlock());
+          html.push('<div class="NewsDate">' + prettyTime + '  ' + getCommentLikeBlock() + '</div>');
+//          html.push(getCommentLikeBlock());
         html.push('</div>')
         html.push('<div class="ClearLeft"><span></span></div>');
       html.push('</div>');
@@ -815,7 +847,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         } else {
           Util.getElementById(appendableRootId).innerHTML = '<div class="Empty">' + Locale.getMsg('displayName_do_not_have_update', [displayName]) + '</div>';
         }
-        gadgets.window.adjustHeight();
+        SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
         return;
       }
 
@@ -879,7 +911,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
       ajaxQueue();
       function ajaxQueue() {
       if (index === displayActivityNum) {
-        gadgets.window.adjustHeight();
+        SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
         displayActivitiesNext = true;
         return
       }
@@ -939,7 +971,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         } catch(e) {
           //ignores
         }
-        if (jsonTitle.data) { //process with json Title, link display
+        if (jsonTitle.title) { //process with json Title, link display
           html = getLinkShareActivityBlock(activity, jsonTitle, isOwnerActivity);
         } else {//normal display
           html = getNormalActivityBlock(activity, isOwnerActivity);

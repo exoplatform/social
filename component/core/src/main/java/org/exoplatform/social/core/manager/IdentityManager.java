@@ -18,28 +18,37 @@ package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.Validate;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.cache.CacheService;
+import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.IdentityProviderPlugin;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.IdentityStorage;
 
 /**
  * The Class IdentityManager.
  */
 public class IdentityManager {
+  /** Logger */
   private static final Log LOG = ExoLogger.getExoLogger(IdentityManager.class);
+  /** The limit search list to be returned for matching search criteria */
+  private static final long SEARCH_LIMIT = 500;
 
   /** The identity providers. */
   private Map<String, IdentityProvider<?>> identityProviders = new HashMap<String, IdentityProvider<?>>();
@@ -47,6 +56,19 @@ public class IdentityManager {
   /** The storage. */
   private IdentityStorage identityStorage;
 
+  private RelationshipManager relationshipManager;
+
+  private ExoCache<String, Identity> identityCacheById;
+
+  /**
+   * identityCache
+   */
+  private ExoCache<GlobalId, Identity> identityCache;
+
+  /**
+   * identityListCache with key = identityProvider
+   */
+  private ExoCache<String, List<Identity>> identityListCache;
   /**
    * lifecycle for profile
    */
@@ -55,13 +77,16 @@ public class IdentityManager {
   /**
    * Instantiates a new identity manager.
    *
-   * @param dataLocation the data location
+   * @param identityStorage
    * @param defaultIdentityProvider the builtin default identity provider to use when when no other  provider match
-   * @throws Exception the exception
+   * @param cacheService
    */
-  public IdentityManager(SocialDataLocation dataLocation, IdentityProvider<?> defaultIdentityProvider) throws Exception {
-    this.identityStorage = new IdentityStorage(dataLocation);
+  public IdentityManager(IdentityStorage identityStorage, IdentityProvider<?> defaultIdentityProvider, CacheService cacheService) {
+    this.identityStorage = identityStorage;
     this.addIdentityProvider(defaultIdentityProvider);
+    this.identityCacheById = cacheService.getCacheInstance(getClass().getName() + "identityCacheById");
+    this.identityCache = cacheService.getCacheInstance(getClass().getName() + "identityCache");
+    this.identityListCache = cacheService.getCacheInstance(getClass().getName() + "identityListCache");
   }
 
 
@@ -85,41 +110,80 @@ public class IdentityManager {
    * @return null if nothing is found, or the Identity object
    * @see #getIdentity(String, boolean)
    */
-  public Identity getIdentity(String id) throws Exception {
+  public Identity getIdentity(String id) {
     return getIdentity(id, true);
   }
 
   /**
-   * Gets the identity by id optionnaly loading his profile
+   * Gets the identity by id optionally loading his profile
+   *
+   * Note: if id = uuid, you get the info from JCR if found.
+   * if id = providerId:remoteId, you get the info from provider and currently with
+   * this case, you get null for identity.getId(). This can cause some troubles.
    *
    * @param id ID be a social {@link GlobalId} or a raw identity such as in {@link Identity#getId()}
-   * @param loadProfile the load profile true if load and false if doesn't
+   * @param loadProfile the load profile true if load and false if doesn't.
+   *        when loadProfile is true, gets profile from JCR
    * @return null if nothing is found, or the Identity object
    */
-  public Identity getIdentity(String id, boolean loadProfile) throws Exception {
-    Identity identity = null;
-
+  //FIXME: Make it clear here when id=uuid vs id=providerId:remoteId vs id=providerId:uuid
+  public Identity getIdentity(String id, boolean loadProfile) {
+    Identity cachedIdentity = null;
     // attempts to match a global id in the form "providerId:remoteId"
-
     if (GlobalId.isValid(id)) {
       GlobalId globalId = new GlobalId(id);
       String providerId = globalId.getDomain();
       String remoteId = globalId.getLocalId();
-      identity = identityStorage.findIdentity(providerId,remoteId);
+      cachedIdentity = identityCache.get(globalId);
+      if (cachedIdentity == null) {
+        cachedIdentity = getOrCreateIdentity(providerId, remoteId, loadProfile);
+        if (cachedIdentity != null) {
+          identityCache.put(globalId, cachedIdentity);
+          return cachedIdentity;
+        }
+        //retry with providerId:nodeId
+        if (cachedIdentity == null) {
+          String tempId = globalId.getLocalId();
+          cachedIdentity = identityStorage.findIdentityById(tempId);
+          if (cachedIdentity != null) {
+            id = tempId;
+          }
+        }
+      }
+
+    } else {
+      cachedIdentity = identityCacheById.get(id);
+      if (cachedIdentity == null) {
+        cachedIdentity = identityStorage.findIdentityById(id);
+      }
     }
 
-    // attempts to find a raw id
-    if (identity == null) {
-      identity = identityStorage.findIdentityById(id);
+    if (cachedIdentity != null) {
+      if (loadProfile) {
+        identityStorage.loadProfile(cachedIdentity.getProfile());
+      }
+      identityCacheById.put(id, cachedIdentity);
     }
+    if (cachedIdentity == null) {
+      LOG.info("Can not get identity with id: " + id);
+    }
+    return cachedIdentity;
+  }
 
-    if (identity == null)
-      return null;
-
-    if(loadProfile)
-      identityStorage.loadProfile(identity.getProfile());
-
-    return identity;
+  /**
+   * Deletes an identity
+   *
+   * @param identity
+   */
+  public void deleteIdentity(Identity identity) {
+    if (identity.getId() == null) {
+      LOG.warn("identity.getId() must not be null of [" + identity + "]");
+      return;
+    }
+    identityStorage.deleteIdentity(identity);
+    identityCacheById.remove(identity.getId());
+    identityCache.remove(new GlobalId(identity.getProviderId()+GlobalId.SEPARATOR+identity.getRemoteId()));
+    identityListCache.remove(identity.getProviderId());
   }
 
 
@@ -142,10 +206,64 @@ public class IdentityManager {
    * @param providerId the provider id
    * @param remoteId the remote id
    * @return the identity
-   * @throws Exception the exception
    */
-  public Identity getOrCreateIdentity(String providerId, String remoteId) throws Exception {
+  public Identity getOrCreateIdentity(String providerId, String remoteId) {
     return getOrCreateIdentity(providerId, remoteId, true);
+  }
+
+  /**
+   * This function return an Identity object that specific to
+   * a special type.
+   * <p>
+   * For example if the type is Linked'In, the identifier will be the URL of the profile
+   * or if it's a CS contact manager contact, it will be the UID of the contact.</p>
+   *  A new identity is created if it is found by provider, if not null will be returned.
+   *
+   * If identity is found by provider and not stored, store it. If stored, return it.
+   *
+   * If identity is not found by provider, return null. If stored, delete that stored identity.
+   *
+   *
+   * @param providerId refering to the name of the Identity provider
+   * @param remoteId   the identifier that identify the identity in the specific identity provider
+   * @param loadProfile true to load profile
+   * @return null if nothing is found, or the Identity object
+   * TODO improve the performance by specifying what needs to be loaded
+   */
+  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) {
+    GlobalId globalIdCacheKey = new GlobalId(providerId+GlobalId.SEPARATOR+remoteId);
+    Identity cachedIdentity = identityCache.get(globalIdCacheKey);
+    if (cachedIdentity == null) {
+      IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
+
+      Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
+      Identity result = identityStorage.findIdentity(providerId, remoteId);
+      //FIXME make it clear here when both identity1 and result != null.
+      if(result == null) {
+        if (identity1 != null) { // identity is valid for provider, but no yet referenced in storage
+          saveIdentity(identity1);
+          identityStorage.saveProfile(identity1.getProfile());
+          result = identity1;
+        } else {
+          //Not found in provider, so return null
+          return result;
+        }
+      } else {
+        if (identity1 == null) {
+          //in the case: identity is stored but identity is not found from provider, delete that identity
+          identityStorage.deleteIdentity(result);
+          return null;
+        }
+        if (loadProfile) {
+          identityStorage.loadProfile(result.getProfile());
+        }
+      }
+      cachedIdentity = result;
+      if (cachedIdentity.getId() != null) {
+        identityCache.put(globalIdCacheKey, cachedIdentity);
+      }
+    }
+    return cachedIdentity;
   }
 
   /**
@@ -160,6 +278,16 @@ public class IdentityManager {
     return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, 0, 20);
   }
 
+  /**
+   * Gets the identities by profile filter.
+   *
+   * @param providerId
+   * @param profileFilter
+   * @param offset
+   * @param limit
+   * @return identity list
+   * @throws Exception
+   */
   public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception {
     return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset, limit);
   }
@@ -175,6 +303,15 @@ public class IdentityManager {
     return getIdentitiesByProfileFilter(null, profileFilter, 0, 20);
   }
 
+  /**
+   * Gets the identities by profile filter
+   *
+   * @param profileFilter
+   * @param offset
+   * @param limit
+   * @return the identities by profile filter
+   * @throws Exception
+   */
   public List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter, long offset, long limit) throws Exception {
     return getIdentitiesByProfileFilter(null, profileFilter, offset, limit);
   }
@@ -187,7 +324,20 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFilter profileFilter) throws Exception {
-    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, 0, 20);
+    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, 0, SEARCH_LIMIT);
+  }
+
+  /**
+   *
+   * @param providerId
+   * @param profileFilter
+   * @param offset
+   * @param limit
+   * @return the identitities list
+   * @throws Exception
+   */
+  public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception {
+    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, offset, limit);
   }
 
   /**
@@ -202,68 +352,43 @@ public class IdentityManager {
   }
 
   /**
-   * This function return an Identity object that specific to
-   * a special type.
-   * <p>
-   * For example if the type is Linked'In, the identifier will be the URL of the profile
-   * or if it's a CS contact manager contact, it will be the UID of the contact.</p>
-   *  A new identity is created if it does not exist.
+   * Gets identity from the provider, not in JCR.
+   * To make sure to gets the info from JCR, use {@link #getOrCreateIdentity(String, String, boolean)}
    *
-   * @param providerId refering to the name of the Identity provider
-   * @param remoteId   the identifier that identify the identity in the specific identity provider
-   * @param loadProfile true to load profile
-   * @return null if nothing is found, or the Identity object
-   * TODO improve the performance by specifying what needs to be loaded
-   * @throws Exception the exception
-   */
-  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) throws Exception {
-
-    IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
-
-    Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
-    Identity result = identityStorage.findIdentity(providerId, remoteId);
-
-    if(result == null) {
-      if (identity1 != null) { // identity is valid for provider, but no yet referenced in storage
-        saveIdentity(identity1);
-        identityStorage.saveProfile(identity1.getProfile());
-        result = identity1;
-      } else {
-        result = new Identity(providerId, remoteId);
-        saveIdentity(result);
-        if (loadProfile) {
-          identityStorage.loadProfile(result.getProfile());
-        }
-      }
-    } else if (loadProfile) {
-      identityStorage.loadProfile(result.getProfile());
-    }
-    return result;
-  }
-
-  /**
-   * Gets identity
    * @param providerId
    * @param remoteId
    * @param loadProfile
-   * @return
-   * @throws Exception
+   * @return identity
    */
-  public Identity getIdentity(String providerId, String remoteId, boolean loadProfile) throws Exception {
-    IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
-    Identity identity = identityProvider.getIdentityByRemoteId(remoteId);
-    if (identity == null) return null;
-    if (loadProfile) {
-      identityStorage.loadProfile(identity.getProfile());
+  public Identity getIdentity(String providerId, String remoteId, boolean loadProfile) {
+    GlobalId globalIdCacheKey = new GlobalId(providerId + GlobalId.SEPARATOR + remoteId);
+    Identity cachedIdentity = identityCache.get(globalIdCacheKey);
+    if (cachedIdentity == null) {
+      IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
+      cachedIdentity = identityProvider.getIdentityByRemoteId(remoteId);
+      if (cachedIdentity != null) {
+        Identity storedIdentity = identityStorage.findIdentity(providerId, remoteId);
+        if (storedIdentity != null) {
+          cachedIdentity.setId(storedIdentity.getId());
+          if (loadProfile) {
+            identityStorage.loadProfile(cachedIdentity.getProfile());
+          }
+        } else {
+          //save new identity
+          identityStorage.saveIdentity(cachedIdentity);
+        }
+      }
+      identityCache.put(globalIdCacheKey, cachedIdentity);
     }
-    return identity;
+
+    return cachedIdentity;
   }
 
   /**
    * Checks if identity existed or not
    * @param providerId
    * @param remoteId
-   * @return
+   * @return true or false
    */
   public boolean identityExisted(String providerId, String remoteId) {
     IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
@@ -274,35 +399,72 @@ public class IdentityManager {
    * Save identity.
    *
    * @param identity the identity
-   * @throws Exception the exception
    */
-  public void saveIdentity(Identity identity) throws Exception {
+  public void saveIdentity(Identity identity) {
     identityStorage.saveIdentity(identity);
     getIdentityProvider(identity.getProviderId()).onSaveIdentity(identity);
+    if (identity.getId() != null) {
+      identityCacheById.remove(identity.getId());
+      identityCache.remove(new GlobalId(identity.getProviderId()+GlobalId.SEPARATOR+identity.getRemoteId()));
+    }
+    identityListCache.remove(identity.getProviderId());
   }
 
-  public void updateAvatar(Profile p) throws Exception {
-    identityStorage.saveProfile(p);
+  /**
+   * Save a profile
+   *
+   * @param profile
+   */
+  public void saveProfile(Profile profile) {
+    identityStorage.saveProfile(profile);
+    getIdentityProvider(profile.getIdentity().getProviderId()).onSaveProfile(profile);
+    removeCacheForProfileChange(profile);
+  }
+
+  /**
+   * Updates avatar
+   *
+   * @param p profile
+   */
+  //TODO make easier api, this is not good.
+  public void updateAvatar(Profile p) {
+    saveProfile(p);
     profileLifeCycle.avatarUpdated(p.getIdentity().getRemoteId(), p);
   }
 
-  public void updateBasicInfo(Profile p) throws Exception {
-    identityStorage.saveProfile(p);
+  /**
+   *
+   * @param p
+   */
+  public void updateBasicInfo(Profile p) {
+    saveProfile(p);
     profileLifeCycle.basicUpdated(p.getIdentity().getRemoteId(), p);
   }
 
-  public void updateContactSection(Profile p) throws Exception {
-    identityStorage.saveProfile(p);
+  /**
+   *
+   * @param p
+   */
+  public void updateContactSection(Profile p) {
+    saveProfile(p);
     profileLifeCycle.contactUpdated(p.getIdentity().getRemoteId(), p);
   }
 
-  public void updateExperienceSection(Profile p) throws Exception {
-    identityStorage.saveProfile(p);
+  /**
+   *
+   * @param p
+   */
+  public void updateExperienceSection(Profile p) {
+    saveProfile(p);
     profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), p);
   }
 
-  public void updateHeaderSection(Profile p) throws Exception {
-    identityStorage.saveProfile(p);
+  /**
+   *
+   * @param p
+   */
+  public void updateHeaderSection(Profile p) {
+    saveProfile(p);
     profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), p);
   }
 
@@ -318,15 +480,14 @@ public class IdentityManager {
   }
 
   /**
-   * Gets the identities.
+   * Gets all the identities from a providerId.
    *
    * @param providerId the provider id
    * @param loadProfile the load profile
    * @return the identities
-   * @throws Exception the exception
    */
-  public List<Identity> getIdentities(String providerId, boolean loadProfile) throws Exception {
-    IdentityProvider ip = getIdentityProvider(providerId);
+  public List<Identity> getIdentities(String providerId, boolean loadProfile) {
+    IdentityProvider<?> ip = getIdentityProvider(providerId);
     List<String> userids = ip.getAllUserId();
     List<Identity> ids = new ArrayList<Identity>();
 
@@ -334,6 +495,27 @@ public class IdentityManager {
       ids.add(this.getOrCreateIdentity(providerId, userId, loadProfile));
     }
     return ids;
+  }
+
+  /**
+   * Gets connections of an identity.
+   *
+   * @param ownerIdentity
+   * @return list of identity
+   * @throws Exception
+   * @since 1.1.1
+   */
+  public List<Identity> getConnections(Identity ownerIdentity) throws Exception {
+    List<Identity> connectionsList = getIdentities(OrganizationIdentityProvider.NAME);
+    Iterator<Identity> itr = connectionsList.iterator();
+    relationshipManager = getRelationshipManager();
+    while (itr.hasNext()) {
+      Identity identity = itr.next();
+      if (relationshipManager.getConnectionStatus(identity, ownerIdentity) != Relationship.Type.CONFIRM) {
+        itr.remove();
+      }
+    }
+    return connectionsList;
   }
 
   /**
@@ -345,6 +527,11 @@ public class IdentityManager {
     return this.identityStorage;
   }
 
+  /**
+   * Sets identityStorage
+   *
+   * @param identityStorage
+   */
   public void setIdentityStorage(IdentityStorage identityStorage) {
     this.identityStorage = identityStorage;
   }
@@ -358,14 +545,16 @@ public class IdentityManager {
   }
 
   /**
-   * {@inheritDoc}
+   *
+   * @param listener
    */
   public void registerProfileListener(ProfileListener listener) {
     profileLifeCycle.addListener(listener);
   }
 
   /**
-   * {@inheritDoc}
+   *
+   * @param listener
    */
   public void unregisterProfileListener(ProfileListener listener) {
     profileLifeCycle.removeListener(listener);
@@ -379,7 +568,32 @@ public class IdentityManager {
     registerProfileListener(plugin);
   }
 
+  /**
+   * Gets IdentityStorage
+   *
+   * @return identityStorage
+   */
   public IdentityStorage getIdentityStorage() {
     return identityStorage;
   }
+
+  /**
+   * Removes cache when there is changes in profile
+   *
+   * @param profile
+   */
+  private void removeCacheForProfileChange(Profile profile) {
+    Identity identity = profile.getIdentity();
+    identityCacheById.remove(identity.getId());
+    identityCache.remove(new GlobalId(identity.getProviderId()+GlobalId.SEPARATOR+identity.getRemoteId()));
+    identityListCache.remove(identity.getProviderId());
+  }
+
+  private RelationshipManager getRelationshipManager() {
+    if (relationshipManager == null) {
+      relationshipManager = (RelationshipManager) PortalContainer.getInstance().getComponentInstanceOfType(RelationshipManager.class);
+    }
+    return relationshipManager;
+  }
+
 }

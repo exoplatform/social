@@ -17,11 +17,12 @@
 
  @import url(portal/webui/component/UIToolbarContainer/Stylesheet.css);
 
-#UIPortalApplication .UIWorkingWorkspace{
-  background-color: #eeeeee;
-  margin: auto;
-  width: 100%;
+#UIPortalApplication .UIWorkingWorkspace {
+  background-color: #eee;
+  margin:auto;
+  width:100%;
 }
+
 
 @font-face {
 	font-family: Hattori;
@@ -42,4 +43,73 @@
 	font-family: Lucida;
 	src: url("/social-resources/skin/DefaultSkin/fonts/Lucida_Sans_Regular.ttf");
 	font-weight:normal;
+}
+
+body{
+	background: #eee;
+	overflow:auto !important;
+	font-family: Lucida, arial, tahoma !important;
+}
+
+div, table, tr, td, img, form{
+	font-family: Lucida, arial, tahoma !important;
+	font-size: 12px;
+}
+
+.UIWorkingWorkspace{
+	width: 100%;
+	background: #eee;
+}
+
+.FL {
+	float: left; /* orientation=lt */
+	float: right; /* orientation=rt */
+}
+
+.FR {
+	float: right; /* orientation=lt */
+	float: left; /* orientation=rt */
+}
+
+a {
+	color:#28175A;
+	text-decoration:none;
+}
+
+img {
+	border: none;
+
+}
+
+p, h1, h2, h3, h4, h5, h6{
+	margin: 0px;
+}
+
+ul {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.ClearFix:after {
+	content: ".";
+	display: block;
+	height: 0px;
+	clear: both;
+	visibility: hidden;
+}
+
+.ClearFix {
+	!display: inline-block;
+	!zoom: 1;
+	!display: block;
+}
+
+
+.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage {
+	padding: 0px;
+}
+
+.UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock {
+	background: #eee !important;
 }

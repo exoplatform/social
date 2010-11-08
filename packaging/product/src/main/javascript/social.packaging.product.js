@@ -38,12 +38,12 @@ function getProduct(version) {
   product.addDependencies(social.webapp.opensocial) ;
   product.addDependencies(social.webapp.portlet);
   product.addDependencies(social.webapp.resources);
-  product.addDependencies(social.webapp.socialExtensionPortal);
+  //product.addDependencies(social.webapp.socialExtensionPortal);
   product.addDependencies(social.extras.feedmash);
   product.addDependencies(social.extras.linkComposerPlugin);
   product.addDependencies(social.extras.widgetRest);
   product.addDependencies(social.extras.widgetResources);
-  product.addDependencies(social.extension.war) ;
+  //product.addDependencies(social.extension.war) ;
   product.addDependencies(social.demo.portal);
   product.addDependencies(social.demo.rest);
 

@@ -24,12 +24,10 @@ import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.model.SpaceAttachment;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -39,8 +37,8 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIManagePendingSpaces: list all pending spaces which user can revoke pending. <br />
@@ -116,12 +114,7 @@ public class UIManagePendingSpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    AvatarAttachment spaceAtt = (AvatarAttachment) space.getAvatarAttachment();
-    if (spaceAtt != null) {
-      return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + spaceAtt.getWorkspace()
-              + spaceAtt.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
+    return space.getImageSource();
   }
 
   /**

@@ -1,7 +1,7 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.core.relationship.model.Relationship;
-  import org.exoplatform.social.core.identity.model.AvatarAttachment;
+  import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.container.PortalContainer;
   import org.exoplatform.services.jcr.RepositoryService;
   import org.exoplatform.portal.application.PortalRequestContext;
@@ -58,13 +58,9 @@
             if (!position)
               position = "";
 
-            String imageSource = "/social-portlet/skin/social/portlet/UIInvitationsPortlet/DefaultSkin/background/BLAvatar.gif";
-            AvatarAttachment att = identity.profile.getProperty("avatar");
-            if (att != null) {
-              try {
-                imageSource = "/" + portalName + "/rest/jcr/" + repository + "/" + att.getWorkspace();
-                imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-                } catch (Exception e) {}
+            String imageSource = identity.profile.getAvatarImageSource();
+            if (imageSource == null) {
+              imageSource = "/social-portlet/skin/social/portlet/UIInvitationsPortlet/DefaultSkin/background/BLAvatar.gif";
             }
    %>
     <% if (invitationRelationIdx % 2 == 0) { %>

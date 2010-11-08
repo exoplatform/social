@@ -160,6 +160,7 @@ eXo.social.LinkShare.prototype.displayAttach = function(id) {
     return;
   }
   //alias
+  var SocialUtil = eXo.social.SocialUtil;
   var Util = eXo.social.Util,
       LinkShare = eXo.social.LinkShare;
   LinkShare.clearMsg();
@@ -176,7 +177,7 @@ eXo.social.LinkShare.prototype.displayAttach = function(id) {
   } else if (id === LinkShare.config.LINKSHARE_DISPLAY_ID) {
     this.addAttachDisplay();
   }
-  gadgets.window.adjustHeight();
+  SocialUtil.adjustHeight(eXo.social.LinkShare.ref.statusUpdate.contentForAdjustHeight);
 }
 
 /**
@@ -632,7 +633,7 @@ eXo.social.LinkShare.prototype.constructContent = function() {
  * @param	callback function callback after sending activity
  */
 
-eXo.social.LinkShare.prototype.save = function(status, callback) {
+eXo.social.LinkShare.prototype.save = function(comment, callback) {
   var LinkShare = eXo.social.LinkShare,
       Locale = eXo.social.Locale,
       //create activity params
@@ -647,13 +648,13 @@ eXo.social.LinkShare.prototype.save = function(status, callback) {
   if (LinkShare.data.images.length > 0) {
     chosenImage = LinkShare.data.images[LinkShare.data.selectedImageIndex];
   }
-  body.data = {
+  body = {
     link: LinkShare.data.link,
     image: chosenImage,
     title: LinkShare.data.title,
     description: LinkShare.data.description
   };
-  body.comment = status;
+  body.comment = comment;
   //body.comment = status;
   //params[opensocial.Activity.Field.TITLE] = Locale.getMsg('user_shared_a_link', [viewerName]);
   params[opensocial.Activity.Field.TITLE] = gadgets.json.stringify(body);
@@ -670,7 +671,17 @@ eXo.social.LinkShare.prototype.save = function(status, callback) {
 //		mediaItems.push(mediaItem);
 //		params[opensocial.Activity.Field.MEDIA_ITEMS] = mediaItems;
 //	}
-  var activity = opensocial.newActivity(params);
+//  var activity = opensocial.newActivity(params);
+    var title = LinkShare.data.title;
+    var link = LinkShare.data.link;
+    var description = LinkShare.data.description;
+    var activity = opensocial.newActivity({ 'title' : title, 
+                                            'url': link, 
+                                            'externalId' : "LINK_ACTIVITY",
+                                            
+                                            'templateParams': 
+                                            	  {"comment":comment,"description":description}
+                                          });
   opensocial.requestCreateActivity(activity, opensocial.CreateActivityPriority.HIGH, callback);
   //resets
   this.displayAttach(LinkShare.config.LINKSHARE_OPTION_ID);

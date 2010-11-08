@@ -20,6 +20,8 @@
 
 @import url('/social-resources/skin/social/webui/activity/UIDefaultActivity/DefaultSkin.css');
 
+@import url('/social-resources/skin/social/webui/UIActivitiesLoader/DefaultSkin.css');
+
 .clearfix:after {
 content: ".";
 display: block;
@@ -43,7 +45,7 @@ visibility: hidden;
 .UIUserActivitiesContainer {
   padding: 10px 10px 20px 10px;
 }
-  
+
 .UIUserActivityStreamPortlet .TitleBar {
   height: 22px;
   color: #7d7d7d;

@@ -3,14 +3,15 @@ package org.exoplatform.social.core.storage;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
@@ -22,161 +23,181 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  */
 public class IdentityStorageTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
-  private JCRSessionManager sessionManager;
-  private static final String IDENTITY_NODETYPE = "exo:identity".intern();
-  private static final String PROFILE_NODETYPE = "exo:profile".intern();
-  private final String WORKSPACE = "portal-test";
 
-  @Override
-  protected void beforeRunBare() throws Exception {
-    super.beforeRunBare();
-    SocialDataLocation dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
-    RepositoryService repositoryService = (RepositoryService) getContainer().getComponentInstanceOfType(RepositoryService.class);
-    sessionManager = new JCRSessionManager(WORKSPACE, repositoryService);
-    identityStorage = new IdentityStorage(dataLocation);
-  }
-
-  @Override
-  protected void afterRunBare() {
-    super.afterRunBare();
-  }
 
   public void setUp() throws Exception {
     super.setUp();
-    begin();
+    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    assertNotNull("identityStorage must not be null", identityStorage);
   }
 
   public void tearDown() throws Exception {
-    end();
-    Session session = sessionManager.getOrOpenSession();
-    try {
-      List<Node> profileNodes = new QueryBuilder(session).select(PROFILE_NODETYPE).exec();
-      List<Node> idetityNodes = new QueryBuilder(session).select(IDENTITY_NODETYPE).exec();
-      for (Node node : profileNodes) {
-        node.remove();
-      }
-      for (Node node : idetityNodes) {
-        node.remove();
-      }
-      session.save();
-    } finally {
-      sessionManager.closeSession();
+    List<Identity> storedIdentityList = identityStorage.getAllIdentities();
+    for (Identity identity : storedIdentityList) {
+      identityStorage.deleteIdentity(identity);
+    }
+    super.tearDown();
+  }
+
+  public void testSaveIdentity() {
+    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, "identity1");
+    identityStorage.saveIdentity(tobeSavedIdentity);
+
+    assertNotNull(tobeSavedIdentity.getId());
+
+    final String updatedRemoteId = "identity-updated";
+
+    tobeSavedIdentity.setRemoteId(updatedRemoteId);
+
+    identityStorage.saveIdentity(tobeSavedIdentity);
+
+    Identity gotIdentity = identityStorage.findIdentityById(tobeSavedIdentity.getId());
+
+    assertEquals(updatedRemoteId, gotIdentity.getRemoteId());
+
+  }
+
+  public void testDeleteIdentity() {
+    final String username = "username";
+    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
+    identityStorage.saveIdentity(tobeSavedIdentity);
+
+    assertNotNull(tobeSavedIdentity.getId());
+
+    identityStorage.deleteIdentity(tobeSavedIdentity);
+    assertNotNull(tobeSavedIdentity.getId());
+    assertNull(identityStorage.findIdentityById(tobeSavedIdentity.getId()));
+    assertNull(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, username));
+
+    // Delete identity with loaded profile
+    {
+      tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
+      identityStorage.saveIdentity(tobeSavedIdentity);
+      assertNotNull("tobeSavedIdentity.getId() must not be null.", tobeSavedIdentity.getId());
+      assertNull("tobeSavedIdentity.getProfile().getId() msut be null.", tobeSavedIdentity.getProfile().getId());
+      identityStorage.loadProfile(tobeSavedIdentity.getProfile());
+      assertNotNull("tobeSavedIdentity.getProfile().getId() must not be null", tobeSavedIdentity.getProfile().getId());
+
+      identityStorage.deleteIdentity(tobeSavedIdentity);
+      assertNotNull("tobeSavedIdentity.getId() must not be null", tobeSavedIdentity.getId());
+      assertNull("must return null with identityId: " + tobeSavedIdentity.getId(), identityStorage.findIdentityById(tobeSavedIdentity.getId()));
+
     }
   }
 
-  public void testSaveIdentity() throws Exception {
-    String providerId = "organization";
-    String remoteId = "zun";
-    Identity identity = new Identity(providerId, remoteId);
+  public void testFindIdentityById() {
+    final String remoteUser = "identity1";
+    Identity toSaveIdentity = new Identity(OrganizationIdentityProvider.NAME, remoteUser);
+    identityStorage.saveIdentity(toSaveIdentity);
 
-    identityStorage.saveIdentity(identity);
+    assertNotNull(toSaveIdentity.getId());
 
-    assertNotNull(identity);
-    assertNotNull(identity.getId());
+    Identity gotIdentityById = identityStorage.findIdentityById(toSaveIdentity.getId());
+
+    assertNotNull(gotIdentityById);
+    assertEquals(toSaveIdentity.getId(), gotIdentityById.getId());
+    assertEquals(toSaveIdentity.getProviderId(), gotIdentityById.getProviderId());
+    assertEquals(toSaveIdentity.getRemoteId(), gotIdentityById.getRemoteId());
+
+    Identity notFoundIdentityByRemoteid = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "not-found");
+
+    assertNull(notFoundIdentityByRemoteid);
+
+    Identity gotIdentityByRemoteId = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+
+    assertNotNull(gotIdentityByRemoteId);
+    assertEquals(gotIdentityByRemoteId.getId(), toSaveIdentity.getId());
+    assertEquals(gotIdentityByRemoteId.getProviderId(), toSaveIdentity.getProviderId());
+    assertEquals(gotIdentityByRemoteId.getRemoteId(), toSaveIdentity.getRemoteId());
+
   }
 
-  public void testFindIdentityById() throws Exception {
-    String providerId = "organization";
-    String remoteId = "zun";
-    Identity identity = new Identity(providerId, remoteId);
-
-    identityStorage.saveIdentity(identity);
-
-    Identity identityById = identityStorage.findIdentityById(identity.getId());
-    assertNotNull(identityById);
-    assertEquals(identity.getId(), identityById.getId());
-  }
-
-  public void testFindIdentityByProviderIdAndRemoteId() throws Exception {
-    String providerId = "organization";
-    String remoteId = "zun";
-    Identity identity = new Identity(providerId, remoteId);
-
-    identityStorage.saveIdentity(identity);
-
-    Identity identitybyproviderIdandremoteId = identityStorage.findIdentity(providerId, remoteId);
-    assertNotNull(identitybyproviderIdandremoteId);
-    assertEquals(identity.getId(), identitybyproviderIdandremoteId.getId());
-  }
-
-  public void testGetAllIdentities() throws Exception {
-    String providerId = "organization";
-    String remoteId = "zun";
-
-    int total = 10;
-    for (int i = 0; i < total; i++) {
-      Identity identity = new Identity(providerId, remoteId + i);
-      identityStorage.saveIdentity(identity);
+  public void testGetAllIdentities() {
+    List<Identity> emptyIdentityList = identityStorage.getAllIdentities();
+    assertEquals(0, emptyIdentityList.size());
+    final String prefixUserName = "user";
+    final String providerId = "providerTest";
+    final int numberOfIdentities = 30;
+    for (int i = 0; i < numberOfIdentities; i++) {
+      Identity toSaveIdentity = new Identity(providerId, prefixUserName + i);
+      identityStorage.saveIdentity(toSaveIdentity);
     }
 
-    List<Identity> identities = identityStorage.getAllIdentities();
+    List<Identity> gotIdentityList = identityStorage.getAllIdentities();
 
-    assertEquals(total, identities.size());
+    assertNotNull(gotIdentityList);
+    assertEquals(numberOfIdentities, gotIdentityList.size());
+
   }
 
-  public void testGetIdentityByNode() throws Exception {
-    String providerId = "organization";
-    String remoteId = "zun";
-    Identity identity = new Identity(providerId, remoteId);
+  public void testFindIdentity() {
+    final String userName = "username";
 
-    identityStorage.saveIdentity(identity);
+    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, userName);
+    identityStorage.saveIdentity(tobeSavedIdentity);
 
-    final Session session = sessionManager.openSession();
-    try {
-      QueryBuilder queryBuilder = new QueryBuilder(session);
-      final List<Node> nodes = queryBuilder
-        .select(IDENTITY_NODETYPE)
-        .equal(IdentityStorage.IDENTITY_PROVIDERID, providerId)
-        .and()
-        .equal(IdentityStorage.IDENTITY_REMOTEID, remoteId)
-        .exec();
+    Identity foundIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
 
-      assertEquals(1, nodes.size());
-
-      final Node identityNode = nodes.get(0);
-      final Identity identityByNode = identityStorage.getIdentity(identityNode);
-      assertNotNull(identityByNode);
-      assertEquals(identity.getId(), identityByNode.getId());
-    } finally {
-      sessionManager.closeSession();
-    }
+    assertNotNull(foundIdentity);
+    assertNotNull(foundIdentity.getId());
+    assertEquals(OrganizationIdentityProvider.NAME, foundIdentity.getProviderId());
+    assertEquals(userName, foundIdentity.getRemoteId());
   }
 
-  public void testSaveProfile() throws Exception {
-    String providerId = "organization";
-    String remoteId = "zun";
-
-    Identity identity = new Identity(providerId, remoteId);
-    identityStorage.saveIdentity(identity);
-
-    Profile profile = new Profile(identity);
-    identityStorage.saveProfile(profile);
-
-    try {
-      final Session session = sessionManager.openSession();
-      final List<Node> nodes = new QueryBuilder(session)
-        .select(IdentityStorage.PROFILE_NODETYPE).exec();
-
-      assertEquals(1, nodes.size());
-    } finally {
-      sessionManager.closeSession();
-    }
+  public void testGetIdentitiesByProfileFilter() {
+    //TODO hoatle complete testGetIdentitiesByProfileFilter
+    assert true;
   }
 
-  public void testLoadProfileByLazyCreating() throws Exception {
-    String providerId = "organization";
-    String remoteId = "zun";
-    Identity identity = new Identity(providerId, remoteId);
+  public void testGetIdentitiesFilterByAlphaBet() {
+    //TODO hoatle complete testGetIdentitiesFilterByAlphaBet
+    assert true;
+  }
 
-    identityStorage.saveIdentity(identity);
+  public void testSaveProfile() {
+    final String userName = "username";
+    final String firstName = "FirstName";
+    final String lastName = "LastName";
+    final String avatarUrl = "http://localhost:8080/rest-socialdemo/username/avatar.jpg";
+    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, userName);
+    identityStorage.saveIdentity(tobeSavedIdentity);
 
-    //create new profile in db without data (lazy creating)
-    Profile profile = new Profile(identity);
-    identityStorage.loadProfile(profile);
+    Profile tobeSavedProfile = tobeSavedIdentity.getProfile();
+
+    tobeSavedProfile.setProperty(Profile.USERNAME, userName);
+    tobeSavedProfile.setProperty(Profile.FIRST_NAME, firstName);
+    tobeSavedProfile.setProperty(Profile.LAST_NAME, lastName);
+    tobeSavedProfile.setProperty(Profile.AVATAR_URL, avatarUrl);
+
+    identityStorage.saveProfile(tobeSavedProfile);
+
+    assertNotNull(tobeSavedProfile.getId());
+
+    assertEquals(userName, tobeSavedProfile.getProperty(Profile.USERNAME));
+    assertEquals(firstName, tobeSavedProfile.getProperty(Profile.FIRST_NAME));
+    assertEquals(lastName, tobeSavedProfile.getProperty(Profile.LAST_NAME));
+    assertEquals(avatarUrl, tobeSavedProfile.getProperty(Profile.AVATAR_URL));
+    assertEquals(firstName + " " + lastName, tobeSavedProfile.getFullName());
+  }
+
+  public void testLoadProfile() {
+    final String username = "username";
+    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
+    identityStorage.saveIdentity(tobeSavedIdentity);
+    Profile tobeSavedProfile = tobeSavedIdentity.getProfile();
+    tobeSavedProfile.setProperty(Profile.USERNAME, username);
+
+    identityStorage.loadProfile(tobeSavedProfile);
+
+    assertNotNull(tobeSavedProfile.getId());
+    assertEquals(username, tobeSavedProfile.getProperty(Profile.USERNAME));
+
+    SocialDataLocation dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
+    JCRSessionManager sessionManager = dataLocation.getSessionManager();
 
     //query created profile
     try {
-      final Session session = sessionManager.openSession();
+      final Session session = sessionManager.getOrOpenSession();
       final List<Node> nodes = new QueryBuilder(session)
         .select(IdentityStorage.PROFILE_NODETYPE).exec();
 
@@ -185,16 +206,20 @@ public class IdentityStorageTest extends AbstractCoreTest {
       final Node profileNode = nodes.get(0);
       final Node identityNode = profileNode.getProperty(IdentityStorage.PROFILE_IDENTITY).getNode();
       final Identity identityByProfile = identityStorage.getIdentity(identityNode);
-
-      assertEquals(identity.getId(), identityByProfile.getId());
+      assertEquals(tobeSavedIdentity.getId(), identityByProfile.getId());
+    } catch (RepositoryException e) {
+      e.printStackTrace();
+    } catch (Exception e) {
+      e.printStackTrace();
     } finally {
       sessionManager.closeSession();
     }
   }
 
+
   public void testLoadProfileByReloadCreatedProfileNode() throws Exception {
     String providerId = "organization";
-    String remoteId = "zun";
+    String remoteId = "username";
     Identity identity = new Identity(providerId, remoteId);
 
     identityStorage.saveIdentity(identity);
@@ -217,76 +242,76 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
   public void testFindIdentityByExistName() throws Exception {
     String providerId = "organization";
-    String remoteId = "zun";
+    String remoteId = "username";
 
     Identity identity = new Identity(providerId, remoteId);
     identityStorage.saveIdentity(identity);
 
     Profile profile = new Profile(identity);
-    profile.setProperty(Profile.FIRST_NAME, "zuanoc");
+    profile.setProperty(Profile.FIRST_NAME, "FirstName");
     identityStorage.saveProfile(profile);
 
     final ProfileFilter filter = new ProfileFilter();
-    filter.setName("zu");
-    final List<Identity> result = identityStorage.getIdentitiesFilterByAlphaBet(providerId, filter,0 ,1);
+    filter.setName("First");
+    final List<Identity> result = identityStorage.getIdentitiesFilterByAlphaBet(providerId, filter, 0, 1);
     assertEquals(1, result.size());
   }
 
   public void testFindManyIdentitiesByExistName() throws Exception {
-    String providerId = "organization";
+    final String providerId = "organization";
 
-    int total = 10;
+    final int total = 10;
     for (int i = 0; i <  total; i++) {
-      String remoteId = "zun" + i;
+      String remoteId = "username" + i;
       Identity identity = new Identity(providerId, remoteId+i);
       identityStorage.saveIdentity(identity);
 
       Profile profile = new Profile(identity);
-      profile.setProperty(Profile.FIRST_NAME, "zuanoc"+ i);
+      profile.setProperty(Profile.FIRST_NAME, "FirstName"+ i);
       identityStorage.saveProfile(profile);
     }
 
     final ProfileFilter filter = new ProfileFilter();
-    filter.setName("zu");
+    filter.setName("FirstName");
     final List<Identity> result = identityStorage.getIdentitiesFilterByAlphaBet(providerId, filter, 0, total);
     assertEquals(total, result.size());
   }
 
   public void testFindIdentityByNotExistName() throws Exception {
     String providerId = "organization";
-    String remoteId = "zun";
+    String remoteId = "username";
 
     Identity identity = new Identity(providerId, remoteId);
     identityStorage.saveIdentity(identity);
 
     Profile profile = new Profile(identity);
-    profile.setProperty(Profile.FIRST_NAME, "zuanoc");
+    profile.setProperty(Profile.FIRST_NAME, "FirstName");
     identityStorage.saveProfile(profile);
 
     final ProfileFilter filter = new ProfileFilter();
-    filter.setName("kuku");
+    filter.setName("notfound");
     final List<Identity> result = identityStorage.getIdentitiesFilterByAlphaBet(providerId, filter, 0, 1);
     assertEquals(0, result.size());
   }
 
   public void testFindIdentityByProfileFilter() throws Exception {
     String providerId = "organization";
-    String remoteId = "zun";
+    String remoteId = "username";
 
     Identity identity = new Identity(providerId, remoteId);
     identityStorage.saveIdentity(identity);
 
     Profile profile = new Profile(identity);
-    profile.setProperty(Profile.FIRST_NAME, "zuanoc");
-    profile.setProperty("postition", "hanoi");
+    profile.setProperty(Profile.FIRST_NAME, "FirstName");
+    profile.setProperty("postition", "developer");
     profile.setProperty("gender", "male");
 
     identityStorage.saveProfile(profile);
 
     final ProfileFilter filter = new ProfileFilter();
-    filter.setPosition("hanoi");
+    filter.setPosition("developer");
     filter.setGender("male");
-    filter.setName("zu");
+    filter.setName("First");
     final List<Identity> result = identityStorage.getIdentitiesFilterByAlphaBet(providerId, filter, 0, 1);
     assertEquals(1, result.size());
   }
@@ -296,22 +321,22 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
     int total = 10;
     for (int i = 0; i < total; i++) {
-      String remoteId = "zun" + i;
+      String remoteId = "username" + i;
       Identity identity = new Identity(providerId, remoteId);
       identityStorage.saveIdentity(identity);
 
       Profile profile = new Profile(identity);
-      profile.setProperty(Profile.FIRST_NAME, "zuanoc" + i);
-      profile.setProperty("postition", "hanoi");
+      profile.setProperty(Profile.FIRST_NAME, "FirstName" + i);
+      profile.setProperty("postition", "developer");
       profile.setProperty("gender", "male");
 
       identityStorage.saveProfile(profile);
     }
 
     final ProfileFilter filter = new ProfileFilter();
-    filter.setPosition("hanoi");
+    filter.setPosition("developer");
     filter.setGender("male");
-    filter.setName("zu");
+    filter.setName("FirstN");
     final List<Identity> result = identityStorage.getIdentitiesFilterByAlphaBet(providerId, filter, 0, total);
     assertEquals(total, result.size());
   }

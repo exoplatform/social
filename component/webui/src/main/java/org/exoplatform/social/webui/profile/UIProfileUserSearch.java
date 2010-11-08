@@ -65,6 +65,10 @@ import org.exoplatform.webui.form.UIFormStringInput;
   }
 )
 public class UIProfileUserSearch extends UIForm {
+
+  /** The limit number of query for matching with search criteria */
+  private static final int SEARCH_LIMIT = 500;
+
   /** USER CONTACT. */
   final public static String USER_CONTACT              = "name";
 
@@ -292,9 +296,8 @@ public class UIProfileUserSearch extends UIForm {
           if ("All".equals(charSearch)) {
             filter.setName("");
           }
-
           identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME,
-                                                                     filter);
+                                                                     filter, 0, SEARCH_LIMIT);
           uiSearch.setIdentityList(identitiesSearchResult);
         } else {
           if (!isValidInput(filter)) { // is invalid condition input
@@ -363,19 +366,6 @@ public class UIProfileUserSearch extends UIForm {
         // Make sure string for checking is started by alphabet character
         contactNameForCheck = PREFIX_ADDED_FOR_CHECK + contactNameForCheck;
         if (!contactNameForCheck.matches(RIGHT_INPUT_PATTERN))
-          return false;
-      }
-
-      // Check position
-      String position = input.getPosition();
-      // Eliminate '*' and '%' character in string for checking
-      String positionForCheck = null;
-      if (position != null) {
-        positionForCheck = position.trim().replace("*", "");
-        positionForCheck = positionForCheck.replace("%", "");
-        // Make sure string for checking is started by alphabet character
-        positionForCheck = PREFIX_ADDED_FOR_CHECK + positionForCheck;
-        if (!positionForCheck.matches(POSITION_REGEX_EXPRESSION))
           return false;
       }
 

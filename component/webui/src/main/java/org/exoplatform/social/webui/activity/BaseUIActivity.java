@@ -368,10 +368,15 @@ public class BaseUIActivity extends UIForm {
   public String getUserProfileUri(String userIdentityId) throws Exception {
     Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
     if (userIdentity == null) {
-      throw new Exception("User " +userIdentityId +" is not exist");
+      throw new Exception("User " + userIdentityId +" does not exist");
     }
     LinkProvider linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
-    return linkProvider.getProfileUri(userIdentity.getRemoteId(), null);
+    String uri = linkProvider.getProfileUri(userIdentity.getRemoteId(), null);
+    if (uri == null) {
+      uri = "#";
+    }
+
+    return uri;
   }
 
   /**
@@ -447,30 +452,18 @@ public class BaseUIActivity extends UIForm {
     return getApplicationComponent(SpaceService.class);
   }
 
-  public boolean isSpaceActivity(String id) {
-    try {
-      identityManager = getIdentityManager();
-      Identity identity = identityManager.getIdentity(id, false);
-      String remoteId = identity.getRemoteId();
-      boolean result = (identityManager.getIdentity(SpaceIdentityProvider.NAME, remoteId, false) != null);
-      return result;
-    } catch (Exception e) {
-      return false;
-    }
-  }
-
   public boolean isUserActivity(String id) throws Exception {
+    boolean isUserActivity = false;
     try {
       identityManager = getIdentityManager();
       Identity identity = identityManager.getIdentity(id, false);
-      String remoteId = identity.getRemoteId();
-      boolean result = (identityManager.getIdentity(OrganizationIdentityProvider.NAME,
-                                                     remoteId,
-                                                     false) != null);
-      return result;
+      if (identity != null) {
+        isUserActivity = (identity.getProviderId().equals(OrganizationIdentityProvider.NAME));
+      }
     } catch (Exception e) {
-      return false;
+      LOG.warn("Failed to check if an activity is of a user." + e.getMessage());
     }
+    return isUserActivity;
   }
 
   public boolean isActivityDeletable() throws SpaceException {
@@ -637,6 +630,11 @@ public class BaseUIActivity extends UIForm {
       BaseUIActivity uiActivity = event.getSource();
       ActivityManager activityManager = uiActivity.getActivityManager();
       activityManager.deleteActivity(uiActivity.getActivity().getId());
+      UIActivitiesContainer activitiesContainer = uiActivity.getParent();
+      activitiesContainer.removeChildById(uiActivity.getId());
+      activitiesContainer.removeActivity(uiActivity.getActivity());
+
+      event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
     }
   }
 

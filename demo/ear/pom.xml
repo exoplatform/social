@@ -76,6 +76,11 @@
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.document-composer-plugin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extras.widget.rest</artifactId>
     </dependency>
 
@@ -190,6 +195,11 @@
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
               <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+             <jarModule>
+              <groupId>org.exoplatform.social</groupId>
+              <artifactId>exo.social.extras.document-composer-plugin</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>

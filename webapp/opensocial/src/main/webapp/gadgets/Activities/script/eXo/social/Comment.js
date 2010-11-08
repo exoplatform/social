@@ -74,6 +74,7 @@ eXo.social.Comment.del = function(activityId, commentId, callback) {
 }
 
 eXo.social.Comment.setComment = function(activityId, activityUserId) {
+  var SocialUtil = eXo.social.SocialUtil;
   var Util = eXo.social.Util,
   Locale = eXo.social.Locale,
   statusUpdate = eXo.social.Comment.ref.statusUpdate,
@@ -140,7 +141,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
                         hideAll = false;
                         comments[activityId] = res.data.comments;
                         renderCommentList(comments[activityId], false);
-                        gadgets.window.adjustHeight();
+                        SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
                       }
                     })
                   }
@@ -148,7 +149,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
                   Util.removeElementById(commentListInfoId);
                   display(comments[activityId]);
                 }
-                gadgets.window.adjustHeight();
+                SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
               } else if (comments[activityId].length < 3) {
                 Util.removeElementById(commentListInfoId);
               }
@@ -199,7 +200,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
               updateNumComment = false;
               comments[activityId] = res.data.comments;
               renderCommentList(comments[activityId], false);
-              gadgets.window.adjustHeight();
+              SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
             }
           })
         }
@@ -220,7 +221,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
           hideAll = true;
           commentListBlockEl.style.display = 'none';
           renderCommentList(comments[activityId], true);
-          gadgets.window.adjustHeight();
+          SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
         }
         commentListBlockEl.style.display = 'block';
         display(comments[activityId]);
@@ -241,7 +242,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
       } else {
         debug.warn('Comment.get: res.data is null!!!');
       }
-      gadgets.window.adjustHeight();
+      SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
     })
   })();
 
@@ -309,7 +310,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
     if (commentFormEl.style.display !== 'block') {
       Util.showElement(commentFormId);
       commentTextareaEl.focus();
-      gadgets.window.adjustHeight();
+      SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
     } else {
       Util.hideElement(commentFormId);
     }
@@ -322,7 +323,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
       this.value = '';
     }
     Util.showElement(commentButtonId);
-    gadgets.window.adjustHeight();
+    SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
   }, false);
 
   Util.addEventListener(commentTextareaEl, 'blur', function(evt) {
@@ -400,7 +401,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
                 hideAll = false;
                 comments[activityId] = res.data.comments;
                 renderCommentList(comments[activityId], false);
-                gadgets.window.adjustHeight();
+                SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
               }
             })
           }
@@ -409,7 +410,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
         newEl.setAttribute('className', 'CommentBlock');
         newEl.className = 'CommentBlock';
         setDeleteComment(commentId);
-        gadgets.window.adjustHeight();
+        SocialUtil.adjustHeight(statusUpdate.contentForAdjustHeight);
       } else { //failed
         //alert(Locale.getMsg('internal_error'));
         debug.warn('post comment failed!');

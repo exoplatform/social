@@ -46,13 +46,14 @@
     <script type="text/javascript" src="script/eXo/social/Like.js"></script>
     <script type="text/javascript" src="script/eXo/social/Comment.js"></script>
     <script type="text/javascript" src="script/eXo/social/StatusUpdate.js"></script>
+    <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
     <div id="StatusLoading" class="StatusLoading">__MSG_loading__</div>
     <div id="StatusUpdate" class="ActivitiesComponent DisplayNone">
       <div class="ActivitiesComponentBT">
         <div class="ActivitiesTitleBarR">
           <div id="AppTitle" class="ActivitiesTitleBarM">__MSG_title__</div>
         </div>
-        <div class="ActivitiesContainer">
+        <div class="ActivitiesContainer" id="ActivitiesContainer">
           <div id="UIMyStatusInput" class="MyStatusComponent">
             <table>
               <body>
@@ -148,13 +149,14 @@
     <script type="text/javascript" src="script/eXo/social/Like.js"></script>
     <script type="text/javascript" src="script/eXo/social/Comment.js"></script>
     <script type="text/javascript" src="script/eXo/social/StatusUpdate.js"></script>
+    <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
     <div id="StatusLoading" class="StatusLoading">__MSG_loading__</div>
     <div id="StatusUpdate" class="ActivitiesComponent DisplayNone">
       <div class="ActivitiesComponentBT">
         <div class="ActivitiesTitleBarR">
           <div id="AppTitle" class="ActivitiesTitleBarM">__MSG_title__</div>
         </div>
-        <div class="ActivitiesContainer">
+        <div class="ActivitiesContainer" id="ActivitiesContainer">
           <div id="UIMyStatusInput" class="MyStatusComponent">
             <table>
               <body>

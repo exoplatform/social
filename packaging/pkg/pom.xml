@@ -212,6 +212,27 @@
     </dependency><!-- 1.0.0-->
 
     <dependency>
+      <groupId>org.gatein.mop</groupId>
+      <artifactId>mop-api</artifactId>
+      <version>${org.gatein.mop.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0.4-GA-->
+
+    <dependency>
+      <groupId>org.gatein.mop</groupId>
+      <artifactId>mop-spi</artifactId>
+      <version>${org.gatein.mop.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0.4-GA-->
+
+    <dependency>
+      <groupId>org.gatein.mop</groupId>
+      <artifactId>mop-core</artifactId>
+      <version>${org.gatein.mop.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.0.4-GA-->
+    
+    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.component.remote</artifactId>
       <version>${org.exoplatform.kernel.version}</version>
@@ -385,6 +406,125 @@
       <version>${com.sun.xml.bind.version}</version>
       <type>jar</type>
     </dependency><!-- 2.1.7-->
+
+    <dependency>
+      <groupId>org.gatein.wsrp</groupId>
+      <artifactId>wsrp-producer</artifactId>
+      <version>${org.gatein.wsrp.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.core</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.opensocial</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.service</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.webui</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.demo.rest</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.demo.config</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.demo.war</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extension.config</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.webapp.portlet</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.webapp.opensocial</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.webapp.resources</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.feedmash</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency><!-- 1.1.1-SNAPSHOT-->
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.widget.resources</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.extras.widget.rest</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
 
   </dependencies>
 

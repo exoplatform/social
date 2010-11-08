@@ -1,5 +1,5 @@
 =====================================================
-    Release Notes - eXo Social - Version 1.1.0-GA
+    Release Notes - eXo Social - Version 1.1.1
 =====================================================
 
 ===============
@@ -29,24 +29,9 @@ eXo Social is composed of 2 modules :
 2 What's new?
 =============
 
-- Project cleanup: reorganize code, package and its artifactIds.
-- New look and feel for Social extension and demo.
-- Speed improvement for creating a new space by using template instead of page node to
-  create a new space's navigation.
-- Enhance usability in space: message type, input validation, contextual message when
-  selecting options in space creation form.
-- New space name navigation: allows only alphabet, digit and space characters only.
-- Change the way of creating a space bound to an existing group.
-- Use portlet preference to get space context instead of getting space context via Uri and use
-component plugin to define which portlets can have this when installing in a space.
-- Properly organize gadgets for speeding up server startup time.
-- Make possible to create space via REST service.
-- Reference guide added
-- New activity stream portlet for space and user and its activity composer extension mechanism:
-link composer plugin, relationship activity type...; replace user activity stream portlet on user
-activity gadget.
-
-  * Find the latest release notes here : http://wiki.exoplatform.com/xwiki/bin/view/Social/Release+Notes
+- Focus more on Social's performance with ExoCache. Make avatar images are cached.
+- Make it configurable for OpenSocial Rest Context API.
+- UI enhancement: more incentive "Add New Space" button; move edit space navigation into space settings
 
 =========
 3 INSTALL
@@ -123,6 +108,45 @@ All those accounts have the default password "gtn".
 ===========
 5 CHANGELOG
 ===========
+
+- 1.1.1
+
+** Bug
+    * [SOC-817] - Internal Error when updating activities with very long message - All following messages, even short, give same error (demo2)
+    * [SOC-819] - In profile, required fields are not marked as such (start and end date in "Experiences")(demo2)
+    * [SOC-981] - Attaching an image to an activity stream of a space causes javascript misinterpretation
+    * [SOC-1005] - [Space][activity] Disable Share button when attach some link
+    * [SOC-1018] - [SOC]: Change message when edit FN/LN contain specical chars in Public Profile
+    * [SOC-1042] - spaces and people selector font is not consistent with overall look and feel
+    * [SOC-1053] - Shared link is not available on User'activity
+    * [SOC-1058] - Apps preconfigured on Spaces does not work, need lifecycle for this
+    * [SOC-1059] - Some labels are not translated in space
+    * [SOC-1101] - Space: Change label for icons in share comment
+    * [SOC-1102] - Text right after [@] character is not displayed in user activites
+    * [SOC-1108] - [Activity] text for comment is clean after share link or document
+    * [SOC-1112] - Can't publish activity stream using the opensocial API
+    * [SOC-1113] - Space, FF3.6: Text for comment is clean after choosing attachment
+    * [SOC-1114] - When adding an activity and attaching an image only the image is taken into account
+    * [SOC-1119] - [space] lost Revoke icon on pending space list
+    * [SOC-1124] - opensocial.Person.Field.PROFILE_URL should return a valid URL
+    * [SOC-1125] - Bug in Activity Stream when user deletes inputted text in the status textbox when share link, document
+    * [SOC-1127] - Share image link and input status text, input text disappears
+    * [SOC-1129] - [People]_A wrong control on Start date
+    * [SOC-1131] - Activity extension are resetting the activity field to blank
+    * [SOC-1134] - Bug in templateParams of activity
+    * [SOC-1136] - It is possible to remove last space leader
+    * [SOC-1142] - Avatar images are not cached by browser
+    * [SOC-1154] - Can't share links with images
+
+** Feedback
+    * [SOC-743] - SNF_PRL_03 fail : nothing gets translated
+    * [SOC-866] - order the list of people by last name
+
+** Improvement
+    * [SOC-726] - Move edit space navigation into space settings
+    * [SOC-1066] - More incentive "Add New Space" button
+    * [SOC-1069] - Use applications icons
+
 
 - 1.1.0-GA
 

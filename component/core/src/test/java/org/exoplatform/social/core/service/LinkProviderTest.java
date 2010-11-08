@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.core.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -23,6 +26,26 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class LinkProviderTest extends AbstractCoreTest {
 
+  private IdentityManager identityManager;
+
+  private LinkProvider linkProvider;
+
+  public void setUp() throws Exception {
+    super.setUp();
+    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    assertNotNull(identityManager);
+    linkProvider = (LinkProvider) getContainer().getComponentInstanceOfType(LinkProvider.class);
+    assertNotNull(linkProvider);
+  }
+
+  public void tearDown() throws Exception {
+    super.tearDown();
+  }
+
+  /**
+   *
+   * @throws Exception
+   */
   public void testGetProfileLink() throws Exception {
     final String portalOwner = "classic";
 
@@ -30,11 +53,12 @@ public class LinkProviderTest extends AbstractCoreTest {
     Identity rootIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");    
     String rootFullName = rootIdentity.getProfile().getFullName();
     assertNotNull("rootFullName must not be null.", rootFullName);
-    LinkProvider provider = (LinkProvider) getContainer().getComponentInstanceOfType(LinkProvider.class);
     // but when we have the identity we generate a link
-    String actualLink = provider.getProfileLink(rootIdentity.getRemoteId(), portalOwner);
+    String actualLink = linkProvider.getProfileLink(rootIdentity.getRemoteId(), portalOwner);
     String expected =  "<a href=\"/portal/private/" + portalOwner + "/profile/" +
                         rootIdentity.getRemoteId()+"\" target=\"_parent\">"+rootFullName+"</a>";
     assertEquals(expected, actualLink);
+
+    identityManager.deleteIdentity(rootIdentity);
   }
 }

@@ -50,7 +50,7 @@
                     <div class="ButtonLeft">
                       <div class="ButtonRight">
                         <div class="ButtonMiddle">
-                          <a href="#" onclick="$changeAvatar"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
+                          <a href="#" onclick="$changeAvatar;return false;"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
                         </div>
                       </div>
                     </div>

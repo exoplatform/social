@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.plugin.link;
 
+import java.util.Map;
+
 import org.apache.commons.lang.Validate;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;

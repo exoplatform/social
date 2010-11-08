@@ -31,9 +31,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.common.UserListAccess;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -69,11 +67,11 @@ import org.exoplatform.webui.event.Event.Phase;
   )
 })
 public class UIMembersPortlet extends UIPortletApplication {
-  private UIPageIterator iterator_;
+  private final UIPageIterator iterator_;
   private List<User> memberList;
   private List<User> leaderList;
-  private UIPageIterator iteratorLeaders;
-  private UIPageIterator iteratorMembers;
+  private final UIPageIterator iteratorLeaders;
+  private final UIPageIterator iteratorMembers;
   private final String iteratorLeaderID = "UIIteratorLeader";
   private final String iteratorMemberID = "UIIteratorMember";
   private final Integer ITEMS_PER_PAGE = 5;
@@ -196,13 +194,7 @@ public class UIMembersPortlet extends UIPortletApplication {
    */
   public String getUserAvatar(String userId) throws Exception {
     Identity identity = getIdentityManager().getOrCreateIdentity("organization", userId);
-    Profile profile = identity.getProfile();
-    AvatarAttachment attach = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
-    if (attach != null) {
-      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository()+ "/" + attach.getWorkspace()
-              + attach.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
+    return identity.getProfile().getAvatarImageSource();
   }
 
   /**

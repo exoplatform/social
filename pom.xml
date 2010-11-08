@@ -82,13 +82,13 @@
     <quartz.version>1.5.2</quartz.version>
     <picocontainer.version>1.1</picocontainer.version>
 
-    <org.exoplatform.kernel.version>2.2.5-GA-SNAPSHOT</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.3.5-GA-SNAPSHOT</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.1.5-GA-SNAPSHOT</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.12.5-GA-SNAPSHOT</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.1.5-PLF-SNAPSHOT</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>2.1.1-SNAPSHOT</org.exoplatform.ecms.version>
-    <org.exoplatform.commons.version>1.0.1-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.kernel.version>2.2.6-GA-SNAPSHOT</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.3.6-GA-SNAPSHOT</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.1.6-GA-SNAPSHOT</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.12.6-GA-SNAPSHOT</org.exoplatform.jcr.version>
+    <org.exoplatform.portal.version>3.1.6-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.ecms.version>2.1.2-SNAPSHOT</org.exoplatform.ecms.version>
+    <org.exoplatform.commons.version>1.0.2-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.exopackage.version>1.1.0</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
 
@@ -96,9 +96,9 @@
     <org.gatein.wci.version>2.0.1-GA</org.gatein.wci.version>
     <org.gatein.pc.version>2.1.1-GA</org.gatein.pc.version>
     <org.gatein.wsrp.version>1.1.1-GA</org.gatein.wsrp.version>
-    <org.gatein.mop.version>1.0.3-GA</org.gatein.mop.version>
-    <org.shindig.version>1.0-r790473-Patch02</org.shindig.version>
-    <org.chromattic.version>1.0.3</org.chromattic.version>
+    <org.gatein.mop.version>1.0.4-GA</org.gatein.mop.version>
+    <org.shindig.version>1.0-r790473-Patch04</org.shindig.version>
+    <org.chromattic.version>1.0.4</org.chromattic.version>
 
     <org.fontbox.version>0.1.0</org.fontbox.version>
     <org.slf4j.version>1.5.6</org.slf4j.version>
@@ -712,6 +712,11 @@
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.extras.document-composer-plugin</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

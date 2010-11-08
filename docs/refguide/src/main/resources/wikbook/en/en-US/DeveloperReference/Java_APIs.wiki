@@ -15,8 +15,11 @@ h1. Activity Manager
 | *recordActivity*(Identity owner, java.lang.String type, java.lang.String title, java.lang.String body) | {{owner}} - the owner of the target stream for this activity; {{type}} is the type of activity (freeform); {{title}}; {{body}}| stored activity | To record an activity. |
 | *recordActivity*(Identity owner, Activity activity) | {{owner}}; {{activity}} | stored activity | To save an activity. |
 | *addProcessor*(ActivityProcessor processor, Adds a new processor}} | {{processor}}; {{addProcessorPlugin}} |  |  |
-| addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} |  | To add a new processor plug-in. |
+| *addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} |  | To add a new processor plug-in. |
 | *getActivitiesCount*(Identity owner) |  |  |  |
+| *getActivitiesOfConnections*(Identity ownerIdentity)| {{ownerIdentity}}| List<Activity> | Gets activities of connections from an identity which is sorted by time.|
+| *getActivitiesOfUserSpaces*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activities from all user's spaces which is sorted by time.|
+| *getActivityFeed*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activity feed of an identity. This feed is the combination of all the activities of his own activities, his connections' activities and his spaces' activities which is sorted by time. The latest activity is the first item in the activity list.|
 
 h1. IdentityManager
 
@@ -24,7 +27,7 @@ h1. IdentityManager
 | *getIdentity*(java.lang.String id) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId() | null if nothing is found, or the Identity object | To get the identity by id and to load his profile. |
 | *getIdentity*(java.lang.String id, boolean loadProfile) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId(); {{loadProfile}} - the value is true if the profile is loaded and false if not loaded | null if nothing is found, or the Identity object | To get the identity by loading id of the profile optionally. |
 | *addIdentityProvider*(IdentityProvider<?> idProvider)| {{idProvider}} is the id of provider |  | To add the id of provider. |
-| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}} is the id of provider; {{remoteId}} is the remote id | identity | To get the identity by remote id. |
+| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}} is the id of provider; {{remoteId}} is the remote id | identity | To get the identity by remoteId. If the provider can not find any identity by remoteId, the return value is null. If no identity found by identity provider and that identity is still stored on JCR, that stored identity will be deleted and the return value is null.|
 | *getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter) | {{providerId}} is the id of provider; {{profileFilter}} is the filter of provider | the identities by the profile filter | To get the identities by profile filter. |
 | getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter, long offset, long limit) |  |  |  |
 | *getIdentitiesByProfileFilter*(ProfileFilter profileFilter) | {{profileFilter}} - the profile filter | the identities by profile filter | To get the identities by profile filter. |
@@ -48,6 +51,7 @@ h1. IdentityManager
 | *unregisterProfileListener*(ProfileListener listener)addProfileListener |  |  |  |
 | *addProfileListener*(ProfileListenerPlugin plugin) | {{plugin}} |  | To register a profile listener component plug-in. |
 | *getIdentityStorage*() |  |  |  |
+| *getConnections*(Identity ownerIdentity)| {{ownerIdentity}} | List<Identity> | Gets connections of an identity |
 
 
 h1. Relationship Manager

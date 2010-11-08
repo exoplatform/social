@@ -21,8 +21,15 @@ import java.util.GregorianCalendar;
 
 import junit.framework.TestCase;
 
+/**
+ * Unit Tests for {@link Activity}
+ *
+ */
 public class ActivityTest extends TestCase {
 
+  /**
+   *
+   */
   public void testOpenSocialCompatibility() {
 
     Activity activity = new Activity();

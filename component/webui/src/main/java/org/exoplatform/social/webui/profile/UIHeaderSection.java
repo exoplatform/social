@@ -34,7 +34,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
-import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
@@ -54,21 +53,13 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 public class UIHeaderSection extends UIProfileSection {
   /** POSITION. */
   final public static String POSITION             = "position";
-
-  /** REGEX EXPRESSION. */
-  final public static String REGEX_EXPRESSION     = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
-
-  /** INVALID CHARACTER MESSAGE. */
-  final public static String INVALID_CHAR_MESSAGE = "UIHeaderSection.msg.Invalid-char";
-
   /**
    * Initializes components for header form.<br>
    */
   public UIHeaderSection() throws Exception {
     addUIFormInput(new UIFormStringInput(POSITION, POSITION, null).
                    addValidator(MandatoryValidator.class).
-                   addValidator(StringLengthValidator.class, 3, 30).
-                   addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
+                   addValidator(StringLengthValidator.class, 3, 30));
   }
 
   /**

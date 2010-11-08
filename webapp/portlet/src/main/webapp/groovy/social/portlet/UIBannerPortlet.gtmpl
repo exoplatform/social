@@ -19,17 +19,12 @@
 <%
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.portal.webui.util.Util;
-  def uicomponentId = "UISocialBannerPortlet";
   def prContext = _ctx.getRequestContext().getParentAppRequestContext();
   String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));";
   String changeLanguageAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ChangeLanguage', true));";
   String portletId = uicomponent.getId();
   String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";
   String homeURI = Util.getPortalRequestContext().getPortalURI();
-  def labelLogin = _ctx.appRes("${uicomponentId}.label.Login");
-  def labelStartASession = _ctx.appRes("${uicomponentId}.label.Start_A_Sesssion");
-  def labelRegister = _ctx.appRes("${uicomponentId}.label.Register");
-  def labelCreateAnAccount = _ctx.appRes("${uicomponentId}.label.Create_An_Account");
 %>
 <div id="$portletId" class="UIBannerPortlet UIApplication">
   <div class="ApplicationMinWidth">
@@ -38,21 +33,20 @@
         <%if(prContext.getRemoteUser() != null) {%>
           <div class="BannerTitle"><span></span></div>
         <%} else {%>
-              <div class="LeftLoginContainer">
-                <div class="RightLoginContainer">
-                  <div class="MiddleLoginContainer">
-                  <a href="#" onclick="$signInAction">$labelLogin</a>
-			          <a href="$registerURI">$labelRegister</a>
-                    <a class="Language" onclick="$changeLanguageAction">
-                    <%=_ctx.appRes("UIBanner.label.ChangeLanguage")%>
-                    </a>
-                    
-                    <div style="clear:both"><span></span></div>
-                  </div>
-                </div>
-                <div style="clear:both"><span></span></div>
-              </div>
-        <% } %>
+          <div class="LeftLoginContainer">
+            <div class="RightLoginContainer">
+              <div class="MiddleLoginContainer">
+              <a href="#" onclick="$signInAction"><%= _ctx.appRes("UISocialBannerPortlet.label.Sign_In") %></a>
+              <a href="$registerURI"><%= _ctx.appRes("UISocialBannerPortlet.label.Register") %></a>
+              <a class="Language" onclick="$changeLanguageAction">
+                <%= _ctx.appRes("UISocialBannerPortlet.label.ChangeLanguage") %>
+              </a>
+              <div style="clear:both"><span></span></div>
+            </div>
+          </div>
+          <div style="clear:both"><span></span></div>
+        </div>
+      <% } %>
     </div>
   </div>
 </div>

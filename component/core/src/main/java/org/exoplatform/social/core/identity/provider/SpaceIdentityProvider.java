@@ -42,23 +42,24 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
     this.spaceService = spaceService;
   }
 
+  /**
+   *
+   *
+   * @param spaceId can be space name or spaceId
+   * @return
+   */
   public Space findByRemoteId(String spaceId) {
-    Space space;
+    Space space = null;
     try {
       space = spaceService.getSpaceById(spaceId);
 
       // attempt to find by name
-      if (space ==null) {
-        String name = spaceId;
-        if (spaceId.contains(":")) {
-          name = spaceId.split(":")[1];
-        }
-
-        return spaceService.getSpaceByName(name);
+      //FIXME what if the space name with space characters "abc def" and "abc%20def"
+      if (space == null) {
+        space = spaceService.getSpaceByName(spaceId);
       }
     } catch (Exception e) {
       LOG.error("Could not find space " + spaceId, e);
-      return null;
     }
     return space;
   }

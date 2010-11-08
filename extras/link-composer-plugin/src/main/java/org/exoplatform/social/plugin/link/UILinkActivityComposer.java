@@ -29,11 +29,11 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.LinkShare;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
-import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -73,7 +73,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
   public static final String DESCRIPTION_PARAM = "description";
   public static final String COMMENT_PARAM = "comment";
 
-  private static final String MSG_ERROR_ATTACH_LINK = "UIComposerLinkExtension.msg.error.Attach_Link";
+  //private static final String MSG_ERROR_ATTACH_LINK = "UIComposerLinkExtension.msg.error.Attach_Link";
   private static final String HTTP = "http://";
   private static final String HTTPS = "https://";
   private LinkShare linkShare_;
@@ -226,6 +226,11 @@ public class UILinkActivityComposer extends UIActivityComposer {
                                        null);
       activity.setType(UILinkActivity.ACTIVITY_TYPE);
       activityManager.saveActivity(spaceIdentity, activity);
+
+      UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
+      activitiesContainer.addActivity(activity);
+      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+      requestContext.addUIComponentToUpdateByAjax(uiComposer);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       String ownerName = uiUserActivitiesDisplay.getOwnerName();
@@ -237,7 +242,19 @@ public class UILinkActivityComposer extends UIActivityComposer {
                                        null);
       activity.setType(UILinkActivity.ACTIVITY_TYPE);
       activityManager.saveActivity(ownerIdentity, activity);
-      uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
+      
+      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
+        UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
+        if (activitiesContainer.getChildren().size() == 1) {
+          uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+        } else {
+          activitiesContainer.addActivity(activity);
+          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+          requestContext.addUIComponentToUpdateByAjax(uiComposer);
+        }
+      } else{
+        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+      }
     }
   }
 }

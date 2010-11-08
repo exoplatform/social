@@ -63,11 +63,12 @@ import org.exoplatform.webui.event.EventListener;
 public class UISpaceMenu extends UIContainer {
   /** NEW SPACE APPLICATION NAME. */
   private static final String NEW_SPACE_APPLICATION_NAME = "newSpaceAppName";
-
   /** INVALID APPLICATION NAME MESSAGE. */
   private static final String INVALID_APPLICATION_NAME_MSG = "UISpaceMenuPortlet.msg.invalidAppName";
 
   private static final String EXISTING_APPLICATION_NAME_MSG = "UISpaceMenuPortlet.msg.existingAppName";
+
+  private static final String SPACE_HOME_APP_NAME = "UISpaceMenu.label.Home";
 
   private static final String SPACE_SETTING_PORTLET = "SpaceSettingPortlet";
   /** Stores SpaceService object. */
@@ -126,6 +127,7 @@ public class UISpaceMenu extends UIContainer {
     {
       UISpaceMenu spaceMenu = event.getSource();
       WebuiRequestContext context = event.getRequestContext();
+
       String newSpaceAppName = context.getRequestParameter(NEW_SPACE_APPLICATION_NAME);
       UIPortal uiPortal = Util.getUIPortal();
       PortalRequestContext prContext = Util.getPortalRequestContext();
@@ -331,17 +333,20 @@ public class UISpaceMenu extends UIContainer {
     List<PageNode> nodes = homeNode.getChildren();
 
     // Check in case new name is duplicated with space name
-     for (PageNode node : pageNav.getNodes()) {
-        if (node.getName().equals(nodeName)) {
-           return true;
-        }
-     }
-     for (PageNode node : nodes) {
-        if (node.getName().equals(nodeName)) {
-           return true;
-        }
-     }
-     return false;
+    for (PageNode node : pageNav.getNodes()) {
+      if (node.getName().equals(nodeName)) {
+         return true;
+      }
+    }
+    for (PageNode node : nodes) {
+      if (node.getName().equals(nodeName)) {
+         return true;
+      }
+    }
+
+    //space home application name is not PageNode so we alse need to check this name 
+    String spaceHomeAppName = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle().getString(SPACE_HOME_APP_NAME);
+    return nodeName.equals(spaceHomeAppName);
   }
 
   /**

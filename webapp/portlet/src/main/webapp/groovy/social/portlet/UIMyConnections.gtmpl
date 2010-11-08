@@ -92,14 +92,10 @@
 			  if (!position)
 		      position = "";
 		      
-		    String imageSource = "/social-resources/skin/ShareImages/Avartar.gif";
-		    AvatarAttachment att = id.profile.getProperty(Profile.AVATAR);
-    		if (att != null) {
-					try {
-      			imageSource = "/" + uicomponent.getPortalName()+"/rest/jcr/" + uicomponent.getRepository() + "/" + att.getWorkspace();
-      			imageSource = imageSource + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-					} catch (Exception e) {}
-    		}
+		    String imageSource = id.profile.getAvatarImageSource();
+        if (imageSource == null) {
+          imageSource = "/social-resources/skin/ShareImages/Avartar.gif";
+        }
 		 %>
 		
 				<% if (relationIdx % 2 == 0) { %>

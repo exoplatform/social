@@ -18,7 +18,7 @@ package org.exoplatform.social.core.space.model;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
+import org.exoplatform.social.core.model.AvatarAttachment;
 
 
 // TODO: Auto-generated Javadoc
@@ -384,7 +384,7 @@ public class Space {
   /**
    * Sets the space attachment.
    * 
-   * @param spaceAttachment the new space attachment
+   * @param avatarAttachment the new space attachment
    */
   public void setAvatarAttachment(AvatarAttachment avatarAttachment) {
     this.avatarAttachment = avatarAttachment;
@@ -409,8 +409,7 @@ public class Space {
     AvatarAttachment avatarAttachment = getAvatarAttachment();
     if (avatarAttachment != null) {
       return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-      + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd="
-      + System.currentTimeMillis();
+      + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd=" + avatarAttachment.getLastModified();
     }
     } catch (Exception e) {
       ;

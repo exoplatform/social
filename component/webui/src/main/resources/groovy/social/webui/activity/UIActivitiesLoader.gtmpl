@@ -1,0 +1,79 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  def labelNotAnyUpdatesPostedYet = _ctx.appRes("${uicomponent.id}.label.Not_Any_Updates_Posted_Yet");
+  def labelMore = _ctx.appRes("${uicomponent.id}.label.More");
+
+%>
+<div class="$uicomponent.id" id="$uicomponent.id">
+<% if (uicomponent.getActivitiesContainer().getChildren().size()> 1) {
+     uicomponent.renderChild(uicomponent.getActivitiesContainer());
+     uicomponent.renderChild(uicomponent.getExtendContainer());
+   } else {
+     if (uicomponent.isExtendLoader()) {
+       %>
+        <script type="text/javascript">
+          try{document.getElementById("uiActivitiesLoadButton").style.display = "none";}catch(e){};
+        </script>
+       <%
+     } else {
+       %>
+        <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
+       <%
+     }
+   }
+%>
+  <%
+    if(!uicomponent.isExtendLoader() && !uicomponent.isUnableLoadNext()){
+      %>
+        <div id="UIActivitiesLoadButton" onclick="<%=uicomponent.event("LoadMore")%>" class="UIAction">
+          <table>
+            <tbody>
+              <tr>
+             <td>
+              <div class="ActionButton MoreActivitiesLoader">
+               <div class="ButtonLeft">
+                 <div class="ButtonRight">
+                   <div class="ButtonMiddle">
+                     <a>$labelMore</a>
+                   </div>
+                 </div>
+               </div>
+              </div>
+             </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      <%
+    }
+
+    if(uicomponent.isUnableLoadNext() || uicomponent.getActivitiesContainer().getChildren().size()<=1){
+      %>
+        <script type="text/javascript">
+          try{document.getElementById("UIActivitiesLoadButton").style.display = "none";}catch(e){};
+        </script>
+      <%
+    }
+  %>
+</div>

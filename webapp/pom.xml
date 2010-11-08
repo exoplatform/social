@@ -42,7 +42,6 @@
     <module>resources</module>
     <module>portlet</module>
     <module>opensocial</module>
-    <module>social-extension-portal</module>
   </modules>
 
 </project>

@@ -24,70 +24,70 @@ import java.util.Map;
  * An activity is a piece of message aimed at sharing some status, mood, idea, notification, data...
  */
 public class Activity  {
-  
+
   /** The  Constant label comment. */
-  static final public String IS_COMMENT = "IS_COMMENT";
-  
+  public static final String IS_COMMENT = "IS_COMMENT";
+
   /** The body. */
   private String body = null;
 
   /** The body. */
   private String bodyId = null;
-  
+
   /** The external id. */
   private String externalId = null;
-  
+
   /** The id. */
   private String id = null;
-  
+
   /** The updatedTimestamp. */
   private Long updatedTimestamp = null;
-  
+
   /** The media items. */
   private List<org.apache.shindig.social.opensocial.model.MediaItem> mediaItems = null;
-  
+
   /** The posted time. */
   private Long postedTime = null;
-  
+
   /** The priority. */
   private Integer priority = null;
-  
+
   /** The stream. */
   private Stream stream = null;
-  
+
   /** The template params. */
   private Map<String, String> templateParams = null;
-  
+
   /** The title. */
   private String title = null;
 
   /** The titleId. */
   private String titleId = null;
-  
+
   /** The url. */
   private String url = null;
-  
+
   /** The user id. */
   private String userId = null;
-  
+
   /** The type. */
   private String type = null;
-  
+
   /** The replyTo id. */
   private String replyToId = null;
- 
+
   /** The hidden. */
   private boolean hidden = false;
-  
+
   /** The like identity ids. */
   private String[] likeIdentityIds = null;
-  
 
-  
-  
+
   /**
    * Instantiates a new activity based on userId, type, title and its body.
-   * 
+   *
+   * The fields <code>postedTime</code> and <code>updatedTimestamp</code> is automatically initialized.
+   *
    * @param userId the user id
    * @param type the type
    * @param title the title
@@ -98,10 +98,13 @@ public class Activity  {
     this.type = type;
     this.title = title;
     this.body = body;
+    setPostedTime(new Date().getTime());
+    setUpdated(new Date());
   }
 
   /**
    * Instantiates a new activity.
+   * Init <code>updatedTimestamp</code> and <code>postedTime</code> at the time of new instance construction
    */
   public Activity() {
     setUpdated(new Date());
@@ -111,7 +114,7 @@ public class Activity  {
 
   /**
    * Gets the body.
-   * 
+   *
    * @return the body
    */
   public String getBody() {
@@ -120,7 +123,7 @@ public class Activity  {
 
   /**
    * Sets the body.
-   * 
+   *
    * @param body the new body
    */
   public void setBody(String body) {
@@ -129,7 +132,7 @@ public class Activity  {
 
   /**
    * Gets the external id.
-   * 
+   *
    * @return the external id
    */
   public String getExternalId() {
@@ -138,7 +141,7 @@ public class Activity  {
 
   /**
    * Sets the external id.
-   * 
+   *
    * @param externalId the new external id
    */
   public void setExternalId(String externalId) {
@@ -147,7 +150,7 @@ public class Activity  {
 
   /**
    * Gets the id.
-   * 
+   *
    * @return the id
    */
   public String getId() {
@@ -156,7 +159,7 @@ public class Activity  {
 
   /**
    * Sets the id.
-   * 
+   *
    * @param id the new id
    */
   public void setId(String id) {
@@ -165,7 +168,7 @@ public class Activity  {
 
   /**
    * Gets the updatedTimestamp.
-   * 
+   *
    * @return the updatedTimestamp
    */
   public Long getUpdatedTimestamp() {
@@ -174,7 +177,7 @@ public class Activity  {
 
   /**
    * Sets the updatedTimestamp.
-   * 
+   *
    * @param timestamp the new updatedTimestamp
    */
   public void setUpdatedTimestamp(Long timestamp) {
@@ -183,9 +186,9 @@ public class Activity  {
 
   /**
    * Gets the media items.
-   * 
+   *
    * @return the media items
-   * @see org.exoplatform.social.core.activitystream.model.MediaItem
+   * @see org.exoplatform.social.core.activity.model.MediaItem
    */
   public List<org.apache.shindig.social.opensocial.model.MediaItem> getMediaItems() {
     return mediaItems;
@@ -193,9 +196,9 @@ public class Activity  {
 
   /**
    * Sets the media items.
-   * 
+   *
    * @param mediaItems the new media items
-   * @see org.exoplatform.social.core.activitystream.model.MediaItem
+   * @see org.exoplatform.social.core.activity.model.MediaItem
    */
   public void setMediaItems(List<org.apache.shindig.social.opensocial.model.MediaItem> mediaItems) {
     this.mediaItems = mediaItems;
@@ -203,7 +206,7 @@ public class Activity  {
 
   /**
    * Gets the posted time.
-   * 
+   *
    * @return the posted time
    */
   public Long getPostedTime() {
@@ -212,7 +215,7 @@ public class Activity  {
 
   /**
    * Sets the posted time.
-   * 
+   *
    * @param postedTime the new posted time
    */
   public void setPostedTime(Long postedTime) {
@@ -220,25 +223,30 @@ public class Activity  {
   }
 
 
+  /**
+   * Gets priority
+   *
+   * @return priority
+   */
   public Float getPriority() {
     if (priority == null) {
       return null;
     }
     return (priority>0) ? (priority/100F) : 0F;
   }
-  
+
   /**
    * Gets the priority.
-   * 
+   *
    * @return the priority
    */
   public Integer getIntPriority() {
     return priority;
   }
-  
+
   /**
    * Sets the priority.
-   * 
+   *
    * @param priority a number between 0 and 100
    */
   public void setPriority(Integer priority) {
@@ -254,6 +262,7 @@ public class Activity  {
 
   /**
    * should be between 0 and 1
+   * @param priority
    */
   public void setPriority(Float priority) {
     if (priority == null) {
@@ -265,12 +274,12 @@ public class Activity  {
     } else {
       setPriority(0);
     }
-    
+
   }
 
   /**
    * Gets the stream.
-   * 
+   *
    * @return the stream
    */
   public Stream getStream() {
@@ -282,7 +291,7 @@ public class Activity  {
 
   /**
    * Sets the stream.
-   * 
+   *
    * @param stream the new stream
    */
   public void setStream(Stream stream) {
@@ -291,7 +300,7 @@ public class Activity  {
 
   /**
    * Gets the template params.
-   * 
+   *
    * @return the template params
    */
   public Map<String, String> getTemplateParams() {
@@ -300,7 +309,7 @@ public class Activity  {
 
   /**
    * Sets the template params.
-   * 
+   *
    * @param templateParams the template params
    */
   public void setTemplateParams(Map<String, String> templateParams) {
@@ -309,7 +318,7 @@ public class Activity  {
 
   /**
    * Gets the title.
-   * 
+   *
    * @return the title
    */
   public String getTitle() {
@@ -318,7 +327,7 @@ public class Activity  {
 
   /**
    * Sets the title.
-   * 
+   *
    * @param title the new title
    */
   public void setTitle(String title) {
@@ -327,7 +336,7 @@ public class Activity  {
 
   /**
    * Gets the url.
-   * 
+   *
    * @return the url
    */
   public String getUrl() {
@@ -336,7 +345,7 @@ public class Activity  {
 
   /**
    * Sets the url.
-   * 
+   *
    * @param url the new url
    */
   public void setUrl(String url) {
@@ -345,7 +354,7 @@ public class Activity  {
 
   /**
    * Gets the user id.
-   * 
+   *
    * @return the user id
    */
   public String getUserId() {
@@ -354,7 +363,7 @@ public class Activity  {
 
   /**
    * Sets the user id.
-   * 
+   *
    * @param userId the new user id
    */
   public void setUserId(String userId) {
@@ -363,7 +372,7 @@ public class Activity  {
 
   /**
    * Gets the replyto id.
-   * 
+   *
    * @return the replyto id
    */
   public String getReplyToId() {
@@ -372,7 +381,7 @@ public class Activity  {
 
   /**
    * Sets the replyto id.
-   * 
+   *
    * @param replyToId the new replyto id
    */
   public void setReplyToId(String replyToId) {
@@ -381,7 +390,7 @@ public class Activity  {
 
   /**
    * Gets the type.
-   * 
+   *
    * @return the type
    */
   public String getType() {
@@ -390,7 +399,7 @@ public class Activity  {
 
   /**
    * Sets the type.
-   * 
+   *
    * @param type the new type
    */
   public void setType(String type) {
@@ -399,7 +408,7 @@ public class Activity  {
 
   /**
    * Checks if is hidden.
-   * 
+   *
    * @return true, if is hidden
    */
   public boolean isHidden() {
@@ -408,84 +417,139 @@ public class Activity  {
 
   /**
    * Sets the hidden.
-   * 
+   *
    * @param hidden the new hidden
    */
   public void setHidden(boolean hidden) {
       this.hidden = hidden;
   }
-  
+
   /**
    * Sets the like identity ids.
-   * 
+   *
    * @param likeIdentityIds the new like identity ids
    */
   public void setLikeIdentityIds(String[] likeIdentityIds) {
    this.likeIdentityIds = likeIdentityIds;
   }
-  
+
   /**
    * Gets the like identity ids.
-   * 
+   *
    * @return the like identity ids
    */
   public String[] getLikeIdentityIds() {
     return likeIdentityIds;
   }
 
+  /**
+   * Gets the bodyId
+   * @return bodyId
+   */
   public String getBodyId() {
     return bodyId;
   }
 
+  /**
+   * Sets the bodyId
+   * @param bodyId
+   */
   public void setBodyId(String bodyId) {
     this.bodyId = bodyId;
   }
 
+  /**
+   * Gets titleId
+   * @return titleId
+   */
   public String getTitleId() {
     return titleId;
   }
 
+  /**
+   * Sets the titleId
+   * @param titleId
+   */
   public void setTitleId(String titleId) {
     this.titleId = titleId;
   }
 
+  /**
+   * Gets streamUrl
+   * @return streamUrl
+   */
   public String getStreamUrl() {
     return getStream().getUrl();
   }
 
+  /**
+   * Sets streamUrl
+   * @param streamUrl
+   */
   public void setStreamUrl(String streamUrl) {
     this.getStream().setUrl(streamUrl);
   }
 
+  /**
+   * Gets streamSourceUrl
+   * @return streamSourceUrl
+   */
   public String getStreamSourceUrl() {
     return getStream().getSourceUrl();
   }
 
+  /**
+   * Sets streamSourceUrl
+   * @param streamSourceUrl
+   */
   public void setStreamSourceUrl(String streamSourceUrl) {
     getStream().setSourceUrl(streamSourceUrl);
   }
 
+  /**
+   * Gets streamTitle
+   * @return streamTitle
+   */
   public String getStreamTitle() {
     return getStream().getTitle();
   }
 
+  /**
+   * Sets streamTitle
+   * @param streamTitle
+   */
   public void setStreamTitle(String streamTitle) {
     this.getStream().setTitle(streamTitle);
   }
 
+  /**
+   * Gets streamFaviconUrl
+   * @return streamFaviconUrl
+   */
   public String getStreamFaviconUrl() {
     return getStream().getFaviconUrl();
   }
 
+  /**
+   * Sets streamFaviconUrl
+   * @param streamFaviconUrl
+   */
   public void setStreamFaviconUrl(String streamFaviconUrl) {
     getStream().setFaviconUrl(streamFaviconUrl);
   }
 
-
+  /**
+   * Gets updatedTimestamp
+   * @return updatedTimestamp
+   */
   public Date getUpdated() {
     return (updatedTimestamp!=null) ? new Date(updatedTimestamp) : null;
   }
 
+  /**
+   * Sets updatedTimestamp
+   * @param updated
+   */
   public void setUpdated(Date updated) {
     if (updated != null) {
       updatedTimestamp = updated.getTime();
@@ -494,6 +558,10 @@ public class Activity  {
     }
   }
 
+  /**
+   * Gets appId
+   * @return appId
+   */
   public String getAppId() {
     if (type != null && type.startsWith("opensocial:")) {
       return type.substring("opensocial:".length());
@@ -501,6 +569,10 @@ public class Activity  {
     return null;
   }
 
+  /**
+   * Sets apId
+   * @param appId
+   */
   public void setAppId(String appId) {
     if (appId!=null && !appId.startsWith("opensocial:")) {
       setType("opensocial:" + appId);
@@ -509,26 +581,36 @@ public class Activity  {
 
   /**
    * get the ID of the stream where this activity is bound to
+   * @return streamId
    */
   public String getStreamId() {
     return getStream().getStreamId();
   }
 
 
+  /**
+   * Sets streamId
+   * @param streamId
+   */
   public void setStreamId(String streamId) {
     getStream().setStreamId(streamId);
   }
-  
+
   /**
    * get the ID of the stream where this activity is bound to
+   * @return streamOwner
    */
   public String getStreamOwner() {
     return getStream().getStreamOwner();
   }
 
 
+  /**
+   * Sets streamOwner
+   * @param streamOwner
+   */
   public void setStreamOwner(String streamOwner) {
     getStream().setStreamOwner(streamOwner);
   }
-  
+
 }

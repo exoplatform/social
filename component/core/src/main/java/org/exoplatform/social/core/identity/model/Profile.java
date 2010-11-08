@@ -16,16 +16,25 @@
  */
 package org.exoplatform.social.core.identity.model;
 
-import java.util.Map;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.image.ImageUtils;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 
 /**
  * The Class Profile.
  */
 public class Profile {
+
+  private static final Log LOG = ExoLogger.getLogger(Profile.class);
 
   public static final String USERNAME = "username";
 
@@ -41,7 +50,11 @@ public class Profile {
   /**
    * url of the avatar (can be used instead of {@link #AVATAR})
    */
-  public static final String AVATAR_URL = "avatarUrl";
+  public static final String        AVATAR_URL     = "avatarUrl";
+
+  public static final String        URL_POSTFIX    = "Url";
+
+  public static final String        RESIZED_SUBFIX = "RESIZED_";
 
   /**
    * An optional url for this profile
@@ -49,10 +62,10 @@ public class Profile {
   public static final String URL = "Url";
 
   /** The properties. */
-  private Map<String, Object> properties = new HashMap<String, Object>();
+  private final Map<String, Object> properties = new HashMap<String, Object>();
 
   /** The identity. */
-  private Identity identity;
+  private final Identity identity;
 
   /** The id. */
   private String id;
@@ -149,6 +162,7 @@ public class Profile {
    * @deprecated
    * @return
    */
+  @Deprecated
   public Object getPropertyValue(String name) {
     return getProperty(name);
   }
@@ -167,65 +181,95 @@ public class Profile {
   }
 
   /**
-   * Gets user's avatar image source by specifying a PortalContainer instance
    * @return null or an url if available
-   * @throws Exception
    */
-  public String getAvatarImageSource(PortalContainer portalContainer) {
-    try {
-      String avatarUrl = (String) getProperty(AVATAR_URL);
-      if (avatarUrl != null) {
-        return avatarUrl;
-      }
-      AvatarAttachment avatarAttachment = (AvatarAttachment) getProperty(AVATAR);
-      if (avatarAttachment != null) {
-        return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-            + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd="
-            + System.currentTimeMillis();
-      }
-    } catch (Exception e) {
-
+  public String getAvatarImageSource() {
+    String avatarUrl = (String) getProperty(AVATAR_URL);
+    if (avatarUrl != null) {
+      return avatarUrl;
+    }
+    AvatarAttachment avatarAttachment = (AvatarAttachment) getProperty(AVATAR);
+    if (avatarAttachment != null) {
+      return LinkProvider.buildAvatarUrl(avatarAttachment);
     }
     return null;
   }
 
   /**
+   * @param containerByName
+   * @return
+   */
+  public String getAvatarImageSource(PortalContainer containerByName) {
+    return getAvatarImageSource();
+  }
+
+  /**
+   * Gets user's avatar image source by specifying width and height property The
+   * method will create a new scaled image file then return you the url to view
+   * that file
+   * 
+   * @author tuan_nguyenxuan Oct 26, 2010
+   * @return null or an url if available
+   * @throws Exception
+   */
+  public String getAvatarImageSource(int width, int height) {
+    // Determine the key of avatar file and avatar url like avatar_30x30 and
+    // avatar_30x30Url
+    String postfix = ImageUtils.buildImagePostfix(width, height);
+    String keyFile = AVATAR + postfix;
+    String keyURL = AVATAR + postfix + URL_POSTFIX;
+    // When the resized avatar with params size is exist, we return immediately
+    String avatarUrl = (String) getProperty(keyURL);
+    if (avatarUrl != null) {
+      return avatarUrl;
+    }
+    IdentityManager identityManager = (IdentityManager) PortalContainer.getInstance()
+                                                                       .getComponentInstanceOfType(IdentityManager.class);
+    // When had resized avatar but hadn't avatar url we build the avatar url
+    // then return
+    AvatarAttachment avatarAttachment = (AvatarAttachment) getProperty(keyURL);
+    if (avatarAttachment != null) {
+      avatarUrl = LinkProvider.buildAvatarUrl(avatarAttachment);
+      setProperty(keyURL, avatarUrl);
+      identityManager.saveProfile(this);
+      return avatarUrl;
+    }
+    // When hadn't avatar yet we return null
+    avatarAttachment = (AvatarAttachment) getProperty(AVATAR);
+    if (avatarAttachment == null)
+      return null;
+    // Otherwise we create the resize avatar then return the avatar url
+    InputStream inputStream = new ByteArrayInputStream(avatarAttachment.getImageBytes());
+    String mimeType = avatarAttachment.getMimeType();
+    AvatarAttachment newAvatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream,
+                                                                                   width,
+                                                                                   height,
+                                                                                   avatarAttachment.getId()
+                                                                                       + postfix,
+                                                                                   ImageUtils.buildFileName(avatarAttachment.getFileName(),
+                                                                                                           RESIZED_SUBFIX,
+                                                                                                           postfix),
+                                                                                   mimeType,
+                                                                                   avatarAttachment.getWorkspace());
+
+    if (newAvatarAttachment == null)
+      return getAvatarImageSource();
+    // Set property that contain resized avatar file to profile
+    setProperty(keyFile, newAvatarAttachment);
+    identityManager.saveProfile(this);
+    // Build the url to that resized avatar file then save and return
+    avatarUrl = LinkProvider.buildAvatarUrl(newAvatarAttachment);
+    setProperty(keyURL, avatarUrl);
+    identityManager.saveProfile(this);
+    return avatarUrl;
+  }
+
+  /**
    * Get this profile URL
+   * 
    * @return
    */
   public String getUrl() {
     return (String) getProperty(URL);
   }
-
-  /**
-   * Gets user's avatar image source from current portal container.
-   * uses the {@link #AVATAR_URL} if specified or loads the {@link AvatarAttachment} from the {@link #AVATAR} property
-   * @return null or an url if available
-   * @throws Exception
-   */
-  public String getAvatarImageSource() {
-    return getAvatarImageSource(PortalContainer.getInstance());
-  }
-
-  /**
-   * Gets repository name by specifying a PortalContainer instance
-   *
-   * @return repository name
-   * @throws Exception
-   */
-  private String getRepository(PortalContainer portalContainer) throws Exception {
-    RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
-  }
-
-  /**
-   * Gets current repository name
-   * @return
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = (RepositoryService) PortalContainer.getInstance().getComponentInstanceOfType(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
-  }
-
 }

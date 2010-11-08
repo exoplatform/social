@@ -14,7 +14,7 @@
   <name>Documentation module</name>
 
   <properties>
-    <wikbook.version>0.9.28</wikbook.version>
+    <wikbook.version>0.9.30</wikbook.version>
     <wikbook.sourceDirectory>${project.build.directory}/wikbook/tmp</wikbook.sourceDirectory>
     <wikbook.syntaxId>confluence/1.0</wikbook.syntaxId><!-- xwiki/2.0 -->
     <wikbook.validationMode>strict</wikbook.validationMode> <!-- lax/strick -->

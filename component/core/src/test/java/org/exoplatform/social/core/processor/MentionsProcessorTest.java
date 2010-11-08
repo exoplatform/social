@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.core.processor;
 
+import javax.portlet.PortalContext;
+
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -24,6 +27,26 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class MentionsProcessorTest extends AbstractCoreTest {
+
+  private IdentityManager identityManager;
+  private Identity rootIdentity, johnIdentity;
+
+
+  public void setUp() throws Exception {
+    super.setUp();
+    identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
+    assertNotNull("identityManager must not be null", identityManager);
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+    assertNotNull("rootIdentity.getId() must not be null", rootIdentity.getId());
+    assertNotNull("johnIdentity.getId() must not be null", johnIdentity.getId());
+  }
+
+  public void tearDown() throws Exception {
+    identityManager.deleteIdentity(rootIdentity);
+    identityManager.deleteIdentity(johnIdentity);
+    super.tearDown();
+  }
 
   public void testSubstituteUsernames() throws Exception {
     MentionsProcessor processor = (MentionsProcessor) getContainer().getComponentInstanceOfType(MentionsProcessor.class);

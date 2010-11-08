@@ -2,16 +2,6 @@
 	padding: 0px;
 	height: auto;
 }
-/** BUG SOC-562 **/
-/*.UIToolbarContainer .AdminToolBarPortletTDContainer {*/
-  /*float: right; */ /* orientation=lt */
-  /* float: left; */ /* orientation=rt */
-/*}*/
-
-*,div, table, tr, td, img, form{
-	font-family:lucida,Tahoma,Verdana,Arial,Helvetica,sans-serif;
-	font-size:12px;
-}
 
 .UIToolbarContainer .LAYOUT-CONTAINER {
 	overflow: hidden;
@@ -54,6 +44,7 @@
 	white-space: nowrap;
 	color: #ffd400;
 	font-weight: normal;
+	font-size: 12px;
 }
 
 
@@ -70,7 +61,7 @@
 }
 
 .UIWorkingWorkspace .UIToolbarContainer .UIHorizontalTabs .TabsContainer {
-	position:relative;   
+	position:relative;
 	margin:auto;
 	width:100%;
 	height: 30px;
@@ -109,7 +100,6 @@
 	cursor: default;
 }
 
-
 .UIWorkingWorkspace .UIToolbarContainer .MenuItem .MenuItemHover {
 	background-color: #a4a4a4;
 }
@@ -140,52 +130,13 @@
 	background-position: 90% center; /* orientation=rt */
 }
 
-/*
-
-*/
-
-/**********************************/
-
-/*
-.UIToolbarContainer .SocialPeopleToolBarIcon {
-  background: url('background/IconPeople_Space.gif') no-repeat left 7px;
-}
-*/
-
-/*
-.UIToolbarContainer .SocialUserToolBarIcon {
-  background: url('background/UserIcon.png') no-repeat scroll 13px center;
-}
-*/
-
 /************** Add style trung.nguyen   ********************/
 
-.UIWorkingWorkspace .UIToolbarContainer .SocialSpacesIcon {
+.UIWorkingWorkspace .UIToolbarContainer .SocialSpacesIcon,
+.UIWorkingWorkspace .UIToolbarContainer .DashboardIcon,
+.UIWorkingWorkspace .UIToolbarContainer .EditorIcon,
+.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet .UITab {
 	background: none;
-}
-/*
-.UIWorkingWorkspace .UIToolbarContainer .SocialSiteIcon {
-	background: url('background/ToolbarContainer.gif') no-repeat left -96px;
-}
-*/
-
-/*
-.UIWorkingWorkspace .UIToolbarContainer .SocialDashboardIcon {
-	background: url('background/ToolbarContainer.gif') no-repeat left -64px;
-}
-*/
-
-.UIWorkingWorkspace .UIToolbarContainer .DashboardIcon{
-	background: none;
-}
-
-.UIWorkingWorkspace .UIToolbarContainer .EditorIcon{
-	background: none;
-}
-
-.UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet .UITab{
-	background: none;
-
 }
 
 .UIWorkingWorkspace .UIToolbarContainer .UserProfileToolBarPortletTDContainer {
@@ -288,4 +239,13 @@
 
 .UIWorkingWorkspace .UIToolbarContainer .UIStarToolBarPortlet a{
 	color: #aeadad;
+}
+
+.DemoUserProfileToolBarPortletTDContainer {
+	float: right !important;
+	padding-right: 55px;
+}
+
+.UIToolbarContainer .DemoUserProfileToolBarPortletTDContainer .UIHorizontalTabs .UITab {
+	background: none;
 }

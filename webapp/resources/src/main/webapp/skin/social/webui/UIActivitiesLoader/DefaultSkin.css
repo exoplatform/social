@@ -1,0 +1,23 @@
+/**
+ * UIActivitiesLoader default skin
+ */
+.MoreActivitiesLoader .ButtonLeft {
+  background: none;
+}
+
+.MoreActivitiesLoader .ButtonRight {
+  background: url('DefaultSkin/background/More.gif') no-repeat right top;
+  padding-right: 20px;
+}
+
+.MoreActivitiesLoader .ButtonMiddle {
+  background: #e6e1bd;
+  height: 26px;
+  padding: 0px 4px 0px 13px;
+  font-size: 12px;
+  line-height: 26px;
+}
+
+.MoreActivitiesLoader .ButtonMiddle a {
+  color: #222240;
+}

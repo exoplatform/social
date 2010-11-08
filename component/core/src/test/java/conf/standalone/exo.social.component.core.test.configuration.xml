@@ -87,7 +87,28 @@
       </values-param>
     </init-params>
   </component>
-  
+
+
+  <component>
+    <key>org.exoplatform.social.core.storage.ActivityStorage</key>
+    <type>org.exoplatform.social.core.storage.ActivityStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.IdentityStorage</key>
+    <type>org.exoplatform.social.core.storage.IdentityStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.RelationshipStorage</key>
+    <type>org.exoplatform.social.core.storage.RelationshipStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.SpaceStorage</key>
+    <type>org.exoplatform.social.core.storage.SpaceStorage</type>
+  </component>
+
   <component>
     <key>org.exoplatform.social.core.service.LinkProvider</key>
     <type>org.exoplatform.social.core.service.LinkProvider</type>
@@ -158,11 +179,6 @@
         </init-params>
       </component-plugin>
     </component-plugins>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.IdentityStorage</key>
-    <type>org.exoplatform.social.core.storage.IdentityStorage</type>
   </component>
 
   <component>

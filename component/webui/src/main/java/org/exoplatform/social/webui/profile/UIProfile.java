@@ -17,19 +17,20 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.webui.UIAvatarUploadContent;
 import org.exoplatform.social.webui.UIAvatarUploader;
 import org.exoplatform.social.webui.URLUtils;
@@ -128,15 +129,13 @@ public class UIProfile extends UIContainer {
    * @return imageSource link
    */
   public String getImageSource() throws Exception {
-    Profile p = getProfile(true);
-    AvatarAttachment att = (AvatarAttachment) p.getProperty(Profile.AVATAR);
-    if (att != null) {
-      return "/" + getRestContext() + "/jcr/" + getRepository()+ "/" + att.getWorkspace()
-              + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
+    return  getProfile(true).getAvatarImageSource();
   }
 
+  /**
+   * @param uiAvatarUploadContent
+   * @throws Exception
+   */
   public void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent) throws Exception {
     AvatarAttachment attacthment = uiAvatarUploadContent.getAvatarAttachment();
     if (im == null) {
@@ -146,6 +145,17 @@ public class UIProfile extends UIContainer {
     
     Profile p = getProfile(true);
     p.setProperty(Profile.AVATAR, attacthment);
+    Map<String, Object> props = p.getProperties();
+    Iterator<String> it = props.keySet().iterator();
+    it = props.keySet().iterator();
+    while (it.hasNext()) {
+      String name = it.next();
+      if (name.startsWith(Profile.AVATAR + ImageUtils.KEY_SEPARATOR)) {
+        it.remove();
+        p.removeProperty(name);
+      }
+    }
+
     im.updateAvatar(p);
   }
   
@@ -165,27 +175,6 @@ public class UIProfile extends UIContainer {
       uiPopup.setShow(true);
     }
 
-  }
-
- /**
- * Gets the rest context.
- *
- * @return the rest context
- */
-  private String getRestContext() {
-	return PortalContainer.getInstance().getRestContextName();
-  }
-
-  /**
-   * Gets the current repository.<br>
-   *
-   * @return current repository through repository service.
-   *
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;
-    return rService.getCurrentRepository().getConfiguration().getName() ;
   }
 
   /**

@@ -21,181 +21,128 @@
 */
 %>
 <%
-  import org.exoplatform.portal.application.PortalRequestContext;
-  import org.exoplatform.portal.webui.util.Util;
-
   def prContext = _ctx.getRequestContext().getParentAppRequestContext();
-  String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));";
-  String portletId = uicomponent.getId();
-  String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";
-  def uicomponentId = "UISocialDemoHomePagePortlet";
-  def labelAnExtendedServiceOfeXoPlatform = _ctx.appRes("${uicomponentId}.label.An_Extended_Service_Of_eXo_Platform");
-  def labelLogin = _ctx.appRes("${uicomponentId}.label.Login");
-  def labelStartASession = _ctx.appRes("${uicomponentId}.label.Start_A_Sesssion");
-  def labelRegister = _ctx.appRes("${uicomponentId}.label.Register");
-  def labelCreateAnAccount = _ctx.appRes("${uicomponentId}.label.Create_An_Account");
-  def labelOpenSocialStandard = _ctx.appRes("${uicomponentId}.label.OpenSocial_Standard");
-  def labelOpenSocialVersionSupport = _ctx.appRes("${uicomponentId}.label.OpenSocial_Version_Support");
-  def labelOAuthSupportForRemoteAccess = _ctx.appRes("${uicomponentId}.label.OAuth_Support_For_Remote_Access");
-  def labelOpenSocialRestServiceSupport = _ctx.appRes("${uicomponentId}.label.Open_Social_Rest_Service_Support");
-  def labelActivityStream = _ctx.appRes("${uicomponentId}.label.Activity_Stream");
-  def labelUpdateAndShareUserStatus=_ctx.appRes("${uicomponentId}.label.Update_And_Share_User_Status");
-  def labelGetUserNetworkActivityStream = _ctx.appRes("${uicomponentId}.label.Get_User_Network_Activity_Stream");
-  def labelCustomSharePlugin = _ctx.appRes("${uicomponentId}.label.Custom_Share_Plugin");
-  def labelPeopleDirectory = _ctx.appRes("${uicomponentId}.label.People_Directory");
-  def labelTurnYourDirectoryIntoASocialNetwork = _ctx.appRes("${uicomponentId}.label.Turn_Your_Directory_Into_A_Social_Network");
-  def labelExtensibleProfileToOtherNetworks = _ctx.appRes("${uicomponentId}.label.Extensible_Profile_To_Other_Networks");
-  def labelSearchUsersBySkillAndExperience = _ctx.appRes("${uicomponentId}.label.Search_Users_By_Skills_And_Experience");
-  def labelSpace = _ctx.appRes("${uicomponentId}.label.Space");
-  def labelCollaborativeWorkspacesForCommunity = _ctx.appRes("${uicomponentId}.label.Collaborative_Workspaces_For_Community");
-  def labelGroupActivityStream = _ctx.appRes("${uicomponentId}.label.Group_Activity_Stream");
-  def labelAddCustomApplications = _ctx.appRes("${uicomponentId}.label.Add_Custom_Applications");
-  def labelDownload = _ctx.appRes("${uicomponentId}.label.Download");
-  def labelCommunityVersion = _ctx.appRes("${uicomponentId}.label.Community_Version");
-  def labelDoYouLikeIt = _ctx.appRes("${uicomponentId}.label.Do_You_Like_It");
-  def labelSendFeedback = _ctx.appRes("${uicomponentId}.label.Send_Feedback");
-  def labelJoinTheCommunity = _ctx.appRes("${uicomponentId}.label.Join_The_Community");
-  def labelWiki = _ctx.appRes("${uicomponentId}.label.Wiki");
-  def labelForum = _ctx.appRes("${uicomponentId}.label.Forum");
+  def initialURI = _ctx.getRequestContext().getParentAppRequestContext().getRequestContextPath() + "/private/" + _ctx.getRequestContext().getParentAppRequestContext().getPortalOwner();
 %>
 
-
 <div class="UISocialHomepage ClearFix" id="$uicomponent.id">
-	<div class="UIBannerHomePage">
-		<div class="ProductName">
-		  <h2 class="TxtLarge">eXo Social</h2>
-		  <h3 class="TxtSmall">$labelAnExtendedServiceOfeXoPlatform</h3>
-		</div>
+
+	<div class="ProductImage">
+		<h2><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Social") %></h2>
+		<h3><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.An_Extended_Service_Of_eXo_Platform") %></h3>
 	</div>
 
-	<div class="ClearFix BoxButton">
-		<div  class="Container FL">
+  <div class="UIBox"><div class="BoxTop"><div class="BoxBottom ClearFix">
+		<div class="Container FL">
 			<div class="BoxDocument">
-				<h4>Community Members: </h4>
-				<a href="http://docs.exoplatform.org" class="ArrowBlue">Download eXo Social Documentation</a>
+				<h4><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Community_Members") %></h4>
+				<a href="http://docs.exoplatform.org" class="ArrowBlue"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Download_eXo_Social_Documentation") %></a>
 			</div>
 		</div>
-		<div  class="Container FR">
+	  <div  class="Container FR">
 			<div class="BoxTry">
-				<h4>Enterprise or Production Use? </h4>
-				<a href="http://platform.demo.exoplatform.org/" class="ArrowBlue">Try eXo Platform 3</a>
+				<h4><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Enterprise_Or_Production_Use") %></h4>
+				<a href="http://platform.demo.exoplatform.org/" class="ArrowBlue"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Try_eXo_Platform_3") %></a>
 			</div>
-		</div>
-	</div>
-	<div class="RightSocialHomepage DecorationContainer">
-		<div class="DecorationTL">
-			<div class="DecorationTR">
-				<div class="DecorationTC">
-					<span></span>
-				</div>
-			</div>
-		</div>	
-		<div class="DecorationML">
-			<div class="DecorationMR">
-				<div class="DecorationMC">							
-					<div class="ClearFix">
-						<div class="BlockWebsite FL">
-							<a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon"></a>
-							<a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon">Contact Us</a>
-						</div>
-						<div class="BlockResource FL">
-							<a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon"></a>
-							<a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon">Resource Center</a>
-						</div>
-					</div>
-					<div class="ClearFix">
-						<div class="BlockWebsite FL">
-							<a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon"> </a>										
-							<a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon">Support</a>
-						</div>
-						<div class="BlockResource FL">
-							<a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon"></a>											
-							<a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon">Training</a>
-						</div>
-					</div>
-					<div class="ClearFix">
-						<div class="BlockWebsite FL">
-							<a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon"> </a>
-							<a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon">Exo Blog</a>
-						</div>
-						<div class="BlockResource FL">
-							<a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon"> </a>
-							<a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon">Exo Website</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="DecorationBL">
-			<div class="DecorationBR">
-				<div class="DecorationBC"><span></span></div>
-			</div>
-		</div>
-	</div>
-	<div class="LeftSocialHomepage DecorationContainer">
-		<div class="DecorationTL">
-			<div class="DecorationTR">
-				<div class="DecorationTC">
-					<span></span>
-				</div>
-			</div>
-		</div>						
-		<div class="DecorationML">
-			<div class="DecorationMR">
-				<div class="DecorationMC">
-					<div class="RowContent BorderBottom"><p class="Introduction">New to eXo <span class="TextBold">Social?</span></p>
-							<p class="Introduction">Watch the <a href="http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/eXo-Social-GS" target="_blank" >Getting Started Guide</a>, or start exploring some of the key features:</p>
-						
-					</div>
-					<div class="RowContent ClearFix">
-						<div class="FL ColsPeople">
-							<h5 class="ProductTitle">People & Connections</h5>
-							<ul>
-								<li>Profiles: users can add work experience, job description and other details</li>
-								<li>LDAP integration: automatically populate a network from existing user accounts</li>
-								<li>Browse user profiles or search for connections based on selected critieria</li>
-								<li>Send, accept, reject or cancel connection requests</li>
-							</ul>
-						</div>
-						<div class="FL ColsCommunity">
-							<h5 class="ProductTitle">Community Management</h5>
-							<ul>
-								<li>Automatic creation of new spaces for groups</li>
-								<li>Control access and set registration requirements for joining a space</li>
-								<li>Add or remove members or applications from a space</li>
-								<li>Browse or search for existing spaces</li>
-							</ul>
-						</div>								
-					</div>
-					<div class="RowContent ClearFix">									
-						<div class="FL ColsActivity">
-							<h5 class="ProductTitle">Activity Streams</h5>
-							<ul>
-								<li>Publish and view user activities and status updates</li>
-								<li>Publish and view activities of applications</li>
-								<li>Share content and links within a stream</li>
-								<li>Comment and vote (like/don't like) on activities in real-time</li>
-							</ul>
-						</div>								
-						<div class="FL ColsGadgets">
-							<h5 class="ProductTitle">Built-in Social Gadgets</h5>
-							<ul>
-								<li>Status update: publish and view activity streams</li>
-								<li>RSS fetcher: fetch an RSS feed to share posts in activity streams</li>
-								<li>Connection viewer: view a list of a user's connections</li>
-								<li>Build custom gadgets using OpenSocial APIs</li>
-							</ul>
-						</div>
-					</div>								
-					<div class="RowContent ClearFix"><p class="Introduction Information">Start using eXo Social, <a href=""> login as Root</a></p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="DecorationBL">
-			<div class="DecorationBR">
-				<div class="DecorationBC"><span></span></div>
-			</div>
-		</div>					
-	</div>					
+	  </div>
+  </div></div></div>
+
+	<div class="UIDecoration DecorationTop">
+		<div class="DecorationBottom"><div class="DecorationCenter ClearFix">
+        <div class="RightSocialHomepage">
+          <div class="ClearFix">
+            <div class="BlockWebsite FL">
+              <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon"></a>
+              <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Contact_Us") %></a>
+            </div>
+            <div class="BlockResource FL">
+              <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon"></a>
+              <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Resource_Center") %></a>
+            </div>
+          </div>
+          <div class="ClearFix">
+            <div class="BlockWebsite FL">
+              <a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon"> </a>
+              <a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Support") %></a>
+            </div>
+            <div class="BlockResource FL">
+              <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon"></a>
+              <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Training") %></a>
+            </div>
+          </div>
+          <div class="ClearFix">
+            <div class="BlockWebsite FL">
+              <a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon"> </a>
+              <a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Blog") %></a>
+            </div>
+            <div class="BlockResource FL">
+              <a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon"> </a>
+              <a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Website") %></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="LeftSocialHomepage">
+          <div class="RowContent BorderBottom">
+            <p class="Introduction TextBold"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.New_To_eXo_Social_Question") %></p>
+            <p class="Introduction"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Watch_The") %>
+              <a href="http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/eXo-Social-GS" target="_blank" ><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Getting_Started_Guide") %></a><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Or_Start_Exploring_Some_Of_The_Key_Features") %>
+            </p>
+          </div>
+          <div class="RowContent ClearFix">
+            <div class="FL ColsPeople">
+              <h5 class="ProductTitle"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.People_And_Connections") %></h5>
+              <ul>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Profiles") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.LDAP_Integration") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Browse_User_Profiles") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Send_Accept_Reject_Cancel_Connection_Requests") %></li>
+              </ul>
+            </div>
+            <div class="FL ColsCommunity">
+              <h5 class="ProductTitle"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Community_Management") %></h5>
+              <ul>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Atomatic_Creation_Of_New_Spaces_For_Groups") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Control_Access_And_Set_Registration_Requirements") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Add_Remove_Memers_Applications") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Browse_Search_Existing_Spaces") %></li>
+              </ul>
+            </div>
+          </div>
+          <div class="RowContent ClearFix">
+            <div class="FL ColsActivity">
+              <h5 class="ProductTitle"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Activity_Streams") %></h5>
+              <ul>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Publish_View_User_Activities") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Publish_View_Applications_Activities") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Share_Content_Links") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Comment_Vote_Activities") %></li>
+              </ul>
+            </div>
+            <div class="FL ColsGadgets">
+              <h5 class="ProductTitle"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Builtin_Social_Gadgets") %></h5>
+              <ul>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Status_Update") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.RSS_Fetcher") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Connection_Viewer") %></li>
+                <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Build_Custom_Gadgets") %></li>
+              </ul>
+            </div>
+          </div>
+          <div class="RowContent ClearFix">
+            <p class="Introduction Information"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Start_Using_eXo_Social") %>
+               <% if(prContext.getRemoteUser() == null) { %>
+                <a href="${_ctx.getPortalContextPath()}/login?username=root&amp;password=gtn&amp;initialURI=${initialURI}">
+                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_Root") %>
+                </a>
+               <%} else {%>
+                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.You_Are_Loginned_As_Root") %>
+               <%}%>
+            </p>
+          </div>
+        </div>
+
+		</div></div>
+  </div>
+
 </div>

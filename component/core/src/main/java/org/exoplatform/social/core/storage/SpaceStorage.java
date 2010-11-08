@@ -36,7 +36,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
-import org.exoplatform.social.core.identity.model.AvatarAttachment;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.SpaceAttachment;
 

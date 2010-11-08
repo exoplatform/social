@@ -20,6 +20,11 @@ a.Link {
 a.ColorLink {
   color: #058EE6;
 }
+
+a.ColorLinkShared {
+  color: #F68A2F;
+}
+
 }
 
 

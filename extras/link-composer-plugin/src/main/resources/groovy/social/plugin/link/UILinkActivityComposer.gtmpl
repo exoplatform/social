@@ -25,7 +25,8 @@
 
   def removeAllNewLines(def str) {
     if (str) {
-      return str.replaceAll("\r\n|\n\r|\n|\r", "");
+      str = str.replaceAll("\r\n|\n\r|\n|\r", "");
+      return str.replaceAll("'", " ");
     } else {
       return "";
     }

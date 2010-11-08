@@ -22,10 +22,13 @@ import java.util.List;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
@@ -73,16 +76,17 @@ public class RelationshipStorage {
   /** The Constant RELATION_RECEIVER. */
   final public static String RELATION_RECEIVER = "exo:identity2Id".intern();
 
+  /** The Constant REFERENCEABLE_TYPE */
   public final static String REFERENCEABLE_TYPE = "mix:referenceable";
+
+  private Node relationshipServiceHome;
   /**
    * Instantiates a new jCR storage.
    *
    * @param dataLocation the data location
-   * @param identityManager the identity manager
    */
-  public RelationshipStorage(SocialDataLocation dataLocation, IdentityManager identityManager) {
+  public RelationshipStorage(SocialDataLocation dataLocation) {
     this.dataLocation = dataLocation;
-    this.identityManager = identityManager;
     this.sessionManager = dataLocation.getSessionManager();
   }
 
@@ -90,10 +94,9 @@ public class RelationshipStorage {
    * Save relationship.
    *
    * @param relationship the relationship
-   * @throws Exception the exception
    */
-  public void saveRelationship(Relationship relationship) throws Exception {
-    Session session = sessionManager.openSession();
+  public void saveRelationship(Relationship relationship) {
+    Session session = sessionManager.getOrOpenSession();
     Node relationshipNode = null;
 
     try {
@@ -117,9 +120,10 @@ public class RelationshipStorage {
       if (relationship.getId() == null) {
         relationshipHomeNode.save();
         relationship.setId(relationshipNode.getUUID());
-      }
-      else {
+        LOG.info("relationship " + relationship + " stored");
+      } else {
         relationshipNode.save();
+        LOG.info("relationship " + relationship + " updated");
       }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -127,7 +131,11 @@ public class RelationshipStorage {
       sessionManager.closeSession();
     }
 
-    loadProperties(relationship, relationshipNode);
+    try {
+      loadProperties(relationship, relationshipNode);
+    } catch (Exception e) {
+      LOG.warn("can not loadProperties()", e);
+    }
   }
 
   /**
@@ -138,10 +146,10 @@ public class RelationshipStorage {
   public void removeRelationship(Relationship relationship) {
     Session session = sessionManager.openSession();
     try {
-      Node relationshipHomeNode = getRelationshipServiceHome(session);
       Node relationshipNode = session.getNodeByUUID(relationship.getId());
       relationshipNode.remove();
-      relationshipHomeNode.save();
+      session.save();
+      LOG.info("relationship: " + relationship + " deleted");
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     } finally {
@@ -154,35 +162,37 @@ public class RelationshipStorage {
    *
    * @param uuid the uuid
    * @return the relationship
-   * @throws Exception the exception
    */
-  public Relationship getRelationship(String uuid) throws Exception {
-    Session session = sessionManager.openSession();
+  public Relationship getRelationship(String uuid) {
+    Session session = sessionManager.getOrOpenSession();
 
     Node relationshipNode;
+    Relationship relationship = null;
     try {
       relationshipNode = session.getNodeByUUID(uuid);
-    }
-    catch (ItemNotFoundException e) {
-      LOG.error(e.getMessage(), e);
+      relationship = new Relationship(relationshipNode.getUUID());
+
+      Node idNode = relationshipNode.getProperty(RELATION_SENDER).getNode();
+      identityManager = getIdentityManager();
+      Identity id = identityManager.getIdentity(idNode.getUUID());
+      relationship.setSender(id);
+
+      idNode = relationshipNode.getProperty(RELATION_RECEIVER).getNode();
+      id = identityManager.getIdentity(idNode.getUUID());
+      relationship.setReceiver(id);
+
+      relationship.setStatus(Relationship.Type.valueOf(relationshipNode.getProperty(PROPERTY_STATUS).getString()));
+      loadProperties(relationship, relationshipNode);
+    } catch (ItemNotFoundException e) {
+      LOG.warn(e.getMessage());
       return null;
+    } catch (RepositoryException e) {
+      LOG.error(e.getMessage(), e);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
-
-    Relationship relationship = new Relationship(relationshipNode.getUUID());
-
-    Node idNode = relationshipNode.getProperty(RELATION_SENDER).getNode();
-    Identity id = identityManager.getIdentity(idNode.getUUID());
-    relationship.setSender(id);
-
-    idNode = relationshipNode.getProperty(RELATION_RECEIVER).getNode();
-    id = identityManager.getIdentity(idNode.getUUID());
-    relationship.setReceiver(id);
-
-    relationship.setStatus(Relationship.Type.valueOf(relationshipNode.getProperty(PROPERTY_STATUS).getString()));
-
-    loadProperties(relationship, relationshipNode);
 
     return relationship;
   }
@@ -195,9 +205,9 @@ public class RelationshipStorage {
    * @throws Exception the exception
    */
   public List<Relationship> getRelationshipByIdentity(Identity identity) throws Exception {
-    if (identity.getId() == null)
+    if (identity.getId() == null) {
       return null;
-
+    }
     return getRelationshipByIdentityId(identity.getId());
   }
 
@@ -209,7 +219,7 @@ public class RelationshipStorage {
    * @throws Exception the exception
    */
   public List<Relationship> getRelationshipByIdentityId(String identityId) throws Exception {
-    Session session = sessionManager.openSession();
+    Session session = sessionManager.getOrOpenSession();
     List<Relationship> results = new ArrayList<Relationship>();
     PropertyIterator refNodes = null;
     try {
@@ -245,7 +255,7 @@ public class RelationshipStorage {
    * @throws Exception the exception
    */
   public List<Identity> getRelationshipIdentitiesByIdentity(Identity identity) throws Exception {
-    Session session = sessionManager.openSession();
+    Session session = sessionManager.getOrOpenSession();
     List<Identity> results = new ArrayList<Identity>();
     PropertyIterator refNodes = null;
     try {
@@ -256,12 +266,12 @@ public class RelationshipStorage {
       Node identityNode = session.getNodeByUUID(identity.getId());
       refNodes = identityNode.getReferences();
     } catch (Exception e) {
-      // TODO: handle exception
+      LOG.warn(e.getMessage(), e);
       return null;
     } finally {
       sessionManager.closeSession();
     }
-
+    identityManager = getIdentityManager();
     while (refNodes.hasNext()) {
       Property property = (Property) refNodes.next();
       Node node = property.getParent();
@@ -295,9 +305,18 @@ public class RelationshipStorage {
    * @return the relationship service home
    * @throws Exception the exception
    */
-  private Node getRelationshipServiceHome(Session session) throws Exception {
-    String path = dataLocation.getSocialRelationshipHome();
-    return session.getRootNode().getNode(path);
+  private Node getRelationshipServiceHome(Session session) {
+    if (relationshipServiceHome == null) {
+      String path = dataLocation.getSocialRelationshipHome();
+      try {
+        relationshipServiceHome = session.getRootNode().getNode(path);
+      } catch (PathNotFoundException e) {
+        LOG.warn(e.getMessage(), e);
+      } catch (RepositoryException e) {
+        LOG.warn(e.getMessage(), e);
+      }
+    }
+    return relationshipServiceHome;
   }
 
   /**
@@ -362,7 +381,7 @@ public class RelationshipStorage {
       }
     }
 
-    //add the new properties and update the exisiting one
+    //add the new properties and update the existing one
     for (org.exoplatform.social.core.relationship.model.Property property : properties) {
       Node propertyNode;
       if (property.getId() == null) {
@@ -382,5 +401,16 @@ public class RelationshipStorage {
         propertyNode.setProperty(PROPERTY_INITIATOR, initiatorNode);
       }
     }
+  }
+
+  /**
+   * Gets identityManager
+   * @return identityManager
+   */
+  private IdentityManager getIdentityManager() {
+    if (identityManager == null) {
+      identityManager = (IdentityManager) PortalContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
+    }
+    return identityManager;
   }
 }

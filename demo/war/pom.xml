@@ -37,4 +37,7 @@
   <packaging>war</packaging>
   <name>eXo Social Demo WAR</name>
   <description>eXo Social Demo WAR</description>
+  <build>
+    <finalName>socialdemo</finalName>
+  </build>
 </project>
