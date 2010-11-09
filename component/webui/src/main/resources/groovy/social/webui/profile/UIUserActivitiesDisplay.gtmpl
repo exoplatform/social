@@ -22,8 +22,7 @@
 %>
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
-  
-  uicomponent.bindDataToActivitiesContainer();
+
 
   def labelConnections = _ctx.appRes("${uicomponent.id}.label.Connections");
   def labelSpaces = _ctx.appRes("${uicomponent.id}.label.Spaces");
@@ -40,6 +39,7 @@
   } else if (selectedDisplayMode.toString().equals("MY_STATUS")) {
     myStatusDisplayModeStyle = "DarkBlueStyle";
   }
+
 %>
 <div id="$uicomponent.id" class="$uicomponent.id">
 <% if (uicomponent.isActivityStreamOwner()) { %>
