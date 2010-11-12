@@ -16,10 +16,7 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
- * Created by IntelliJ IDEA.
- * User: zun
- * Date: Jun 17, 2010
- * Time: 9:34:56 AM
+ * Created by IntelliJ IDEA. User: zun Date: Jun 17, 2010 Time: 9:34:56 AM
  */
 public class IdentityStorageTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
@@ -169,7 +166,9 @@ public class IdentityStorageTest extends AbstractCoreTest {
     tobeSavedProfile.setProperty(Profile.LAST_NAME, lastName);
     tobeSavedProfile.setProperty(Profile.AVATAR_URL, avatarUrl);
 
+    assertTrue(tobeSavedProfile.hasChanged());
     identityStorage.saveProfile(tobeSavedProfile);
+    assertFalse(tobeSavedProfile.hasChanged());
 
     assertNotNull(tobeSavedProfile.getId());
 
@@ -187,7 +186,9 @@ public class IdentityStorageTest extends AbstractCoreTest {
     Profile tobeSavedProfile = tobeSavedIdentity.getProfile();
     tobeSavedProfile.setProperty(Profile.USERNAME, username);
 
+    assertTrue(tobeSavedProfile.hasChanged());
     identityStorage.loadProfile(tobeSavedProfile);
+    assertFalse(tobeSavedProfile.hasChanged());
 
     assertNotNull(tobeSavedProfile.getId());
     assertEquals(username, tobeSavedProfile.getProperty(Profile.USERNAME));
@@ -199,7 +200,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     try {
       final Session session = sessionManager.getOrOpenSession();
       final List<Node> nodes = new QueryBuilder(session)
-        .select(IdentityStorage.PROFILE_NODETYPE).exec();
+              .select(IdentityStorage.PROFILE_NODETYPE).exec();
 
       assertEquals(1, nodes.size());
 
@@ -228,14 +229,18 @@ public class IdentityStorageTest extends AbstractCoreTest {
     {
       //create new profile in db without data (lazy creating)
       Profile profile = new Profile(identity);
+      assertFalse(profile.hasChanged());
       identityStorage.loadProfile(profile);
+      assertFalse(profile.hasChanged());
       profileId = profile.getId();
     }
 
     //here is the testcase
     {
       Profile profile = new Profile(identity);
+      assertFalse(profile.hasChanged());
       identityStorage.loadProfile(profile);
+      assertFalse(profile.hasChanged());
       assertEquals(profileId, profile.getId());
     }
   }
@@ -261,13 +266,13 @@ public class IdentityStorageTest extends AbstractCoreTest {
     final String providerId = "organization";
 
     final int total = 10;
-    for (int i = 0; i <  total; i++) {
+    for (int i = 0; i < total; i++) {
       String remoteId = "username" + i;
-      Identity identity = new Identity(providerId, remoteId+i);
+      Identity identity = new Identity(providerId, remoteId + i);
       identityStorage.saveIdentity(identity);
 
       Profile profile = new Profile(identity);
-      profile.setProperty(Profile.FIRST_NAME, "FirstName"+ i);
+      profile.setProperty(Profile.FIRST_NAME, "FirstName" + i);
       identityStorage.saveProfile(profile);
     }
 
