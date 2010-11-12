@@ -169,7 +169,9 @@ public class IdentityStorageTest extends AbstractCoreTest {
     tobeSavedProfile.setProperty(Profile.LAST_NAME, lastName);
     tobeSavedProfile.setProperty(Profile.AVATAR_URL, avatarUrl);
 
+    assertTrue(tobeSavedProfile.hasChanged());
     identityStorage.saveProfile(tobeSavedProfile);
+    assertFalse(tobeSavedProfile.hasChanged());
 
     assertNotNull(tobeSavedProfile.getId());
 
@@ -187,7 +189,9 @@ public class IdentityStorageTest extends AbstractCoreTest {
     Profile tobeSavedProfile = tobeSavedIdentity.getProfile();
     tobeSavedProfile.setProperty(Profile.USERNAME, username);
 
+    assertTrue(tobeSavedProfile.hasChanged());
     identityStorage.loadProfile(tobeSavedProfile);
+    assertFalse(tobeSavedProfile.hasChanged());
 
     assertNotNull(tobeSavedProfile.getId());
     assertEquals(username, tobeSavedProfile.getProperty(Profile.USERNAME));
@@ -228,14 +232,18 @@ public class IdentityStorageTest extends AbstractCoreTest {
     {
       //create new profile in db without data (lazy creating)
       Profile profile = new Profile(identity);
+      assertFalse(profile.hasChanged());
       identityStorage.loadProfile(profile);
+      assertFalse(profile.hasChanged());
       profileId = profile.getId();
     }
 
     //here is the testcase
     {
       Profile profile = new Profile(identity);
+      assertFalse(profile.hasChanged());
       identityStorage.loadProfile(profile);
+      assertFalse(profile.hasChanged());
       assertEquals(profileId, profile.getId());
     }
   }

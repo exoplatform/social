@@ -70,6 +70,12 @@ public class Profile {
   /** The id. */
   private String id;
 
+  /** The last loaded time */
+  private long lastLoaded;
+  
+  /** Indicates whether or not the profile has been modified locally */
+  private boolean hasChanged;
+  
   /**
    * Instantiates a new profile.
    *
@@ -107,6 +113,49 @@ public class Profile {
   }
 
   /**
+   * Gets the last loaded time.
+   *
+   * @return the last loaded time
+   */
+  public long getLastLoaded() {
+    return lastLoaded;
+  }
+
+  /**
+   * Sets the last loaded time.
+   *
+   * @param lastLoaded the new last loaded time
+   */
+  public void setLastLoaded(long lastLoaded) {
+    this.lastLoaded = lastLoaded;
+  }
+
+  /**
+   * Indicates whether or not the profile has been modified locally.
+   *
+   * @return <code>true</code> if it has been modified locally, <code>false</code> otherwise.
+   */
+  public boolean hasChanged() {
+    return hasChanged;
+  }
+
+  /**
+   * Clear the has changed flag.
+   */
+  public void clearHasChanged() {
+     setHasChanged(false);
+  }
+
+  /**
+   * Sets the value of the property <code>hasChanged<code>.
+   *
+   * @param hasChanged the new hasChanged
+   */
+  private void setHasChanged(boolean hasChanged) {
+    this.hasChanged = hasChanged;
+  }
+  
+  /**
    * Gets the property.
    *
    * @param name the name
@@ -124,6 +173,7 @@ public class Profile {
    */
   public void setProperty(String name, Object value) {
     properties.put(name, value);
+    setHasChanged(true);
   }
 
   /**
@@ -152,6 +202,7 @@ public class Profile {
    */
   public void removeProperty(String name) {
     properties.remove(name);
+    setHasChanged(true);
   }
 
   /**

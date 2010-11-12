@@ -18,6 +18,7 @@ package org.exoplatform.social.core.storage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -64,9 +65,7 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.ProfileConfig;
 
-/**
- * The Class JCRStorage for identity and profile.
- */
+/** The Class JCRStorage for identity and profile. */
 public class IdentityStorage {
   private static final Log LOG = ExoLogger.getExoLogger(IdentityStorage.class);
 
@@ -104,6 +103,10 @@ public class IdentityStorage {
 
 
 
+
+
+
+
   Comparator<Identity> identityComparator = new Comparator<Identity>() {
     public int compare(Identity o1, Identity o2) {
       String name1 = o1.getProfile().getProperties().get("firstName").toString();
@@ -138,7 +141,7 @@ public class IdentityStorage {
     if (identityServiceHome == null) {
       String path = dataLocation.getSocialIdentityHome();
       try {
-        identityServiceHome =  session.getRootNode().getNode(path);
+        identityServiceHome = session.getRootNode().getNode(path);
       } catch (PathNotFoundException e) {
         LOG.warn(e.getMessage(), e);
       } catch (RepositoryException e) {
@@ -185,13 +188,13 @@ public class IdentityStorage {
     Identity checkingIdentity = null;
     checkingIdentity = findIdentity(identity.getProviderId(), identity.getRemoteId());
 
-    Session session =  sessionManager.getOrOpenSession();
+    Session session = sessionManager.getOrOpenSession();
     try {
       Node identityNode;
       Node identityHomeNode = getIdentityServiceHome(session);
 
       if (identity.getId() == null) {
-        if(checkingIdentity == null){
+        if (checkingIdentity == null) {
           identityNode = identityHomeNode.addNode(IDENTITY_NODETYPE, IDENTITY_NODETYPE);
           identityNode.addMixin(REFERENCEABLE_NODE);
         } else {
@@ -260,6 +263,7 @@ public class IdentityStorage {
     }
 
   }
+
   /**
    * Gets the identity by his id.
    *
@@ -273,7 +277,7 @@ public class IdentityStorage {
     try {
       identityNode = session.getNodeByUUID(nodeId);
       if (identityNode != null) {
-        identity =  getIdentity(identityNode);
+        identity = getIdentity(identityNode);
       }
     } catch (ItemNotFoundException e) {
       LOG.warn("can not find identity with nodeId: " + nodeId);
@@ -318,7 +322,7 @@ public class IdentityStorage {
    * Gets the identity by remote id.
    *
    * @param providerId the identity provider
-   * @param remoteId the id
+   * @param remoteId   the id
    * @return the identity by remote id
    */
   public Identity findIdentity(String providerId, String remoteId) {
@@ -327,20 +331,20 @@ public class IdentityStorage {
     Identity identity = null;
     try {
       List<Node> nodes = new QueryBuilder(session)
-        .select(IDENTITY_NODETYPE)
-        .like("jcr:path", identityHomeNode.getPath()+"/%")
-        .and()
-        .equal(IDENTITY_PROVIDERID, providerId)
-        .and()
-        .equal(IDENTITY_REMOTEID, remoteId)
-        .exec();
+              .select(IDENTITY_NODETYPE)
+              .like("jcr:path", identityHomeNode.getPath() + "/%")
+              .and()
+              .equal(IDENTITY_PROVIDERID, providerId)
+              .and()
+              .equal(IDENTITY_REMOTEID, remoteId)
+              .exec();
 
       if (nodes.size() == 1) {
         Node identityNode = nodes.get(0);
         identity = getIdentity(identityNode);
       }
     } catch (Exception e) {
-      LOG.warn("failed to load identity by remote id : "+ providerId +":" + remoteId, e);
+      LOG.warn("failed to load identity by remote id : " + providerId + ":" + remoteId, e);
     } finally {
       sessionManager.closeSession();
     }
@@ -373,13 +377,13 @@ public class IdentityStorage {
    * Gets the identities by profile filter.
    *
    * @param identityProvider the identity provider
-   * @param profileFilter the profile filter
-   * @param offset the result offset
-   * @param limit the result limit
+   * @param profileFilter    the profile filter
+   * @param offset           the result offset
+   * @param limit            the result limit
    * @return the identities by profile filter
    * @throws Exception the exception
    */
-  public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFilter profileFilter,long offset, long limit) throws Exception {
+  public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFilter profileFilter, long offset, long limit) throws Exception {
     Session session = sessionManager.openSession();
     Node profileHomeNode = getProfileServiceHome(session);
 
@@ -387,16 +391,16 @@ public class IdentityStorage {
     List<Node> nodes = null;
     try {
       QueryBuilder queryBuilder = new QueryBuilder(session)
-        .select(PROFILE_NODETYPE, offset, limit)
-        .like("jcr:path", profileHomeNode.getPath() + "[%]/" + PROFILE_NODETYPE + "[%]");
+              .select(PROFILE_NODETYPE, offset, limit)
+              .like("jcr:path", profileHomeNode.getPath() + "[%]/" + PROFILE_NODETYPE + "[%]");
 
       String position = addPositionSearchPattern(profileFilter.getPosition().trim());
       String gender = profileFilter.getGender().trim();
 
-      if (position.length() != 0){
+      if (position.length() != 0) {
         queryBuilder.and().contains("position", position);
       }
-      if(gender.length() != 0){
+      if (gender.length() != 0) {
         queryBuilder.and().equal("gender", gender);
       }
 
@@ -413,7 +417,9 @@ public class IdentityStorage {
     for (Node profileNode : nodes) {
       Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
       Identity identity = getIdentity(identityNode);
-      if(!identity.getProviderId().equals(identityProvider)) continue;
+      if (!identity.getProviderId().equals(identityProvider)) {
+        continue;
+      }
       if (userName.length() != 0) {
         String fullUserName = identity.getProfile().getFullName();
         String fullNameLC = fullUserName.toLowerCase();
@@ -433,18 +439,19 @@ public class IdentityStorage {
 
   private String addPositionSearchPattern(String position) {
     if (position.length() != 0) {
-      if(position.indexOf("*")==-1){
-        return "*" + position+ "*";
+      if (position.indexOf("*") == -1) {
+        return "*" + position + "*";
       }
       return position;
-    } return "";
+    }
+    return "";
   }
 
   private String processUsernameSearchPattern(String userName) {
     if (userName.length() > 0) {
       userName = ((userName == "") || (userName.length() == 0)) ? "*" : userName;
       userName = (userName.charAt(0) != '*') ? "*" + userName : userName;
-      userName = (userName.charAt(userName.length()-1) != '*') ? userName += "*" : userName;
+      userName = (userName.charAt(userName.length() - 1) != '*') ? userName += "*" : userName;
       userName = (userName.indexOf("*") >= 0) ? userName.replace("*", ".*") : userName;
       userName = (userName.indexOf("%") >= 0) ? userName.replace("%", ".*") : userName;
       Pattern.compile(userName);
@@ -456,7 +463,7 @@ public class IdentityStorage {
    * Gets the identities filter by alpha bet.
    *
    * @param identityProvider the identity provider
-   * @param profileFilter the profile filter
+   * @param profileFilter    the profile filter
    * @param offset
    * @param limit
    * @return the identities filter by alpha bet
@@ -464,18 +471,18 @@ public class IdentityStorage {
    */
   public List<Identity> getIdentitiesFilterByAlphaBet(String identityProvider, ProfileFilter profileFilter, long offset, long limit) throws Exception {
     List<Identity> listIdentity = new ArrayList<Identity>();
-    try{
+    try {
       Session session = sessionManager.getOrOpenSession();
       Node profileHomeNode = getProfileServiceHome(session);
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
       queryBuilder
-        .select(PROFILE_NODETYPE, offset, limit)
-        .like("jcr:path", profileHomeNode.getPath()+"/%");
+              .select(PROFILE_NODETYPE, offset, limit)
+              .like("jcr:path", profileHomeNode.getPath() + "/%");
 
       String userName = profileFilter.getName();
       if (userName.length() != 0) {
-        userName += "*" ;
+        userName += "*";
         queryBuilder.and().contains(Profile.FIRST_NAME, userName);
       }
 
@@ -483,7 +490,9 @@ public class IdentityStorage {
       for (Node profileNode : nodes) {
         Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
         Identity identity = getIdentity(identityNode);
-        if(!identity.getProviderId().equals(identityProvider)) continue;
+        if (!identity.getProviderId().equals(identityProvider)) {
+          continue;
+        }
         listIdentity.add(identity);
       }
     } catch (Exception e) {
@@ -512,25 +521,26 @@ public class IdentityStorage {
       }
 
       Node profileNode;
-      if(profile.getId() == null) {
-        profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
-        profileNode.addMixin(REFERENCEABLE_NODE);
+      synchronized (profile) {
+        if (profile.getId() == null) {
+          profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
+          profileNode.addMixin(REFERENCEABLE_NODE);
 
-        Node identityNode = session.getNodeByUUID(profile.getIdentity().getId());
-        profileNode.setProperty(PROFILE_IDENTITY, identityNode);
-      }
-      else {
-        profileNode = session.getNodeByUUID(profile.getId());
-      }
+          Node identityNode = session.getNodeByUUID(profile.getIdentity().getId());
+          profileNode.setProperty(PROFILE_IDENTITY, identityNode);
+          profileNode.setProperty("jcr:lastModified", Calendar.getInstance());
+        } else {
+          profileNode = session.getNodeByUUID(profile.getId());
+        }
+        saveProfile(profile, profileNode, session);
 
-      saveProfile(profile, profileNode, session);
-
-      if (profile.getId() == null) {
-        //create a new profile...
-        profileHomeNode.save();
-        profile.setId(profileNode.getUUID());
-      } else {
-        profileNode.save();
+        if (profile.getId() == null) {
+          //create a new profile...
+          profileHomeNode.save();
+          profile.setId(profileNode.getUUID());
+        } else {
+          profileNode.save();
+        }
       }
     } catch (Exception e) {
       LOG.error("Failed to save profile " + profile, e);
@@ -542,128 +552,142 @@ public class IdentityStorage {
   /**
    * Save profile.
    *
-   * @param profile the profile
+   * @param profile     the profile
    * @param profileNode the node
-   * @param session the session
-   * @throws Exception the exception
+   * @param session     the session
+   * @throws Exception   the exception
    * @throws IOException Signals that an I/O exception has occurred.
    */
   protected void saveProfile(Profile profile, Node profileNode, Session session) throws Exception, IOException {
-    Map<String,Object> props = profile.getProperties();
+    synchronized (profile) {
 
-//    Iterator<String> it = props.keySet().iterator();
-
-    Profile oldProfile = new Profile(null);
-    loadProfile(oldProfile,profileNode,session.getWorkspace().getName());
-    Map<String,Object> oldProps = oldProfile.getProperties();
-
-    // We remove all the property that was deleted
-    Set<String> removedProps = oldProps.keySet();
-    removedProps.removeAll(props.keySet());
-    Iterator<String> it = removedProps.iterator();
-    while (it.hasNext()) {
-      String name = it.next();
-
-      // We skip all the property that are jcr related
-      if (name.contains(":"))
-        continue;
-      if (!props.containsKey(name)) {
-        if (profileNode.hasProperty(name))
-          profileNode.getProperty(name).remove();
-        else if (profileNode.hasNode(name))
-          profileNode.getNode(name).remove();
+      long lastLoaded = profile.getLastLoaded();
+      long lastPersisted = 0;
+      if (profileNode.hasProperty("jcr:lastModified")) {
+        lastPersisted = profileNode.getProperty("jcr:lastModified").getLong();
       }
-    }
 
-    it = props.keySet().iterator();
-    while(it.hasNext()) {
-      String name = it.next();
+      if (!profile.hasChanged() && lastPersisted > 0 && lastPersisted <= lastLoaded) {
+        return;
+      }
+      profile.clearHasChanged();
+      Calendar date = Calendar.getInstance();
+      profileNode.setProperty("jcr:lastModified", date);
+      profile.setLastLoaded(date.getTimeInMillis());
 
-      //we skip all the property that are jcr related
-      if (name.contains(":")) continue;
+      Map<String, Object> props = profile.getProperties();
 
-      Object propValue = props.get(name);
+//     Iterator<String> it = props.keySet().iterator();
 
-      if(isForcedMultiValue(name)) {
-        //if it's a String, we convert it to string array to be able to store it
-        if(propValue instanceof String) {
-          propValue = new String[]{(String) propValue};
+      Profile oldProfile = new Profile(null);
+      loadProfile(oldProfile, profileNode, session.getWorkspace().getName());
+      Map<String, Object> oldProps = oldProfile.getProperties();
+
+      // We remove all the property that was deleted
+      Set<String> removedProps = oldProps.keySet();
+      removedProps.removeAll(props.keySet());
+      Iterator<String> it = removedProps.iterator();
+      while (it.hasNext()) {
+        String name = it.next();
+
+        // We skip all the property that are jcr related
+        if (name.contains(":")) {
+          continue;
         }
-        setProperty(name, (String[]) propValue, profileNode);
-      }
-      else if (propValue instanceof String) {
-        profileNode.setProperty(name, (String) propValue);
-      }
-      else if (propValue instanceof Double) {
-        profileNode.setProperty(name, (Double) propValue);
-      }
-      else if (propValue instanceof Boolean) {
-        profileNode.setProperty(name, (Boolean) propValue);
-      }
-      else if (propValue instanceof Long) {
-        profileNode.setProperty(name, (Long) propValue);
-      }
-      else if (propValue instanceof String[]){
-        final String[] strings = (String[]) propValue;
-        if (strings.length == 1) {
-          profileNode.setProperty(name, strings[0]);
-        } else {
-          setProperty(name, strings, profileNode);
-        }
-      }
-      else if (propValue instanceof List) {
-        setProperty(name, (List<Map<String,Object>>) propValue, profileNode);
-      }
-      else if (propValue instanceof AvatarAttachment) {
-        //fix id6 load
-        ExtendedNode extNode = (ExtendedNode) profileNode;
-        if (extNode.canAddMixin("exo:privilegeable")) {
-          extNode.addMixin("exo:privilegeable");
-        }
-
-        String[] arrayPers = {
-          PermissionType.READ,
-          PermissionType.ADD_NODE,
-          PermissionType.SET_PROPERTY,
-          PermissionType.REMOVE
-        };
-
-        extNode.setPermission(SystemIdentity.ANY, arrayPers);
-
-        List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;
-        for(AccessControlEntry accessControlEntry : permsList) {
-          extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;
-        }
-        AvatarAttachment profileAtt = (AvatarAttachment) propValue;
-        if(profileAtt.getFileName() != null) {
-          Node nodeFile;
-          try {
-            nodeFile = profileNode.getNode(name) ;
-          } catch (PathNotFoundException ex) {
-            nodeFile = profileNode.addNode(name, "nt:file");
-          }
-
-          Node nodeContent;
-          try {
-            nodeContent = nodeFile.getNode("jcr:content") ;
-          } catch (PathNotFoundException ex) {
-            nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
-          }
-
-          long lastModified = profileAtt.getLastModified();
-          long lastSaveTime = 0;
-          if (nodeContent.hasProperty("jcr:lastModified"))
-            lastSaveTime = nodeContent.getProperty("jcr:lastModified").getLong();
-          if ((lastModified != 0) && (lastModified != lastSaveTime)) {
-            nodeContent.setProperty("jcr:mimeType", profileAtt.getMimeType()) ;
-            nodeContent.setProperty("jcr:data", profileAtt.getInputStream(session));
-            nodeContent.setProperty("jcr:lastModified", profileAtt.getLastModified());
+        if (!props.containsKey(name)) {
+          if (profileNode.hasProperty(name)) {
+            profileNode.getProperty(name).remove();
+          } else if (profileNode.hasNode(name)) {
+            profileNode.getNode(name).remove();
           }
         }
-        else {
-          if(profileNode.hasNode(name)) {
-            profileNode.getNode(name).remove() ;
-            session.save();
+      }
+
+      it = props.keySet().iterator();
+      while (it.hasNext()) {
+        String name = it.next();
+
+        //we skip all the property that are jcr related
+        if (name.contains(":")) {
+          continue;
+        }
+
+        Object propValue = props.get(name);
+
+        if (isForcedMultiValue(name)) {
+          //if it's a String, we convert it to string array to be able to store it
+          if (propValue instanceof String) {
+            propValue = new String[]{(String) propValue};
+          }
+          setProperty(name, (String[]) propValue, profileNode);
+        } else if (propValue instanceof String) {
+          profileNode.setProperty(name, (String) propValue);
+        } else if (propValue instanceof Double) {
+          profileNode.setProperty(name, (Double) propValue);
+        } else if (propValue instanceof Boolean) {
+          profileNode.setProperty(name, (Boolean) propValue);
+        } else if (propValue instanceof Long) {
+          profileNode.setProperty(name, (Long) propValue);
+        } else if (propValue instanceof String[]) {
+          final String[] strings = (String[]) propValue;
+          if (strings.length == 1) {
+            profileNode.setProperty(name, strings[0]);
+          } else {
+            setProperty(name, strings, profileNode);
+          }
+        } else if (propValue instanceof List) {
+          setProperty(name, (List<Map<String, Object>>) propValue, profileNode);
+        } else if (propValue instanceof AvatarAttachment) {
+          //fix id6 load
+          ExtendedNode extNode = (ExtendedNode) profileNode;
+          if (extNode.canAddMixin("exo:privilegeable")) {
+            extNode.addMixin("exo:privilegeable");
+          }
+
+          String[] arrayPers = {
+                  PermissionType.READ,
+                  PermissionType.ADD_NODE,
+                  PermissionType.SET_PROPERTY,
+                  PermissionType.REMOVE
+          };
+
+          extNode.setPermission(SystemIdentity.ANY, arrayPers);
+
+          List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries();
+          for (AccessControlEntry accessControlEntry : permsList) {
+            extNode.setPermission(accessControlEntry.getIdentity(), arrayPers);
+          }
+          AvatarAttachment profileAtt = (AvatarAttachment) propValue;
+          if (profileAtt.getFileName() != null) {
+            Node nodeFile;
+            try {
+              nodeFile = profileNode.getNode(name);
+            } catch (PathNotFoundException ex) {
+              nodeFile = profileNode.addNode(name, "nt:file");
+            }
+
+            Node nodeContent;
+            try {
+              nodeContent = nodeFile.getNode("jcr:content");
+            } catch (PathNotFoundException ex) {
+              nodeContent = nodeFile.addNode("jcr:content", "nt:resource");
+            }
+
+            long lastModified = profileAtt.getLastModified();
+            long lastSaveTime = 0;
+            if (nodeContent.hasProperty("jcr:lastModified")) {
+              lastSaveTime = nodeContent.getProperty("jcr:lastModified").getLong();
+            }
+            if ((lastModified != 0) && (lastModified != lastSaveTime)) {
+              nodeContent.setProperty("jcr:mimeType", profileAtt.getMimeType());
+              nodeContent.setProperty("jcr:data", profileAtt.getInputStream(session));
+              nodeContent.setProperty("jcr:lastModified", profileAtt.getLastModified());
+            }
+          } else {
+            if (profileNode.hasNode(name)) {
+              profileNode.getNode(name).remove();
+              session.save();
+            }
           }
         }
       }
@@ -673,14 +697,14 @@ public class IdentityStorage {
   /**
    * Sets the property.
    *
-   * @param name the name
+   * @param name  the name
    * @param props the props
-   * @param n the node
-   * @throws Exception the exception
+   * @param n     the node
+   * @throws Exception                    the exception
    * @throws ConstraintViolationException the constraint violation exception
-   * @throws VersionException the version exception
+   * @throws VersionException             the version exception
    */
-  private void setProperty(String name, List<Map<String,Object>> props, Node n) throws Exception, VersionException {
+  private void setProperty(String name, List<Map<String, Object>> props, Node n) throws Exception, VersionException {
     String ntName = getNodeTypeName(name);
     if (ntName == null) {
       throw new Exception("no nodeType is defined for " + name);
@@ -688,14 +712,14 @@ public class IdentityStorage {
 
     // remove the existing nodes
     NodeIterator nIt = n.getNodes(name);
-    while(nIt.hasNext()) {
+    while (nIt.hasNext()) {
       Node currNode = nIt.nextNode();
       currNode.remove();
     }
 
     Iterator<Map<String, Object>> it = props.iterator();
-    while(it.hasNext()) {
-      Map<String,Object> prop = it.next();
+    while (it.hasNext()) {
+      Map<String, Object> prop = it.next();
       Node propNode = n.addNode(name, ntName);
 
       Iterator<String> itKey = prop.keySet().iterator();
@@ -705,14 +729,11 @@ public class IdentityStorage {
 
         if (propValue instanceof String) {
           propNode.setProperty(key, (String) propValue);
-        }
-        else if (propValue instanceof Double) {
+        } else if (propValue instanceof Double) {
           propNode.setProperty(key, (Double) propValue);
-        }
-        else if (propValue instanceof Boolean) {
+        } else if (propValue instanceof Boolean) {
           propNode.setProperty(key, (Boolean) propValue);
-        }
-        else if (propValue instanceof Long) {
+        } else if (propValue instanceof Long) {
           propNode.setProperty(key, (Long) propValue);
         }
       }
@@ -722,18 +743,19 @@ public class IdentityStorage {
   /**
    * Sets the property.
    *
-   * @param name the name
+   * @param name      the name
    * @param propValue the prop value
-   * @param n the node
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws RepositoryException the repository exception
+   * @param n         the node
+   * @throws IOException                  Signals that an I/O exception has
+   *                                      occurred.
+   * @throws RepositoryException          the repository exception
    * @throws ConstraintViolationException the constraint violation exception
-   * @throws VersionException the version exception
+   * @throws VersionException             the version exception
    */
   private void setProperty(String name, String[] propValue, Node n) throws IOException, RepositoryException, ConstraintViolationException, VersionException {
     ArrayList<Value> values = new ArrayList<Value>();
     for (String value : propValue) {
-      if(value != null && value.length() > 0) {
+      if (value != null && value.length() > 0) {
         values.add(new StringValue(value));
       }
     }
@@ -760,7 +782,7 @@ public class IdentityStorage {
       identityNode = session.getNodeByUUID(profile.getIdentity().getId());
       workspaceName = session.getWorkspace().getName();
       PropertyIterator references = identityNode.getReferences();
-      if(references.getSize() == 0) {
+      if (references.getSize() == 0) {
         //there is no profile node referencing to this identity node -> create new profile node
         //Lazily initializing a new Profile...
         saveProfile(profile);
@@ -807,40 +829,64 @@ public class IdentityStorage {
   /**
    * Load profile.
    *
-   * @param profile the p
-   * @param profileNode the n
+   * @param profile       the p
+   * @param profileNode   the n
    * @param workspaceName the workspace name
    * @throws RepositoryException the repository exception
    */
   protected void loadProfile(Profile profile, Node profileNode, String workspaceName) throws RepositoryException {
-    PropertyIterator props = profileNode.getProperties();
-    copyPropertiesToMap(props, profile.getProperties());
-
-    NodeIterator it = profileNode.getNodes();
-    while(it.hasNext()) {
-      Node node = it.nextNode();
-      if (node.getName().equals(PROFILE_AVATAR) || node.getName().startsWith(PROFILE_AVATAR + "_")) {
-        if (node.isNodeType("nt:file")) {
-          AvatarAttachment file = new AvatarAttachment();
-          file.setId(node.getPath());
-          file.setMimeType(node.getNode("jcr:content").getProperty("jcr:mimeType").getString());
-          try {
-            file.setInputStream(node.getNode("jcr:content").getProperty("jcr:data").getValue().getStream());
-          } catch (Exception e) {
-            LOG.warn("Failed to load data for avatar of " + profile + ": " + e.getMessage());
-          }
-          file.setLastModified(node.getNode("jcr:content").getProperty("jcr:lastModified").getLong());
-          file.setFileName(node.getName());
-          file.setWorkspace(workspaceName);
-          profile.setProperty(node.getName(), file);
-        }
+    synchronized (profile) {
+      long lastLoaded = profile.getLastLoaded();
+      long lastPersisted = 0;
+      if (profileNode.hasProperty("jcr:lastModified")) {
+        lastPersisted = profileNode.getProperty("jcr:lastModified").getLong();
       } else {
-        List l = (List) profile.getProperty(node.getName());
-        if(l == null) {
-          profile.setProperty(node.getName(), new ArrayList());
-          l = (List) profile.getProperty(node.getName());
-          l.add(copyPropertiesToMap(node.getProperties(), new HashMap()));
+        // Lazy add the property
+        profileNode.setProperty("jcr:lastModified", Calendar.getInstance());
+        profileNode.save();
+      }
+      if (lastPersisted > 0 && lastPersisted <= lastLoaded) {
+        return;
+      }
+      // Get the previous value of the flag has changed
+      boolean hasChanged = profile.hasChanged();
+      Calendar date = Calendar.getInstance();
+      profile.setLastLoaded(date.getTimeInMillis());
+
+      PropertyIterator props = profileNode.getProperties();
+      copyPropertiesToMap(props, profile.getProperties());
+
+      NodeIterator it = profileNode.getNodes();
+      while (it.hasNext()) {
+        Node node = it.nextNode();
+        if (node.getName().equals(PROFILE_AVATAR) || node.getName().startsWith(PROFILE_AVATAR + "_")) {
+          if (node.isNodeType("nt:file")) {
+            AvatarAttachment file = new AvatarAttachment();
+            file.setId(node.getPath());
+            file.setMimeType(node.getNode("jcr:content").getProperty("jcr:mimeType").getString());
+            try {
+              file.setInputStream(node.getNode("jcr:content").getProperty("jcr:data").getValue().getStream());
+            } catch (Exception e) {
+              LOG.warn("Failed to load data for avatar of " + profile + ": " + e.getMessage());
+            }
+            file.setLastModified(node.getNode("jcr:content").getProperty("jcr:lastModified").getLong());
+            file.setFileName(node.getName());
+            file.setWorkspace(workspaceName);
+            profile.setProperty(node.getName(), file);
+          }
+        } else {
+          List l = (List) profile.getProperty(node.getName());
+          if (l == null) {
+            profile.setProperty(node.getName(), new ArrayList());
+            l = (List) profile.getProperty(node.getName());
+            l.add(copyPropertiesToMap(node.getProperties(), new HashMap()));
+          }
         }
+      }
+      if (!hasChanged) {
+        // The profile has not been modified before loading it so we
+        // can safely clear the hasChanged flag
+        profile.clearHasChanged();
       }
     }
   }
@@ -849,34 +895,36 @@ public class IdentityStorage {
    * Copy properties to map.
    *
    * @param props the props
-   * @param map the map
+   * @param map   the map
    * @return the map
    * @throws RepositoryException the repository exception
    */
   private Map copyPropertiesToMap(PropertyIterator props, Map map) throws RepositoryException {
-    while(props.hasNext()) {
+    while (props.hasNext()) {
       Property prop = (Property) props.next();
 
       //we skip all the property that are jcr related
-      if (prop.getName().contains(":"))
+      if (prop.getName().contains(":")) {
         continue;
+      }
 
       try {
         Value v = prop.getValue();
-        if (v instanceof StringValue)
+        if (v instanceof StringValue) {
           map.put(prop.getName(), v.getString());
-        else if (v instanceof LongValue)
+        } else if (v instanceof LongValue) {
           map.put(prop.getName(), v.getLong());
-        else if (v instanceof DoubleValue)
+        } else if (v instanceof DoubleValue) {
           map.put(prop.getName(), v.getDouble());
-        else if (v instanceof BooleanValue)
+        } else if (v instanceof BooleanValue) {
           map.put(prop.getName(), v.getBoolean());
+        }
       }
       catch (ValueFormatException e) {
         Value[] values = prop.getValues();
         List<String> res = new ArrayList<String>();
 
-        for(Value v : values) {
+        for (Value v : values) {
           res.add(v.getString());
         }
         map.put(prop.getName(), res.toArray(new String[res.size()]));
@@ -901,13 +949,13 @@ public class IdentityStorage {
       NodeType nt = ntManager.getNodeType(nodetype);
       PropertyDefinition[] pDefs = nt.getDeclaredPropertyDefinitions();
 
-      for(PropertyDefinition pDef : pDefs) {
-        if(pDef.getName().equals(property)) {
+      for (PropertyDefinition pDef : pDefs) {
+        if (pDef.getName().equals(property)) {
           return PropertyType.nameFromValue(pDef.getRequiredType());
         }
       }
     } catch (Exception e) {
-      LOG.error("Could not find type of property " + property +" for nodetype " + nodetype);
+      LOG.error("Could not find type of property " + property + " for nodetype " + nodetype);
       return null;
     } finally {
       sessionManager.closeSession();
