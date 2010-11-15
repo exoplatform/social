@@ -98,7 +98,7 @@ public class UISpaceGroupBound extends UIContainer {
    * @return True if current user has one group that he is manager of that group.
    * @throws Exception
    */
-  protected boolean hasGroupWithMangerRole() throws Exception {
+  protected boolean hasGroupWithManagerRole() throws Exception {
     OrganizationService service = getApplicationComponent(OrganizationService.class);
     RequestContext reqCtx = RequestContext.getCurrentInstance();
     String remoteUser = reqCtx.getRemoteUser();

@@ -31,14 +31,14 @@
   
   def uiCheckbox = uicomponent.getChild(UIFormCheckBoxInput.class);
   def checked = uiCheckbox.isChecked();
-  def hasGroupWithMangerRole = uicomponent.hasGroupWithMangerRole();
+  def hasGroupWithManagerRole = uicomponent.hasGroupWithManagerRole();
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <%if (checked) {%>
   <div class="UIGroupSelected"><%= lblSelectedGroup %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
   <%}%>
   
-  <%if (hasGroupWithMangerRole) {
+  <%if (hasGroupWithManagerRole) {
     uiCheckbox.setEnable(true); %>
 	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><label for="useExistingGroup"><%= lblCheckbox %></label></span></div>
 	  <div class="UIGroupBoundDescription"><%= lblDescription %></div>
