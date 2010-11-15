@@ -43,6 +43,7 @@
 
   <Content type="html" view="home">
   <![CDATA[
+    <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
     <style type="text/css">
         .UIPageIterator {
           margin: 5px auto 0px auto;
@@ -176,6 +177,7 @@
 
   <Content type="html" view="canvas">
   <![CDATA[
+    <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
     <style type="text/css">
         .UIPageIterator {
           margin: 5px auto 0px auto;

@@ -19,6 +19,8 @@ RssFetch.prototype.getFavicon = function(feedurl) {
 }
 
 RssFetch.prototype.toggleDescription = function(elmnt_id) {
+  	var blockForAdjustHeight = _gel("rssFeed");
+  	var SocialUtil = eXo.social.SocialUtil;
     if (_gel('more_'+elmnt_id).style.display == 'none') {
         _gel('more_'+elmnt_id).style.display = '';
         _gel('item_'+elmnt_id).className = 'item descriptionHighlight';
@@ -26,7 +28,7 @@ RssFetch.prototype.toggleDescription = function(elmnt_id) {
         _gel('more_'+elmnt_id).style.display = 'none';
         _gel('item_'+elmnt_id).className = 'item';
     }
-    gadgets.window.adjustHeight();
+    SocialUtil.adjustHeight(blockForAdjustHeight);
 }
 
 RssFetch.prototype.shared = function() {
@@ -59,7 +61,8 @@ RssFetch.prototype.refreshFeed = function() {
   _IG_FetchXmlContent(prefs.getString("rssurl"), function(feed) {rssFetch.renderFeed(feed);}, { refreshInterval: (60 * 30) });
 }
 
-RssFetch.prototype.loadPage = function() {
+RssFetch.prototype.loadPage = function() { 	
+	var SocialUtil = eXo.social.SocialUtil;
   var feedEl = _gel("rssFeed");
   var currentView = gadgets.views.getCurrentView().getName();
 
@@ -182,7 +185,7 @@ RssFetch.prototype.loadPage = function() {
       allPagesEl.innerHTML = allPages.join(" ");
     }
 
-    gadgets.window.adjustHeight();
+    SocialUtil.adjustHeight(feedEl);
 }
 
 RssFetch.prototype.setDisplayPaging = function(currentPage) {
