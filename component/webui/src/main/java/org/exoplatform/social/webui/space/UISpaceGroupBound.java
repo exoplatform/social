@@ -16,8 +16,13 @@
  */
 package org.exoplatform.social.webui.space;
 
+import java.util.Collection;
+
 import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.webui.UISocialGroupSelector;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -56,6 +61,7 @@ public class UISpaceGroupBound extends UIContainer {
   private final String USE_EXISTING_GROUP = "useExistingGroup";
   private final String POPUP_GROUP_BOUND = "UIPopupGroupBound";
   private final String SELECTED_GROUP = "groupId";
+
   /**
    * constructor
    * @throws Exception
@@ -64,6 +70,7 @@ public class UISpaceGroupBound extends UIContainer {
     UIFormCheckBoxInput<Boolean> uiUseExisting = new UIFormCheckBoxInput<Boolean>(USE_EXISTING_GROUP, null, false);
     uiUseExisting.setOnChange("ToggleUseGroup");
     addChild(uiUseExisting);
+    
     UIFormInputInfo uiFormInputInfo = new UIFormInputInfo(SELECTED_GROUP, null, null);
     addChild(uiFormInputInfo);
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "SelectGroup", POPUP_GROUP_BOUND);
@@ -85,6 +92,20 @@ public class UISpaceGroupBound extends UIContainer {
     return null;
   }
 
+  /**
+   * Check current user is manager of group or not.
+   * 
+   * @return True if current user has one group that he is manager of that group.
+   * @throws Exception
+   */
+  protected boolean hasGroupWithMangerRole() throws Exception {
+    OrganizationService service = getApplicationComponent(OrganizationService.class);
+    RequestContext reqCtx = RequestContext.getCurrentInstance();
+    String remoteUser = reqCtx.getRemoteUser();
+    Collection groups = service.getGroupHandler().findGroupByMembership(remoteUser, SpaceUtils.MANAGER);
+    return (groups.size() > 0);    
+  }
+  
   /**
    * triggers this action when user clicks on select group on UIGroupSelector
    */

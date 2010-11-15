@@ -26,16 +26,26 @@
   
   def lblCheckbox = _ctx.appRes("${uicomponent.id}.label.checkbox");
   def lblDescription = _ctx.appRes("${uicomponent.id}.label.description");
+  def lblDescription_none_group = _ctx.appRes("${uicomponent.id}.label.description_none_existing_group");
   def lblSelectedGroup = _ctx.appRes("${uicomponent.id}.label.selected_group");
   
   def uiCheckbox = uicomponent.getChild(UIFormCheckBoxInput.class);
   def checked = uiCheckbox.isChecked();
+  def hasGroupWithMangerRole = uicomponent.hasGroupWithMangerRole();
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <%if (checked) {%>
   <div class="UIGroupSelected"><%= lblSelectedGroup %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
   <%}%>
-  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><label for="useExistingGroup"><%= lblCheckbox %></label></span></div>
-  <div class="UIGroupBoundDescription"><%= lblDescription %></div>
+  
+  <%if (hasGroupWithMangerRole) {
+    uiCheckbox.setEnable(true); %>
+	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><label for="useExistingGroup"><%= lblCheckbox %></label></span></div>
+	  <div class="UIGroupBoundDescription"><%= lblDescription %></div>
+  <% } else {
+    uiCheckbox.setEnable(false); %>
+	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UINoneGroupBoundLabel"><label for="useExistingGroup"><%= lblCheckbox %></label></span></div>
+	  <div class="UIGroupBoundDescription"><%= lblDescription_none_group %></div>
+  <% } %>
   <div class="UIGroupBoundPopup"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>
