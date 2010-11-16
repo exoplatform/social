@@ -76,7 +76,7 @@ public class SpaceStorage {
     return session.getRootNode().getNode(path);
   }
 
-  public String getWorkspace() throws Exception {
+  private String getWorkspace() throws Exception {
      return workspace;
   }
 

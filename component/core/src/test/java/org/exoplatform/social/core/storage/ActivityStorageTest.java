@@ -27,7 +27,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
@@ -62,7 +61,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
 
     assertNotNull("rootIdentity.getId() must not be null", rootIdentity.getId());
     assertNotNull("johnIdentity.getId() must not be null", johnIdentity.getId());
-    assertNotNull("maryIdentity.getId() must not be null", maryIdentity.getId());                   
+    assertNotNull("maryIdentity.getId() must not be null", maryIdentity.getId());
     assertNotNull("demoIdentity.getId() must not be null", demoIdentity.getId());
 
     tearDownActivityList = new ArrayList<Activity>();
@@ -79,6 +78,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     identityManager.deleteIdentity(demoIdentity);
     super.tearDown();
   }
+
 
   /**
    * Test {@link ActivityStorage#saveActivity(Identity, Activity)}
@@ -135,6 +135,29 @@ public class ActivityStorageTest extends AbstractCoreTest {
   }
 
   /**
+   * Test {@link ActivityStorage#save(Identity, Activity)}
+   * @author vien_levan
+   */
+  @SuppressWarnings("deprecation")
+  public void testSave() {
+    //test for root
+    Activity saveActivity = new Activity();
+    saveActivity.setTitle("save activity");
+    activityStorage.save(rootIdentity, saveActivity);
+    tearDownActivityList.add(saveActivity);
+
+    assertNotNull("saveActivity.getId() must not be null", saveActivity.getId());
+
+    //test for normal user
+    Activity normalActivity = new Activity();
+    normalActivity.setTitle("normal activity");
+    activityStorage.save(johnIdentity, normalActivity);
+    tearDownActivityList.add(normalActivity);
+
+    assertNotNull("normalActivity.getId() must not null", normalActivity.getId());
+  }
+
+  /**
    * Test {@link ActivityStorage#deleteActivity(String)}
    * and {@link ActivityStorage#deleteActivity(Activity)}
    */
@@ -163,6 +186,43 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.deleteActivity(activity2);
     }
 
+  }
+
+  /**
+   * Test {@link ActivityStorage#load(String)}}
+   * @author vien_levan
+   */
+  @SuppressWarnings("deprecation")
+  public void testLoad() {
+    //test for user root
+    Activity loadActivity = new Activity();
+    loadActivity.setTitle("load activity");
+    activityStorage.saveActivity(rootIdentity, loadActivity);
+    tearDownActivityList.add(loadActivity);
+    assertNotNull("loadActivity.getId() must not be null", loadActivity.getId());
+
+    //load
+    Activity loadedActivity = activityStorage.load(loadActivity.getId());
+    assertNotNull("loadedActivity must not be null", loadedActivity);
+    assertNotNull("loadedActivity.getId() must not be null", loadedActivity.getId());
+    assertEquals("loadActivity.getId() must return: " + loadActivity.getId(), loadActivity.getId(), loadedActivity.getId());
+    assertEquals("loadedActivity.getStreamOwner() must return: " + loadedActivity.getStreamOwner(), loadedActivity.getStreamOwner(), loadActivity.getStreamOwner());
+    assertEquals("loadActivity.getTitle() must return: " + loadActivity.getTitle(), loadActivity.getTitle(), loadedActivity.getTitle());
+
+    //test for normal user
+    Activity normalActivity = new Activity();
+    normalActivity.setTitle("normal activity");
+    activityStorage.saveActivity(johnIdentity, normalActivity);
+    tearDownActivityList.add(normalActivity);
+    assertNotNull("normalActivity.getId() must not be null", normalActivity.getId());
+
+    //load
+    Activity normalLoadedActivity = activityStorage.load(normalActivity.getId());
+    assertNotNull("normalLoadedActivity must not be null", normalLoadedActivity);
+    assertNotNull("normalLoadedActivity.getId() must not be null", normalLoadedActivity.getId());
+    assertEquals("normalActivity.getTitle() must return: " + normalActivity.getTitle(), normalActivity.getTitle(), normalLoadedActivity.getTitle());
+    assertEquals("normalActivity.getId() must return: " + normalActivity.getId(), normalActivity.getId(), normalLoadedActivity.getId());
+    assertEquals("normalActivity.getStreamOwner() must return: " + normalActivity.getStreamOwner(), normalActivity.getStreamOwner(), normalLoadedActivity.getStreamOwner());
   }
 
   /**
@@ -224,19 +284,17 @@ public class ActivityStorageTest extends AbstractCoreTest {
     activityStorage.saveActivity(demoIdentity, activity);
     tearDownActivityList.add(activity);
 
-    assertNotNull("activity1.getId() must not be null", activity.getId());
+    assertNotNull("activity.getId() must not be null", activity.getId());
 
-    assertEquals(demoIdentity.getRemoteId(), activity.getStreamOwner());
+    assertEquals("demoIdentity.getRemoteId() must return: " + demoIdentity.getRemoteId(), demoIdentity.getRemoteId(), activity.getStreamOwner());
 
     Activity gotActivity = activityStorage.getActivity(activity.getId());
 
-    assertNotNull(gotActivity.getId());
+    assertNotNull("gotActivity.getId() must not be null", gotActivity.getId());
 
-    assertEquals(activity.getId(), gotActivity.getId());
+    assertEquals("activity.getId() must return: " + activity.getId(), activity.getId(), gotActivity.getId());
 
-    assertEquals(activityTitle, gotActivity.getTitle());
-
-
+    assertEquals("gotActivity.getTitle() must return: " + gotActivity.getTitle(), activityTitle, gotActivity.getTitle());
   }
 
   /**
