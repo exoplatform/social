@@ -16,10 +16,9 @@
  */
 package org.exoplatform.social.core.processor;
 
-import javax.portlet.PortalContext;
-
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -52,11 +51,11 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     MentionsProcessor processor = (MentionsProcessor) getContainer().getComponentInstanceOfType(MentionsProcessor.class);
     LinkProvider linkProvider = (LinkProvider) getContainer().getComponentInstanceOfType(LinkProvider.class);
     assertNotNull("prococessor must not be null", processor);
-    Activity activity = null;
+    ExoSocialActivity activity = null;
     processor.processActivity(activity);
     assertNull("returned activity must be null", activity);
 
-    activity = new Activity();
+    activity = new ExoSocialActivityImpl();
     processor.processActivity(activity);
     assertNull(activity.getTitle());
     assertNull(activity.getBody());

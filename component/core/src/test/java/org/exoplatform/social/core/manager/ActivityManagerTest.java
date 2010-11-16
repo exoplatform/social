@@ -23,9 +23,11 @@ import java.util.Random;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -34,7 +36,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  */
 public class ActivityManagerTest extends AbstractCoreTest {
   private final Log LOG = ExoLogger.getLogger(ActivityManagerTest.class);
-  private List<Activity> tearDownActivityList;
+  private List<ExoSocialActivity> tearDownActivityList;
   private Identity rootIdentity;
   private Identity johnIdentity;
   private Identity maryIdentity;
@@ -50,7 +52,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertNotNull("identityManager must not be null", identityManager);
     activityManager =  (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     assertNotNull("activityManager must not be null", activityManager);
-    tearDownActivityList = new ArrayList<Activity>();
+    tearDownActivityList = new ArrayList<ExoSocialActivity>();
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
@@ -65,7 +67,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
 
   @Override
   public void tearDown() throws Exception {
-    for (Activity activity : tearDownActivityList) {
+    for (ExoSocialActivity activity : tearDownActivityList) {
       try {
         activityManager.deleteActivity(activity.getId());
       } catch (Exception e) {
@@ -75,22 +77,19 @@ public class ActivityManagerTest extends AbstractCoreTest {
     identityManager.deleteIdentity(rootIdentity);
     identityManager.deleteIdentity(johnIdentity);
     identityManager.deleteIdentity(maryIdentity);
-    if (demoIdentity.getId() != null) {
-      //FIXME hoatle this can be affected by other tests
-      identityManager.deleteIdentity(demoIdentity);
-    }
+    identityManager.deleteIdentity(demoIdentity);
     super.tearDown();
   }
 
   /**
-   * Test for {@link ActivityManager#saveActivity(Activity)}
+   * Test for {@link ActivityManager#saveActivity(org.exoplatform.social.core.activity.model.ExoSocialActivity)}
    *
-   * and {@link ActivityManager#saveActivity(Identity, Activity)}
+   * and {@link ActivityManager#saveActivity(Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity)}
    */
-  public void testSaveActivity() {
+  public void testSaveActivity() throws ActivityStorageException {
     //save mal-formed activity
     {
-      Activity malformedActivity = new Activity();
+      ExoSocialActivity malformedActivity = new ExoSocialActivityImpl();;
       malformedActivity.setTitle("malform");
       try {
         activityManager.saveActivity(malformedActivity);
@@ -101,7 +100,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
 
     {
       final String activityTitle = "root activity";
-      Activity rootActivity = new Activity();
+      ExoSocialActivity rootActivity = new ExoSocialActivityImpl();;
       rootActivity.setTitle(activityTitle);
       rootActivity.setUserId(rootIdentity.getId());
       activityManager.saveActivity(rootActivity);
@@ -117,7 +116,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
 
     {
       final String title = "john activity";
-      Activity johnActivity = new Activity();
+      ExoSocialActivity johnActivity = new ExoSocialActivityImpl();;
       johnActivity.setTitle(title);
       activityManager.saveActivity(johnIdentity, johnActivity);
 
@@ -132,11 +131,11 @@ public class ActivityManagerTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityManager#getActivity(String)}
    */
-  public void testGetActivity() {
-      List<Activity> rootActivities = activityManager.getActivities(rootIdentity);
+  public void testGetActivity() throws ActivityStorageException {
+      List<ExoSocialActivity> rootActivities = activityManager.getActivities(rootIdentity);
       assertEquals("user's activities should have 0 element.", 0, rootActivities.size());
 
-      Activity activity = new Activity();
+      ExoSocialActivity activity = new ExoSocialActivityImpl();;
       activity.setTitle("title");
       activity.setUserId(rootIdentity.getId());
 
@@ -152,40 +151,40 @@ public class ActivityManagerTest extends AbstractCoreTest {
    * Unit Test for:
    * <p>
    * {@link ActivityManager#deleteActivity(String)}
-   * {@link ActivityManager#deleteActivity(Activity)}
+   * {@link ActivityManager#deleteActivity(org.exoplatform.social.core.activity.model.ExoSocialActivity)}
    */
   public void testDeleteActivity() {
     assert true;
   }
 
-  public  void testGetCommentWithHtmlContent(){
+  public  void testGetCommentWithHtmlContent() throws ActivityStorageException {
     String htmlString = "<span><strong>foo</strong>bar<script>zed</script></span>";
     String htmlRemovedString = "<span><strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;</span>";
     
-    Activity activity = new Activity();
+    ExoSocialActivity activity = new ExoSocialActivityImpl();;
     activity.setTitle("blah blah");
     activityManager.saveActivity(rootIdentity, activity);
 
-    Activity comment = new Activity();
+    ExoSocialActivity comment = new ExoSocialActivityImpl();;
     comment.setTitle(htmlString);
     comment.setUserId(rootIdentity.getId());
     comment.setBody(htmlString);
     activityManager.saveComment(activity, comment);
     assertNotNull("comment.getId() must not be null", comment.getId());
 
-    List<Activity> comments = activityManager.getComments(activity);
+    List<ExoSocialActivity> comments = activityManager.getComments(activity);
     assertEquals(1, comments.size());
     assertEquals(htmlRemovedString, comments.get(0).getBody());
     assertEquals(htmlRemovedString, comments.get(0).getTitle());
     tearDownActivityList.add(activity);    
   }
   
-  public  void testGetComment(){
-    Activity activity = new Activity();
+  public  void testGetComment() throws ActivityStorageException {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();;
     activity.setTitle("blah blah");
     activityManager.saveActivity(rootIdentity, activity);
 
-    Activity comment = new Activity();
+    ExoSocialActivity comment = new ExoSocialActivityImpl();;
     comment.setTitle("comment blah blah");
     comment.setUserId(rootIdentity.getId());
 
@@ -198,14 +197,14 @@ public class ActivityManagerTest extends AbstractCoreTest {
     tearDownActivityList.add(activity);
   }
 
-  public  void testGetComments(){
-    Activity activity = new Activity();
+  public  void testGetComments() throws ActivityStorageException {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();;
     activity.setTitle("blah blah");
     activityManager.saveActivity(rootIdentity, activity);
 
-    List<Activity> comments = new ArrayList<Activity>();
+    List<ExoSocialActivity> comments = new ArrayList<ExoSocialActivity>();
     for (int i = 0; i < 10; i++) {
-      Activity comment = new Activity();
+      ExoSocialActivity comment = new ExoSocialActivityImpl();;
       comment.setTitle("comment blah blah");
       comment.setUserId(rootIdentity.getId());
       activityManager.saveComment(activity, comment);
@@ -214,7 +213,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
       comments.add(comment);
     }
 
-    Activity assertActivity = activityManager.getActivity(activity.getId());
+    ExoSocialActivity assertActivity = activityManager.getActivity(activity.getId());
     String rawCommentIds = assertActivity.getReplyToId();
     String[] commentIds = rawCommentIds.split(",");
     for (int i = 1; i < commentIds.length; i++) {
@@ -227,13 +226,13 @@ public class ActivityManagerTest extends AbstractCoreTest {
    * <p>
    * {@link ActivityManager#deleteComment(String, String)}
    */
-  public void testDeleteComment() {
+  public void testDeleteComment() throws ActivityStorageException {
     final String title = "Activity Title";
     {
       //FIXBUG: SOC-1194
       //Case: a user create an activity in his stream, then give some comments on it.
       //Delete comments and check
-      Activity activity1 = new Activity();
+      ExoSocialActivity activity1 = new ExoSocialActivityImpl();;
       activity1.setUserId(demoIdentity.getId());
       activity1.setTitle(title);
       activityManager.saveActivity(demoIdentity, activity1);
@@ -241,13 +240,13 @@ public class ActivityManagerTest extends AbstractCoreTest {
       final int numberOfComments = 10;
       final String commentTitle = "Activity Comment";
       for (int i = 0; i < numberOfComments; i++) {
-        Activity comment = new Activity();
+        ExoSocialActivity comment = new ExoSocialActivityImpl();;
         comment.setUserId(demoIdentity.getId());
         comment.setTitle(commentTitle + i);
         activityManager.saveComment(activity1, comment);
       }
 
-      List<Activity> storedCommentList = activityManager.getComments(activity1);
+      List<ExoSocialActivity> storedCommentList = activityManager.getComments(activity1);
 
       assertEquals("storedCommentList.size() must return: " + numberOfComments, numberOfComments, storedCommentList.size());
 
@@ -258,13 +257,13 @@ public class ActivityManagerTest extends AbstractCoreTest {
         index2 = new Random().nextInt(numberOfComments - 1);
       }
 
-      Activity tobeDeletedComment1 = storedCommentList.get(index1);
-      Activity tobeDeletedComment2 = storedCommentList.get(index2);
+      ExoSocialActivity tobeDeletedComment1 = storedCommentList.get(index1);
+      ExoSocialActivity tobeDeletedComment2 = storedCommentList.get(index2);
 
       activityManager.deleteComment(activity1.getId(), tobeDeletedComment1.getId());
       activityManager.deleteComment(activity1.getId(), tobeDeletedComment2.getId());
 
-      List<Activity> afterDeletedCommentList = activityManager.getComments(activity1);
+      List<ExoSocialActivity> afterDeletedCommentList = activityManager.getComments(activity1);
 
       assertEquals("afterDeletedCommentList.size() must return: " + (numberOfComments - 2), numberOfComments - 2, afterDeletedCommentList.size());
 
@@ -279,13 +278,13 @@ public class ActivityManagerTest extends AbstractCoreTest {
   * {@link ActivityManager#getActivities(Identity)}
   * {@link ActivityManager#getActivities(Identity, long, long)}
   */
- public void testGetActivities() {
+ public void testGetActivities() throws ActivityStorageException {
    populateActivityMass(rootIdentity, 30);
-   List<Activity> activities = activityManager.getActivities(rootIdentity);
+   List<ExoSocialActivity> activities = activityManager.getActivities(rootIdentity);
    assertNotNull("activities must not be null", activities);
    assertEquals(20, activities.size());
 
-   List<Activity> allActivities = activityManager.getActivities(rootIdentity, 0, 30);
+   List<ExoSocialActivity> allActivities = activityManager.getActivities(rootIdentity, 0, 30);
 
    assertEquals(30, allActivities.size());
 
@@ -313,20 +312,20 @@ public class ActivityManagerTest extends AbstractCoreTest {
   /**
    *
    */
-  public void testGetActivitiesByPagingWithoutCreatingComments() {
+  public void testGetActivitiesByPagingWithoutCreatingComments() throws ActivityStorageException {
     final int totalActivityCount = 9;
     final int retrievedCount = 7;
 
     for (int i = 0; i < totalActivityCount; i++) {
       //root save on john's stream
-      Activity activity = new Activity();
+      ExoSocialActivity activity = new ExoSocialActivityImpl();;
       activity.setTitle("blabla");
       activity.setUserId(rootIdentity.getId());
 
       activityManager.saveActivity(johnIdentity, activity);
     }
 
-    List<Activity> activities = activityManager.getActivities(johnIdentity, 0, retrievedCount);
+    List<ExoSocialActivity> activities = activityManager.getActivities(johnIdentity, 0, retrievedCount);
     assertEquals(retrievedCount, activities.size());
 
     tearDownActivityList.addAll(activityManager.getActivities(johnIdentity, 0, totalActivityCount));
@@ -340,7 +339,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     activityManager.addProcessor(new FakeProcessor(2));
     activityManager.addProcessor(new FakeProcessor(1));
 
-    Activity activity = new Activity();
+    ExoSocialActivity activity = new ExoSocialActivityImpl();;
     activity.setTitle("Hello");
     activityManager.processActivitiy(activity);
     //just verify that we run in priority order
@@ -355,14 +354,14 @@ public class ActivityManagerTest extends AbstractCoreTest {
     }
 
     @Override
-    public void processActivity(Activity activity) {
+    public void processActivity(ExoSocialActivity activity) {
       activity.setTitle(activity.getTitle() + "-" + priority);
     }
   }
 
   private void populateActivityMass(Identity user, int number) {
     for (int i = 0; i < number; i++) {
-      Activity activity = new Activity();
+      ExoSocialActivity activity = new ExoSocialActivityImpl();;
       activity.setTitle("title " + i);
       activity.setUserId(user.getId());
       try {

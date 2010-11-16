@@ -24,7 +24,8 @@ import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.portal.webui.util.SessionProviderFactory;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -203,7 +204,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     String remoteUser = requestContext.getRemoteUser();
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
 
-    Activity activity = new Activity(userIdentity.getId(),
+    ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                      PeopleService.PEOPLE_APP_ID,
                                      jsonData,
                                      null);
@@ -232,11 +233,11 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
     IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                           space.getId(),
+                                                           space.getName(),
                                                            false);
     String remoteUser = requestContext.getRemoteUser();
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
-    Activity activity = new Activity(userIdentity.getId(),
+    ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                  SpaceService.SPACES_APP_ID,
                                  jsonData,
                                  null);

@@ -24,7 +24,7 @@ import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 
@@ -51,7 +51,7 @@ public class UIActivityFactory extends BaseComponentPlugin {
     }
   }
 
-  public BaseUIActivity addChild(Activity activity, UIContainer parent) throws Exception {
+  public BaseUIActivity addChild(ExoSocialActivity activity, UIContainer parent) throws Exception {
     final String type = activity.getType();
     if(type!=null){
       return buildActivity(activity, parent, type);
@@ -60,7 +60,7 @@ public class UIActivityFactory extends BaseComponentPlugin {
     }
   }
 
-  private BaseUIActivity buildActivity(Activity activity, UIContainer parent, String type) throws Exception {
+  private BaseUIActivity buildActivity(ExoSocialActivity activity, UIContainer parent, String type) throws Exception {
     extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
     UIExtension activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), type);
     if (activityExtension == null) {

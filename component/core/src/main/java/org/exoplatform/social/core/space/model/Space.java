@@ -19,6 +19,7 @@ package org.exoplatform.social.core.space.model;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.space.SpaceUtils;
 
 
 // TODO: Auto-generated Javadoc
@@ -33,8 +34,8 @@ public class Space {
   /** The id. */
   private String id;
   
-  /** The name. */
-  private String name;
+  /** The display name. */
+  private String displayName;
   
   /** The group id. */
   private String groupId;
@@ -137,10 +138,10 @@ public class Space {
   /**
    * Sets the name.
    * 
-   * @param name the new name
+   * @param spaceDisplayName the space Display Name
    */
-  public void setName(String name) {
-    this.name = name;
+  public void setDisplayName(String spaceDisplayName) {
+    displayName = spaceDisplayName;
   }
   
   /**
@@ -148,8 +149,17 @@ public class Space {
    * 
    * @return the name
    */
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  /**
+   * Gets space name id for used as space url; space identity remote id
+   * 
+   * @return
+   */
   public String getName() {
-    return name;
+    return SpaceUtils.cleanString(displayName);
   }
   
   /**
@@ -342,7 +352,7 @@ public class Space {
   }
   
   public String toString() {
-    return name + " (" + groupId + ")";
+    return displayName + " (" + groupId + ")";
   }
   
   /**

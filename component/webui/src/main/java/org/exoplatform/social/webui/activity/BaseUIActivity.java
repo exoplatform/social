@@ -26,11 +26,11 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -40,6 +40,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
@@ -76,8 +77,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   private String image;
-  private Activity activity;
-  private List<Activity> comments;
+  private ExoSocialActivity activity;
+  private List<ExoSocialActivity> comments;
   private String[] identityLikes;
   private ActivityManager activityManager;
   private IdentityManager identityManager;
@@ -96,13 +97,17 @@ public class BaseUIActivity extends UIForm {
     setSubmitAction("return false;");
   }
 
-  public void setActivity(Activity activity) {
+  public void setActivity(ExoSocialActivity activity) {
     this.activity = activity;
     addChild(new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null));
-    refresh();
+    try {
+      refresh();
+    } catch (ActivityStorageException e) {
+      LOG.error(e.getMessage(), e);
+    }
   }
 
-  public Activity getActivity() {
+  public ExoSocialActivity getActivity() {
     return activity;
   }
 
@@ -176,11 +181,11 @@ public class BaseUIActivity extends UIForm {
    * if available, returns max LATEST_COMMENTS_SIZE latest comments.
    * @return
    */
-  public List<Activity> getComments() {
+  public List<ExoSocialActivity> getComments() {
     if (commentListStatus == CommentStatus.ALL) {
       return comments;
     } else if (commentListStatus == CommentStatus.NONE) {
-      return new ArrayList<Activity>();
+      return new ArrayList<ExoSocialActivity>();
     } else {
       int commentsSize = comments.size();
       if (commentsSize > LATEST_COMMENTS_SIZE) {
@@ -190,7 +195,7 @@ public class BaseUIActivity extends UIForm {
     return comments;
   }
 
-  public List<Activity> getAllComments() {
+  public List<ExoSocialActivity> getAllComments() {
     return comments;
   }
 
@@ -301,7 +306,7 @@ public class BaseUIActivity extends UIForm {
     activityManager = getActivityManager();
     identityManager = getIdentityManager();
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
-    Activity comment = new Activity(userIdentity.getId(), SpaceService.SPACES_APP_ID, message, null);
+    ExoSocialActivity comment = new ExoSocialActivityImpl(userIdentity.getId(), SpaceService.SPACES_APP_ID, message, null);
     activityManager.saveComment(getActivity(), comment);
     comments = activityManager.getComments(getActivity());
     setCommentListStatus(CommentStatus.ALL);
@@ -333,7 +338,7 @@ public class BaseUIActivity extends UIForm {
   /**
    * refresh, regets all like, comments of this activity
    */
-  protected void refresh() {
+  protected void refresh() throws ActivityStorageException {
     activityManager = getActivityManager();
     activity = activityManager.getActivity(activity.getId());
     if (activity == null) { //not found -> should render nothing

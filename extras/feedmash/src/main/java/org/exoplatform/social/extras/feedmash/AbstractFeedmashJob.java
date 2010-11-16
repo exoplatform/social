@@ -24,7 +24,8 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -142,7 +143,7 @@ public abstract class AbstractFeedmashJob implements Job {
    */
   protected void publishActivity(String message, Identity from, Identity to) throws Exception {
 
-    Activity activity = new Activity();
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("");
     activity.setBody(message);
     activity.setAppId("feedmash:" + getClass());

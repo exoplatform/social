@@ -326,7 +326,7 @@ public class IdentityStorage {
    * @return the identity by remote id
    */
   public Identity findIdentity(String providerId, String remoteId) {
-    Session session = sessionManager.openSession();
+    Session session = sessionManager.getOrOpenSession();
     Node identityHomeNode = getIdentityServiceHome(session);
     Identity identity = null;
     try {
@@ -384,7 +384,7 @@ public class IdentityStorage {
    * @throws Exception the exception
    */
   public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFilter profileFilter, long offset, long limit) throws Exception {
-    Session session = sessionManager.openSession();
+    Session session = sessionManager.getOrOpenSession();
     Node profileHomeNode = getProfileServiceHome(session);
 
     List<Identity> listIdentity = new ArrayList<Identity>();

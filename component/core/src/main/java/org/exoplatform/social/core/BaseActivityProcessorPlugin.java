@@ -20,11 +20,11 @@ import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 /**
  * A base plugin to configure {@link ActivityProcessor}s for
- * {@link ActivityManager}.
+ * {@link org.exoplatform.social.core.manager.ActivityManager}.
  *
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
  *         Lamarque</a>
@@ -62,5 +62,5 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin im
     this.priority = priority;
   }
 
-  public abstract void processActivity(Activity activity);
+  public abstract void processActivity(ExoSocialActivity activity);
 }

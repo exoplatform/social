@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 /**
  * DefaultUIActivityBuilder.java
@@ -27,6 +27,6 @@ import org.exoplatform.social.core.activity.model.Activity;
  */
 public class DefaultUIActivityBuilder extends BaseUIActivityBuilder {
   @Override
-  protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
+  protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
   }
 }

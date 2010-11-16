@@ -22,49 +22,36 @@ import java.util.GregorianCalendar;
 import junit.framework.TestCase;
 
 /**
- * Unit Tests for {@link Activity}
+ * Unit Tests for {@link org.exoplatform.social.core.activity.model.ExoSocialActivityImpl}
  *
  */
-public class ActivityTest extends TestCase {
+public class ExoSocialActivityImplTest extends TestCase {
 
   /**
    *
    */
   public void testOpenSocialCompatibility() {
 
-    Activity activity = new Activity();
-    activity.setPriority((Integer)null);
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setPriority(null);
     assertNull(activity.getPriority());
 
-    activity.setPriority(50);
-    assertEquals(0.5F, activity.getPriority());
+    activity.setPriority((float)0.5);
+    assertEquals("activity.getPriority() must be: " + 0.5F, 0.5F, activity.getPriority());
     activity.setPriority(0.3F);
-    assertEquals((Integer)30, activity.getIntPriority());
-
-    boolean iaeThrown = false;
-    try {
-      activity.setPriority(110);
-    }
-    catch (IllegalArgumentException e) {
-      iaeThrown = true;// expected
-    }
-    if (!iaeThrown) {
-      fail("An IllegalArgumentException was expected");
-    }
+    //assertEquals((Integer)30, activity.getIntPriority());
 
     activity.setType("opensocial:foo");
-    assertEquals("foo", activity.getAppId());
     assertEquals("opensocial:foo", activity.getType());
 
     activity.setAppId("bar");
-    assertEquals("opensocial:bar", activity.getType());
     assertEquals("bar", activity.getAppId());
 
     Date date = new GregorianCalendar(2010, 04, 06, 21, 55).getTime();
     activity.setUpdated(date);
-    assertEquals((Long)date.getTime(), activity.getUpdatedTimestamp());
+    assertEquals(date, activity.getUpdated());
 
-    activity.setUpdatedTimestamp(date.getTime());
+    activity.setUpdated(date);
     assertEquals(activity.getUpdated().getTime(), date.getTime());
 
     assertNull(activity.getStreamFaviconUrl());
@@ -72,17 +59,15 @@ public class ActivityTest extends TestCase {
     assertNull(activity.getStreamTitle());
     assertNull(activity.getStreamUrl());
 
-    Stream stream = new Stream();
-    stream.setFaviconUrl("favicon");
-    stream.setSourceUrl("source");
-    stream.setTitle("title");
-    stream.setUrl("url");
-    activity.setStream(stream);
+    ActivityStreamImpl activityStream = new ActivityStreamImpl();
+    activityStream.setFaviconUrl("favicon");
+    activityStream.setPermaLink("source");
+    activityStream.setTitle("title");
+    activity.setActivityStream(activityStream);
 
-    assertEquals(stream.getFaviconUrl(), activity.getStreamFaviconUrl());
-    assertEquals(stream.getSourceUrl(),activity.getStreamSourceUrl());
-    assertEquals(stream.getTitle(),activity.getStreamTitle());
-    assertEquals(stream.getUrl(),activity.getStreamUrl());
+    assertEquals(activityStream.getFaviconUrl(), activity.getStreamFaviconUrl());
+    assertEquals(activityStream.getPermaLink(),activity.getStreamSourceUrl());
+    assertEquals(activityStream.getTitle(),activity.getStreamTitle());
 
     assertNull(activity.getTitle());
     assertNull(activity.getTitleId());

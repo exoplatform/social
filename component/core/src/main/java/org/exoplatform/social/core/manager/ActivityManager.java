@@ -19,6 +19,7 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +36,8 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.activity.model.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -43,12 +45,13 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorage;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 
 /**
  * This class represents an Activity Manager, also can configure as service in
  * social platform.
  *
- * @see org.exoplatform.social.core.activity.model.Activity
+ * @see org.exoplatform.social.core.activity.model.ExoSocialActivity
  * @see ActivityStorage
  * @see IdentityManager
  */
@@ -71,13 +74,13 @@ public class ActivityManager {
   private SpaceService spaceService;
 
   /** cache each activity by its id */
-  private ExoCache<String, Activity> activityCache;
+  private ExoCache<String, ExoSocialActivity> activityCache;
 
   /** cache list of activities by identityId and its segment */
-  private ExoCache<String, Map<Segment, List<Activity>>> activityListCache;
+  private ExoCache<String, Map<Segment, List<ExoSocialActivity>>> activityListCache;
 
   /** cache comments of an activity */
-  private ExoCache<String, List<Activity>> commentsCache;
+  private ExoCache<String, List<ExoSocialActivity>> commentsCache;
 
   /**
    * Instantiates a new activity manager.
@@ -102,7 +105,7 @@ public class ActivityManager {
    * @param activity the activity to save
    * @return the activity saved
    */
-  public Activity saveActivity(Identity owner, Activity activity) {
+  public ExoSocialActivity saveActivity(Identity owner, ExoSocialActivity activity) throws ActivityStorageException {
     // TODO: check the security
     Validate.notNull(owner, "owner must not be null.");
     Validate.notNull(owner.getId(), "owner.getId() must not be null");
@@ -111,7 +114,7 @@ public class ActivityManager {
     if (activity.getId() == null) {
       activity.setPostedTime(now);
     }
-    activity.setUpdatedTimestamp(now);
+    activity.setUpdated(new Date(now));
 
     // if not given, the activity is from the stream owner
     if (activity.getUserId() == null) {
@@ -133,8 +136,8 @@ public class ActivityManager {
    * @param activityId the activity id
    * @return the activity
    */
-  public Activity getActivity(String activityId) {
-    Activity cachedActivity = activityCache.get(activityId);
+  public ExoSocialActivity getActivity(String activityId) throws ActivityStorageException {
+    ExoSocialActivity cachedActivity = activityCache.get(activityId);
     if (cachedActivity == null) {
       cachedActivity = storage.getActivity(activityId);
       if (cachedActivity != null) {
@@ -150,8 +153,8 @@ public class ActivityManager {
    *
    * @param activityId the activity id
    */
-  public void deleteActivity(String activityId) {
-    Activity activity = storage.getActivity(activityId);
+  public void deleteActivity(String activityId) throws ActivityStorageException {
+    ExoSocialActivity activity = storage.getActivity(activityId);
     if (activity != null) {
       Identity streamOwner = identityManager.getIdentity(activity.getStreamOwner(), false);
       storage.deleteActivity(activityId);
@@ -170,7 +173,7 @@ public class ActivityManager {
    * @param activity
    * @since 1.1.1
    */
-  public void deleteActivity(Activity activity) {
+  public void deleteActivity(ExoSocialActivity activity) throws ActivityStorageException {
     Validate.notNull("activity.getId() must not be null", activity.getId());
     deleteActivity(activity.getId());
   }
@@ -181,7 +184,7 @@ public class ActivityManager {
    * @param activityId
    * @param commentId
    */
-  public void deleteComment(String activityId, String commentId) {
+  public void deleteComment(String activityId, String commentId) throws ActivityStorageException {
     storage.deleteComment(activityId, commentId);
     activityCache.remove(activityId);
     commentsCache.remove(activityId);
@@ -194,7 +197,7 @@ public class ActivityManager {
    * @return the activities
    * @see #getActivities(Identity, long, long)
    */
-  public List<Activity> getActivities(Identity identity) {
+  public List<ExoSocialActivity> getActivities(Identity identity) throws ActivityStorageException {
     return storage.getActivities(identity, 0, 20);
   }
 
@@ -206,13 +209,13 @@ public class ActivityManager {
    * @param limit
    * @return the activities
    */
-  public List<Activity> getActivities(Identity identity, long start, long limit) {
+  public List<ExoSocialActivity> getActivities(Identity identity, long start, long limit) throws ActivityStorageException {
     Segment segment = new Segment(start, limit);
-    Map<Segment, List<Activity>> segments = activityListCache.get(identity.getId());
+    Map<Segment, List<ExoSocialActivity>> segments = activityListCache.get(identity.getId());
     if (segments == null || segments.get(segment) == null) {
-      segments = new HashMap<Segment, List<Activity>>();
-      List<Activity> activityList = storage.getActivities(identity, start, limit);
-      for (Activity activity : activityList) {
+      segments = new HashMap<Segment, List<ExoSocialActivity>>();
+      List<ExoSocialActivity> activityList = storage.getActivities(identity, start, limit);
+      for (ExoSocialActivity activity : activityList) {
         processActivitiy(activity);
       }
       segments.put(segment, activityList);
@@ -230,20 +233,20 @@ public class ActivityManager {
    * @since 1.1.1
    */
   //TODO Find way to improve its performance
-  public List<Activity> getActivitiesOfConnections(Identity ownerIdentity) {
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity) throws ActivityStorageException {
     List<Identity> connectionList = null;
     try {
       connectionList = identityManager.getConnections(ownerIdentity);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
-    List<Activity> activityList = new ArrayList<Activity>();
+    List<ExoSocialActivity> activityList = new ArrayList<ExoSocialActivity>();
     String identityId;
     for (Identity identity : connectionList) {
       //default 20 activities each identity
-      List<Activity> tempActivityList = getActivities(identity);
+      List<ExoSocialActivity> tempActivityList = getActivities(identity);
       identityId = identity.getId();
-      for (Activity activity : tempActivityList) {
+      for (ExoSocialActivity activity : tempActivityList) {
         if (activity.getUserId().equals(identityId)) {
           activityList.add(activity);
         }
@@ -262,9 +265,9 @@ public class ActivityManager {
    * @return list of activities
    * @since 1.1.1
    */
-  public List<Activity> getActivitiesOfUserSpaces(Identity ownerIdentity) {
+  public List<ExoSocialActivity> getActivitiesOfUserSpaces(Identity ownerIdentity) {
     spaceService = getSpaceService();
-    List<Activity> activityList = new ArrayList<Activity>();
+    List<ExoSocialActivity> activityList = new ArrayList<ExoSocialActivity>();
     List<Space> accessibleSpaceList = null;
     try {
       accessibleSpaceList = spaceService.getAccessibleSpaces(ownerIdentity.getRemoteId());
@@ -272,7 +275,7 @@ public class ActivityManager {
       LOG.warn(e1.getMessage(), e1);
     }
     for (Space space : accessibleSpaceList) {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId());
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName());
       try {
         activityList.addAll(getActivities(spaceIdentity));
       } catch (Exception e) {
@@ -293,9 +296,8 @@ public class ActivityManager {
    * @return all related activities of identity such as his activities, his
    *         connections's activities, his spaces's activities
    */
-  public List<Activity> getActivityFeed(Identity identity)
-  {
-    List<Activity> activityList = new ArrayList<Activity>();
+  public List<ExoSocialActivity> getActivityFeed(Identity identity) throws ActivityStorageException {
+    List<ExoSocialActivity> activityList = new ArrayList<ExoSocialActivity>();
     activityList.addAll(getActivitiesOfConnections(identity));
     activityList.addAll(getActivitiesOfUserSpaces(identity));
     activityList.addAll(getActivities(identity));
@@ -309,10 +311,10 @@ public class ActivityManager {
    *
    * @param activity the activity to save
    * @return the activity
-   * @see #saveActivity(Identity, Activity)
-   * @see Activity#getUserId()
+   * @see #saveActivity(Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity)
+   * @see org.exoplatform.social.core.activity.model.ExoSocialActivity#getUserId()
    */
-  public Activity saveActivity(Activity activity) {
+  public ExoSocialActivity saveActivity(ExoSocialActivity activity) throws ActivityStorageException {
     Validate.notNull(activity.getUserId(), "activity.getUserId() must not be null.");
     Identity owner = identityManager.getIdentity(activity.getUserId());
     return saveActivity(owner, activity);
@@ -325,7 +327,7 @@ public class ActivityManager {
    * @param activity
    * @param comment
    */
-  public void saveComment(Activity activity, Activity comment) {
+  public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException {
     storage.saveComment(activity, comment);
     activityCache.remove(activity.getId());
     commentsCache.remove(activity.getId());
@@ -337,7 +339,7 @@ public class ActivityManager {
    * @param activity
    * @param identity
    */
-  public void saveLike(Activity activity, Identity identity) {
+  public void saveLike(ExoSocialActivity activity, Identity identity) throws ActivityStorageException {
     String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       LOG.warn("activity is already liked by identity: " + identity);
@@ -355,7 +357,7 @@ public class ActivityManager {
    * @param activity
    * @param identity user that unlikes the activity
    */
-  public void removeLike(Activity activity, Identity identity) {
+  public void removeLike(ExoSocialActivity activity, Identity identity) throws ActivityStorageException {
     String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());
@@ -373,13 +375,13 @@ public class ActivityManager {
    * @param activity
    * @return commentList
    */
-  public List<Activity> getComments(Activity activity) {
+  public List<ExoSocialActivity> getComments(ExoSocialActivity activity) throws ActivityStorageException {
     String activityId = activity.getId();
-    List<Activity> cachedComments = commentsCache.get(activityId);
+    List<ExoSocialActivity> cachedComments = commentsCache.get(activityId);
     if (cachedComments == null) {
       //reload activity to make sure to have the most update activity
       activity = getActivity(activityId);
-      cachedComments = new ArrayList<Activity>();
+      cachedComments = new ArrayList<ExoSocialActivity>();
       String rawCommentIds = activity.getReplyToId();
       // rawCommentIds can be: null || ,a,b,c,d
       if (rawCommentIds != null) {
@@ -387,7 +389,7 @@ public class ActivityManager {
         commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
 
         for (String commentId : commentIds) {
-          Activity comment = storage.getActivity(commentId);
+          ExoSocialActivity comment = storage.getActivity(commentId);
           processActivitiy(comment);
           cachedComments.add(comment);
         }
@@ -402,15 +404,30 @@ public class ActivityManager {
   /**
    * Records an activity.
    *
+   * @param owner
+   * @param type
+   * @param title
+   * @return
+   * @throws ActivityStorageException
+   * @since 1.2.0-GA
+   */
+  public ExoSocialActivity recordActivity(Identity owner, String type, String title) throws ActivityStorageException {
+    return saveActivity(owner, new ExoSocialActivityImpl(owner.getId(), type, title));
+  }
+
+
+  /**
+   * Records an activity.
+   *
    * @param owner the owner of the target stream for this activity
    * @param type the type of activity which will be used to use custom ui for rendering
    * @param title the title
    * @param body the body
    * @return the stored activity
    */
-  public Activity recordActivity(Identity owner, String type, String title, String body) {
+  public ExoSocialActivity recordActivity(Identity owner, String type, String title, String body) throws ActivityStorageException {
     String userId = owner.getId();
-    Activity activity = new Activity(userId, type, title, body);
+    ExoSocialActivity activity = new ExoSocialActivityImpl(userId, type, title, body);
     return saveActivity(owner, activity);
   }
 
@@ -421,9 +438,9 @@ public class ActivityManager {
    * @param activity
    * @return the stored activity
    * @throws Exception
-   * @deprecated use {@link #saveActivity(Identity, Activity)} instead. Will be removed by 1.2.x
+   * @deprecated use {@link #saveActivity(Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity)} instead. Will be removed by 1.2.x
    */
-  public Activity recordActivity(Identity owner, Activity activity) throws Exception {
+  public ExoSocialActivity recordActivity(Identity owner, ExoSocialActivity activity) throws Exception {
     return saveActivity(owner, activity);
   }
   /**
@@ -445,29 +462,12 @@ public class ActivityManager {
 
 
   /**
-   * Comparator used to order the processors by priority
-   * @return
-   */
-  private static Comparator<ActivityProcessor> processorComparator() {
-    return new Comparator<ActivityProcessor>() {
-
-      public int compare(ActivityProcessor p1, ActivityProcessor p2) {
-        if (p1 == null || p1 == null) {
-          throw new IllegalArgumentException("Cannot compare null ActivityProcessor");
-        }
-        return p1.getPriority() - p2.getPriority();
-      }
-    };
-  }
-
-
-  /**
    * Gets the number of activity from a stream owner.
    *
    * @param owner
    * @return the number
    */
-  public int getActivitiesCount(Identity owner) {
+  public int getActivitiesCount(Identity owner) throws ActivityStorageException {
     return storage.getActivitiesCount(owner);
   }
 
@@ -476,7 +476,7 @@ public class ActivityManager {
    *
    * @param activity
    */
-  public void processActivitiy(Activity activity) {
+  public void processActivitiy(ExoSocialActivity activity) {
     Iterator<ActivityProcessor> it = processors.iterator();
     while (it.hasNext()) {
       try {
@@ -486,6 +486,23 @@ public class ActivityManager {
       }
     }
   }
+
+  /**
+   * Comparator used to order the processors by priority
+   * @return
+   */
+  private static Comparator<ActivityProcessor> processorComparator() {
+    return new Comparator<ActivityProcessor>() {
+
+      public int compare(ActivityProcessor p1, ActivityProcessor p2) {
+        if (p1 == null || p2 == null) {
+          throw new IllegalArgumentException("Cannot compare null ActivityProcessor");
+        }
+        return p1.getPriority() - p2.getPriority();
+      }
+    };
+  }
+
 
   /**
    * Gets spaceService

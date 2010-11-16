@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,19 +32,26 @@ import javax.jcr.Value;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
+import org.exoplatform.social.common.jcr.NodeProperty;
+import org.exoplatform.social.common.jcr.NodeType;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ActivityStream;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.service.LinkProvider;
 
 /**
  * The Class JCRStorage represents storage for activity manager.
- * {@link ActivityManager} is the access point for activity service, do not access
+ * {@link org.exoplatform.social.core.manager.ActivityManager} is the access point for activity service, do not access
  * {@link ActivityStorage} directly though your application.
  *
  * @see org.exoplatform.social.core.manager.ActivityManager
@@ -55,58 +63,7 @@ public class ActivityStorage {
   /** The Constant PUBLISHED_NODE. */
   private static final String PUBLISHED_NODE = "published".intern();
 
-  /** The Constant NT_UNSTRUCTURED. */
-  private static final String NT_UNSTRUCTURED = "nt:unstructured".intern();
-
-  /** The Constant ACTIVITY_NODETYPE. */
-  private static final String ACTIVITY_NODETYPE =  "exo:activity".intern();
-
-  /** The Constant BODY. */
-  private static final String BODY =  "exo:body".intern();
-
-  /** The Constant BODY. */
-  private static final String BODY_TEMPLATE =  "exo:bodyTemplate".intern();
-
-  /** The Constant EXTERNAL_ID. */
-  private static final String EXTERNAL_ID =  "exo:externalId".intern();
-
-  /** The Constant ID. */
-  private static final String ID =  "exo:id".intern();
-
-  /** The Constant UPDATED. */
-  private static final String UPDATED_TIMESTAMP =  "exo:updatedTimestamp".intern();
-
-  /** The Constant POSTED_TIME. */
-  private static final String POSTED_TIME =  "exo:postedTime".intern();
-
-  /** The Constant PRIORITY. */
-  private static final String PRIORITY =  "exo:priority".intern();
-
-  /** The Constant TITLE. */
-  private static final String TITLE =  "exo:title".intern();
-
-  /** The Constant TITLE_TEMPLATE. */
-  private static final String TITLE_TEMPLATE =  "exo:titleTemplate".intern();
-
-  /** The Constant URL. */
-  private static final String URL =  "exo:url".intern();
-
-  /** The Constant USER_ID. */
-  private static final String USER_ID =  "exo:userId".intern();
-
-  /** The Constant TYPE. */
-  private static final String TYPE =  "exo:type".intern();
-
-  private static final String REPLY_TO_ID = "exo:replyToId".intern();
-
-  /** The Constant HIDDEN. */
-  private static final String HIDDEN =  "exo:hidden".intern();
-
-  /** The Constant LIKE_IDENTITY_IDS. */
-  private static final String LIKE_IDENTITY_IDS = "exo:likeIdentityIds".intern();
-
-  /** The Constant LIKE_IDENTITY_IDS. */
-  private static final String PARAMS = "exo:params";
+  private static final String COMMENT_IDS_DELIMITER = ",";
 
   /** The data location. */
   private SocialDataLocation dataLocation;
@@ -119,10 +76,17 @@ public class ActivityStorage {
 
   private IdentityManager identityManager;
 
+  private LinkProvider linkProvider;
+
+  /**
+   * Hack for unit test to work
+   */
+  private String portalOwner = "classic";
+
   /**
    * Instantiates a new JCR storage base on SocialDataLocation
    * @param dataLocation the data location.
-   * @param identityManager
+   * @param identityManager the identity manager instance
    */
   public ActivityStorage(SocialDataLocation dataLocation, IdentityManager identityManager) {
     this.dataLocation = dataLocation;
@@ -131,82 +95,48 @@ public class ActivityStorage {
   }
 
   /**
-   * Saves an activity
-   *
-   * @param owner
-   * @param activity
-   * @deprecated use {@link #saveActivity(Identity, Activity)} instead.
-   */
-  //TODO to be removed for 1.2.x
-  public void save(Identity owner, Activity activity) {
-    saveActivity(owner, activity);
-  }
-  /**
-   * Saves an activity into a stream
-   *
-   * Note that the field {@link Activity#setUserId(String)} should be the id of an identity {@link Identity#getId()}
-   *
-   * @param owner owner of the stream where this activity is bound. Usually a user or space identity
+   * Saves an activity into a stream.
+   * Note that the field {@link org.exoplatform.social.core.activity.model.ExoSocialActivity#setUserId(String)}
+   * should be the id of an identity {@link Identity#getId()}
+   * @param owner owner of the stream where this activity is bound.
+   *              Usually a user or space identity
    * @param activity the activity to save
-   * @return the activity
+   * @return stored activity
+   * @throws ActivityStorageException activity storage exception with type: ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY
    * @since 1.1.1
    */
   //TODO hoatle: we force title is mandatory; the spec says that if title is not
   // available, titleId must be available. We haven't processed titleId yet, so leave title is mandatory
-  public Activity saveActivity(Identity owner, Activity activity) {
-    Validate.notNull(owner, "owner must not be null.");
-    Validate.notNull(activity, "activity must not be null.");
-    Validate.notNull(activity.getUpdated(), "Activity.getUpdated() must not be null.");
-    Validate.notNull(activity.getPostedTime(), "Activity.getPostedTime() must not be null.");
-    Validate.notNull(activity.getTitle(), "Activity.getTitle() must not be null.");
+  public ExoSocialActivity saveActivity(Identity owner, ExoSocialActivity activity) throws ActivityStorageException {
+    try {
+      Validate.notNull(owner, "owner must not be null.");
+      Validate.notNull(activity, "activity must not be null.");
+      Validate.notNull(activity.getUpdated(), "Activity.getUpdated() must not be null.");
+      Validate.notNull(activity.getPostedTime(), "Activity.getPostedTime() must not be null.");
+      Validate.notNull(activity.getTitle(), "Activity.getTitle() must not be null.");
+    } catch (IllegalArgumentException e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.ILLEGAL_ARGUMENTS, e.getMessage(), e);
+    }
+
     if (activity.getUserId() == null) {
       activity.setUserId(owner.getId());
     }
-    Node activityHomeNode = getPublishedActivityServiceHome(owner);
 
     try {
+      Node activityHomeNode = getPublishedActivityServiceHome(owner);
       Node activityNode;
 
       Session session = sessionManager.getOrOpenSession();
       if (activity.getId() == null) {
-        activityNode = activityHomeNode.addNode(ACTIVITY_NODETYPE, ACTIVITY_NODETYPE);
-        activityNode.addMixin("mix:referenceable");
+        activityNode = activityHomeNode.addNode(NodeType.NT_ACTIVITY, NodeType.NT_ACTIVITY);
+        activityNode.addMixin(NodeType.MIX_REFERENCEABLE);
       } else {
         activityNode = session.getNodeByUUID(activity.getId());
       }
 
       setStreamInfo(activity, activityNode);
 
-      activityNode.setProperty(TITLE, activity.getTitle());
-      if (activity.getTitleId() != null) {
-        activityNode.setProperty(TITLE_TEMPLATE, activity.getTitleId());
-      }
-      activityNode.setProperty(UPDATED_TIMESTAMP, activity.getUpdatedTimestamp());
-      activityNode.setProperty(POSTED_TIME, activity.getPostedTime());
-
-      if(activity.getBody() != null)
-        activityNode.setProperty(BODY, activity.getBody());
-      if(activity.getExternalId() != null)
-        activityNode.setProperty(EXTERNAL_ID, activity.getExternalId());
-
-      if(activity.getPriority() != null)
-        activityNode.setProperty(PRIORITY, activity.getPriority());
-      if(activity.getTitle() != null)
-        activityNode.setProperty(TITLE, activity.getTitle());
-      if(activity.getUserId() != null)
-        activityNode.setProperty(USER_ID, activity.getUserId());
-      if(activity.getType() != null)
-        activityNode.setProperty(TYPE, activity.getType());
-      if (activity.getReplyToId() != null)
-        activityNode.setProperty(REPLY_TO_ID, activity.getReplyToId());
-      if(activity.getUrl() != null) {
-        activityNode.setProperty(URL, activity.getUrl());
-      }
-      activityNode.setProperty(LIKE_IDENTITY_IDS, activity.getLikeIdentityIds());
-      activityNode.setProperty(HIDDEN, activity.isHidden());
-      activityNode.setProperty(TITLE_TEMPLATE, activity.getTitleId());
-      activityNode.setProperty(BODY_TEMPLATE, activity.getBodyId());
-      activityNode.setProperty(PARAMS, mapToArray(activity.getTemplateParams()));
+      setActivityNodeFromActivity(activityNode, activity);
 
       if (activity.getId() == null) {
         activityHomeNode.save();
@@ -214,12 +144,10 @@ public class ActivityStorage {
       } else {
         activityNode.save();
       }
-      LOG.info("activity for owner " + owner + " by " + activity.getUserId() + " stored.");
     } catch (Exception e) {
-      LOG.warn("Failed to save activity", e);
-      return null;
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, e.getMessage(), e);
     } finally {
-      sessionManager.closeSession();
+      sessionManager.closeSession(true);
     }
     return activity;
   }
@@ -230,22 +158,21 @@ public class ActivityStorage {
    *
    * @param activityId the activity id
    */
-  public void deleteActivity(String activityId) {
-    deleteActivityComments(activityId);
-    Session session = sessionManager.getOrOpenSession();
+  public void deleteActivity(String activityId) throws ActivityStorageException {
     try {
+      //TODO check if this is a comment
+      deleteActivityComments(activityId);
+      Session session = sessionManager.getOrOpenSession();
       Node activityNode = session.getNodeByUUID(activityId);
       if (activityNode != null) {
         activityNode.remove();
-        session.save();
-        LOG.info("activity and its comments have been deleted, activityId: " + activityId);
       } else {
-        LOG.info("Failed to delete activityId: " + activityId + ": not found");
+        throw new Exception("Failed to delete activityId: " + activityId + ": not found");
       }
-    } catch(Exception ex) {
-      LOG.error("Failed to delete activity", ex);
+    } catch(Exception e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_DELETE_ACTIVITY, e.getMessage(), e);
     } finally {
-      sessionManager.closeSession();
+      sessionManager.closeSession(true);
     }
   }
 
@@ -255,9 +182,9 @@ public class ActivityStorage {
    * @param storedActivity
    * @since 1.1.1
    */
-  public void deleteActivity(Activity storedActivity) {
+  public void deleteActivity(ExoSocialActivity storedActivity) throws ActivityStorageException {
     if (storedActivity.getId() == null) {
-      LOG.warn("failed to delete this actvitiy. It is not stored in JCR yet.");
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_DELETE_ACTIVITY, "Failed to delete this activity. It is not stored in JCR yet.");
     }
     deleteActivity(storedActivity.getId());
   }
@@ -270,26 +197,36 @@ public class ActivityStorage {
    * @param comment
    * @since 1.1.1
    */
-  public void saveComment(Activity activity, Activity comment) {
-    Validate.notNull(activity, "activity must not be null.");
-    Validate.notNull(comment.getUserId(), "comment.getUserId() must not be null.");
-    Validate.notNull(comment.getTitle(), "comment.getTitle() must not be null.");
+  public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException {
+    try {
+      Validate.notNull(activity, "activity must not be null.");
+      Validate.notNull(comment.getUserId(), "comment.getUserId() must not be null.");
+      Validate.notNull(comment.getTitle(), "comment.getTitle() must not be null.");
+    } catch (IllegalArgumentException e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.ILLEGAL_ARGUMENTS, e.getMessage(), e);
+    }
+    long currentTimeMillis = System.currentTimeMillis();
     if (comment.getId() != null) { // allows users to edit its comment?
-      comment.setUpdatedTimestamp(System.currentTimeMillis());
+      comment.setUpdated(new Date(currentTimeMillis));
     } else {
-      comment.setPostedTime(System.currentTimeMillis());
-      comment.setUpdatedTimestamp(System.currentTimeMillis());
+      comment.setPostedTime(currentTimeMillis);
+      comment.setUpdated(new Date(currentTimeMillis));
     }
-    comment.setReplyToId(Activity.IS_COMMENT);
+    comment.setReplyToId(ExoSocialActivity.IS_COMMENT);
     Identity ownerStream = identityManager.getIdentity(activity.getUserId());
-    comment = saveActivity(ownerStream, comment);
-    String rawCommentIds = activity.getReplyToId();
-    if (rawCommentIds == null) {
-      rawCommentIds = "";
+    try {
+      comment = saveActivity(ownerStream, comment);
+      String rawCommentIds = activity.getReplyToId();
+      if (rawCommentIds == null) {
+        rawCommentIds = "";
+      }
+      rawCommentIds += COMMENT_IDS_DELIMITER + comment.getId();
+      activity.setReplyToId(rawCommentIds);
+      saveActivity(ownerStream, activity);
+    } catch (ActivityStorageException e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
     }
-    rawCommentIds += "," + comment.getId();
-    activity.setReplyToId(rawCommentIds);
-    saveActivity(ownerStream, activity);
+
   }
 
   /**
@@ -298,29 +235,34 @@ public class ActivityStorage {
    * @param activityId
    * @param commentId
    */
-  public void deleteComment(String activityId, String commentId) {
-    Activity activity = getActivity(activityId);
-    String rawCommentIds = activity.getReplyToId();
-    //rawCommentIds can be: null || ,a,b,c,d
-    if (rawCommentIds != null && rawCommentIds.contains(commentId)) {
-      Activity comment = getActivity(commentId);
-      if (comment == null) {
-        LOG.warn("can not find comment with id: " + commentId);
-        return;
+  public void deleteComment(String activityId, String commentId) throws ActivityStorageException {
+    ExoSocialActivity activity = null;
+    try {
+      activity = getActivity(activityId);
+      String rawCommentIds = activity.getReplyToId();
+      //rawCommentIds can be: null || ,a,b,c,d
+      if (rawCommentIds != null && rawCommentIds.contains(commentId)) {
+        ExoSocialActivity comment = getActivity(commentId);
+        if (comment == null) {
+          throw new Exception("Failed to find comment with id: " + commentId);
+        }
+        try {
+          deleteActivity(commentId);
+          commentId = COMMENT_IDS_DELIMITER + commentId;
+          rawCommentIds = rawCommentIds.replace(commentId, "");
+          activity.setReplyToId(rawCommentIds);
+          Identity user = identityManager.getIdentity(activity.getUserId());
+          saveActivity(user, activity);
+        } catch (Exception e) {
+          throw new Exception("Failed to delete comment with id: " + commentId, e);
+        }
+      } else {
+        throw new Exception("Failed to find commentId: " + commentId + " in activity with activityId: " + activityId);
       }
-      try {
-        deleteActivity(commentId);
-        commentId = "," + commentId;
-        rawCommentIds = rawCommentIds.replace(commentId, "");
-        activity.setReplyToId(rawCommentIds);
-        Identity user = identityManager.getIdentity(activity.getUserId());
-        saveActivity(user, activity);
-      } catch (Exception e) {
-        LOG.warn("failed to delete comment with id: " + commentId);
-      }
-    } else {
-      LOG.warn("can't not find commentId: " + commentId + " in activity with activityId: " + activityId);
+    } catch (Exception e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_DELETE_COMMENT, e.getMessage(), e);
     }
+
   }
 
   /**
@@ -329,30 +271,19 @@ public class ActivityStorage {
    * @param activityId the id of the activity. An UUID.
    * @return the activity
    */
-  public Activity getActivity(String activityId) {
+  public ExoSocialActivity getActivity(String activityId) throws ActivityStorageException {
     Session session = sessionManager.getOrOpenSession();
     try {
       Node activityNode = session.getNodeByUUID(activityId);
       if (activityNode != null) {
-        return load(activityNode);
+        return getActivityFromActivityNode(activityNode);
       }
     } catch (Exception e) {
-      LOG.warn(e.getMessage());
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITY, e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
     return null;
-  }
-
-  /**
-   * Gets an activity by its id
-   *
-   * @param activityId
-   * @return stored activity
-   * @deprecated use {@link #getActivity(String)}
-   */
-  public Activity load(String activityId) {
-    return getActivity(activityId);
   }
 
 
@@ -366,25 +297,26 @@ public class ActivityStorage {
    * @param limit
    * @return the activities
    */
-  public List<Activity> getActivities(Identity owner, long offset, long limit) {
-    Node n = getPublishedActivityServiceHome(owner);
-    List<Activity> activities = new ArrayList<Activity>();
+  public List<ExoSocialActivity> getActivities(Identity owner, long offset, long limit) throws ActivityStorageException {
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
 
     try {
+      Node n = getPublishedActivityServiceHome(owner);
       String path = n.getPath();
       Session session = sessionManager.getOrOpenSession();
       List<Node> nodes = new QueryBuilder(session)
-        .select(ACTIVITY_NODETYPE, offset, limit)
+        .select(NodeType.NT_ACTIVITY, offset, limit)
+        //TODO hard-coded
         .like("jcr:path", path + "[%]/exo:activity[%]")
         .and()
-        .not().equal(REPLY_TO_ID,Activity.IS_COMMENT)
-        .orderBy("exo:updatedTimestamp", QueryBuilder.DESC).exec();
+        .not().equal(NodeProperty.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT)
+        .orderBy(NodeProperty.ACTIVITY_UPDATED, QueryBuilder.DESC).exec();
 
       for (Node node : nodes) {
-        activities.add(load(node));
+        activities.add(getActivityFromActivityNode(node));
       }
-    } catch (RepositoryException e) {
-      LOG.warn(e.getMessage(), e);
+    } catch (Exception e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES, e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
@@ -393,30 +325,31 @@ public class ActivityStorage {
   }
 
   /**
-   * Gets the activities by identity.
+   * Gets all the activities by identity.
    *
    * @param owner the identity
    * @return the activities
    */
-  public List<Activity> getActivities(Identity owner) {
-    Node publishingNode = getPublishedActivityServiceHome(owner);
+  public List<ExoSocialActivity> getActivities(Identity owner) throws ActivityStorageException {
     //here is path of activity of john  :/exo:applications/Social_Activity/organization/john/published
     // we will query activities of owner via the way : jcr:path of activity will contains owner's remoteid and providerid(/organization/john/)
-    List<Activity> activities = new ArrayList<Activity>();
-    Session session = sessionManager.getOrOpenSession();
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     try {
+      Node publishingNode = getPublishedActivityServiceHome(owner);
+      Session session = sessionManager.getOrOpenSession();
       String path = publishingNode.getPath();
       List<Node> nodes = new QueryBuilder(session)
-        .select(ACTIVITY_NODETYPE)
+        .select(NodeType.NT_ACTIVITY)
+        //TODO hard-coded
         .like("jcr:path", path + "[%]/exo:activity[%]")
         .and()
-        .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).exec();
+        .not().equal(NodeProperty.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT).exec();
 
       for (Node node : nodes) {
-        activities.add(load(node));
+        activities.add(getActivityFromActivityNode(node));
       }
-    } catch (RepositoryException e) {
-      LOG.warn(e.getMessage(), e);
+    } catch (Exception e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES, e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
@@ -429,25 +362,46 @@ public class ActivityStorage {
    * @param owner
    * @return the number of activities
    */
-  public int getActivitiesCount(Identity owner) {
+  public int getActivitiesCount(Identity owner) throws ActivityStorageException {
     int count = 0;
 
-    Node publishingNode = getPublishedActivityServiceHome(owner);
-    Session session = sessionManager.getOrOpenSession();
     try {
+      Node publishingNode = getPublishedActivityServiceHome(owner);
+      Session session = sessionManager.getOrOpenSession();
       String path = publishingNode.getPath();
       count = (int) new QueryBuilder(session)
-        .select(ACTIVITY_NODETYPE)
+        .select(NodeType.NT_ACTIVITY)
+        //TODO hard-coded
         .like("jcr:path", path + "[%]/exo:activity[%]")
         .and()
-        .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).count();
+        .not().equal(NodeProperty.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT).count();
     } catch (Exception e){
-      LOG.warn(e.getMessage(), e);
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_COUNT, e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
 
     return count;
+  }
+
+  public String getPortalOwner() {
+    try {
+      // This always works well on UI
+      //TODO This can have problem with REST API, need to check
+      PortalRequestContext context = Util.getPortalRequestContext();
+      portalOwner = context.getPortalOwner();
+    } catch (Exception e) {
+      //Ignore
+    }
+    return portalOwner;
+  }
+
+  /**
+   * Sets portal owner for getStream permaLink
+   * @param portalOwner
+   */
+  public void setPortalOwner(String portalOwner) {
+    this.portalOwner = portalOwner;
   }
 
   /**
@@ -456,16 +410,10 @@ public class ActivityStorage {
    * @param session the session
    * @return the activity service home
    */
-  private Node getActivityServiceHome(Session session) {
+  private Node getActivityServiceHome(Session session) throws Exception {
     if (activityServiceHome == null) {
       String path = dataLocation.getSocialActivitiesHome();
-      try {
-        activityServiceHome = session.getRootNode().getNode(path);
-      } catch (PathNotFoundException e) {
-        LOG.warn(e.getMessage(), e);
-      } catch (RepositoryException e) {
-        LOG.warn(e.getMessage(), e);
-      }
+      activityServiceHome = session.getRootNode().getNode(path);
     }
     return activityServiceHome;
   }
@@ -477,7 +425,7 @@ public class ActivityStorage {
    * @return the user activity service home
    */
   //TODO hoatle bug if id = uuid, username refers to the same identity
-  private Node getStreamLocation(Identity owner) {
+  private Node getStreamLocation(Identity owner) throws Exception {
     String type = owner.getProviderId();
     String id = owner.getRemoteId();
 
@@ -487,11 +435,12 @@ public class ActivityStorage {
     } else {
       // default location for stream without a prefix
       LOG.warn("attempting to get a stream for non prefixed owner : " + id);
+      //TODO hard-coded
       return getStreamsLocationByType("default", id);
     }
   }
 
-  private Node getStreamsLocationByType(String type, String username) {
+  private Node getStreamsLocationByType(String type, String username) throws Exception {
     Session session = sessionManager.getOrOpenSession();
     try {
       // first get or create the node for type. Ex: /activities/organization
@@ -500,7 +449,7 @@ public class ActivityStorage {
       if (activityHomeNode.hasNode(type)){
         typeHome = activityHomeNode.getNode(type);
       } else {
-        typeHome = activityHomeNode.addNode(type, NT_UNSTRUCTURED);
+        typeHome = activityHomeNode.addNode(type, NodeType.NT_UNSTRUCTURED);
         activityHomeNode.save();
       }
 
@@ -508,13 +457,12 @@ public class ActivityStorage {
       if (typeHome.hasNode(username)){
         return typeHome.getNode(username);
       } else {
-        Node streamNode = typeHome.addNode(username, NT_UNSTRUCTURED);
+        Node streamNode = typeHome.addNode(username, NodeType.NT_UNSTRUCTURED);
         typeHome.save();
         return streamNode;
       }
     } catch (Exception e) {
-      LOG.error("failed to locate stream owner node for " +username, e);
-      return null;
+      throw new Exception("Failed to locate stream owner node for " + username +"; " + e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
@@ -527,45 +475,36 @@ public class ActivityStorage {
    * @param owner the owner of the stream
    * @return the published activity service home
    */
-  private Node getPublishedActivityServiceHome(Identity owner) {
+  private Node getPublishedActivityServiceHome(Identity owner) throws Exception {
+    Node userActivityHomeNode = getStreamLocation(owner);
     try {
-      Node userActivityHomeNode = getStreamLocation(owner);
-      try {
-        return userActivityHomeNode.getNode(PUBLISHED_NODE);
-      } catch (PathNotFoundException ex) {
-        Node appNode = userActivityHomeNode.addNode(PUBLISHED_NODE, NT_UNSTRUCTURED);
-        appNode.addMixin("mix:referenceable");
-        userActivityHomeNode.save();
-        return appNode;
-      }
-    } catch (Exception e) {
-      LOG.error("Failed to get published activity service location for " + owner, e);
-      return null;
+      return userActivityHomeNode.getNode(PUBLISHED_NODE);
+    } catch (PathNotFoundException ex) {
+      Node appNode = userActivityHomeNode.addNode(PUBLISHED_NODE, NodeType.NT_UNSTRUCTURED);
+      appNode.addMixin(NodeType.MIX_REFERENCEABLE);
+      userActivityHomeNode.save();
+      return appNode;
     }
   }
 
   /**
    * Delete an activity's comments
    * All the comment ids are stored in an activity's replytoId
+   * 
    * @param activityId
    */
-  private void deleteActivityComments(String activityId) {
-    Activity activity = getActivity(activityId);
+  private void deleteActivityComments(String activityId) throws Exception {
+    ExoSocialActivity activity = getActivity(activityId);
     String rawCommentIds = activity.getReplyToId();
     //rawCommentIds can be: null || ,a,b,c,d
     if (rawCommentIds != null) {
-      if (rawCommentIds.equals(Activity.IS_COMMENT)) return;
+      if (rawCommentIds.equals(ExoSocialActivity.IS_COMMENT)) return;
 
-      String[] commentIds = rawCommentIds.split(",");
+      String[] commentIds = rawCommentIds.split(COMMENT_IDS_DELIMITER);
       //remove the first empty element
       commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
       for (String commentId : commentIds) {
-        try {
-          deleteActivity(commentId);
-        } catch(Exception ex) {
-          LOG.warn("Failed to delete comment actvity " + commentId + ": " + ex.getMessage());
-          //TODO hoatle handles or ignores?
-        }
+        deleteActivity(commentId);
       }
     }
   }
@@ -578,13 +517,70 @@ public class ActivityStorage {
    * @param activityNode
    * @throws Exception
    */
-  private void setStreamInfo(Activity activity, Node activityNode) throws Exception {
+  private void setStreamInfo(ExoSocialActivity activity, Node activityNode) throws Exception {
+    ActivityStream activityStream = activity.getActivityStream();
     try {// /activities/space/spaceID/published/activity
-      activity.setStreamOwner(activityNode.getParent().getParent().getName());
-      activity.setStreamId(activityNode.getParent().getUUID());
+      final String providerName = activityNode.getParent().getParent().getParent().getName();
+      final String streamNodeId = activityNode.getParent().getUUID(); //published
+      final String streamName = activityNode.getParent().getParent().getName();
+      activityStream.setId(streamNodeId);
+      activityStream.setPrettyId(streamName);
+      activityStream.setType(providerName);
+      //TODO hard-coded
+      activityStream.setTitle("Activity Stream of " + streamName);
+      linkProvider = getLinkProvider();
+      //TODO use absolute url here
+      activityStream.setPermaLink(linkProvider.getActivityUri(providerName, streamName, getPortalOwner()));
+
     } catch (UnsupportedRepositoryOperationException e) {
-      activityNode.getParent().addMixin("mix:referenceable");
-      activity.setStreamId(activityNode.getParent().getUUID());
+      activityNode.getParent().addMixin(NodeType.MIX_REFERENCEABLE);
+      //TODO handle this case: activityStream is not fully set here
+      activityStream.setId(activityNode.getParent().getUUID());
+    }
+  }
+
+  private void setActivityNodeFromActivity(Node activityNode, ExoSocialActivity activity) throws RepositoryException {
+    activityNode.setProperty(NodeProperty.ACTIVITY_TITLE, activity.getTitle());
+    activityNode.setProperty(NodeProperty.ACTIVITY_USER_ID, activity.getUserId());
+    //TODO Change "exo:updated" property to time/ string instead of long
+    activityNode.setProperty(NodeProperty.ACTIVITY_UPDATED, activity.getUpdated().getTime());
+    activityNode.setProperty(NodeProperty.ACTIVITY_POSTED_TIME, activity.getPostedTime());
+
+    if (activity.getLikeIdentityIds() != null) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS, activity.getLikeIdentityIds());
+    }
+    if (activity.isHidden()) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_HIDDEN, activity.isHidden());
+    }
+    //TODO clarify this: bodyTemplate vs bodyId
+    activityNode.setProperty(NodeProperty.ACTIVITY_BODY_TEMPLATE, activity.getBodyId());
+    activityNode.setProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS, mapToArray(activity.getTemplateParams()));
+
+    if (activity.getTitleId() != null) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_TITLE_TEMPLATE, activity.getTitleId());
+    }
+
+    if(activity.getBody() != null) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_BODY, activity.getBody());
+    }
+    if(activity.getExternalId() != null) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_EXTERNAL_ID, activity.getExternalId());
+    }
+
+    if(activity.getPriority() != null) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_PRIORITY, activity.getPriority());
+    }
+
+    if(activity.getType() != null) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_TYPE, activity.getType());
+    }
+
+    if (activity.getReplyToId() != null) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_REPLY_TO_ID, activity.getReplyToId());
+    }
+
+    if(activity.getUrl() != null) {
+      activityNode.setProperty(NodeProperty.ACTIVITY_URL, activity.getUrl());
     }
   }
 
@@ -595,64 +591,56 @@ public class ActivityStorage {
    * @return the activity
    * @throws Exception the exception
    */
-  private Activity load(Node activityNode) {
-    Activity activity = new Activity();
-    try {
-      activity.setId(activityNode.getUUID());
-      setStreamInfo(activity, activityNode);
+  private ExoSocialActivity getActivityFromActivityNode(Node activityNode) throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setId(activityNode.getUUID());
+    setStreamInfo(activity, activityNode);
 
-      if (activityNode.hasProperty(BODY)) {
-        activity.setBody(activityNode.getProperty(BODY).getString());
-      }
-      if (activityNode.hasProperty(EXTERNAL_ID)) {
-        activity.setExternalId(activityNode.getProperty(EXTERNAL_ID).getString());
-      }
-      if (activityNode.hasProperty(HIDDEN)) {
-        activity.setHidden(activityNode.getProperty(HIDDEN).getBoolean());
-      }
-      if (activityNode.hasProperty(POSTED_TIME)) {
-        activity.setPostedTime(activityNode.getProperty(POSTED_TIME).getLong());
-      }
-      if (activityNode.hasProperty(PRIORITY)) {
-        activity.setPriority((int) activityNode.getProperty(PRIORITY).getLong());
-      }
-      if (activityNode.hasProperty(TITLE)) {
-        activity.setTitle(activityNode.getProperty(TITLE).getString());
-      }
-      if (activityNode.hasProperty(TYPE)) {
-        activity.setType(activityNode.getProperty(TYPE).getString());
-      }
-      if (activityNode.hasProperty(REPLY_TO_ID)) {
-        activity.setReplyToId(activityNode.getProperty(REPLY_TO_ID).getString());
-      }
-      if (activityNode.hasProperty(UPDATED_TIMESTAMP)) {
-        activity.setUpdatedTimestamp(activityNode.getProperty(UPDATED_TIMESTAMP).getLong());
-      }
-      if (activityNode.hasProperty(URL)) {
-        activity.setUrl(activityNode.getProperty(URL).getString());
-      }
-      //TODO: replace by a reference to the identity node
-      if (activityNode.hasProperty(USER_ID)) {
-        activity.setUserId(activityNode.getProperty(USER_ID).getString());
-      }
-      if (activityNode.hasProperty(LIKE_IDENTITY_IDS)) {
-        activity.setLikeIdentityIds(ValuesToStrings(activityNode.getProperty(LIKE_IDENTITY_IDS).getValues()));
-      }
-      if(activityNode.hasProperty(PARAMS)) {
-        activity.setTemplateParams(valuesToMap(activityNode.getProperty(PARAMS).getValues()));
-      }
-      if(activityNode.hasProperty(TITLE_TEMPLATE)) {
-        activity.setTitleId(activityNode.getProperty(TITLE_TEMPLATE).getString());
-      }
-      if(activityNode.hasProperty(BODY_TEMPLATE)) {
-        activity.setBodyId(activityNode.getProperty(BODY_TEMPLATE).getString());
-      }
-    } catch (UnsupportedRepositoryOperationException e) {
-      LOG.warn(e.getMessage(), e);
-    } catch (RepositoryException e) {
-      LOG.warn(e.getMessage(), e);
-    } catch (Exception e) {
-      LOG.warn(e.getMessage(), e);
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_BODY)) {
+      activity.setBody(activityNode.getProperty(NodeProperty.ACTIVITY_BODY).getString());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_EXTERNAL_ID)) {
+      activity.setExternalId(activityNode.getProperty(NodeProperty.ACTIVITY_EXTERNAL_ID).getString());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_HIDDEN)) {
+      activity.isHidden(activityNode.getProperty(NodeProperty.ACTIVITY_HIDDEN).getBoolean());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_POSTED_TIME)) {
+      activity.setPostedTime(activityNode.getProperty(NodeProperty.ACTIVITY_POSTED_TIME).getLong());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_PRIORITY)) {
+      activity.setPriority((float)activityNode.getProperty(NodeProperty.ACTIVITY_PRIORITY).getLong());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_TITLE)) {
+      activity.setTitle(activityNode.getProperty(NodeProperty.ACTIVITY_TITLE).getString());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_TYPE)) {
+      activity.setType(activityNode.getProperty(NodeProperty.ACTIVITY_TYPE).getString());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_REPLY_TO_ID)) {
+      activity.setReplyToId(activityNode.getProperty(NodeProperty.ACTIVITY_REPLY_TO_ID).getString());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_UPDATED)) {
+      activity.setUpdated(new Date(activityNode.getProperty(NodeProperty.ACTIVITY_UPDATED).getLong()));
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_URL)) {
+      activity.setUrl(activityNode.getProperty(NodeProperty.ACTIVITY_URL).getString());
+    }
+    //TODO: replace by a reference to the identity node
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_USER_ID)) {
+      activity.setUserId(activityNode.getProperty(NodeProperty.ACTIVITY_USER_ID).getString());
+    }
+    if (activityNode.hasProperty(NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS)) {
+      activity.setLikeIdentityIds(ValuesToStrings(activityNode.getProperty(NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS).getValues()));
+    }
+    if(activityNode.hasProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS)) {
+      activity.setTemplateParams(valuesToMap(activityNode.getProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS).getValues()));
+    }
+    if(activityNode.hasProperty(NodeProperty.ACTIVITY_TITLE_TEMPLATE)) {
+      activity.setTitleId(activityNode.getProperty(NodeProperty.ACTIVITY_TITLE_TEMPLATE).getString());
+    }
+    if(activityNode.hasProperty(NodeProperty.ACTIVITY_BODY_TEMPLATE)) {
+      activity.setBodyId(activityNode.getProperty(NodeProperty.ACTIVITY_BODY_TEMPLATE).getString());
     }
     return activity;
   }
@@ -695,7 +683,7 @@ public class ActivityStorage {
     String [] result = new String[keys.size()];
     int i = 0;
     for (String key : keys) {
-      result[i++] = key + "=" +templateParams.get(key);
+      result[i++] = key + "=" + templateParams.get(key);
     }
     return result;
   }
@@ -714,5 +702,12 @@ public class ActivityStorage {
       Str[i] = Val[i].getString();
     }
     return Str;
+  }
+
+  private LinkProvider getLinkProvider() {
+    if (linkProvider == null) {
+      linkProvider = (LinkProvider) PortalContainer.getComponent(LinkProvider.class);
+    }
+    return linkProvider;
   }
 }

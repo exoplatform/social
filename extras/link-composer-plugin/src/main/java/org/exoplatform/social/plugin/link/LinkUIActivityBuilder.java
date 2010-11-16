@@ -16,10 +16,8 @@
  */
 package org.exoplatform.social.plugin.link;
 
-import java.util.Map;
-
 import org.apache.commons.lang.Validate;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
 import org.json.JSONException;
@@ -36,7 +34,7 @@ public class LinkUIActivityBuilder extends BaseUIActivityBuilder {
   private JSONObject titleData;
   
   @Override
-  protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
+  protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
     UILinkActivity uiLinkActivity = (UILinkActivity) uiActivity;
     Validate.notNull(activity.getTitle(), "activity_.getTitle() must not be null.");
     try {

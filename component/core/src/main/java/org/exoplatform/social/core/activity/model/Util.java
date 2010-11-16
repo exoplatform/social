@@ -30,10 +30,10 @@ public class Util {
    * Comparator used to order the activity by postedTime
    * @return
    */
-  public static Comparator<Activity> activityComparator() {
-    return new Comparator<Activity>() {
+  public static Comparator<ExoSocialActivity> activityComparator() {
+    return new Comparator<ExoSocialActivity>() {
 
-      public int compare(Activity a1, Activity a2) {
+      public int compare(ExoSocialActivity a1, ExoSocialActivity a2) {
         if (a1 == null || a2 == null) {
           throw new IllegalArgumentException("Cannot compare null Activity");
         }

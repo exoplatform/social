@@ -66,7 +66,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
   // get an instance of Space
   private Space getSpaceInstance(int number) {
     Space space = new Space();
-    space.setName("my space " + number);
+    space.setDisplayName("my space " + number);
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -259,7 +259,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     spaceStorage.saveSpace(space, true);
     assertNotNull("space.getId() must not be null", space.getId());
     String newName = "newnamespace";
-    space.setName(newName);
+    space.setDisplayName(newName);
     spaceStorage.saveSpace(space, false);
     assertEquals("spaceStorage.getSpaceById(space.getId()).getName() must return: "
         + newName, newName, spaceStorage.getSpaceById(space.getId())

@@ -121,6 +121,20 @@ public class SpaceServiceImpl implements SpaceService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public Space getSpaceByDisplayName(String spaceDisplayName) throws SpaceException {
+    try {
+      return storage.getSpaceByDisplayName(spaceDisplayName);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public Space getSpaceByName(String spaceName) throws SpaceException {
     try {
       return storage.getSpaceByName(spaceName);

@@ -46,7 +46,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
  */
 
 public class UISpaceSettings extends UIFormInputSet {
-  private final String SPACE_NAME             = "name";
+  private final String SPACE_DISPLAY_NAME             = "displayName";
 
   private final String SPACE_PRIORITY         = "priority";
 
@@ -70,7 +70,7 @@ public class UISpaceSettings extends UIFormInputSet {
    */
   public UISpaceSettings(String name) throws Exception {
     super(name);
-    addUIFormInput(new UIFormStringInput(SPACE_NAME, SPACE_NAME, null).
+    addUIFormInput(new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null).
                    addValidator(MandatoryValidator.class).
                    //addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
                    addValidator(ExpressionValidator.class, "^([\\p{L}\\s\\d]+[\\s]?)+$", MSG_INVALID_SPACE_NAME).

@@ -19,7 +19,8 @@ package org.exoplatform.social.plugin.link;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -218,9 +219,9 @@ public class UILinkActivityComposer extends UIActivityComposer {
       Space space = uiDisplaySpaceActivities.getSpace();
 
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getId(),
+                                                                   space.getName(),
                                                                    false);
-      Activity activity = new Activity(userIdentity.getId(),
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                        SpaceService.SPACES_APP_ID,
                                        titleData,
                                        null);
@@ -236,7 +237,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
       String ownerName = uiUserActivitiesDisplay.getOwnerName();
       Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                    ownerName);
-      Activity activity = new Activity(userIdentity.getId(),
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                        PeopleService.PEOPLE_APP_ID,
                                        titleData,
                                        null);

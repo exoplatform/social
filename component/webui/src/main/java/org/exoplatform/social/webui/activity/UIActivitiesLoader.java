@@ -23,7 +23,7 @@ import java.util.Random;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -51,7 +51,7 @@ public class UIActivitiesLoader extends UIContainer {
   private int currentLoadIndex;
   private boolean unableLoadNext;
   private UIActivitiesLoader lastActivitiesLoader;
-  private ListAccess<Activity> activityListAccess;
+  private ListAccess<ExoSocialActivity> activityListAccess;
   private String ownerName;
 
   public static String genereateId() {
@@ -75,7 +75,7 @@ public class UIActivitiesLoader extends UIContainer {
     }
   }
 
-  public void setActivityListAccess(ListAccess<Activity> activityListAccess) {
+  public void setActivityListAccess(ListAccess<ExoSocialActivity> activityListAccess) {
     this.activityListAccess = activityListAccess;
   }
 
@@ -143,7 +143,7 @@ public class UIActivitiesLoader extends UIContainer {
         activitiesContainer.setSpace(space);
       }
 
-      List<Activity> activities = loadActivities(currentLoadIndex, loadingCapacity);
+      List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
       if (activities.size() < loadingCapacity) {
         setUnableLoadNext(true);
       }
@@ -155,7 +155,7 @@ public class UIActivitiesLoader extends UIContainer {
 
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    List<Activity> activities = loadActivities(currentLoadIndex, loadingCapacity);
+    List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
     lastActivitiesLoader.setExtendLoader(true);
 
@@ -176,12 +176,12 @@ public class UIActivitiesLoader extends UIContainer {
     }
   }
 
-  private void setActivities(List<Activity> activities) throws Exception {
+  private void setActivities(List<ExoSocialActivity> activities) throws Exception {
     activitiesContainer.setActivityList(activities);
   }
 
-  private List<Activity> loadActivities(int index, int length) throws Exception {
-    Activity[] activities = activityListAccess.load(index, length);
+  private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
+    ExoSocialActivity[] activities = activityListAccess.load(index, length);
     return Arrays.asList(activities);
   }
 

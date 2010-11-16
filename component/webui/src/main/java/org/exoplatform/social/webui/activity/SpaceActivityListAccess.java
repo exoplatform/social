@@ -20,7 +20,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -35,7 +35,7 @@ import org.exoplatform.social.core.space.model.Space;
  * @copyright eXo SEA
  * @since Sep 7, 2010
  */
-public class SpaceActivityListAccess implements ListAccess<Activity> {
+public class SpaceActivityListAccess implements ListAccess<ExoSocialActivity> {
   static private final Log LOG = ExoLogger.getLogger(SpaceActivityListAccess.class);
 
   /** The list. */
@@ -52,7 +52,7 @@ public class SpaceActivityListAccess implements ListAccess<Activity> {
     IdentityManager identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
     activityManager = (ActivityManager) PortalContainer.getComponent(ActivityManager.class);
     try {
-      spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId());
+      spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName());
     } catch (Exception e) {
       LOG.error(e);
     }
@@ -68,11 +68,11 @@ public class SpaceActivityListAccess implements ListAccess<Activity> {
   /* (non-Javadoc)
    * @see org.exoplatform.commons.utils.ListAccess#load(int, int)
    */
-  public Activity[] load(int index, int length) throws Exception {
+  public ExoSocialActivity[] load(int index, int length) throws Exception {
     final Object[] objects = activityManager.getActivities(spaceIdentity, index, length).toArray();
-    Activity[] results = new Activity[objects.length];
+    ExoSocialActivity[] results = new ExoSocialActivity[objects.length];
     for (int i = 0; i < objects.length; i++) {
-      results[i]= (Activity) objects[i];
+      results[i]= (ExoSocialActivity) objects[i];
     }
     return results;
   }

@@ -2,7 +2,7 @@ package org.exoplatform.social.extras.samples.activity;
 
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 public class SmileyProcessor extends BaseActivityProcessorPlugin {
 
@@ -12,7 +12,7 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
 
   String smiley =  "<img src=\"http://www.tombraider4u.com/pictures/smiley.gif\"/>";
 
-  public void processActivity(Activity activity) {
+  public void processActivity(ExoSocialActivity activity) {
     String title = activity.getTitle();
     activity.setTitle(title.replaceAll(":-\\)", smiley));
   }

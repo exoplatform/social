@@ -87,6 +87,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
       <scope>provided</scope>

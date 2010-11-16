@@ -25,6 +25,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 
@@ -56,10 +57,7 @@ public class LinkProvider {
 
       String container = PortalContainer.getCurrentPortalContainerName();
 
-      if(portalOwner == null || portalOwner.equals("")){
-        PortalRequestContext context = Util.getPortalRequestContext();
-        portalOwner = context.getPortalOwner();
-      }
+      portalOwner = getPortalOwner(portalOwner);
 
       url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
     } catch (Exception e) {
@@ -67,6 +65,7 @@ public class LinkProvider {
     }
     return url;
   }
+
 
   public String getProfileLink(String username) {
     return getProfileLink(username, null);
@@ -84,10 +83,7 @@ public class LinkProvider {
 
       String container = PortalContainer.getCurrentPortalContainerName();
 
-      if(portalOwner == null || portalOwner.equals("")){
-        PortalRequestContext context = Util.getPortalRequestContext();
-        portalOwner = context.getPortalOwner();
-      }
+      portalOwner = getPortalOwner(portalOwner);
 
       String url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
@@ -97,6 +93,31 @@ public class LinkProvider {
     }
     return link;
   }
+
+
+  public String getActivityUri(String providerId, String remoteId) {
+    return getActivityUri(providerId, remoteId, null);
+  }
+
+  /**
+   * Gets activity link of space or user; remoteId should be the id name.
+   * For example: organization:root or space:abc_def
+   * @param remoteId
+   * @return
+   */
+  public String getActivityUri(String providerId, String remoteId, String portalOwner) {
+    final String container = PortalContainer.getCurrentPortalContainerName();
+    portalOwner = getPortalOwner(portalOwner);
+    if (providerId.equals(OrganizationIdentityProvider.NAME)) {
+      return "/"+ container +"/private/"+portalOwner+"/activities/" + remoteId;
+    } else if (providerId.equals(SpaceIdentityProvider.NAME)) {
+      return "/" + container + "/private/" + portalOwner + "/" + remoteId;
+    } else {
+      LOG.warn("Failed to getActivityLink with providerId: " + providerId);
+    }
+    return null;
+  }
+
 
   public String getAbsoluteProfileUrl(String userName, String portalName, String portalOwner, String host) {
     String url = null;
@@ -112,6 +133,8 @@ public class LinkProvider {
     }
     return url;
   }
+
+
 
   /**
    * @param avatarAttachment
@@ -131,4 +154,14 @@ public class LinkProvider {
     }
     return avatarUrl;
   }
+
+
+  private String getPortalOwner(String portalOwner) {
+    if(portalOwner == null || portalOwner.equals("")){
+      PortalRequestContext context = Util.getPortalRequestContext();
+      portalOwner = context.getPortalOwner();
+    }
+    return portalOwner;
+  }
+
 }

@@ -34,7 +34,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -63,7 +63,7 @@ public class WidgetRestService implements ResourceContainer {
       if (space == null) {
         // If the space does not exist, we create it
         space = new Space();
-        space.setName(spaceName);
+        space.setDisplayName(spaceName);
         space.setRegistration("open");
         space.setDescription(description);
         space.setType("classic");
@@ -141,8 +141,8 @@ public class WidgetRestService implements ResourceContainer {
 
         if (service.hasAccessPermission(space, username)) {
           Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                       space.getId());
-          List<Activity> activities = activityManager.getActivities(spaceIdentity);
+                                                                       space.getName());
+          List<ExoSocialActivity> activities = activityManager.getActivities(spaceIdentity);
 
           if (activities.size() > 0) {
             response.append("<i>" + activities.get(0).getTitle() + "</i>");

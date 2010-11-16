@@ -23,7 +23,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -42,7 +42,7 @@ import org.exoplatform.webui.core.UIPopupWindow;
 public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
 
-  private List<Activity> activityList;
+  private List<ExoSocialActivity> activityList;
   private PostContext postContext;
   //hold activities for user or space
   private Space space;
@@ -64,7 +64,7 @@ public class UIActivitiesContainer extends UIContainer {
     return popupWindow;
   }
 
-  public UIActivitiesContainer setActivityList(List<Activity> activityList) throws Exception {
+  public UIActivitiesContainer setActivityList(List<ExoSocialActivity> activityList) throws Exception {
     this.activityList = activityList;
     init();
     return this;
@@ -105,25 +105,25 @@ public class UIActivitiesContainer extends UIContainer {
     }
     
     if (activityList == null) {
-      activityList = new ArrayList<Activity>();
+      activityList = new ArrayList<ExoSocialActivity>();
     }
     PortalContainer portalContainer = PortalContainer.getInstance();
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
-    for (Activity activity : activityList) {
+    for (ExoSocialActivity activity : activityList) {
       factory.addChild(activity, this);
     }
   }
 
-  public void addActivity(Activity activity) throws Exception {
-    ArrayList<Activity> list = new ArrayList<Activity>();
+  public void addActivity(ExoSocialActivity activity) throws Exception {
+    ArrayList<ExoSocialActivity> list = new ArrayList<ExoSocialActivity>();
     list.add(activity);
     list.addAll(activityList);
     activityList = list;
     init();
   }
 
-  public void removeActivity(Activity removedActivity) {
-    for (Activity activity: activityList) {
+  public void removeActivity(ExoSocialActivity removedActivity) {
+    for (ExoSocialActivity activity: activityList) {
       if (activity.getId() == removedActivity.getId()) {
         activityList.remove(activity);
         break;

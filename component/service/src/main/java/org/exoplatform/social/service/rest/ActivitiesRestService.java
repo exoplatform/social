@@ -37,12 +37,13 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 
 /**
  * ActivitiesRestService.java <br />
@@ -77,9 +78,14 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param activityId
    * @return activity
    */
-  private Activity destroyActivity(String activityId) {
+  private ExoSocialActivity destroyActivity(String activityId) {
     _activityManager = getActivityManager();
-    Activity activity = _activityManager.getActivity(activityId);
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
@@ -107,7 +113,7 @@ public class ActivitiesRestService implements ResourceContainer {
                                   @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
-    Activity activity = destroyActivity(activityId);
+    ExoSocialActivity activity = destroyActivity(activityId);
     return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -121,7 +127,12 @@ public class ActivitiesRestService implements ResourceContainer {
     LikeList likeList = new LikeList();
     likeList.setActivityId(activityId);
     _activityManager = getActivityManager();
-    Activity activity = _activityManager.getActivity(activityId);
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException((Response.Status.INTERNAL_SERVER_ERROR));
+    }
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
@@ -144,7 +155,7 @@ public class ActivitiesRestService implements ResourceContainer {
     LikeList likeList = new LikeList();
     likeList.setActivityId(activityId);
     _activityManager = getActivityManager();
-    Activity activity = _activityManager.getActivity(activityId);
+    ExoSocialActivity activity = _activityManager.getActivity(activityId);
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
@@ -186,7 +197,12 @@ public class ActivitiesRestService implements ResourceContainer {
     LikeList likeList = new LikeList();
     likeList.setActivityId(activityId);
     _activityManager = getActivityManager();
-    Activity activity = _activityManager.getActivity(activityId);
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
@@ -299,22 +315,28 @@ public class ActivitiesRestService implements ResourceContainer {
     CommentList commentList = new CommentList();
     commentList.setActivityId(activityId);
     _activityManager = getActivityManager();
-    Activity activity = _activityManager.getActivity(activityId);
-    if (activity == null) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
-    String rawCommentIds = activity.getReplyToId();
-    //rawCommentIds can be: null || ,a,b,c,d
-    if (rawCommentIds == null) {
-      commentList.setComments(new ArrayList<Activity>());
-    } else {
-      String[] commentIds = rawCommentIds.split(",");
-      for (String commentId: commentIds) {
-        if (commentId.length() > 0) {
-          commentList.addComment(_activityManager.getActivity(commentId));
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+      if (activity == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+      String rawCommentIds = activity.getReplyToId();
+      //rawCommentIds can be: null || ,a,b,c,d
+      if (rawCommentIds == null) {
+        commentList.setComments(new ArrayList<ExoSocialActivity>());
+      } else {
+        String[] commentIds = rawCommentIds.split(",");
+        for (String commentId: commentIds) {
+          if (commentId.length() > 0) {
+            commentList.addComment(_activityManager.getActivity(commentId));
+          }
         }
       }
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
     }
+
     return commentList;
   }
 
@@ -325,10 +347,15 @@ public class ActivitiesRestService implements ResourceContainer {
    * @return commentList
    * @see CommentList
    */
-  private CommentList updateComment(String activityId, Activity comment, UriInfo uriInfo, String portalName) {
+  private CommentList updateComment(String activityId, ExoSocialActivity comment, UriInfo uriInfo, String portalName) {
     CommentList commentList = new CommentList();
     commentList.setActivityId(activityId);
-    Activity activity = _activityManager.getActivity(activityId);
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    }
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
@@ -407,36 +434,18 @@ public class ActivitiesRestService implements ResourceContainer {
 
     _activityManager = getActivityManager();
 
-    Activity activity = _activityManager.getActivity(activityId);
-    Activity comment = _activityManager.getActivity(commentId);
-    if (activity == null || comment == null) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
-    commentList.addComment(comment);
-    _activityManager.deleteComment(activityId, commentId);
-    /*
-    String rawCommentIds = activity.getReplyToId();
+    ExoSocialActivity activity = null;
     try {
-      if (rawCommentIds.contains(commentId)) {
-        Activity comment = _activityManager.getActivity(commentId);
-        if (activity == null) {
-          throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-        commentList.addComment(comment);
-        _activityManager.deleteActivity(commentId);
-        commentId = "," + commentId;
-        rawCommentIds = rawCommentIds.replace(commentId, "");
-        activity.setReplyToId(rawCommentIds);
-
-        Identity user = getIdentityManager().getIdentity(activity.getUserId());
-        _activityManager.saveActivity(user, activity);
-      } else {
-        throw new WebApplicationException(Response.Status.BAD_REQUEST);
+      activity = _activityManager.getActivity(activityId);
+      ExoSocialActivity comment = _activityManager.getActivity(commentId);
+      if (activity == null || comment == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
       }
-    } catch(Exception e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      commentList.addComment(comment);
+      _activityManager.deleteComment(activityId, commentId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
     }
-    */
     return commentList;
   }
 
@@ -478,7 +487,7 @@ public class ActivitiesRestService implements ResourceContainer {
                                 @PathParam("portalName") String portalName,
                                 @PathParam("activityId") String activityId,
                                 @PathParam("format") String format,
-                                Activity comment) throws Exception {
+                                ExoSocialActivity comment) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
     CommentList commentList = null;
@@ -567,7 +576,7 @@ public class ActivitiesRestService implements ResourceContainer {
   @XmlRootElement
   static public class CommentList {
     private String _activityId;
-    private List<Activity> _comments;
+    private List<ExoSocialActivity> _comments;
     /**
      * sets activityId
      * @param activityId
@@ -586,23 +595,23 @@ public class ActivitiesRestService implements ResourceContainer {
      * sets comment list
      * @param comments comment list
      */
-    public void setComments(List<Activity> comments) {
+    public void setComments(List<ExoSocialActivity> comments) {
       _comments = comments;
     }
     /**
      * gets comment list
      * @return comments
      */
-    public List<Activity> getComments() {
+    public List<ExoSocialActivity> getComments() {
       return _comments;
     }
     /**
      * add comment to comment List
      * @param activity comment
      */
-    public void addComment(Activity activity) {
+    public void addComment(ExoSocialActivity activity) {
       if (_comments == null) {
-        _comments = new ArrayList<Activity>();
+        _comments = new ArrayList<ExoSocialActivity>();
       }
       _comments.add(activity);
     }
@@ -674,7 +683,7 @@ public class ActivitiesRestService implements ResourceContainer {
 
   /**
    * removes an item from an array
-   * @param arrays
+   * @param array
    * @param str
    * @return new array
    */

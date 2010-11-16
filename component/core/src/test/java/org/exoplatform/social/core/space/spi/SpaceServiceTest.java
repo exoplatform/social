@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.space.spi;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -26,60 +27,69 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 
 public class SpaceServiceTest extends AbstractCoreTest {
-  private static final Log LOG = ExoLogger.getLogger(SpaceServiceTest.class);
+  private final Log LOG = ExoLogger.getLogger(SpaceServiceTest.class);
   private SpaceService spaceService;
+  private List<Space> tearDownSpaceList;
+
 
   @Override
   public void setUp() throws Exception {
     super.setUp();
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     assertNotNull("spaceService must not be null", spaceService);
+    tearDownSpaceList = new ArrayList<Space>();
   }
 
   @Override
   public void tearDown() throws Exception {
+    for (Space space : tearDownSpaceList) {
+      spaceService.deleteSpace(space);
+    }
     super.tearDown();
   }
 
   public void testGetAllSpaces() throws Exception {
-    populateData();
-    createMoreSpace("Space2");
+    tearDownSpaceList.add(populateData());
+    tearDownSpaceList.add(createMoreSpace("Space2"));
     assertEquals(2, spaceService.getAllSpaces().size());
-    destroyData();
   }
 
   public void testGetSpaceByName() throws Exception {
     Space space = populateData();
-    assertEquals(space.getName(), spaceService.getSpaceByName("Space1").getName());
-    destroyData();
+    tearDownSpaceList.add(space);
+    Space gotSpace1 = spaceService.getSpaceByDisplayName("Space1");
+    
+    assertNotNull("gotSpace1 must not be null", gotSpace1);
+
+    Space gotSpace2 = spaceService.getSpaceByDisplayName("Space2");
+
+    //assertEquals(space.getDisplayName(), spaceService.getSpaceByDisplayName("Space1").getDisplayName());
   }
 
   public void testGetSpacesByFirstCharacterOfName() throws Exception {
-    populateData();
-    createMoreSpace("Space2");
+    tearDownSpaceList.add(populateData());
+    tearDownSpaceList.add(createMoreSpace("Space2"));
     assertEquals(2, spaceService.getSpacesByFirstCharacterOfName("S").size());
-    destroyData();
   }
 
   public void testGetSpacesBySearchCondition() throws Exception {
-    populateData();
-    createMoreSpace("Space2");
+    tearDownSpaceList.add(populateData());
+    tearDownSpaceList.add(createMoreSpace("Space2"));
     assertEquals(2, spaceService.getSpacesBySearchCondition("Space").size());
     assertEquals(1, spaceService.getSpacesBySearchCondition("1").size());
-    destroyData();
   }
 
   public void testGetSpaceById() throws Exception {
     Space space = populateData();
-    createMoreSpace("Space2");
+    tearDownSpaceList.add(space);
+    tearDownSpaceList.add(createMoreSpace("Space2"));
     assertEquals(space.getName(), spaceService.getSpaceById(space.getId()).getName());
-    destroyData();
   }
 
   public void testGetSpaceByUrl() throws Exception {
     Space space = populateData();
+    tearDownSpaceList.add(space);
     assertEquals(space.getName(), spaceService.getSpaceByUrl("space1").getName());
-    destroyData();
   }
   
 // //Relate to navigation and page maybe tested later 
@@ -99,47 +109,42 @@ public class SpaceServiceTest extends AbstractCoreTest {
 //  }
 
   public void testGetEditableSpaces() throws Exception {
-    populateData();
+    tearDownSpaceList.add(populateData());
     assertEquals(1, spaceService.getEditableSpaces("root").size());
-    destroyData();
   }
 
   public void testGetInvitedSpaces() throws Exception {
-    populateData();
+    tearDownSpaceList.add(populateData());
     assertEquals(0, spaceService.getInvitedSpaces("root").size());
-    Space space = spaceService.getSpaceByName("Space1");
+    Space space = spaceService.getSpaceByDisplayName("Space1");
     spaceService.inviteMember(space, "root");
     assertEquals(1, spaceService.getInvitedSpaces("root").size());
-    destroyData();
   }
 
   public void testGetPublicSpaces() throws Exception {
-    populateData();
+    tearDownSpaceList.add(populateData());
     assertEquals(1, spaceService.getPublicSpaces("root").size());
-    destroyData();
   }
 
   public void testGetPendingSpaces() throws Exception {
-    populateData();
-    Space space = spaceService.getSpaceByName("Space1");
+    tearDownSpaceList.add(populateData());
+    Space space = spaceService.getSpaceByDisplayName("Space1");
     spaceService.requestJoin(space, "root");
     assertEquals(true, spaceService.isPending(space, "root"));
-    destroyData();
   }
 
   public void testCreateSpace() throws Exception {
-    populateData();
-    createMoreSpace("Space2");
+    tearDownSpaceList.add(populateData());
+    tearDownSpaceList.add(createMoreSpace("Space2"));
     assertEquals(2, spaceService.getAllSpaces().size());
-    destroyData();
   }
 
   private Space populateData() throws Exception {
-    String spaceName = "Space1";
+    String spaceDisplayName = "Space1";
     Space space1 = new Space();
     space1.setApp("Calendar;FileSharing");
-    space1.setName(spaceName);
-    String shortName = SpaceUtils.cleanString(spaceName);
+    space1.setDisplayName(spaceDisplayName);
+    String shortName = SpaceUtils.cleanString(spaceDisplayName);
     space1.setGroupId("/spaces/" + shortName);
     space1.setUrl(shortName);
     space1.setRegistration("validation");
@@ -155,7 +160,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   private Space createMoreSpace(String spaceName) throws Exception {
     Space space2 = new Space();
     space2.setApp("Contact,Forum");
-    space2.setName(spaceName);
+    space2.setDisplayName(spaceName);
     String shortName = SpaceUtils.cleanString(spaceName);
     space2.setGroupId("/spaces/" + shortName );
     space2.setUrl(shortName);
@@ -168,12 +173,5 @@ public class SpaceServiceTest extends AbstractCoreTest {
     spaceService.saveSpace(space2, true);
     
     return space2;
-  }
-  
-  private void destroyData() throws Exception {
-    List<Space> spaces = spaceService.getAllSpaces();
-    for (Space space : spaces) {
-      spaceService.deleteSpace(space);
-    }
   }
 }

@@ -21,7 +21,7 @@ import javax.jcr.Node;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.wcm.core.NodeLocation;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
 import org.json.JSONException;
@@ -36,7 +36,7 @@ import org.json.JSONObject;
 public class DocUIActivityBuilder extends BaseUIActivityBuilder {
   private static final Log LOG = ExoLogger.getLogger(DocUIActivityBuilder.class);
   @Override
-  protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
+  protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
     UIDocActivity docActivity = (UIDocActivity) uiActivity;
     final String jsonData = activity.getTitle();
     try {

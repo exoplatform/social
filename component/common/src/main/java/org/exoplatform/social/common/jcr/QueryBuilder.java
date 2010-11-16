@@ -70,7 +70,6 @@ public class QueryBuilder {
   public long count() throws RepositoryException {
     assert queryBuilder != null;
 
-    List<Node> nodes = new ArrayList<Node>();
     QueryManager queryManager = session.getWorkspace().getQueryManager();
     QueryImpl query = (QueryImpl) queryManager.createQuery(getSQL(), Query.SQL);
 

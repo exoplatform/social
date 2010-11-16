@@ -53,8 +53,7 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
     try {
       space = spaceService.getSpaceById(spaceId);
 
-      // attempt to find by name
-      //FIXME what if the space name with space characters "abc def" and "abc%20def"
+      // attempt to find by name id
       if (space == null) {
         space = spaceService.getSpaceByName(spaceId);
       }
@@ -71,7 +70,7 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
 
   @Override
   public Identity createIdentity(Space space) {
-    Identity identity = new Identity(NAME, space.getId());
+    Identity identity = new Identity(NAME, space.getName());
     return identity;
   }
 

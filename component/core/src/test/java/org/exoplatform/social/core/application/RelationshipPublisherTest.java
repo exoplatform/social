@@ -21,16 +21,10 @@ import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.relationship.RelationshipEvent;
-import org.exoplatform.social.core.relationship.RelationshipEvent.Type;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -43,10 +37,10 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
   private IdentityManager identityManager;
   private RelationshipManager relationshipManager;
   private RelationshipPublisher relationshipPublisher;
-  private List<Activity> tearDownActivityList;
+  private List<ExoSocialActivity> tearDownActivityList;
   public void setUp() throws Exception {
     super.setUp();
-    tearDownActivityList = new ArrayList<Activity>();
+    tearDownActivityList = new ArrayList<ExoSocialActivity>();
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     assertNotNull("activityManager must not be null", activityManager);
     identityManager =  (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
@@ -58,7 +52,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
   }
 
   public void tearDown() throws Exception {
-    for (Activity activity : tearDownActivityList) {
+    for (ExoSocialActivity activity : tearDownActivityList) {
       try {
         activityManager.deleteActivity(activity.getId());
       } catch (Exception e) {

@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.webui.activity.plugin;
 
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.application.RelationshipPublisher;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
@@ -31,7 +31,7 @@ import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
 public class RelationshipUIActivityBuilder extends BaseUIActivityBuilder {
 
   @Override
-  protected void extendUIActivity(BaseUIActivity uiActivity, Activity activity) {
+  protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
     UIRelationshipActivity uiRelationshipActivity = (UIRelationshipActivity) uiActivity;
     String titleId = activity.getTitleId();
     if (titleId.equals(TitleId.CONNECTION_CONFIRMED.toString())) {

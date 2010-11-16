@@ -21,11 +21,12 @@ import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -424,7 +425,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
   /**
    * Test cache management
    */
-  public void testCacheMangement() {
+  public void testCacheMangement() throws ActivityStorageException {
     Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                 "root");
     Identity johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
@@ -467,7 +468,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     // Wait 3 secs to have activity stored
     try {
       Thread.sleep(3000);
-      List<Activity> johnActivityList = activityManager.getActivities(johnIdentity);
+      List<ExoSocialActivity> johnActivityList = activityManager.getActivities(johnIdentity);
       assertEquals("johnActivityList.size() must be 1", 1, johnActivityList.size());
       activityManager.deleteActivity(johnActivityList.get(0));
     } catch (InterruptedException e) {

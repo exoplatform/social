@@ -22,7 +22,8 @@ import java.util.Map;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -70,7 +71,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       String user1 = id1.getRemoteId();
       String user2 = id2.getRemoteId();
 
-      Activity activity = new Activity(id1.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" + user2, null);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(id1.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" + user2, null);
       activity.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       Map<String,String> params = new HashMap<String,String>();
       params.put(SENDER_PARAM, user1);
@@ -78,7 +79,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       activity.setTemplateParams(params);
       activityManager.saveActivity(id1, activity);
 
-      Activity activity2 = new Activity(id2.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" +  user1, null);
+      ExoSocialActivity activity2 = new ExoSocialActivityImpl(id2.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" +  user1, null);
       activity2.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       Map<String,String> params2 = new HashMap<String,String>();
       params2.put(SENDER_PARAM, user2);
@@ -125,7 +126,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       String user1 = id1.getRemoteId();
       String user2 = id2.getRemoteId();
       //TODO hoatle a quick fix for activities gadget to allow deleting this activity
-      Activity activity2 = new Activity(id2.getId(), RELATIONSHIP_ACTIVITY_TYPE, "@" + user1 + " has invited @" +  user2 + " to connect", null);
+      ExoSocialActivity activity2 = new ExoSocialActivityImpl(id2.getId(), RELATIONSHIP_ACTIVITY_TYPE, "@" + user1 + " has invited @" +  user2 + " to connect", null);
       activity2.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       Map<String,String> params2 = new HashMap<String,String>();
       params2.put(SENDER_PARAM, user1);

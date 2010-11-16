@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.opensocial.service;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -37,6 +35,8 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -78,7 +78,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
       for (Identity id : idSet) {
         // TODO filter by appID
-        List<org.exoplatform.social.core.activity.model.Activity> activities = am.getActivities(id, options.getFirst(), options.getMax());
+        List<ExoSocialActivity> activities = am.getActivities(id, options.getFirst(), options.getMax());
         result.addAll(convertToOSActivities(activities, fields));
       }
 
@@ -116,10 +116,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
       String user = userId.getUserId(token);
       Identity id = getIdentity(user, token);
 
-      List<org.exoplatform.social.core.activity.model.Activity> exoActivities = am.getActivities(id, options.getFirst(), options.getMax());
+      List<ExoSocialActivity> exoActivities = am.getActivities(id, options.getFirst(), options.getMax());
 
       // TODO : this is not efficient, this should be done by the JCR
-      for (org.exoplatform.social.core.activity.model.Activity exoActivity : exoActivities) {
+      for (ExoSocialActivity exoActivity : exoActivities) {
         if (exoActivity.getType() != null && exoActivity.getType().startsWith(OPENSOCIAL_PREFIX)) {
           if (activityIds.contains(exoActivity.getType().substring(OPENSOCIAL_PREFIX_LENGTH)))
             ;
@@ -184,7 +184,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
     try {
       activity.setAppId(appId); //groupId = new GroupId(GroupId.Type.groupId, "space:qsdsqd")
 
-      org.exoplatform.social.core.activity.model.Activity exoActivity = convertFromOSActivity(activity, fields);
+      ExoSocialActivity exoActivity = convertFromOSActivity(activity, fields);
 
 
       if (token instanceof AnonymousSecurityToken) {
@@ -244,10 +244,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * @param fields the fields
    * @return the org.exoplatform.social.core.activitystream.model. activity
    */
-  private org.exoplatform.social.core.activity.model.Activity convertFromOSActivity(Activity activity,
+  private ExoSocialActivity convertFromOSActivity(Activity activity,
                                                                                           Set<String> fields) {
 
-    org.exoplatform.social.core.activity.model.Activity exoActivity = new org.exoplatform.social.core.activity.model.Activity();
+    ExoSocialActivity exoActivity = new ExoSocialActivityImpl();
 
     if (fields != null && !fields.isEmpty()) {
 
@@ -359,7 +359,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * @param fields the fields
    * @return the activity
    */
-  private Activity convertToOSActivity(org.exoplatform.social.core.activity.model.Activity exoActivity,
+  private Activity convertToOSActivity(ExoSocialActivity exoActivity,
                                        Set<String> fields) {
 
     Activity activity = new ActivityImpl();
@@ -473,10 +473,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * @param fields the fields
    * @return the list
    */
-  private List<Activity> convertToOSActivities(List<org.exoplatform.social.core.activity.model.Activity> activities,
+  private List<Activity> convertToOSActivities(List<ExoSocialActivity> activities,
                                                Set<String> fields) {
     List<Activity> res = Lists.newArrayList();
-    for (org.exoplatform.social.core.activity.model.Activity activity : activities) {
+    for (ExoSocialActivity activity : activities) {
       res.add(convertToOSActivity(activity, fields));
     }
     return res;

@@ -21,12 +21,12 @@ import java.util.List;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.jcr.SocialDataLocation;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.ActivityStorage;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 
 
 /**
@@ -58,12 +58,15 @@ public class TracingActivityManager extends ActivityManager {
     this.activityManager = new ActivityManager (activityStorage, identityManager, cacheService);
   }
 
-  public List<Activity> getActivities(Identity identity) {
+  public List<ExoSocialActivity> getActivities(Identity identity) {
     long t1 = System.currentTimeMillis();
     try {
       return activityManager.getActivities(identity);
+    } catch (ActivityStorageException e) {
+      LOG.warn("Failed to getActivities");
     } finally {
       LOG.info("getActivities() : " + (System.currentTimeMillis() - t1) + "ms");
     }
+    return null;
   }
 }

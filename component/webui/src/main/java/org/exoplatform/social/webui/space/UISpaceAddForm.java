@@ -120,7 +120,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
-      space.setName(space.getName().trim());
+      space.setDisplayName(space.getDisplayName().trim());
       if (space.getDescription() == null) {
         space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
       }

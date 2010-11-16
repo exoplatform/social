@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.service.LinkProvider;
 
 /**
@@ -41,7 +41,7 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
   }
 
 
-  public void processActivity(Activity activity) {
+  public void processActivity(ExoSocialActivity activity) {
     if (activity != null) {
     activity.setTitle(substituteUsernames(activity.getTitle()));
     activity.setBody(substituteUsernames(activity.getBody()));

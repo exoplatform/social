@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
 
@@ -58,7 +58,7 @@ public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
     return Integer.MIN_VALUE;
   }
 
-  public void processActivity(Activity activity) {
+  public void processActivity(ExoSocialActivity activity) {
     activity.setTitle(escapeHtml(activity.getTitle()));
     activity.setBody(escapeHtml(activity.getBody()));
   }

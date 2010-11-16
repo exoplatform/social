@@ -26,7 +26,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -114,10 +115,10 @@ public class DataInjector {
   }
 
 
-  public Collection<Activity> generateActivities(long count) {
-    Collection<Activity> activities = new ArrayList<Activity>();
+  public Collection<ExoSocialActivity> generateActivities(long count) {
+    Collection<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     for (int i = 0; i < count; i++) {
-      Activity activity = generateActivity();
+      ExoSocialActivity activity = generateActivity();
       if (activity != null) {
         activities.add(activity);
       }
@@ -125,12 +126,12 @@ public class DataInjector {
     return activities;
   }
 
-  public Collection<Activity> generateActivities(String user, long count) {
-    Collection<Activity> activities = new ArrayList<Activity>();
+  public Collection<ExoSocialActivity> generateActivities(String user, long count) {
+    Collection<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     try {
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user);
     for (int i = 0; i < count; i++) {
-      Activity activity = generateActivity(identity);
+      ExoSocialActivity activity = generateActivity(identity);
       if (activity != null) {
         activities.add(activity);
       }
@@ -143,8 +144,8 @@ public class DataInjector {
   }
 
 
-  private Activity generateActivity(Identity id1) {
-    Activity activity = null;
+  private ExoSocialActivity generateActivity(Identity id1) {
+    ExoSocialActivity activity = null;
     if (id1 != null) {
       try {
         int idx = activityCount.getAndIncrement();
@@ -160,13 +161,13 @@ public class DataInjector {
     return activity;
   }
 
-  private Activity generateActivity() {
+  private ExoSocialActivity generateActivity() {
     Identity id1 = selectRandomUser(null);
     return generateActivity(id1);
   }
 
-  private Activity generateRandomActivity() {
-    Activity activity = new Activity();
+  private ExoSocialActivity generateRandomActivity() {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
     LoremIpsum4J lorem = new LoremIpsum4J();
     activity.setBody(lorem.getWords(10));
     activity.setTitle(lorem.getParagraphs());

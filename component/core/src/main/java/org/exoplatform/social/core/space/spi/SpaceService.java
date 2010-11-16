@@ -49,9 +49,19 @@ public interface SpaceService {
   /**
    * Get space by space name.
    *
+   * @param spaceDisplayName
+   * @return
+   * @throws SpaceException
+   */
+  public Space getSpaceByDisplayName(String spaceDisplayName) throws SpaceException;
+
+  /**
+   * Gets a space by its space name id
+   *
    * @param spaceName
    * @return
    * @throws SpaceException
+   * @since 1.2.0-GA
    */
   public Space getSpaceByName(String spaceName) throws SpaceException;
 
@@ -208,7 +218,7 @@ public interface SpaceService {
   /**
    * De-initialize applications of a space.
    * Make sure call this before {@link #deleteSpace(Space)} or {@link #deleteSpace(String)}
-   * @param spaceId
+   * @param space
    * @throws SpaceException
    */
   void deInitApps(Space space) throws SpaceException;
@@ -250,7 +260,6 @@ public interface SpaceService {
   /**
    * Add a userId to the pending list of a space
    * @param space
-   * @param userId
    * @return space with new pending list
    * @throws SpaceException
    */

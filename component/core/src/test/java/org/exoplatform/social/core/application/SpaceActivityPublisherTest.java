@@ -21,7 +21,8 @@ import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
+import org.exoplatform.social.core.activity.model.ActivityStream;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -42,11 +43,11 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
   private IdentityManager identityManager;
   private SpaceService spaceService;
   private SpaceActivityPublisher spaceActivityPublisher;
-  private List<Activity> tearDownActivityList;
+  private List<ExoSocialActivity> tearDownActivityList;
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    tearDownActivityList = new ArrayList<Activity>();
+    tearDownActivityList = new ArrayList<ExoSocialActivity>();
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     assertNotNull("activityManager must not be null", activityManager);
     identityManager =  (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
@@ -59,7 +60,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
 
   @Override
   public void tearDown() throws Exception {
-    for (Activity activity : tearDownActivityList) {
+    for (ExoSocialActivity activity : tearDownActivityList) {
       try {
         activityManager.deleteActivity(activity.getId());
       } catch (Exception e) {
@@ -74,29 +75,36 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    * @throws Exception
    */
   public void testSpaceCreation() throws Exception {
-    assert true;
-    /*
     Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
 
     Space space = new Space();
-    space.setName("Toto");
+    space.setDisplayName("Toto");
     space.setGroupId("/platform/users");
     spaceService.saveSpace(space, true);
-    String spaceId = space.getId(); // set by storage
+    assertNotNull("space.getId() must not be null", space.getId());
     SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, rootIdentity.getRemoteId(), SpaceLifeCycleEvent.Type.SPACE_CREATED);
     spaceActivityPublisher.spaceCreated(event);
 
     Thread.sleep(3000);
 
-    Identity identity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceId);
-    List<Activity> activities = activityManager.getActivities(identity);
+    Identity identity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName());
+    List<ExoSocialActivity> activities = activityManager.getActivities(identity);
     assertEquals(1, activities.size());
     tearDownActivityList.add(activities.get(0));
     assertTrue(activities.get(0).getTitle().contains(space.getName()));
     assertTrue(activities.get(0).getTitle().contains("root"));
+
+    ActivityStream activityStream = activities.get(0).getActivityStream();
+
+    assertNotNull("activityStream.getId() must not be null", activityStream.getId());
+    
+    assertEquals("activityStream.getPrettyId() must return: " + space.getName(), space.getName(), activityStream.getPrettyId());
+    assertEquals(ActivityStream.Type.SPACE, activityStream.getType());
+
+    assertEquals(SpaceIdentityProvider.NAME, activityStream.getType().toString());
+
     //clean up
     spaceService.deleteSpace(space);
     identityManager.deleteIdentity(rootIdentity);
-    */
   }
 }

@@ -78,6 +78,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.ext</artifactId>
       <scope>provided</scope>
@@ -118,12 +124,20 @@
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.core</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.webui</artifactId>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>
