@@ -464,7 +464,7 @@ public class ActivityStorage {
     } catch (Exception e) {
       throw new Exception("Failed to locate stream owner node for " + username +"; " + e.getMessage(), e);
     } finally {
-      sessionManager.closeSession();
+      sessionManager.closeSession(true);
     }
   }
 
@@ -706,7 +706,7 @@ public class ActivityStorage {
 
   private LinkProvider getLinkProvider() {
     if (linkProvider == null) {
-      linkProvider = (LinkProvider) PortalContainer.getComponent(LinkProvider.class);
+      linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
     }
     return linkProvider;
   }
