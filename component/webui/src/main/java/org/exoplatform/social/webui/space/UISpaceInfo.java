@@ -73,10 +73,13 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
   }
 )
 public class UISpaceInfo extends UIForm {
-  private final String SPACE_PRIORITY = "priority";
-  private final String PRIORITY_HIGH = "high";
-  private final String PRIORITY_IMMEDIATE = "immediate";
-  private final String PRIORITY_LOW = "low";
+  private static final String SPACE_PRIORITY = "priority";
+  private static final String PRIORITY_HIGH = "high";
+  private static final String PRIORITY_IMMEDIATE = "immediate";
+  private static final String PRIORITY_LOW = "low";
+  private static final String SPACE_ID = "id";
+  private static final String SPACE_DISPLAY_NAME = "displayName";
+  private static final String SPACE_DESCRIPTION = "description";
   private SpaceService spaceService = null;
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
   /**
@@ -84,15 +87,15 @@ public class UISpaceInfo extends UIForm {
    * @throws Exception
    */
   public UISpaceInfo() throws Exception {
-    addUIFormInput((UIFormStringInput)new UIFormStringInput("id","id",null).setRendered(false));
+    addUIFormInput((UIFormStringInput)new UIFormStringInput(SPACE_ID, SPACE_ID, null).setRendered(false));
 
-    addUIFormInput(new UIFormStringInput("name","name",null).
+    addUIFormInput(new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null).
                    addValidator(MandatoryValidator.class).
                    //addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
                    addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30));
 
-    addUIFormInput(new UIFormTextAreaInput("description","description",null).
+    addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null).
                    addValidator(MandatoryValidator.class).
                    addValidator(StringLengthValidator.class, 0, 255));
 
@@ -140,7 +143,7 @@ public class UISpaceInfo extends UIForm {
    */
   protected String getImageSource() throws Exception {
     SpaceService spaceService = getSpaceService();
-    String id = getUIStringInput("id").getValue();
+    String id = getUIStringInput(SPACE_ID).getValue();
     Space space = spaceService.getSpaceById(id);
     return space.getImageSource();
   }
@@ -161,8 +164,8 @@ public class UISpaceInfo extends UIForm {
       PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
-      String id = uiSpaceInfo.getUIStringInput("id").getValue();
-      String name = uiSpaceInfo.getUIStringInput("name").getValue();
+      String id = uiSpaceInfo.getUIStringInput(SPACE_ID).getValue();
+      String name = uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).getValue();
       Space space = spaceService.getSpaceById(id);
       String spaceUrl = space.getUrl();
       if (space == null) {
@@ -172,7 +175,7 @@ public class UISpaceInfo extends UIForm {
       }
       PageNode selectedNode = uiPortal.getSelectedNode();
       PageNode homeNode = null;
-      boolean nameChanged = (!space.getName().equals(name));
+      boolean nameChanged = (!space.getDisplayName().equals(name));
       if (nameChanged) {
         String cleanedString = SpaceUtils.cleanString(name);
         if (spaceService.getSpaceByUrl(cleanedString) != null) {

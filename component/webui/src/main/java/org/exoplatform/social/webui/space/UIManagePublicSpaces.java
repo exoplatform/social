@@ -225,7 +225,7 @@ public class UIManagePublicSpaces extends UIContainer {
       while(spaceItr.hasNext()) {
         Space space = spaceItr.next();
         for(Space publicSpace : allPublicSpace) {
-          if(space.getName().equals(publicSpace.getName())){
+          if(space.getDisplayName().equals(publicSpace.getDisplayName())){
             publicSpaces.add(publicSpace);
             break;
           }
@@ -245,7 +245,7 @@ public class UIManagePublicSpaces extends UIContainer {
     List<Space> publicSpaces = getAllPublicSpaces();
     List<String> publicSpaceNames = new ArrayList<String>();
     for (Space space : publicSpaces) {
-      publicSpaceNames.add(space.getName());
+      publicSpaceNames.add(space.getDisplayName());
     }
 
     return publicSpaceNames;

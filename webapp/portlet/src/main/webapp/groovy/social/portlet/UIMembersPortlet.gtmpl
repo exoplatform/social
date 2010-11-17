@@ -35,7 +35,7 @@
     def leaders = uicomponent.getLeaderList()
     def space = uicomponent.getSpace();
     def visibility = space.getVisibility();
-    def spaceName = space.getName();
+    def spaceName = space.getDisplayName();
     def position = adminName = "";
     def adminProfileURL = "#";
     def clzz = "PortletContent";

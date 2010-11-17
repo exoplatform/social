@@ -226,7 +226,7 @@ public class UISpaceMenu extends UIContainer {
     if (space == null) {
       return null;
     }
-    return space.getName();
+    return space.getDisplayName();
   }
 
   /**

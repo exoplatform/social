@@ -114,7 +114,7 @@ public class UISocialUserToolBarGroupPortlet extends UIPortletApplication {
     SpaceService spaceSrv = getSpaceService();
     List<Space> spaces = spaceSrv.getAllSpaces();
     for (Space space : spaces) {
-      if (space.getName().equals(node.getUri()))
+      if (space.getDisplayName().equals(node.getUri()))
         return false;
     }
     return true;

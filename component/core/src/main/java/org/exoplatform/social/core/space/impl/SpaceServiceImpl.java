@@ -159,7 +159,7 @@ public class SpaceServiceImpl implements SpaceService {
     Iterator<Space> itr = spaces.iterator();
     while (itr.hasNext()) {
       Space space = itr.next();
-      if (!space.getName().toLowerCase().startsWith(firstCharacterOfName.toLowerCase()))
+      if (!space.getDisplayName().toLowerCase().startsWith(firstCharacterOfName.toLowerCase()))
         itr.remove();
     }
 
@@ -303,7 +303,7 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public Space createSpace(Space space, String creator, String invitedGroupId) throws SpaceException {
     // Creates new space by creating new group
-    String groupId = SpaceUtils.createGroup(space.getName(), creator);
+    String groupId = SpaceUtils.createGroup(space.getDisplayName(), creator);
 
     if (invitedGroupId != null) { // Invites user in group join to new created
                                   // space.
@@ -328,7 +328,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     space.setGroupId(groupId);
-    space.setUrl(SpaceUtils.cleanString(space.getName()));
+    space.setUrl(space.getName());
     saveSpace(space, true);
     spaceLifeCycle.spaceCreated(space, creator);
     return space;

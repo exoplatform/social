@@ -409,7 +409,7 @@ public class SpaceUtils {
     String pageId = spacePageNode.getPageReference();
     DataStorage dataStorage = getDataStorage();
     Page page = dataStorage.getPage(pageId);
-    page.setTitle(page.getTitle().replace(space.getName(), newSpaceName));
+    page.setTitle(page.getTitle().replace(space.getDisplayName(), newSpaceName));
     dataStorage.save(page);
     ArrayList<ModelObject> pageChildren = page.getChildren();
     Container menuContainer = findContainerById(pageChildren, MENU_CONTAINER);
@@ -742,7 +742,7 @@ public class SpaceUtils {
     List<Space> spaces = spaceService.getAllSpaces();
     // Checks whether spaceName has existed yet
     for (Space space : spaces) {
-      if (cleanString(space.getName()).equalsIgnoreCase(cleanString(spaceName)))
+      if (cleanString(space.getDisplayName()).equalsIgnoreCase(cleanString(spaceName)))
         return true;
     }
     return false;

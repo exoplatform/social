@@ -213,7 +213,7 @@ public class UIManagePendingSpaces extends UIContainer {
       while(spaceItr.hasNext()) {
         Space space = spaceItr.next();
         for(Space pendingSpace : allPendingSpace) {
-          if(space.getName().equals(pendingSpace.getName())){
+          if(space.getDisplayName().equals(pendingSpace.getDisplayName())){
             pendingSpaces.add(pendingSpace);
             break;
           }
@@ -234,7 +234,7 @@ public class UIManagePendingSpaces extends UIContainer {
     List<Space> pendingSpaces = getAllPendingSpaces();
     List<String> pendingSpaceNames = new ArrayList<String>();
     for (Space space : pendingSpaces) {
-      pendingSpaceNames.add(space.getName());
+      pendingSpaceNames.add(space.getDisplayName());
     }
 
     return pendingSpaceNames;

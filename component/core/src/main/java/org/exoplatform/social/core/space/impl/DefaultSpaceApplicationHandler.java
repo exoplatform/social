@@ -293,7 +293,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
 
       // In case bug SOC-674
       if (childNode == null) {
-        nodeName = space.getName() + nodeName;
+        nodeName = space.getDisplayName() + nodeName;
         childNode = homeNode.getChild(nodeName);
       }
 
@@ -387,7 +387,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       portletApplication.setShowInfoBar(false);
     }
 
-    String pageTitle = space.getName() + " - " + app.getDisplayName();
+    String pageTitle = space.getDisplayName() + " - " + app.getDisplayName();
     String pageName = app.getApplicationName();
     if (SpaceUtils.isInstalledApp(space, appId) && (appName != null)) {
       pageName = appName;
@@ -418,7 +418,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
 
     if (isRoot) {
       pageName = space.getUrl();
-      label = space.getName();
+      label = space.getDisplayName();
       pageNode.setUri(pageName);
     } else {
       pageNode.setUri(space.getUrl() + "/" + pageName);
@@ -504,13 +504,13 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   /**
    * Sets permission for page
    *
-   * @param childs
-   * @param id
+   * @param children
+   * @param perm
    * @return
    */
   @SuppressWarnings("unchecked")
-  private void setPermissionForPage(ArrayList<ModelObject> childrens, String perm) {
-    for (ModelObject modelObject : childrens) {
+  private void setPermissionForPage(ArrayList<ModelObject> children, String perm) {
+    for (ModelObject modelObject : children) {
       if (modelObject instanceof org.exoplatform.portal.config.model.Application<?>) {
         ((org.exoplatform.portal.config.model.Application) modelObject).setAccessPermissions(new String[] { perm });
       } else if (modelObject instanceof Container) {

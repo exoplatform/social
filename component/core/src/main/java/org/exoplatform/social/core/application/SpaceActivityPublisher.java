@@ -62,7 +62,7 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
       // this should create the identity for the space
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName(), false);
       String creator = event.getTarget();
-      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, space.getName() + " was created by @" + creator + " .");
+      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, space.getDisplayName() + " was created by @" + creator + " .");
     } catch (Exception e) {
       LOG.error("Failed to initialize space activity stream ", e);
     }

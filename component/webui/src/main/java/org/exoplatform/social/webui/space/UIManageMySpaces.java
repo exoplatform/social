@@ -430,7 +430,7 @@ public class UIManageMySpaces extends UIContainer {
       while(spaceItr.hasNext()) {
         Space space = spaceItr.next();
         for(Space userSpace : allUserSpace) {
-          if(space.getName().equalsIgnoreCase(userSpace.getName())){
+          if(space.getDisplayName().equalsIgnoreCase(userSpace.getDisplayName())){
             mySpaces.add(userSpace);
             break;
           }
@@ -473,7 +473,7 @@ public class UIManageMySpaces extends UIContainer {
     List<Space> allSpaces = getAllUserSpaces();
     List<String> allSpacesNames = new ArrayList<String>();
     for (Space space : allSpaces){
-      allSpacesNames.add(space.getName());
+      allSpacesNames.add(space.getDisplayName());
     }
 
     return allSpacesNames;
@@ -532,7 +532,7 @@ public class UIManageMySpaces extends UIContainer {
 
        // In case bug SOC-674
        if (childNode == null) {
-     	  nodeName = space.getName() + nodeName;
+     	  nodeName = space.getDisplayName() + nodeName;
      	  childNode = homeNode.getChild(nodeName);
        }
 

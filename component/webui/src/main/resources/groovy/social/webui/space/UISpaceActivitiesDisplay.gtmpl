@@ -26,8 +26,8 @@
   
   def space = uicomponent.getSpace();
   def uicomponentId = uicomponent.id;
-  def labelActivityStreamOfSpace = _ctx.appRes("${uicomponentId}.label.Activity_Stream_Of_Space").replace("{0}", space.name);
-  def labelEmptyActivityList = _ctx.appRes("${uicomponentId}.label.Empty_Activity_List").replace("{0}", space.name);
+  def labelActivityStreamOfSpace = _ctx.appRes("${uicomponentId}.label.Activity_Stream_Of_Space").replace("{0}", space.displayName);
+  def labelEmptyActivityList = _ctx.appRes("${uicomponentId}.label.Empty_Activity_List").replace("{0}", space.displayName);
  %>
 
 <div class="UIDisplaySpaceActivities" id="$uicomponent.id">

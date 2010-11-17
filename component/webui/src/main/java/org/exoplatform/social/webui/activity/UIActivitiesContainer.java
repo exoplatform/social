@@ -103,7 +103,7 @@ public class UIActivitiesContainer extends UIContainer {
     while (getChild(BaseUIActivity.class) != null){
       removeChild(BaseUIActivity.class);
     }
-    
+
     if (activityList == null) {
       activityList = new ArrayList<ExoSocialActivity>();
     }
@@ -124,7 +124,7 @@ public class UIActivitiesContainer extends UIContainer {
 
   public void removeActivity(ExoSocialActivity removedActivity) {
     for (ExoSocialActivity activity: activityList) {
-      if (activity.getId() == removedActivity.getId()) {
+      if (activity.getId().equals(removedActivity.getId())) {
         activityList.remove(activity);
         break;
       }

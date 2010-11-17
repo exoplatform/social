@@ -76,7 +76,7 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
 
   @Override
   public void populateProfile(Profile profile, Space space) {
-    profile.setProperty(Profile.FIRST_NAME, space.getName());
+    profile.setProperty(Profile.FIRST_NAME, space.getDisplayName());
     profile.setProperty(Profile.USERNAME, space.getGroupId());
     profile.setProperty(Profile.AVATAR_URL, space.getImageSource());
     profile.setProperty(Profile.URL, space.getImageSource());

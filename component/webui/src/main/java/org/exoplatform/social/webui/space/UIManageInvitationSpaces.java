@@ -286,7 +286,7 @@ public class UIManageInvitationSpaces extends UIContainer {
     List<Space> invitedSpaces = getInvitationSpaces();
     List<String> invitedSpaceNames = new ArrayList<String>();
     for (Space space: invitedSpaces) {
-      invitedSpaceNames.add(space.getName());
+      invitedSpaceNames.add(space.getDisplayName());
     }
 
     return invitedSpaceNames;
@@ -334,7 +334,7 @@ public class UIManageInvitationSpaces extends UIContainer {
       while(spaceItr.hasNext()) {
         Space space = spaceItr.next();
         for(Space invitationSpace : allInvitationSpace) {
-          if(space.getName().equals(invitationSpace.getName())){
+          if(space.getDisplayName().equals(invitationSpace.getDisplayName())){
             invitedSpaces.add(invitationSpace);
             break;
           }

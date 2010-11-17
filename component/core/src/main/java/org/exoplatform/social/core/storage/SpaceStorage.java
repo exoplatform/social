@@ -180,14 +180,17 @@ public class SpaceStorage {
     Space space = null;
     try {
       Node spaceHomeNode = getSpaceHome(session);
-      String spaceHomeNodePath = spaceHomeNode.getPath();
       List<Node> nodes = new QueryBuilder(session)
               .select(SPACE_NODETYPE)
-              .like(SPACE_NAME, spaceDisplayName).exec();
+              .equal(SPACE_NAME, spaceDisplayName).exec();
       if (nodes.size() == 1) {
         space =  getSpace(nodes.get(0), session);
       } else {
-        LOG.warn("More than one node found for name: " + spaceDisplayName);
+        if (nodes.size() > 1) {
+          LOG.warn("More than one node found for name: " + spaceDisplayName);
+        } else {
+          LOG.warn("No node found for name: " + spaceDisplayName);
+        }
       }
     } catch (Exception e) {
       LOG.warn("Failed to getSpaceByDisplayName: " + e.getMessage(), e);
@@ -236,14 +239,17 @@ public class SpaceStorage {
     Space space = null;
     try {
       Node spaceHomeNode = getSpaceHome(session);
-      String spaceHomeNodePath = spaceHomeNode.getPath();
       List<Node> nodes = new QueryBuilder(session)
               .select(SPACE_NODETYPE)
-              .like(SPACE_URL, url).exec();
+              .equal(SPACE_URL, url).exec();
       if (nodes.size() == 1) {
         space =  getSpace(nodes.get(0), session);
       } else {
-        LOG.warn("Problem: nodes.size() != 1");
+        if (nodes.size() > 1) {
+          LOG.warn("More than one node found for url: " + url);
+        } else {
+          LOG.warn("No node found for url: " + url);
+        }
       }
     } catch (Exception e) {
       LOG.warn("Failed to getSpaceByUrl: " + e.getMessage(), e);
