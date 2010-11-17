@@ -15,7 +15,7 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 .UIWindow .UISocialHomepage {
-    margin: 0px;
+	margin: 0px;
 }
 
 .UISocialHomepage {
@@ -166,13 +166,10 @@
 	font-size: 14px;
 }
 
-.UISocialHomepage  .LeftSocialHomepage {
-	overflow:hidden;
-}
-
 .UISocialHomepage  .LeftSocialHomepage  .RowContent  {	
 	padding: 5px 0px 5px 24px; /* orientation=lt */
 	padding: 5px 24px 5px 0px; /* orientation=rt */
+	overflow: hidden;
 }
 
 .UISocialHomepage .LeftSocialHomepage .ProductTitle {
@@ -230,15 +227,17 @@
 }
 
 .UISocialHomepage .RightSocialHomepage  .BlockWebsite {
+	margin-left: 11px;
 	padding-bottom:25px;
 	text-align:center;
 	width: 90px;
 }
 
 .UISocialHomepage .RightSocialHomepage  .BlockResource {
+	margin-left: 9px;
 	padding-bottom:25px;
 	text-align:center;
-	width: 125px;
+	width: 109px;
 }
 
 .UISocialHomepage .RightSocialHomepage .Icon {
@@ -283,19 +282,24 @@
 	color: #565759;
 	font-size: 12px;
 	font-family: Lucida;
+	display: inline-block;
+}
+
+.RightSocialHomepage .BlockWebsite .TxtLinkIcon {
+	width: 70px;
 }
 
 .UIPageBody .BLPagebody{
- 	background: none;
- 	background-color: #eeeeee
+	background: none;
+	background-color: #eeeeee
  }
  
 .UIPageBody .BRPagebody{
- 	background: none;
- 	background-color: #eeeeee
+	background: none;
+	background-color: #eeeeee
  }
  
 .UIPageBody .BMPagebody{
- 	background: none;
- 	background-color: #eeeeee
+	background: none;
+	background-color: #eeeeee
 }
