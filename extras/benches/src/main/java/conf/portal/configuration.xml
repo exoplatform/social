@@ -18,28 +18,38 @@
 
 -->
 
-<configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
-   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+	xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
 
   <component>
-    <type>org.exoplatform.social.benches.DataInjector</type>
+    <type>org.exoplatform.social.extras.benches.DataInjector</type>
   </component>
 
   <component>
-    <type>org.exoplatform.social.benches.StartupInjectionConfig</type>
+    <type>org.exoplatform.social.extras.benches.StartupInjectionConfig</type>
     <init-params>
       <properties-param>
         <name>inject.conf</name>
         <description>possible properties are 'people', 'relations' and 'activities'  or USERNAME.activities (ex: john.activities) as long values</description>
-        <!--  Example config : 100 of each -->
-        <!--
-        <property name="people" value="100"/>
-        <property name="relations" value="100"/>
-        <property name="activities" value="100"/>
-        <property name="john.activities" value="10"/>
-        -->
+        <!-- create 50 users -->
+        <!-- <property name="people" value="50"/> -->
+
+        <!-- create 50 random relations -->
+        <!-- <property name="relations" value="50"/> -->
+
+        <!-- create 1000 random activities -->
+        <!-- <property name="activities" value="1000"/>  -->
+        
+        <!-- inject 100 activities to john's stream -->
+        <!-- <property name="john.activities" value="100"/> -->
+        
+        <!-- inject 10 spaces -->
+        <!-- <property name="spaces" value="10"/> --> 
+         
+        <!-- add 10 members to each space created (requires "spaces > 0") -->
+        <!-- <property name="spaces.members" value="10"/> --> 
+
       </properties-param>
     </init-params>
   </component>

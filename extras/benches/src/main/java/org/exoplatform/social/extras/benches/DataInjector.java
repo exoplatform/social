@@ -21,19 +21,23 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.extras.benches.util.LoremIpsum4J;
 import org.exoplatform.social.extras.benches.util.NameGenerator;
@@ -141,7 +145,51 @@ public class DataInjector {
     }
     return activities;
   }
+  
+  
+  public Collection<Space> generateSpaces(long count) {
+    Collection<Space> spaces = new ArrayList<Space>();
+    for (int i = 0; i < count; i++) {
+      Space space = generateSpace();
+      if (space != null) {
+        spaces.add(space);
+      }
+    }
+    return spaces;
+  }
+  
+  
+  private Space generateSpace() {
+    Identity id1 = selectRandomUser(null);
+    return generateSpace(id1);
+  }
+  
+  private Space generateSpace(Identity owner) {
+    Space space = null;
+    if (owner != null) {
+      try {
+        int idx = spaceCount.getAndIncrement();
+        space = generateRandomSpace();
+        space.setDescription("benches:"+ idx);
+        space.setVisibility(Space.PUBLIC);
+        space.setRegistration(Space.OPEN);
+        space.setPriority(Space.INTERMEDIATE_PRIORITY);
+        spaceService.createSpace(space, owner.getRemoteId());
+        LOG.info(owner.getRemoteId() + " created space " + space.getName());
+      } catch (Exception e) {
+        LOG.error("failed to save space " + space.getName() + ": "  + e.getMessage());
+      }
 
+    }
+    return space;
+  }
+  
+
+  private Space generateRandomSpace() {
+    Space space = new Space();
+    space.setName(nameGenerator.compose(3));
+    return space;
+  }
 
   private Activity generateActivity(Identity id1) {
     Activity activity = null;
@@ -211,7 +259,9 @@ public class DataInjector {
     String username = null;
     while (identity == null) {
       try {
-        username = username(getRandomUserIndex());
+        
+        username = pickupRandomUser();
+        
         String id = GlobalId.create(OrganizationIdentityProvider.NAME, username).toString();
         identity = identityManager.getIdentity(id);
         if (except != null && except.getId().equals(identity.getId())) {
@@ -226,6 +276,27 @@ public class DataInjector {
       }
     }
     return identity;
+  }
+
+  private String pickupRandomUser() throws Exception {
+    String username;
+    if (userCount.get() > 0) {
+    username = username(getRandomUserIndex());
+    } else {
+      username = findRandomUserInOrgService();
+    }
+    return username;
+  }
+
+  private String findRandomUserInOrgService() throws Exception  {
+    UserHandler userService = orgnizationservice.getUserHandler();
+    Query q = new Query();
+    ListAccess<User> userlist = userService.findUsersByQuery(q);
+    User[] users = userlist.load(0, 10);
+    Random rnd = new Random();   
+    int idx = rnd.nextInt(10);
+    User user = users[idx];
+    return user.getUserName();
   }
 
   private int getRandomUserIndex() {
@@ -327,6 +398,24 @@ public class DataInjector {
 
   public AtomicInteger getSpaceCount() {
     return spaceCount;
+  }
+
+  public void inviteMembers(Collection<Space> spacesCreated, long membersPerSpace) {
+    for (Space space : spacesCreated) {
+      
+      for (int i = 0; i< membersPerSpace ;i++) {
+        try {
+        String userId = pickupRandomUser();
+        spaceService.addMember(space, userId) ; 
+        LOG.info("Added member " + userId + " to space " + space.getName());
+        } catch (Exception e) {
+          LOG.error("Failed to invite a random user to space " + space.getName() + ": " + e.getMessage());
+        }
+ 
+      }
+      
+    }
+     
   }
 
 }

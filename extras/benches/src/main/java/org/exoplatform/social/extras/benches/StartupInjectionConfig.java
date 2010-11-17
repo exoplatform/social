@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.extras.benches;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.exoplatform.container.xml.Property;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.space.model.Space;
 import org.picocontainer.Startable;
 
 /**
@@ -48,6 +50,10 @@ public class StartupInjectionConfig implements Startable {
 
   private long             activities = 0;
 
+  private long             spaces = 0;
+  
+  private long              membersPerSpace = 0;
+  
   private Map<String, Long> userActivities = new HashMap<String,Long>();
 
   private DataInjector     injector;
@@ -81,16 +87,30 @@ public class StartupInjectionConfig implements Startable {
         String name = property.getName();
         String value = property.getValue();
         Long longValue = longValue(name, value);
-        if ("people".equals(property)) {
+        if ("people".equals(name)) {
           people = longValue;
-        } else if ("relations".equals(property)) {
+        } 
+        if ("relations".equals(name)) {
           relations = longValue;
-        } else if ("activities".equals(property)) {
+        } 
+        
+        if ("activities".equals(name)) {
           activities = longValue;
-        } else if (name.contains(".activities")) {
+        } 
+        
+        if (name.contains(".activities")) {
           String user = name.substring(0, name.indexOf(".activities"));
           userActivities.put(user, longValue);
         }
+        
+        if ("spaces".equals(name)) {
+          spaces = longValue;
+        }
+        
+        if ("spaces.members".equals(name)) {
+          membersPerSpace = longValue;
+        }
+        
       }
 
 
@@ -148,6 +168,18 @@ public class StartupInjectionConfig implements Startable {
       LOG.info("\t> about to inject " + activities + " activities.");
       injector.generateActivities(activities);
     }
+    
+    if (spaces > 0) {
+      nothingWasDone = false;
+      LOG.info("\t> about to inject " + spaces + " spaces.");
+      Collection<Space> spacesCreated = injector.generateSpaces(spaces);
+ 
+      if (membersPerSpace > 0) {
+        LOG.info("\t> about to inject " + membersPerSpace + " per space.");
+         injector.inviteMembers(spacesCreated,membersPerSpace);
+      }
+      
+    }         
 
     if(! userActivities.isEmpty()) {
       Set<Entry<String,Long>> entries = userActivities.entrySet();
@@ -157,6 +189,8 @@ public class StartupInjectionConfig implements Startable {
         LOG.info("\t> about to inject " + count + " activities for " + username + ".");
         injector.generateActivities(username, count);
       }
+      
+ 
 
     }
 
