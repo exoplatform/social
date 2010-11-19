@@ -138,3 +138,12 @@
   color:gray;
   text-align:center;
 }
+
+.InformationIcon {
+  background: url('DefaultSkin/background/Information.png') no-repeat left top;
+  padding-left: 20px;
+}
+
+.UINoneGroupBoundLabel {
+  color:gray;
+}

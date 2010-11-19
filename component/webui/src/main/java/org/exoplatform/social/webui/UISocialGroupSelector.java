@@ -49,7 +49,7 @@ import org.exoplatform.webui.form.UIForm;
  */
 @ComponentConfigs({
   @ComponentConfig(
-    template = "system:/groovy/webui/organization/account/UIGroupSelector.gtmpl",
+    template = "classpath:groovy/social/webui/space/UISocialGroupSelector.gtmpl",
     events = {
       @EventConfig(phase = Phase.DECODE, listeners = UISocialGroupSelector.ChangeNodeActionListener.class),
       @EventConfig(phase = Phase.DECODE, listeners = UISocialGroupSelector.SelectGroupActionListener.class),

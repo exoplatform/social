@@ -26,16 +26,34 @@
   
   def lblCheckbox = _ctx.appRes("${uicomponent.id}.label.checkbox");
   def lblDescription = _ctx.appRes("${uicomponent.id}.label.description");
+  def lblDescription_hasGroupManagerRole = _ctx.appRes("${uicomponent.id}.label.description_hasGroupManagerRole");
+  def lblDescription_notHasGroupManagerRole = _ctx.appRes("${uicomponent.id}.label.description_notHasGroupManagerRole");
   def lblSelectedGroup = _ctx.appRes("${uicomponent.id}.label.selected_group");
   
   def uiCheckbox = uicomponent.getChild(UIFormCheckBoxInput.class);
   def checked = uiCheckbox.isChecked();
+  def hasGroupWithManagerRole = uicomponent.hasGroupWithManagerRole();
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <%if (checked) {%>
   <div class="UIGroupSelected"><%= lblSelectedGroup %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
   <%}%>
-  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><label for="useExistingGroup"><%= lblCheckbox %></label></span></div>
-  <div class="UIGroupBoundDescription"><%= lblDescription %></div>
+  <%if (hasGroupWithManagerRole) {
+    uiCheckbox.setEnable(true); %>
+	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UIGroupBoundLabel"><label for="useExistingGroup"><%= lblCheckbox %></label></span></div>
+	  <div class="UIGroupBoundDescription">
+	    <%= lblDescription %>
+ 	    <%= lblDescription_hasGroupManagerRole %>
+	  </div>
+  <% } else {
+    uiCheckbox.setEnable(false); %>
+	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UIFormCheckBoxInput.class) %> <span class="UINoneGroupBoundLabel"><label for="useExistingGroup"><%= lblCheckbox %></label></span></div>
+	  <div class="UIGroupBoundDescription">
+	    <%= lblDescription %>
+	    <div class="InformationIcon">
+        <%= lblDescription_notHasGroupManagerRole %>
+      </div>
+	  </div>
+  <% } %>
   <div class="UIGroupBoundPopup"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>
