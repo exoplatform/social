@@ -278,13 +278,13 @@ a:VISITED {
  * Refactor to share the css with Spaces
  */
 .UIPeoplePortlet .ContainerSpace{
-  padding:8px 24px 8px 28px;
+	border: solid 1px #D6D6D6;
+	-moz-border-radius: 3px;
 }
 
 .UIPeoplePortlet .ATitleBarL {
   background: url('DefaultSkin/background/ATitleBarL.gif') no-repeat left top;
   padding-left: 4px;
-  margin-top: 8px;
 }
 
 .UIPeoplePortlet .ATitleBarR {
@@ -327,14 +327,12 @@ a:VISITED {
 .UIPeoplePortlet .ContainerSpace .ContentSpace {
   background: white;
   padding: 8px;
-  margin-bottom:4px;
   background: #fbfbfb;
 }
 
 .UIPeoplePortlet .ContainerSpace .ContentSpaceGray {
   background: white;
   padding: 8px;
-  margin-bottom:4px;
   background: #f3f3f3;
 }
 

@@ -274,7 +274,8 @@
  * Refactor to share the css with Spaces
  */
 .UITabPane .ContainerSpace{
-  padding:8px 24px 8px 28px;
+	padding:10px;
+	background: #fff;
 }
 
 .UITabPane .ATitleBarL {

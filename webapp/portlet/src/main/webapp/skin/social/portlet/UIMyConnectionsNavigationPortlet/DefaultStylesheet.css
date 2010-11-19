@@ -50,6 +50,10 @@
 	background: #f3f3f3;
 }
 
+.UIMyConnectionsNavigationPortlet{
+	background: #F3F3F3;
+}
+
 .UIMyConnectionsNavigationPortlet .RelTitle {
 	background: url(DefaultSkin/background/RelTitle.gif) no-repeat center top;
 	color: #2f2f2f;

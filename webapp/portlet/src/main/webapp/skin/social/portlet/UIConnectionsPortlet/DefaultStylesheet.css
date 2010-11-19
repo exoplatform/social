@@ -35,6 +35,10 @@
 	zoom: 100%;
 }
 
+.ConnectionsPortletTDContainer{
+	background: #fff;
+}
+
 .UIProfile {
 	padding: 8px;
 	font-family: tahoma;
@@ -274,7 +278,8 @@
  * Refactor to share the css with Spaces
  */
 .UITabPane .ContainerSpace{
-	padding:8px 24px 8px 28px;
+	padding:10px;
+	background: #fff;
 }
 
 .UITabPane .ATitleBarL {

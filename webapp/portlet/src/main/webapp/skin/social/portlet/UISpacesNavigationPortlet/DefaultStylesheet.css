@@ -3,8 +3,8 @@
 }
 
 #sociallayout {
-  -moz-border-radius: 3px;
-  border: 1px solid #d6d6d6;
+	border: 1px solid #d6d6d6;
+	-moz-border-radius:3px 3px 3px 3px;
 }
 
 #sociallayout .UIComponentBlock {
@@ -17,6 +17,10 @@
 
 .MySpacesPortletTDContainer {
   background: white;
+}
+
+.UISpacesNavigationPortlet{
+	background: #EDEDED;
 }
 
 .UISpacesNavigationPortlet .ProfTitle {

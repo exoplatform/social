@@ -5,6 +5,11 @@
 @import url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin.css');
 
 .UIPendingSpacesPortlet {
+	background: #fff;
+}
+
+.PendingSpacesPortletTDContainer{
+	background: #fff;
 }
 
 .UIManageInvitationSpaces {

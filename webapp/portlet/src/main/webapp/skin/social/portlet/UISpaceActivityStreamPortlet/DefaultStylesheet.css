@@ -27,14 +27,16 @@
  */
 
 .clearfix:after {
-content: ".";
-display: block;
-height: 0;
-clear: both;
-visibility: hidden;
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
 }
 
-.clearfix {display: inline-block;}
+.clearfix {
+	display: inline-block;
+}
 
 /* Hides from IE-mac \*/
 * html .clearfix {height: 1%;}
@@ -78,6 +80,7 @@ visibility: hidden;
 
 .UISpaceActivitiesContainer {
   padding: 10px 10px 20px 10px;
+  background: #fff;
 }
 
 .UISpaceActivityStreamPortlet .link {
