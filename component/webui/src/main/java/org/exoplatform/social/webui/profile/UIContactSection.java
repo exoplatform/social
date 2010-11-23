@@ -21,8 +21,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.exoplatform.container.ExoContainer;
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -43,7 +44,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
  * Component is used for contact information managing.<br>
- * Some contact information such as: email, phone, ims, website ...
+ * Some contact information such as: phone, ims, website ...
  * This is one part of profile management beside basic information and experience.<br>
  *
  * Modified : hanh.vi
@@ -62,140 +63,90 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
   }
 )
 public class UIContactSection extends UIProfileSection {
-  /** EMAILS. */
-  final public static String EMAILS = "emails";
-
-  /** PHONES. */
-  final public static String PHONES = "phones";
-
-  /** IMS. */
-  final public static String IMS = "ims";
-
-  /** URLS. */
-  final public static String URLS = "urls";
-
-  /** URL. */
-  final public static String URL = "url";
-
-  /** EMAIL. */
-  final public static String EMAIL = "email";
+  /** GENDER */
+  public static final String GENDER_CHILD = "gender";
 
   /** PHONE. */
-  final public static String PHONE = "phone";
+  public static final String PHONE = "1phone";
 
-  /** FONE. */
-  final public static String FONE = "fone";
+  /** URL. */
+  public static final String IM = "2im";
 
-  /** RLU. */
-  final public static String RLU = "rlu";
-
-  /** WORK. */
-  final public static String WORK = "Work";
-
-  /** HOME. */
-  final public static String HOME = "Home";
-
-  /** OTHER. */
-  final public static String OTHER = "Other";
-
-  /** GTALK. */
-  final public static String GTALK = "Gtalk";
-
-  /** MSN. */
-  final public static String MSN = "Msn";
-
-  /** SKYPE. */
-  final public static String SKYPE = "Skype";
-
-  /** YAHOO. */
-  final public static String YAHOO = "Yahoo";
-
-  /** WEBSITE TITLE. */
-  final public static String WEBSITE_TITLE = "Website Title";
-
-  /** URL EXAMPLE. */
-  final public static String URL_EXAMPLE = "http://";
-
-  /** KEY. */
-  final public static String KEY = "key";
-
-  /** VALUE. */
-  final public static String VALUE = "value";
-
-  /** EMAIL REGEX EXPRESSION. */
-  final public static String EMAIL_REGEX_EXPRESSION = "^([^@\\s]+)@((?:[-a-z0-9]+\\.)+[a-z]{2,})$";
-
-  /** INVALID EMAIl. */
-  final public static String INVALID_EMAIl = "UIContactSect.msg.Invalid-email";
-
-  /** PHONE REGEX EXPRESSION. */
-  final public static String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]+$";
-
-  /** INVALID PHONE. */
-  final public static String INVALID_PHONE = "UIContactSect.msg.Invalid-phone";
-
-  /** URL REGEX EXPRESSION. */
-  final public static String URL_REGEX_EXPRESSION = "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
-
-  /** INVALID URL. */
-  final public static String INVALID_URL = "UIContactSect.msg.Invalid-url";
-
-  /** GENDER Child. */
-  final public static String GENDER_CHILD = "UITgender";
-
-  /** GENDER. */
-  final public static String GENDER = "gender";
-
-  /** DEFAULT GENDER. */
-  final public static String GENDER_DEFAULT = "Gender";
+  /** URL. */
+  public static final String URL = "3url";
 
   /** MALE. */
-  final public static String MALE = "male";
+  public static final String VALUE_GENDER_MALE      = "male";
 
   /** FEMALE. */
-  final public static String FEMALE = "female";
+  public static final String VALUE_GENDER_FEMALE    = "female";
 
-  /** Number of email. */
-  private int emailCount = 0;
+  /** PHONE_TYPES. */
+  public static final String[] PHONE_TYPES = new String[] {"Work","Home","Other"};
+
+  /** IM_TYPES. */
+  public static final String[] IM_TYPES = new String[] {"Gtalk","Msn","Skype","Yahoo","Other"};
+
+  /** WEBSITE TITLE. */
+  public static final String WEBSITE_TITLE = "Website Title";
+
+  /** URL EXAMPLE. */
+  public static final String URL_EXAMPLE = "http://";
+
+  /** KEY. */
+  public static final String KEY = "key";
+
+  /** VALUE. */
+  public static final String VALUE = "value";
+
+//  /** EMAIL REGEX EXPRESSION. */
+//  final public static String EMAIL_REGEX_EXPRESSION = "^([^@\\s]+)@((?:[-a-z0-9]+\\.)+[a-z]{2,})$";
+
+//  /** INVALID EMAIl. */
+//  final public static String INVALID_EMAIl = "UIContactSect.msg.Invalid-email";
+
+  /** PHONE REGEX EXPRESSION. */
+  public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]+$";
+
+  /** INVALID PHONE. */
+  public static final String INVALID_PHONE = "UIContactSect.msg.Invalid-phone";
+
+  /** URL REGEX EXPRESSION. */
+  public static final String URL_REGEX_EXPRESSION = "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
+
+  /** INVALID URL. */
+  public static final String INVALID_URL = "UIContactSect.msg.Invalid-url";
 
   /** Number of phone. */
   private int phoneCount = 0;
 
   /** Number of ims. */
-  private int imsCount = 0;
+  private int imCount = 0;
 
   /** Number of url. */
   private int urlCount = 0;
 
-  /** Index of email. */
-  private int emailIdx = 0;
-
-  /** Index of phone. */
-  private int phoneIdx = 0;
-
-  /** Index of ims. */
-  private int imsIdx = 0;
-
-  /** Index of url. */
-  private int urlIdx = 0;
-
-  /** Get the number of email. */
-  public int getEmailCount() {
-    return emailCount;
-  }
-
   /** Get the number of phone. */
-  public int getPhoneCount() {
+  /**
+   * @return phoneCount
+   */
+  public final int getPhoneCount() {
     return phoneCount;
   }
 
   /** Get the number of ims. */
-  public int getImsCount() {
-    return imsCount;
+  /**
+   * @return imCount
+   */
+  public final int getImsCount() {
+    return imCount;
   }
 
   /** Get the number of url. */
-  public int getUrlCount() {
+  /**
+   * @return urlCount
+   */
+  public final int getUrlCount() {
     return urlCount;
   }
 
@@ -208,9 +159,8 @@ public class UIContactSection extends UIProfileSection {
     addChild(UITitleBar.class, null, null);
 
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    options.add(new SelectItemOption<String>(GENDER_DEFAULT));
-    options.add(new SelectItemOption<String>(MALE));
-    options.add(new SelectItemOption<String>(FEMALE));
+    options.add(new SelectItemOption<String>(VALUE_GENDER_MALE));
+    options.add(new SelectItemOption<String>(VALUE_GENDER_FEMALE));
     addUIFormInput(new UIFormSelectBox(GENDER_CHILD, GENDER_CHILD, options));
   }
 
@@ -219,18 +169,9 @@ public class UIContactSection extends UIProfileSection {
    *
    * @return All children in order.
    */
-  public List<UIComponent> getChilds() {
+  public final List<UIComponent> getChilds() {
     List<UIComponent> listChild = getChildren();
     return sort(listChild);
-  }
-
-  /**
-   * Gets all children of email.<br>
-   *
-   * @return All email children in order.
-   */
-  public List<UIComponent> getEmailChilds() {
-    return sortSubList(getSubList(0, emailCount));
   }
 
   /**
@@ -238,8 +179,8 @@ public class UIContactSection extends UIProfileSection {
    *
    * @return All Phone children in order.
    */
-  public List<UIComponent> getPhoneChilds() {
-    return sortSubList(getSubList(emailCount, emailCount + phoneCount));
+  public final List<UIComponent> getPhoneChilds() {
+    return sortSubList(getSubList(0, phoneCount));
   }
 
   /**
@@ -247,8 +188,8 @@ public class UIContactSection extends UIProfileSection {
    *
    * @return All ims children in order.
    */
-  public List<UIComponent> getImsChilds() {
-    return sortSubList(getSubList(emailCount + phoneCount, emailCount + phoneCount + imsCount));
+  public final List<UIComponent> getImsChilds() {
+    return sortSubList(getSubList(phoneCount, phoneCount + imCount));
   }
 
   /**
@@ -256,8 +197,8 @@ public class UIContactSection extends UIProfileSection {
    *
    * @return All URL children in order.
    */
-  public List<UIComponent> getUrlChilds() {
-    return sortSubList(getSubList( emailCount + phoneCount + imsCount, emailCount + phoneCount + imsCount + urlCount));
+  public final List<UIComponent> getUrlChilds() {
+    return sortSubList(getSubList( phoneCount + imCount, phoneCount + imCount + urlCount));
   }
 
   /**
@@ -265,8 +206,9 @@ public class UIContactSection extends UIProfileSection {
    *
    * @return  gender child.
    */
-  public UIComponent getGenderChild() {
-    return getChildById(GENDER_CHILD);
+  @SuppressWarnings("unchecked")
+  public final UIFormInput<String> getGenderChild() {
+    return (UIFormInput<String>)getChildById(GENDER_CHILD);
   }
 
   /**
@@ -275,7 +217,8 @@ public class UIContactSection extends UIProfileSection {
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
 
-    public void execute(Event<UIProfileSection> event) throws Exception {
+    @Override
+    public final void execute(final Event<UIProfileSection> event) throws Exception {
       super.execute(event);
 
       UIProfileSection sect = event.getSource();
@@ -291,7 +234,8 @@ public class UIContactSection extends UIProfileSection {
    */
   public static class AddActionListener extends EventListener<UIContactSection> {
 
-    public void execute(Event<UIContactSection> event) throws Exception {
+    @Override
+    public final void execute(final Event<UIContactSection> event) throws Exception {
       UIContactSection sect = event.getSource();
       String typeOfComp = event.getRequestContext().getRequestParameter(OBJECTID);
       sect.addUIFormInput(typeOfComp);
@@ -304,7 +248,8 @@ public class UIContactSection extends UIProfileSection {
    */
   public static class RemoveActionListener extends EventListener<UIContactSection> {
 
-    public void execute(Event<UIContactSection> event) throws Exception {
+    @Override
+    public final void execute(final Event<UIContactSection> event) throws Exception {
       UIContactSection sect = event.getSource();
       String comps = event.getRequestContext().getRequestParameter(OBJECTID);
       String uiComp1 = comps.substring(0, comps.indexOf("."));
@@ -319,7 +264,8 @@ public class UIContactSection extends UIProfileSection {
    */
   public static class EditActionListener extends UIProfileSection.EditActionListener {
 
-    public void execute(Event<UIProfileSection> event) throws Exception {
+    @Override
+    public final void execute(final Event<UIProfileSection> event) throws Exception {
       super.execute(event);
       UIProfileSection sect = event.getSource();
       UIContactSection uiContactSectionSect = (UIContactSection)sect;
@@ -334,37 +280,18 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void saveProfileInfo() throws Exception {
-//    ArrayList<HashMap<String, String>> emails = new ArrayList<HashMap<String, String>>();
-    ArrayList<HashMap<String, String>> phones = new ArrayList<HashMap<String, String>>();
-    ArrayList<HashMap<String, String>> ims = new ArrayList<HashMap<String, String>>();
-    ArrayList<HashMap<String, String>> urls = new ArrayList<HashMap<String, String>>();
-
-//    List<UIComponent> listEmailUIComp = getEmailChilds();
-    List<UIComponent> listPhoneUIComp = getPhoneChilds();
-    List<UIComponent> listIMSUIComp = getImsChilds();
-    List<UIComponent> listURLUIComp = getUrlChilds();
-
-    UIFormSelectBox uiGender = getChildById(GENDER_CHILD);
-    String gender = uiGender.getValue();
-    gender = ("Gender".equals(gender) ? "" : gender);
-
-//    emails = getProfileForSave(emailCount, listEmailUIComp, null);
-    phones = getProfileForSave(phoneCount, listPhoneUIComp, WORK);
-    ims = getProfileForSave(imsCount, listIMSUIComp, null);
-    urls = getProfileForSave(urlCount, listURLUIComp, URL);
-
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-
+    IdentityManager im = (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
     Profile p = getProfile(true);
 
-//    p.setProperty(EMAILS, emails);
-    p.setProperty(PHONES, phones);
-    p.setProperty(IMS, ims);
-    p.setProperty(URLS, urls);
-    p.setProperty(GENDER, gender);
+    Profile toBeUpdatedProfile = new Profile(p.getIdentity());
+    toBeUpdatedProfile.setId(p.getId());
 
-    im.updateContactSection(p);
+    toBeUpdatedProfile.setProperty(Profile.GENDER, getGenderChild().getValue());
+    toBeUpdatedProfile.setProperty(Profile.CONTACT_PHONES, getProfileForSave(phoneCount, getPhoneChilds(), PHONE));
+    toBeUpdatedProfile.setProperty(Profile.CONTACT_IMS, getProfileForSave(imCount, getImsChilds(), IM));
+    toBeUpdatedProfile.setProperty(Profile.CONTACT_URLS, getProfileForSave(urlCount, getUrlChilds(), URL));
+
+    im.updateBasicInfo(toBeUpdatedProfile);
   }
 
   /**
@@ -372,55 +299,36 @@ public class UIContactSection extends UIProfileSection {
    *
    * @param count Number of children.
    *
-   * @param listUIComp Contains children of each input type (email, phone,...).
+   * @param listUIComp Contains children of each input type (phone,...).
    *
    * @param uiStringType Type of component.
    *
    * @return All profile information.
    */
-  private ArrayList<HashMap<String, String>> getProfileForSave(int count, List<UIComponent> listUIComp, String uiStringType) {
+  private ArrayList<HashMap<String, String>> getProfileForSave(final int count, final List<UIComponent> listUIComp, final String uiStringType) {
     ArrayList<HashMap<String, String>> profileMap = new ArrayList<HashMap<String, String>>();
-    String value = null;
-    String key = null;
-    UIFormStringInput uiStringInput = null;
-    UIFormSelectBox uiSelectBox = null;
-    if (WORK.equals(uiStringType)) {
-      for (int i = 0; i < count; i++) {
-        HashMap<String, String> uiMap = new HashMap<String, String>();
-        key = uiStringType;
-        uiStringInput = (UIFormStringInput) listUIComp.get(i);
+    for (int i = 0; i < count; i+=2) {
+      HashMap<String, String> uiMap = new HashMap<String, String>();
+      String value = null;
+      String key = null;
+      if (uiStringType.equals(URL)) {
+        UIFormStringInput uiStringInput = (UIFormStringInput) listUIComp.get(i+1);
+        key = uiStringInput.getValue();
         value = uiStringInput.getValue();
-
-        uiMap.put(KEY,key);
-        uiMap.put(VALUE, value);
-        profileMap.add(uiMap);
+      } else {
+        key = ((UIFormSelectBox) listUIComp.get(i)).getValue();
+        value = ((UIFormStringInput) listUIComp.get(i+1)).getValue();
       }
-    } else {
-      for (int i = 0; i < count; i+=2) {
-        HashMap<String, String> uiMap = new HashMap<String, String>();
-        if (uiStringType == null) {
-          uiSelectBox = (UIFormSelectBox) listUIComp.get(i);
-          key = uiSelectBox.getValue();
-          uiStringInput = (UIFormStringInput) listUIComp.get(i+1);
-          value = uiStringInput.getValue();
-        } else {
-          //uiStringInput = (UIFormStringInput) listUIComp.get(i);
-          //key = uiStringInput.getValue();
-          uiStringInput = (UIFormStringInput) listUIComp.get(i+1);
-          key = uiStringInput.getValue();
-          value = uiStringInput.getValue();
-        }
 
-        uiMap.put(KEY,key);
-        uiMap.put(VALUE, value);
-        profileMap.add(uiMap);
-      }
+      uiMap.put(KEY,key);
+      uiMap.put(VALUE, value);
+      profileMap.add(uiMap);
     }
     return profileMap;
   }
 
   /**
-   * Gets children of each type (email, phone, ...) from the all children list.<br>
+   * Gets children of each type (phone, ...) from the all children list.<br>
    *
    * @param startIdx Start index of sublist.
    *
@@ -428,7 +336,7 @@ public class UIContactSection extends UIProfileSection {
    *
    * @return A list contains children of each type.
    */
-  private List<UIComponent> getSubList(int startIdx, int endIdx) {
+  private List<UIComponent> getSubList(final int startIdx, final int endIdx) {
     List<UIComponent> rtnList = new ArrayList<UIComponent>();
     for (int idx = startIdx; idx < endIdx; idx++) {
       rtnList.add(getChilds().get(idx));
@@ -443,10 +351,15 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void setValue() throws Exception {
-//    setValueByType(getEmailChilds(), EMAILS);
-    setValueByType(getPhoneChilds(), PHONES);
-    setValueByType(getImsChilds(), IMS);
-    setValueByType(getUrlChilds(), URLS);
+    Profile profile = getProfile(false);
+    String gender = (String) profile.getProperty(Profile.GENDER);
+    if (gender != "") {
+      getGenderChild().setValue(gender);
+    }
+
+    setValueByType(profile, getPhoneChilds(), Profile.CONTACT_PHONES);
+    setValueByType(profile, getImsChilds(), Profile.CONTACT_IMS);
+    setValueByType(profile, getUrlChilds(), Profile.CONTACT_URLS);
   }
 
   /**
@@ -459,87 +372,50 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  private void setValueByType(List<UIComponent> listChilds, String uiType) throws Exception {
-    Profile profile = getProfile(false);
-    ArrayList<HashMap<String, String>> profiles = (ArrayList<HashMap<String, String>>) profile.getProperty(uiType);
-    List<String> listProfile = new ArrayList<String>();
-    int listChildSize = listChilds.size();
-    String gender = (String) profile.getProperty(GENDER);
-    if (gender != "") ((UIFormInput)getGenderChild()).setValue(gender);
+  private void setValueByType(final Profile profile, final List<UIComponent> listChilds, final String uiType) throws Exception {
+    if (profile == null || listChilds == null || uiType == null || uiType.equals("")) {
+      return;
+    }
+    List<Map<String, String>> profiles = (List<Map<String, String>>) profile.getProperty(uiType);
+    int numberOfUI = listChilds.size();
+    int newProfileSize = profiles == null ? 0 : profiles.size();
 
-    if ((profiles == null) || (profiles.size() == 0)) {
-      if (listChildSize != 0) {
-        if (PHONES.equals(uiType)) {
-          String id1 = listChilds.get(listChildSize-1).getName();
-          removeFormInput(id1, null);
-          return;
-        } else {
-          String id1 = listChilds.get(listChildSize-1).getName();
-          String id2 = listChilds.get(listChildSize-2).getName();
-          removeFormInput(id1, id2);
-          return;
-        }
-      } else {
-        return;
+    while (numberOfUI/2 > newProfileSize) {
+      String id1 = listChilds.get(--numberOfUI).getName();
+      String id2 = listChilds.get(--numberOfUI).getName();
+      removeFormInput(id1, id2);
+    }
+
+    if(newProfileSize == 0) {
+      return;
+    }
+
+    while (newProfileSize > numberOfUI/2) {
+      if (Profile.CONTACT_IMS.equals(uiType)) {
+        addUIFormInput(IM);
+      } else if (Profile.CONTACT_PHONES.equals(uiType)) {
+        addUIFormInput(PHONE);
+      } else if (Profile.CONTACT_URLS.equals(uiType)) {
+        addUIFormInput(URL);
       }
-    } else {
-      for (HashMap<String, String> map : profiles) {
-        listProfile.add(map.get(KEY));
-        listProfile.add(map.get(VALUE));
+      numberOfUI += 2;
+    }
+
+    int index = 0;
+    if (Profile.CONTACT_IMS.equals(uiType)) {
+      for (Map<String, String> map : profiles) {
+        ((UIFormInput) getImsChilds().get(index++)).setValue(map.get(KEY));
+        ((UIFormInput) getImsChilds().get(index++)).setValue(map.get(VALUE));
       }
-
-      int listProfileSize = listProfile.size();
-      int totalProfile = 0;
-      if (PHONES.equalsIgnoreCase(uiType)) {
-        totalProfile = listProfileSize;
-        while( totalProfile > 2*listChildSize) {
-          addUIFormInput(PHONE);
-          totalProfile -= 2;
-        }
-        totalProfile = listProfileSize;
-        while( totalProfile < 2*listChildSize) {
-          String id1 = listChilds.get(listChildSize-1).getName();
-          removeFormInput(id1, null);
-          totalProfile += 2;
-        }
-
-        for (int i = 0; i < listProfileSize/2; i++) {
-          ((UIFormInput)getPhoneChilds().get(i)).setValue(listProfile.get(2*i + 1));
-        }
-      } else {
-        totalProfile = listProfileSize;
-        while (totalProfile > listChildSize) {
-          if (EMAILS.equals(uiType)) {
-            addUIFormInput(EMAIL);
-          } else if (IMS.equals(uiType)) {
-            addUIFormInput(IMS);
-          } else if (URLS.equals(uiType)) {
-            addUIFormInput(RLU);
-          }
-          totalProfile -= 2;
-        }
-        totalProfile = listProfileSize;
-        while (totalProfile < listChildSize) {
-          String id1 = listChilds.get(listChildSize-1).getName();
-          String id2 = listChilds.get(listChildSize-2).getName();
-          removeFormInput(id1, id2);
-
-          totalProfile += 2;
-        }
-
-        if (EMAILS.equals(uiType)) {
-          for (int i = 0; i <= listProfileSize - 1; i++) {
-            ((UIFormInput)getEmailChilds().get(i)).setValue(listProfile.get(i));
-          }
-        } else if (IMS.equals(uiType)) {
-          for (int i = 0; i <= listProfileSize - 1; i++) {
-            ((UIFormInput)getImsChilds().get(i)).setValue(listProfile.get(i));
-          }
-        } else if (URLS.equals(uiType)) {
-          for (int i = 0; i <= listProfileSize - 1; i++) {
-            ((UIFormInput)getUrlChilds().get(i)).setValue(listProfile.get(i));
-          }
-        }
+    } else if (Profile.CONTACT_URLS.equals(uiType)) {
+      for (Map<String, String> map : profiles) {
+        ((UIFormInput) getUrlChilds().get(index++)).setValue(map.get(KEY));
+        ((UIFormInput) getUrlChilds().get(index++)).setValue(map.get(VALUE));
+      }
+    } else if (Profile.CONTACT_PHONES.equals(uiType)) {
+      for (Map<String, String> map : profiles) {
+        ((UIFormInput) getPhoneChilds().get(index++)).setValue(map.get(KEY));
+        ((UIFormInput) getPhoneChilds().get(index++)).setValue(map.get(VALUE));
       }
     }
   }
@@ -551,20 +427,15 @@ public class UIContactSection extends UIProfileSection {
    *
    * @param id2 The id of next component.
    */
-  private void removeFormInput(String id1, String id2) {
-    if (id1.startsWith(FONE)) {
-      removeChildById(id1);
-      --phoneCount;
-    } else {
-      removeChildById(id1);
-      removeChildById(id2);
-      if (id1.startsWith(EMAIL)) {
-        emailCount -= 2;
-      } else if (id1.startsWith(IMS)) {
-        imsCount -= 2;
-      } else if (id1.startsWith(RLU)) {
-        urlCount -= 2;
-      }
+  private void removeFormInput(final String id1, final String id2) {
+    removeChildById(id1);
+    removeChildById(id2);
+    if (id1.startsWith(IM)) {
+      imCount -= 2;
+    } else if (id1.startsWith(URL)) {
+      urlCount -= 2;
+    } else if (id1.startsWith(PHONE)) {
+      phoneCount -= 2;
     }
   }
 
@@ -575,31 +446,29 @@ public class UIContactSection extends UIProfileSection {
    *
    * @throws Exception
    */
-  private void addUIFormInput(String type) throws Exception {
-    if (EMAIL.equals(type)) {
-      createUISelectBox(new String[]{WORK, HOME, OTHER}, EMAIL);
-      addUIFormInput(new UIFormStringInput(EMAIL + (++emailIdx), null, null)
+  private void addUIFormInput(final String type) throws Exception {
+    if (PHONE.equals(type)) {
+      int phoneIdx = phoneCount;
+      createUISelectBox(PHONE_TYPES, PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'));
+      addUIFormInput(new UIFormStringInput(PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'),null,null)
       .addValidator(MandatoryValidator.class)
-      .addValidator(StringLengthValidator.class, 3, 30).addValidator(ExpressionValidator
-      .class, EMAIL_REGEX_EXPRESSION, INVALID_EMAIl));
-    } else if (PHONE.equals(type)) {
-      phoneCount += 1;
-      addUIFormInput(new UIFormStringInput(FONE + (++phoneIdx),null,null)
-      .addValidator(MandatoryValidator.class)
-      .addValidator(StringLengthValidator.class, 3, 30)
+      .addValidator(StringLengthValidator.class, 3, 20)
       .addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, INVALID_PHONE));
-    } else if (IMS.equals(type)) {
-      createUISelectBox(new String[]{GTALK, MSN, SKYPE, YAHOO, OTHER}, IMS);
-      addUIFormInput(new UIFormStringInput(IMS + (++imsIdx),null,null)
+      phoneCount += 2;
+    } else if (IM.equals(type)) {
+      int imIdx = imCount;
+      createUISelectBox(IM_TYPES, IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'));
+      addUIFormInput(new UIFormStringInput(IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'), null, null)
       .addValidator(MandatoryValidator.class)
       .addValidator(StringLengthValidator.class, 3, 60));
-    } else {
-      urlCount += 2;
-      addUIFormInput(new UIFormStringInput(RLU + (++urlIdx),null, WEBSITE_TITLE));
-      addUIFormInput(new UIFormStringInput(RLU + (++urlIdx), null, URL_EXAMPLE)
+      imCount += 2;
+    } else if (URL.equals(type)) {
+      int urlIdx = urlCount;
+      addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, WEBSITE_TITLE));
+      addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, URL_EXAMPLE)
       .addValidator(MandatoryValidator.class)
-      .addValidator(ExpressionValidator
-      .class, URL_REGEX_EXPRESSION, INVALID_URL));
+      .addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, INVALID_URL));
+      urlCount += 2;
     }
   }
 
@@ -610,20 +479,12 @@ public class UIContactSection extends UIProfileSection {
    *
    * @param uiName Name of component.
    */
-  private void createUISelectBox(String[] values, String uiName) {
+  private void createUISelectBox(final String[] values, final String uiName) {
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    int len = values.length;
-    for (int idx = 0; idx < len; idx ++) {
-      options.add(new SelectItemOption<String>(values[idx]));
+    for (String value : values) {
+      options.add(new SelectItemOption<String>(value));
     }
-
-    if (EMAIL.equals(uiName)) {
-      emailCount += 2;
-      addUIFormInput(new UIFormSelectBox(uiName + (++emailIdx), null, options));
-    } else if (IMS.equals(uiName)) {
-      imsCount += 2;
-      addUIFormInput(new UIFormSelectBox(uiName + (++imsIdx), null, options));
-    }
+    addUIFormInput(new UIFormSelectBox(uiName, null, options));
   }
 
   /**
@@ -633,7 +494,7 @@ public class UIContactSection extends UIProfileSection {
    *
    * @return A sorted array in increase order.
    */
-  private List<UIComponent> sort(List<UIComponent> lstComps) {
+  private List<UIComponent> sort(final List<UIComponent> lstComps) {
     Collections.sort(lstComps, new UiComponentComparator());
     return lstComps;
   }
@@ -642,12 +503,12 @@ public class UIContactSection extends UIProfileSection {
    *   Implement UiComponentComparator class for sorting in increase order of alphabet.<br>
    *
    */
-  private class UiComponentComparator implements Comparator<UIComponent> {
+  private static class UiComponentComparator implements Comparator<UIComponent> {
     /**
-     * Compare 2 uicomponent by name
+     * Compare 2 uicomponent by id
      */
-    public int compare(UIComponent uicomp1, UIComponent uicomp2) {
-      return uicomp1.getName().compareToIgnoreCase(uicomp2.getName());
+    public int compare(final UIComponent uicomp1, final UIComponent uicomp2) {
+      return uicomp1.getId().compareToIgnoreCase(uicomp2.getId());
     }
   }
 
@@ -657,21 +518,8 @@ public class UIContactSection extends UIProfileSection {
    * @param lstComps List for sorting.
    * @return A sorted array in increase order.
    */
-  private List<UIComponent> sortSubList(List<UIComponent> lstComps) {
-    Collections.sort(lstComps, new UIComparator());
+  private List<UIComponent> sortSubList(final List<UIComponent> lstComps) {
+    Collections.sort(lstComps, new UiComponentComparator());
     return lstComps;
-  }
-
-  /**
-   * Implement UiComponentComparator class for sorting in increase order of length.<br>
-   *
-   */
-  private class UIComparator implements Comparator<UIComponent> {
-    /**
-     * Compare 2 uicomponent by name
-     */
-    public int compare(UIComponent uicomp1, UIComponent uicomp2) {
-      return (uicomp1.getName().length() - uicomp2.getName().length());
-    }
   }
 }

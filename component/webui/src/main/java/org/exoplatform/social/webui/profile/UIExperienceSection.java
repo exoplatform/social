@@ -74,29 +74,6 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
   )
 })
 public class UIExperienceSection extends UIProfileSection {
-  /** COMPANY. */
-  final public static String COMPANY = "company";
-
-  /** POSITION. */
-  final public static String POSITION = "position";
-
-  /** POSITION. */
-  final public static String SKILLS = "skills";
-
-  /** START DATE OF EXPERIENCE. */
-  final public static String START_DATE = "startDate";
-
-  /** END DATE OF EXPERIENCE. */
-  final public static String END_DATE = "endDate";
-
-  /** CURRENT OR PAST EXPERIENCE. */
-  final public static String IS_CURRENT = "isCurrent";
-
-  /** DESCRIPTION OF EXPERIENCE. */
-  final public static String DESCRIPTION = "description";
-
-  /** EXPERIENCE. */
-  final public static String EXPERIENCE = "experiences";
 
   /** START DATE AFTER TODAY. */
   final public static String START_DATE_AFTER_TODAY = "UIExperienceSection.msg.StartDateAfterToday";
@@ -191,6 +168,7 @@ public class UIExperienceSection extends UIProfileSection {
    *
    */
   public static class AddActionListener extends EventListener<UIExperienceSection> {
+    @Override
     public void execute(Event<UIExperienceSection> event) throws Exception {
       UIExperienceSection uiForm = event.getSource();
       uiForm.addUIFormInput();
@@ -202,6 +180,7 @@ public class UIExperienceSection extends UIProfileSection {
    *
    */
   public static class RemoveActionListener extends EventListener<UIExperienceSection> {
+    @Override
     public void execute(Event<UIExperienceSection> event) throws Exception {
       UIExperienceSection uiForm = event.getSource();
       String block = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -240,6 +219,7 @@ public class UIExperienceSection extends UIProfileSection {
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
 
+    @Override
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
       UIExperienceSection uiExperienceSectionSect = (UIExperienceSection)sect;
@@ -255,11 +235,12 @@ public class UIExperienceSection extends UIProfileSection {
    */
   public static class EditActionListener extends UIProfileSection.EditActionListener {
 
+    @Override
     @SuppressWarnings("unchecked")
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
       UIExperienceSection uiExpSection = (UIExperienceSection)sect;
-      ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
+      ArrayList<HashMap<String, Object>> experiences;
       Profile p = sect.getProfile(false);
       List<UIComponent> listChild = uiExpSection.getChilds();
       List<Object> listProfile = new ArrayList<Object>();
@@ -272,7 +253,7 @@ public class UIExperienceSection extends UIProfileSection {
       String endDateId = null;
       String descriptionId = null;
 
-      experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(EXPERIENCE);
+      experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
       if (experiences == null) {
         for (int idx = 1; idx <= childSize; idx += 7) {
           sect.removeChild(UIFormStringInput.class);
@@ -285,13 +266,13 @@ public class UIExperienceSection extends UIProfileSection {
         }
       } else {
         for (HashMap<String, Object> map : experiences) {
-          listProfile.add(map.get(COMPANY));
-          listProfile.add(map.get(POSITION));
-          listProfile.add(map.get(DESCRIPTION));
-          listProfile.add(map.get(SKILLS));
-          listProfile.add(map.get(START_DATE));
-          listProfile.add(map.get(END_DATE));
-          listProfile.add(map.get(IS_CURRENT));
+          listProfile.add(map.get(Profile.EXPERIENCES_COMPANY));
+          listProfile.add(map.get(Profile.EXPERIENCES_POSITION));
+          listProfile.add(map.get(Profile.EXPERIENCES_DESCRIPTION));
+          listProfile.add(map.get(Profile.EXPERIENCES_SKILLS));
+          listProfile.add(map.get(Profile.EXPERIENCES_START_DATE));
+          listProfile.add(map.get(Profile.EXPERIENCES_END_DATE));
+          listProfile.add(map.get(Profile.EXPERIENCES_IS_CURRENT));
         }
 
         int totalProfiles = listProfile.size();
@@ -348,10 +329,11 @@ public class UIExperienceSection extends UIProfileSection {
    */
   static public class ShowHideEndDateActionListener extends EventListener<UIFormCheckBoxInput<Boolean>> {
 
+    @Override
     public void execute(Event<UIFormCheckBoxInput<Boolean>> event) throws Exception {
       UIFormCheckBoxInput<Boolean> sect = event.getSource();
       UIExperienceSection uiForm = sect.getAncestorOfType(UIExperienceSection.class);
-      UIFormDateTimeInput uiDateTime = uiForm.getChildById(END_DATE + sect.getId());
+      UIFormDateTimeInput uiDateTime = uiForm.getChildById(Profile.EXPERIENCES_END_DATE + sect.getId());
       boolean isCheck = sect.isChecked();
       uiDateTime.setRendered(!isCheck);
 
@@ -368,13 +350,13 @@ public class UIExperienceSection extends UIProfileSection {
    */
   @SuppressWarnings("unchecked")
   public List<HashMap<String, Object>> getPastExperience() throws Exception {
-    ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
+    ArrayList<HashMap<String, Object>> experiences;
     ArrayList<HashMap<String, Object>> pastExperiences = new ArrayList<HashMap<String, Object>>();
     Profile p = getProfile(false);
-    experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(EXPERIENCE);
+    experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
-        if (!(Boolean)map.get(IS_CURRENT)) {
+        if (!(Boolean)map.get(Profile.EXPERIENCES_IS_CURRENT)) {
           pastExperiences.add(map);
         }
       }
@@ -392,13 +374,13 @@ public class UIExperienceSection extends UIProfileSection {
    */
   @SuppressWarnings("unchecked")
   public List<HashMap<String, Object>> getCurrentExperience() throws Exception {
-    ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
+    ArrayList<HashMap<String, Object>> experiences;
     ArrayList<HashMap<String, Object>> currentExperiences = new ArrayList<HashMap<String, Object>>();
     Profile p = getProfile(false);
-    experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(EXPERIENCE);
+    experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
-        if ((Boolean)map.get(IS_CURRENT)) {
+        if ((Boolean)map.get(Profile.EXPERIENCES_IS_CURRENT)) {
           currentExperiences.add(map);
         }
       }
@@ -442,8 +424,10 @@ public class UIExperienceSection extends UIProfileSection {
 
     if (totalUIComponent == 0) {
       if (p != null) {
-        p.setProperty(EXPERIENCE, experiences);
-        im.updateExperienceSection(p);
+        Profile updateProfile = new Profile(p.getIdentity());
+        updateProfile.setId(p.getId());
+        updateProfile.setProperty(Profile.EXPERIENCES, experiences);
+        im.updateExperienceSection(updateProfile);
       }
 
       return 0;
@@ -493,20 +477,21 @@ public class UIExperienceSection extends UIProfileSection {
         endDate = null;
       }
 
-      uiMap.put(COMPANY, company);
-      uiMap.put(POSITION,position);
-      uiMap.put(DESCRIPTION, description);
-      uiMap.put(SKILLS,skills);
-      uiMap.put(START_DATE, startDate);
-      uiMap.put(END_DATE, endDate);
-      uiMap.put(IS_CURRENT, isCurrent);
+      uiMap.put(Profile.EXPERIENCES_COMPANY, company);
+      uiMap.put(Profile.EXPERIENCES_POSITION,position);
+      uiMap.put(Profile.EXPERIENCES_DESCRIPTION, description);
+      uiMap.put(Profile.EXPERIENCES_SKILLS,skills);
+      uiMap.put(Profile.EXPERIENCES_START_DATE, startDate);
+      uiMap.put(Profile.EXPERIENCES_END_DATE, endDate);
+      uiMap.put(Profile.EXPERIENCES_IS_CURRENT, isCurrent);
 
       experiences.add(uiMap);
     }
 
-    p.setProperty(EXPERIENCE, experiences);
-
-    im.updateExperienceSection(p);
+    Profile updateProfile = new Profile(p.getIdentity());
+    updateProfile.setId(p.getId());
+    updateProfile.setProperty(Profile.EXPERIENCES, experiences);
+    im.updateExperienceSection(updateProfile);
 
     return 0;
   }
@@ -518,25 +503,25 @@ public class UIExperienceSection extends UIProfileSection {
    */
   private void addUIFormInput() throws Exception {
     expIdx += 1;
-    addUIFormInput(new UIFormStringInput(COMPANY + expIdx, null, null).addValidator(MandatoryValidator.class)
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null).addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 90));
-    addUIFormInput(new UIFormStringInput(POSITION + expIdx, null, null).addValidator(MandatoryValidator.class)
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null).addValidator(MandatoryValidator.class)
                    .addValidator(StringLengthValidator.class, 3, 90));
 
-    addUIFormInput(new UIFormTextAreaInput(DESCRIPTION + expIdx, null, null));
-    UIFormTextAreaInput uiDespcription = getChildById(DESCRIPTION + expIdx);
+    addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null));
+    UIFormTextAreaInput uiDespcription = getChildById(Profile.EXPERIENCES_DESCRIPTION + expIdx);
     uiDespcription.setColumns(28);
     uiDespcription.setRows(3);
 
-    addUIFormInput(new UIFormTextAreaInput(SKILLS + expIdx, null, null));
-    UIFormTextAreaInput uiFormTextAreaInput = getChildById(SKILLS + expIdx);
+    addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + expIdx, null, null));
+    UIFormTextAreaInput uiFormTextAreaInput = getChildById(Profile.EXPERIENCES_SKILLS + expIdx);
     uiFormTextAreaInput.setColumns(28);
     uiFormTextAreaInput.setRows(3);
 
-    addUIFormInput(new UIFormDateTimeInput(START_DATE + expIdx, null, null, false).
+    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false).
                    addValidator(DateTimeValidator.class).addValidator(MandatoryValidator.class)) ;
 
-    addUIFormInput(new UIFormDateTimeInput(END_DATE + expIdx, null, null, false).addValidator(MandatoryValidator.class)
+    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false).addValidator(MandatoryValidator.class)
       .addValidator(DateTimeValidator.class)) ;
 
     UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(Integer.toString(expIdx), null, false) ;

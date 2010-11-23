@@ -221,4 +221,12 @@ public class UIProfile extends UIContainer {
     return sects;
   }
 
+public void setProfile(Profile profile) {
+  this.profile = profile;
+}
+
+public Profile getProfile() {
+  return profile;
+}
+
 }

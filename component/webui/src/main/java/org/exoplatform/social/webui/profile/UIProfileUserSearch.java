@@ -69,23 +69,11 @@ public class UIProfileUserSearch extends UIForm {
   /** The limit number of query for matching with search criteria */
   private static final int SEARCH_LIMIT = 500;
 
-  /** USER CONTACT. */
-  final public static String USER_CONTACT              = "name";
-
-  /** SKILLS. */
-  final public static String SKILLS                    = "skills";
-
-  /** POSITION. */
-  final public static String POSITION                  = "position";
-
-  /** GENDER. */
-  final public static String GENDER                    = "gender";
-
   /** SEARCH. */
   final public static String SEARCH                    = "Search";
 
-  /** EXPERIENCE. */
-  final public static String EXPERIENCE                = "experiences";
+  /** USER CONTACT. */
+  final public static String USER_CONTACT              = "name";
 
   /** DEFAULT GENDER. */
   final public static String GENDER_DEFAULT            = "Gender";
@@ -216,9 +204,9 @@ public class UIProfileUserSearch extends UIForm {
     options.add(new SelectItemOption<String>(FEMALE));
 
     addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, USER_CONTACT));
-    addUIFormInput(new UIFormStringInput(POSITION, POSITION, POSITION));
-    addUIFormInput(new UIFormStringInput(SKILLS, SKILLS, SKILLS));
-    addUIFormInput(new UIFormSelectBox(GENDER, GENDER, options));
+    addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, Profile.POSITION));
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS));
+    addUIFormInput(new UIFormSelectBox(Profile.GENDER, Profile.GENDER, options));
   }
 
   /**
@@ -272,8 +260,8 @@ public class UIProfileUserSearch extends UIForm {
       WebuiRequestContext ctx = event.getRequestContext();
       UIProfileUserSearch uiSearch = event.getSource();
       String charSearch = ctx.getRequestParameter(OBJECTID);
-      List<Identity> identitiesSearchResult = new ArrayList<Identity>();
-      List<Identity> identities = new ArrayList<Identity>();
+      List<Identity> identitiesSearchResult;
+      List<Identity> identities;
       IdentityManager idm = uiSearch.getIdentityManager();
       ProfileFilter filter = new ProfileFilter();
       uiSearch.invokeSetBindingBean(filter);
@@ -287,9 +275,9 @@ public class UIProfileUserSearch extends UIForm {
         uiSearch.setSelectedChar(charSearch);
         if (charSearch != null) { // search by alphabet
           ((UIFormStringInput) uiSearch.getChildById(SEARCH)).setValue(defaultNameVal);
-          ((UIFormStringInput) uiSearch.getChildById(POSITION)).setValue(defaultPosVal);
-          ((UIFormStringInput) uiSearch.getChildById(SKILLS)).setValue(defaultSkillsVal);
-          ((UIFormStringInput) uiSearch.getChildById(GENDER)).setValue(defaultGenderVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.POSITION)).setValue(defaultPosVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.EXPERIENCES_SKILLS)).setValue(defaultSkillsVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.GENDER)).setValue(defaultGenderVal);
           filter.setName(charSearch);
           filter.setPosition("");
           filter.setGender("");
@@ -384,7 +372,7 @@ public class UIProfileUserSearch extends UIForm {
   private List<Identity> getIdentitiesBySkills(String skills, List<Identity> identities) {
     List<Identity> identityLst = new ArrayList<Identity>();
     String prof = null;
-    ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
+    ArrayList<HashMap<String, Object>> experiences;
     String skill = skills.trim().toLowerCase();
 
     if (identities.size() == 0)
@@ -392,11 +380,11 @@ public class UIProfileUserSearch extends UIForm {
 
     for (Identity id : identities) {
       Profile profile = id.getProfile();
-      experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(EXPERIENCE);
+      experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(Profile.EXPERIENCES);
       if (experiences == null)
         continue;
       for (HashMap<String, Object> exp : experiences) {
-        prof = (String) exp.get(SKILLS);
+        prof = (String) exp.get(Profile.EXPERIENCES_SKILLS);
         if (prof == null)
           continue;
         Pattern p = Pattern.compile(REG_FOR_SPLIT);

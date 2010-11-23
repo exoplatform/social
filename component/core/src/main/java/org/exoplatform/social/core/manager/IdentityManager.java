@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.Validate;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
@@ -51,28 +50,28 @@ public class IdentityManager {
   private static final long SEARCH_LIMIT = 500;
 
   /** The identity providers. */
-  private Map<String, IdentityProvider<?>> identityProviders = new HashMap<String, IdentityProvider<?>>();
+  private final Map<String, IdentityProvider<?>> identityProviders = new HashMap<String, IdentityProvider<?>>();
 
   /** The storage. */
   private IdentityStorage identityStorage;
 
   private RelationshipManager relationshipManager;
 
-  private ExoCache<String, Identity> identityCacheById;
+  private final ExoCache<String, Identity> identityCacheById;
 
   /**
    * identityCache
    */
-  private ExoCache<GlobalId, Identity> identityCache;
+  private final ExoCache<GlobalId, Identity> identityCache;
 
   /**
    * identityListCache with key = identityProvider
    */
-  private ExoCache<String, List<Identity>> identityListCache;
+  private final ExoCache<String, List<Identity>> identityListCache;
   /**
    * lifecycle for profile
    */
-  private ProfileLifeCycle profileLifeCycle = new ProfileLifeCycle();
+  private final ProfileLifeCycle profileLifeCycle = new ProfileLifeCycle();
 
   /**
    * Instantiates a new identity manager.
@@ -182,7 +181,7 @@ public class IdentityManager {
     }
     identityStorage.deleteIdentity(identity);
     identityCacheById.remove(identity.getId());
-    identityCache.remove(new GlobalId(identity.getProviderId()+GlobalId.SEPARATOR+identity.getRemoteId()));
+    identityCache.remove(identity.getGlobalId());
     identityListCache.remove(identity.getProviderId());
   }
 
@@ -231,7 +230,7 @@ public class IdentityManager {
    * TODO improve the performance by specifying what needs to be loaded
    */
   public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) {
-    GlobalId globalIdCacheKey = new GlobalId(providerId+GlobalId.SEPARATOR+remoteId);
+    GlobalId globalIdCacheKey = GlobalId.create(providerId, remoteId);
     Identity cachedIdentity = identityCache.get(globalIdCacheKey);
     if (cachedIdentity == null) {
       IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
@@ -361,7 +360,7 @@ public class IdentityManager {
    * @return identity
    */
   public Identity getIdentity(String providerId, String remoteId, boolean loadProfile) {
-    GlobalId globalIdCacheKey = new GlobalId(providerId + GlobalId.SEPARATOR + remoteId);
+    GlobalId globalIdCacheKey = GlobalId.create(providerId, remoteId);
     Identity cachedIdentity = identityCache.get(globalIdCacheKey);
     if (cachedIdentity == null) {
       IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
@@ -405,7 +404,7 @@ public class IdentityManager {
     getIdentityProvider(identity.getProviderId()).onSaveIdentity(identity);
     if (identity.getId() != null) {
       identityCacheById.remove(identity.getId());
-      identityCache.remove(new GlobalId(identity.getProviderId()+GlobalId.SEPARATOR+identity.getRemoteId()));
+      identityCache.remove(identity.getGlobalId());
     }
     identityListCache.remove(identity.getProviderId());
   }
@@ -422,50 +421,132 @@ public class IdentityManager {
   }
 
   /**
+   * Add or modify properties of profile. Profile parameter is a lightweight that 
+   * contains only the property that you want to add or modify. NOTE: The method will
+   * not delete the properties on old profile when the param profile have not those keys.
+   * 
+   * @param profile
+   * @throws Exception 
+   */
+  private Profile addOrModifyProfileProperties(Profile profile) throws Exception{
+    identityStorage.addOrModifyProfileProperties(profile);
+    Profile newProfile = addOrModifyProfilePropertiesCache(profile);
+    String providerId = profile.getIdentity().getProviderId();
+    if(newProfile == null)
+      newProfile = getIdentity(providerId, true).getProfile();
+
+    getIdentityProvider(providerId).onSaveProfile(newProfile);
+    return newProfile;
+  }
+
+  /**
+   * Add or modify properties of profile in cache. Profile parameter is a lightweight that 
+   * contains only the property that you want to add or modify. NOTE: The method will
+   * not delete the properties on old profile when the param profile have not those keys.
+   * 
+   * @param profile
+   * @return
+   */
+  private Profile addOrModifyProfilePropertiesCache(Profile profile) {
+    Profile cachedProfile = getCachedProfile(profile.getIdentity()).getProfile();
+    if(cachedProfile == null)
+      return null;
+    cachedProfile.addOrModifyProperties(profile.getProperties());
+    return cachedProfile;
+  }
+
+  /**
+   * Get profile that was cached
+   * 
+   * @param identity
+   * @return
+   */
+  private Identity getCachedProfile(Identity identity) {
+    Identity cachedIdentity;
+    if(identity == null)
+      return null;
+    String identityId = identity.getId();
+    if (identityId != null) {
+      cachedIdentity = identityCacheById.get(identityId);
+      if (cachedIdentity != null)
+        return cachedIdentity;
+    }
+
+    GlobalId globalId = identity.getGlobalId();
+    if (globalId != null) {
+      cachedIdentity = identityCache.get(globalId);
+      if (cachedIdentity != null)
+        return cachedIdentity;
+    }
+
+    String providerId = identity.getProviderId();
+    List<Identity> listIdentity = identityListCache.get(providerId);
+    if (listIdentity != null)
+      for (Identity identityFromCache : listIdentity)
+        if (identityFromCache.equals(identity))
+          return identityFromCache;
+    return null;
+  }
+
+  /**
    * Updates avatar
    *
    * @param p profile
+   * @throws Exception 
    */
   //TODO make easier api, this is not good.
-  public void updateAvatar(Profile p) {
+  public void updateAvatar(Profile p) throws Exception {
     saveProfile(p);
     profileLifeCycle.avatarUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update avatar successfully for user: " + p);
   }
 
   /**
    *
    * @param p
+   * @throws Exception 
    */
-  public void updateBasicInfo(Profile p) {
-    saveProfile(p);
-    profileLifeCycle.basicUpdated(p.getIdentity().getRemoteId(), p);
+  public Profile updateBasicInfo(Profile p) throws Exception {
+    Profile newProfile = addOrModifyProfileProperties(p);
+    profileLifeCycle.basicUpdated(newProfile.getIdentity().getRemoteId(), newProfile);
+    LOG.debug("Update basic infomation successfully for user: " + newProfile);
+    return newProfile;
   }
 
   /**
-   *
+   * Update the contact section of profile 
+   * 
    * @param p
+   * @throws Exception 
    */
-  public void updateContactSection(Profile p) {
-    saveProfile(p);
-    profileLifeCycle.contactUpdated(p.getIdentity().getRemoteId(), p);
+  public void updateContactSection(Profile p) throws Exception {
+    Profile newProfile = addOrModifyProfileProperties(p);
+    profileLifeCycle.contactUpdated(newProfile.getIdentity().getRemoteId(), newProfile);
+    LOG.debug("Update contact section successfully for user: " + newProfile);
   }
 
   /**
+   * Update the experience section of profile 
    *
    * @param p
+   * @throws Exception 
    */
-  public void updateExperienceSection(Profile p) {
-    saveProfile(p);
-    profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), p);
+  public void updateExperienceSection(Profile p) throws Exception {
+    Profile newProfile = addOrModifyProfileProperties(p);
+    profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), newProfile);
+    LOG.debug("Update experience section successfully for user: " + newProfile);
   }
 
   /**
+   * Update the header section of profile 
    *
    * @param p
+   * @throws Exception 
    */
-  public void updateHeaderSection(Profile p) {
-    saveProfile(p);
-    profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), p);
+  public void updateHeaderSection(Profile p) throws Exception {
+    Profile newProfile = addOrModifyProfileProperties(p);
+    profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), newProfile);
+    LOG.debug("Update header section successfully for user: " + newProfile);
   }
 
   /**
@@ -585,7 +666,7 @@ public class IdentityManager {
   private void removeCacheForProfileChange(Profile profile) {
     Identity identity = profile.getIdentity();
     identityCacheById.remove(identity.getId());
-    identityCache.remove(new GlobalId(identity.getProviderId()+GlobalId.SEPARATOR+identity.getRemoteId()));
+    identityCache.remove(profile.getIdentity().getGlobalId());
     identityListCache.remove(identity.getProviderId());
   }
 
@@ -595,5 +676,4 @@ public class IdentityManager {
     }
     return relationshipManager;
   }
-
 }

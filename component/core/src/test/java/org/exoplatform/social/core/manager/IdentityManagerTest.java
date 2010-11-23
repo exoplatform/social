@@ -455,7 +455,11 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
     final String johnAvatarUrl = "http://domain.com/avatar/john.jpg";
     johnProfile.setProperty(Profile.AVATAR_URL, johnAvatarUrl);
-    identityManager.updateAvatar(johnProfile);
+    try {
+      identityManager.updateAvatar(johnProfile);
+    } catch (Exception e1) {
+      assert false : "can't update avatar" + e1 ;
+    }
 
     Identity gotJohnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                    "john");
