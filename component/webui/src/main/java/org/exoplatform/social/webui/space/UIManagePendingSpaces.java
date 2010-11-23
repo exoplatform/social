@@ -24,6 +24,7 @@ import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -114,7 +115,7 @@ public class UIManagePendingSpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return space.getImageSource();
+    return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
   }
 
   /**

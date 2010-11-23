@@ -6,6 +6,7 @@
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
+  import org.exoplatform.social.core.service.LinkProvider;
 
   def isEditable = uicomponent.isEditable();
   def myRelation = uicomponent.getMyRelation();
@@ -94,7 +95,7 @@
         if (!position)
           position = "";
 
-        String imageSource = id.profile.getAvatarImageSource();
+        String imageSource = LinkProvider.getAvatarImageSource(id.profile);
         if (imageSource == null) {
           imageSource = "/social-resources/skin/ShareImages/Avartar.gif"; 
         }

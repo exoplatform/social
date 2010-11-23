@@ -37,7 +37,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -46,16 +46,14 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupWindow;
-import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIManageMySpaces.java <br />
@@ -212,7 +210,7 @@ public class UIManageMySpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return space.getImageSource();    
+    return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
   }
 
 

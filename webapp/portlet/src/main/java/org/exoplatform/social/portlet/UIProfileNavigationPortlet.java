@@ -25,6 +25,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -105,9 +106,6 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
   /**
    * Gets contact status between current user and identity that is checked.<br>
    * 
-   * @param identity
-   *        Object is checked status with current user.
-   *        
    * @return type of relationship status that equivalent the relationship.
    * 
    * @throws Exception
@@ -213,7 +211,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    */
   protected String getImageSource() throws Exception {
     Identity currIdentity = Utils.getCurrentIdentity();
-    return currIdentity.getProfile().getAvatarImageSource();
+    return LinkProvider.getAvatarImageSource(currIdentity.getProfile());
   }
   
   /**

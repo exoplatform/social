@@ -33,11 +33,9 @@ import org.exoplatform.social.core.service.LinkProvider;
 public class MentionsProcessor extends BaseActivityProcessorPlugin {
 
 
-  private LinkProvider linkProvider;
 
-  public MentionsProcessor(InitParams params, LinkProvider linkProvider) {
+  public MentionsProcessor(InitParams params) {
     super(params);
-    this.linkProvider = linkProvider;
   }
 
 
@@ -74,7 +72,7 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
       }
 
       // Convert to uppercase
-      replaceStr = linkProvider.getProfileLink(replaceStr, portalOwner);
+      replaceStr = LinkProvider.getProfileLink(replaceStr, portalOwner);
 
       // Insert replacement
       if(replaceStr != null){

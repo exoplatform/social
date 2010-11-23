@@ -26,7 +26,7 @@ import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.model.Space;
@@ -39,8 +39,8 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIManagePublicSpaces: list all spaces where user can request to join. <br />
@@ -127,7 +127,7 @@ public class UIManagePublicSpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return space.getImageSource();
+    return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
   }
   /**
    * listener for request to join space action

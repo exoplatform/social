@@ -16,9 +16,6 @@
  */
 package org.exoplatform.social.core.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -28,14 +25,10 @@ public class LinkProviderTest extends AbstractCoreTest {
 
   private IdentityManager identityManager;
 
-  private LinkProvider linkProvider;
-
   public void setUp() throws Exception {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     assertNotNull(identityManager);
-    linkProvider = (LinkProvider) getContainer().getComponentInstanceOfType(LinkProvider.class);
-    assertNotNull(linkProvider);
   }
 
   public void tearDown() throws Exception {
@@ -54,11 +47,12 @@ public class LinkProviderTest extends AbstractCoreTest {
     String rootFullName = rootIdentity.getProfile().getFullName();
     assertNotNull("rootFullName must not be null.", rootFullName);
     // but when we have the identity we generate a link
-    String actualLink = linkProvider.getProfileLink(rootIdentity.getRemoteId(), portalOwner);
+    String actualLink = LinkProvider.getProfileLink(rootIdentity.getRemoteId(), portalOwner);
     String expected =  "<a href=\"/portal/private/" + portalOwner + "/profile/" +
                         rootIdentity.getRemoteId()+"\" target=\"_parent\">"+rootFullName+"</a>";
     assertEquals(expected, actualLink);
 
     identityManager.deleteIdentity(rootIdentity);
   }
+  
 }

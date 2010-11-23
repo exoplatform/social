@@ -22,7 +22,8 @@
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
-  import org.exoplatform.webui.core.UIPageIterator
+  import org.exoplatform.webui.core.UIPageIterator;
+  import org.exoplatform.social.core.service.LinkProvider;
 
   def list = uicomponent.getList();
   def currIdentity = uicomponent.getCurrentIdentity();
@@ -63,7 +64,7 @@
       peopleIdx += 1;
 
       if (!position) {  position = ""; }
-      String imageSource = identity.profile.getAvatarImageSource();
+      String imageSource = LinkProvider.getAvatarImageSource(identity.profile);
       if (imageSource == null) {
         imageSource = "/social-portlet/skin/social/portlet/UIPeoplePortlet/DefaultSkin/background/BLAvatar.gif";
       }

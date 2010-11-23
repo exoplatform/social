@@ -202,7 +202,6 @@ public class UIRelationshipActivity extends BaseUIActivity {
   }
 
   private String getProfileLink(String username) {
-    LinkProvider linkProvider = getApplicationComponent(LinkProvider.class);
-    return "<a href=" + linkProvider.getProfileUri(username) + ">" + username +"</a>";
+    return "<a href=" + LinkProvider.getProfileUri(username) + ">" + username +"</a>";
   }
 }

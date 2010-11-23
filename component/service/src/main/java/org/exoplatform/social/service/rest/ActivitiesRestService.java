@@ -29,8 +29,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.exoplatform.container.ExoContainerContext;
@@ -43,6 +43,8 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 
 /**
@@ -667,7 +669,7 @@ public class ActivitiesRestService implements ResourceContainer {
         profile = identity.getProfile();
         username = (String) profile.getProperty(Profile.USERNAME);
         fullName = profile.getFullName();
-        thumbnail = profile.getAvatarImageSource((PortalContainer) ExoContainerContext.getContainerByName(portalName_));
+        thumbnail = LinkProvider.getAvatarImageSource((PortalContainer) ExoContainerContext.getContainerByName(portalName_), (AvatarAttachment) profile.getProperty(Profile.AVATAR));
         like = new Like();
         like.setIdentityId(identityId);
         like.setUsername(username);
@@ -687,9 +689,9 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param str
    * @return new array
    */
-  private String[] removeItemFromArray(String[] array, String str) {
+  private String[] removeItemFromArray(String[] arrays, String str) {
     List<String> list = new ArrayList<String>();
-    list.addAll(Arrays.asList(array));
+    list.addAll(Arrays.asList(arrays));
     list.remove(str);
     if(list.size() > 0) return list.toArray(new String[list.size()]);
     else return null;

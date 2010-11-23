@@ -410,24 +410,6 @@ public class Space {
   }
   
   /**
-   * Gets space's image source url if available or null
-   * @return
-   * @throws Exception
-   */
-  public String getImageSource()  {
-    try {
-    AvatarAttachment avatarAttachment = getAvatarAttachment();
-    if (avatarAttachment != null) {
-      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-      + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd=" + avatarAttachment.getLastModified();
-    }
-    } catch (Exception e) {
-      ;
-    }
-    return null;
-  }
-  
-  /**
    * Gets current repository name
    * 
    * @return repository name

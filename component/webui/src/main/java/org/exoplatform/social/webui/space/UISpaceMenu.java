@@ -32,6 +32,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -249,7 +250,7 @@ public class UISpaceMenu extends UIContainer {
   protected String getImageSource() throws Exception {
     Space space = getSpace();
     if (space != null) {
-      return space.getImageSource();
+      return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
     } else {
       return "";
     }

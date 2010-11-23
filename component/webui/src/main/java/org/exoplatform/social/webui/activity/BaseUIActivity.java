@@ -375,8 +375,8 @@ public class BaseUIActivity extends UIForm {
     if (userIdentity == null) {
       throw new Exception("User " + userIdentityId +" does not exist");
     }
-    LinkProvider linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
-    String uri = linkProvider.getProfileUri(userIdentity.getRemoteId(), null);
+
+    String uri = LinkProvider.getProfileUri(userIdentity.getRemoteId(), null);
     if (uri == null) {
       uri = "#";
     }
@@ -396,7 +396,7 @@ public class BaseUIActivity extends UIForm {
       return null;
     }
     Profile userProfile = userIdentity.getProfile();
-    return userProfile.getAvatarImageSource();
+    return LinkProvider.getAvatarImageSource(userProfile);
   }
 
   /**
@@ -406,11 +406,11 @@ public class BaseUIActivity extends UIForm {
    */
   public String getSpaceAvatarImageSource(String spaceIdentityId) throws Exception {
     Identity spaceIdentity = identityManager.getIdentity(spaceIdentityId, false);
-    String spaceId = spaceIdentity.getRemoteId();
+    String spaceName = spaceIdentity.getRemoteId();
     SpaceService spaceService = getSpaceService();
-    Space space = spaceService.getSpaceById(spaceId);
+    Space space = spaceService.getSpaceByName(spaceName);
     if (space != null) {
-      return space.getImageSource();
+      return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
     }
 
     return null;

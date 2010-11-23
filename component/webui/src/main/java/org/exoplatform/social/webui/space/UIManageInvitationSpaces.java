@@ -27,7 +27,7 @@ import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -41,8 +41,8 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIManageInvitationSpaces.java used for managing invitation spaces. <br />
@@ -274,7 +274,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return space.getImageSource();
+    return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
   }
 
   /**
@@ -349,7 +349,7 @@ public class UIManageInvitationSpaces extends UIContainer {
 
   /**
    * gets displayed invited space list
-   * @param spaces_
+   * @param spaces
    * @param pageIterator_
    * @return invited space list
    * @throws Exception

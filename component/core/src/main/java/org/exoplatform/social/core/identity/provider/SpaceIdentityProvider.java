@@ -21,6 +21,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
@@ -36,7 +37,6 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
   public static final String NAME = "space";
 
   private SpaceService spaceService;
-
 
   public SpaceIdentityProvider(SpaceService spaceService) {
     this.spaceService = spaceService;
@@ -76,9 +76,11 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
 
   @Override
   public void populateProfile(Profile profile, Space space) {
+    String url = LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
+
     profile.setProperty(Profile.FIRST_NAME, space.getDisplayName());
-    profile.setProperty(Profile.USERNAME, space.getGroupId());
-    profile.setProperty(Profile.AVATAR_URL, space.getImageSource());
-    profile.setProperty(Profile.URL, space.getImageSource());
+    profile.setProperty(Profile.USERNAME, space.getGroupId());    
+    profile.setProperty(Profile.AVATAR_URL, url);
+    profile.setProperty(Profile.URL, url);
   }
 }

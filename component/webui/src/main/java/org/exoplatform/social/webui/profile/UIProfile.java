@@ -31,6 +31,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.UIAvatarUploadContent;
 import org.exoplatform.social.webui.UIAvatarUploader;
 import org.exoplatform.social.webui.URLUtils;
@@ -129,7 +130,7 @@ public class UIProfile extends UIContainer {
    * @return imageSource link
    */
   public String getImageSource() throws Exception {
-    return  getProfile(true).getAvatarImageSource();
+    return LinkProvider.getAvatarImageSource(getProfile(true));
   }
 
   /**

@@ -32,7 +32,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.web.application.RequestContext;
@@ -64,7 +64,7 @@ public class UISocialLogoPortlet extends UIPortletApplication {
     PortletPreferences pref = pcontext.getRequest().getPreferences();
     String imageSource = null;
     try {
-      imageSource = getImageSource();
+      imageSource = LinkProvider.getAvatarImageSource(getProfile(true));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -102,21 +102,6 @@ public class UISocialLogoPortlet extends UIPortletApplication {
       profile = id.getProfile();
     }
     return profile;
-  }
-
-  /**
-   * Gets the source of image.
-   *
-   * @return imageSource link
-   */
-  protected String getImageSource() throws Exception {
-    Profile p = getProfile(true);
-    AvatarAttachment att = (AvatarAttachment) p.getProperty(Profile.AVATAR);
-    if (att != null) {
-      return "/" + getRestContext() + "/jcr/" + getRepository() + "/" + att.getWorkspace()
-          + att.getDataPath() + "/?rnd=" + System.currentTimeMillis();
-    }
-    return null;
   }
 
   /**

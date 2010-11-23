@@ -51,6 +51,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
@@ -61,7 +62,6 @@ import org.exoplatform.social.opensocial.model.SpaceImpl;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -69,17 +69,12 @@ import com.google.inject.Injector;
  */
 public class ExoPeopleService extends ExoService implements PersonService, AppDataService {
 
-  /** The injector. */
-  private Injector injector;
-
   /**
    * Instantiates a new exo people service.
    *
-   * @param injector the injector
    */
   @Inject
-  public ExoPeopleService(Injector injector) {
-    this.injector = injector;
+  public ExoPeopleService() {
   }
 
   /** The Constant NAME_COMPARATOR. */
@@ -98,19 +93,16 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds, GroupId groupId, CollectionOptions collectionOptions, Set<String> fields, SecurityToken token) throws ProtocolException {
     List<Person> result = Lists.newArrayList();
     try {
-
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
 
       Iterator<Identity> it = idSet.iterator();
 
-        while(it.hasNext()) {
-            Identity id = it.next();
-
-            if(id != null) {
-              result.add(convertToPerson(id, fields, token));
-            }
+      while(it.hasNext()) {
+        Identity id = it.next();
+        if(id != null) {
+          result.add(convertToPerson(id, fields, token));
         }
-
+      }
 
       // We can pretend that by default the people are in top friends order
       if (collectionOptions.getSortBy().equals(Person.Field.NAME.toString())) {
@@ -134,8 +126,6 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
   }
-
-
 
   /* (non-Javadoc)
    * @see org.apache.shindig.social.opensocial.spi.PersonService#getPerson(org.apache.shindig.social.opensocial.spi.UserId, java.util.Set, org.apache.shindig.auth.SecurityToken)
@@ -164,7 +154,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @throws Exception
    */
   private Person convertToPerson(Identity identity, Set<String> fields, SecurityToken st) throws Exception {
-    Person p = injector.getInstance(Person.class);
+    Person p = new ExoPersonImpl();
     Profile pro = identity.getProfile();
     PortalContainer container = getPortalContainer(st);
     for (String field : fields) {
@@ -180,8 +170,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       else if(Person.Field.IMS.toString().equals(field)) {
         p.setIms(convertToListFields((List<Map>) pro.getProperty("ims")));
       }
-      else if(Person.Field.ID.toString().equals(field)) {
-        p.setId(identity.getId());
+        else if(Person.Field.ID.toString().equals(field)) {
+        p.setId(identity.getGlobalId().toString());
       }
       else if(Person.Field.NAME.toString().equals(field)) {
         NameImpl name = new NameImpl();
@@ -195,8 +185,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         String portalOwner = getPortalOwner(st);
         String portalName = getPortalContainer(st).getName();
         String host = getHost(st);
-        LinkProvider linkProvider = (LinkProvider)(container.getComponentInstanceOfType(LinkProvider.class));
-        p.setProfileUrl(linkProvider.getAbsoluteProfileUrl(identity.getRemoteId(), portalName, portalOwner, host));
+        p.setProfileUrl(LinkProvider.getAbsoluteProfileUrl(identity.getRemoteId(), portalName, portalOwner, host));
       }
       else if(Person.Field.GENDER.toString().equals(field)) {
         String gender = (String) pro.getProperty("gender");
@@ -223,7 +212,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         } catch (SpaceException e) {}
       }
       else if(Person.Field.THUMBNAIL_URL.toString().equals(field)) {
-        p.setThumbnailUrl(pro.getAvatarImageSource(container));
+        p.setThumbnailUrl(LinkProvider.getAvatarImageSource((AvatarAttachment) pro.getProperty(Profile.AVATAR)));
       }
 
       else if(ExoPersonImpl.Field.PORTAL_CONTAINER.toString().equals(field)) {

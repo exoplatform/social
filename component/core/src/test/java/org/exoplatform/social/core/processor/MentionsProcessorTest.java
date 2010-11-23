@@ -49,7 +49,6 @@ public class MentionsProcessorTest extends AbstractCoreTest {
 
   public void testSubstituteUsernames() throws Exception {
     MentionsProcessor processor = (MentionsProcessor) getContainer().getComponentInstanceOfType(MentionsProcessor.class);
-    LinkProvider linkProvider = (LinkProvider) getContainer().getComponentInstanceOfType(LinkProvider.class);
     assertNotNull("prococessor must not be null", processor);
     ExoSocialActivity activity = null;
     processor.processActivity(activity);
@@ -60,13 +59,10 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     assertNull(activity.getTitle());
     assertNull(activity.getBody());
 
-    IdentityManager identityManger = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     String root = "root", john = "john";
-    Identity rootIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, root);
-    Identity johnIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, john);
 
-    String rootLink = linkProvider.getProfileLink(root, "classic");
-    String johnLink = linkProvider.getProfileLink(john, "classic");
+    String rootLink = LinkProvider.getProfileLink(root, "classic");
+    String johnLink = LinkProvider.getProfileLink(john, "classic");
 
     activity.setTitle("single @root substitution");
     processor.processActivity(activity);
