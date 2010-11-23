@@ -62,6 +62,7 @@ import org.exoplatform.social.opensocial.model.SpaceImpl;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -69,12 +70,17 @@ import com.google.inject.Inject;
  */
 public class ExoPeopleService extends ExoService implements PersonService, AppDataService {
 
+   /** The injector. */
+  private Injector injector;
+
   /**
    * Instantiates a new exo people service.
    *
+   * @param injector the injector
    */
   @Inject
-  public ExoPeopleService() {
+  public ExoPeopleService(Injector injector) {
+    this.injector = injector;
   }
 
   /** The Constant NAME_COMPARATOR. */
