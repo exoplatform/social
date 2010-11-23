@@ -36,7 +36,7 @@
           <div class="LeftLoginContainer">
             <div class="RightLoginContainer">
               <div class="MiddleLoginContainer">
-              <a href="#" onclick="$signInAction"><%= _ctx.appRes("UISocialBannerPortlet.label.Login") %></a>
+              <a href="#" onclick="$signInAction"><%= _ctx.appRes("UISocialBannerPortlet.label.Sign_In") %></a>
               <a href="$registerURI"><%= _ctx.appRes("UISocialBannerPortlet.label.Register") %></a>
               <a class="Language" onclick="$changeLanguageAction">
                 <%= _ctx.appRes("UISocialBannerPortlet.label.ChangeLanguage") %>
