@@ -19,11 +19,10 @@ package org.exoplatform.social.core.identity.model;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
@@ -34,65 +33,100 @@ import org.exoplatform.social.core.service.LinkProvider;
  */
 public class Profile {
 
-  private static final Log LOG = ExoLogger.getLogger(Profile.class);
+  /** gender key. */
+  public static final String        GENDER         = "gender";
 
-  public static final String USERNAME = "username";
+  /** username key. */
+  public static final String        USERNAME       = "username";
 
-  public static final String FIRST_NAME = "firstName";
+  /** firstname key. */
+  public static final String        FIRST_NAME     = "firstName";
 
-  public static final String LAST_NAME = "lastName";
+  /** lastname key. */
+  public static final String        LAST_NAME      = "lastName";
+
+  /** email key. */
+  public static final String        EMAIL          = "email";
 
   /**
    * property of type {@link AvatarAttachment} that contains the avatar
    */
-  public static String AVATAR = "avatar";
+  public static final String        AVATAR         = "avatar";
 
   /**
    * url of the avatar (can be used instead of {@link #AVATAR})
    */
-  public static final String AVATAR_URL = "avatarUrl";
+  public static final String        AVATAR_URL     = "avatarUrl";
 
-  public static final String URL_POSTFIX = "Url";
+  /** EXPERIENCE. */
+  public static final String        EXPERIENCES    = "experiences";
 
-  public static final String RESIZED_SUBFIX = "RESIZED_";
+  /** COMPANY. */
+  public static final String        EXPERIENCES_COMPANY     = "company";
+
+  /** POSITION. */
+  public static final String        EXPERIENCES_POSITION    = "position";
+
+  /** POSITION. */
+  public static final String        EXPERIENCES_SKILLS      = "skills";
+
+  /** START DATE OF EXPERIENCE. */
+  public static final String        EXPERIENCES_START_DATE  = "startDate";
+
+  /** END DATE OF EXPERIENCE. */
+  public static final String        EXPERIENCES_END_DATE    = "endDate";
+
+  /** CURRENT OR PAST EXPERIENCE. */
+  public static final String        EXPERIENCES_IS_CURRENT  = "isCurrent";
+
+  /** DESCRIPTION OF EXPERIENCE. */
+  public static final String        EXPERIENCES_DESCRIPTION = "description";
+
+  /** POSITION. */
+  public static final String        POSITION       = "position";
 
   /**
    * An optional url for this profile
    */
-  public static final String URL = "Url";
+  public static final String        URL            = "Url";
 
-  /**
-   * The properties.
-   */
-  private final Map<String, Object> properties = new HashMap<String, Object>();
+  /** PHONES key. */
+  public static final String        CONTACT_PHONES = "phones";
 
-  /**
-   * The identity.
-   */
-  private final Identity identity;
+  /** IMS key. */
+  public static final String        CONTACT_IMS    = "ims";
 
-  /**
-   * The id.
-   */
-  private String id;
+  /** URLS key. */
+  public static final String        CONTACT_URLS   = "urls";
 
-  /**
-   * The last loaded time
-   */
-  private long lastLoaded;
+  /** url postfix */
+  public static final String        URL_POSTFIX    = "Url";
 
-  /**
-   * Indicates whether or not the profile has been modified locally
-   */
-  private boolean hasChanged;
+  /** Resized subfix */
+  public static final String        RESIZED_SUBFIX = "RESIZED_";
+
+  /** The properties. */
+  private final Map<String, Object> properties     = new HashMap<String, Object>();
+
+  /** The identity. */
+  private final Identity            identity;
+
+  /** The id. */
+  private String                    id;
+
+  /** The last loaded time */
+  private long                      lastLoaded;
+
+  /** Indicates whether or not the profile has been modified locally */
+  private boolean                   hasChanged;
 
   /**
    * Instantiates a new profile.
    *
-   * @param id the id
+   * @param identity the identity
    */
-  public Profile(Identity id) {
-    this.identity = id;
+  public Profile(final Identity identity) {
+    this.identity = identity;
   }
 
   /**
@@ -100,7 +134,7 @@ public class Profile {
    *
    * @return the identity
    */
-  public Identity getIdentity() {
+  public final Identity getIdentity() {
     return identity;
   }
 
@@ -109,7 +143,7 @@ public class Profile {
    *
    * @return the id
    */
-  public String getId() {
+  public final String getId() {
     return id;
   }
 
@@ -118,7 +152,7 @@ public class Profile {
    *
    * @param id the new id
    */
-  public void setId(String id) {
+  public final void setId(final String id) {
     this.id = id;
   }
 
@@ -127,7 +161,7 @@ public class Profile {
    *
    * @return the last loaded time
    */
-  public long getLastLoaded() {
+  public final long getLastLoaded() {
     return lastLoaded;
   }
 
@@ -136,25 +170,24 @@ public class Profile {
    *
    * @param lastLoaded the new last loaded time
    */
-  public void setLastLoaded(long lastLoaded) {
+  public final void setLastLoaded(final long lastLoaded) {
     this.lastLoaded = lastLoaded;
   }
 
   /**
    * Indicates whether or not the profile has been modified locally.
    *
-   * @return <code>true</code> if it has been modified locally,
-   *         <code>false</code> otherwise.
+   * @return <code>true</code> if it has been modified locally, <code>false</code> otherwise.
    */
-  public boolean hasChanged() {
+  public final boolean hasChanged() {
     return hasChanged;
   }
 
   /**
    * Clear the has changed flag.
    */
-  public void clearHasChanged() {
-    setHasChanged(false);
+  public final void clearHasChanged() {
+     setHasChanged(false);
   }
 
   /**
@@ -162,7 +195,7 @@ public class Profile {
    *
    * @param hasChanged the new hasChanged
    */
-  private void setHasChanged(boolean hasChanged) {
+  private void setHasChanged(final boolean hasChanged) {
     this.hasChanged = hasChanged;
   }
 
@@ -172,17 +205,17 @@ public class Profile {
    * @param name the name
    * @return the property
    */
-  public Object getProperty(String name) {
+  public final Object getProperty(final String name) {
     return properties.get(name);
   }
 
   /**
    * Sets the property.
    *
-   * @param name  the name
+   * @param name the name
    * @param value the value
    */
-  public void setProperty(String name, Object value) {
+  public final void setProperty(final String name, final Object value) {
     properties.put(name, value);
     setHasChanged(true);
   }
@@ -193,7 +226,7 @@ public class Profile {
    * @param name the name
    * @return true, if successful
    */
-  public boolean contains(String name) {
+  public final boolean contains(final String name) {
     return properties.containsKey(name);
   }
 
@@ -202,7 +235,7 @@ public class Profile {
    *
    * @return the properties
    */
-  public Map<String, Object> getProperties() {
+  public final Map<String, Object> getProperties() {
     return properties;
   }
 
@@ -211,7 +244,7 @@ public class Profile {
    *
    * @param name the name
    */
-  public void removeProperty(String name) {
+  public final void removeProperty(final String name) {
     properties.remove(name);
     setHasChanged(true);
   }
@@ -220,11 +253,12 @@ public class Profile {
    * Gets the property value.
    *
    * @param name the name
-   * @return
+   * @return the property value
    * @deprecated
+   * @return
    */
   @Deprecated
-  public Object getPropertyValue(String name) {
+  public final Object getPropertyValue(final String name) {
     return getProperty(name);
   }
 
@@ -233,7 +267,7 @@ public class Profile {
    *
    * @return the full name
    */
-  public String getFullName() {
+  public final String getFullName() {
     String first = (String) getProperty(FIRST_NAME);
     String last = (String) getProperty(LAST_NAME);
     String all = (first != null) ? first : "";
@@ -242,9 +276,10 @@ public class Profile {
   }
 
   /**
+   * Get url of avatar image source
    * @return null or an url if available
    */
-  public String getAvatarImageSource() {
+  public final String getAvatarImageSource() {
     String avatarUrl = (String) getProperty(AVATAR_URL);
     if (avatarUrl != null) {
       return avatarUrl;
@@ -257,10 +292,11 @@ public class Profile {
   }
 
   /**
+   * Get url of avatar image source
    * @param containerByName
    * @return
    */
-  public String getAvatarImageSource(PortalContainer containerByName) {
+  public final String getAvatarImageSource(final PortalContainer containerByName) {
     return getAvatarImageSource();
   }
 
@@ -268,12 +304,13 @@ public class Profile {
    * Gets user's avatar image source by specifying width and height property The
    * method will create a new scaled image file then return you the url to view
    * that file
-   *
-   * @return null or an url if available
-   * @throws Exception
-   * @author tuan_nguyenxuan Oct 26, 2010
+   * 
+   * @author tuan_nguyenxuan
+   * @param width
+   * @param height
+   * @return avatar url that link to specified width, height avatar
    */
-  public String getAvatarImageSource(int width, int height) {
+  public final String getAvatarImageSource(final int width, final int height) {
     // Determine the key of avatar file and avatar url like avatar_30x30 and
     // avatar_30x30Url
     String postfix = ImageUtils.buildImagePostfix(width, height);
@@ -285,7 +322,7 @@ public class Profile {
       return avatarUrl;
     }
     IdentityManager identityManager = (IdentityManager) PortalContainer.getInstance()
-            .getComponentInstanceOfType(IdentityManager.class);
+                                                                       .getComponentInstanceOfType(IdentityManager.class);
     // When had resized avatar but hadn't avatar url we build the avatar url
     // then return
     AvatarAttachment avatarAttachment = (AvatarAttachment) getProperty(keyURL);
@@ -304,15 +341,15 @@ public class Profile {
     InputStream inputStream = new ByteArrayInputStream(avatarAttachment.getImageBytes());
     String mimeType = avatarAttachment.getMimeType();
     AvatarAttachment newAvatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream,
-            width,
-            height,
-            avatarAttachment.getId()
-                    + postfix,
-            ImageUtils.buildFileName(avatarAttachment.getFileName(),
-                    RESIZED_SUBFIX,
-                    postfix),
-            mimeType,
-            avatarAttachment.getWorkspace());
+                                                                                   width,
+                                                                                   height,
+                                                                                   avatarAttachment.getId()
+                                                                                       + postfix,
+                                                                                   ImageUtils.buildFileName(avatarAttachment.getFileName(),
+                                                                                                           RESIZED_SUBFIX,
+                                                                                                           postfix),
+                                                                                   mimeType,
+                                                                                   avatarAttachment.getWorkspace());
 
     if (newAvatarAttachment == null) {
       return getAvatarImageSource();
@@ -329,10 +366,38 @@ public class Profile {
 
   /**
    * Get this profile URL
-   *
-   * @return
+   * 
+   * @return this profile URL
    */
-  public String getUrl() {
+  public final String getUrl() {
     return (String) getProperty(URL);
+  }
+
+  /**
+   * Add or modify properties of the profile
+   * 
+   * @param props
+   */
+  public final void addOrModifyProperties(final Map<String, Object> props) {
+    Iterator<Map.Entry<String, Object>> it = props.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<String, Object> entry = it.next();
+      String key = entry.getKey();
+      // we skip all the property that are jcr related
+      if (key.contains(":")) {
+        continue;
+      }
+      setProperty(key, entry.getValue());
+    }
+    setHasChanged(true);
+  }
+
+  /*
+   * Get uuid, identity, properties of profile
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public final String toString() {
+    return "[uuid : " + id + " identity : " + identity.getId() + " properties: " + properties;
   }
 }

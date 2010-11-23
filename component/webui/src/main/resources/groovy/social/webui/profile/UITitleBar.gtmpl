@@ -29,10 +29,10 @@
           <div class="Title"><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></div>
           <% if (isEditable) { %>
             <% if (!isEdit) { %>
-              <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>" href="#" class="EditIcon">&nbsp;</a>
+              <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="#" class="EditIcon">&nbsp;</a>
             <% } else { %>
-              <a onclick="<%=uicomponent.event("Cancel")%>" href="#" class="CancelIcon">&nbsp;</a>
-              <a onclick="<%=uicomponent.event("Save")%>" href="#" class="SaveIcon">&nbsp;</a>
+              <a onclick="<%=uicomponent.event("Cancel")%>; return false;" href="#" class="CancelIcon">&nbsp;</a>
+              <a onclick="<%=uicomponent.event("Save")%>; return false;" href="#" class="SaveIcon">&nbsp;</a>
              <% } %>
           <% } %>
         </div>

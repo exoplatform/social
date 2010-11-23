@@ -18,12 +18,13 @@
 -->
 <%
   import org.exoplatform.webui.form.UIFormStringInput;
+  import org.exoplatform.social.core.identity.model.Profile;
   def user = uicomponent.getViewUser();
   def profile = uicomponent.getProfile(false);
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
 
-  def position = profile.getPropertyValue("position");
+  def position = profile.getPropertyValue(Profile.POSITION);
 
   if (isEditable)
     position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): position);

@@ -33,6 +33,9 @@ public class Identity {
   /** The profile. */
   Profile profile;
 
+  /** The global id. */
+  GlobalId globalId;
+
   /**
    * Instantiates a new identity.
    *
@@ -128,11 +131,20 @@ public class Identity {
     this.providerId = providerId;
   }
 
+  /**
+   * @return the global id string of identity
+   */
+  @Override
   public String toString() {
-    return providerId + ":" + remoteId;
+    return getGlobalId().toString();
   }
 
+  /**
+   * @return global id of identity
+   */
   public GlobalId getGlobalId() {
-    return GlobalId.create(providerId, remoteId);
+    if(globalId == null)
+      globalId = GlobalId.create(providerId, remoteId);
+    return globalId;
   }
 }

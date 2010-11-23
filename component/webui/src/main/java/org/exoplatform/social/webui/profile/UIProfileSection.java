@@ -16,7 +16,14 @@
  */
 package org.exoplatform.social.webui.profile;
 
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.web.CacheUserProfileFilter;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -91,6 +98,7 @@ public abstract class UIProfileSection extends UIForm {
    * 
    * @return true if is multiple part.
    */
+  @Override
   public boolean isMultipart() {
     return isMultipart;
   }
@@ -123,11 +131,29 @@ public abstract class UIProfileSection extends UIForm {
   }
 
   /**
+   * Get user
+   *
+   * @return
+   * @throws Exception
+   */
+  public User getViewUser() throws Exception {
+    String currentUserName = RequestContext.getCurrentInstance().getRemoteUser();
+    String currentViewer = URLUtils.getCurrentUser();
+    if ((currentViewer != null) && (!currentViewer.equals(currentUserName))) {
+      UserHandler userHandler = getApplicationComponent(OrganizationService.class).getUserHandler();
+      return userHandler.findUserByName(currentViewer);
+    }
+    ConversationState state = ConversationState.getCurrent();
+    return (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+  }
+
+  /**
    * Listens to edit event and changes the form to edit mode.<br>
    *
    */
   public static class EditActionListener extends EventListener<UIProfileSection> {
 
+    @Override
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
       sect.setEditMode("true".equals(event.getRequestContext().getRequestParameter(OBJECTID)));
@@ -141,6 +167,7 @@ public abstract class UIProfileSection extends UIForm {
    */
   public static class SaveActionListener extends EventListener<UIProfileSection> {
 
+    @Override
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
       sect.setEditMode(false);
@@ -154,6 +181,7 @@ public abstract class UIProfileSection extends UIForm {
    */
   public static class CancelActionListener extends EventListener<UIProfileSection> {
 
+    @Override
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
       sect.setEditMode(false);

@@ -19,6 +19,7 @@
 <%
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.webui.profile.UITitleBar;
+  import org.exoplatform.social.core.identity.model.Profile;
 
   def profile = uicomponent.getProfile(false);
   def isEdit = uicomponent.isEditMode();
@@ -26,10 +27,10 @@
   def childs = uicomponent.getChilds();
   def childSize = childs.size();
 
-  def exp = profile.getPropertyValue("experiences");
+  def exp = profile.getPropertyValue(Profile.EXPERIENCES);
   def pastExp = uicomponent.getPastExperience();
   def currentExp = uicomponent.getCurrentExperience();
-  def currentUser = profile.getPropertyValue("firstName");
+  def currentUser = profile.getPropertyValue(Profile.FIRST_NAME);
 %>
 <div class="experience">
 <%uiform.begin()%>
@@ -135,13 +136,13 @@
     <div class="CurrentExperience" style="background:#efefef none; padding-left: 8px;">
     <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Current")%></b></div>
     <%  currentExp.each {
-          def company = it.get("company");
-          def position = it.get("position");
-          def skills = it.get("skills");
-          def startDate = it.get("startDate");
-          def endDate = it.get("endDate");
-          def isCurrent = it.get("isCurrent");
-          def description = it.get("description");
+          def company = it.get(Profile.EXPERIENCES_COMPANY);
+          def position = it.get(Profile.EXPERIENCES_POSITION);
+          def skills = it.get(Profile.EXPERIENCES_SKILLS);
+          def startDate = it.get(Profile.EXPERIENCES_START_DATE);
+          def endDate = it.get(Profile.EXPERIENCES_END_DATE);
+          def isCurrent = it.get(Profile.EXPERIENCES_IS_CURRENT);
+          def description = it.get(Profile.EXPERIENCES_DESCRIPTION);
           def endDateMonth = uicomponent.getMonth(endDate);
           def endDateYear = uicomponent.getYear(endDate);
           def startDateMonth = uicomponent.getMonth(startDate);
@@ -161,13 +162,13 @@
     <div class="PassExperience" style="background:#d5d5d5 none; padding-left: 8px;">
     <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Past")%></b></div>
     <%  pastExp.each {
-          def company = it.get("company");
-          def position = it.get("position");
-          def skills = it.get("skills");
-          def startDate = it.get("startDate");
-          def endDate = it.get("endDate");
-          def isCurrent = it.get("isCurrent");
-          def description = it.get("description");
+          def company = it.get(Profile.EXPERIENCES_COMPANY);
+          def position = it.get(Profile.EXPERIENCES_POSITION);
+          def skills = it.get(Profile.EXPERIENCES_SKILLS);
+          def startDate = it.get(Profile.EXPERIENCES_START_DATE);
+          def endDate = it.get(Profile.EXPERIENCES_END_DATE);
+          def isCurrent = it.get(Profile.EXPERIENCES_IS_CURRENT);
+          def description = it.get(Profile.EXPERIENCES_DESCRIPTION);
           def endDateMonth = uicomponent.getMonth(endDate);
           def endDateYear = uicomponent.getYear(endDate);
           def startDateMonth = uicomponent.getMonth(startDate);

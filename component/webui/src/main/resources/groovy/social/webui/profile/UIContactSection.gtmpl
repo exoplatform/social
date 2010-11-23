@@ -23,6 +23,8 @@
 <%
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.webui.profile.UITitleBar;
+  import org.exoplatform.social.core.identity.model.Profile;
+  import org.exoplatform.social.webui.profile.UIContactSection;
 
   def uicomponentId = uicomponent.id;
   def noGenderLabel = _ctx.appRes("${uicomponentId}.label.noGender");
@@ -32,7 +34,6 @@
   def noContact = _ctx.appRes("${uicomponentId}.label.noContact");
   def noContactCurrent = _ctx.appRes("${uicomponentId}.label.noContactCurrent");
 
-
   def profile = uicomponent.getProfile(false);
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
@@ -40,18 +41,25 @@
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
 
-  def gender = profile.getPropertyValue("gender");
-  def phones = profile.getPropertyValue("phones");
-  def ims = profile.getPropertyValue("ims");
-  def urls = profile.getPropertyValue("urls");
+  // Can't use UIContactSection.GENDER_CHILD because of below error. So I use uicomponent.GENDER_CHILD
+  // Caused by: groovy.lang.MissingPropertyException: No such property: PHONE for class: UIContactSection
+  // Don't know why Profile.CONTACT_PHONES could be used
+  def gender = profile.getPropertyValue(uicomponent.GENDER_CHILD);
+  def phones = profile.getPropertyValue(Profile.CONTACT_PHONES);
+  def ims = profile.getPropertyValue(Profile.CONTACT_IMS);
+  def urls = profile.getPropertyValue(Profile.CONTACT_URLS);
 
-  def emailChilds = uicomponent.getEmailChilds();
+  def phoneChild = uicomponent.PHONE;
+  def urlChild = uicomponent.URL;
+  def imChild = uicomponent.IM;
+  def key = uicomponent.KEY;
+  def value = uicomponent.VALUE;
+
   def phoneChilds = uicomponent.getPhoneChilds();
   def urlChilds = uicomponent.getUrlChilds();
   def imsChilds = uicomponent.getImsChilds();
   def genderChild = uicomponent.getGenderChild();
 
-  def emailCount = uicomponent.getEmailCount();
   def phoneCount = uicomponent.getPhoneCount();
   def urlCount = uicomponent.getUrlCount();
   def imsCount = uicomponent.getImsCount();
@@ -71,11 +79,10 @@
   }
 
   def noContactInfo = false;
-  def currentUser = profile.getPropertyValue("firstName");
+  def currentUser = profile.getPropertyValue(Profile.FIRST_NAME);
 
-  if (((gender == "gender") || (gender == "") || (gender == null)) && (phoneSize == 0) && (urlSize == 0) && (imsSize == 0)) {
+  if (((gender == null)) || (gender == "") && (phoneSize == 0) && (urlSize == 0) && (imsSize == 0)) {
     noContactInfo = true;
-
   }
 %>
 <div class="UIContactSection">
@@ -127,12 +134,19 @@
                if (phoneCount > 0) {
                  for (i in 0..phoneCount-1) {
                    if (phoneChilds.get(i).isRendered()) {
-                     uiform.renderField(phoneChilds.get(i));
+                     if (i % 2 != 0) {
+                       uiform.renderField(phoneChilds.get(i));
                      %>
-            <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+phoneChilds.get(i).getId()+".phone")%>">&nbsp</a>
-                     <% if (i != phoneCount - 1) { %>
-              <br />
-                     <% }
+            <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", "" + phoneChilds.get(i).getId()+"." + phoneChilds.get(i-1).getId())%>; return false;">&nbsp</a>
+                     <%
+                     } else {
+                       if (i != 0) {
+                     %>
+            <br />
+                     <%
+                     }
+                       uiform.renderField(phoneChilds.get(i));
+                     }
                    }
                  }
                } // end if phoneCount > 0
@@ -141,10 +155,11 @@
              <% } %>
           <% } else { %>
                <% if (phoneSize > 0) {
-                    phones.each {
-                      def phone = it.get("value");
+                    phones.each() {
+                      def phone = it.get(value);
+                      def type = it.get(key);
                 %>
-                    <%=phone%><br>
+                    <%=type%>: <%=phone%><br>
                  <% }
                   } else { %>
                     $noPhoneLabel
@@ -153,7 +168,7 @@
             <%
             if (isEdit) {
             %>
-                <a class="AddIcon" onclick="<%=uicomponent.event("Add", "phone")%>">&nbsp</a>
+                <a class="AddIcon" onclick="<%=uicomponent.event("Add", phoneChild)%>">&nbsp</a>
             <% } %>
             </td>
           </tr>
@@ -162,8 +177,8 @@
             <tr>
               <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%> :</td>
               <td class="FieldComponent">
-              <%     phones.each {
-                      def phone = it.get("value");
+              <%     phones.each() {
+                      def phone = it.get(uicomponent.VALUE);
 
                     %>
                     <%=phone%><br>
@@ -187,14 +202,12 @@
                          if (i % 2 != 0) {
                            uiform.renderField(imsChilds.get(i));
                            %>
-                             <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>">&nbsp</a>
+                             <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>; return false;">&nbsp</a>
                            <%
                          } else {
                            if (i != 0) {
                          %>
-
                            <br>
-
                          <%
                          }
                            uiform.renderField(imsChilds.get(i));
@@ -208,9 +221,9 @@
 
                 <% } else { %>
                     <%if (imsSize > 0) {
-                        ims.each {
-                          def im = it.get("value");
-                          def type = it.get("key");
+                        ims.each() {
+                          def im = it.get(value);
+                          def type = it.get(key);
 
                       %>
                       <%=type%>: <%=im%><br>
@@ -223,7 +236,7 @@
             <%
             if (isEdit) {
             %>
-                <a class="AddIcon" onclick="<%=uicomponent.event("Add", "ims")%>">&nbsp</a>
+                <a class="AddIcon" onclick="<%=uicomponent.event("Add", imChild)%>">&nbsp</a>
             <% } %>
             </td>
           </tr>
@@ -232,9 +245,9 @@
              <tr>
               <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.ims")%> :</td>
               <td class="FieldComponent">
-              <%    ims.each {
-                    def im = it.get("value");
-                    def type = it.get("key");
+              <%    ims.each() {
+                    def im = it.get(value);
+                    def type = it.get(key);
 
                     %>
                     <%=type%>: <%=im%><br>
@@ -258,7 +271,7 @@
                          if (i % 2 != 0) {
                            uiform.renderField(urlChilds.get(i));
                            %>
-                             <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>">&nbsp</a>
+                             <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>; return false;">&nbsp</a>
                            <%
                          } else {
                            if (i != 0) { %>
@@ -275,8 +288,8 @@
                   </li>
              <% } else { %>
                   <%if (urlSize > 0) {
-                    urls.each {
-                      def url = it.get("value");
+                    urls.each() {
+                      def url = it.get(value);
                   %>
                   <a href="${url}">${url}</a><br>
                   <%}
@@ -288,7 +301,7 @@
             <%
             if (isEdit) {
             %>
-                <a class="AddIcon" onclick="<%=uicomponent.event("Add", "urls")%>">&nbsp</a>
+                <a class="AddIcon" onclick="<%=uicomponent.event("Add", urlChild)%>">&nbsp</a>
             <% } %>
             </td>
           </tr>
@@ -297,8 +310,8 @@
              <tr>
               <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.urls")%> :</td>
               <td class="FieldComponent">
-              <%    urls.each {
-                    def url = it.get("value");
+              <%    urls.each() {
+                    def url = it.get(value);
 
                     %>
                     <a href="${url}">${url}</a><br>
