@@ -40,10 +40,8 @@ import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
-import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceLifecycle;
@@ -56,8 +54,9 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.SpaceStorage;
 
 /**
- * Created by The eXo Platform SARL Author : dang.tung tungcnw@gmail.com August
- * 29, 2008
+ * {@link org.exoplatform.social.core.space.spi.SpaceService} implementation.
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since  August 29, 2008
  */
 public class SpaceServiceImpl implements SpaceService {
   private static final Log                           LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
@@ -301,6 +300,7 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
+  @SuppressWarnings("deprecation")
   public Space createSpace(Space space, String creator, String invitedGroupId) throws SpaceException {
     // Creates new space by creating new group
     String groupId = SpaceUtils.createGroup(space.getDisplayName(), creator);
@@ -309,21 +309,22 @@ public class SpaceServiceImpl implements SpaceService {
                                   // space.
       // Gets users in group and then invites user to join into space.
       OrganizationService org = getOrgService();
-      List<User> allUsers = null;
       try {
-        allUsers = org.getUserHandler().findUsers(new Query()).getAll();
-        Collection<?> memberships = null;
-        String userId = null;
-        for (User user : allUsers) {
-          memberships = org.getMembershipHandler()
-                           .findMembershipsByUserAndGroup(user.getUserName(), invitedGroupId);
-          if ((((List) memberships).size() != 0) && (!user.getUserName().equals(creator))) {
-            userId = user.getUserName();
+        
+        // Cannot use due to http://jira.exoplatform.org/browse/EXOGTN-173
+        //ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
+        //User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
+        PageList<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
+        List<User> users = groupMembersAccess.getAll();
+
+        for (User user : users) {
+          String userId = user.getUserName();
+          if (!userId.equals(creator)) {
             space.setInvitedUsers(addItemToArray(space.getInvitedUsers(), userId));
           }
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.error("Failed to invite users from group " + invitedGroupId, e);
       }
     }
 
