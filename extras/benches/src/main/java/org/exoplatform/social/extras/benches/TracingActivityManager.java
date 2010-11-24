@@ -24,6 +24,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.CachingActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.ActivityStorage;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -37,7 +38,7 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
  *         Lamarque</a>
  * @version $Revision$
  */
-public class TracingActivityManager extends ActivityManager {
+public class TracingActivityManager extends CachingActivityManager {
 
   private static final Log LOG = ExoLogger.getExoLogger(TracingActivityManager.class);
 
@@ -55,7 +56,7 @@ public class TracingActivityManager extends ActivityManager {
   public TracingActivityManager(ActivityStorage activityStorage,
                                 IdentityManager identityManager, CacheService cacheService) throws Exception {
     super(activityStorage, identityManager, cacheService);
-    this.activityManager = new ActivityManager (activityStorage, identityManager, cacheService);
+    this.activityManager = new CachingActivityManager (activityStorage, identityManager, cacheService);
   }
 
   public List<ExoSocialActivity> getActivities(Identity identity) {

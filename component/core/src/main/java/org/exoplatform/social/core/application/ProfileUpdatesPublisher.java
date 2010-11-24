@@ -78,8 +78,7 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
       reloadIfNeeded(identity);
       activityManager.recordActivity(identity,
                                      PeopleService.PEOPLE_APP_ID,
-                                     message,
-                                     null);
+                                     message);
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
     }

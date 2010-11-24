@@ -49,7 +49,7 @@
 
   <component>
     <key>org.exoplatform.social.core.manager.ActivityManager</key>
-    <type>org.exoplatform.social.core.manager.ActivityManager</type>
+    <type>org.exoplatform.social.core.manager.CachingActivityManager</type>
     <component-plugins>
       <component-plugin>
         <name>OSHtmlSanitizer</name>
@@ -83,7 +83,7 @@
 
   <component>
     <key>org.exoplatform.social.core.manager.RelationshipManager</key>
-    <type>org.exoplatform.social.core.manager.RelationshipManager</type>
+    <type>org.exoplatform.social.core.manager.CachingRelationshipManager</type>
   </component>
 
   <component>
@@ -97,7 +97,7 @@
 
   <component>
     <key>org.exoplatform.social.core.manager.IdentityManager</key>
-    <type>org.exoplatform.social.core.manager.IdentityManager</type>
+    <type>org.exoplatform.social.core.manager.CachingIdentityManager</type>
     <component-plugins>
       <component-plugin>
         <name>SpaceIdentityProvider plugin</name>

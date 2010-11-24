@@ -38,14 +38,13 @@ import org.exoplatform.social.core.space.spi.SpaceService;
  *         Lamarque</a>
  * @version $Revision$
  */
-public class SpaceActivityPublisher  extends SpaceListenerPlugin {
+public class SpaceActivityPublisher extends SpaceListenerPlugin {
 
   private static Log      LOG = ExoLogger.getExoLogger(SpaceActivityPublisher.class);
 
   private ActivityManager activityManager;
 
   private IdentityManager identityManager;
-
 
   public SpaceActivityPublisher(InitParams params,
                                 ActivityManager activityManager,
@@ -60,9 +59,13 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
     Space space = event.getSpace();
     try {
       // this should create the identity for the space
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName(), false);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                   space.getName(),
+                                                                   false);
       String creator = event.getTarget();
-      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, space.getDisplayName() + " was created by @" + creator + " .");
+      activityManager.recordActivity(spaceIdentity,
+                                     SpaceService.SPACES_APP_ID,
+                                     space.getDisplayName() + " was created by @" + creator + " .");
     } catch (Exception e) {
       LOG.error("Failed to initialize space activity stream ", e);
     }
@@ -100,21 +103,24 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
   public void grantedLead(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     try {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName(), false);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                   space.getName(),
+                                                                   false);
       String member = event.getTarget();
       activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
           + " was granted lead.");
     } catch (Exception e) {
       LOG.error("Failed to grant lead ", e);
     }
-    LOG.info("user " + event.getTarget() + " was granted lead of space "
-        + space.getName());
+    LOG.info("user " + event.getTarget() + " was granted lead of space " + space.getName());
   }
 
   public void joined(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     try {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName(), false);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                   space.getName(),
+                                                                   false);
       String member = event.getTarget();
       activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
           + " has joined.");
@@ -128,7 +134,9 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
   public void left(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     try {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName(), false);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                   space.getName(),
+                                                                   false);
       String member = event.getTarget();
       activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
           + " has left the space.");
