@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.portlet.PortletPreferences;
@@ -84,8 +85,6 @@ public class SpaceUtils {
 
   static public final String                PLATFORM_USERS_GROUP                 = "/platform/users";
 
-  static public final String                MEMBER                               = "member";
-
   static public final String                MANAGER                              = "manager";
 
   static public final String                MENU_CONTAINER                       = "Menu";
@@ -94,13 +93,7 @@ public class SpaceUtils {
 
   static public final String                SPACE_URL                            = "SPACE_URL";
 
-  static private ExoContainer               container;
-
-  static private SpaceService               spaceService;
-
-  static private List<Application>          appListCache                         = new ArrayList<Application>();
-
-  static private ApplicationRegistryService appService                           = null;
+  static private final ConcurrentHashMap<String, Application> appListCache       = new ConcurrentHashMap<String, Application>();
 
   private static final String               REMOTE_CATEGORY_NAME                 = "remote";
 
@@ -117,6 +110,7 @@ public class SpaceUtils {
    * @param name
    * @return new Group
    * @throws Exception
+   * @deprecated to be removed by 1.2.x
    */
   @SuppressWarnings("unchecked")
   static public Group createGroupFromExistingGroup(Group parentGroup,
@@ -143,7 +137,7 @@ public class SpaceUtils {
   }
 
   /**
-   * Gets applications that a group have right to access
+   * Gets applications that a group has right to access
    *
    * @param groupId
    * @return applications
@@ -168,10 +162,11 @@ public class SpaceUtils {
       Iterator<Application> appIterator = applications.iterator();
       while (appIterator.hasNext()) {
         Application app = appIterator.next();
-        if (!hasAccessPermission(app, groupId))
+        if (!hasAccessPermission(app, groupId)) {
           appIterator.remove();
-        else
+        } else {
           list.add(app);
+        }
       }
     }
     return list;
@@ -226,17 +221,12 @@ public class SpaceUtils {
    * @throws Exception
    */
   static public Application getAppFromPortalContainer(String appId) throws Exception {
-    // TODO do we really need this?
-    if (appListCache.size() > 1) {
-      for (Application app : appListCache) {
-        if (app.getApplicationName().equals(appId))
-          return app;
-      }
+    if (appListCache.containsKey(appId)) {
+      return appListCache.get(appId);
     }
 
-    if (container == null) {
-      container = ExoContainerContext.getCurrentContainer();
-    }
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+
     PortletInvoker portletInvoker = (PortletInvoker) container.getComponentInstance(PortletInvoker.class);
     Set<Portlet> portlets = portletInvoker.getPortlets();
     ApplicationRegistryService appRegistryService = getApplicationRegistryService();
@@ -309,8 +299,8 @@ public class SpaceUtils {
           app.setCategoryName(categoryName);
           app.setDisplayName(getLocalizedStringValue(displayNameLS, portletName));
           app.setDescription(getLocalizedStringValue(descriptionLS, portletName));
-          appListCache.add(app);
-          return app;
+          Application oldApp = appListCache.putIfAbsent(app.getApplicationName(), app);
+          return oldApp == null ? app : oldApp;
         }
       }
     }
@@ -530,9 +520,7 @@ public class SpaceUtils {
    */
   static public void removeNavigation(PageNavigation nav) throws Exception {
     UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
-    if (container == null) {
-      container = ExoContainerContext.getCurrentContainer();
-    }
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
     DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
     if (dataStorage == null) {
       LOG.warn("dataStorage is null!");
@@ -571,13 +559,8 @@ public class SpaceUtils {
    * @throws Exception
    */
   public static void reloadNavigation() throws Exception {
-    if (container == null) {
-      container = ExoContainerContext.getCurrentContainer();
-    }
-    if (spaceService == null) {
-      spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
-    }
-
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    SpaceService  spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
     String userId = Util.getPortalRequestContext().getRemoteUser();
     List<Space> spaces = spaceService.getAccessibleSpaces(userId);
     UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
@@ -641,6 +624,8 @@ public class SpaceUtils {
    * @throws SpaceException
    */
   private static Space getSpaceByGroupId(String groupId) throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
     List<Space> spaces = spaceService.getAllSpaces();
     for (Space space : spaces) {
       if (space.getGroupId().equals(groupId)) {
@@ -814,9 +799,7 @@ public class SpaceUtils {
    * @throws SpaceException
    */
   static public void removeGroupNavigation(String groupId) throws SpaceException {
-    if (container == null) {
-      container = ExoContainerContext.getCurrentContainer();
-    }
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
     DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
     PageNavigation spaceNav;
     try {
@@ -1193,10 +1176,7 @@ public class SpaceUtils {
    * @return
    */
   private static ApplicationRegistryService getApplicationRegistryService() {
-    if (appService == null) {
-      PortalContainer portalContainer = PortalContainer.getInstance();
-      appService = (ApplicationRegistryService) portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
-    }
-    return appService;
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    return (ApplicationRegistryService) portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
   }
 }
