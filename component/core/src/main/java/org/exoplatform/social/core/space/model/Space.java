@@ -18,6 +18,8 @@ package org.exoplatform.social.core.space.model;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.model.AvatarAttachment;
 
 
@@ -29,7 +31,7 @@ import org.exoplatform.social.core.model.AvatarAttachment;
  * August 29, 2008
  */
 public class Space {
-  
+  private static final Log LOG = ExoLogger.getLogger(Space.class);
   /** The id. */
   private String id;
   
@@ -408,11 +410,12 @@ public class Space {
     try {
     AvatarAttachment avatarAttachment = getAvatarAttachment();
     if (avatarAttachment != null) {
-      return "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
-      + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd=" + avatarAttachment.getLastModified();
+      String avatarUrl = "/" + PortalContainer.getCurrentRestContextName() + "/jcr/" + getRepository() + "/"
+          + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?rnd=" + avatarAttachment.getLastModified();
+      return escapeJCRSpecialCharacters(avatarUrl);
     }
     } catch (Exception e) {
-      ;
+      LOG.error("GetImageSource error : ", e);
     }
     return null;
   }
@@ -427,5 +430,11 @@ public class Space {
     PortalContainer portalContainer = PortalContainer.getInstance();
     RepositoryService rService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
     return rService.getCurrentRepository().getConfiguration().getName();
+  }
+
+  private String escapeJCRSpecialCharacters(String string) {
+    return string.replace("[", "%5B")
+                .replace("]", "%5D")
+                .replace(":", "%3A");
   }
 }

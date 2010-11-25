@@ -286,7 +286,8 @@ public class Profile {
     }
     AvatarAttachment avatarAttachment = (AvatarAttachment) getProperty(AVATAR);
     if (avatarAttachment != null) {
-      return LinkProvider.buildAvatarUrl(avatarAttachment);
+      avatarUrl = LinkProvider.buildAvatarUrl(avatarAttachment);
+      return escapeJCRSpecialCharacters(avatarUrl);
     }
     return null;
   }
@@ -361,7 +362,7 @@ public class Profile {
     avatarUrl = LinkProvider.buildAvatarUrl(newAvatarAttachment);
     setProperty(keyURL, avatarUrl);
     identityManager.saveProfile(this);
-    return avatarUrl;
+    return escapeJCRSpecialCharacters(avatarUrl);
   }
 
   /**
@@ -399,5 +400,11 @@ public class Profile {
   @Override
   public final String toString() {
     return "[uuid : " + id + " identity : " + identity.getId() + " properties: " + properties;
+  }
+
+  private String escapeJCRSpecialCharacters(String string) {
+    return string.replace("[", "%5B")
+                .replace("]", "%5D")
+                .replace(":", "%3A");
   }
 }
