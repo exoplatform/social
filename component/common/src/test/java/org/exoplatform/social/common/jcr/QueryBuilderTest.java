@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.common.org.exoplatform.social.common.jcr;
+package org.exoplatform.social.common.jcr;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,8 +38,6 @@ import org.exoplatform.services.jcr.core.nodetype.PropertyDefinitionValue;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.AbstractCommonTest;
-import org.exoplatform.social.common.jcr.JCRSessionManager;
-import org.exoplatform.social.common.jcr.QueryBuilder;
 
 /**
  * QueryBuilder unit test
