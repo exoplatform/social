@@ -104,6 +104,10 @@ public class SpaceUtils {
 
   private static final String               REMOTE_CATEGORY_NAME                 = "remote";
 
+  // A {@link Transliterator} instance is stateless which has for consequences that it is Thread Safe and thus can be shared among several threads as mentioned in 
+  // the javadoc
+  private static final Transliterator       ACCENTS_CONVERTER                     = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
+  
   /**
    * Creates a new group from an existing group. This new group will get all
    * data from existing group except for group name
@@ -340,14 +344,12 @@ public class SpaceUtils {
    */
   static public String cleanString(String str) {
 
-    Transliterator accentsconverter = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
-
-    str = accentsconverter.transliterate(str);
+    str = ACCENTS_CONVERTER.transliterate(str);
 
     // the character ? seems to not be changed to d by the transliterate
     // function
 
-    StringBuffer cleanedStr = new StringBuffer(str.trim());
+    StringBuilder cleanedStr = new StringBuilder(str.trim());
     // delete special character
     for (int i = 0; i < cleanedStr.length(); i++) {
       char c = cleanedStr.charAt(i);
@@ -456,7 +458,7 @@ public class SpaceUtils {
   /**
    * Finds container by id
    *
-   * @param childs
+   * @param children
    * @param id
    * @return
    */
@@ -1013,7 +1015,7 @@ public class SpaceUtils {
    * Checks if a user is removed or not.<br>
    *
    * @param userName User name for checking.
-   * @throws SpaceEception if user is removed.
+   * @throws SpaceException if user is removed.
    */
   static public void checkUserExisting(String userName) throws SpaceException {
     OrganizationService orgService = getOrganizationService();
