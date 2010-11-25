@@ -35,7 +35,7 @@ import javax.jcr.query.RowIterator;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 
 /**
- * Query Builder
+ * Query Builder utility to create SQL query and fetch the result.
  *
  * @author Zun
  * @since Nov 10, 2010
@@ -51,7 +51,7 @@ public class QueryBuilder {
   public static final String ASC = "ASC";
 
   /**
-   * Constructor
+   * Constructor.
    * @param session
    */
   public QueryBuilder(Session session) {
@@ -59,7 +59,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Set query selector. Use this for retrieving all data of that selector
+   * Sets query selector. Use this for retrieving all data of that selector.
    * @param selector node type string                                     .
    * @return QueryBuilder instance
    */
@@ -70,20 +70,20 @@ public class QueryBuilder {
   }
 
   /**
-   * Set the selector that query will select data from and the paging configs
+   * Sets the selector that query will select data by specifying the offset and limit.
    * @param selector the node type querying from
    * @param offset offset for paging
-   * @param count paging size
+   * @param limit the limit size
    * @return QueryBuilder instance
    */
-  public QueryBuilder select(String selector, long offset, long count) {
+  public QueryBuilder select(String selector, long offset, long limit) {
     this.offset = offset;
-    this.limit = count;
+    this.limit = limit;
     return select(selector);
   }
 
   /**
-   * Set the query selector and set property for retrieving data partly.
+   * Sets the query selector and sets property for retrieving data partly.
    * @param selector node type string
    * @param property property of that node type
    * @return QueryBuilder instance
@@ -93,21 +93,21 @@ public class QueryBuilder {
   }
 
   /**
-   * Set the query selector and set property for retrieving data partly.
+   * Sets the query selector and set property for retrieving data partly.
    * @param selector node type string
    * @param property property of that node type
    * @param offset offset for paging
-   * @param count paging size
+   * @param limit limit size
    * @return QueryBuilder instance
    */
-  public QueryBuilder select(String selector, String property, long offset, long count) throws Exception {
+  public QueryBuilder select(String selector, String property, long offset, long limit) throws Exception {
     this.offset = offset;
-    this.limit = count;
+    this.limit = limit;
     return select(selector, new String[]{property});
   }
 
   /**
-   * Set the query selector and set properties for retrieving data partly.
+   * Sets the query selector and sets properties for retrieving data partly.
    * @param selector node type string
    * @param properties properties of that node type
    * @return QueryBuilder instance
@@ -127,21 +127,22 @@ public class QueryBuilder {
   }
 
   /**
-   * Set the query selector and set properties for retrieving data partly.
+   * Sets the query selector and sets properties for retrieving data partly.
+   * This select is used for specifying the offset and limit result.
    * @param selector node type string
    * @param properties properties of that node type
    * @param offset offset for paging
-   * @param count paging size
+   * @param limit the limit size
    * @return QueryBuilder instance
    */
-  public QueryBuilder select(String selector, long offset, long count, String... properties) throws Exception {
+  public QueryBuilder select(String selector, long offset, long limit, String... properties) throws Exception {
     this.offset = offset;
-    this.limit = count;
+    this.limit = limit;
     return select(selector, properties);
   }
   
   /**
-   * Open group of operators
+   * Opens group of operators.
    * @return QueryBuilder instance
    */
   public QueryBuilder group() {
@@ -150,7 +151,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Close group of operators
+   * Closes group of operators.
    * @return QueryBuilder instance
    */
   public QueryBuilder endGroup() {
@@ -159,7 +160,7 @@ public class QueryBuilder {
   }
 
   /**
-   * appends a CONTAINS predicate in the form : CONTAINS(property, 'value')
+   * Appends a CONTAINS predicate in the form : CONTAINS(property, 'value').
    * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
@@ -170,7 +171,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Appends a LIKE predicate in the form : property LIKE 'value'
+   * Appends a LIKE predicate in the form : property LIKE 'value'.
    * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
@@ -181,7 +182,7 @@ public class QueryBuilder {
   }
 
   /**
-   * AND operator
+   * Appends AND operator.
    * @return QueryBuilder instance
    */
   public QueryBuilder and() {
@@ -190,7 +191,7 @@ public class QueryBuilder {
   }
 
   /**
-   * OR operator
+   * Appends OR operator.
    * @return QueryBuilder instance
    */
   public QueryBuilder or() {
@@ -199,7 +200,7 @@ public class QueryBuilder {
   }
 
   /**
-   * NOT operator
+   * Appends NOT operator.
    * @return QueryBuilder instance
    */
   public QueryBuilder not() {
@@ -208,8 +209,8 @@ public class QueryBuilder {
   }
 
   /**
-   * EQUAL operator
-    * @param property name of property
+   * Appends EQUAL operator with boolean value.
+   * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
    */
@@ -218,7 +219,7 @@ public class QueryBuilder {
   }
 
   /**
-   * EQUAL operator
+   * Appends EQUAL operator with string value.
    * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
@@ -228,8 +229,8 @@ public class QueryBuilder {
   }
 
   /**
-   * EQUAL operator
-    * @param property name of property
+   * Appends EQUAL operator with int value.
+   * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
    */
@@ -238,7 +239,7 @@ public class QueryBuilder {
   }
 
   /**
-   * GREATER operator
+   * Appends GREATER operator.
    * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
@@ -248,7 +249,7 @@ public class QueryBuilder {
   }
 
   /**
-   * GREATER OR EQUAL operator
+   * Appends GREATER OR EQUAL operator.
    * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
@@ -258,7 +259,7 @@ public class QueryBuilder {
   }
 
   /**
-   * LESS operator
+   * Appends LESS operator.
    * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
@@ -268,7 +269,7 @@ public class QueryBuilder {
   }
 
   /**
-   * LESS OR EQUAL operator
+   * Appends LESS OR EQUAL operator.
    * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
@@ -278,7 +279,7 @@ public class QueryBuilder {
   }
 
   /**
-   * NOT EQUAL operator
+   * Appends NOT EQUAL operator.
    * @param property name of property
    * @param value property value for matching
    * @return QueryBuilder instance
@@ -287,13 +288,8 @@ public class QueryBuilder {
     return appendComparison(property, value, "<>");
   }
 
-  private QueryBuilder appendComparison(String property, Object value, String comparator) {
-    queryBuilder.append(" ").append(property).append(comparator).append(value);
-    return this;
-  }
-
   /**
-   * LOWER operator
+   * Appends LOWER operator.
    * @param property name of property
    * @return LOWER query string
    */
@@ -302,7 +298,7 @@ public class QueryBuilder {
   }
 
   /**
-   * UPPER operator
+   * Appends UPPER operator.
    * @param property name of property
    * @return UPPER query string
    */
@@ -311,7 +307,7 @@ public class QueryBuilder {
   }
 
   /**
-   * IS NULL operator
+   * Appends IS NULL operator.
    * @param property name of property
    * @return QueryBuilder instance
    */
@@ -320,7 +316,7 @@ public class QueryBuilder {
   }
 
   /**
-   * IS NOT NULL operator
+   * Appends IS NOT NULL operator.
    * @param property name of property
    * @return QueryBuilder instance
    */
@@ -329,7 +325,7 @@ public class QueryBuilder {
   }
 
   /**
-   * ORDER BY operator
+   * Appends ORDER BY operator.
    * @param property name of property
    * @param orderType DESC or ASC
    * @return QueryBuilder instance
@@ -341,7 +337,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Get the number of results of current query string
+   * Gets the number of results of current query string.
    * @return the number of results
    * @throws RepositoryException
    */
@@ -353,7 +349,8 @@ public class QueryBuilder {
   }
 
   /**
-   * Find node of current query string.
+   * Finds a node of current query string.
+   * This method is called when expected result in 1 node only.
    * @return the result node
    * @throws Exception
    */
@@ -369,7 +366,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Get list of result nodes of current query string.
+   * Gets list of result nodes of current query string.
    * @return the query results
    * @throws Exception
    */
@@ -388,7 +385,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Get list of property values of current query string.
+   * Gets list of property values of current query string.
    * @return the query results
    * @throws Exception
    */
@@ -410,7 +407,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Get list of properties values of current query string.
+   * Gets list of properties values of current query string.
    * @return the query results
    * @throws Exception
    */
@@ -437,7 +434,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Get current SQL string
+   * Gets current SQL string.
    * @return SQL string
    */
   public String getSQL() {
@@ -447,7 +444,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Set offset for paging
+   * Sets offset for fetching.
    * @param offset
    */
   public void setOffset(long offset) {
@@ -455,7 +452,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Set size for paging
+   * Set limit size for fetching.
    * @param limit
    */
   public void setLimit(int limit) {
@@ -466,7 +463,6 @@ public class QueryBuilder {
     QueryManager queryManager = session.getWorkspace().getQueryManager();
     QueryImpl query = (QueryImpl) queryManager.createQuery(getSQL(), Query.SQL);
 
-    //set paging
     if(offset != -1 & limit != -1){
       query.setOffset(offset);
       query.setLimit(limit);
@@ -474,6 +470,11 @@ public class QueryBuilder {
 
     QueryResult result = query.execute();
     return result;
+  }
+
+  private QueryBuilder appendComparison(String property, Object value, String comparator) {
+    queryBuilder.append(" ").append(property).append(comparator).append(value);
+    return this;
   }
   
   private void revalidateQueryBuilder() {
