@@ -185,7 +185,14 @@
         <%}%>
         </div>
       <%}%>
-    <%} else {%>
+      <% if((pastExp.size() == 0) && (currentExp.size() == 0)){%>
+        <% if(isEditable) {%>
+        <div class="NoneExperience"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
+        <% } else {%>
+        <div class="NoneExperience">$currentUser <%=_ctx.appRes(uicomponent.getName() + ".label.noneExperienceOther")%></div>
+        <% } %>
+      <% } %>
+     <%} else {%>
         <% if(isEditable) {%>
         <div class="NoneExperience"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
         <% } else {%>
