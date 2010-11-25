@@ -452,7 +452,7 @@ public class QueryBuilder {
   }
 
   /**
-   * Set limit size for fetching.
+   * Sets limit size for fetching.
    * @param limit
    */
   public void setLimit(int limit) {

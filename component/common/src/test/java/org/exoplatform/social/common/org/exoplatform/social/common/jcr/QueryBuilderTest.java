@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.common;
+package org.exoplatform.social.common.org.exoplatform.social.common.jcr;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,15 +37,16 @@ import org.exoplatform.services.jcr.core.nodetype.NodeTypeValue;
 import org.exoplatform.services.jcr.core.nodetype.PropertyDefinitionValue;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.AbstractCommonTest;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 
 /**
- * User: zun
- * Date: Jun 15, 2010
- * Time: 5:56:40 PM
+ * QueryBuilder unit test
+ * @author zun
+ * @since  Jun 15, 2010
  */
-public class QueryBuilderTest extends AbstractCommonTest{
+public class QueryBuilderTest extends AbstractCommonTest {
   private final Log LOG = ExoLogger.getLogger(QueryBuilderTest.class);
   PortalContainer portalContainer;
   RepositoryService repositoryService;
