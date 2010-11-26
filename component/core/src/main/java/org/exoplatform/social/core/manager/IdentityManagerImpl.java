@@ -99,16 +99,8 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public List<Identity> getConnections(Identity ownerIdentity) throws Exception {
-    List<Identity> connectionsList = getIdentities(OrganizationIdentityProvider.NAME);
-    Iterator<Identity> itr = connectionsList.iterator();
-    relationshipManager = this.getRelationshipManager();
-    while (itr.hasNext()) {
-      Identity identity = itr.next();
-      if (relationshipManager.getConnectionStatus(identity, ownerIdentity) != Relationship.Type.CONFIRM) {
-        itr.remove();
-      }
-    }
-    return connectionsList;
+    relationshipManager = getRelationshipManager();
+    return relationshipManager.findRelationships(ownerIdentity, Relationship.Type.CONFIRM);
   }
 
   /**

@@ -297,6 +297,13 @@ public class RelationshipManagerImpl implements RelationshipManager {
   /**
    * {@inheritDoc}
    */
+  public List<Identity> findRelationships(Identity ownerIdentity, Relationship.Type relationshipType) throws Exception {
+    return storage.findRelationships(ownerIdentity.getRemoteId(), relationshipType.name());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public Relationship.Type getRelationshipStatus(Relationship rel, Identity id) {
     if (rel == null)
       return Relationship.Type.ALIEN;

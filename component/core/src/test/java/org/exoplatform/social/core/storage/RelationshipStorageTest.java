@@ -108,7 +108,30 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * Test for {@link RelationshipStorage#getRelationship(String)}
    */
   public void testGetRelationship() {
-    assert true;
+    Relationship demoToJohnRelationship = new Relationship(demoIdentity, johnIdentity);
+    relationshipStorage.saveRelationship(demoToJohnRelationship);
+
+    Relationship gotDemoToJohnRelationship = relationshipStorage.getRelationship(demoToJohnRelationship.getId());
+    assertNotNull("gotDemoToJohnRelationship must not be null", gotDemoToJohnRelationship);
+    assertEquals("gotDemoToJohnRelationship.getSender().getRemoteId() must return: "
+            + demoIdentity.getRemoteId(), demoIdentity.getRemoteId(), 
+            gotDemoToJohnRelationship.getSender().getRemoteId());
+    tearDownRelationshipList.add(gotDemoToJohnRelationship);
+  }
+
+  /**
+   * Test for {@link RelationshipStorage#findRelationships(String, String)}
+   * @throws Exception
+   */
+  public void testFindRelationships() throws Exception {
+    Relationship demoToJohnRelationship = new Relationship(demoIdentity, johnIdentity);
+    demoToJohnRelationship.setStatus(Relationship.Type.CONFIRM);
+    relationshipStorage.saveRelationship(demoToJohnRelationship);
+
+    List<Identity> confirmedIdentityList = relationshipStorage.findRelationships(demoIdentity.getId(), Relationship.Type.CONFIRM.name());
+    assertEquals("confirmedIdentityList.size() must return: 1", 1, confirmedIdentityList.size());
+
+    tearDownRelationshipList.add(demoToJohnRelationship);
   }
 
 
@@ -116,6 +139,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * Test for {@link RelationshipStorage#getRelationshipByIdentity(org.exoplatform.social.core.identity.model.Identity)}
    */
   public void testGetRelationshipByIdentity() {
+    //TODO complete testGetRelatinshipByIdentity
     assert true;
   }
 
@@ -123,6 +147,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * Test for {@link RelationshipStorage#getRelationshipByIdentityId(String)}
    */
   public void testGetRelationshipByIdentityId() {
+    //TODO complete testGetRelationshipByIdentityId
     assert true;
   }
 
@@ -130,6 +155,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * Test for {@link RelationshipStorage#getRelationshipIdentitiesByIdentity(org.exoplatform.social.core.identity.model.Identity)}
    */
   public void testGetRelationshipIdentitiesByIdentity() {
+    //TODO complete testGetRelationshipIdentitiesByIdentity
     assert true;
   }
 

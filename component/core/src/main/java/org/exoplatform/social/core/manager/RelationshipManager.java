@@ -199,6 +199,16 @@ public interface RelationshipManager {
   Relationship getRelationship(Identity sender, Identity receiver) throws Exception;
 
   /**
+   * Finds any identity having relationshipType with the ownerIdentity.
+   * @param ownerIdentity
+   * @param relationshipType
+   * @return list of identites
+   * @throws Exception
+   * @since 1.2.0-GA
+   */
+  List<Identity> findRelationships(Identity ownerIdentity, Relationship.Type relationshipType) throws Exception;
+
+  /**
    * Gets the relationship status.
    *
    * @param rel the rel
