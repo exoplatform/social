@@ -27,11 +27,13 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
+import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -120,10 +122,10 @@ public class RelationshipStorage {
       if (relationship.getId() == null) {
         relationshipHomeNode.save();
         relationship.setId(relationshipNode.getUUID());
-        LOG.info("relationship " + relationship + " stored");
+        LOG.debug("relationship " + relationship + " stored");
       } else {
         relationshipNode.save();
-        LOG.info("relationship " + relationship + " updated");
+        LOG.debug("relationship " + relationship + " updated");
       }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -149,7 +151,7 @@ public class RelationshipStorage {
       Node relationshipNode = session.getNodeByUUID(relationship.getId());
       relationshipNode.remove();
       session.save();
-      LOG.info("relationship: " + relationship + " deleted");
+      LOG.debug("relationship: " + relationship + " deleted");
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     } finally {
@@ -195,6 +197,40 @@ public class RelationshipStorage {
     }
 
     return relationship;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<Identity> findRelationships(String senderIdentityId, String relationshipTypeName) throws Exception {
+    Session session = sessionManager.getOrOpenSession();
+    relationshipServiceHome = getRelationshipServiceHome(session);
+    List<Identity> results = new ArrayList<Identity>();
+    QueryBuilder queryBuilder = new QueryBuilder(session);
+    try {
+      queryBuilder.select("exo:relationship", "exo:identity2Id")
+                  .like("jcr:path", relationshipServiceHome.getPath()+"/%")
+                  .and()
+                  .equal("exo:status", relationshipTypeName)
+                  .and()
+                  .equal("exo:identity1Id", senderIdentityId);
+      List<Value> values = queryBuilder.execProperty();
+      for (Value value : values) {
+        String uuid = value.getString();
+        Identity identity = getIdentityManager().getIdentity(uuid, false);
+        if (identity != null) {
+          results.add(identity);
+        } else {
+          LOG.warn(senderIdentityId + " has a  relationship of type: " + relationshipTypeName
+                  + " with" + uuid + " which does not exist in storage");
+        }
+      }
+    } catch (Exception e) {
+      LOG.warn("Failed to findRelationships:" + e.getMessage(), e);
+    } finally {
+     sessionManager.closeSession();
+    }
+    return results;
   }
 
   /**

@@ -362,6 +362,18 @@ public class RelationshipManager {
   }
 
   /**
+   * Finds any identity having relationshipType with the ownerIdentity.
+   * @param ownerIdentity
+   * @param relationshipType
+   * @return list of identites
+   * @throws Exception
+   * @since 1.1.2
+   */
+  List<Identity> findRelationships(Identity ownerIdentity, Relationship.Type relationshipType) throws Exception {
+    return storage.findRelationships(ownerIdentity.getRemoteId(), relationshipType.name());
+  }
+
+  /**
    * Gets the relationship status.
    *
    * @param rel the rel

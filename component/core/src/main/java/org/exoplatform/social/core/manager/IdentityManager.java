@@ -587,16 +587,8 @@ public class IdentityManager {
    * @since 1.1.1
    */
   public List<Identity> getConnections(Identity ownerIdentity) throws Exception {
-    List<Identity> connectionsList = getIdentities(OrganizationIdentityProvider.NAME);
-    Iterator<Identity> itr = connectionsList.iterator();
     relationshipManager = getRelationshipManager();
-    while (itr.hasNext()) {
-      Identity identity = itr.next();
-      if (relationshipManager.getConnectionStatus(identity, ownerIdentity) != Relationship.Type.CONFIRM) {
-        itr.remove();
-      }
-    }
-    return connectionsList;
+    return relationshipManager.findRelationships(ownerIdentity, Relationship.Type.CONFIRM);
   }
 
   /**
