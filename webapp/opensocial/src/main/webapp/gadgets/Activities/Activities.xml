@@ -18,8 +18,8 @@
 
 -->
 <Module>
-  <ModulePrefs  title="Status Update"
-                description="Status Update"
+  <ModulePrefs  title="Activity Stream"
+                description="Activity Stream"
                 author_email="hoatlevan@gmail.com"
                 author_affiliation="eXo Platform">
     <Locale messages="locale/ALL_ALL.xml" />
