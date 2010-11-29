@@ -257,6 +257,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.social.core.processor.TemplateParamsProcessor</key>
+    <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.core.application.ProfileUpdatesPublisher</key>
     <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
   </component>
@@ -285,6 +290,17 @@
         </value-param>
       </init-params>
     </component-plugin>
+    <component-plugin>
+      <name>TemplateParamsProcessor</name>
+      <set-method>addProcessorPlugin</set-method>
+      <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
+      <init-params>
+        <value-param>
+          <name>priority</name>
+          <value>1</value>
+        </value-param>
+      </init-params>
+    </component-plugin>    
     <!--
     <component-plugin>
       <name>GoogleMapProcessor</name>

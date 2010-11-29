@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.plugin.doc;
 
+import java.util.Map;
+
 import javax.jcr.Node;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -24,8 +26,6 @@ import org.exoplatform.services.wcm.core.NodeLocation;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by The eXo Platform SAS
@@ -33,27 +33,25 @@ import org.json.JSONObject;
  *          exo@exoplatform.com
  * Jul 23, 2010
  */
-public class DocUIActivityBuilder extends BaseUIActivityBuilder {
-  private static final Log LOG = ExoLogger.getLogger(DocUIActivityBuilder.class);
+public class UIDocActivityBuilder extends BaseUIActivityBuilder {
+  private static final Log LOG = ExoLogger.getLogger(UIDocActivityBuilder.class);
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
     UIDocActivity docActivity = (UIDocActivity) uiActivity;
-    final String jsonData = activity.getTitle();
     try {
-      final JSONObject jsonObject = new JSONObject(jsonData);
-      docActivity.docLink = jsonObject.getString(UIDocActivity.DOCLINK);
-      docActivity.docName = jsonObject.getString(UIDocActivity.DOCNAME); 
-      docActivity.message = jsonObject.getString(UIDocActivity.MESSAGE);
-      docActivity.docPath = jsonObject.getString(UIDocActivity.DOCPATH);
-      String repository = jsonObject.getString(UIDocActivity.REPOSITORY);
-      String workspace = jsonObject.getString(UIDocActivity.WORKSPACE);
-
-
+      Map<String,String> activityParams = activity.getTemplateParams();
+      docActivity.docLink = activityParams.get(UIDocActivity.DOCLINK);
+      docActivity.docName = activityParams.get(UIDocActivity.DOCNAME);
+      docActivity.message = activityParams.get(UIDocActivity.MESSAGE);
+      docActivity.docPath = activityParams.get(UIDocActivity.DOCPATH);
+      String repository = activityParams.get(UIDocActivity.REPOSITORY);
+      String workspace = activityParams.get(UIDocActivity.WORKSPACE);
+      
       NodeLocation nodeLocation = new NodeLocation(repository, workspace, docActivity.docPath);
       final Node docNode = NodeLocation.getNodeByLocation(nodeLocation);
       docActivity.setDocNode(docNode);
-    } catch (JSONException e) {
-      LOG.error(e);
+    } catch (Exception e) {
+      LOG.error("Binding activity data error : ", e);
     }
   }
 }
