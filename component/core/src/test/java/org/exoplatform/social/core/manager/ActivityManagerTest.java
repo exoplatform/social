@@ -337,14 +337,14 @@ public class ActivityManagerTest extends AbstractCoreTest {
    */
   public void testAddProviders() {
     activityManager.addProcessor(new FakeProcessor(10));
-    activityManager.addProcessor(new FakeProcessor(2));
-    activityManager.addProcessor(new FakeProcessor(1));
+    activityManager.addProcessor(new FakeProcessor(9));
+    activityManager.addProcessor(new FakeProcessor(8));
 
     Activity activity = new Activity();
     activity.setTitle("Hello");
     activityManager.processActivitiy(activity);
     //just verify that we run in priority order
-    assertEquals("Hello-1-2-10", activity.getTitle());
+    assertEquals("Hello-8-9-10", activity.getTitle());
   }
 
 

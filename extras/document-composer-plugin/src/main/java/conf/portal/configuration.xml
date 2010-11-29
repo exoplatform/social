@@ -34,7 +34,7 @@
             <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
             <field name="name"><string>DOC_ACTIVITY</string></field>
             <field name="component"><string>org.exoplatform.social.plugin.doc.UIDocActivity</string></field>
-            <field name="activityBuiderClass"><string>org.exoplatform.social.plugin.doc.DocUIActivityBuilder</string></field>
+            <field name="activityBuiderClass"><string>org.exoplatform.social.plugin.doc.UIDocActivityBuilder</string></field>
           </object>
         </object-param>
       </init-params>
