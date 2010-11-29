@@ -16,7 +16,10 @@
  */
 package org.exoplatform.social.portlet;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -76,6 +79,20 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
 
   public boolean isComposerDisplayed() {
     return composerDisplayed;
+  }
+
+  /**
+   * Checks if title is displayed or not.
+   * This title is only displayed when matching url: /activities
+   * @return
+   */
+  public final boolean isTitleDisplayed() {
+    final String activities = "/activities";
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    HttpServletRequest request = portalRequestContext.getRequest();
+    String str = request.getRequestURL().toString();
+    //return str.substring(0, str.indexOf(portalRequestContext.getRequestContextPath()));
+    return str.contains(activities);
   }
 
   /**
