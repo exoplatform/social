@@ -33,7 +33,7 @@
             <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
             <field name="name"><string>LINK_ACTIVITY</string></field>
             <field name="component"><string>org.exoplatform.social.plugin.link.UILinkActivity</string></field>
-            <field name="activityBuiderClass"><string>org.exoplatform.social.plugin.link.LinkUIActivityBuilder</string></field>
+            <field name="activityBuiderClass"><string>org.exoplatform.social.plugin.link.UILinkActivityBuilder</string></field>
           </object>
         </object-param>
       </init-params>
