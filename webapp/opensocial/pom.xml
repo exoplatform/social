@@ -39,7 +39,7 @@
   <description>eXo Social OpenSocial Web App</description>
 
   <build>
-    <finalName>social-opensocial</finalName>
+    <finalName>social</finalName>
   </build>
 
 </project>
