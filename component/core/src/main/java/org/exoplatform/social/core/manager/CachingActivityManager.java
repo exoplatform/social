@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.manager;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -92,13 +93,14 @@ public class CachingActivityManager extends ActivityManagerImpl {
   public void deleteActivity(String activityId) throws ActivityStorageException {
     ExoSocialActivity activity = this.getStorage().getActivity(activityId);
     if (activity != null) {
-      Identity streamOwner = this.getIdentityManager()
-                                 .getIdentity(activity.getStreamOwner(), false);
+      Identity streamOwner = identityManager.getIdentity(activity.getStreamOwner(), false);
       this.getStorage().deleteActivity(activityId);
       try {
         activityCache.remove(streamOwner.getId());
         activityListCache.remove(streamOwner.getId());
       } catch (Exception e) {
+        // Do nothing; just ignore
+        LOG.debug("No cache key: " + activityId + " from cache");
       }
     }
   }
@@ -118,6 +120,7 @@ public class CachingActivityManager extends ActivityManagerImpl {
    */
   @Override
   public ExoSocialActivity saveActivity(Identity owner, ExoSocialActivity activity) throws ActivityStorageException {
+    // TODO: check the security
     Validate.notNull(owner, "owner must not be null.");
     Validate.notNull(owner.getId(), "owner.getId() must not be null");
     // posted now
@@ -132,7 +135,7 @@ public class CachingActivityManager extends ActivityManagerImpl {
       activity.setUserId(owner.getId());
     }
 
-    activity = storage.saveActivity(owner, activity);
+    activity = this.getStorage().saveActivity(owner, activity);
 
     activityListCache.remove(owner.getId());
 
@@ -199,6 +202,35 @@ public class CachingActivityManager extends ActivityManagerImpl {
       activityListCache.put(identity.getId(), segments);
     }
     return segments.get(segment);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<ExoSocialActivity> getComments(ExoSocialActivity activity) throws ActivityStorageException {
+    String activityId = activity.getId();
+    List<ExoSocialActivity> cachedComments = commentsCache.get(activityId);
+    if (cachedComments == null) {
+      // reload activity to make sure to have the most update activity
+      activity = getActivity(activityId);
+      cachedComments = new ArrayList<ExoSocialActivity>();
+      String rawCommentIds = activity.getReplyToId();
+      // rawCommentIds can be: null || ,a,b,c,d
+      if (rawCommentIds != null) {
+        String[] commentIds = rawCommentIds.split(",");
+        commentIds = (String[]) ArrayUtils.removeElement(commentIds, "");
+
+        for (String commentId : commentIds) {
+          ExoSocialActivity comment = this.getStorage().getActivity(commentId);
+          processActivitiy(comment);
+          cachedComments.add(comment);
+        }
+        if (cachedComments.size() > 0) {
+          commentsCache.put(activityId, cachedComments);
+        }
+      }
+    }
+    return cachedComments;
   }
 
   /**

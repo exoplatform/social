@@ -237,25 +237,6 @@ public interface IdentityManager {
   Profile addOrModifyProfileProperties(Profile profile) throws Exception;
 
   /**
-   * Adds or modifies properties of profile in cache. Profile parameter is a
-   * lightweight that contains only the property that you want to add or modify.
-   * NOTE: The method will not delete the properties on old profile when the
-   * param profile have not those keys.
-   *
-   * @param profile
-   * @return
-   */
-  Profile addOrModifyProfilePropertiesCache(Profile profile);
-
-  /**
-   * Gets profile that was cached.
-   *
-   * @param identity
-   * @return
-   */
-  Identity getCachedProfile(Identity identity);
-
-  /**
    * Updates avatar.
    *
    * @param p
@@ -332,6 +313,7 @@ public interface IdentityManager {
 
   /**
    * Gets identityStorage.
+   *
    * @deprecated should use method getIdentityStorage()
    * @return identityStorage
    */

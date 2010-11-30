@@ -18,7 +18,6 @@ package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ import org.exoplatform.social.core.identity.IdentityProviderPlugin;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
@@ -65,8 +63,8 @@ public class IdentityManagerImpl implements IdentityManager {
    * Instantiates a new identity manager.
    *
    * @param identityStorage
-   * @param defaultIdentityProvider the builtin default identity provider to use
-   *          when when no other provider match
+   * @param defaultIdentityProvider the built-in default identity provider to use
+   *          when no other provider matches
    */
   public IdentityManagerImpl(IdentityStorage identityStorage,
                              IdentityProvider<?> defaultIdentityProvider) {
@@ -161,10 +159,7 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFilter profileFilter) throws Exception {
-    return identityStorage.getIdentitiesFilterByAlphaBet(providerId,
-                                                         profileFilter,
-                                                         0,
-                                                         IdentityManager.SEARCH_LIMIT);
+    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, 0, SEARCH_LIMIT);
   }
 
   /**
@@ -194,7 +189,8 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  // FIXME: Make it clear here when id=uuid vs id=providerId:remoteId vs id=providerId:uuid
+  // FIXME: Make it clear here when id=uuid vs id=providerId:remoteId vs
+  // id=providerId:uuid
   public Identity getIdentity(String id, boolean loadProfile) {
     Identity returnIdentity = null;
     // attempts to match a global id in the form "providerId:remoteId"
@@ -259,7 +255,7 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  //TODO improve the performance by specifying what needs to be loaded
+  // TODO improve the performance by specifying what needs to be loaded
   public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) {
     Identity returnIdentity = null;
     IdentityProvider<?> identityProvider = this.getIdentityProvider(providerId);
@@ -331,10 +327,11 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  //TODO make easier api, this is not good.
+  // TODO make easier api, this is not good.
   public void updateAvatar(Profile p) {
     this.saveProfile(p);
     this.profileLifeCycle.avatarUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update avatar successfully for user: " + p);
   }
 
   /**
@@ -444,21 +441,11 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public Profile addOrModifyProfileProperties(Profile profile) throws Exception {
-    return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public Profile addOrModifyProfilePropertiesCache(Profile profile) {
-    return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public Identity getCachedProfile(Identity identity) {
-    return null;
+    this.getIdentityStorage().addOrModifyProfileProperties(profile);
+    String providerId = profile.getIdentity().getProviderId();
+    Profile newProfile = getIdentity(providerId, true).getProfile();
+    this.getIdentityProvider(providerId).onSaveProfile(newProfile);
+    return newProfile;
   }
 
   /**

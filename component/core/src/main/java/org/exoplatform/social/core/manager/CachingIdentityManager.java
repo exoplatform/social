@@ -87,7 +87,6 @@ public class CachingIdentityManager extends IdentityManagerImpl {
           identityCache.put(globalId, cachedIdentity);
           return cachedIdentity;
         }
-
         // retry with providerId:nodeId
         if (cachedIdentity == null) {
           String tempId = globalId.getLocalId();
@@ -97,6 +96,7 @@ public class CachingIdentityManager extends IdentityManagerImpl {
           }
         }
       }
+
     } else {
       cachedIdentity = identityCacheById.get(id);
       if (cachedIdentity == null) {
@@ -134,6 +134,7 @@ public class CachingIdentityManager extends IdentityManagerImpl {
             this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
           }
         } else {
+          // save new identity
           this.getIdentityStorage().saveIdentity(cachedIdentity);
         }
       }
@@ -173,8 +174,7 @@ public class CachingIdentityManager extends IdentityManagerImpl {
       // FIXME make it clear here when both identity1 and result != null.
       if (result == null) {
         if (identity1 != null) {
-          // identity is valid for provider, but no yet
-          // referenced in storage
+          // identity is valid for provider, but no yet referenced in storage
           saveIdentity(identity1);
           this.getIdentityStorage().saveProfile(identity1.getProfile());
           result = identity1;
@@ -223,8 +223,7 @@ public class CachingIdentityManager extends IdentityManagerImpl {
   private void removeCacheForProfileChange(Profile profile) {
     Identity identity = profile.getIdentity();
     identityCacheById.remove(identity.getId());
-    identityCache.remove(new GlobalId(identity.getProviderId() + GlobalId.SEPARATOR
-        + identity.getRemoteId()));
+    identityCache.remove(profile.getIdentity().getGlobalId());
     identityListCache.remove(identity.getProviderId());
   }
 
@@ -254,10 +253,15 @@ public class CachingIdentityManager extends IdentityManagerImpl {
   }
 
   /**
-   * {@inheritDoc}
+   * Adds or modifies properties of profile in cache. Profile parameter is a
+   * lightweight that contains only the property that you want to add or modify.
+   * NOTE: The method will not delete the properties on old profile when the
+   * param profile does not have those keys.
+   *
+   * @param profile
+   * @return Profile
    */
-  @Override
-  public Profile addOrModifyProfilePropertiesCache(Profile profile) {
+  private Profile addOrModifyProfilePropertiesCache(Profile profile) {
     Profile cachedProfile = getCachedProfile(profile.getIdentity()).getProfile();
     if (cachedProfile == null)
       return null;
@@ -266,10 +270,12 @@ public class CachingIdentityManager extends IdentityManagerImpl {
   }
 
   /**
-   * {@inheritDoc}
+   * Gets profile that was cached.
+   *
+   * @param identity
+   * @return Identity
    */
-  @Override
-  public Identity getCachedProfile(Identity identity) {
+  private Identity getCachedProfile(Identity identity) {
     Identity cachedIdentity;
     if (identity == null)
       return null;

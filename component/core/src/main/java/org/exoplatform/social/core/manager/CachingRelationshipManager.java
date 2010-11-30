@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.services.cache.CacheService;
@@ -58,26 +59,51 @@ public class CachingRelationshipManager extends RelationshipManagerImpl {
    */
   @Override
   public void deny(Relationship relationship) throws Exception {
-    List<Relationship> cachedRelationshipsReceiver = this.relationshipListCache.get(relationship.getReceiver()
-                                                                                                .getId());
-    List<Relationship> cachedRelationshipsSender = this.relationshipListCache.get(relationship.getSender()
-                                                                                              .getId());
-    if (cachedRelationshipsReceiver != null) {
-      if (cachedRelationshipsReceiver.contains(relationship)) {
-        cachedRelationshipsReceiver.remove(relationship);
-        this.relationshipListCache.put(relationship.getReceiver().getId(),
-                                       cachedRelationshipsReceiver);
+    final Identity sender = relationship.getSender();
+    final Identity receiver = relationship.getReceiver();
+    final String senderId = sender.getId();
+    final String receiverId = receiver.getId();
+
+    List<Relationship> cachedRelationshipsSender = this.relationshipListCache.get(senderId);
+    List<Relationship> cachedRelationshipReceiver = this.relationshipListCache.get(receiverId);
+
+    // remove in sender
+    if (cachedRelationshipsSender != null && cachedRelationshipsSender.size() > 0) {
+      for (int i = 0; i < cachedRelationshipsSender.size(); i++) {
+        Relationship temp = cachedRelationshipsSender.get(i);
+        if (temp.getSender().getId().equals(senderId)
+            && temp.getReceiver().getId().equals(receiverId)) {
+          cachedRelationshipsSender.remove(i);
+          break;
+        }
       }
-    } else if (cachedRelationshipsSender != null) {
-      if (cachedRelationshipsSender.contains(relationship)) {
-        cachedRelationshipsSender.remove(relationship);
-        this.relationshipListCache.put(relationship.getSender().getId(), cachedRelationshipsSender);
+      this.relationshipListCache.remove(senderId);
+      if (cachedRelationshipsSender.size() > 0) {
+        this.relationshipListCache.put(senderId, cachedRelationshipsSender);
       }
-    } else if (this.relationshipIdCache.get(relationship.getId()) != null) {
-      this.relationshipIdCache.remove(relationship.getId());
     }
-    this.getStorage().removeRelationship(relationship);
-    this.getLifeCycle().relationshipDenied(this, relationship);
+
+    // remove in receiver
+    if (cachedRelationshipReceiver != null && cachedRelationshipReceiver.size() > 0) {
+      for (int i = 0; i < cachedRelationshipReceiver.size(); i++) {
+        Relationship temp = cachedRelationshipReceiver.get(i);
+        if (temp.getSender().getId().equals(senderId)
+            && temp.getReceiver().getId().equals(receiverId)) {
+          cachedRelationshipReceiver.remove(i);
+          break;
+        }
+      }
+      this.relationshipListCache.remove(receiverId);
+      if (cachedRelationshipReceiver.size() > 0) {
+        this.relationshipListCache.put(receiverId, cachedRelationshipReceiver);
+      }
+    }
+    if (relationship.getId() != null) {
+      if (this.relationshipIdCache.get(relationship.getId()) != null) {
+        this.relationshipIdCache.remove(relationship.getId());
+      }
+    }
+    super.deny(relationship);
   }
 
   /**
@@ -85,26 +111,50 @@ public class CachingRelationshipManager extends RelationshipManagerImpl {
    */
   @Override
   public void remove(Relationship relationship) throws Exception {
-    List<Relationship> cachedRelationshipsReceiver = this.relationshipListCache.get(relationship.getReceiver()
-                                                                                                .getId());
-    List<Relationship> cachedRelationshipsSender = this.relationshipListCache.get(relationship.getSender()
-                                                                                              .getId());
-    if (cachedRelationshipsReceiver != null) {
-      if (cachedRelationshipsReceiver.contains(relationship)) {
-        cachedRelationshipsReceiver.remove(relationship);
-        this.relationshipListCache.put(relationship.getReceiver().getId(),
-                                       cachedRelationshipsReceiver);
+    final Identity sender = relationship.getSender();
+    final Identity receiver = relationship.getReceiver();
+    final String senderId = sender.getId();
+    final String receiverId = receiver.getId();
+    List<Relationship> cachedRelationshipsSender = this.relationshipListCache.get(senderId);
+    List<Relationship> cachedRelationshipReceiver = this.relationshipListCache.get(receiverId);
+
+    // remove in sender
+    if (cachedRelationshipsSender != null && cachedRelationshipsSender.size() > 0) {
+      for (int i = 0; i < cachedRelationshipsSender.size(); i++) {
+        Relationship temp = cachedRelationshipsSender.get(i);
+        if (temp.getSender().getId().equals(senderId)
+            && temp.getReceiver().getId().equals(receiverId)) {
+          cachedRelationshipsSender.remove(i);
+          break;
+        }
       }
-    } else if (cachedRelationshipsSender != null) {
-      if (cachedRelationshipsSender.contains(relationship)) {
-        cachedRelationshipsSender.remove(relationship);
-        this.relationshipListCache.put(relationship.getSender().getId(), cachedRelationshipsSender);
+      this.relationshipListCache.remove(senderId);
+      if (cachedRelationshipsSender.size() > 0) {
+        this.relationshipListCache.put(senderId, cachedRelationshipsSender);
       }
-    } else if (this.relationshipIdCache.get(relationship.getId()) != null) {
-      this.relationshipIdCache.remove(relationship.getId());
     }
-    this.getStorage().removeRelationship(relationship);
-    this.getLifeCycle().relationshipRemoved(this, relationship);
+
+    // remove in receiver
+    if (cachedRelationshipReceiver != null && cachedRelationshipReceiver.size() > 0) {
+      for (int i = 0; i < cachedRelationshipReceiver.size(); i++) {
+        Relationship temp = cachedRelationshipReceiver.get(i);
+        if (temp.getSender().getId().equals(senderId)
+            && temp.getReceiver().getId().equals(receiverId)) {
+          cachedRelationshipReceiver.remove(i);
+          break;
+        }
+      }
+      this.relationshipListCache.remove(receiverId);
+      if (cachedRelationshipReceiver.size() > 0) {
+        this.relationshipListCache.put(receiverId, cachedRelationshipReceiver);
+      }
+    }
+    if (relationship.getId() != null) {
+      if (this.relationshipIdCache.get(relationship.getId()) != null) {
+        this.relationshipIdCache.remove(relationship.getId());
+      }
+    }
+    super.remove(relationship);
   }
 
   /**
@@ -115,8 +165,20 @@ public class CachingRelationshipManager extends RelationshipManagerImpl {
     List<Relationship> cachedRelationship = this.relationshipListCache.get(identity.getId());
     if (cachedRelationship == null) {
       cachedRelationship = this.getStorage().getRelationshipByIdentity(identity);
+    }
+    return cachedRelationship;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Relationship getRelationshipById(String id) throws Exception {
+    Relationship cachedRelationship = this.relationshipIdCache.get(id);
+    if (cachedRelationship == null) {
+      cachedRelationship = this.storage.getRelationship(id);
       if (cachedRelationship != null) {
-        this.relationshipListCache.put(identity.getId(), cachedRelationship);
+        this.relationshipIdCache.put(id, cachedRelationship);
       }
     }
     return cachedRelationship;
@@ -127,14 +189,11 @@ public class CachingRelationshipManager extends RelationshipManagerImpl {
    */
   @Override
   public List<Relationship> getRelationshipsByIdentityId(String id) throws Exception {
-    List<Relationship> relationshipListCached = this.relationshipListCache.get(id);
-    if (relationshipListCached == null) {
-      relationshipListCached = this.getStorage().getRelationshipByIdentityId(id);
-      if (relationshipListCached != null) {
-        this.relationshipListCache.put(id, relationshipListCached);
-      }
+    List<Relationship> listCached = this.relationshipListCache.get(id);
+    if (listCached == null) {
+      listCached = this.getStorage().getRelationshipByIdentityId(id);
     }
-    return relationshipListCached;
+    return listCached;
   }
 
   /**
@@ -159,24 +218,72 @@ public class CachingRelationshipManager extends RelationshipManagerImpl {
         throw new Exception("the property initiator is not member of the relationship");
       }
     }
+    List<Relationship> cachedRelationshipsSender = this.relationshipListCache.get(senderId);
+    List<Relationship> cachedRelationshipReceiver = this.relationshipListCache.get(receiverId);
 
-    List<Relationship> cachedRelationshipsReceiver = this.relationshipListCache.get(relationship.getReceiver()
-                                                                                                .getId());
-    List<Relationship> cachedRelationshipsSender = this.relationshipListCache.get(relationship.getSender()
-                                                                                              .getId());
-    if (cachedRelationshipsReceiver != null) {
-      if (cachedRelationshipsReceiver.contains(relationship)) {
-        cachedRelationshipsReceiver.remove(relationship);
-        this.relationshipListCache.put(relationship.getReceiver().getId(),
-                                       cachedRelationshipsReceiver);
+    boolean updateCache;
+    // update in sender
+    if (cachedRelationshipsSender != null && cachedRelationshipsSender.size() > 0) {
+      updateCache = true;
+      for (int i = 0; i < cachedRelationshipsSender.size(); i++) {
+        Relationship temp = cachedRelationshipsSender.get(i);
+        if (temp.getSender().getId().equals(senderId)
+            && temp.getReceiver().getId().equals(receiverId)) {
+          cachedRelationshipsSender.remove(i);
+          cachedRelationshipsSender.add(temp);
+          updateCache = false;
+          break;
+        }
       }
-    } else if (cachedRelationshipsSender != null) {
-      if (cachedRelationshipsSender.contains(relationship)) {
-        cachedRelationshipsSender.remove(relationship);
-        this.relationshipListCache.put(relationship.getSender().getId(), cachedRelationshipsSender);
+      if (updateCache) {
+        cachedRelationshipsSender.add(relationship);
       }
-    } else if (this.relationshipIdCache.get(relationship.getId()) != null) {
-      this.relationshipIdCache.remove(relationship.getId());
+      this.relationshipListCache.remove(senderId);
+      this.relationshipListCache.put(senderId, cachedRelationshipsSender);
+    }
+    if (cachedRelationshipsSender == null) {
+      List<Relationship> listRelationship = new ArrayList<Relationship>();
+      listRelationship.add(relationship);
+      this.relationshipListCache.put(senderId, listRelationship);
+    }
+
+    // update in receiver
+    if (cachedRelationshipReceiver != null && cachedRelationshipReceiver.size() > 0) {
+      updateCache = true;
+      for (int i = 0; i < cachedRelationshipReceiver.size(); i++) {
+        Relationship temp = cachedRelationshipReceiver.get(i);
+        if (temp.getSender().getId().equals(senderId)
+            && temp.getReceiver().getId().equals(receiverId)) {
+          cachedRelationshipReceiver.remove(i);
+          cachedRelationshipReceiver.add(temp);
+          updateCache = false;
+          break;
+        }
+      }
+      if (updateCache) {
+        cachedRelationshipReceiver.add(relationship);
+        this.relationshipListCache.remove(receiverId);
+        this.relationshipListCache.put(receiverId, cachedRelationshipReceiver);
+      }
+    }
+    if (cachedRelationshipReceiver == null) {
+      List<Relationship> listRelationship = new ArrayList<Relationship>();
+      listRelationship.add(relationship);
+      this.relationshipListCache.put(receiverId, listRelationship);
+    }
+    if (cachedRelationshipsSender != null && cachedRelationshipsSender.size() == 0) {
+      this.relationshipListCache.remove(senderId);
+    }
+    if (cachedRelationshipReceiver != null && cachedRelationshipReceiver.size() == 0) {
+      this.relationshipListCache.remove(receiverId);
+    }
+    if (relationship.getId() != null) {
+      if (this.relationshipIdCache.get(relationship.getId()) != null) {
+        this.relationshipIdCache.remove(relationship.getId());
+        this.relationshipIdCache.put(relationship.getId(), relationship);
+      } else {
+        this.relationshipIdCache.put(relationship.getId(), relationship);
+      }
     }
     this.getStorage().saveRelationship(relationship);
   }
