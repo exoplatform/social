@@ -16,7 +16,9 @@
  */
 package org.exoplatform.social.plugin.link;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.exoplatform.social.core.activity.model.Activity;
@@ -44,7 +46,6 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
-import org.json.JSONObject;
 /**
  * UIComposerLinkExtension.java
  * <p>
@@ -78,8 +79,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
   private static final String HTTPS = "https://";
   private LinkShare linkShare_;
   private boolean linkInfoDisplayed_ = false;
-  private JSONObject dataLink_;
-
+  private Map<String, String> templateParams;
+  
   /**
    * constructor
    */
@@ -96,12 +97,12 @@ public class UILinkActivityComposer extends UIActivityComposer {
     return linkInfoDisplayed_;
   }
 
-  public void setDataLink(JSONObject dataLink) {
-    dataLink_ = dataLink;
+  public void setTemplateParams(Map<String, String> tempParams) {
+    templateParams = tempParams;
   }
 
-  public JSONObject getDataLink() {
-    return dataLink_;
+  public Map<String, String> getTemplateParams() {
+    return templateParams;
   }
 
   public void clearLinkShare() {
@@ -122,16 +123,16 @@ public class UILinkActivityComposer extends UIActivityComposer {
       url = HTTP + url;
     }
     linkShare_ = LinkShare.getInstance(url);
-    dataLink_ = new JSONObject();
-    dataLink_.put(LINK_PARAM, linkShare_.getLink());
+    templateParams = new HashMap<String, String>();
+    templateParams.put(LINK_PARAM, linkShare_.getLink());
     String image = "";
     List<String> images = linkShare_.getImages();
     if (images != null && images.size() > 0) {
       image = images.get(0);
     }
-    dataLink_.put(IMAGE_PARAM, image);
-    dataLink_.put(TITLE_PARAM, linkShare_.getTitle());
-    dataLink_.put(DESCRIPTION_PARAM, linkShare_.getDescription());
+    templateParams.put(IMAGE_PARAM, image);
+    templateParams.put(TITLE_PARAM, linkShare_.getTitle());
+    templateParams.put(DESCRIPTION_PARAM, linkShare_.getDescription());
     setLinkInfoDisplayed(true);
   }
   private boolean isImageLink(String link){
@@ -164,12 +165,12 @@ public class UILinkActivityComposer extends UIActivityComposer {
     public void execute(Event<UILinkActivityComposer> event) throws Exception {
       WebuiRequestContext requestContext = event.getRequestContext();
       UILinkActivityComposer uiComposerLinkExtension = event.getSource();
-      JSONObject dataLink = new JSONObject();
-      dataLink.put(LINK_PARAM, requestContext.getRequestParameter(LINK_PARAM));
-      dataLink.put(IMAGE_PARAM, requestContext.getRequestParameter(IMAGE_PARAM));
-      dataLink.put(TITLE_PARAM, requestContext.getRequestParameter(TITLE_PARAM));
-      dataLink.put(DESCRIPTION_PARAM, requestContext.getRequestParameter(DESCRIPTION_PARAM));
-      uiComposerLinkExtension.setDataLink(dataLink);
+      Map<String, String> tempParams = new HashMap<String, String>();
+      tempParams.put(LINK_PARAM, requestContext.getRequestParameter(LINK_PARAM));
+      tempParams.put(IMAGE_PARAM, requestContext.getRequestParameter(IMAGE_PARAM));
+      tempParams.put(TITLE_PARAM, requestContext.getRequestParameter(TITLE_PARAM));
+      tempParams.put(DESCRIPTION_PARAM, requestContext.getRequestParameter(DESCRIPTION_PARAM));
+      uiComposerLinkExtension.setTemplateParams(tempParams);
       requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
       UIComponent uiParent = uiComposerLinkExtension.getParent();
       if (uiParent != null) {
@@ -200,18 +201,24 @@ public class UILinkActivityComposer extends UIActivityComposer {
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
 
     UIApplication uiApplication = requestContext.getUIApplication();
-    JSONObject dataLink = getDataLink();
-    dataLink.put(COMMENT_PARAM, postedMessage);
-    setDataLink(dataLink);
-    String titleData = dataLink.toString();
+    Map<String, String> templateParams = getTemplateParams();
+    templateParams.put(COMMENT_PARAM, postedMessage);
+    setTemplateParams(templateParams);
 
-    if (titleData.equals("")) {
+    if (templateParams.size() == 0) {
       uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
                                                     null,
                                                     ApplicationMessage.WARNING));
       return;
     }
-
+    
+    String title = "Shared a link: <a href=\"${" + LINK_PARAM + "}\">${" + TITLE_PARAM + "} </a>";
+    Activity activity = new Activity(userIdentity.getId(),
+                                     UILinkActivity.ACTIVITY_TYPE,
+                                     title,
+                                     null);
+    activity.setTemplateParams(templateParams);
+    
     if (postContext == UIComposer.PostContext.SPACE) {
       UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
       Space space = uiDisplaySpaceActivities.getSpace();
@@ -219,11 +226,6 @@ public class UILinkActivityComposer extends UIActivityComposer {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                    space.getId(),
                                                                    false);
-      Activity activity = new Activity(userIdentity.getId(),
-                                       SpaceService.SPACES_APP_ID,
-                                       titleData,
-                                       null);
-      activity.setType(UILinkActivity.ACTIVITY_TYPE);
       activityManager.saveActivity(spaceIdentity, activity);
 
       UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
@@ -235,11 +237,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
       String ownerName = uiUserActivitiesDisplay.getOwnerName();
       Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                    ownerName);
-      Activity activity = new Activity(userIdentity.getId(),
-                                       PeopleService.PEOPLE_APP_ID,
-                                       titleData,
-                                       null);
-      activity.setType(UILinkActivity.ACTIVITY_TYPE);
+
       activityManager.saveActivity(ownerIdentity, activity);
       
       if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
