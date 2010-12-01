@@ -22,8 +22,7 @@
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <external-component-plugins>
-    <target-component>org.exoplatform.services.scheduler.JobSchedulerService
-    </target-component>
+    <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
     <component-plugin>
       <name>RepubSocialJiraActivityJob</name>
       <set-method>addPeriodJob</set-method>
@@ -59,8 +58,7 @@
       <init-params>
         <properties-param>
           <name>mash.info</name>
-          <property name="baseURL"
-            value="http://builder.exoplatform.org/hudson/view/social" />
+          <property name="baseURL" value="http://builder.exoplatform.org/hudson/view/social" />
           <property name="project" value="social-trunk-ci" />
           <property name="targetActivityStream" value="space:exosocial" />
           <property name="successIcon" value="http://builder.exoplatform.org/hudson/plugin/greenballs/48x48/green.gif" />
