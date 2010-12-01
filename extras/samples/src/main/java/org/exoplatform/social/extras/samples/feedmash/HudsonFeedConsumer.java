@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.extras.samples.feedmash;
 
-import java.util.Date;
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -82,7 +80,6 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
       publishActivity(message, hudson, targetStream);
 
       saveState(HUDSON_STATUS, currentStatus);
-      saveState(LAST_CHECKED, new Date());
 
     } catch (Exception e) {
       LOG.error("failed to publish hudson activity: " + e.getMessage(), e);
@@ -90,9 +87,9 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
     }
   }
 
-
   @Override
   public void beforeJobExecute(JobDataMap dataMap) {
+    super.beforeJobExecute(dataMap);
     successIcon = getStringParam(dataMap, "successIcon", successIcon);
     failureIcon = getStringParam(dataMap, "failureIcon", failureIcon);
     baseUrl = getStringParam(dataMap, "baseURL", null);
@@ -101,8 +98,6 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
       feedUrl = baseUrl + "/job/" + project + "/rssAll";
     }
   }
-
-
 
   private String currentStatus(SyndEntryImpl entry) {
     String currentStatus;
@@ -117,7 +112,7 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
 
   private String message(String status, String link, String title) {
     String icon = (status == BuildStatus.SUCCESS.name()) ? successIcon : failureIcon;
-    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;<a href=\""+ link+"\">" + title + "</a>";
+    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;<a href=\""+ link+"\" target=\"_blank\">" + title + "</a>";
   }
 
   private Identity getHudsonIdentity() throws Exception {

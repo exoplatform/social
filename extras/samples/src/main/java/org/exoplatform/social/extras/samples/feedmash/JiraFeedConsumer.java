@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.extras.samples.feedmash;
 
-import java.util.Date;
 import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -40,7 +39,7 @@ public class JiraFeedConsumer extends AbstractFeedmashJob {
   private String jiraLogo = "http://www.meta-inf.hu/images/atlassian/logo-jira.gif";
   private String baseUrl;
   private String project;
-
+  private String categoryMatch;
 
   public JiraFeedConsumer() {
   }
@@ -85,15 +84,10 @@ public class JiraFeedConsumer extends AbstractFeedmashJob {
 
       publishActivity(message, jira, space);
 
-      saveState(LAST_CHECKED, new Date());
     } catch (Exception e) {
       LOG.error("failed to republish jira activity: " + e.getMessage(), e);
     }
   }
-
-
-
-
 
   @Override
   public void beforeJobExecute(JobDataMap dataMap) {
@@ -104,7 +98,6 @@ public class JiraFeedConsumer extends AbstractFeedmashJob {
     }
     categoryMatch = dataMap.getString("categoryMatch");
   }
-
 
   private Identity getJiraIdentity() throws Exception {
     Application jiraApp = jiraApp();
