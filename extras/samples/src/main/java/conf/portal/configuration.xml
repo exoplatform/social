@@ -22,8 +22,7 @@
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <external-component-plugins>
-    <target-component>org.exoplatform.services.scheduler.JobSchedulerService
-    </target-component>
+    <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
     <component-plugin>
       <name>RepubSocialJiraActivityJob</name>
       <set-method>addPeriodJob</set-method>
