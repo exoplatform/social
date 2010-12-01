@@ -72,6 +72,13 @@ public class UserActivityListAccess implements ListAccess<Activity> {
     return size;
   }
 
+  /**
+   * Loads activity list by specifying the index and length counting from that index
+   * @param index
+   * @param length
+   * @return activity list
+   * @throws Exception
+   */
   public Activity[] load(int index, int length) throws Exception{
     List<Activity> activityList;
     if (displayMode == UIUserActivitiesDisplay.DisplayMode.MY_STATUS || displayMode == UIUserActivitiesDisplay.DisplayMode.OWNER_STATUS) {
@@ -97,15 +104,12 @@ public class UserActivityListAccess implements ListAccess<Activity> {
   }
 
   private List<Activity> getActivityList(int index, int length, List<Activity> activityList) {
-    Collections.sort(activityList, Util.activityComparator());
     if (activityList.size() < 1) {
       return activityList;
     }
-    try {
-      return activityList.subList(index, index + length);
-    } catch (Exception e) {
-      return activityList.subList(index, activityList.size() - 1);
-    }
-  }
+    int toIndex = length + index;
 
+    toIndex = (activityList.size() >= toIndex) ? toIndex : (activityList.size() + index);
+    return activityList.subList(index, toIndex);
+  }
 }

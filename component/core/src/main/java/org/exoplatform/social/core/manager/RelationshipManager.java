@@ -561,7 +561,7 @@ public class RelationshipManager {
    * @since 1.1.2
    */
   List<Identity> findRelationships(Identity ownerIdentity, Relationship.Type relationshipType) throws Exception {
-    return storage.findRelationships(ownerIdentity.getRemoteId(), relationshipType.name());
+    return storage.findRelationships(ownerIdentity.getId(), relationshipType.name());
   }
 
   /**
