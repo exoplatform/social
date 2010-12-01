@@ -188,7 +188,7 @@ public class ActivityManagerImpl implements ActivityManager {
     }
     for (Space space : accessibleSpaceList) {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getId());
+                                                                   space.getName());
       try {
         activityList.addAll(getActivities(spaceIdentity));
       } catch (Exception e) {

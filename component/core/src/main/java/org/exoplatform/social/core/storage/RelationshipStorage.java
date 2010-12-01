@@ -18,6 +18,7 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -202,28 +203,39 @@ public class RelationshipStorage {
   /**
    * {@inheritDoc}
    */
-  public List<Identity> findRelationships(String senderIdentityId, String relationshipTypeName) throws Exception {
+  public List<Identity> findRelationships(String identityId, String relationshipTypeName) throws Exception {
     Session session = sessionManager.getOrOpenSession();
     relationshipServiceHome = getRelationshipServiceHome(session);
     List<Identity> results = new ArrayList<Identity>();
     QueryBuilder queryBuilder = new QueryBuilder(session);
     try {
-      queryBuilder.select("exo:relationship", "exo:identity2Id")
+      queryBuilder.select(RELATION_NODETYPE, RELATION_SENDER, RELATION_RECEIVER)
                   .like("jcr:path", relationshipServiceHome.getPath()+"/%")
                   .and()
-                  .equal("exo:status", relationshipTypeName)
+                  .equal(PROPERTY_STATUS, relationshipTypeName)
                   .and()
-                  .equal("exo:identity1Id", senderIdentityId);
-      List<Value> values = queryBuilder.execProperty();
-      for (Value value : values) {
-        String uuid = value.getString();
-        Identity identity = getIdentityManager().getIdentity(uuid, false);
-        if (identity != null) {
-          results.add(identity);
-        } else {
-          LOG.warn(senderIdentityId + " has a  relationship of type: " + relationshipTypeName
-                  + " with" + uuid + " which does not exist in storage");
+                  .group()
+                  .equal(RELATION_SENDER, identityId)
+                  .or()
+                  .equal(RELATION_RECEIVER, identityId)
+                  .endGroup();
+      List<Map<String, Value>> valueList = queryBuilder.execProperties();
+
+      for (Map<String, Value> valueMap : valueList) {
+        for (Map.Entry<String, Value> entry : valueMap.entrySet()) {
+          String uuid = entry.getValue().getString();
+          if (identityId.equals(uuid)) {
+            continue;
+          }
+          Identity identity = getIdentityManager().getIdentity(uuid, false);
+          if (identity != null) {
+            results.add(identity);
+          } else {
+            LOG.warn(identityId + " has a  relationship of type: " + relationshipTypeName
+                    + " with" + uuid + " which does not exist in storage");
+          }
         }
+
       }
     } catch (Exception e) {
       LOG.warn("Failed to findRelationships:" + e.getMessage(), e);

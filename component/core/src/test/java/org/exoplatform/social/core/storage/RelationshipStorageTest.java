@@ -128,9 +128,16 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     demoToJohnRelationship.setStatus(Relationship.Type.CONFIRM);
     relationshipStorage.saveRelationship(demoToJohnRelationship);
 
-    List<Identity> confirmedIdentityList = relationshipStorage.findRelationships(demoIdentity.getId(), Relationship.Type.CONFIRM.name());
-    assertEquals("confirmedIdentityList.size() must return: 1", 1, confirmedIdentityList.size());
-
+    List<Identity> confirmedIdentityListOfDemo = relationshipStorage.findRelationships(demoIdentity.getId(), Relationship.Type.CONFIRM.name());
+    List<Identity> confirmedIdentityListOfJohn = relationshipStorage.findRelationships(johnIdentity.getId(), Relationship.Type.CONFIRM.name());
+    assertEquals("confirmedIdentityListOfDemo.size() must return: 1", 1, confirmedIdentityListOfDemo.size());
+    assertEquals("confirmedIdentityListOfDemo.get(0).getId() must return :" + johnIdentity.getId(),
+                  johnIdentity.getId(),
+                  confirmedIdentityListOfDemo.get(0).getId());
+    assertEquals("confirmedIdentityListOfJohn.size() must return: 1", 1, confirmedIdentityListOfJohn.size());
+    assertEquals("confirmedIdentityListOfJohn.get(0).getId() must return :" + demoIdentity.getId(),
+                  demoIdentity.getId(),
+                  confirmedIdentityListOfJohn.get(0).getId());
     tearDownRelationshipList.add(demoToJohnRelationship);
   }
 
