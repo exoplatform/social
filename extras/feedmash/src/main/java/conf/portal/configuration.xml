@@ -1,101 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+  <!--
 
-    Copyright (C) 2003-2010 eXo Platform SAS.
+    Copyright (C) 2003-2010 eXo Platform SAS. This program is free
+    software; you can redistribute it and/or modify it under the terms of
+    the GNU Affero General Public License as published by the Free
+    Software Foundation; either version 3 of the License, or (at your
+    option) any later version. This program is distributed in the hope
+    that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+    PURPOSE. See the GNU General Public License for more details. You
+    should have received a copy of the GNU General Public License along
+    with this program; if not, see<http://www.gnu.org/licenses/>.
+  -->
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-
-<configuration
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
-
-
-   <component>
-     <type>org.exoplatform.services.scheduler.impl.QuartzSheduler</type>
-   </component>
-
-   <component>
-      <type>org.exoplatform.services.scheduler.QueueTasks</type>
-   </component>
+  <component>
+    <type>org.exoplatform.services.scheduler.impl.QuartzSheduler</type>
+  </component>
 
   <component>
-      <type>org.exoplatform.social.extras.feedmash.MashupStateHolder</type>
-   </component>
+    <type>org.exoplatform.services.scheduler.QueueTasks</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.extras.feedmash.MashupStateHolder</type>
+  </component>
 
   <component>
     <key>org.exoplatform.services.scheduler.JobSchedulerService</key>
     <type>org.exoplatform.services.scheduler.impl.JobSchedulerServiceImpl</type>
   </component>
-
-
-<!--
- <external-component-plugins>
-   <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
-    <component-plugin>
-      <name>RepubSocialJiraActivityJob</name>
-      <set-method>addPeriodJob</set-method>
-      <type>org.exoplatform.social.feedmash.FeedmashJobPlugin</type>
-      <description></description>
-      <init-params>
-        <properties-param>
-          <name>mash.info</name>
-          <property name="feedURL" value="http://jira.exoplatform.org/plugins/servlet/streams?key=SOC"/>
-          <property name="categoryMatch" value="resolved|created"/>
-          <property name="targetActivityStream" value="space:exosocial"/>
-          <property name="portalContainer" value="socialdemo"/>
-        </properties-param>
-        <properties-param>
-          <name>job.info</name>
-          <description>save the monitor data  periodically</description>
-          <property name="jobName" value="JIRAFeedConsumer"/>
-          <property name="groupName" value="Feedmash"/>
-          <property name="job" value="org.exoplatform.social.feedmash.JiraFeedConsumer"/>
-          <property name="repeatCount" value="0"/>
-          <property name="period" value="60000"/>
-          <property name="startTime" value="+45"/>
-          <property name="endTime" value=""/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>WatchSocialBuildStatus</name>
-      <set-method>addPeriodJob</set-method>
-      <type>org.exoplatform.social.feedmash.FeedmashJobPlugin</type>
-      <description></description>
-      <init-params>
-        <properties-param>
-          <name>mash.info</name>
-           <property name="feedURL" value="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/rssAll"/>
-           <property name="targetActivityStream" value="space:exosocial"/>
-           <property name="portalContainer" value="socialdemo"/>
-        </properties-param>
-        <properties-param>
-          <name>job.info</name>
-          <description>save the monitor data  periodically</description>
-          <property name="jobName" value="HudsonFeedConsumer"/>
-          <property name="groupName" value="Feedmash"/>
-          <property name="job" value="org.exoplatform.social.feedmash.HudsonFeedConsumer"/>
-          <property name="repeatCount" value="0"/>
-          <property name="period" value="60000"/>
-          <property name="startTime" value="+100"/>
-          <property name="endTime" value=""/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
- </external-component-plugins>
- -->
 </configuration>

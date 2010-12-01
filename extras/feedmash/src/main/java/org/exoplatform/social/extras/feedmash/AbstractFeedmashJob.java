@@ -45,8 +45,6 @@ public abstract class AbstractFeedmashJob implements Job {
 
   protected static final String LAST_CHECKED = "lastChecked";
 
-  protected String              categoryMatch;
-
   protected String              targetActivityStream;
 
   protected String              portalContainer;
@@ -89,6 +87,7 @@ public abstract class AbstractFeedmashJob implements Job {
         }
       }
 
+      saveState(LAST_CHECKED, new Date());
     } catch (Exception e) {
       throw new JobExecutionException(e);
     }
@@ -144,8 +143,7 @@ public abstract class AbstractFeedmashJob implements Job {
   protected void publishActivity(String message, Identity from, Identity to) throws Exception {
 
     ExoSocialActivity activity = new ExoSocialActivityImpl();
-    activity.setTitle("");
-    activity.setBody(message);
+    activity.setTitle(message);
     activity.setAppId("feedmash:" + getClass());
     activity.setUserId(from.getId());
 
