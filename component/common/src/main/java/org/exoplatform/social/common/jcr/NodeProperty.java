@@ -133,4 +133,6 @@ public final class NodeProperty {
 
   public static final String JCR_LANGUAGE = "jcr:language";
 
+  public static final String JCR_PATH = "jcr:path";
+
 }

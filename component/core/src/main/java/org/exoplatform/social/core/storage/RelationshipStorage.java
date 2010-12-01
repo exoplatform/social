@@ -34,6 +34,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
+import org.exoplatform.social.common.jcr.NodeProperty;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -210,7 +211,7 @@ public class RelationshipStorage {
     QueryBuilder queryBuilder = new QueryBuilder(session);
     try {
       queryBuilder.select(RELATION_NODETYPE, RELATION_SENDER, RELATION_RECEIVER)
-                  .like("jcr:path", relationshipServiceHome.getPath()+"/%")
+                  .like(NodeProperty.JCR_PATH, relationshipServiceHome.getPath()+"/%")
                   .and()
                   .equal(PROPERTY_STATUS, relationshipTypeName)
                   .and()
