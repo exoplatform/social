@@ -22,7 +22,6 @@ import org.exoplatform.web.application.JavascriptManager;
 def uicomponentId = uicomponent.id;
 
 def rcontext = _ctx.getRequestContext() ;
-def allContactName = uicomponent.getAllContactName().toString();
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
 jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', '/social-resources/javascript');
 jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/social-resources/javascript');
