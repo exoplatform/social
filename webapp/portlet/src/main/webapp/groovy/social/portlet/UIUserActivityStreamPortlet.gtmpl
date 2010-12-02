@@ -30,7 +30,9 @@
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="UITabPane">
- 	  <div class="TitleBar">$labelUserActivities</div>
+    <% if (uicomponent.isTitleDisplayed()) { %>
+       <div class="TitleBar">$labelUserActivities</div>
+    <%}%>
  	 	<div class="UIUserActivitiesContainer">
       <% uicomponent.renderChild(PopupContainer.class); %>
       <% uicomponent.renderChild(UIComposer.class); %>
