@@ -138,7 +138,6 @@ public class UIPendingRelation extends UIContainer {
     int currentPage = uiPageIterator_.getCurrentPage();
     LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
 
-    uiProfileUserSearchPending.setAllUserContactName(getAllPendingUserNames()); // set identitite names for suggestion
     uiPageIterator_.setPageList(pageList) ;
     int pageCount = uiPageIterator_.getAvailablePage();
     if(pageCount >= currentPage){
@@ -284,33 +283,6 @@ public class UIPendingRelation extends UIContainer {
     String currentViewer = URLUtils.getCurrentUser();
 
     return currentUserName.equals(currentViewer);
-  }
-
-  /**
-   * Get all pending identities for searching suggestion.
-   *
-   * @return Relationship list.
-   * @throws Exception
-   */
-  private List<String> getAllPendingUserNames() throws Exception {
-    RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentViewerIdentity();
-    List<Identity> allPendingIdentities = new ArrayList<Identity>();
-    List<Relationship> allPendings = relm.getPendingRelationships(currentIdentity, true);
-    Identity id = null;
-    Identity currIdentity = getCurrentIdentity();
-    for(Relationship rel : allPendings) {
-      id = (currIdentity.getId() == (rel.getSender()).getId()) ? rel.getReceiver() : rel.getSender();
-      allPendingIdentities.add(id);
-    }
-
-    List<String> allUserContactName = new ArrayList<String>();
-
-    for (Identity identity : allPendingIdentities) {
-      allUserContactName.add((identity.getProfile()).getFullName());
-    }
-
-    return allUserContactName;
   }
 
   /**

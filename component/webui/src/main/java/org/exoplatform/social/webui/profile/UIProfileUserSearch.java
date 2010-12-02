@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -114,9 +115,6 @@ public class UIProfileUserSearch extends UIForm {
   /** Used stores filter information. */
   ProfileFilter              profileFilter             = null;
 
-  /** Stores all user name for auto suggestion. */
-  List<String>               allUserContactName        = null;
-
   /**
    * Sets list identity.
    *
@@ -170,25 +168,6 @@ public class UIProfileUserSearch extends UIForm {
    */
   public void setProfileFilter(ProfileFilter profileFilter) {
     this.profileFilter = profileFilter;
-  }
-
-  /**
-   * Gets all users for searching suggestion.
-   *
-   * @return all contact name of each relation
-   * @throws Exception
-   */
-  public List<String> getAllContactName() throws Exception {
-    return allUserContactName;
-  }
-
-  /**
-   * Sets all user contact name for auto-suggestion.
-   *
-   * @param allUserContactName <code>List</code>
-   */
-  public void setAllUserContactName(List<String> allUserContactName) {
-    this.allUserContactName = allUserContactName;
   }
 
   /**
@@ -247,6 +226,15 @@ public class UIProfileUserSearch extends UIForm {
     return context.getRemoteUser();
   }
 
+  /**
+   * Get current rest context name.
+   *
+   * @return
+   */
+  protected String getRestContextName() {
+    return PortalContainer.getCurrentRestContextName();
+  }
+  
   /**
    * Listens to search event from search form, then processes search condition
    * and set search result to the result variable.<br>

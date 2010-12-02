@@ -48,18 +48,12 @@ function UIProfileUserSearch() {
     * 
     */
    this.filterBlock = null;
-   
-   /**
-    * All Contact name for suggesting.
-    * @scope private.
-    */
-   this.allContactName = null;
 };
 
 /**
  * When form load at the first time, init controls.
  */
-UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) {
+UIProfileUserSearch.prototype.onLoad = function(uicomponentId) {
 	var DOMUtil = eXo.core.DOMUtil;
 	var profileSearch = document.getElementById(uicomponentId);
 	var searchEl = DOMUtil.findDescendantById(profileSearch, 'Search');
@@ -114,7 +108,6 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 		filterBlock.style.display='none';
 	}
 	
-	this.setAllContactName(allContactNames);
 	this.initTextBox();
 };
 
@@ -302,60 +295,6 @@ UIProfileUserSearch.prototype.toggleFilter = function(newLabel, filterBlockId, e
     	element.style.display = 'block';
     	filter.style.display = 'none';
     }
-};
-
-/**
- * Set all contact name to allContactName variable.
- * @scope private.
- */
-UIProfileUserSearch.prototype.setAllContactName = function(allName) {
-	var allContactNames = allName.substring(1, allName.length-1);
-	var allSN = allContactNames.split(',');
-	var allNames = [];
-	for (var i=0; i < allSN.length; i++) {
-		(function(idx) {
-			allNames.push(allSN[idx].trim());
-		})(i);
-	}
-	this.allContactName = allNames;
-};
-
-/**
- * Request suggestions for the given autosuggest control. 
- * @scope protected
- * @param oAutoSuggestControl The autosuggest control to provide suggestions for.
- */
-UIProfileUserSearch.prototype.requestSuggestions = function (oAutoSuggestControl /*:AutoSuggestControl*/) {
-    var aSuggestions = [];
-    var sTextboxValue = oAutoSuggestControl.textbox.value;
-    
-    if (sTextboxValue.length > 0){
-    
-        //convert value in textbox to lowercase
-        var sTextboxValueLC = sTextboxValue.toLowerCase();
-        
-        //search for matching states
-        for (var i=0; i < this.allContactName.length; i++) { 
-
-            //convert state name to lowercase
-            var sStateLC = this.allContactName[i].toLowerCase();
-            
-            //compare the lowercase versions for case-insensitive comparison
-            if (sStateLC.indexOf(sTextboxValueLC) == 0) {
-                //add a suggestion using what's already in the textbox to begin it                
-            	aSuggestions.push(this.allContactName[i]);
-
-                // Check if user type like the last suggestion in drop-down list.
-                if ((this.allContactName[i].substring(sTextboxValue.length) == "") && (aSuggestions.length == 1)) {
-                	oAutoSuggestControl.hideSuggestions();
-                	return;
-                }
-            } 
-        }
-    }
-    
-    //provide suggestions to the control
-    oAutoSuggestControl.autosuggest(aSuggestions);
 };
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
