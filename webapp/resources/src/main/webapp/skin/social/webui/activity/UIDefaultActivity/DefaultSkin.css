@@ -90,6 +90,7 @@
 .UIActivity .ContentBox .TitleContent {
   height:24px;
   color: #f68a2f;
+  overflow: hidden;
 }
 
 .UIActivity .ContentBox .LinkCM {
