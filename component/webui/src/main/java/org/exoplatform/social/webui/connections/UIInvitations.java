@@ -130,7 +130,6 @@ public class UIInvitations extends UIContainer {
   public List<Relationship> getInvitation() throws Exception {
     List<Relationship> invitationList = getInvitedRelations();
     List<Relationship> contactLists = getDisplayRelationList(invitationList, uiPageIteratorInvitation);
-    uiProfileUserSearchRelation.setAllUserContactName(getAllInvitedUserNames()); // set identitite names for suggestion
     return contactLists;
   }
 
@@ -310,34 +309,6 @@ public class UIInvitations extends UIContainer {
     }
 
     return uiPageIterator.getCurrentPageData();
-  }
-
-  /**
-   * Gets all invited  identities for searching suggestion.
-   *
-   * @return Relationship list.
-   *
-   * @throws Exception
-   */
-  private List<String> getAllInvitedUserNames() throws Exception {
-    RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentViewerIdentity();
-    List<Identity> allInvitedIdentities = new ArrayList<Identity>();
-    List<Relationship> allInviteds = relm.getPendingRelationships(currentIdentity, false);
-    Identity id = null;
-    Identity currIdentity = getCurrentIdentity();
-    for(Relationship rel : allInviteds) {
-      id = (currIdentity.getId() == (rel.getSender()).getId()) ? rel.getReceiver() : rel.getSender();
-      allInvitedIdentities.add(id);
-    }
-
-    List<String> allUserContactName = new ArrayList<String>();
-
-    for (Identity identity : allInvitedIdentities) {
-      allUserContactName.add((identity.getProfile()).getFullName());
-    }
-
-    return allUserContactName;
   }
 
   /**

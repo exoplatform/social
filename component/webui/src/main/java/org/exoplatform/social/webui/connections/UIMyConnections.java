@@ -134,7 +134,6 @@ public class UIMyConnections extends UIContainer {
   public List<Relationship> getMyRelation() throws Exception {
     List<Relationship> listContacts = getMyContacts();
     List<Relationship> contactLists = getDisplayRelationList(listContacts, uiPageIteratorContact);
-    uiProfileUserSearchRelation.setAllUserContactName(getAllMyRelationUserNames()); // set identitite names for suggestion
     return contactLists;
   }
 
@@ -276,33 +275,6 @@ public class UIMyConnections extends UIContainer {
     }
 
     return uiPageIterator.getCurrentPageData();
-  }
-
-  /**
-   * Get all relations for searching suggestion.
-   *
-   * @return Relationship list.
-   * @throws Exception
-   */
-  private List<String> getAllMyRelationUserNames() throws Exception {
-    RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentViewerIdentity();
-    List<Identity> allRelationIdentities = new ArrayList<Identity>();
-    List<Relationship> allRelations = relm.getContacts(currentIdentity);
-    Identity id = null;
-    Identity currIdentity = getCurrentIdentity();
-    for(Relationship rel : allRelations) {
-      id = (currIdentity.getId() == (rel.getSender()).getId()) ? rel.getReceiver() : rel.getSender();
-      allRelationIdentities.add(id);
-    }
-
-    List<String> allUserContactName = new ArrayList<String>();
-
-    for (Identity identity : allRelationIdentities) {
-      allUserContactName.add((identity.getProfile()).getFullName());
-    }
-
-    return allUserContactName;
   }
 
   /**

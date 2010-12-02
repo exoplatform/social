@@ -123,7 +123,6 @@ public class UIDisplayProfileList extends UIContainer {
   public UIDisplayProfileList() throws Exception {
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
     uiProfileUserSearchPeople = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
-    uiProfileUserSearchPeople.setAllUserContactName(loadAllUserNames());
     addChild(uiProfileUserSearchPeople);
   }
 
@@ -423,22 +422,6 @@ public class UIDisplayProfileList extends UIContainer {
     }
 
     return ids;
-  }
-
-  /**
-   * Loads all user names.<br>
-   *
-   * @return all user name.
-   *
-   * @throws Exception
-   */
-  private List<String> loadAllUserNames() throws Exception {
-    List<String> allUserContactName = new ArrayList<String>();
-    List<Identity> allIds = loadAllProfiles();
-    for (Identity identity : allIds) {
-      allUserContactName.add((identity.getProfile()).getFullName());
-    }
-    return allUserContactName;
   }
 
   /**

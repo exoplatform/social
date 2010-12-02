@@ -171,9 +171,6 @@ public class UIMembersPortlet extends UIPortletApplication {
   @SuppressWarnings("unchecked")
   public List<User> getMembers() throws Exception {
     initMember();
-    UIProfileUserSearch uiSearchMemberOfSpace1 = getChild(UIProfileUserSearch.class);
-    uiSearchMemberOfSpace1.setAllUserContactName(getAllMemberNames()); // set identitites for suggestion
-
     int currentPage = iteratorMembers.getCurrentPage();
     LazyPageList<User> pageList = new LazyPageList<User>(new UserListAccess(memberList), ITEMS_PER_PAGE);
     iteratorMembers.setPageList(pageList);
@@ -375,19 +372,6 @@ public class UIMembersPortlet extends UIPortletApplication {
       List<Identity> identityList = uiProfileUserSearch.getIdentityList();
       uiMembersPortlet.setIdentityList(identityList);
     }
-  }
-
-  /**
-   * gets all member names for suggesting.
-   * @return member name list
-   * @throws Exception
-   */
-  private List<String> getAllMemberNames() throws Exception {
-    List<String> allMemberNames = new ArrayList<String>();
-    for (User user : memberList) {
-      allMemberNames.add(user.getFirstName() + " " + user.getLastName());
-    }
-    return allMemberNames;
   }
 
   /**
