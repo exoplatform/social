@@ -169,15 +169,15 @@ UIAutoSuggestControl.prototype.handleKeyDown = function (oEvent /*:Event*/) {
 UIAutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
     var iKeyCode = oEvent.keyCode || oEvent.which;
     var el = oEvent.target || oEvent.srcElement;
-	var isInputTag = (el.tagName.toLowerCase() == 'input');
-	
+	  var isInputTag = (el.tagName.toLowerCase() == 'input');
+	  var oThis = eXo.social.webui.UIAutoSuggestControl;
     //for backspace (8) and delete (46), shows suggestions without typeahead
     if (iKeyCode == 8 || iKeyCode == 46) {
     	if (isInputTag) {
     		this.storeText = el.value;
     	}
-        this.provider.requestSuggestions(this);
-        
+    	oThis.resetAutoSuggestList();
+    	
     //make sure not to interfere with non-character keys
     } else if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode < 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
         //ignore
@@ -185,9 +185,70 @@ UIAutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
     	if (isInputTag) {
     		this.storeText = el.value;
     	}
-    	this.provider.requestSuggestions(this);
+    	oThis.resetAutoSuggestList();
     }
 };
+
+///////////////// Request for new data each time input by ajax ///////////////////
+
+/**
+ * Resets the autosuggest list.
+ */
+UIAutoSuggestControl.prototype.resetAutoSuggestList = function() {
+	  var oThis = eXo.social.webui.UIAutoSuggestControl;
+  	if (oThis.timeout) clearTimeout(oThis.timeout);
+  	oThis.timeout = setTimeout(function(){
+  	  oThis.requestDataForAutoSuggest();
+  	  clearTimeout(oThis.timeout);
+  	}, 300);
+}
+
+/**
+ * Sends request to get data from server to add to auto suggest control.
+ */
+UIAutoSuggestControl.prototype.requestDataForAutoSuggest = function() {
+	var inputName = this.textbox.value.trim();
+	var restContext = eXo.social.webui.restContextName;
+	
+	restContext = (restContext) ? restContext : 'rest-socialdemo';
+	
+	var restURL = "/" + restContext + "/social/people/suggest.json?userName=" + inputName;
+	
+	if ((inputName.length == 0) || (inputName == ' ')) {
+  	this.hideSuggestions();
+  	return;
+	}
+	
+	this.makeRequest(restURL, true, this.resetList);
+}
+
+/**
+ * Gets return data and resets the name list to suggest control.
+ */
+UIAutoSuggestControl.prototype.resetList = function(resp) {
+	var userNames = eval('(' + resp.responseText +')').names;
+  eXo.social.webui.UIAutoSuggestControl.showSuggestions(userNames);
+}
+
+/**
+ * Posts rest request to server.
+ */
+UIAutoSuggestControl.prototype.makeRequest = function(url, async, callback) {
+  if (async !== false) async = true;
+  var request = eXo.core.Browser.createHttpRequest();
+  request.open('GET', url, async);
+  request.setRequestHeader("Cache-Control", "max-age=86400") ;
+  request.onreadystatechange = function() {
+    if((request.readyState === 4) && (request.status === 200)) {
+      if (callback) {
+        callback(request);
+      }
+    }
+  }
+  request.send(null);
+}
+
+////////////////////////////End of request data for autosuggest/////////////////////////////
 
 /**
  * Hides the suggestion dropdown.
@@ -295,7 +356,6 @@ UIAutoSuggestControl.prototype.previousSuggestion = function () {
  * @param aSuggestions An array of suggestions for the control.
  */
 UIAutoSuggestControl.prototype.showSuggestions = function (aSuggestions /*:Array*/) {
-    
     var oDiv = null;
     this.layer.innerHTML = "";  //clear contents of the layer
     // Display 10 top suggestion only
@@ -309,6 +369,7 @@ UIAutoSuggestControl.prototype.showSuggestions = function (aSuggestions /*:Array
     this.layer.style.left = this.getLeft() + "px";
     this.layer.style.top = (this.getTop()+this.textbox.offsetHeight) + "px";
     var thisLayer = this.layer;
+    
     if (this.timeout) clearTimeout(this.timeout);
     // haven't support delay, maybe later
     this.timeout = setTimeout(function(){thisLayer.style.visibility = "visible";}, 0);

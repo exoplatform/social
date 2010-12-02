@@ -48,18 +48,13 @@ function UIProfileUserSearch() {
     * 
     */
    this.filterBlock = null;
-   
-   /**
-    * All Contact name for suggesting.
-    * @scope private.
-    */
-   this.allContactName = null;
 };
 
 /**
  * When form load at the first time, init controls.
+ * TODO : remove. autosuggest must be implemenented by an ajax call! not by pushing all names in the client!!
  */
-UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) {
+UIProfileUserSearch.prototype.onLoad = function(uicomponentId) {
 	var DOMUtil = eXo.core.DOMUtil;
 	var profileSearch = document.getElementById(uicomponentId);
 	var searchEl = DOMUtil.findDescendantById(profileSearch, 'Search');
@@ -114,7 +109,6 @@ UIProfileUserSearch.prototype.onLoad = function(uicomponentId, allContactNames) 
 		filterBlock.style.display='none';
 	}
 	
-	this.setAllContactName(allContactNames);
 	this.initTextBox();
 };
 
@@ -200,7 +194,6 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 		var textBox = e.srcElement || e.target;
 		var keynum = e.keyCode || e.which;  
 		var searchForm = DOMUtil.findAncestorByClass(textBox, 'UIForm');
-		
 		if(keynum == 13) {
 			posEl.value = defaultPos;
 			skillEl.value = defaultSkills;
@@ -215,6 +208,7 @@ UIProfileUserSearch.prototype.initTextBox = function() {
 			// ignore
 		}
 	}
+
 	
 	// Add keydown event for control
 	posEl.onkeydown = skillEl.onkeydown = genderEl.onkeydown = function(event) {
@@ -304,59 +298,6 @@ UIProfileUserSearch.prototype.toggleFilter = function(newLabel, filterBlockId, e
     }
 };
 
-/**
- * Set all contact name to allContactName variable.
- * @scope private.
- */
-UIProfileUserSearch.prototype.setAllContactName = function(allName) {
-	var allContactNames = allName.substring(1, allName.length-1);
-	var allSN = allContactNames.split(',');
-	var allNames = [];
-	for (var i=0; i < allSN.length; i++) {
-		(function(idx) {
-			allNames.push(allSN[idx].trim());
-		})(i);
-	}
-	this.allContactName = allNames;
-};
-
-/**
- * Request suggestions for the given autosuggest control. 
- * @scope protected
- * @param oAutoSuggestControl The autosuggest control to provide suggestions for.
- */
-UIProfileUserSearch.prototype.requestSuggestions = function (oAutoSuggestControl /*:AutoSuggestControl*/) {
-    var aSuggestions = [];
-    var sTextboxValue = oAutoSuggestControl.textbox.value;
-    
-    if (sTextboxValue.length > 0){
-    
-        //convert value in textbox to lowercase
-        var sTextboxValueLC = sTextboxValue.toLowerCase();
-        
-        //search for matching states
-        for (var i=0; i < this.allContactName.length; i++) { 
-
-            //convert state name to lowercase
-            var sStateLC = this.allContactName[i].toLowerCase();
-            
-            //compare the lowercase versions for case-insensitive comparison
-            if (sStateLC.indexOf(sTextboxValueLC) == 0) {
-                //add a suggestion using what's already in the textbox to begin it                
-            	aSuggestions.push(this.allContactName[i]);
-
-                // Check if user type like the last suggestion in drop-down list.
-                if ((this.allContactName[i].substring(sTextboxValue.length) == "") && (aSuggestions.length == 1)) {
-                	oAutoSuggestControl.hideSuggestions();
-                	return;
-                }
-            } 
-        }
-    }
-    
-    //provide suggestions to the control
-    oAutoSuggestControl.autosuggest(aSuggestions);
-};
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
 if(!eXo.social.webui) eXo.social.webui = {};

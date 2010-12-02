@@ -42,5 +42,9 @@
   <component>
     <type>org.exoplatform.social.service.rest.LinkShareRestService</type>
   </component>
+  
+  <component>
+    <type>org.exoplatform.social.service.rest.PeopleRestService</type>
+  </component>
 <!-- REST service -->
 </configuration>
