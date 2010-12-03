@@ -214,7 +214,6 @@ public class ActivityStorage {
       } else {
         activityNode.save();
       }
-      LOG.info("activity for owner " + owner + " by " + activity.getUserId() + " stored.");
     } catch (Exception e) {
       LOG.warn("Failed to save activity", e);
       return null;
@@ -238,9 +237,8 @@ public class ActivityStorage {
       if (activityNode != null) {
         activityNode.remove();
         session.save();
-        LOG.info("activity and its comments have been deleted, activityId: " + activityId);
       } else {
-        LOG.info("Failed to delete activityId: " + activityId + ": not found");
+        LOG.warn("Failed to delete activityId: " + activityId + ": not found");
       }
     } catch(Exception ex) {
       LOG.error("Failed to delete activity", ex);

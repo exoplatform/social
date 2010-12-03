@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
@@ -53,7 +52,7 @@ public class UIActivitiesContainer extends UIContainer {
    */
   public UIActivitiesContainer() {
     try {
-      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow" + this.hashCode());
+      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow");
       popupWindow.setShow(false);
     } catch (Exception e) {
       LOG.error(e);
@@ -105,7 +104,7 @@ public class UIActivitiesContainer extends UIContainer {
     }
     
     if (activityList == null) {
-      activityList = new ArrayList<Activity>();
+      return;
     }
     PortalContainer portalContainer = PortalContainer.getInstance();
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
@@ -115,10 +114,7 @@ public class UIActivitiesContainer extends UIContainer {
   }
 
   public void addActivity(Activity activity) throws Exception {
-    ArrayList<Activity> list = new ArrayList<Activity>();
-    list.add(activity);
-    list.addAll(activityList);
-    activityList = list;
+    activityList.add(0, activity);
     init();
   }
 

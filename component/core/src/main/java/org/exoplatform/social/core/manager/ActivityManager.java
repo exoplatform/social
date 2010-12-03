@@ -153,10 +153,10 @@ public class ActivityManager {
   public void deleteActivity(String activityId) {
     Activity activity = storage.getActivity(activityId);
     if (activity != null) {
-      Identity streamOwner = identityManager.getIdentity(activity.getStreamOwner(), false);
+      Identity streamOwner = identityManager.getIdentity(activity.getUserId(), false);
       storage.deleteActivity(activityId);
       try {
-        activityCache.remove(streamOwner.getId());
+        activityCache.remove(activityId);
         activityListCache.remove(streamOwner.getId());
       } catch(Exception e) {
         //Do nothing; just ignore
