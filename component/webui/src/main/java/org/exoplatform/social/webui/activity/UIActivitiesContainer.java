@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
@@ -105,7 +104,7 @@ public class UIActivitiesContainer extends UIContainer {
     }
 
     if (activityList == null) {
-      activityList = new ArrayList<ExoSocialActivity>();
+      return;
     }
     PortalContainer portalContainer = PortalContainer.getInstance();
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
@@ -115,10 +114,7 @@ public class UIActivitiesContainer extends UIContainer {
   }
 
   public void addActivity(ExoSocialActivity activity) throws Exception {
-    ArrayList<ExoSocialActivity> list = new ArrayList<ExoSocialActivity>();
-    list.add(activity);
-    list.addAll(activityList);
-    activityList = list;
+    activityList.add(0,activity);
     init();
   }
 

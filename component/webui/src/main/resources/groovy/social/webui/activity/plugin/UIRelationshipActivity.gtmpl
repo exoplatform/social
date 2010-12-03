@@ -23,20 +23,19 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
-  import org.exoplatform.social.core.application.RelationshipPublisher;
+  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.relationship.model.Relationship.Type;
+  import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 
-  def pcontext = Util.getPortalRequestContext();
-  def jsManager = pcontext.getJavascriptManager();
+  def jsManager = Util.getPortalRequestContext().getJavascriptManager();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
   def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
 
-  def isConnectionRequested = (uicomponent.getTitleId() == RelationshipPublisher.TitleId.CONNECTION_REQUESTED);
-  def isConnectionConfirmed = (uicomponent.getTitleId() == RelationshipPublisher.TitleId.CONNECTION_CONFIRMED);
-
   def labelAccept = _ctx.appRes("UIRelationshipActivity.label.Accept");
   def labelRefuse = _ctx.appRes("UIRelationshipActivity.label.Refuse");
+  def labelRevoke = _ctx.appRes("UIRelationshipActivity.label.Revoke");
 %>
 
 <% if (activity) { //process if not null
@@ -67,8 +66,8 @@
   if (allComments) {
     labelShowAllComments = labelShowAllComments.replace("{0}", allComments.size() + "");
     labelHideAllComments = labelHideAllComments.replace("{0}", allComments.size() + "");
-
   }
+
   def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
   def identityLikesNum = 0;
   def labelLikes = null;
@@ -131,12 +130,19 @@
   activityUserName = uicomponent.getUserFullName(userId);
   activityUserProfileUri = uicomponent.getUserProfileUri(userId);
 
+  def isSender = uicomponent.isSender();
+  def isReceiver = uicomponent.isReceiver();
+  def status = uicomponent.getStatus();
+  def canShowAction = (uicomponent.getTitleId() == TitleId.CONNECTION_REQUESTED && (status == Type.PENDING || status == Type.REQUIRE_VALIDATION));
+  def isActivitySender = uicomponent.isActivitySender();
+  def isActivityReceiver = uicomponent.isActivityReceiver();
+
   if (uicomponent.isUserActivity(userId)) {
     activityImageSource = uicomponent.getUserAvatarImageSource(userId);
-    if (!activityImageSource) activityImageSource= "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+    if (!activityImageSource) activityImageSource= ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   } else {
     activityImageSource = uicomponent.getSpaceAvatarImageSource(userId);
-    if (!activityImageSource) activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+    if (!activityImageSource) activityImageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
 %>
 
@@ -150,7 +156,7 @@
   <% uiform.begin() %>
   <div class="NormalBox clearfix">
     <a class="Avatar" title="$activityUserName" href="$activityUserProfileUri">
-      <img title="$activityUserName" src="$activityImageSource" alt="$activityUserName" height="54px" width="56px">
+      <img title="$activityUserName" src="$activityImageSource" alt="$activityUserName">
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
       <div class="TitleContent clearfix">
@@ -162,10 +168,14 @@
       <%}%>
       </div>
       <div class="Content">
-        $activityContentTitle
-        <% if (isConnectionRequested && uicomponent.isActivityStreamOwner()) {%>
+        $activityContentTitle 
+        <% if (canShowAction) {
+             if (isReceiver && isActivityReceiver) {%>
           <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
-        <%}%>
+        <%   } else if (isSender && isActivitySender) {%>
+          <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRevoke</a>
+        <%   }
+           }%>
         <br />
       </div>
       <div class="LinkCM">
@@ -203,11 +213,11 @@
               personLikeProfileUri = uicomponent.getUserProfileUri(it);
               personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
               if (!personLikeAvatarImageSource) {
-                personLikeAvatarImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+                personLikeAvatarImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
               }
               %>
                 <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
-                  <img width="47px" height="47px" src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
+                  <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
                 </a>
              <% })%>
             </div>
@@ -258,14 +268,14 @@
       commenterProfileUri = uicomponent.getUserProfileUri(it.userId);
       commenterImageSource = uicomponent.getUserAvatarImageSource(it.userId);
       if (!commenterImageSource) {
-        commenterImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+        commenterImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       }
       commentMessage = it.title;
       commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
     %>
       <div id="CommentBlock${activity.id}" class="CommentBox clearfix">
         <a class="AvatarCM" title="$commenterFullName" href="$commenterProfileUri">
-          <img src="$commenterImageSource" alt="$commenterFullName" height="36px" width="38px">
+          <img src="$commenterImageSource" alt="$commenterFullName">
         </a>
         <div class="ContentBox">
           <div class="Content">

@@ -111,7 +111,7 @@ public class UIAvatarUploader extends UIForm {
    * Changes and displays avatar on the profile if upload successful, else
    * inform user to upload image.
    */
-  static public class ConfirmActionListener extends EventListener<UIAvatarUploader> {
+  public static class ConfirmActionListener extends EventListener<UIAvatarUploader> {
     // The width of resized avatar fix 200px like facebook avatar
     private static final int WIDTH = 200;
 
@@ -138,7 +138,7 @@ public class UIAvatarUploader extends UIForm {
       String uploadId = uiAvatarUploadInput.getUploadId();
       if (!uiAvatarUploader.isAcceptedMimeType(mimeType)) {
         UploadService uploadService = (UploadService) PortalContainer.getComponent(UploadService.class);
-        uploadService.removeUpload(uploadId);
+        uploadService.removeUploadResource(uploadId);
         uiApplication.addMessage(new ApplicationMessage(MSG_MIMETYPE_NOT_ACCEPTED,
                                                         null,
                                                         ApplicationMessage.ERROR));
@@ -170,7 +170,7 @@ public class UIAvatarUploader extends UIForm {
         }
 
         UploadService uploadService = (UploadService) PortalContainer.getComponent(UploadService.class);
-        uploadService.removeUpload(uploadId);
+        uploadService.removeUploadResource(uploadId);
         UIAvatarUploadContent uiAvatarUploadContent = uiAvatarUploader.createUIComponent(UIAvatarUploadContent.class,
                                                                                          null,
                                                                                          null);
@@ -185,7 +185,7 @@ public class UIAvatarUploader extends UIForm {
    * Cancels the upload image.<br>
    *
    */
-  static public class CancelActionListener extends EventListener<UIAvatarUploader> {
+  public static class CancelActionListener extends EventListener<UIAvatarUploader> {
 
     @Override
     public void execute(Event<UIAvatarUploader> event) throws Exception {

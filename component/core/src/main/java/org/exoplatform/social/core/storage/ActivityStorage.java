@@ -32,7 +32,6 @@ import javax.jcr.Value;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
@@ -75,8 +74,6 @@ public class ActivityStorage {
   private Node activityServiceHome;
 
   private IdentityManager identityManager;
-
-  private LinkProvider linkProvider;
 
   /**
    * Hack for unit test to work
@@ -528,9 +525,8 @@ public class ActivityStorage {
       activityStream.setType(providerName);
       //TODO hard-coded
       activityStream.setTitle("Activity Stream of " + streamName);
-      linkProvider = getLinkProvider();
       //TODO use absolute url here
-      activityStream.setPermaLink(linkProvider.getActivityUri(providerName, streamName, getPortalOwner()));
+      activityStream.setPermaLink(LinkProvider.getActivityUri(providerName, streamName, getPortalOwner()));
 
     } catch (UnsupportedRepositoryOperationException e) {
       activityNode.getParent().addMixin(NodeType.MIX_REFERENCEABLE);
@@ -702,12 +698,5 @@ public class ActivityStorage {
       Str[i] = Val[i].getString();
     }
     return Str;
-  }
-
-  private LinkProvider getLinkProvider() {
-    if (linkProvider == null) {
-      linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
-    }
-    return linkProvider;
   }
 }

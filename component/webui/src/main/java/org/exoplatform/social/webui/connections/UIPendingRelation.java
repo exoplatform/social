@@ -253,7 +253,7 @@ public class UIPendingRelation extends UIContainer {
       RelationshipManager rm = portlet.getRelationshipManager();
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       if (rel != null)
-        rm.remove(rel);
+        rm.deny(rel);
     }
   }
 

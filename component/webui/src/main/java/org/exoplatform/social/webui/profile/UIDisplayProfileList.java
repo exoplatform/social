@@ -222,8 +222,7 @@ public class UIDisplayProfileList extends UIContainer {
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
       String currUserId = portlet.getCurrentUserName();
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currUserId);
       Identity requestedIdentity = im.getIdentity(userId);
       RelationshipManager rm = portlet.getRelationshipManager();
       // Check if invitation is revoked or deleted by another user
@@ -235,7 +234,7 @@ public class UIDisplayProfileList extends UIContainer {
       }
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       if (rel != null) {
-        rm.remove(rel);
+        rm.deny(rel);
       }
     }
   }

@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.activity.plugin;
 
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.ResourceBundleUtil;
@@ -32,15 +31,12 @@ import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
-import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event.Phase;
 
 /**
  *
@@ -62,7 +58,7 @@ import org.exoplatform.webui.event.Event.Phase;
     @EventConfig(listeners = UIRelationshipActivity.AcceptActionListener.class),
     @EventConfig(listeners = UIRelationshipActivity.RefuseActionListener.class),
     @EventConfig(listeners = UIRelationshipActivity.RevokeActionListener.class)
-  }
+ }
 )
 public class UIRelationshipActivity extends BaseUIActivity {
   private static final Log LOG = ExoLogger.getLogger(UIRelationshipActivity.class);
@@ -72,6 +68,14 @@ public class UIRelationshipActivity extends BaseUIActivity {
   private String senderName;
 
   private String receiverName;
+
+  private Relationship relationship;
+
+  private Identity sender;
+
+  private Identity receiver;
+
+  private Type status;
 
   public UIRelationshipActivity() {
 
@@ -101,42 +105,106 @@ public class UIRelationshipActivity extends BaseUIActivity {
     return receiverName;
   }
 
-  public String getSenderProfileLink() {
-    return getProfileLink(senderName);
+  public void setSender(Identity sender) {
+    this.sender = sender;
   }
 
-  public String getReceiverProfileLink() {
-    return getProfileLink(receiverName);
+  public Identity getSender() {
+    if(sender == null)
+      sender = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, senderName, false);
+    return sender;
+  }
+
+  public void setReceiver(Identity receiver) {
+    this.receiver = receiver;
+  }
+
+  public Identity getReceiver() {
+    if(receiver == null)
+      receiver = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, receiverName, false);
+    return receiver;
+  }
+
+  public void setStatus(Relationship.Type status) {
+    this.status = status;
+  }
+
+  public Type getStatus() throws Exception {
+    if(status == null)
+      status = getRelationshipManager().getConnectionStatus(getSender(), getReceiver());
+    return status;
+  }
+
+  public void setRelationship(Relationship relationship) {
+    this.relationship = relationship;
+  }
+
+  public Relationship getRelationship() throws Exception {
+    if(relationship == null)
+      relationship = getRelationshipManager().getRelationship(getSender(), getReceiver());
+    return relationship;
   }
 
   public boolean isActivityStreamOwner() {
     UIActivitiesContainer uiActivititesContainer = getAncestorOfType(UIActivitiesContainer.class);
-    String remoteUser = Util.getPortalRequestContext().getRemoteUser();
-    return remoteUser.equals(uiActivititesContainer.getOwnerName());
+    return getRemoteUser().equals(uiActivititesContainer.getOwnerName());
+  }
+
+  public boolean isSender() throws Exception {
+    if(getRelationship() == null)
+      return false;
+    return getRemoteUser().equals(getRelationship().getSender().getRemoteId());
+  }
+
+  public boolean isReceiver() throws Exception {
+    if(getRelationship() == null)
+      return false;
+    return getRemoteUser().equals(getRelationship().getReceiver().getRemoteId());
+  }
+
+  public boolean isActivitySender() throws Exception {
+    if(getRelationship() == null)
+      return false;
+    return getRemoteUser().equals(senderName);
+  }
+
+  public boolean isActivityReceiver() throws Exception {
+    if(getRelationship() == null)
+      return false;
+    return getRemoteUser().equals(receiverName);
   }
 
   public String getActivityTitle(WebuiBindingContext ctx) throws Exception {
     UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
     DisplayMode displayMode = uiUserActivitiesDisplay.getSelectedDisplayMode();
+    String senderLink = LinkProvider.getProfileLink(senderName);
+    String receiverLink = LinkProvider.getProfileLink(receiverName);
+
     if (titleId == TitleId.CONNECTION_CONFIRMED) {
       if (isActivityStreamOwner() && (displayMode == DisplayMode.MY_STATUS)) {
-        return ResourceBundleUtil.replaceArguments(
-                                 ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
-                                 new String[]{getReceiverProfileLink()});
+        if(isSender()) {
+          return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
+                                                     new String[] { receiverLink });
+        } else {
+          return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
+                                                     new String[] { senderLink });
+        }
       } else {
-        return ResourceBundleUtil.replaceArguments(
-                                 ctx.appRes("UIRelationshipActivity.msg.UserName_Are_Now_Connected_With_UserName"),
-                                 new String[]{getReceiverProfileLink(), getSenderProfileLink()});
+        return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Are_Now_Connected_With_UserName"),
+                                                   new String[] { receiverLink, senderLink });
       }
     } else if (titleId == TitleId.CONNECTION_REQUESTED) {
-        if (isActivityStreamOwner() && ((displayMode == DisplayMode.MY_STATUS))) {
-          return ResourceBundleUtil.replaceArguments(
-                                   ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_You_To_Connect"),
-                                   new String[]{getSenderProfileLink()});
+      if (isActivityStreamOwner() && ((displayMode == DisplayMode.MY_STATUS))) {
+        if(isSender()) {
+          return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Invited_UserName_To_Connect"),
+                                                     new String[] { receiverLink });
+        } else {
+          return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_You_To_Connect"),
+                                                     new String[] { senderLink });
+        }
       } else {
-        return ResourceBundleUtil.replaceArguments(
-                                   ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect"),
-                                   new String[]{getSenderProfileLink(), getReceiverProfileLink()});
+        return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect"),
+                                                   new String[] { senderLink, receiverLink });
       }
     }
     return "";
@@ -157,13 +225,13 @@ public class UIRelationshipActivity extends BaseUIActivity {
       if (status == Type.REQUIRE_VALIDATION) {
         relationshipManager.confirm(relationship);
       }
-      //delete this activity
-      Event<UIComponent> deleteActivityEvent = uiRelationshipActivity.createEvent("DeleteActivity", Phase.PROCESS, event.getRequestContext());
-      if (deleteActivityEvent != null) {
-        deleteActivityEvent.broadcast();
-      }
-    }
 
+      //delete this activity
+      //      Event<UIComponent> deleteActivityEvent = uiRelationshipActivity.createEvent("DeleteActivity", Phase.PROCESS, event.getRequestContext());
+      //      if (deleteActivityEvent != null) {
+      //        deleteActivityEvent.broadcast();
+      //      }
+    }
   }
 
   public static class RefuseActionListener extends EventListener<UIRelationshipActivity> {
@@ -182,10 +250,10 @@ public class UIRelationshipActivity extends BaseUIActivity {
         relationshipManager.deny(relationship);
       }
       //delete this activity
-      Event<UIComponent> deleteActivityEvent = uiRelationshipActivity.createEvent("DeleteActivity", Phase.PROCESS, event.getRequestContext());
-      if (deleteActivityEvent != null) {
-        deleteActivityEvent.broadcast();
-      }
+      //      Event<UIComponent> deleteActivityEvent = uiRelationshipActivity.createEvent("DeleteActivity", Phase.PROCESS, event.getRequestContext());
+      //      if (deleteActivityEvent != null) {
+      //        deleteActivityEvent.broadcast();
+      //      }
     }
 
   }
@@ -195,13 +263,6 @@ public class UIRelationshipActivity extends BaseUIActivity {
     @Override
     public void execute(Event<UIRelationshipActivity> event) throws Exception {
       // TODO Auto-generated method stub
-      LOG.info("Revoke");
-      System.out.println("Revoke");
     }
-
-  }
-
-  private String getProfileLink(String username) {
-    return "<a href=" + LinkProvider.getProfileUri(username) + ">" + username +"</a>";
   }
 }

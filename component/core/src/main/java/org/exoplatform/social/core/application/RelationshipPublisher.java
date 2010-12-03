@@ -22,8 +22,8 @@ import java.util.Map;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -64,28 +64,28 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   public void confirmed(RelationshipEvent event) {
     Relationship relationship = event.getPayload();
     try {
-      Identity id1 = relationship.getSender();
-      reloadIfNeeded(id1);
-      Identity id2 = relationship.getReceiver();
-      reloadIfNeeded(id2);
-      String user1 = id1.getRemoteId();
-      String user2 = id2.getRemoteId();
+      Identity sender = relationship.getSender();
+      reloadIfNeeded(sender);
+      Identity receiver = relationship.getReceiver();
+      reloadIfNeeded(receiver);
+      String senderRemoteId = sender.getRemoteId();
+      String receiverRemoteId = receiver.getRemoteId();
 
-      ExoSocialActivity activity = new ExoSocialActivityImpl(id1.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" + user2, null);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" + receiverRemoteId, null);
       activity.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       Map<String,String> params = new HashMap<String,String>();
-      params.put(SENDER_PARAM, user1);
-      params.put(RECEIVER_PARAM, user2);
+      params.put(SENDER_PARAM, senderRemoteId);
+      params.put(RECEIVER_PARAM, receiverRemoteId);
       activity.setTemplateParams(params);
-      activityManager.saveActivity(id1, activity);
+      activityManager.saveActivity(sender, activity);
 
-      ExoSocialActivity activity2 = new ExoSocialActivityImpl(id2.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" +  user1, null);
+      ExoSocialActivity activity2 = new ExoSocialActivityImpl(receiver.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" +  senderRemoteId, null);
       activity2.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       Map<String,String> params2 = new HashMap<String,String>();
-      params2.put(SENDER_PARAM, user2);
-      params2.put(RECEIVER_PARAM, user1);
+      params2.put(SENDER_PARAM, senderRemoteId);
+      params2.put(RECEIVER_PARAM, receiverRemoteId);
       activity2.setTemplateParams(params2);
-      activityManager.saveActivity(id2, activity2);
+      activityManager.saveActivity(receiver, activity2);
 
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
@@ -119,20 +119,28 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   public void requested(RelationshipEvent event) {
     Relationship relationship = event.getPayload();
     try {
-      Identity id1 = relationship.getSender();
-      reloadIfNeeded(id1);
-      Identity id2 = relationship.getReceiver();
-      reloadIfNeeded(id2);
-      String user1 = id1.getRemoteId();
-      String user2 = id2.getRemoteId();
+      Identity sender = relationship.getSender();
+      reloadIfNeeded(sender);
+      Identity receiver = relationship.getReceiver();
+      reloadIfNeeded(receiver);
+      String senderRemoteId = sender.getRemoteId();
+      String receiverRemoteId = receiver.getRemoteId();
+      ExoSocialActivity activity1 = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE, "@" + senderRemoteId + " has invited @" +  receiverRemoteId + " to connect", null);
+      activity1.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
+      Map<String,String> params1 = new HashMap<String,String>();
+      params1.put(SENDER_PARAM, senderRemoteId);
+      params1.put(RECEIVER_PARAM, receiverRemoteId);
+      activity1.setTemplateParams(params1);
+      activityManager.saveActivity(sender, activity1);
+
       //TODO hoatle a quick fix for activities gadget to allow deleting this activity
-      ExoSocialActivity activity2 = new ExoSocialActivityImpl(id2.getId(), RELATIONSHIP_ACTIVITY_TYPE, "@" + user1 + " has invited @" +  user2 + " to connect", null);
+      ExoSocialActivity activity2 = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE, "@" + senderRemoteId + " has invited @" +  receiverRemoteId + " to connect", null);
       activity2.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       Map<String,String> params2 = new HashMap<String,String>();
-      params2.put(SENDER_PARAM, user1);
-      params2.put(RECEIVER_PARAM, user2);
+      params2.put(SENDER_PARAM, senderRemoteId);
+      params2.put(RECEIVER_PARAM, receiverRemoteId);
       activity2.setTemplateParams(params2);
-      activityManager.saveActivity(id2, activity2);
+      activityManager.saveActivity(receiver, activity2);
 
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());

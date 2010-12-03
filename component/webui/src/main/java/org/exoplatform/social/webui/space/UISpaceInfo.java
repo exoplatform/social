@@ -142,7 +142,7 @@ public class UISpaceInfo extends UIForm {
     SpaceService spaceService = getSpaceService();
     String id = getUIStringInput(SPACE_ID).getValue();
     Space space = spaceService.getSpaceById(id);
-    return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
+    return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
   }
 
   /**

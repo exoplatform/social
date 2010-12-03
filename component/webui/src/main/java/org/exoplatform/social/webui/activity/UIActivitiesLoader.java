@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.activity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -182,7 +183,7 @@ public class UIActivitiesLoader extends UIContainer {
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
     ExoSocialActivity[] activities = activityListAccess.load(index, length);
-    return Arrays.asList(activities);
+    return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
   }
 
   public static class LoadMoreActionListener extends EventListener<UIActivitiesLoader> {

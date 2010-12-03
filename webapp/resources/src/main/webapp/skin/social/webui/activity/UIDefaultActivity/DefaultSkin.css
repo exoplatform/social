@@ -22,6 +22,12 @@
 .UIActivity {
 }
 
+.UIActivity .AvatarPeopleBG img {
+  height:47px;
+  width:47px;
+}
+
+
 .UIActivity .Avatar {
   background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll left -78px;
   float:left;
@@ -31,6 +37,11 @@
   width:60px;
 }
 
+.UIActivity .Avatar img {
+  width:56px;
+  height:54px;
+}
+
 .UIActivity .AvatarCM {
   background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll left -143px transparent;
   float:left;
@@ -38,6 +49,11 @@
   padding-left:3px;
   padding-top:3px;
   width:42px;
+}
+
+.UIActivity .AvatarCM img {
+  height:36px;
+  width:38px;
 }
 
 .UIActivity .DownIconCM {

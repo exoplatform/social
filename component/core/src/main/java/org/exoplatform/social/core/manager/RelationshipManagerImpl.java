@@ -19,7 +19,6 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.lifecycle.Lifecycle;
 import javax.resource.NotSupportedException;
 
 import org.exoplatform.social.core.identity.model.Identity;
@@ -105,10 +104,8 @@ public class RelationshipManagerImpl implements RelationshipManager {
    * {@inheritDoc}
    */
   public void ignore(Relationship relationship) throws Exception {
-    relationship.setStatus(Relationship.Type.IGNORE);
-    for (Property prop : relationship.getProperties()) {
-      prop.setStatus(Relationship.Type.IGNORE);
-    }
+    // TODO: Now we remove and implement later
+    storage.removeRelationship(relationship);
     saveRelationship(relationship);
     lifeCycle.relationshipIgnored(this, relationship);
   }

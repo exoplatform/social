@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
@@ -349,8 +348,7 @@ public class BaseUIActivity extends UIForm {
     identityLikes = activity.getLikeIdentityIds();
   }
 
-
-  private String getRemoteUser() {
+  protected String getRemoteUser() {
     PortalRequestContext requestContext = Util.getPortalRequestContext();
     return requestContext.getRemoteUser();
   }
@@ -410,7 +408,7 @@ public class BaseUIActivity extends UIForm {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceByName(spaceName);
     if (space != null) {
-      return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
+      return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
     }
 
     return null;
@@ -420,7 +418,7 @@ public class BaseUIActivity extends UIForm {
    * Gets activityManager
    * @return
    */
-  private ActivityManager getActivityManager() {
+  protected ActivityManager getActivityManager() {
     if (activityManager == null) {
       activityManager = getApplicationComponent(ActivityManager.class);
     }
@@ -431,7 +429,7 @@ public class BaseUIActivity extends UIForm {
    * Gets identityManager
    * @return
    */
-  private IdentityManager getIdentityManager() {
+  protected IdentityManager getIdentityManager() {
     if (identityManager == null) {
       identityManager = getApplicationComponent(IdentityManager.class);
     }
@@ -442,7 +440,7 @@ public class BaseUIActivity extends UIForm {
    * Gets relationshipManager
    * @return
    */
-  private RelationshipManager getRelationshipManager() {
+  protected RelationshipManager getRelationshipManager() {
     if (relationshipManager == null) {
       relationshipManager = getApplicationComponent(RelationshipManager.class);
     }
@@ -481,7 +479,7 @@ public class BaseUIActivity extends UIForm {
       return spaceService.isLeader(space, remoteUser);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-      if (uiUserActivitiesDisplay.isActivityStreamOwner()) {
+      if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
         if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
           return true;
         } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
@@ -501,7 +499,7 @@ public class BaseUIActivity extends UIForm {
     PostContext postContext = uiActivitiesContainer.getPostContext();
     if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-      if (!uiUserActivitiesDisplay.isActivityStreamOwner()) {
+      if (uiUserActivitiesDisplay != null && !uiUserActivitiesDisplay.isActivityStreamOwner()) {
         String ownerName = uiUserActivitiesDisplay.getOwnerName();
         String viewerName = getRemoteUser();
         Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
@@ -533,7 +531,7 @@ public class BaseUIActivity extends UIForm {
         return spaceService.isLeader(space, getRemoteUser());
       } else if (postContext == PostContext.USER) {
         UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-        if (uiUserActivitiesDisplay.isActivityStreamOwner()) {
+        if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
           if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
             return true;
           } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
@@ -655,6 +653,5 @@ public class BaseUIActivity extends UIForm {
       uiActivity.refresh();
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
     }
-
   }
 }

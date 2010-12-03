@@ -115,7 +115,7 @@ public class UIAvatarUploadContent extends UIContainer {
    * Updates working work space.<br>
    *
    */
-  static public void updateWorkingWorkSpace() {
+  public static void updateWorkingWorkSpace() {
     UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
     UIWorkingWorkspace uiWorkingWS = uiPortalApplication.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
     PortalRequestContext pContext = Util.getPortalRequestContext();
@@ -128,7 +128,7 @@ public class UIAvatarUploadContent extends UIContainer {
    * Closes the popup window, refreshes UIProfile.
    *
    */
-  static public class SaveActionListener extends EventListener<UIAvatarUploadContent> {
+  public static class SaveActionListener extends EventListener<UIAvatarUploadContent> {
     @Override
     public void execute(Event<UIAvatarUploadContent> event) throws Exception {
       UIAvatarUploadContent uiAvatarUploadContent = event.getSource();
@@ -143,12 +143,14 @@ public class UIAvatarUploadContent extends UIContainer {
       while (parent != null) {
          if (UIProfile.class.isInstance(parent)) {
            ((UIProfile)parent).saveAvatar(uiAvatarUploadContent);
+           return;
          } else if (UISpaceInfo.class.isInstance(parent)) {
            UISpaceInfo uiSpaceInfo = ((UISpaceInfo)parent);
            SpaceService spaceService = uiSpaceInfo.getSpaceService();
            String id = uiSpaceInfo.getUIStringInput("id").getValue();
            Space space = spaceService.getSpaceById(id);
            uiSpaceInfo.saveAvatar(uiAvatarUploadContent, space);
+           return;
          }
          parent = parent.getParent();
       }
@@ -159,7 +161,7 @@ public class UIAvatarUploadContent extends UIContainer {
    * Aborts, close the popup window.
    *
    */
-  static public class AbortActionListener extends EventListener<UIAvatarUploadContent> {
+  public static class AbortActionListener extends EventListener<UIAvatarUploadContent> {
     @Override
     public void execute(Event<UIAvatarUploadContent> event) throws Exception {
       UIAvatarUploadContent uiAvatarUploadContent = event.getSource();

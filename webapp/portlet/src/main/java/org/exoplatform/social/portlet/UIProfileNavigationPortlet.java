@@ -197,7 +197,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
       }
       Relationship rel = rm.getRelationship(currIdentity, viewerIdentity);
       if (rel != null) {
-        rm.remove(rel);
+        rm.deny(rel);
       }
     }
   }

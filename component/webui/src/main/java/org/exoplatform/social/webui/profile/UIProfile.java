@@ -17,7 +17,6 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -143,17 +142,18 @@ public class UIProfile extends UIContainer {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     }
-    
+
     Profile p = getProfile(true);
     p.setProperty(Profile.AVATAR, attacthment);
     Map<String, Object> props = p.getProperties();
-    Iterator<String> it = props.keySet().iterator();
-    it = props.keySet().iterator();
-    while (it.hasNext()) {
-      String name = it.next();
-      if (name.startsWith(Profile.AVATAR + ImageUtils.KEY_SEPARATOR)) {
-        it.remove();
-        p.removeProperty(name);
+
+    // Removes avatar url and resized avatar
+    if (p.contains(Profile.AVATAR_URL)) {
+      p.removeProperty(Profile.AVATAR_URL);
+    }
+    for (String key : props.keySet()) {
+      if (key.startsWith(Profile.AVATAR + ImageUtils.KEY_SEPARATOR)) {
+        p.removeProperty(key);
       }
     }
 

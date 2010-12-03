@@ -19,8 +19,9 @@ package org.exoplatform.social.core.service;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
@@ -34,118 +35,122 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 
 public class LinkProvider {
-  private static Log LOG = ExoLogger.getLogger(LinkProvider.class);
+  private static IdentityManager identityManager;
+  private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);
 
-  public static String getProfileUri(String username) {
+  /**
+   * The method return the uri link to user profile
+   * 
+   * @param username
+   * @return the uri link to user profile
+   */
+  public static String getProfileUri(final String username) {
     return getProfileUri(username, null);
   }
 
-  public static String getProfileUri(String username, String portalOwner) {
-    String url = null;
-    try {
-      IdentityManager identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
-      Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
-      if (identity == null) {
-        LOG.warn("could not find a user identity for " + username);
-        return null;
-      }
-
-      String container = PortalContainer.getCurrentPortalContainerName();
-
-      portalOwner = getPortalOwner(portalOwner);
-
-      url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
-    } catch (Exception e) {
-      LOG.warn("failed to substitute username for " + username + ": " + e.getMessage());
-    }
-    return url;
+  /**
+   * The method return the uri link to user profile on portalOwner
+   * 
+   * @param userName
+   * @param portalOwner
+   * @return the uri link to user profile on portalOwner
+   */
+  public static String getProfileUri(final String userName, final String portalOwner) {
+    return buildProfileUri(userName, portalOwner);
   }
 
-  public static String getProfileLink(String username) {
+  /**
+   * The method return tag <a> with a link to profile of userName
+   * 
+   * @param username
+   * @return tag <a> with a link to profile of userName
+   */
+  public static String getProfileLink(final String username) {
     return getProfileLink(username, null);
   }
 
-  public static String getProfileLink(String username, String portalOwner) {
-    String link;
-
-    try {
-      IdentityManager identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
-      Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
-      if (identity == null) {
-        LOG.warn("could not find a user identity for " + username);
-        return null;
-      }
-
-      String container = PortalContainer.getCurrentPortalContainerName();
-
-      portalOwner = getPortalOwner(portalOwner);
-
-      String url = "/"+ container +"/private/"+portalOwner+"/profile/" + identity.getRemoteId();
-      link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
-    } catch (Exception e) {
-      LOG.warn("failed to substitute username for " + username + ": " + e.getMessage());
-      return null;
-    }
-    return link;
+  /**
+   * The method return tag <a> with a link to profile of userName on portalName
+   * 
+   * @param username
+   * @param portalOwner
+   * @return tag <a> with a link to profile of userName on portalName
+   */
+  public static String getProfileLink(final String username, final String portalOwner) {
+    Identity identity = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
+    Validate.notNull(identity, "Identity must not be null.");
+    return "<a href=\"" + buildProfileUri(identity.getRemoteId(), portalOwner)
+        + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
   }
 
-
-  public String getActivityUri(String providerId, String remoteId) {
-    return getActivityUri(providerId, remoteId, null);
+  /**
+   * Get absolute profile uri of userName
+   * 
+   * @param userName
+   * @param portalName
+   * @param portalOwner
+   * @param host
+   * @return absolute profile uri of userName
+   */
+  public static String getAbsoluteProfileUrl(final String userName, final String portalName, final String portalOwner, final String host) {
+    return host + buildProfileUri(userName, portalName, portalOwner);
   }
 
   /**
    * Gets activity link of space or user; remoteId should be the id name.
    * For example: organization:root or space:abc_def
+   * 
+   * @param providerId
    * @param remoteId
    * @return
    */
-  public String getActivityUri(String providerId, String remoteId, String portalOwner) {
-    final String container = PortalContainer.getCurrentPortalContainerName();
-    portalOwner = getPortalOwner(portalOwner);
+  public static String getActivityUri(final String providerId, final String remoteId) {
+    return getActivityUri(providerId, remoteId, null);
+  }
+
+  /**
+   * Gets activity link of space or user; remoteId should be the id name. For
+   * example: organization:root or space:abc_def
+   * 
+   * @param remoteId
+   * @return
+   */
+  public static String getActivityUri(final String providerId, final String remoteId, String portalOwner) {
+    final String prefix = "/" + PortalContainer.getCurrentPortalContainerName() + "/private/" + getPortalOwner(portalOwner) + "/";
     if (providerId.equals(OrganizationIdentityProvider.NAME)) {
-      return "/"+ container +"/private/"+portalOwner+"/activities/" + remoteId;
+      return prefix + "activities/" + remoteId;
     } else if (providerId.equals(SpaceIdentityProvider.NAME)) {
-      return "/" + container + "/private/" + portalOwner + "/" + remoteId;
+      return prefix + remoteId;
     } else {
       LOG.warn("Failed to getActivityLink with providerId: " + providerId);
     }
     return null;
   }
 
-
-  public static String getAbsoluteProfileUrl(String userName, String portalName, String portalOwner, String host) {
-    String url = null;
-    try {
-      IdentityManager identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
-      Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + userName, true);
-      if (identity == null) {
-        throw new RuntimeException("could not find a user identity for " + userName);
-      }
-
-      url = host + "/"+ portalName +"/private/" + portalOwner + "/profile/" + identity.getRemoteId();
-    } catch (Exception e) {
-      LOG.warn("failed to substitute username for " + userName + ": " + e.getMessage());
-    }
-    return url;
-  }
-
-  public static String getAvatarImageSource(AvatarAttachment avatarAttachment) {
-    return getAvatarImageSource(PortalContainer.getInstance(), avatarAttachment);
+  /**
+   * Build avatar image uri from avatarAttachment
+   * 
+   * @param avatarAttachment
+   * @return uri
+   */
+  public static String buildAvatarImageUri(final AvatarAttachment avatarAttachment) {
+    return buildAvatarImageUri(PortalContainer.getInstance(), avatarAttachment);
   }
 
   /**
+   * Build avatar image uri from avatarAttachment
+   * 
    * @param container
-   * @param avatarAttachment   
+   * @param avatarAttachment
    * @return url to avatar
    */
-  public static String getAvatarImageSource(PortalContainer container, AvatarAttachment avatarAttachment) {
+  public static String buildAvatarImageUri(final PortalContainer container, final AvatarAttachment avatarAttachment) {
     String avatarUrl = null;
     try {
       if (avatarAttachment != null) {
-        String repository = ((RepositoryService) container.getComponentInstanceOfType(RepositoryService.class)).getCurrentRepository()
-                                                                                                                     .getConfiguration()
-                                                                                                                     .getName();
+        final String repository = ((RepositoryService) container.getComponentInstanceOfType(RepositoryService.class)).getCurrentRepository()
+                                                                                                               .getConfiguration()
+                                                                                                               .getName();
         avatarUrl = "/" + container.getRestContextName() + "/jcr/" + repository + "/"
             + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?upd="
             + avatarAttachment.getLastModified();
@@ -156,54 +161,78 @@ public class LinkProvider {
     }
     return avatarUrl;
   }
-  
+
   /**
+   * Get avatar image uri of profile in a portalContainer
+   * 
    * @param profile
+   * @param portalContainer
    * @return null or an url if available
    */
-  public static String getAvatarImageSource(Profile profile) {
+  public static String getAvatarImageSource(final PortalContainer portalContainer, final Profile profile) {
     String avatarUrl = (String) profile.getProperty(Profile.AVATAR_URL);
     if (avatarUrl != null) {
       return avatarUrl;
     }
-    AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
+
+    final AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
     if (avatarAttachment != null) {
-      return getAvatarImageSource(avatarAttachment);
+      avatarUrl = buildAvatarImageUri(portalContainer, avatarAttachment);
+      profile.setProperty(Profile.AVATAR_URL, avatarUrl);
+      getIdentityManager().updateAvatar(profile);
+      return avatarUrl;
     }
     return null;
   }
 
   /**
-   * If the resized image does not exist, the method will lazily create a new scaled image
-   * file, store it as a property of the profile and return the url to view that resized avatar file.
-   *
+   * Get avatar image uri of profile
+   * @param profile
+   * @return null or an url if available
+   */
+  public static String getAvatarImageSource(final Profile profile) {
+    String avatarUrl = (String) profile.getProperty(Profile.AVATAR_URL);
+    if (avatarUrl != null) {
+      return avatarUrl;
+    }
+
+    final AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
+    if (avatarAttachment != null) {
+      avatarUrl = buildAvatarImageUri(avatarAttachment);
+      profile.setProperty(Profile.AVATAR_URL, avatarUrl);
+      getIdentityManager().updateAvatar(profile);
+      return avatarUrl;
+    }
+    return null;
+  }
+
+  /**
+   * If the resized image does not exist, the method will lazily create a new
+   * scaled image file, store it as a property of the profile and return the url
+   * to view that resized avatar file.
+   * 
    * @param profile
    * @param width
    * @param height
-   * @author tuan_nguyenxuan Oct 26, 2010
    * @return null or an url if available
    * @throws Exception
    */
-  public static String getAvatarImageSource(Profile profile,int width, int height) {
-    // Determine the key of avatar file and avatar url like avatar_30x30 and
-    // avatar_30x30Url
-    String postfix = ImageUtils.buildImagePostfix(width, height);
-    String keyFile = Profile.AVATAR + postfix;
-    String keyURL = Profile.AVATAR + postfix + Profile.URL_POSTFIX;
+  public static String getAvatarImageSource(Profile profile, int width, int height) {
+    // Determine the key of avatar file and avatar url like avatar_30x30 and avatar_30x30Url
+    final String postfix = ImageUtils.buildImagePostfix(width, height);
+    final String keyFile = Profile.AVATAR + postfix;
+    final String keyURL = Profile.AVATAR + postfix + Profile.URL_POSTFIX;
     // When the resized avatar with params size is exist, we return immediately
     String avatarUrl = (String) profile.getProperty(keyURL);
     if (avatarUrl != null) {
       return avatarUrl;
     }
-    IdentityManager identityManager = (IdentityManager) PortalContainer.getInstance()
-                                                                       .getComponentInstanceOfType(IdentityManager.class);
-    // When had resized avatar but hadn't avatar url we build the avatar url
-    // then return
+    // When had resized avatar but hadn't avatar url we build the avatar url then return
     AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(keyURL);
     if (avatarAttachment != null) {
-      avatarUrl = getAvatarImageSource(avatarAttachment);
+      avatarUrl = buildAvatarImageUri(avatarAttachment);
       profile.setProperty(keyURL, avatarUrl);
-      identityManager.saveProfile(profile);
+      getIdentityManager().updateAvatar(profile);
       return avatarUrl;
     }
     // When hadn't avatar yet we return null
@@ -212,40 +241,86 @@ public class LinkProvider {
       return null;
     // Otherwise we create the resize avatar then return the avatar url
     InputStream inputStream = new ByteArrayInputStream(avatarAttachment.getImageBytes());
-    String mimeType = avatarAttachment.getMimeType();
-    AvatarAttachment newAvatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream,
-                                                                                   width,
-                                                                                   height,
-                                                                                   avatarAttachment.getId()
-                                                                                       + postfix,
-                                                                                   ImageUtils.buildFileName(avatarAttachment.getFileName(),
-                                                                                                           Profile.RESIZED_SUBFIX,
-                                                                                                           postfix),
-                                                                                   mimeType,
-                                                                                   avatarAttachment.getWorkspace());
+    avatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream,
+                                                                width,
+                                                                height,
+                                                                avatarAttachment.getId() + postfix,
+                                                                ImageUtils.buildFileName(avatarAttachment.getFileName(),
+                                                                                         Profile.RESIZED_SUBFIX,
+                                                                                         postfix),
+                                                                avatarAttachment.getMimeType(),
+                                                                avatarAttachment.getWorkspace());
 
-    if (newAvatarAttachment == null)
+    if (avatarAttachment == null)
       return getAvatarImageSource(profile);
-    // Set property that contain resized avatar file to profile
-    profile.setProperty(keyFile, newAvatarAttachment);
-    identityManager.saveProfile(profile);
     // Build the url to that resized avatar file then save and return
-    avatarUrl = getAvatarImageSource(newAvatarAttachment);
+    avatarUrl = buildAvatarImageUri(avatarAttachment);
+
+    // Set property that contain resized avatar file and url to profile
+    profile.setProperty(keyFile, avatarAttachment);
     profile.setProperty(keyURL, avatarUrl);
-    identityManager.saveProfile(profile);
+
+    getIdentityManager().updateAvatar(profile);
     return avatarUrl;
   }
 
-  private static String escapeJCRSpecialCharacters(String string) {
-    return string.replace("[", "%5B")
-                .replace("]", "%5D")
-                .replace(":", "%3A");
+  /**
+   * Build profile uri from userName and portalOwner
+   * 
+   * @param userName
+   * @param portalOwner
+   * @return profile uri
+   */
+  private static String buildProfileUri(final String userName, final String portalOwner) {
+    return buildProfileUri(userName, PortalContainer.getCurrentPortalContainerName(), portalOwner);
   }
 
- private static String getPortalOwner(String portalOwner) {
-    if(portalOwner == null || portalOwner.equals("")){
-      PortalRequestContext context = Util.getPortalRequestContext();
-      portalOwner = context.getPortalOwner();
+  /**
+   * Build profile uri from userName and portalName and portalOwner
+   * 
+   * @param userName
+   * @param portalName
+   * @param portalOwner
+   * @return profile uri
+   */
+  private static String buildProfileUri(final String userName, final String portalName, String portalOwner) {
+    return "/" + StringUtils.trimToEmpty(portalName) + "/private/" + getPortalOwner(portalOwner)
+        + "/profile/" + StringUtils.trimToEmpty(userName);
+  }
+
+  /**
+   * Escape jcr special characters
+   * 
+   * @param string
+   * @return
+   */
+  private static String escapeJCRSpecialCharacters(String string) {
+    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
+  }
+
+  /**
+   * get IdentityManager instance
+   * 
+   * @return identityManager
+   */
+  private static IdentityManager getIdentityManager() {
+    if(LinkProvider.identityManager == null)
+    {
+      LinkProvider.identityManager = (IdentityManager) PortalContainer.getInstance()
+                                    .getComponentInstanceOfType(IdentityManager.class);
+    }
+    return LinkProvider.identityManager;
+  }
+
+  /**
+   * Get portal owner, if parameter is null or "", the method return default portal owner
+   * 
+   * @param portalOwner
+   * @return portalOwner
+   */
+  private static String getPortalOwner(String portalOwner) {
+    if (portalOwner == null || "".equals(portalOwner)) {
+      portalOwner = Util.getPortalRequestContext().getPortalOwner();
     }
     return portalOwner;
   }

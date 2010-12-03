@@ -51,7 +51,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
@@ -218,7 +217,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         } catch (SpaceException e) {}
       }
       else if(Person.Field.THUMBNAIL_URL.toString().equals(field)) {
-        p.setThumbnailUrl(LinkProvider.getAvatarImageSource((AvatarAttachment) pro.getProperty(Profile.AVATAR)));
+        p.setThumbnailUrl(LinkProvider.getAvatarImageSource(pro));
       }
 
       else if(ExoPersonImpl.Field.PORTAL_CONTAINER.toString().equals(field)) {

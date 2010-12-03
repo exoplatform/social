@@ -274,7 +274,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return LinkProvider.getAvatarImageSource(space.getAvatarAttachment());
+    return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
   }
 
   /**
