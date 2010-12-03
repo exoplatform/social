@@ -18,7 +18,6 @@ package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ import org.exoplatform.social.core.identity.IdentityProviderPlugin;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
@@ -200,6 +198,15 @@ public class IdentityManager {
 
 
   /**
+   * Gets the number of indentities.
+   * 
+   * @return Number of identities.
+   */
+  public long getIdentitiesCount(String providerId) {
+    return identityStorage.getIdentitiesCount(providerId);
+  }
+
+  /**
    * Gets the identity by remote id.
    *
    * @param providerId the provider id
@@ -274,7 +281,7 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter) throws Exception {
-    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, 0, 20);
+    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, 0, SEARCH_LIMIT);
   }
 
   /**
@@ -299,7 +306,7 @@ public class IdentityManager {
    * @throws Exception the exception
    */
   public List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter) throws Exception {
-    return getIdentitiesByProfileFilter(null, profileFilter, 0, 20);
+    return getIdentitiesByProfileFilter(null, profileFilter, 0, SEARCH_LIMIT);
   }
 
   /**

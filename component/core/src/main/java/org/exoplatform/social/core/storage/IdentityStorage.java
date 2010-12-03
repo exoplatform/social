@@ -19,8 +19,6 @@ package org.exoplatform.social.core.storage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +43,8 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
 
 import org.apache.commons.lang.Validate;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
@@ -62,6 +62,7 @@ import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.image.ImageUtils;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.ProfileConfig;
@@ -124,19 +125,12 @@ public class IdentityStorage {
    */
   private JCRSessionManager sessionManager;
 
-  Comparator<Identity> identityComparator = new Comparator<Identity>() {
-    public int compare(Identity o1, Identity o2) {
-      String name1 = (String) o1.getProfile().getProperty(Profile.FIRST_NAME);
-      String name2 = (String) o2.getProfile().getProperty(Profile.FIRST_NAME);
-
-      return name1.compareToIgnoreCase(name2);
-    }
-  };
-
   private Node identityServiceHome;
 
   private Node profileServiceHome;
 
+  private IdentityManager identityManager;
+  
   /**
    * Instantiates a new jCR storage.
    *
@@ -401,55 +395,65 @@ public class IdentityStorage {
    * @throws Exception the exception
    */
   public List<Identity> getIdentitiesByProfileFilter(String identityProvider, ProfileFilter profileFilter, long offset, long limit) throws Exception {
-    Session session = sessionManager.openSession();
-    Node profileHomeNode = getProfileServiceHome(session);
-
+    String inputName = profileFilter.getName();
+    String userName = processUsernameSearchPattern(inputName.trim());
+    String position = addPositionSearchPattern(profileFilter.getPosition().trim());
+    String gender = profileFilter.getGender().trim();
+    inputName = ((inputName == "") || (inputName.length() == 0)) ? "*" : inputName;
+    String nameForSearch = inputName.replace("*", " ");
+    String [] nameParts = nameForSearch.trim().split(" ");
     List<Identity> listIdentity = new ArrayList<Identity>();
     List<Node> nodes = null;
+
     try {
+      Session session = sessionManager.getOrOpenSession();
+      Node profileHomeNode = getProfileServiceHome(session);
+
       QueryBuilder queryBuilder = new QueryBuilder(session)
               .select(PROFILE_NODETYPE, offset, limit)
               .like("jcr:path", profileHomeNode.getPath() + "[%]/" + PROFILE_NODETYPE + "[%]");
 
-      String position = addPositionSearchPattern(profileFilter.getPosition().trim());
-      String gender = profileFilter.getGender().trim();
+      for (String namePart : nameParts) {
+        if (namePart != "") {
+          queryBuilder.or().like(queryBuilder.lower(Profile.FIRST_NAME), "%" + namePart.toLowerCase() + "%");
+          queryBuilder.or().like(queryBuilder.lower(Profile.LAST_NAME),  "%" + namePart.toLowerCase() + "%");
+        }
+      }
 
       if (position.length() != 0) {
-        queryBuilder.and().contains("position", position);
+        queryBuilder.and().contains(Profile.POSITION, position);
       }
       if (gender.length() != 0) {
-        queryBuilder.and().equal("gender", gender);
+        queryBuilder.and().equal(Profile.GENDER, gender);
       }
 
+      queryBuilder.orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);
+      
       nodes = queryBuilder.exec();
+  
+      for (Node profileNode : nodes) {
+        Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
+        Identity identity = getIdentityManager().getIdentity(identityNode.getUUID(), false);
+        if (!identity.getProviderId().equals(identityProvider)) {
+          continue;
+        }
+        if (userName.length() != 0) {
+          String fullUserName = identity.getProfile().getFullName();
+          String fullNameLC = fullUserName.toLowerCase();
+          String userNameLC = userName.toLowerCase();
+          if ((userNameLC.length() != 0) && fullNameLC.matches(userNameLC)) {
+            listIdentity.add(identity);
+          }
+        } else {
+          listIdentity.add(identity);
+        }
+      }
     } catch (Exception e) {
       LOG.warn("error while filtering identities: " + e.getMessage());
       return (new ArrayList<Identity>());
     } finally {
       sessionManager.closeSession();
     }
-
-    String userName = processUsernameSearchPattern(profileFilter.getName().trim());
-
-    for (Node profileNode : nodes) {
-      Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
-      Identity identity = getIdentity(identityNode);
-      if (!identity.getProviderId().equals(identityProvider)) {
-        continue;
-      }
-      if (userName.length() != 0) {
-        String fullUserName = identity.getProfile().getFullName();
-        String fullNameLC = fullUserName.toLowerCase();
-        String userNameLC = userName.toLowerCase();
-        if ((userNameLC.length() != 0) && fullNameLC.matches(userNameLC)) {
-          listIdentity.add(identity);
-        }
-      } else {
-        listIdentity.add(identity);
-      }
-    }
-
-    Collections.sort(listIdentity, identityComparator);
 
     return listIdentity;
   }
@@ -488,6 +492,8 @@ public class IdentityStorage {
    */
   public final List<Identity> getIdentitiesFilterByAlphaBet(final String identityProvider, final ProfileFilter profileFilter, final long offset, final long limit) throws Exception {
     List<Identity> listIdentity = new ArrayList<Identity>();
+    List<Node> nodes = null;
+    
     try {
       Session session = sessionManager.getOrOpenSession();
       Node profileHomeNode = getProfileServiceHome(session);
@@ -503,10 +509,12 @@ public class IdentityStorage {
         queryBuilder.and().contains(Profile.FIRST_NAME, userName);
       }
 
-      final List<Node> nodes = queryBuilder.exec();
+      queryBuilder.orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);
+      
+      nodes = queryBuilder.exec();
       for (Node profileNode : nodes) {
         Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
-        Identity identity = getIdentity(identityNode);
+        Identity identity = getIdentityManager().getIdentity(identityNode.getUUID(), false);
         if (!identity.getProviderId().equals(identityProvider)) {
           continue;
         }
@@ -635,6 +643,26 @@ public class IdentityStorage {
     }
   }
 
+  /**
+   * Gets total number of identities in storage depend on providerId. 
+   */
+  public int getIdentitiesCount (String providerId) {
+    Session session = sessionManager.getOrOpenSession();
+    int count = 0;
+    Node identityHomeNode = getIdentityServiceHome(session);
+    try {
+      count = (int) new QueryBuilder(session).select(IDENTITY_NODETYPE)
+      .like("jcr:path", identityHomeNode.getPath()+"/%")
+      .and()
+      .equal(IDENTITY_PROVIDERID, providerId).count();
+    } catch (Exception e){
+      LOG.warn(e.getMessage(), e);
+    } finally {
+      sessionManager.closeSession();
+    }
+    return count;
+  }
+  
   /**
    * Add or modify properties of profile and persist to JCR. Profile parameter is a lightweight that 
    * contains only the property that you want to add or modify. NOTE: The method will
@@ -1023,6 +1051,20 @@ public class IdentityStorage {
     return map;
   }
 
+  /**
+   * Gets identity manager instance.
+   * 
+   * @return identity manager instance.
+   */
+  private IdentityManager getIdentityManager() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    if (identityManager == null) {
+      identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    }
+    
+    return identityManager;
+  }
+  
   /**
    * Gets the type.
    *
