@@ -67,9 +67,6 @@ import org.exoplatform.webui.form.UIFormStringInput;
 )
 public class UIProfileUserSearch extends UIForm {
 
-  /** The limit number of query for matching with search criteria */
-  private static final int SEARCH_LIMIT = 500;
-
   /** SEARCH. */
   final public static String SEARCH                    = "Search";
 
@@ -114,7 +111,10 @@ public class UIProfileUserSearch extends UIForm {
 
   /** Used stores filter information. */
   ProfileFilter              profileFilter             = null;
-
+  
+  /** Number of identities. */
+  long identitiesCount;
+  
   /**
    * Sets list identity.
    *
@@ -236,6 +236,19 @@ public class UIProfileUserSearch extends UIForm {
   }
   
   /**
+   * Gets number of identities.
+   * 
+   * @return Number of identities.
+   */
+  private long getIdentitiesCount() {
+    if (identitiesCount == 0L) {
+      identitiesCount = getIdentityManager().getIdentitiesCount(OrganizationIdentityProvider.NAME);  
+    }
+    
+    return identitiesCount;
+  }
+  
+  /**
    * Listens to search event from search form, then processes search condition
    * and set search result to the result variable.<br>
    * - Gets user name and other filter information from request.<br>
@@ -273,7 +286,7 @@ public class UIProfileUserSearch extends UIForm {
             filter.setName("");
           }
           identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME,
-                                                                     filter, 0, SEARCH_LIMIT);
+                                                                     filter, 0, uiSearch.getIdentitiesCount());
           uiSearch.setIdentityList(identitiesSearchResult);
         } else {
           if (!isValidInput(filter)) { // is invalid condition input
@@ -297,7 +310,7 @@ public class UIProfileUserSearch extends UIForm {
             // uiSearch.setSelectedChar(charSearch);
 
             identitiesSearchResult = idm.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME,
-                                                                      filter);
+                                                                      filter, 0, uiSearch.getIdentitiesCount());
             uiSearch.setIdentityList(identitiesSearchResult);
 
             // Using regular expression for search

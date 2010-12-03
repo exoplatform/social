@@ -203,6 +203,13 @@ public interface IdentityManager {
   Identity getIdentity(String providerId, String remoteId, boolean loadProfile);
 
   /**
+   * Gets the number of indentities.
+   * 
+   * @return Number of identities.
+   */
+  long getIdentitiesCount(String providerId);
+  
+  /**
    * Checks if identity existed or not.
    *
    * @param providerId

@@ -126,7 +126,7 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter) throws Exception {
-    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, 0, 20);
+    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, 0, SEARCH_LIMIT);
   }
 
   /**
@@ -143,7 +143,7 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter) throws Exception {
-    return getIdentitiesByProfileFilter(null, profileFilter, 0, 20);
+    return getIdentitiesByProfileFilter(null, profileFilter, 0, SEARCH_LIMIT);
   }
 
   /**
@@ -186,6 +186,14 @@ public class IdentityManagerImpl implements IdentityManager {
     return getIdentity(id, true);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public long getIdentitiesCount(String providerId) {
+    return identityStorage.getIdentitiesCount(providerId);
+  }
+
+  
   /**
    * {@inheritDoc}
    */
