@@ -76,7 +76,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   public static final String REPOSITORY = "repository";
   public static final String WORKSPACE = "collaboration";
   private final String POPUP_COMPOSER = "UIPopupComposer";
-  private final String docActivityTitle = "Shared document <a href=\"${"+ UIDocActivity.DOCLINK +"}\">${" +UIDocActivity.DOCNAME +"}</a>";
+  private final String docActivityTitle = "Shared a document <a href=\"${"+ UIDocActivity.DOCLINK +"}\">${" +UIDocActivity.DOCNAME +"}</a>";
 
   private String documentRefLink;
   private String rootpath;

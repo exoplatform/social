@@ -16,16 +16,23 @@
  */
 package org.exoplatform.social.plugin.doc;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.jcr.Node;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.wcm.core.NodeLocation;
+import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by The eXo Platform SAS
@@ -38,20 +45,56 @@ public class UIDocActivityBuilder extends BaseUIActivityBuilder {
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
     UIDocActivity docActivity = (UIDocActivity) uiActivity;
-    try {
+    String repository = null;
+    String workspace = null;
+    if (activity.getTemplateParams() != null) {
       Map<String,String> activityParams = activity.getTemplateParams();
       docActivity.docLink = activityParams.get(UIDocActivity.DOCLINK);
       docActivity.docName = activityParams.get(UIDocActivity.DOCNAME);
       docActivity.message = activityParams.get(UIDocActivity.MESSAGE);
       docActivity.docPath = activityParams.get(UIDocActivity.DOCPATH);
-      String repository = activityParams.get(UIDocActivity.REPOSITORY);
-      String workspace = activityParams.get(UIDocActivity.WORKSPACE);
-      
-      NodeLocation nodeLocation = new NodeLocation(repository, workspace, docActivity.docPath);
-      final Node docNode = NodeLocation.getNodeByLocation(nodeLocation);
-      docActivity.setDocNode(docNode);
-    } catch (Exception e) {
-      LOG.error("Binding activity data error : ", e);
+      repository = activityParams.get(UIDocActivity.REPOSITORY);
+      workspace = activityParams.get(UIDocActivity.WORKSPACE);
+    } else {
+      //backward compatible with old data
+      try {
+        final JSONObject jsonObject = new JSONObject(activity.getTitle());
+        docActivity.docLink = jsonObject.getString(UIDocActivity.DOCLINK);
+        docActivity.docName = jsonObject.getString(UIDocActivity.DOCNAME);
+        docActivity.message = jsonObject.getString(UIDocActivity.MESSAGE);
+        docActivity.docPath = jsonObject.getString(UIDocActivity.DOCPATH);
+        repository = jsonObject.getString(UIDocActivity.REPOSITORY);
+        workspace = jsonObject.getString(UIDocActivity.WORKSPACE);
+
+        saveToNewDataFormat(activity, docActivity, repository, workspace);
+
+      } catch (JSONException je) {
+        LOG.error("Error with activity's title data");
+      }
+
+    }
+
+    NodeLocation nodeLocation = new NodeLocation(repository, workspace, docActivity.docPath);
+    final Node docNode = NodeLocation.getNodeByLocation(nodeLocation);
+    docActivity.setDocNode(docNode);
+  }
+
+  private void saveToNewDataFormat(ExoSocialActivity activity, UIDocActivity docActivity, String repository , String workspace) {
+    final String docActivityTitle = "Shared a document <a href=\"${"+ UIDocActivity.DOCLINK +"}\">${" +UIDocActivity.DOCNAME +"}</a>";
+    activity.setTitle(docActivityTitle);
+    Map<String, String> activityParams = new HashMap<String, String>();
+    activityParams.put(UIDocActivity.DOCNAME, docActivity.docName);
+    activityParams.put(UIDocActivity.DOCLINK, docActivity.docLink);
+    activityParams.put(UIDocActivity.DOCPATH, docActivity.docPath);
+    activityParams.put(UIDocActivity.REPOSITORY, repository);
+    activityParams.put(UIDocActivity.WORKSPACE, workspace);
+    activityParams.put(UIDocActivity.MESSAGE, docActivity.message);
+    activity.setTemplateParams(activityParams);
+    ActivityManager activityManager = (ActivityManager) PortalContainer.getInstance().getComponentInstanceOfType(ActivityManager.class);
+    try {
+      activityManager.saveActivity(activity);
+    } catch (ActivityStorageException ase) {
+      LOG.warn("Could not save new data format for document activity.", ase);
     }
   }
 }
