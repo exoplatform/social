@@ -16,6 +16,8 @@ package org.exoplatform.social.webui.composer;
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -31,14 +33,15 @@ import org.exoplatform.webui.core.UIPopupWindow;
   template = "classpath:groovy/social/webui/composer/PopupContainer.gtmpl"
 )
 public class PopupContainer extends UIContainer{
+  private static final Log LOG = ExoLogger.getLogger(PopupContainer.class);
   private UIPopupWindow popupWindow;
 
   public PopupContainer() {
     try {
-      popupWindow = addChild(UIPopupWindow.class, null, "UIPopupWindow_" + hashCode());
-      
+      popupWindow = addChild(UIPopupWindow.class, null, "UIPopupWindow");
+
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.error("Failed to add popup window", e);
     }
   }
 

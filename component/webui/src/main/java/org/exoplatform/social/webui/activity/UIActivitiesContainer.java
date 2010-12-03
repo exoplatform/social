@@ -52,7 +52,7 @@ public class UIActivitiesContainer extends UIContainer {
    */
   public UIActivitiesContainer() {
     try {
-      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow" + this.hashCode());
+      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow");
       popupWindow.setShow(false);
     } catch (Exception e) {
       LOG.error(e);
