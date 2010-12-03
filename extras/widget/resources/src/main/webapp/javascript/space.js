@@ -5,16 +5,22 @@
     var configuration = {
         //Do not include a trailing /
         serverURL: "http://localhost:8080",
+
         //start and end by a /
-        spaceServicePath: "/rest-socialdemo/private/spaces/",
-        portalName: "socialdemo",
+        spaceServicePath: "/rest/private/spaces/",
+
+        // This is default values work with eXo Platform 3.0.x
+        // This can be configured using space.setContainerName and space.setPortalName
+        containerName: "portal",
+        portalName: "intranet",
+
         linkElId: "exoSpacesLink",
         spaceInfoTmpl: '<div style="height:200px;overflow:hidden;width:220px;border:medium none;"><a href="javascript:void(0)" rel="close" style="float:right;">Close</a><br /><%= iframe %></div>'
     },
     templateRenderer;
     
     function getIframe(spaceName, description) {
-        return '<iframe  scrolling="no" height="180" frameborder="no" width="220" src="' + configuration.serverURL + configuration.spaceServicePath + configuration.portalName + "/space_info?spaceName=" + encodeURIComponent(spaceName) + '&description=' + encodeURIComponent(description) + '"></iframe>'
+        return '<iframe  scrolling="no" height="180" frameborder="no" width="220" src="' + configuration.serverURL + configuration.spaceServicePath + configuration.containerName + "/space_info?spaceName=" + encodeURIComponent(spaceName) + '&portalName=' + encodeURIComponent(configuration.portalName) + '&description=' + encodeURIComponent(description) + '"></iframe>'
     }
     
     function createSpaceBox(container, spaceName, description) {
@@ -126,7 +132,7 @@
         
         
         if (link.tagName === "A") {
-            link.href = configuration.serverURL + configuration.spaceServicePath + configuration.portalName + "/go_to_space?spaceName=" + encodeURIComponent(spaceName) + '&description=' + encodeURIComponent(description);
+            link.href = configuration.serverURL + configuration.spaceServicePath + configuration.containerName + "/go_to_space?spaceName=" + encodeURIComponent(spaceName) + '&portalName=' + encodeURIComponent(configuration.portalName) + '&description=' + encodeURIComponent(description);
         }
         
         link.onclick = function(e) {
@@ -178,6 +184,9 @@
     };
     spaces.setPortalName = function(value) {
         configuration["portalName"] = value;    
+    };
+    spaces.setContainerName = function(value) {
+        configuration["containerName"] = value;    
     };
     
     initialize();

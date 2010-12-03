@@ -19,13 +19,11 @@ package org.exoplatform.social.extras.widget.rest;
 import java.net.URI;
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -43,16 +41,19 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
-@Path("spaces/{portalName}")
+@Path("spaces/{containerName}")
 public class WidgetRestService implements ResourceContainer {
   private static Log log = ExoLogger.getLogger(WidgetRestService.class.getName());
 
   @GET
   @Path("go_to_space")
-  public Response goToSpace(@PathParam("portalName") String portalName,
+  public Response goToSpace(@PathParam("containerName") String containerName,
+                            @QueryParam("portalName") @DefaultValue("classic") String portalName,
                             @QueryParam("spaceName") String spaceName,
                             @QueryParam("description") String description) {
-    ExoContainer pc = ExoContainerContext.getContainerByName(portalName);
+    ExoContainer pc = ExoContainerContext.getContainerByName(containerName);
+    // we make sure we use the right container
+    ExoContainerContext.setCurrentContainer(pc);
     RequestLifeCycle.begin(pc);
     try {
       SpaceService service = (SpaceService) pc.getComponentInstanceOfType(SpaceService.class);
@@ -70,13 +71,13 @@ public class WidgetRestService implements ResourceContainer {
         space.setVisibility("public");
         space.setPriority("2");
         space = service.createSpace(space, username);
-        service.initApp(space);
+        service.initApps(space);
       } else {
         // Otherwise we add the user as a member
 
         // We verify if the registrations are open to everyone
         if (!service.hasAccessPermission(space, username)) {
-          if (space.getRegistration() == "open") {
+          if (space.getRegistration().equals("open")) {
             service.addMember(space, username);
           } else {
             service.requestJoin(space, username);
@@ -84,16 +85,16 @@ public class WidgetRestService implements ResourceContainer {
         }
       }
 
-      URI spaceURL = UriBuilder.fromPath("/{portalName}/private/classic/{spaceURL}")
-                               .build(portalName, space.getUrl());
+      URI spaceURL = UriBuilder.fromPath("/{containerName}/private/{portalName}/{spaceURL}")
+                               .build(containerName, portalName, space.getUrl());
 
       // We need to cleanup the session
       // The parameter portal is not really the portal name but the site name
       // inside the portal
-      URI cleanupURL = UriBuilder.fromPath("/{portalName}/invalidationsession")
-                                 .queryParam("portal", "classic")
+      URI cleanupURL = UriBuilder.fromPath("/{containerName}/invalidationsession")
+                                 .queryParam("portal", portalName)
                                  .queryParam("url", "{url}")
-                                 .build(portalName, spaceURL);
+                                 .build(containerName, spaceURL);
 
       // We could move the "classic" to configuration
       return Response.temporaryRedirect(cleanupURL).build();
@@ -108,10 +109,14 @@ public class WidgetRestService implements ResourceContainer {
   @GET
   @Path("space_info")
   @Produces("text/html")
-  public String spaceInfo(@PathParam("portalName") String portalName,
+  public String spaceInfo(@PathParam("containerName") String containerName,
+                          @QueryParam("portalName") @DefaultValue("classic") String portalName,
                           @QueryParam("spaceName") String spaceName,
-                          @QueryParam("description") String description) {
-    ExoContainer pc = ExoContainerContext.getContainerByName(portalName);
+                          @QueryParam("description") String description,
+                          @Context UriInfo uriInfo) {
+    ExoContainer pc = ExoContainerContext.getContainerByName(containerName);
+    // we make sure we use the right container
+    ExoContainerContext.setCurrentContainer(pc);
     try {
       SpaceService service = (SpaceService) pc.getComponentInstanceOfType(SpaceService.class);
       IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
@@ -124,15 +129,16 @@ public class WidgetRestService implements ResourceContainer {
               .append("background:url(\"/socialWidgetResources/img/social-logo.png\") no-repeat scroll 0 0 #FFFFFF; margin-bottom:5px;}</style>")
               .append("</head><body><h1>eXo Social</h1>");
 
+
+      URI goToSpace = uriInfo.getBaseUriBuilder().path("/spaces/{containerName}/go_to_space")
+                                 .queryParam("spaceName", spaceName)
+                                 .queryParam("portalName", portalName)
+                                 .queryParam("description", description)
+                                 .build(containerName);
+
       Space space = service.getSpaceByName(spaceName);
-      response.append("<h3 class=\"space_name\"><a href=\"/rest-")
-              .append(portalName)
-              .append("/private/spaces/")
-              .append(portalName)
-              .append("/go_to_space?spaceName=")
-              .append(spaceName)
-              .append("&description=")
-              .append(description)
+      response.append("<h3 class=\"space_name\"><a href=\"")
+              .append(goToSpace.toString())
               .append("\" target=\"_blank\">")
               .append(spaceName)
               .append("</a></h3>");
