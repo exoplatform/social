@@ -16,11 +16,18 @@
  */
 package org.exoplatform.social.common.filter;
 
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
-import org.exoplatform.container.web.AbstractFilter;
-import org.exoplatform.container.web.AbstractHttpServlet;
 import org.exoplatform.portal.application.PortalApplication;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -31,15 +38,6 @@ import org.exoplatform.web.WebAppController;
 import org.exoplatform.web.filter.Filter;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.core.UIApplication;
-
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * The filter to invalidate navigation cache.
