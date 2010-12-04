@@ -14,70 +14,87 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.common.servlet;
+package org.exoplatform.social.common.filter;
 
 import java.io.IOException;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
-import org.exoplatform.container.web.AbstractHttpServlet;
 import org.exoplatform.portal.application.PortalApplication;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.web.WebAppController;
+import org.exoplatform.web.filter.Filter;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.core.UIApplication;
 
 /**
- * @author <a href="mailto:trongtt@gmail.com">Tran The Trong</a>
- * @version $Revision$
+ * The filter to invalidate navigation cache.
+ *
+ * @author <a href="mailto:khoi.nguyen@exoplatform.com">Nguyen Duc Khoi</a>
+ * @since Dec 4, 2010
  */
-public class NavigationCleanupServlet extends AbstractHttpServlet {
+public class NavigationCleanupFilter implements Filter {
+  private static final Log LOG = ExoLogger.getLogger(NavigationCleanupFilter.class);
 
   class ExtendedPortalRequestContext extends PortalRequestContext {
     private String portalName;
 
-    public void setPortalName(String name) {
-      portalName = name;
+    public ExtendedPortalRequestContext(WebuiApplication app, HttpServletRequest req, HttpServletResponse res)
+            throws Exception {
+      super(app, req, res);
+    }
+
+    public void setPortalName(String portalName) {
+      this.portalName = portalName;
     }
 
     public String getPortalOwner() {
       return portalName;
     }
 
-    public ExtendedPortalRequestContext(WebuiApplication app,
-                                        HttpServletRequest req,
-                                        HttpServletResponse res) throws Exception {
-      super(app, req, res);
-    }
-
   }
 
-  @Override
-  protected void onService(ExoContainer container, HttpServletRequest req, HttpServletResponse res) throws ServletException,
-                                                                                                   IOException {
-    WebAppController controller = (WebAppController) container.getComponentInstanceOfType(WebAppController.class);
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+                       ServletException {
+    HttpServletRequest req = (HttpServletRequest) request;
+    HttpServletResponse res = (HttpServletResponse) response;
+    ExoContainer container = PortalContainer.getInstance();
+    WebAppController controller = (WebAppController) container.getComponentInstance(WebAppController.class);
     PortalApplication app = controller.getApplication(PortalApplication.PORTAL_APPLICATION_ID);
     String url = req.getParameter("url");
     String portalSite = req.getParameter("portal");
+
     try {
       RequestLifeCycle.begin(container);
       ExtendedPortalRequestContext context = new ExtendedPortalRequestContext(app, req, res);
       context.setPortalName(portalSite);
+
       UIApplication uiApp = app.getStateManager().restoreUIRootComponent(context);
       UIPortalApplication pApp = (UIPortalApplication) uiApp;
       String remoteUser = context.getRemoteUser();
-      UserPortalConfigService service_ = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+      UserPortalConfigService service_ = (UserPortalConfigService) container
+              .getComponentInstanceOfType(UserPortalConfigService.class);
       pApp.setUserPortalConfig(service_.getUserPortalConfig(portalSite, remoteUser));
     } catch (Exception e) {
-    } finally {
+      // just ignore
+    }
+    finally {
       res.sendRedirect(url);
       RequestLifeCycle.end();
     }
   }
 }
+
+
