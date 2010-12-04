@@ -16,13 +16,20 @@
  */
 package org.exoplatform.social.plugin.link;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by The eXo Platform SAS
@@ -31,26 +38,52 @@ import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
  * Jul 23, 2010  
  */
 public class UILinkActivityBuilder extends BaseUIActivityBuilder {
-  private static final Log log = ExoLogger.getLogger(UILinkActivityBuilder.class);
+  private static final Log LOG = ExoLogger.getLogger(UILinkActivityBuilder.class);
   
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
     UILinkActivity uiLinkActivity = (UILinkActivity) uiActivity;
+
+    Map<String, String> templateParams = activity.getTemplateParams();
+    if (templateParams != null) {
+        uiLinkActivity.setLinkSource(templateParams.get(UILinkActivityComposer.LINK_PARAM));
+
+        uiLinkActivity.setLinkTitle(templateParams.get(UILinkActivityComposer.TITLE_PARAM));
+
+        uiLinkActivity.setLinkImage(templateParams.get(UILinkActivityComposer.IMAGE_PARAM));
+
+        uiLinkActivity.setLinkDescription(templateParams.get(UILinkActivityComposer.DESCRIPTION_PARAM));
+
+        uiLinkActivity.setLinkComment(templateParams.get(UILinkActivityComposer.COMMENT_PARAM));
+    } else {
+      try {
+        JSONObject jsonObj = new JSONObject(activity.getTitle());
+        uiLinkActivity.setLinkSource(jsonObj.getString(UILinkActivityComposer.LINK_PARAM));
+        uiLinkActivity.setLinkTitle(jsonObj.getString(UILinkActivityComposer.TITLE_PARAM));
+        uiLinkActivity.setLinkImage(jsonObj.getString(UILinkActivityComposer.IMAGE_PARAM));
+        uiLinkActivity.setLinkDescription(jsonObj.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
+        uiLinkActivity.setLinkComment(jsonObj.getString(UILinkActivityComposer.COMMENT_PARAM));
+        saveToNewDataFormat(activity, uiLinkActivity);
+      } catch (JSONException e) {
+        LOG.error("Error with link activity's title data");
+      }
+    }
+  }
+
+  private void saveToNewDataFormat(ExoSocialActivity activity, UILinkActivity uiLinkActivity) {
+    String linkTitle = "Shared a link: <a href=\"${" + UILinkActivityComposer.LINK_PARAM + "}\">${" + UILinkActivityComposer.TITLE_PARAM + "} </a>";
+    activity.setTitle(linkTitle);
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put(UILinkActivityComposer.LINK_PARAM, uiLinkActivity.getLinkSource());
+    templateParams.put(UILinkActivityComposer.TITLE_PARAM, uiLinkActivity.getLinkTitle());
+    templateParams.put(UILinkActivityComposer.IMAGE_PARAM, uiLinkActivity.getLinkImage());
+    templateParams.put(UILinkActivityComposer.DESCRIPTION_PARAM, uiLinkActivity.getLinkDescription());
+    templateParams.put(UILinkActivityComposer.COMMENT_PARAM, uiLinkActivity.getLinkComment());
+    ActivityManager am = (ActivityManager) PortalContainer.getInstance().getComponentInstanceOfType(ActivityManager.class);
     try {
-      Map<String, String> templateParams = activity.getTemplateParams();
-      if (templateParams != null) {
-          uiLinkActivity.setLinkSource(templateParams.get(UILinkActivityComposer.LINK_PARAM));
-
-          uiLinkActivity.setLinkTitle(templateParams.get(UILinkActivityComposer.TITLE_PARAM));
-
-          uiLinkActivity.setLinkImage(templateParams.get(UILinkActivityComposer.IMAGE_PARAM));
-
-          uiLinkActivity.setLinkDescription(templateParams.get(UILinkActivityComposer.DESCRIPTION_PARAM));
-
-          uiLinkActivity.setLinkComment(templateParams.get(UILinkActivityComposer.COMMENT_PARAM));
-      } 
-    } catch (Exception e) {
-      log.warn("Has error when building link activity at Activity Builder");
+      am.saveActivity(activity);
+    } catch (ActivityStorageException ase) {
+      LOG.warn("Could not save new data format for document activity.", ase);
     }
   }
 }
