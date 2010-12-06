@@ -29,7 +29,7 @@ import java.util.Arrays;
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Nov 9, 2010
  */
-public class ExoSocialException extends Exception {
+public class ExoSocialException extends RuntimeException {
   /**
    * messageKey used for gets resource bundle message. *
    */
