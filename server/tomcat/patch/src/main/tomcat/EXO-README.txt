@@ -1,5 +1,5 @@
 =====================================================
-    Release Notes - eXo Social - Version 1.1.1
+    Release Notes - eXo Social - Version 1.1.2
 =====================================================
 
 ===============
@@ -29,9 +29,15 @@ eXo Social is composed of 2 modules :
 2 What's new?
 =============
 
-- Focus more on Social's performance with ExoCache. Make avatar images are cached.
-- Make it configurable for OpenSocial Rest Context API.
-- UI enhancement: more incentive "Add New Space" button; move edit space navigation into space settings
+- Performance improvement
+- Introduce NavigationCleanupFilter instead of NavigationCleanupServlet
+- Move sample gadgets to socialdemo.war, keep core gadgets in opensocial.war
+- Avatar is resized when uploaded and displayed.
+- Clean up console logging
+- Fix critical bug: Can't publish activities in a space using the opensocial API
+- Do not use json string in document and link activity
+- Give the user a hint why he does not see any groups in "bind groups"
+- Define keys for the profile properties in the API
 
 =========
 3 INSTALL
@@ -77,9 +83,6 @@ Need to set the JAVA_HOME variable for run Social servers.
 * Enter one of the following addresses into your browser address bar:
    Social demo portal
       http://localhost:8080/socialdemo
-   Classic :
-      http://localhost:8080/portal
-      http://localhost:8080/portal/public/classic
 
 
 You can log into the portal with the following accounts: root, john, marry, demo.
@@ -97,7 +100,7 @@ All those accounts have the default password "gtn".
 ===========
 4 RESOURCES
 ===========
-
+     Community download  http://sourceforge.net/projects/exo-social/
      Company site        http://www.exoplatform.com
      Community JIRA      http://jira.exoplatform.org
      Community site      http://www.exoplatform.org
@@ -108,6 +111,68 @@ All those accounts have the default password "gtn".
 ===========
 5 CHANGELOG
 ===========
+- 1.1.2
+
+** Bug
+    * [SOC-943] - IE7: problem of placement in the menu bar
+    * [SOC-973] - [people] Need to validate the field "position"
+    * [SOC-1100] - Broken UI in Member tab of Space setting when change language to French
+    * [SOC-1161] - on http://platform.demo.exoplatfrom.org, the gadget "Status Update" does not update status on Safafi & Chromes browser
+    * [SOC-1164] - on http://platform.demo.exoplatfrom.org, the gadget "RssFetcherGadget" does not display anything when user open it in new tab on the Safari browser.
+    * [SOC-1168] - Sub item of Space is display not well on IE
+    * [SOC-1176] - [Soc] can not share link/document on User activities on IE7
+    * [SOC-1177] - Parse and render when user share text contain HTML or JS source code
+    * [SOC-1186] - Add friend screen: when adding/accepting a friend the screen goes back to the top
+    * [SOC-1194] - Deleting the second comments in an activity causes exception
+    * [SOC-1198] - Do not display user's name but space's name on space activity
+    * [SOC-1202] - Exception in PicketLink - cannot login in PLF
+    * [SOC-1205] - jboss, SOC: Missing icon to upload document to share
+    * [SOC-1206] - Can't publish activities in a space using the opensocial API
+    * [SOC-1219] - Fix the same id problem for portal skin config
+    * [SOC-1221] - Delete activity but when refreshing, that activity is still displayed.
+    * [SOC-1223] - Exception when starting server with "UserToIdentityEventListener" activated
+    * [SOC-1228] - Backport - Profile.getAvatarImageSource() return an invalid URL
+    * [SOC-1232] - Backport - no label on experience (profile portlet)
+    * [SOC-1233] - Backport - can't edit multiple experience
+    * [SOC-1241] - Backport - UI Avatar Uploader does not work
+    * [SOC-1250] - Backport - extra widget is not working with eXo Platform 3
+    * [SOC-1273] - Backport - Auto suggest on Profile page loads all users
+    * [SOC-1276] - Backport -[SOC] Have a large space between avatar and activity on FF. See file attach
+    * [SOC-1277] - Backport - in UIBasicInfoSection the email is saved in the username field
+    * [SOC-1305] - Feedmash for Hudson and JIRA doesn't work anymore
+    * [SOC-1315] - The User Activities title should not belong to the UserActivityStream portlet
+    * [SOC-1322] - Could not get activities of spaces or connections in User Activity Stream Portlet
+    * [SOC-1323] - Backport - Feedmash is not working anymore
+    * [SOC-1325] - Navigation cache problem after creating a space by a webservice
+    * [SOC-1329] - Backport - [Activity] can not remove user's activities
+    * [SOC-1330] - Backport - Can not search people from the search box [Find People] function
+
+** Improvement
+    * [SOC-983] - Current position input field hides letters g, j, y.
+    * [SOC-1191] - the list of activities returned by getActivitiesOfUserSpaces(identity) and getActivitiesOfConnections(identity) should be sorted by date
+    * [SOC-1234] - Backport -Define keys for the profile properties in the API, fix bug for header session, contact session, experiences session
+    * [SOC-1238] - Backport - The method loadProfile should be called only when it is needed
+    * [SOC-1260] - Backport - Give the user a hint why he does not see any groups in "bind groups"
+    * [SOC-1261] - Backport - improve space creation
+    * [SOC-1274] - Backport - Do not use json string to store in document composer activity plugin
+    * [SOC-1286] - Backport - Do not use json string in link activity's title
+    * [SOC-1303] - Backport - Make Security Domain configurable
+    * [SOC-1304] - Backport - Use only one instance of Transliterator
+    * [SOC-1307] - Backport - The class SpaceUtils doesn't support several portal containers and is not thread safe
+    * [SOC-1309] - Backport - Improve QueryBuilder
+    * [SOC-1312] - Backport - IdentityManager.getConnections() should not attempt to load all identities
+
+** New Feature
+    * [SOC-806] - avatar images resizing
+
+** Task
+    * [SOC-1158] - Update home page for 1.1.x
+    * [SOC-1190] - implement a method that return all the activities of the user, its connections and spaces
+    * [SOC-1200] - Fix packaging build problem
+    * [SOC-1267] - Backport - Clean up console logging
+    * [SOC-1308] - Backport - gadgets: update to names and move sample gadgets to socialdemo webapp
+    * [SOC-1313] - Implement cache for RelationshipManager
+
 
 - 1.1.1
 
