@@ -16,17 +16,11 @@
  */
 package org.exoplatform.social.core.identity.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.core.image.ImageUtils;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
-import org.exoplatform.social.core.service.LinkProvider;
 
 /**
  * The Class Profile.

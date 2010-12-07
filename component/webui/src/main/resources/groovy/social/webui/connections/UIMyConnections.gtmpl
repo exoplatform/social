@@ -79,59 +79,55 @@
 
       <%if ((myRelation != null) && (myRelation.size() > 0)) {%>
 
-      <% for(relation in myRelation) {
-        def id = null;
-        if (currIdentity.id == relation.sender.id) {
-          id = relation.receiver;
-        } else {
-          id = relation.sender;
-        }
-        profileURL = portalURI + "activities/" + id.getRemoteId();
-        fullName = id.profile.fullName;
-        position = id.profile.getPropertyValue("position");
-        def actionLink = uicomponent.event("Remove",id.getId());
-        position = id.profile.getPropertyValue("position");
-        relationIdx += 1;
-        if (!position)
-          position = "";
+      <%  for(relation in myRelation) {
+            def id = null;
+            if (currIdentity.id == relation.sender.id) {
+              id = relation.receiver;
+            } else {
+              id = relation.sender;
+            }
+            profileURL = portalURI + "activities/" + id.getRemoteId();
+            fullName = id.profile.fullName;
+            position = id.profile.getPropertyValue("position");
+            def actionLink = uicomponent.event("Remove",id.getId());
+            position = id.profile.getPropertyValue("position");
+            relationIdx += 1;
+            if (!position)
+              position = "";
 
-        String imageSource = LinkProvider.getAvatarImageSource(id.profile);
-        if (imageSource == null) {
-          imageSource = "/social-resources/skin/ShareImages/Avartar.gif"; 
-        }
-     %>
-
-        <% if (relationIdx % 2 == 0) { %>
+            String imageSource = LinkProvider.getAvatarImageSource(id.profile);
+            if (imageSource == null) {
+              imageSource = "/social-resources/skin/ShareImages/Avatar.gif"; 
+            }
+            if (relationIdx % 2 == 0) { %>
           <div class="ContentSpaceGray ClearFix">
-        <% } else {%>
+         <% } else {%>
           <div class="ContentSpace ClearFix">
-        <% }%>
+       <% }%>
         <div class="AvartarPeopleBG">
              <img height="47px" width="47px" src="$imageSource"/>
           </div>
         <div class="CommunityContainer">
           <div class="CommunityMane Line">
               <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
-            <% if (isEditable) {%>
-              <a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
-            <% } %>
+       <% if (isEditable) {%>
+                 <a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
+       <% } %>
               <div style="clear: both;"><span/></div>
           </div>
-            <% if(position.length() > 0) { %>
-              <div class="CommunityContent" style="padding: 4px;">
-                <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-              </div>
-            <%  } %>
-
+       <% if(position.length() > 0) { %>
+        <div class="CommunityContent" style="padding: 4px;">
+          <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+        </div>
+       <% } %>
         </div>
         <div style="clear: left;"><span></span></div>
       </div>
-    <% } %>
-    <%}%>
-    <%
-         if (iteratorContact.getAvailablePage() > 1) {
-           uicomponent.renderUIComponent(iteratorContact) ;
-         }
+    <%  }
+      }
+      if (iteratorContact.getAvailablePage() > 1) {
+        uicomponent.renderUIComponent(iteratorContact);
+      }
      %>
     </div>
   </div>

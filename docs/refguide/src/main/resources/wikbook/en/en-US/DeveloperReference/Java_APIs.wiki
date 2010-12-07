@@ -29,7 +29,7 @@ h1. IdentityManager
 | *addIdentityProvider*(IdentityProvider<?> idProvider)| {{idProvider}} is the id of provider |  | To add the id of provider. |
 | *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}} is the id of provider; {{remoteId}} is the remote id | identity | To get the identity by remoteId. If the provider can not find any identity by remoteId, the return value is null. If no identity found by identity provider and that identity is still stored on JCR, that stored identity will be deleted and the return value is null.|
 | *getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter) | {{providerId}} is the id of provider; {{profileFilter}} is the filter of provider | the identities by the profile filter | To get the identities by profile filter. |
-| getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter, long offset, long limit) |  |  |  |
+| *getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter, long offset, long limit) |  |  |  |
 | *getIdentitiesByProfileFilter*(ProfileFilter profileFilter) | {{profileFilter}} - the profile filter | the identities by profile filter | To get the identities by profile filter. |
 | *getIdentitiesByProfileFilter*(ProfileFilter profileFilter, long offset, long limit) |  |  |  |
 | *getIdentitiesFilterByAlphaBet*(java.lang.String providerId, ProfileFilter profileFilter) | {{providerId}} is the id of provider; {{profileFilter}} is the profile filter | the identities filter by alphabet | To get the identities filter by alpha bet. |
@@ -56,4 +56,21 @@ h1. IdentityManager
 
 h1. Relationship Manager
 
-
+|| Function || Param || Return || Description ||
+| *getRelationship*(String relationshipId)| {{relationshipId}} | Relationship | Gets relationship the by id. |
+| *invite*(Identity sender, Identity receiver)| {{sender}} {{receiver}} | Relationship | Creates a connection invitation between 2 identities. |
+| *saveRelationship*(Relationship relationship)| {{relationship}}  is a relationship |  | Saves a relationship. |
+| *confirm*(Relationship relationship)| {{relationship}}  is a pending relationship |  | Confirms a relationship. |
+| *deny*(Relationship relationship)| {{relationship}}  is a pending relationship |  | Denies a relationship. |
+| *remove*(Relationship relationship)| {{relationship}}  is a pending relationship |  | Removes a relationship. |
+| *ignore*(Relationship relationship)| {{relationship}}  is a pending relationship |  | Ignores a relationship. |
+| *getPendingRelationships*(Identity sender)| {{sender}}  is a identity | List<Relationship> | Gets all the pending relationship of sender. |
+| *getPendingRelationships*(Identity sender, List<Identity> identities)| {{sender}} is a identity, {{identities}} is a list of identity | List<Relationship> | Gets pending relationships of sender that match with identities. |
+| *getRequireValidationRelationships*(Identity receiver)| {{receiver}}  is a identity | List<Relationship> | Gets list of required validation relationship of receiver. |
+| *getRequireValidationRelationships*(Identity receiver, List<Identity> identities)| {{receiver}} is a identity, {{identities}} is a list of identity | List<Relationship> | Gets list of required validation relationship of receiver that match with identities. |
+| *getConfirmedRelationships*(Identity identity)| {{identity}}  is a identity | List<Relationship> | Gets list of confirmed relationship of identity. |
+| *getConfirmedRelationships*(Identity identity, List<Identity> identities)| {{identity}} is a identity, {{identities}} is a list of identity | List<Relationship> | Gets list of confirmed relationship of identity that match with identities. |
+| *getAllRelationships*(Identity identity)| {{identity}}  is a identity | List<Relationship> | Returns all the relationship of a given identity with other identity. |
+| *getAllRelationships*(Identity identity, List<Identity> identities)| {{identity}} is a identity, {{identities}} is a list of identity | List<Relationship> | Returns all the relationship of a given identity with other identity in identities. |
+| *getAllRelationships*(Identity identity)| {{identity}}  is a identity | List<Relationship> | Returns all the relationship of a given identity with other identity. || *getAllRelationships*(Identity identity, Relationship.Type type, List<Identity> identities)| {{identity}} is a identity, {{type}} is a Relationship.Type {{identities}} is a list of identity | List<Relationship> | Returns all the  relationship of a given identity with other identity in identities in type. |
+| *getRelationship*(Identity identity1, Identity identity2)| {{identity1}} and {{identity2}} is identities| Relationship | Gets the relationship of 2 identity. |

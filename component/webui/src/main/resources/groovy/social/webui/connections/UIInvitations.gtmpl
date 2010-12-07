@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      <%if (myInvitations.size() == 0) {%>
+      <%if (myInvitations == null || myInvitations.size() == 0) {%>
         <div class="ContentSpace">
             <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
             <div style="clear: left;"><span></span></div>

@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.connections;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -135,6 +134,8 @@ public class UIPendingRelation extends UIContainer {
   @SuppressWarnings("unchecked")
   public List<Relationship> getPendingRelationList() throws Exception {
     List<Relationship> listRelationShip = getPendingRelationships();
+    if (listRelationShip == null)
+      return null;
     int currentPage = uiPageIterator_.getCurrentPage();
     LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
 
@@ -245,15 +246,15 @@ public class UIPendingRelation extends UIContainer {
       // TODO Check if relation is deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
       Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
-      if (relationStatus == Relationship.Type.ALIEN) {
+      if (relationStatus != Relationship.Type.PENDING) {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
       RelationshipManager rm = portlet.getRelationshipManager();
-      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
+      Relationship rel = rm.get(currIdentity, requestedIdentity);
       if (rel != null)
-        rm.deny(rel);
+        rm.remove(rel);
     }
   }
 
@@ -297,10 +298,10 @@ public class UIPendingRelation extends UIContainer {
     List<Identity> matchIdentities = getIdentityList();
 
     if (matchIdentities == null) {
-      return relm.getPendingRelationships(currentIdentity, true);
+      return relm.getPending(currentIdentity);
     }
 
-    return relm.getPendingRelationships(currentIdentity, matchIdentities, true);
+    return relm.getPending(currentIdentity, matchIdentities);
   }
 
   /**
@@ -341,9 +342,7 @@ public class UIPendingRelation extends UIContainer {
    */
   private Relationship.Type getContactStatus(Identity identity) throws Exception {
     if (identity.getId().equals(getCurrentIdentity().getId()))
-      return Relationship.Type.SELF;
-    RelationshipManager rm = getRelationshipManager();
-    Relationship rl = rm.getRelationship(identity, getCurrentIdentity());
-    return rm.getRelationshipStatus(rl, getCurrentIdentity());
+      return null;
+    return getRelationshipManager().getStatus(identity, getCurrentIdentity());
   }
 }

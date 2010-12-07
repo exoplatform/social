@@ -46,6 +46,11 @@ public final class NodeProperty {
   public static final String ACTIVITY_PRIORITY = "exo:priority";
   public static final String ACTIVITY_URL = "exo:url";
 
+  /* eXo Social Relarionship Node Properties */
+  public static final String RELATIONSHIP_SENDER     = "exo:sender";
+  public static final String RELATIONSHIP_RECEIVER   = "exo:receiver";
+  public static final String RELATIONSHIP_STATUS     = "exo:status";
+  public static final String RELATIONSHIP_IS_SYMETRIC = "exo:isSymetric";
 
   /* JCR Node Property */
 
@@ -134,5 +139,4 @@ public final class NodeProperty {
   public static final String JCR_LANGUAGE = "jcr:language";
 
   public static final String JCR_PATH = "jcr:path";
-
 }

@@ -85,6 +85,18 @@ public class ExoSocialException extends RuntimeException {
    * The message key with exception message and cause.
    *
    * @param msgKey message key
+   * @param cause  the cause
+   */
+  public ExoSocialException(final String msgKey,
+                            final Throwable cause) {
+    super(cause);
+    messageKey = msgKey;
+  }
+
+  /**
+   * The message key with exception message and cause.
+   *
+   * @param msgKey message key
    * @param msg    the message which is useful for developers.
    * @param cause  the cause
    */

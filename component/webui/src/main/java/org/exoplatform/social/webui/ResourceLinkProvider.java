@@ -22,6 +22,9 @@ package org.exoplatform.social.webui;
  * Nov 11, 2010  
  */
 public class ResourceLinkProvider {
-  public static final String PROFILE_DEFAULT_AVATAR_URL = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+  public static final String PROFILE_DEFAULT_AVATAR_FOR_ACTIVITY_URL = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+  public static final String PROFILE_DEFAULT_AVATAR_FOR_LIKE_URL = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+  public static final String PROFILE_DEFAULT_AVATAR_FOR_COMMENT_URL = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
+  public static final String PROFILE_DEFAULT_AVATAR_URL = "/social-resources/skin/ShareImages/Avatar.gif";
   public static final String SPACE_DEFAULT_AVATAR_URL = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
 }

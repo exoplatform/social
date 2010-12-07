@@ -25,6 +25,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -80,81 +81,79 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
   /**
    * Test for {@link RelationshipStorage#saveRelationship(Relationship)}
+   * @throws RelationshipStorageException 
    */
-  public void testSaveRelationship() {
-    {
-      Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity);
-      relationshipStorage.saveRelationship(rootToJohnRelationship);
-
-      tearDownRelationshipList.add(rootToJohnRelationship);
-    }
+  public void testSaveRelationship() throws RelationshipStorageException {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull(rootToJohnRelationship.getId());
+    tearDownRelationshipList.add(rootToJohnRelationship);
   }
 
   /**
    * Test for {@link RelationshipStorage#removeRelationship(Relationship)}
    */
   public void testRemoveRelationship() {
-    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity);
-    relationshipStorage.saveRelationship(rootToJohnRelationship);
-    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    try {
+      relationshipStorage.saveRelationship(rootToJohnRelationship);
+      assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
 
-    relationshipStorage.removeRelationship(rootToJohnRelationship);
-
-    assertNull("relationshipStorage.getRelationship(rootToJohnRelationship.getId() must be null",
-               relationshipStorage.getRelationship(rootToJohnRelationship.getId()));
+      relationshipStorage.removeRelationship(rootToJohnRelationship);
+      assertNull("relationshipStorage.getRelationship(rootToJohnRelationship.getId() must be null",
+                 relationshipStorage.getRelationship(rootToJohnRelationship.getId()));
+    } catch (RelationshipStorageException e) {
+      LOG.error(e);
+    }
   }
 
   /**
    * Test for {@link RelationshipStorage#getRelationship(String)}
+   * @throws RelationshipStorageException 
    */
-  public void testGetRelationship() {
-    Relationship demoToJohnRelationship = new Relationship(demoIdentity, johnIdentity);
-    relationshipStorage.saveRelationship(demoToJohnRelationship);
-
-    Relationship gotDemoToJohnRelationship = relationshipStorage.getRelationship(demoToJohnRelationship.getId());
-    assertNotNull("gotDemoToJohnRelationship must not be null", gotDemoToJohnRelationship);
-    assertEquals("gotDemoToJohnRelationship.getSender().getRemoteId() must return: "
-            + demoIdentity.getRemoteId(), demoIdentity.getRemoteId(), 
-            gotDemoToJohnRelationship.getSender().getRemoteId());
-    tearDownRelationshipList.add(gotDemoToJohnRelationship);
-  }
-
-  /**
-   * Test for {@link RelationshipStorage#findRelationships(String, String)}
-   * @throws Exception
-   */
-  public void testFindRelationships() throws Exception {
-    Relationship demoToJohnRelationship = new Relationship(demoIdentity, johnIdentity);
-    demoToJohnRelationship.setStatus(Relationship.Type.CONFIRM);
-    relationshipStorage.saveRelationship(demoToJohnRelationship);
-
-    List<Identity> confirmedIdentityListOfDemo = relationshipStorage.findRelationships(demoIdentity.getId(), Relationship.Type.CONFIRM.name());
-    List<Identity> confirmedIdentityListOfJohn = relationshipStorage.findRelationships(johnIdentity.getId(), Relationship.Type.CONFIRM.name());
-    assertEquals("confirmedIdentityListOfDemo.size() must return: 1", 1, confirmedIdentityListOfDemo.size());
-    assertEquals("confirmedIdentityListOfDemo.get(0).getId() must return :" + johnIdentity.getId(),
-                  johnIdentity.getId(),
-                  confirmedIdentityListOfDemo.get(0).getId());
-    assertEquals("confirmedIdentityListOfJohn.size() must return: 1", 1, confirmedIdentityListOfJohn.size());
-    assertEquals("confirmedIdentityListOfJohn.get(0).getId() must return :" + demoIdentity.getId(),
-                  demoIdentity.getId(),
-                  confirmedIdentityListOfJohn.get(0).getId());
-    tearDownRelationshipList.add(demoToJohnRelationship);
+  public void testGetRelationship() throws RelationshipStorageException {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull(rootToJohnRelationship.getId());
+    rootToJohnRelationship = relationshipStorage.getRelationship(rootToJohnRelationship.getId());
+    assertNotNull(rootToJohnRelationship.getId());
+    tearDownRelationshipList.add(rootToJohnRelationship);
   }
 
 
   /**
-   * Test for {@link RelationshipStorage#getRelationshipByIdentity(org.exoplatform.social.core.identity.model.Identity)}
+   * @throws RelationshipStorageException 
    */
-  public void testGetRelationshipByIdentity() {
-    //TODO complete testGetRelatinshipByIdentity
-    assert true;
+  public void testGetSenderRelationshipsByIdentityAndType() throws RelationshipStorageException {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.PENDING);
+    relationshipStorage.saveRelationship(rootToJohnRelationship);
+    relationshipStorage.saveRelationship(rootToDemoRelationship);
+
+    List<Relationship> relationships = relationshipStorage.getSenderRelationships(rootIdentity, Type.PENDING, null);
+    assertNotNull(relationships);
+    assertEquals(2, relationships.size());
+
+    Relationship rootToMaryRelationship = new Relationship(rootIdentity, maryIdentity, Type.CONFIRMED);
+    relationshipStorage.saveRelationship(rootToMaryRelationship);
+
+    relationships = relationshipStorage.getSenderRelationships(rootIdentity, Type.CONFIRMED, null);
+    assertNotNull(relationships);
+    assertEquals(1, relationships.size());
+
+    relationships = relationshipStorage.getSenderRelationships(rootIdentity, null, null);
+    assertNotNull(relationships);
+    assertEquals(3, relationships.size());
+
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(rootToMaryRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
    * Test for {@link RelationshipStorage#getRelationshipByIdentityId(String)}
    */
   public void testGetRelationshipByIdentityId() {
-    //TODO complete testGetRelationshipByIdentityId
     assert true;
   }
 
@@ -162,7 +161,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * Test for {@link RelationshipStorage#getRelationshipIdentitiesByIdentity(org.exoplatform.social.core.identity.model.Identity)}
    */
   public void testGetRelationshipIdentitiesByIdentity() {
-    //TODO complete testGetRelationshipIdentitiesByIdentity
     assert true;
   }
 

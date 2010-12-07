@@ -93,10 +93,10 @@ public class CachingActivityManager extends ActivityManagerImpl {
   public void deleteActivity(String activityId) throws ActivityStorageException {
     ExoSocialActivity activity = this.getStorage().getActivity(activityId);
     if (activity != null) {
-      Identity streamOwner = identityManager.getIdentity(activity.getStreamOwner(), false);
+      Identity streamOwner = identityManager.getIdentity(activity.getUserId(), false);
       this.getStorage().deleteActivity(activityId);
       try {
-        activityCache.remove(streamOwner.getId());
+        activityCache.remove(activityId);
         activityListCache.remove(streamOwner.getId());
       } catch (Exception e) {
         // Do nothing; just ignore

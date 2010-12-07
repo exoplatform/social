@@ -19,21 +19,28 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.social.webui.ResourceLinkProvider;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.core.relationship.model.Relationship;
-    
+  import org.exoplatform.social.core.relationship.model.Relationship;
+  import org.exoplatform.social.core.relationship.model.Relationship.Type;
+  import org.exoplatform.social.core.identity.model.Profile;
+
+  def ownerIdentity = Utils.getOwnerIdentity();
+  def viewerIdentity = Utils.getViewerIdentity();
+
   PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
-  def currIdentity = Utils.getCurrentIdentity();
-  def currentUser = currIdentity.profile.getPropertyValue("firstName");
-  def actititesURL = portalURI + "activities/" + currIdentity.getRemoteId();
-  def profileURL = portalURI + "profile/" + currIdentity.getRemoteId();
-  def relationURL = portalURI + "connections/yours/" + currIdentity.getRemoteId();
+  def currentUser = ownerIdentity.profile.getProperty(Profile.FIRST_NAME);
+  def actititesURL = portalURI + "activities/" + ownerIdentity.getRemoteId();
+  def profileURL = portalURI + "profile/" + ownerIdentity.getRemoteId();
+  def relationURL = portalURI + "connections/yours/" + ownerIdentity.getRemoteId();
+
   def selectedNode = uicomponent.getSelectedNode();
-  def imageSource = uicomponent.getImageSource();
-  def isMe = uicomponent.isMe();
   def componentId = uicomponent.id;
   def contactStatus = uicomponent.getContactStatus();
+  def relationship = uicomponent.getRelationship();
+
   def inviteToConnectLabel = _ctx.appRes(componentId + ".label.InviteToConnect");
   def connectLabel = _ctx.appRes(componentId + ".label.Connect");
   def denyLabel = _ctx.appRes(componentId + ".label.Deny");
@@ -44,33 +51,35 @@
   def denyTitlel = (_ctx.appRes(componentId + ".label.DenyTitle")).replace("{0}", currentUser + "");;
   def revokeTitle = (_ctx.appRes(componentId + ".label.RevokeTitle")).replace("{0}", currentUser + "");;
   def disconnectTitle = (_ctx.appRes(componentId + ".label.DisconnectTitle")).replace("{0}", currentUser + "");;
-  if(imageSource == null) imageSource = "/social-resources/skin/ShareImages/Avartar.gif";
+
+  def imageSource = uicomponent.getImageSource();
+  if (imageSource == null) imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
-  <%if ((isMe == null) || isMe) { %>
+  <%if (Utils.isOwner()) { %>
       <div class="ProfTitle">
         <%=_ctx.appRes(uicomponent.getId() + ".label.Me")%>
       </div>
       <a class="Avartar">
-        <img height="65" width="65" alt="" src="$imageSource"/>
+        <img alt="$currentUser" src="$imageSource"/>
       </a>
   <% } else {%>
       <div class="ProfTitle">
         ${currentUser}
       </div>
       <a class="Avartar">
-        <img height="65" width="65" alt="" src="$imageSource"/>
+        <img alt="$currentUser" src="$imageSource"/>
       </a>
       <div class="ConnectionArea">
-        <% if (contactStatus == Relationship.Type.REQUIRE_VALIDATION) { %>
+        <% if (contactStatus == null) { %>
+             <a href="#" title="$inviteToConnectTitle"  onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</a>
+        <% } else if (contactStatus == Type.PENDING && relationship.isReceiver(viewerIdentity)) { %>
              <a href="#" title="$connectTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</a>
              <span> | </span>
              <a href="#" title="$denyTitlel"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</a>
-        <% } else if (contactStatus == Relationship.Type.ALIEN) { %>
-             <a href="#" title="$inviteToConnectTitle"  onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</a>
-        <% } else if (contactStatus == Relationship.Type.PENDING) { %>
+        <% } else if (contactStatus == Type.PENDING && relationship.isSender(viewerIdentity)) { %>
              <a href="#" title="$revokeTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</a> 
-        <% } else if (contactStatus == Relationship.Type.CONFIRM) { %>
+        <% } else if (contactStatus == Type.CONFIRMED) { %>
              <a href="#" title="$disconnectTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectTitle</a>
         <% } %>
       </div>
@@ -78,7 +87,7 @@
   <div class="UIVerclTab">
     <% if (selectedNode == "activities")  {%>
     <div class="SelectedTab Tab">
-    <% } else  {%>
+    <% } else {%>
     <div class="NormalTab Tab">
     <%}%>
         <a href="${actititesURL}" class="ActivityIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Activity")%></a>

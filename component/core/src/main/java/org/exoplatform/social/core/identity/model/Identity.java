@@ -147,4 +147,12 @@ public class Identity {
       globalId = GlobalId.create(providerId, remoteId);
     return globalId;
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Identity) {
+        return getId().equals(((Identity)obj).getId());
+    }
+    return super.equals(obj);
+  }
 }

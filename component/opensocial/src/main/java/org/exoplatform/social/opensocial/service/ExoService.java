@@ -99,18 +99,14 @@ public class ExoService {
     protected List<Identity> getFriendsList(Identity id, SecurityToken token) throws Exception {
       PortalContainer pc = (PortalContainer) getPortalContainer(token);
       RelationshipManager rm = (RelationshipManager) pc.getComponentInstanceOfType(RelationshipManager.class);
-      List<Relationship> rels = rm.getContacts(id);
+      List<Relationship> rels = rm.getConfirmed(id);
       List<Identity> ids = new ArrayList<Identity>();
 
       for(Relationship rel : rels) {
-        if (rel.getSender().getId().equals(id.getId()))
-          ids.add(rel.getReceiver());
-        else
-          ids.add(rel.getSender());
+        ids.add(rel.getPartner(id));
       }
 
       return ids;
-
     }
 
     /**

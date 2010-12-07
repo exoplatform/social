@@ -52,8 +52,8 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 
 /**
  * UIManageMySpaces.java <br />
@@ -530,8 +530,8 @@ public class UIManageMySpaces extends UIContainer {
 
        // In case bug SOC-674
        if (childNode == null) {
-     	  nodeName = space.getDisplayName() + nodeName;
-     	  childNode = homeNode.getChild(nodeName);
+         nodeName = space.getDisplayName() + nodeName;
+         childNode = homeNode.getChild(nodeName);
        }
 
        return nodeName;

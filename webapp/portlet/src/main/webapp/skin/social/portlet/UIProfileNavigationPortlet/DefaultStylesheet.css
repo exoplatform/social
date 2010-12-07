@@ -71,15 +71,20 @@
 }
 
 .UIProfileNavigationPortlet .Avartar {
-	background: url(DefaultSkin/background/BgProfAvartar.gif) no-repeat left top;
-	display: block;
-	height: 64px;
+  background: url(DefaultSkin/background/BgProfAvartar.gif) no-repeat left top;
+  display: block;
+  height: 64px;
   margin-top: 30px;
   margin-left: 40px;
-	padding: 6px 0;
-	text-align: center;
-	vertical-align: middle;
-	width: 79px;
+  padding: 6px 0;
+  text-align: center;
+  vertical-align: middle;
+  width: 79px;
+}
+
+.UIProfileNavigationPortlet .Avartar img {
+  height: 65px;
+  width: 65px;
 }
 
 .UIProfileNavigationPortlet .ConnectionArea {

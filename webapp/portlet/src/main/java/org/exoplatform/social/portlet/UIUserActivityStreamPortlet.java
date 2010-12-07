@@ -102,9 +102,9 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
       Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
       Identity viewerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName);
 
-      Relationship relationship = relationshipManager.getRelationship(ownerIdentity, viewerIdentity);
+      Relationship relationship = relationshipManager.get(ownerIdentity, viewerIdentity);
 
-      if (relationship != null && (relationship.getStatus() == Relationship.Type.CONFIRM)) {
+      if (relationship != null && (relationship.getStatus() == Relationship.Type.CONFIRMED)) {
         uiComposer.setRendered(true);
       } else {
         uiComposer.setRendered(false);

@@ -16,17 +16,15 @@
  */
 package org.exoplatform.social.webui.activity.plugin;
 
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.ResourceBundleUtil;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
@@ -61,13 +59,13 @@ import org.exoplatform.webui.event.EventListener;
  }
 )
 public class UIRelationshipActivity extends BaseUIActivity {
-  private static final Log LOG = ExoLogger.getLogger(UIRelationshipActivity.class);
-
   private TitleId titleId;
 
   private String senderName;
 
   private String receiverName;
+
+  private String relationshipUUID;
 
   private Relationship relationship;
 
@@ -110,8 +108,9 @@ public class UIRelationshipActivity extends BaseUIActivity {
   }
 
   public Identity getSender() {
-    if(sender == null)
+    if (sender == null) {
       sender = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, senderName, false);
+    }
     return sender;
   }
 
@@ -120,8 +119,9 @@ public class UIRelationshipActivity extends BaseUIActivity {
   }
 
   public Identity getReceiver() {
-    if(receiver == null)
+    if (receiver == null) {
       receiver = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, receiverName, false);
+    }
     return receiver;
   }
 
@@ -130,8 +130,9 @@ public class UIRelationshipActivity extends BaseUIActivity {
   }
 
   public Type getStatus() throws Exception {
-    if(status == null)
-      status = getRelationshipManager().getConnectionStatus(getSender(), getReceiver());
+    if (status == null) {
+      status = getRelationshipManager().getStatus(getSender(), getReceiver());
+    }
     return status;
   }
 
@@ -140,8 +141,9 @@ public class UIRelationshipActivity extends BaseUIActivity {
   }
 
   public Relationship getRelationship() throws Exception {
-    if(relationship == null)
-      relationship = getRelationshipManager().getRelationship(getSender(), getReceiver());
+    if (relationship == null) {
+      relationship = getRelationshipManager().get(relationshipUUID);
+    }
     return relationship;
   }
 
@@ -151,26 +153,10 @@ public class UIRelationshipActivity extends BaseUIActivity {
   }
 
   public boolean isSender() throws Exception {
-    if(getRelationship() == null)
-      return false;
-    return getRemoteUser().equals(getRelationship().getSender().getRemoteId());
-  }
-
-  public boolean isReceiver() throws Exception {
-    if(getRelationship() == null)
-      return false;
-    return getRemoteUser().equals(getRelationship().getReceiver().getRemoteId());
-  }
-
-  public boolean isActivitySender() throws Exception {
-    if(getRelationship() == null)
-      return false;
     return getRemoteUser().equals(senderName);
   }
 
-  public boolean isActivityReceiver() throws Exception {
-    if(getRelationship() == null)
-      return false;
+  public boolean isReceiver() throws Exception {
     return getRemoteUser().equals(receiverName);
   }
 
@@ -210,20 +196,25 @@ public class UIRelationshipActivity extends BaseUIActivity {
     return "";
   }
 
+  public void setRelationshipUUID(String relationshipUUID) {
+    this.relationshipUUID = relationshipUUID;
+  }
+
+  public String getRelationshipUUID() {
+    return relationshipUUID;
+  }
+
   public static class AcceptActionListener extends EventListener<UIRelationshipActivity> {
 
     @Override
     public void execute(Event<UIRelationshipActivity> event) throws Exception {
       UIRelationshipActivity uiRelationshipActivity = event.getSource();
-      IdentityManager identityManager = uiRelationshipActivity.getApplicationComponent(IdentityManager.class);
-      Identity senderIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiRelationshipActivity.getSenderName(), false);
-      Identity receiverIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiRelationshipActivity.getReceiverName(), false);
 
-      RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
-      Relationship relationship = relationshipManager.getRelationship(receiverIdentity, senderIdentity);
-      Type status = relationshipManager.getRelationshipStatus(relationship, receiverIdentity);
-      if (status == Type.REQUIRE_VALIDATION) {
+      Relationship relationship = uiRelationshipActivity.getRelationship();
+      if (relationship != null && relationship.getStatus() == Type.PENDING) {
+        RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
         relationshipManager.confirm(relationship);
+        Utils.updateWorkingWorkSpace();
       }
 
       //delete this activity
@@ -239,15 +230,11 @@ public class UIRelationshipActivity extends BaseUIActivity {
     @Override
     public void execute(Event<UIRelationshipActivity> event) throws Exception {
       UIRelationshipActivity uiRelationshipActivity = event.getSource();
-      IdentityManager identityManager = uiRelationshipActivity.getApplicationComponent(IdentityManager.class);
-      Identity senderIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiRelationshipActivity.getSenderName(), false);
-      Identity receiverIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiRelationshipActivity.getReceiverName(), false);
-
-      RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
-      Relationship relationship = relationshipManager.getRelationship(receiverIdentity, senderIdentity);
-      Type status = relationshipManager.getRelationshipStatus(relationship, receiverIdentity);
-      if (status == Type.REQUIRE_VALIDATION) {
+      Relationship relationship = uiRelationshipActivity.getRelationship();
+      if (relationship != null && relationship.getStatus() == Type.PENDING) {
+        RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
         relationshipManager.deny(relationship);
+        Utils.updateWorkingWorkSpace();
       }
       //delete this activity
       //      Event<UIComponent> deleteActivityEvent = uiRelationshipActivity.createEvent("DeleteActivity", Phase.PROCESS, event.getRequestContext());

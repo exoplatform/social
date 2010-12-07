@@ -33,6 +33,9 @@
   def activityDeletable = uicomponent.isActivityDeletable();
   def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
 
+  def isConnectionRequested = (uicomponent.getTitleId() == TitleId.CONNECTION_REQUESTED);
+  def isConnectionConfirmed = (uicomponent.getTitleId() == TitleId.CONNECTION_CONFIRMED);
+
   def labelAccept = _ctx.appRes("UIRelationshipActivity.label.Accept");
   def labelRefuse = _ctx.appRes("UIRelationshipActivity.label.Refuse");
   def labelRevoke = _ctx.appRes("UIRelationshipActivity.label.Revoke");
@@ -113,9 +116,9 @@
     }
   } else {
     if (identityLikesNum > 1) {
-        labelLikes = labelPeopleLikeThis.replace("{start}", startTag).replace("{end}", endTag).replace("{0}", identityLikesNum + "");
+      labelLikes = labelPeopleLikeThis.replace("{start}", startTag).replace("{end}", endTag).replace("{0}", identityLikesNum + "");
     } else if (identityLikesNum == 1) {
-        labelLikes = labelOnePersonLikeThis.replace("{start}", startTag).replace("{end}", endTag);
+      labelLikes = labelOnePersonLikeThis.replace("{start}", startTag).replace("{end}", endTag);
     }
   }
 
@@ -133,13 +136,12 @@
   def isSender = uicomponent.isSender();
   def isReceiver = uicomponent.isReceiver();
   def status = uicomponent.getStatus();
-  def canShowAction = (uicomponent.getTitleId() == TitleId.CONNECTION_REQUESTED && (status == Type.PENDING || status == Type.REQUIRE_VALIDATION));
-  def isActivitySender = uicomponent.isActivitySender();
-  def isActivityReceiver = uicomponent.isActivityReceiver();
+  def relationship = uicomponent.getRelationship();
+  def canShowAction = (relationship != null && uicomponent.getTitleId() == TitleId.CONNECTION_REQUESTED && status == Type.PENDING);
 
   if (uicomponent.isUserActivity(userId)) {
     activityImageSource = uicomponent.getUserAvatarImageSource(userId);
-    if (!activityImageSource) activityImageSource= ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+    if (!activityImageSource) activityImageSource= ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_FOR_ACTIVITY_URL;
   } else {
     activityImageSource = uicomponent.getSpaceAvatarImageSource(userId);
     if (!activityImageSource) activityImageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
@@ -170,9 +172,9 @@
       <div class="Content">
         $activityContentTitle 
         <% if (canShowAction) {
-             if (isReceiver && isActivityReceiver) {%>
+             if (isReceiver) {%>
           <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
-        <%   } else if (isSender && isActivitySender) {%>
+        <%   } else if (isSender) {%>
           <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRevoke</a>
         <%   }
            }%>
@@ -213,7 +215,7 @@
               personLikeProfileUri = uicomponent.getUserProfileUri(it);
               personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
               if (!personLikeAvatarImageSource) {
-                personLikeAvatarImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+                personLikeAvatarImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_FOR_LIKE_URL;
               }
               %>
                 <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
@@ -268,7 +270,7 @@
       commenterProfileUri = uicomponent.getUserProfileUri(it.userId);
       commenterImageSource = uicomponent.getUserAvatarImageSource(it.userId);
       if (!commenterImageSource) {
-        commenterImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+        commenterImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_FOR_COMMENT_URL;
       }
       commentMessage = it.title;
       commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);

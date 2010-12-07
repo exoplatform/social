@@ -145,7 +145,7 @@ public class UIActivitiesLoader extends UIContainer {
       }
 
       List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
-      if (activities.size() < loadingCapacity) {
+      if (activities != null && activities.size() < loadingCapacity) {
         setUnableLoadNext(true);
       }
       activitiesContainer.setActivityList(activities);
@@ -183,6 +183,8 @@ public class UIActivitiesLoader extends UIContainer {
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
     ExoSocialActivity[] activities = activityListAccess.load(index, length);
+    if (activities == null)
+      return null;
     return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
   }
 

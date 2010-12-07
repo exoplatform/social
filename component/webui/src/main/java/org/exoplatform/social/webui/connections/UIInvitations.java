@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.connections;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -31,6 +30,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.webui.RelationshipListAccess;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
@@ -129,6 +129,8 @@ public class UIInvitations extends UIContainer {
    */
   public List<Relationship> getInvitation() throws Exception {
     List<Relationship> invitationList = getInvitedRelations();
+    if (invitationList == null)
+      return null;
     List<Relationship> contactLists = getDisplayRelationList(invitationList, uiPageIteratorInvitation);
     return contactLists;
   }
@@ -187,12 +189,12 @@ public class UIInvitations extends UIContainer {
       // TODO Check if invitation is revoked or deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
       Relationship.Type relationStatus = uiMyRelation.getContactStatus(requestedIdentity);
-      if (relationStatus == Relationship.Type.ALIEN) {
+      if (relationStatus != Relationship.Type.PENDING) {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
+      Relationship rel = rm.get(currIdentity, requestedIdentity);
       rm.confirm(rel);
     }
   }
@@ -220,13 +222,13 @@ public class UIInvitations extends UIContainer {
       // TODO Check if invitation is revoked or deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
       Relationship.Type relationStatus = uiMyRelation.getContactStatus(requestedIdentity);
-      if (relationStatus == Relationship.Type.ALIEN) {
+      if (relationStatus != Relationship.Type.PENDING) {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
       RelationshipManager rm = uiMyRelation.getRelationshipManager();
-      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
+      Relationship rel = rm.get(currIdentity, requestedIdentity);
       if (rel != null)
         rm.remove(rel);
     }
@@ -322,13 +324,7 @@ public class UIInvitations extends UIContainer {
     RelationshipManager relm = getRelationshipManager();
     Identity currentIdentity = getCurrentViewerIdentity();
 
-    List<Identity> matchIdentities = getIdentityList();
-
-    if (matchIdentities == null) {
-      return relm.getPendingRelationships(currentIdentity, false);
-    }
-
-    return relm.getPendingRelationships(currentIdentity, matchIdentities, false);
+    return relm.getAll(currentIdentity, Type.PENDING, getIdentityList());
   }
 
   /**
@@ -393,9 +389,7 @@ public class UIInvitations extends UIContainer {
    */
   private Relationship.Type getContactStatus(Identity identity) throws Exception {
     if (identity.getId().equals(getCurrentIdentity().getId()))
-      return Relationship.Type.SELF;
-    RelationshipManager rm = getRelationshipManager();
-    Relationship rl = rm.getRelationship(identity, getCurrentIdentity());
-    return rm.getRelationshipStatus(rl, getCurrentIdentity());
+      return null;
+    return getRelationshipManager().getStatus(identity, getCurrentIdentity());
   }
 }

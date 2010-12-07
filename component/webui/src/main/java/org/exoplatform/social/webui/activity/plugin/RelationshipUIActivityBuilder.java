@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.webui.activity.plugin;
 
+import java.util.Map;
+
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.application.RelationshipPublisher;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
@@ -39,10 +41,11 @@ public class RelationshipUIActivityBuilder extends BaseUIActivityBuilder {
     } else if (titleId.equals(TitleId.CONNECTION_REQUESTED.toString())) {
       uiRelationshipActivity.setTitleId(TitleId.CONNECTION_REQUESTED);
     }
-    String senderName = activity.getTemplateParams().get(RelationshipPublisher.SENDER_PARAM);
-    String receiverName = activity.getTemplateParams().get(RelationshipPublisher.RECEIVER_PARAM);
-    uiRelationshipActivity.setSenderName(senderName);
-    uiRelationshipActivity.setReceiverName(receiverName);
+
+    Map<String, String> templateParams = activity.getTemplateParams();
+    uiRelationshipActivity.setSenderName(templateParams.get(RelationshipPublisher.SENDER_PARAM));
+    uiRelationshipActivity.setReceiverName(templateParams.get(RelationshipPublisher.RECEIVER_PARAM));
+    uiRelationshipActivity.setRelationshipUUID(templateParams.get(RelationshipPublisher.RELATIONSHIP_UUID_PARAM));
   }
 
 }

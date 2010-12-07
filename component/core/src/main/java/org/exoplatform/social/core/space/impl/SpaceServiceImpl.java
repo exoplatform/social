@@ -1231,7 +1231,7 @@ public class SpaceServiceImpl implements SpaceService {
       return new String[] { str };
   }
 
-  private class SpaceComparator implements Comparator<Space> {
+  private static class SpaceComparator implements Comparator<Space> {
     /**
      * Compare 2 spaces by name
      *

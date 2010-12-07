@@ -158,12 +158,15 @@ public class ActivityManagerImpl implements ActivityManager {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
+    if (connectionList == null || connectionList.size() == 0)
+      return null;
     List<ExoSocialActivity> activityList = new ArrayList<ExoSocialActivity>();
-    String identityId;
     for (Identity identity : connectionList) {
       // default 20 activities each identity
       List<ExoSocialActivity> tempActivityList = getActivities(identity);
-      identityId = identity.getId();
+      if (tempActivityList == null || tempActivityList.size() == 0)
+        continue;
+      String identityId = identity.getId();
       for (ExoSocialActivity activity : tempActivityList) {
         if (activity.getUserId().equals(identityId)) {
           activityList.add(activity);
@@ -186,6 +189,8 @@ public class ActivityManagerImpl implements ActivityManager {
     } catch (SpaceException e1) {
       LOG.warn(e1.getMessage(), e1);
     }
+    if (accessibleSpaceList == null || accessibleSpaceList.size() == 0)
+      return null;
     for (Space space : accessibleSpaceList) {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                    space.getName());
@@ -370,7 +375,7 @@ public class ActivityManagerImpl implements ActivityManager {
     return new Comparator<ActivityProcessor>() {
 
       public int compare(ActivityProcessor p1, ActivityProcessor p2) {
-        if (p1 == null || p1 == null) {
+        if (p1 == null || p2 == null) {
           throw new IllegalArgumentException("Cannot compare null ActivityProcessor");
         }
         return p1.getPriority() - p2.getPriority();

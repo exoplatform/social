@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
 
 public class RelationshipTest extends TestCase {
   public void testToString() {
@@ -29,7 +30,7 @@ public class RelationshipTest extends TestCase {
     Identity receiver = new Identity("organization", "john");
 
     //create relationship
-    Relationship relationship = new Relationship(sender, receiver);
+    Relationship relationship = new Relationship(sender, receiver, Type.PENDING);
     assertEquals("organization:root--[PENDING]--organization:john", relationship.toString());
   }
 }

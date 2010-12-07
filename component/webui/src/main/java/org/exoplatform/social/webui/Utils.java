@@ -16,14 +16,22 @@
  */
 package org.exoplatform.social.webui;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.RequestContext;
 
 /**
@@ -45,7 +53,7 @@ public class Utils {
    *        Revert list or not.
    * @return sorted list.
    */
-  static public List sort(List l, String key1, String key2, boolean reverse) {
+  public static List sort(List l, String key1, String key2, boolean reverse) {
     if (l == null)
       return null;
     Collections.sort(l, new MapSorter(key1, key2));
@@ -66,7 +74,7 @@ public class Utils {
    *
    * @return sorted list.
    */
-  static public List sort(List l, String key1, String key2) {
+  public static List sort(List l, String key1, String key2) {
     return sort(l, key1, key2, false);
   }
 
@@ -80,7 +88,7 @@ public class Utils {
    *
    * @return sorted list.
    */
-  static public List sort(List l, String key) {
+  public static List sort(List l, String key) {
     return sort(l, key, null, false);
   }
 
@@ -98,7 +106,7 @@ public class Utils {
    *
    * @return object that match the key.
    */
-  static private Object select(List<Map> l, String key, String value, boolean onlyFirst) {
+  private static Object select(List<Map> l, String key, String value, boolean onlyFirst) {
     List res = new ArrayList<Map>();
 
     for (Map m : l) {
@@ -124,7 +132,7 @@ public class Utils {
    *
    * @return object that match the key.
    */
-  static public List select(List<Map> l, String key, String value) {
+  public static List select(List<Map> l, String key, String value) {
     return (List) select(l, key, value, false);
   }
 
@@ -140,32 +148,91 @@ public class Utils {
    *
    * @return object that match the key.
    */
-  static public Map selectFirst(List<Map> l, String key, String value) {
+  public static Map selectFirst(List<Map> l, String key, String value) {
     return (Map) select(l, key, value, true);
   }
 
   /**
-   * Gets current identity of login user.<br>
+   * Gets remoteid of owner user.<br>
    *
    * @return identity
-   *         Current identity of login user.
+   *         Current identity of owner user.
    *
    * @throws Exception
    */
-  static public Identity getCurrentIdentity() throws Exception {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      IdentityManager identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      RequestContext context = RequestContext.getCurrentInstance();
-      String currentUserName = context.getRemoteUser();
-      if (URLUtils.getCurrentUser() != null) currentUserName = URLUtils.getCurrentUser() ;
+  public static String getOwnerRemoteId() {
+    String currentUserName = URLUtils.getCurrentUser();
+    if (currentUserName == null || currentUserName.equals("")) {
+      return getViewerRemoteId();
+    }
+    return currentUserName;
+  }
 
-      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName);
+  /**
+   * Gets remoteid of owner user.<br>
+   *
+   * @return identity
+   *         Current identity of owner user.
+   *
+   * @throws Exception
+   */
+  public static String getViewerRemoteId() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    return context.getRemoteUser();
+  }
+
+  /**
+   * Gets current identity of owner user.<br>
+   *
+   * @return identity
+   *         Current identity of owner user.
+   *
+   * @throws Exception
+   */
+  public static Identity getOwnerIdentity() throws Exception {
+    return getIdentity(getOwnerRemoteId());
+  }
+
+  /**
+   * Checked is view by current user or by another.<br>
+   * 
+   * @return true if it is viewed by current login user.
+   * @throws Exception 
+   */
+  public static boolean isOwner() throws Exception {
+    return Utils.getViewerIdentity().equals(Utils.getOwnerIdentity());
+  }
+
+  /**
+   * Gets current identity of viewer user (login user).<br>
+   *
+   * @return identity
+   *         Current identity of viewer user.
+   *
+   * @throws Exception
+   */
+  public static Identity getViewerIdentity() throws Exception {
+    return getIdentity(getViewerRemoteId());
+  }
+
+  /**
+   * Gets identity from identity user name
+   * 
+   * @param userName
+   * @return identity
+   */
+  public static Identity getIdentity(String userName)
+  {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    IdentityManager identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName);
   }
 
   /**
    * Sorts the map depend on key.<br>
    *
    */
+  @SuppressWarnings("unchecked")
   protected static class MapSorter implements Comparator {
     private String key1;
     private String key2;
@@ -244,4 +311,17 @@ public class Utils {
         return ((Comparable)v1).compareTo(v2);
     }
   }
+
+  /**
+   * Updates working work space.<br>
+   *
+   */
+  public static void updateWorkingWorkSpace() {
+    UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
+    UIWorkingWorkspace uiWorkingWS = uiPortalApplication.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+    PortalRequestContext pContext = Util.getPortalRequestContext();
+    pContext.addUIComponentToUpdateByAjax(uiWorkingWS);
+    pContext.setFullRender(true);
+  }
+
 }

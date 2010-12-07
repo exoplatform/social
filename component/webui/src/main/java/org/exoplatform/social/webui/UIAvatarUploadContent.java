@@ -20,11 +20,7 @@ import java.io.ByteArrayInputStream;
 
 import org.exoplatform.download.DownloadService;
 import org.exoplatform.download.InputStreamDownloadResource;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.container.UIContainer;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -112,18 +108,6 @@ public class UIAvatarUploadContent extends UIContainer {
   }
 
   /**
-   * Updates working work space.<br>
-   *
-   */
-  public static void updateWorkingWorkSpace() {
-    UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
-    UIWorkingWorkspace uiWorkingWS = uiPortalApplication.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
-    PortalRequestContext pContext = Util.getPortalRequestContext();
-    pContext.addUIComponentToUpdateByAjax(uiWorkingWS);
-    pContext.setFullRender(true);
-  }
-
-  /**
    * Accepts and saves the uploaded image to profile.
    * Closes the popup window, refreshes UIProfile.
    *
@@ -135,9 +119,9 @@ public class UIAvatarUploadContent extends UIContainer {
       saveAvatar(uiAvatarUploadContent);
       UIPopupWindow uiPopup = uiAvatarUploadContent.getParent();
       uiPopup.setShow(false);
-      updateWorkingWorkSpace();
+      Utils.updateWorkingWorkSpace();
     }
-    
+
     private void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent) throws Exception {
       UIComponent parent =uiAvatarUploadContent.getParent();
       while (parent != null) {

@@ -21,8 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -40,6 +38,7 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
@@ -348,9 +347,9 @@ public class BaseUIActivity extends UIForm {
     identityLikes = activity.getLikeIdentityIds();
   }
 
+  @Deprecated
   protected String getRemoteUser() {
-    PortalRequestContext requestContext = Util.getPortalRequestContext();
-    return requestContext.getRemoteUser();
+    return Utils.getOwnerRemoteId();
   }
 
   public String getUserFullName(String userIdentityId) throws Exception {
@@ -504,10 +503,10 @@ public class BaseUIActivity extends UIForm {
         String viewerName = getRemoteUser();
         Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
         Identity viewerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName, false);
-        Relationship relationship = getRelationshipManager().getRelationship(ownerIdentity, viewerIdentity);
+        Relationship relationship = getRelationshipManager().get(ownerIdentity, viewerIdentity);
         if (relationship == null) {
           return false;
-        } else if (!(relationship.getStatus() == Type.CONFIRM)) {
+        } else if (!(relationship.getStatus() == Type.CONFIRMED)) {
           return false;
         }
       }

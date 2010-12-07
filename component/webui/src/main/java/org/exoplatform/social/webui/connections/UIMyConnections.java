@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.connections;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -133,6 +132,8 @@ public class UIMyConnections extends UIContainer {
    */
   public List<Relationship> getMyRelation() throws Exception {
     List<Relationship> listContacts = getMyContacts();
+    if (listContacts == null)
+      return null;
     List<Relationship> contactLists = getDisplayRelationList(listContacts, uiPageIteratorContact);
     return contactLists;
   }
@@ -187,12 +188,12 @@ public class UIMyConnections extends UIContainer {
 
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
       Relationship.Type relationStatus = uiMyRelation.getContactStatus(requestedIdentity);
-      if (relationStatus != Relationship.Type.CONFIRM) {
+      if (relationStatus != Relationship.Type.CONFIRMED) {
         uiApplication.addMessage(new ApplicationMessage(RELATION_DELETED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
+      Relationship rel = rm.get(currIdentity, requestedIdentity);
       if (rel != null)
         rm.remove(rel);
     }
@@ -287,14 +288,9 @@ public class UIMyConnections extends UIContainer {
   private List<Relationship> getMyContacts() throws Exception {
     RelationshipManager relm = getRelationshipManager();
     Identity currentIdentity = getCurrentViewerIdentity();
-
     List<Identity> matchIdentities = getIdentityList();
 
-    if (matchIdentities == null) {
-      return relm.getContacts(currentIdentity);
-    }
-
-    return relm.getContacts(currentIdentity, matchIdentities);
+    return relm.getConfirmed(currentIdentity, matchIdentities);
   }
 
   /**
@@ -359,10 +355,12 @@ public class UIMyConnections extends UIContainer {
    */
   private Relationship.Type getContactStatus(Identity identity) throws Exception {
     if (identity.getId().equals(getCurrentIdentity().getId())) {
-      return Relationship.Type.SELF;
+      return null;
     }
-    RelationshipManager rm = getRelationshipManager();
-    Relationship rl = rm.getRelationship(identity, getCurrentIdentity());
-    return rm.getRelationshipStatus(rl, getCurrentIdentity());
+    Relationship relationship = getRelationshipManager().get(identity, getCurrentIdentity());
+    if (relationship == null) {
+      return null;
+    }
+    return relationship.getStatus();
   }
 }

@@ -95,7 +95,7 @@
 		      
 		    String imageSource = LinkProvider.getAvatarImageSource(id.profile);
         if (imageSource == null) {
-          imageSource = "/social-resources/skin/ShareImages/Avartar.gif";
+          imageSource = "/social-resources/skin/ShareImages/Avatar.gif";
         }
 		 %>
 		

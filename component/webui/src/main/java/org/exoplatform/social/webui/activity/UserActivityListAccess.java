@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
@@ -24,7 +23,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.activity.model.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
@@ -87,7 +85,7 @@ public class UserActivityListAccess implements ListAccess<ExoSocialActivity> {
       activityList = getActivitiesOfConnections(index, length);
     }
 
-    return activityList.toArray(new ExoSocialActivity[activityList.size()]);
+    return (activityList == null ? null : activityList.toArray(new ExoSocialActivity[activityList.size()]));
   }
 
   private List<ExoSocialActivity> getActivitiesOfConnections(int index, int length) throws Exception {
@@ -102,7 +100,7 @@ public class UserActivityListAccess implements ListAccess<ExoSocialActivity> {
   }
   
   private List<ExoSocialActivity> getActivityList(int index, int length, List<ExoSocialActivity> activityList) {
-    if (activityList.size() < 1) {
+    if (activityList == null || activityList.size() < 1) {
       return activityList;
     }
     int toIndex = length + index;

@@ -16,9 +16,6 @@
  */
 package org.exoplatform.social.core.relationship.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.social.core.identity.model.Identity;
 
 /**
@@ -27,19 +24,19 @@ import org.exoplatform.social.core.identity.model.Identity;
 public class Relationship {
 
   /** The id. */
-  private String         id;
-
-  /** The properties. */
-  private List<Property> properties;
+  private String   id;
 
   /** The sender. */
-  private Identity       sender;
+  private Identity sender;
 
   /** The receiver. */
-  private Identity       receiver;
+  private Identity receiver;
+
+  /** Is symetric. */
+  private boolean  isSymetric;
 
   /** The status. */
-  private Type           status = Type.PENDING;
+  private Type     status;
 
   /**
    * The Relationship Type Enum
@@ -47,18 +44,10 @@ public class Relationship {
   public enum Type {
     /** The PENDING. */
     PENDING,
-    /** The CONFIRM. */
-    CONFIRM,
-    /** The IGNORE. */
-    IGNORE,
-    /** The ALIEN. */
-    ALIEN,
-    /** The REQUIRE_VALIDATION. */
-    REQUIRE_VALIDATION,
-    /** The SELF. */
-    SELF,
-    /** The SPACE_MEMBER type **/
-    SPACE_MEMBER
+    /** The CONFIRMED. */
+    CONFIRMED,
+    /** The IGNORED. */
+    IGNORED,
   }
 
   /**
@@ -68,7 +57,9 @@ public class Relationship {
    * @param receiver the receiver
    */
   public Relationship(Identity sender, Identity receiver) {
-    this(sender, receiver, new ArrayList<Property>());
+    this.sender = sender;
+    this.receiver = receiver;
+    this.status = Type.PENDING;
   }
 
   /**
@@ -76,12 +67,12 @@ public class Relationship {
    * 
    * @param sender the sender
    * @param receiver the receiver
-   * @param properties the properties
+   * @param status the status
    */
-  public Relationship(Identity sender, Identity receiver, List<Property> properties) {
+  public Relationship(Identity sender, Identity receiver, Type status) {
     this.sender = sender;
     this.receiver = receiver;
-    this.properties = properties;
+    this.status = status;
   }
 
   /**
@@ -91,7 +82,6 @@ public class Relationship {
    */
   public Relationship(String uuid) {
     this.id = uuid;
-    this.properties = new ArrayList<Property>();
   }
 
   /**
@@ -131,34 +121,6 @@ public class Relationship {
   }
 
   /**
-   * Gets the properties.
-   * 
-   * @return the properties
-   */
-  public List<Property> getProperties() {
-    return properties;
-  }
-
-  /**
-   * Sets the properties.
-   * 
-   * @param properties the new properties
-   */
-  public void setProperties(List<Property> properties) {
-
-    this.properties = properties;
-  }
-
-  /**
-   * Adds the property.
-   * 
-   * @param property the property
-   */
-  public void addProperty(Property property) {
-    properties.add(property);
-  }
-
-  /**
    * Gets the id.
    * 
    * @return the id
@@ -195,21 +157,79 @@ public class Relationship {
   }
 
   /**
-   * Gets the properties.
+   * Gets the isSymetric.
    * 
-   * @param status the status
-   * @return the properties
+   * @param isSymetric
    */
-  public List<Property> getProperties(Type status) {
-    List<Property> pendingProps = new ArrayList<Property>();
-    for (Property prop : properties) {
-      if (prop.getStatus() == status)
-        pendingProps.add(prop);
-    }
-    return pendingProps;
+  public void setSymetric(boolean isSymetric) {
+    this.isSymetric = isSymetric;
   }
 
+  /**
+   * Sets the isSymetric
+   * 
+   * @return isSymetric
+   */
+  public boolean isSymetric() {
+    return isSymetric;
+  }
+
+  /**
+   * Gets string sender + "--[" + status + "]--" + receiver
+   * @return string
+   */
   public String toString() {
     return sender + "--[" + status + "]--" + receiver;
+  }
+
+  /**
+   * Gets the partner of relationship. Returns null if not found any identity in this relationship
+   * 
+   * @param identity
+   * @return identity
+   */
+  public Identity getPartner(Identity identity) {
+    if (identity.equals(sender))
+      return receiver;
+    if (identity.equals(receiver))
+      return sender;
+    return null;
+  }
+
+  /**
+   * Checks the identity is the sender of relationship
+   * 
+   * @param identity
+   * @return boolean
+   */
+  public boolean isSender(Identity identity) {
+    if (identity.equals(sender))
+      return true;
+    return false;
+  }
+
+  /**
+   * Checks the identity is the receiver of relationship
+   * 
+   * @param identity
+   * @return boolean
+   */
+  public boolean isReceiver(Identity identity) {
+    if (identity.equals(receiver))
+      return true;
+    return false;
+  }
+
+  /**
+   * Compares to this object
+   * 
+   * return true if parameter object have the same id with this
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Relationship) {
+      return getId().equals(((Relationship)obj).getId());
+    }
+    return super.equals(obj);
   }
 }

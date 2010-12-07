@@ -24,10 +24,15 @@ package org.exoplatform.social.common.jcr;
  * @since Nov 10, 2010
  */
 public final class NodeType {
- /**
+  /**
    * eXo Social Activity Node Type.
    */
   public static final String NT_ACTIVITY = "exo:activity";
+
+  /**
+   * eXo Social Relationship node type.
+   */
+  public static final String EXO_RELATIONSHIP = "exo:relationship";
 
   /* JCR Node Types */
 

@@ -98,7 +98,7 @@ public class IdentityManagerImpl implements IdentityManager {
    */
   public List<Identity> getConnections(Identity ownerIdentity) throws Exception {
     relationshipManager = getRelationshipManager();
-    return relationshipManager.findRelationships(ownerIdentity, Relationship.Type.CONFIRM);
+    return relationshipManager.findRelationships(ownerIdentity, Relationship.Type.CONFIRMED);
   }
 
   /**

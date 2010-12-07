@@ -56,10 +56,10 @@ import org.exoplatform.webui.event.EventListener;
 public class UIProfileNavigationPortlet extends UIPortletApplication {
   /** Label for display invoke action */
   private static final String INVITATION_REVOKED_INFO = "UIProfileNavigationPortlet.label.RevokedInfo";
-  
+
   /** Label for display established invitation */
   private static final String INVITATION_ESTABLISHED_INFO = "UIProfileNavigationPortlet.label.InvitationEstablishedInfo";
-  
+
   private IdentityManager identityManager;
   private RelationshipManager relationshipManager;
   /**
@@ -85,24 +85,18 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     }
     return split[split.length-1];
   }
-  
+
   /**
-   * Checked is view by current user or by another.<br>
+   * Gets relationship between current user and viewer identity.<br>
    * 
-   * @return true if it is viewed by current login user.
+   * @return relationship.
+   * 
+   * @throws Exception
    */
-  public boolean isMe () {
-    RequestContext context = RequestContext.getCurrentInstance();
-    String currentUserName = context.getRemoteUser();
-    String currentViewer = URLUtils.getCurrentUser();
-    
-    if (currentViewer == null) {
-      return true;
-    }
-    
-    return currentUserName.equals(currentViewer);
+  public Relationship getRelationship() throws Exception {
+    return getRelationshipManager().get(getCurrentViewerIdentity(), getCurrentIdentity());
   }
-  
+
   /**
    * Gets contact status between current user and identity that is checked.<br>
    * 
@@ -111,14 +105,12 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public Relationship.Type getContactStatus() throws Exception {
-    Identity viewerIdentity = getCurrentViewerIdentity();
-    if (viewerIdentity.getId().equals(getCurrentIdentity().getId()))
-      return Relationship.Type.SELF;
-    RelationshipManager rm = getRelationshipManager();
-    Relationship rl = rm.getRelationship(viewerIdentity, getCurrentIdentity());
-    return rm.getRelationshipStatus(rl, getCurrentIdentity());
+    Relationship rl = getRelationship();
+    if(rl == null)
+      return null;
+    return rl.getStatus();
   }
-  
+
   /**
    * Listens to add action then make request to invite person to make connection.<br>
    *   - Gets information of user is invited.<br>
@@ -132,20 +124,15 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
       Identity currIdentity = profileNavigationportlet.getCurrentIdentity();
       Identity viewerIdentity = profileNavigationportlet.getCurrentViewerIdentity();
-      RelationshipManager rm = profileNavigationportlet.getRelationshipManager();
-      Relationship rel = rm.getRelationship(currIdentity, viewerIdentity);
       // Check if invitation is established by another user
-      UIApplication uiApplication = event.getRequestContext().getUIApplication();
-      Relationship.Type relationStatus = profileNavigationportlet.getContactStatus();
-      if (relationStatus != Relationship.Type.ALIEN) {
+      Relationship relationship = profileNavigationportlet.getRelationship();
+      if (relationship != null) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      if (rel == null) {
-        rel = rm.invite(currIdentity, viewerIdentity);
-      } else {
-        rm.confirm(rel);
-      }
+      profileNavigationportlet.getRelationshipManager().invite(currIdentity, viewerIdentity);
+      Utils.updateWorkingWorkSpace();
     }
   }
 
@@ -159,18 +146,16 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
-      UIApplication uiApplication = event.getRequestContext().getUIApplication();
-      Identity currIdentity = profileNavigationportlet.getCurrentIdentity();
-      Identity viewerIdentity = profileNavigationportlet.getCurrentViewerIdentity();
       RelationshipManager rm = profileNavigationportlet.getRelationshipManager();
       // Check if invitation is revoked or deleted by another user
-      Relationship rel = rm.getRelationship(currIdentity, viewerIdentity);
-      Relationship.Type relationStatus = profileNavigationportlet.getContactStatus();
-      if (relationStatus == Relationship.Type.ALIEN) {
+      Relationship rel = profileNavigationportlet.getRelationship();
+      if (rel == null || rel.getStatus().equals(Relationship.Type.IGNORED)) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
       rm.confirm(rel);
+      Utils.updateWorkingWorkSpace();
     }
   }
 
@@ -185,20 +170,16 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
-      Identity currIdentity = profileNavigationportlet.getCurrentIdentity();
-      Identity viewerIdentity = profileNavigationportlet.getCurrentViewerIdentity();
       RelationshipManager rm = profileNavigationportlet.getRelationshipManager();
       // Check if invitation is revoked or deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
-      Relationship.Type relationStatus = profileNavigationportlet.getContactStatus();
-      if (relationStatus == Relationship.Type.ALIEN) {
+      Relationship relationship = profileNavigationportlet.getRelationship();
+      if (relationship == null) {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      Relationship rel = rm.getRelationship(currIdentity, viewerIdentity);
-      if (rel != null) {
-        rm.deny(rel);
-      }
+      rm.remove(relationship);
+      Utils.updateWorkingWorkSpace();
     }
   }
   
@@ -210,7 +191,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    * @throws Exception
    */
   protected String getImageSource() throws Exception {
-    Identity currIdentity = Utils.getCurrentIdentity();
+    Identity currIdentity = Utils.getOwnerIdentity();
     return LinkProvider.getAvatarImageSource(currIdentity.getProfile());
   }
   
@@ -225,7 +206,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     RepositoryService rService = getApplicationComponent(RepositoryService.class);
     return rService.getCurrentRepository().getConfiguration().getName();
   }
-  
+
   /**
    * Gets the rest context.
    * 
