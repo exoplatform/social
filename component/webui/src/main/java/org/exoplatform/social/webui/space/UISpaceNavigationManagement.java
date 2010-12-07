@@ -66,7 +66,13 @@ import org.exoplatform.webui.event.Event.Phase;
          @EventConfig(listeners = UIPageNodeForm.ClearPageActionListener.class, phase = Phase.DECODE),
          @EventConfig(listeners = UIPageNodeForm.CreatePageActionListener.class, phase = Phase.DECODE)
        }
-     )
+     ),
+@ComponentConfig(
+   type = UIPopupWindow.class,
+   id = "AddNode",
+   template =  "system:/groovy/webui/core/UIPopupWindow.gtmpl",
+   events = @EventConfig(listeners = UISpaceNavigationManagement.ClosePopupActionListener.class, name = "ClosePopup")
+)
 })
 
 public class UISpaceNavigationManagement extends UIContainer {
@@ -77,7 +83,8 @@ public class UISpaceNavigationManagement extends UIContainer {
 
    @SuppressWarnings("unused")
    public UISpaceNavigationManagement() throws Exception {
-      UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, null);
+     // add config for popup
+      UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "AddNode", null);
       uiPopup.setWindowSize(800, 500);
       uiPopup.setShow(false);
       addChild(uiPopup);
@@ -239,6 +246,23 @@ public class UISpaceNavigationManagement extends UIContainer {
        uiSpaceNavManagement.setOwner(contextNavigation.getOwnerId());
        uiSpaceNavManagement.setOwnerType(contextNavigation.getOwnerType());
        UISpaceNavigationNodeSelector selector = uiSpaceNavManagement.getChild(UISpaceNavigationNodeSelector.class);
+       selector.setEdittedNavigation(contextNavigation);
+       selector.initTreeData();
+       event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceNavManagement);
+     }
+   }
+   
+   static public class ClosePopupActionListener extends EventListener<UIPopupWindow> {
+
+     @Override
+     public void execute(Event<UIPopupWindow> event) throws Exception {
+       UIPopupWindow uiPopup = event.getSource();
+       UISpaceNavigationManagement uiSpaceNavManagement = uiPopup.getAncestorOfType(UISpaceNavigationManagement.class);
+       UISpaceNavigationNodeSelector selector = uiSpaceNavManagement.getChild(UISpaceNavigationNodeSelector.class);
+       PageNavigation contextNavigation = selector.getEdittedNavigation();
+       uiPopup.setShow(false);
+       uiSpaceNavManagement.setOwner(contextNavigation.getOwnerId());
+       uiSpaceNavManagement.setOwnerType(contextNavigation.getOwnerType());
        selector.setEdittedNavigation(contextNavigation);
        selector.initTreeData();
        event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceNavManagement);
