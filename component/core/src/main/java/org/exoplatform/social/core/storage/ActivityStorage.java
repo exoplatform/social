@@ -60,7 +60,7 @@ public class ActivityStorage {
   private static final Log LOG = ExoLogger.getLogger(ActivityStorage.class);
 
   /** The Constant PUBLISHED_NODE. */
-  private static final String PUBLISHED_NODE = "published".intern();
+  private static final String PUBLISHED_NODE = "published";
 
   private static final String COMMENT_IDS_DELIMITER = ",";
 
@@ -125,7 +125,7 @@ public class ActivityStorage {
 
       Session session = sessionManager.getOrOpenSession();
       if (activity.getId() == null) {
-        activityNode = activityHomeNode.addNode(NodeType.NT_ACTIVITY, NodeType.NT_ACTIVITY);
+        activityNode = activityHomeNode.addNode(NodeType.EXO_ACTIVITY, NodeType.EXO_ACTIVITY);
         activityNode.addMixin(NodeType.MIX_REFERENCEABLE);
       } else {
         activityNode = session.getNodeByUUID(activity.getId());
@@ -302,9 +302,8 @@ public class ActivityStorage {
       String path = n.getPath();
       Session session = sessionManager.getOrOpenSession();
       List<Node> nodes = new QueryBuilder(session)
-        .select(NodeType.NT_ACTIVITY, offset, limit)
-        //TODO hard-coded
-        .like("jcr:path", path + "[%]/exo:activity[%]")
+        .select(NodeType.EXO_ACTIVITY, offset, limit)
+        .like(NodeProperty.JCR_PATH, path + "[%]/" + NodeType.EXO_ACTIVITY + "[%]")
         .and()
         .not().equal(NodeProperty.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT)
         .orderBy(NodeProperty.ACTIVITY_UPDATED, QueryBuilder.DESC).exec();
@@ -336,9 +335,8 @@ public class ActivityStorage {
       Session session = sessionManager.getOrOpenSession();
       String path = publishingNode.getPath();
       List<Node> nodes = new QueryBuilder(session)
-        .select(NodeType.NT_ACTIVITY)
-        //TODO hard-coded
-        .like("jcr:path", path + "[%]/exo:activity[%]")
+        .select(NodeType.EXO_ACTIVITY)
+        .like(NodeProperty.JCR_PATH, path + "[%]/" + NodeType.EXO_ACTIVITY + "[%]")
         .and()
         .not().equal(NodeProperty.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT).exec();
 
@@ -367,9 +365,8 @@ public class ActivityStorage {
       Session session = sessionManager.getOrOpenSession();
       String path = publishingNode.getPath();
       count = (int) new QueryBuilder(session)
-        .select(NodeType.NT_ACTIVITY)
-        //TODO hard-coded
-        .like("jcr:path", path + "[%]/exo:activity[%]")
+        .select(NodeType.EXO_ACTIVITY)
+        .like(NodeProperty.JCR_PATH, path + "[%]/" + NodeType.EXO_ACTIVITY + "[%]")
         .and()
         .not().equal(NodeProperty.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT).count();
     } catch (Exception e){

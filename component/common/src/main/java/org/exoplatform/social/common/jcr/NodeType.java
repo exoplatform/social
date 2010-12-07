@@ -27,7 +27,7 @@ public final class NodeType {
   /**
    * eXo Social Activity Node Type.
    */
-  public static final String NT_ACTIVITY = "exo:activity";
+  public static final String EXO_ACTIVITY = "exo:activity";
 
   /**
    * eXo Social Relationship node type.
