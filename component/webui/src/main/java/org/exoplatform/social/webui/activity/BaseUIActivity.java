@@ -475,6 +475,14 @@ public class BaseUIActivity extends UIForm {
     if (postContext == PostContext.SPACE) {
       Space space = uiActivitiesContainer.getSpace();
       SpaceService spaceService = getApplicationComponent(SpaceService.class);
+
+      String userId = this.getActivity().getUserId();
+      Identity ownerIdentity = getIdentityManager().getIdentity(userId, false);
+      String ownerActivityName = ownerIdentity.getRemoteId();
+      if (ownerActivityName.equals(remoteUser)) {
+        return true;
+      }
+
       return spaceService.isLeader(space, remoteUser);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
