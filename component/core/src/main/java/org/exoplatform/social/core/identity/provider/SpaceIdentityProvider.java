@@ -55,6 +55,7 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
 
       // attempt to find by name
       //FIXME what if the space name with space characters "abc def" and "abc%20def"
+      //@since 1.1.2
       if (space == null) {
         space = spaceService.getSpaceByName(spaceId);
       }

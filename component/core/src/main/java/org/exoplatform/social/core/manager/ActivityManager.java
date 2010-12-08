@@ -292,9 +292,9 @@ public class ActivityManager {
    * @param identity
    * @return all related activities of identity such as his activities, his
    *         connections's activities, his spaces's activities
+   * @since 1.1.2
    */
-  public List<Activity> getActivityFeed(Identity identity)
-  {
+  public List<Activity> getActivityFeed(Identity identity) {
     List<Activity> activityList = new ArrayList<Activity>();
     activityList.addAll(getActivitiesOfConnections(identity));
     activityList.addAll(getActivitiesOfUserSpaces(identity));
