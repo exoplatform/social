@@ -70,7 +70,7 @@ public class UIMyConnections extends UIContainer {
   private final String iteratorIDContact = "UIPageIteratorContact";
 
   /** Label for display realtion is deleted information */
-  private static final String RELATION_DELETED_INFO = "UIMyRelations.label.DeletedInfo";
+  private static final String RELATION_DELETED_INFO = "UIMyConnections.label.DeletedInfo";
 
   /** Stores UIPageIterator instance. */
   UIPageIterator uiPageIteratorContact;

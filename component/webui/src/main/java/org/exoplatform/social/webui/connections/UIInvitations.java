@@ -72,7 +72,7 @@ public class UIInvitations extends UIContainer {
   private final String iteratorIDInvitation = "UIPageIteratorInvitation";
 
   /** Label displays revoked information. */
-  private static final String INVITATION_REVOKED_INFO = "UIInvitationRelation.label.RevokedInfo";
+  private static final String INVITATION_REVOKED_INFO = "UIInvitations.label.RevokedInfo";
 
   /** Stores UIPageIterator object. */
   private UIPageIterator uiPageIteratorInvitation;
