@@ -171,13 +171,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.exoplatform.ecms</groupId>
-      <artifactId>exo-ecms-core-ext</artifactId>
-      <version>${org.exoplatform.ecms.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.common</artifactId>
     </dependency>
