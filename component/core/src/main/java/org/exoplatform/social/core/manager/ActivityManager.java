@@ -29,23 +29,23 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
  *
  * @author <a href="mailto:vien_levan@exoplatform.com">vien_levan</a>
  * @see org.exoplatform.social.core.activity.model.ExoSocialActivity
- * @see ActivityStorage
+ * @see org.exoplatform.social.core.storage.ActivityStorage
  * @see IdentityManager
  */
 public interface ActivityManager {
   /**
    * Saves an activity to the stream of an owner.<br/>
-   * Note that the Activity.userId will be set to the owner identity if not
+   * Note that the Activity.userId will be set to the owner's identity if it has not
    * already set.
    *
-   * @param owner owner of the activity stream. Usually a user or space
+   * @param owner the owner of the activity stream. Usually a user or space
    * @param activity the activity to save
    * @return the activity saved
    */
   ExoSocialActivity saveActivity(Identity owner, ExoSocialActivity activity) throws ActivityStorageException;
 
   /**
-   * Gets the activity by activity Id.
+   * Gets an activity by its Id.
    *
    * @param activityId the activity id
    * @return the activity
@@ -53,7 +53,7 @@ public interface ActivityManager {
   ExoSocialActivity getActivity(String activityId) throws ActivityStorageException;
 
   /**
-   * Deletes activity by its id.
+   * Deletes an activity by its id.
    *
    * @param activityId the activity id
    */
@@ -68,7 +68,7 @@ public interface ActivityManager {
   void deleteActivity(ExoSocialActivity activity) throws ActivityStorageException;
 
   /**
-   * Deletes comment by its id.
+   * Deletes a comment by its id.
    *
    * @param activityId
    * @param commentId
@@ -76,7 +76,7 @@ public interface ActivityManager {
   void deleteComment(String activityId, String commentId) throws ActivityStorageException;
 
   /**
-   * Gets the latest activities by identity with the default limit of 20 latest
+   * Gets the latest activities by an identity with the default limit of 20 latest
    * activities.
    *
    * @param identity the identity
@@ -86,8 +86,8 @@ public interface ActivityManager {
   List<ExoSocialActivity> getActivities(Identity identity) throws ActivityStorageException;
 
   /**
-   * Gets the latest activities by identity, specifying start offset index and
-   * limit.
+   * Gets the latest activities by an identity, specifying the start that is an offset index and
+   * the limit.
    *
    * @param identity the identity
    * @param start offset index
@@ -108,9 +108,9 @@ public interface ActivityManager {
   List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity) throws ActivityStorageException;
 
   /**
-   * Gets the activities from all user's spaces. By default, the activity list
-   * is composed of all spaces' activities. Each space's activity list contains
-   * 20 activities max and are sorted by time.
+   * Gets the activities from all spaces of a user. By default, the activity list
+   * is composed of all spaces' activities. Each activity list of the space contains
+   * maximum 20 activities and are sorted by time.
    *
    * @param ownerIdentity
    * @return list of activities
@@ -127,11 +127,12 @@ public interface ActivityManager {
    * @param identity
    * @return all related activities of identity such as his activities, his
    *         connections's activities, his spaces's activities
+   * @since  1.1.2
    */
   List<ExoSocialActivity> getActivityFeed(Identity identity) throws ActivityStorageException;
 
   /**
-   * Saves activity into the stream for the activity's userId. The userId must
+   * Saves an activity into the stream for the activity's userId. The userId must
    * be set and this field is used to indicate the owner stream.
    *
    * @param activity the activity to save
@@ -143,8 +144,8 @@ public interface ActivityManager {
   ExoSocialActivity saveActivity(ExoSocialActivity activity) throws ActivityStorageException;
 
   /**
-   * Saves new or updates comment to an activity comment is an instance of
-   * Activity with mandatory properties: userId, title.
+   * Saves a new comment or updates an existing comment that is an instance of
+   * Activity with mandatory fields: userId, title.
    *
    * @param activity
    * @param comment
@@ -160,15 +161,15 @@ public interface ActivityManager {
   void saveLike(ExoSocialActivity activity, Identity identity) throws ActivityStorageException;
 
   /**
-   * Removes activity like, if this activity liked, remove; else does nothing.
+   * Removes an indentity who likes an activity, if this activity is liked, it will be removed.
    *
    * @param activity
-   * @param identity user that unlikes the activity
+   * @param identity a user who dislikes an activity
    */
   void removeLike(ExoSocialActivity activity, Identity identity) throws ActivityStorageException;
 
   /**
-   * Gets an activity's commentList.
+   * Gets an activity's comment list.
    *
    * @param activity
    * @return commentList
@@ -195,7 +196,7 @@ public interface ActivityManager {
    * @return the stored activity
    * @throws Exception
    * @deprecated use {@link #saveActivity(Identity, Activity)} instead. Will be
-   *             removed by 1.2.x
+   *             removed by 1.3.x
    */
   ExoSocialActivity recordActivity(Identity owner, ExoSocialActivity activity) throws Exception;
 
@@ -226,7 +227,7 @@ public interface ActivityManager {
   void addProcessorPlugin(BaseActivityProcessorPlugin plugin);
 
   /**
-   * Gets the number of activity from a stream owner.
+   * Gets the number of activities from a stream owner.
    *
    * @param owner
    * @return the number
