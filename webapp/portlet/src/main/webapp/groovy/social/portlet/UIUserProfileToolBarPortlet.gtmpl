@@ -22,6 +22,7 @@
 %>
 <%
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.core.service.LinkProvider;
 
 def requestContext = _ctx.getRequestContext();
 def jsManager = requestContext.getJavascriptManager();
@@ -35,8 +36,7 @@ def portalURI = Util.getPortalRequestContext().getPortalURI();
 def labelActivities = _ctx.appRes("UIUserToolBarPortlet.label.activities");
 def labelProfile = _ctx.appRes("UIUserToolBarPortlet.label.profile");
 def activitiesLink = portalURI + "activities";
-//TODO hoatle hard-coded; use LinkProvider
-def profileLink = portalURI + "profile/" + user.userName;
+def profileLink = LinkProvider.getProfileUri(user.userName);
 
 %>
 

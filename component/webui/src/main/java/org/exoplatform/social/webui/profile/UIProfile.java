@@ -129,7 +129,7 @@ public class UIProfile extends UIContainer {
    * @return imageSource link
    */
   public String getImageSource() throws Exception {
-    return LinkProvider.getAvatarImageSource(getProfile(true));
+    return getProfile(true).getAvatarUrl();
   }
 
   /**
@@ -158,6 +158,10 @@ public class UIProfile extends UIContainer {
     }
 
     im.updateAvatar(p);
+    p = getProfile(true);
+    attacthment = (AvatarAttachment) p.getProperty(Profile.AVATAR);
+    p.setProperty(Profile.AVATAR_URL, LinkProvider.buildAvatarImageUri(attacthment));
+    im.saveProfile(p);
   }
   
   /**

@@ -32,8 +32,6 @@ import javax.jcr.Value;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
@@ -74,11 +72,6 @@ public class ActivityStorage {
   private Node activityServiceHome;
 
   private IdentityManager identityManager;
-
-  /**
-   * Hack for unit test to work
-   */
-  private String portalOwner = "classic";
 
   /**
    * Instantiates a new JCR storage base on SocialDataLocation
@@ -378,26 +371,6 @@ public class ActivityStorage {
     return count;
   }
 
-  public String getPortalOwner() {
-    try {
-      // This always works well on UI
-      //TODO This can have problem with REST API, need to check
-      PortalRequestContext context = Util.getPortalRequestContext();
-      portalOwner = context.getPortalOwner();
-    } catch (Exception e) {
-      //Ignore
-    }
-    return portalOwner;
-  }
-
-  /**
-   * Sets portal owner for getStream permaLink
-   * @param portalOwner
-   */
-  public void setPortalOwner(String portalOwner) {
-    this.portalOwner = portalOwner;
-  }
-
   /**
    * Gets the activity service home node which is cached and lazy-loaded.
    *
@@ -523,7 +496,7 @@ public class ActivityStorage {
       //TODO hard-coded
       activityStream.setTitle("Activity Stream of " + streamName);
       //TODO use absolute url here
-      activityStream.setPermaLink(LinkProvider.getActivityUri(providerName, streamName, getPortalOwner()));
+      activityStream.setPermaLink(LinkProvider.getActivityUri(providerName, streamName));
 
     } catch (UnsupportedRepositoryOperationException e) {
       activityNode.getParent().addMixin(NodeType.MIX_REFERENCEABLE);

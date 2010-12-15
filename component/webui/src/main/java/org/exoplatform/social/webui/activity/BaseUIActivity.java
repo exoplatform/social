@@ -373,7 +373,7 @@ public class BaseUIActivity extends UIForm {
       throw new Exception("User " + userIdentityId +" does not exist");
     }
 
-    String uri = LinkProvider.getProfileUri(userIdentity.getRemoteId(), null);
+    String uri = userIdentity.getProfile().getUrl();
     if (uri == null) {
       uri = "#";
     }
@@ -393,7 +393,7 @@ public class BaseUIActivity extends UIForm {
       return null;
     }
     Profile userProfile = userIdentity.getProfile();
-    return LinkProvider.getAvatarImageSource(userProfile);
+    return userProfile.getAvatarUrl();
   }
 
   /**

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -30,10 +29,9 @@ import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.IdentityProvider;
-import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.service.LinkProvider;
 
 
 /**
@@ -143,10 +141,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
     profile.setProperty(Profile.LAST_NAME, user.getLastName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
-
-    // TODO reuse linkprovider
-    String url = "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/profile/" + user.getUserName();
-    profile.setProperty(Profile.URL,  url);
+    profile.setProperty(Profile.URL, LinkProvider.getProfileUri(user.getUserName()));
 
     if (user.getEmail() != null && !profile.contains("emails")) {
       List<Map<String,String>> emails = new ArrayList<Map<String,String>>();

@@ -16,9 +16,6 @@
  */
 package org.exoplatform.social.core.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.container.PortalContainer;
@@ -30,7 +27,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 
@@ -39,28 +35,33 @@ public class LinkProvider {
   private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);
 
   /**
-   * The method return the uri link to user profile
+   * Hacks for unit test to work
+   */
+  private static String DEFAULT_PORTAL_OWNER = "classic";
+
+  /**
+   * returns the uri link to user profile
    * 
    * @param username
    * @return the uri link to user profile
    */
   public static String getProfileUri(final String username) {
-    return getProfileUri(username, null);
+    return buildProfileUri(username, null);
   }
 
   /**
-   * The method return the uri link to user profile on portalOwner
+   * Returns the uri link to user profile in a portalOwner
    * 
-   * @param userName
+   * @param username
    * @param portalOwner
-   * @return the uri link to user profile on portalOwner
+   * @return the uri link to user profile
    */
-  public static String getProfileUri(final String userName, final String portalOwner) {
-    return buildProfileUri(userName, portalOwner);
+  public static String getProfileUri(final String username, final String portalOwner) {
+    return buildProfileUri(username, portalOwner);
   }
 
   /**
-   * The method return tag <a> with a link to profile of userName
+   * Returns tag <a> with a link to profile of userName
    * 
    * @param username
    * @return tag <a> with a link to profile of userName
@@ -70,7 +71,7 @@ public class LinkProvider {
   }
 
   /**
-   * The method return tag <a> with a link to profile of userName on portalName
+   * Returns tag <a> with a link to profile of userName on portalName
    * 
    * @param username
    * @param portalOwner
@@ -84,7 +85,7 @@ public class LinkProvider {
   }
 
   /**
-   * Get absolute profile uri of userName
+   * Gets absolute profile uri of userName
    * 
    * @param userName
    * @param portalName
@@ -97,26 +98,15 @@ public class LinkProvider {
   }
 
   /**
-   * Gets activity link of space or user; remoteId should be the id name.
-   * For example: organization:root or space:abc_def
+   * Gets activity link of space or user; remoteId should be the id name. For
+   * example: organization:root or space:abc_def
    * 
    * @param providerId
    * @param remoteId
    * @return
    */
   public static String getActivityUri(final String providerId, final String remoteId) {
-    return getActivityUri(providerId, remoteId, null);
-  }
-
-  /**
-   * Gets activity link of space or user; remoteId should be the id name. For
-   * example: organization:root or space:abc_def
-   * 
-   * @param remoteId
-   * @return
-   */
-  public static String getActivityUri(final String providerId, final String remoteId, String portalOwner) {
-    final String prefix = "/" + PortalContainer.getCurrentPortalContainerName() + "/private/" + getPortalOwner(portalOwner) + "/";
+    final String prefix = "/" + PortalContainer.getCurrentPortalContainerName() + "/private/" + getPortalOwner(null) + "/";
     if (providerId.equals(OrganizationIdentityProvider.NAME)) {
       return prefix + "activities/" + remoteId;
     } else if (providerId.equals(SpaceIdentityProvider.NAME)) {
@@ -128,7 +118,7 @@ public class LinkProvider {
   }
 
   /**
-   * Build avatar image uri from avatarAttachment
+   * Builds avatar image uri from avatarAttachment
    * 
    * @param avatarAttachment
    * @return uri
@@ -138,7 +128,7 @@ public class LinkProvider {
   }
 
   /**
-   * Build avatar image uri from avatarAttachment
+   * Builds avatar image uri from avatarAttachment
    * 
    * @param container
    * @param avatarAttachment
@@ -163,32 +153,26 @@ public class LinkProvider {
   }
 
   /**
-   * Get avatar image uri of profile in a portalContainer
+   * Gets avatar image uri of profile in a portalContainer
    * 
    * @param profile
    * @param portalContainer
    * @return null or an url if available
+   * @deprecated use {@link #getAvatarUrl()}. Will be removed at 1.3.x
    */
   public static String getAvatarImageSource(final PortalContainer portalContainer, final Profile profile) {
-    String avatarUrl = (String) profile.getProperty(Profile.AVATAR_URL);
-    if (avatarUrl != null) {
-      return avatarUrl;
-    }
-
     final AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
     if (avatarAttachment != null) {
-      avatarUrl = buildAvatarImageUri(portalContainer, avatarAttachment);
-      profile.setProperty(Profile.AVATAR_URL, avatarUrl);
-      getIdentityManager().updateAvatar(profile);
-      return avatarUrl;
+      return buildAvatarImageUri(portalContainer, avatarAttachment);
     }
     return null;
   }
 
   /**
-   * Get avatar image uri of profile
+   * Gets avatar image uri of profile
    * @param profile
    * @return null or an url if available
+   * @deprecated use {@link #getAvatarUrl()}. Will be removed at 1.3.x
    */
   public static String getAvatarImageSource(final Profile profile) {
     String avatarUrl = (String) profile.getProperty(Profile.AVATAR_URL);
@@ -200,72 +184,14 @@ public class LinkProvider {
     if (avatarAttachment != null) {
       avatarUrl = buildAvatarImageUri(avatarAttachment);
       profile.setProperty(Profile.AVATAR_URL, avatarUrl);
-      getIdentityManager().updateAvatar(profile);
+      getIdentityManager().saveProfile(profile);
       return avatarUrl;
     }
     return null;
   }
 
   /**
-   * If the resized image does not exist, the method will lazily create a new
-   * scaled image file, store it as a property of the profile and return the url
-   * to view that resized avatar file.
-   * 
-   * @param profile
-   * @param width
-   * @param height
-   * @return null or an url if available
-   * @throws Exception
-   */
-  public static String getAvatarImageSource(Profile profile, int width, int height) {
-    // Determine the key of avatar file and avatar url like avatar_30x30 and avatar_30x30Url
-    final String postfix = ImageUtils.buildImagePostfix(width, height);
-    final String keyFile = Profile.AVATAR + postfix;
-    final String keyURL = Profile.AVATAR + postfix + Profile.URL_POSTFIX;
-    // When the resized avatar with params size is exist, we return immediately
-    String avatarUrl = (String) profile.getProperty(keyURL);
-    if (avatarUrl != null) {
-      return avatarUrl;
-    }
-    // When had resized avatar but hadn't avatar url we build the avatar url then return
-    AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(keyURL);
-    if (avatarAttachment != null) {
-      avatarUrl = buildAvatarImageUri(avatarAttachment);
-      profile.setProperty(keyURL, avatarUrl);
-      getIdentityManager().updateAvatar(profile);
-      return avatarUrl;
-    }
-    // When hadn't avatar yet we return null
-    avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
-    if (avatarAttachment == null)
-      return null;
-    // Otherwise we create the resize avatar then return the avatar url
-    InputStream inputStream = new ByteArrayInputStream(avatarAttachment.getImageBytes());
-    avatarAttachment = ImageUtils.createResizedAvatarAttachment(inputStream,
-                                                                width,
-                                                                height,
-                                                                avatarAttachment.getId() + postfix,
-                                                                ImageUtils.buildFileName(avatarAttachment.getFileName(),
-                                                                                         Profile.RESIZED_SUBFIX,
-                                                                                         postfix),
-                                                                avatarAttachment.getMimeType(),
-                                                                avatarAttachment.getWorkspace());
-
-    if (avatarAttachment == null)
-      return getAvatarImageSource(profile);
-    // Build the url to that resized avatar file then save and return
-    avatarUrl = buildAvatarImageUri(avatarAttachment);
-
-    // Set property that contain resized avatar file and url to profile
-    profile.setProperty(keyFile, avatarAttachment);
-    profile.setProperty(keyURL, avatarUrl);
-
-    getIdentityManager().updateAvatar(profile);
-    return avatarUrl;
-  }
-
-  /**
-   * Build profile uri from userName and portalOwner
+   * Builds profile uri from userName and portalOwner
    * 
    * @param userName
    * @param portalOwner
@@ -276,7 +202,7 @@ public class LinkProvider {
   }
 
   /**
-   * Build profile uri from userName and portalName and portalOwner
+   * Builds profile uri from userName and portalName and portalOwner
    * 
    * @param userName
    * @param portalName
@@ -289,7 +215,7 @@ public class LinkProvider {
   }
 
   /**
-   * Escape jcr special characters
+   * Escapes jcr special characters
    * 
    * @param string
    * @return
@@ -299,13 +225,12 @@ public class LinkProvider {
   }
 
   /**
-   * get IdentityManager instance
+   * Gets IdentityManager instance
    * 
    * @return identityManager
    */
   private static IdentityManager getIdentityManager() {
-    if(LinkProvider.identityManager == null)
-    {
+    if (LinkProvider.identityManager == null) {
       LinkProvider.identityManager = (IdentityManager) PortalContainer.getInstance()
                                     .getComponentInstanceOfType(IdentityManager.class);
     }
@@ -313,14 +238,18 @@ public class LinkProvider {
   }
 
   /**
-   * Get portal owner, if parameter is null or "", the method return default portal owner
+   * Gets portal owner, if parameter is null or "", the method return default portal owner
    * 
    * @param portalOwner
    * @return portalOwner
    */
   private static String getPortalOwner(String portalOwner) {
     if (portalOwner == null || "".equals(portalOwner)) {
-      portalOwner = Util.getPortalRequestContext().getPortalOwner();
+      try {
+        return Util.getPortalRequestContext().getPortalOwner();
+      } catch (Exception e) {
+        return DEFAULT_PORTAL_OWNER;
+      }
     }
     return portalOwner;
   }

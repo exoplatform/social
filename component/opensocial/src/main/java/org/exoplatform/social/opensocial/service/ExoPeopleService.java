@@ -162,6 +162,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     Person p = new ExoPersonImpl();
     Profile pro = identity.getProfile();
     PortalContainer container = getPortalContainer(st);
+    String host = getHost(st);
     for (String field : fields) {
       if(Person.Field.DISPLAY_NAME.toString().equals(field)) {
         p.setDisplayName(pro.getFullName());
@@ -176,7 +177,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         p.setIms(convertToListFields((List<Map>) pro.getProperty("ims")));
       }
         else if(Person.Field.ID.toString().equals(field)) {
-        p.setId(identity.getGlobalId().toString());
+        p.setId(identity.getId());
       }
       else if(Person.Field.NAME.toString().equals(field)) {
         NameImpl name = new NameImpl();
@@ -189,7 +190,6 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         //TODO use a url manager to manage this
         String portalOwner = getPortalOwner(st);
         String portalName = getPortalContainer(st).getName();
-        String host = getHost(st);
         p.setProfileUrl(LinkProvider.getAbsoluteProfileUrl(identity.getRemoteId(), portalName, portalOwner, host));
       }
       else if(Person.Field.GENDER.toString().equals(field)) {
@@ -217,7 +217,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         } catch (SpaceException e) {}
       }
       else if(Person.Field.THUMBNAIL_URL.toString().equals(field)) {
-        p.setThumbnailUrl(LinkProvider.getAvatarImageSource(pro));
+        p.setThumbnailUrl(host + pro.getAvatarUrl());
       }
 
       else if(ExoPersonImpl.Field.PORTAL_CONTAINER.toString().equals(field)) {

@@ -43,7 +43,6 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 
 /**
@@ -668,7 +667,7 @@ public class ActivitiesRestService implements ResourceContainer {
         profile = identity.getProfile();
         username = (String) profile.getProperty(Profile.USERNAME);
         fullName = profile.getFullName();
-        thumbnail = LinkProvider.getAvatarImageSource((PortalContainer) ExoContainerContext.getContainerByName(portalName_), profile);
+        thumbnail = profile.getAvatarUrl();
         like = new Like();
         like.setIdentityId(identityId);
         like.setUsername(username);

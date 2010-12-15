@@ -248,10 +248,9 @@ public class Profile {
    *
    * @param name the name
    * @return the property value
-   * @deprecated
+   * @deprecated use {@link #getProperty(String)}. Will be removed at 1.3.x
    * @return
    */
-  @Deprecated
   public final Object getPropertyValue(final String name) {
     return getProperty(name);
   }
@@ -295,6 +294,36 @@ public class Profile {
       setProperty(key, entry.getValue());
     }
     setHasChanged(true);
+  }
+
+  /**
+   * Gets avatar url
+   * 
+   * @return avatar image source
+   * @deprecated use {@link #getAvatarUrl()}. Will be removed at 1.3.x
+   */
+  public final String getAvatarImageSource() {
+    return (String) getProperty(Profile.AVATAR_URL);
+  }
+
+  /**
+   * Gets avatar url
+   * 
+   * @return avatar image source
+   * @since 1.2.0-GA
+   */
+  public final String getAvatarUrl() {
+    return (String) getProperty(Profile.AVATAR_URL);
+  }
+
+  /**
+   * Gets position
+   * 
+   * @return position
+   * @since 1.2.0-GA
+   */
+  public final String getPosition() {
+    return (String) getProperty(Profile.POSITION);
   }
 
   /*

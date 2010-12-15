@@ -4,7 +4,6 @@
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
-  import org.exoplatform.social.core.service.LinkProvider;
 
   def isEditable = uicomponent.isEditable();
   def list = uicomponent.getPendingRelationList();
@@ -74,7 +73,7 @@
           pendingRelationIdx += 1;
           if (!position) position = "";
 
-          String imageSource = LinkProvider.getAvatarImageSource(identity.profile);
+          String imageSource = identity.profile.avatarUrl;
           if (imageSource == null) {
             imageSource = "/social-portlet/skin/social/portlet/UIRequestsPortlet/DefaultSkin/background/BLAvatar.gif";
           }
