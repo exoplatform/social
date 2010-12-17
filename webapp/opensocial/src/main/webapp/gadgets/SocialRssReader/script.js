@@ -44,12 +44,16 @@ RssFetch.prototype.share = function(i, link) {
       var title = node.firstChild.nodeValue;
     } else if (node.nodeName == "link") {
       var link = node.firstChild.nodeValue;
-    }
+    } else if (node.nodeName == "description") {
+      var description = node.firstChild.nodeValue;
+    } 
   }
 
-  var activity = opensocial.newActivity({ 'title' : title,
-  'body' : "share the link " + title + ": " + link,
-  'url': link});
+  var sharedContent = "Shared a link: <a href=\"" + link + "\" target=\"_blank\">" + title + " </a>";
+  
+  var activity = opensocial.newActivity({ 'title' : sharedContent,
+	                                'templateParams': {"title" : title, "link" : link, "description": description}});
+
 
    opensocial.requestCreateActivity(activity, "HIGH", this.shared);
 }
