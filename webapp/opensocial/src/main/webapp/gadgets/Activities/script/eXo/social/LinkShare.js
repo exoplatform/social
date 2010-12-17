@@ -672,15 +672,16 @@ eXo.social.LinkShare.prototype.save = function(comment, callback) {
 //		params[opensocial.Activity.Field.MEDIA_ITEMS] = mediaItems;
 //	}
 //  var activity = opensocial.newActivity(params);
-    var title = LinkShare.data.title;
     var link = LinkShare.data.link;
+    var title = LinkShare.data.title;
+    var titleData = "Shared a link: <a href=\"" + link + "\" target=\"_blank\">" + title + " </a>";
     var description = LinkShare.data.description;
-    var activity = opensocial.newActivity({ 'title' : title, 
+    var activity = opensocial.newActivity({ 'title' : titleData, 
                                             'url': link, 
                                             'externalId' : "LINK_ACTIVITY",
                                             
                                             'templateParams': 
-                                            	  {"comment":comment,"description":description}
+                                            	  {"comment":comment,"description":description, "title":title, "link":link}
                                           });
   opensocial.requestCreateActivity(activity, opensocial.CreateActivityPriority.HIGH, callback);
   //resets

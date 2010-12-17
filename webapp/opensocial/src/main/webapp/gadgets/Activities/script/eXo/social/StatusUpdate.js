@@ -659,21 +659,17 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
             html.push('<div style="clear: both; height: 0px;"><span></span></div>');
           html.push('</div>');
 
-          if (url) {
-            if (templateParams != undefined) {
-            	var comment = templateParams.comment;
-              var descripts = templateParams.description;
-              html.push('<div class="ContentArea">' + comment + '</div>');  
-              html.push('<div><a class="ColorLinkShared" href="' + url + '" target="_blank" title="' + title + '">' + title + '</a></div>');          	
-              html.push('<div class="Description">' + descripts + '</div>');
-             	html.push('<div>' + Locale.getMsg('source') + ' : ' + url + '</div>');
-            } else {
-            	html.push('<div><a class="ColorLinkShared" href="' + url + '" target="_blank" title="' + title + '">' + title + '</a></div>');
-            	html.push('<div>' + Locale.getMsg('source') + ' : ' + url + '</div>');
-            }
+          if (templateParams != undefined) {
+          	var title = templateParams.title;
+          	var link = templateParams.link;
+            var descripts = templateParams.description;
+            html.push('<div><a class="ColorLinkShared" href="' + link + '" target="_blank" title="' + title + '">' + title + '</a></div>');          	
+            html.push('<div class="Description">' + descripts + '</div>');
+           	html.push('<div>' + Locale.getMsg('source') + ' : ' + link + '</div>');
           } else {
             html.push('<div class="ContentArea">' + title + '</div>');            	
           }
+          
           html.push('<div class="NewsDate">' + prettyTime + '  ' + getCommentLikeBlock() + '</div>');
 //          html.push(getCommentLikeBlock());
         html.push('</div>');
