@@ -279,6 +279,10 @@ public class ActivityManagerTest extends AbstractCoreTest {
   * {@link ActivityManager#getActivities(Identity, long, long)}
   */
  public void testGetActivities() throws ActivityStorageException {
+   List<ExoSocialActivity> rootActivityList = activityManager.getActivities(rootIdentity);
+   assertNotNull("rootActivityList must not be null", rootActivityList);
+   assertEquals(0, rootActivityList.size());
+
    populateActivityMass(rootIdentity, 30);
    List<ExoSocialActivity> activities = activityManager.getActivities(rootIdentity);
    assertNotNull("activities must not be null", activities);
@@ -297,7 +301,9 @@ public class ActivityManagerTest extends AbstractCoreTest {
   * {@link ActivityManager#getActivitiesOfConnections(Identity)}
   */
  public void testGetActivitiesOfConnections() {
-   assert true;
+   List<ExoSocialActivity> johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity);
+   assertNotNull("johnConnectionsActivityList must not be null", johnConnectionsActivityList);
+   assertEquals(0, johnConnectionsActivityList.size());
  }
 
  /**
@@ -306,7 +312,9 @@ public class ActivityManagerTest extends AbstractCoreTest {
   * {@link ActivityManager#getActivitiesOfUserSpaces(Identity)}
   */
  public void testGetActivitiesOfUserSpaces() {
-   assert true;
+   List<ExoSocialActivity> demoSpacesActivityList = activityManager.getActivitiesOfUserSpaces(demoIdentity);
+   assertNotNull("demoSpacesActivityList must not be null", demoSpacesActivityList);
+   assertEquals(0, demoSpacesActivityList.size());
  }
 
   /**

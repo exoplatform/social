@@ -153,19 +153,21 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity) throws ActivityStorageException {
     List<Identity> connectionList = null;
+    List<ExoSocialActivity> activityList = new ArrayList<ExoSocialActivity>();
     try {
       connectionList = identityManager.getConnections(ownerIdentity);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
-    if (connectionList == null || connectionList.size() == 0)
-      return null;
-    List<ExoSocialActivity> activityList = new ArrayList<ExoSocialActivity>();
+    if (connectionList == null || connectionList.size() == 0) {
+      return activityList;
+    }
     for (Identity identity : connectionList) {
       // default 20 activities each identity
       List<ExoSocialActivity> tempActivityList = getActivities(identity);
-      if (tempActivityList == null || tempActivityList.size() == 0)
+      if (tempActivityList == null || tempActivityList.size() == 0) {
         continue;
+      }
       String identityId = identity.getId();
       for (ExoSocialActivity activity : tempActivityList) {
         if (activity.getUserId().equals(identityId)) {
@@ -189,8 +191,9 @@ public class ActivityManagerImpl implements ActivityManager {
     } catch (SpaceException e1) {
       LOG.warn(e1.getMessage(), e1);
     }
-    if (accessibleSpaceList == null || accessibleSpaceList.size() == 0)
-      return null;
+    if (accessibleSpaceList == null || accessibleSpaceList.size() == 0) {
+      return activityList;
+    }
     for (Space space : accessibleSpaceList) {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                    space.getName());
