@@ -39,7 +39,7 @@ public class AbstractLifeCycleTest extends TestCase {
     lifecycle.event1(null, "foo");
     lifecycle.event1(null, "bar");
 
-    lifecycle.await(100);  // wait for the executor to finish
+    lifecycle.await(150);  // wait for the executor to finish
 
     assertTrue(capture.hasEvent("bar"));
     assertTrue(capture.hasEvent("foo"));
