@@ -1,5 +1,5 @@
 =====================================================
-    Release Notes - eXo Social - Version 1.1.2
+    Release Notes - eXo Social - Version 1.1.2_CP01
 =====================================================
 
 ===============
@@ -29,26 +29,8 @@ eXo Social is composed of 2 modules :
 2 What's new?
 =============
 
-- Performance improvement
-- Introduce NavigationCleanupFilter instead of NavigationCleanupServlet
-- Move sample gadgets to socialdemo.war, keep core gadgets in opensocial.war
-- Avatar is resized when uploaded and displayed.
-- Clean up console logging
-- Fix critical bug: Can't publish activities in a space using the opensocial API
-- Do not use json string in document and link activity
-- Give the user a hint why he does not see any groups in "bind groups"
-- Define keys for the profile properties in the API
-
-- API Changes:
-+ RelationshipManager#findRelationships(Identity, Relationship.Type) (new)
-+ ActivityManager#getActivityFeed(Identity identity) (new)
-+ ActivityManager#getActivitiesOfConnections(Identity) return sorted list by time
-+ ActivityManager#getActivitiesOfUserSpaces(Identity) return sorted list by time
-+ Defined keys in Profile: GENDER, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, AVATAR,
-  EXPERIENCES, EXPERIENCES_COMPANY, EXPERIENCES_SKILL, EXPERIENCE_START_DATE,
-  EXPERIENCES_END_DATE, EXPERIENCES_IS_CURRENT, EXPERIENCES_DESCRIPTION, POSITION,
-  CONTACT_PHONES, CONTACT_IMS, CONTACT_URLS
-+ SpaceIdentityProvider supports getSpaceByName; before just getSpaceById() is supported.
+- Fix a blocker bug on 1.1.2:
+http://jira.exoplatform.org/browse/SOC-1344 | [Profile] can not update user's experiences and contacts
 
 =========
 3 INSTALL
@@ -122,6 +104,13 @@ All those accounts have the default password "gtn".
 ===========
 5 CHANGELOG
 ===========
+
+- 1.1.2_CP01
+
+** Bug
+    * [SOC-1344] - [Profile] can not update user's experiences and contacts
+
+
 - 1.1.2
 
 ** Bug
