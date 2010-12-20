@@ -25,12 +25,12 @@
   <parent>
     <artifactId>exo.social.demo</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.1.2</version>
+    <version>1.1.2_CP01</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.demo.jar</artifactId>
-  <version>1.1.2</version>
+  <version>1.1.2_CP01</version>
   <name>eXo Social Demo JAR</name>
   <description>eXo Social Demo JAR</description>
 </project>
