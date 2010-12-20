@@ -28,12 +28,12 @@
   <parent>
     <artifactId>exo.social.demo</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0-GA-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.demo.config</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.0-GA-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Demo Portal Container Definition</name>
   <description>eXo Social Demo Portal Container Definition</description>

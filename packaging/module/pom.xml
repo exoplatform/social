@@ -28,12 +28,12 @@
   <parent>
     <artifactId>exo.social.packaging</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0-GA-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social.packaging.module</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.0-GA-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Packaging (module)</name>
   <description>eXo Social Packaging (module)</description>
