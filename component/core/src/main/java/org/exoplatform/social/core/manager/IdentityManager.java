@@ -232,11 +232,11 @@ public class IdentityManager {
    *
    * @param providerId refering to the name of the Identity provider
    * @param remoteId   the identifier that identify the identity in the specific identity provider
-   * @param loadProfile true to load profile
+   * @param forceLoadProfile true to load profile
    * @return null if nothing is found, or the Identity object
    * TODO improve the performance by specifying what needs to be loaded
    */
-  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) {
+  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean forceLoadProfile) {
     GlobalId globalIdCacheKey = GlobalId.create(providerId, remoteId);
     Identity cachedIdentity = identityCache.get(globalIdCacheKey);
     if (cachedIdentity == null) {
@@ -260,13 +260,17 @@ public class IdentityManager {
           identityStorage.deleteIdentity(result);
           return null;
         }
-        if (loadProfile) {
+        if (forceLoadProfile) {
           identityStorage.loadProfile(result.getProfile());
         }
       }
       cachedIdentity = result;
       if (cachedIdentity.getId() != null) {
         identityCache.put(globalIdCacheKey, cachedIdentity);
+      }
+    } else {
+      if (forceLoadProfile) {
+        identityStorage.loadProfile(cachedIdentity.getProfile());
       }
     }
     return cachedIdentity;
@@ -435,31 +439,10 @@ public class IdentityManager {
    * @param profile
    * @throws Exception 
    */
-  private Profile addOrModifyProfileProperties(Profile profile) throws Exception{
+  private void addOrModifyProfileProperties(Profile profile) throws Exception{
     identityStorage.addOrModifyProfileProperties(profile);
-    Profile newProfile = addOrModifyProfilePropertiesCache(profile);
-    String providerId = profile.getIdentity().getProviderId();
-    if(newProfile == null)
-      newProfile = getIdentity(providerId, true).getProfile();
-
-    getIdentityProvider(providerId).onSaveProfile(newProfile);
-    return newProfile;
-  }
-
-  /**
-   * Add or modify properties of profile in cache. Profile parameter is a lightweight that 
-   * contains only the property that you want to add or modify. NOTE: The method will
-   * not delete the properties on old profile when the param profile have not those keys.
-   * 
-   * @param profile
-   * @return
-   */
-  private Profile addOrModifyProfilePropertiesCache(Profile profile) {
-    Profile cachedProfile = getCachedProfile(profile.getIdentity()).getProfile();
-    if(cachedProfile == null)
-      return null;
-    cachedProfile.addOrModifyProperties(profile.getProperties());
-    return cachedProfile;
+    getIdentityProvider(profile.getIdentity().getProviderId()).onSaveProfile(profile);
+    removeCacheForProfileChange(profile);
   }
 
   /**
@@ -513,11 +496,10 @@ public class IdentityManager {
    * @param p
    * @throws Exception 
    */
-  public Profile updateBasicInfo(Profile p) throws Exception {
-    Profile newProfile = addOrModifyProfileProperties(p);
-    profileLifeCycle.basicUpdated(newProfile.getIdentity().getRemoteId(), newProfile);
-    LOG.debug("Update basic infomation successfully for user: " + newProfile);
-    return newProfile;
+  public void updateBasicInfo(Profile p) throws Exception {
+    addOrModifyProfileProperties(p);
+    profileLifeCycle.basicUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update basic infomation successfully for user: " + p);
   }
 
   /**
@@ -527,9 +509,9 @@ public class IdentityManager {
    * @throws Exception 
    */
   public void updateContactSection(Profile p) throws Exception {
-    Profile newProfile = addOrModifyProfileProperties(p);
-    profileLifeCycle.contactUpdated(newProfile.getIdentity().getRemoteId(), newProfile);
-    LOG.debug("Update contact section successfully for user: " + newProfile);
+    addOrModifyProfileProperties(p);
+    profileLifeCycle.contactUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update contact section successfully for user: " + p);
   }
 
   /**
@@ -539,9 +521,9 @@ public class IdentityManager {
    * @throws Exception 
    */
   public void updateExperienceSection(Profile p) throws Exception {
-    Profile newProfile = addOrModifyProfileProperties(p);
-    profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), newProfile);
-    LOG.debug("Update experience section successfully for user: " + newProfile);
+    addOrModifyProfileProperties(p);
+    profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update experience section successfully for user: " + p);
   }
 
   /**
@@ -551,9 +533,9 @@ public class IdentityManager {
    * @throws Exception 
    */
   public void updateHeaderSection(Profile p) throws Exception {
-    Profile newProfile = addOrModifyProfileProperties(p);
-    profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), newProfile);
-    LOG.debug("Update header section successfully for user: " + newProfile);
+    addOrModifyProfileProperties(p);
+    profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update header section successfully for user: " + p);
   }
 
   /**

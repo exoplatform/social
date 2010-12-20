@@ -34,7 +34,7 @@
   def noContact = _ctx.appRes("${uicomponentId}.label.noContact");
   def noContactCurrent = _ctx.appRes("${uicomponentId}.label.noContactCurrent");
 
-  def profile = uicomponent.getProfile(false);
+  def profile = uicomponent.getProfile(true);
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
 

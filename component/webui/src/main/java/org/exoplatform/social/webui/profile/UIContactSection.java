@@ -291,7 +291,7 @@ public class UIContactSection extends UIProfileSection {
     toBeUpdatedProfile.setProperty(Profile.CONTACT_IMS, getProfileForSave(imCount, getImsChilds(), IM));
     toBeUpdatedProfile.setProperty(Profile.CONTACT_URLS, getProfileForSave(urlCount, getUrlChilds(), URL));
 
-    im.updateBasicInfo(toBeUpdatedProfile);
+    im.updateContactSection(toBeUpdatedProfile);
   }
 
   /**
@@ -351,9 +351,9 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void setValue() throws Exception {
-    Profile profile = getProfile(false);
+    Profile profile = getProfile(true);
     String gender = (String) profile.getProperty(Profile.GENDER);
-    if (gender != "") {
+    if (gender != null && !("".equals(gender))) {
       getGenderChild().setValue(gender);
     }
 

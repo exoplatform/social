@@ -246,7 +246,7 @@ public class UIExperienceSection extends UIProfileSection {
       UIProfileSection sect = event.getSource();
       UIExperienceSection uiExpSection = (UIExperienceSection)sect;
       ArrayList<HashMap<String, Object>> experiences;
-      Profile p = sect.getProfile(false);
+      Profile p = sect.getProfile(true);
       List<UIComponent> listChild = uiExpSection.getChilds();
       List<Object> listProfile = new ArrayList<Object>();
       int childSize = listChild.size() - 1; // List of children include UITitleBar child.
@@ -357,7 +357,7 @@ public class UIExperienceSection extends UIProfileSection {
   public final List<HashMap<String, Object>> getPastExperience() throws Exception {
     ArrayList<HashMap<String, Object>> experiences;
     ArrayList<HashMap<String, Object>> pastExperiences = new ArrayList<HashMap<String, Object>>();
-    Profile p = getProfile(false);
+    Profile p = getProfile(true);
     experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
@@ -381,7 +381,7 @@ public class UIExperienceSection extends UIProfileSection {
   public final List<HashMap<String, Object>> getCurrentExperience() throws Exception {
     ArrayList<HashMap<String, Object>> experiences;
     ArrayList<HashMap<String, Object>> currentExperiences = new ArrayList<HashMap<String, Object>>();
-    Profile p = getProfile(false);
+    Profile p = getProfile(true);
     experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {

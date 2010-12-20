@@ -699,6 +699,9 @@ public class IdentityStorage {
    */
   @SuppressWarnings("unchecked")
   private void setProperty(final Node profileNode, final Session session, final String name, Object value) throws Exception {
+    if (value == null) {
+      return;
+    }
     if (isForcedMultiValue(name)) {
       // if it's a String, we convert it to string array to be able to store it
       if (value instanceof String) {
