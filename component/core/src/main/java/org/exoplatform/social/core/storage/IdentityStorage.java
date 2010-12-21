@@ -824,7 +824,9 @@ public class IdentityStorage {
         Map.Entry<String, Object> entry = iterator.next();
         String key = entry.getKey();
         Object propValue = entry.getValue();
-
+        if (propValue == null) {
+          continue;
+        }
         if (propValue instanceof String) {
           propNode.setProperty(key, (String) propValue);
         } else if (propValue instanceof Double) {

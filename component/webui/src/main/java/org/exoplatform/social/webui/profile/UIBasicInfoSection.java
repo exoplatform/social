@@ -175,7 +175,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       updateProfile.setProperty(Profile.EMAIL, newEmail);
 
       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      updateProfile = im.updateBasicInfo(updateProfile);
+      im.updateBasicInfo(updateProfile);
 
       user.setFirstName((String) updateProfile.getProperty(Profile.FIRST_NAME));
       user.setLastName((String) updateProfile.getProperty(Profile.LAST_NAME));
