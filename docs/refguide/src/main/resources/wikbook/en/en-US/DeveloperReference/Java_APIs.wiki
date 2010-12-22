@@ -78,5 +78,79 @@ h1. Relationship Manager
 | *getAllRelationships*(Identity identity)| {{identity}}  is a identity | List<Relationship> | Returns all the relationship of a given identity with other identity. || *getAllRelationships*(Identity identity, Relationship.Type type, List<Identity> identities)| {{identity}} is a identity, {{type}} is a Relationship.Type {{identities}} is a list of identity | List<Relationship> | Returns all the  relationship of a given identity with other identity in identities in type. |
 | *getRelationship*(Identity identity1, Identity identity2)| {{identity1}} and {{identity2}} is identities| Relationship | Gets the relationship of 2 identity. |
 
+h1. SpaceService
+
+|| Method || Param || Return || Description ||
+|*getAllSpaces*() throws SpaceException|{{N/A}}|List<Space> - list of spaces in Social|Gets all spaces in Social.|
+|*getSpaceByDisplayName*(String spaceDisplayName) throws SpaceException|{{spaceDisplayName}}|Space|Gets a space by its display name. (Since 1.2.0-GA).|
+|*getSpaceByName*(String spaceName) throws SpaceException|{{spaceName}}|Space|Gets a space by its name.|
+|*getSpacesByFirstCharacterOfName*(String firstCharacterOfName) throws SpaceException|{{firstCharacterOfName}}|  List<Space> - all spaces which have first character of name matched the input string.|Gets all spaces has the name starting with the input character.|
+|*getSpacesBySearchCondition*(String condition) throws Exception|{{condition - the input condition}}| List<Space> - a list of spaces|Gets all spaces which has the name or the description that matches the input condition.|
+|*getSpaceById*(String spaceId) throws SpaceException|{{spaceId- Id of that space}}|Space - space with the id specified|Gets a space by its id.|
+|*getSpaceByUrl*(String spaceUrl) throws SpaceException|{{spaceUrl - url of space}}|Space - the space with string url specified|Gets a space by its url.|
+|*getSpaces*(String userId) throws SpaceException|{{userId - Id of the user}}| List<Space> - all spaces of a user in which the user is a member|Gets spaces of a user in which that user is a member.|
+|*getAccessibleSpaces*(String userId) throws SpaceException|{{userId}}| List<Space> - list of spaces|Gets spaces of a user which that user has the access permission|
+|*getEditableSpaces*(String userId) throws SpaceException|{{userId}}| List<Space> - list of space|Gets spaces of a user which that user has the edit permission.|
+|*getInvitedSpaces*(String userId) throws SpaceException|{{userId}}|  List<Space> - spaces list of all user's invited spaces|Gets a user's invited spaces and that user can accept or deny the request.|
+|*getPublicSpaces*(String userId) throws SpaceException|{{userId - Id of user}}|List<Space> - spaces list in which the user can request to join|Gets a user's public spaces and that user can request to join.|
+|*getPendingSpaces*(String userId) throws SpaceException|{{userId}}|  List<Space> -  spaces list in which the user can revoke that request|Gets a user's pending spaces and that the user can revoke that request.|
+|*createSpace*(Space space, String creator) throws SpaceException|{{space, creator}}|Space - the created space|Creates a new space by creating a new group.This new group will be under */Spaces* node.This is shorthand for calling createSpace(space, creator, null).|
+|*createSpace*(Space space, String creator, String groupId) throws SpaceException|{{space, creator,  groupId - if groupId == null: create a new space by creating a new group}}|space|Creates a new space from an existing group.|
+|*saveSpace*(Space space, boolean isNew) throws SpaceException|{{space - space is saved,  isNew - true if creating a new space; otherwise, update an existing space.}}|void|Saves a new space or updates a space.|
+|*deleteSpace*(Space space) throws SpaceException|{{space - the space is deleted}}|void|Deletes a space. When deleting a space, all of its page navigations and its group will be deleted.|
+|*deleteSpace*(String spaceId) throws SpaceException|{{ spaceId}}|void|Deletes a space by its id.|
+|*initApp*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Deprecated, use *initApps*(Space) instead.|
+|*initApps*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Set *space.homeNodeApp* from the configuration file to be the root page of that space node. When removing a space, make sure to call *deInitApps*(Space) and then deleteSpace(Space) or *deleteSpace*(String)|
+|*deInitApps*(Space space) throws SpaceException|{{space }}| void |De-initializes the applications of a space.Make sure to call this method before *deleteSpace*(Space) or *deleteSpace*(String). Otherwise, the space is deleted but its pages and navigation still exists.|
+|*addMember*(Space space, String userId) throws SpaceException|{{}}|void|Adds a user to a space, the user will get the "member" role in a space|
+|*addMember*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|void|Adds a user to a space, the user will get the "member" role in a space|
+|*removeMember*(Space space, String userId) throws SpaceException|{{space, userId}}|void|Removes a member from a space. If the member is the only leader of that space, the member removed is not allowed and throws *SpaceException* with Code = USER_ONLY_LEADER.|
+|*removeMember*?(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|void|Removes a member from a space.|
+|*getMembers*(Space space) throws SpaceException|{{space}}| List<String> - a list of the space members|Gets a list of the space members from a space.|
+|*getMembers*(String spaceId) throws SpaceException|{{spaceId}}| List<String> - a list of the space members| Gets a list of the space members from a space.|
+|*setLeader*(Space space, String userId, boolean isLeader) throws SpaceException|{{space, userId, isLeader }}|void|Sets a member of a space as a manager.|
+|*setLeader*(String spaceId, String userId, boolean isLeader) throws SpaceException|{{spaceId, userId, isLeader}}|void|Sets a member of a space as a manager.|
+|*isLeader*(Space space, String userId) throws SpaceException|{{space, userId}}|boolean - true if that the user is a leader; otherwise, false|Checks whether a user is a space's leader or not.|
+|*isLeader*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean - true if that user is a leader; otherwise, false|Checks whether a user is a space's leader or not.|
+|*isOnlyLeader*(Space space, String userId) throws SpaceException|{{space, userId}}|boolean - true if that user is the only leader of the space; otherwise, false|Checks whether a user is the only leader of a space or not.|
+|*isOnlyLeader*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean|Checks whether a user is the only leader of a space or not.|
+|*isMember*(Space space, String userId) throws SpaceException|{{space, userId}}| boolean - true if that user is a member; otherwise, false|Checks whether a user is a space's member or not.|
+|*isMember*(String spaceId, String userId) throws SpaceException|{{spaceId, userId, }}| boolean - true if that user is a member; otherwise,false|Checks whether a user is a space's member or not.|
+|*hasAccessPermission*(Space space, String userId) throws SpaceException|{{space, userId}}|boolean -  true If the user is root or the space's member.|Checks if a user can access a space or not.|
+|*hasAccessPermission*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean - true If the user is root or the space's member|Checks if a user can access a space or not.|
+|*hasEditPermission*(Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true If the user is root or the space's manager|Checks if a user can have the edit permission of a space or not.|
+|*hasEditPermission*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolen - true If user is root or the space's manager|Checks if a user can have the edit permission of a space or not.|
+|*isInvited*(Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true if that user is in the invited list; otherwise, false|Checks if a user is in the invited list of a space or not.|
+|*isInvited*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolen - true if the user is in the invited list; otherwise, false|Checks if a user is in the invited list of a space or not.|
+|*isPending*(Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true if that user is in the pending list; otherwise, false|Checks if a user is in the pending list of a space or not.|
+|*installApplication*(String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Installs an application to a space.|
+|*installApplication*(Space space, String appId) throws SpaceException|{{space, appId}}|void | Installs an application to a space|
+|*activateApplication*(Space space, String appId) throws SpaceException|{{space, appId}}| void| Activates an installed application in a space.|
+|*activateApplication*(String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Activates an installed application in a space.|
+|*deactivateApplication*(Space space, String appId) throws SpaceException|{{space, appId}}|void |Deactivates an installed application in a space.|
+|*deactivateApplication*(String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Deactivates an installed application in a space.|
+|*removeApplication*(Space space, String appId, String appName) throws SpaceException|{{space, appId, appName}}| void|Removes an installed application from a space.|
+|*removeApplication*(String spaceId, String appId, String appName) throws SpaceException|{{space, appId, appName}}|void|Removes an installed application from a space.|
+|*requestJoin*(Space space, String userId) throws SpaceException|{{space, userid}}|  void |Requests a user to join a space, adds that user to the pending list of the space.|
+|*requestJoin*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Requests a user to join a space, adds that user to the pending list of the space.|
+|*revokeRequestJoin*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Revokes a join request after users request to join a group and is in the pending status.|
+|*revokeRequestJoin*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Revokes a request to join a space.|
+|*inviteMember*(Space space, String userId) throws SpaceException|{{space, userid}}| void |Invites a userId to become a member of a space.|
+|*inviteMember*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Invites a userId to a be member of a space.|
+|*revokeInvitation*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Revokes an invitation. Removes a user from the invited  member list of the space.|
+|*revokeInvitation*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Revokes an invitation. Removes a user from the invited  member list of the space.|
+|*acceptInvitation*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Accepts an invitation and moves a user from the invited list to the member list.|
+|*acceptInvitation*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Accepts an invitation and moves a user from the invited list to the member list.|
+|*denyInvitation*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Denies an invitation and removes a user from the invited list.|
+|*denyInvitation*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Denies an invitation and removes a user from the invited list.|
+|*validateRequest*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Validates a request and moves a user from the pending list to the member list.|
+|*validateRequest*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Validates a request and moves a user from the pending list to the member list.|
+|*declineRequest*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Declines a request and removes a user from  the pending list.|
+|*declineRequest*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Declines a request and removes a user from  the pending list.|
+|*registerSpaceLifeCycleListener*(SpaceLifeCycleListener listener|{{listener}}|void|Registers a space lifecycle listener.|
+|*unregisterSpaceLifeCycleListener*(SpaceLifeCycleListener listener)|{{listener}}|void|Unregisters a space lifecycle listener.|
+|*setPortletsPrefsRequired*(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin)|{{portletPrefsRequiredPlugin}}|void| Sets the portlet preferences got from the plug-in configuration.|
+|*getPortletsPrefsRequired*()|{{N/A}}|String|Gets the portlet preferences required to use in creating the portlet application.|
+
 
 
