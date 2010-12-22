@@ -595,7 +595,19 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public boolean isLeader(Space space, String userId) throws SpaceException cl
+  public boolean isLeader(Space space, String userId) throws SpaceException {
+    try {
+      OrganizationService orgService = getOrgService();
+      MembershipHandler memberShipHandler = orgService.getMembershipHandler();
+
+      return (memberShipHandler.findMembershipByUserGroupAndType(userId,
+                                                                 space.getGroupId(),
+                                                                 MANAGER) != null);
+
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
+    }
+  }
 
   /**
    * {@inheritDoc}
