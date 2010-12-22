@@ -1,25 +1,28 @@
-h1. Activity Manager
+h1. ActivityManager
 
-|| Function || Param || Return || Description ||
-| *getActivity*(java.lang.String activityId) | {{activityId}} is id of activity | the activity | To get the activity by activity id. |
-| *deleteActivity*(java.lang.String activityId) | {{activityId}} is the id of activity |  | To delete activity by id. |
-| *deleteComment*(java.lang.String activityId, java.lang.String commentId) | {{activityId}} is the id of activity; {{commentId}} is the id of comment |  | To delete comment by id. |
-| *getActivities*(Identity identity) | {{identity}} | activities |  |
-| *getActivities*(Identity identity, long start, long limit) | {{identity}}; {{start}} is the offset index ; {{limit}} | activities |  To get the latest activities by identity, specifying the start offset index and limit. |
-| *saveActivity*(Identity owner, Activity activity) | {{owner}} is the owner of activity stream; {{activity}} is the activity which needs to be saved |activity saved | To save an activity to the stream of a owner. Note that the Activity.userId will be set to the owner identity if not already set. |
-| *saveActivity*(Activity activity) | {{activity}} is the activity which needs to be saved | activity | To save the activity into the stream for the activity's userId. |
-| *saveComment*(Activity activity, Activity comment) | {{activity}}; {{comment}} |  | To save new or update comments to an activity comment which is an instance of Activity with mandatory properties: userId, title. |
-| *saveLike*(Activity activity, Identity identity) | {{activity}}; {{identity}} |  | To save an identity of user who likes the activity. |
-| *removeLike*(Activity activity, Identity identity) | {{activity}}; {{identity}} is the identity of user who unlikes the activity |  | To remove the like activity, if this activity liked, remove; else does nothing. |
-| *getComments*(Activity activity) | {{activity}} | comments | To get an activity's commentList. |
-| *recordActivity*(Identity owner, java.lang.String type, java.lang.String title, java.lang.String body) | {{owner}} - the owner of the target stream for this activity; {{type}} is the type of activity (freeform); {{title}}; {{body}}| stored activity | To record an activity. |
-| *recordActivity*(Identity owner, Activity activity) | {{owner}}; {{activity}} | stored activity | To save an activity. |
-| *addProcessor*(ActivityProcessor processor, Adds a new processor}} | {{processor}}; {{addProcessorPlugin}} |  |  |
-| *addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} |  | To add a new processor plug-in. |
-| *getActivitiesCount*(Identity owner) |  |  |  |
-| *getActivitiesOfConnections*(Identity ownerIdentity)| {{ownerIdentity}}| List<Activity> | Gets activities of connections from an identity which is sorted by time.|
-| *getActivitiesOfUserSpaces*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activities from all user's spaces which is sorted by time.|
-| *getActivityFeed*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activity feed of an identity. This feed is the combination of all the activities of his own activities, his connections' activities and his spaces' activities which is sorted by time. The latest activity is the first item in the activity list.|
+|| Method|| Param || Return || Description ||
+|*saveActivity*(Identity owner, ExoSocialActivity activity) throws ActivityStorageException |{{owner }} - the owner of activity stream, {{activity}} -  the activity which needs to be saved |ExoSocialActivity  | Saves an activity to the stream of an owner.Note that the Activity.userId will be set to the owner's identity if it has not already set.|
+|*getActivity*(String activityId) throws ActivityStorageException |{{activityId}} - the id of activity|{{ExoSocialActivity }} | Gets an activity by its Id.|
+|*deleteActivity*(String activityId) throws ActivityStorageException |{{activityId}} - the id of activity |void |Deletes an activity by its id. |
+|*deleteActivity*(ExoSocialActivity activity) throws ActivityStorageException |{{activity}} | void |Deletes a stored activity ({{{id !}}}= null). (Since 1.1.1).|
+|*deleteComment*(String activityId, String commentId) throws ActivityStorageException |{{activityId}} - the id of activity, {{commentId}} - the id of comment| void | Deletes a comment by its id.|
+|*getActivities*(Identity identity) throws ActivityStorageException|{{identity}} |List<ExoSocialActivity>  |Gets the latest activities by an identity with the default limit of 20 latest activities.|
+|*getActivities*(Identity identity, long start, long limit) throws ActivityStorageException |{{identity}}, {{start }}, {{limit}}  | List<ExoSocialActivity> |Gets the latest activities by an identity, specifying *start* that is an offset index and *limit*. |
+|*getActivitiesOfConnections*(Identity ownerIdentity) throws ActivityStorageException | {{ownerIdentity}} |List<ExoSocialActivity> |Gets activities of connections from an identity. The activities are sorted by time. Though by using cache, this still can be considered as the cause of the biggest performance problem. (Since 1.1.1).|
+|*getActivitiesOfUserSpaces*(Identity ownerIdentity)| {{ownerIdentity}} |List<ExoSocialActivity> |Gets the activities from all spaces of a user. By default, the activity list is composed of all spaces' activities. Each activity list of the space contains maximum 20 activities and are sorted by time. (Since 1.1.1).|
+|*getActivityFeed*(Identity identity) throws ActivityStorageException | {{identity}} |List<ExoSocialActivity> |Gets the activity feed of an identity. This feed is the combination of all the activities of his own activities, his connections' activities and his spaces' activities which are sorted by time. The latest activity is the first item in the activity list. (Since  1.1.2).|
+|*saveActivity*(ExoSocialActivity activity) throws ActivityStorageException | {{ activity}} - the activity to save|ExoSocialActivity |Saves an activity into the stream for the activity's userId. The userId must be set and this field is used to indicate the owner stream.|
+|*saveComment*(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException | {{activity, comment}} |void |Saves a new comment or updates an existing comment that is an instance of activity with mandatory fields: userId, title.|
+|*saveLike*(ExoSocialActivity activity, Identity identity) throws ActivityStorageException | {{activity, identity }} |void|Saves an identity who likes an activity.|
+|*removeLike*(ExoSocialActivity activity, Identity identity) throws ActivityStorageException | {{ activity}}, {{identity}} - a user who dislikes an activity |void|Removes an indentity who likes an activity, if this activity is liked, it will be removed.|
+|*getComments*(ExoSocialActivity activity) throws ActivityStorageException | {{activity}} |List<ExoSocialActivity>| Gets the comment list of an activity.||
+|*recordActivity*(Identity owner, String type, String title) throws ActivityStorageException | {{owner, type, title }} |ExoSocialActivity |Records an activity. (Since 1.2.0-GA).|
+|*recordActivity*(Identity owner, ExoSocialActivity activity) throws Exception | {{owner, activity,  }} |ExoSocialActivity |Saves an activity. Deprecated - use saveActivity(Identity, Activity) instead. It Will be removed by 1.3.x|
+|*recordActivity*(Identity owner, String type, String title, String body) throws ActivityStorageException | {{ owner}} - the owner of the target stream for this activity, {{type}} - the type of an activity which will be used to render a custom ui, {{title}} - the title, {{body}} - the body |ExoSocialActivity |Records an activity.|
+|*addProcessor*(ActivityProcessor processor) | {{processor }} |void|Adds a new processor.|
+|*addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} |void|Adds a new processor plugin.|
+|*getActivitiesCount*(Identity owner) throws ActivityStorageException | {{owner }} | int|Gets the number of activities from a stream owner.|
+|*processActivitiy*(ExoSocialActivity activity) | {{activity}} |void|Passes an activity through the chain of processors.|
 
 h1. IdentityManager
 
@@ -74,3 +77,6 @@ h1. Relationship Manager
 | *getAllRelationships*(Identity identity, List<Identity> identities)| {{identity}} is a identity, {{identities}} is a list of identity | List<Relationship> | Returns all the relationship of a given identity with other identity in identities. |
 | *getAllRelationships*(Identity identity)| {{identity}}  is a identity | List<Relationship> | Returns all the relationship of a given identity with other identity. || *getAllRelationships*(Identity identity, Relationship.Type type, List<Identity> identities)| {{identity}} is a identity, {{type}} is a Relationship.Type {{identities}} is a list of identity | List<Relationship> | Returns all the  relationship of a given identity with other identity in identities in type. |
 | *getRelationship*(Identity identity1, Identity identity2)| {{identity1}} and {{identity2}} is identities| Relationship | Gets the relationship of 2 identity. |
+
+
+
