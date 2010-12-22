@@ -32,26 +32,25 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorage;
 
 /**
- * The Class RelationshipManager to manage connectionType between identities.
+ * RelationshipManager manages connections between identities.
  */
 public class RelationshipManager {
 
   /** The storage. */
   private RelationshipStorage storage;
 
-  /**
-   * lifecycle of a relationship
-   */
+  /** Lifecycle of a relationship. */
   private RelationshipLifeCycle lifeCycle = new RelationshipLifeCycle();
 
-  /** Cache list of relationships by its id identity */
+  /** Cache of relationships by identity id. */
   private ExoCache<String, List<Relationship>> relationshipListCache;
 
-  /** Cache a relationship by its id relationship */
+  /** Cache of a relationship by its relationship id. */
   private ExoCache<String, Relationship>       relationshipIdCache;
 
   /**
    * Instantiates a new relationship manager.
+   * 
    * @param relationshipStorage
    */
   public RelationshipManager(RelationshipStorage relationshipStorage, CacheService cacheService) {
@@ -61,7 +60,7 @@ public class RelationshipManager {
   }
 
   /**
-   * Gets relationship the by id.
+   * Gets a relationship the by its relationship id.
    *
    * @param id the id
    * @return the by id
@@ -79,9 +78,10 @@ public class RelationshipManager {
   }
 
   /**
-   * Creates a connection invitation between 2 identities
+   * Creates an invitation between 2 identities.
+   * 
    * @param currIdentity inviter
-   * @param requestedIdentity invitee
+   * @param requestedIdentity
    * @return a PENDING relation
    * @throws Exception
    */
@@ -94,7 +94,7 @@ public class RelationshipManager {
   }
 
   /**
-   * mark a relationship as confirmed.
+   * Marks a relationship as confirmed.
    *
    * @param relationship the relationship
    * @throws Exception the exception
@@ -109,9 +109,10 @@ public class RelationshipManager {
   }
 
   /**
+   * Marks a relationship as denied.
    *
-   * @param relationship
-   * @throws Exception
+   * @param relationship the relationship
+   * @throws Exception the exception
    */
   public void deny(Relationship relationship) throws Exception {
     final Identity sender = relationship.getSender();
@@ -163,7 +164,7 @@ public class RelationshipManager {
   }
 
   /**
-   * remove a relationship.
+   * Removes a relationship.
    *
    * @param relationship the relationship
    * @throws Exception the exception
@@ -217,7 +218,7 @@ public class RelationshipManager {
   }
 
   /**
-   * mark a relationship as ignored.
+   * Marks a relationship as ignored.
    *
    * @param relationship the relationship
    * @throws Exception the exception
@@ -232,7 +233,7 @@ public class RelationshipManager {
   }
 
   /**
-   * return all the pending relationship: sent and received.
+   * Returns all the pending relationships of the identity, including sent and received relationships of the pending type.
    *
    * @param identity the identity
    * @return the pending
@@ -253,13 +254,13 @@ public class RelationshipManager {
   }
 
   /**
-   * if toConfirm is true, it return list of pending relationship received not
-   * confirmed if toConfirm is false, it return list of relationship sent not
+   * If toConfirm is true, it returns a list of pending relationships received, but not
+   * confirmed. If toConfirm is false, it returns a list of relationships sent, but not
    * confirmed yet.
    *
    * @param identity the identity
    * @param toConfirm the to confirm
-   * @return the pending
+   * @return the pending relationships
    * @throws Exception the exception
    */
   public List<Relationship> getPendingRelationships(Identity identity, boolean toConfirm) throws Exception {
@@ -280,13 +281,13 @@ public class RelationshipManager {
   }
 
   /**
-   * Get pending relations in 2 case:
-   * - if toConfirm is true, it return list of pending relationship received not confirmed
-   * - if toConfirm is false, it return list of relationship sent not confirmed yet.
+   * Gets the pending relations in two cases:
+   * - If toConfirm is true, it returns a list of the pending relationships received, but not confirmed.
+   * - If toConfirm is false, it returns a list of the relationships sent, but not confirmed yet.
    *
    * @param currIdentity the curr identity
    * @param identities the identities
-   * @param toConfirm the to confirm
+   * @param toConfirm
    * @return the pending
    * @throws Exception the exception
    */
@@ -319,9 +320,9 @@ public class RelationshipManager {
   }
 
   /**
-   * Get contacts that match the search result.
+   * Gets contacts that matches the search result.
    *
-   * @param currIdentity the curr identity
+   * @param currIdentity the current identity
    * @param identities the identities
    * @return the contacts
    * @throws Exception the exception
@@ -346,7 +347,7 @@ public class RelationshipManager {
   }
 
   /**
-   * Gets the contacts.
+   * Gets the contacts of the identity.
    *
    * @param identity the identity
    * @return the contacts
@@ -365,7 +366,7 @@ public class RelationshipManager {
   }
 
   /**
-   * return all the relationship associated with a given identity.
+   * Returns all the relationships associated with a given identity.
    *
    * @param identity the identity
    * @return the list
@@ -380,7 +381,7 @@ public class RelationshipManager {
   }
 
   /**
-   * return all the relationship associated with a given identityId.
+   * Returns all the relationships associated with a given identity id.
    *
    * @param id the id
    * @return the by identity id
@@ -395,19 +396,19 @@ public class RelationshipManager {
   }
 
   /**
-   * return all the identity associated with a given identity TODO check if the
-   * relation has been validated.
+   * Returns all the identities associated with a given identity
    *
    * @param id the id
    * @return the identities
    * @throws Exception the exception
    */
+  //TODO checks if the relation has been validated.
   public List<Identity> getIdentities(Identity id) throws Exception {
     return this.storage.getRelationshipIdentitiesByIdentity(id);
   }
 
   /**
-   * Creates the.
+   * Creates the relationship.
    *
    * @param sender the sender
    * @param receiver the receiver
@@ -418,9 +419,9 @@ public class RelationshipManager {
   }
 
   /**
-   * Save.
+   * Saves the relationship.
    *
-   * @param relationship the rel
+   * @param relationship the relationship
    * @throws Exception the exception
    */
   void saveRelationship(Relationship relationship) throws Exception {
@@ -446,6 +447,7 @@ public class RelationshipManager {
 
   /**
    * Updates the relationship cached.
+   * 
    * @param relationship
    */
   public void updateRelationshipCached(Relationship relationship) {
@@ -523,7 +525,7 @@ public class RelationshipManager {
   }
 
   /**
-   * Find route.
+   * Finds a route.
    *
    * @param sender the id1
    * @param receiver the id2
@@ -534,7 +536,7 @@ public class RelationshipManager {
   }
 
   /**
-   * Gets the relationship.
+   * Gets the relation between 2 identities sender and receiver.
    *
    * @param sender the id1
    * @param receiver the id2
@@ -553,7 +555,8 @@ public class RelationshipManager {
   }
 
   /**
-   * Finds any identity having relationshipType with the ownerIdentity.
+   * Finds all identities having relationshipType with the ownerIdentity.
+   * 
    * @param ownerIdentity
    * @param relationshipType
    * @return list of identites
@@ -565,9 +568,9 @@ public class RelationshipManager {
   }
 
   /**
-   * Gets the relationship status.
+   * Gets the relationship type of the relationship with the identity.
    *
-   * @param rel the rel
+   * @param rel the relationship
    * @param id the id
    * @return the relationship status
    */
@@ -589,7 +592,8 @@ public class RelationshipManager {
 
 
   /**
-   * Gets connection status
+   * Gets the connection type between two identities.
+   * 
    * @param fromIdentity
    * @param toIdentity
    * @return relationshipType
@@ -605,6 +609,8 @@ public class RelationshipManager {
   }
 
   /**
+   * Registers the RelationshipListener.
+   * 
    * @param listener
    */
   public void registerListener(RelationshipListener listener) {
@@ -612,6 +618,8 @@ public class RelationshipManager {
   }
 
   /**
+   * Removes the RelationshipListener.
+   * 
    * @param listener
    */
   public void unregisterListener(RelationshipListener listener) {
@@ -619,6 +627,8 @@ public class RelationshipManager {
   }
 
   /**
+   * Adds the relationship listener plugin.
+   * 
    * @param plugin
    */
   public void addListenerPlugin(RelationshipListenerPlugin plugin) {
