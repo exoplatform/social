@@ -18,61 +18,57 @@ package org.exoplatform.social.core.space.spi;
 
 import java.util.List;
 
-import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 
 /**
- * <pre>
- * SpaceService provides methods for working with Space
+ * SpaceService provides methods for working with Space.
  *
- * Created by The eXo Platform SARL
- *
- * Author : dang.tung
- *          tungcnw@gmail.com
- *
- * August 29, 2008
- * </pre>
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Aug 29, 2008
  */
 public interface SpaceService {
 
   public static final String SPACES_APP_ID = "exosocial:spaces";
 
   /**
-   * Gets all spaces of the portal
-   * @return all spaces of portal
+   * Gets all spaces in Social.
+   *
+   * @return list of spaces in Social
    * @throws SpaceException with code SpaceException.Code.ERROR_DATASTORE
    */
   List<Space> getAllSpaces() throws SpaceException;
 
   /**
-   * Get space by space name.
+   * Gets a space by its space name.
    *
-   * @param spaceName
-   * @return
+   * @param spaceName space name
+   * @return the stored space
    * @throws SpaceException
    */
   public Space getSpaceByName(String spaceName) throws SpaceException;
 
   /**
-   * Gets all spaces has name start with the input character
-   * @return all spaces which like space name
+   * Gets all spaces has the name starting with the input character.
+   *
+   * @return all spaces which have first character of name matched the input string.
    * @throws SpaceException with code SpaceException.Code.ERROR_DATASTORE
    */
   List<Space> getSpacesByFirstCharacterOfName(String firstCharacterOfName) throws SpaceException;
 
   /**
-   * Gets all spaces has name or description that match input condition.
+   * Gets all spaces which has name or description that match input condition.
    *
-   * @param condition
-   * @return
+   * @param condition the input condition
+   * @return a list of spaces
    * @throws Exception
    */
   public List<Space> getSpacesBySearchCondition(String condition) throws Exception;
 
   /**
-   * Get a space by its id
+   * Gets a space by its id.
+   *
    * @param spaceId Id of that space
    * @return space with id specified
    * @throws SpaceException with code SpaceException.Code.ERROR_DATASTORE
@@ -80,15 +76,16 @@ public interface SpaceService {
   Space getSpaceById(String spaceId) throws SpaceException;
 
   /**
-   * Get a space by its url
+   * Gets a space by its url.
+   *
    * @param spaceUrl url of space
-   * @return Space space with string url specified
+   * @return the space with string url specified
    * @throws SpaceException
    */
   Space getSpaceByUrl(String spaceUrl) throws SpaceException;
 
   /**
-   * Get spaces of a user in which user is a member
+   * Gets spaces of a user in which that user is a member.
    *
    * @param userId Id of user
    * @return all spaces of a user in which the user is a member
@@ -97,23 +94,26 @@ public interface SpaceService {
   List<Space> getSpaces(String userId) throws SpaceException;
 
   /**
-   * Get spaces of a user which user has access permission
+   * Gets spaces of a user which that user has the access permission.
+   *
    * @param userId
-   * @return
+   * @return list of spaces
    * @throws SpaceException
    */
   List<Space> getAccessibleSpaces(String userId) throws SpaceException;
 
   /**
-   * Get spaces of a user which user has edit permission
+   * Gets spaces of a user which that user has the edit permission.
+   *
    * @param userId
-   * @return
+   * @return list of space
    * @throws SpaceException
    */
   List<Space> getEditableSpaces(String userId) throws SpaceException;
 
   /**
-   * Get user's invited spaces and that user can accept or deny the request
+   * Gets a user's invited spaces and that user can accept or deny the request.
+   *
    * @param userId
    * @return spaces list of all user's invited spaces
    * @throws SpaceException
@@ -122,34 +122,37 @@ public interface SpaceService {
 
 
   /**
-   * Get user's public spaces and that user can request to join
+   * Gets a user's public spaces and that user can request to join.
+   *
    * @param userId Id of user
-   * @return spaces list in which user can request to join
+   * @return spaces list in which the user can request to join
    * @throws SpaceException
    */
   List<Space> getPublicSpaces(String userId) throws SpaceException;
 
   /**
-   * Get user's pending spaces and that user can revoke that request
+   * Gets a user's pending spaces and that the user can revoke that request.
+   *
    * @param userId
-   * @return spaces list in which user can revode that request
+   * @return spaces list in which the user can revoke that request
    * @throws SpaceException
    */
   List<Space> getPendingSpaces(String userId) throws SpaceException;
 
   /**
-   * Create new space by creating new group
-   * This new group will be under /Spaces node
-   * This is shorthand for calling createSpace(space, creator, null)
+   * Creates a new space by creating a new group.
+   * This new group will be under /Spaces node.
+   * This is shorthand for calling createSpace(space, creator, null).
+   *
    * @param space
    * @param creator
-   * @return
+   * @return the created space
    * @throws SpaceException with possible code SpaceException.Code.SPACE_ALREADY_EXIST, UNABLE_TO_ADD_CREATOR
    */
   Space createSpace(Space space, String creator) throws SpaceException;
 
   /**
-   * Create new space from an existing group
+   * Creates a new space from an existing group.
    *
    * @param space
    * @param creator
@@ -160,43 +163,43 @@ public interface SpaceService {
   Space createSpace(Space space, String creator, String groupId) throws SpaceException;
 
   /**
-   * Save new space or Update space
+   * Saves a new space or updates a space.
    *
    * @param space space is saved
-   * @param isNew true if create new space; otherwise, update existed space
+   * @param isNew true if creating a new space; otherwise, update an existing space.
    * @throws SpaceException with code: SpaceException.Code.ERROR_DATASTORE
    */
   void saveSpace(Space space, boolean isNew) throws SpaceException;
 
   /**
-   * Delete space. When deleting a space, all it's page navigations and it's group will be deleted.
-   * @param space
+   * Deletes a space. When deleting a space, all of its page navigations and its group will be deleted.
+   *
+   * @param space the space to be deleted
    * @throws SpaceException
    */
   void deleteSpace(Space space) throws SpaceException;
 
   /**
-   * Delete space
+   * Deletes a space by its id.
+   *
    * @param spaceId
    * @throws SpaceException
    */
   void deleteSpace(String spaceId) throws SpaceException;
 
   /**
-   * Initialize default application to space.
+   * Initializes default applications in a space.
    *
-   * Set HomeSpacePortlet to be the root page of that space node
-   *
-   * @param space Space
+   * @param space the space
    * @throws SpaceException with code SpaceException.Code.UNABLE_INIT_APP
    * @deprecated Use {@link #initApps(Space)} instead
    */
   void initApp(Space space) throws SpaceException;
 
   /**
-   * Initialize default application to space.
+   * Initialize default applications in a space.
    * Set <tt>space.homeNodeApp</tt> from configuration file to be the root page of that space node.
-   * When remove a space, make sure to call {@link #deInitApps(Space)} and then {@link #deleteSpace(Space)}
+   * When removing a space, make sure to call {@link #deInitApps(Space)} and then {@link #deleteSpace(Space)}
    * or {@link #deleteSpace(String)}
    *
    *
@@ -206,15 +209,17 @@ public interface SpaceService {
   void initApps(Space space) throws SpaceException;
 
   /**
-   * De-initialize applications of a space.
-   * Make sure call this before {@link #deleteSpace(Space)} or {@link #deleteSpace(String)}
-   * @param spaceId
+   * De-initializes the applications of a space: remove application page from a space.
+   * Make sure to call this method before {@link #deleteSpace(Space)} or {@link #deleteSpace(String)},
+   * Otherwise, the space is deleted but its pages and navigation still exists.
+   * @param space the space
    * @throws SpaceException
    */
   void deInitApps(Space space) throws SpaceException;
 
   /**
-   * Add a user to a space, the user will get role: member
+   * Adds a user to a space, the user will get "member" role in a space.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -222,7 +227,8 @@ public interface SpaceService {
   void addMember(Space space, String userId) throws SpaceException;
 
   /**
-   * Add a user to a space, the user will get role: member
+   * Adds a user to a space, the user will get the "member" role in a space.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -230,9 +236,10 @@ public interface SpaceService {
   void addMember(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Remove member from a space
-   * If the member is the only leader from that space, member remove is not allowed and throws SpaceException
+   * Removes a member from a space.
+   * If the member is the only leader of that space, the member removed is not allowed and throws SpaceException
    * with Code = USER_ONLY_LEADER
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -240,7 +247,8 @@ public interface SpaceService {
   void removeMember(Space space, String userId) throws SpaceException;
 
   /**
-   * Remove member from a space
+   * Removes a member from a space.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -248,29 +256,27 @@ public interface SpaceService {
   void removeMember(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Add a userId to the pending list of a space
+   * Gets a list of the space members from a space.
+   *
    * @param space
-   * @param userId
-   * @return space with new pending list
+   * @return list of space members
    * @throws SpaceException
    */
 
   List<String> getMembers(Space space) throws SpaceException;
 
   /**
-   * Get all members from a space
+   * Gets a list of the space members from a space.
+   *
    * @param spaceId
-   * @return members list
+   * @return a list of the space members
    * @throws SpaceException
    */
   List<String> getMembers(String spaceId) throws SpaceException;
 
   /**
-   * Set leader to a member of a space.
+   * Sets a member of a space as a manager.
    *
-   * If isLeader == true, that user will be assigned "manager" membership and removed "member" membership
-   * Otherwise, that user will be assigned "member" membership and removed "manager" membership
-   * However, if that user is the only leader, that user is not allowed to be removed from manager membership.
    * @param space
    * @param userId
    * @param isLeader
@@ -279,11 +285,8 @@ public interface SpaceService {
   void setLeader(Space space, String userId, boolean isLeader) throws SpaceException;
 
   /**
-   * Set leader to a member of a space.
-   * <p>
-   * If isLeader == true, that user will be assigned "manager" membership and removed "member" membership
-   * Otherwise, that user will be assigned "member" membership and removed "manager" membership
-   * </p>
+   * Sets a member of a space as a manager.
+   *
    * @param spaceId
    * @param userId
    * @param isLeader
@@ -292,25 +295,28 @@ public interface SpaceService {
   void setLeader(String spaceId, String userId, boolean isLeader) throws SpaceException;
 
   /**
-   * Checking whether a user is a space's leader.
+   * Checks whether a user is a space's leader or not.
+   *
    * @param space
    * @param userId
-   * @return true if that user if a leader otherwise false
+   * @return true if that the user is a leader; otherwise, false
    * @throws SpaceException
    */
   boolean isLeader(Space space, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is a space's leader.
+   * Checks whether a user is a space's leader or not.
+   *
    * @param spaceId
    * @param userId
-   * @return
+   * @return true if that user is a leader; otherwise, false
    * @throws SpaceException
    */
   boolean isLeader(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is the only leader of a space
+   * Checks whether a user is the only leader of a space or not.
+   *
    * @param space
    * @param userId
    * @return <tt>true</tt> if that user is the only leader of the space; otherwise, false
@@ -319,7 +325,8 @@ public interface SpaceService {
   boolean isOnlyLeader(Space space, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is the only leader of a space
+   * Checks whether a user is the only leader of a space or not.
+   *
    * @param spaceId
    * @param userId
    * @return
@@ -328,7 +335,8 @@ public interface SpaceService {
   boolean isOnlyLeader(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is a space's member.
+   * Checks whether a user is a space's member or not.
+   *
    * @param space
    * @param userId
    * @return true if that user is a member; otherwise, false
@@ -337,7 +345,8 @@ public interface SpaceService {
   boolean isMember(Space space, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is a space's member.
+   * Checks whether a user is a space's member or not.
+   *
    * @param spaceId
    * @param userId
    * @return true if that user is a member; otherwise,false
@@ -346,7 +355,9 @@ public interface SpaceService {
   boolean isMember(String spaceId, String userId) throws SpaceException;
 
   /**
-   * If user is root or user is space's member, return true
+   * Checks if a user can access a space or not.
+   * returns true If the user is root or the space's member.
+   *
    * @param space
    * @param userId
    * @return
@@ -355,7 +366,8 @@ public interface SpaceService {
   boolean hasAccessPermission(Space space, String userId) throws SpaceException;
 
   /**
-   * If user is root or user is space's member, return true
+   * Checks if a user can access a space or not.
+   * If the user is root or the space's member, return true
    * @param spaceId
    * @param userId
    * @return
@@ -364,7 +376,9 @@ public interface SpaceService {
   boolean hasAccessPermission(String spaceId, String userId) throws SpaceException;
 
   /**
-   * If user is root or user is space's manager, return true
+   * Checks if a user can have the edit permission of a space or not.
+   * If user is root or the space's manager, return true.
+   *
    * @param space
    * @param userId
    * @return
@@ -373,7 +387,8 @@ public interface SpaceService {
   boolean hasEditPermission(Space space, String userId) throws SpaceException;
 
   /**
-   * If user is root or user is space's manager, return true
+   * Checks if a user can have edit permission of a space.
+   * If user is root or the space's manager, return true
    * @param spaceId
    * @param userId
    * @return
@@ -382,25 +397,28 @@ public interface SpaceService {
   boolean hasEditPermission(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is in the invited list of a space
+   * Checks if a user is in the invited list of a space or not.
+   *
    * @param space
    * @param userId
-   * @return true if that user is in invited list; otherwise, false
+   * @return true if that user is in the invited list; otherwise, false
    * @throws SpaceException
    */
   boolean isInvited(Space space, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is in the invited list of a space
+   * Checks if a user is in the invited list of a space or not.
+   *
    * @param spaceId
    * @param userId
-   * @return <tt>true</tt> if user is in invited list; otherwise, false
+   * @return <tt>true</tt> if user is in the invited list; otherwise, false
    * @throws SpaceException
    */
   boolean isInvited(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is in the pending list of a space
+   * Checks if a user is in the pending list of a space or not.
+   *
    * @param space
    * @param userId
    * @return true if that user is in pending list; otherwise, false
@@ -409,16 +427,18 @@ public interface SpaceService {
   boolean isPending(Space space, String userId) throws SpaceException;
 
   /**
-   * Checking whether a user is in the pending list of a space
+   * Checks if a user is in the pending list of a space.
+   *
    * @param spaceId
    * @param userId
-   * @return true if that user is in pending list; otherwise, false
+   * @return true if that user is in the pending list; otherwise, false
    * @throws SpaceException
    */
   boolean isPending(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Install an application to a space
+   * Installs an application to a space.
+   *
    * @param spaceId
    * @param appId
    * @throws SpaceException with code SpaceException.Code.ERROR_DATA_STORE
@@ -426,7 +446,8 @@ public interface SpaceService {
   void installApplication(String spaceId, String appId) throws SpaceException;
 
   /**
-   * Install an application to a space
+   * Installs an application to a space.
+   *
    * @param space
    * @param appId
    * @throws SpaceException with code SpaceException.Code.ERROR_DATA_STORE
@@ -434,7 +455,8 @@ public interface SpaceService {
   void installApplication(Space space, String appId) throws SpaceException;
 
   /**
-   * Activate an installed application in a space
+   * Activates an installed application in a space.
+   *
    * @param space
    * @param appId
    * @throws SpaceException with possible code: SpaceException.Code.UNABLE_TO_ADD_APPLICATION,
@@ -443,7 +465,8 @@ public interface SpaceService {
   void activateApplication(Space space, String appId) throws SpaceException;
 
   /**
-   * Activate an installed application in a space
+   * Activates an installed application in a space.
+   *
    * @param spaceId
    * @param appId
    * @throws SpaceException with possible code: SpaceException.Code.UNABLE_TO_ADD_APPLICATION,
@@ -452,7 +475,8 @@ public interface SpaceService {
   void activateApplication(String spaceId, String appId) throws SpaceException;
 
   /**
-   * Deactivate an installed application in a space
+   * Deactivates an installed application in a space.
+   *
    * @param space
    * @param appId
    * @throws SpaceException
@@ -460,7 +484,8 @@ public interface SpaceService {
   void deactivateApplication(Space space, String appId) throws SpaceException;
 
   /**
-   * Deactivate an installed application in a space
+   * Deactivates an installed application in a space.
+   *
    * @param spaceId
    * @param appId
    * @throws SpaceException
@@ -468,7 +493,8 @@ public interface SpaceService {
   void deactivateApplication(String spaceId, String appId) throws SpaceException;
 
   /**
-   * Remove an installed application from a space
+   * Removes an installed application from a space.
+   *
    * @param space
    * @param appId
    * @throws SpaceException
@@ -476,7 +502,8 @@ public interface SpaceService {
   void removeApplication(Space space, String appId, String appName) throws SpaceException;
 
   /**
-   * Remove and installed application from a space
+   * Removes an installed application from a space.
+   *
    * @param spaceId
    * @param appId
    * @throws SpaceException
@@ -484,7 +511,8 @@ public interface SpaceService {
   void removeApplication(String spaceId, String appId, String appName) throws SpaceException;
 
   /**
-   * Request to join a space, add that user to pending list
+   * Requests a user to join a space, adds that user to the pending list of the space.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -492,7 +520,8 @@ public interface SpaceService {
   void requestJoin(Space space, String userId) throws SpaceException;
 
   /**
-   * Request to join a space, add that user to pending list
+   * Requests a user to join a space, adds that user to the pending list of the space.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -500,7 +529,8 @@ public interface SpaceService {
   void requestJoin(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Revoke request join request after user request to join a group and is in pending status
+   * Revokes a join request after users request to join a group and is in the pending status.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -508,7 +538,8 @@ public interface SpaceService {
   void revokeRequestJoin(Space space, String userId) throws SpaceException;
 
   /**
-   * Revoke request join request
+   * Revokes a request to join a space.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -516,7 +547,8 @@ public interface SpaceService {
   void revokeRequestJoin(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Invite a userId to a be member of a space
+   * Invites a userId to become a member of a space.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -524,7 +556,8 @@ public interface SpaceService {
   void inviteMember(Space space, String userId) throws SpaceException;
 
   /**
-   * Invite a userId to a be member of a space
+   * Invites a userId to a be member of a space.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -532,8 +565,9 @@ public interface SpaceService {
   void inviteMember(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Revoke invitation - undo inviteMember
-   * Remove user from space's invited  member list
+   * Revokes an invitation - undo inviteMember.
+   * Removes a user from the invited  member list of the space.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -541,8 +575,9 @@ public interface SpaceService {
   void revokeInvitation(Space space, String userId) throws SpaceException;
 
   /**
-   * Revoke invitation - undo inviteMember
-   * Remove user from space's invited  member list
+   * Revokes invitation - undo inviteMember.
+   * Removes a user from the invited  member list of the space.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -550,7 +585,8 @@ public interface SpaceService {
   void revokeInvitation(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Accept Invitation - move user from invited list to member list
+   * Accepts Invitation - move a user from the invited list to the member list.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -558,7 +594,8 @@ public interface SpaceService {
   void acceptInvitation(Space space, String userId) throws SpaceException;
 
   /**
-   * Accept Invitation - move user from invited list to member list
+   * Accepts an invitation - move a user from the invited list to the member list.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -566,7 +603,8 @@ public interface SpaceService {
   void acceptInvitation(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Deny Invitation - remove user from invited list
+   * Denies an invitation - removes a user from the invited list.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -574,7 +612,8 @@ public interface SpaceService {
   void denyInvitation(Space space, String userId) throws SpaceException;
 
   /**
-   * Deny Invitation - remove user from invited list
+   * Denies an invitation - removes user from the invited list.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -582,7 +621,8 @@ public interface SpaceService {
   void denyInvitation(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Validate request, move user from pending list to member list
+   * Validates a request, moves a user from the pending list to the member list.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -590,7 +630,8 @@ public interface SpaceService {
   void validateRequest(Space space, String userId) throws SpaceException;
 
   /**
-   * Validate request, move user from pending list to member list
+   * Validates request, moves a user from pending list to member list.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -598,7 +639,8 @@ public interface SpaceService {
   void validateRequest(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Decline request, remove user from pending list
+   * Declines a request and removes a user from  the pending list.
+   *
    * @param space
    * @param userId
    * @throws SpaceException
@@ -606,7 +648,8 @@ public interface SpaceService {
   void declineRequest(Space space, String userId) throws SpaceException;
 
   /**
-   * Decline request, remove user from pending list
+   * Declines request and removes a user from the pending list.
+   *
    * @param spaceId
    * @param userId
    * @throws SpaceException
@@ -614,27 +657,31 @@ public interface SpaceService {
   void declineRequest(String spaceId, String userId) throws SpaceException;
 
   /**
-   * Registers a space lifecycle listener
+   * Registers a space lifecycle listener.
+   *
    * @param listener
    */
-  public void registerSpaceLifeCycleListener(SpaceLifeCycleListener listener);
+  void registerSpaceLifeCycleListener(SpaceLifeCycleListener listener);
 
   /**
-   * Unregisters a space lifecycle listener
+   * Unregisters a space lifecycle listener.
+   *
    * @param listener
    */
-  public void unregisterSpaceLifeCycleListener(SpaceLifeCycleListener listener);
+  void unregisterSpaceLifeCycleListener(SpaceLifeCycleListener listener);
 
   /**
-   * Set portlet preferences get from plug-in into local variable.
+   * Sets the portlet preferences got from the plug-in configuration.
+   *
    * @param portletPrefsRequiredPlugin
    */
-  public void setPortletsPrefsRequired(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin);
-  
+  void setPortletsPrefsRequired(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin);
+
   /**
-   * Get portlet preferences required for using in create portlet application.
+   * Gets the portlet preferences required to use in creating the portlet application.
+   *
    * @return
    */
-  public String [] getPortletsPrefsRequired();
-  
+  String[] getPortletsPrefsRequired();
+
 }

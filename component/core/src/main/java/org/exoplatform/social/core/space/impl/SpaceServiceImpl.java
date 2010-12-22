@@ -524,6 +524,9 @@ public class SpaceServiceImpl implements SpaceService {
 
   /**
    * {@inheritDoc}
+   * If isLeader == true, that user will be assigned "manager" membership and the "member" memberhship will be removed.
+   * Otherwise, that user will be assigned "member" membership and the "manager" membership will be removed.
+   * However, if that user is the only manager, that user is not allowed to be removed from the manager membership.
    */
   public void setLeader(Space space, String userId, boolean isLeader) throws SpaceException {
     try {
@@ -567,6 +570,8 @@ public class SpaceServiceImpl implements SpaceService {
 
   /**
    * {@inheritDoc}
+   * If isLeader == true, that user will be assigned "manager" membership and the "member" membership will be removed.
+   * Otherwise, that user will be assigned "member" membership and the "manager" membership will be removed.
    */
   public void setLeader(String spaceId, String userId, boolean isLeader) throws SpaceException {
     setLeader(getSpaceById(spaceId), userId, isLeader);
