@@ -1,59 +1,65 @@
-h1. Activity Manager
+h1. ActivityManager
 
-|| Function || Param || Return || Description ||
-| *getActivity*(java.lang.String activityId) | {{activityId}} is id of activity | the activity | To get the activity by activity id. |
-| *deleteActivity*(java.lang.String activityId) | {{activityId}} is the id of activity |  | To delete activity by id. |
-| *deleteComment*(java.lang.String activityId, java.lang.String commentId) | {{activityId}} is the id of activity; {{commentId}} is the id of comment |  | To delete comment by id. |
-| *getActivities*(Identity identity) | {{identity}} | activities |  |
-| *getActivities*(Identity identity, long start, long limit) | {{identity}}; {{start}} is the offset index ; {{limit}} | activities |  To get the latest activities by identity, specifying the start offset index and limit. |
-| *saveActivity*(Identity owner, Activity activity) | {{owner}} is the owner of activity stream; {{activity}} is the activity which needs to be saved |activity saved | To save an activity to the stream of a owner. Note that the Activity.userId will be set to the owner identity if not already set. |
+|| Method || Param || Return || Description ||
+| *saveActivity*(Identity owner, Activity activity) | {{owner}} is the owner of activity stream; {{activity}} is the activity which needs to be saved |activity saved | Saves an activity to the stream of a owner. Note that the Activity.userId will be set to the owner identity if not already set. |
+| *getActivity*(java.lang.String activityId) | {{activityId}} is id of activity | the activity | Gets an activity by activity id. |
+| *deleteActivity*(java.lang.String activityId) | {{activityId}} is the id of activity | void  | Deletes an activity by id. |
+| *deleteComment*(java.lang.String activityId, java.lang.String commentId) | {{activityId}} is the id of activity; {{commentId}} is the id of comment | void | To delete comment by id. |
+| *getActivities*(Identity identity) | {{identity}} | List<Activity> | Gets the latest activities by identity with the default limit of 20 latest activities. |
+| *getActivities*(Identity identity, long start, long limit) | {{identity}}; {{start}} is the offset index ; {{limit}} | List<Activity> |  To get the latest activities by identity, specifying the start offset index and limit. |
+| *getActivitiesOfConnections*(Identity ownerIdentity)| {{ownerIdentity}}| List<Activity>| Gets activities of connections from an identity. The activities are sorted by time. Since 1.1.1 |
+| *getActivitiesOfUserSpaces*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activities from all user's spaces.|
+| *getActivityFeed*(Identity identity)|{{identity}}|List<Activity>|Gets the activity feed of an identity. This feed is the combination of all the activities of his own activities, his connections' activities and his spaces' activities which are sorted by time. The latest activity is the first item in the activity list.|
 | *saveActivity*(Activity activity) | {{activity}} is the activity which needs to be saved | activity | To save the activity into the stream for the activity's userId. |
-| *saveComment*(Activity activity, Activity comment) | {{activity}}; {{comment}} |  | To save new or update comments to an activity comment which is an instance of Activity with mandatory properties: userId, title. |
-| *saveLike*(Activity activity, Identity identity) | {{activity}}; {{identity}} |  | To save an identity of user who likes the activity. |
-| *removeLike*(Activity activity, Identity identity) | {{activity}}; {{identity}} is the identity of user who unlikes the activity |  | To remove the like activity, if this activity liked, remove; else does nothing. |
-| *getComments*(Activity activity) | {{activity}} | comments | To get an activity's commentList. |
-| *recordActivity*(Identity owner, java.lang.String type, java.lang.String title, java.lang.String body) | {{owner}} - the owner of the target stream for this activity; {{type}} is the type of activity (freeform); {{title}}; {{body}}| stored activity | To record an activity. |
-| *recordActivity*(Identity owner, Activity activity) | {{owner}}; {{activity}} | stored activity | To save an activity. |
-| *addProcessor*(ActivityProcessor processor, Adds a new processor}} | {{processor}}; {{addProcessorPlugin}} |  |  |
-| *addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} |  | To add a new processor plug-in. |
-| *getActivitiesCount*(Identity owner) |  |  |  |
-| *getActivitiesOfConnections*(Identity ownerIdentity)| {{ownerIdentity}}| List<Activity> | Gets activities of connections from an identity which is sorted by time.|
-| *getActivitiesOfUserSpaces*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activities from all user's spaces which is sorted by time.|
-| *getActivityFeed*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activity feed of an identity. This feed is the combination of all the activities of his own activities, his connections' activities and his spaces' activities which is sorted by time. The latest activity is the first item in the activity list.|
+| *saveComment*(Activity activity, Activity comment) | {{activity}}; {{comment}} | void | Saves new or update comments to an activity comment which is an instance of Activity with mandatory properties: userId, title. |
+| *saveLike*(Activity activity, Identity identity) | {{activity}}; {{identity}} | void | Saves an identity of user who likes the activity. |
+| *removeLike*(Activity activity, Identity identity) | {{activity}}; {{identity}} is the identity of user who unlikes the activity |void  | Removes the like activity, if this activity liked, remove; else does nothing. |
+| *getComments*(Activity activity) | {{activity}} | comments | Gets an activity's commentList. |
+| *recordActivity*(Identity owner, java.lang.String type, java.lang.String title, java.lang.String body) | {{owner}} - the owner of the target stream for this activity; {{type}} is the type of activity (freeform); {{title}}; {{body}}| stored activity | Records an activity. |
+| *recordActivity*(Identity owner, Activity activity) | {{owner}}; {{activity}} | stored activity | Saves an activity. |
+| *addProcessor*(ActivityProcessor processor, Adds a new processor}} | {{processor}}; {{addProcessorPlugin}} | void | Adds a new activity processor. |
+| *addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} | void | Adds a new processor plug-in. |
+| *getActivitiesCount*(Identity owner) |{{owner}}  | int | Gets the number of activity from a stream owner. |
 
 h1. IdentityManager
 
-|| Function || Param || Return || Description ||
-| *getIdentity*(java.lang.String id) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId() | null if nothing is found, or the Identity object | To get the identity by id and to load his profile. |
-| *getIdentity*(java.lang.String id, boolean loadProfile) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId(); {{loadProfile}} - the value is true if the profile is loaded and false if not loaded | null if nothing is found, or the Identity object | To get the identity by loading id of the profile optionally. |
-| *addIdentityProvider*(IdentityProvider<?> idProvider)| {{idProvider}} is the id of provider |  | To add the id of provider. |
-| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}} is the id of provider; {{remoteId}} is the remote id | identity | To get the identity by remoteId. If the provider can not find any identity by remoteId, the return value is null. If no identity found by identity provider and that identity is still stored on JCR, that stored identity will be deleted and the return value is null.|
-| *getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter) | {{providerId}} is the id of provider; {{profileFilter}} is the filter of provider | the identities by the profile filter | To get the identities by profile filter. |
-| getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter, long offset, long limit) |  |  |  |
-| *getIdentitiesByProfileFilter*(ProfileFilter profileFilter) | {{profileFilter}} - the profile filter | the identities by profile filter | To get the identities by profile filter. |
-| *getIdentitiesByProfileFilter*(ProfileFilter profileFilter, long offset, long limit) |  |  |  |
-| *getIdentitiesFilterByAlphaBet*(java.lang.String providerId, ProfileFilter profileFilter) | {{providerId}} is the id of provider; {{profileFilter}} is the profile filter | the identities filter by alphabet | To get the identities filter by alpha bet. |
-| *getIdentitiesFilterByAlphaBet*(ProfileFilter profileFilter) | {{profileFilter}} - the profile filter | the identities filter by alphabet | To get the identities filter by alphabet. |
-| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId, boolean loadProfile) | {{providerId}} - referring to the name of the Identity provider; {{remoteId}} - the identifier that identify the identity in the specific identity provider; {{loadProfile}} is true when the profile is loaded | null if nothing is found, or the Identity object TODO improves the performance by specifying what needs to be loaded | This function returns an Identity object that is specific to a special type. For example, if the type is Linked'In, the identifier will be the URL of profile or if it is a CS contact manager contact, it will be the UID of the contact. A new identity is created if it doesnot exist. |
-| *getIdentity*(java.lang.String providerId, java.lang.String remoteId, boolean loadProfile) | {{providerId}}; {{remoteId}}; {{loadProfile}} |  | To get the identity. |
-| *identityExisted*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}}; {{remoteId}} |  | To check if the identity has existed or not. |
-| *saveIdentity*(Identity identity) | {{identity}} is the identity |  | To save the identity. |
-| *updateAvatar*(Profile p) |  |  |  |
-| *updateBasicInfo*(Profile p) |  |  |  |
-| *updateContactSection*(Profile p) |  |  |  |
-| *updateExperienceSection*(Profile p) |  |  |  |
-| *updateHeaderSection*(Profile p) |  |  |  |
-| *getIdentities*(java.lang.String providerId) | {{providerId}} is the id of provider | identities | To get the identity. |
-| *getIdentities*(java.lang.String providerId, boolean loadProfile) | {{providerId}} is the id of provider; {{loadProfile}} is the loaded profile. |identities | To get the identities. |
-| *getStorage*() |  |  | the storage | To get the storage. |
-| *setIdentityStorage*(IdentityStorage identityStorage)registerProfileListener |  |  |  |
-| *registerProfileListener*(ProfileListener listener)unregisterProfileListener |  |  |  |
-| *unregisterProfileListener*(ProfileListener listener)addProfileListener |  |  |  |
-| *addProfileListener*(ProfileListenerPlugin plugin) | {{plugin}} |  | To register a profile listener component plug-in. |
-| *getIdentityStorage*() |  |  |  |
-| *getConnections*(Identity ownerIdentity)| {{ownerIdentity}} | List<Identity> | Gets connections of an identity |
+|| Method || Param || Return || Description ||
+| *registerIdentityProviders(IdentityProviderPlugin plugin)* | {{plugin}}| |Registers one or more IdentityProvider through an IdentityProviderPlugin |
+| *getIdentity*(String id) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId() | null if nothing is found, or the Identity object | Gets the identity by id and to load his profile. |
+| *getIdentity*(String id, boolean loadProfile) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId(); {{loadProfile}} - the value is true if the profile is loaded and false if not loaded | null if nothing is found, or the Identity object | Gets the identity by loading id of the profile optionally. |
+| *deleteIdentity*(Identity identity)| {{identity}}| void |Deletes an identity. |
+| *addIdentityProvider*(IdentityProvider<?> idProvider)| {{idProvider}} is the id of provider | void  | Adds the id of provider. |
+| *getIdentitiesCount*(String providerId) | {{providerId}}|long |Gets the number of identities. |
+| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}} is the id of provider; {{remoteId}} is the remote id | identity | Gets the identity by a remote id. |
+| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId, boolean loadProfile) | {{providerId}} - referring to the name of the Identity provider; {{remoteId}} - the identifier that identify the identity in the specific identity provider; {{loadProfile}} is true when the profile is loaded | null if nothing is found, or the Identity object TODO improves the performance by specifying what needs to be loaded | Returns an Identity object that is specific to a special type. For example, if the type is Linked'In, the identifier will be the URL of profile or if it is a CS contact manager contact, it will be the UID of the contact. A new identity is created if it doesnot exist. |
+| *getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter)  throws Exception  | {{providerId}} is the id of provider; {{profileFilter}} is the filter of provider | the identities by the profile filter | Gets the identities by profile filter.|
+| *getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception | {{providerId, profileFilter, offset, limit,}} | List<Identity>  | Gets the identities by profile filter.|
+| *getIdentitiesByProfileFilter*(ProfileFilter profileFilter) throws Exception | {{profileFilter}} - the profile filter | the identities by profile filter | Gets the identities by profile filter. |
+| *getIdentitiesByProfileFilter*(ProfileFilter profileFilter, long offset, long limit) throws Exception|{{profileFilter, offset, limit}}  |List<Identity> |Gets the identities by profile filter.  |
+| *getIdentitiesFilterByAlphaBet*(java.lang.String providerId, ProfileFilter profileFilter) throws Exception | {{providerId}} is the id of provider; {{profileFilter}} is the profile filter | the identities filter by alphabet | Gets the identities filter by alpha bet. |
+| *getIdentitiesFilterByAlphaBet*(String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception |{{providerId, profileFilter, offset, limit}} |List<Identity>| Gets the identities filter by alpha bet by specifying offset and limit.|
+| *getIdentitiesFilterByAlphaBet*(ProfileFilter profileFilter) throws Exception | {{profileFilter}} - the profile filter | the identities filter by alphabet | Gets the identities filter by alphabet. |
+| *getIdentity*(java.lang.String providerId, java.lang.String remoteId, boolean loadProfile) | {{providerId}}; {{remoteId}}; {{loadProfile}} | Identity | Gets the identity. |
+| *identityExisted*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}}; {{remoteId}} | boolean | Checks if the identity is already existed or not. |
+| *saveIdentity*(Identity identity) | {{identity}} is the identity | void | Saves the identity. |
+| *saveProfile*(Profile profile)|{{profile}}|void|Saves a profile.|
+| *updateAvatar*(Profile p) throws Exception | {{p - profile}} | void | Updates avatar. |
+| *updateBasicInfo*(Profile p) throws Exception  | {{p - profile}} | Profile | Updates basic info of a profile. |
+| *updateContactSection*(Profile p)throws Exception | {{p - profile}} | void | Updates the contact section of a profile.  |
+| *updateExperienceSection*(Profile p) throws Exception| {{p - profile}} | void  | Updates the experience section of a profile.  |
+| *updateHeaderSection*(Profile p)throws Exception | {{p - profile}}  | void  | Updates the header section of profile.   |
+| *getIdentities*(java.lang.String providerId) throws Exception  | {{providerId}} is the id of provider | List<Identity>| Gets the identity. |
+| *getIdentities*(java.lang.String providerId, boolean loadProfile) | {{providerId}} is the id of provider; {{loadProfile}} is the loaded profile. |List<Identity> | Gets the identities. |
+| *getConnections*(Identity ownerIdentity) throws Exception| {{ownerIdentity}} | List<Identity> | Gets connections of an identity |
+| *getStorage*() | {{N/A}} | IdentityStorage| Gets the storage. |
+| *setIdentityStorage*(IdentityStorage identityStorage) | {{identityStorage}}  | void  | Sets identityStorage. |
+| *registerProfileListener*(ProfileListener listener)unregisterProfileListener |{{listener}}  |void  | Registers a profile listener. |
+| *unregisterProfileListener*(ProfileListener listener) | {{listener}} | void  | Unregisters a profile listener. |
+| *addProfileListener*(ProfileListenerPlugin plugin) | {{plugin}} | void  | Registers a profile listener component plug-in. |
+| *getIdentityStorage*() | {{N/A}} | identityStorage | Gets identity storage.  |
 
 
 h1. Relationship Manager
+
 
 
