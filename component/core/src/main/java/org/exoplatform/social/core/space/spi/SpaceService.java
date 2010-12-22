@@ -23,16 +23,10 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 
 /**
- * <pre>
- * SpaceService provides methods for working with Space
+ * SpaceService provides methods for working with Space.
  *
- * Created by The eXo Platform SARL
- *
- * Author : dang.tung
- *          tungcnw@gmail.com
- *
- * August 29, 2008
- * </pre>
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since Aug 29, 2008
  */
 public interface SpaceService {
 
@@ -47,7 +41,7 @@ public interface SpaceService {
   List<Space> getAllSpaces() throws SpaceException;
 
   /**
-   * Get space by space name.
+   * Get a space by its space display name.
    *
    * @param spaceDisplayName
    * @return
@@ -226,14 +220,15 @@ public interface SpaceService {
 
   /**
    * De-initializes the applications of a space.
-   * Make sure to call this method before {@link #deleteSpace(Space)} or {@link #deleteSpace(String)}
+   * Make sure to call this method before {@link #deleteSpace(Space)} or {@link #deleteSpace(String)},
+   * Otherwise, the space is deleted but its pages and navigation still exists.
    * @param space the space
    * @throws SpaceException
    */
   void deInitApps(Space space) throws SpaceException;
 
   /**
-   * Adds a user to a space, the user will get the role as a member.
+   * Adds a user to a space, the user will get the "member" role in a space.
    *
    * @param space
    * @param userId
@@ -242,7 +237,7 @@ public interface SpaceService {
   void addMember(Space space, String userId) throws SpaceException;
 
   /**
-   * Adds a user to a space, the user will get the role as a member.
+   * Adds a user to a space, the user will get the "member" role in a space.
    *
    * @param spaceId
    * @param userId
@@ -292,10 +287,6 @@ public interface SpaceService {
   /**
    * Sets a member of a space as a manager.
    *
-   * If isLeader == true, that user will be assigned "manager" membership and the "member" memberhship will be removed.
-   * Otherwise, that user will be assigned "member" membership and the "manager" membership will be removed.
-   * However, if that user is the only manager, that user is not allowed to be removed from the manager membership.
-   *
    * @param space
    * @param userId
    * @param isLeader
@@ -305,10 +296,7 @@ public interface SpaceService {
 
   /**
    * Sets a member of a space as a manager.
-   * <p>
-   * If isLeader == true, that user will be assigned "manager" membership and the "member" membership will be removed.
-   * Otherwise, that user will be assigned "member" membership and the "manager" membership will be removed.
-   * </p>
+   *
    * @param spaceId
    * @param userId
    * @param isLeader

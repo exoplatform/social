@@ -538,6 +538,9 @@ public class SpaceServiceImpl implements SpaceService {
 
   /**
    * {@inheritDoc}
+   * If isLeader == true, that user will be assigned "manager" membership and the "member" memberhship will be removed.
+   * Otherwise, that user will be assigned "member" membership and the "manager" membership will be removed.
+   * However, if that user is the only manager, that user is not allowed to be removed from the manager membership.
    */
   public void setLeader(Space space, String userId, boolean isLeader) throws SpaceException {
     try {
@@ -581,6 +584,9 @@ public class SpaceServiceImpl implements SpaceService {
 
   /**
    * {@inheritDoc}
+   *
+   * If isLeader == true, that user will be assigned "manager" membership and the "member" membership will be removed.
+   * Otherwise, that user will be assigned "member" membership and the "manager" membership will be removed.
    */
   public void setLeader(String spaceId, String userId, boolean isLeader) throws SpaceException {
     setLeader(getSpaceById(spaceId), userId, isLeader);
@@ -589,19 +595,7 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  public boolean isLeader(Space space, String userId) throws SpaceException {
-    try {
-      OrganizationService orgService = getOrgService();
-      MembershipHandler memberShipHandler = orgService.getMembershipHandler();
-
-      return (memberShipHandler.findMembershipByUserGroupAndType(userId,
-                                                                 space.getGroupId(),
-                                                                 MANAGER) != null);
-
-    } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_MEMBER_LIST, e);
-    }
-  }
+  public boolean isLeader(Space space, String userId) throws SpaceException cl
 
   /**
    * {@inheritDoc}
