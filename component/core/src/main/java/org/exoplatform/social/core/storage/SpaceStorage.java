@@ -22,6 +22,8 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
@@ -38,7 +40,6 @@ import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.model.SpaceAttachment;
 
 
 public class SpaceStorage {
@@ -59,6 +60,26 @@ public class SpaceStorage {
   final static private String SPACE_VISIBILITY = "exo:visibility".intern();
   final static private String SPACE_REGISTRATION = "exo:registration".intern();
   final static private String SPACE_PRIORITY = "exo:priority".intern();
+
+  private static final String SPACE_PROPERTIES_NAME_PATTERN;
+  static {
+    StringBuilder buffer = new StringBuilder(256);
+    final char separator = '|';
+    buffer.append(SPACE_NAME).append(separator);
+    buffer.append(SPACE_GROUPID).append(separator);
+    buffer.append(SPACE_APP).append(separator);
+    buffer.append(SPACE_PARENT).append(separator);
+    buffer.append(SPACE_DESCRIPTION).append(separator);
+    buffer.append(SPACE_TAG).append(separator);
+    buffer.append(SPACE_PENDING_USER).append(separator);
+    buffer.append(SPACE_INVITED_USER).append(separator);
+    buffer.append(SPACE_TYPE).append(separator);
+    buffer.append(SPACE_URL).append(separator);
+    buffer.append(SPACE_VISIBILITY).append(separator);
+    buffer.append(SPACE_REGISTRATION).append(separator);
+    buffer.append(SPACE_PRIORITY);
+    SPACE_PROPERTIES_NAME_PATTERN = buffer.toString();
+  }
 
   //new change
   private SocialDataLocation dataLocation;
@@ -331,19 +352,38 @@ public class SpaceStorage {
   private Space getSpace(Node spaceNode, Session session) throws Exception{
     Space space = new Space();
     space.setId(spaceNode.getUUID());
-    if(spaceNode.hasProperty(SPACE_NAME)) space.setName(spaceNode.getProperty(SPACE_NAME).getString());
-    if(spaceNode.hasProperty(SPACE_GROUPID)) space.setGroupId(spaceNode.getProperty(SPACE_GROUPID).getString());
-    if(spaceNode.hasProperty(SPACE_APP)) space.setApp(spaceNode.getProperty(SPACE_APP).getString());
-    if(spaceNode.hasProperty(SPACE_PARENT)) space.setParent(spaceNode.getProperty(SPACE_PARENT).getString());
-    if(spaceNode.hasProperty(SPACE_DESCRIPTION)) space.setDescription(spaceNode.getProperty(SPACE_DESCRIPTION).getString());
-    if(spaceNode.hasProperty(SPACE_TAG)) space.setTag(spaceNode.getProperty(SPACE_TAG).getString());
-    if(spaceNode.hasProperty(SPACE_PENDING_USER)) space.setPendingUsers(ValuesToStrings(spaceNode.getProperty(SPACE_PENDING_USER).getValues()));
-    if(spaceNode.hasProperty(SPACE_INVITED_USER)) space.setInvitedUsers(ValuesToStrings(spaceNode.getProperty(SPACE_INVITED_USER).getValues()));
-    if(spaceNode.hasProperty(SPACE_TYPE)) space.setType(spaceNode.getProperty(SPACE_TYPE).getString());
-    if(spaceNode.hasProperty(SPACE_URL)) space.setUrl(spaceNode.getProperty(SPACE_URL).getString());
-    if(spaceNode.hasProperty(SPACE_VISIBILITY)) space.setVisibility(spaceNode.getProperty(SPACE_VISIBILITY).getString());
-    if(spaceNode.hasProperty(SPACE_REGISTRATION)) space.setRegistration(spaceNode.getProperty(SPACE_REGISTRATION).getString());
-    if(spaceNode.hasProperty(SPACE_PRIORITY)) space.setPriority(spaceNode.getProperty(SPACE_PRIORITY).getString());
+
+    PropertyIterator it = spaceNode.getProperties(SPACE_PROPERTIES_NAME_PATTERN);
+    while (it.hasNext()) {
+      Property p = it.nextProperty();
+      String propertyName = p.getName();
+      if (SPACE_NAME.equals(propertyName))
+        space.setName(p.getString());
+      else if (SPACE_GROUPID.equals(propertyName))
+        space.setGroupId(p.getString());
+      else if (SPACE_APP.equals(propertyName))
+        space.setApp(p.getString());
+      else if (SPACE_PARENT.equals(propertyName))
+        space.setParent(p.getString());
+      else if (SPACE_DESCRIPTION.equals(propertyName))
+        space.setDescription(p.getString());
+      else if (SPACE_TAG.equals(propertyName))
+        space.setTag(p.getString());
+      else if (SPACE_PENDING_USER.equals(propertyName))
+        space.setPendingUsers(convertValuesToStrings(p.getValues()));
+      else if (SPACE_INVITED_USER.equals(propertyName))
+        space.setInvitedUsers(convertValuesToStrings(p.getValues()));
+      else if (SPACE_TYPE.equals(propertyName))
+        space.setType(p.getString());
+      else if (SPACE_URL.equals(propertyName))
+        space.setUrl(p.getString());
+      else if (SPACE_VISIBILITY.equals(propertyName))
+        space.setVisibility(p.getString());
+      else if (SPACE_REGISTRATION.equals(propertyName))
+        space.setRegistration(p.getString());
+      else if (SPACE_PRIORITY.equals(propertyName))
+        space.setPriority(p.getString());
+    }
     if(spaceNode.hasNode("image")){
       Node image = spaceNode.getNode("image");
       if (image.isNodeType("nt:file")) {
@@ -365,7 +405,7 @@ public class SpaceStorage {
     return space;
   }
 
-  private String [] ValuesToStrings(Value[] Val) throws Exception {
+  private String [] convertValuesToStrings(Value[] Val) throws Exception {
     if(Val.length == 1) return new String[]{Val[0].getString()};
     String[] Str = new String[Val.length];
     for(int i = 0; i < Val.length; ++i) {

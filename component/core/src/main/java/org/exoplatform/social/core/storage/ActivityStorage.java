@@ -24,6 +24,8 @@ import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
@@ -107,6 +109,28 @@ public class ActivityStorage {
 
   /** The Constant LIKE_IDENTITY_IDS. */
   private static final String PARAMS = "exo:params";
+
+  private static final String ACTIVITY_PROPERTIES_NAME_PATTERN;
+  static {
+    StringBuilder buffer = new StringBuilder(256);
+    char separator = '|';
+    buffer.append(BODY).append(separator);
+    buffer.append(EXTERNAL_ID).append(separator);
+    buffer.append(HIDDEN).append(separator);
+    buffer.append(POSTED_TIME).append(separator);
+    buffer.append(PRIORITY).append(separator);
+    buffer.append(TITLE).append(separator);
+    buffer.append(TYPE).append(separator);
+    buffer.append(REPLY_TO_ID).append(separator);
+    buffer.append(UPDATED_TIMESTAMP).append(separator);
+    buffer.append(URL).append(separator);
+    buffer.append(USER_ID).append(separator);
+    buffer.append(LIKE_IDENTITY_IDS).append(separator);
+    buffer.append(PARAMS).append(separator);
+    buffer.append(TITLE_TEMPLATE).append(separator);
+    buffer.append(BODY_TEMPLATE);
+    ACTIVITY_PROPERTIES_NAME_PATTERN = buffer.toString();
+  }
 
   /** The data location. */
   private SocialDataLocation dataLocation;
@@ -599,51 +623,43 @@ public class ActivityStorage {
       activity.setId(activityNode.getUUID());
       setStreamInfo(activity, activityNode);
 
-      if (activityNode.hasProperty(BODY)) {
-        activity.setBody(activityNode.getProperty(BODY).getString());
-      }
-      if (activityNode.hasProperty(EXTERNAL_ID)) {
-        activity.setExternalId(activityNode.getProperty(EXTERNAL_ID).getString());
-      }
-      if (activityNode.hasProperty(HIDDEN)) {
-        activity.setHidden(activityNode.getProperty(HIDDEN).getBoolean());
-      }
-      if (activityNode.hasProperty(POSTED_TIME)) {
-        activity.setPostedTime(activityNode.getProperty(POSTED_TIME).getLong());
-      }
-      if (activityNode.hasProperty(PRIORITY)) {
-        activity.setPriority((int) activityNode.getProperty(PRIORITY).getLong());
-      }
-      if (activityNode.hasProperty(TITLE)) {
-        activity.setTitle(activityNode.getProperty(TITLE).getString());
-      }
-      if (activityNode.hasProperty(TYPE)) {
-        activity.setType(activityNode.getProperty(TYPE).getString());
-      }
-      if (activityNode.hasProperty(REPLY_TO_ID)) {
-        activity.setReplyToId(activityNode.getProperty(REPLY_TO_ID).getString());
-      }
-      if (activityNode.hasProperty(UPDATED_TIMESTAMP)) {
-        activity.setUpdatedTimestamp(activityNode.getProperty(UPDATED_TIMESTAMP).getLong());
-      }
-      if (activityNode.hasProperty(URL)) {
-        activity.setUrl(activityNode.getProperty(URL).getString());
-      }
-      //TODO: replace by a reference to the identity node
-      if (activityNode.hasProperty(USER_ID)) {
-        activity.setUserId(activityNode.getProperty(USER_ID).getString());
-      }
-      if (activityNode.hasProperty(LIKE_IDENTITY_IDS)) {
-        activity.setLikeIdentityIds(ValuesToStrings(activityNode.getProperty(LIKE_IDENTITY_IDS).getValues()));
-      }
-      if(activityNode.hasProperty(PARAMS)) {
-        activity.setTemplateParams(valuesToMap(activityNode.getProperty(PARAMS).getValues()));
-      }
-      if(activityNode.hasProperty(TITLE_TEMPLATE)) {
-        activity.setTitleId(activityNode.getProperty(TITLE_TEMPLATE).getString());
-      }
-      if(activityNode.hasProperty(BODY_TEMPLATE)) {
-        activity.setBodyId(activityNode.getProperty(BODY_TEMPLATE).getString());
+      PropertyIterator it = activityNode.getProperties(ACTIVITY_PROPERTIES_NAME_PATTERN);
+      while (it.hasNext()) {
+        Property p = it.nextProperty();
+        String propertyName = p.getName();
+        if (BODY.equals(propertyName)) {
+          activity.setBody(p.getString());
+        } else if (EXTERNAL_ID.equals(propertyName)) {
+          activity.setExternalId(p.getString());
+        } else if (HIDDEN.equals(propertyName)) {
+          activity.setHidden(p.getBoolean());
+        } else if (POSTED_TIME.equals(propertyName)) {
+          activity.setPostedTime(p.getLong());
+        } else if (PRIORITY.equals(propertyName)) {
+          activity.setPriority((int) p.getLong());
+        } else if (TITLE.equals(propertyName)) {
+          activity.setTitle(p.getString());
+        } else if (TYPE.equals(propertyName)) {
+          activity.setType(p.getString());
+        } else if (REPLY_TO_ID.equals(propertyName)) {
+          activity.setReplyToId(p.getString());
+        } else if (UPDATED_TIMESTAMP.equals(propertyName)) {
+          activity.setUpdatedTimestamp(p.getLong());
+        } else if (URL.equals(propertyName)) {
+          activity.setUrl(p.getString());
+        }
+        // TODO: replace by a reference to the identity node
+        else if (USER_ID.equals(propertyName)) {
+          activity.setUserId(p.getString());
+        } else if (LIKE_IDENTITY_IDS.equals(propertyName)) {
+          activity.setLikeIdentityIds(ValuesToStrings(p.getValues()));
+        } else if (PARAMS.equals(propertyName)) {
+          activity.setTemplateParams(valuesToMap(p.getValues()));
+        } else if (TITLE_TEMPLATE.equals(propertyName)) {
+          activity.setTitleId(p.getString());
+        } else if (BODY_TEMPLATE.equals(propertyName)) {
+          activity.setBodyId(p.getString());
+        }
       }
     } catch (UnsupportedRepositoryOperationException e) {
       LOG.warn(e.getMessage(), e);
