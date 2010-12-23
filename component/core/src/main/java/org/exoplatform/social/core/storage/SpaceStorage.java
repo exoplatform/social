@@ -405,11 +405,11 @@ public class SpaceStorage {
     return space;
   }
 
-  private String [] convertValuesToStrings(Value[] Val) throws Exception {
-    if(Val.length == 1) return new String[]{Val[0].getString()};
-    String[] Str = new String[Val.length];
-    for(int i = 0; i < Val.length; ++i) {
-      Str[i] = Val[i].getString();
+  private String [] convertValuesToStrings(Value[] values) throws Exception {
+    if(values.length == 1) return new String[]{values[0].getString()};
+    String[] Str = new String[values.length];
+    for(int i = 0; i < values.length; ++i) {
+      Str[i] = values[i].getString();
     }
     return Str;
   }

@@ -652,9 +652,9 @@ public class ActivityStorage {
         else if (USER_ID.equals(propertyName)) {
           activity.setUserId(p.getString());
         } else if (LIKE_IDENTITY_IDS.equals(propertyName)) {
-          activity.setLikeIdentityIds(ValuesToStrings(p.getValues()));
+          activity.setLikeIdentityIds(convertValuesToStrings(p.getValues()));
         } else if (PARAMS.equals(propertyName)) {
-          activity.setTemplateParams(valuesToMap(p.getValues()));
+          activity.setTemplateParams(convertValuesToMap(p.getValues()));
         } else if (TITLE_TEMPLATE.equals(propertyName)) {
           activity.setTitleId(p.getString());
         } else if (BODY_TEMPLATE.equals(propertyName)) {
@@ -676,7 +676,7 @@ public class ActivityStorage {
    * @param values
    * @return
    */
-  private Map<String, String> valuesToMap(Value[] values) {
+  private Map<String, String> convertValuesToMap(Value[] values) {
     if (values == null) {
       return null;
     }
@@ -717,15 +717,15 @@ public class ActivityStorage {
   /**
    * Values to strings.
    *
-   * @param Val the jcr value
+   * @param values the jcr value
    * @return the string[]
    * @throws Exception the exception
    */
-  private String [] ValuesToStrings(Value[] Val) throws Exception {
-    if(Val.length == 1) return new String[]{Val[0].getString()};
-    String[] Str = new String[Val.length];
-    for(int i = 0; i < Val.length; ++i) {
-      Str[i] = Val[i].getString();
+  private String [] convertValuesToStrings(Value[] values) throws Exception {
+    if(values.length == 1) return new String[]{values[0].getString()};
+    String[] Str = new String[values.length];
+    for(int i = 0; i < values.length; ++i) {
+      Str[i] = values[i].getString();
     }
     return Str;
   }
