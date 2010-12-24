@@ -56,10 +56,36 @@ h1. IdentityManager
 | *registerProfileListener*(ProfileListener listener)unregisterProfileListener |{{listener}}  |void  | Registers a profile listener. |
 | *unregisterProfileListener*(ProfileListener listener) | {{listener}} | void  | Unregisters a profile listener. |
 | *addProfileListener*(ProfileListenerPlugin plugin) | {{plugin}} | void  | Registers a profile listener component plug-in. |
-| *getIdentityStorage*() | {{N/A}} | identityStorage | Gets identity storage.  |
+| *getIdentityStorage*() | {{N/A}} | IdentityStorage | Gets identity storage.  |
 
 
-h1. Relationship Manager
+h1. RelationshipManager
+
+|| Method || Param || Return || Description ||
+|*getRelationshipById*(String id) throws Exception|{{id}}|Relationship |Gets relationship the by id.|
+|*invite*(Identity currIdentity, Identity requestedIdentity) throws Exception|{{currIdentity}} - The current identity, {{requestedIdentity}} - The requested identity}}|Relationship|Creates a connection invitation between two identities.|
+|*confirm*(Relationship relationship) throws Exception|{{relationship}}|void|Marks a relationship as confirmed.|
+|*deny*(Relationship relationship) throws Exception|{{relationship}}|void|Denies a relationship.|
+|*remove*(Relationship relationship) throws Exception|{{relationship}}|void|Removes a relationship.|
+|*ignore*(Relationship relationship) throws Exception|{{relationship}}|void |Marks a relationship as ignored.|
+|*getPendingRelationships*(Identity identity) throws Exception |{{identity}}|List<Relationship>|Returns all the pending relationships of the identity, including sent and received relationships of the pending type.|
+|*getPendingRelationships*(Identity identity, boolean toConfirm) throws Exception|{{identity, toConfirm}}|List<Relationship>|If toConfirm is true, it returns a list of the pending relationship received, but not confirmed; if toConfirm is false, it returns a list of the relationship sent, but not confirmed yet.|
+|*getPendingRelationships*(Identity currIdentity, List<Identity> identities, boolean toConfirm) throws Exception|{{currIdentity}} - the current identity, {{identities}} - the identities, {{toConfirm}} - |List<Relationship> |Gets the pending relations in two cases:{example}{example} - If toConfirm is true, it returns a list of the pending relationships received, but not confirmed.{example}{example} - If toConfirm is false, it returns a list of the relationships sent, but not confirmed yet.|
+|*getContacts*(Identity currIdentity, List<Identity> identities) throws Exception|{{currIdentity}} - the current identity, {{identities}} - the identities, |List<Relationship> |Gets contacts that matches the search result.|
+|*getContacts*(Identity identity) throws Exception|{{identity}}|List<Relationship>|Gets the contacts of the identity.|
+|*getAllRelationships*(Identity identity) throws Exception|{{identity }}|List<Relationship> |Returns all the relationships associated with a given identity.|
+|*getRelationshipsByIdentityId*(String id) throws Exception|{{id}}|List<Relationship>|Returns all the relationships associated with a given identityId.|
+|*getIdentities*(Identity id) throws Exception|{{id}}|List<Identity> |Returns all the identities associated with a given identity and checks whether the relation has been validated or not.|
+|*create*(Identity sender, Identity receiver)|{{sender, receiver}}|Relationship |Creates the relationship.|
+|*saveRelationship*(Relationship relationship) throws Exception|{{relationship}}|void|Saves the relationship.|
+|*updateRelationshipCached*(Relationship relationship)|{{relationship}}|void|Updates the relationship cached.|
+|*findRoute*(Identity sender, Identity receiver) throws NotSupportedException|{{sender,receiver}}|Relationship|Finds a route.|
+|*findRelationships*(Identity ownerIdentity, Relationship.Type relationshipType) throws Exception|{{ownerIdentity, relationshipType}}|List<Identity> | Finds all identities having relationshipType with the ownerIdentity.(Since 1.1.2).|
+|*getRelationshipStatus*(Relationship rel, Identity id)|{{rel, id }}|Relationship.Type |Gets the relationship type of the relationship with the identity.|
+|*getConnectionStatus*(Identity fromIdentity, Identity toIdentity) throws Exception|{{fromIdentity, toIdentity}}|Relationship.Type |Gets the connection type between two identities. (Since 1.1.1).|
+|*registerListener*(RelationshipListener listener)|{{listener}}|void|Registers the RelationshipListener.|
+|*unregisterListener*(RelationshipListener listener)|{{listener}}|void|Removes the RelationshipListener.|
+|*addListenerPlugin*(RelationshipListenerPlugin plugin)|{{plugin}}|void| Adds the plugin.|
 
 
 
