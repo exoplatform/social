@@ -84,6 +84,9 @@ public class UIPendingRelation extends UIContainer {
 
   /** Stores identities. */
   private List<Identity> identityList;
+  
+  /** The first page. */
+  private static final int FIRST_PAGE = 1;
 
   /**
    * Gets identities.
@@ -138,15 +141,13 @@ public class UIPendingRelation extends UIContainer {
       return null;
     int currentPage = uiPageIterator_.getCurrentPage();
     LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
-
     uiPageIterator_.setPageList(pageList) ;
-    int pageCount = uiPageIterator_.getAvailablePage();
-    if(pageCount >= currentPage){
+    if (this.uiProfileUserSearchPending.isNewSearch()) {
+      uiPageIterator_.setCurrentPage(FIRST_PAGE);
+    } else {
       uiPageIterator_.setCurrentPage(currentPage);
-    }else if(pageCount < currentPage){
-      uiPageIterator_.setCurrentPage(currentPage-1);
     }
-
+    this.uiProfileUserSearchPending.setNewSearch(false);
     return uiPageIterator_.getCurrentPageData();
   }
 

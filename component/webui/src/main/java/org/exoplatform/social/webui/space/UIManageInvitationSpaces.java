@@ -64,6 +64,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   static private final String MSG_ERROR_DENY_INVITATION = "UIManageInvitationSpaces.msg.error_deny_invitation";
   private static final String SPACE_DELETED_INFO = "UIManageInvitationSpaces.msg.DeletedInfo";
   private static final String INVITATION_REVOKED_INFO = "UIManageInvitationSpaces.msg.RevokedInfo";
+  /** The first page */
+  private static final int FIRST_PAGE = 1;
 
   static public final Integer LEADER = 1, MEMBER = 2;
 
@@ -74,7 +76,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   private String userId = null;
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
-
+  
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
    * @throws Exception
@@ -359,12 +361,12 @@ public class UIManageInvitationSpaces extends UIContainer {
     int currentPage = pageIterator_.getCurrentPage();
     LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
     pageIterator_.setPageList(pageList);
-    int pageCount = pageIterator_.getAvailablePage();
-    if (pageCount >= currentPage) {
-      pageIterator_.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      pageIterator_.setCurrentPage(currentPage - 1);
+    if (this.uiSpaceSearch.isNewSearch()) {
+    	pageIterator_.setCurrentPage(FIRST_PAGE);
+    } else {
+    	pageIterator_.setCurrentPage(currentPage);
     }
+    this.uiSpaceSearch.setNewSearch(false);
     return pageIterator_.getCurrentPageData();
   }
 }

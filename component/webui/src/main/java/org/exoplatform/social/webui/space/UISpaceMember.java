@@ -99,6 +99,8 @@ public class UISpaceMember extends UIForm {
   static private final String MSG_ERROR_DECLINE_USER   = "UISpaceMember.msg.error_decline_user";
   static private final String MSG_ERROR_VALIDATE_USER  = "UISpaceMember.msg.error_validate_user";
   static private final String MSG_ERROR_MAKE_LEADER    = "UISpaceMember.msg.error_make_leader";
+  /** The first page. */
+  private static final int FIRST_PAGE = 1;
 
   private String spaceId;
   private SpaceService spaceService = null;
@@ -110,6 +112,10 @@ public class UISpaceMember extends UIForm {
   private final String iteratorInvitedID = "UIIteratorInvited";
   private final String iteratorExistingID = "UIIteratorExisting";
   private final Integer ITEMS_PER_PAGE = 5;
+  
+  /** The flag notifies a new search when clicks search icon or presses enter. */
+  private boolean isNewSearch;
+  
 
   /**
    * constructor
@@ -221,7 +227,6 @@ public class UISpaceMember extends UIForm {
     } else if (pageCount < currentPage) {
       iteratorPendingUsers.setCurrentPage(currentPage - 1);
     }
-
     return iteratorPendingUsers.getCurrentPageData();
   }
 
@@ -271,13 +276,12 @@ public class UISpaceMember extends UIForm {
     int currentPage = iteratorExistingUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(spaceService.getMembers(space)), ITEMS_PER_PAGE);
     iteratorExistingUsers.setPageList(pageList);
-    int pageCount = iteratorExistingUsers.getAvailablePage();
-    if (pageCount >= currentPage) {
+    if (this.isNewSearch()) {
+      iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
+    } else {
       iteratorExistingUsers.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      iteratorExistingUsers.setCurrentPage(currentPage - 1);
     }
-
+    this.setNewSearch(false);
     return iteratorExistingUsers.getCurrentPageData();
   }
 
@@ -392,6 +396,7 @@ public class UISpaceMember extends UIForm {
       UISpaceMember uiSpaceMember = event.getSource();
       UIPopupWindow searchUserPopup = uiSpaceMember.getChild(UIPopupWindow.class);
       UIUserSelector userSelector = uiSpaceMember.createUIComponent(UIUserSelector.class, null, null);
+      uiSpaceMember.setNewSearch(true);
       userSelector.setShowSearchGroup(false);
       searchUserPopup.setUIComponent(userSelector);
       searchUserPopup.setShow(true);
@@ -741,5 +746,13 @@ public class UISpaceMember extends UIForm {
    */
   private String getRemoteUser() throws Exception {
     return Util.getPortalRequestContext().getRemoteUser();
+  }
+
+  public boolean isNewSearch() {
+    return isNewSearch;
+  }
+
+  public void setNewSearch(boolean isNewSearch) {
+    this.isNewSearch = isNewSearch;
   }
 }

@@ -58,6 +58,10 @@ import org.exoplatform.webui.event.EventListener;
 public class UIManagePublicSpaces extends UIContainer {
   private static final String SPACE_DELETED_INFO = "UIPublicSpacePortlet.msg.DeletedInfo";
   static private final String MSG_ERROR_REQUEST_JOIN = "UIManagePublicSpaces.msg.error_request_join";
+  
+  /** The first page. */
+  private static final int FIRST_PAGE = 1;
+  
   private SpaceService spaceService = null;
   private String userId = null;
   private UIPageIterator iterator;
@@ -291,12 +295,12 @@ public class UIManagePublicSpaces extends UIContainer {
    int currentPage = iterator.getCurrentPage();
    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
    iterator.setPageList(pageList);
-   int pageCount = iterator.getAvailablePage();
-   if (pageCount >= currentPage) {
+   if (this.uiSpaceSearch.isNewSearch()) {
+     iterator.setCurrentPage(FIRST_PAGE);
+   } else {
      iterator.setCurrentPage(currentPage);
-   } else if (pageCount < currentPage) {
-     iterator.setCurrentPage(currentPage - 1);
    }
+   this.uiSpaceSearch.setNewSearch(false);
    return iterator.getCurrentPageData();
  }
 }

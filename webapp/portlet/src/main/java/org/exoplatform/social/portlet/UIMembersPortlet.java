@@ -78,6 +78,8 @@ public class UIMembersPortlet extends UIPortletApplication {
   private IdentityManager identityManager_ = null;
   private UIProfileUserSearch uiSearchMemberOfSpace = null;
   private List<Identity> identityList;
+  
+  private static final int FIRST_PAGE = 1;
 
   /**
    * gets identity list
@@ -173,13 +175,12 @@ public class UIMembersPortlet extends UIPortletApplication {
     int currentPage = iteratorMembers.getCurrentPage();
     LazyPageList<User> pageList = new LazyPageList<User>(new UserListAccess(memberList), ITEMS_PER_PAGE);
     iteratorMembers.setPageList(pageList);
-    int pageCount = iteratorMembers.getAvailablePage();
-    if (pageCount >= currentPage) {
+    if (this.uiSearchMemberOfSpace.isNewSearch()) {
+      iteratorMembers.setCurrentPage(FIRST_PAGE);
+    } else {
       iteratorMembers.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      iteratorMembers.setCurrentPage(currentPage - 1);
     }
-
+    this.uiSearchMemberOfSpace.setNewSearch(false);
     return iteratorMembers.getCurrentPageData();
   }
 

@@ -112,6 +112,9 @@ public class UIProfileUserSearch extends UIForm {
   /** Used stores filter information. */
   ProfileFilter              profileFilter             = null;
   
+  /** The flag notifies a new search when clicks search icon or presses enter. */
+  private boolean isNewSearch;
+  
   /** Number of identities. */
   long identitiesCount;
   
@@ -327,6 +330,7 @@ public class UIProfileUserSearch extends UIForm {
             }
           }
         }
+        uiSearch.setNewSearch(true);
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }
@@ -451,5 +455,13 @@ public class UIProfileUserSearch extends UIForm {
    */
   private static ArrayList<Identity> GetUniqueIdentities(Collection<Identity> identities) {
     return (ArrayList<Identity>) Union(identities, identities);
+  }
+
+  public boolean isNewSearch() {
+    return isNewSearch;
+  }
+
+  public void setNewSearch(boolean isNewSearch) {
+    this.isNewSearch = isNewSearch;
   }
 }

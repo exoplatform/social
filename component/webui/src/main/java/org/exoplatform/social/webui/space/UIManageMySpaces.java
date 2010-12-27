@@ -81,6 +81,9 @@ public class UIManageMySpaces extends UIContainer {
   private static final String SPACE_DELETED_INFO = "UIManageMySpaces.msg.DeletedInfo";
   private static final String MEMBERSHIP_REMOVED_INFO = "UIManageMySpaces.msg.MemberShipRemovedInfo";
   private static final String NAVIGATION_REMOVED_INFO = "UIManageMySpaces.msg.NavigationRemovedInfo";
+  
+  /** The first page. */
+  private static final int FIRST_PAGE = 1;
 
   
   private UIPageIterator iterator;
@@ -92,7 +95,7 @@ public class UIManageMySpaces extends UIContainer {
   private PageNavigation selectedNavigation;
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
-
+  
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
    * @throws Exception
@@ -453,12 +456,12 @@ public class UIManageMySpaces extends UIContainer {
     int currentPage = pageIterator_.getCurrentPage();
     LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces_), SPACES_PER_PAGE);
     pageIterator_.setPageList(pageList);
-    int pageCount = pageIterator_.getAvailablePage();
-    if (pageCount >= currentPage) {
+    if (this.uiSpaceSearch.isNewSearch()) {
+      pageIterator_.setCurrentPage(FIRST_PAGE);
+    } else {
       pageIterator_.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      pageIterator_.setCurrentPage(currentPage - 1);
     }
+    this.uiSpaceSearch.setNewSearch(false);
     return pageIterator_.getCurrentPageData();
   }
 
