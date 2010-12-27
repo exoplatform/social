@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.jcr.LockManager;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.IdentityProviderPlugin;
 import org.exoplatform.social.core.identity.model.GlobalId;
@@ -54,6 +56,9 @@ public class IdentityManager {
   private IdentityStorage identityStorage;
 
   private RelationshipManager relationshipManager;
+  
+  /** The Lock manager. */
+  private final LockManager lockManager;
 
   private final ExoCache<String, Identity> identityCacheById;
 
@@ -77,13 +82,15 @@ public class IdentityManager {
    * @param identityStorage
    * @param defaultIdentityProvider the builtin default identity provider to use when when no other  provider match
    * @param cacheService
+   * @param lockManager
    */
-  public IdentityManager(IdentityStorage identityStorage, IdentityProvider<?> defaultIdentityProvider, CacheService cacheService) {
+  public IdentityManager(IdentityStorage identityStorage, IdentityProvider<?> defaultIdentityProvider, CacheService cacheService, LockManager lockManager) {
     this.identityStorage = identityStorage;
     this.addIdentityProvider(defaultIdentityProvider);
     this.identityCacheById = cacheService.getCacheInstance(getClass().getName() + "identityCacheById");
     this.identityCache = cacheService.getCacheInstance(getClass().getName() + "identityCache");
     this.identityListCache = cacheService.getCacheInstance(getClass().getName() + "identityListCache");
+    this.lockManager = lockManager;
   }
 
 
@@ -242,31 +249,42 @@ public class IdentityManager {
     if (cachedIdentity == null) {
       IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
 
-      Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
-      Identity result = identityStorage.findIdentity(providerId, remoteId);
-      //FIXME make it clear here when both identity1 and result != null.
-      if(result == null) {
-        if (identity1 != null) { // identity is valid for provider, but no yet referenced in storage
-          saveIdentity(identity1);
-          identityStorage.saveProfile(identity1.getProfile());
-          result = identity1;
-        } else {
-          //Not found in provider, so return null
-          return result;
-        }
-      } else {
-        if (identity1 == null) {
-          //in the case: identity is stored but identity is not found from provider, delete that identity
-          identityStorage.deleteIdentity(result);
-          return null;
-        }
-        if (forceLoadProfile) {
-          identityStorage.loadProfile(result.getProfile());
-        }
-      }
-      cachedIdentity = result;
-      if (cachedIdentity.getId() != null) {
-        identityCache.put(globalIdCacheKey, cachedIdentity);
+      Lock lock = lockManager.getLock("Identity", remoteId);
+      lock.lock();
+      try {
+         // Ensure that the identity has not been loaded since we acquire the lock
+         cachedIdentity = identityCache.get(globalIdCacheKey);
+         if (cachedIdentity != null) {
+            return cachedIdentity;
+         }
+         Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
+         Identity result = identityStorage.findIdentity(providerId, remoteId);
+         //FIXME make it clear here when both identity1 and result != null.
+         if(result == null) {
+           if (identity1 != null) { // identity is valid for provider, but no yet referenced in storage
+             saveIdentity(identity1);
+             identityStorage.saveProfile(identity1.getProfile());
+             result = identity1;
+           } else {
+             //Not found in provider, so return null
+             return result;
+           }
+         } else {
+           if (identity1 == null) {
+             //in the case: identity is stored but identity is not found from provider, delete that identity
+             identityStorage.deleteIdentity(result);
+             return null;
+           }
+           if (forceLoadProfile) {
+             identityStorage.loadProfile(result.getProfile());
+           }
+         }
+         cachedIdentity = result;
+         if (cachedIdentity.getId() != null) {
+           identityCache.put(globalIdCacheKey, cachedIdentity);
+         }
+      } finally {
+        lock.unlock();
       }
     } else {
       if (forceLoadProfile) {
@@ -375,20 +393,31 @@ public class IdentityManager {
     Identity cachedIdentity = identityCache.get(globalIdCacheKey);
     if (cachedIdentity == null) {
       IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
-      cachedIdentity = identityProvider.getIdentityByRemoteId(remoteId);
-      if (cachedIdentity != null) {
-        Identity storedIdentity = identityStorage.findIdentity(providerId, remoteId);
-        if (storedIdentity != null) {
-          cachedIdentity.setId(storedIdentity.getId());
-          if (loadProfile) {
-            identityStorage.loadProfile(cachedIdentity.getProfile());
-          }
-        } else {
-          //save new identity
-          identityStorage.saveIdentity(cachedIdentity);
-        }
+      Lock lock = lockManager.getLock("Identity", remoteId);
+      lock.lock();
+      try {
+         // Ensure that the identity has not been loaded since we acquire the lock
+         cachedIdentity = identityCache.get(globalIdCacheKey);
+         if (cachedIdentity != null) {
+            return cachedIdentity;
+         }         
+         cachedIdentity = identityProvider.getIdentityByRemoteId(remoteId);
+         if (cachedIdentity != null) {
+           Identity storedIdentity = identityStorage.findIdentity(providerId, remoteId);
+           if (storedIdentity != null) {
+             cachedIdentity.setId(storedIdentity.getId());
+             if (loadProfile) {
+               identityStorage.loadProfile(cachedIdentity.getProfile());
+             }
+           } else {
+             //save new identity
+             identityStorage.saveIdentity(cachedIdentity);
+           }
+         }
+         identityCache.put(globalIdCacheKey, cachedIdentity);
+      } finally {
+        lock.unlock();
       }
-      identityCache.put(globalIdCacheKey, cachedIdentity);
     }
 
     return cachedIdentity;
@@ -411,13 +440,19 @@ public class IdentityManager {
    * @param identity the identity
    */
   public void saveIdentity(Identity identity) {
-    identityStorage.saveIdentity(identity);
-    getIdentityProvider(identity.getProviderId()).onSaveIdentity(identity);
-    if (identity.getId() != null) {
-      identityCacheById.remove(identity.getId());
-      identityCache.remove(identity.getGlobalId());
+    Lock lock = lockManager.getLock("Identity", identity.getRemoteId());
+    lock.lock();
+    try {
+      identityStorage.saveIdentity(identity);
+      getIdentityProvider(identity.getProviderId()).onSaveIdentity(identity);
+      if (identity.getId() != null) {
+        identityCacheById.remove(identity.getId());
+        identityCache.remove(identity.getGlobalId());
+      }
+      identityListCache.remove(identity.getProviderId());
+    } finally {
+      lock.unlock();
     }
-    identityListCache.remove(identity.getProviderId());
   }
 
   /**

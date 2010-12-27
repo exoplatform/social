@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 import java.util.regex.Pattern;
 
 import javax.jcr.ItemNotFoundException;
@@ -57,6 +58,7 @@ import org.exoplatform.services.jcr.impl.core.value.StringValue;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
+import org.exoplatform.social.common.jcr.LockManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -125,18 +127,18 @@ public class IdentityStorage {
    */
   private JCRSessionManager sessionManager;
 
-  private Node identityServiceHome;
-
-  private Node profileServiceHome;
-
   private IdentityManager identityManager;
-  
+
+  /** The Lock manager. */
+  private final LockManager lockManager;
+
   /**
    * Instantiates a new jCR storage.
    *
    * @param dataLocation the data location
    */
-  public IdentityStorage(final SocialDataLocation dataLocation) {
+  public IdentityStorage(final SocialDataLocation dataLocation, final LockManager lockManager) {
+    this.lockManager = lockManager;
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
   }
@@ -149,17 +151,15 @@ public class IdentityStorage {
    * @throws Exception the exception
    */
   private Node getIdentityServiceHome(final Session session) {
-    if (identityServiceHome == null) {
+    try {
       String path = dataLocation.getSocialIdentityHome();
-      try {
-        identityServiceHome = session.getRootNode().getNode(path);
-      } catch (PathNotFoundException e) {
-        LOG.warn(e.getMessage(), e);
-      } catch (RepositoryException e) {
-        LOG.warn(e.getMessage(), e);
-      }
+      return session.getRootNode().getNode(path);
+    } catch (PathNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
     }
-    return identityServiceHome;
+    return null;
   }
 
   /**
@@ -183,11 +183,8 @@ public class IdentityStorage {
    * @throws Exception the exception
    */
   private Node getProfileServiceHome(final Session session) throws Exception {
-    if (profileServiceHome == null) {
-      String path = dataLocation.getSocialProfileHome();
-      profileServiceHome = session.getRootNode().getNode(path);
-    }
-    return profileServiceHome;
+    String path = dataLocation.getSocialProfileHome();
+    return session.getRootNode().getNode(path);
   }
 
   /**
@@ -197,36 +194,43 @@ public class IdentityStorage {
    */
   public final void saveIdentity(final Identity identity) {
     Identity checkingIdentity = null;
-    checkingIdentity = findIdentity(identity.getProviderId(), identity.getRemoteId());
-
-    Session session = sessionManager.getOrOpenSession();
+    Lock lock = lockManager.getLock("Identity", identity.getRemoteId());
+    lock.lock();
     try {
-      Node identityNode;
-      Node identityHomeNode = getIdentityServiceHome(session);
+      checkingIdentity = findIdentity(identity.getProviderId(), identity.getRemoteId());
 
-      if (identity.getId() == null) {
-        if (checkingIdentity == null) {
-          identityNode = identityHomeNode.addNode(IDENTITY_NODETYPE, IDENTITY_NODETYPE);
-          identityNode.addMixin(REFERENCEABLE_NODE);
+      Session session = sessionManager.getOrOpenSession();
+      try {
+        Node identityNode;
+        Node identityHomeNode = getIdentityServiceHome(session);
+
+        if (identity.getId() == null) {
+          if (checkingIdentity == null) {
+            identityNode = identityHomeNode.addNode(identity.getRemoteId(), IDENTITY_NODETYPE);
+            identityNode.addMixin(REFERENCEABLE_NODE);
+          } else {
+            identityNode = session.getNodeByUUID(checkingIdentity.getId());
+          }
         } else {
-          identityNode = session.getNodeByUUID(checkingIdentity.getId());
+          identityNode = session.getNodeByUUID(identity.getId());
         }
-      } else {
-        identityNode = session.getNodeByUUID(identity.getId());
-      }
-      identityNode.setProperty(IDENTITY_REMOTEID, identity.getRemoteId());
-      identityNode.setProperty(IDENTITY_PROVIDERID, identity.getProviderId());
+        identityNode.setProperty(IDENTITY_REMOTEID, identity.getRemoteId());
+        identityNode.setProperty(IDENTITY_PROVIDERID, identity.getProviderId());
 
-      if (identity.getId() == null) {
-        identityHomeNode.save();
-        identity.setId(identityNode.getUUID());
-      } else {
-        identityNode.save();
+        if (identity.getId() == null) {
+          identityHomeNode.save();
+          identity.setId(identityNode.getUUID());
+        } else {
+          identityNode.save();
+        }
+      } catch (Exception e) {
+        LOG.error("failed to save identity " + identity, e);
+      } finally {
+        sessionManager.closeSession();
       }
-    } catch (Exception e) {
-      LOG.error("failed to save identity " + identity, e);
-    } finally {
-      sessionManager.closeSession();
+    }
+    finally {
+      lock.unlock();
     }
   }
 
@@ -411,7 +415,7 @@ public class IdentityStorage {
 
       QueryBuilder queryBuilder = new QueryBuilder(session)
               .select(PROFILE_NODETYPE, offset, limit)
-              .like("jcr:path", profileHomeNode.getPath() + "[%]/" + PROFILE_NODETYPE + "[%]");
+              .like("jcr:path", profileHomeNode.getPath() + "[%]/%");
 
       for (String namePart : nameParts) {
         if (namePart != "") {
@@ -428,9 +432,9 @@ public class IdentityStorage {
       }
 
       queryBuilder.orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);
-      
+
       nodes = queryBuilder.exec();
-  
+
       for (Node profileNode : nodes) {
         Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
         Identity identity = getIdentityManager().getIdentity(identityNode.getUUID(), false);
@@ -493,7 +497,7 @@ public class IdentityStorage {
   public final List<Identity> getIdentitiesFilterByAlphaBet(final String identityProvider, final ProfileFilter profileFilter, final long offset, final long limit) throws Exception {
     List<Identity> listIdentity = new ArrayList<Identity>();
     List<Node> nodes = null;
-    
+
     try {
       Session session = sessionManager.getOrOpenSession();
       Node profileHomeNode = getProfileServiceHome(session);
@@ -510,7 +514,7 @@ public class IdentityStorage {
       }
 
       queryBuilder.orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);
-      
+
       nodes = queryBuilder.exec();
       for (Node profileNode : nodes) {
         Node identityNode = profileNode.getProperty(PROFILE_IDENTITY).getNode();
@@ -532,7 +536,7 @@ public class IdentityStorage {
 
   /**
    * Save profile.
-   * 
+   *
    * @param profile the profile
    * @throws Exception the exception
    */
@@ -546,9 +550,11 @@ public class IdentityStorage {
       }
 
       Node profileNode;
-      synchronized (profile) {
+      Lock lock = lockManager.getLock("Profile", profile.getIdentity().getId());
+      lock.lock();
+      try {
         if (profile.getId() == null) {
-          profileNode = profileHomeNode.addNode(PROFILE_NODETYPE, PROFILE_NODETYPE);
+          profileNode = profileHomeNode.addNode(profile.getIdentity().getId(), PROFILE_NODETYPE);
           profileNode.addMixin(REFERENCEABLE_NODE);
 
           Node identityNode = session.getNodeByUUID(profile.getIdentity().getId());
@@ -568,6 +574,9 @@ public class IdentityStorage {
           profileNode.save();
         }
       }
+      finally {
+        lock.unlock();
+      }
     } catch (Exception e) {
       LOG.error("Failed to save profile " + profile, e);
     } finally {
@@ -577,7 +586,7 @@ public class IdentityStorage {
 
   /**
    * Save profile.
-   * 
+   *
    * @param profile the profile
    * @param profileNode the node
    * @param session the session
@@ -585,8 +594,10 @@ public class IdentityStorage {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   protected final void saveProfile(final Profile profile, final Node profileNode, final Session session) throws Exception,
-                                                                                IOException {
-    synchronized (profile) {
+          IOException {
+    Lock lock = lockManager.getLock("Profile", profile.getIdentity().getId());
+    lock.lock();
+    try {
 
       long lastLoaded = profile.getLastLoaded();
       long lastPersisted = 0;
@@ -602,7 +613,7 @@ public class IdentityStorage {
       profileNode.setProperty("jcr:lastModified", date);
       profile.setLastLoaded(date.getTimeInMillis());
 
-      Profile oldProfile = new Profile(null);
+      Profile oldProfile = new Profile(profile.getIdentity());
       loadProfile(oldProfile, profileNode, session.getWorkspace().getName());
 
       // We remove all the property that was deleted
@@ -619,13 +630,16 @@ public class IdentityStorage {
 
       addOrModifyProfileProperties(profile, profileNode, session);
     }
+    finally {
+      lock.unlock();
+    }
   }
 
   /**
    * Add or modify properties of profile and persist to JCR. Profile parameter is a lightweight that 
    * contains only the property that you want to add or modify. NOTE: The method will
    * not delete the properties on old profile when the param profile have not those keys.
-   * 
+   *
    * @param profile
    * @throws Exception
    */
@@ -652,9 +666,9 @@ public class IdentityStorage {
     Node identityHomeNode = getIdentityServiceHome(session);
     try {
       count = (int) new QueryBuilder(session).select(IDENTITY_NODETYPE)
-      .like("jcr:path", identityHomeNode.getPath()+"/%")
-      .and()
-      .equal(IDENTITY_PROVIDERID, providerId).count();
+              .like("jcr:path", identityHomeNode.getPath()+"/%")
+              .and()
+              .equal(IDENTITY_PROVIDERID, providerId).count();
     } catch (Exception e){
       LOG.warn(e.getMessage(), e);
     } finally {
@@ -662,7 +676,7 @@ public class IdentityStorage {
     }
     return count;
   }
-  
+
   /**
    * Add or modify properties of profile and persist to JCR. Profile parameter is a lightweight that 
    * contains only the property that you want to add or modify. NOTE: The method will
@@ -677,20 +691,27 @@ public class IdentityStorage {
     Map<String, Object> props = profile.getProperties();
 
     Iterator<Map.Entry<String, Object>> it = props.entrySet().iterator();
-    while (it.hasNext()) {
-      Map.Entry<String, Object> entry = it.next();
-      String key = entry.getKey();
-      //we skip all the property that are jcr related
-      if (key.contains(":")) {
-        continue;
+    Lock lock = lockManager.getLock("Profile", profile.getIdentity().getId());
+    lock.lock();
+    try {
+      while (it.hasNext()) {
+        Map.Entry<String, Object> entry = it.next();
+        String key = entry.getKey();
+        //we skip all the property that are jcr related
+        if (key.contains(":")) {
+          continue;
+        }
+        setProperty(profileNode, session, key, entry.getValue());
       }
-      setProperty(profileNode, session, key, entry.getValue());
+    }
+    finally {
+      lock.unlock();
     }
   }
 
   /**
    * The method set property for profile node from profile properties by name and value
-   * 
+   *
    * @param profileNode
    * @param session
    * @param name
@@ -730,7 +751,7 @@ public class IdentityStorage {
 
   /**
    * Save avatar attachment, new JCR file node for avatar
-   * 
+   *
    * @param profileNode
    * @param session
    * @param name
@@ -747,7 +768,7 @@ public class IdentityStorage {
     }
 
     String[] arrayPers = { PermissionType.READ, PermissionType.ADD_NODE,
-        PermissionType.SET_PROPERTY, PermissionType.REMOVE };
+            PermissionType.SET_PROPERTY, PermissionType.REMOVE };
 
     extNode.setPermission(SystemIdentity.ANY, arrayPers);
 
@@ -938,7 +959,9 @@ public class IdentityStorage {
    */
   @SuppressWarnings("unchecked")
   protected final void loadProfile(final Profile profile, final Node profileNode, final String workspaceName) throws RepositoryException {
-    synchronized (profile) {
+    Lock lock = lockManager.getLock("Profile", profile.getIdentity().getId());
+    lock.lock();
+    try {
       long lastLoaded = profile.getLastLoaded();
       long lastPersisted = 0;
       if (profileNode.hasProperty("jcr:lastModified")) {
@@ -1005,6 +1028,8 @@ public class IdentityStorage {
         // can safely clear the hasChanged flag
         profile.clearHasChanged();
       }
+    } finally {
+      lock.unlock();
     }
   }
 
@@ -1055,7 +1080,7 @@ public class IdentityStorage {
 
   /**
    * Gets identity manager instance.
-   * 
+   *
    * @return identity manager instance.
    */
   private IdentityManager getIdentityManager() {
@@ -1063,10 +1088,10 @@ public class IdentityStorage {
     if (identityManager == null) {
       identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     }
-    
+
     return identityManager;
   }
-  
+
   /**
    * Gets the type.
    *

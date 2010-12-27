@@ -87,6 +87,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.social.common.jcr.LockManager</key>
+    <type>org.exoplatform.social.common.jcr.LockManager</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.core.identity.IdentityProvider</key>
     <type>org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider</type>
   </component>

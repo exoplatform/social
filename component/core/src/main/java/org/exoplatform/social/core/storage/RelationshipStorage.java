@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -31,9 +32,11 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.util.IdGenerator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
+import org.exoplatform.social.common.jcr.LockManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -54,6 +57,9 @@ public class RelationshipStorage {
 
   /** The session manager. */
   private JCRSessionManager sessionManager;
+ 
+  /** The Lock manager. */
+  private final LockManager lockManager;
 
   /** The Constant RELATION_NODETYPE. */
   final public static String RELATION_NODETYPE = "exo:relationship".intern();
@@ -82,13 +88,13 @@ public class RelationshipStorage {
   /** The Constant REFERENCEABLE_TYPE */
   public final static String REFERENCEABLE_TYPE = "mix:referenceable";
 
-  private Node relationshipServiceHome;
   /**
    * Instantiates a new jCR storage.
    *
    * @param dataLocation the data location
    */
-  public RelationshipStorage(SocialDataLocation dataLocation) {
+  public RelationshipStorage(SocialDataLocation dataLocation, LockManager lockManager) {
+    this.lockManager = lockManager;
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
   }
@@ -101,37 +107,44 @@ public class RelationshipStorage {
   public void saveRelationship(Relationship relationship) {
     Session session = sessionManager.getOrOpenSession();
     Node relationshipNode = null;
-
+    Lock lock = lockManager.getLock("Relationship", relationship.getSender().getId() + "_" + relationship.getReceiver().getId());
+    lock.lock();
     try {
-      Node relationshipHomeNode = getRelationshipServiceHome(session);
+      try {
+        Node relationshipHomeNode = getRelationshipServiceHome(session);
 
-      if (relationship.getId() == null) {
-        relationshipNode = relationshipHomeNode.addNode(RELATION_NODETYPE, RELATION_NODETYPE);
-        relationshipNode.addMixin(REFERENCEABLE_TYPE);
-      } else {
-        relationshipNode = session.getNodeByUUID(relationship.getId());
+        if (relationship.getId() == null) {
+          relationshipNode = relationshipHomeNode.addNode(IdGenerator.generate(), RELATION_NODETYPE);
+          relationshipNode.addMixin(REFERENCEABLE_TYPE);
+        } else {
+          relationshipNode = session.getNodeByUUID(relationship.getId());
+        }
+        Node id1Node = session.getNodeByUUID(relationship.getSender().getId());
+        Node id2Node = session.getNodeByUUID(relationship.getReceiver().getId());
+
+        relationshipNode.setProperty(RELATION_SENDER, id1Node);
+        relationshipNode.setProperty(RELATION_RECEIVER, id2Node);
+        relationshipNode.setProperty(PROPERTY_STATUS, relationship.getStatus().toString());
+
+        updateProperties(relationship, relationshipNode, session);
+
+        if (relationship.getId() == null) {
+          relationshipHomeNode.save();
+          relationship.setId(relationshipNode.getUUID());
+          LOG.debug("relationship " + relationship + " stored");
+        } else {
+          relationshipNode.save();
+          LOG.debug("relationship " + relationship + " updated");
+        }
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+      } finally {
+        sessionManager.closeSession();
       }
-      Node id1Node = session.getNodeByUUID(relationship.getSender().getId());
-      Node id2Node = session.getNodeByUUID(relationship.getReceiver().getId());
-
-      relationshipNode.setProperty(RELATION_SENDER, id1Node);
-      relationshipNode.setProperty(RELATION_RECEIVER, id2Node);
-      relationshipNode.setProperty(PROPERTY_STATUS, relationship.getStatus().toString());
-
-      updateProperties(relationship, relationshipNode, session);
-
-      if (relationship.getId() == null) {
-        relationshipHomeNode.save();
-        relationship.setId(relationshipNode.getUUID());
-        LOG.debug("relationship " + relationship + " stored");
-      } else {
-        relationshipNode.save();
-        LOG.debug("relationship " + relationship + " updated");
-      }
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-    } finally {
-      sessionManager.closeSession();
+       
+    }
+    finally {
+       lock.unlock();
     }
 
     try {
@@ -205,7 +218,7 @@ public class RelationshipStorage {
    */
   public List<Identity> findRelationships(String identityId, String relationshipTypeName) throws Exception {
     Session session = sessionManager.getOrOpenSession();
-    relationshipServiceHome = getRelationshipServiceHome(session);
+    Node relationshipServiceHome = getRelationshipServiceHome(session);
     List<Identity> results = new ArrayList<Identity>();
     QueryBuilder queryBuilder = new QueryBuilder(session);
     try {
@@ -354,17 +367,15 @@ public class RelationshipStorage {
    * @throws Exception the exception
    */
   private Node getRelationshipServiceHome(Session session) {
-    if (relationshipServiceHome == null) {
-      String path = dataLocation.getSocialRelationshipHome();
-      try {
-        relationshipServiceHome = session.getRootNode().getNode(path);
-      } catch (PathNotFoundException e) {
-        LOG.warn(e.getMessage(), e);
-      } catch (RepositoryException e) {
-        LOG.warn(e.getMessage(), e);
-      }
-    }
-    return relationshipServiceHome;
+     String path = dataLocation.getSocialRelationshipHome();
+     try {
+       return session.getRootNode().getNode(path);
+     } catch (PathNotFoundException e) {
+       LOG.warn(e.getMessage(), e);
+     } catch (RepositoryException e) {
+       LOG.warn(e.getMessage(), e);
+     }
+    return null;
   }
 
   /**

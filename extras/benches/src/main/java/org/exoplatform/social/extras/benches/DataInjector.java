@@ -32,7 +32,6 @@ import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -177,7 +176,7 @@ public class DataInjector {
         spaceService.createSpace(space, owner.getRemoteId());
         LOG.info(owner.getRemoteId() + " created space " + space.getName());
       } catch (Exception e) {
-        LOG.error("failed to save space " + space.getName() + ": "  + e.getMessage());
+        LOG.error("failed to save space " + space.getName(), e);
       }
 
     }
@@ -201,7 +200,7 @@ public class DataInjector {
         activityManager.saveActivity(id1, activity);
         LOG.info("created activity " + activity.getExternalId());
       } catch (Exception e) {
-        LOG.error("failed to save activity for " + id1 + ": "  + e.getMessage());
+        LOG.error("failed to save activity for " + id1, e);
       }
 
     }
@@ -231,8 +230,7 @@ public class DataInjector {
         relationship = relationshipManager.create(pple[0], pple[1]);
         relationshipManager.confirm(relationship);
       } catch (Exception e) {
-        LOG.error("failed to create connection between " + pple[0] + " and " + pple[1] + ": "
-            + e.getMessage());
+        LOG.error("failed to create connection between " + pple[0] + " and " + pple[1], e);
       }
       LOG.info("created connection " + relationship + ".");
     }
@@ -268,7 +266,7 @@ public class DataInjector {
           identity = null; // continue
         }
       } catch (Exception e) {
-        LOG.warn("failed to get identity for " + username + ": " + e.getMessage());
+        LOG.warn("failed to get identity for " + username, e);
       }
       if (--limit == 0) {
         LOG.warn("failed to select a random user after 10 attempts. Make sure enough identities are populated.");
@@ -329,7 +327,7 @@ public class DataInjector {
         username = user.getUserName();
         identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
       } catch (Exception e) {
-        LOG.error("Failed to generate social identity for " + username + ": " + e.getMessage());
+        LOG.error("Failed to generate social identity for " + username, e);
       }
     }
     return identity;
@@ -354,7 +352,7 @@ public class DataInjector {
 
         user = userHandler.findUserByName(username);
       } catch (Exception e) {
-        LOG.warn("failed to check existence of  " + username + ": " + e.getMessage());
+        LOG.warn("failed to check existence of  " + username, e);
       }
       if (user != null) {
         LOG.info(username + " already exists, skipping");
@@ -365,7 +363,7 @@ public class DataInjector {
           initRandomUser(user, username);
           userHandler.createUser(user, true);
         } catch (Exception e) {
-          LOG.warn("failed to create user " + username + ": " + e.getMessage());
+          LOG.warn("failed to create user " + username, e);
           return null;
         }
       }
@@ -409,7 +407,7 @@ public class DataInjector {
         spaceService.addMember(space, userId) ; 
         LOG.info("Added member " + userId + " to space " + space.getName());
         } catch (Exception e) {
-          LOG.error("Failed to invite a random user to space " + space.getName() + ": " + e.getMessage());
+          LOG.error("Failed to invite a random user to space " + space.getName(), e);
         }
  
       }

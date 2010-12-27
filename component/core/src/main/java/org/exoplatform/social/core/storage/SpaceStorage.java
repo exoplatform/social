@@ -18,6 +18,7 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -34,10 +35,12 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
+import org.exoplatform.services.jcr.util.IdGenerator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.common.jcr.LockManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 
@@ -86,7 +89,11 @@ public class SpaceStorage {
   private JCRSessionManager sessionManager;
   private String workspace;
 
-  public SpaceStorage(SocialDataLocation dataLocation) {
+  /** The Lock manager. */
+  private final LockManager lockManager;
+
+  public SpaceStorage(SocialDataLocation dataLocation, LockManager lockManager) {
+    this.lockManager = lockManager;
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
     this.workspace = dataLocation.getWorkspace();
@@ -98,7 +105,7 @@ public class SpaceStorage {
   }
 
   public String getWorkspace() throws Exception {
-     return workspace;
+    return workspace;
   }
 
   /**
@@ -131,9 +138,9 @@ public class SpaceStorage {
     try {
       Session session = sessionManager.openSession();
       Node spaceHomeNode = getSpaceHome(session);
-      StringBuffer queryString = new StringBuffer("/").append(spaceHomeNode.getPath())
-      .append("/").append(SPACE_NODETYPE).append("[(@")
-      .append("jcr:uuid").append("='").append(id).append("')]");
+      StringBuilder queryString = new StringBuilder("/").append(spaceHomeNode.getPath())
+              .append("/element(*,").append(SPACE_NODETYPE).append(")[(@")
+              .append("jcr:uuid").append("='").append(id).append("')]");
       QueryManager queryManager = session.getWorkspace().getQueryManager();
       Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
       QueryResult queryResult = query.execute();
@@ -157,8 +164,7 @@ public class SpaceStorage {
   /**
    * Gets all spaces that have name or description match input condition.
    *
-   * @param identityProvider the identity provider
-   * @param profileFilter the profile filter
+   * @param condition the search condition
    * @return the identities by profile filter
    * @throws Exception the exception
    */
@@ -170,8 +176,8 @@ public class SpaceStorage {
 
     try {
       QueryManager queryManager = session.getWorkspace().getQueryManager() ;
-      StringBuffer queryString = new StringBuffer("/").append(spaceHomeNode.getPath())
-          .append("/").append(SPACE_NODETYPE);
+      StringBuilder queryString = new StringBuilder("/").append(spaceHomeNode.getPath())
+              .append("/element(*,").append(SPACE_NODETYPE).append(')');
 
       if (condition.length() != 0) {
         queryString.append("[");
@@ -198,9 +204,9 @@ public class SpaceStorage {
     Space space;
     Node spaceNode;
     while (nodeIterator.hasNext()) {
-        spaceNode = nodeIterator.nextNode();
-        space = getSpace(spaceNode, session);
-        listSpace.add(space);
+      spaceNode = nodeIterator.nextNode();
+      space = getSpace(spaceNode, session);
+      listSpace.add(space);
     }
 
     return listSpace;
@@ -274,78 +280,83 @@ public class SpaceStorage {
   }
 
   private void saveSpace(Node spaceHomeNode, Space space, boolean isNew, Session session) {
-    Node spaceNode;
+    Lock lock = lockManager.getLock("Space", space.getName());
+    lock.lock();
     try {
-      if(isNew) {
-        spaceNode = spaceHomeNode.addNode(SPACE_NODETYPE,SPACE_NODETYPE);
-        spaceNode.addMixin("mix:referenceable");
-      } else {
-        spaceNode = session.getNodeByUUID(space.getId());
-      }
-      if(space.getId() == null) space.setId(spaceNode.getUUID());
-      spaceNode.setProperty(SPACE_NAME, space.getName());
-      spaceNode.setProperty(SPACE_GROUPID, space.getGroupId());
-      spaceNode.setProperty(SPACE_APP, space.getApp());
-      spaceNode.setProperty(SPACE_PARENT, space.getParent());
-      spaceNode.setProperty(SPACE_DESCRIPTION, space.getDescription());
-      spaceNode.setProperty(SPACE_TAG, space.getTag());
-      spaceNode.setProperty(SPACE_PENDING_USER, space.getPendingUsers());
-      spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUsers());
-      spaceNode.setProperty(SPACE_TYPE, space.getType());
-      spaceNode.setProperty(SPACE_URL, space.getUrl());
-      spaceNode.setProperty(SPACE_VISIBILITY, space.getVisibility());
-      spaceNode.setProperty(SPACE_REGISTRATION, space.getRegistration());
-      spaceNode.setProperty(SPACE_PRIORITY, space.getPriority());
-      //  save image to contact
-      AvatarAttachment attachment = space.getAvatarAttachment();
-      if (attachment != null) {
-      // fix load image on IE6 UI
-        ExtendedNode extNode = (ExtendedNode)spaceNode;
-        if (extNode.canAddMixin("exo:privilegeable")) extNode.addMixin("exo:privilegeable");
-        String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE} ;
-        extNode.setPermission(SystemIdentity.ANY, arrayPers) ;
-        List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;
-        for(AccessControlEntry accessControlEntry : permsList) {
-          extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;
+      Node spaceNode;
+      try {
+        if(isNew) {
+          spaceNode = spaceHomeNode.addNode(IdGenerator.generate(), SPACE_NODETYPE);
+          spaceNode.addMixin("mix:referenceable");
+        } else {
+          spaceNode = session.getNodeByUUID(space.getId());
         }
+        if(space.getId() == null) space.setId(spaceNode.getUUID());
+        spaceNode.setProperty(SPACE_NAME, space.getName());
+        spaceNode.setProperty(SPACE_GROUPID, space.getGroupId());
+        spaceNode.setProperty(SPACE_APP, space.getApp());
+        spaceNode.setProperty(SPACE_PARENT, space.getParent());
+        spaceNode.setProperty(SPACE_DESCRIPTION, space.getDescription());
+        spaceNode.setProperty(SPACE_TAG, space.getTag());
+        spaceNode.setProperty(SPACE_PENDING_USER, space.getPendingUsers());
+        spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUsers());
+        spaceNode.setProperty(SPACE_TYPE, space.getType());
+        spaceNode.setProperty(SPACE_URL, space.getUrl());
+        spaceNode.setProperty(SPACE_VISIBILITY, space.getVisibility());
+        spaceNode.setProperty(SPACE_REGISTRATION, space.getRegistration());
+        spaceNode.setProperty(SPACE_PRIORITY, space.getPriority());
+        //  save image to contact
+        AvatarAttachment attachment = space.getAvatarAttachment();
+        if (attachment != null) {
+          // fix load image on IE6 UI
+          ExtendedNode extNode = (ExtendedNode)spaceNode;
+          if (extNode.canAddMixin("exo:privilegeable")) extNode.addMixin("exo:privilegeable");
+          String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE} ;
+          extNode.setPermission(SystemIdentity.ANY, arrayPers) ;
+          List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;
+          for(AccessControlEntry accessControlEntry : permsList) {
+            extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;
+          }
 
-        if (attachment.getFileName() != null) {
-          Node nodeFile = null ;
-          try {
-            nodeFile = spaceNode.getNode("image") ;
-          } catch (PathNotFoundException ex) {
-            nodeFile = spaceNode.addNode("image", "nt:file");
+          if (attachment.getFileName() != null) {
+            Node nodeFile = null ;
+            try {
+              nodeFile = spaceNode.getNode("image") ;
+            } catch (PathNotFoundException ex) {
+              nodeFile = spaceNode.addNode("image", "nt:file");
+            }
+            Node nodeContent = null ;
+            try {
+              nodeContent = nodeFile.getNode("jcr:content") ;
+            } catch (PathNotFoundException ex) {
+              nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
+            }
+            long lastModified = attachment.getLastModified();
+            long lastSaveTime = 0;
+            if (nodeContent.hasProperty("jcr:lastModified"))
+              lastSaveTime = nodeContent.getProperty("jcr:lastModified").getLong();
+            if ((lastModified != 0) && (lastModified != lastSaveTime)) {
+              nodeContent.setProperty("jcr:mimeType", attachment.getMimeType()) ;
+              nodeContent.setProperty("jcr:data", attachment.getInputStream(session));
+              nodeContent.setProperty("jcr:lastModified", attachment.getLastModified());
+            }
           }
-          Node nodeContent = null ;
-          try {
-            nodeContent = nodeFile.getNode("jcr:content") ;
-          } catch (PathNotFoundException ex) {
-            nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
-          }
-          long lastModified = attachment.getLastModified();
-          long lastSaveTime = 0;
-          if (nodeContent.hasProperty("jcr:lastModified"))
-            lastSaveTime = nodeContent.getProperty("jcr:lastModified").getLong();
-          if ((lastModified != 0) && (lastModified != lastSaveTime)) {
-            nodeContent.setProperty("jcr:mimeType", attachment.getMimeType()) ;
-            nodeContent.setProperty("jcr:data", attachment.getInputStream(session));
-            nodeContent.setProperty("jcr:lastModified", attachment.getLastModified());
+        } else {
+          if(spaceNode.hasNode("image")) {
+            spaceNode.getNode("image").remove() ;
+            // add 12DEC
+            session.save();
           }
         }
-      } else {
-        if(spaceNode.hasNode("image")) {
-          spaceNode.getNode("image").remove() ;
-          // add 12DEC
-          session.save();
-        }
+        //TODO: dang.tung need review
+        if(isNew) spaceHomeNode.save();
+        else spaceNode.save();
+      } catch (Exception e) {
+        LOG.error("failed to save space", e);
+        // TODO: handle exception
       }
-      //TODO: dang.tung need review
-      if(isNew) spaceHomeNode.save();
-      else spaceNode.save();
-    } catch (Exception e) {
-      LOG.error("failed to save space", e);
-      // TODO: handle exception
     } finally {
+      lock.unlock();
     }
   }
 
@@ -407,10 +418,10 @@ public class SpaceStorage {
 
   private String [] convertValuesToStrings(Value[] values) throws Exception {
     if(values.length == 1) return new String[]{values[0].getString()};
-    String[] Str = new String[values.length];
+    String[] strArrays = new String[values.length];
     for(int i = 0; i < values.length; ++i) {
-      Str[i] = values[i].getString();
+      strArrays[i] = values[i].getString();
     }
-    return Str;
+    return strArrays;
   }
 }

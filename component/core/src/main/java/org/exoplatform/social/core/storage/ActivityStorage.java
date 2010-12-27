@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -33,9 +34,11 @@ import javax.jcr.Value;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.exoplatform.services.jcr.util.IdGenerator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
+import org.exoplatform.social.common.jcr.LockManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.activity.model.Activity;
@@ -138,17 +141,19 @@ public class ActivityStorage {
   /** The session manager. */
   private JCRSessionManager sessionManager;
 
-  /** The activityServiceHome node */
-  private Node activityServiceHome;
-
   private IdentityManager identityManager;
+
+  /** The Lock manager. */
+  private final LockManager lockManager;
 
   /**
    * Instantiates a new JCR storage base on SocialDataLocation
    * @param dataLocation the data location.
    * @param identityManager
+   * @param lockManager
    */
-  public ActivityStorage(SocialDataLocation dataLocation, IdentityManager identityManager) {
+  public ActivityStorage(SocialDataLocation dataLocation, IdentityManager identityManager, LockManager lockManager) {
+    this.lockManager = lockManager;
     this.dataLocation = dataLocation;
     this.identityManager = identityManager;
     sessionManager = dataLocation.getSessionManager();
@@ -193,7 +198,7 @@ public class ActivityStorage {
 
       Session session = sessionManager.getOrOpenSession();
       if (activity.getId() == null) {
-        activityNode = activityHomeNode.addNode(ACTIVITY_NODETYPE, ACTIVITY_NODETYPE);
+        activityNode = activityHomeNode.addNode(IdGenerator.generate(), ACTIVITY_NODETYPE);
         activityNode.addMixin("mix:referenceable");
       } else {
         activityNode = session.getNodeByUUID(activity.getId());
@@ -396,11 +401,11 @@ public class ActivityStorage {
       String path = n.getPath();
       Session session = sessionManager.getOrOpenSession();
       List<Node> nodes = new QueryBuilder(session)
-        .select(ACTIVITY_NODETYPE, offset, limit)
-        .like("jcr:path", path + "[%]/exo:activity[%]")
-        .and()
-        .not().equal(REPLY_TO_ID,Activity.IS_COMMENT)
-        .orderBy("exo:updatedTimestamp", QueryBuilder.DESC).exec();
+              .select(ACTIVITY_NODETYPE, offset, limit)
+              .like("jcr:path", path + "[%]/%")
+              .and()
+              .not().equal(REPLY_TO_ID,Activity.IS_COMMENT)
+              .orderBy("exo:updatedTimestamp", QueryBuilder.DESC).exec();
 
       for (Node node : nodes) {
         activities.add(load(node));
@@ -429,10 +434,10 @@ public class ActivityStorage {
     try {
       String path = publishingNode.getPath();
       List<Node> nodes = new QueryBuilder(session)
-        .select(ACTIVITY_NODETYPE)
-        .like("jcr:path", path + "[%]/exo:activity[%]")
-        .and()
-        .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).exec();
+              .select(ACTIVITY_NODETYPE)
+              .like("jcr:path", path + "[%]/%")
+              .and()
+              .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).exec();
 
       for (Node node : nodes) {
         activities.add(load(node));
@@ -459,10 +464,10 @@ public class ActivityStorage {
     try {
       String path = publishingNode.getPath();
       count = (int) new QueryBuilder(session)
-        .select(ACTIVITY_NODETYPE)
-        .like("jcr:path", path + "[%]/exo:activity[%]")
-        .and()
-        .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).count();
+              .select(ACTIVITY_NODETYPE)
+              .like("jcr:path", path + "[%]/%")
+              .and()
+              .not().equal(REPLY_TO_ID, Activity.IS_COMMENT).count();
     } catch (Exception e){
       LOG.warn(e.getMessage(), e);
     } finally {
@@ -479,17 +484,15 @@ public class ActivityStorage {
    * @return the activity service home
    */
   private Node getActivityServiceHome(Session session) {
-    if (activityServiceHome == null) {
-      String path = dataLocation.getSocialActivitiesHome();
-      try {
-        activityServiceHome = session.getRootNode().getNode(path);
-      } catch (PathNotFoundException e) {
-        LOG.warn(e.getMessage(), e);
-      } catch (RepositoryException e) {
-        LOG.warn(e.getMessage(), e);
-      }
+    String path = dataLocation.getSocialActivitiesHome();
+    try {
+      return session.getRootNode().getNode(path);
+    } catch (PathNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
     }
-    return activityServiceHome;
+    return null;
   }
 
   /**
@@ -522,17 +525,37 @@ public class ActivityStorage {
       if (activityHomeNode.hasNode(type)){
         typeHome = activityHomeNode.getNode(type);
       } else {
-        typeHome = activityHomeNode.addNode(type, NT_UNSTRUCTURED);
-        activityHomeNode.save();
+        Lock lock = lockManager.getLock("Activity", type);
+        lock.lock();
+        try {
+          if (activityHomeNode.hasNode(type)){
+            typeHome = activityHomeNode.getNode(type);
+          } else {
+            typeHome = activityHomeNode.addNode(type, NT_UNSTRUCTURED);
+            activityHomeNode.save();
+          }
+        } finally {
+          lock.unlock();
+        }
       }
 
       // now get or create the node for the owner. Ex: /activities/organization/root
       if (typeHome.hasNode(username)){
         return typeHome.getNode(username);
       } else {
-        Node streamNode = typeHome.addNode(username, NT_UNSTRUCTURED);
-        typeHome.save();
-        return streamNode;
+        Lock lock = lockManager.getLock("Activity", username);
+        lock.lock();
+        try {
+          if (typeHome.hasNode(username)){
+            return typeHome.getNode(username);
+          } else {
+            Node streamNode = typeHome.addNode(username, NT_UNSTRUCTURED);
+            typeHome.save();
+            return streamNode;
+          }
+        } finally {
+          lock.unlock();
+        }
       }
     } catch (Exception e) {
       LOG.error("failed to locate stream owner node for " +username, e);
@@ -555,10 +578,21 @@ public class ActivityStorage {
       try {
         return userActivityHomeNode.getNode(PUBLISHED_NODE);
       } catch (PathNotFoundException ex) {
-        Node appNode = userActivityHomeNode.addNode(PUBLISHED_NODE, NT_UNSTRUCTURED);
-        appNode.addMixin("mix:referenceable");
-        userActivityHomeNode.save();
-        return appNode;
+        Lock lock = lockManager.getLock("Activity", owner.getRemoteId());
+        lock.lock();
+        try {
+          try {
+            return userActivityHomeNode.getNode(PUBLISHED_NODE);
+          } catch (PathNotFoundException ex2) {
+
+            Node appNode = userActivityHomeNode.addNode(PUBLISHED_NODE, NT_UNSTRUCTURED);
+            appNode.addMixin("mix:referenceable");
+            userActivityHomeNode.save();
+            return appNode;
+          }
+        } finally {
+          lock.unlock();
+        }
       }
     } catch (Exception e) {
       LOG.error("Failed to get published activity service location for " + owner, e);
