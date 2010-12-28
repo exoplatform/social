@@ -45,6 +45,7 @@ public class LinkProvider {
    *
    * @param prettyName
    * @return the uri link to space
+   * @since 1.2.0 GA
    */
   public static String getSpaceUri(final String prettyName) {
     return buildSpaceUri(prettyName, null, null);
@@ -254,6 +255,7 @@ public class LinkProvider {
    * @param portalName
    * @param portalOwner
    * @return space uri
+   * @since 1.2.0 GA
    */
   private static String buildSpaceUri(final String prettyName, final String portalName, String portalOwner) {
     return getBaseUri(portalName, portalOwner) + "/" + prettyName;

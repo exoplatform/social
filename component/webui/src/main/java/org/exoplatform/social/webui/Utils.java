@@ -19,12 +19,10 @@ package org.exoplatform.social.webui;
 import java.util.List;
 
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -43,6 +41,7 @@ public class Utils {
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
    *
    * @return remoteId of owner user
+   * @since 1.2.0 GA
    */
   public static String getOwnerRemoteId() {
     String currentUserName = URLUtils.getCurrentUser();
@@ -56,6 +55,7 @@ public class Utils {
    * Gets remote id of viewer user.
    *
    * @return remote id
+   * @since 1.2.0 GA
    */
   public static String getViewerRemoteId() {
     return RequestContext.getCurrentInstance().getRemoteUser();
@@ -65,6 +65,7 @@ public class Utils {
    * Checks if the owner user is the viewer user.
    * 
    * @return true if the viewer user is the same as owner user.
+   * @since 1.2.0 GA
    */
   public static boolean isOwner() {
     return Utils.getViewerRemoteId().equals(Utils.getOwnerRemoteId());
@@ -75,6 +76,7 @@ public class Utils {
    *
    * @param loadProfile
    * @return identity
+   * @since 1.2.0 GA
    */
   public static Identity getOwnerIdentity(boolean loadProfile) {
     return getUserIdentity(getOwnerRemoteId(), loadProfile);
@@ -85,6 +87,7 @@ public class Utils {
    *
    * @param loadProfile
    * @return identity
+   * @since 1.2.0 GA
    */
   public static Identity getViewerIdentity(boolean loadProfile) {
     return getUserIdentity(getViewerRemoteId(), loadProfile);
@@ -94,6 +97,7 @@ public class Utils {
    * Gets identity of owner user. Do not load profile.
    *
    * @return identity
+   * @since 1.2.0 GA
    */
   public static Identity getOwnerIdentity() {
     return getUserIdentity(getOwnerRemoteId(), false);
@@ -103,6 +107,7 @@ public class Utils {
    * Gets identity of viewer user (logged-in user). Do not load profile.
    *
    * @return identity
+   * @since 1.2.0 GA
    */
   public static Identity getViewerIdentity() {
     return getUserIdentity(getViewerRemoteId(), false);
@@ -114,6 +119,7 @@ public class Utils {
    * @param userName
    * @param loadProfile
    * @return identity
+   * @since 1.2.0 GA
    */
   public static Identity getUserIdentity(String userName, boolean loadProfile) {
     return Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, loadProfile);
@@ -123,6 +129,7 @@ public class Utils {
    * Gets space identity of the owner space (from remote id)
    * 
    * @return space identity
+   * @since 1.2.0 GA
    */
   public static Identity getOwnerSpaceIdentity() {
     return Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, getOwnerRemoteId(), true);
@@ -133,6 +140,7 @@ public class Utils {
    * 
    * @return list of friends
    * @throws Exception
+   * @since 1.2.0 GA
    */
   public static List<Identity> getOwnerFriends() throws Exception {
     return Utils.getIdentityManager().getConnections(getOwnerIdentity());
@@ -143,6 +151,7 @@ public class Utils {
    * 
    * @return list of friends
    * @throws Exception
+   * @since 1.2.0 GA
    */
   public static List<Identity> getViewerFriends() throws Exception {
     return Utils.getIdentityManager().getConnections(getViewerIdentity());
@@ -151,6 +160,7 @@ public class Utils {
   /**
    * Updates working work space.
    *
+   * @since 1.2.0 GA
    */
   public static void updateWorkingWorkSpace() {
     UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication().getChildById(UIPortalApplication.UI_WORKING_WS_ID);
@@ -161,7 +171,8 @@ public class Utils {
 
   /**
    * Gets activityManager
-   * @return
+   * @return activityManager
+   * @since 1.2.0 GA
    */
   public static final ActivityManager getActivityManager() {
     return (ActivityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ActivityManager.class);
@@ -169,7 +180,8 @@ public class Utils {
 
   /**
    * Gets identityManager
-   * @return
+   * @return identityManager
+   * @since 1.2.0 GA
    */
   public static final IdentityManager getIdentityManager() {
     return (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
@@ -177,49 +189,19 @@ public class Utils {
 
   /**
    * Gets relationshipManager
-   * @return
+   * @return relationshipManager
+   * @since 1.2.0 GA
    */
   public static final RelationshipManager getRelationshipManager() {
     return (RelationshipManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RelationshipManager.class);
   }
 
   /**
-   * Gets SpaceService
-   * @return
+   * Gets spaceService
+   * @return spaceService
+   * @since 1.2.0 GA
    */
   public static final SpaceService getSpaceService() {
     return (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
   }
-
-  /**
-   * Gets the current portal name.
-   *
-   * @return name of current portal.
-   *
-   */
-  public static final String getCurrentPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();
-  }
-
-  /**
-   * Gets the current repository name.
-   *
-   * @return current repository through repository service.
-   *
-   * @throws Exception
-   */
-  public static final String getCurrentRepositoryName() throws Exception {
-    RepositoryService rService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class) ;
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-
-  /**
-   * Gets the rest context.
-   *
-   * @return the rest context
-   */
-  public static final String getRestContextName() {
-     return PortalContainer.getInstance().getRestContextName();
-   }
 }
