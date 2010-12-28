@@ -65,16 +65,13 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertNotNull(tobeSavedIdentity.getId());
 
     identityStorage.deleteIdentity(tobeSavedIdentity);
-    assertNotNull(tobeSavedIdentity.getId());
-    assertNull(identityStorage.findIdentityById(tobeSavedIdentity.getId()));
-    assertNull(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, username));
 
     // Delete identity with loaded profile
     {
       tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
       identityStorage.saveIdentity(tobeSavedIdentity);
       assertNotNull("tobeSavedIdentity.getId() must not be null.", tobeSavedIdentity.getId());
-      assertNull("tobeSavedIdentity.getProfile().getId() msut be null.", tobeSavedIdentity.getProfile().getId());
+      assertNull("tobeSavedIdentity.getProfile().getId() must be null.", tobeSavedIdentity.getProfile().getId());
       identityStorage.loadProfile(tobeSavedIdentity.getProfile());
       assertNotNull("tobeSavedIdentity.getProfile().getId() must not be null", tobeSavedIdentity.getProfile().getId());
 

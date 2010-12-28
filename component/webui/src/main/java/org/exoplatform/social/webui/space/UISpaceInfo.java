@@ -28,7 +28,6 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -81,6 +80,7 @@ public class UISpaceInfo extends UIForm {
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
   /**
    * constructor
+   * 
    * @throws Exception
    */
   public UISpaceInfo() throws Exception {
@@ -131,9 +131,9 @@ public class UISpaceInfo extends UIForm {
     space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
     spaceService.saveSpace(space, false);
   }
-  
+
   /**
-   * Gets image source url
+   * Gets image source url.
    *
    * @return image source url
    * @throws Exception
@@ -142,7 +142,7 @@ public class UISpaceInfo extends UIForm {
     SpaceService spaceService = getSpaceService();
     String id = getUIStringInput(SPACE_ID).getValue();
     Space space = spaceService.getSpaceById(id);
-    return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
+    return space.getAvatarUrl();
   }
 
   /**
@@ -246,7 +246,7 @@ public class UISpaceInfo extends UIForm {
   }
 
   /**
-   * Gets spaceService
+   * Gets spaceService.
    *
    * @return spaceService
    * @see SpaceService
@@ -259,7 +259,7 @@ public class UISpaceInfo extends UIForm {
   }
 
   /**
-   * Gets organizationService
+   * Gets organizationService.
    *
    * @return organizationService
    */
@@ -268,7 +268,7 @@ public class UISpaceInfo extends UIForm {
   }
 
   /**
-   * Gets dataSource
+   * Gets dataSource.
    *
    * @return
    */

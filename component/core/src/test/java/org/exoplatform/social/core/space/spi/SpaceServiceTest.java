@@ -54,16 +54,14 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals(2, spaceService.getAllSpaces().size());
   }
 
-  public void testGetSpaceByName() throws Exception {
+  public void testGetSpaceByDisplayName() throws Exception {
     Space space = populateData();
     tearDownSpaceList.add(space);
     Space gotSpace1 = spaceService.getSpaceByDisplayName("Space1");
-    
+
     assertNotNull("gotSpace1 must not be null", gotSpace1);
 
-    Space gotSpace2 = spaceService.getSpaceByDisplayName("Space2");
-
-    //assertEquals(space.getDisplayName(), spaceService.getSpaceByDisplayName("Space1").getDisplayName());
+    assertEquals(space.getDisplayName(), gotSpace1.getDisplayName());
   }
 
   public void testGetSpacesByFirstCharacterOfName() throws Exception {
@@ -83,16 +81,16 @@ public class SpaceServiceTest extends AbstractCoreTest {
     Space space = populateData();
     tearDownSpaceList.add(space);
     tearDownSpaceList.add(createMoreSpace("Space2"));
-    assertEquals(space.getName(), spaceService.getSpaceById(space.getId()).getName());
+    assertEquals(space.getDisplayName(), spaceService.getSpaceById(space.getId()).getDisplayName());
   }
 
   public void testGetSpaceByUrl() throws Exception {
     Space space = populateData();
     tearDownSpaceList.add(space);
-    assertEquals(space.getName(), spaceService.getSpaceByUrl("space1").getName());
+    assertEquals(space.getDisplayName(), spaceService.getSpaceByUrl("space1").getDisplayName());
   }
-  
-// //Relate to navigation and page maybe tested later 
+
+// //Relate to navigation and page maybe tested later
 //  public void testGetSpaces() throws Exception {
 //    Space space = populateData();
 //    spaceService.addMember(space, "root");
@@ -148,7 +146,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space1.setGroupId("/spaces/" + shortName);
     space1.setUrl(shortName);
     space1.setRegistration("validation");
-    space1.setDescription("This is my first space for testing"); 
+    space1.setDescription("This is my first space for testing");
     space1.setType("classic");
     space1.setVisibility("public");
     space1.setPriority("2");
@@ -156,7 +154,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     spaceService.saveSpace(space1, true);
     return space1;
   }
-  
+
   private Space createMoreSpace(String spaceName) throws Exception {
     Space space2 = new Space();
     space2.setApp("Contact,Forum");
@@ -165,13 +163,13 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space2.setGroupId("/spaces/" + shortName );
     space2.setUrl(shortName);
     space2.setRegistration("open");
-    space2.setDescription("This is my second space for testing"); 
+    space2.setDescription("This is my second space for testing");
     space2.setType("classic");
     space2.setVisibility("public");
     space2.setPriority("2");
-    
+
     spaceService.saveSpace(space2, true);
-    
+
     return space2;
   }
 }

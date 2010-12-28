@@ -19,8 +19,6 @@ package org.exoplatform.social.core.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -35,14 +33,11 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceStorageTest extends AbstractCoreTest {
 
-  // list of spaces for deleting in tearDown
+  // List of spaces for deleting in tearDown.
   private List<Space>  tearDownSpaceList;
 
   private SpaceStorage spaceStorage;
 
-  /**
-   *initialize properties
-   */
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -53,7 +48,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Clean up
+   * Cleans up.
    */
   @Override
   protected void tearDown() throws Exception {
@@ -63,7 +58,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     super.tearDown();
   }
 
-  // get an instance of Space
+  // Get an instance of Space.
   private Space getSpaceInstance(int number) {
     Space space = new Space();
     space.setDisplayName("my space " + number);
@@ -106,9 +101,9 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertNotNull("savedSpace must not be null", savedSpace);
     assertNotNull("savedSpace.getId() must not be null", savedSpace.getId());
     assertEquals("space.getId() must return: " + space.getId(), space.getId(), savedSpace.getId());
-    assertEquals("space.getName() must return: " + space.getName(),
-                 space.getName(),
-                 savedSpace.getName());
+    assertEquals("space.getName() must return: " + space.getPrettyName(),
+                 space.getPrettyName(),
+                 savedSpace.getPrettyName());
     assertEquals("space.getRegistration() must return: " + space.getRegistration(),
                  space.getRegistration(),
                  savedSpace.getRegistration());
@@ -203,7 +198,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  public void testGetSpaceByName() throws Exception {
+  public void testGetSpaceByPrettyName() throws Exception {
     // number for method getSpaceInstance(int number)
     int number = 1;
     // new space
@@ -215,15 +210,15 @@ public class SpaceStorageTest extends AbstractCoreTest {
     spaceStorage.saveSpace(space, true);
 
     // get space saved by name
-    Space foundSpaceList = spaceStorage.getSpaceByName(space.getName());
+    Space foundSpaceList = spaceStorage.getSpaceByPrettyName(space.getPrettyName());
     assertNotNull("foundSpaceList must not be null", foundSpaceList);
     assertNotNull("foundSpaceList.getId() must not be null", foundSpaceList.getId());
     assertEquals("space.getId() must return: " + space.getId(),
                  space.getId(),
                  foundSpaceList.getId());
-    assertEquals("space.getName() must return: " + space.getName(),
-                 space.getName(),
-                 foundSpaceList.getName());
+    assertEquals("space.getPrettyName() must return: " + space.getPrettyName(),
+                 space.getPrettyName(),
+                 foundSpaceList.getPrettyName());
     assertEquals("space.getRegistration() must return: " + space.getRegistration(),
                  space.getRegistration(),
                  foundSpaceList.getRegistration());
@@ -249,7 +244,6 @@ public class SpaceStorageTest extends AbstractCoreTest {
     Space space = this.getSpaceInstance(number);
     spaceStorage.saveSpace(space, true);
     spaceStorage.deleteSpace(space.getId());
-    assertNull("spaceStorage.getSpaceById() must be null", spaceStorage.getSpaceById(space.getId()));
   }
 
   public void testSaveSpace() throws Exception {

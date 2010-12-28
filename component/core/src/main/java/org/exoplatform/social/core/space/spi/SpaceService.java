@@ -30,7 +30,7 @@ import org.exoplatform.social.core.space.model.Space;
  */
 public interface SpaceService {
 
-  public static final String SPACES_APP_ID = "exosocial:spaces";
+  static final String SPACES_APP_ID = "exosocial:spaces";
 
   /**
    * Gets all spaces in Social.
@@ -48,7 +48,18 @@ public interface SpaceService {
    * @throws SpaceException
    * @since  1.2.0-GA
    */
-  public Space getSpaceByDisplayName(String spaceDisplayName) throws SpaceException;
+  Space getSpaceByDisplayName(String spaceDisplayName) throws SpaceException;
+
+  /**
+   * Gets a space by its space name.
+   *
+   * @param spaceName space name
+   * @return the stored space
+   * @throws SpaceException
+   * @deprecated Use {@link SpaceService#getSpaceByPrettyName(String)} instead.
+   *             Will be removed at 1.3.x
+   */
+  public Space getSpaceByName(String spaceName) throws SpaceException;
 
   /**
    * Gets a space by its space name.
@@ -57,7 +68,7 @@ public interface SpaceService {
    * @return the stored space
    * @throws SpaceException
    */
-  public Space getSpaceByName(String spaceName) throws SpaceException;
+  Space getSpaceByPrettyName(String spaceName) throws SpaceException;
 
   /**
    * Gets all spaces has the name starting with the input character.
@@ -74,7 +85,7 @@ public interface SpaceService {
    * @return a list of spaces
    * @throws Exception
    */
-  public List<Space> getSpacesBySearchCondition(String condition) throws Exception;
+  List<Space> getSpacesBySearchCondition(String condition) throws Exception;
 
   /**
    * Gets a space by its id.
@@ -686,7 +697,6 @@ public interface SpaceService {
    * @param portletPrefsRequiredPlugin
    */
   void setPortletsPrefsRequired(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin);
-
   /**
    * Gets the portlet preferences required to use in creating the portlet application.
    *

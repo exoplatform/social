@@ -79,14 +79,15 @@ public class UISpaceMenu extends UIContainer {
   private Space space = null;
 
   /**
-   * constructor
+   * Constructor.
+   * 
    * @throws Exception
    */
   public UISpaceMenu() throws  Exception {
   }
 
   /**
-   * Gets page node list for displaying as application links
+   * Gets page node list for displaying as application links.
    * @return page node list
    * @throws Exception
    */
@@ -231,7 +232,8 @@ public class UISpaceMenu extends UIContainer {
   }
 
   /**
-   * Gets selected application page node
+   * Gets selected application page node.
+   * 
    * @return selected application page node
    * @throws Exception
    */
@@ -243,14 +245,15 @@ public class UISpaceMenu extends UIContainer {
   }
 
   /**
-   * Gets image source url
+   * Gets image source url.
+   * 
    * @return image source url
    * @throws Exception
    */
   protected String getImageSource() throws Exception {
     Space space = getSpace();
     if (space != null) {
-      return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
+      return space.getAvatarUrl();
     } else {
       return "";
     }
@@ -275,7 +278,8 @@ public class UISpaceMenu extends UIContainer {
   }
 
   /**
-   * Application comparator
+   * Application comparator.
+   * 
    * @author hoatle
    *
    */
@@ -286,7 +290,8 @@ public class UISpaceMenu extends UIContainer {
   }
 
   /**
-   * Gets spaceService
+   * Gets spaceService.
+   * 
    * @return spaceService
    * @see SpaceService
    */
@@ -318,7 +323,7 @@ public class UISpaceMenu extends UIContainer {
   /**
    * Checks the input name is existed or not.<br>
    *
-   * @param pageNavigation
+   * @param pageNav
    *
    * @param nodeName
    *
@@ -345,7 +350,7 @@ public class UISpaceMenu extends UIContainer {
       }
     }
 
-    //space home application name is not PageNode so we alse need to check this name 
+    //space home application name is not PageNode so we alse need to check this name
     String spaceHomeAppName = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle().getString(SPACE_HOME_APP_NAME);
     return nodeName.equals(spaceHomeAppName);
   }

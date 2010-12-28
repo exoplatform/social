@@ -71,7 +71,8 @@ public class UIManagePublicSpaces extends UIContainer {
   private UISpaceSearch uiSpaceSearch = null;
 
   /**
-   * constructor to initialize iterator
+   * Constructor to initialize iterator.
+   * 
    * @throws Exception
    */
   public UIManagePublicSpaces() throws Exception {
@@ -82,7 +83,8 @@ public class UIManagePublicSpaces extends UIContainer {
 
 
   /**
-   * gets uiPageIterator
+   * Gets the uiPageIterator.
+   * 
    * @return uiPageIterator
    */
   public UIPageIterator getUIPageIterator() {
@@ -90,7 +92,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * gets all public spaces of a user
+   * Gets all public spaces of a user.
+   * 
    * @return public spaces list
    * @throws Exception
    */
@@ -103,7 +106,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * checks if the remote user has edit permission  of a space
+   * Checks if the remote user has edit permission  of a space.
+   * 
    * @param space
    * @return true or false
    * @throws Exception
@@ -114,7 +118,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * gets paginated public spaces so that user can request to join
+   * Gets paginated public spaces so that user can request to join.
+   * 
    * @return paginated public spaces list
    * @throws Exception
    */
@@ -125,16 +130,17 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * gets image source url
+   * Gets image source url.
+   * 
    * @param space
    * @return image source url
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
+    return space.getAvatarUrl();
   }
   /**
-   * listener for request to join space action
+   * Listener for request to join space action.
    */
   static public class RequestJoinActionListener extends EventListener<UIManagePublicSpaces> {
     public void execute(Event<UIManagePublicSpaces> event) throws Exception {
@@ -157,9 +163,9 @@ public class UIManagePublicSpaces extends UIContainer {
        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REQUEST_JOIN, null, ApplicationMessage.ERROR));
        return;
      }
-     
+
      UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication().getChild(UIWorkingWorkspace.class);
-     
+
      uiWorkingWS.updatePortletsByName("SpacesToolbarPortlet");
      // portal
      uiWorkingWS.updatePortletsByName("SocialUserToolBarGroupPortlet");
@@ -167,7 +173,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * listener for SpaceSearch's broadcasting
+   * Listener for SpaceSearch's broadcasting.
+   * 
    * @author hoatle
    *
    */
@@ -182,21 +189,24 @@ public class UIManagePublicSpaces extends UIContainer {
 
   }
   /**
-   * sets space lists
+   * Sets space lists.
+   * 
    * @param spaces
    */
   public void setSpaces(List<Space> spaces) {
     this.spaces = spaces;
   }
   /**
-   * gets space list
+   * Gets space list.
+   * 
    * @return space list
    */
   public List<Space> getSpaces() {
     return spaces;
   }
   /**
-   * gets current remote user
+   * Gets current remote user.
+   * 
    * @return remote user
    */
   private String getUserId() {
@@ -205,7 +215,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * gets spaceService
+   * Gets spaceService.
+   * 
    * @return spaceService
    * @see SpaceService
    */
@@ -215,7 +226,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * gets spaceList
+   * Gets spaceList.
+   * 
    * @return
    * @throws Exception
    */
@@ -241,7 +253,8 @@ public class UIManagePublicSpaces extends UIContainer {
  }
 
   /**
-   * gets public space names
+   * Gets public space names.
+   * 
    * @return public space names
    * @throws Exception
    */
@@ -256,7 +269,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * gets current portal name
+   * Gets current portal name.
+   * 
    * @return current portal name
    */
   private String getPortalName() {
@@ -265,7 +279,8 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * gets current repository name
+   * Gets current repository name.
+   * 
    * @return current repository name
    * @throws Exception
    */
@@ -284,7 +299,8 @@ public class UIManagePublicSpaces extends UIContainer {
    }
 
  /**
-  * gets paginated public spaces so that the user can request to join
+  * Gets paginated public spaces so that the user can request to join.
+  * 
   * @param spaces
   * @param iterator
   * @return

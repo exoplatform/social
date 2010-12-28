@@ -61,8 +61,6 @@ import org.exoplatform.social.core.storage.SpaceStorage;
 public class SpaceServiceImpl implements SpaceService {
   private static final Log                           LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
 
-  final static public String                   SPACE_PARENT             = "/spaces";
-
   final static public String                   MEMBER                   = "member";
 
   final static public String                   MANAGER                  = "manager";
@@ -135,8 +133,15 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public Space getSpaceByName(String spaceName) throws SpaceException {
+    return getSpaceByPrettyName(spaceName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public Space getSpaceByPrettyName(String spacePrettyName) throws SpaceException {
     try {
-      return storage.getSpaceByName(spaceName);
+      return storage.getSpaceByPrettyName(spacePrettyName);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
@@ -144,8 +149,6 @@ public class SpaceServiceImpl implements SpaceService {
 
   /**
    * {@inheritDoc}
-   *
-   * @throws Exception
    */
   public List<Space> getSpacesByFirstCharacterOfName(String firstCharacterOfName) throws SpaceException {
     List<Space> spaces;
@@ -166,7 +169,7 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   /**
-   * Gets all spaces has name or description that match input condition.
+   * {@inheritDoc}
    */
   public List<Space> getSpacesBySearchCondition(String condition) throws Exception {
     List<Space> listSpace = new ArrayList<Space>();
@@ -310,7 +313,7 @@ public class SpaceServiceImpl implements SpaceService {
       // Gets users in group and then invites user to join into space.
       OrganizationService org = getOrgService();
       try {
-        
+
         // Cannot use due to http://jira.exoplatform.org/browse/EXOGTN-173
         //ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
         //User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
@@ -373,6 +376,9 @@ public class SpaceServiceImpl implements SpaceService {
     spaceLifeCycle.spaceRemoved(space, null);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void deleteSpace(String spaceId) throws SpaceException {
     deleteSpace(getSpaceById(spaceId));
   }
@@ -385,6 +391,9 @@ public class SpaceServiceImpl implements SpaceService {
     initApps(space);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void initApps(Space space) throws SpaceException {
     SpaceApplicationHandler spaceAppHandler = getSpaceApplicationHandler(space);
     spaceAppHandler.initApp(space, homeNodeApp, apps);
@@ -407,6 +416,9 @@ public class SpaceServiceImpl implements SpaceService {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void deInitApps(Space space) throws SpaceException {
     SpaceApplicationHandler appHander = getSpaceApplicationHandler(space);
     appHander.removeApplications(space);
@@ -1244,7 +1256,7 @@ public class SpaceServiceImpl implements SpaceService {
      * @return
      */
     public int compare(Space space1, Space space2) {
-      return space1.getName().compareToIgnoreCase(space2.getName());
+      return space1.getPrettyName().compareToIgnoreCase(space2.getPrettyName());
     }
   }
 
@@ -1260,10 +1272,19 @@ public class SpaceServiceImpl implements SpaceService {
     return false;
   }
 
+  /**
+   * @return
+   * @deprecated To be removed at 1.3.x.
+   */
   public SpaceStorage getStorage() {
     return storage;
   }
 
+  /**
+   *
+   * @param storage
+   * @deprecated  To be removed at 1.3.x
+   */
   public void setStorage(SpaceStorage storage) {
     this.storage = storage;
   }

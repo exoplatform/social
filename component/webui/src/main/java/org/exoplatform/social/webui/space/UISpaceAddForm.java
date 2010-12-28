@@ -135,7 +135,7 @@ public class UISpaceAddForm extends UIFormTabPane {
           space = spaceService.createSpace(space, creator);
         }
         space.setType(DefaultSpaceApplicationHandler.NAME);
-        spaceService.initApp(space);
+        spaceService.initApps(space);
       } catch (SpaceException se) {
         //se.printStackTrace();
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
@@ -160,7 +160,6 @@ public class UISpaceAddForm extends UIFormTabPane {
       }
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
-      
       UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
       uiPortalApp.localizeNavigations();
       UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);

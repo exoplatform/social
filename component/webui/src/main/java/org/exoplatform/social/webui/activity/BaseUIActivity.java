@@ -33,7 +33,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -51,15 +50,16 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 
 /**
- * Created by The eXo Platform SAS
- * Author : Zun
- *          exo@exoplatform.com
- * Jul 23, 2010
+ * Base UI Activity for other custom activity ui to extend for displaying.
+ *
+ * @author Zun
+ * @author <a href="hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @since Jul 23, 2010
  */
 public class BaseUIActivity extends UIForm {
-  static private final Log LOG = ExoLogger.getLogger(BaseUIActivity.class);
+  private static final Log LOG = ExoLogger.getLogger(BaseUIActivity.class);
 
-  static public int LATEST_COMMENTS_SIZE = 2;
+  private static int LATEST_COMMENTS_SIZE = 2;
   private int commentMinCharactersAllowed = 0;
   private int commentMaxCharactersAllowed = 100;
 
@@ -86,8 +86,10 @@ public class BaseUIActivity extends UIForm {
   private CommentStatus commentListStatus = CommentStatus.LATEST;
   private boolean allCommentsHidden = false;
   private boolean commentFormFocused = false;
+
   /**
    * Constructor
+   * 
    * @throws Exception
    */
   public BaseUIActivity(){
@@ -202,7 +204,7 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * removes currently viewing userId if he liked this activity
+   * Removes currently viewing userId if he liked this activity.
    * @return
    * @throws Exception
    */
@@ -224,7 +226,7 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Gets activity image
+   * Gets activity image.
    *
    * @return
    */
@@ -245,7 +247,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Gets prettyTime by timestamp
+   * Gets prettyTime by timestamp.
+   * 
    * @param resourceBundle
    * @param postedTime
    * @return String
@@ -324,7 +327,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Checks if this activity is liked by the remote user
+   * Checks if this activity is liked by the remote user.
+   * 
    * @return
    * @throws Exception
    */
@@ -334,7 +338,7 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * refresh, regets all like, comments of this activity
+   * Refresh, regets all likes, comments of this activity.
    */
   protected void refresh() throws ActivityStorageException {
     activityManager = getActivityManager();
@@ -349,7 +353,7 @@ public class BaseUIActivity extends UIForm {
 
   @Deprecated
   protected String getRemoteUser() {
-    return Utils.getOwnerRemoteId();
+    return Utils.getViewerRemoteId();
   }
 
   public String getUserFullName(String userIdentityId) throws Exception {
@@ -362,7 +366,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Gets user profile uri
+   * Gets user profile uri.
+   * 
    * @param userIdentityId
    * @return
    * @throws Exception
@@ -382,7 +387,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Gets user's avatar image source by userIdentityId
+   * Gets user's avatar image source by userIdentityId.
+   * 
    * @param userIdentityId
    * @return
    * @throws Exception
@@ -397,24 +403,26 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Gets space's avatar image source
+   * Gets space's avatar image source.
+   * 
    * @return
    * @throws Exception
    */
   public String getSpaceAvatarImageSource(String spaceIdentityId) throws Exception {
     Identity spaceIdentity = identityManager.getIdentity(spaceIdentityId, false);
-    String spaceName = spaceIdentity.getRemoteId();
+    String prettyName = spaceIdentity.getRemoteId();
     SpaceService spaceService = getSpaceService();
-    Space space = spaceService.getSpaceByName(spaceName);
+    Space space = spaceService.getSpaceByPrettyName(prettyName);
     if (space != null) {
-      return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
+      return space.getAvatarUrl();
     }
 
     return null;
   }
 
   /**
-   * Gets activityManager
+   * Gets activityManager.
+   * 
    * @return
    */
   protected ActivityManager getActivityManager() {
@@ -425,7 +433,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Gets identityManager
+   * Gets identityManager.
+   * 
    * @return
    */
   protected IdentityManager getIdentityManager() {
@@ -436,7 +445,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Gets relationshipManager
+   * Gets relationshipManager.
+   * 
    * @return
    */
   protected RelationshipManager getRelationshipManager() {
@@ -447,7 +457,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Gets SpaceService
+   * Gets SpaceService.
+   * 
    * @return
    */
   private SpaceService getSpaceService() {
@@ -471,7 +482,7 @@ public class BaseUIActivity extends UIForm {
   public boolean isActivityDeletable() throws SpaceException {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
     PostContext postContext = uiActivitiesContainer.getPostContext();
-    String remoteUser = getRemoteUser();
+    String remoteUser = Utils.getOwnerRemoteId();
     if (postContext == PostContext.SPACE) {
       Space space = uiActivitiesContainer.getSpace();
       SpaceService spaceService = getApplicationComponent(SpaceService.class);
@@ -535,7 +546,7 @@ public class BaseUIActivity extends UIForm {
       if (postContext == PostContext.SPACE) {
         Space space = uiActivitiesContainer.getSpace();
         SpaceService spaceService = getApplicationComponent(SpaceService.class);
-        return spaceService.isLeader(space, getRemoteUser());
+        return spaceService.isLeader(space, Utils.getOwnerRemoteId());
       } else if (postContext == PostContext.USER) {
         UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
         if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {

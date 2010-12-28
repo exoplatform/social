@@ -27,7 +27,6 @@ import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -78,7 +77,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   private UISpaceSearch uiSpaceSearch = null;
   
   /**
-   * Constructor for initialize UIPopupWindow for adding new space popup
+   * Constructor for initialize UIPopupWindow for adding new space popup.
+   * 
    * @throws Exception
    */
   public UIManageInvitationSpaces() throws Exception {
@@ -87,7 +87,8 @@ public class UIManageInvitationSpaces extends UIContainer {
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }
   /**
-   * gets uiPageIterator
+   * Gets uiPageIterator.
+   * 
    * @return uiPageIterator
    */
   public UIPageIterator getUIPageIterator() {
@@ -95,7 +96,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * gets spaceService
+   * Gets spaceService.
+   * 
    * @return spaceService
    */
   private SpaceService getSpaceService() {
@@ -105,7 +107,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * gets remote user Id
+   * Gets remote user Id.
+   * 
    * @return userId
    */
   private String getUserId() {
@@ -115,7 +118,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * gets all user's spaces
+   * Gets all user's spaces.
+   * 
    * @return space list
    * @throws Exception
    */
@@ -127,7 +131,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * gets paginated spaces in which user is member or leader
+   * Gets paginated spaces in which user is member or leader.
    *
    * @return paginated spaces list
    * @throws Exception
@@ -139,7 +143,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * Get role of the user in a specific space for displaying in template
+   * Gets role of the user in a specific space for displaying in template.
    *
    * @param spaceId
    * @return UIManageMySpaces.LEADER if the remote user is the space's leader <br />
@@ -156,14 +160,16 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * sets space list
+   * Sets space list.
+   * 
    * @param spaces
    */
   public void setSpaces(List<Space> spaces) {
     this.spaces = spaces;
   }
   /**
-   * gets space list
+   * Gets space list.
+   * 
    * @return space list
    */
   public List<Space> getSpaces() {
@@ -171,8 +177,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-  * This action is triggered when user clicks on Accept Space Invitation
-  * When accepting, that user will be the member of the space
+  * This action is triggered when user clicks on Accept Space Invitation.
+  * When accepting, that user will be the member of the space.
   */
   static public class AcceptActionListener extends EventListener<UIManageInvitationSpaces> {
 
@@ -214,15 +220,15 @@ public class UIManageInvitationSpaces extends UIContainer {
         break;
       }
      }
-     
+
      SpaceUtils.setNavigation(spaceNavigation);
      SpaceUtils.updateWorkingWorkSpace();
    }
   }
 
   /**
-  * This action is triggered when user clicks on Deny Space Invitation
-  * When denying, that space will remove the user from pending list
+  * This action is triggered when user clicks on Deny Space Invitation.
+  * When denying, that space will remove the user from pending list.
   */
   static public class DenyActionListener extends EventListener<UIManageInvitationSpaces> {
 
@@ -255,7 +261,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * triggers this action when user clicks on search button
+   * Triggers this action when user clicks on search button.
+   * 
    * @author hoatle
    *
    */
@@ -270,17 +277,19 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * gets image source url
+   * Gets image source url.
+   * 
    * @param space
    * @return image source url
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
+    return space.getAvatarUrl();
   }
 
   /**
-   * gets invited space name list
+   * Gets invited space name list.
+   * 
    * @return invited space name list
    * @throws Exception
    */
@@ -304,7 +313,8 @@ public class UIManageInvitationSpaces extends UIContainer {
     }
 
   /**
-   * gets portal name
+   * Gets portal name.
+   * 
    * @return portal name
    */
   private String getPortalName() {
@@ -312,7 +322,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * gets repository name
+   * Gets repository name.
+   * 
    * @return repository name
    * @throws Exception
    */
@@ -322,7 +333,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * gets space list
+   * Gets space list.
+   * 
    * @return space list
    * @throws Exception
    */
@@ -350,7 +362,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * gets displayed invited space list
+   * Gets displayed invited space list.
+   * 
    * @param spaces
    * @param pageIterator_
    * @return invited space list

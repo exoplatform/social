@@ -24,7 +24,6 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -60,7 +59,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     try {
       // this should create the identity for the space
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getName(),
+                                                                   space.getPrettyName(),
                                                                    false);
       String creator = event.getTarget();
       activityManager.recordActivity(spaceIdentity,
@@ -73,38 +72,38 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
 
   @Override
   public void spaceRemoved(SpaceLifeCycleEvent event) {
-    LOG.info("space " + event.getSpace().getName() + " was removed!");
+    LOG.info("space " + event.getSpace().getDisplayName() + " was removed!");
   }
 
   public void applicationActivated(SpaceLifeCycleEvent event) {
 
     LOG.info("application <b>" + event.getTarget() + "</b> was activated in space "
-        + event.getSpace().getName());
+        + event.getSpace().getDisplayName());
 
   }
 
   public void applicationAdded(SpaceLifeCycleEvent event) {
     LOG.info("application <b>" + event.getTarget() + "</b> was added in space "
-        + event.getSpace().getName());
+        + event.getSpace().getDisplayName());
 
   }
 
   public void applicationDeactivated(SpaceLifeCycleEvent event) {
     LOG.info("application " + event.getTarget() + " was deactivated in space "
-        + event.getSpace().getName());
+        + event.getSpace().getDisplayName());
 
   }
 
   public void applicationRemoved(SpaceLifeCycleEvent event) {
     LOG.info("application " + event.getTarget() + " was removed in space "
-        + event.getSpace().getName());
+        + event.getSpace().getDisplayName());
   }
 
   public void grantedLead(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     try {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getName(),
+                                                                   space.getPrettyName(),
                                                                    false);
       String member = event.getTarget();
       activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
@@ -119,7 +118,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Space space = event.getSpace();
     try {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getName(),
+                                                                   space.getPrettyName(),
                                                                    false);
       String member = event.getTarget();
       activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
@@ -128,14 +127,14 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       LOG.error("Failed to log join activity ", e);
     }
 
-    LOG.info("user " + event.getTarget() + " joined space " + event.getSpace().getName());
+    LOG.info("user " + event.getTarget() + " joined space " + event.getSpace().getDisplayName());
   }
 
   public void left(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     try {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getName(),
+                                                                   space.getPrettyName(),
                                                                    false);
       String member = event.getTarget();
       activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
@@ -144,13 +143,13 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       LOG.error("Failed to log leave activity ", e);
     }
 
-    LOG.info("user " + event.getTarget() + " has left of space " + event.getSpace().getName());
+    LOG.info("user " + event.getTarget() + " has left of space " + event.getSpace().getDisplayName());
   }
 
   public void revokedLead(SpaceLifeCycleEvent event) {
 
     LOG.info("user " + event.getTarget() + " was revoked lead privileges of space "
-        + event.getSpace().getName());
+        + event.getSpace().getDisplayName());
   }
 
 }

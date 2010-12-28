@@ -38,6 +38,8 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
@@ -49,7 +51,7 @@ public class WidgetRestService implements ResourceContainer {
   @Path("go_to_space")
   public Response goToSpace(@PathParam("containerName") String containerName,
                             @QueryParam("portalName") @DefaultValue("classic") String portalName,
-                            @QueryParam("spaceName") String spaceName,
+                            @QueryParam("spaceDisplayName") String spaceDisplayName,
                             @QueryParam("description") String description) {
     ExoContainer pc = ExoContainerContext.getContainerByName(containerName);
     // we make sure we use the right container
@@ -58,18 +60,18 @@ public class WidgetRestService implements ResourceContainer {
     try {
       SpaceService service = (SpaceService) pc.getComponentInstanceOfType(SpaceService.class);
 
-      Space space = service.getSpaceByName(spaceName);
+      Space space = service.getSpaceByPrettyName(SpaceUtils.cleanString(spaceDisplayName));
       String username = ConversationState.getCurrent().getIdentity().getUserId();
 
       if (space == null) {
         // If the space does not exist, we create it
         space = new Space();
-        space.setDisplayName(spaceName);
-        space.setRegistration("open");
+        space.setDisplayName(spaceDisplayName);
+        space.setRegistration(Space.OPEN);
         space.setDescription(description);
-        space.setType("classic");
-        space.setVisibility("public");
-        space.setPriority("2");
+        space.setType(DefaultSpaceApplicationHandler.NAME);
+        space.setVisibility(Space.PUBLIC);
+        space.setPriority(Space.INTERMEDIATE_PRIORITY);
         space = service.createSpace(space, username);
         service.initApps(space);
       } else {
@@ -77,7 +79,7 @@ public class WidgetRestService implements ResourceContainer {
 
         // We verify if the registrations are open to everyone
         if (!service.hasAccessPermission(space, username)) {
-          if (space.getRegistration().equals("open")) {
+          if (space.getRegistration().equals(Space.OPEN)) {
             service.addMember(space, username);
           } else {
             service.requestJoin(space, username);
@@ -111,7 +113,7 @@ public class WidgetRestService implements ResourceContainer {
   @Produces("text/html")
   public String spaceInfo(@PathParam("containerName") String containerName,
                           @QueryParam("portalName") @DefaultValue("classic") String portalName,
-                          @QueryParam("spaceName") String spaceName,
+                          @QueryParam("spacePrettyName") String spacePrettyName,
                           @QueryParam("description") String description,
                           @Context UriInfo uriInfo) {
     ExoContainer pc = ExoContainerContext.getContainerByName(containerName);
@@ -131,23 +133,23 @@ public class WidgetRestService implements ResourceContainer {
 
 
       URI goToSpace = uriInfo.getBaseUriBuilder().path("/spaces/{containerName}/go_to_space")
-                                 .queryParam("spaceName", spaceName)
+                                 .queryParam("spacePrettyName", spacePrettyName)
                                  .queryParam("portalName", portalName)
                                  .queryParam("description", description)
                                  .build(containerName);
 
-      Space space = service.getSpaceByName(spaceName);
+      Space space = service.getSpaceByPrettyName(spacePrettyName);
       response.append("<h3 class=\"space_name\"><a href=\"")
               .append(goToSpace.toString())
               .append("\" target=\"_blank\">")
-              .append(spaceName)
+              .append(space.getDisplayName())
               .append("</a></h3>");
       if (space != null) {
         String username = ConversationState.getCurrent().getIdentity().getUserId();
 
         if (service.hasAccessPermission(space, username)) {
           Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                       space.getName());
+                                                                       space.getPrettyName());
           List<ExoSocialActivity> activities = activityManager.getActivities(spaceIdentity);
 
           if (activities.size() > 0) {

@@ -24,7 +24,6 @@ import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -70,7 +69,8 @@ public class UIManagePendingSpaces extends UIContainer {
   private UISpaceSearch uiSpaceSearch = null;
   
   /**
-   * constructor to initialize iterator
+   * Constructor to initialize iterator.
+   * 
    * @throws Exception
    */
   public UIManagePendingSpaces() throws Exception {
@@ -80,7 +80,8 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * gets uiPageIterator
+   * Gets uiPageIterator.
+   * 
    * @return uiPageIterator
    */
   public UIPageIterator getUIPageIterator() {
@@ -88,7 +89,8 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * gets all pending spaces of a user
+   * Gets all pending spaces of a user.
+   * 
    * @return all pending spaces
    * @throws SpaceException
    */
@@ -101,7 +103,8 @@ public class UIManagePendingSpaces extends UIContainer {
 
 
   /**
-   * gets pending spaces by page iterator
+   * Gets pending spaces by page iterator.
+   * 
    * @return pending spaces
    * @throws Exception
    */
@@ -112,17 +115,18 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * gets image source url
+   * Gets image source url.
+   * 
    * @param space
    * @return image source url
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
+    return space.getAvatarUrl();
   }
 
   /**
-   * This action is triggered when user clicks on RevokePending action
+   * This action is triggered when user clicks on RevokePending action.
    */
   static public class RevokePendingActionListener extends EventListener<UIManagePendingSpaces> {
     @Override
@@ -151,7 +155,8 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * triggers this action when user click on search button
+   * Triggers this action when user click on search button.
+   * 
    * @author hoatle
    *
    */
@@ -166,14 +171,16 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * sets space list
+   * Sets space list.
+   * 
    * @param spaces
    */
   public void setSpaces(List<Space> spaces) {
     this.spaces = spaces;
   }
   /**
-   * gets space list
+   * Gets space list.
+   * 
    * @return space list
    */
   public List<Space> getSpaces() {
@@ -181,7 +188,8 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * gets spaceService
+   * Gets spaceService.
+   * 
    * @return spaceService
    * @see SpaceService
    */
@@ -193,7 +201,8 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * gets remote user
+   * Gets remote user.
+   * 
    * @return userId
    */
   private String getUserId() {
@@ -203,7 +212,8 @@ public class UIManagePendingSpaces extends UIContainer {
     return userId;
   }
   /**
-   * gets space list
+   * Gets space list.
+   * 
    * @return space list
    * @throws Exception
    */
@@ -230,7 +240,8 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * gets pending space names
+   * Gets pending space names.
+   * 
    * @return pending space names
    * @throws SpaceException
    */
@@ -245,7 +256,8 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * gets current portal name
+   * Gets current portal name.
+   * 
    * @return current portal name
    */
   private String getPortalName() {
@@ -254,7 +266,8 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * gets repository name
+   * Gets repository name.
+   * 
    * @return repository name
    * @throws Exception
    */
@@ -273,7 +286,8 @@ public class UIManagePendingSpaces extends UIContainer {
    }
 
   /**
-   * gets paginated pending spaces so that the user can revoke pending
+   * Gets paginated pending spaces so that the user can revoke pending.
+   * 
    * @return paginated pending spaces
    * @throws Exception
    */

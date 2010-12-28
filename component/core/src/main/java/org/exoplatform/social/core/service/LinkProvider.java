@@ -29,19 +29,20 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.space.model.Space;
 
 public class LinkProvider {
   private static IdentityManager identityManager;
   private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);
 
   /**
-   * Hacks for unit test to work
+   * Hacks for unit test to work.
    */
   private static String DEFAULT_PORTAL_OWNER = "classic";
 
   /**
-   * returns the uri link to user profile
-   * 
+   * Returns the uri link to user profile.
+   *
    * @param username
    * @return the uri link to user profile
    */
@@ -50,8 +51,8 @@ public class LinkProvider {
   }
 
   /**
-   * Returns the uri link to user profile in a portalOwner
-   * 
+   * Returns the uri link to user profile in a portalOwner.
+   *
    * @param username
    * @param portalOwner
    * @return the uri link to user profile
@@ -61,8 +62,8 @@ public class LinkProvider {
   }
 
   /**
-   * Returns tag <a> with a link to profile of userName
-   * 
+   * Returns tag <a> with a link to profile of userName.
+   *
    * @param username
    * @return tag <a> with a link to profile of userName
    */
@@ -71,8 +72,8 @@ public class LinkProvider {
   }
 
   /**
-   * Returns tag <a> with a link to profile of userName on portalName
-   * 
+   * Returns tag <a> with a link to profile of userName on portalName.
+   *
    * @param username
    * @param portalOwner
    * @return tag <a> with a link to profile of userName on portalName
@@ -86,7 +87,7 @@ public class LinkProvider {
 
   /**
    * Gets absolute profile uri of userName
-   * 
+   *
    * @param userName
    * @param portalName
    * @param portalOwner
@@ -99,8 +100,8 @@ public class LinkProvider {
 
   /**
    * Gets activity link of space or user; remoteId should be the id name. For
-   * example: organization:root or space:abc_def
-   * 
+   * example: organization:root or space:abc_def.
+   *
    * @param providerId
    * @param remoteId
    * @return
@@ -118,8 +119,8 @@ public class LinkProvider {
   }
 
   /**
-   * Builds avatar image uri from avatarAttachment
-   * 
+   * Builds avatar image uri from avatarAttachment.
+   *
    * @param avatarAttachment
    * @return uri
    */
@@ -128,13 +129,24 @@ public class LinkProvider {
   }
 
   /**
-   * Builds avatar image uri from avatarAttachment
-   * 
+   * Gets url of avatar.
+   *
+   * @param space
+   * @return
+   * @since 1.2.0-GA
+   */
+  public static String buildAvatarImageUri(final Space space) {
+    return buildAvatarImageUri(space.getAvatarAttachment());
+  }
+
+  /**
+   * Builds avatar image uri from avatarAttachment.
+   *
    * @param container
    * @param avatarAttachment
    * @return url to avatar
    */
-  public static String buildAvatarImageUri(final PortalContainer container, final AvatarAttachment avatarAttachment) {
+  private static String buildAvatarImageUri(final PortalContainer container, final AvatarAttachment avatarAttachment) {
     String avatarUrl = null;
     try {
       if (avatarAttachment != null) {
@@ -153,12 +165,12 @@ public class LinkProvider {
   }
 
   /**
-   * Gets avatar image uri of profile in a portalContainer
-   * 
+   * Gets avatar image uri of profile in a portalContainer.
+   *
    * @param profile
    * @param portalContainer
    * @return null or an url if available
-   * @deprecated use {@link #getAvatarUrl()}. Will be removed at 1.3.x
+   * @deprecated use {@link Profile#getAvatarUrl()}. Will be removed at 1.3.x
    */
   public static String getAvatarImageSource(final PortalContainer portalContainer, final Profile profile) {
     final AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
@@ -169,10 +181,11 @@ public class LinkProvider {
   }
 
   /**
-   * Gets avatar image uri of profile
+   * Gets avatar image uri of profile.
+   *
    * @param profile
    * @return null or an url if available
-   * @deprecated use {@link #getAvatarUrl()}. Will be removed at 1.3.x
+   * @deprecated use {@link Profile#getAvatarUrl()}. Will be removed at 1.3.x
    */
   public static String getAvatarImageSource(final Profile profile) {
     String avatarUrl = (String) profile.getProperty(Profile.AVATAR_URL);
@@ -191,8 +204,8 @@ public class LinkProvider {
   }
 
   /**
-   * Builds profile uri from userName and portalOwner
-   * 
+   * Builds profile uri from userName and portalOwner.
+   *
    * @param userName
    * @param portalOwner
    * @return profile uri
@@ -202,8 +215,8 @@ public class LinkProvider {
   }
 
   /**
-   * Builds profile uri from userName and portalName and portalOwner
-   * 
+   * Builds profile uri from userName and portalName and portalOwner.
+   *
    * @param userName
    * @param portalName
    * @param portalOwner
@@ -215,8 +228,8 @@ public class LinkProvider {
   }
 
   /**
-   * Escapes jcr special characters
-   * 
+   * Escapes jcr special characters.
+   *
    * @param string
    * @return
    */
@@ -225,8 +238,8 @@ public class LinkProvider {
   }
 
   /**
-   * Gets IdentityManager instance
-   * 
+   * Gets IdentityManager instance.
+   *
    * @return identityManager
    */
   private static IdentityManager getIdentityManager() {
@@ -238,8 +251,8 @@ public class LinkProvider {
   }
 
   /**
-   * Gets portal owner, if parameter is null or "", the method return default portal owner
-   * 
+   * Gets portal owner, if parameter is null or "", the method return default portal owner.
+   *
    * @param portalOwner
    * @return portalOwner
    */

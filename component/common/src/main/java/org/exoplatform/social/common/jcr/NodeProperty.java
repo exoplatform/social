@@ -46,11 +46,29 @@ public final class NodeProperty {
   public static final String ACTIVITY_PRIORITY = "exo:priority";
   public static final String ACTIVITY_URL = "exo:url";
 
+  /* eXo Social Space Node Properties */
+  public static final String SPACE_DISPLAY_NAME = "exo:name";
+  public static final String SPACE_GROUP_ID = "exo:groupId";
+  public static final String SPACE_APP = "exo:app";
+  public static final String SPACE_PARENT = "exo:parent";
+  public static final String SPACE_DESCRIPTION = "exo:description";
+  public static final String SPACE_TAG = "exo:tag";
+  public static final String SPACE_PENDING_USERS = "exo:pendingUsers";
+  public static final String SPACE_INVITED_USERS = "exo:invitedUsers";
+  public static final String SPACE_TYPE = "exo:type";
+  public static final String SPACE_URL = "exo:url";
+  public static final String SPACE_VISIBILITY = "exo:visibility";
+  public static final String SPACE_REGISTRATION = "exo:registration";
+  public static final String SPACE_PRIORITY = "exo:priority";
+  public static final String SPACE_PRETTY_NAME = "exo:prettyName";
+  public static final String SPACE_AVATAR_URL = "exo:avatarUrl";
+
   /* eXo Social Relarionship Node Properties */
   public static final String RELATIONSHIP_SENDER     = "exo:sender";
   public static final String RELATIONSHIP_RECEIVER   = "exo:receiver";
   public static final String RELATIONSHIP_STATUS     = "exo:status";
   public static final String RELATIONSHIP_IS_SYMETRIC = "exo:isSymetric";
+
 
   /* JCR Node Property */
 
@@ -137,6 +155,8 @@ public final class NodeProperty {
   public static final String JCR_STATEMENT = "jcr:statement";
 
   public static final String JCR_LANGUAGE = "jcr:language";
+
+  public static final String JCR_DATA = "jcr:data";
 
   public static final String JCR_PATH = "jcr:path";
 }

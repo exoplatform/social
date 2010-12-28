@@ -23,7 +23,6 @@ import java.util.List;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -34,10 +33,8 @@ import org.exoplatform.portal.webui.navigation.UINavigationManagement;
 import org.exoplatform.portal.webui.navigation.UINavigationNodeSelector;
 import org.exoplatform.portal.webui.page.UIPageNodeForm;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -52,8 +49,8 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIManageMySpaces.java <br />
@@ -85,7 +82,7 @@ public class UIManageMySpaces extends UIContainer {
   /** The first page. */
   private static final int FIRST_PAGE = 1;
 
-  
+
   private UIPageIterator iterator;
   private final Integer SPACES_PER_PAGE = 4;
   private final String ITERATOR_ID = "UIIteratorMySpaces";
@@ -97,7 +94,8 @@ public class UIManageMySpaces extends UIContainer {
   private UISpaceSearch uiSpaceSearch = null;
   
   /**
-   * Constructor for initialize UIPopupWindow for adding new space popup
+   * Constructor for initialize UIPopupWindow for adding new space popup.
+   * 
    * @throws Exception
    */
   public UIManageMySpaces() throws Exception {
@@ -107,7 +105,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets uiPageIterator
+   * Gets uiPageIterator.
+   * 
    * @return uiPageIterator
    */
   public UIPageIterator getMySpacesUIPageIterator() {
@@ -115,7 +114,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets all user's spaces
+   * Gets all user's spaces.
+   * 
    * @return user spaces
    * @throws Exception
    */
@@ -129,7 +129,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets selected navigation
+   * Gets selected navigation.
+   * 
    * @return page navigation
    */
   public PageNavigation getSelectedNavigation() {
@@ -137,7 +138,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * sets selected navigation
+   * Sets selected navigation.
+   * 
    * @param navigation
    */
   public void setSelectedNavigation(PageNavigation navigation) {
@@ -145,7 +147,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets paginated spaces in which user is member or leader
+   * Gets paginated spaces in which user is member or leader.
+   * 
    *
    * @return paginated spaces list
    * @throws Exception
@@ -157,7 +160,7 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets role of the user in a specific space for displaying in template
+   * Gets role of the user in a specific space for displaying in template.
    *
    * @param spaceId
    * @return UIManageMySpaces.LEADER if the remote user is the space's leader <br />
@@ -174,7 +177,7 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * checks in case root has membership with current space.
+   * Checks in case root has membership with current space.
    *
    * @param spaceId
    * @return true or false
@@ -192,14 +195,16 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * sets space list
+   * Sets space list.
+   * 
    * @param spaces
    */
   public void setSpaces(List<Space> spaces) {
     this.spaces = spaces;
   }
   /**
-   * gets space list
+   * Gets space list.
+   * 
    * @return space list
    */
   public List<Space> getSpaces() {
@@ -207,20 +212,21 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets image source url
+   * Gets image source url.
+   * 
    * @param space
    * @return image source url
    * @throws Exception
    */
   public String getImageSource(Space space) throws Exception {
-    return LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
+    return space.getAvatarUrl();
   }
 
 
   /**
    * This action is triggered when user click on EditSpace
    * Currently, when user click on EditSpace, they will be redirected to /xxx/SpaceSettingPortlet
-   * When user click on editSpace, the user is redirected to SpaceSettingPortlet
+   * When user click on editSpace, the user is redirected to SpaceSettingPortlet.
    *
    */
   static public class EditSpaceActionListener extends EventListener<UIManageMySpaces> {
@@ -252,7 +258,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * This action trigger when user click on back button from UINavigationManagement
+   * This action trigger when user click on back button from UINavigationManagement.
+   * 
    * @author hoatle
    *
    */
@@ -356,7 +363,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * triggers this action when user clicks on the search button
+   * Triggers this action when user clicks on the search button.
+   * 
    * @author hoatle
    *
    */
@@ -371,7 +379,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets spaceService
+   * Gets spaceService.
+   * 
    * @return spaceService
    * @see SpaceService
    */
@@ -382,7 +391,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets remote user Id
+   * Gets remote user Id.
+   * 
    * @return remote userId
    */
   private String getUserId() {
@@ -391,7 +401,8 @@ public class UIManageMySpaces extends UIContainer {
     return userId;
   }
   /**
-   * loads navigations
+   * Loads navigations.
+   * 
    * @throws Exception
    */
   private void loadNavigations() throws Exception {
@@ -417,7 +428,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets my space list
+   * Gets my space list.
+   * 
    * @return my space list
    * @throws Exception
    */
@@ -445,7 +457,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets display my space list
+   * Gets display my space list.
+   * 
    * @param spaces_
    * @param pageIterator_
    * @return display my space list
@@ -466,7 +479,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * gets all my space names
+   * Gets all my space names.
+   * 
    * @return my space names
    * @throws Exception
    */
@@ -480,27 +494,9 @@ public class UIManageMySpaces extends UIContainer {
     return allSpacesNames;
   }
 
-  /**
-   * gets current repository name
-   * @return repository name
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
-  }
-
-  /**
-   * Gets the rest context.
-   *
-   * @return the rest context
-   */
-   private String getRestContext() {
-     return PortalContainer.getInstance().getRestContextName();
-   }
-
    /**
-    * Get node's name base on application name
+    * Gets node's name base on application name.
+    * 
     * @param space
     * @param appId
     * @throws SpaceException

@@ -30,6 +30,13 @@ public final class NodeType {
   public static final String EXO_ACTIVITY = "exo:activity";
 
   /**
+   * eXo Social Space Node Type.
+   */
+  public static final String EXO_SPACE = "exo:space";
+
+  public static final String EXO_PRIVILEGEABLE = "exo:privilegeable";
+
+  /**
    * eXo Social Relationship node type.
    */
   public static final String EXO_RELATIONSHIP = "exo:relationship";

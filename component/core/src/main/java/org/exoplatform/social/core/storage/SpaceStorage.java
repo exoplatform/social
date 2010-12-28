@@ -20,13 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
@@ -35,54 +33,63 @@ import org.exoplatform.services.jcr.core.ExtendedNode;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
+import org.exoplatform.social.common.jcr.NodeProperty;
+import org.exoplatform.social.common.jcr.NodeType;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.model.AvatarAttachment;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.model.SpaceAttachment;
 
-
+/**
+ * SpaceStorage layer to work directly with JCR.
+ *
+ * @author <a href="hoatle.net">hoatle</a>
+ */
 public class SpaceStorage {
-
+  /**
+   * The Logger.
+   */
   private static final Log LOG = ExoLogger.getLogger(SpaceStorage.class);
-
-  final static private String SPACE_NODETYPE = "exo:space".intern();
-  final static private String SPACE_NAME = "exo:name".intern();
-  final static private String SPACE_GROUPID = "exo:groupId".intern();
-  final static private String SPACE_APP = "exo:app".intern();
-  final static private String SPACE_PARENT = "exo:parent".intern();
-  final static private String SPACE_DESCRIPTION = "exo:description".intern();
-  final static private String SPACE_TAG = "exo:tag".intern();
-  final static private String SPACE_PENDING_USER = "exo:pendingUsers".intern();
-  final static private String SPACE_INVITED_USER = "exo:invitedUsers".intern();
-  final static private String SPACE_TYPE = "exo:type".intern();
-  final static private String SPACE_URL = "exo:url".intern();
-  final static private String SPACE_VISIBILITY = "exo:visibility".intern();
-  final static private String SPACE_REGISTRATION = "exo:registration".intern();
-  final static private String SPACE_PRIORITY = "exo:priority".intern();
-
+  /**
+   * SPACE_PROPERTIES_NAME_PATTERN for loading all properties of one node at once.
+   */
+  private static final String SPACE_PROPERTIES_NAME_PATTERN = Util.getPropertiesNamePattern(
+          new String[]{
+                  NodeProperty.SPACE_APP,
+                  NodeProperty.SPACE_AVATAR_URL,
+                  NodeProperty.SPACE_DESCRIPTION,
+                  NodeProperty.SPACE_DISPLAY_NAME,
+                  NodeProperty.SPACE_GROUP_ID,
+                  NodeProperty.SPACE_INVITED_USERS,
+                  NodeProperty.SPACE_PARENT,
+                  NodeProperty.SPACE_PENDING_USERS,
+                  NodeProperty.SPACE_PRETTY_NAME,
+                  NodeProperty.SPACE_PRIORITY,
+                  NodeProperty.SPACE_REGISTRATION,
+                  NodeProperty.SPACE_TAG,
+                  NodeProperty.SPACE_TYPE,
+                  NodeProperty.SPACE_URL,
+                  NodeProperty.SPACE_VISIBILITY
+          }
+  );
   private SocialDataLocation dataLocation;
   private JCRSessionManager sessionManager;
-  private String workspace;
+  private static final String IMAGE_PATH = "image";
+  private Node spaceHomeNode;
 
+  /**
+   * Constructor.
+   *
+   * @param dataLocation
+   */
   public SpaceStorage(SocialDataLocation dataLocation) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
-    this.workspace = dataLocation.getWorkspace();
-  }
-
-  private Node getSpaceHome(Session session) throws Exception {
-    String path = dataLocation.getSocialSpaceHome();
-    return session.getRootNode().getNode(path);
-  }
-
-  private String getWorkspace() throws Exception {
-     return workspace;
   }
 
   /**
-   * Gets the all spaces.
+   * Gets all the spaces.
    *
    * @return the all spaces
    */
@@ -90,37 +97,42 @@ public class SpaceStorage {
     List<Space> spaces = new ArrayList<Space>();
     try {
       Session session = sessionManager.getOrOpenSession();
-      Node spaceHomeNode = getSpaceHome(session);
-      NodeIterator iter = spaceHomeNode.getNodes();
-      Space space;
-      while (iter.hasNext()) {
-        Node spaceNode = iter.nextNode();
-        space = getSpace(spaceNode, session);
+      List<Node> spacesNode = new QueryBuilder(session)
+              .select(NodeType.EXO_SPACE)
+              .exec();
+      for (Node node : spacesNode) {
+        Space space = this.getSpaceFromNode(node, session);
         spaces.add(space);
       }
       return spaces;
     } catch (Exception e) {
-      e.printStackTrace();
-      return null;
+      LOG.warn("Failed to getAllSpaces()", e);
+      return spaces;
     } finally {
       sessionManager.closeSession();
     }
   }
 
+  /**
+   * Gets a space by its space id.
+   *
+   * @param id
+   * @return
+   */
   public Space getSpaceById(String id) {
     Session session = sessionManager.getOrOpenSession();
     try {
       Node spaceNode = session.getNodeByUUID(id);
       if (spaceNode != null) {
-        return getSpace(spaceNode, session);
+        return getSpaceFromNode(spaceNode, session);
       }
-
     } catch (Exception e) {
-      // TODO: handle exception
+      LOG.warn("Failed to getSpaceById: " + id, e);
+      return null;
     } finally {
       sessionManager.closeSession();
     }
-    LOG.debug("No node found for space: " + id);
+    LOG.warn("No node found for space: " + id);
     return null;
   }
 
@@ -133,67 +145,64 @@ public class SpaceStorage {
    */
   public List<Space> getSpacesBySearchCondition(String condition) throws Exception {
     Session session = sessionManager.getOrOpenSession();
-    Node spaceHomeNode = getSpaceHome(session);
-    List<Space> listSpace = new ArrayList<Space>();
-    NodeIterator nodeIterator = null;
-
+    List<Space> spaceList = new ArrayList<Space>();
+    List<Node> spaceNodes = null;
     try {
-      QueryManager queryManager = session.getWorkspace().getQueryManager() ;
-      StringBuffer queryString = new StringBuffer("/").append(spaceHomeNode.getPath())
-          .append("/").append(SPACE_NODETYPE);
-
       if (condition.length() != 0) {
-        queryString.append("[");
-
-        if(condition.indexOf("*")<0){
-          if(condition.charAt(0) != '*') condition = "*" + condition;
-          if(condition.charAt(condition.length()-1) != '*') condition += "*";
+        if (condition.indexOf("*") < 0) {
+          if (condition.charAt(0) != '*') {
+            condition = "*" + condition;
+          }
+          if (condition.charAt(condition.length() - 1) != '*') {
+            condition += "*";
+          }
         }
-        queryString.append("(jcr:contains(@exo:name, ").append("'").append(condition).append("'))");
-        queryString.append(" or (jcr:contains(@exo:description, '").append(condition).append("'))");
-
-        queryString.append("]");
+        spaceNodes = new QueryBuilder(session)
+                .select(NodeType.EXO_SPACE)
+                .contains(NodeProperty.SPACE_DISPLAY_NAME, condition)
+                .or()
+                .contains(NodeProperty.SPACE_DESCRIPTION, condition)
+                .exec();
+      } else {
+        //TODO if no condition defined, it's better to return an empty list
+        spaceList = getAllSpaces();
       }
-      Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
-      QueryResult queryResult = query.execute();
-      nodeIterator = queryResult.getNodes();
     } catch (Exception e) {
-      LOG.warn("error while filtering identities: " + e.getMessage());
-      return (new ArrayList<Space>());
+      LOG.warn("Failed to getSpacesBySearchCondition with condition: " + condition, e);
+      return spaceList;
     } finally {
       sessionManager.closeSession();
     }
-
-    Space space;
-    Node spaceNode;
-    while (nodeIterator.hasNext()) {
-        spaceNode = nodeIterator.nextNode();
-        space = getSpace(spaceNode, session);
-        listSpace.add(space);
+    for (Node spaceNode : spaceNodes) {
+      Space space = getSpaceFromNode(spaceNode, session);
+      if (space != null) {
+        spaceList.add(space);
+      }
     }
-
-    return listSpace;
+    return spaceList;
   }
 
+  /**
+   * Gets a space by its display name.
+   *
+   * @param spaceDisplayName
+   * @return the space
+   * @since  1.2.0-GA
+   */
   public Space getSpaceByDisplayName(String spaceDisplayName) {
     Session session = sessionManager.getOrOpenSession();
     Space space = null;
     try {
-      Node spaceHomeNode = getSpaceHome(session);
-      List<Node> nodes = new QueryBuilder(session)
-              .select(SPACE_NODETYPE)
-              .equal(SPACE_NAME, spaceDisplayName).exec();
-      if (nodes.size() == 1) {
-        space =  getSpace(nodes.get(0), session);
+      Node foundNode = new QueryBuilder(session)
+              .select(NodeType.EXO_SPACE)
+              .equal(NodeProperty.SPACE_DISPLAY_NAME, spaceDisplayName).findNode();
+      if (foundNode != null) {
+        space = this.getSpaceFromNode(foundNode, session);
       } else {
-        if (nodes.size() > 1) {
-          LOG.warn("More than one node found for name: " + spaceDisplayName);
-        } else {
-          LOG.warn("No node found for name: " + spaceDisplayName);
-        }
+        LOG.warn("Not found node: " + spaceDisplayName);
       }
     } catch (Exception e) {
-      LOG.warn("Failed to getSpaceByDisplayName: " + e.getMessage(), e);
+      LOG.warn("Failed to getSpaceByDisplayName with displayName: " + spaceDisplayName, e);
     } finally {
       sessionManager.closeSession();
     }
@@ -201,210 +210,281 @@ public class SpaceStorage {
   }
 
   /**
-   * Gets a space by its nameId = SpaceUtils.cleanString(spaceName);
-   *
-   * This is a bad implementation (suppose there are 1000 spaces that will cause performance problem)
+   * Gets a space by its space name.
    *
    * @param spaceName
    * @return
-   * @since 1.2.0-GA
+   * @throws Exception
+   * @deprecated Use {@link SpaceStorage#getSpaceByPrettyName(String)} instead.
+   *             Will be removed at 1.3.x
    */
   public Space getSpaceByName(String spaceName) throws Exception {
+    return getSpaceByPrettyName(spaceName);
+  }
+
+  /**
+   * Gets a space by its pretty name.
+   *
+   * @param spacePrettyName
+   * @return
+   * @since 1.2.0-GA
+   */
+  public Space getSpaceByPrettyName(String spacePrettyName) throws Exception {
     Session session = sessionManager.getOrOpenSession();
-    Node spaceHomeNode = getSpaceHome(session);
-
-    NodeIterator itr = spaceHomeNode.getNodes();
-
     Space space = null;
-
-    while (itr.hasNext()) {
-      Node spaceNode = itr.nextNode();
-      String spaceDisplayName = spaceNode.getProperty(SPACE_NAME).getString();
-      if (SpaceUtils.cleanString(spaceDisplayName).equals(spaceName)) {
-        space = getSpace(spaceNode, session);
-        return space;
+    try {
+      Node foundNodeSpace = new QueryBuilder(session)
+              .select(NodeType.EXO_SPACE)
+              .equal(NodeProperty.SPACE_PRETTY_NAME, spacePrettyName)
+              .findNode();
+      if (foundNodeSpace != null) {
+        space = this.getSpaceFromNode(foundNodeSpace, session);
+      } else {
+        LOG.warn("Node not found for spacePrettyName:  " + spacePrettyName);
       }
+    } catch (Exception ex) {
+      LOG.warn("Failed to getSpaceByName: " + ex.getMessage(), ex);
+    } finally {
+      sessionManager.closeSession();
     }
-    
     return space;
   }
 
   /**
-   * Gets a space by its url
+   * Gets a space by its url.
+   *
    * @param url
-   * @return a space
+   * @return the space
    */
   public Space getSpaceByUrl(String url) {
     Session session = sessionManager.getOrOpenSession();
     Space space = null;
+
     try {
-      Node spaceHomeNode = getSpaceHome(session);
-      List<Node> nodes = new QueryBuilder(session)
-              .select(SPACE_NODETYPE)
-              .equal(SPACE_URL, url).exec();
-      if (nodes.size() == 1) {
-        space =  getSpace(nodes.get(0), session);
+      Node foundNode = new QueryBuilder(session)
+              .select(NodeType.EXO_SPACE)
+              .equal(NodeProperty.SPACE_URL, url).findNode();
+      if (foundNode != null) {
+        space = this.getSpaceFromNode(foundNode, session);
       } else {
-        if (nodes.size() > 1) {
-          LOG.warn("More than one node found for url: " + url);
-        } else {
-          LOG.warn("No node found for url: " + url);
-        }
+        LOG.warn("No node found for url: " + url);
       }
     } catch (Exception e) {
-      LOG.warn("Failed to getSpaceByUrl: " + e.getMessage(), e);
+      LOG.warn("Failed to getSpaceByUrl: " + url, e);
     } finally {
       sessionManager.closeSession();
     }
     return space;
   }
 
+  /**
+   * Deletes a space by space id.
+   *
+   * @param id
+   */
   public void deleteSpace(String id) {
     Session session = sessionManager.getOrOpenSession();
     try {
       Node spaceNode = session.getNodeByUUID(id);
-      if(spaceNode != null) {
+      if (spaceNode != null) {
         spaceNode.remove();
+      } else {
+        LOG.warn("Failed to find a spaceNode by its id: " + id);
       }
     } catch (Exception e) {
-      // TODO: handle exception
+      LOG.error("Failed to delete a space by its id: " + id, e);
     } finally {
       sessionManager.closeSession(true);
     }
   }
 
+  /**
+   * Saves a space. If isNew is true, creat new space. If not only updates space
+   * an saves it.
+   *
+   * @param space
+   * @param isNew
+   */
   public void saveSpace(Space space, boolean isNew) {
     try {
       Session session = sessionManager.getOrOpenSession();
-
-      Node spaceHomeNode = getSpaceHome(session);
+      spaceHomeNode = getSpaceHomeNode(session);
       saveSpace(spaceHomeNode, space, isNew, session);
     } catch (Exception e) {
-      // TODO: handle exception
+      LOG.warn("Failed to saveSpace", e);
     } finally {
       sessionManager.closeSession(true);
     }
   }
 
+  /**
+   * Creates a new space. If isNew is true, creates a new space. If not only
+   * updates space an saves it.
+   *
+   * @param space
+   * @param isNew
+   */
   private void saveSpace(Node spaceHomeNode, Space space, boolean isNew, Session session) {
     Node spaceNode;
     try {
-      if(isNew) {
-        spaceNode = spaceHomeNode.addNode(SPACE_NODETYPE,SPACE_NODETYPE);
-        spaceNode.addMixin("mix:referenceable");
+      if (isNew) {
+        spaceNode = spaceHomeNode.addNode(NodeType.EXO_SPACE, NodeType.EXO_SPACE);
+        spaceNode.addMixin(NodeType.MIX_REFERENCEABLE);
       } else {
         spaceNode = session.getNodeByUUID(space.getId());
       }
-      if(space.getId() == null) space.setId(spaceNode.getUUID());
-      spaceNode.setProperty(SPACE_NAME, space.getDisplayName());
-      spaceNode.setProperty(SPACE_GROUPID, space.getGroupId());
-      spaceNode.setProperty(SPACE_APP, space.getApp());
-      spaceNode.setProperty(SPACE_PARENT, space.getParent());
-      spaceNode.setProperty(SPACE_DESCRIPTION, space.getDescription());
-      spaceNode.setProperty(SPACE_TAG, space.getTag());
-      spaceNode.setProperty(SPACE_PENDING_USER, space.getPendingUsers());
-      spaceNode.setProperty(SPACE_INVITED_USER, space.getInvitedUsers());
-      spaceNode.setProperty(SPACE_TYPE, space.getType());
-      spaceNode.setProperty(SPACE_URL, space.getUrl());
-      spaceNode.setProperty(SPACE_VISIBILITY, space.getVisibility());
-      spaceNode.setProperty(SPACE_REGISTRATION, space.getRegistration());
-      spaceNode.setProperty(SPACE_PRIORITY, space.getPriority());
+      if (space.getId() == null) {
+        space.setId(spaceNode.getUUID());
+      }
+      setNodeFromSpace(space, spaceNode);
       //  save image to contact
       AvatarAttachment attachment = space.getAvatarAttachment();
       if (attachment != null) {
-      // fix load image on IE6 UI
-        ExtendedNode extNode = (ExtendedNode)spaceNode;
-        if (extNode.canAddMixin("exo:privilegeable")) extNode.addMixin("exo:privilegeable");
-        String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE} ;
-        extNode.setPermission(SystemIdentity.ANY, arrayPers) ;
-        List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries() ;
-        for(AccessControlEntry accessControlEntry : permsList) {
-          extNode.setPermission(accessControlEntry.getIdentity(), arrayPers) ;
+        // fix load image on IE6 UI
+        ExtendedNode extNode = (ExtendedNode) spaceNode;
+        if (extNode.canAddMixin(NodeType.EXO_PRIVILEGEABLE)) {
+          extNode.addMixin(NodeType.EXO_PRIVILEGEABLE);
+        }
+        String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE};
+        extNode.setPermission(SystemIdentity.ANY, arrayPers);
+        List<AccessControlEntry> permsList = extNode.getACL().getPermissionEntries();
+        for (AccessControlEntry accessControlEntry : permsList) {
+          extNode.setPermission(accessControlEntry.getIdentity(), arrayPers);
         }
 
         if (attachment.getFileName() != null) {
-          Node nodeFile = null ;
+          Node nodeFile = null;
           try {
-            nodeFile = spaceNode.getNode("image") ;
+            nodeFile = spaceNode.getNode(IMAGE_PATH);
           } catch (PathNotFoundException ex) {
-            nodeFile = spaceNode.addNode("image", "nt:file");
+            nodeFile = spaceNode.addNode(IMAGE_PATH, NodeType.NT_FILE);
           }
-          Node nodeContent = null ;
+          Node nodeContent = null;
           try {
-            nodeContent = nodeFile.getNode("jcr:content") ;
+            nodeContent = nodeFile.getNode(NodeProperty.JCR_CONTENT);
           } catch (PathNotFoundException ex) {
-            nodeContent = nodeFile.addNode("jcr:content", "nt:resource") ;
+            nodeContent = nodeFile.addNode(NodeProperty.JCR_CONTENT, NodeType.NT_RESOURCE);
           }
           long lastModified = attachment.getLastModified();
           long lastSaveTime = 0;
-          if (nodeContent.hasProperty("jcr:lastModified"))
-            lastSaveTime = nodeContent.getProperty("jcr:lastModified").getLong();
+          if (nodeContent.hasProperty(NodeProperty.JCR_LAST_MODIFIED)) {
+            lastSaveTime = nodeContent.getProperty(NodeProperty.JCR_LAST_MODIFIED).getLong();
+          }
           if ((lastModified != 0) && (lastModified != lastSaveTime)) {
-            nodeContent.setProperty("jcr:mimeType", attachment.getMimeType()) ;
-            nodeContent.setProperty("jcr:data", attachment.getInputStream(session));
-            nodeContent.setProperty("jcr:lastModified", attachment.getLastModified());
+            nodeContent.setProperty(NodeProperty.JCR_MIME_TYPE, attachment.getMimeType());
+            nodeContent.setProperty(NodeProperty.JCR_DATA, attachment.getInputStream(session));
+            nodeContent.setProperty(NodeProperty.JCR_LAST_MODIFIED, attachment.getLastModified());
           }
         }
       } else {
-        if(spaceNode.hasNode("image")) {
-          spaceNode.getNode("image").remove() ;
+        if (spaceNode.hasNode(IMAGE_PATH)) {
+          spaceNode.getNode(IMAGE_PATH).remove();
           // add 12DEC
           session.save();
         }
       }
-      //TODO: dang.tung need review
-      if(isNew) spaceHomeNode.save();
-      else spaceNode.save();
+      if (isNew) {
+        spaceHomeNode.save();
+      } else {
+        spaceNode.save();
+      }
     } catch (Exception e) {
       LOG.error("failed to save space", e);
-      // TODO: handle exception
     } finally {
+      sessionManager.closeSession();
     }
   }
 
-  private Space getSpace(Node spaceNode, Session session) throws Exception{
+  private void setNodeFromSpace(Space space, Node spaceNode) throws RepositoryException {
+    spaceNode.setProperty(NodeProperty.SPACE_DISPLAY_NAME, space.getDisplayName());
+    spaceNode.setProperty(NodeProperty.SPACE_GROUP_ID, space.getGroupId());
+    spaceNode.setProperty(NodeProperty.SPACE_APP, space.getApp());
+    spaceNode.setProperty(NodeProperty.SPACE_PARENT, space.getParent());
+    spaceNode.setProperty(NodeProperty.SPACE_DESCRIPTION, space.getDescription());
+    spaceNode.setProperty(NodeProperty.SPACE_TAG, space.getTag());
+    spaceNode.setProperty(NodeProperty.SPACE_PENDING_USERS, space.getPendingUsers());
+    spaceNode.setProperty(NodeProperty.SPACE_INVITED_USERS, space.getInvitedUsers());
+    spaceNode.setProperty(NodeProperty.SPACE_TYPE, space.getType());
+    spaceNode.setProperty(NodeProperty.SPACE_URL, space.getUrl());
+    spaceNode.setProperty(NodeProperty.SPACE_VISIBILITY, space.getVisibility());
+    spaceNode.setProperty(NodeProperty.SPACE_REGISTRATION, space.getRegistration());
+    spaceNode.setProperty(NodeProperty.SPACE_PRIORITY, space.getPriority());
+    spaceNode.setProperty(NodeProperty.SPACE_PRETTY_NAME, space.getPrettyName());
+    spaceNode.setProperty(NodeProperty.SPACE_AVATAR_URL, space.getAvatarUrl());
+  }
+
+  /**
+   * Gets the space from space node.
+   *
+   * @param spaceNode
+   * @param session
+   * @return the space
+   * @throws Exception
+   */
+  private Space getSpaceFromNode(Node spaceNode, Session session) throws Exception {
     Space space = new Space();
     space.setId(spaceNode.getUUID());
-    if(spaceNode.hasProperty(SPACE_NAME)) space.setDisplayName(spaceNode.getProperty(SPACE_NAME).getString());
-    if(spaceNode.hasProperty(SPACE_GROUPID)) space.setGroupId(spaceNode.getProperty(SPACE_GROUPID).getString());
-    if(spaceNode.hasProperty(SPACE_APP)) space.setApp(spaceNode.getProperty(SPACE_APP).getString());
-    if(spaceNode.hasProperty(SPACE_PARENT)) space.setParent(spaceNode.getProperty(SPACE_PARENT).getString());
-    if(spaceNode.hasProperty(SPACE_DESCRIPTION)) space.setDescription(spaceNode.getProperty(SPACE_DESCRIPTION).getString());
-    if(spaceNode.hasProperty(SPACE_TAG)) space.setTag(spaceNode.getProperty(SPACE_TAG).getString());
-    if(spaceNode.hasProperty(SPACE_PENDING_USER)) space.setPendingUsers(ValuesToStrings(spaceNode.getProperty(SPACE_PENDING_USER).getValues()));
-    if(spaceNode.hasProperty(SPACE_INVITED_USER)) space.setInvitedUsers(ValuesToStrings(spaceNode.getProperty(SPACE_INVITED_USER).getValues()));
-    if(spaceNode.hasProperty(SPACE_TYPE)) space.setType(spaceNode.getProperty(SPACE_TYPE).getString());
-    if(spaceNode.hasProperty(SPACE_URL)) space.setUrl(spaceNode.getProperty(SPACE_URL).getString());
-    if(spaceNode.hasProperty(SPACE_VISIBILITY)) space.setVisibility(spaceNode.getProperty(SPACE_VISIBILITY).getString());
-    if(spaceNode.hasProperty(SPACE_REGISTRATION)) space.setRegistration(spaceNode.getProperty(SPACE_REGISTRATION).getString());
-    if(spaceNode.hasProperty(SPACE_PRIORITY)) space.setPriority(spaceNode.getProperty(SPACE_PRIORITY).getString());
-    if(spaceNode.hasNode("image")){
-      Node image = spaceNode.getNode("image");
-      if (image.isNodeType("nt:file")) {
-        AvatarAttachment file = new AvatarAttachment() ;
-        file.setId(image.getPath()) ;
-        file.setMimeType(image.getNode("jcr:content").getProperty("jcr:mimeType").getString()) ;
+    PropertyIterator itr = spaceNode.getProperties(SPACE_PROPERTIES_NAME_PATTERN);
+    while (itr.hasNext()) {
+      Property p = itr.nextProperty();
+      String propertyName = p.getName();
+      if (NodeProperty.SPACE_DISPLAY_NAME.equals(propertyName)) {
+        space.setDisplayName(p.getString());
+      } else if (NodeProperty.SPACE_GROUP_ID.equals(propertyName)) {
+        space.setGroupId(p.getString());
+      } else if (NodeProperty.SPACE_APP.equals(propertyName)) {
+        space.setApp(p.getString());
+      } else if (NodeProperty.SPACE_PARENT.equals(propertyName)) {
+        space.setParent(p.getString());
+      } else if (NodeProperty.SPACE_DESCRIPTION.equals(propertyName)) {
+        space.setDescription(p.getString());
+      } else if (NodeProperty.SPACE_TAG.equals(propertyName)) {
+        space.setTag(p.getString());
+      } else if (NodeProperty.SPACE_PENDING_USERS.equals(propertyName)) {
+        space.setPendingUsers(Util.convertValuesToStrings(p.getValues()));
+      } else if (NodeProperty.SPACE_INVITED_USERS.equals(propertyName)) {
+        space.setInvitedUsers(Util.convertValuesToStrings(p.getValues()));
+      } else if (NodeProperty.SPACE_TYPE.equals(propertyName)) {
+        space.setType(p.getString());
+      } else if (NodeProperty.SPACE_URL.equals(propertyName)) {
+        space.setUrl(p.getString());
+      } else if (NodeProperty.SPACE_VISIBILITY.equals(propertyName)) {
+        space.setVisibility(p.getString());
+      } else if (NodeProperty.SPACE_REGISTRATION.equals(propertyName)) {
+        space.setRegistration(p.getString());
+      } else if (NodeProperty.SPACE_PRIORITY.equals(propertyName)) {
+        space.setPriority(p.getString());
+      } else if (NodeProperty.SPACE_PRETTY_NAME.equals(propertyName)) {
+        space.setPrettyName(p.getString());
+      } else if (NodeProperty.SPACE_AVATAR_URL.equals(propertyName)) {
+        space.setAvatarUrl(p.getString());
+      }
+    }
+    if (spaceNode.hasNode(IMAGE_PATH)) {
+      Node image = spaceNode.getNode(IMAGE_PATH);
+      if (image.isNodeType(NodeType.NT_FILE)) {
+        AvatarAttachment file = new AvatarAttachment();
+        file.setId(image.getPath());
+        file.setMimeType(image.getNode(NodeProperty.JCR_CONTENT).getProperty(NodeProperty.JCR_MIME_TYPE).getString());
         try {
-          file.setInputStream(image.getNode("jcr:content").getProperty("jcr:data").getValue().getStream());
+          file.setInputStream(image.getNode(NodeProperty.JCR_CONTENT).getProperty(NodeProperty.JCR_DATA).getValue().getStream());
         } catch (Exception ex) {
-          // TODO: handle exception
-          ex.getStackTrace();
+          LOG.warn("Failed to setInputStream in space", ex);
         }
-        file.setFileName(image.getName()) ;
-        file.setLastModified(image.getNode("jcr:content").getProperty("jcr:lastModified").getLong());
-        file.setWorkspace(session.getWorkspace().getName()) ;
-        space.setAvatarAttachment(file) ;
+        file.setFileName(image.getName());
+        file.setLastModified(image.getNode(NodeProperty.JCR_CONTENT).getProperty(NodeProperty.JCR_LAST_MODIFIED).getLong());
+        file.setWorkspace(session.getWorkspace().getName());
+        space.setAvatarAttachment(file);
       }
     }
     return space;
   }
 
-  private String [] ValuesToStrings(Value[] Val) throws Exception {
-    if(Val.length == 1) return new String[]{Val[0].getString()};
-    String[] Str = new String[Val.length];
-    for(int i = 0; i < Val.length; ++i) {
-      Str[i] = Val[i].getString();
+  private Node getSpaceHomeNode(Session session) throws Exception {
+    if (spaceHomeNode == null) {
+      String path = dataLocation.getSocialSpaceHome();
+      spaceHomeNode = session.getRootNode().getNode(path);
     }
-    return Str;
+    return spaceHomeNode;
   }
 }

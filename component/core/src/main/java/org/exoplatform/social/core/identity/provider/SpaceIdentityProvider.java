@@ -21,12 +21,11 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
- * provides identity for a space
+ * Provides the identity for a space
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
  */
@@ -38,27 +37,31 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
 
   private SpaceService spaceService;
 
+  /**
+   * Constructor
+   *
+   * @param spaceService
+   */
   public SpaceIdentityProvider(SpaceService spaceService) {
     this.spaceService = spaceService;
   }
 
   /**
+   * Finds a space by its remote Id (pretty name or space id).
    *
-   *
-   * @param spaceId can be space name or spaceId
+   * @param spacePrettyName could be spacePrettyName or spaceId
    * @return
    */
-  public Space findByRemoteId(String spaceId) {
+  public Space findByRemoteId(String spacePrettyName) {
     Space space = null;
     try {
-      space = spaceService.getSpaceById(spaceId);
-
-      // attempt to find by name id
+      space = spaceService.getSpaceByPrettyName(spacePrettyName);
+      // attempt to find by pretty name
       if (space == null) {
-        space = spaceService.getSpaceByName(spaceId);
+        space = spaceService.getSpaceById(spacePrettyName);
       }
     } catch (Exception e) {
-      LOG.error("Could not find space " + spaceId, e);
+      LOG.error("Could not find space " + spacePrettyName, e);
     }
     return space;
   }
@@ -70,17 +73,16 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
 
   @Override
   public Identity createIdentity(Space space) {
-    Identity identity = new Identity(NAME, space.getName());
+    Identity identity = new Identity(NAME, space.getPrettyName());
     return identity;
   }
 
   @Override
   public void populateProfile(Profile profile, Space space) {
-    String url = LinkProvider.buildAvatarImageUri(space.getAvatarAttachment());
-
+    String avatarUrl = space.getAvatarUrl();
     profile.setProperty(Profile.FIRST_NAME, space.getDisplayName());
-    profile.setProperty(Profile.USERNAME, space.getGroupId());    
-    profile.setProperty(Profile.AVATAR_URL, url);
-    profile.setProperty(Profile.URL, url);
+    profile.setProperty(Profile.USERNAME, space.getPrettyName());
+    profile.setProperty(Profile.AVATAR_URL, avatarUrl);
+    profile.setProperty(Profile.URL, space.getUrl());
   }
 }
