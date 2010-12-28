@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
@@ -24,16 +23,12 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.social.core.activity.model.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 
 /**
  * UserActivityListAccess
- * <p></p>
  *
  * @author Zuanoc
  * @copyright eXo SEA
@@ -109,7 +104,7 @@ public class UserActivityListAccess implements ListAccess<Activity> {
     }
     int toIndex = length + index;
 
-    toIndex = (activityList.size() >= toIndex) ? toIndex : (activityList.size() + index);
+    toIndex = Math.min(activityList.size(), toIndex);
     return activityList.subList(index, toIndex);
   }
 }
