@@ -74,6 +74,9 @@ public class UIManageInvitationSpaces extends UIContainer {
   private String userId = null;
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
+  
+  /** The first page. */
+  private static final int FIRST_PAGE = 1;
 
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup
@@ -359,12 +362,12 @@ public class UIManageInvitationSpaces extends UIContainer {
     int currentPage = pageIterator_.getCurrentPage();
     LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
     pageIterator_.setPageList(pageList);
-    int pageCount = pageIterator_.getAvailablePage();
-    if (pageCount >= currentPage) {
+    if (this.uiSpaceSearch.isNewSearch()) {
+      pageIterator_.setCurrentPage(FIRST_PAGE);
+    } else {
       pageIterator_.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      pageIterator_.setCurrentPage(currentPage - 1);
     }
+    this.uiSpaceSearch.setNewSearch(false);
     return pageIterator_.getCurrentPageData();
   }
 }

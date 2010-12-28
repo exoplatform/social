@@ -88,6 +88,9 @@ public class UIInvitations extends UIContainer {
 
   /** Stores identities. */
   private List<Identity> identityList;
+  
+  /** The first page. */
+  private static final int FIRST_PAGE = 1;
 
   /**
    * Gets identities.<br>
@@ -301,13 +304,12 @@ public class UIInvitations extends UIContainer {
     int curPage = uiPageIterator.getCurrentPage();
     LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
     uiPageIterator.setPageList(pageListContact) ;
-    int availablePageCount = uiPageIterator.getAvailablePage();
-    if(availablePageCount >= curPage){
+    if (this.uiProfileUserSearchRelation.isNewSearch()) {
+      uiPageIterator.setCurrentPage(FIRST_PAGE);
+    } else {
       uiPageIterator.setCurrentPage(curPage);
-    }else if(availablePageCount < curPage){
-      uiPageIterator.setCurrentPage(curPage-1);
     }
-
+    this.uiProfileUserSearchRelation.setNewSearch(false);
     return uiPageIterator.getCurrentPageData();
   }
 

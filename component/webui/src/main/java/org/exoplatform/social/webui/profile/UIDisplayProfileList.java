@@ -86,6 +86,9 @@ public class UIDisplayProfileList extends UIContainer {
 
   /** Contains identities. */
   private List<Identity> identityList;
+  
+  /** The first page. */
+  private static final int FIRST_PAGE = 1;
 
   /**
    * Gets identities.
@@ -138,12 +141,12 @@ public class UIDisplayProfileList extends UIContainer {
     List<Identity> peopleList = getProfiles();
     LazyPageList<Identity> pageList = new LazyPageList<Identity>(new IdentityListAccess(peopleList), PEOPLE_PER_PAGE);
     iterator.setPageList(pageList);
-    int pageCount = iterator.getAvailablePage();
-    if (pageCount >= currentPage) {
+    if (this.uiProfileUserSearchPeople.isNewSearch()) {
+      iterator.setCurrentPage(FIRST_PAGE);
+    } else {
       iterator.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      iterator.setCurrentPage(currentPage - 1);
     }
+    this.uiProfileUserSearchPeople.setNewSearch(false);
     return iterator.getCurrentPageData();
   }
 

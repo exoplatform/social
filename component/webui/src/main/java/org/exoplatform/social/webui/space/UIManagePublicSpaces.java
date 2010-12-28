@@ -65,6 +65,9 @@ public class UIManagePublicSpaces extends UIContainer {
   private final Integer SPACES_PER_PAGE = 4;
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
+  
+  /** The first page. */
+  private static final int FIRST_PAGE = 1;
 
   /**
    * constructor to initialize iterator
@@ -291,12 +294,12 @@ public class UIManagePublicSpaces extends UIContainer {
    int currentPage = iterator.getCurrentPage();
    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
    iterator.setPageList(pageList);
-   int pageCount = iterator.getAvailablePage();
-   if (pageCount >= currentPage) {
+   if (this.uiSpaceSearch.isNewSearch()) {
+     iterator.setCurrentPage(FIRST_PAGE);
+   } else {
      iterator.setCurrentPage(currentPage);
-   } else if (pageCount < currentPage) {
-     iterator.setCurrentPage(currentPage - 1);
    }
+   this.uiSpaceSearch.setNewSearch(false);
    return iterator.getCurrentPageData();
  }
 }

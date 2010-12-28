@@ -88,6 +88,9 @@ public class UISpaceSearch extends UIForm {
 
   /** Contains all space name in individual context for auto suggesting. */
   List<String> spaceNameForAutoSuggest = null;
+  
+  /** The flag notifies a new search when clicks search icon or presses enter. */
+  private boolean isNewSearch;
 
   /**
    * Gets input space name search input.
@@ -209,6 +212,7 @@ public class UISpaceSearch extends UIForm {
       }
 
       uiSpaceSearch.setSpaceNameSearch(searchCondition);
+      uiSpaceSearch.setNewSearch(true);
 
       Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
@@ -270,4 +274,11 @@ public class UISpaceSearch extends UIForm {
     return spaceService;
   }
 
+  public boolean isNewSearch() {
+    return isNewSearch;
+  }
+
+  public void setNewSearch(boolean isNewSearch) {
+    this.isNewSearch = isNewSearch;
+  }
 }
