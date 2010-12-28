@@ -104,7 +104,7 @@ public class UserActivityListAccess implements ListAccess<ExoSocialActivity> {
     }
     int toIndex = length + index;
 
-    toIndex = (maxIndex >= toIndex) ? toIndex : maxIndex;
+    toIndex = Math.min(activityList.size(), toIndex);
     return activityList.subList(index, toIndex);
   }
 

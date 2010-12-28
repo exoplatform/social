@@ -21,8 +21,8 @@
 */
 %>
 <%
-  def labelNotAnyUpdatesPostedYet = _ctx.appRes("${uicomponent.id}.label.Not_Any_Updates_Posted_Yet");
-  def labelMore = _ctx.appRes("${uicomponent.id}.label.More");
+  def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
+  def labelMore = _ctx.appRes("UIActivitiesLoader.label.More");
 
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
