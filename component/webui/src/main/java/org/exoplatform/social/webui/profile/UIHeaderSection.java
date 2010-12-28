@@ -16,10 +16,8 @@
  */
 package org.exoplatform.social.webui.profile;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
@@ -90,11 +88,9 @@ public class UIHeaderSection extends UIProfileSection {
       UIHeaderSection uiHeaderSect = (UIHeaderSection) sect;
       UIFormStringInput uiPosition = uiHeaderSect.getChildById(Profile.POSITION);
       String position = uiPosition.getValue();
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      Profile p = uiHeaderSect.getProfile(true);
+      Profile p = uiHeaderSect.getProfile();
       p.setProperty(Profile.POSITION, position);
-      im.updateHeaderSection(p);
+      Utils.getIdentityManager().updateHeaderSection(p);
     }
   }
 
@@ -105,7 +101,7 @@ public class UIHeaderSection extends UIProfileSection {
    */
   public void setValue() throws Exception {
     UIFormStringInput uiPosition = getChildById(Profile.POSITION);
-    Profile profile = getProfile(false);
+    Profile profile = getProfile();
     String position = (String) profile.getProperty(Profile.POSITION);
     position = (position == null ? "" : position);
     uiPosition.setValue(position);

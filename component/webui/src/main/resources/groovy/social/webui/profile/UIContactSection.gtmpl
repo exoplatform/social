@@ -34,20 +34,17 @@
   def noContact = _ctx.appRes("${uicomponentId}.label.noContact");
   def noContactCurrent = _ctx.appRes("${uicomponentId}.label.noContactCurrent");
 
-  def profile = uicomponent.getProfile(false);
+  def profile = uicomponent.getProfile();
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
 
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
 
-  // Can't use UIContactSection.GENDER_CHILD because of below error. So I use uicomponent.GENDER_CHILD
-  // Caused by: groovy.lang.MissingPropertyException: No such property: PHONE for class: UIContactSection
-  // Don't know why Profile.CONTACT_PHONES could be used
-  def gender = profile.getPropertyValue(uicomponent.GENDER_CHILD);
-  def phones = profile.getPropertyValue(Profile.CONTACT_PHONES);
-  def ims = profile.getPropertyValue(Profile.CONTACT_IMS);
-  def urls = profile.getPropertyValue(Profile.CONTACT_URLS);
+  def gender = profile.getProperty(Profile.GENDER);
+  def phones = profile.getProperty(Profile.CONTACT_PHONES);
+  def ims = profile.getProperty(Profile.CONTACT_IMS);
+  def urls = profile.getProperty(Profile.CONTACT_URLS);
 
   def phoneChild = uicomponent.PHONE;
   def urlChild = uicomponent.URL;
@@ -178,10 +175,11 @@
               <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%> :</td>
               <td class="FieldComponent">
               <%     phones.each() {
-                      def phone = it.get(uicomponent.VALUE);
+                      def phone = it.get(value);
+                      def type = it.get(key);
 
                     %>
-                    <%=phone%><br>
+                    <%=type%>: <%=phone%><br>
                  <%	} %>
               </td>
             </tr>

@@ -24,7 +24,7 @@
 	zoom: 100%;
 }
 
-.UIProfile .AvatarSpace {
+.UIProfile .Avatar {
 	background: url('DefaultSkin/background/BLAvatarBG.gif') no-repeat left top;
 	width: 126px;
 	height: 126px;
@@ -32,12 +32,17 @@
 	margin: 15px;
 }
 
+.UIProfile .Avatar img {
+  width: 119px;
+  height: 119px;
+}
+
 .UIProfile .LeftColumn {
 	float: left;
 	width: 190px;
 }
 
-.UIProfile .AvatarSpace .Image {
+.UIProfile .Avatar .Image {
 	width: 126px;
 	height: 126px;
 }
@@ -73,53 +78,53 @@
 	font-weight: bold;
 }
 
-.UIProfile .ContainerSpace {
+.UIProfile .Container {
 	margin-left: 190px;
 }
 
-.UIProfile .AvatarSpace .HiddenAvatarChangeLink {
+.UIProfile .Avatar .HiddenAvatarChangeLink {
 	display: none;
 }
 
-.UIProfile .AvatarSpace .ShowedAvatarChangeLink {
+.UIProfile .Avatar .ShowedAvatarChangeLink {
 	display: inline;
 }
 
-.UIProfile .ContainerSpace .LeftContainer {
+.UIProfile .Container .LeftContainer {
 	background: url(DefaultSkin/background/LeftContainerPortlet.gif) repeat-y left;
 	padding-left: 7px;
 }
 
-.UIProfile .ContainerSpace .RightContainer {
+.UIProfile .Container .RightContainer {
 	background: url(DefaultSkin/background/RightContainerPortlet.gif) repeat-y right;
 	padding-right: 7px;
 }
 
-.UIProfile .ContainerSpace .CenterContainer {
+.UIProfile .Container .CenterContainer {
 	background: #f2f8fa;
 	padding: 10px;
 }
 
-.UIProfile .ContainerSpace .PortletContent {
+.UIProfile .Container .PortletContent {
 	background: #FBFBFB none repeat scroll 0 0;
 	padding: 8px;
 }
 
-.UIProfile .ContainerSpace .ActionBar .CenterButton .SaveIcon {
+.UIProfile .Container .ActionBar .CenterButton .SaveIcon {
 	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
 	line-height: 18px;
 	width: auto;
 	padding-left: 20px;
 }
 
-.UITabPane .ContainerSpace .ActionBar .CenterButton .SaveIcon {
+.UITabPane .Container .ActionBar .CenterButton .SaveIcon {
 	background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
 	line-height: 18px;
 	width: auto;
 	padding-left: 20px;
 }
 
-.UIProfile .ContainerSpace .ActionBar .CenterButton .EditIcon {
+.UIProfile .Container .ActionBar .CenterButton .EditIcon {
 	background: url('DefaultSkin/background/EditIcon.gif') no-repeat left;
 	line-height: 18px;
 	padding-left: 20px;
@@ -127,20 +132,20 @@
 	width: auto;
 }
 
-.UIProfile .ContainerSpace .ActionBar .CenterButton .DeleteIcon {
+.UIProfile .Container .ActionBar .CenterButton .DeleteIcon {
 	background: url('DefaultSkin/background/DeleteIconButton.gif') no-repeat left;
 	line-height: 18px;
 	width: auto;
 	padding-left: 20px;
 }
 
-.UIProfile .ContainerSpace .PortletContent .DeleteIcon {
+.UIProfile .Container .PortletContent .DeleteIcon {
 	background: url(DefaultSkin/background/DeleteIcon.gif) no-repeat center;
 	padding: 5px 6px;
 	margin-left: 4px;
 }
 
-.UIProfile .ContainerSpace .PortletContent .AddIcon {
+.UIProfile .Container .PortletContent .AddIcon {
 	background: url(DefaultSkin/background/AddIcon.gif) no-repeat center;
 	width: 22px;
 	height: 22px;
@@ -243,70 +248,70 @@
 	margin-top: 8px;
 }
 
-.UIProfile .ContainerSpace .FieldLabel {
+.UIProfile .Container .FieldLabel {
 	text-align: right;
 	padding: 4px;
 	font-weight: bold;
 	width: 130px;
 }
 
-.UIProfile .ContainerSpace .FieldComponent {
+.UIProfile .Container .FieldComponent {
 	padding: 4px;
 }
 
-.UIProfile .ContainerSpace .FieldError {
+.UIProfile .Container .FieldError {
 	color: red;
 }
 
-.UIProfile .ContainerSpace .FieldComponent ul {
+.UIProfile .Container .FieldComponent ul {
 	margin: 0px;
 	padding-left: 0;
 	list-style: none;
 }
 
-.UIProfile .ContainerSpace .FieldComponent .selectbox {
+.UIProfile .Container .FieldComponent .selectbox {
 	font-size: 14px;
 }
 
-.UIProfile .ContainerSpace .FieldComponent .LV_invalid_field {
+.UIProfile .Container .FieldComponent .LV_invalid_field {
 	border: 3px solid #CC0000;
 }
 
-.UIProfile .ContainerSpace .FieldComponent .LV_invalid {
+.UIProfile .Container .FieldComponent .LV_invalid {
 	margin-left: 4px;
 	color: #CC0000;
 }
 
-.ContainerSpace .ActionBar {
+.Container .ActionBar {
 	float: right;
 	margin: 3px 4px 0px 0px;
 	cursor: pointer;
 }
 
-.UIProfile .ContainerSpace .UIAction {
+.UIProfile .Container .UIAction {
 	padding: 8px 0px;
 }
 
-.UIProfile .ContainerSpace .ButtonLeft {
+.UIProfile .Container .ButtonLeft {
 	background: url("DefaultSkin/background/LeftButton.gif") no-repeat left;
 	padding-left: 4px;
 	cursor: pointer;
 }
 
-.UIProfile .ContainerSpace .ButtonRight {
+.UIProfile .Container .ButtonRight {
 	background: url( "DefaultSkin/background/RightButton.gif" ) no-repeat right;
 	padding-right: 4px;
 	cursor: pointer;
 }
 
-.UIProfile .ContainerSpace .ButtonMiddle {
+.UIProfile .Container .ButtonMiddle {
 	background: url( "DefaultSkin/background/CenterButton.gif" ) repeat-x;
 	line-height: 29px;
 	padding: 0px 16px;
 	cursor: pointer;
 }
 
-.UIProfile .ContainerSpace .EditButtons {
+.UIProfile .Container .EditButtons {
 	float: right;
 }
 
@@ -314,7 +319,7 @@
 	padding-left: 50px;
 }
 
-.ContainerSpace .CommunityMane {
+.Container .CommunityMane {
 	color: #0d6e8f;
 	height: 20px;
 	font-size: 11px;
@@ -327,16 +332,16 @@ input.hint,textarea.hint {
 	color: #999999 !important;
 }
 
-.UITabPane .ContainerSpace .WaitingConfirmation {
+.UITabPane .Container .WaitingConfirmation {
 	padding-left: 5px;
 }
 
-.ContainerSpace .NotYet {
+.Container .NotYet {
 	color: #FF0000;
 	text-align: center;
 }
 
-.ContainerSpace .NoneExperience {
+.Container .NoneExperience {
 	text-align: center;
 }
 
@@ -421,7 +426,8 @@ input.hint,textarea.hint {
 }
 
 .UIAvatarUploadContent .ImageAvatar img {
-	width: 110px;
+  width: 110px;
+  height: 110px;
 }
 
 .UIAvatarUploadContent .UIAction .ButtonLeft {
@@ -439,9 +445,6 @@ input.hint,textarea.hint {
 	line-height: 21px;
 	padding: 0px 14px;
 }
-
-
-
 
 .UIProfile .Experience {
 	padding: 5px;

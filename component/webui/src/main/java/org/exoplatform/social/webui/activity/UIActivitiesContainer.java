@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
@@ -114,6 +115,9 @@ public class UIActivitiesContainer extends UIContainer {
   }
 
   public void addActivity(ExoSocialActivity activity) throws Exception {
+    if (activityList == null) {
+      activityList = new ArrayList<ExoSocialActivity>();
+    }
     activityList.add(0,activity);
     init();
   }

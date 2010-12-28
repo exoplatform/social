@@ -23,9 +23,10 @@
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.webui.core.UIPageIterator;
+  import org.exoplatform.social.core.identity.model.Profile;
+  import org.exoplatform.social.webui.ResourceLinkProvider;
 
   def list = uicomponent.getList();
-  def currIdentity = uicomponent.getCurrentIdentity();
   def iterator = uicomponent.getUIPageIterator();
   def peopleIdx = 0
 %>
@@ -48,14 +49,15 @@
   <%}%>
 
   <% list.each {
-      def identity = null;
-      identity = it;
-      def profileURL = uicomponent.getPath() + "/activities/" + identity.getRemoteId();
+      def identity = it;
+      def profileURL = identity.profile.url;
       def fullName = identity.profile.fullName;
       def addAction = uicomponent.event("AddContact", identity.getId());
-      def contactStatus = uicomponent.getContactStatus(identity);
       def relationship = uicomponent.getRelationship(identity);
-      def position = identity.profile.getPropertyValue("position");
+      def contactStatus = null;
+      if (relationship != null) {
+        contactStatus = relationship.status;
+      }
       def inviteTitle = "Invite " + fullName;
       def denyTitle = "Deny " + fullName + "'s invitation";
       def acceptTitle = "Accept " + fullName + "'s invitation";
@@ -63,11 +65,10 @@
       def removeTitle = "Remove relation";
       peopleIdx += 1;
 
-      if (!position) {  position = ""; }
+      def position = identity.profile.position;
+      if (!position) { position = ""; }
       String imageSource = identity.profile.avatarUrl;
-      if (imageSource == null) {
-        imageSource = "/social-portlet/skin/social/portlet/UIPeoplePortlet/DefaultSkin/background/BLAvatar.gif";
-      }
+      if (!imageSource) imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   %>
     <% if (peopleIdx % 2 == 0) { %>
        <div class="ContentSpaceGray ClearFix">
@@ -75,7 +76,7 @@
        <div class="ContentSpace ClearFix">
     <% }%>
       <div class="AvartarPeopleBG">
-         <img height="47px" width="47px" src="$imageSource"/>
+         <img src="$imageSource"/>
       </div>
 
       <div class="CommunityContainer">
@@ -83,7 +84,7 @@
               <div class="CommunityName" style="float: left; cursor:pointer;">
                 <a href="${profileURL}" style="color: #afafaf;">${fullName}</a>
               </div>
-    <% if (contactStatus == Relationship.Type.PENDING && relationship.getSender().equals(identity)) { %>
+    <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
               <a href="#" class="StopIcon" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
                <a href="#" class="SelectIcon" title="$acceptTitle" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
     <%  } else if (contactStatus == Relationship.Type.PENDING) { %>

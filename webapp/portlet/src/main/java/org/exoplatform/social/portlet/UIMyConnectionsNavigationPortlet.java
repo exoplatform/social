@@ -51,14 +51,4 @@ public class UIMyConnectionsNavigationPortlet extends UIPortletApplication {
     String[] split = requestUrl.split("/");
     return split[split.length-2];
   }
-
-  /**
-   * Gets current user name is viewed.<br>
-   *
-   * @return name of current viewer user.
-   */
-  public String getViewerId() {
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    return portalRequestContext.getRemoteUser();
-  }
 }

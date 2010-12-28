@@ -16,19 +16,11 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
@@ -59,15 +51,13 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
   /** Label for display established invitation */
   private static final String INVITATION_ESTABLISHED_INFO = "UIProfileNavigationPortlet.label.InvitationEstablishedInfo";
 
-  private IdentityManager identityManager;
-  private RelationshipManager relationshipManager;
   /**
    * Default Constructor.<br>
    * 
    * @throws Exception
    */
   public UIProfileNavigationPortlet() throws Exception { }
-  
+
   /**
    * Returns the current selected node.<br>
    * 
@@ -93,7 +83,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public Relationship getRelationship() throws Exception {
-    return getRelationshipManager().get(getCurrentViewerIdentity(), getCurrentIdentity());
+    return Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), Utils.getViewerIdentity());
   }
 
   /**
@@ -105,8 +95,9 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    */
   public Relationship.Type getContactStatus() throws Exception {
     Relationship rl = getRelationship();
-    if(rl == null)
+    if(rl == null) {
       return null;
+    }
     return rl.getStatus();
   }
 
@@ -121,8 +112,6 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
-      Identity currIdentity = profileNavigationportlet.getCurrentIdentity();
-      Identity viewerIdentity = profileNavigationportlet.getCurrentViewerIdentity();
       // Check if invitation is established by another user
       Relationship relationship = profileNavigationportlet.getRelationship();
       if (relationship != null) {
@@ -130,7 +119,7 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      profileNavigationportlet.getRelationshipManager().invite(currIdentity, viewerIdentity);
+      Utils.getRelationshipManager().invite(Utils.getViewerIdentity(), Utils.getOwnerIdentity());
       Utils.updateWorkingWorkSpace();
     }
   }
@@ -145,15 +134,14 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
-      RelationshipManager rm = profileNavigationportlet.getRelationshipManager();
       // Check if invitation is revoked or deleted by another user
-      Relationship rel = profileNavigationportlet.getRelationship();
-      if (rel == null || rel.getStatus().equals(Relationship.Type.IGNORED)) {
+      Relationship relationship = profileNavigationportlet.getRelationship();
+      if (relationship == null || relationship.getStatus().equals(Relationship.Type.IGNORED)) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      rm.confirm(rel);
+      Utils.getRelationshipManager().confirm(relationship);
       Utils.updateWorkingWorkSpace();
     }
   }
@@ -169,7 +157,6 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
     @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
       UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
-      RelationshipManager rm = profileNavigationportlet.getRelationshipManager();
       // Check if invitation is revoked or deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
       Relationship relationship = profileNavigationportlet.getRelationship();
@@ -177,119 +164,8 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      rm.remove(relationship);
+      Utils.getRelationshipManager().remove(relationship);
       Utils.updateWorkingWorkSpace();
     }
   }
-  
-  /**
-   * Gets information about source that avatar image is stored.<br>
-   *  
-   * @return image source address.
-   * 
-   * @throws Exception
-   */
-  protected String getImageSource() throws Exception {
-    Identity currIdentity = Utils.getOwnerIdentity();
-    return currIdentity.getProfile().getAvatarUrl();
-  }
-  
-  /**
-   * Gets the current repository.<br>
-   * 
-   * @return current repository through repository service.
-   * 
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
-  }
-
-  /**
-   * Gets the rest context.
-   * 
-   * @return the rest context
-   */
-  private String getRestContext() {
-    return PortalContainer.getInstance().getRestContextName();
-  }
-  
-  /**
-   * Gets current identity.<br>
-   * 
-   * @return identity of current login user.
-   * 
-   * @throws Exception
-   */
-  public Identity getCurrentIdentity() throws Exception {
-      IdentityManager im = getIdentityManager();
-      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
-  }
-  
-  /**
-   * Gets the identity of current user is viewed by another.<br>
-   * 
-   * @return identity of current user who is viewed.
-   * 
-   * @throws Exception
-   */
-  public Identity getCurrentViewerIdentity() throws Exception {
-    IdentityManager im = getIdentityManager();
-    return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
-  }
-  
-  /**
-   * Gets currents name of user that is viewed by another.<br>
-   *
-   * @return name of user who is viewed.
-   */
-  private String getCurrentViewerUserName() {
-    String username = URLUtils.getCurrentUser();
-    if(username != null)
-      return username;
-
-    PortalRequestContext portalRequest = Util.getPortalRequestContext();
-
-    return portalRequest.getRemoteUser();
-  }
-  
-  /**
-   * Gets identity manager object.<br>
-   * 
-   * @return identity manager object.
-   */
-  private IdentityManager getIdentityManager() {
-    if (identityManager == null) {
-      PortalContainer container = PortalContainer.getInstance();
-      identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    }
-    return identityManager;
-  }
-
-  /**
-   * Gets relationshipManager object.<br>
-   * 
-   * @return
-   */
-  private RelationshipManager getRelationshipManager() {
-    if (relationshipManager == null) {
-      PortalContainer container = PortalContainer.getInstance();
-      relationshipManager = (RelationshipManager) container
-        .getComponentInstanceOfType(RelationshipManager.class);
-    }
-    
-    return relationshipManager;
-  }
-  
-  /**
-   * Gets name of current user.
-   * 
-   * @return name of current login user.
-   */
-  private String getCurrentUserName() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    return context.getRemoteUser();
-  }
 }
-

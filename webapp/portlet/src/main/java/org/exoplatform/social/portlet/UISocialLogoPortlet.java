@@ -17,26 +17,21 @@
 
 package org.exoplatform.social.portlet;
 
-import javax.portlet.PortletPreferences;
-
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.webui.ResourceLinkProvider;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -58,22 +53,12 @@ public class UISocialLogoPortlet extends UIPortletApplication {
     // addChild(UILogoEditMode.class, null, null);
   }
 
-  public String getURL() {
-    PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
-    PortletPreferences pref = pcontext.getRequest().getPreferences();
-    String imageSource = null;
-    try {
-      imageSource = getProfile(true).getAvatarUrl();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+  public String getURL() throws Exception {
+    String imageSource = getProfile(true).getAvatarUrl();
     if (imageSource == null) {
-      return pref.getValue("url", ""); // url
-      // /social-resources/skin/ShareImages/Avartar.gif
-    } else {
-      return imageSource;
+      imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     }
+    return imageSource;
   }
 
   public String getNavigationTitle() throws Exception {
@@ -101,26 +86,6 @@ public class UISocialLogoPortlet extends UIPortletApplication {
       profile = id.getProfile();
     }
     return profile;
-  }
-
-  /**
-   * Gets the current repository.<br>
-   *
-   * @return current repository through repository service.
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
-  }
-
-  /**
-   * Gets the rest context.
-   *
-   * @return the rest context
-   */
-  private String getRestContext() {
-    return PortalContainer.getInstance().getRestContextName();
   }
 
   /**

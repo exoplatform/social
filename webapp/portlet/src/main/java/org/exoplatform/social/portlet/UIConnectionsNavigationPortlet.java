@@ -18,6 +18,7 @@ package org.exoplatform.social.portlet;
 
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -59,8 +60,8 @@ public class UIConnectionsNavigationPortlet extends UIPortletApplication {
    *
    * @return name of current viewer user.
    */
+  @Deprecated
   public String getViewerId() {
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    return portalRequestContext.getRemoteUser();
+    return Utils.getViewerRemoteId();
   }
 }

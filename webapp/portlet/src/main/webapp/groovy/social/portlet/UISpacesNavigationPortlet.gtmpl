@@ -23,9 +23,11 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.core.space.SpaceUtils
+  import org.exoplatform.social.webui.ResourceLinkProvider;
+
   def pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
-  def uicomponentId = uicomponent.id
+  def uicomponentId = uicomponent.id;
   def mySpaceURL = portalURI + "spaces";
   def invitationsURL = portalURI + "invitationSpace";
   def pendingsURL = portalURI + "pendingSpace";
@@ -36,11 +38,12 @@
   def labelInvitation = _ctx.appRes("${uicomponentId}.label.Invitation");
   def labelPending = _ctx.appRes("${uicomponentId}.label.Pending");
   def labelPublic = _ctx.appRes("${uicomponentId}.label.Public");
+  def spaceImage = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="ProfTitle">$labelSpace</div>
   <a class="Avartar">
-    <img height="65px" width="65px" alt="" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif"/>
+    <img alt="" src="$spaceImage"/>
   </a>
   <div class="UIVerclTab">
   <% if (selectedNode == "spaces") { %>

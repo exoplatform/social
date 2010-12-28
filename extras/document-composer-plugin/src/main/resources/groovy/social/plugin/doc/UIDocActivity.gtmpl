@@ -25,9 +25,11 @@
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   import org.exoplatform.social.webui.composer.PopupContainer;
   import org.exoplatform.social.plugin.doc.UIDocViewer;
+  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.space.model.Space;
+  import org.exoplatform.social.webui.Utils;
 
   def pcontext = Util.getPortalRequestContext();
-  def jsManager = pcontext.getJavascriptManager();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
@@ -36,10 +38,11 @@
 
 <% if (activity) { //process if not null
 
-  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
-  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/social-resources/javascript");
-  jsManager.importJavascript("eXo.social.webui.UIForm", "/social-resources/javascript");
-  jsManager.importJavascript("eXo.social.webui.UIActivity", "/social-resources/javascript");
+  def jsManager = pcontext.getJavascriptManager();
+  jsManager.importJavascript("eXo.social.Util", ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
+  jsManager.importJavascript("eXo.social.PortalHttpRequest", ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
+  jsManager.importJavascript("eXo.social.webui.UIForm", ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
+  jsManager.importJavascript("eXo.social.webui.UIActivity", ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
 
   def labelComment = _ctx.appRes("UIActivity.label.Comment");
   def labelLike = _ctx.appRes("UIActivity.label.Like");
@@ -89,7 +92,7 @@
   jsManager.addOnLoadJavascript("initUIActivity${activity.id}");
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
-  def activityUserName, activityUserProfileUri, activityImageSource, activityContentBody, activityPostedTime;
+  def ownerName, ownerUri, ownerAvatar, activityContentBody, activityPostedTime;
   def commentFormBlockClass = "", listPeopleLikeBlockClass = "", listPeopleBGClass = "";
   if (!commentFormDisplayed) {
     commentFormBlockClass = "DisplayNone";
@@ -122,12 +125,19 @@
 
   activityContentTitle = activity.title;
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
-  activityUserName = uicomponent.getUserFullName(activity.userId);
-  activityUserProfileUri = uicomponent.getUserProfileUri(activity.userId);
 
-  activityImageSource = uicomponent.getUserAvatarImageSource(activity.userId);
-  if (!activityImageSource)  {
-    activityImageSource = "/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+  def ownerIdentity = uicomponent.ownerIdentity;
+  if (uicomponent.isUserActivity()) {
+    ownerUri = ownerIdentity.profile.url;
+    ownerAvatar = ownerIdentity.profile.avatarUrl;
+    ownerName = ownerIdentity.profile.fullName;
+    if (!ownerAvatar) ownerAvatar= ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+  } else {
+    Space space = Utils.getSpaceService().getSpaceByName(ownerIdentity.remoteId);
+    ownerUri = space.url;
+    ownerAvatar = space.avatarUrl;
+    ownerName = space.displayName;
+    if (!ownerAvatar) ownerAvatar = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
 
   def dMessage = uicomponent.message;
@@ -147,13 +157,13 @@
 
   <% uiform.begin() %>
   <div class="NormalBox clearfix">
-    <a class="Avatar" title="$activityUserName" href="$activityUserProfileUri">
-      <img title="$activityUserName" src="$activityImageSource" alt="$activityUserName" height="54px" width="56px">
+    <a class="Avatar" title="$ownerName" href="$ownerUri">
+      <img title="$ownerName" src="$ownerAvatar" alt="$ownerName">
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
       <div class="TitleContent clearfix">
         <div class="Text">
-          <a title="$activityUserName" href="$activityUserProfileUri">$activityUserName</a>
+          <a title="$ownerName" href="$ownerUri">$ownerName</a>
         </div>
       <% if (activityDeletable) {%>
         <div onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"><span></span></div>
@@ -204,12 +214,11 @@
           //def personLikeFullName, personLikeProfileUri, personLikeAvatarImageSource;
 
           displayedIdentityLikes.each({
-            personLikeFullName = uicomponent.getUserFullName(it);
-            personLikeProfileUri = uicomponent.getUserProfileUri(it);
-            personLikeAvatarImageSource = uicomponent.getUserAvatarImageSource(it);
-            if (!personLikeAvatarImageSource) {
-              personLikeAvatarImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
-            }
+            def id = Utils.getIdentityManager().getIdentity(it);
+            personLikeFullName = id.profile.fullName;
+            personLikeProfileUri = id.profile.url;
+            personLikeAvatarImageSource = id.profile.avatarUrl;
+            if (!personLikeAvatarImageSource) personLikeAvatarImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
             %>
               <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
                 <img width="47px" height="47px" src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
@@ -259,18 +268,17 @@
     } else {
       commentContentClass = "";
     }
-    commenterFullName = uicomponent.getUserFullName(it.userId);
-    commenterProfileUri = uicomponent.getUserProfileUri(it.userId);
-    commenterImageSource = uicomponent.getUserAvatarImageSource(it.userId);
-    if (!commenterImageSource) {
-      commenterImageSource = "/social-resources/skin/ShareImages/activity/AvatarPeople.gif";
-    }
+    def id = Utils.getIdentityManager().getIdentity(it.userId);
+    commenterFullName = id.profile.fullName;
+    commenterProfileUri = id.profile.url;
+    commenterImageSource = id.profile.avatarUrl;
+    if (!commenterImageSource) commenterImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     commentMessage = it.title;
     commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
   %>
     <div id="CommentBlock${activity.id}" class="CommentBox clearfix">
       <a class="AvatarCM" title="$commenterFullName" href="$commenterProfileUri">
-        <img src="$commenterImageSource" alt="$commenterFullName" height="36px" width="38px">
+        <img src="$commenterImageSource" alt="$commenterFullName">
       </a>
       <div class="ContentBox">
         <div class="Content">

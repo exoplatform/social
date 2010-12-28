@@ -130,15 +130,15 @@ public class CachingIdentityManager extends IdentityManagerImpl {
         Identity storedIdentity = this.getIdentityStorage().findIdentity(providerId, remoteId);
         if (storedIdentity != null) {
           cachedIdentity.setId(storedIdentity.getId());
-          if (loadProfile) {
-            this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
-          }
         } else {
           // save new identity
           this.getIdentityStorage().saveIdentity(cachedIdentity);
         }
       }
       identityCache.put(globalIdCacheKey, cachedIdentity);
+    }
+    if (loadProfile && cachedIdentity.getProfile().getId() == null) {
+      this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
     }
 
     return cachedIdentity;
@@ -197,6 +197,8 @@ public class CachingIdentityManager extends IdentityManagerImpl {
       if (cachedIdentity.getId() != null) {
         identityCache.put(globalIdCacheKey, cachedIdentity);
       }
+    } else if (loadProfile && cachedIdentity.getProfile().getId() == null) {
+      this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
     }
     return cachedIdentity;
   }
@@ -241,64 +243,9 @@ public class CachingIdentityManager extends IdentityManagerImpl {
    * {@inheritDoc}
    */
   @Override
-  public Profile addOrModifyProfileProperties(Profile profile) throws Exception {
+  public void addOrModifyProfileProperties(Profile profile) throws Exception {
     this.getIdentityStorage().addOrModifyProfileProperties(profile);
-    Profile newProfile = this.addOrModifyProfilePropertiesCache(profile);
-    String providerId = profile.getIdentity().getProviderId();
-    if (newProfile == null) {
-      newProfile = getIdentity(providerId, true).getProfile();
-    }
-    this.getIdentityProvider(providerId).onSaveProfile(newProfile);
-    return newProfile;
-  }
-
-  /**
-   * Adds or modifies properties of profile in cache. Profile parameter is a
-   * lightweight that contains only the property that you want to add or modify.
-   * NOTE: The method will not delete the properties on old profile when the
-   * param profile does not have those keys.
-   *
-   * @param profile
-   * @return Profile
-   */
-  private Profile addOrModifyProfilePropertiesCache(Profile profile) {
-    Profile cachedProfile = getCachedProfile(profile.getIdentity()).getProfile();
-    if (cachedProfile == null)
-      return null;
-    cachedProfile.addOrModifyProperties(profile.getProperties());
-    return cachedProfile;
-  }
-
-  /**
-   * Gets profile that was cached.
-   *
-   * @param identity
-   * @return Identity
-   */
-  private Identity getCachedProfile(Identity identity) {
-    Identity cachedIdentity;
-    if (identity == null)
-      return null;
-    String identityId = identity.getId();
-    if (identityId != null) {
-      cachedIdentity = identityCacheById.get(identityId);
-      if (cachedIdentity != null)
-        return cachedIdentity;
-    }
-
-    GlobalId globalId = identity.getGlobalId();
-    if (globalId != null) {
-      cachedIdentity = identityCache.get(globalId);
-      if (cachedIdentity != null)
-        return cachedIdentity;
-    }
-
-    String providerId = identity.getProviderId();
-    List<Identity> listIdentity = identityListCache.get(providerId);
-    if (listIdentity != null)
-      for (Identity identityFromCache : listIdentity)
-        if (identityFromCache.equals(identity))
-          return identityFromCache;
-    return null;
+    this.getIdentityProvider(profile.getIdentity().getProviderId()).onSaveProfile(profile);
+    this.removeCacheForProfileChange(profile);
   }
 }

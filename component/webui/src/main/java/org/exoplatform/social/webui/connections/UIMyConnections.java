@@ -19,22 +19,12 @@ package org.exoplatform.social.webui.connections;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.RelationshipListAccess;
-import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -67,7 +57,7 @@ import org.exoplatform.webui.event.Event.Phase;
 })
 public class UIMyConnections extends UIContainer {
   /** UIPageIterator ID. */
-  private final String iteratorIDContact = "UIPageIteratorContact";
+  private static final String iteratorIDContact = "UIPageIteratorContact";
 
   /** Label for display realtion is deleted information */
   private static final String RELATION_DELETED_INFO = "UIMyConnections.label.DeletedInfo";
@@ -75,18 +65,12 @@ public class UIMyConnections extends UIContainer {
   /** Stores UIPageIterator instance. */
   UIPageIterator uiPageIteratorContact;
 
-  /** Stores RelationshipManager instance. */
-  private RelationshipManager relationshipManager;
-
-  /** Stores IdentityManager instance. */
-  private IdentityManager identityManager = null;
-
   /** Stores UIProfileUserSearch instance. */
   UIProfileUserSearch uiProfileUserSearchRelation = null;
 
   /** Stores identities. */
   private List<Identity> identityList;
-  
+
   /** The first page. */
   private static final int FIRST_PAGE = 1;
 
@@ -142,63 +126,25 @@ public class UIMyConnections extends UIContainer {
   }
 
   /**
-   * Gets current identity.<br>
-   *
-   * @return identity of current login user.
-   *
-   * @throws Exception
-   */
-  public Identity getCurrentIdentity() throws Exception {
-      IdentityManager im = getIdentityManager();
-      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentVieweredUserName());
-  }
-
-  /**
-   * Gets the identity of current user is viewed by another.<br>
-   *
-   * @return identity of current user who is viewed.
-   *
-   * @throws Exception
-   */
-  public Identity getCurrentViewerIdentity() throws Exception {
-    IdentityManager im = getIdentityManager();
-    Identity identity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentVieweredUserName());
-    if (identity == null) identity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
-    return identity;
-  }
-
-  /**
    * Listens to remove action then delete the relation.<br>
    *   - Gets information of user is removed.<br>
    *   - Checks the relation to confirm that still got relation.<br>
    *   - Removes the current relation.<br>
    *
    */
-  static public class RemoveActionListener extends EventListener<UIMyConnections> {
+  public static class RemoveActionListener extends EventListener<UIMyConnections> {
     @Override
     public void execute(Event<UIMyConnections> event) throws Exception {
-      UIMyConnections uiMyRelation = event.getSource();
       String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = uiMyRelation.getCurrentUserName();
-
-      IdentityManager im = uiMyRelation.getIdentityManager();
-      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
-
-      Identity requestedIdentity = im.getIdentity(identityId);
-
-      RelationshipManager rm = uiMyRelation.getRelationshipManager();
-
-      UIApplication uiApplication = event.getRequestContext().getUIApplication();
-      Relationship.Type relationStatus = uiMyRelation.getContactStatus(requestedIdentity);
-      if (relationStatus != Relationship.Type.CONFIRMED) {
+      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId);
+      Relationship relationship = Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), requestedIdentity);
+      if (relationship == null || relationship.getStatus() != Relationship.Type.CONFIRMED) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(RELATION_DELETED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      Relationship rel = rm.get(currIdentity, requestedIdentity);
-      if (rel != null)
-        rm.remove(rel);
+      Utils.getRelationshipManager().remove(relationship);
     }
   }
 
@@ -223,34 +169,7 @@ public class UIMyConnections extends UIContainer {
    * @return true if current user is current login user.
    */
   public boolean isEditable () {
-    RequestContext context = RequestContext.getCurrentInstance();
-    String currentUserName = context.getRemoteUser();
-    String currentViewer = URLUtils.getCurrentUser();
-
-    return currentUserName.equals(currentViewer);
-  }
-
-  /**
-   * Gets the current portal name.<br>
-   *
-   * @return name of current portal.
-   *
-   */
-  public String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();
-  }
-
-  /**
-   * Gets the current repository.<br>
-   *
-   * @return current repository through repository service.
-   *
-   * @throws Exception
-   */
-  public String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;
-    return rService.getCurrentRepository().getConfiguration().getName() ;
+    return Utils.isOwner();
   }
 
   /**
@@ -288,81 +207,7 @@ public class UIMyConnections extends UIContainer {
    * @throws Exception
    */
   private List<Relationship> getMyContacts() throws Exception {
-    RelationshipManager relm = getRelationshipManager();
-    Identity currentIdentity = getCurrentViewerIdentity();
     List<Identity> matchIdentities = getIdentityList();
-
-    return relm.getConfirmed(currentIdentity, matchIdentities);
-  }
-
-  /**
-   * Gets identity manager object.<br>
-   *
-   * @return identity manager object.
-   */
-  private IdentityManager getIdentityManager() {
-    if(identityManager == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      identityManager =  (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    }
-    return identityManager;
-  }
-
-  /**
-   * Gets currents name of user that is viewed by another.<br>
-   *
-   * @return name of user who is viewed.
-   */
-  private String getCurrentVieweredUserName() {
-    String username = URLUtils.getCurrentUser();
-    if(username != null)
-      return username;
-
-    PortalRequestContext portalRequest = Util.getPortalRequestContext();
-    return portalRequest.getRemoteUser();
-  }
-
-  /**
-   * Gets name of current login user.
-   *
-   * @return name of current login user.
-   */
-  private String getCurrentUserName() {
-    PortalRequestContext portalRequest = Util.getPortalRequestContext();
-    return portalRequest.getRemoteUser();
-  }
-
-  /**
-   * Gets relationship manager object.<br>
-   *
-   * @return an object that is instance of relationship manager.
-   */
-  private RelationshipManager getRelationshipManager() {
-    if(relationshipManager == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
-    }
-    return relationshipManager;
-  }
-
-  /**
-   * Gets contact status between current user and identity that is checked.<br>
-   *
-   * @param identity
-   *        Object is checked status with current user.
-   *
-   * @return type of relation status that equivalent the relation.
-   *
-   * @throws Exception
-   */
-  private Relationship.Type getContactStatus(Identity identity) throws Exception {
-    if (identity.getId().equals(getCurrentIdentity().getId())) {
-      return null;
-    }
-    Relationship relationship = getRelationshipManager().get(identity, getCurrentIdentity());
-    if (relationship == null) {
-      return null;
-    }
-    return relationship.getStatus();
+    return Utils.getRelationshipManager().getConfirmed(Utils.getOwnerIdentity(), matchIdentities);
   }
 }

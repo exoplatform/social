@@ -22,7 +22,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.activity.UserActivityListAccess;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -142,17 +142,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     activitiesLoader.setPostContext(PostContext.USER);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
-    Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
+    Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
     activitiesLoader.setActivityListAccess(new UserActivityListAccess(ownerIdentity,getSelectedDisplayMode()));
     activitiesLoader.init();
-  }
-
-  /**
-   * Gets identityManager
-   *
-   * @return
-   */
-  private IdentityManager getIdentityManager() {
-    return getApplicationComponent(IdentityManager.class);
   }
 }

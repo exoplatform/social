@@ -33,16 +33,13 @@
   def pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def ownerIdentity = Utils.getOwnerIdentity();
-  def viewerId = uicomponent.getViewerId();
   def ownerId = ownerIdentity.getRemoteId();
   def myfriendsURL = "${portalURI}connections/yours/${ownerId}";
   def invitationsURL = "${portalURI}connections/invitations/${ownerId}";
   def requestsURL = "${portalURI}connections/requests/${ownerId}";
   def selectedNode = uicomponent.getSelectedNode();
-  def isOwner = false;
-  if (ownerId.equals(viewerId)) {
-    isOwner = true;
-  } else {
+  def isOwner = Utils.isOwner();
+  if (!isOwner) {
     def jsManager = pcontext.getJavascriptManager();
     jsManager.addOnLoadJavascript("hideUIRelationNavigation");
   }

@@ -33,6 +33,10 @@
   margin: 15px;
 }
 
+.UIProfileSpace .AvatarSpace img {
+  width: 119px;
+  height: 119px;
+}
 
 .UIProfileSpace .AvartarPeopleBG{
   background: url('DefaultSkin/background/AvartarPeopleBG.gif') no-repeat left top;
@@ -41,6 +45,11 @@
   padding: 6px 0px 0px 6px;
   float: left;
   margin: 8px;
+}
+
+.UIProfileSpace .AvartarPeopleBG img {
+  width: 47px;
+  height: 47px;
 }
 
 .UIProfileSpace .LeftColumn {

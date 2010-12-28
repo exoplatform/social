@@ -17,15 +17,13 @@
 package org.exoplatform.social.webui.activity;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.webui.Utils;
 
 /**
  * SpaceActivityListAccess
@@ -41,7 +39,6 @@ public class SpaceActivityListAccess implements ListAccess<ExoSocialActivity> {
   /** The list. */
   private Space space;
   private Identity spaceIdentity = null;
-  private ActivityManager activityManager;
   /**
    * Instantiates a new space list access.
    *
@@ -49,10 +46,8 @@ public class SpaceActivityListAccess implements ListAccess<ExoSocialActivity> {
    */
   public SpaceActivityListAccess(Space space) {
     this.space = space;
-    IdentityManager identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
-    activityManager = (ActivityManager) PortalContainer.getComponent(ActivityManager.class);
     try {
-      spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName());
+      spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName());
     } catch (Exception e) {
       LOG.error(e);
     }
@@ -62,14 +57,14 @@ public class SpaceActivityListAccess implements ListAccess<ExoSocialActivity> {
    * @see org.exoplatform.commons.utils.ListAccess#getSize()
    */
   public int getSize() throws Exception {
-    return activityManager.getActivitiesCount(spaceIdentity);
+    return Utils.getActivityManager().getActivitiesCount(spaceIdentity);
   }
 
   /* (non-Javadoc)
    * @see org.exoplatform.commons.utils.ListAccess#load(int, int)
    */
   public ExoSocialActivity[] load(int index, int length) throws Exception {
-    final Object[] objects = activityManager.getActivities(spaceIdentity, index, length).toArray();
+    final Object[] objects = Utils.getActivityManager().getActivities(spaceIdentity, index, length).toArray();
     ExoSocialActivity[] results = new ExoSocialActivity[objects.length];
     for (int i = 0; i < objects.length; i++) {
       results[i]= (ExoSocialActivity) objects[i];

@@ -17,7 +17,6 @@
 package org.exoplatform.social.webui.space;
 
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -92,12 +91,7 @@ public class UISpaceSetting extends UIContainer {
    * @return space name
    */
   public String getSpaceName() {
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    try {
-      return spaceSrc.getSpaceById(space.getId()).getName();
-    } catch (SpaceException e) {
-      return null;
-    }
+    return space.getDisplayName();
   }
 
   /**

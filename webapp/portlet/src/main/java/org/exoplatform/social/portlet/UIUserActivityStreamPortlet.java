@@ -22,12 +22,8 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -64,11 +60,8 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public UIUserActivityStreamPortlet() throws Exception {
-    viewerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
-    ownerName = URLUtils.getCurrentUser();
-    if (ownerName == null) {
-      ownerName = viewerName;
-    }
+    viewerName = Utils.getViewerRemoteId();
+    ownerName = Utils.getOwnerRemoteId();
     hiddenContainer = addChild(PopupContainer.class, null, "HiddenContainer");
     uiComposer = addChild(UIComposer.class, null, null);
     uiComposer.setPostContext(PostContext.USER);
@@ -87,23 +80,15 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void refresh() throws Exception {
-    viewerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
-    ownerName = URLUtils.getCurrentUser();
-    if (ownerName == null) {
-      ownerName = viewerName;
-    }
+    viewerName = Utils.getViewerRemoteId();
+    ownerName = Utils.getOwnerRemoteId();
     if (viewerName.equals(ownerName)) {
       uiComposer.isActivityStreamOwner(true);
       uiComposer.setRendered(true);
     } else {
       uiComposer.isActivityStreamOwner(false);
-      IdentityManager identityManager = getApplicationComponent(IdentityManager.class);
-      RelationshipManager relationshipManager = getApplicationComponent(RelationshipManager.class);
-      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
-      Identity viewerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName);
 
-      Relationship relationship = relationshipManager.get(ownerIdentity, viewerIdentity);
-
+      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), Utils.getOwnerIdentity());
       if (relationship != null && (relationship.getStatus() == Relationship.Type.CONFIRMED)) {
         uiComposer.setRendered(true);
       } else {

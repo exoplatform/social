@@ -332,7 +332,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     space.setGroupId(groupId);
-    space.setUrl(space.getName());
+    space.setUrl(space.getPrettyName());
     saveSpace(space, true);
     spaceLifeCycle.spaceCreated(space, creator);
     return space;

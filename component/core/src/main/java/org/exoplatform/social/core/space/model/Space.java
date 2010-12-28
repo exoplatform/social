@@ -457,5 +457,4 @@ public class Space {
   public void setAvatarUrl(String avatarUrl) {
     this.avatarUrl = avatarUrl;
   }
-
 }

@@ -26,11 +26,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.space.SpaceException;
@@ -63,7 +59,7 @@ public class BaseUIActivity extends UIForm {
   private int commentMinCharactersAllowed = 0;
   private int commentMaxCharactersAllowed = 100;
 
-  static public enum CommentStatus {
+  public static enum CommentStatus {
     LATEST("latest"),    ALL("all"),    NONE("none");
     public String getStatus() {
       return commentStatus;
@@ -74,13 +70,10 @@ public class BaseUIActivity extends UIForm {
     private String commentStatus;
   }
 
-  private String image;
   private ExoSocialActivity activity;
+  private Identity ownerIdentity;
   private List<ExoSocialActivity> comments;
   private String[] identityLikes;
-  private ActivityManager activityManager;
-  private IdentityManager identityManager;
-  private RelationshipManager relationshipManager;
   private boolean commentFormDisplayed = false;
   private boolean likesDisplayed = false;
   private CommentStatus commentListStatus = CommentStatus.LATEST;
@@ -99,6 +92,7 @@ public class BaseUIActivity extends UIForm {
 
   public void setActivity(ExoSocialActivity activity) {
     this.activity = activity;
+    setOwnerIdentity(Utils.getIdentityManager().getIdentity(activity.getUserId()));
     addChild(new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null));
     try {
       refresh();
@@ -209,29 +203,14 @@ public class BaseUIActivity extends UIForm {
    * @throws Exception
    */
   public String[] getDisplayedIdentityLikes() throws Exception {
-    identityManager = getIdentityManager();
-    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getRemoteUser());
     if (isLiked()) {
-      return (String[]) ArrayUtils.removeElement(identityLikes, userIdentity.getId());
+      return (String[]) ArrayUtils.removeElement(identityLikes, Utils.getViewerIdentity().getId());
     }
     return identityLikes;
   }
 
   public void setIdenityLikes(String[] identityLikes) {
     this.identityLikes = identityLikes;
-  }
-
-  public void setImage(String image) {
-    this.image = image;
-  }
-
-  /**
-   * Gets activity image.
-   *
-   * @return
-   */
-  public String getImage (){
-    return image;
   }
 
   public String event(String actionName, String callback, boolean updateForm) throws Exception {
@@ -304,25 +283,20 @@ public class BaseUIActivity extends UIForm {
   }
 
   protected void saveComment(String remoteUser, String message) throws Exception {
-    activityManager = getActivityManager();
-    identityManager = getIdentityManager();
-    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
-    ExoSocialActivity comment = new ExoSocialActivityImpl(userIdentity.getId(), SpaceService.SPACES_APP_ID, message, null);
-    activityManager.saveComment(getActivity(), comment);
-    comments = activityManager.getComments(getActivity());
+    ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(), SpaceService.SPACES_APP_ID, message, null);
+    Utils.getActivityManager().saveComment(getActivity(), comment);
+    comments = Utils.getActivityManager().getComments(getActivity());
     setCommentListStatus(CommentStatus.ALL);
   }
 
   protected void setLike(boolean isLiked, String remoteUser) throws Exception {
-    activityManager = getActivityManager();
-    identityManager = getIdentityManager();
-    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+    Identity viewerIdentity = Utils.getViewerIdentity();
     if (isLiked) {
-      activityManager.saveLike(activity, userIdentity);
+      Utils.getActivityManager().saveLike(activity, viewerIdentity);
     } else {
-      activityManager.removeLike(activity, userIdentity);
+      Utils.getActivityManager().removeLike(activity, viewerIdentity);
     }
-    activity = activityManager.getActivity(activity.getId());
+    activity = Utils.getActivityManager().getActivity(activity.getId());
     setIdenityLikes(activity.getLikeIdentityIds());
   }
 
@@ -333,148 +307,26 @@ public class BaseUIActivity extends UIForm {
    * @throws Exception
    */
   public boolean isLiked() throws Exception {
-    identityManager = getIdentityManager();
-    return ArrayUtils.contains(identityLikes, identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getRemoteUser()).getId());
+    return ArrayUtils.contains(identityLikes, Utils.getViewerIdentity().getId());
   }
 
   /**
    * Refresh, regets all likes, comments of this activity.
    */
   protected void refresh() throws ActivityStorageException {
-    activityManager = getActivityManager();
-    activity = activityManager.getActivity(activity.getId());
+    activity = Utils.getActivityManager().getActivity(activity.getId());
     if (activity == null) { //not found -> should render nothing
       LOG.info("activity_ is null, not found. It can be deleted!");
       return;
     }
-    comments = activityManager.getComments(activity);
+    comments = Utils.getActivityManager().getComments(activity);
     identityLikes = activity.getLikeIdentityIds();
   }
 
-  @Deprecated
-  protected String getRemoteUser() {
-    return Utils.getViewerRemoteId();
-  }
-
-  public String getUserFullName(String userIdentityId) throws Exception {
-    Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
-    if (userIdentity == null) {
-      return null;
-    }
-    Profile userProfile = userIdentity.getProfile();
-    return userProfile.getFullName();
-  }
-
-  /**
-   * Gets user profile uri.
-   * 
-   * @param userIdentityId
-   * @return
-   * @throws Exception
-   */
-  public String getUserProfileUri(String userIdentityId) throws Exception {
-    Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
-    if (userIdentity == null) {
-      throw new Exception("User " + userIdentityId +" does not exist");
-    }
-
-    String uri = userIdentity.getProfile().getUrl();
-    if (uri == null) {
-      uri = "#";
-    }
-
-    return uri;
-  }
-
-  /**
-   * Gets user's avatar image source by userIdentityId.
-   * 
-   * @param userIdentityId
-   * @return
-   * @throws Exception
-   */
-  public String getUserAvatarImageSource(String userIdentityId) throws Exception {
-    Identity userIdentity = identityManager.getIdentity(userIdentityId, true);
-    if (userIdentity == null) {
-      return null;
-    }
-    Profile userProfile = userIdentity.getProfile();
-    return userProfile.getAvatarUrl();
-  }
-
-  /**
-   * Gets space's avatar image source.
-   * 
-   * @return
-   * @throws Exception
-   */
-  public String getSpaceAvatarImageSource(String spaceIdentityId) throws Exception {
-    Identity spaceIdentity = identityManager.getIdentity(spaceIdentityId, false);
-    String prettyName = spaceIdentity.getRemoteId();
-    SpaceService spaceService = getSpaceService();
-    Space space = spaceService.getSpaceByPrettyName(prettyName);
-    if (space != null) {
-      return space.getAvatarUrl();
-    }
-
-    return null;
-  }
-
-  /**
-   * Gets activityManager.
-   * 
-   * @return
-   */
-  protected ActivityManager getActivityManager() {
-    if (activityManager == null) {
-      activityManager = getApplicationComponent(ActivityManager.class);
-    }
-    return activityManager;
-  }
-
-  /**
-   * Gets identityManager.
-   * 
-   * @return
-   */
-  protected IdentityManager getIdentityManager() {
-    if (identityManager == null) {
-      identityManager = getApplicationComponent(IdentityManager.class);
-    }
-    return identityManager;
-  }
-
-  /**
-   * Gets relationshipManager.
-   * 
-   * @return
-   */
-  protected RelationshipManager getRelationshipManager() {
-    if (relationshipManager == null) {
-      relationshipManager = getApplicationComponent(RelationshipManager.class);
-    }
-    return relationshipManager;
-  }
-
-  /**
-   * Gets SpaceService.
-   * 
-   * @return
-   */
-  private SpaceService getSpaceService() {
-    return getApplicationComponent(SpaceService.class);
-  }
-
-  public boolean isUserActivity(String id) throws Exception {
+  public boolean isUserActivity(String id) {
     boolean isUserActivity = false;
-    try {
-      identityManager = getIdentityManager();
-      Identity identity = identityManager.getIdentity(id, false);
-      if (identity != null) {
-        isUserActivity = (identity.getProviderId().equals(OrganizationIdentityProvider.NAME));
-      }
-    } catch (Exception e) {
-      LOG.warn("Failed to check if an activity is of a user." + e.getMessage());
+    if (getOwnerIdentity() != null) {
+      isUserActivity = getOwnerIdentity().getProviderId().equals(OrganizationIdentityProvider.NAME);
     }
     return isUserActivity;
   }
@@ -482,19 +334,15 @@ public class BaseUIActivity extends UIForm {
   public boolean isActivityDeletable() throws SpaceException {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
     PostContext postContext = uiActivitiesContainer.getPostContext();
-    String remoteUser = Utils.getOwnerRemoteId();
     if (postContext == PostContext.SPACE) {
       Space space = uiActivitiesContainer.getSpace();
       SpaceService spaceService = getApplicationComponent(SpaceService.class);
 
-      String userId = this.getActivity().getUserId();
-      Identity ownerIdentity = getIdentityManager().getIdentity(userId, false);
-      String ownerActivityName = ownerIdentity.getRemoteId();
-      if (ownerActivityName.equals(remoteUser)) {
+      if (Utils.getViewerIdentity().equals(getOwnerIdentity())) {
         return true;
       }
 
-      return spaceService.isLeader(space, remoteUser);
+      return spaceService.isLeader(space, Utils.getOwnerRemoteId());
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
       if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
@@ -519,10 +367,8 @@ public class BaseUIActivity extends UIForm {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
       if (uiUserActivitiesDisplay != null && !uiUserActivitiesDisplay.isActivityStreamOwner()) {
         String ownerName = uiUserActivitiesDisplay.getOwnerName();
-        String viewerName = getRemoteUser();
-        Identity ownerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
-        Identity viewerIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName, false);
-        Relationship relationship = getRelationshipManager().get(ownerIdentity, viewerIdentity);
+        Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
+        Relationship relationship = Utils.getRelationshipManager().get(ownerIdentity, Utils.getViewerIdentity());
         if (relationship == null) {
           return false;
         } else if (!(relationship.getStatus() == Type.CONFIRMED)) {
@@ -536,11 +382,8 @@ public class BaseUIActivity extends UIForm {
   public boolean isCommentDeletable(String activityUserId) throws SpaceException {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
     PostContext postContext = uiActivitiesContainer.getPostContext();
-    IdentityManager identityManager = getApplicationComponent(IdentityManager.class);
     try {
-      Identity remoteUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getRemoteUser(), false);
-
-      if (remoteUserIdentity.getId().equals(activityUserId)) {
+      if (Utils.getViewerIdentity().getId().equals(activityUserId)) {
         return true;
       }
       if (postContext == PostContext.SPACE) {
@@ -561,12 +404,20 @@ public class BaseUIActivity extends UIForm {
         }
       }
     } catch (Exception e) {
-      LOG.warn("can't not get remoteUserIdentity: remoteUser = " + getRemoteUser());
+      LOG.warn("can't not get remoteUserIdentity: remoteUser = " + Utils.getViewerRemoteId());
     }
     return false;
   }
 
-  static public class ToggleDisplayLikesActionListener extends EventListener<BaseUIActivity> {
+  public void setOwnerIdentity(Identity ownerIdentity) {
+    this.ownerIdentity = ownerIdentity;
+  }
+
+  public Identity getOwnerIdentity() {
+    return ownerIdentity;
+  }
+
+  public static class ToggleDisplayLikesActionListener extends EventListener<BaseUIActivity> {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
@@ -649,8 +500,7 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
-      ActivityManager activityManager = uiActivity.getActivityManager();
-      activityManager.deleteActivity(uiActivity.getActivity().getId());
+      Utils.getActivityManager().deleteActivity(uiActivity.getActivity().getId());
       UIActivitiesContainer activitiesContainer = uiActivity.getParent();
       activitiesContainer.removeChildById(uiActivity.getId());
       activitiesContainer.removeActivity(uiActivity.getActivity());
@@ -666,8 +516,7 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      ActivityManager activityManager = uiActivity.getActivityManager();
-      activityManager.deleteComment(uiActivity.getActivity().getId(), requestContext.getRequestParameter(OBJECTID));
+      Utils.getActivityManager().deleteComment(uiActivity.getActivity().getId(), requestContext.getRequestParameter(OBJECTID));
       uiActivity.refresh();
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
     }

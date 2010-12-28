@@ -345,38 +345,37 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  public Profile updateBasicInfo(Profile p) throws Exception {
-    Profile newProfile = addOrModifyProfileProperties(p);
-    profileLifeCycle.basicUpdated(newProfile.getIdentity().getRemoteId(), newProfile);
-    LOG.debug("Update basic infomation successfully for user: " + newProfile);
-    return newProfile;
+  public void updateBasicInfo(Profile p) throws Exception {
+    addOrModifyProfileProperties(p);
+    profileLifeCycle.basicUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update basic infomation successfully for user: " + p);
   }
 
   /**
    * {@inheritDoc}
    */
   public void updateContactSection(Profile p) throws Exception {
-    Profile newProfile = addOrModifyProfileProperties(p);
-    profileLifeCycle.contactUpdated(newProfile.getIdentity().getRemoteId(), newProfile);
-    LOG.debug("Update contact section successfully for user: " + newProfile);
+    addOrModifyProfileProperties(p);
+    profileLifeCycle.contactUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update contact section successfully for user: " + p);
   }
 
   /**
    * {@inheritDoc}
    */
   public void updateExperienceSection(Profile p) throws Exception {
-    Profile newProfile = addOrModifyProfileProperties(p);
-    profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), newProfile);
-    LOG.debug("Update experience section successfully for user: " + newProfile);
+    addOrModifyProfileProperties(p);
+    profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update experience section successfully for user: " + p);
   }
 
   /**
    * {@inheritDoc}
    */
   public void updateHeaderSection(Profile p) throws Exception {
-    Profile newProfile = addOrModifyProfileProperties(p);
-    profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), newProfile);
-    LOG.debug("Update header section successfully for user: " + newProfile);
+    addOrModifyProfileProperties(p);
+    profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), p);
+    LOG.debug("Update header section successfully for user: " + p);
   }
 
   /**
@@ -448,12 +447,9 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  public Profile addOrModifyProfileProperties(Profile profile) throws Exception {
+  public void addOrModifyProfileProperties(Profile profile) throws Exception {
     this.getIdentityStorage().addOrModifyProfileProperties(profile);
-    String providerId = profile.getIdentity().getProviderId();
-    Profile newProfile = getIdentity(providerId, true).getProfile();
-    this.getIdentityProvider(providerId).onSaveProfile(newProfile);
-    return newProfile;
+    this.getIdentityProvider(profile.getIdentity().getProviderId()).onSaveProfile(profile);
   }
 
   /**

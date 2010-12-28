@@ -24,9 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -280,8 +279,7 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void saveProfileInfo() throws Exception {
-    IdentityManager im = (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
-    Profile p = getProfile(true);
+    Profile p = getProfile();
 
     Profile toBeUpdatedProfile = new Profile(p.getIdentity());
     toBeUpdatedProfile.setId(p.getId());
@@ -291,7 +289,7 @@ public class UIContactSection extends UIProfileSection {
     toBeUpdatedProfile.setProperty(Profile.CONTACT_IMS, getProfileForSave(imCount, getImsChilds(), IM));
     toBeUpdatedProfile.setProperty(Profile.CONTACT_URLS, getProfileForSave(urlCount, getUrlChilds(), URL));
 
-    im.updateBasicInfo(toBeUpdatedProfile);
+    Utils.getIdentityManager().updateContactSection(toBeUpdatedProfile);
   }
 
   /**
@@ -351,7 +349,7 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void setValue() throws Exception {
-    Profile profile = getProfile(false);
+    Profile profile = getProfile();
     String gender = (String) profile.getProperty(Profile.GENDER);
     if (gender != "") {
       getGenderChild().setValue(gender);

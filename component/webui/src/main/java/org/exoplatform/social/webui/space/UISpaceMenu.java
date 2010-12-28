@@ -250,7 +250,7 @@ public class UISpaceMenu extends UIContainer {
    * @return image source url
    * @throws Exception
    */
-  protected String getImageSource() throws Exception {
+  protected String getImageSource() {
     Space space = getSpace();
     if (space != null) {
       return space.getAvatarUrl();

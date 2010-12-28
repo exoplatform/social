@@ -22,6 +22,7 @@ import org.exoplatform.application.registry.Application;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPageIterator;
@@ -51,7 +52,7 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
 
   private UIPageIterator iterator_;
   private String spaceId;
-  private final String iteratorID = "UIIteratorAddSpaceApplication";
+  private final static String iteratorID = "UIIteratorAddSpaceApplication";
   private final String HOME_APPLICATION = "HomeSpacePortlet";
   /**
    * constructor
@@ -70,8 +71,7 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
   public void setSpaceId(String spaceId) throws Exception {
     this.spaceId = spaceId;
     List<Application> list;
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    Space space = spaceSrc.getSpaceById(spaceId);
+    Space space = Utils.getSpaceService().getSpaceById(spaceId);
     list = SpaceUtils.getApplications(space.getGroupId());
     // remove installed app
     String appList = space.getApp();

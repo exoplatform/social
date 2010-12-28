@@ -27,6 +27,7 @@
   import org.exoplatform.social.core.space.SpaceUtils
   import org.exoplatform.social.webui.space.UIManageMySpaces
   import org.exoplatform.social.webui.space.UISpaceSearch
+  import org.exoplatform.social.webui.ResourceLinkProvider;
 
   def uicomponentId = uicomponent.id
   def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
@@ -54,6 +55,9 @@
       def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false"
       def denySpaceAction = uicomponent.event("Deny", space.id) + "; return false"
       def imageSource = uicomponent.getImageSource(space);
+      if (imageSource == null) {
+        imageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
+      }
       def visibility = space.visibility
        //trick, temporary use private as visible
       if (visibility.equals(Space.PRIVATE)) visibility = "visible"
@@ -66,11 +70,7 @@
     <div class="NormalBox">
     <% } %>
       <div class="AvatarSpace">
-      <% if (imageSource == null) { %>
-        <img alt="#" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
-      <% } else { %>
         <img alt="#" src="$imageSource" />
-      <%}%>
       </div>
       <div class="ContentBox">
         <div class="TitleContent">

@@ -27,6 +27,7 @@
   import org.exoplatform.social.core.space.SpaceUtils
   import org.exoplatform.social.webui.space.UIManageMySpaces
   import org.exoplatform.social.webui.space.UISpaceSearch
+  import org.exoplatform.social.webui.ResourceLinkProvider;
 
   def uicomponentId = uicomponent.id
   def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
@@ -89,6 +90,9 @@
          status = "${hiddenStatus}"
         }
         def imageSource = uicomponent.getImageSource(space);
+        if (imageSource == null) {
+          imageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
+        }
         mySpaceIdx += 1;
     %>
 
@@ -100,11 +104,7 @@
       <!-- Leader -->
       <% if (role == 1) {%>
         <a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
-        <% if (imageSource == null) { %>
-          <img alt="#" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
-        <% } else { %>
           <img alt="#" src="$imageSource" />
-        <%}%>
         </a>
         <div class="ContentBox">
           <div class="TitleContent">
@@ -129,11 +129,7 @@
       <!-- Member -->
       <%if (role == 2) {%>
         <a href="<%= spaceUrl %>" class="AvatarSpace">
-      <% if (imageSource == null) { %>
-          <img alt="#" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif" />
-      <% } else { %>
           <img alt="#" src="$imageSource" />
-      <%}%>
         </a>
         <div class="ContentBox">
           <div class="TitleContent">

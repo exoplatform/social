@@ -241,7 +241,7 @@ public interface IdentityManager {
    * @param profile
    * @throws Exception
    */
-  Profile addOrModifyProfileProperties(Profile profile) throws Exception;
+  void addOrModifyProfileProperties(Profile profile) throws Exception;
 
   /**
    * Updates avatar.
@@ -257,7 +257,7 @@ public interface IdentityManager {
    * @param p
    * @throws Exception
    */
-  Profile updateBasicInfo(Profile p) throws Exception;
+  void updateBasicInfo(Profile p) throws Exception;
 
   /**
    * Updates the contact section of profile.

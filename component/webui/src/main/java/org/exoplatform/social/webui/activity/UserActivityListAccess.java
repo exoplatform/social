@@ -16,16 +16,16 @@
  */
 package org.exoplatform.social.webui.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 
 /**
  * UserActivityListAccess
@@ -39,30 +39,25 @@ public class UserActivityListAccess implements ListAccess<ExoSocialActivity> {
   static private final Log LOG = ExoLogger.getLogger(UserActivityListAccess.class);
 
   private Identity ownerIdentity;
-  private UIUserActivitiesDisplay.DisplayMode displayMode;
-  private ActivityManager activityManager;
+  private DisplayMode displayMode;
 
   /**
    * @param ownerIdentity
    * @param displayMode
    */
-  public UserActivityListAccess(Identity ownerIdentity, UIUserActivitiesDisplay.DisplayMode displayMode) {
-    //identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
-    activityManager = (ActivityManager) PortalContainer.getComponent(ActivityManager.class);
-    //spaceService = (SpaceService) PortalContainer.getComponent(SpaceService.class);
-
+  public UserActivityListAccess(Identity ownerIdentity, DisplayMode displayMode) {
     this.ownerIdentity = ownerIdentity;
     this.displayMode = displayMode;
   }
 
   public int getSize() throws Exception {
     int size;
-    if (displayMode == UIUserActivitiesDisplay.DisplayMode.MY_STATUS || displayMode == UIUserActivitiesDisplay.DisplayMode.OWNER_STATUS) {
-      size = activityManager.getActivitiesCount(ownerIdentity);
-    } else if (displayMode == UIUserActivitiesDisplay.DisplayMode.SPACES) {
-      size = activityManager.getActivitiesOfUserSpaces(ownerIdentity).size();
+    if (displayMode == DisplayMode.MY_STATUS || displayMode == DisplayMode.OWNER_STATUS) {
+      size = Utils.getActivityManager().getActivitiesCount(ownerIdentity);
+    } else if (displayMode == DisplayMode.SPACES) {
+      size = Utils.getActivityManager().getActivitiesOfUserSpaces(ownerIdentity).size();
     } else {
-      size = activityManager.getActivitiesOfConnections(ownerIdentity).size();
+      size = Utils.getActivityManager().getActivitiesOfConnections(ownerIdentity).size();
     }
 
     return size;
@@ -77,9 +72,9 @@ public class UserActivityListAccess implements ListAccess<ExoSocialActivity> {
    */
   public ExoSocialActivity[] load(int index, int length) throws Exception{
     List<ExoSocialActivity> activityList;
-    if (displayMode == UIUserActivitiesDisplay.DisplayMode.MY_STATUS || displayMode == UIUserActivitiesDisplay.DisplayMode.OWNER_STATUS) {
-      activityList = activityManager.getActivities(ownerIdentity, index, length);
-    } else if (displayMode == UIUserActivitiesDisplay.DisplayMode.SPACES) {
+    if (displayMode == DisplayMode.MY_STATUS || displayMode == DisplayMode.OWNER_STATUS) {
+      activityList = Utils.getActivityManager().getActivities(ownerIdentity, index, length);
+    } else if (displayMode == DisplayMode.SPACES) {
       activityList = getActivitiesOfUserSpaces(index, length);
     } else {
       activityList = getActivitiesOfConnections(index, length);
@@ -89,23 +84,27 @@ public class UserActivityListAccess implements ListAccess<ExoSocialActivity> {
   }
 
   private List<ExoSocialActivity> getActivitiesOfConnections(int index, int length) throws Exception {
-    List<ExoSocialActivity> activityList = activityManager.getActivitiesOfConnections(ownerIdentity);
+    List<ExoSocialActivity> activityList = Utils.getActivityManager().getActivitiesOfConnections(ownerIdentity);
     return getActivityList(index, length, activityList);
 
   }
 
   private List<ExoSocialActivity> getActivitiesOfUserSpaces(int index, int length) {
-    List<ExoSocialActivity> activityList = activityManager.getActivitiesOfUserSpaces(ownerIdentity);
+    List<ExoSocialActivity> activityList = Utils.getActivityManager().getActivitiesOfUserSpaces(ownerIdentity);
     return getActivityList(index, length, activityList);
   }
   
   private List<ExoSocialActivity> getActivityList(int index, int length, List<ExoSocialActivity> activityList) {
-    if (activityList == null || activityList.size() < 1) {
+    if (activityList == null) {
+      return new ArrayList<ExoSocialActivity>();
+    }
+    int maxIndex = activityList.size();
+    if (maxIndex < 1) {
       return activityList;
     }
     int toIndex = length + index;
 
-    toIndex = (activityList.size() >= toIndex) ? toIndex : (activityList.size() + index);
+    toIndex = (maxIndex >= toIndex) ? toIndex : maxIndex;
     return activityList.subList(index, toIndex);
   }
 

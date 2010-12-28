@@ -28,6 +28,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -42,8 +43,8 @@ import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
@@ -127,8 +128,11 @@ public class UISpaceInfo extends UIForm {
 
   public void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent, Space space) throws Exception {
     SpaceService spaceService = getSpaceService();
-    
+
     space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
+    spaceService.saveSpace(space, false);
+    space = spaceService.getSpaceById(space.getId());
+    space.setAvatarUrl(LinkProvider.buildAvatarImageUri(space.getAvatarAttachment()));
     spaceService.saveSpace(space, false);
   }
 
@@ -152,7 +156,7 @@ public class UISpaceInfo extends UIForm {
    *
    * @author hoatle
    */
-  static public class SaveActionListener extends EventListener<UISpaceInfo> {
+  public static class SaveActionListener extends EventListener<UISpaceInfo> {
     public void execute(Event<UISpaceInfo> event) throws Exception {
       UISpaceInfo uiSpaceInfo = event.getSource();
       SpaceService spaceService = uiSpaceInfo.getSpaceService();
@@ -233,7 +237,7 @@ public class UISpaceInfo extends UIForm {
    *
    * @author hoatle
    */
-  static public class ChangeAvatarActionListener extends EventListener<UISpaceInfo> {
+  public static class ChangeAvatarActionListener extends EventListener<UISpaceInfo> {
 
     @Override
     public void execute(Event<UISpaceInfo> event) throws Exception {

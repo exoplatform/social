@@ -24,10 +24,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -241,7 +239,7 @@ public class UIExperienceSection extends UIProfileSection {
       UIProfileSection sect = event.getSource();
       UIExperienceSection uiExpSection = (UIExperienceSection)sect;
       ArrayList<HashMap<String, Object>> experiences;
-      Profile p = sect.getProfile(false);
+      Profile p = sect.getProfile();
       List<UIComponent> listChild = uiExpSection.getChilds();
       List<Object> listProfile = new ArrayList<Object>();
       int childSize = listChild.size() - 1; // List of children include UITitleBar child.
@@ -352,7 +350,7 @@ public class UIExperienceSection extends UIProfileSection {
   public List<HashMap<String, Object>> getPastExperience() throws Exception {
     ArrayList<HashMap<String, Object>> experiences;
     ArrayList<HashMap<String, Object>> pastExperiences = new ArrayList<HashMap<String, Object>>();
-    Profile p = getProfile(false);
+    Profile p = getProfile();
     experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
@@ -376,7 +374,7 @@ public class UIExperienceSection extends UIProfileSection {
   public List<HashMap<String, Object>> getCurrentExperience() throws Exception {
     ArrayList<HashMap<String, Object>> experiences;
     ArrayList<HashMap<String, Object>> currentExperiences = new ArrayList<HashMap<String, Object>>();
-    Profile p = getProfile(false);
+    Profile p = getProfile();
     experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
@@ -416,9 +414,7 @@ public class UIExperienceSection extends UIProfileSection {
 
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     UIApplication uiApplication = context.getUIApplication();
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Profile p = getProfile(true);
+    Profile p = getProfile();
     List<UIComponent> listUIComp = getChilds();
     int totalUIComponent = listUIComp.size() - 1; // List of children not include UITitleBar child.
 
@@ -427,7 +423,7 @@ public class UIExperienceSection extends UIProfileSection {
         Profile updateProfile = new Profile(p.getIdentity());
         updateProfile.setId(p.getId());
         updateProfile.setProperty(Profile.EXPERIENCES, experiences);
-        im.updateExperienceSection(updateProfile);
+        Utils.getIdentityManager().updateExperienceSection(updateProfile);
       }
 
       return 0;
@@ -491,7 +487,7 @@ public class UIExperienceSection extends UIProfileSection {
     Profile updateProfile = new Profile(p.getIdentity());
     updateProfile.setId(p.getId());
     updateProfile.setProperty(Profile.EXPERIENCES, experiences);
-    im.updateExperienceSection(updateProfile);
+    Utils.getIdentityManager().updateExperienceSection(updateProfile);
 
     return 0;
   }

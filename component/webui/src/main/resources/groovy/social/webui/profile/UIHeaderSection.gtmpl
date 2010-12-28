@@ -20,7 +20,7 @@
   import org.exoplatform.webui.form.UIFormStringInput;
   import org.exoplatform.social.core.identity.model.Profile;
   def user = uicomponent.getViewUser();
-  def profile = uicomponent.getProfile(false);
+  def profile = uicomponent.getProfile();
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
 

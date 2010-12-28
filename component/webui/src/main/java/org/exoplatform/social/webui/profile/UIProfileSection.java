@@ -21,9 +21,8 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.CacheUserProfileFilter;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -44,25 +43,16 @@ import org.exoplatform.webui.form.UIForm;
 public abstract class UIProfileSection extends UIForm {
   /** The isEditMode is used for check the view mode. */
   private boolean isEditMode;
-  
-  /** Checks is multi part or not. */
-  private boolean isMultipart = false;
-  
-  /** Store current property.*/
-  private String currentProperty;
-  
+
   /**
    * Gets profile.<br>
    * 
-   * @param forceReload
-   * 
    * @return profile.
-   * 
    * @throws Exception
    */
-  public Profile getProfile(boolean forceReload) throws Exception {
+  public Profile getProfile() throws Exception {
     UIProfile uiProfile = this.getAncestorOfType(UIProfile.class);
-    return uiProfile.getProfile(forceReload);
+    return uiProfile.getProfile();
   }
 
   /**
@@ -94,54 +84,15 @@ public abstract class UIProfileSection extends UIForm {
   }
 
   /**
-   * Checks is multiple parts or not.<br>
-   * 
-   * @return true if is multiple part.
-   */
-  @Override
-  public boolean isMultipart() {
-    return isMultipart;
-  }
-
-  /**
-   * Sets multiple part.<br>
-   * 
-   * @param multipart
-   */
-  public void setMultipart(boolean multipart) {
-    isMultipart = multipart;
-  }
-
-  /**
-   * Gets current property.<br>
-   * 
-   * @return currentProperty
-   */
-  public String getCurrentProperty() {
-    return currentProperty;
-  }
-
-  /**
-   * Sets current property.<br>
-   * 
-   * @param currentProperty
-   */
-  public void setCurrentProperty(String currentProperty) {
-    this.currentProperty = currentProperty;
-  }
-
-  /**
    * Get user
    *
    * @return
    * @throws Exception
    */
   public User getViewUser() throws Exception {
-    String currentUserName = RequestContext.getCurrentInstance().getRemoteUser();
-    String currentViewer = URLUtils.getCurrentUser();
-    if ((currentViewer != null) && (!currentViewer.equals(currentUserName))) {
+    if (!Utils.isOwner()) {
       UserHandler userHandler = getApplicationComponent(OrganizationService.class).getUserHandler();
-      return userHandler.findUserByName(currentViewer);
+      return userHandler.findUserByName(Utils.getOwnerRemoteId());
     }
     ConversationState state = ConversationState.getCurrent();
     return (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);

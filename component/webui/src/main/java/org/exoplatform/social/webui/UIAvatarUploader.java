@@ -58,25 +58,25 @@ import org.exoplatform.webui.form.UIFormUploadInput;
 })
 public class UIAvatarUploader extends UIForm {
   /** Message alert that image is not uploaded successfully. */
-  static private final String MSG_IMG_NOT_UPLOADED = "UIAvatarUploader.msg.img_not_loaded";
+  private static final String MSG_IMG_NOT_UPLOADED = "UIAvatarUploader.msg.img_not_loaded";
 
   /** Message alert that mimetype is not accepted. */
-  static private final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
+  private static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
 /*  *//** Message alert that the file name is too long *//*
   static private final String MSG_CHARACTERS_TOO_LONG = "UIAvatarUploader.msg.characters_too_long";
   *//** The number of characters allowed to rename *//*
   static private final int ALLOWED_CHARACTERS_LONG = 50;*/
   /** FIELD NAME. */
-  private final String FIELD_NAME = "Name";
+  private static final String FIELD_NAME = "Name";
 
   /** FIELD Uploader. */
-  private final String FIELD_UPLOADER = "Uploader";
+  private static final String FIELD_UPLOADER = "Uploader";
 
   /** The limit size for upload image. */
-  private final int uploadLimit = 2; //MB
+  private static final int uploadLimit = 2; //MB
 
   /** List of accepted mimetype. */
-  private final String[] acceptedMimeTypes = new String[] {"image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
+  private static final String[] acceptedMimeTypes = new String[] {"image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
 
   /** Stores UIFormUploadInput instance. */
   private final UIFormUploadInput uiAvatarUploadInput;

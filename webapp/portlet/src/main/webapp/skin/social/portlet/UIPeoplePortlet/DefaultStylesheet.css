@@ -315,6 +315,11 @@ a:VISITED {
  margin: 8px;
 }
 
+.UIPeoplePortlet .AvartarPeopleBG img {
+ width: 47px;
+ height: 47px;
+}
+
 .ActivitiesTitleBarM{
   background: #ebebeb;
   height: 21px;

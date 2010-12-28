@@ -22,7 +22,7 @@ import org.exoplatform.dashboard.webui.component.DashboardParent;
 import org.exoplatform.dashboard.webui.component.UIDashboard;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -58,23 +58,16 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
   }
 
   public boolean canEdit() {
-    PortletRequestContext context = (PortletRequestContext) WebuiRequestContext
-    .getCurrentInstance();
-    String remoteUser = context.getRemoteUser();
     String spaceUrl = SpaceUtils.getSpaceUrl();
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     try {
-      Space space = spaceSrc.getSpaceByUrl(spaceUrl);
-      return spaceSrc.hasEditPermission(space, remoteUser);
+      Space space = Utils.getSpaceService().getSpaceByUrl(spaceUrl);
+      return Utils.getSpaceService().hasEditPermission(space, Utils.getViewerRemoteId());
     } catch (Exception e) {
-      e.printStackTrace();
     }
     return false;
   }
 
   public String getDashboardOwner() {
-    PortletRequestContext context = (PortletRequestContext) WebuiRequestContext
-    .getCurrentInstance();
-    return context.getRemoteUser();
+    return Utils.getViewerRemoteId();
   }
 }

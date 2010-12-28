@@ -312,6 +312,11 @@
  margin: 8px;
 }
 
+.UITabPane .AvartarPeopleBG img {
+ width: 47px;
+ height: 47px;
+}
+
 .ActivitiesTitleBarM{
   background: #ebebeb;
   height: 21px;

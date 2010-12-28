@@ -16,13 +16,13 @@
  */
 package org.exoplatform.social.core.service;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -41,13 +41,23 @@ public class LinkProvider {
   private static String DEFAULT_PORTAL_OWNER = "classic";
 
   /**
+   * Returns the uri link to space profile.
+   *
+   * @param prettyName
+   * @return the uri link to space
+   */
+  public static String getSpaceUri(final String prettyName) {
+    return buildSpaceUri(prettyName, null, null);
+  }
+
+  /**
    * Returns the uri link to user profile.
    *
    * @param username
    * @return the uri link to user profile
    */
   public static String getProfileUri(final String username) {
-    return buildProfileUri(username, null);
+    return buildProfileUri(username, null, null);
   }
 
   /**
@@ -58,7 +68,7 @@ public class LinkProvider {
    * @return the uri link to user profile
    */
   public static String getProfileUri(final String username, final String portalOwner) {
-    return buildProfileUri(username, portalOwner);
+    return buildProfileUri(username, null, portalOwner);
   }
 
   /**
@@ -79,9 +89,9 @@ public class LinkProvider {
    * @return tag <a> with a link to profile of userName on portalName
    */
   public static String getProfileLink(final String username, final String portalOwner) {
-    Identity identity = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
+    Identity identity = getIdentityManager().getIdentity(GlobalId.create(OrganizationIdentityProvider.NAME,username).toString(), true);
     Validate.notNull(identity, "Identity must not be null.");
-    return "<a href=\"" + buildProfileUri(identity.getRemoteId(), portalOwner)
+    return "<a href=\"" + buildProfileUri(identity.getRemoteId(), null, portalOwner)
         + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
   }
 
@@ -99,6 +109,28 @@ public class LinkProvider {
   }
 
   /**
+   * Gets activity link of user; remoteId should be the id name. For
+   * example: root
+   * 
+   * @param remoteId
+   * @return
+   */
+  public static String getUserActivityUri(final String remoteId) {
+    return getActivityUri(OrganizationIdentityProvider.NAME,remoteId);
+  }
+
+  /**
+   * Gets activity link of user; remoteId should be the id name. For
+   * example: root
+   * 
+   * @param remoteId
+   * @return
+   */
+  public static String getUserConnectionsUri(final String remoteId) {
+    return getBaseUri(null, null) + "/connections/myConnections/" + remoteId;
+  }
+
+  /**
    * Gets activity link of space or user; remoteId should be the id name. For
    * example: organization:root or space:abc_def.
    *
@@ -107,7 +139,7 @@ public class LinkProvider {
    * @return
    */
   public static String getActivityUri(final String providerId, final String remoteId) {
-    final String prefix = "/" + PortalContainer.getCurrentPortalContainerName() + "/private/" + getPortalOwner(null) + "/";
+    final String prefix = getBaseUri(null, null) + "/";
     if (providerId.equals(OrganizationIdentityProvider.NAME)) {
       return prefix + "activities/" + remoteId;
     } else if (providerId.equals(SpaceIdentityProvider.NAME)) {
@@ -207,24 +239,35 @@ public class LinkProvider {
    * Builds profile uri from userName and portalOwner.
    *
    * @param userName
-   * @param portalOwner
-   * @return profile uri
-   */
-  private static String buildProfileUri(final String userName, final String portalOwner) {
-    return buildProfileUri(userName, PortalContainer.getCurrentPortalContainerName(), portalOwner);
-  }
-
-  /**
-   * Builds profile uri from userName and portalName and portalOwner.
-   *
-   * @param userName
    * @param portalName
    * @param portalOwner
    * @return profile uri
    */
   private static String buildProfileUri(final String userName, final String portalName, String portalOwner) {
-    return "/" + StringUtils.trimToEmpty(portalName) + "/private/" + getPortalOwner(portalOwner)
-        + "/profile/" + StringUtils.trimToEmpty(userName);
+    return getBaseUri(portalName, portalOwner) + "/profile/" + userName;
+  }
+
+  /**
+   * Builds space uri from userName and portalOwner.
+   *
+   * @param prettyName
+   * @param portalName
+   * @param portalOwner
+   * @return space uri
+   */
+  private static String buildSpaceUri(final String prettyName, final String portalName, String portalOwner) {
+    return getBaseUri(portalName, portalOwner) + "/" + prettyName;
+  }
+
+  /**
+   * Builds profile uri from userName and portalName and portalOwner.
+   *
+   * @param portalName
+   * @param portalOwner
+   * @return
+   */
+  private static String getBaseUri(final String portalName, String portalOwner) {
+    return "/" + getPortalName(portalName) + "/private/" + getPortalOwner(portalOwner);
   }
 
   /**
@@ -265,5 +308,18 @@ public class LinkProvider {
       }
     }
     return portalOwner;
+  }
+
+  /**
+   * Gets portal owner, if parameter is null or "", the method return default portal owner
+   * 
+   * @param portalOwner
+   * @return portalOwner
+   */
+  private static String getPortalName(String portalName) {
+    if (portalName == null || "".equals(portalName)) {
+      return PortalContainer.getCurrentPortalContainerName();
+    }
+    return portalName;
   }
 }

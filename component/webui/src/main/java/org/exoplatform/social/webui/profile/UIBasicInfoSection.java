@@ -18,16 +18,12 @@ package org.exoplatform.social.webui.profile;
 
 import java.util.List;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -62,13 +58,13 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 public class UIBasicInfoSection extends UIProfileSection {
 
   /** REGEX EXPRESSION. */
-  final public static String REGEX_EXPRESSION     = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
+  public static final String REGEX_EXPRESSION     = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
 
   /** INVALID CHARACTER MESSAGE. */
-  final public static String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
+  public static final String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
 
   public UIBasicInfoSection() throws Exception {
-    String username = Util.getPortalRequestContext().getRemoteUser();
+    String username = Utils.getViewerRemoteId();
     OrganizationService service = this.getApplicationComponent(OrganizationService.class);
     User useraccount = service.getUserHandler().findUserByName(username);
 
@@ -115,7 +111,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       super.execute(event);
       UIProfileSection sect = event.getSource();
       UIBasicInfoSection uiForm = (UIBasicInfoSection) sect;
-      String username = Util.getPortalRequestContext().getRemoteUser();
+      String username = Utils.getViewerRemoteId();
       OrganizationService service = uiForm.getApplicationComponent(OrganizationService.class);
       User user = service.getUserHandler().findUserByName(username);
 
@@ -134,7 +130,7 @@ public class UIBasicInfoSection extends UIProfileSection {
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
     private static final String MSG_KEY_UI_ACCOUNT_INPUT_SET_EMAIL_EXIST   = "UIAccountInputSet.msg.email-exist";
 //    private static final String MSG_KEY_UI_ACCOUNT_PROFILES_UPDATE_SUCCESS = "UIAccountProfiles.msg.update.success";
-    private static final String PORTLET_NAME_USER_PROFILE_TOOLBAR_PORTLET  = "UserProfileToolBarPortlet";
+//    private static final String PORTLET_NAME_USER_PROFILE_TOOLBAR_PORTLET  = "UserProfileToolBarPortlet";
 //    private static final String PORTLET_NAME_USER_PROFILE_PORTLET          = "ProfilePortlet";
 
     @Override
@@ -155,8 +151,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       // Check if mail address is already used
       Query query = new Query();
       query.setEmail(newEmail);
-      if (service.getUserHandler().findUsers(query).getAll().size() > 0
-          && !oldEmail.equals(newEmail)) {
+      if (!oldEmail.equals(newEmail) && service.getUserHandler().findUsersByQuery(query).getSize() > 0) {
         // Be sure it keep old value
         user.setEmail(oldEmail);
         Object[] args = { userName };
@@ -164,9 +159,7 @@ public class UIBasicInfoSection extends UIProfileSection {
         return;
       }
 
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-
-      Profile p = uiForm.getProfile(true);
+      Profile p = uiForm.getProfile();
       Profile updateProfile = new Profile(p.getIdentity());
       updateProfile.setId(p.getId());
 
@@ -174,22 +167,21 @@ public class UIBasicInfoSection extends UIProfileSection {
       updateProfile.setProperty(Profile.LAST_NAME, uiForm.getUIStringInput(Profile.LAST_NAME).getValue());
       updateProfile.setProperty(Profile.EMAIL, newEmail);
 
-      IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      updateProfile = im.updateBasicInfo(updateProfile);
-
+      Utils.getIdentityManager().updateBasicInfo(updateProfile);
       user.setFirstName((String) updateProfile.getProperty(Profile.FIRST_NAME));
       user.setLastName((String) updateProfile.getProperty(Profile.LAST_NAME));
       user.setEmail((String) updateProfile.getProperty(Profile.EMAIL));
       service.getUserHandler().saveUser(user, true);
       ConversationState.getCurrent().setAttribute(CacheUserProfileFilter.USER_PROFILE,user);
 
-      UIProfile uiProfile = uiForm.getParent();
-      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIHeaderSection.class));
-      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIBasicInfoSection.class));
-
-      UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication()
-                                           .getChild(UIWorkingWorkspace.class);
-      uiWorkingWS.updatePortletsByName(PORTLET_NAME_USER_PROFILE_TOOLBAR_PORTLET);
+      Utils.updateWorkingWorkSpace();
+//      UIProfile uiProfile = uiForm.getParent();
+//      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIHeaderSection.class));
+//      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIBasicInfoSection.class));
+//
+//      UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication()
+//                                           .getChild(UIWorkingWorkspace.class);
+//      uiWorkingWS.updatePortletsByName(PORTLET_NAME_USER_PROFILE_TOOLBAR_PORTLET);
     }
   }
 }

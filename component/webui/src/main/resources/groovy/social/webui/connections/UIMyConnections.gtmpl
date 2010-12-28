@@ -6,19 +6,18 @@
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
+  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.webui.Utils;
 
   def isEditable = uicomponent.isEditable();
   def myRelation = uicomponent.getMyRelation();
-  def currIdentity = uicomponent.getCurrentIdentity();
+  def currIdentity = Utils.getOwnerIdentity(true);
   def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
   UIPageIterator iteratorContact = uicomponent.getUIPageIteratorContact();
   PortalRequestContext pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def relationIdx = 0;
-  def isOwner = false;
-  if (currIdentity.getRemoteId().equals(uicomponent.getCurrentUserName())) {
-    isOwner = true;
-  }
+  def isOwner = Utils.isOwner();
 %>
 <div class="UIMyRelations" id="$uicomponent.id">
   <div class="UITabPane">
@@ -27,7 +26,7 @@
         <%=_ctx.appRes(uicomponent.id + ".label.MyRelationsList")%>
      <%} else {
         def userRelationList = _ctx.appRes(uicomponent.id + ".label.UserRelationList");
-        userRelationList = userRelationList.replace("{0}", currIdentity.profile.getPropertyValue("firstName"));
+        userRelationList = userRelationList.replace("{0}", currIdentity.profile.fullName);
      %>
       <%= userRelationList %>
 
@@ -79,32 +78,23 @@
       <%if ((myRelation != null) && (myRelation.size() > 0)) {%>
 
       <%  for(relation in myRelation) {
-            def id = null;
-            if (currIdentity.id == relation.sender.id) {
-              id = relation.receiver;
-            } else {
-              id = relation.sender;
-            }
-            profileURL = portalURI + "activities/" + id.getRemoteId();
+            def id = relation.getPartner(currIdentity);
+            profileURL = id.profile.url;
             fullName = id.profile.fullName;
-            position = id.profile.getPropertyValue("position");
             def actionLink = uicomponent.event("Remove",id.getId());
-            position = id.profile.getPropertyValue("position");
+            position = id.profile.position;
             relationIdx += 1;
-            if (!position)
-              position = "";
+            if (!position) position = "";
 
             String imageSource = id.profile.avatarUrl;
-            if (imageSource == null) {
-              imageSource = "/social-resources/skin/ShareImages/Avatar.gif"; 
-            }
+            if (!imageSource) imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
             if (relationIdx % 2 == 0) { %>
           <div class="ContentSpaceGray ClearFix">
          <% } else {%>
           <div class="ContentSpace ClearFix">
        <% }%>
         <div class="AvartarPeopleBG">
-             <img height="47px" width="47px" src="$imageSource"/>
+             <img src="$imageSource"/>
           </div>
         <div class="CommunityContainer">
           <div class="CommunityMane Line">

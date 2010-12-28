@@ -22,11 +22,16 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.core.space.SpaceUtils;
+  import org.exoplatform.social.webui.ResourceLinkProvider;
+
   SpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
   def spaceUrl = SpaceUtils.getSpaceUrl();
   def appSelected = uicomponent.getAppSelected();
   def imageSource = uicomponent.getImageSource();
+  if (imageSource == null) {
+    imageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
+  }
   def spaceUserListName = "MembersPortlet";
   def spaceSettingName = "SpaceSettingPortlet";
 
@@ -71,11 +76,7 @@
   <div class="SpaceMenuPortlet">
     <div class="ProfTitle" title="$spaceName"><%= spaceNameDisplay %></div>
     <a class="Avartar">
-    <% if(imageSource == null) { %>
-      <img width="65" height="65" src="/social-resources/skin/ShareImages/SpaceImages/SpaceLogoDefault_80X80.gif" alt="" />
-    <% } else { %>
       <img src="$imageSource" height="65px" width="65px" />
-    <% } %>
     </a>
     <% if(spaceUrl.equals(appSelected)) { %>
     <div class="Home"><a class="HomeSelect" href="$home"><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></a></div>

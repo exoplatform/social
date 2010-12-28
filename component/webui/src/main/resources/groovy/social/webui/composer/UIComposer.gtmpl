@@ -26,6 +26,7 @@
   import org.exoplatform.social.webui.composer.UIComposer;
   import org.exoplatform.social.webui.composer.UIActivityComposerContainer;
   import org.exoplatform.social.webui.composer.UIDefaultActivityComposer;
+  import org.exoplatform.social.webui.ResourceLinkProvider;
 
   def requestContext = _ctx.getRequestContext();
 
@@ -44,8 +45,9 @@
   }
 
 
-  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
-  jsManager.importJavascript("eXo.social.webui.UIComposer", "/social-resources/javascript");
+
+  jsManager.importJavascript("eXo.social.Util", ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
+  jsManager.importJavascript("eXo.social.webui.UIComposer", ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
   def params = """
     {
       composerId: '${uicomponent.getChild(UIFormTextAreaInput.class).getId()}',

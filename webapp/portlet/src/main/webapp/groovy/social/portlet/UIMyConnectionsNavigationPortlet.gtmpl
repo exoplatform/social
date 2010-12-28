@@ -27,16 +27,12 @@
   def pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
   def ownerIdentity = Utils.getOwnerIdentity();
-  def viewerId = uicomponent.getViewerId();
   def ownerId = ownerIdentity.getRemoteId();
   def myRelationsURL = "${portalURI}connections/myConnections/${ownerId}";
   def invitationsURL = "${portalURI}connections/myInvitations/${ownerId}";
   def requestsURL = "${portalURI}connections/myRequests/${ownerId}";
   def selectedNode = uicomponent.getSelectedNode();
-  def isOwner = false;
-  if (ownerId.equals(viewerId)) {
-    isOwner = true;
-  }
+  def isOwner = Utils.isOwner();
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="RelTitle"><%=_ctx.appRes(uicomponent.getId() + ".label.Relation")%></div>

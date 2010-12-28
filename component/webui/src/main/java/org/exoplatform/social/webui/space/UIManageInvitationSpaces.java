@@ -21,17 +21,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -40,8 +39,8 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 
 /**
  * UIManageInvitationSpaces.java used for managing invitation spaces. <br />
@@ -71,11 +70,9 @@ public class UIManageInvitationSpaces extends UIContainer {
   private UIPageIterator iterator;
   private final Integer SPACES_PER_PAGE = 4;
   private final String ITERATOR_ID = "UIIteratorInvitationSpaces";
-  private SpaceService spaceService = null;
-  private String userId = null;
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
-  
+
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup.
    * 
@@ -86,6 +83,7 @@ public class UIManageInvitationSpaces extends UIContainer {
     addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }
+
   /**
    * Gets uiPageIterator.
    * 
@@ -96,37 +94,13 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * Gets spaceService.
-   * 
-   * @return spaceService
-   */
-  private SpaceService getSpaceService() {
-    if(spaceService == null)
-      spaceService = getApplicationComponent(SpaceService.class);
-    return spaceService;
-  }
-
-  /**
-   * Gets remote user Id.
-   * 
-   * @return userId
-   */
-  private String getUserId() {
-    if(userId == null)
-      userId = Util.getPortalRequestContext().getRemoteUser();
-    return userId;
-  }
-
-  /**
    * Gets all user's spaces.
    * 
    * @return space list
    * @throws Exception
    */
   public List<Space> getInvitationSpaces() throws Exception {
-    SpaceService spaceService = getSpaceService();
-    String userId = getUserId();
-    List<Space> userSpaces = spaceService.getInvitedSpaces(userId);
+    List<Space> userSpaces = Utils.getSpaceService().getInvitedSpaces(Utils.getViewerRemoteId());
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
 
@@ -151,9 +125,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @throws SpaceException
    */
   public int getRole(String spaceId) throws SpaceException {
-    SpaceService spaceService = getSpaceService();
-    String userId = getUserId();
-    if(spaceService.hasEditPermission(spaceId, userId)) {
+    if(Utils.getSpaceService().hasEditPermission(spaceId, Utils.getViewerRemoteId())) {
       return LEADER;
     }
     return MEMBER;
@@ -180,16 +152,15 @@ public class UIManageInvitationSpaces extends UIContainer {
   * This action is triggered when user clicks on Accept Space Invitation.
   * When accepting, that user will be the member of the space.
   */
-  static public class AcceptActionListener extends EventListener<UIManageInvitationSpaces> {
+  public static class AcceptActionListener extends EventListener<UIManageInvitationSpaces> {
 
    @Override
    public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
-     UIManageInvitationSpaces uiForm = event.getSource();
-     SpaceService spaceService = uiForm.getSpaceService();
+     SpaceService spaceService = Utils.getSpaceService();
      WebuiRequestContext ctx = event.getRequestContext();
      UIApplication uiApp = ctx.getUIApplication();
      String spaceId = ctx.getRequestParameter(OBJECTID);
-     String userId = uiForm.getUserId();
+     String userId = Utils.getViewerRemoteId();
 
      Space space = spaceService.getSpaceById(spaceId);
 
@@ -230,16 +201,15 @@ public class UIManageInvitationSpaces extends UIContainer {
   * This action is triggered when user clicks on Deny Space Invitation.
   * When denying, that space will remove the user from pending list.
   */
-  static public class DenyActionListener extends EventListener<UIManageInvitationSpaces> {
+  public static class DenyActionListener extends EventListener<UIManageInvitationSpaces> {
 
    @Override
    public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
-     UIManageInvitationSpaces uiForm = event.getSource();
-     SpaceService spaceService = uiForm.getSpaceService();
+     SpaceService spaceService = Utils.getSpaceService();
      WebuiRequestContext ctx = event.getRequestContext();
      UIApplication uiApp = ctx.getUIApplication();
      String spaceId = ctx.getRequestParameter(OBJECTID);
-     String userId = uiForm.getUserId();
+     String userId = Utils.getViewerRemoteId();
      Space space = spaceService.getSpaceById(spaceId);
 
      if (space == null) {
@@ -301,35 +271,6 @@ public class UIManageInvitationSpaces extends UIContainer {
     }
 
     return invitedSpaceNames;
-  }
-
-  /**
-   * Gets the rest context.
-   *
-   * @return the rest context
-   */
-    private String getRestContext() {
-  	return PortalContainer.getInstance().getRestContextName();
-    }
-
-  /**
-   * Gets portal name.
-   * 
-   * @return portal name
-   */
-  private String getPortalName() {
-    return PortalContainer.getCurrentPortalContainerName();
-  }
-
-  /**
-   * Gets repository name.
-   * 
-   * @return repository name
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;
-    return rService.getCurrentRepository().getConfiguration().getName() ;
   }
 
   /**

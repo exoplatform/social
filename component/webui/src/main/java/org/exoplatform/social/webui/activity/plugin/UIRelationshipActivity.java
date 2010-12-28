@@ -20,7 +20,6 @@ import org.exoplatform.social.common.ResourceBundleUtil;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -109,7 +108,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   public Identity getSender() {
     if (sender == null) {
-      sender = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, senderName, false);
+      sender = Utils.getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, senderName, false);
     }
     return sender;
   }
@@ -120,7 +119,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   public Identity getReceiver() {
     if (receiver == null) {
-      receiver = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, receiverName, false);
+      receiver = Utils.getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, receiverName, false);
     }
     return receiver;
   }
@@ -131,7 +130,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   public Type getStatus() throws Exception {
     if (status == null) {
-      status = getRelationshipManager().getStatus(getSender(), getReceiver());
+      status = Utils.getRelationshipManager().getStatus(getSender(), getReceiver());
     }
     return status;
   }
@@ -142,26 +141,29 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   public Relationship getRelationship() throws Exception {
     if (relationship == null) {
-      relationship = getRelationshipManager().get(relationshipUUID);
+      relationship = Utils.getRelationshipManager().get(relationshipUUID);
     }
     return relationship;
   }
 
   public boolean isActivityStreamOwner() {
     UIActivitiesContainer uiActivititesContainer = getAncestorOfType(UIActivitiesContainer.class);
-    return getRemoteUser().equals(uiActivititesContainer.getOwnerName());
+    return Utils.getViewerRemoteId().equals(uiActivititesContainer.getOwnerName());
   }
 
   public boolean isSender() throws Exception {
-    return getRemoteUser().equals(senderName);
+    return Utils.getViewerRemoteId().equals(senderName);
   }
 
   public boolean isReceiver() throws Exception {
-    return getRemoteUser().equals(receiverName);
+    return Utils.getViewerRemoteId().equals(receiverName);
   }
 
   public String getActivityTitle(WebuiBindingContext ctx) throws Exception {
     UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+    if (uiUserActivitiesDisplay == null) {
+      return null;
+    }
     DisplayMode displayMode = uiUserActivitiesDisplay.getSelectedDisplayMode();
     String senderLink = LinkProvider.getProfileLink(senderName);
     String receiverLink = LinkProvider.getProfileLink(receiverName);
@@ -212,8 +214,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
       Relationship relationship = uiRelationshipActivity.getRelationship();
       if (relationship != null && relationship.getStatus() == Type.PENDING) {
-        RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
-        relationshipManager.confirm(relationship);
+        Utils.getRelationshipManager().confirm(relationship);
         Utils.updateWorkingWorkSpace();
       }
 
@@ -232,8 +233,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
       UIRelationshipActivity uiRelationshipActivity = event.getSource();
       Relationship relationship = uiRelationshipActivity.getRelationship();
       if (relationship != null && relationship.getStatus() == Type.PENDING) {
-        RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
-        relationshipManager.deny(relationship);
+        Utils.getRelationshipManager().deny(relationship);
         Utils.updateWorkingWorkSpace();
       }
       //delete this activity

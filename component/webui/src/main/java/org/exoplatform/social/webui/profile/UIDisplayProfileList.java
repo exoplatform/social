@@ -16,25 +16,16 @@
  */
 package org.exoplatform.social.webui.profile;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.IdentityListAccess;
-import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
@@ -69,13 +60,10 @@ public class UIDisplayProfileList extends UIContainer {
   private static final String INVITATION_ESTABLISHED_INFO = "UIDisplayProfileList.label.InvitationEstablishedInfo";
 
   /** Number element per page. */
-  private final Integer PEOPLE_PER_PAGE = 10;
+  private static final Integer PEOPLE_PER_PAGE = 10;
 
   /** Id of iterator. */
-  private final String ITERATOR_ID = "UIIteratorPeople";
-
-  /** Stores IdentityManager instance. */
-  private IdentityManager     identityManager_ = null;
+  private static final String ITERATOR_ID = "UIIteratorPeople";
 
   /** The search object variable. */
   UIProfileUserSearch uiProfileUserSearchPeople = null;
@@ -93,9 +81,16 @@ public class UIDisplayProfileList extends UIContainer {
    * Gets identities.
    *
    * @return one list of identity.
+   * @throws Exception
    */
-  public List<Identity> getIdentityList() {
-    return identityList;
+  public List<Identity> getIdentityList() throws Exception {
+    if (identityList == null) {
+      identityList = Utils.getIdentityManager().getIdentities(OrganizationIdentityProvider.NAME);
+      if (identityList.contains(Utils.getViewerIdentity())) {
+        identityList.remove(Utils.getViewerIdentity());
+      }
+    }
+	return identityList;
   }
 
   /**
@@ -137,8 +132,7 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public List<Identity> getList() throws Exception {
     int currentPage = iterator.getCurrentPage();
-    List<Identity> peopleList = getProfiles();
-    LazyPageList<Identity> pageList = new LazyPageList<Identity>(new IdentityListAccess(peopleList), PEOPLE_PER_PAGE);
+    LazyPageList<Identity> pageList = new LazyPageList<Identity>(new IdentityListAccess(getIdentityList()), PEOPLE_PER_PAGE);
     iterator.setPageList(pageList);
     if (this.uiProfileUserSearchPeople.isNewSearch()) {
       iterator.setCurrentPage(FIRST_PAGE);
@@ -158,21 +152,17 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
-      UIDisplayProfileList portlet = event.getSource();
-      IdentityManager im = portlet.getIdentityManager();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = portlet.getCurrentUserName();
-      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currUserId);
-      Identity requestedIdentity = im.getIdentity(userId);
-      RelationshipManager rm = portlet.getRelationshipManager();
-      // Check if invitation is established by another user
-      UIApplication uiApplication = event.getRequestContext().getUIApplication();
-      Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
-      if (relationStatus != null) {
+      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(userId);
+
+      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
+      if (relationship != null) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      rm.invite(currIdentity, requestedIdentity);
+
+      Utils.getRelationshipManager().invite(Utils.getViewerIdentity(), requestedIdentity);
     }
   }
 
@@ -184,25 +174,17 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public static class AcceptContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
-      UIDisplayProfileList portlet = event.getSource();
-      UIApplication uiApplication = event.getRequestContext().getUIApplication();
-
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = portlet.getCurrentUserName();
+      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(userId);
 
-      IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
-      Identity requestedIdentity = im.getIdentity(userId);
-      RelationshipManager rm = portlet.getRelationshipManager();
-      // Check if invitation is revoked or deleted by another user
-      Relationship rel = rm.get(currIdentity, requestedIdentity);
-      Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
-      if (relationStatus == Relationship.Type.IGNORED) {
+      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
+      if (relationship == null || relationship.getStatus() != Relationship.Type.PENDING) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      rm.confirm(rel);
+
+      Utils.getRelationshipManager().confirm(relationship);
     }
   }
 
@@ -215,24 +197,17 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public static class DenyContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
-      UIDisplayProfileList portlet = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      String currUserId = portlet.getCurrentUserName();
-      IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currUserId);
-      Identity requestedIdentity = im.getIdentity(userId);
-      RelationshipManager rm = portlet.getRelationshipManager();
-      // Check if invitation is revoked or deleted by another user
-      UIApplication uiApplication = event.getRequestContext().getUIApplication();
-      Relationship.Type relationStatus = portlet.getContactStatus(requestedIdentity);
-      if (relationStatus == Relationship.Type.IGNORED) {
+      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(userId);
+
+      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
+      if (relationship == null || relationship.getStatus() != Relationship.Type.PENDING) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      Relationship rel = rm.get(currIdentity, requestedIdentity);
-      if (rel != null) {
-        rm.deny(rel);
-      }
+
+      Utils.getRelationshipManager().deny(relationship);
     }
   }
 
@@ -252,43 +227,16 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Gets the identity of current user is viewed by another.<br>
-   *
-   * @return identity of current user who is viewed.
-   *
-   * @throws Exception
-   */
-  public Identity getCurrentViewerIdentity() throws Exception {
-    IdentityManager im = getIdentityManager();
-    return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
-  }
-
-  /**
-   * Gets contact status between current user and identity that is checked.<br>
-   *
-   * @param identity
-   *        Object is checked status with current user.
-   *
-   * @return type of relationship status that equivalent the relationship.
-   *
-   * @throws Exception
-   */
-  private Relationship.Type getContactStatus(Identity identity) throws Exception {
-    if (identity.getId().equals(getCurrentIdentity().getId()))
-      return null;
-    return getRelationshipManager().getStatus(identity, getCurrentIdentity());
-  }
-
-  /**
    * 
    * @param identity
    * @return
    * @throws Exception
    */
   public Relationship getRelationship(Identity identity) throws Exception {
-    if (identity.getId().equals(getCurrentIdentity().getId()))
+    if (identity.equals(Utils.getViewerIdentity())) {
       return null;
-    return getRelationshipManager().get(identity, getCurrentIdentity());
+    }
+    return Utils.getRelationshipManager().get(identity, Utils.getViewerIdentity());
   }
 
   /**
@@ -300,143 +248,5 @@ public class UIDisplayProfileList extends UIContainer {
     String nodePath = Util.getPortalRequestContext().getNodePath();
     String uriPath = Util.getPortalRequestContext().getRequestURI();
     return uriPath.replaceAll(nodePath, "");
-  }
-
-  /**
-   * Gets the current portal name.<br>
-   *
-   * @return name of current portal.
-   *
-   */
-  public String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();
-  }
-
-  /**
-   * Gets the current repository.<br>
-   *
-   * @return current repository through repository service.
-   *
-   * @throws Exception
-   */
-  public String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class) ;
-    return rService.getCurrentRepository().getConfiguration().getName() ;
-  }
-
-  /**
-   * Gets name of current user.
-   *
-   * @return name of current login user.
-   */
-  public String getCurrentUserName() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    return context.getRemoteUser();
-  }
-
-  /**
-   * Gets current identity.<br>
-   *
-   * @return identity of current login user.
-   *
-   * @throws Exception
-   */
-  public Identity getCurrentIdentity() throws Exception {
-      IdentityManager im = getIdentityManager();
-      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
-  }
-
-  /**
-   * Gets the rest context.
-   *
-   * @return the rest context
-   */
-	public String getRestContext() {
-	  return PortalContainer.getInstance().getRestContextName();
-	}
-
-  /**
-   * Gets identity manager object.<br>
-   *
-   * @return identity manager object.
-   */
-  private IdentityManager getIdentityManager() {
-    if (identityManager_ == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      identityManager_ = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    }
-    return identityManager_;
-  }
-
-  /**
-   * Gets all profiles exclude profile of current identity.<br>
-   *
-   * @return all profiles exclude current identity's profile.
-   *
-   * @throws Exception
-   */
-  private List<Identity> getProfiles() throws Exception {
-    List<Identity> matchIdentities = getIdentityList();
-
-    if (matchIdentities == null) {
-      return loadAllProfiles();
-    }
-
-    Iterator<Identity> itr = matchIdentities.iterator();
-    while(itr.hasNext()) {
-      Identity id = itr.next();
-      if(id.equals(getCurrentIdentity())) {
-        itr.remove();
-      }
-    }
-
-    return matchIdentities;
-  }
-
-  /**
-   * Gets currents name of user that is viewed by another.<br>
-   *
-   * @return name of user who is viewed.
-   */
-  private String getCurrentViewerUserName() {
-    String username = URLUtils.getCurrentUser();
-    if(username != null)
-      return username;
-
-    PortalRequestContext portalRequest = Util.getPortalRequestContext();
-
-    return portalRequest.getRemoteUser();
-  }
-
-  /**
-   * Loads all existing user profiles.<br>
-   *
-   * @return all existing profiles.
-   *
-   * @throws Exception
-   */
-  private List<Identity> loadAllProfiles() throws Exception {
-    IdentityManager im = getIdentityManager();
-    List<Identity> ids = im.getIdentities(OrganizationIdentityProvider.NAME);
-    Iterator<Identity> itr = ids.iterator();
-    while(itr.hasNext()) {
-      Identity id = itr.next();
-      if(id.equals(getCurrentIdentity())){
-        itr.remove();
-      }
-    }
-
-    return ids;
-  }
-
-  /**
-   * Gets relationship manager object.<br>
-   *
-   * @return an object that is instance of relationship manager.
-   */
-  private RelationshipManager getRelationshipManager() {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    return (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
   }
 }

@@ -22,10 +22,9 @@ import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -60,41 +59,37 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                                     ApplicationMessage.WARNING));
       return;
     }
-    String remoteUser = requestContext.getRemoteUser();
     final UIComposer uiComposer = (UIComposer) source;
-    ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
-    IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
-    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
-    String ownerName = null;
-    if(postContext == UIComposer.PostContext.SPACE){
+
+    if (postContext == UIComposer.PostContext.SPACE){
       UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
       Space space = uiDisplaySpaceActivities.getSpace();
 
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+      Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                space.getName(),
                                                                false);
-      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+      ExoSocialActivity activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
                                    SpaceService.SPACES_APP_ID,
                                    postedMessage,
                                    null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
-      activityManager.saveActivity(spaceIdentity, activity);
-      
+      Utils.getActivityManager().saveActivity(spaceIdentity, activity);
+
       UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
       activitiesContainer.addActivity(activity);
       requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
       requestContext.addUIComponentToUpdateByAjax(uiComposer);
-    } else if(postContext == PostContext.USER){
+    } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
-      ownerName = uiUserActivitiesDisplay.getOwnerName();
-      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                   ownerName);
-      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+      Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                   uiUserActivitiesDisplay.getOwnerName());
+      ExoSocialActivity activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
                                        PeopleService.PEOPLE_APP_ID,
                                        postedMessage,
                                        null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
-      activityManager.saveActivity(ownerIdentity, activity);
+      Utils.getActivityManager().saveActivity(ownerIdentity, activity);
+
       if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
         UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
         if (activitiesContainer.getChildren().size() == 1) {
@@ -104,7 +99,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
           activitiesContainer.addActivity(activity);
           requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
         }
-      } else{
+      } else {
         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
       }
     }

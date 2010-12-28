@@ -18,29 +18,25 @@
 -->
 <%
   import org.exoplatform.webui.core.UIPopupWindow
+  import org.exoplatform.social.webui.ResourceLinkProvider;
 
-  def imageSource = uicomponent.getImageSource();
+  def imageSource = uicomponent.getProfile().avatarUrl;
+  if (!imageSource) {
+    imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+  }
+
   def changeAvatar = "return false;";
   def isEditable = uicomponent.isEditable();
-  if(isEditable) changeAvatar = uicomponent.event('ChangeAvatar');
+  if (isEditable) changeAvatar = uicomponent.event('ChangeAvatar') + ";return false;";
 %>
   <div class="UIProfile" id="$uicomponent.id">
     <div class="LeftColumn">
-    <% if (isEditable) { %>
-     <div class="AvatarSpace" style="cursor: pointer;">
-      <div class="Image" onclick="$changeAvatar" title="Click to chage avatar">
-    <% } else { %>
-     <div class="AvatarSpace">
-     <div class="Image" onclick="$changeAvatar">
-    <% } %>
-        <% if(imageSource == null) { %>
-          <img src="/social-portlet/skin/social/portlet/UIProfilePortlet/DefaultSkin/background/BLAvatar.gif" height="119px" width="119px" alt="">
-        <% } else { %>
-          <img src="$imageSource" height="119px" width="119px">
-        <% } %>
-      </div>
+     <div class="Avatar" style="cursor: pointer;">
+      <div class="Image" onclick="$changeAvatar" title="Click to change avatar">
+         <img src="$imageSource" alt=""/>
+       </div>
      </div>
-    <% if(uicomponent.isEditable()) { %>
+    <% if (isEditable) { %>
         <div class="UIAction">
           <table class="ActionContainer">
             <tbody>
@@ -50,7 +46,7 @@
                     <div class="ButtonLeft">
                       <div class="ButtonRight">
                         <div class="ButtonMiddle">
-                          <a href="#" onclick="$changeAvatar;return false;"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
+                          <a href="#" onclick="$changeAvatar"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
                         </div>
                       </div>
                     </div>
@@ -62,7 +58,7 @@
         </div>
     <% } %>
   </div>
-  <div class="ContainerSpace" >
+  <div class="Container" >
 
           <% uicomponent.renderChildren(); %>
 

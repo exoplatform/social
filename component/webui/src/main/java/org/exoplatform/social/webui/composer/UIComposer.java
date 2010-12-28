@@ -91,23 +91,23 @@ public class UIComposer extends UIForm {
   private void initActivityComposerManager() throws Exception {
     UIExtensionManager uiExtensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
     final List<UIExtension> extensionList = uiExtensionManager.getUIExtensions(UIActivityComposer.class.getName());
-
-    for (int i = 0, j = extensionList.size(); i < j; i++) {
-      final UIExtension composerExtension = extensionList.get(i);
-      if(composerExtension.getName().equals(UIActivityComposerManager.DEFAULT_ACTIVITY_COMPOSER)){
-        UIActivityComposer uiDefaultComposer = (UIActivityComposer) uiExtensionManager.addUIExtension(composerExtension, null, composerContainer);
-        composerContainer.removeChildById(uiDefaultComposer.getId());
-        uiDefaultComposer.setRendered(false);
-        uiDefaultComposer.setActivityComposerManager(activityComposerManager);
-        activityComposerManager.setDefaultActivityComposer(uiDefaultComposer);
-      } else{
-        UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.addUIExtension(composerExtension, null, composerContainer);
-        uiActivityComposer.setRendered(false);
-        uiActivityComposer.setActivityComposerManager(activityComposerManager);
-        activityComposerManager.registerActivityComposer(uiActivityComposer);
+    if (extensionList != null) {
+      for (int i = 0, j = extensionList.size(); i < j; i++) {
+        final UIExtension composerExtension = extensionList.get(i);
+        if(composerExtension.getName().equals(UIActivityComposerManager.DEFAULT_ACTIVITY_COMPOSER)){
+          UIActivityComposer uiDefaultComposer = (UIActivityComposer) uiExtensionManager.addUIExtension(composerExtension, null, composerContainer);
+          composerContainer.removeChildById(uiDefaultComposer.getId());
+          uiDefaultComposer.setRendered(false);
+          uiDefaultComposer.setActivityComposerManager(activityComposerManager);
+          activityComposerManager.setDefaultActivityComposer(uiDefaultComposer);
+        } else{
+          UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.addUIExtension(composerExtension, null, composerContainer);
+          uiActivityComposer.setRendered(false);
+          uiActivityComposer.setActivityComposerManager(activityComposerManager);
+          activityComposerManager.registerActivityComposer(uiActivityComposer);
+        }
       }
     }
-
     activityComposerManager.setUiComposer(this);
     activityComposerManager.setInitialized();
   }

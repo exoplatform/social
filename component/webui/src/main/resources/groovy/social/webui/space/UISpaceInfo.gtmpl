@@ -22,8 +22,13 @@
 %>
 <%
   import org.exoplatform.webui.core.UIPopupWindow;
-  
+  import org.exoplatform.social.webui.ResourceLinkProvider;
+
   def imageSource = uicomponent.getImageSource();
+  if (imageSource == null) {
+    imageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
+  }
+
   def changeAvatar = uicomponent.event('ChangeAvatar');
   def saveAction = uicomponent.url('Save');
   def childs = uicomponent.getChildren();
@@ -37,11 +42,7 @@
         <div class="AvatarSpace">
           <div class="AvaBorder">
             <div class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
-            <% if(imageSource == null) { %>
-              <img height="64px" width="64px" alt="" src="/social-portlet/skin/social/portlet/UISpaceSettingPortlet/DefaultSkin/background/SpaceAva.gif"/>
-            <% } else { %>
               <img src="$imageSource" height="64px" width="64px">
-            <% } %>
             </div>
           </div>
         </div>

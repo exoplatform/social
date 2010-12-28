@@ -17,40 +17,42 @@
 -->
 
 <%
-import org.exoplatform.web.application.JavascriptManager;
+  import org.exoplatform.web.application.JavascriptManager;
+  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.webui.Utils;
 
-def uicomponentId = uicomponent.id;
+	def uicomponentId = uicomponent.id;
+	
+	def rcontext = _ctx.getRequestContext() ;
+	JavascriptManager jsmanager = rcontext.getJavascriptManager();
+	jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
+	jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl',ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
+	jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UIProfileUserSearch.onLoad("' + uicomponentId + '");');
+	jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ Utils.getRestContextName() +'" ;') ;
 
-def rcontext = _ctx.getRequestContext() ;
-JavascriptManager jsmanager = rcontext.getJavascriptManager();
-jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', '/social-resources/javascript');
-jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/social-resources/javascript');
-jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UIProfileUserSearch.onLoad("' + uicomponentId + '");');
-jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
-    
-def findContactLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
-def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
-def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreLabel");
-def hideLabel = _ctx.appRes("${uicomponentId}.label.HideLabel");
-def filterByLabel = _ctx.appRes("${uicomponentId}.label.FilterBy");
-def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
-def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
-def femaleLabel = _ctx.appRes("${uicomponentId}.label.FeMale");
-def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
-def skillsDefaultVal = _ctx.appRes("${uicomponentId}.label.Skills");
-def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
-def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
-def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
-def filterId = "Filter";
-def searchId = "Search";
-def moreSearchId = "MoreSearch";
-def hideMoreSearchId = "HideMoreSearch";
-def positionId = "position";
-def skillsId = "skills";
-def genderId = "gender";
-def selectedStartChar = uicomponent.getSelectedChar();
-def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-def childs = uicomponent.getChildren();
+	def findContactLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
+	def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
+	def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreLabel");
+	def hideLabel = _ctx.appRes("${uicomponentId}.label.HideLabel");
+	def filterByLabel = _ctx.appRes("${uicomponentId}.label.FilterBy");
+	def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
+	def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
+	def femaleLabel = _ctx.appRes("${uicomponentId}.label.FeMale");
+	def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
+	def skillsDefaultVal = _ctx.appRes("${uicomponentId}.label.Skills");
+	def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
+	def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
+	def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
+	def filterId = "Filter";
+	def searchId = "Search";
+	def moreSearchId = "MoreSearch";
+	def hideMoreSearchId = "HideMoreSearch";
+	def positionId = "position";
+	def skillsId = "skills";
+	def genderId = "gender";
+	def selectedStartChar = uicomponent.getSelectedChar();
+	def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+	def childs = uicomponent.getChildren();
 %>
 <div class="UIProfileUserSearch">
 <% uiform.begin() %>

@@ -43,6 +43,11 @@
   width: 79px;
 }
 
+.UISpacesNavigationPortlet .Avartar img {
+  height: 65px;
+  width: 65px;
+}
+
 .UISpacesNavigationPortlet .UIVerclTab {
   width: 168px;
   position: relative;
