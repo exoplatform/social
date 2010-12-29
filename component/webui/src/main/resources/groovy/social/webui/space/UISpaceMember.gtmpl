@@ -34,7 +34,6 @@
   def labelRemoveLeader = _ctx.appRes("${uicomponentId}.label.RemoveLeader");
   def labelMakeLeader = _ctx.appRes("${uicomponentId}.label.MakeLeader");
   def labelRemoveAction = _ctx.appRes("${uicomponentId}.label.RemoveAction");
-  def allUserName = uicomponent.getAllUserNames().toString();
   def pendingUsers = uicomponent.getPendingUsers();
   def invitedUsers = uicomponent.getInvitedUsers();
   def existingUsers = uicomponent.getExistingUsers();
@@ -45,7 +44,15 @@
   def jsmanager = rcontext.getJavascriptManager();
   jsmanager.importJavascript('eXo.social.webui.UISpaceMemberSuggestion', '/social-resources/javascript');
   jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestMultiValueControl','/social-resources/javascript');
-  jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceMemberSuggest.onLoad("' + allUserName + '");');
+  jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceMemberSuggest.onLoad();');
+  jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
+	jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');
+	jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'" ;');
+	jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL() +'" ;');
+	jsmanager.addJavascript('eXo.social.webui.portalName = "'+ uicomponent.getPortalName() +'" ;');
+	jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "user_to_invite";');
+  
+  
   def pendingIdx = 0;
   def invitedIdx = 0;
   def existingIdx = 0;

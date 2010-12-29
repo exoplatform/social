@@ -56,6 +56,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UIManagePendingSpaces extends UIContainer {
   static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error_revoke_pending";
   static private final String SPACE_DELETED_INFO = "UIManagePendingSpaces.msg.DeletedInfo";
+  private static final String PENDING_STATUS = "pending";
   
   /** The first page. */
   private static final int FIRST_PAGE = 1;
@@ -75,6 +76,7 @@ public class UIManagePendingSpaces extends UIContainer {
    */
   public UIManagePendingSpaces() throws Exception {
     uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
+    uiSpaceSearch.setTypeOfRelation(PENDING_STATUS);
     addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }

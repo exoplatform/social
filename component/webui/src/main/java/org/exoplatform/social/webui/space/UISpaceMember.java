@@ -21,22 +21,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.webui.portal.PageNodeEvent;
-import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.StringListAccess;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -112,11 +108,13 @@ public class UISpaceMember extends UIForm {
   private final String iteratorInvitedID = "UIIteratorInvited";
   private final String iteratorExistingID = "UIIteratorExisting";
   private final Integer ITEMS_PER_PAGE = 5;
+  private static final String USER_TO_INVITE = "user_to_invite";
+  String typeOfRelation = null;
+  String spaceURL = null;
   
   /** The flag notifies a new search when clicks search icon or presses enter. */
   private boolean isNewSearch;
   
-
   /**
    * constructor
    * @throws Exception
@@ -133,6 +131,7 @@ public class UISpaceMember extends UIForm {
     addChild(iteratorPendingUsers);
     addChild(iteratorInvitedUsers);
     addChild(iteratorExistingUsers);
+    setTypeOfRelation(USER_TO_INVITE);
   }
 
   /**
@@ -162,42 +161,67 @@ public class UISpaceMember extends UIForm {
     this.spaceId = spaceId;
   }
 
-  public List<String> getAllUserNames() throws Exception {
-	OrganizationService organizationService = getApplicationComponent(OrganizationService.class);
-	List<User> allUsers = organizationService.getUserHandler().findUsers(new Query()).getAll();
-	List<String> allUserNames = new ArrayList<String>();
-	List<String> pendingUsersList = new ArrayList<String>();
-	List<String> invitedUsersList = new ArrayList<String>();
-	List<String> membersList = new ArrayList<String>();
-    SpaceService spaceService = getSpaceService();
-    Space space = spaceService.getSpaceById(spaceId);
-    if (space == null) {
-      return new ArrayList<String>(0);
-    }
-    String[] pendingUsers = space.getPendingUsers();
-    if(pendingUsers != null) {
-      pendingUsersList.addAll(Arrays.asList(pendingUsers));
-    }
 
-    String[] invitedUsers = space.getInvitedUsers();
-    if(invitedUsers != null) {
-      invitedUsersList.addAll(Arrays.asList(invitedUsers));
-    }
+  /**
+   * Gets type of relation with current user.
+   *
+   */
+  public String getTypeOfRelation() {
+    return typeOfRelation;
+  }
 
-    membersList = spaceService.getMembers(space);
+  /**
+   * Sets type of relation with current user to variable.
+   *
+   * @param typeOfRelation <code>char</code>
+   */
+  public void setTypeOfRelation(String typeOfRelation) {
+    this.typeOfRelation = typeOfRelation;
+  }
 
-	for (User user : allUsers) {
-		String userName = user.getUserName();
-		if (pendingUsersList.contains(userName) ||
-				invitedUsersList.contains(userName) || membersList.contains(userName)) {
-			continue;
-		} else {
-		    allUserNames.add(userName);
-		}
-	}
+  /**
+   * Gets space url.
+   *
+   */
+  public String getSpaceURL() {
+    return spaceURL;
+  }
 
-	// Return all user names that available for invite to become space's member
-	return allUserNames;
+  /**
+   * Sets space url.
+   *
+   * @param spaceURL <code>char</code>
+   */
+  public void setSpaceURL(String spaceURL) {
+    this.spaceURL = spaceURL;
+  }
+  
+  /**
+   * Get current user name.
+   *
+   * @return
+   */
+  public String getCurrentUserName() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    return context.getRemoteUser();
+  }
+
+  /**
+   * Get current rest context name.
+   *
+   * @return
+   */
+  protected String getRestContextName() {
+    return PortalContainer.getCurrentRestContextName();
+  }
+  
+  /**
+   * Get portal name.
+   *
+   * @return
+   */
+  protected String getPortalName() {
+    return PortalContainer.getCurrentPortalContainerName();
   }
 
   /**

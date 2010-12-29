@@ -75,6 +75,7 @@ public class UIMembersPortlet extends UIPortletApplication {
   private final String iteratorLeaderID = "UIIteratorLeader";
   private final String iteratorMemberID = "UIIteratorMember";
   private final Integer ITEMS_PER_PAGE = 5;
+  private static final String SPACE_MEMBER = "member_of_space";
   private IdentityManager identityManager_ = null;
   private UIProfileUserSearch uiSearchMemberOfSpace = null;
   private List<Identity> identityList;
@@ -107,6 +108,8 @@ public class UIMembersPortlet extends UIPortletApplication {
     addChild(iteratorLeaders);
     addChild(iteratorMembers);
     uiSearchMemberOfSpace = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
+    uiSearchMemberOfSpace.setTypeOfRelation(SPACE_MEMBER);
+    uiSearchMemberOfSpace.setSpaceURL(getSpace().getUrl());
     addChild(uiSearchMemberOfSpace);
   }
   /**

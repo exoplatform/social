@@ -10,6 +10,13 @@ function UIAutoSuggestMultiValueControl() {
 };
 
 /**
+ * Constant values.
+ */
+UIAutoSuggestMultiValueControl.config = {
+  DEFAULT_REST_CONTEXT_NAME : 'rest-socialdemo',
+	PEOPLE_REST_PATH : "/social/people/suggest.json?nameToSearch=",
+}
+/**
  * Load the initialization for textbox control.
  * @scope private
  */
@@ -56,22 +63,6 @@ UIAutoSuggestMultiValueControl.prototype.load = function(oTextbox /*:HTMLInputEl
 }
 
 /**
- * Autosuggests one or more suggestions for what the user has typed.
- * If no suggestions are passed in, then no autosuggest occurs.
- * @scope private
- * @param aSuggestions An array of suggestion strings.
- * @param bTypeAhead If the control should provide a type ahead suggestion.
- */
-UIAutoSuggestMultiValueControl.prototype.autosuggest = function (aSuggestions /*:Array*/, currTextBoxValue) {
-    //make sure there's at least one suggestion
-    if (aSuggestions.length > 0) {
-        this.showSuggestions(aSuggestions);
-    } else {
-        this.hideSuggestions();
-    }
-};
-
-/**
  * Creates the dropdown layer to display multiple suggestions.
  * @scope private
  */
@@ -81,6 +72,7 @@ UIAutoSuggestMultiValueControl.prototype.createDropDown = function () {
 
     //create the layer and assign styles
     this.layer = document.createElement("div");
+    this.layer.id = "UIAutoSuggestMultiValueControl";
     this.layer.className = "suggestions";
     this.layer.style.visibility = "hidden";
     this.layer.style.width = this.textbox.offsetWidth;
@@ -182,14 +174,22 @@ UIAutoSuggestMultiValueControl.prototype.handleKeyUp = function (oEvent /*:Event
     var iKeyCode = oEvent.keyCode || oEvent.which;
     var el = oEvent.target || oEvent.srcElement;
 	  var isInputTag = (el.tagName.toLowerCase() == 'input');
-	  var currentVal = el.value;
+	  var currentVal = el.value.trim();
+	  var oThis = eXo.social.webui.UIAutoSuggestMultiValueControl;
+	  
+	  if (currentVal == '') {
+	  	oThis.hideSuggestions();
+	  	return;
+	  }
+	  
     //for backspace (8) and delete (46), shows suggestions without typeahead
     if (iKeyCode == 8 || iKeyCode == 46) {
     	if (isInputTag) {
     		this.storeInputText = currentVal;
     		this.storeText = currentVal.substr(currentVal.lastIndexOf(",") + 1, currentVal.length - 1).trim();
     	}
-        this.provider.requestSuggestions(this);
+
+      oThis.resetAutoSuggestList();
         
     } else if (iKeyCode == 32 || iKeyCode == 44) {
     	this.storeText = "";
@@ -202,16 +202,131 @@ UIAutoSuggestMultiValueControl.prototype.handleKeyUp = function (oEvent /*:Event
     		this.storeText = currentVal.substr(currentVal.lastIndexOf(",") + 1, currentVal.length).trim();
 	    	this.storeInputText = currentVal;
     	}
-    	this.provider.requestSuggestions(this);
+    	
+    	oThis.resetAutoSuggestList();
     }
 };
+
+
+///////////////// Request for new data each time input by ajax ///////////////////
+
+/**
+ * Resets the autosuggest list.
+ */
+UIAutoSuggestMultiValueControl.prototype.resetAutoSuggestList = function() {
+	  var oThis = eXo.social.webui.UIAutoSuggestMultiValueControl;
+  	if (oThis.timeout) clearTimeout(oThis.timeout);
+  	oThis.timeout = setTimeout(function(){
+  	  oThis.requestDataForAutoSuggest();
+  	  clearTimeout(oThis.timeout);
+  	}, 100);
+}
+
+/**
+ * Sends request to get data from server to add to auto suggest control.
+ */
+UIAutoSuggestMultiValueControl.prototype.requestDataForAutoSuggest = function() {
+	var CONFIG = UIAutoSuggestMultiValueControl.config;
+	var inputString = this.textbox.value.trim();
+	var restContext = eXo.social.webui.restContextName;
+	var currentUser = eXo.social.webui.currentUserName;
+	var typeOfRelation = eXo.social.webui.typeOfRelation;
+	var spaceURL = eXo.social.webui.spaceURL;
+	var typeOfSuggest = eXo.social.webui.typeOfSuggest;
+	var portalName = eXo.social.webui.portalName;
+  var inputStringLen = inputString.length;
+  
+  // TODO Need more check
+  for (var idx = 0; idx < inputStringLen; idx++) {
+  	var currentCharKeyCode = inputString.charCodeAt(idx);
+  	if (currentCharKeyCode == 44) {
+  		// ignore comma for putting as saperating of multi suggestion
+  	} else if (currentCharKeyCode < 32 || (currentCharKeyCode >= 33 && currentCharKeyCode < 46) || 
+  	          (currentCharKeyCode >= 123)) {
+  		this.hideSuggestions();
+  		return;
+  	}
+  }
+  
+  if ((typeOfSuggest == 'user_to_invite') && (inputString.indexOf(',') != -1)) {
+    inputString = inputString.substr(inputString.lastIndexOf(',') + 1, inputString.length).trim();
+  }
+  
+	restContext = (restContext) ? restContext : CONFIG.DEFAULT_REST_CONTEXT_NAME;
+	
+	var restURL = "/" + restContext + CONFIG.PEOPLE_REST_PATH + inputString ;
+	
+	if (!isNull(currentUser)) {
+		restURL += "&currentUser=" + currentUser;
+	}
+	
+	if (!isNull(typeOfRelation)) {
+		restURL += "&typeOfRelation=" + typeOfRelation;
+	}
+	
+	if (!isNull(spaceURL)) {
+		restURL += "&spaceURL=" + spaceURL;
+	}
+	
+	if ((inputString.length == 0) || (inputString == ' ')) {
+  	this.hideSuggestions();
+  	return;
+	}
+	
+	this.makeRequest(restURL, true, this.resetList);
+	
+	function isNull(str) {
+		var obj = null;
+		try {
+			obj = new Function( "return " + str )();
+			return (obj == null);
+		} catch(e) {
+			return false;
+		}
+    return false;
+	}
+}
+
+/**
+ * Gets return data and resets the name list to suggest control.
+ */
+UIAutoSuggestMultiValueControl.prototype.resetList = function(resp) {
+	var JSON = eXo.core.JSON;
+  var names = JSON.parse(resp.responseText).names;
+  eXo.social.webui.UIAutoSuggestMultiValueControl.showSuggestions(names);
+}
+
+/**
+ * Posts rest request to server.
+ */
+UIAutoSuggestMultiValueControl.prototype.makeRequest = function(url, async, callback) {
+  if (async !== false) async = true;
+  var request = eXo.core.Browser.createHttpRequest();
+  request.open('GET', url, async);
+  request.setRequestHeader("Cache-Control", "max-age=86400") ;
+  request.onreadystatechange = function() {
+    if((request.readyState === 4) && (request.status === 200)) {
+      if (callback) {
+        callback(request);
+      }
+    }
+  }
+  request.send(null);
+}
+
+////////////////////////////End of request data for autosuggest/////////////////////////////
+
 
 /**
  * Hides the suggestion dropdown.
  * @scope private
  */
 UIAutoSuggestMultiValueControl.prototype.hideSuggestions = function () {
-    this.layer.style.visibility = "hidden";
+  	var uiAutosuggestion = document.getElementById("UIAutoSuggestMultiValueControl");
+  	if (uiAutosuggestion != null) {
+      uiAutosuggestion.style.visibility = "hidden";
+      return;
+  	}
 };
 
 /**
@@ -253,8 +368,15 @@ UIAutoSuggestMultiValueControl.prototype.init = function () {
         oThis.handleKeyUp(oEvent);
     };
     
-    //create the suggestions dropdown
-    this.createDropDown();
+    var uiAutosuggestion = document.getElementById("UIAutoSuggestMultiValueControl");
+    if (uiAutosuggestion) {
+    	if (this.timeout) clearTimeout(this.timeout);
+    	this.layer = uiAutosuggestion;
+    	uiAutosuggestion.style.visibility = "hidden";
+    } else {
+	    //create the suggestions dropdown
+	    this.createDropDown();
+    }
 };
 
 /**

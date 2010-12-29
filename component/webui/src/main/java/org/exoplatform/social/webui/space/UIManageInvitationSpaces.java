@@ -62,6 +62,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   static private final String MSG_ERROR_DENY_INVITATION = "UIManageInvitationSpaces.msg.error_deny_invitation";
   private static final String SPACE_DELETED_INFO = "UIManageInvitationSpaces.msg.DeletedInfo";
   private static final String INVITATION_REVOKED_INFO = "UIManageInvitationSpaces.msg.RevokedInfo";
+  private static final String INCOMING_STATUS = "incoming";
+
   /** The first page */
   private static final int FIRST_PAGE = 1;
 
@@ -80,6 +82,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    */
   public UIManageInvitationSpaces() throws Exception {
     uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
+    uiSpaceSearch.setTypeOfRelation(INCOMING_STATUS);
     addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }

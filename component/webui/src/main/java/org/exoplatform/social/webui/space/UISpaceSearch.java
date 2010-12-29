@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -91,6 +93,12 @@ public class UISpaceSearch extends UIForm {
   /** The flag notifies a new search when clicks search icon or presses enter. */
   private boolean isNewSearch;
 
+  /** Used stores type of relation with current user information. */
+  String typeOfRelation = null;
+  
+  /** URL of space that this UIComponent is used in member searching. */
+  String spaceURL = null;
+  
   /**
    * Gets input space name search input.
    *
@@ -108,6 +116,68 @@ public class UISpaceSearch extends UIForm {
     this.spaceNameSearch = spaceNameSearch;
   }
 
+  /**
+   * Gets type of relation with current user.
+   *
+   */
+  public String getTypeOfRelation() {
+    return typeOfRelation;
+  }
+
+  /**
+   * Sets type of relation with current user to variable.
+   *
+   * @param typeOfRelation <code>char</code>
+   */
+  public void setTypeOfRelation(String typeOfRelation) {
+    this.typeOfRelation = typeOfRelation;
+  }
+
+  /**
+   * Gets space url.
+   *
+   */
+  public String getSpaceURL() {
+    return spaceURL;
+  }
+
+  /**
+   * Sets space url.
+   *
+   * @param spaceURL <code>char</code>
+   */
+  public void setSpaceURL(String spaceURL) {
+    this.spaceURL = spaceURL;
+  }
+  
+  /**
+   * Get current user name.
+   *
+   * @return
+   */
+  public String getCurrentUserName() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    return context.getRemoteUser();
+  }
+
+  /**
+   * Get current rest context name.
+   *
+   * @return
+   */
+  protected String getRestContextName() {
+    return PortalContainer.getCurrentRestContextName();
+  }
+  
+  /**
+   * Get portal name.
+   *
+   * @return
+   */
+  protected String getPortalName() {
+    return PortalContainer.getCurrentPortalContainerName();
+  }
+  
   /**
    * Gets space name for auto suggesting.
    *

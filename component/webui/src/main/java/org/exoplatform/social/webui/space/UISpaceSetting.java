@@ -78,6 +78,7 @@ public class UISpaceSetting extends UIContainer {
     uiSpaceInfo.setValue(space);
     UISpaceMember uiSpaceMember = getChild(UITabPane.class).getChild(UISpaceMember.class);
     uiSpaceMember.setValue(space.getId());
+    uiSpaceMember.setSpaceURL(space.getUrl());
     UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).getChild(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
     UISpacePermission uiSpacePermission = getChild(UITabPane.class).getChild(UISpacePermission.class);

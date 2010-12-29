@@ -28,7 +28,11 @@
 	jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
 	jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl',ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
 	jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UIProfileUserSearch.onLoad("' + uicomponentId + '");');
-	jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ Utils.getRestContextName() +'" ;') ;
+	jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
+	jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');
+	jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'" ;');
+	jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL() +'" ;');
+	jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "people";');
 
 	def findContactLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
 	def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");

@@ -26,24 +26,17 @@ function UISpaceMemberSuggest() {
     * @scope private.
     */
    this.userNameTextObj = null;
-   
-   /**
-    * All user name for suggesting.
-    * @scope private.
-    */
-   this.allUserName = null;
 };
 
 /**
  * When form load at the first time, init controls.
  */
-UISpaceMemberSuggest.prototype.onLoad = function(allUserNames) {
+UISpaceMemberSuggest.prototype.onLoad = function() {
 	var DOMUtil = eXo.core.DOMUtil;
 	var suggestEl = document.getElementById('user');
 
 	this.userNameTextObj = suggestEl;
 	
-	this.setAllUserName(allUserNames);
 	this.initTextBox();
 };
 
@@ -106,60 +99,6 @@ UISpaceMemberSuggest.prototype.submitSearchForm = function(suggestEl /*input tex
 	var searchForm = DOMUtil.findAncestorByClass(suggestEl, 'UIForm');
 	if (searchForm != null ) UIForm.submitForm(searchForm.id, 'Search', true);
 }
-
-/**
- * Set all contact name to allUserName variable.
- * @scope private.
- */
-UISpaceMemberSuggest.prototype.setAllUserName = function(allName) {
-	var allUserNames = allName.substring(1, allName.length-1);
-	var allSN = allUserNames.split(',');
-	var allNames = [];
-	for (var i=0; i < allSN.length; i++) {
-		(function(idx) {
-			allNames.push(allSN[idx].trim());
-		})(i);
-	}
-	this.allUserName = allNames;
-};
-
-/**
- * Request suggestions for the given autosuggest control. 
- * @scope protected
- * @param oAutoSuggestControl The autosuggest control to provide suggestions for.
- */
-UISpaceMemberSuggest.prototype.requestSuggestions = function (oAutoSuggestControl /*:AutoSuggestControl*/) {
-    var aSuggestions = [];
-//    var sTextboxValue = oAutoSuggestControl.textbox.value;
-    var sTextboxValue = oAutoSuggestControl.storeText;
-    if (sTextboxValue.length > 0){
-    
-        //convert value in textbox to lowercase
-        var sTextboxValueLC = sTextboxValue.toLowerCase();
-        
-        //search for matching states
-        for (var i=0; i < this.allUserName.length; i++) { 
-
-            //convert state name to lowercase
-            var sStateLC = this.allUserName[i].toLowerCase();
-            
-            //compare the lowercase versions for case-insensitive comparison
-            if (sStateLC.indexOf(sTextboxValueLC) == 0) {
-                //add a suggestion using what's already in the textbox to begin it                
-            	aSuggestions.push(this.allUserName[i]);
-
-                // Check if user type like the last suggestion in drop-down list.
-                if ((this.allUserName[i].substring(sTextboxValue.length) == "") && (aSuggestions.length == 1)) {
-                	oAutoSuggestControl.hideSuggestions();
-                	return;
-                }
-            } 
-        }
-    }
-    
-    //provide suggestions to the control
-    oAutoSuggestControl.autosuggest(aSuggestions);
-};
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
 if(!eXo.social.webui) eXo.social.webui = {};

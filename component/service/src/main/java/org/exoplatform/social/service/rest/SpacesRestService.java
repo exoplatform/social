@@ -22,6 +22,7 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -34,10 +35,15 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.service.rest.PeopleRestService.UserNameList;
 
 /**
  * SpacesRestService.java <br />
@@ -57,7 +63,15 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 public class SpacesRestService implements ResourceContainer {
   private SpaceService _spaceService;
   private IdentityManager _identityManager;
-
+  /** Confirmed Status information */
+  private static final String CONFIRMED_STATUS = "confirmed";
+  /** Pending Status information */
+  private static final String PENDING_STATUS = "pending";
+  /** Incoming Status information */
+  private static final String INCOMING_STATUS = "incoming";
+  /** Public Status information */
+  private static final String PUBLIC_STATUS = "public";
+  
   /**
    * constructor
    */
@@ -100,6 +114,7 @@ public class SpacesRestService implements ResourceContainer {
     spaceList.setSpaces(pendingSpaces);
     return spaceList;
   }
+  
   /**
    * shows mySpaceList by json/xml format
    * @param uriInfo provided as {@link Context}
@@ -149,6 +164,57 @@ public class SpacesRestService implements ResourceContainer {
     return Util.getResponse(pendingSpaceList, uriInfo, mediaType, Response.Status.OK);
   }
 
+  @GET
+  @Path("suggest.{format}")
+  public Response suggestSpacenames(@Context UriInfo uriInfo,
+                    @PathParam("portalName") String portalName,
+                    @QueryParam("conditionToSearch") String conditionToSearch,
+                    @QueryParam("typeOfRelation") String typeOfRelation,
+                    @QueryParam("currentUser") String currentUser,
+                    @PathParam("format") String format) throws Exception {
+    
+    MediaType mediaType = Util.getMediaType(format);
+    SpaceNameList nameList = new SpaceNameList();
+    List<Space> spaces = getSpaceService(portalName).getSpacesBySearchCondition(conditionToSearch);
+    
+    if (spaces.size() == 0) {
+      return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
+    }
+    
+    String userId = currentUser;
+
+    if (PENDING_STATUS.equals(typeOfRelation)) {
+      addToNameList(spaces, userId, typeOfRelation, portalName, nameList);
+    } else if (INCOMING_STATUS.equals(typeOfRelation)) {
+      addToNameList(spaces, userId, typeOfRelation, portalName, nameList);
+    } else if (CONFIRMED_STATUS.equals(typeOfRelation)){
+      addToNameList(spaces, userId, typeOfRelation, portalName, nameList);
+    } else { // publics.
+      addToNameList(spaces, userId, PUBLIC_STATUS, portalName, nameList);
+    }
+    
+    return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  private void addToNameList(List<Space> spaces, String userId, String status, 
+                                       String portalName, SpaceNameList nameList) throws SpaceException {
+    SpaceService spaceSrv = getSpaceService(portalName);
+    for (Space space : spaces) {
+      if (PENDING_STATUS.equals(status) && (spaceSrv.isPending(space, userId))) {
+        nameList.addName(space.getDisplayName());
+        continue;
+      } else if (INCOMING_STATUS.equals(status) && (spaceSrv.isInvited(space, userId))) {
+        nameList.addName(space.getDisplayName());
+        continue;
+      } else if (CONFIRMED_STATUS.equals(status) && (spaceSrv.isMember(space, userId))) {
+        nameList.addName(space.getDisplayName());
+        continue;
+      } else if (PUBLIC_STATUS.equals(status) && !space.getVisibility().equals(Space.HIDDEN)) {
+        nameList.addName(space.getDisplayName());
+      }
+    }
+  }
+  
   /**
    * List that contains space from space service.<br>
    * Need this class for converter from rest service.
@@ -179,6 +245,37 @@ public class SpacesRestService implements ResourceContainer {
     }
   }
 
+  @XmlRootElement
+  static public class SpaceNameList {
+    private List<String> _names;
+    /**
+     * Sets space name list
+     * @param space name list
+     */
+    public void setNames(List<String> names) {
+      this._names = names; 
+    }
+    
+    /**
+     * Gets space name list
+     * @return space name list
+     */
+    public List<String> getNames() { 
+      return _names; 
+    }
+    
+    /**
+     * Add name to space name list
+     * @param space name
+     */
+    public void addName(String name) {
+      if (_names == null) {
+        _names = new ArrayList<String>();
+      }
+      _names.add(name);
+    }
+  }
+  
   /**
    * gets spaceService
    * @return spaceService

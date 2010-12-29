@@ -25,11 +25,14 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -95,6 +98,12 @@ public class UIProfileUserSearch extends UIForm {
   /** Used stores filter information. */
   ProfileFilter              profileFilter             = null;
   
+  /** Used stores type of relation with current user information. */
+  String                     typeOfRelation            = null;
+  
+  /** URL of space that this UIComponent is used in member searching. */
+  String                     spaceURL                 = null;
+  
   /** The flag notifies a new search when clicks search icon or presses enter. */
   private boolean isNewSearch;
 
@@ -141,6 +150,55 @@ public class UIProfileUserSearch extends UIForm {
     this.selectedChar = selectedChar;
   }
 
+  /**
+   * Gets type of relation with current user.
+   *
+   */
+  public String getTypeOfRelation() {
+    return typeOfRelation;
+  }
+
+  /**
+   * Sets type of relation with current user to variable.
+   *
+   * @param typeOfRelation <code>char</code>
+   */
+  public void setTypeOfRelation(String typeOfRelation) {
+    this.typeOfRelation = typeOfRelation;
+  }
+
+  /**
+   * Gets space url.
+   *
+   */
+  public String getSpaceURL() {
+    return spaceURL;
+  }
+
+  /**
+   * Sets space url.
+   *
+   * @param spaceURL <code>char</code>
+   */
+  public void setSpaceURL(String spaceURL) {
+    this.spaceURL = spaceURL;
+  }
+
+  /**
+   * Gets current user's name.
+   * @return
+   */
+  protected String getCurrentUserName() {
+    return RequestContext.getCurrentInstance().getRemoteUser(); 
+  }
+  
+  /**
+   * Gets current Rest context name of portal container.
+   */
+  protected String getRestContextName() {
+    return PortalContainer.getCurrentRestContextName();
+  }
+  
   /**
    * Gets filter object.
    *

@@ -97,10 +97,10 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public List<Identity> getConnections(Identity ownerIdentity) throws Exception {
-    relationshipManager = getRelationshipManager();
-    return relationshipManager.findRelationships(ownerIdentity, Relationship.Type.CONFIRMED);
+    return getRelationshipManager().findRelationships(ownerIdentity, Relationship.Type.CONFIRMED);
   }
 
+  
   /**
    * {@inheritDoc}
    */

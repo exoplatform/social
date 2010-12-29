@@ -10,6 +10,15 @@ function UIAutoSuggestControl() {
 };
 
 /**
+ * Constant values.
+ */
+UIAutoSuggestControl.config = {
+  DEFAULT_REST_CONTEXT_NAME : 'rest-socialdemo',
+	PEOPLE_REST_PATH : '/social/people/suggest.json?nameToSearch=',
+	SPACE_REST_PATH : '/social/spaces/suggest.json?conditionToSearch='
+}
+
+/**
  * Load the initialization for textbox control.
  * @scope private
  */
@@ -54,22 +63,6 @@ UIAutoSuggestControl.prototype.load = function(oTextbox /*:HTMLInputElement*/,
 }
 
 /**
- * Autosuggests one or more suggestions for what the user has typed.
- * If no suggestions are passed in, then no autosuggest occurs.
- * @scope private
- * @param aSuggestions An array of suggestion strings.
- * @param bTypeAhead If the control should provide a type ahead suggestion.
- */
-UIAutoSuggestControl.prototype.autosuggest = function (aSuggestions /*:Array*/, currTextBoxValue) {
-    //make sure there's at least one suggestion
-    if (aSuggestions.length > 0) {
-        this.showSuggestions(aSuggestions);
-    } else {
-        this.hideSuggestions();
-    }
-};
-
-/**
  * Creates the dropdown layer to display multiple suggestions.
  * @scope private
  */
@@ -79,6 +72,7 @@ UIAutoSuggestControl.prototype.createDropDown = function () {
 
     //create the layer and assign styles
     this.layer = document.createElement("div");
+    this.layer.id = "UIAutoSuggestControl";
     this.layer.className = "suggestions";
     this.layer.style.visibility = "hidden";
     this.layer.style.width = this.textbox.offsetWidth;
@@ -147,6 +141,7 @@ UIAutoSuggestControl.prototype.getTop = function () /*:int*/ {
  */
 UIAutoSuggestControl.prototype.handleKeyDown = function (oEvent /*:Event*/) {
 	if (this.layer.style.visibility == "visible") { //Applied on suggestion drop-down only.
+
 	    switch(oEvent.keyCode || oEvent.which) {
 	        case 38: //up arrow
 	            this.previousSuggestion();
@@ -171,19 +166,28 @@ UIAutoSuggestControl.prototype.handleKeyUp = function (oEvent /*:Event*/) {
     var el = oEvent.target || oEvent.srcElement;
 	  var isInputTag = (el.tagName.toLowerCase() == 'input');
 	  var oThis = eXo.social.webui.UIAutoSuggestControl;
+	  var value = el.value.trim();
+	  
+	  if (value == '') {
+	  	oThis.hideSuggestions();
+	  	return;
+	  }
     //for backspace (8) and delete (46), shows suggestions without typeahead
     if (iKeyCode == 8 || iKeyCode == 46) {
     	if (isInputTag) {
-    		this.storeText = el.value;
+    		this.storeText = value;
     	}
     	oThis.resetAutoSuggestList();
     	
     //make sure not to interfere with non-character keys
+    } else if (iKeyCode == 13) {
+    	oThis.hideSuggestions();
+	  	return;
     } else if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode < 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
         //ignore
     } else {
     	if (isInputTag) {
-    		this.storeText = el.value;
+    		this.storeText = value;
     	}
     	oThis.resetAutoSuggestList();
     }
@@ -200,34 +204,80 @@ UIAutoSuggestControl.prototype.resetAutoSuggestList = function() {
   	oThis.timeout = setTimeout(function(){
   	  oThis.requestDataForAutoSuggest();
   	  clearTimeout(oThis.timeout);
-  	}, 300);
+  	}, 100);
 }
 
 /**
  * Sends request to get data from server to add to auto suggest control.
  */
 UIAutoSuggestControl.prototype.requestDataForAutoSuggest = function() {
-	var inputName = this.textbox.value.trim();
+	var CONFIG = UIAutoSuggestControl.config;
+	var inputString = this.textbox.value.trim();
 	var restContext = eXo.social.webui.restContextName;
+	var currentUser = eXo.social.webui.currentUserName;
+	var typeOfRelation = eXo.social.webui.typeOfRelation;
+	var spaceURL = eXo.social.webui.spaceURL;
+	var typeOfSuggest = eXo.social.webui.typeOfSuggest;
+	var portalName = eXo.social.webui.portalName;
+  var inputStringLen = inputString.length;
+  
+  // TODO Need more check
+  for (var idx = 0; idx < inputStringLen; idx++) {
+  	var currentCharKeyCode = inputString.charCodeAt(idx);
+  	if (currentCharKeyCode < 32 || (currentCharKeyCode >= 33 && currentCharKeyCode <= 47) || 
+  	   (currentCharKeyCode >= 58 && currentCharKeyCode <= 63) || (currentCharKeyCode >= 123)) {
+  		this.hideSuggestions();
+  		return;
+  	}
+  }
+  
+	restContext = (restContext) ? restContext : CONFIG.DEFAULT_REST_CONTEXT_NAME;
 	
-	restContext = (restContext) ? restContext : 'rest-socialdemo';
+	var restURL = "/" + restContext;
+	if (typeOfSuggest == 'people') {
+		restURL += CONFIG.PEOPLE_REST_PATH + inputString ;
+	} else if (typeOfSuggest == 'space') {
+		restURL += "/" + portalName + CONFIG.SPACE_REST_PATH + inputString;
+	}
+
+	if (!isNull(currentUser)) {
+		restURL += "&currentUser=" + currentUser;
+	}
 	
-	var restURL = "/" + restContext + "/social/people/suggest.json?userName=" + inputName;
+	if (!isNull(typeOfRelation)) {
+		restURL += "&typeOfRelation=" + typeOfRelation;
+	}
 	
-	if ((inputName.length == 0) || (inputName == ' ')) {
+	if ((!isNull(spaceURL)) && (typeOfSuggest == 'people')) {
+		restURL += "&spaceURL=" + spaceURL;
+	}
+	
+	if ((inputString.length == 0) || (inputString == ' ')) {
   	this.hideSuggestions();
   	return;
 	}
 	
 	this.makeRequest(restURL, true, this.resetList);
+	
+	function isNull(str) {
+		var obj = null;
+		try {
+			obj = new Function( "return " + str )();
+			return (obj == null);
+		} catch(e) {
+			return false;
+		}
+    return false;
+	}
 }
 
 /**
  * Gets return data and resets the name list to suggest control.
  */
 UIAutoSuggestControl.prototype.resetList = function(resp) {
-	var userNames = eval('(' + resp.responseText +')').names;
-  eXo.social.webui.UIAutoSuggestControl.showSuggestions(userNames);
+	var JSON = eXo.core.JSON;
+  var names = JSON.parse(resp.responseText).names;
+  eXo.social.webui.UIAutoSuggestControl.showSuggestions(names);
 }
 
 /**
@@ -255,7 +305,11 @@ UIAutoSuggestControl.prototype.makeRequest = function(url, async, callback) {
  * @scope private
  */
 UIAutoSuggestControl.prototype.hideSuggestions = function () {
-    this.layer.style.visibility = "hidden";
+	  var uiAutosuggestion = document.getElementById("UIAutoSuggestControl");
+	  if (uiAutosuggestion != null) {
+	  	uiAutosuggestion.style.visibility = "hidden";
+	    return;
+	  }
 };
 
 /**
@@ -297,8 +351,15 @@ UIAutoSuggestControl.prototype.init = function () {
         oThis.handleKeyUp(oEvent);
     };
     
-    //create the suggestions dropdown
-    this.createDropDown();
+    var uiAutosuggestion = document.getElementById("UIAutoSuggestControl");
+    if (uiAutosuggestion) {
+    	if (this.timeout) clearTimeout(this.timeout);
+    	this.layer = uiAutosuggestion;
+    	uiAutosuggestion.style.visibility = "hidden";
+    } else {
+	    //create the suggestions dropdown
+	    this.createDropDown();
+    }
 };
 
 /**
