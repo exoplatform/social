@@ -36,9 +36,9 @@
   <![CDATA[
     <link rel="stylesheet" type="text/css" href="style/style.css" />
     <link rel="stylesheet" type="text/css" href="style/home.css" />
-    <script type="text/javascript" src="script/debug.js"></script>
-    <script type="text/javascript" src="script/ie-patch.js"></script>
-    <script type="text/javascript" src="script/htmlparser.js"></script>
+    <script type="text/javascript" src="/social-resources/javascript/debug.js"></script>
+    <script type="text/javascript" src="/social-resources/javascript/ie-patch.js"></script>
+    <script type="text/javascript" src="/social-resources/javascript/htmlparser.js"></script>
     <script type="text/javascript" src="script/eXo/social/Util.js"></script>
     <script type="text/javascript" src="script/eXo/social/Locale.js"></script>
     <script type="text/javascript" src="script/eXo/social/UIComposer.js"></script>
@@ -139,9 +139,9 @@
   <![CDATA[
     <link rel="stylesheet" type="text/css" href="style/style.css" />
     <link rel="stylesheet" type="text/css" href="style/canvas.css" />
-    <script type="text/javascript" src="script/debug.js"></script>
-    <script type="text/javascript" src="script/ie-patch.js"></script>
-    <script type="text/javascript" src="script/htmlparser.js"></script>
+    <script type="text/javascript" src="/social-resources/javascript/debug.js"></script>
+    <script type="text/javascript" src="/social-resources/javascript/ie-patch.js"></script>
+    <script type="text/javascript" src="/social-resources/javascript/htmlparser.js"></script>
     <script type="text/javascript" src="script/eXo/social/Util.js"></script>
     <script type="text/javascript" src="script/eXo/social/Locale.js"></script>
     <script type="text/javascript" src="script/eXo/social/UIComposer.js"></script>
