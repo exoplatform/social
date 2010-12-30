@@ -420,6 +420,53 @@ public class ActivityStorage {
   }
 
   /**
+   * Gets the activities for a list of identities.
+   *
+   * Access a activity stream of a list of identities by specifying the offset and limit.
+   *
+   * @param connectionList the list of connections for which we want to get 
+   * the latest activities
+   * @param offset
+   * @param limit
+   * @return the activities related to the list of connections
+   * @since 1.1.3
+   */
+  public List<Activity> getActivitiesOfConnections(List<Identity> connectionList, int offset, int limit) {
+    List<Activity> activities = new ArrayList<Activity>();
+
+    if (connectionList.isEmpty()) {
+      return activities;
+    }
+
+    try {
+      Session session = sessionManager.getOrOpenSession();
+      QueryBuilder queryBuilder = new QueryBuilder(session)
+              .select(ACTIVITY_NODETYPE, offset, limit)
+              .not().equal(REPLY_TO_ID, Activity.IS_COMMENT)
+              .and()
+              .group();
+      for (int i = 0, length = connectionList.size(); i < length; i++) {
+        Identity id = connectionList.get(i);
+        if (i != 0) {
+          queryBuilder.or();
+        }
+        queryBuilder.equal(USER_ID, id.getId());
+      }
+      queryBuilder.endGroup()
+              .orderBy(POSTED_TIME, QueryBuilder.DESC);
+      List<Node> nodes = queryBuilder.exec();
+      for (Node node : nodes) {
+        activities.add(load(node));
+      }
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
+    } finally {
+      sessionManager.closeSession();
+    }
+
+    return activities;
+  }
+  /**
    * Gets the activities by identity.
    *
    * @param owner the identity

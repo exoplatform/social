@@ -26,6 +26,7 @@ import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -41,6 +42,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
   private Identity demoIdentity;
 
   private IdentityManager identityManager;
+  private RelationshipManager relationshipManager;
   private ActivityManager activityManager;
 
   @Override
@@ -48,6 +50,8 @@ public class ActivityManagerTest extends AbstractCoreTest {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     assertNotNull("identityManager must not be null", identityManager);
+    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    assertNotNull("relationshipManager must not be null", relationshipManager);
     activityManager =  (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     assertNotNull("activityManager must not be null", activityManager);
     tearDownActivityList = new ArrayList<Activity>();
@@ -75,10 +79,16 @@ public class ActivityManagerTest extends AbstractCoreTest {
     identityManager.deleteIdentity(rootIdentity);
     identityManager.deleteIdentity(johnIdentity);
     identityManager.deleteIdentity(maryIdentity);
-    if (demoIdentity.getId() != null) {
-      //FIXME hoatle this can be affected by other tests
-      identityManager.deleteIdentity(demoIdentity);
-    }
+    identityManager.deleteIdentity(demoIdentity);
+
+    assertTrue("activityManager.getActivities(rootIdentity) must be empty",
+                activityManager.getActivities(rootIdentity).isEmpty());
+    assertTrue("activityManager.getActivities(johnIdentity) must be empty",
+                activityManager.getActivities(johnIdentity).isEmpty());
+    assertTrue("activityManager.getActivities(maryIdentity) must be empty",
+                activityManager.getActivities(maryIdentity).isEmpty());
+    assertTrue("activityManager.getActivities(demoIdentity) must be empty",
+               activityManager.getActivities(demoIdentity).isEmpty());
     super.tearDown();
   }
 
@@ -299,11 +309,35 @@ public class ActivityManagerTest extends AbstractCoreTest {
   * Unit Test for:
   * <p>
   * {@link ActivityManager#getActivitiesOfConnections(Identity)}
+  * {@link ActivityManager#getActivitiesOfConnections(org.exoplatform.social.core.identity.model.Identity, int, int)}
   */
- public void testGetActivitiesOfConnections() {
+ public void testGetActivitiesOfConnections() throws Exception {
    List<Activity> johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity);
    assertNotNull("johnConnectionsActivityList must not be null", johnConnectionsActivityList);
    assertEquals(0, johnConnectionsActivityList.size());
+
+   populateActivityMass(demoIdentity, 45);
+
+   Relationship johnDemoRelationship = relationshipManager.invite(johnIdentity, demoIdentity);
+
+   relationshipManager.confirm(johnDemoRelationship);
+
+   johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity);
+
+   assertEquals(30, johnConnectionsActivityList.size());
+
+   johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity, 0, 50);
+
+   assertEquals(45, johnConnectionsActivityList.size());
+
+   johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity, 20, 50);
+
+   assertEquals(25 , johnConnectionsActivityList.size());
+
+   relationshipManager.remove(johnDemoRelationship);
+
+   tearDownActivityList.addAll(activityManager.getActivities(demoIdentity, 0, 50));
+
  }
 
  /**

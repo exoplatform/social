@@ -223,35 +223,37 @@ public class ActivityManager {
 
   /**
    * Gets activities of connections from an identity. The activities are sorted by time.
-   * Though by using cache, this still can be considered as the cause of the biggest performance problem.
+   * The result list is default with 30 maximum activities.
    *
    * @param ownerIdentity
-   * @return activityList
+   * @return the activities of the list of connections
    * @since 1.1.1
    */
   //TODO Find way to improve its performance
   public List<Activity> getActivitiesOfConnections(Identity ownerIdentity) {
+    return getActivitiesOfConnections(ownerIdentity, 0, 30);
+  }
+
+  /**
+   * Gets activities of connections from an identity by specifying offset and limit.
+   * The activities are sorted by time.
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return the activities of the list of connections
+   * @since 1.1.3
+   */
+  public List<Activity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) {
     List<Identity> connectionList = null;
     try {
       connectionList = identityManager.getConnections(ownerIdentity);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
-    List<Activity> activityList = new ArrayList<Activity>();
-    String identityId;
-    for (Identity identity : connectionList) {
-      //default 20 activities each identity
-      List<Activity> tempActivityList = getActivities(identity);
-      identityId = identity.getId();
-      for (Activity activity : tempActivityList) {
-        if (activity.getUserId().equals(identityId)) {
-          activityList.add(activity);
-        }
-      }
-    }
-    Collections.sort(activityList, Util.activityComparator());
-    return activityList;
+    return storage.getActivitiesOfConnections(connectionList, offset, limit);
   }
+
 
   /**
    * Gets the activities from all user's spaces.
