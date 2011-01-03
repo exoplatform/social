@@ -419,8 +419,8 @@ public class IdentityStorage {
 
       for (String namePart : nameParts) {
         if (namePart != "") {
-          queryBuilder.or().like(queryBuilder.lower(Profile.FIRST_NAME), "%" + namePart.toLowerCase() + "%");
-          queryBuilder.or().like(queryBuilder.lower(Profile.LAST_NAME),  "%" + namePart.toLowerCase() + "%");
+          queryBuilder.or().like(queryBuilder.lower(Profile.FIRST_NAME), namePart.toLowerCase() + "%");
+          queryBuilder.or().like(queryBuilder.lower(Profile.LAST_NAME),  namePart.toLowerCase() + "%");
         }
       }
 

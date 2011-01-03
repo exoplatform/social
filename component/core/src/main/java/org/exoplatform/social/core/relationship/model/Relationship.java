@@ -195,6 +195,21 @@ public class Relationship {
   }
 
   /**
+   * Gets the partner of relationship. Returns null if not found any identity in this relationship
+   * 
+   * @param identity
+   * @return identity
+   * @since 1.1.3
+   */
+  public Identity getPartner(Identity identity) {
+    if (identity.getId().equals(sender.getId()))
+      return receiver;
+    if (identity.getId().equals(receiver.getId()))
+      return sender;
+    return null;
+  }
+  
+  /**
    * Gets the properties.
    * 
    * @param status the status

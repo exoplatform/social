@@ -74,6 +74,9 @@ public class UIInvitations extends UIContainer {
   /** Label displays revoked information. */
   private static final String INVITATION_REVOKED_INFO = "UIInvitationRelation.label.RevokedInfo";
 
+  /** Incoming Status information */
+  private static final String INCOMING_STATUS = "incoming";
+  
   /** Stores UIPageIterator object. */
   private UIPageIterator uiPageIteratorInvitation;
 
@@ -120,6 +123,7 @@ public class UIInvitations extends UIContainer {
     uiPageIteratorInvitation = createUIComponent(UIPageIterator.class, null, iteratorIDInvitation);
     addChild(uiPageIteratorInvitation);
     uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
+    uiProfileUserSearchRelation.setTypeOfRelation(INCOMING_STATUS);
     addChild(uiProfileUserSearchRelation);
   }
 

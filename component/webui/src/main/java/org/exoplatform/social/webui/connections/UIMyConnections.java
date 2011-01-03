@@ -73,6 +73,9 @@ public class UIMyConnections extends UIContainer {
   /** Label for display realtion is deleted information */
   private static final String RELATION_DELETED_INFO = "UIMyRelations.label.DeletedInfo";
 
+  /** Confirmed Status information */
+  private static final String CONFIRMED_STATUS = "confirm";
+  
   /** Stores UIPageIterator instance. */
   UIPageIterator uiPageIteratorContact;
 
@@ -124,6 +127,7 @@ public class UIMyConnections extends UIContainer {
     uiPageIteratorContact = createUIComponent(UIPageIterator.class, null, iteratorIDContact);
     addChild(uiPageIteratorContact);
     uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
+    uiProfileUserSearchRelation.setTypeOfRelation(CONFIRMED_STATUS);
     addChild(uiProfileUserSearchRelation);
   }
 

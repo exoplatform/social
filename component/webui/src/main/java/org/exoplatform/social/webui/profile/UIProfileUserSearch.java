@@ -111,7 +111,13 @@ public class UIProfileUserSearch extends UIForm {
 
   /** Used stores filter information. */
   ProfileFilter              profileFilter             = null;
-
+  
+  /** Used stores type of relation with current user information. */
+  String                     typeOfRelation            = null;
+  
+  /** URL of space that this UIComponent is used in member searching. */
+  String                     spaceURL                 = null;
+  
   /** Number of identities. */
   long identitiesCount;
   
@@ -155,6 +161,41 @@ public class UIProfileUserSearch extends UIForm {
     this.selectedChar = selectedChar;
   }
 
+
+  /**
+   * Gets type of relation with current user.
+   *
+   */
+  public String getTypeOfRelation() {
+    return typeOfRelation;
+  }
+
+  /**
+   * Sets type of relation with current user to variable.
+   *
+   * @param typeOfRelation <code>char</code>
+   */
+  public void setTypeOfRelation(String typeOfRelation) {
+    this.typeOfRelation = typeOfRelation;
+  }
+
+  /**
+   * Gets space url.
+   *
+   */
+  public String getSpaceURL() {
+    return spaceURL;
+  }
+
+  /**
+   * Sets space url.
+   *
+   * @param spaceURL <code>char</code>
+   */
+  public void setSpaceURL(String spaceURL) {
+    this.spaceURL = spaceURL;
+  }
+  
   /**
    * Gets filter object.
    *

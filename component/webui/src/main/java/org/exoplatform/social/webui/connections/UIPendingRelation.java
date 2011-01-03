@@ -68,6 +68,9 @@ public class UIPendingRelation extends UIContainer {
   /** Label for display invitation is revoked information */
   private static final String INVITATION_REVOKED_INFO = "UIPendingRelation.label.RevokedInfo";
 
+  /** Pending Status information */
+  private static final String PENDING_STATUS = "pending";
+  
   /** Stores UIPageIterator instance. */
   UIPageIterator uiPageIterator_;
 
@@ -126,6 +129,7 @@ public class UIPendingRelation extends UIContainer {
     uiPageIterator_ = createUIComponent(UIPageIterator.class, null, iteratorID_);
     addChild(uiPageIterator_);
     uiProfileUserSearchPending = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
+    uiProfileUserSearchPending.setTypeOfRelation(PENDING_STATUS);
     addChild(uiProfileUserSearchPending);
   }
 

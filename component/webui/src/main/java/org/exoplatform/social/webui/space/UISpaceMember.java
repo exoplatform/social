@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PageNavigation;
@@ -37,6 +38,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.StringListAccess;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -110,6 +112,9 @@ public class UISpaceMember extends UIForm {
   private final String iteratorInvitedID = "UIIteratorInvited";
   private final String iteratorExistingID = "UIIteratorExisting";
   private final Integer ITEMS_PER_PAGE = 5;
+  private static final String USER_TO_INVITE = "user_to_invite";
+  String typeOfRelation = null;
+  String spaceURL = null;
   
   /** The first page. */
   private static final int FIRST_PAGE = 1;
@@ -134,6 +139,7 @@ public class UISpaceMember extends UIForm {
     addChild(iteratorPendingUsers);
     addChild(iteratorInvitedUsers);
     addChild(iteratorExistingUsers);
+    setTypeOfRelation(USER_TO_INVITE);
   }
 
   /**
@@ -154,6 +160,68 @@ public class UISpaceMember extends UIForm {
    */
   public UIPageIterator getUIPageIteratorExistingUsers() { return iteratorExistingUsers;}
 
+  /**
+   * Gets type of relation with current user.
+   *
+   */
+  public String getTypeOfRelation() {
+    return typeOfRelation;
+  }
+
+  /**
+   * Sets type of relation with current user to variable.
+   *
+   * @param typeOfRelation <code>char</code>
+   */
+  public void setTypeOfRelation(String typeOfRelation) {
+    this.typeOfRelation = typeOfRelation;
+  }
+
+  /**
+   * Gets space url.
+   *
+   */
+  public String getSpaceURL() {
+    return spaceURL;
+  }
+
+  /**
+   * Sets space url.
+   *
+   * @param spaceURL <code>char</code>
+   */
+  public void setSpaceURL(String spaceURL) {
+    this.spaceURL = spaceURL;
+  }
+  
+  /**
+   * Get current user name.
+   *
+   * @return
+   */
+  public String getCurrentUserName() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    return context.getRemoteUser();
+  }
+
+  /**
+   * Get current rest context name.
+   *
+   * @return
+   */
+  protected String getRestContextName() {
+    return PortalContainer.getCurrentRestContextName();
+  }
+  
+  /**
+   * Get portal name.
+   *
+   * @return
+   */
+  protected String getPortalName() {
+    return PortalContainer.getCurrentPortalContainerName();
+  }
+  
   /**
    * sets spaceId to this for getting current space
    * @param spaceId

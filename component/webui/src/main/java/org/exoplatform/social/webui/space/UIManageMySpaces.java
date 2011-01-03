@@ -81,7 +81,8 @@ public class UIManageMySpaces extends UIContainer {
   static private final Integer LEADER = 1, MEMBER = 2;
   private static final String SPACE_DELETED_INFO = "UIManageMySpaces.msg.DeletedInfo";
   private static final String MEMBERSHIP_REMOVED_INFO = "UIManageMySpaces.msg.MemberShipRemovedInfo";
-
+  private static final String CONFIRM_STATUS = "confirm";
+  
   private UIPageIterator iterator;
   private final Integer SPACES_PER_PAGE = 4;
   private final String ITERATOR_ID = "UIIteratorMySpaces";
@@ -101,6 +102,7 @@ public class UIManageMySpaces extends UIContainer {
    */
   public UIManageMySpaces() throws Exception {
     uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
+    uiSpaceSearch.setTypeOfRelation(CONFIRM_STATUS);
     addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }

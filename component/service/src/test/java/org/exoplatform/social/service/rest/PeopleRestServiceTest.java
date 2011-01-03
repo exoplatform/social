@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 
 import junit.framework.AssertionFailedError;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
@@ -51,7 +52,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     String username = "root";
     h.putSingle("username", username);
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
-    ContainerResponse response = service("GET", "/social/people/suggest.json?userName=R", "", h, null, writer);
+    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=d&portalName=portal&currentUser=root", "", h, null, writer);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     assertEquals("application/json", response.getContentType().toString());
