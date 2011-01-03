@@ -67,6 +67,7 @@ public interface SpaceService {
    * @param spaceName space name
    * @return the stored space
    * @throws SpaceException
+   * @since 1.2.0-GA
    */
   Space getSpaceByPrettyName(String spaceName) throws SpaceException;
 
