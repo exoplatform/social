@@ -626,13 +626,7 @@ public class SpaceUtils {
   private static Space getSpaceByGroupId(String groupId) throws SpaceException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
-    List<Space> spaces = spaceService.getAllSpaces();
-    for (Space space : spaces) {
-      if (space.getGroupId().equals(groupId)) {
-        return space;
-      }
-    }
-    return null;
+    return spaceService.getSpaceByGroupId(groupId);
   }
 
   /**

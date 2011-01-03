@@ -120,6 +120,9 @@ public class SpaceServiceImpl implements SpaceService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public Space getSpaceByName(String spaceName) throws SpaceException {
     try {
       return storage.getSpaceByName(spaceName);
@@ -165,6 +168,17 @@ public class SpaceServiceImpl implements SpaceService {
     return listSpace;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public Space getSpaceByGroupId(String groupId) throws SpaceException {
+    try {
+      return storage.getSpaceByGroupId(groupId);
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+  
   /**
    * {@inheritDoc}
    */

@@ -30,7 +30,7 @@ import org.exoplatform.social.core.space.model.Space;
  */
 public interface SpaceService {
 
-  public static final String SPACES_APP_ID = "exosocial:spaces";
+  final String SPACES_APP_ID = "exosocial:spaces";
 
   /**
    * Gets all spaces in Social.
@@ -47,7 +47,7 @@ public interface SpaceService {
    * @return the stored space
    * @throws SpaceException
    */
-  public Space getSpaceByName(String spaceName) throws SpaceException;
+  Space getSpaceByName(String spaceName) throws SpaceException;
 
   /**
    * Gets all spaces has the name starting with the input character.
@@ -64,8 +64,18 @@ public interface SpaceService {
    * @return a list of spaces
    * @throws Exception
    */
-  public List<Space> getSpacesBySearchCondition(String condition) throws Exception;
+  List<Space> getSpacesBySearchCondition(String condition) throws Exception;
 
+  /**
+   * Gets a space by its group id
+   *
+   * @param groupId the group id of the space to find
+   * @return
+   * @throws SpaceException
+   * @since 1.1.3
+   */  
+  Space getSpaceByGroupId(String groupId) throws SpaceException;
+  
   /**
    * Gets a space by its id.
    *
