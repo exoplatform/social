@@ -98,17 +98,52 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>12000</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--access the new Space</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='Icon IconEditSpaceNavigation']</td>
+	<td>//div[2]/div[2]/div[1]/div[1]/div[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[2]/div[2]/div[1]/div[1]/div[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- access Space setting---</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UISpaceMenu']/div/div[5]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UISpaceMenu']/div/div[5]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- select Edit navigation tab</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//td[2]/div/div/div/div/div/div/div/div/div/div/div[1]/div/div/div[1]/div/div[5]/div/div/div/div</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@class='Icon IconEditSpaceNavigation']</td>
+	<td>//td[2]/div/div/div/div/div/div/div/div/div/div/div[1]/div/div/div[1]/div/div[5]/div/div/div/div</td>
 	<td></td>
 </tr>
 <tr>
@@ -127,18 +162,28 @@
 	<td>1,1</td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>name</td>
+	<td>//div[1]/div/table/tbody/tr[2]/td[2]/input</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name</td>
-	<td>test_nodename_13</td>
+	<td>//div[1]/div/table/tbody/tr[2]/td[2]/input</td>
+	<td>test_node_label_13</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//tr[3]/td[2]/input</td>
+	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>label</td>
+	<td>//tr[3]/td[2]/input</td>
 	<td>test_node_label_13</td>
 </tr>
 <tr>
@@ -147,9 +192,14 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>//div[2]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/div</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
-	<td>//div[@id='UIPopupAddSpace']//div[@class='TabsContainer']/div[2]//div[@class='MiddleTab']</td>
-	<td>1,1</td>
+	<td>//div[2]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/div</td>
+	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
@@ -177,23 +227,38 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>3000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>--Save</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Save</td>
-	<td>1,1</td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>2000</td>
+	<td>waitForElementPresent</td>
+	<td>//div[2]/table/tbody/tr/td/div[1]/div/div/div/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Save</td>
+	<td>//div[2]/table/tbody/tr/td/div[1]/div/div/div/a</td>
+	<td>1,1</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>3000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//td[2]/div/div/div/div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//td[2]/div/div/div/div/a</td>
 	<td>1,1</td>
 </tr>
 <tr>
@@ -227,26 +292,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//a[@class='Icon IconEditSpaceNavigation']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//a[@class='Icon IconEditSpaceNavigation']</td>
-	<td></td>
-</tr>
-<tr>
 	<td>echo</td>
 	<td>-- Right click</td>
 	<td></td>
@@ -263,12 +308,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UINavigationNodeSelector']//div[@id='NavigationNodePopupMenu']//a[@class='ItemIcon DeleteNode16x16Icon']</td>
+	<td>link=Delete Node</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UINavigationNodeSelector']//div[@id='NavigationNodePopupMenu']//a[@class='ItemIcon DeleteNode16x16Icon']</td>
+	<td>link=Delete Node</td>
 	<td></td>
 </tr>
 <tr>
@@ -386,7 +431,6 @@
 	<td></td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>
