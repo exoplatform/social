@@ -35,15 +35,10 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.service.rest.PeopleRestService.UserNameList;
 
 /**
  * SpacesRestService.java <br />
@@ -71,6 +66,8 @@ public class SpacesRestService implements ResourceContainer {
   private static final String INCOMING_STATUS = "incoming";
   /** Public Status information */
   private static final String PUBLIC_STATUS = "public";
+
+  private String portalContainerName;
   
   /**
    * constructor
@@ -83,9 +80,9 @@ public class SpacesRestService implements ResourceContainer {
    * @return spaceList
    * @see SpaceList
    */
-  private SpaceList showMySpaceList(String userId, String portalName) {
+  private SpaceList showMySpaceList(String userId) {
     SpaceList spaceList = new SpaceList();
-    _spaceService = getSpaceService(portalName);
+    _spaceService = getSpaceService();
     List<Space> mySpaces;
     try {
       mySpaces = _spaceService.getSpaces(userId);
@@ -102,9 +99,9 @@ public class SpacesRestService implements ResourceContainer {
    * @return spaceList
    * @see SpaceList
    */
-  private SpaceList showPendingSpaceList(String userId, String portalName) {
+  private SpaceList showPendingSpaceList(String userId) {
     SpaceList spaceList = new SpaceList();
-    _spaceService = getSpaceService(portalName);
+    _spaceService = getSpaceService();
     List<Space> pendingSpaces;
     try {
       pendingSpaces = _spaceService.getPendingSpaces(userId);
@@ -130,14 +127,15 @@ public class SpacesRestService implements ResourceContainer {
                                   @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     ConversationState state = ConversationState.getCurrent();
+    portalContainerName = portalName;
     String userId = null;
     if (state != null) {
       userId = state.getIdentity().getUserId();
     } else {
-      userId = getRemoteId(uriInfo, portalName);
+      userId = getRemoteId(uriInfo);
     }
 
-    SpaceList mySpaceList = showMySpaceList(userId, portalName);
+    SpaceList mySpaceList = showMySpaceList(userId);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -156,63 +154,60 @@ public class SpacesRestService implements ResourceContainer {
                                        @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     String userId = ConversationState.getCurrent().getIdentity().getUserId();
-    String remoteId = getRemoteId(uriInfo, portalName);
+    portalContainerName = portalName;
+    String remoteId = getRemoteId(uriInfo);
     if (!userId.equals(remoteId)) {
       return null;
     }
-    SpaceList pendingSpaceList = showPendingSpaceList(userId, portalName);
+    SpaceList pendingSpaceList = showPendingSpaceList(userId);
     return Util.getResponse(pendingSpaceList, uriInfo, mediaType, Response.Status.OK);
   }
 
+  /**
+   * Suggests space's name for searching.
+   * 
+   * @param uriInfo
+   * @param portalName
+   * @param conditionToSearch
+   * @param typeOfRelation
+   * @param userId
+   * @param format
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("suggest.{format}")
   public Response suggestSpacenames(@Context UriInfo uriInfo,
                     @PathParam("portalName") String portalName,
                     @QueryParam("conditionToSearch") String conditionToSearch,
                     @QueryParam("typeOfRelation") String typeOfRelation,
-                    @QueryParam("currentUser") String currentUser,
+                    @QueryParam("currentUser") String userId,
                     @PathParam("format") String format) throws Exception {
     
     MediaType mediaType = Util.getMediaType(format);
     SpaceNameList nameList = new SpaceNameList();
-    List<Space> spaces = getSpaceService(portalName).getSpacesBySearchCondition(conditionToSearch);
+    portalContainerName = portalName;
+    SpaceService spaceSrv = getSpaceService();
     
-    if (spaces.size() == 0) {
-      return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
-    }
+    List<Space> spaces = spaceSrv.getSpacesBySearchCondition(conditionToSearch);
     
-    String userId = currentUser;
-
-    if (PENDING_STATUS.equals(typeOfRelation)) {
-      addToNameList(spaces, userId, typeOfRelation, portalName, nameList);
-    } else if (INCOMING_STATUS.equals(typeOfRelation)) {
-      addToNameList(spaces, userId, typeOfRelation, portalName, nameList);
-    } else if (CONFIRMED_STATUS.equals(typeOfRelation)){
-      addToNameList(spaces, userId, typeOfRelation, portalName, nameList);
-    } else { // publics.
-      addToNameList(spaces, userId, PUBLIC_STATUS, portalName, nameList);
-    }
-    
-    return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
-  }
-  
-  private void addToNameList(List<Space> spaces, String userId, String status, 
-                                       String portalName, SpaceNameList nameList) throws SpaceException {
-    SpaceService spaceSrv = getSpaceService(portalName);
     for (Space space : spaces) {
-      if (PENDING_STATUS.equals(status) && (spaceSrv.isPending(space, userId))) {
+      if (PENDING_STATUS.equals(typeOfRelation) && (spaceSrv.isPending(space, userId))) {
         nameList.addName(space.getDisplayName());
         continue;
-      } else if (INCOMING_STATUS.equals(status) && (spaceSrv.isInvited(space, userId))) {
+      } else if (INCOMING_STATUS.equals(typeOfRelation) && (spaceSrv.isInvited(space, userId))) {
         nameList.addName(space.getDisplayName());
         continue;
-      } else if (CONFIRMED_STATUS.equals(status) && (spaceSrv.isMember(space, userId))) {
+      } else if (CONFIRMED_STATUS.equals(typeOfRelation) && (spaceSrv.isMember(space, userId))) {
         nameList.addName(space.getDisplayName());
         continue;
-      } else if (PUBLIC_STATUS.equals(status) && !space.getVisibility().equals(Space.HIDDEN)) {
+      } else if (PUBLIC_STATUS.equals(typeOfRelation) && !space.getVisibility().equals(Space.HIDDEN) &&
+          (!spaceSrv.isPending(space, userId)) && (!spaceSrv.isInvited(space, userId)) && (!spaceSrv.isMember(space, userId))) {
         nameList.addName(space.getDisplayName());
       }
     }
+    
+    return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
@@ -281,14 +276,13 @@ public class SpacesRestService implements ResourceContainer {
    * @return spaceService
    * @see SpaceService
    */
-  private SpaceService getSpaceService(String portalName) {
-    PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
-    return (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+  private SpaceService getSpaceService() {
+    return (SpaceService) getPortalContainer().getComponentInstanceOfType(SpaceService.class);
   }
   
-  private String getRemoteId(UriInfo uriInfo, String portalName) throws Exception {
+  private String getRemoteId(UriInfo uriInfo) throws Exception {
     String viewerId = Util.getViewerId(uriInfo);
-    Identity identity = getIdentityManager(portalName).getIdentity(viewerId);
+    Identity identity = getIdentityManager().getIdentity(viewerId);
     return identity.getRemoteId();
   }
 
@@ -296,11 +290,14 @@ public class SpacesRestService implements ResourceContainer {
    * gets identityManager
    * @return
    */
-  private IdentityManager getIdentityManager(String portalName) {
+  private IdentityManager getIdentityManager() {
     if (_identityManager == null) {
-      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
-      _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+      _identityManager = (IdentityManager) getPortalContainer().getComponentInstanceOfType(IdentityManager.class);
     }
     return _identityManager;
+  }
+  
+  private PortalContainer getPortalContainer() {
+    return (PortalContainer) ExoContainerContext.getContainerByName(portalContainerName);
   }
 }

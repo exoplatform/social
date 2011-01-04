@@ -67,6 +67,7 @@ public class UIManagePublicSpaces extends UIContainer {
   private UIPageIterator iterator;
   private final String ITERATOR_ID = "UIIteratorPublicSpaces";
   private final Integer SPACES_PER_PAGE = 4;
+  private static final String PUBLIC_STATUS = "public";
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
 
@@ -77,6 +78,7 @@ public class UIManagePublicSpaces extends UIContainer {
    */
   public UIManagePublicSpaces() throws Exception {
     uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
+    uiSpaceSearch.setTypeOfRelation(PUBLIC_STATUS);
     addChild(uiSpaceSearch);
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
   }

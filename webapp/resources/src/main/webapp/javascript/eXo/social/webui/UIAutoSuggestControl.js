@@ -219,8 +219,13 @@ UIAutoSuggestControl.prototype.requestDataForAutoSuggest = function() {
 	var spaceURL = eXo.social.webui.spaceURL;
 	var typeOfSuggest = eXo.social.webui.typeOfSuggest;
 	var portalName = eXo.social.webui.portalName;
-  var inputStringLen = inputString.length;
+  var inputStringLen = (inputString ? inputString.length : 0);
   
+	if ((inputStringLen == 0) || (inputString == ' ')) {
+  	this.hideSuggestions();
+  	return;
+	}
+	
   // TODO Need more check
   for (var idx = 0; idx < inputStringLen; idx++) {
   	var currentCharKeyCode = inputString.charCodeAt(idx);
@@ -252,11 +257,6 @@ UIAutoSuggestControl.prototype.requestDataForAutoSuggest = function() {
 		restURL += "&spaceURL=" + spaceURL;
 	}
 	
-	if ((inputString.length == 0) || (inputString == ' ')) {
-  	this.hideSuggestions();
-  	return;
-	}
-	
 	this.makeRequest(restURL, true, this.resetList);
 	
 	function isNull(str) {
@@ -277,7 +277,13 @@ UIAutoSuggestControl.prototype.requestDataForAutoSuggest = function() {
 UIAutoSuggestControl.prototype.resetList = function(resp) {
 	var JSON = eXo.core.JSON;
   var names = JSON.parse(resp.responseText).names;
-  eXo.social.webui.UIAutoSuggestControl.showSuggestions(names);
+  var namesLen = (names ? names.length : 0);
+  var oThis = eXo.social.webui.UIAutoSuggestControl;
+  if (namesLen == 0) {
+  	oThis.hideSuggestions();
+  	return;
+  }
+  oThis.showSuggestions(names);
 }
 
 /**
@@ -318,8 +324,9 @@ UIAutoSuggestControl.prototype.hideSuggestions = function () {
  * @param oSuggestionNode The node representing a suggestion in the dropdown.
  */
 UIAutoSuggestControl.prototype.highlightSuggestion = function (oSuggestionNode) {
-    
-    for (var i=0; i < this.layer.childNodes.length; i++) {
+    var childNodes = this.layer.childNodes;
+    var childNodesLen = (childNodes ? childNodes.length : 0);
+    for (var i=0; i < childNodesLen; i++) {
         var oNode = this.layer.childNodes[i];
         if (oNode == oSuggestionNode) {
             oNode.className = "current"
@@ -369,17 +376,18 @@ UIAutoSuggestControl.prototype.init = function () {
  */
 UIAutoSuggestControl.prototype.nextSuggestion = function () {
     var cSuggestionNodes = this.layer.childNodes;
-    if (this.cur == cSuggestionNodes.length) this.cur = -1;
+    var cSuggestionNodesLen = (cSuggestionNodes ? cSuggestionNodes.length : 0);
+    if (this.cur == cSuggestionNodesLen) this.cur = -1;
     ++this.cur;
-    if (cSuggestionNodes.length > 0 && this.cur < cSuggestionNodes.length) {
+    if (cSuggestionNodes.length > 0 && this.cur < cSuggestionNodesLen) {
         var oNode = cSuggestionNodes[this.cur];
         this.highlightSuggestion(oNode);
         this.textbox.value = oNode.firstChild.nodeValue; 
     } 
     
     // If press next at the last element then return the start input value
-    if (this.cur > cSuggestionNodes.length - 1) {
-    	(cSuggestionNodes[cSuggestionNodes.length - 1]).className = "";
+    if (this.cur > cSuggestionNodesLen - 1) {
+    	(cSuggestionNodes[cSuggestionNodesLen - 1]).className = "";
     	this.textbox.value = this.storeText;
     	this.textbox.focus();
     	this.cur = -1;
@@ -394,9 +402,10 @@ UIAutoSuggestControl.prototype.nextSuggestion = function () {
  */
 UIAutoSuggestControl.prototype.previousSuggestion = function () {
     var cSuggestionNodes = this.layer.childNodes;
-    if (this.cur < 0) this.cur = cSuggestionNodes.length;
+    var cSuggestionNodesLen = (cSuggestionNodes ? cSuggestionNodes.length : 0);
+    if (this.cur < 0) this.cur = cSuggestionNodesLen;
     --this.cur;
-    if (cSuggestionNodes.length > 0 && this.cur >= 0) {
+    if (cSuggestionNodesLen > 0 && this.cur >= 0) {
         var oNode = cSuggestionNodes[this.cur];
         this.highlightSuggestion(oNode);
         this.textbox.value = oNode.firstChild.nodeValue;   
@@ -406,7 +415,7 @@ UIAutoSuggestControl.prototype.previousSuggestion = function () {
     	(cSuggestionNodes[0]).className = "";
     	this.textbox.value = this.storeText;
     	this.textbox.focus();
-    	this.cur = cSuggestionNodes.length;
+    	this.cur = cSuggestionNodesLen;
     }
 };
 
@@ -419,8 +428,9 @@ UIAutoSuggestControl.prototype.previousSuggestion = function () {
 UIAutoSuggestControl.prototype.showSuggestions = function (aSuggestions /*:Array*/) {
     var oDiv = null;
     this.layer.innerHTML = "";  //clear contents of the layer
+    var aSuggestionsLen = (aSuggestions ? aSuggestions.length : 0);
     // Display 10 top suggestion only
-    var numberSuggestShowed = (aSuggestions.length >= 10) ? 10 : (aSuggestions.length);
+    var numberSuggestShowed = (aSuggestionsLen >= 10) ? 10 : (aSuggestionsLen);
     for (var i=0; i < numberSuggestShowed; i++) {
         oDiv = document.createElement("div");
         oDiv.appendChild(document.createTextNode(aSuggestions[i]));

@@ -30,7 +30,7 @@ function UISpaceSearch() {
  * @ uicomponentId Id of current component
  * @ spaceNames All space name of current search.
  */
-UISpaceSearch.prototype.onLoad = function(uicomponentId, spaceNames) {
+UISpaceSearch.prototype.onLoad = function(uicomponentId) {
 	var DOMUtil = eXo.core.DOMUtil;
 	var spaceSearch = document.getElementById(uicomponentId);
 	var spaceSearchEl = DOMUtil.findDescendantById(spaceSearch, 'SpaceSearch');
@@ -41,7 +41,6 @@ UISpaceSearch.prototype.onLoad = function(uicomponentId, spaceNames) {
 	(spaceSearchEl.value != defaultSpaceNameAndDesc) ? (spaceSearchEl.style.color = '#000000') : (spaceSearchEl.style.color = '#C7C7C7');
 	
 	this.inputTextBoxObj = spaceSearchEl;
-	this.setAllSpaceName(spaceNames);
 	// Initialize the input textbox
 	this.initTextBox();
 };
@@ -102,60 +101,6 @@ UISpaceSearch.prototype.submitSearchForm = function(searchEl) {
 	var searchForm = DOMUtil.findAncestorByClass(searchEl, 'UIForm');
 	if (searchForm != null ) UIForm.submitForm(searchForm.id, 'Search', true);
 }
-
-/**
- * Set all space name to allSpaceNames variable.
- * @scope private.
- */
-UISpaceSearch.prototype.setAllSpaceName = function(allName) {
-	var allSpaceNames = allName.substring(1, allName.length-1);
-	var allSN = allSpaceNames.split(',');
-	var allNames = [];
-	for (var i=0; i < allSN.length; i++) {
-		(function(idx) {
-			allNames.push(allSN[idx].trim());
-		})(i);
-	}
-	this.allSpaceName = allNames;
-};
-
-/**
- * Request suggestions for the given autosuggest control. 
- * @scope protected
- * @param oAutoSuggestControl The autosuggest control to provide suggestions for.
- */
-UISpaceSearch.prototype.requestSuggestions = function (oAutoSuggestControl /*:AutoSuggestControl*/) {
-    var aSuggestions = [];
-    var sTextboxValue = oAutoSuggestControl.textbox.value;
-    
-    if (sTextboxValue.length > 0){
-    
-        //convert value in textbox to lowercase
-        var sTextboxValueLC = sTextboxValue.toLowerCase();
-        
-        //search for matching states
-        for (var i=0; i < this.allSpaceName.length; i++) { 
-
-            //convert state name to lowercase
-            var sStateLC = this.allSpaceName[i].toLowerCase();
-            
-            //compare the lowercase versions for case-insensitive comparison
-            if (sStateLC.indexOf(sTextboxValueLC) == 0) {
-                //add a suggestion using what's already in the textbox to begin it                
-            	aSuggestions.push(this.allSpaceName[i]);
-
-                // Check if user type like the last suggestion in drop-down list.
-                if ((this.allSpaceName[i].substring(sTextboxValue.length) == "") && (aSuggestions.length == 1)) {
-                	oAutoSuggestControl.hideSuggestions();
-                	return;
-                }
-            } 
-        }
-    }
-    
-    //provide suggestions to the control
-    oAutoSuggestControl.autosuggest(aSuggestions);
-};
 
 /*===================================================================*/
 if(!eXo.social) eXo.social = {};
