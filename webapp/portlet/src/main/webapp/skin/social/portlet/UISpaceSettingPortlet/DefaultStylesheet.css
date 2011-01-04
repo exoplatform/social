@@ -449,8 +449,13 @@
 }
 
 .UISpaceSettingPortlet .AddAplicationButton {
-  width: 100px;
-  margin: auto;
+	display: inline-block;
+	margin: auto;
+  width: auto;
+  _width: auto;
+  position: relative;
+  left: 45%;
+  float: left;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .LeftButton {
@@ -462,13 +467,14 @@
 .UISpaceSettingPortlet .AddAplicationButton .RightButton {
   background: url('DefaultSkin/background/RightButton3x26.gif') no-repeat right center;
   padding-right: 3px;
-  width: 70px;
+  width: auto;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .CenterButton {
   background: url('DefaultSkin/background/CenterButton1x26.gif') repeat-x center;
   line-height: 26px;
-  padding: 0px 10px;
+  padding: 0 10px;
+  clear: both;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .IconButton {
