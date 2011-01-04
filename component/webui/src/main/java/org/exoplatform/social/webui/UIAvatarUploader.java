@@ -17,6 +17,8 @@
 package org.exoplatform.social.webui;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.PortalContainer;
@@ -76,8 +78,16 @@ public class UIAvatarUploader extends UIForm {
   private static final int uploadLimit = 2; //MB
 
   /** List of accepted mimetype. */
-  private static final String[] acceptedMimeTypes = new String[] {"image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
+  private static final String[] ACCEPTED_MIME_TYPES = new String[] {"image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
 
+  /** Contains pair of IE Mimetype and Standard Mimetype. */
+  private final Map<String, String> IE_MIME_TYPES = new HashMap<String, String>() {
+    {
+      put("image/pjpeg", "image/jpeg");
+      put("image/x-png", "image/png");
+    }
+  };
+  
   /** Stores UIFormUploadInput instance. */
   private final UIFormUploadInput uiAvatarUploadInput;
 
@@ -101,12 +111,23 @@ public class UIAvatarUploader extends UIForm {
    * @return boolean
    */
   private boolean isAcceptedMimeType(String mimeType) {
-    for (String acceptedMimeType : acceptedMimeTypes) {
+    for (String acceptedMimeType : ACCEPTED_MIME_TYPES) {
       if (mimeType.equals(acceptedMimeType)) return true;
     }
     return false;
   }
 
+  /**
+   * Gets standard mimetype from IE mimetype appropriately.
+   * 
+   * @param mimeType
+   * @return standard mimetype.
+   * @since 1.1.3
+   */
+  private String getStandardMimeType(String mimeType) {
+    return IE_MIME_TYPES.get(mimeType);  
+  }
+  
   /**
    * Changes and displays avatar on the profile if upload successful, else
    * inform user to upload image.
@@ -146,6 +167,13 @@ public class UIAvatarUploader extends UIForm {
       } else {
         MimeTypeResolver mimeTypeResolver = new MimeTypeResolver();
         String fileName = uiName.getValue();
+        
+        // @since 1.1.3
+        String extension = mimeTypeResolver.getExtension(mimeType);
+        if ("".equals(extension)) {
+          mimeType = uiAvatarUploader.getStandardMimeType(mimeType);
+        }
+        
         if (fileName == null)
           fileName = uploadResource.getFileName();
         else
