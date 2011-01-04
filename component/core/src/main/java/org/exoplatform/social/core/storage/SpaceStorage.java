@@ -41,8 +41,8 @@ import org.exoplatform.services.jcr.util.IdGenerator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
-import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.common.jcr.LockManager;
+import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 
@@ -143,6 +143,10 @@ public class SpaceStorage {
   }
 
   public Space getSpaceById(String id) {
+    Space cachedSpace = spaceCache.get(id);
+    if (cachedSpace!= null) {
+      return cachedSpace;
+    }
     try {
       Session session = sessionManager.openSession();
       Node spaceHomeNode = getSpaceHome(session);
@@ -170,7 +174,8 @@ public class SpaceStorage {
   }
 
   /**
-   * Gets a space by its groupId
+   * Gets a space by its groupId.
+   *
    * @param id the group Id
    * @return
    * @since 1.1.3
@@ -186,14 +191,15 @@ public class SpaceStorage {
       Query query = queryManager.createQuery(queryString.toString(), Query.XPATH);
       QueryResult queryResult = query.execute();
       NodeIterator nodeIterator = queryResult.getNodes();
-      Node identityNode = null;
+      Node spaceNode = null;
 
       if (nodeIterator.hasNext()) {
-        identityNode = (Node) nodeIterator.next();
+        spaceNode = (Node) nodeIterator.next();
       } else {
         LOG.debug("No space could be found with the group id " + id);
+        return null;
       }
-      return getSpace(identityNode, session);
+      return getSpace(spaceNode, session);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     } finally {
@@ -319,12 +325,18 @@ public class SpaceStorage {
       }
       spaceCache.remove(id);
     } catch (Exception e) {
-      // TODO: handle exception
+      LOG.warn(e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
   }
 
+  /**
+   * Saves a space.
+   *
+   * @param space
+   * @param isNew
+   */
   public void saveSpace(Space space, boolean isNew) {
     try {
       Session session = sessionManager.openSession();
@@ -406,9 +418,12 @@ public class SpaceStorage {
             session.save();
           }
         }
-        //TODO: dang.tung need review
-        if(isNew) spaceHomeNode.save();
-        else spaceNode.save();
+        if(isNew) {
+          spaceHomeNode.save();
+        } else {
+          spaceNode.save();
+          spaceCache.remove(spaceNode.getUUID());
+        }
       } catch (Exception e) {
         LOG.error("failed to save space", e);
         // TODO: handle exception
