@@ -14,7 +14,7 @@ function UIAutoSuggestMultiValueControl() {
  */
 UIAutoSuggestMultiValueControl.config = {
   DEFAULT_REST_CONTEXT_NAME : 'rest-socialdemo',
-	PEOPLE_REST_PATH : "/social/people/suggest.json?nameToSearch=",
+	PEOPLE_REST_PATH : "/social/people/suggest.json?nameToSearch="
 }
 
 /**
@@ -183,11 +183,13 @@ UIAutoSuggestMultiValueControl.prototype.handleKeyUp = function (oEvent /*:Event
 	  	return;
 	  }
 	  
+	  var currentValLength = (currentVal ? currentVal.length : 0);
+	  
     //for backspace (8) and delete (46), shows suggestions without typeahead
     if (iKeyCode == 8 || iKeyCode == 46) {
     	if (isInputTag) {
     		this.storeInputText = currentVal;
-    		this.storeText = currentVal.substr(currentVal.lastIndexOf(",") + 1, currentVal.length - 1).trim();
+    		this.storeText = currentVal.substr(currentVal.lastIndexOf(",") + 1, currentValLength - 1).trim();
     	}
         
       oThis.resetAutoSuggestList();
@@ -200,7 +202,7 @@ UIAutoSuggestMultiValueControl.prototype.handleKeyUp = function (oEvent /*:Event
         //ignore
     } else {
     	if (isInputTag) {
-    		this.storeText = currentVal.substr(currentVal.lastIndexOf(",") + 1, currentVal.length).trim();
+    		this.storeText = currentVal.substr(currentVal.lastIndexOf(",") + 1, currentValLength).trim();
 	    	this.storeInputText = currentVal;
     	}
     	
@@ -234,7 +236,7 @@ UIAutoSuggestMultiValueControl.prototype.requestDataForAutoSuggest = function() 
 	var spaceURL = eXo.social.webui.spaceURL;
 	var typeOfSuggest = eXo.social.webui.typeOfSuggest;
 	var portalName = eXo.social.webui.portalName;
-  var inputStringLen = inputString.length;
+  var inputStringLen = (inputString ? inputString.length : 0);
   
   // TODO Need more check
   for (var idx = 0; idx < inputStringLen; idx++) {
@@ -254,7 +256,7 @@ UIAutoSuggestMultiValueControl.prototype.requestDataForAutoSuggest = function() 
   }
   
   if ((typeOfSuggest == 'user_to_invite') && (inputString.indexOf(',') != -1)) {
-    inputString = inputString.substr(inputString.lastIndexOf(',') + 1, inputString.length).trim();
+    inputString = inputString.substr(inputString.lastIndexOf(',') + 1, inputStringLen).trim();
   }
   
 	restContext = (restContext) ? restContext : CONFIG.DEFAULT_REST_CONTEXT_NAME;
@@ -273,7 +275,7 @@ UIAutoSuggestMultiValueControl.prototype.requestDataForAutoSuggest = function() 
 		restURL += "&spaceURL=" + spaceURL;
 	}
 	
-	if ((inputString.length == 0) || (inputString == ' ')) {
+	if ((inputStringLen == 0) || (inputString == ' ')) {
   	this.hideSuggestions();
   	return;
 	}
@@ -298,7 +300,13 @@ UIAutoSuggestMultiValueControl.prototype.requestDataForAutoSuggest = function() 
 UIAutoSuggestMultiValueControl.prototype.resetList = function(resp) {
 	var JSON = eXo.core.JSON;
   var names = JSON.parse(resp.responseText).names;
-  eXo.social.webui.UIAutoSuggestMultiValueControl.showSuggestions(names);
+  var namesLen = (names ? names.length : 0);
+  var oThis = eXo.social.webui.UIAutoSuggestMultiValueControl;
+  if (namesLen == 0) {
+	  oThis.hideSuggestions();
+	  return;
+  }
+  oThis.showSuggestions(names);
 }
 
 /**
@@ -339,8 +347,9 @@ UIAutoSuggestMultiValueControl.prototype.hideSuggestions = function () {
  * @param oSuggestionNode The node representing a suggestion in the dropdown.
  */
 UIAutoSuggestMultiValueControl.prototype.highlightSuggestion = function (oSuggestionNode) {
-    
-    for (var i=0; i < this.layer.childNodes.length; i++) {
+    var childNodes = this.layer.childNodes;
+    var childNodesLen = (childNodes ? childNodes.length : 0);
+    for (var i=0; i < childNodesLen; i++) {
         var oNode = this.layer.childNodes[i];
         if (oNode == oSuggestionNode) {
             oNode.className = "current"
@@ -390,10 +399,11 @@ UIAutoSuggestMultiValueControl.prototype.init = function () {
  */
 UIAutoSuggestMultiValueControl.prototype.nextSuggestion = function () {
     var cSuggestionNodes = this.layer.childNodes;
-    if (this.cur == cSuggestionNodes.length) this.cur = -1;
+    var cSuggestionNodesLen = (cSuggestionNodes ? cSuggestionNodes.length : 0);
+    if (this.cur == cSuggestionNodesLen) this.cur = -1;
     ++this.cur;
     var currentVal = this.textbox.value;
-    if (cSuggestionNodes.length > 0 && this.cur < cSuggestionNodes.length) {
+    if (cSuggestionNodesLen > 0 && this.cur < cSuggestionNodesLen) {
         var oNode = cSuggestionNodes[this.cur];
         this.highlightSuggestion(oNode);
         if (currentVal.lastIndexOf(",") > 0) {
@@ -404,8 +414,8 @@ UIAutoSuggestMultiValueControl.prototype.nextSuggestion = function () {
     } 
     
     // If press next at the last element then return the start input value
-    if (this.cur > cSuggestionNodes.length - 1) {
-    	(cSuggestionNodes[cSuggestionNodes.length - 1]).className = "";
+    if (this.cur > cSuggestionNodesLen - 1) {
+    	(cSuggestionNodes[cSuggestionNodesLen - 1]).className = "";
     	this.textbox.value = this.storeInputText;
     	this.textbox.focus();
     	this.cur = -1;
@@ -420,10 +430,11 @@ UIAutoSuggestMultiValueControl.prototype.nextSuggestion = function () {
  */
 UIAutoSuggestMultiValueControl.prototype.previousSuggestion = function () {
     var cSuggestionNodes = this.layer.childNodes;
-    if (this.cur < 0) this.cur = cSuggestionNodes.length;
+    var cSuggestionNodesLen = (cSuggestionNodes ? cSuggestionNodes.length : 0);
+    if (this.cur < 0) this.cur = cSuggestionNodesLen;
     --this.cur;
     var currentVal = this.textbox.value;
-    if (cSuggestionNodes.length > 0 && this.cur >= 0) {
+    if (cSuggestionNodesLen > 0 && this.cur >= 0) {
         var oNode = cSuggestionNodes[this.cur];
         this.highlightSuggestion(oNode);
         if (currentVal.lastIndexOf(",") > 0) {     
@@ -437,7 +448,7 @@ UIAutoSuggestMultiValueControl.prototype.previousSuggestion = function () {
     	(cSuggestionNodes[0]).className = "";
     	this.textbox.value = this.storeInputText;
     	this.textbox.focus();
-    	this.cur = cSuggestionNodes.length;
+    	this.cur = cSuggestionNodesLen;
     }
 };
 
@@ -451,8 +462,9 @@ UIAutoSuggestMultiValueControl.prototype.showSuggestions = function (aSuggestion
     
     var oDiv = null;
     this.layer.innerHTML = "";  //clear contents of the layer
+    var aSuggestionsLen = (aSuggestions ? aSuggestions.length : 0);
     // Display 10 top suggestion only
-    var numberSuggestShowed = (aSuggestions.length >= 10) ? 10 : (aSuggestions.length);
+    var numberSuggestShowed = (aSuggestionsLen >= 10) ? 10 : (aSuggestionsLen);
     for (var i=0; i < numberSuggestShowed; i++) {
         oDiv = document.createElement("div");
         oDiv.appendChild(document.createTextNode(aSuggestions[i]));
