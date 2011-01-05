@@ -78,6 +78,12 @@ visibility: hidden;
 
 .UISpaceActivitiesContainer {
   padding: 10px 10px 20px 10px;
+  background: white;
+}
+
+.UISpaceActivitiesContainer .UIDisplaySpaceActivities .UIActivitiesLoader{
+  padding: 4px;
+  background: #fbfbfb;
 }
 
 .UISpaceActivityStreamPortlet .link {

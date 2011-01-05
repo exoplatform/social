@@ -278,7 +278,7 @@ a:VISITED {
  * Refactor to share the css with Spaces
  */
 .UIPeoplePortlet .ContainerSpace{
-  padding:8px 24px 8px 28px;
+  background: white;
 }
 
 .UIPeoplePortlet .ATitleBarL {

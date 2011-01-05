@@ -110,6 +110,23 @@ ul {
 	padding: 0px;
 }
 
-.UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock {
-	background: #eee !important;
+.UIPageBody .BLPagebody {
+    background:none;
+    height: 10px;
+    padding-left: 0px;
+}
+
+.UIPageBody .BRPagebody {
+    background:none;
+    height: 10px;
+    padding-right: 0px;
+}
+
+.UIPageBody .BMPagebody {
+    background:none;
+    height: 10px;
+}
+
+.UITabPaneDashboard {
+    padding: 0px;
 }

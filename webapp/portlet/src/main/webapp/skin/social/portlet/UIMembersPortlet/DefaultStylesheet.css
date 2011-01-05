@@ -66,6 +66,10 @@
   margin-left:190px;
 }
 
+.UIProfileSpace .ContainerSpace .clzz{
+  background: #fbfbfb;
+}
+
 .UIProfileSpace .ContainerSpace .PortletContent {
   background:#FBFBFB none repeat scroll 0 0;
   color:#3A3A3A;
