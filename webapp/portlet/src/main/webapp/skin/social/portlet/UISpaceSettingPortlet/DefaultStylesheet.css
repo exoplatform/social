@@ -24,7 +24,7 @@
 }
 
 .UISpaceSettingPortlet .UISpaceSetting .UITabPane{
-  padding: 0px 4px 4px 4px;
+  padding: 0 4px 4px 4px;
   background: #f7f7f9;
 }
 
@@ -106,12 +106,17 @@
 }
 
 .UISpaceSettingPortlet .UIAction {
-  padding:15px 0px 15px 0px;
+  padding:15px 0;
 }
 
 .UISpaceSettingPortlet .UIAction .ActionContainer {
   margin:auto;
   width:auto;
+}
+
+.UISpaceSettingPortlet .UIAction .UITable {
+	margin: 0;
+	padding: 0;
 }
 
 .UISpaceSettingPortlet .UIAction .ActionButton {
@@ -146,7 +151,7 @@
 
 /********************************UI Space Member********************************/
 .UISpaceSettingPortlet .UISpaceMember .AddInviteContent {
-  padding: 12px 0px 0px 8px;
+  padding: 12px 0 0 8px;
   height: 50px;
 }
 
@@ -160,7 +165,7 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .UIActionContainer {
-  padding: 8px 0px;
+  padding: 8px 0;
   margin-left: 320px;
   line-height: 28px;
   border-left: 2px solid #eeeeee;
@@ -213,7 +218,7 @@
 .UISpaceSettingPortlet .UISpaceMember .TitleContent {
   height: 24px;
   border-bottom: 1px solid #777777;
-  padding: 5px 0px;
+  padding: 5px 0;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .Title {
@@ -234,7 +239,7 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .AddInviteButton {
-  padding: 0px 12px;
+  padding: 0 12px;
   float: right;
 }
 
@@ -259,7 +264,7 @@
   width: 15px;
   height: 16px;
   cursor: pointer;
-  margin: 0px 120px;
+  margin: 0 120px;
   display: block;
 }
 
@@ -268,7 +273,7 @@
   width: 15px;
   height: 16px;
   cursor: pointer;
-  margin: 0px 41px;
+  margin: 0 41px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .ValidateButton {
@@ -318,7 +323,7 @@
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchInviteForm {
   padding:4px 16px;
-  margin: 8px 8px 0px 0px;
+  margin: 8px 8px 0 0;
   float: left;
   width: 590px;
 }
@@ -432,7 +437,7 @@
   width: 15px;
   height: 16px;
   line-height: 18px;
-  padding: 0px;
+  padding: 0;
   color: #7f7a77;
   font-size: 11px;
 }
@@ -442,20 +447,18 @@
   width: 15px;
   height: 16px;
   line-height: 18px;
-  padding: 0px;
+  padding: 0;
   color: #7f7a77;
   font-size: 11px;
   cursor: pointer;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton {
-	display: inline-block;
-	margin: auto;
-  width: auto;
-  _width: auto;
-  position: relative;
-  left: 45%;
   float: left;
+  display: inline;
+  width: auto;
+  margin: 0 0 0 45%;
+  _margin: 10px 0 0 45%;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .LeftButton {
@@ -464,17 +467,24 @@
   margin: 10px;
 }
 
-.UISpaceSettingPortlet .AddAplicationButton .RightButton {
-  background: url('DefaultSkin/background/RightButton3x26.gif') no-repeat right center;
-  padding-right: 3px;
+.UISpaceSettingPortlet .AddAplicationButton .RightButtonAutoWidth {
   width: auto;
 }
 
-.UISpaceSettingPortlet .AddAplicationButton .CenterButton {
-  background: url('DefaultSkin/background/CenterButton1x26.gif') repeat-x center;
-  line-height: 26px;
+.UISpaceSettingPortlet .AddAplicationButton .RightButton {
+	background: url('DefaultSkin/background/RightButton3x26.gif') no-repeat right center;
+  padding-right: 3px;
+}
+
+.UISpaceSettingPortlet .AddAplicationButton .CenterButtonAutoWidth {
   padding: 0 10px;
   clear: both;
+}
+
+.UISpaceSettingPortlet .AddAplicationButton .CenterButton {
+	background: url('DefaultSkin/background/CenterButton1x26.gif') repeat-x center;
+  line-height: 26px;
+  padding: 0 20px;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton .IconButton {
@@ -495,7 +505,7 @@
 
 .UISpaceSettingPortlet .AplicationButton {
   float: right;
-  margin: 0px 10px 8px 0px;
+  margin: 0 10px 8px 0;
 }
 
 .UISpaceSettingPortlet .AplicationButton .AplicationButtonL {
@@ -511,14 +521,14 @@
 .UISpaceSettingPortlet .AplicationButton .AplicationButtonC {
   background: url('DefaultSkin/background/ButtonSpaces.gif') repeat-x left -18px;
   line-height: 18px;
-  padding: 0px 10px;
+  padding: 0 10px;
   color: #7F7A77;
 }
 
 /*==============SPACE NAME===============================*/
 .UISpaceSettingPortlet .SpaceName {
   background: #559bc1;
-  padding: 0px 15px;
+  padding: 0 15px;
   margin: auto;
   line-height: 40px;
 }
@@ -572,7 +582,7 @@
 .UISpaceSettingPortlet .BackButton .BackButtonC {
   background: url('DefaultSkin/background/BackButtonC.gif') repeat-x center;
   line-height: 24px;
-  padding: 0px 10px;
+  padding: 0 10px;
 }
 
 .UISpaceSettingPortlet .BackButton .BackButtonIcon {
@@ -593,7 +603,7 @@
   cursor:pointer;
   font-weight:normal;
   line-height:31px;
-  padding:0px 8px 5px 4px;
+  padding:0 8px 5px 4px;
 }
 
 .UIHorizontalTabs .MessageTabDialog .DisabledTab .MiddleTab {
@@ -601,10 +611,14 @@
   cursor:pointer;
   font-weight:normal;
   line-height:31px;
-  padding:0px 8px 5px 4px;
+  padding:0 8px 5px 4px;
 }
 
 /* =============left column - space setting===============*/
+.UISpaceInfo {
+	height: 100% !important;
+}
+
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft {
   background: url('DefaultSkin/background/BGSettingAvatar.gif') no-repeat left top;
   float: left;
@@ -655,12 +669,18 @@
 .UISpaceInfo .SpaceContainer .SpaceInfoLeft .Arrow {
   background: url('DefaultSkin/background/Arrow.gif') no-repeat right 5px;
   line-height: 15px;
-  padding: 0px 12px 0px 5px;
+  padding: 0 12px 0 5px;
   font-size: 11px;
 }
 
 .UISpaceSettingPortlet .UISpaceInfo .UIAction {
-  padding: 5px 0px 20px 0px;
+  padding: 5px 0 20px 0;
+}
+
+.UISpaceSettingPortlet .UISpaceInfo .UISaveButton {
+	display: inline;
+	margin: 0 0 0 35%;
+	float: left;
 }
 
 .UIAvatarUploader .HorizontalLayout {
@@ -669,7 +689,7 @@
 }
 
 .UIAvatarUploader .InfoMessage {
-  padding: 5px 0px;
+  padding: 5px 0;
   text-align: center;
 }
 
@@ -709,7 +729,7 @@
 .UIAvatarUploader .UIAction .ButtonMiddle {
   background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
   line-height: 21px;
-  padding: 0px 14px;
+  padding: 0 14px;
 }
 
 .UIAvatarUploadContent .InfoTitle {
@@ -718,7 +738,7 @@
   line-height: 24px;
   font-size: 12px;
   font-weight: bold;
-  padding: 0px 10px;
+  padding: 0 10px;
 }
 
 .UIAvatarUploadContent .AvatarInfo {
@@ -759,5 +779,5 @@
 .UIAvatarUploadContent .UIAction .ButtonMiddle {
   background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
   line-height: 21px;
-  padding: 0px 14px;
+  padding: 0 14px;
 }

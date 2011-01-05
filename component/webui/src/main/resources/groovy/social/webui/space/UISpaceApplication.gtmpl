@@ -73,8 +73,8 @@
   <div class="AddAplicationButton">
     <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
     <div class="LeftButton" onclick="<%= addApplication %>">
-      <div class="RightButton">
-        <div class="CenterButton">
+      <div class="RightButton RightButtonAutoWidth">
+        <div class="CenterButton CenterButtonAutoWidth">
           <div class="IconButton"><%= _ctx.appRes(uicomponent.getId() + ".button.add")%></div>
         </div>
       </div>

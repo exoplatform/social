@@ -81,8 +81,8 @@
         </tbody>
       </table>
       <div style="clear: left;"><span></span></div>
-      <div class="UIAction"> 
-        <table class="ActionContainer">
+      <div class="UIAction UISaveButton"> 
+        <table class="ActionContainer UITable">
           <tbody>
             <tr>
               <td>
