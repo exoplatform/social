@@ -1,9 +1,21 @@
-All Social Gadgets are in the _opensocial.war_ file
+All Social Gadgets are in _opensocial.war_.
 
-|| Gadget name || Used REST service || Description ||
-| *Activities* | ActivitiesRestServices | To manage activities of users. For example, update status, like/unlike activities, comment activities, delete activities and delete comments.
-| *ApplicationList* | AppsRestService | To get information of all existing applications (portlet type) in the Portal. The gadget is used for the demo rest service to get application from the portal container. | 
-| *RSSFetch* | N/A | The number of rss per page is 10 by default; Get the rss from input url ( Default url is http://blog.exoplatform.org/feed/ ) |
-| *UserSpaces* | SpacesRestService |  |
-| *MySpaces* | SpacesRestService | To get information of spaces, including my space and pending spaces of current login users. This gadget is used for the demo using tab in writing gadgets. |
+h1. Activity Stream
+* *Description*: Manages activities of users. Some kinds of activities, such as update status, like/unlike activities, comment activities, delete activities and delete comments. 
+* *Used REST services*: ActivitiesRestServices
 
+h1. Social RSS Reader
+* *Description*: Fetches and parses RSS information from a specific url. 
+* *Description of user preferences*: The number of RSS per page is 10 by default. Get RSS from input URL (Default URL is http://blog.exoplatform.org/feed/).
+* *Used REST services*: N/A 
+
+
+h1. My Connections
+* *Description*: Displays a viewer's information and his connections' information.
+* *Description of user preferences*: Connections displayed per page. The number of connections displayed is 5 by default.
+* *Used REST services*: N/A
+
+
+h1. My Spaces
+* *Description*: Displays all spaces that a user has the "member" role.
+* *Used REST services*: SpacesRestService
