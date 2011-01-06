@@ -42,7 +42,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -53,7 +53,7 @@ import org.exoplatform.webui.event.EventListener;
  * @since Dec 15, 2008
  */
 @ComponentConfig(
-  lifecycle = UIApplicationLifecycle.class,
+  lifecycle = UIContainerLifecycle.class,
   template = "classpath:groovy/social/webui/space/UISpaceMenu.gtmpl",
   events = {
     @EventConfig(name = "RenameSpaceAppName", listeners = UISpaceMenu.RenameSpaceAppNameActionListener.class)
