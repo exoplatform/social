@@ -336,9 +336,10 @@ public class RelationshipManagerImpl implements RelationshipManager {
    */
   public List<Identity> findRelationships(Identity ownerIdentity, Type relationshipType) throws Exception {
     List<Relationship> allRelationships = getAll(ownerIdentity, relationshipType, null);
-    if (allRelationships == null || allRelationships.size() == 0)
-      return null;
     List<Identity> identities = new ArrayList<Identity>();
+    if (allRelationships == null || allRelationships.size() == 0) {
+      return identities;
+    }
     for(Relationship relationship : allRelationships) {
       identities.add(relationship.getPartner(ownerIdentity));
     }

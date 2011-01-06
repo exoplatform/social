@@ -147,40 +147,31 @@ public class ActivityManagerImpl implements ActivityManager {
     return storage.getActivitiesCount(owner);
   }
 
-  // TODO Find way to improve its performance
+  /**
+   * {@inheritDoc}
+   * The result list is returned with 30 maximum activities.
+   */
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity) throws ActivityStorageException {
+    return getActivitiesOfConnections(ownerIdentity, 0, 30);
+  }
+
   /**
    * {@inheritDoc}
    */
-  public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) throws ActivityStorageException {
     List<Identity> connectionList = null;
-    List<ExoSocialActivity> activityList = new ArrayList<ExoSocialActivity>();
     try {
       connectionList = identityManager.getConnections(ownerIdentity);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
-    if (connectionList == null || connectionList.size() == 0) {
-      return activityList;
-    }
-    for (Identity identity : connectionList) {
-      // default 20 activities each identity
-      List<ExoSocialActivity> tempActivityList = getActivities(identity);
-      if (tempActivityList == null || tempActivityList.size() == 0) {
-        continue;
-      }
-      String identityId = identity.getId();
-      for (ExoSocialActivity activity : tempActivityList) {
-        if (activity.getUserId().equals(identityId)) {
-          activityList.add(activity);
-        }
-      }
-    }
-    Collections.sort(activityList, Util.activityComparator());
-    return activityList;
+    return storage.getActivitiesOfConnections(connectionList, offset, limit);
   }
 
   /**
    * {@inheritDoc}
+   * By default, the activity list is composed of all spaces' activities.
+   * Each activity list of the space contains maximum 20 activities and are returned sorted starting from the most recent.
    */
   public List<ExoSocialActivity> getActivitiesOfUserSpaces(Identity ownerIdentity) {
     spaceService = this.getSpaceService();
@@ -196,7 +187,7 @@ public class ActivityManagerImpl implements ActivityManager {
     }
     for (Space space : accessibleSpaceList) {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getName());
+                                                                   space.getPrettyName());
       try {
         activityList.addAll(getActivities(spaceIdentity));
       } catch (Exception e) {

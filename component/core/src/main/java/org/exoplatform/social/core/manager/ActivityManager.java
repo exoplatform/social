@@ -97,9 +97,8 @@ public interface ActivityManager {
   List<ExoSocialActivity> getActivities(Identity identity, long start, long limit) throws ActivityStorageException;
 
   /**
-   * Gets activities of connections from an identity. The activities are sorted
-   * by time. Though by using cache, this still can be considered as the cause
-   * of the biggest performance problem.
+   * Gets activities of connections from an identity.
+   * The activities are returned sorted starting from the most recent.
    *
    * @param ownerIdentity
    * @return activityList
@@ -108,9 +107,19 @@ public interface ActivityManager {
   List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity) throws ActivityStorageException;
 
   /**
-   * Gets the activities from all spaces of a user. By default, the activity list
-   * is composed of all spaces' activities. Each activity list of the space contains
-   * maximum 20 activities and are sorted by time.
+   * Gets activities of connections from an identity by specifying offset and limit.
+   * The activities are returned sorted starting from the most recent.
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return the activities of the list of connections
+   * @since 1.2.0-GA
+   */
+  List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) throws ActivityStorageException;
+
+  /**
+   * Gets the activities from all spaces of a user.
    *
    * @param ownerIdentity
    * @return list of activities
@@ -121,8 +130,7 @@ public interface ActivityManager {
   /**
    * Gets the activity feed of an identity. This feed is the combination of all
    * the activities of his own activities, his connections' activities and his
-   * spaces' activities which are sorted by time. The latest activity is the
-   * first item in the activity list.
+   * spaces' activities which are returned sorted starting from the most recent.
    *
    * @param identity
    * @return all related activities of identity such as his activities, his
@@ -195,8 +203,8 @@ public interface ActivityManager {
    * @param activity
    * @return the stored activity
    * @throws Exception
-   * @deprecated use {@link #saveActivity(Identity, Activity)} instead. Will be
-   *             removed by 1.3.x
+   * @deprecated use {@link ActivityManager#saveActivity(org.exoplatform.social.core.identity.model.Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity)}  instead.
+   *             Will be removed by 1.3.x
    */
   ExoSocialActivity recordActivity(Identity owner, ExoSocialActivity activity) throws Exception;
 

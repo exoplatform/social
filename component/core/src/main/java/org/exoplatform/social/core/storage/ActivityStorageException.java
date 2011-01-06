@@ -36,6 +36,7 @@ public class ActivityStorageException extends ExoSocialException {
     FAILED_TO_SAVE_COMMENT("Failed_To_Save_Comment"),
     FAILED_TO_DELETE_COMMENT("Failed_To_Delete_Comment"),
     FAILED_TO_GET_ACTIVITIES("Failed_To_Get_Activities"),
+    FAILED_TO_GET_ACTIVITIES_OF_CONNECTIONS("Failed_To_Get_Activities_Of_Connections"),
     FAILED_TO_GET_ACTIVITIES_COUNT("Failed_To_Get_Activities_Count");
     
     private final String msgKey;

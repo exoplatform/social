@@ -18,17 +18,13 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
@@ -39,6 +35,7 @@ import org.exoplatform.social.common.jcr.NodeProperty;
 import org.exoplatform.social.common.jcr.NodeType;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -276,6 +273,53 @@ public class ActivityStorage {
     return null;
   }
 
+ /**
+   * Gets the activities for a list of identities.
+   *
+   * Access a activity stream of a list of identities by specifying the offset and limit.
+   *
+   * @param connectionList the list of connections for which we want to get
+   * the latest activities
+   * @param offset
+   * @param limit
+   * @return the activities related to the list of connections
+   * @since 1.2.0-GA
+   */
+  public List<ExoSocialActivity> getActivitiesOfConnections(List<Identity> connectionList, int offset, int limit) throws ActivityStorageException {
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+
+    if (connectionList == null || connectionList.isEmpty()) {
+      return activities;
+    }
+
+    try {
+      Session session = sessionManager.getOrOpenSession();
+      QueryBuilder queryBuilder = new QueryBuilder(session)
+              .select(NodeType.EXO_ACTIVITY, offset, limit)
+              .not().equal(NodeProperty.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT)
+              .and()
+              .group();
+      for (int i = 0, length = connectionList.size(); i < length; i++) {
+        Identity id = connectionList.get(i);
+        if (i != 0) {
+          queryBuilder.or();
+        }
+        queryBuilder.equal(NodeProperty.ACTIVITY_USER_ID, id.getId());
+      }
+      queryBuilder.endGroup()
+              .orderBy(NodeProperty.ACTIVITY_POSTED_TIME, QueryBuilder.DESC);
+      List<Node> nodes = queryBuilder.exec();
+      for (Node node : nodes) {
+        activities.add(getActivityFromActivityNode(node));
+      }
+    } catch (Exception e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_OF_CONNECTIONS, e.getMessage(), e);
+    } finally {
+      sessionManager.closeSession();
+    }
+
+    return activities;
+  }
 
   /**
    * Gets the activities by identity.
@@ -520,7 +564,7 @@ public class ActivityStorage {
     }
     //TODO clarify this: bodyTemplate vs bodyId
     activityNode.setProperty(NodeProperty.ACTIVITY_BODY_TEMPLATE, activity.getBodyId());
-    activityNode.setProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS, mapToArray(activity.getTemplateParams()));
+    activityNode.setProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS, Util.convertMapToStrings(activity.getTemplateParams()));
 
     if (activity.getTitleId() != null) {
       activityNode.setProperty(NodeProperty.ACTIVITY_TITLE_TEMPLATE, activity.getTitleId());
@@ -597,10 +641,10 @@ public class ActivityStorage {
       activity.setUserId(activityNode.getProperty(NodeProperty.ACTIVITY_USER_ID).getString());
     }
     if (activityNode.hasProperty(NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS)) {
-      activity.setLikeIdentityIds(ValuesToStrings(activityNode.getProperty(NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS).getValues()));
+      activity.setLikeIdentityIds(Util.convertValuesToStrings(activityNode.getProperty(NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS).getValues()));
     }
     if(activityNode.hasProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS)) {
-      activity.setTemplateParams(valuesToMap(activityNode.getProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS).getValues()));
+      activity.setTemplateParams(Util.convertValuesToMap(activityNode.getProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS).getValues()));
     }
     if(activityNode.hasProperty(NodeProperty.ACTIVITY_TITLE_TEMPLATE)) {
       activity.setTitleId(activityNode.getProperty(NodeProperty.ACTIVITY_TITLE_TEMPLATE).getString());
@@ -611,62 +655,4 @@ public class ActivityStorage {
     return activity;
   }
 
-  /**
-   * transforms an array {@link Value} into a map of string. The values are expected to be of string type and in the form key=value
-   * @param values
-   * @return
-   */
-  private Map<String, String> valuesToMap(Value[] values) {
-    if (values == null) {
-      return null;
-    }
-    Map<String, String> result = new HashMap<String, String>();
-    for (Value value : values) {
-      try {
-        String val = value.getString();
-        int equalIndex = val.indexOf("=");
-        if (equalIndex > 0) {
-          result.put(val.split("=")[0], val.substring(equalIndex + 1));
-        }
-      } catch (Exception e) {
-        ;// ignore
-      }
-    }
-    return result;
-  }
-
-  /**
-   * transforms a map into a string array where values are in the form key=value
-   *
-   * @param templateParams
-   * @return
-   */
-  private String[] mapToArray(Map<String, String> templateParams) {
-    if (templateParams == null) {
-      return null;
-    }
-    Set<String> keys = templateParams.keySet();
-    String [] result = new String[keys.size()];
-    int i = 0;
-    for (String key : keys) {
-      result[i++] = key + "=" + templateParams.get(key);
-    }
-    return result;
-  }
-
-  /**
-   * Values to strings.
-   *
-   * @param Val the jcr value
-   * @return the string[]
-   * @throws Exception the exception
-   */
-  private String [] ValuesToStrings(Value[] Val) throws Exception {
-    if(Val.length == 1) return new String[]{Val[0].getString()};
-    String[] Str = new String[Val.length];
-    for(int i = 0; i < Val.length; ++i) {
-      Str[i] = Val[i].getString();
-    }
-    return Str;
-  }
 }
