@@ -166,13 +166,10 @@
 	font-size: 14px;
 }
 
-.UISocialHomepage  .LeftSocialHomepage {
-	overflow:hidden;
-}
-
-.UISocialHomepage  .LeftSocialHomepage  .RowContent  {
+.UISocialHomepage .LeftSocialHomepage .RowContent  {
 	padding: 5px 0px 5px 24px; /* orientation=lt */
 	padding: 5px 24px 5px 0px; /* orientation=rt */
+	overflow:hidden;
 }
 
 .UISocialHomepage .LeftSocialHomepage .ProductTitle {
@@ -230,15 +227,17 @@
 }
 
 .UISocialHomepage .RightSocialHomepage  .BlockWebsite {
+	margin-left:11px;
 	padding-bottom:25px;
 	text-align:center;
-	width: 90px;
+	width:90px;
 }
 
 .UISocialHomepage .RightSocialHomepage  .BlockResource {
+	margin-left:9px;
 	padding-bottom:25px;
 	text-align:center;
-	width: 125px;
+	width:109px;
 }
 
 .UISocialHomepage .RightSocialHomepage .Icon {
@@ -279,10 +278,15 @@
 }
 
 .RightSocialHomepage .TxtLinkIcon {
-	font-weight: bold;
-	color: #565759;
-	font-size: 12px;
-	font-family: Lucida;
+	color:#565759;
+	display:inline-block;
+	font-family:Lucida;
+	font-size:12px;
+	font-weight:bold;
+}
+
+.RightSocialHomepage .BlockWebsite .TxtLinkIcon {
+	width:70px;
 }
 
 .UIPageBody .BLPagebody{
