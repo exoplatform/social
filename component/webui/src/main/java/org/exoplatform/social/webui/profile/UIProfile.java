@@ -39,7 +39,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
-import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -50,7 +49,6 @@ import org.exoplatform.webui.event.EventListener;
  */
 
 @ComponentConfig(
-  lifecycle = UIContainerLifecycle.class,
   template = "classpath:groovy/social/webui/profile/UIProfile.gtmpl",
   events = {
     @EventConfig(listeners=UIProfile.ChangeAvatarActionListener.class)
