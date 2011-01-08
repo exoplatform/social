@@ -105,7 +105,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       SpaceUtils.setNavigation(spaceNav);
       PortalConfig portalConfig = dataStorage.getPortalConfig(PortalConfig.GROUP_TYPE,
                                                               space.getGroupId());
-      LOG.info("portalConfig: " + portalConfig);
 
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);

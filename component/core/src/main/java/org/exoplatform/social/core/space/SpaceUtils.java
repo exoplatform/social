@@ -681,6 +681,7 @@ public class SpaceUtils {
       }
       newGroup.setGroupName(shortName);
       newGroup.setLabel(spaceName);
+      newGroup.setDescription("the " + parentGroup.getId() + "/" + shortName + " group");
       groupHandler.addChild(parentGroup, newGroup, true);
     } catch (Exception e) {
       if (e instanceof SpaceException) {
