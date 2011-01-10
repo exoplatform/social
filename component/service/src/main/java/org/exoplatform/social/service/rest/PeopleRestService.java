@@ -95,8 +95,6 @@ public class PeopleRestService implements ResourceContainer{
 
     Identity currentIdentity = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, currentUser, false);
     
-    // Eliminate current name in suggesting.
-    identities.remove(currentIdentity);
     Space space = getSpaceService().getSpaceByUrl(spaceURL);
     if (PENDING_STATUS.equals(typeOfRelation)) {
       addToNameList(currentIdentity, getRelationshipManager().getPending(currentIdentity, identities), nameList);
@@ -111,6 +109,12 @@ public class PeopleRestService implements ResourceContainer{
     } else { // Identities that match the keywords.
       for (Identity identity : identities) {
         String fullName = identity.getProfile().getFullName();
+        String userName = (String) identity.getProfile().getProperty(Profile.USERNAME);
+        
+        if (currentUser.equals(userName)) {
+          continue;
+        }
+        
         nameList.addName(fullName);
       }
     }
