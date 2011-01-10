@@ -148,6 +148,12 @@ public class PeopleRestService implements ResourceContainer {
     } else { // Identities that match the keywords.
       for (Identity identity : identities) {
         String fullName = identity.getProfile().getFullName();
+        String userName = (String) identity.getProfile().getProperty(Profile.USERNAME);
+        
+        if (currentUser.equals(userName)) {
+          continue;
+        }
+        
         nameList.addName(fullName);
       }
     }
