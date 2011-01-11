@@ -62,43 +62,48 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>link=My Status</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=My Status</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>-- Add Activites</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>UIComposerTextArea</td>
-	<td></td>
-</tr>
-<tr>
 	<td>type</td>
-	<td>UIComposerTextArea</td>
+	<td>composerInput</td>
 	<td>This is activity for User_Demo</td>
 </tr>
 <tr>
+	<td>keyPress</td>
+	<td>composerInput</td>
+	<td>\13</td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>//input[@id='UIComposerShareButton']</td>
+	<td>ShareButton</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//input[@id='UIComposerShareButton']</td>
+	<td>ShareButton</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
 	<td>-- Verify activity is added</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UIOwnerActivitiesShowHide']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='UIOwnerActivitiesShowHide']</td>
 	<td></td>
 </tr>
 <tr>
@@ -110,6 +115,11 @@
 	<td>verifyTextPresent</td>
 	<td></td>
 	<td>This is activity for User_Demo</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
@@ -128,23 +138,28 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@class='CommentContent']//textarea[@class='CommentTextarea']</td>
+	<td>document.forms[1].elements[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>//div[@class='CommentContent']//textarea[@class='CommentTextarea']</td>
+	<td>document.forms[1].elements[1]</td>
 	<td>This is Comment for Activity Demo</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@class='CommentContent']//input</td>
+	<td>document.forms[1].elements[2]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
 	<td></td>
 	<td>This is Comment for Activity Demo</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
@@ -192,28 +207,23 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>--Delete User Activity</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIOwnerAppendableRoot']/div[1]//div[@class='TitleContent']//div[@class='ActionContent']/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>mouseOver</td>
-	<td>//div[@id='UIOwnerAppendableRoot']/div[1]//div[@class='TitleContent']//div[@class='ActionContent']/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Delete</td>
+	<td>//div[2]/div/div[1]/div[2]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Delete</td>
+	<td>//div[2]/div/div[1]/div[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -246,7 +256,6 @@
 	<td></td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

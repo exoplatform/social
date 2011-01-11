@@ -62,43 +62,103 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>link=My Status</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=My Status</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>-- Add Activites</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>UIComposerTextArea</td>
-	<td></td>
-</tr>
-<tr>
 	<td>type</td>
-	<td>UIComposerTextArea</td>
+	<td>composerInput</td>
 	<td>This is activity for User_Demo</td>
 </tr>
 <tr>
+	<td>keyPress</td>
+	<td>composerInput</td>
+	<td>\13</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- share link</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>//input[@id='UIComposerShareButton']</td>
+	<td>//form[@id='UIComposer']/div[2]/div[2]/div/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//input[@id='UIComposerShareButton']</td>
+	<td>//form[@id='UIComposer']/div[2]/div[2]/div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- enter link</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>InputLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>InputLink</td>
+	<td>http://google.com</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- click attach button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>AttachButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>AttachButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- share all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>ShareButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>ShareButton</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
 	<td>-- Verify activity is added</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UIOwnerActivitiesShowHide']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='UIOwnerActivitiesShowHide']</td>
 	<td></td>
 </tr>
 <tr>
@@ -110,101 +170,6 @@
 	<td>verifyTextPresent</td>
 	<td></td>
 	<td>This is activity for User_Demo</td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--Delete User Activity</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UIOwnerAppendableRoot']/div[1]//div[@class='TitleContent']//div[@class='ActionContent']/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>mouseOver</td>
-	<td>//div[@id='UIOwnerAppendableRoot']/div[1]//div[@class='TitleContent']//div[@class='ActionContent']/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Delete</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Delete</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertConfirmation</td>
-	<td>Are you sure to delete this activity?</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextNotPresent</td>
-	<td>This is activity for User_Demo</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextNotPresent</td>
-	<td>This is activity for User_Demo</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- Add Attach Link</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='LinkAttach']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='LinkAttach']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>InputLink</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>InputLink</td>
-	<td>http://www.google.com/</td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>AddLinkButton</td>
-	<td>Attach</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>AddLinkButton</td>
-	<td>Attach</td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>2000</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//input[@id='UIComposerShareButton']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//input[@id='UIComposerShareButton']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Google</td>
-	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
@@ -222,28 +187,28 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='UIOwnerAppendableRoot']/div[1]//div[@class='TitleContent']//div[@class='ActionContent']/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>mouseOver</td>
-	<td>//div[@id='UIOwnerAppendableRoot']/div[1]//div[@class='TitleContent']//div[@class='ActionContent']/div[2]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>waitForElementPresent</td>
-	<td>link=Delete</td>
+	<td>//div[2]/div/div[1]/div[2]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Delete</td>
+	<td>//div[2]/div/div[1]/div[2]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertConfirmation</td>
 	<td>Are you sure to delete this activity?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>This is activity for User_Demo</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>This is activity for User_Demo</td>
 	<td></td>
 </tr>
 <tr>
@@ -266,7 +231,6 @@
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>
