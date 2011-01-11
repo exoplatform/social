@@ -130,3 +130,7 @@ ul {
 .UITabPaneDashboard {
     padding: 0px;
 }
+
+.UIPageBody .UIComponent .VIEW-PAGEBODY .UIPage .UIComponentBlock {
+	background: #eeeeee;
+}
