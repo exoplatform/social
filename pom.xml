@@ -138,6 +138,7 @@
     <module>server</module>
     <module>docs</module>
     <module>packaging</module>
+	<module>testsuite</module>
   </modules>
 
   <dependencyManagement>
