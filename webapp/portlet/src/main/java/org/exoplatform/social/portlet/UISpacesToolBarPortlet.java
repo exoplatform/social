@@ -73,6 +73,9 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
       if (ownerId.startsWith("/spaces")) {
         navigationParts = ownerId.split("/");
         space = spaceService.getSpaceByUrl(navigationParts[2]);
+        if (space == null) {
+          space = spaceService.getSpaceByGroupId("/spaces/" + navigationParts[2]);
+        }
         if (space == null) navigationItr.remove();
         if (!navigationParts[1].equals("spaces") && !spaces.contains(space)) navigationItr.remove();
       } else { // not spaces navigation

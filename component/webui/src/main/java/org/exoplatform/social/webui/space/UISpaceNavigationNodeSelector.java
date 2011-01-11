@@ -291,6 +291,14 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       this.copyOfTreeNodeData = copyNode;
    }
 
+   public TreeNodeData getEdittedTreeNodeData() {
+    return edittedTreeNodeData;
+   }
+
+   public void setEdittedTreeNodeData(TreeNodeData edittedTreeNodeData) {
+     this.edittedTreeNodeData = edittedTreeNodeData;
+   }
+
    static public class ChangeNodeActionListener extends EventListener<UITree> {
       public void execute(Event<UITree> event) throws Exception {
          String uri = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -818,5 +826,4 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
          cloneNode = b;
       }
    }
-
 }
