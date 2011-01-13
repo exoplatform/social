@@ -30,14 +30,17 @@ import org.exoplatform.social.core.manager.IdentityManager;
  * 
  * Created by hanh.vi@exoplatform.com
  * 
- * Jan 6, 2011  
+ * Jan 6, 2011
+ * @since 1.1.3
  */
 public class SocialUserEventListenerImpl extends UserEventListener {
   
   /**
    * Listens to postSave action for updating profile.
-   * 
-   * @since 1.1.3
+   *
+   * @param user
+   * @param isNew
+   * @throws Exception
    */
   public void postSave(User user, boolean isNew) throws Exception {
     if (!isNew) {
@@ -46,22 +49,15 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
 
       Profile profile = identity.getProfile();
-      String pUserName = (String) profile.getProperty(Profile.USERNAME);
       String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
       String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
       String pEmail = (String) profile.getProperty(Profile.EMAIL);
 
-      String uUserName = user.getUserName();
       String uFirstName = user.getFirstName();
       String uLastName = user.getLastName();
       String uEmail = user.getEmail();
 
       boolean hasUpdated = false;
-
-      if (pUserName == null) {
-        profile.setProperty(Profile.USERNAME, uUserName);
-        hasUpdated = true;
-      }
       
       if ((pFirstName == null) || (!pFirstName.equals(uFirstName))) {
         profile.setProperty(Profile.FIRST_NAME, uFirstName);
@@ -79,7 +75,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       }
 
       if (hasUpdated) {
-        idm.updateBasicInfo(profile);
+        idm.saveProfile(profile);
       }
     }
   }

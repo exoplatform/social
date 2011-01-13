@@ -169,6 +169,9 @@ public class IdentityManager {
     if (cachedIdentity != null) {
       if (loadProfile) {
         identityStorage.loadProfile(cachedIdentity.getProfile());
+        if (cachedIdentity.getProfile().getFullName().isEmpty()) {
+          updateProfileIfNeeded(cachedIdentity);
+        }
       }
       identityCacheById.put(id, cachedIdentity);
     }
@@ -281,6 +284,9 @@ public class IdentityManager {
            }
            if (forceLoadProfile) {
              identityStorage.loadProfile(result.getProfile());
+             if (result.getProfile().getFullName().isEmpty()) {
+               updateProfileIfNeeded(result);
+             }
            }
          }
          cachedIdentity = result;
@@ -293,13 +299,12 @@ public class IdentityManager {
     } else {
       if (forceLoadProfile) {
         identityStorage.loadProfile(cachedIdentity.getProfile());
+        if (cachedIdentity.getProfile().getFullName().isEmpty()) {
+          updateProfileIfNeeded(cachedIdentity);
+        }
       }
     }
-        
-    //FIXME SOC-1415
-    if (cachedIdentity.getProfile().getFullName().length() == 0) {
-      updateProfileIfNeeded(cachedIdentity);
-    }
+
     return cachedIdentity;
   }
 
@@ -417,6 +422,9 @@ public class IdentityManager {
              cachedIdentity.setId(storedIdentity.getId());
              if (loadProfile) {
                identityStorage.loadProfile(cachedIdentity.getProfile());
+               if (cachedIdentity.getProfile().getFullName().isEmpty()) {
+                 updateProfileIfNeeded(cachedIdentity);
+               }
              }
            } else {
              //save new identity
@@ -643,7 +651,7 @@ public class IdentityManager {
   }
 
   /**
-   * Updates profile in case there some problems with its informations.
+   * Updates profile in case there are some problems with its information.
    * 
    * @param identity
    * @return profile after reset.
@@ -653,27 +661,37 @@ public class IdentityManager {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     String userName = identity.getRemoteId();
     Profile profile = identity.getProfile();
-    
+
+    if (profile.getId() == null) {
+      return;
+    }
+
     try {
       OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
       User user = service.getUserHandler().findUserByName(userName);
-      
-      profile.setProperty(Profile.USERNAME, user.getUserName());
-      profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
-      profile.setProperty(Profile.LAST_NAME, user.getLastName());
-      profile.setProperty(Profile.EMAIL, user.getEmail());
-      if (profile.getId() == null) {
-        return;
-      } else {
-        updateBasicInfo(profile);
+      boolean hasChanged = false;
+      if (!user.getFirstName().equals((String)profile.getProperty(Profile.FIRST_NAME))) {
+        profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
+        hasChanged = true;
+      }
+      if (!user.getLastName().equals((String)profile.getProperty(Profile.LAST_NAME))) {
+        profile.setProperty(Profile.LAST_NAME, user.getLastName());
+        hasChanged = true;
+      }
+      if (!user.getEmail().equals((String)profile.getProperty(Profile.LAST_NAME))) {
+        profile.setProperty(Profile.LAST_NAME, user.getLastName());
+        hasChanged = true;
+      }
+
+      if (hasChanged) {
+        saveProfile(profile);
+        identity.setProfile(profile);
       }
     } catch (Exception e) {
-      LOG.warn("Problems in reseting profile information");
+      LOG.warn("Problems in reseting profile information", e);
     }
-    
-    identity.setProfile(profile);
-    saveIdentity(identity);
   }
+
   
   private IdentityProvider<?> getIdentityProvider(String providerId) {
     IdentityProvider<?> provider = identityProviders.get(providerId);
