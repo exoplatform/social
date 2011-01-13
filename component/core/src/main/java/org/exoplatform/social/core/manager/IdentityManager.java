@@ -22,11 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.jcr.LockManager;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.IdentityProviderPlugin;
@@ -290,6 +294,11 @@ public class IdentityManager {
       if (forceLoadProfile) {
         identityStorage.loadProfile(cachedIdentity.getProfile());
       }
+    }
+        
+    //FIXME SOC-1415
+    if (cachedIdentity.getProfile().getFullName().length() == 0) {
+      updateProfileIfNeeded(cachedIdentity);
     }
     return cachedIdentity;
   }
@@ -633,6 +642,39 @@ public class IdentityManager {
     this.identityStorage = identityStorage;
   }
 
+  /**
+   * Updates profile in case there some problems with its informations.
+   * 
+   * @param identity
+   * @return profile after reset.
+   * @throws Exception
+   */
+  private void updateProfileIfNeeded(Identity identity) {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    String userName = identity.getRemoteId();
+    Profile profile = identity.getProfile();
+    
+    try {
+      OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      User user = service.getUserHandler().findUserByName(userName);
+      
+      profile.setProperty(Profile.USERNAME, user.getUserName());
+      profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
+      profile.setProperty(Profile.LAST_NAME, user.getLastName());
+      profile.setProperty(Profile.EMAIL, user.getEmail());
+      if (profile.getId() == null) {
+        return;
+      } else {
+        updateBasicInfo(profile);
+      }
+    } catch (Exception e) {
+      LOG.warn("Problems in reseting profile information");
+    }
+    
+    identity.setProfile(profile);
+    saveIdentity(identity);
+  }
+  
   private IdentityProvider<?> getIdentityProvider(String providerId) {
     IdentityProvider<?> provider = identityProviders.get(providerId);
     if (provider == null) {

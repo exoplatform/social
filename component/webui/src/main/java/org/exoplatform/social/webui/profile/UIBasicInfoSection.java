@@ -18,16 +18,15 @@ package org.exoplatform.social.webui.profile;
 
 import java.util.List;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -147,10 +146,12 @@ public class UIBasicInfoSection extends UIProfileSection {
       UIApplication uiApp = context.getUIApplication();
 
       String userName = uiForm.getUIStringInput(Profile.USERNAME).getValue();
+      String firstName = uiForm.getUIStringInput(Profile.FIRST_NAME).getValue();
+      String lastName = uiForm.getUIStringInput(Profile.LAST_NAME).getValue();
+      String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();
       OrganizationService service = uiForm.getApplicationComponent(OrganizationService.class);
       User user = service.getUserHandler().findUserByName(userName);
       String oldEmail = user.getEmail();
-      String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();
 
       // Check if mail address is already used
       Query query = new Query();
@@ -164,32 +165,16 @@ public class UIBasicInfoSection extends UIProfileSection {
         return;
       }
 
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-
-      Profile p = uiForm.getProfile(true);
-      Profile updateProfile = new Profile(p.getIdentity());
-      updateProfile.setId(p.getId());
-
-      updateProfile.setProperty(Profile.FIRST_NAME, uiForm.getUIStringInput(Profile.FIRST_NAME).getValue());
-      updateProfile.setProperty(Profile.LAST_NAME, uiForm.getUIStringInput(Profile.LAST_NAME).getValue());
-      updateProfile.setProperty(Profile.EMAIL, newEmail);
-
-      IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      im.updateBasicInfo(updateProfile);
-
-      user.setFirstName((String) updateProfile.getProperty(Profile.FIRST_NAME));
-      user.setLastName((String) updateProfile.getProperty(Profile.LAST_NAME));
-      user.setEmail((String) updateProfile.getProperty(Profile.EMAIL));
+      user.setFirstName(firstName);
+      user.setLastName(lastName);
+      user.setEmail(newEmail);
       service.getUserHandler().saveUser(user, true);
       ConversationState.getCurrent().setAttribute(CacheUserProfileFilter.USER_PROFILE,user);
 
-      UIProfile uiProfile = uiForm.getParent();
-      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIHeaderSection.class));
-      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIBasicInfoSection.class));
-
-      UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication()
-                                           .getChild(UIWorkingWorkspace.class);
-      uiWorkingWS.updatePortletsByName(PORTLET_NAME_USER_PROFILE_TOOLBAR_PORTLET);
+      UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication().getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+      PortalRequestContext pContext = Util.getPortalRequestContext();
+      pContext.addUIComponentToUpdateByAjax(uiWorkingWS);
+      pContext.setFullRender(true);
     }
   }
 }
