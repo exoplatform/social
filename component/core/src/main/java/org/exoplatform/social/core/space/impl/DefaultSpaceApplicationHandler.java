@@ -89,8 +89,16 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    */
   private static final String PAGE_NAME_PREFERENCE = "{pageName}";
 
+  /**
+   * The {pageUrl} preference value pattern
+   * @since 1.1.3
+   */
   private static final String PAGE_URL_PREFERENCE = "{pageUrl}";
 
+  /**
+   * The {spaceUrl} preference value pattern
+   * @since 1.1.3
+   */
   private static final String SPACE_URL_PREFERENCE = "{spaceUrl}";
 
   private PortalContainer                                    container              = PortalContainer.getInstance();

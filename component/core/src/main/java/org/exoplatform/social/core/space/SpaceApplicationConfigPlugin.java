@@ -29,6 +29,7 @@ import org.exoplatform.container.xml.InitParams;
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Sep 1, 2010
  * @copyright eXo SAS
+ * @since     1.1.3
  */
 public class SpaceApplicationConfigPlugin extends BaseComponentPlugin {
 
