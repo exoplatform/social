@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.ComponentRequestLifecycle;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -30,10 +32,8 @@ import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.IdentityProvider;
-import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.IdentityManager;
 
 
 /**
@@ -121,10 +121,13 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public User findByRemoteId(String remoteId) {
     User user;
     try {
+      RequestLifeCycle.begin((ComponentRequestLifecycle)organizationService);
       UserHandler userHandler = organizationService.getUserHandler();
       user = userHandler.findUserByName(remoteId);
     } catch (Exception e) {
       return null;
+    } finally {
+      RequestLifeCycle.end();
     }
     return user;
   }
