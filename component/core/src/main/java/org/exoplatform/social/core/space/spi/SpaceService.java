@@ -19,6 +19,7 @@ package org.exoplatform.social.core.space.spi;
 import java.util.List;
 
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
+import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 
@@ -692,6 +693,22 @@ public interface SpaceService {
    *
    * @return
    */
-  String[] getPortletsPrefsRequired();
+  String [] getPortletsPrefsRequired();
 
+  /**
+   * Sets configuration plugin for initializing applications when creating a new space.
+   *
+   * @param spaceApplicationConfigPlugin
+   * @since 1.1.3
+   */
+  void setSpaceApplicationConfigPlugin(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin);
+
+  /**
+   * Gets the configuration of applications to be initialized when creating a new space.
+   *
+   * @return
+   * @since 1.1.3
+   */
+  SpaceApplicationConfigPlugin getSpaceApplicationConfigPlugin();
+  
 }

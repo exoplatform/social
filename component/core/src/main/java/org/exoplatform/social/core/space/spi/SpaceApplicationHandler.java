@@ -18,6 +18,7 @@ package org.exoplatform.social.core.space.spi;
 
 import java.util.List;
 
+import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 
@@ -34,8 +35,21 @@ public interface SpaceApplicationHandler {
    * Add apps to this space.
    * @param space
    * @throws SpaceException
+   * @deprecated  Use {@link #initApps(org.exoplatform.social.core.space.model.Space, org.exoplatform.social.core.space.SpaceApplicationConfigPlugin)} instead.
+   *              Will be removed by 1.2.0-GA
    */
   public void initApp(Space space, String homeNodeApp, List<String> apps) throws SpaceException;
+
+
+  /**
+   * Initialize home space applications and space applications.
+   *
+   * @param space
+   * @param spaceApplicationConfigPlugin
+   * @throws SpaceException
+   * @since 1.1.3
+   */
+  public void initApps(Space space, SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) throws SpaceException;
 
   /**
    * De-initialize

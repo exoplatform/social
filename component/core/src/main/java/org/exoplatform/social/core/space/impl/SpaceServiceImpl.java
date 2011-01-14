@@ -43,6 +43,8 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
+import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
+import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceLifecycle;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
@@ -67,10 +69,6 @@ public class SpaceServiceImpl implements SpaceService {
 
   final static public String                   MANAGER                  = "manager";
 
-  private String                               homeNodeApp;
-
-  private List<String>                         apps                     = null;
-
   private SpaceStorage                         storage;
 
   private OrganizationService                  orgService               = null;
@@ -83,6 +81,8 @@ public class SpaceServiceImpl implements SpaceService {
 
   String []                                    portletPrefsRequireds = null;
   List<String>                                 portletPrefsRequired = null;
+
+  private SpaceApplicationConfigPlugin         spaceApplicationConfigPlugin;
   /**
    * SpaceServiceImpl constructor Initialize
    * <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
@@ -93,18 +93,47 @@ public class SpaceServiceImpl implements SpaceService {
   @SuppressWarnings("unchecked")
   public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage) throws Exception {
     storage = spaceStorage;
-    Iterator<?> it = params.getValuesParamIterator();
-    apps = new ArrayList<String>();
-    while (it.hasNext()) {
-      ValuesParam param = (ValuesParam) it.next();
-      String name = param.getName();
-      if (name.endsWith("homeNodeApp")) {
-        homeNodeApp = param.getValue();
-      }
-      if (name.endsWith("apps")) {
-        apps = param.getValues();
+    //backward compatible
+    if (params != null) {
+      LOG.warn("The SpaceService configuration you attempt to use is deprecated, please update it by" +
+              "using external-component-plugins configuration");
+      spaceApplicationConfigPlugin = new SpaceApplicationConfigPlugin();
+      Iterator<?> it = params.getValuesParamIterator();
+
+      while (it.hasNext()) {
+        ValuesParam param = (ValuesParam) it.next();
+        String name = param.getName();
+        if (name.endsWith("homeNodeApp")) {
+          String homeNodeApp = param.getValue();
+          SpaceApplication spaceHomeApplication = new SpaceApplication();
+          spaceHomeApplication.setPortletName(homeNodeApp);
+          spaceHomeApplication.setAppTitle(homeNodeApp);
+          spaceHomeApplication.setIcon("SpaceHomeIcon");
+          spaceApplicationConfigPlugin.setHomeApplication(spaceHomeApplication);
+        }
+        if (name.endsWith("apps")) {
+          List<String> apps = param.getValues();
+          for (String app : apps) {
+            String[] splitedString = app.trim().split(":");
+            String appName;
+            boolean isRemovable;
+            if (splitedString.length >= 2) {
+              appName = splitedString[0];
+              isRemovable = Boolean.getBoolean(splitedString[1]);
+            } else { //suppose app is just the name
+              appName = app;
+              isRemovable = false;
+            }
+            SpaceApplication spaceApplication = new SpaceApplication();
+            spaceApplication.setPortletName(appName);
+            spaceApplication.isRemovable(isRemovable);
+
+            spaceApplicationConfigPlugin.addToSpaceApplicationList(spaceApplication);
+          }
+        }
       }
     }
+
   }
 
   /**
@@ -178,7 +207,7 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -310,7 +339,7 @@ public class SpaceServiceImpl implements SpaceService {
       // Gets users in group and then invites user to join into space.
       OrganizationService org = getOrgService();
       try {
-        
+
         // Cannot use due to http://jira.exoplatform.org/browse/EXOGTN-173
         //ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
         //User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
@@ -385,28 +414,21 @@ public class SpaceServiceImpl implements SpaceService {
     initApps(space);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   */
   public void initApps(Space space) throws SpaceException {
-    SpaceApplicationHandler spaceAppHandler = getSpaceApplicationHandler(space);
-    spaceAppHandler.initApp(space, homeNodeApp, apps);
-    for (String app : apps) {
-      app = app.trim();
-      String[] splited = app.split(":");
-      if (splited.length != 2) {
-        LOG.error("app has problem with status value of form: [appId:isRemovable]");
-        return;
-      }
-      boolean isRemovable;
-      if (splited[1].equals("true")) {
-        isRemovable = true;
-      } else {
-        isRemovable = false;
-      }
-      // setApp(space, splited[0], isRemovable, Space.INSTALL_STATUS);
-      setApp(space, splited[0], splited[0], isRemovable, Space.ACTIVE_STATUS);
+    SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
+    spaceApplicationHandler.initApps(space, getSpaceApplicationConfigPlugin());
+    for (SpaceApplication spaceApplication : getSpaceApplicationConfigPlugin().getSpaceApplicationList()) {
+      setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(), Space.ACTIVE_STATUS);
     }
-
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public void deInitApps(Space space) throws SpaceException {
     SpaceApplicationHandler appHander = getSpaceApplicationHandler(space);
     appHander.removeApplications(space);
@@ -1072,6 +1094,24 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public String [] getPortletsPrefsRequired() {
     return this.portletPrefsRequireds;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void setSpaceApplicationConfigPlugin(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) {
+    // If not specify homeApplication config, use default from Social
+    if (spaceApplicationConfigPlugin.getHomeApplication() == null) {
+      spaceApplicationConfigPlugin.setHomeApplication(spaceApplicationConfigPlugin.getHomeApplication());
+    }
+    this.spaceApplicationConfigPlugin = spaceApplicationConfigPlugin;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public SpaceApplicationConfigPlugin getSpaceApplicationConfigPlugin() {
+    return spaceApplicationConfigPlugin;
   }
 
   /**
