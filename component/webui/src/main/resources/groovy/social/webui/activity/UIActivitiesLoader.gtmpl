@@ -33,7 +33,7 @@
      if (uicomponent.isExtendLoader()) {
        %>
         <script type="text/javascript">
-          try{document.getElementById("uiActivitiesLoadButton").style.display = "none";}catch(e){};
+          try{document.getElementById("UIActivitiesLoadButton").style.display = "none";}catch(e){};
         </script>
        <%
      } else {

@@ -27,6 +27,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -147,6 +149,16 @@ public class UIActivitiesLoader extends UIContainer {
       List<Activity> activities = loadActivities(currentLoadIndex, loadingCapacity);
       if (activities.size() < loadingCapacity) {
         setUnableLoadNext(true);
+      }
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+      if (uiUserActivitiesDisplay != null) {
+        int currentIdx = currentLoadIndex + loadingCapacity;
+        List<Activity> activitiesT = loadActivities(currentIdx, loadingCapacity);
+        int moreActivities = activitiesT.size();
+        if ((UIUserActivitiesDisplay.DisplayMode.SPACES.equals(uiUserActivitiesDisplay.getSelectedDisplayMode())) 
+            && (moreActivities == 0)) {
+          setUnableLoadNext(true);
+        }
       }
       activitiesContainer.setActivityList(activities);
     } catch (Exception e) {
