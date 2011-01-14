@@ -96,6 +96,7 @@ h1. SpaceService
 |*getSpaceByName*(String spaceName) throws SpaceException|{{spaceName}}|Space|Gets a space by its space name.|
 |*getSpacesByFirstCharacterOfName*(String firstCharacterOfName) throws SpaceException|{{firstCharacterOfName}}|  List<Space> - all spaces which have first character of name matched the input string.|Gets all spaces has the name starting with the input character.|
 |*getSpacesBySearchCondition*(String condition) throws Exception|{{condition - the input condition}}| List<Space> - a list of spaces|Gets all spaces which has the name or the description that matches the input condition.|
+|*getSpaceByGroupId*(String groupId) throws SpaceException;|{{groupId- the group id of the space }}| Space|Gets a space by its group id. |
 |*getSpaceById*(String spaceId) throws SpaceException|{{spaceId- Id of that space}}|Space - space with the id specified|Gets a space by its id.|
 |*getSpaceByUrl*(String spaceUrl) throws SpaceException|{{spaceUrl - url of space}}|Space - the space with string url specified|Gets a space by its url.|
 |*getSpaces*(String userId) throws SpaceException|{{userId - Id of the user}}| List<Space> - all spaces of a user in which the user is a member|Gets spaces of a user in which that user is a member.|
