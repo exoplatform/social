@@ -262,8 +262,10 @@
         <div class="ContentBox">
           <div class="Content">
             <a href="$commenterProfileUri"><span class="Commenter">$commenterFullName<span></a><br />
-              $commentMessage
-            <br/>
+            <div class="ContentBlock">
+            	$commentMessage
+	            <br/>
+            </div>
           </div>
           <div class="LinkCM">
             <span class="DateTime">$commentPostedTime</span>

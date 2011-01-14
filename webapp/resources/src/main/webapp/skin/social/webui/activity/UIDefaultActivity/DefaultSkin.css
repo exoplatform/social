@@ -46,14 +46,16 @@
   background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll left -143px transparent;
   float:left;
   height:40px;
-  padding-left:3px;
-  padding-top:3px;
-  width:42px;
+  padding: 3px 0 0 3px;
+  width:4%;
+  margin: 0;
 }
 
 .UIActivity .AvatarCM img {
   height:36px;
   width:38px;
+  margin: 0;
+  padding: 0;
 }
 
 .UIActivity .DownIconCM {
@@ -98,8 +100,17 @@
   padding:0 0 0 74px;
 }
 
+.UIActivity .ContentBox .Content .ContentBlock {
+	margin: 0; 
+	padding: 0; 
+	float: left; 
+	text-align: justify;
+}
+
 .UIActivity .CommentBox .ContentBox {
-  padding:0 0 0 4px;
+	margin: 0 0 0 4px;;
+  padding:0;
+  width: 95%;
   float: left;
 }
 
