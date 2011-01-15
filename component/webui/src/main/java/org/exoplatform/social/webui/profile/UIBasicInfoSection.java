@@ -151,7 +151,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       // Check if mail address is already used
       Query query = new Query();
       query.setEmail(newEmail);
-      if (!oldEmail.equals(newEmail) && service.getUserHandler().findUsersByQuery(query).getSize() > 0) {
+      if (!oldEmail.equals(newEmail) && service.getUserHandler().findUsers(query).getAll().size() > 0) {
         // Be sure it keep old value
         user.setEmail(oldEmail);
         Object[] args = { userName };
