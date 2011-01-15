@@ -1,12 +1,16 @@
 h1.Components
 h2. ActivityManager
 || Configuration name || Data type || Default Value || Description ||
-| allowedTags | {{String list}} | b, i, a, span, em, strong, p, ol, ul,li, br, img | html tags |
+| allowedTags | {{String list}} | {{b, i, a, span, em, strong, p, ol, ul,li, br, img}} | html tags |
 
 h2. SpaceService
 || Configuration name || Data type || Default Value || Description ||
-| SpaceActivityStreamPortlet | {{String}} | SpaceActivityStreamPortlet |  |
-| space.apps | {{String list}} | {{DashboardPortlet:true}}, {{SpaceSettingPortlet:false}}, {{MembersPortlet:true}} |  |
+| space.homeNodeApp | {{String}} | {{SpaceActivityStreamPortlet}} | The home application for a space |
+| space.apps | {{String list}} | {{DashboardPortlet:true}}, {{SpaceSettingPortlet:false}}, {{MembersPortlet:true}} | The space applications |
+
+{note}
+Deprecated: Use external-component-plugins instead: org.exoplatform.social.core.space.SpaceApplicationConfigPlugin
+{note}
 
 h2. IdentityManager
 || Configuration name || Data type || Default Value || Description ||
@@ -35,7 +39,13 @@ h2. MentionsProcessor
 
 h2. PortletPreferenceRequiredPlugin
 || Configuration name || Data type || Default Value || Description ||
-| portletsPrefsRequired | {{String list}} | {{SpaceActivityStreamPortlet, SpaceSettingPortlet, MembersPortlet}} | 
+| portletsPrefsRequired | {{String list}} | {{SpaceActivityStreamPortlet, SpaceSettingPortlet, MembersPortlet}} | The portlet name which requires space URL preference|
+
+h2. SpaceApplicationConfigPlugin
+
+|| Configuration name || Data type || Description ||
+| spaceHomeApplication | {{SpaceApplicationConfigPlugin$SpaceApplication}} | The space application for the space home node| 
+|spaceApplicationList| {{SpaceApplicationConfigPlugin}} |space application list configuration|
 
 h2. AddNodeTypePlugin
 || Configuration name || Data type || Default Value || Description ||
@@ -66,13 +76,12 @@ h2. Components configuration
 <component>
     <key>org.exoplatform.social.core.space.spi.SpaceService</key>
     <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
+    <!-- Deprecated, Use external-component-plugins instead
     <init-params>
-      <!-- Configure the applications to install in a space -->
       <values-param>
         <name>space.homeNodeApp</name>
         <value>SpaceActivityStreamPortlet</value>
       </values-param>
-      <!-- Configure removable application or not <value>Application:removable</value> -->
       <values-param>
         <name>space.apps</name>
         <value>DashboardPortlet:true</value>
@@ -80,6 +89,7 @@ h2. Components configuration
         <value>MembersPortlet:true</value>
       </values-param>
     </init-params>
+    -->
   </component>
 {code}
 
@@ -88,23 +98,24 @@ h2. Components configuration
 | *space.apps* | {{String list}} | {{Porlets' name: true/false }} | {{DashboardPortlet:true}}; {{SpaceSettingPortlet:false}}; {{MembersPortlet:true}} |The list of configurations for portlets used as portlet applications. |
 
 h2. External plug-in configuration
+h3. PortletPreferenceRequiredPlugin
 {code:xml}
- <external-component-plugins>
-    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+<external-component-plugins>
+  <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
     <component-plugin>
       <name>portlets.prefs.required</name>
       <set-method>setPortletsPrefsRequired</set-method>
       <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
-	    <init-params>
-	      <values-param>
-	        <name>portletsPrefsRequired</name>
-	        <value>SpaceActivityStreamPortlet</value>
-	        <value>SpaceSettingPortlet</value>
-	        <value>MembersPortlet</value>
-	      </values-param>
-	    </init-params>
+      <init-params>
+        <values-param>
+          <name>portletsPrefsRequired</name>
+          <value>SpaceActivityStreamPortlet</value>
+          <value>SpaceSettingPortlet</value>
+          <value>MembersPortlet</value>
+        </values-param>
+      </init-params>
     </component-plugin>
-  </external-component-plugins>
+</external-component-plugins>
 {code}
 
 In which:
@@ -116,6 +127,85 @@ In which:
 
 || Name || Possible value || Default Value || Description ||
 | *portletsPrefsRequired* | {{Portlet names}} | {{SpaceActivityStreamPortlet; SpaceSettingPortlet; MembersPortlet}} | List of portlets which need to be saved and get the space context name. |
+
+h3. SpaceApplicationConfigPlugin
+{note}
+Since 1.1.3
+{note}
+{code:xml}
+ <external-component-plugins>
+    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+    <!-- Default applications to be installed when creating a new space -->
+    <component-plugin>
+      <name>Space Application Configuration</name>
+      <set-method>setSpaceApplicationConfigPlugin</set-method>
+      <type>org.exoplatform.social.core.space.SpaceApplicationConfigPlugin</type>
+      <init-params>
+
+        <object-param>
+          <name>spaceHomeApplication</name>
+          <description>Space Home Application</description>
+          <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+            <field name="portletApp"><string>social-portlet</string></field>
+            <field name="portletName"><string>SpaceActivityStreamPortlet</string></field>
+            <field name="appTitle"><string>Home</string></field>
+            <!--<field name="icon"><string>SpaceHomeIcon</string></field>-->
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>spaceApplicationListConfig</name>
+          <description>space application list configuration</description>
+          <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin">
+            <field name="spaceApplicationList">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                    <field name="portletApp"><string>dashboard</string></field>
+                    <field name="portletName"><string>DashboardPortlet</string></field>
+                    <field name="appTitle"><string>Dashboard</string></field>
+                    <field name="removable"><boolean>true</boolean></field>
+                    <field name="order"><int>1</int></field>
+                    <field name="uri"><string>dashboard</string></field>
+                    <!--<field name="icon"><string>SpaceDashboardIcon</string></field>-->
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                    <field name="portletApp"><string>social-portlet</string></field>
+                    <field name="portletName"><string>SpaceSettingPortlet</string></field>
+                    <field name="appTitle"><string>Space Settings</string></field>
+                    <field name="removable"><boolean>false</boolean></field>
+                    <field name="order"><int>2</int></field>
+                    <field name="uri"><string>settings</string></field>
+                    <!--<field name="icon"><string>SpaceSettingsIcon</string></field>-->
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                    <field name="portletApp"><string>social-portlet</string></field>
+                    <field name="portletName"><string>MembersPortlet</string></field>
+                    <field name="appTitle"><string>Members</string></field>
+                    <field name="removable"><boolean>true</boolean></field>
+                    <field name="order"><int>3</int></field>
+                    <field name="uri"><string>members</string></field>
+                    <!--<field name="icon"><string>SpaceMembersIcon</string></field>-->
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+      </init-params>
+    </component-plugin>
+ </external-component-plugins>
+{code}
+
+In which:
+
+|| Name || Set-method || Type || Description  ||
+| *Space Application Configuration* | setSpaceApplicationConfigPlugin | org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin | Configure the list of space applications to be installed when creating a new space. |
 
 h1. Activity Manager
 
