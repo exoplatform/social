@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.component.ComponentRequestLifecycle;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -119,10 +121,13 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public User findByRemoteId(String remoteId) {
     User user;
     try {
+      RequestLifeCycle.begin((ComponentRequestLifecycle)organizationService);
       UserHandler userHandler = organizationService.getUserHandler();
       user = userHandler.findUserByName(remoteId);
     } catch (Exception e) {
       return null;
+    } finally {
+      RequestLifeCycle.end();
     }
     return user;
   }
