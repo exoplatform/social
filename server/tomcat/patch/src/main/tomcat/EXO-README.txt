@@ -1,5 +1,5 @@
 =====================================================
-    Release Notes - eXo Social - Version 1.1.2
+    Release Notes - eXo Social - Version 1.1.3
 =====================================================
 
 ===============
@@ -28,27 +28,32 @@ eXo Social is composed of 2 modules :
 =============
 2 What's new?
 =============
-
+- Allow to customize default application names
 - Performance improvement
-- Introduce NavigationCleanupFilter instead of NavigationCleanupServlet
-- Move sample gadgets to socialdemo.war, keep core gadgets in opensocial.war
-- Avatar is resized when uploaded and displayed.
-- Clean up console logging
-- Fix critical bug: Can't publish activities in a space using the opensocial API
-- Do not use json string in document and link activity
-- Give the user a hint why he does not see any groups in "bind groups"
-- Define keys for the profile properties in the API
+  + Improve the accesses to the Spaces
+  + Improve performance by using properties name pattern
+  + Improve the method getActivitiesOfConnections(Identity)
+  + Improve Auto Suggest
+- Add description for space's group navigation
+- http://localhost:8080 point to the demo portal
+
+- New classes are introduced:
+  + SocialUserEventListenerImpl
+  + SpaceApplicationConfigPlugin
 
 - API Changes:
-+ RelationshipManager#findRelationships(Identity, Relationship.Type) (new)
-+ ActivityManager#getActivityFeed(Identity identity) (new)
-+ ActivityManager#getActivitiesOfConnections(Identity) return sorted list by time
-+ ActivityManager#getActivitiesOfUserSpaces(Identity) return sorted list by time
-+ Defined keys in Profile: GENDER, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, AVATAR,
-  EXPERIENCES, EXPERIENCES_COMPANY, EXPERIENCES_SKILL, EXPERIENCE_START_DATE,
-  EXPERIENCES_END_DATE, EXPERIENCES_IS_CURRENT, EXPERIENCES_DESCRIPTION, POSITION,
-  CONTACT_PHONES, CONTACT_IMS, CONTACT_URLS
-+ SpaceIdentityProvider supports getSpaceByName; before just getSpaceById() is supported.
+  New:
+  + List<Activity> ActivityManager#getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit
+  + Identity Relationship#getPartner(Identity identity)
+  + void SpaceApplicationHandler#initApps(Space space, SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) throws SpaceException
+  + Space SpaceService#getSpaceByGroupId(String groupId) throws SpaceException
+  + void SpaceService#setSpaceApplicationConfigPlugin(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin)
+  + SpaceApplicationConfigPlugin SpaceService#getSpaceApplicationConfigPlugin()
+
+  Deprecated:
+  + Activity ActivityManager#recordActivity(Identity owner, Activity activity) throws Exception
+  + Object Profile#getPropertyValue(final String name)
+  + void SpaceService#initApp(Space space) throws SpaceException
 
 =========
 3 INSTALL
@@ -122,6 +127,42 @@ All those accounts have the default password "gtn".
 ===========
 5 CHANGELOG
 ===========
+-1.1.3
+
+** Bug
+    * [SOC-1264] - Backport - After change space's display name, the space is not displayed on "spaces" navigation anymore
+    * [SOC-1300] - Backport - Cannot close add/edit page node popup in space's navigation setting
+    * [SOC-1314] - can not load image when change avatar on IE7
+    * [SOC-1327] - Keep white space when user's activities, space activities, connection's activities is empty
+    * [SOC-1375] - [Profile] can not update user's experiences and contacts
+    * [SOC-1385] - [Soc] show [object error] when send request or accept/deny friend request, search people on IE7
+    * [SOC-1390] - IndexOutOfBoundsException when we try to get more activities
+    * [SOC-1393] - Error occurs when searching  after selecting one page
+    * [SOC-1405] - Show wrong add application button when change language to French
+    * [SOC-1415] - Sometimes profile display "null" value for username
+    * [SOC-1416] - Problem with "More" activities
+    * [SOC-1420] - Missing translations in French
+    * [SOC-1432] - Useless source code causing some problems
+    * [SOC-1438] - Can't publish an activity in a space activity stream
+
+** Improvement
+    * [SOC-1068] - Allow to customize default application names
+    * [SOC-1345] - Avoid concurrency Issues
+    * [SOC-1363] - Improve the accesses to the Spaces
+    * [SOC-1382] - [SOC] Don't have description for space's group navigation
+    * [SOC-1386] - Improve performance by using properties name pattern
+    * [SOC-1388] - http://localhost:8080 should point to the demo portal
+    * [SOC-1389] - Improve the method getActivitiesOfConnections(identity)
+    * [SOC-1401] - Improve Auto Suggest
+
+** Task
+    * [SOC-1355] - Review and update RelationshipManager java docs
+    * [SOC-1358] - Review and update SpaceService java docs
+    * [SOC-1400] - Move some common js stuff to social-resources
+    * [SOC-1424] - Should change to use UIContainerLifecycle instead of UIApplicationLifecycle for extending UIContainer
+    * [SOC-1436] - Align dependencies with EXOGTN 3.1.x
+
+
 - 1.1.2
 
 ** Bug
@@ -223,7 +264,7 @@ All those accounts have the default password "gtn".
     * [SOC-1066] - More incentive "Add New Space" button
     * [SOC-1069] - Use applications icons
 
-
+===================================================================================================
 - 1.1.0-GA
 
 ** Bug

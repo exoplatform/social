@@ -254,10 +254,9 @@ public class Profile {
    *
    * @param name the name
    * @return the property value
-   * @deprecated
+   * @deprecated Use {@link #getProperty(String)} instead.
    * @return
    */
-  @Deprecated
   public final Object getPropertyValue(final String name) {
     return getProperty(name);
   }

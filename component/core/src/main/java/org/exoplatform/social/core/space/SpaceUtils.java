@@ -142,7 +142,7 @@ public class SpaceUtils {
    * @param groupId
    * @return applications
    * @throws Exception
-   * @Deprecated
+   * @deprecated
    */
   static public List<Application> getApplications(String groupId) throws Exception {
 
