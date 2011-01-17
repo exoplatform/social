@@ -134,7 +134,7 @@ public class UIActivitiesLoader extends UIContainer {
 
   public void init() {
     try {
-      unableLoadNext = false;
+      unableLoadNext = true;
       currentLoadIndex = 0;
       isExtendLoader = false;
 
@@ -145,12 +145,12 @@ public class UIActivitiesLoader extends UIContainer {
       }
 
       List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
-      if (activities != null && activities.size() < loadingCapacity) {
-        setUnableLoadNext(true);
+      if (activityListAccess.getSize() > loadingCapacity) {
+        setUnableLoadNext(false);
       }
       activitiesContainer.setActivityList(activities);
     } catch (Exception e) {
-      LOG.error(e);
+      LOG.error(e.getMessage(), e);
     }
   }
 
