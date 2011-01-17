@@ -31,6 +31,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
  * Created by hanh.vi@exoplatform.com
  * 
  * Jan 17, 2011
+ * @since  1.2.0-GA
  */
 public class SocialUserEventListenerImpl extends UserEventListener {
   
