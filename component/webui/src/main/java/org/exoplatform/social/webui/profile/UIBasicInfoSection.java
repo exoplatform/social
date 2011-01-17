@@ -143,10 +143,12 @@ public class UIBasicInfoSection extends UIProfileSection {
       UIApplication uiApp = context.getUIApplication();
 
       String userName = uiForm.getUIStringInput(Profile.USERNAME).getValue();
+      String firstName = uiForm.getUIStringInput(Profile.FIRST_NAME).getValue();
+      String lastName = uiForm.getUIStringInput(Profile.LAST_NAME).getValue();
+      String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();
       OrganizationService service = uiForm.getApplicationComponent(OrganizationService.class);
       User user = service.getUserHandler().findUserByName(userName);
       String oldEmail = user.getEmail();
-      String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();
 
       // Check if mail address is already used
       Query query = new Query();
@@ -159,29 +161,14 @@ public class UIBasicInfoSection extends UIProfileSection {
         return;
       }
 
-      Profile p = uiForm.getProfile();
-      Profile updateProfile = new Profile(p.getIdentity());
-      updateProfile.setId(p.getId());
-
-      updateProfile.setProperty(Profile.FIRST_NAME, uiForm.getUIStringInput(Profile.FIRST_NAME).getValue());
-      updateProfile.setProperty(Profile.LAST_NAME, uiForm.getUIStringInput(Profile.LAST_NAME).getValue());
-      updateProfile.setProperty(Profile.EMAIL, newEmail);
-
-      Utils.getIdentityManager().updateBasicInfo(updateProfile);
-      user.setFirstName((String) updateProfile.getProperty(Profile.FIRST_NAME));
-      user.setLastName((String) updateProfile.getProperty(Profile.LAST_NAME));
-      user.setEmail((String) updateProfile.getProperty(Profile.EMAIL));
+      user.setFirstName(userName);
+      user.setFirstName(firstName);
+      user.setLastName(lastName);
+      user.setEmail(newEmail);
       service.getUserHandler().saveUser(user, true);
       ConversationState.getCurrent().setAttribute(CacheUserProfileFilter.USER_PROFILE,user);
 
       Utils.updateWorkingWorkSpace();
-//      UIProfile uiProfile = uiForm.getParent();
-//      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIHeaderSection.class));
-//      context.addUIComponentToUpdateByAjax(uiProfile.getChild(UIBasicInfoSection.class));
-//
-//      UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication()
-//                                           .getChild(UIWorkingWorkspace.class);
-//      uiWorkingWS.updatePortletsByName(PORTLET_NAME_USER_PROFILE_TOOLBAR_PORTLET);
     }
   }
 }

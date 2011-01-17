@@ -18,10 +18,14 @@ package org.exoplatform.social.core.manager;
 
 import java.util.List;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -107,6 +111,9 @@ public class CachingIdentityManager extends IdentityManagerImpl {
     if (cachedIdentity != null) {
       if (loadProfile) {
         this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
+        if (cachedIdentity.getProfile().getFullName().isEmpty()) {
+          updateProfileIfNeeded(cachedIdentity);
+        }
       }
       identityCacheById.put(id, cachedIdentity);
     }
@@ -139,6 +146,9 @@ public class CachingIdentityManager extends IdentityManagerImpl {
     }
     if (loadProfile && cachedIdentity.getProfile().getId() == null) {
       this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
+      if (cachedIdentity.getProfile().getFullName().isEmpty()) {
+        updateProfileIfNeeded(cachedIdentity);
+      }
     }
 
     return cachedIdentity;
@@ -191,6 +201,9 @@ public class CachingIdentityManager extends IdentityManagerImpl {
         }
         if (loadProfile) {
           this.getIdentityStorage().loadProfile(result.getProfile());
+          if (result.getProfile().getFullName().isEmpty()) {
+            updateProfileIfNeeded(result);
+          }
         }
       }
       cachedIdentity = result;
@@ -199,6 +212,9 @@ public class CachingIdentityManager extends IdentityManagerImpl {
       }
     } else if (loadProfile && cachedIdentity.getProfile().getId() == null) {
       this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
+      if (cachedIdentity.getProfile().getFullName().isEmpty()) {
+        updateProfileIfNeeded(cachedIdentity);
+      }
     }
     return cachedIdentity;
   }
@@ -247,5 +263,47 @@ public class CachingIdentityManager extends IdentityManagerImpl {
     this.getIdentityStorage().addOrModifyProfileProperties(profile);
     this.getIdentityProvider(profile.getIdentity().getProviderId()).onSaveProfile(profile);
     this.removeCacheForProfileChange(profile);
+  }
+  
+  /**
+   * Updates profile in case there are some problems with its information.
+   * 
+   * @param identity
+   * @return profile after reset.
+   * @throws Exception
+   */
+  private void updateProfileIfNeeded(Identity identity) {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    String userName = identity.getRemoteId();
+    Profile profile = identity.getProfile();
+
+    if (profile.getId() == null) {
+      return;
+    }
+
+    try {
+      OrganizationService service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      User user = service.getUserHandler().findUserByName(userName);
+      boolean hasChanged = false;
+      if (!user.getFirstName().equals((String)profile.getProperty(Profile.FIRST_NAME))) {
+        profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
+        hasChanged = true;
+      }
+      if (!user.getLastName().equals((String)profile.getProperty(Profile.LAST_NAME))) {
+        profile.setProperty(Profile.LAST_NAME, user.getLastName());
+        hasChanged = true;
+      }
+      if (!user.getEmail().equals((String)profile.getProperty(Profile.LAST_NAME))) {
+        profile.setProperty(Profile.LAST_NAME, user.getLastName());
+        hasChanged = true;
+      }
+
+      if (hasChanged) {
+        saveProfile(profile);
+        identity.setProfile(profile);
+      }
+    } catch (Exception e) {
+      LOG.warn("Problems in reseting profile information", e);
+    }
   }
 }

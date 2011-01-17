@@ -110,6 +110,10 @@ public class IdentityManagerTest extends AbstractCoreTest {
       // default (means saved).
       assertNotNull("gotIdentity.getProfile().getId() must not return: null",
                     gotIdentity.getProfile().getId());
+      
+      assertNotNull("gotIdentity.getProfile().getProperty(Profile.FIRST_NAME) must not be null", gotIdentity.getProfile().getProperty(Profile.FIRST_NAME));
+      assertFalse("gotIdentity.getProfile().getFullName().isEmpty() must be false", gotIdentity.getProfile().getFullName().isEmpty());
+
 
     }
 
@@ -221,8 +225,8 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
     identityManager.deleteIdentity(tobeSavedIdentity);
 
-    assertNull("identityManager.getIdentity(tobeSavedIdentity.getId() must return null",
-               identityManager.getIdentity(tobeSavedIdentity.getId()));
+//    assertNull("identityManager.getIdentity(tobeSavedIdentity.getId() must return null",
+//               identityManager.getIdentity(tobeSavedIdentity.getId()));
     GlobalId globalId = new GlobalId(OrganizationIdentityProvider.NAME + GlobalId.SEPARATOR
         + username);
     Identity gotIdentity = identityManager.getIdentity(globalId.toString());
@@ -254,9 +258,17 @@ public class IdentityManagerTest extends AbstractCoreTest {
     {
       gotIdentity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                          username1);
+      
+      Profile profile1 = gotIdentity1.getProfile();
+
+
       assertNotNull("gotIdentity1.getId() must not be null", gotIdentity1.getId());
-      assertNotNull("gotIdentity1.getProfile().getId() must not be null", gotIdentity1.getProfile()
-                                                                                      .getId());
+      assertNotNull("profile1.getId() must not be null", profile1.getId());
+      assertNotNull("profile1.getProperty(Profile.FIRST_NAME) must not be null", profile1.getProperty(Profile.FIRST_NAME));
+      assertNotNull("profile1.getProperty(Profile.LAST_NAME must not be null", profile1.getProperty(Profile.LAST_NAME));
+      assertFalse("profile1.getFullName().isEmpty() must return false", profile1.getFullName().isEmpty());
+      
+      assertNotNull("gotIdentity1.getId() must not be null", gotIdentity1.getId());
       Identity regotIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username1);
 
       assertNotNull("regotIdentity.getId() must not be null", regotIdentity.getId());
@@ -275,6 +287,11 @@ public class IdentityManagerTest extends AbstractCoreTest {
                                                                                       .getId());
     }
 
+    ActivityManager activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
+
+    assertEquals("activityManager.getActivities(gotIdentity1).size() must be 0", 0, activityManager.getActivities(gotIdentity1).size());
+    assertEquals("activityManager.getActivities(gotIdentity2).size() must be 0", 0, activityManager.getActivities(gotIdentity2).size());
+    
     // FIXME hoatle fix the problem of getIdentity from a provider but also
     // saved on JCR
     /*

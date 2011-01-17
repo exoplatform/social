@@ -78,6 +78,14 @@ public class ActivityStorageTest extends AbstractCoreTest {
     identityManager.deleteIdentity(johnIdentity);
     identityManager.deleteIdentity(maryIdentity);
     identityManager.deleteIdentity(demoIdentity);
+    assertEquals("assertEquals(activityStorage.getActivities(rootIdentity).size() must be 0",
+           0, activityStorage.getActivities(rootIdentity).size());
+    assertEquals("assertEquals(activityStorage.getActivities(johnIdentity).size() must be 0",
+           0, activityStorage.getActivities(johnIdentity).size());
+    assertEquals("assertEquals(activityStorage.getActivities(maryIdentity).size() must be 0",
+           0, activityStorage.getActivities(maryIdentity).size());
+    assertEquals("assertEquals(activityStorage.getActivities(demoIdentity).size() must be 0",
+           0, activityStorage.getActivities(demoIdentity).size());
     super.tearDown();
   }
 
