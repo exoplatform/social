@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.OrganizationService;
@@ -70,7 +72,7 @@ import org.exoplatform.webui.form.UIForm;
 })
 public class UISocialGroupSelector extends UIContainer {
   final static public String MANAGER = "manager";
-
+  private static Log LOG = ExoLogger.getLogger(UISocialGroupSelector.class);
   private Group selectGroup_;
 
   @SuppressWarnings("unchecked")
@@ -223,7 +225,7 @@ public class UISocialGroupSelector extends UIContainer {
               .findMembershipByUserGroupAndType(remoteUser,
                   group.getId(), MANAGER);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.warn("Error when finding membership for filtering tree node", e);
         }
 
         if (membership != null) {
@@ -235,9 +237,21 @@ public class UISocialGroupSelector extends UIContainer {
           groups = (List) service.getGroupHandler().findGroups(group);
           boolean existMembership = checkMembershipOfChildren(groups,
               orgService, remoteUser);
-          return existMembership;
+          
+          for (Group childGroup : groups) {
+            if (!existMembership) {
+              List<Group> childGroups = null;
+              childGroups = (List) service.getGroupHandler().findGroups(childGroup);
+              boolean hasMembership = checkMembershipOfChildren(childGroups, orgService, remoteUser);
+              if (hasMembership) {
+                return (!hasMembership);
+              }
+            }
+          }
+          
+          return (!existMembership);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.warn("Error when filtering tree node", e);
         }
 
         return true;
@@ -252,15 +266,15 @@ public class UISocialGroupSelector extends UIContainer {
                 .findMembershipByUserGroupAndType(remoteUser,
                     group.getId(), MANAGER);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("Error when filtering tree node", e);
           }
 
           if (membership != null) {
-            return false;
+            return true;
           }
         }
 
-        return true;
+        return false;
       }
 
     };
