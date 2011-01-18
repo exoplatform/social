@@ -17,7 +17,7 @@ h1. ActivityManager
 |*removeLike*(ExoSocialActivity activity, Identity identity) throws ActivityStorageException | {{ activity}}, {{identity}} - a user who dislikes an activity |void|Removes an indentity who likes an activity, if this activity is liked, it will be removed.|
 |*getComments*(ExoSocialActivity activity) throws ActivityStorageException | {{activity}} |List<ExoSocialActivity>| Gets the comment list of an activity.||
 |*recordActivity*(Identity owner, String type, String title) throws ActivityStorageException | {{owner, type, title }} |ExoSocialActivity |Records an activity. (Since 1.2.0-GA).|
-|*recordActivity*(Identity owner, ExoSocialActivity activity) throws Exception | {{owner, activity,  }} |ExoSocialActivity |Saves an activity. Deprecated - use saveActivity(Identity, Activity) instead. It Will be removed by 1.3.x|
+|*recordActivity*(Identity owner, ExoSocialActivity activity) throws Exception | {{owner, activity,  }} |ExoSocialActivity |Saves an activity. Deprecated: use saveActivity(Identity, Activity) instead. It Will be removed by 1.3.x|
 |*recordActivity*(Identity owner, String type, String title, String body) throws ActivityStorageException | {{ owner}} - the owner of the target stream for this activity, {{type}} - the type of an activity which will be used to render a custom ui, {{title}} - the title, {{body}} - the body |ExoSocialActivity |Records an activity.|
 |*addProcessor*(ActivityProcessor processor) | {{processor }} |void|Adds a new processor.|
 |*addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} |void|Adds a new processor plugin.|
@@ -26,33 +26,37 @@ h1. ActivityManager
 
 h1. IdentityManager
 
-|| Function || Param || Return || Description ||
-| *getIdentity*(String id) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId() | null if nothing is found, or the Identity object | Gets the identity by id and to load his profile. |
+|| Method || Param || Return || Description ||
+| *registerIdentityProviders*(IdentityProviderPlugin plugin)| {{plugin}}| void| Registers one or more IdentityProvider through an IdentityProviderPlugin.|
+| *getIdentity*(String id) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId() |Identity - null if nothing is found, or the Identity object | Gets the identity by id and loads his profile. |
 | *getIdentity*(String id, boolean loadProfile) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId(), {{loadProfile}} - the value is true if the profile is loaded and false if not loaded | null if nothing is found, or the Identity object | Gets the identity by loading id of the profile optionally. |
-| *addIdentityProvider*(IdentityProvider<?> idProvider)| {{idProvider}} - the id of provider | void | To add the id of provider. |
-| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}} - the id of provider, {{remoteId}} - the remote id | identity | Gets the identity by remoteId. If the provider can not find any identity by remoteId, the return value is null. If no identity found by identity provider and that identity is still stored on JCR, that stored identity will be deleted and the return value is null.|
-| *getIdentitiesByProfileFilter*(String providerId, ProfileFilter profileFilter) throws Exception | {{providerId}} - the id of provider, {{profileFilter}} - the filter of provider | the identities by the profile filter | Gets the identities by profile filter. |
-| *getIdentitiesByProfileFilter*(String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception | {{providerId, profileFilter, offset, limit}} | List<Identity>  | Gets the identities by profile filter. |
+| *deleteIdentity*(Identity identity)|{{identiy}}| void|Deletes an identity.|
+| *addIdentityProvider*(IdentityProvider<?> idProvider)| {{idProvider}} - the id of provider | void | Adds the identity provider. |
+| *getOrCreateIdentity*(String providerId, String remoteId) | {{providerId}} - the id of provider, {{remoteId}} - the remote id | Identity | Gets the identity by remoteId. If the provider can not find any identity by remoteId, the return value is null. If no identity found by identity provider and that identity is still stored on JCR, that stored identity will be deleted and the return value is null.|
+| *getOrCreateIdentity*(String providerId, String remoteId, boolean loadProfile) | {{providerId}} - referring to the name of the Identity provider, {{remoteId}} - the identifier that identify the identity in the specific identity provider, {{loadProfile}} - true when the profile is loaded |null if nothing is found, or the Identity object improves the performance by specifying what needs to be loaded | This function returns an Identity object that is specific to a special type. For example, if the type is Linked'In, the identifier will be the URL of profile or if it is a CS contact manager, it will be the UID of the contact. A new identity is created if it does not exist. |
+| *getIdentitiesByProfileFilter*(String providerId, ProfileFilter profileFilter) throws Exception | {{providerId}} - the id of provider, {{profileFilter}} - the filter of provider |Identity| Gets the identities by a profile filter. |
+| *getIdentitiesByProfileFilter*(String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception | {{providerId, profileFilter, offset, limit}} | List<Identity>  | Gets the identities by a profile filter. |
 | *getIdentitiesByProfileFilter*(ProfileFilter profileFilter) throws Exception | {{profileFilter}} - the profile filter | List<Identity> | Get the identities by profile filter. |
-| *getIdentitiesByProfileFilter*(ProfileFilter profileFilter, long offset, long limit) throws Exception | {{providerId, profileFilter, offset, limit}} | List<Identity>  |Gets the identities by profile filter.  |
-| *getIdentitiesFilterByAlphaBet*(String providerId, ProfileFilter profileFilter) | {{providerId}} - the id of provider, {{profileFilter}} - the profile filter | the identities filter by alphabet | Gets the identities filter by alpha bet. |
-| *getIdentitiesFilterByAlphaBet*(ProfileFilter profileFilter) | {{profileFilter}} - the profile filter | the identities filter by alphabet | Gets the identities filter by alphabet. |
-| *getOrCreateIdentity*(String providerId, String remoteId, boolean loadProfile) | {{providerId}} - referring to the name of the Identity provider, {{remoteId}} - the identifier that identify the identity in the specific identity provider, {{loadProfile}} is true when the profile is loaded | null if nothing is found, or the Identity object TODO improves the performance by specifying what needs to be loaded | This function returns an Identity object that is specific to a special type. For example, if the type is Linked'In, the identifier will be the URL of profile or if it is a CS contact manager contact, it will be the UID of the contact. A new identity is created if it doesnot exist. |
+| *getIdentitiesByProfileFilter*(ProfileFilter profileFilter, long offset, long limit) throws Exception | {{providerId, profileFilter, offset, limit}} | List<Identity>  |Gets the identities by a profile filter.  |
+| *getIdentitiesFilterByAlphaBet*(String providerId, ProfileFilter profileFilter) throws Exception | {{providerId}} - the id of provider, {{profileFilter}} - the profile filter |  List<Identity>  | Gets the identities filter by alphabet. |
+| *getIdentitiesFilterByAlphaBet*(String providerId, ProfileFilter profileFilter, long offset,long limit) throws Exception| {{providerId, profileFilter, offset, limit}}|List<Identity>| Gets the identities fileter by alphabet with offset and limit.|
+| *getIdentitiesFilterByAlphaBet*(ProfileFilter profileFilter) throws Exception| {{profileFilter}} - the profile filter |   List<Identity>  | Gets the identities filter by alphabet. |
 | *getIdentity*(String providerId, String remoteId, boolean loadProfile) | {{providerId}}, {{remoteId}}, {{loadProfile}} | Identity | Gets the identity. |
-| *identityExisted*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}}, {{remoteId}} | boolean | Checks if the identity has existed or not. |
+| *getIdentitiesCount*(String providerId)| {{providerId}} |long| Gets the number of indentities.|
+| *identityExisted*(String providerId, String remoteId) | {{providerId}}, {{remoteId}} | boolean | Checks if the identity is already existed or not. |
 | *saveIdentity*(Identity identity) | {{identity}} - the identity | void | Saves the identity. |
 | *saveProfile*(Profile profile)| {{profile}} | void | Saves a profile.|
-| *addOrModifyProfileProperties*(Profile profile) throws Exception| {{profile}}|void | Adds or modifies properties of profile. Profile parameter is a lightweight that contains only the property that you want to add or modify. NOTE: The method will not delete the properties on old profile when the param profile have not those keys.|
+| *addOrModifyProfileProperties*(Profile profile) throws Exception| {{profile}}|void | Adds or modifies properties of profile. Profile parameter is a lightweight that contains only the property that you want to add or modify. NOTE: The method will not delete the properties of an old profile when the param profile does not have those keys.|
 | *updateAvatar*(Profile p) | {{profile}} | void | Updates the avatar. |
 | *updateBasicInfo*(Profile p) throws Exception | {{profile}} | void | Updates the basic infomation. |
 | *updateContactSection*(Profile p) throws Exception | {{profile}} | void | Updates the contact section of the profile. |
 | *updateExperienceSection*(Profile p)throws Exception | {{profile}}  | void | Updates the experience section of the profile. |
 | *updateHeaderSection*(Profile p) throws Exception | {{profile}} | void | Updates the header section of the profile. |
-| *getIdentities*(String providerId) throws Exception | {{providerId}} - the id of provider | identities | Gets the identity. |
-| *getIdentities*(String providerId, boolean loadProfile) | {{providerId}} - the id of provider, {{loadProfile}} - the loaded profile. |identities | Gets the identities. |
-| *getConnections*(Identity ownerIdentity) throws Exception| {{ownerIdentity}} | List<Identity> | Gets connections of an identity |
+| *getIdentities*(String providerId) throws Exception | {{providerId}} - the id of provider | List<Identity>  | Gets the identities by the provider id. |
+| *getIdentities*(String providerId, boolean loadProfile)| {{providerId}} - the id of provider, {{loadProfile}} - the loaded profile. |List<Identity>  | Gets the identities by the provider id. If loadProvider is true, loading the profie will be perfomed.|
+| *getConnections*(Identity ownerIdentity) throws Exception| {{ownerIdentity}} | List<Identity> | Gets connections of an identity. (Since 1.1.1). |
 | *getIdentityStorage*() | {{N/A}} | IdentityStorage  | Gets the identity storage. |
-| *getStorage*() | {{ N/A}} | IdentityStorage  |Gets the storage. Deprecated: should use method getIdentityStorage() |
+| *getStorage*() | {{ N/A}} | IdentityStorage  |Gets the storage. Deprecated: should use method getIdentityStorage(). |
 | *registerProfileListener*(ProfileListener listener) | {{listener}} | void | Registers the profile listener. |
 | *unregisterProfileListener*(ProfileListener listener) | {{ listener}}| void | Unregisters the profile listener. |
 | *addProfileListener*(ProfileListenerPlugin plugin) | {{plugin}} | void | Registers a profile listener component plug-in. |
@@ -62,7 +66,7 @@ h1. IdentityManager
 
 h1. RelationshipManager
 
-|| Function || Param || Return || Description ||
+|| Method || Param || Return || Description ||
 | *getRelationshipById*(String id) throws Exception | {{id}}|Relationship| Gets relationship the by id. Deprecated: Use get(String) instead. It will be removed at 1.2.x|
 | *invite*(Identity sender, Identity receiver) throws RelationshipStorageException| {{sender}} {{receiver}} | Relationship | Creates a connection invitation between two identities. |
 | *saveRelationship*(Relationship relationship) throws RelationshipStorageException| {{relationship}} - a relationship | void | Saves a relationship. |
@@ -103,7 +107,7 @@ h1. SpaceService
 |*saveSpace*(Space space, boolean isNew) throws SpaceException|{{space}} - space is saved,  {{isNew}} - true if creating a new space, otherwise, update an existing space.|void|Saves a new space or updates a space.|
 |*deleteSpace*(Space space) throws SpaceException|{{space}} - the space is deleted|void|Deletes a space. When deleting a space, all of its page navigations and its group will be deleted.|
 |*deleteSpace*(String spaceId) throws SpaceException|{{ spaceId}}|void|Deletes a space by its id.|
-|*initApp*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Deprecated, use *initApps*(Space) instead.|
+|*initApp*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Deprecated: use *initApps*(Space) instead.|
 |*initApps*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Set *space.homeNodeApp* from the configuration file to be the root page of that space node. When removing a space, make sure to call *deInitApps*(Space) and then deleteSpace(Space) or *deleteSpace*(String)|
 |*deInitApps*(Space space) throws SpaceException|{{space }}| void |De-initializes the applications of a space.Make sure to call this method before *deleteSpace*(Space) or *deleteSpace*(String). Otherwise, the space is deleted but its pages and navigation still exists.|
 |*addMember*(Space space, String userId) throws SpaceException|{{space, userId}}|void|Adds a user to a space, the user will get the "member" role in a space|
