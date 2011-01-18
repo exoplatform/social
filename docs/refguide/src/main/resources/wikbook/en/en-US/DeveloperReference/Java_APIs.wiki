@@ -91,7 +91,8 @@ h1. SpaceService
 || Method || Param || Return || Description ||
 |*getAllSpaces*() throws SpaceException|{{N/A}}|List<Space> - list of spaces in Social|Gets all spaces in Social.|
 |*getSpaceByDisplayName*(String spaceDisplayName) throws SpaceException|{{spaceDisplayName}}|Space|Gets a space by its display name. (Since 1.2.0-GA).|
-|*getSpaceByName*(String spaceName) throws SpaceException|{{spaceName}}|Space|Gets a space by its name.|
+|*getSpaceByName*(String spaceName) throws SpaceException|{{spaceName}}|Space|Gets a space by its name. Deprecated: Use SpaceService#getSpaceByPrettyName(String) instead. It will be removed at 1.3.x|
+|*getSpaceByPrettyName*(String spaceName) throws SpaceException | {{spaceName}}| Space | Gets a space by its name. (Since 1.2.0-GA).|
 |*getSpacesByFirstCharacterOfName*(String firstCharacterOfName) throws SpaceException|{{firstCharacterOfName}}|  List<Space> - all spaces which have first character of name matched the input string.|Gets all spaces has the name starting with the input character.|
 |*getSpacesBySearchCondition*(String condition) throws Exception|{{condition}} - the input condition| List<Space> - a list of spaces|Gets all spaces which has the name or the description that matches the input condition.|
 |*getSpaceById*(String spaceId) throws SpaceException|{{spaceId}} - Id of that space|Space - space with the id specified|Gets a space by its id.|
@@ -107,7 +108,7 @@ h1. SpaceService
 |*saveSpace*(Space space, boolean isNew) throws SpaceException|{{space}} - space is saved,  {{isNew}} - true if creating a new space, otherwise, update an existing space.|void|Saves a new space or updates a space.|
 |*deleteSpace*(Space space) throws SpaceException|{{space}} - the space is deleted|void|Deletes a space. When deleting a space, all of its page navigations and its group will be deleted.|
 |*deleteSpace*(String spaceId) throws SpaceException|{{ spaceId}}|void|Deletes a space by its id.|
-|*initApp*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Deprecated: use *initApps*(Space) instead.|
+|*initApp*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Deprecated: Use *initApps*(Space) instead.|
 |*initApps*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Set *space.homeNodeApp* from the configuration file to be the root page of that space node. When removing a space, make sure to call *deInitApps*(Space) and then deleteSpace(Space) or *deleteSpace*(String)|
 |*deInitApps*(Space space) throws SpaceException|{{space }}| void |De-initializes the applications of a space.Make sure to call this method before *deleteSpace*(Space) or *deleteSpace*(String). Otherwise, the space is deleted but its pages and navigation still exists.|
 |*addMember*(Space space, String userId) throws SpaceException|{{space, userId}}|void|Adds a user to a space, the user will get the "member" role in a space|
