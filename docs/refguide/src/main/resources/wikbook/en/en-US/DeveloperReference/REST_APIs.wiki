@@ -1,88 +1,113 @@
-h1. Service name and description
-h2. Activities REST service
 
-|| Name || Service URL || Description ||
-| *ActivitiesRestService* | {noformat}{portalName}/social/activities{noformat} | To provide rest services for activity applications: like/unlike; comment; delete activity. |
+h1. Activities REST service
+
+|| Name || Service URL || Location|| Description ||
+| *ActivitiesRestService* | {noformat}{restContextName}/{portalName}/social/activities{noformat} |  *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service|Provides REST services for activity applications: like/unlike; comment; delete activity. |
 
 * *API*:
+|| Name || Service URL Endpoint || Parameters || Expected Values || Description ||
+| *destroyActivity* | {noformat}{restContextName}/{portalName}/social/activities/destroy/{activityId}.{format}{noformat} |portalName {example}{example} activityId{example}{example} format | String{example}{example} String{example}{example}String: json or xml| Destroys activity and gets the json/xml format. |
+| *showLikes* | {noformat}{restContextName}/{portalName}/social/activities/{activityId}/likes/show.{format}{noformat} | portalName{example}{example} activityId{example}{example} format|String{example}{example} String{example}{example}String: json or xml |Shows the list of likes by activityId and returns the json/xml format. |
+| *updateLike* | {noformat}{restContextName}/{portalName}/social/activities/{activityId}/likes/update.{format}{noformat} | portalName{example}{example} activityId{example}{example} format|String{example}{example} String{example}{example}String: json or xml | Updates the list of likes by the json/xml format. |
+| *destroyLike* | {noformat}{restContextName}/{portalName}/social/activities/{activityId}/likes/destroy/{identity}.{format}{noformat} |  portalName{example}{example} activityId{example}{example} identityId {example}{example}format|String {example}{example}String{example}{example} String{example}{example}String: json or xml |Destroys *like* by identityId and get the json/xml return format. |
+| *showComments* | {noformat}{restContextName}/{portalName}/social/activities/{activityId}/likes/show.{format}{noformat} |  portalName{example}{example} activityId{example}{example} format|String{example}{example} String{example}{example}String: json or xml | Shows the comment list by the json/xml format. |
+| *updateComment* | {noformat}{restContextName}/{portalName}/social/activities/{activityId}/likes/update.{format}{noformat} | portalName{example}{example} activityId{example}{example} format|String{example}{example} String{example}{example}String: json or xml | Updates the comment by the json/xml format. |
+| *destroyComment* | {noformat}{restContextName}/{portalName}/social/activities/{activityId}/comments/destroy/{commentId}.{format}{noformat} | portalName{example}{example} activityId{example}{example} commentId {example}{example}format|String {example}{example} String{example}{example} String{example}{example}String: json or xml | Destroys comments and returns the json/xml format. |
 
-|| Name || Service URL Endpoint || Description ||
-| *destroyActivity* | {noformat}{restContextName}/social/activities/{activityId}/likes/destroy/{identity}.{format}{noformat} | To destroy activity and get the json/xml format. |
-| *showLikes* | {noformat}{restContextName}/social/activities/{activityId}/likes/show.{format}{noformat} | To shows the list of likes by activityId and return the json/xml format. |
-| *updateLike* | {noformat}{restContextName}/social/activities/{activityId}/likes/update.{format}{noformat} | To update the list of likes by the json/xml format. |
-| *destroyLike* | {noformat}{restContextName}/social/activities/{activityId}/likes/destroy/{identity}.{format}{noformat} | To destroy like by identityId and get the json/xml return format. |
-| *showComments* | {noformat}{restContextName}/social/activities/{activityId}/likes/show.{format}{noformat} | To show the comment list by the json/xml format. |
-| *updateComment* | {noformat}{restContextName}/social/activities/{activityId}/likes/update.{format}{noformat} | To update the comment by the json/xml format. |
-| *destroyComment* | {noformat}{restContextName}/social/activities/{activityId}/comments/destroy/{commentId}.{format}{noformat} | To destroy comments and return the json/xml format. |
-
-|| Parameter || Expected values ||
-| {{format}} | {{xml/json}} |
 
 Example:
 
-- http://localhost:9090/rest/social/activities/s08d397dg6/likesdestroy/abc.xml
-- http://localhost:9090/rest/social/activities/s08d397dg6/likesdestroy/abc.json
+http://localhost:8080/rest-socialdemo/socialdemo/social/activities/s08d397dg6/likes/destroy/abc.json
 
-h2. Apps REST service
-|| Name || Service URL || Description ||
-| *AppsRestService* | {noformat}{restContextName}/social/apps/show.{format}{noformat} | To provide rest services for the application registry gadget: shows application list |
+h1. Apps REST service
+|| Name || Service URL || Location || Description ||
+| *AppsRestService* | {noformat}{restContextName}/social/apps/{noformat} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Provides REST services for the application registry gadget: shows application list |
 
 * *API*:
-|| Name || Service URL Endpoint || Description ||
-| *showApps* | {noformat}{restContextName}/social/apps/show.{format}{noformat} | To show applications by the json/xml format. |
+|| Name || Service URL Endpoint || Parameters || Expected Values || Description ||
+| *showApps* | {noformat}{restContextName}/social/apps/show.{format}{noformat} | format |String: json or xml |Shows applications by the json/xml format. |
 
-|| Parameter || Expected values ||
-| {{format}} | {{xml/json}} |
 
 Example:
 
-http://localhost:9090/rest/social/apps/show.json
+http://localhost:8080/rest-socialdemo/social/apps/show.json
 
-h2. Identity REST service
-|| Name || Service URL || Description ||
-| *IdentityRestService* | {noformat}{portalName}/social/identity/{username}/id{noformat} | To get identityId by the username. |
+h1. Identity REST service
+
+|| Name|| Serive URL || Location || Description ||
+| *IdentityRestService* |{noformat} restContextName}/{portalName}/social/identity/{username}/id {noformat}| *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Gets identityId by the username.|
 
 * *API*:
-|| Name || Service URL Endpoint || Description || Example ||
-| *UserId getId* | {noformat}{portalName}/social/identity/{username}/show.json{noformat} | To get the identity by username and return by the json format. |
+|| Name || Service URL Endpoint || Parameters || Expected Values || Description ||
+| *UserId getId* | {noformat}{restContextName}/{portalName}/social/identity/{username}/id/show.json{noformat} |username {example}{example}portalName | String{example}{example} String | Gets the identity by username and returns by the json format. |
 
 Example:
 
-http://localhost:9090/socialdemo/social/identity/john/show.json
+http://localhost:8080/rest-socialdemo/socialdemo/social/identity/john/id/show.json
 
 
-h2. Linkshare REST service
-|| Name || Service URL || Description ||
-|  *LinkshareRestService* | {noformat}{restContextName}/social/linkshare{noformat} | To get information from a provided link. |
+h1. Linkshare REST service
+
+
+|| Name || Service URL || Location || Description ||
+|  *LinkshareRestService* | {noformat}{restContextName}/social/linkshare{noformat} | *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Gets information from a provided link. |
 
 * *API*:
-|| Name || Service URL Endpoint || Description |
-| *getLink* | {noformat}{restContextName}/social/linkshare/show.{format}{noformat} | To get the link content by posting with linkShare request as post data |
 
-|| Parameter || Expected values ||
-| {{format}} | {{xml/json}} |
+|| Name || Service URL Endpoint || Parameters || Expected Values || Description ||
+| *getLink* | {noformat}{restContextName}/social/linkshare/show.{format}{noformat} | format | String: json or xml |Gets the link content by posting a linkShare request. |
+
 
 Example:
 
-http://localhost:9090/rest/social/linkshare/show.json
+http://localhost:8080/rest-socialdemo/social/linkshare/show.json
 
-h2. Spaces REST service
-|| Name || Service URL || Description ||
-| *SpacesRestService* | {noformat}{portalName}/social/spaces{noformat}| To provide rest services for space gadget to display user's spaces and pending spaces |
+h1. People Rest Service
+
+
+|| Name || Service URL || Location|| Description ||
+| *PeopleRestService* | {noformat}{restContextName}/social/people{noformat}| *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Provides REST services for manipulating jobs related to people. |
 
 * *API*:
-|| Name || Service URL Endpoint || Description ||
-| *showMySpaceList* | {noformat}{restContextName}/social/spaces/{userId}/mySpaces/show.{format}{noformat}| To show mySpaceList by the json/xml format. |
-| *showPendingSpaceList* | {noformat}{restContextName}/social/spaces/{userId}/pendingSpaces/show.{format}| To show pendingSpaceList by the json/xml format.|
 
-|| Parameter || Expected values ||
-| {{format}} | {{xml/json}} |
+|| Name || Service URL Endpoint || Parameters || Expected Values|| Description ||
+|*suggestUsernames*|{noformat}{restContextName}/social/people/suggest.{format}{noformat}| nameToSearch {example}{example}currentUser{example}{example}typeOfRelation {example}{example}spaceURL {example}{example} format | String{example}{example}String {example}{example}String {example}{example}String {example}{example}String: json or xml|Gets and returns a list of users's name that matches the input string for suggesting.|
+
+
+Example:
+http://localhost:8080/rest-socialdemo/social/people/suggest.json
+
+
+
+h1. Spaces REST service
+
+
+|| Name || Service URL || Location || Description ||
+|*SpacesRestService* |{noformat}{restContextName}/{portalName}/social/spaces{noformat} | *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service | Provides REST services for space gadget to display users' spaces and pending spaces.  |
+
+
+* *API*:
+
+|| Name || Service URL Endpoint || Parameters || Expected Values || Description ||
+| *showMySpaceList* | {noformat}{restContextName}/social/spaces/mySpaces/show.{format}{noformat}| portalName {example}{example} format| String {example}{example} String: json or xml | Shows mySpaceList by the json/xml format. |
+| *showPendingSpaceList* | {noformat}{restContextName}/social/spaces/pendingSpaces/show.{format}{noformat}|portalName {example}{example} format |  String {example}{example} String: json or xml| Shows pendingSpaceList by the json/xml format.|
+| *suggestSpacenames*|{noformat}{restContextName}/social/spaces/spaceNames/suggest.{format}{noformat}|portalName {example}{example}conditionToSearch{example}{example}typeOfRelation{example}{example} currentUser{example}{example} format| String {example}{example} String{example}{example} String{example}{example} String {example}{example} String: json or xml| Gets and returns space's names that match the input string for suggesting.| 
+
 
 Example:
 
-http://localhost:8080/rest/social/spaces/s08d397dg6/mySpaces/show.xml
+http://localhost:8080/rest-socialdemo/social/spaces/mySpaces/show.xml
 
-h1. Location
-* *Maven groupId*: org.exoplatform.social
-* *ArtifactId*: exo.social.component.service
+h1. Widget Rest Service
 
+|| Name || Service URL || Location|| Description ||
+| *WidgetRestService* |{noformat}{restContextName}/spaces/{containerName}{noformat} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.extras.widget.rest |Provides REST services for creating spaces or getting spaces'information.|
+
+
+* *API*:
+|| Name || Service URL Endpoint || Parameters || Expected Values || Description ||
+|*spaceInfo*| {noformat}{restContextName}/spaces/{containerName}/space_info{noformat}  |containerName {example}{example} portalName{example}{example} spacePrettyName {example}{example}description |String {example}{example} String (default value: classic) {example}{example}String {example}{example}String| Returns the HTML page for displaying the information of the space. Two query parameters needed: {{spaceName}} and {{description}} |
+
+Example:
+
+http://localhost:8080/rest-socialdemo/spaces/socialdemo/space_info?name=Social&description=Social
