@@ -90,7 +90,7 @@ public class UIContactSection extends UIProfileSection {
   public static final String WEBSITE_TITLE = "Website Title";
 
   /** URL EXAMPLE. */
-  public static final String URL_EXAMPLE = "http://";
+  public static final String URL_EXAMPLE = "http://exoplatform.org";
 
   /** KEY. */
   public static final String KEY = "key";
@@ -223,6 +223,8 @@ public class UIContactSection extends UIProfileSection {
       UIProfileSection sect = event.getSource();
       UIContactSection uiContactSectionSect = (UIContactSection)sect;
 
+      uiContactSectionSect.removeEmptyComponents();
+
       uiContactSectionSect.saveProfileInfo();
     }
   }
@@ -270,6 +272,34 @@ public class UIContactSection extends UIProfileSection {
       UIContactSection uiContactSectionSect = (UIContactSection)sect;
       uiContactSectionSect.setValue();
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
+    }
+  }
+
+  /**
+   * Removes empty components that user did not input any values.
+   *
+   */
+  public void removeEmptyComponents() {
+    removeEmptyInput(phoneCount, getPhoneChilds(), PHONE);
+    removeEmptyInput(imCount, getImsChilds(), IM);
+    removeEmptyInput(urlCount, getUrlChilds(), URL);
+  }
+
+  private void removeEmptyInput(int count, List<UIComponent> listUIComp, String uiStringType) {
+    for (int i = 0; i < count; i+=2) {
+      String id1 = null;
+      String id2 = ((UIFormStringInput) listUIComp.get(i+1)).getName();
+      String value = ((UIFormStringInput) listUIComp.get(i+1)).getValue();
+      
+      if (uiStringType.equals(URL)) {
+        id1 = ((UIFormStringInput) listUIComp.get(i)).getName();
+      } else {
+        id1 = ((UIFormSelectBox) listUIComp.get(i)).getName();
+      }
+
+      if ((value == null) || (value.length() == 0) || (URL_EXAMPLE.startsWith(value))) {
+        removeFormInput(id1, id2);
+      }
     }
   }
 
@@ -449,7 +479,6 @@ public class UIContactSection extends UIProfileSection {
       int phoneIdx = phoneCount;
       createUISelectBox(PHONE_TYPES, PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'));
       addUIFormInput(new UIFormStringInput(PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'),null,null)
-      .addValidator(MandatoryValidator.class)
       .addValidator(StringLengthValidator.class, 3, 20)
       .addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, INVALID_PHONE));
       phoneCount += 2;
@@ -457,14 +486,12 @@ public class UIContactSection extends UIProfileSection {
       int imIdx = imCount;
       createUISelectBox(IM_TYPES, IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'));
       addUIFormInput(new UIFormStringInput(IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'), null, null)
-      .addValidator(MandatoryValidator.class)
       .addValidator(StringLengthValidator.class, 3, 60));
       imCount += 2;
     } else if (URL.equals(type)) {
       int urlIdx = urlCount;
       addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, WEBSITE_TITLE));
       addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, URL_EXAMPLE)
-      .addValidator(MandatoryValidator.class)
       .addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, INVALID_URL));
       urlCount += 2;
     }

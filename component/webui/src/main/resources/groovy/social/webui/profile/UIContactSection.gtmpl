@@ -25,7 +25,7 @@
   import org.exoplatform.social.webui.profile.UITitleBar;
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.social.webui.profile.UIContactSection;
-
+  
   def uicomponentId = uicomponent.id;
   def noGenderLabel = _ctx.appRes("${uicomponentId}.label.noGender");
   def noPhoneLabel = _ctx.appRes("${uicomponentId}.label.noPhones");
@@ -40,6 +40,8 @@
 
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
+  jsManager.importJavascript("eXo.social.Util", '/social-resources/javascript');
+  jsManager.importJavascript('eXo.social.webui.UIContactSection', '/social-portlet/javascript');
 
   def gender = profile.getProperty(Profile.GENDER);
   def phones = profile.getProperty(Profile.CONTACT_PHONES);
@@ -51,6 +53,7 @@
   def imChild = uicomponent.IM;
   def key = uicomponent.KEY;
   def value = uicomponent.VALUE;
+  def defaultURL = uicomponent.URL_EXAMPLE;
 
   def phoneChilds = uicomponent.getPhoneChilds();
   def urlChilds = uicomponent.getUrlChilds();
@@ -81,8 +84,39 @@
   if (((gender == null)) || (gender == "") && (phoneSize == 0) && (urlSize == 0) && (imsSize == 0)) {
     noContactInfo = true;
   }
+  
+  def ids = "";
+  if (urlCount > 1) {
+	 for (i in 0..urlCount-1) {
+	   if (urlChilds.get(i).isRendered()) {
+	     if (i % 2 != 0) {
+	       if (ids == "") {
+	         ids = urlChilds.get(i).id;
+	       } else {
+  	       ids += "," + urlChilds.get(i).id;
+	       }
+	     }
+	   }
+	 }
+	 
+  }
+  
+  jsManager.addOnLoadJavascript("initUIContactSection");
 %>
 <div class="UIContactSection">
+  <script type="text/javascript">
+    var uiContactSection = uiContactSection || null;
+    function initUIContactSection() {
+      if (uiContactSection) {
+        var ids = '' + \'$ids\';
+        if (ids != '') {
+          uiContactSection.initInputTextBox(ids, \'$defaultURL\');
+        }
+      } else {
+        uiContactSection = new eXo.social.webui.UIContactSection();
+      }
+    }
+  </script>
   <% uiform.begin() %>
   <% uicomponent.renderChild(UITitleBar.class); %>
   <div class="PortletContent">
