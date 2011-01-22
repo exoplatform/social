@@ -459,6 +459,7 @@ img {border: none}
 .ActivitiesContainer .Content {
   color:#424242;
   line-height: 18px;
+  overflow: hidden;
 }
 
 .ActivitiesContainer .ContentArea {

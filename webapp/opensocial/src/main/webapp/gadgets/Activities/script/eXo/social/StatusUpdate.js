@@ -192,6 +192,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
       Util.showElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
       Util.hideElement(config.ui.UI_OWNER_APPENDABLE_ROOT);
     } else {
+    	statusUpdate.refresh();
       statusUpdate.isOwnerActivityShown = true;
       uiOwnerActivitiesShowHide.innerHTML='<div class="CollapseAllActivities">' + Locale.getMsg('collapse_all_activities') + '</div>';
       Util.showElement(config.ui.UI_OWNER_ACTIVITIES_SHOW_HIDE);
