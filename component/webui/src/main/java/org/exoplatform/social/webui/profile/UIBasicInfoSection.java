@@ -38,6 +38,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
+import org.exoplatform.webui.form.validator.ResourceValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
@@ -58,7 +59,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 public class UIBasicInfoSection extends UIProfileSection {
 
   /** REGEX EXPRESSION. */
-  public static final String REGEX_EXPRESSION     = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
+  public static final String USER_NAME_VALIDATOR_REGEX = "^[\\p{L}][\\p{L}._\\-\\d]+$";
 
   /** INVALID CHARACTER MESSAGE. */
   public static final String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
@@ -72,20 +73,21 @@ public class UIBasicInfoSection extends UIProfileSection {
 
     UIFormStringInput userName = new UIFormStringInput(Profile.USERNAME, Profile.USERNAME, username);
     userName.setEditable(false);
-    addUIFormInput(userName);
+    addUIFormInput(userName.addValidator(MandatoryValidator.class).addValidator(StringLengthValidator.class, 3, 30)
+                   .addValidator(ResourceValidator.class).addValidator(ExpressionValidator.class,
+                   USER_NAME_VALIDATOR_REGEX, "ResourceValidator.msg.Invalid-char"));
+    
     addUIFormInput(new UIFormStringInput(Profile.FIRST_NAME,
                                          Profile.FIRST_NAME,
                                          useraccount.getFirstName()).
                    addValidator(MandatoryValidator.class).
-                   addValidator(StringLengthValidator.class,3,45).
-                   addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
+                   addValidator(StringLengthValidator.class, 1, 45));
 
     addUIFormInput(new UIFormStringInput(Profile.LAST_NAME,
                                          Profile.LAST_NAME,
                                          useraccount.getLastName()).
                    addValidator(MandatoryValidator.class).
-                   addValidator(StringLengthValidator.class, 3, 45).
-                   addValidator(ExpressionValidator.class, REGEX_EXPRESSION, INVALID_CHAR_MESSAGE));
+                   addValidator(StringLengthValidator.class, 1, 45));
 
     addUIFormInput(new UIFormStringInput(Profile.EMAIL, Profile.EMAIL, useraccount.getEmail()).
                    addValidator(MandatoryValidator.class).
