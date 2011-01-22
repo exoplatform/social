@@ -62,6 +62,7 @@
     this.composer.style.color = this.blurColor;
     this.shareButton.style.background = 'white'
     this.shareButton.disabled = true;
+    this.currentValue = this.composer.value;
     var uiComposer = this;
     var isReadyEl = document.getElementById("isReadyId");
     var composerContainerEl = document.getElementById("ComposerContainer");
@@ -88,7 +89,10 @@
           uiComposer.shareButton.disabled = true;
         }
 
+      } else {
+        	uiComposer.currentValue = uiComposer.composer.value;
       }
+      
       if (uiComposer.blurCallback) {
         uiComposer.blurCallback();
       }
@@ -126,9 +130,17 @@
   }
 
   UIComposer.prototype.getValue = function() {
-    return composer.value;
+  	if (!this.currentValue) {
+  		return this.defaultInput;
+  	}
+    return this.currentValue;
   }
 
+  UIComposer.prototype.setCurrentValue = function() {
+  	var uiInputText = Util.getElementById(this.composerId);
+	  this.currentValue = uiInputText.value;
+  }
+  
   //expose
   window_.eXo = window_.eXo || {};
   window_.eXo.social = window_.eXo.social || {};

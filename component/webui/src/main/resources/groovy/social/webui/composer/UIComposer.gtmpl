@@ -44,8 +44,6 @@
     blastInput = "BlastInputPeople";
   }
 
-
-
   jsManager.importJavascript("eXo.social.Util", ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
   jsManager.importJavascript("eXo.social.webui.UIComposer", ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
   def params = """
@@ -73,7 +71,7 @@
   function initUIComposer() {
     if(uicomposer){
     	//get current value before re-init uicomposer instance
-    	var value = uicomposer.composer.value;
+    	var value = uicomposer.getValue();
 
     	//re-init uicomposer
     	uicomposer.init();
@@ -81,7 +79,7 @@
     	//re-assign value for appropriate objects
     	uicomposer.composer.value = value;
     	document.getElementById("composerInput").value = value;
-        uicomposer.composer.style.color = uicomposer.focusColor;
+      uicomposer.composer.style.color = uicomposer.focusColor;
 
     	//this if clause used for enable Share button when there was text on composer input and the composer returns back to DefaultComposer
     	if(value != "" && value != uicomposer.defaultInput){
@@ -93,7 +91,7 @@
     	  uicomposer.composer.style.color = uicomposer.blurColor;
     	}
     } else {
-	  uicomposer = new eXo.social.webui.UIComposer($params);
+	    uicomposer = new eXo.social.webui.UIComposer($params);
     }
   }
 </script>
@@ -111,7 +109,7 @@
           simpleName = acComposer.getClass().getSimpleName();
           labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
       %>
-        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("Activate")%>" >&nbsp;</a>
+        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("Activate")%>; uicomposer.setCurrentValue();" >&nbsp;</a>
       <%
         }
       %>
@@ -124,7 +122,7 @@
       if (!(currentActivityComposer instanceof UIDefaultActivityComposer)) {
     %>
       <div class="ComposerExtensionContainer">
-        <div class="Button" onclick="<%=currentActivityComposer.event("Close")%>">x</div>
+        <div class="Button" onclick="<%=currentActivityComposer.event("Close")%>; uicomposer.setCurrentValue();">x</div>
         <div style="clear:right"><span></span></div>
         <div id="ComposerContainer" class="ClearLeft">
           <%
