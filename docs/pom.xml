@@ -10,17 +10,16 @@
   <artifactId>exo.social.docs</artifactId>
   <packaging>pom</packaging>
 
-  <name>Social documentation</name>
+  <name>eXo Social Documentation</name>
 
-  <properties>
-    <wikbook.source>${project.build.directory}/wikbook-src</wikbook.source>
-    <wikbook.resources>${project.basedir}/src/main/resources</wikbook.resources>
-    <wikbook.target>${project.build.directory}/wikbook</wikbook.target>
-    <wikbook.version>0.9.28</wikbook.version>
-  </properties>
-  
-  <modules>
-    <module>refguide</module>
-  </modules>
+  <profiles>
+    <profile>
+      <id>distrib</id>
+      <modules>
+        <module>refguide</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>
 

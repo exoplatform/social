@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
 
 
-  <name>Documentation module</name>
+  <name>eXo Social Reference Guide</name>
 
   <properties>
     <wikbook.version>0.9.30</wikbook.version>
