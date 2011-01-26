@@ -25,12 +25,12 @@
   <parent>
     <artifactId>exo.social.demo</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.1.3-SNAPSHOT</version>
+    <version>1.1.3</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.demo.ear</artifactId>
-  <version>1.1.3-SNAPSHOT</version>
+  <version>1.1.3</version>
   <packaging>ear</packaging>
   <name>eXo Social Demo EAR</name>
   <description>eXo Social Demo EAR</description>
