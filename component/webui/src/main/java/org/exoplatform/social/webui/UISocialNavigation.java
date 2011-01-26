@@ -140,7 +140,7 @@ public class UISocialNavigation extends UIComponent {
     if (selectedNode_ != null && node.getUri().equals(selectedNode_.getUri())) {
       return true;
     }
-    if (selectedParent_ != null || selectedParent_ instanceof PageNode) {
+    if (selectedParent_ != null && selectedParent_ instanceof PageNode) {
       return node.getUri().equals(((PageNode) selectedParent_).getUri());
     }
     return false;
