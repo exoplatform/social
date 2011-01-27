@@ -36,7 +36,7 @@
 	      </div>
 	      <div class="MiddleLeftBar">
 	          <div class="MiddleCenterBar" style="background-image: none;">
-	          	<%= uicomponent.getOwner();%>
+	          	<%= uicomponent.getDisplayName();%>
 	          </div>
 	      </div>
 	      <div class="BottomLeftBar">

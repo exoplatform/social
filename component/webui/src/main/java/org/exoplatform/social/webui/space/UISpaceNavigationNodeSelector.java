@@ -149,7 +149,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       return this.edittedNavigation;
    }
       
-   /**
+  /**
     * Init the UITree wrapped in UISpaceNavigationNodeSelector and localize the label
     * @throws Exception
     */
@@ -289,6 +289,14 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
 
    public void setCopyNode(TreeNodeData copyNode) {
       this.copyOfTreeNodeData = copyNode;
+   }
+
+   public TreeNodeData getEdittedTreeNodeData() {
+    return edittedTreeNodeData;
+   }
+
+   public void setEdittedTreeNodeData(TreeNodeData edittedTreeNodeData) {
+     this.edittedTreeNodeData = edittedTreeNodeData;
    }
 
    static public class ChangeNodeActionListener extends EventListener<UITree> {
@@ -818,5 +826,4 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
          cloneNode = b;
       }
    }
-
 }

@@ -110,6 +110,10 @@ public class UISpaceNavigationManagement extends UIContainer {
    public String getOwner() {
       return this.owner;
    }
+   
+   public String getDisplayName() {
+     return "/spaces/" + SpaceUtils.getSpaceUrl();
+   }
 
    public <T extends UIComponent> T setRendered(boolean b) {
       return super.<T> setRendered(b);
