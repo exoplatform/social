@@ -18,9 +18,7 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -29,7 +27,6 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
@@ -75,6 +72,24 @@ public class ActivityStorage {
 
   private IdentityManager identityManager;
 
+  private static final String ACTIVITY_PROPERTIES_NAME_PATTERN = Util.getPropertiesNamePattern(new String [] {
+      NodeProperty.ACTIVITY_BODY,
+      NodeProperty.ACTIVITY_EXTERNAL_ID,
+      NodeProperty.ACTIVITY_HIDDEN,
+      NodeProperty.ACTIVITY_POSTED_TIME,
+      NodeProperty.ACTIVITY_PRIORITY,
+      NodeProperty.ACTIVITY_TITLE,
+      NodeProperty.ACTIVITY_TYPE,
+      NodeProperty.ACTIVITY_REPLY_TO_ID,
+      NodeProperty.ACTIVITY_UPDATED,
+      NodeProperty.ACTIVITY_URL,
+      NodeProperty.ACTIVITY_USER_ID,
+      NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS,
+      NodeProperty.ACTIVITY_TEMPLATE_PARAMS,
+      NodeProperty.ACTIVITY_TITLE_TEMPLATE,
+      NodeProperty.ACTIVITY_BODY_TEMPLATE
+  });
+  
   /**
    * Instantiates a new JCR storage base on SocialDataLocation
    * @param dataLocation the data location.
@@ -608,31 +623,12 @@ public class ActivityStorage {
    */
   private ExoSocialActivity getActivityFromActivityNode(Node activityNode) {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
-    String [] propertyNames = {
-        NodeProperty.ACTIVITY_BODY,
-        NodeProperty.ACTIVITY_EXTERNAL_ID,
-        NodeProperty.ACTIVITY_HIDDEN,
-        NodeProperty.ACTIVITY_POSTED_TIME,
-        NodeProperty.ACTIVITY_PRIORITY,
-        NodeProperty.ACTIVITY_TITLE,
-        NodeProperty.ACTIVITY_TYPE,
-        NodeProperty.ACTIVITY_REPLY_TO_ID,
-        NodeProperty.ACTIVITY_UPDATED,
-        NodeProperty.ACTIVITY_URL,
-        NodeProperty.ACTIVITY_USER_ID,
-        NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS,
-        NodeProperty.ACTIVITY_TEMPLATE_PARAMS,
-        NodeProperty.ACTIVITY_TITLE_TEMPLATE,
-        NodeProperty.ACTIVITY_BODY_TEMPLATE
-    };
     
     try {
       activity.setId(activityNode.getUUID());
       setStreamInfo(activity, activityNode);
       
-      final String propertiesNamePattern = Util.getPropertiesNamePattern(propertyNames);
-      
-      PropertyIterator it = activityNode.getProperties(propertiesNamePattern);
+      PropertyIterator it = activityNode.getProperties(ACTIVITY_PROPERTIES_NAME_PATTERN);
       while (it.hasNext()) {
         Property p = it.nextProperty();
         String propertyName = p.getName();
