@@ -1,0 +1,65 @@
+.UIPopup {
+	position: absolute;
+	border: solid 1px #cdcdc1;
+	background-color: white;
+	padding: 4px;
+  width:200px;
+  height: 70px;
+  display: none;
+  cursor: default;
+}
+
+.UIPopup .ClosePopup {
+  padding-bottom: 3px;
+  margin-bottom: 5px;
+}
+
+.UIPopup .UserAvatar {
+  float:left;
+  height:20px;
+  margin:2px;
+  padding:2px 0 0 2px;
+  width:20px;
+}
+
+.UIPopup .UserTitle {
+  margin-left: 2px;
+  overflow: hidden;
+  font-size: 11px;
+  color: #000000;
+  padding-left: 7px;
+  ppadding-top: 7px;
+}
+
+.UIPopup .UIAction {
+}
+
+.UIPopup .InviteAction {
+  cursor: pointer;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.UIPopup .WaitingAction {
+  cursor: pointer;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.UIPopup .RemoveAction {
+  cursor: pointer;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.UIPopup .AcceptAction {
+  cursor: pointer;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.UIPopup .DenyAction {
+  cursor: pointer;
+  margin-top: 15px;
+  text-align: center;
+}
