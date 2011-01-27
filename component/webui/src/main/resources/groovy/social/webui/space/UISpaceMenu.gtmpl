@@ -32,14 +32,14 @@
   if (imageSource == null) {
     imageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
-  def spaceUserListName = "MembersPortlet";
-  def spaceSettingName = "SpaceSettingPortlet";
+  def spaceUserListName = "members";
+  def spaceSettingName = "settings";
 
   public String getFitString(String nodeLabel, int maxLen) {
     def labelStr = "";
     def labelStrPrev = "";
     def appendLabel = " ...";
-    def fitStr = SpaceUtils.getDisplayAppName(nodeLabel);
+    def fitStr = nodeLabel;
     if (fitStr == null) {
       return "";
     }

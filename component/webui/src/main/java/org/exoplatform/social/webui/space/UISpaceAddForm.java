@@ -21,6 +21,8 @@ import java.util.ResourceBundle;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -35,8 +37,8 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
@@ -62,6 +64,8 @@ import org.exoplatform.webui.form.UIFormTabPane;
 )
 
 public class UISpaceAddForm extends UIFormTabPane {
+
+  private static final Log LOG = ExoLogger.getLogger(UISpaceAddForm.class);
 
   static private final String MSG_DEFAULT_SPACE_DESCRIPTION       = "UISpaceAddForm.msg.default_space_description";
   static private final String MSG_ERROR_SPACE_CREATION            = "UISpaceAddForm.msg.error_space_creation";
@@ -137,7 +141,7 @@ public class UISpaceAddForm extends UIFormTabPane {
         space.setType(DefaultSpaceApplicationHandler.NAME);
         spaceService.initApps(space);
       } catch (SpaceException se) {
-        //se.printStackTrace();
+        LOG.warn("Failed to create a new space", se);
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
           msg = MSG_ERROR_SPACE_ALREADY_EXIST;
           uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.WARNING));
@@ -215,15 +219,18 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIFormInputInfo uiFormInfo = uiSpaceSettings.getChild(UIFormInputInfo.class);
       int selectedValue = Integer.parseInt(space.getPriority());
       switch (selectedValue) {
-	    case 1: uiFormInfo.setValue(highPrio);
-		break;
-	    case 2: uiFormInfo.setValue(interMePrio);
-	    break;
-	    case 3: uiFormInfo.setValue(lowPrio);
-	    break;
-	    default:
-		break;
-	  }
+        case 1:
+          uiFormInfo.setValue(highPrio);
+          break;
+        case 2:
+          uiFormInfo.setValue(interMePrio);
+          break;
+        case 3:
+          uiFormInfo.setValue(lowPrio);
+          break;
+        default:
+          break;
+      }
     }
   }
 

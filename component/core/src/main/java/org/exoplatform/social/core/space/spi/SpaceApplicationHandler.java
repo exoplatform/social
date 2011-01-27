@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2003-2010 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -16,36 +16,41 @@
  */
 package org.exoplatform.social.core.space.spi;
 
-import java.util.List;
-
+import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 
 /**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Oct 17, 2008
+ * Handler for working with space applications: install, activate, deactivate, uninstall...
+ *
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @since  Oct 17, 2008
  */
 
 public interface SpaceApplicationHandler {
-  /**
-   * Initialize HomeSpacePortlet application as a root page node of a space.
-   * Add apps to this space.
-   * @param space
-   * @throws SpaceException
-   */
-  public void initApp(Space space, String homeNodeApp, List<String> apps) throws SpaceException;
 
   /**
-   * De-initialize
+   * Initializes home space applications and space applications.
+   *
+   * @param space
+   * @param spaceApplicationConfigPlugin
+   * @throws SpaceException
+   * @since 1.2.0-GA
+   */
+  public void initApps(Space space, SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) throws SpaceException;
+
+  /**
+   * De-initializes a space application.
+   *
    * @param space
    * @throws SpaceException
    */
   public void deInitApp(Space space) throws SpaceException;
 
   /**
-   * Install an application to a space
+   * Installs an application to a space.
+   *
    * @param space
    * @param appId
    * @throws SpaceException
@@ -53,7 +58,8 @@ public interface SpaceApplicationHandler {
   public void installApplication(Space space, String appId) throws SpaceException;
 
   /**
-   * Activate an installed application in a space
+   * Activates an installed application in a space.
+   *
    * @param space
    * @param appId
    * @throws SpaceException
@@ -61,7 +67,8 @@ public interface SpaceApplicationHandler {
   public void activateApplication(Space space, String appId, String appName) throws SpaceException;
 
   /**
-   * Deactivate an installed application in a space
+   * Deactivates an installed application in a space.
+   *
    * @param space
    * @param appId
    * @throws SpaceException
@@ -69,7 +76,8 @@ public interface SpaceApplicationHandler {
   public void deactiveApplication(Space space, String appId) throws SpaceException;
 
   /**
-   * Remove an application in a space
+   * Removes an application in a space.
+   *
    * @param space
    * @param appId
    * @throws SpaceException
@@ -77,18 +85,18 @@ public interface SpaceApplicationHandler {
   public void removeApplication(Space space, String appId, String appName) throws SpaceException;
 
   /**
-   * Remove all applications in a space
+   * Remove all applications in a space.
+   *
    * @param space
    * @throws SpaceException
    */
   public void removeApplications(Space space) throws SpaceException;
 
   /**
-   * Get name
+   * Gets name.
+   *
    * @return
    */
   public String getName();
-
-
 
 }

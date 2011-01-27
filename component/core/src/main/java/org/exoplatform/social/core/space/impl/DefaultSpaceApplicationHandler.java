@@ -20,14 +20,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.ApplicationType;
@@ -44,9 +46,10 @@ import org.exoplatform.portal.pom.spi.portlet.Portlet;
 import org.exoplatform.portal.pom.spi.portlet.PortletBuilder;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
+import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -54,22 +57,60 @@ import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
- * Created by The eXo Platform SARL Author : dang.tung tungcnw@gmail.com Oct 17,
- * 2008
+ * Default implementation for working with space applications.
+ *
+ * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @since OCt 17, 2008
  */
 
 public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
-  private static final Log                                          LOG                    = ExoLogger.getLogger(DefaultSpaceApplicationHandler.class);
+  private static final Log                                   LOG                    = ExoLogger.getLogger(DefaultSpaceApplicationHandler.class);
 
   public static final String                                 NAME                   = "classic";
 
   public static final String                                 SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
 
-  static public final String                                 APPLICATION_CONTAINER  = "Application";
+  public static final String                                 APPLICATION_CONTAINER  = "Application";
 
-  private ExoContainer                                       container              = ExoContainerContext.getCurrentContainer();
+  private static final String                                SPACE_DEFAULT_ICON = "SpaceDefaultIcon";
 
-  private DataStorage                                        dataStorage            = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
+  /**
+   * The {groupId} preference value pattern
+   *
+   * @since 1.2.0-GA
+   */
+  private static final String                                GROUP_ID_PREFERENCE = "{groupId}";
+
+  /**
+   * The {modifiedGroupId} preference value pattern
+   *
+   * @since 1.2.0-GA
+   */
+  private static final String                                MODIFIED_GROUP_ID_PREFERENCE = "{modifiedGroupId}";
+
+  /**
+   * The {pageName} preference value pattern
+   *
+   * @since 1.2.0-GA
+   */
+  private static final String                                PAGE_NAME_PREFERENCE = "{pageName}";
+
+  /**
+   * The {pageUrl} preference value pattern
+   * @since 1.2.0-GA
+   */
+  private static final String                                PAGE_URL_PREFERENCE = "{pageUrl}";
+
+  /**
+   * The {spaceUrl} preference value pattern
+   * @since 1.2.0-GA
+   */
+  private static final String                                SPACE_URL_PREFERENCE = "{spaceUrl}";
+
+  private PortalContainer                                    container              = PortalContainer.getInstance();
+
+  private DataStorage                                        dataStorage            = null;
 
   private SpaceService                                       spaceService;
 
@@ -78,43 +119,42 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   private static List<Application>                           appCache               = new ArrayList<Application>();
 
   /**
-   * Inits the app.
+   * Constructor.
    *
-   * @param space the space
-   * @param homeNodeApp the home node app
-   * @param apps the apps
-   * @throws SpaceException the space exception {@inheritDoc}
+   * @param dataStorage
    */
-  public void initApp(Space space, String homeNodeApp, List<String> apps) throws SpaceException {
+  public DefaultSpaceApplicationHandler(DataStorage dataStorage) {
+    this.dataStorage = dataStorage;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void initApps(Space space, SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) throws SpaceException {
     try {
       PageNavigation spaceNav = SpaceUtils.createGroupNavigation(space.getGroupId());
-      PageNode homeNode = createPageNodeFromApplication(space, homeNodeApp, null, true);
-      spaceService = getSpaceService();
+      PageNode homeNode = createPageNodeFromApplication(space, spaceApplicationConfigPlugin.getHomeApplication(), null, true);
+      SpaceService spaceService = getSpaceService();
+
       List<PageNode> childNodes = homeNode.getChildren();
-      if (childNodes == null)
+      if (childNodes == null) {
         childNodes = new ArrayList<PageNode>();
-      for (String app : apps) {
-        app = (app.trim()).split(":")[0];
-        PageNode appNode = createPageNodeFromApplication(space, app, null, false);
-        childNodes.add(appNode);
-        spaceService.installApplication(space, app);
       }
-      // homeNode.setChildren((ArrayList<PageNode>) childNodes);
+      for (SpaceApplication spaceApplication : spaceApplicationConfigPlugin.getSpaceApplicationList()) {
+        PageNode appNode = createPageNodeFromApplication(space, spaceApplication, null, false);
+        childNodes.add(appNode);
+        spaceService.installApplication(space, spaceApplication.getPortletName());
+      }
       spaceNav.addNode(homeNode);
       dataStorage.save(spaceNav);
       SpaceUtils.setNavigation(spaceNav);
-      PortalConfig portalConfig = dataStorage.getPortalConfig(PortalConfig.GROUP_TYPE,
-                                                              space.getGroupId());
-
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);
     }
   }
 
   /**
-   * De-initialize HomeSpacePortlet application.
-   *
-   * @param space
+   * {@inheritDoc}
    */
   public void deInitApp(Space space) throws SpaceException {
     try {
@@ -200,24 +240,16 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    */
   private void activateApplicationClassic(Space space, String appId, String appName) throws SpaceException {
     PageNavigation nav = SpaceUtils.createGroupNavigation(space.getGroupId());
-    PageNode pageNode = createPageNodeFromApplication(space, appId, appName, false);
+    SpaceApplication spaceApplication = new SpaceApplication();
+    spaceApplication.setPortletName(appId);
+    //spaceApplication.setAppTitle(appName);
+    PageNode pageNode = createPageNodeFromApplication(space, spaceApplication, appName, false);
     UIPortal uiPortal = Util.getUIPortal();
     PageNode selectedNode = null;
     try {
       selectedNode = uiPortal.getSelectedNode();
     } catch (Exception e2) {
-      // TODO Auto-generated catch block
-      e2.printStackTrace();
-    }
-
-    UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
-    UserPortalConfig userPortalConfig = uiPortalApp.getUserPortalConfig();
-    List<PageNavigation> navigations = userPortalConfig.getNavigations();
-    for (PageNavigation navi : navigations) {
-      if ((navi.getOwner()).equals(nav.getOwner())) {
-        nav = navi;
-        break;
-      }
+      LOG.warn("Failed to activateApplicationClassic", e2);
     }
 
     try {
@@ -226,19 +258,15 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
         throw new Exception("homeNode is null!");
       }
       List<PageNode> childNodes = homeNode.getChildren();
-      if (childNodes == null)
+      if (childNodes == null) {
         childNodes = new ArrayList<PageNode>();
-      //
+      }
       childNodes.add(pageNode);
       dataStorage.save(nav);
       uiPortal.setSelectedNode(selectedNode);
       uiPortal.setSelectedNavigation(nav);
       SpaceUtils.setNavigation(nav);
     } catch (Exception e) {
-      try {
-        // TODO if navigation can't be updated, remove the page
-      } catch (Exception e1) {
-      }
       throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_APPLICATION, e);
     }
   }
@@ -281,9 +309,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       // bug from portal, gets by nodeUri instead
       if (childNode == null) {
         for (PageNode pageNode : homeNode.getChildren()) {
-          String nodeUri = pageNode.getUri();
-          nodeUri = nodeUri.substring(nodeUri.indexOf("/") + 1);
-          if (nodeUri.equals(nodeName)) {
+          if (pageNode.getPageReference().contains(appId)) {
             childNode = pageNode;
             break;
           }
@@ -333,38 +359,17 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    * - Creates PageNode instance and returns that pageNode.
    *
    * @param space
-   * @param appId
+   * @param  spaceApplication
    * @param isRoot
    * @return
-   * @throws SpaceException
+   * @since 1.2.0-GA
    */
-  private PageNode createPageNodeFromApplication(Space space,
-                                                 String appId,
-                                                 String appName,
-                                                 boolean isRoot) throws SpaceException {
-    Application app = getApplication(appCache, appId);
-    if (app == null) {
-      try {
-        if (appStoreCache == null) {
-          appStoreCache = SpaceUtils.getAppStore(space);
-        }
-        app = getApplication(appStoreCache, appId);
-        if (app == null) {
-          // retry
-          appStoreCache = SpaceUtils.getAppStore(space);
-          app = getApplication(appStoreCache, appId);
-          if (app == null) {
-            app = SpaceUtils.getAppFromPortalContainer(appId);
-            if (app == null) {
-              throw new Exception("app is null!");
-            }
-          }
-        }
-        appCache.add(app);
-      } catch (Exception e) {
-        throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
-      }
-    }
+private PageNode createPageNodeFromApplication(Space space,
+                                               SpaceApplication spaceApplication,
+                                               String appName,
+                                               boolean isRoot) throws SpaceException {
+    String appId = spaceApplication.getPortletName();
+    Application app = getApplication(space, appId);
     String contentId = app.getContentId();
     if (contentId == null) {
       contentId = app.getCategoryName() + "/" + app.getApplicationName();
@@ -405,14 +410,18 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       setPage(space, app, gadgetApplication, portletApplication, page);
       dataStorage.save(page);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.warn(e.getMessage(), e);
     }
     PageNode pageNode = new PageNode();
-    String label = app.getDisplayName();
+    String label = SpaceUtils.getDisplayAppName(app.getDisplayName());
+    /*
     if (appName != null) {
       String sufixLabel = pageName.replaceAll(app.getApplicationName(), "");
       label = label + sufixLabel;
+    }
+    */
+    if (spaceApplication.getAppTitle() != null && !spaceApplication.getAppTitle().isEmpty()) {
+      label = spaceApplication.getAppTitle();
     }
 
     if (isRoot) {
@@ -420,13 +429,54 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       label = space.getDisplayName();
       pageNode.setUri(pageName);
     } else {
+      if (spaceApplication.getUri() != null && !spaceApplication.getUri().isEmpty()) {
+        pageName = spaceApplication.getUri();
+      }
       pageNode.setUri(space.getUrl() + "/" + pageName);
     }
     pageNode.setName(pageName);
+    if (spaceApplication.getIcon() != null && !spaceApplication.getIcon().isEmpty()) {
+      pageNode.setIcon(spaceApplication.getIcon());
+    }
     pageNode.setLabel(label);
     pageNode.setPageReference(page.getPageId());
     pageNode.setModifiable(true);
     return pageNode;
+  }
+
+  /**
+   * Gets an application by its id.
+   *
+   * @param space
+   * @param appId
+   * @return
+   * @throws SpaceException
+   */
+  private Application getApplication(Space space, String appId) throws SpaceException {
+    Application app = getApplication(appCache, appId);
+    if (app == null) {
+      try {
+        if (appStoreCache == null) {
+          appStoreCache = SpaceUtils.getAppStore(space);
+        }
+        app = getApplication(appStoreCache, appId);
+        if (app == null) {
+          // retry
+          appStoreCache = SpaceUtils.getAppStore(space);
+          app = getApplication(appStoreCache, appId);
+          if (app == null) {
+            app = SpaceUtils.getAppFromPortalContainer(appId);
+            if (app == null) {
+              throw new Exception("app is null!");
+            }
+          }
+        }
+        appCache.add(app);
+      } catch (Exception e) {
+        throw new SpaceException(SpaceException.Code.UNABLE_TO_LIST_AVAILABLE_APPLICATIONS, e);
+      }
+    }
+    return app;
   }
 
   @SuppressWarnings("unchecked")
@@ -459,16 +509,14 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       }
       dataStorage.save(state, portletPreference);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.warn("Failed to setPage", e);
     }
 
     Container container = SpaceUtils.findContainerById(pageChilds, SpaceUtils.APPLICATION_CONTAINER);
     ArrayList<ModelObject> children = container.getChildren();
     if (app.getType() == ApplicationType.GADGET) {
       children.add(gadgetApplication);
-    }
-    else {
+    } else {
       children.add(portletApplication);
     }
     container.setChildren(children);
@@ -478,7 +526,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   }
 
   /**
-   * Gets application from appStore by appId
+   * Gets an application from appStore by appId.
    *
    * @param appStore
    * @param appId
@@ -501,7 +549,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   }
 
   /**
-   * Sets permission for page
+   * Sets permission for page.
    *
    * @param children
    * @param perm
@@ -553,7 +601,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    */
   private org.exoplatform.portal.config.model.Application<Portlet> createPortletApplication(String instanceId,
                                                                                             Space space,
-                                                                                            Boolean isRoot) {
+                                                                                            boolean isRoot) {
     int i0 = instanceId.indexOf("#");
     int i1 = instanceId.indexOf(":/", i0 + 1);
     String ownerType = instanceId.substring(0, i0);
@@ -570,6 +618,25 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       }
     }
 
+    List<SpaceApplication> spaceApplicationList = spaceService.getSpaceApplicationConfigPlugin().getSpaceApplicationList();
+    SpaceApplication spaceApplication = null;
+    for (Iterator<SpaceApplication> iterator = spaceApplicationList.iterator(); iterator.hasNext() && spaceApplication == null;) {
+      SpaceApplication tmpSpaceApplication = iterator.next();
+      if (instanceId.contains(tmpSpaceApplication.getPortletName())) {
+        spaceApplication = tmpSpaceApplication;
+      }
+    }
+    if(spaceApplication != null && spaceApplication.getPreferences() != null) {
+      Set<Entry<String, String>> entrySet = spaceApplication.getPreferences().entrySet();
+      try {
+        for (Map.Entry<String, String> preference : entrySet) {
+          pb.add(preference.getKey(), getSubstituteValueFromPattern(space, spaceApplication, preference.getValue()));
+        }
+      } catch (Exception exception) {
+        LOG.warn(exception.getMessage(), exception);
+      }
+    }
+
     TransientApplicationState<Portlet> portletState = new TransientApplicationState<Portlet>(persistenceChunks[0]
                                                                                                  + "/"
                                                                                                  + persistenceChunks[1],
@@ -580,6 +647,25 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     org.exoplatform.portal.config.model.Application<Portlet> portletApp = org.exoplatform.portal.config.model.Application.createPortletApplication();
     portletApp.setState(portletState);
     return portletApp;
+  }
+
+  private String getSubstituteValueFromPattern(Space space, SpaceApplication spaceApplication, String pattern) {
+    if (!pattern.contains("{") || !pattern.contains("}")) {
+      return pattern;
+    }
+    if (SPACE_URL_PREFERENCE.equals(pattern)) {
+      return space.getUrl();
+    } else if (GROUP_ID_PREFERENCE.equals(pattern)) {
+      return space.getGroupId();
+    } else if (MODIFIED_GROUP_ID_PREFERENCE.equals(pattern)) {
+      return space.getGroupId().replace("/", ".");
+    } else if (PAGE_NAME_PREFERENCE.equals(pattern)) {
+      return spaceApplication.getAppTitle();
+    } else if (PAGE_URL_PREFERENCE.equals(pattern)) {
+      return spaceApplication.getUri();
+    }
+    LOG.warn("The pattern is not defined: " + pattern);
+    return null;
   }
 
   /**

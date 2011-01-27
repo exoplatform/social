@@ -18,9 +18,9 @@
 
 -->
 <configuration
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
-  xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
 
   <component>
     <key>org.exoplatform.social.core.storage.ActivityStorage</key>
@@ -163,20 +163,92 @@
   <component>
     <key>org.exoplatform.social.core.space.spi.SpaceService</key>
     <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
-    <init-params>
-      <!-- Configure the applications to install in a space -->
-      <values-param>
-        <name>space.homeNodeApp</name>
-        <value>SpaceActivityStreamPortlet</value>
-      </values-param>
-      <!-- Configure removable application or not <value>Application:removable</value> -->
-      <values-param>
-        <name>space.apps</name>
-        <value>DashboardPortlet:true</value>
-        <value>SpaceSettingPortlet:false</value>
-        <value>MembersPortlet:true</value>
-      </values-param>
-    </init-params>
+    <component-plugins>
+      <!-- Default applications to be installed when creating a new space -->
+      <component-plugin>
+        <name>Space Application Configuration</name>
+        <set-method>setSpaceApplicationConfigPlugin</set-method>
+        <type>org.exoplatform.social.core.space.SpaceApplicationConfigPlugin</type>
+        <init-params>
+
+          <object-param>
+            <name>spaceHomeApplication</name>
+            <description>Space Home Application</description>
+            <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+              <field name="portletApp"><string>social-portlet</string></field>
+              <field name="portletName"><string>SpaceActivityStreamPortlet</string></field>
+              <field name="appTitle"><string>Home</string></field>
+              <!--<field name="icon"><string>SpaceHomeIcon</string></field>-->
+            </object>
+          </object-param>
+
+          <object-param>
+            <name>spaceApplicationListConfig</name>
+            <description>space application list configuration</description>
+            <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin">
+              <field name="spaceApplicationList">
+                <collection type="java.util.ArrayList">
+                  <value>
+                    <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                      <field name="portletApp"><string>dashboard</string></field>
+                      <field name="portletName"><string>DashboardPortlet</string></field>
+                      <field name="appTitle"><string>Dashboard</string></field>
+                      <field name="removable"><boolean>true</boolean></field>
+                      <field name="order"><int>1</int></field>
+                      <field name="uri"><string>dashboard</string></field>
+                      <!--<field name="icon"><string>SpaceDashboardIcon</string></field>-->
+                    </object>
+                  </value>
+                  <value>
+                    <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                      <field name="portletApp"><string>social-portlet</string></field>
+                      <field name="portletName"><string>SpaceSettingPortlet</string></field>
+                      <field name="appTitle"><string>Space Settings</string></field>
+                      <field name="removable"><boolean>false</boolean></field>
+                      <field name="order"><int>2</int></field>
+                      <field name="uri"><string>settings</string></field>
+                      <!--<field name="icon"><string>SpaceSettingsIcon</string></field>-->
+                    </object>
+                  </value>
+                  <value>
+                    <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                      <field name="portletApp"><string>social-portlet</string></field>
+                      <field name="portletName"><string>MembersPortlet</string></field>
+                      <field name="appTitle"><string>Members</string></field>
+                      <field name="removable"><boolean>true</boolean></field>
+                      <field name="order"><int>3</int></field>
+                      <field name="uri"><string>members</string></field>
+                      <!--<field name="icon"><string>SpaceMembersIcon</string></field>-->
+                    </object>
+                  </value>
+                </collection>
+              </field>
+            </object>
+          </object-param>
+
+        </init-params>
+      </component-plugin>
+
+      <component-plugin>
+        <name>SpaceActivityPublisher</name>
+        <set-method>addSpaceListener</set-method>
+        <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
+      </component-plugin>
+
+      <component-plugin>
+        <name>portlets.prefs.required</name>
+        <set-method>setPortletsPrefsRequired</set-method>
+        <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
+        <init-params>
+          <values-param>
+            <name>portletsPrefsRequired</name>
+            <value>SpaceActivityStreamPortlet</value>
+            <value>SpaceSettingPortlet</value>
+            <value>MembersPortlet</value>
+          </values-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
   </component>
 
   <component>
@@ -187,6 +259,11 @@
   <component>
     <key>org.exoplatform.social.core.processor.MentionsProcessor</key>
     <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.processor.TemplateParamsProcessor</key>
+    <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
   </component>
 
   <component>
@@ -207,36 +284,28 @@
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
     <component-plugin>
-      <name>UsernameProcessor</name>
+      <name>MentionsProcessor</name>
       <set-method>addProcessorPlugin</set-method>
       <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
       <init-params>
         <value-param>
           <name>priority</name>
           <description>priority of this processor (lower are executed first)</description>
-          <value>5</value>
+          <value>2</value>
         </value-param>
       </init-params>
     </component-plugin>
-    <!--
     <component-plugin>
-      <name>GoogleMapProcessor</name>
+      <name>TemplateParamsProcessor</name>
       <set-method>addProcessorPlugin</set-method>
-      <type>org.exoplatform.social.activity.GoogleMapProcessor</type>
+      <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
       <init-params>
         <value-param>
           <name>priority</name>
-          <description>priority of this processor (lower are executed first)</description>
           <value>1</value>
-        </value-param>
-        <value-param>
-          <name>key</name>
-          <description>your google map API key</description>
-          <value>xxx</value>
         </value-param>
       </init-params>
     </component-plugin>
-    -->
   </external-component-plugins>
 
   <external-component-plugins>
@@ -247,7 +316,7 @@
       <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
     </component-plugin>
   </external-component-plugins>
-<!--
+  <!--
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
     <component-plugin>
@@ -256,7 +325,7 @@
       <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
     </component-plugin>
   </external-component-plugins>
--->
+  -->
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
     <component-plugin>

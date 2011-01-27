@@ -327,8 +327,7 @@ public class UISpaceMenu extends UIContainer {
    * @return true if input name is existed. false if it not.
    * @throws Exception
    */
-  private boolean isAppNameExisted(PageNavigation pageNav, String nodeName) throws Exception
-  {
+  private boolean isAppNameExisted(PageNavigation pageNav, String nodeName) throws Exception {
     PageNode homeNode = pageNav.getNode(SpaceUtils.getSpaceUrl());
     if (homeNode == null) {
       throw new Exception("homeNode is null!");
@@ -338,12 +337,12 @@ public class UISpaceMenu extends UIContainer {
     // Check in case new name is duplicated with space name
     for (PageNode node : pageNav.getNodes()) {
       if (node.getName().equals(nodeName)) {
-         return true;
+        return true;
       }
     }
     for (PageNode node : nodes) {
       if (node.getName().equals(nodeName)) {
-         return true;
+        return true;
       }
     }
 

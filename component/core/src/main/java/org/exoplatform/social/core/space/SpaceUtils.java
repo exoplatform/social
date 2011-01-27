@@ -1044,9 +1044,9 @@ public class SpaceUtils {
    * @return
    */
   static public String getDisplayAppName (String appDisplayName) {
-    int len = appDisplayName.length() - 1;
-    if (appDisplayName.toLowerCase().endsWith("portlet")) return appDisplayName.substring(0, len - 7);
-    if (appDisplayName.toLowerCase().endsWith("gadget")) return appDisplayName.substring(0, len - 6);
+    int length = appDisplayName.length();
+    if (appDisplayName.toLowerCase().endsWith("portlet")) return appDisplayName.substring(0, length - 7).trim();
+    if (appDisplayName.toLowerCase().endsWith("gadget")) return appDisplayName.substring(0, length - 6).trim();
     return appDisplayName;
   }
   
