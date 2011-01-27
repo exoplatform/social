@@ -59,7 +59,7 @@ import org.exoplatform.social.core.storage.SpaceStorage;
  * @since  August 29, 2008
  */
 public class SpaceServiceImpl implements SpaceService {
-  private static final Log                           LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
+  private static final Log                     LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
 
   final static public String                   MEMBER                   = "member";
 
@@ -180,6 +180,13 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     return listSpace;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public Space getSpaceByGroupId(String groupId) throws SpaceException {
+    return storage.getSpaceByGroupId(groupId);
   }
 
   /**

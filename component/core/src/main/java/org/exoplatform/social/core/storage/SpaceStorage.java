@@ -26,6 +26,8 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.exoplatform.services.cache.CacheService;
+import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
@@ -39,6 +41,7 @@ import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 
 /**
@@ -77,15 +80,20 @@ public class SpaceStorage {
   private JCRSessionManager sessionManager;
   private static final String IMAGE_PATH = "image";
   private Node spaceHomeNode;
+  /**
+   * The cache for the spaces; cache key is spaceId.
+   */
+  private final ExoCache<String, Space> spaceCache;
 
   /**
    * Constructor.
    *
    * @param dataLocation
    */
-  public SpaceStorage(SocialDataLocation dataLocation) {
+  public SpaceStorage(SocialDataLocation dataLocation, CacheService cacheService) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
+    this.spaceCache = cacheService.getCacheInstance(getClass().getName() + "spaceCache");
   }
 
   /**
@@ -114,12 +122,45 @@ public class SpaceStorage {
   }
 
   /**
+   * Gets a space by its associated group id.
+   *
+   * @param  groupId
+   * @return
+   * @throws SpaceException
+   * @since  1.2.0-GA
+   */
+  public Space getSpaceByGroupId(String groupId) throws SpaceException {
+    Session session = sessionManager.getOrOpenSession();
+    Space space = null;
+    try {
+      Node foundNode = new QueryBuilder(session)
+              .select(NodeType.EXO_SPACE)
+              .equal(NodeProperty.SPACE_GROUP_ID, groupId).findNode();
+      if (foundNode != null) {
+        space = getSpaceFromNode(foundNode, session);
+      } else {
+        LOG.warn("Not found node with groupId: " + groupId);
+      }
+    } catch (Exception e) {
+      LOG.warn("Failed to getSpaceByGroupId with groupId: " + groupId, e);
+    } finally {
+      sessionManager.closeSession();
+    }
+    return space;
+  }
+
+  /**
    * Gets a space by its space id.
    *
    * @param id
    * @return
    */
   public Space getSpaceById(String id) {
+    Space cachedSpace = spaceCache.get(id);
+    if (cachedSpace != null) {
+      return cachedSpace;
+    }
+
     Session session = sessionManager.getOrOpenSession();
     try {
       Node spaceNode = session.getNodeByUUID(id);
@@ -387,6 +428,7 @@ public class SpaceStorage {
         spaceHomeNode.save();
       } else {
         spaceNode.save();
+        spaceCache.remove(spaceNode.getUUID());
       }
     } catch (Exception e) {
       LOG.error("failed to save space", e);
@@ -422,7 +464,13 @@ public class SpaceStorage {
    * @throws Exception
    */
   private Space getSpaceFromNode(Node spaceNode, Session session) throws Exception {
-    Space space = new Space();
+    String id = spaceNode.getUUID();
+
+    Space space = spaceCache.get(id);
+    if (space != null) {
+      return space;
+    }
+    space = new Space();
     space.setId(spaceNode.getUUID());
     PropertyIterator itr = spaceNode.getProperties(SPACE_PROPERTIES_NAME_PATTERN);
     while (itr.hasNext()) {
@@ -477,6 +525,7 @@ public class SpaceStorage {
         space.setAvatarAttachment(file);
       }
     }
+    spaceCache.put(id, space);
     return space;
   }
 

@@ -33,7 +33,6 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceStorageTest extends AbstractCoreTest {
 
-  // List of spaces for deleting in tearDown.
   private List<Space>  tearDownSpaceList;
 
   private SpaceStorage spaceStorage;
@@ -56,18 +55,8 @@ public class SpaceStorageTest extends AbstractCoreTest {
       spaceStorage.deleteSpace(sp.getId());
     }
     super.tearDown();
-  }
-
-  // Get an instance of Space.
-  private Space getSpaceInstance(int number) {
-    Space space = new Space();
-    space.setDisplayName("my space " + number);
-    space.setRegistration(Space.OPEN);
-    space.setDescription("add new space " + number);
-    space.setType(DefaultSpaceApplicationHandler.NAME);
-    space.setVisibility(Space.PUBLIC);
-    space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    return space;
+    assertTrue("spaceStorage.getAllSpaces().isEmpty() must return true",
+            spaceStorage.getAllSpaces().isEmpty());
   }
 
   /**
@@ -82,7 +71,8 @@ public class SpaceStorageTest extends AbstractCoreTest {
       spaceStorage.saveSpace(space, true);
       tearDownSpaceList.add(space);
     }
-    assertEquals("spaceStorage.getAllSpaces().size() must return: 10", 10, spaceStorage.getAllSpaces().size());
+    assertEquals("spaceStorage.getAllSpaces().size() must return: " + totalSpaces,
+            totalSpaces, spaceStorage.getAllSpaces().size());
   }
 
   /**
@@ -101,7 +91,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertNotNull("savedSpace must not be null", savedSpace);
     assertNotNull("savedSpace.getId() must not be null", savedSpace.getId());
     assertEquals("space.getId() must return: " + space.getId(), space.getId(), savedSpace.getId());
-    assertEquals("space.getName() must return: " + space.getPrettyName(),
+    assertEquals("space.getPrettyName() must return: " + space.getPrettyName(),
                  space.getPrettyName(),
                  savedSpace.getPrettyName());
     assertEquals("space.getRegistration() must return: " + space.getRegistration(),
@@ -119,6 +109,22 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertEquals("space.getPriority() must return: " + space.getPriority(),
                  space.getPriority(),
                  savedSpace.getPriority());
+  }
+
+  /**
+   * Test {@link SpaceStorage#getSpaceByGroupId(String)}
+   *
+   * @throws Exception
+   */
+  public void testGetSpaceByGroupId() throws Exception {
+    Space space = getSpaceInstance(1);
+    spaceStorage.saveSpace(space, true);
+
+    Space savedSpace = spaceStorage.getSpaceByGroupId(space.getGroupId());
+
+    assertNotNull("savedSpace must not be null", savedSpace);
+    tearDownSpaceList.add(savedSpace);
+
   }
 
   /**
@@ -174,6 +180,11 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertEquals("space.getName() must return: " + space.getName(),
                  space.getName(),
                  savedSpace.getName());
+
+    //Show that getName() is the same as getPrettyname
+    assertTrue("savedSpace.getName().equals(savedSpace.getPrettyName()) must return true",
+            savedSpace.getName().equals(savedSpace.getPrettyName()));
+
     assertEquals("space.getRegistration() must return: " + space.getRegistration(),
                  space.getRegistration(),
                  savedSpace.getRegistration());
@@ -246,6 +257,11 @@ public class SpaceStorageTest extends AbstractCoreTest {
     spaceStorage.deleteSpace(space.getId());
   }
 
+  /**
+   * Test {@link SpaceStorage#saveSpace(org.exoplatform.social.core.space.model.Space, boolean)}
+   *
+   * @throws Exception
+   */
   public void testSaveSpace() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -259,5 +275,18 @@ public class SpaceStorageTest extends AbstractCoreTest {
         + newName, newName, spaceStorage.getSpaceById(space.getId())
                                                                 .getName());
     assertEquals("space.getName() must return: " + newName, newName, space.getName());
+  }
+
+  // Get an instance of Space.
+  private Space getSpaceInstance(int number) {
+    Space space = new Space();
+    space.setDisplayName("my space " + number);
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/abc/def/" + number);
+    return space;
   }
 }
