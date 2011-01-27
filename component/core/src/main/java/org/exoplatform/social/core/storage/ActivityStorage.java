@@ -18,13 +18,18 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.Value;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
@@ -601,58 +606,74 @@ public class ActivityStorage {
    * @return the activity
    * @throws Exception the exception
    */
-  private ExoSocialActivity getActivityFromActivityNode(Node activityNode) throws Exception {
+  private ExoSocialActivity getActivityFromActivityNode(Node activityNode) {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
-    activity.setId(activityNode.getUUID());
-    setStreamInfo(activity, activityNode);
-
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_BODY)) {
-      activity.setBody(activityNode.getProperty(NodeProperty.ACTIVITY_BODY).getString());
+    String [] propertyNames = {
+        NodeProperty.ACTIVITY_BODY,
+        NodeProperty.ACTIVITY_EXTERNAL_ID,
+        NodeProperty.ACTIVITY_HIDDEN,
+        NodeProperty.ACTIVITY_POSTED_TIME,
+        NodeProperty.ACTIVITY_PRIORITY,
+        NodeProperty.ACTIVITY_TITLE,
+        NodeProperty.ACTIVITY_TYPE,
+        NodeProperty.ACTIVITY_REPLY_TO_ID,
+        NodeProperty.ACTIVITY_UPDATED,
+        NodeProperty.ACTIVITY_URL,
+        NodeProperty.ACTIVITY_USER_ID,
+        NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS,
+        NodeProperty.ACTIVITY_TEMPLATE_PARAMS,
+        NodeProperty.ACTIVITY_TITLE_TEMPLATE,
+        NodeProperty.ACTIVITY_BODY_TEMPLATE
+    };
+    
+    try {
+      activity.setId(activityNode.getUUID());
+      setStreamInfo(activity, activityNode);
+      
+      final String propertiesNamePattern = Util.getPropertiesNamePattern(propertyNames);
+      
+      PropertyIterator it = activityNode.getProperties(propertiesNamePattern);
+      while (it.hasNext()) {
+        Property p = it.nextProperty();
+        String propertyName = p.getName();
+        if (NodeProperty.ACTIVITY_BODY.equals(propertyName)) {
+          activity.setBody(p.getString());
+        } else if (NodeProperty.ACTIVITY_EXTERNAL_ID.equals(propertyName)) {
+          activity.setExternalId(p.getString());
+        } else if (NodeProperty.ACTIVITY_HIDDEN.equals(propertyName)) {
+          activity.isHidden(p.getBoolean());
+        } else if (NodeProperty.ACTIVITY_POSTED_TIME.equals(propertyName)) {
+          activity.setPostedTime(p.getLong());
+        } else if (NodeProperty.ACTIVITY_PRIORITY.equals(propertyName)) {
+          activity.setPriority((float)p.getLong());
+        } else if (NodeProperty.ACTIVITY_TITLE.equals(propertyName)) {
+          activity.setTitle(p.getString());
+        } else if (NodeProperty.ACTIVITY_TYPE.equals(propertyName)) {
+          activity.setType(p.getString());
+        } else if (NodeProperty.ACTIVITY_REPLY_TO_ID.equals(propertyName)) {
+          activity.setReplyToId(p.getString());
+        } else if (NodeProperty.ACTIVITY_UPDATED.equals(propertyName)) {
+          activity.setUpdated(new Date(p.getLong()));
+        } else if (NodeProperty.ACTIVITY_URL.equals(propertyName)) {
+          activity.setUrl(p.getString());
+        }
+        // TODO: replace by a reference to the identity node
+        else if (NodeProperty.ACTIVITY_USER_ID.equals(propertyName)) {
+          activity.setUserId(p.getString());
+        } else if (NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS.equals(propertyName)) {
+          activity.setLikeIdentityIds(Util.convertValuesToStrings(p.getValues()));
+        } else if (NodeProperty.ACTIVITY_TEMPLATE_PARAMS.equals(propertyName)) {
+          activity.setTemplateParams(Util.convertValuesToMap(p.getValues()));
+        } else if (NodeProperty.ACTIVITY_TITLE_TEMPLATE.equals(propertyName)) {
+          activity.setTitleId(p.getString());
+        } else if (NodeProperty.ACTIVITY_BODY_TEMPLATE.equals(propertyName)) {
+          activity.setBodyId(p.getString());
+        }
+      }
+    } catch (Exception e) {
+      LOG.warn(e.getMessage(), e);
     }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_EXTERNAL_ID)) {
-      activity.setExternalId(activityNode.getProperty(NodeProperty.ACTIVITY_EXTERNAL_ID).getString());
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_HIDDEN)) {
-      activity.isHidden(activityNode.getProperty(NodeProperty.ACTIVITY_HIDDEN).getBoolean());
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_POSTED_TIME)) {
-      activity.setPostedTime(activityNode.getProperty(NodeProperty.ACTIVITY_POSTED_TIME).getLong());
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_PRIORITY)) {
-      activity.setPriority((float)activityNode.getProperty(NodeProperty.ACTIVITY_PRIORITY).getLong());
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_TITLE)) {
-      activity.setTitle(activityNode.getProperty(NodeProperty.ACTIVITY_TITLE).getString());
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_TYPE)) {
-      activity.setType(activityNode.getProperty(NodeProperty.ACTIVITY_TYPE).getString());
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_REPLY_TO_ID)) {
-      activity.setReplyToId(activityNode.getProperty(NodeProperty.ACTIVITY_REPLY_TO_ID).getString());
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_UPDATED)) {
-      activity.setUpdated(new Date(activityNode.getProperty(NodeProperty.ACTIVITY_UPDATED).getLong()));
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_URL)) {
-      activity.setUrl(activityNode.getProperty(NodeProperty.ACTIVITY_URL).getString());
-    }
-    //TODO: replace by a reference to the identity node
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_USER_ID)) {
-      activity.setUserId(activityNode.getProperty(NodeProperty.ACTIVITY_USER_ID).getString());
-    }
-    if (activityNode.hasProperty(NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS)) {
-      activity.setLikeIdentityIds(Util.convertValuesToStrings(activityNode.getProperty(NodeProperty.ACTIVITY_LIKE_IDENTITY_IDS).getValues()));
-    }
-    if(activityNode.hasProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS)) {
-      activity.setTemplateParams(Util.convertValuesToMap(activityNode.getProperty(NodeProperty.ACTIVITY_TEMPLATE_PARAMS).getValues()));
-    }
-    if(activityNode.hasProperty(NodeProperty.ACTIVITY_TITLE_TEMPLATE)) {
-      activity.setTitleId(activityNode.getProperty(NodeProperty.ACTIVITY_TITLE_TEMPLATE).getString());
-    }
-    if(activityNode.hasProperty(NodeProperty.ACTIVITY_BODY_TEMPLATE)) {
-      activity.setBodyId(activityNode.getProperty(NodeProperty.ACTIVITY_BODY_TEMPLATE).getString());
-    }
+    
     return activity;
   }
-
 }
