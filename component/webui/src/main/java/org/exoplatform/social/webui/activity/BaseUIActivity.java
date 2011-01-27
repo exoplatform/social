@@ -345,6 +345,9 @@ public class BaseUIActivity extends UIForm {
       return spaceService.isLeader(space, Utils.getOwnerRemoteId());
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+      if (Utils.getViewerIdentity().equals(getOwnerIdentity())) {
+        return true;
+      }
       if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
         if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
           return true;
