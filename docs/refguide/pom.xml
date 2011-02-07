@@ -250,10 +250,6 @@
                   <file>${docbook.targetDirectory}/${project.artifactId}.pdf</file>
                   <type>pdf</type>
                 </artifact>
-                <artifact>
-                  <file>target/${project.artifactId}-${project.version}.zip</file>
-                  <type>zip</type>
-                </artifact>
               </artifacts>
             </configuration>
           </execution>
