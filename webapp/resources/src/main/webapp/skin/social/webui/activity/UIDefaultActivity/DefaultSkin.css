@@ -105,6 +105,7 @@
 	padding: 0; 
 	float: left; 
 	text-align: justify;
+	width: 100%;
 }
 
 .UIActivity .CommentBox .ContentBox {
