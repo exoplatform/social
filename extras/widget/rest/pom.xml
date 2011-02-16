@@ -35,7 +35,7 @@
   <packaging>jar</packaging>
   <version>1.2.0-GA-SNAPSHOT</version>
   <name>eXo Social widget (REST Service)</name>
-  <description>eXo Social widget (REST Service)</description>
+  <description>eXo Social Widget (REST Service)</description>
   <dependencies>
 
     <dependency>

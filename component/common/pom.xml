@@ -52,6 +52,12 @@
     </dependency>
 
     <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
        <groupId>org.gatein.pc</groupId>
        <artifactId>pc-api</artifactId>
        <scope>provided</scope>
@@ -70,6 +76,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.exoplatform.core</groupId>
+      <artifactId>exo.core.component.organization.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.core</artifactId>
       <scope>provided</scope>
@@ -83,7 +95,25 @@
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.web</artifactId>
+      <artifactId>exo.portal.component.portal</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web.api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web.controller</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.framework</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -110,5 +140,6 @@
       <artifactId>exo.portal.component.test.jcr</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 </project>

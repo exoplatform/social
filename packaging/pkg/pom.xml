@@ -205,13 +205,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.exoplatform.tool</groupId>
-      <artifactId>exo.tool.webunit</artifactId>
-      <version>${org.exoplatform.tool.version}</version>
-      <type>jar</type>
-    </dependency>
-
-    <dependency>
       <groupId>org.gatein.mop</groupId>
       <artifactId>mop-api</artifactId>
       <version>${org.gatein.mop.version}</version>
@@ -229,6 +222,34 @@
       <groupId>org.gatein.mop</groupId>
       <artifactId>mop-core</artifactId>
       <version>${org.gatein.mop.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gatein.wsrp</groupId>
+      <artifactId>wsrp-admin-gui</artifactId>
+      <version>${org.gatein.wsrp.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gatein.wsrp</groupId>
+      <artifactId>wsrp-producer</artifactId>
+      <version>${org.gatein.wsrp.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.tool</groupId>
+      <artifactId>exo.tool.webunit</artifactId>
+      <version>${org.exoplatform.tool.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>exo.platform.commons.webui.ext</artifactId>
+      <version>${org.exoplatform.commons.version}</version>
       <type>jar</type>
     </dependency>
     
@@ -269,44 +290,9 @@
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
-      <artifactId>gatein.portal.component.wsrp</artifactId>
+      <artifactId>exo.portal.gadgets-core</artifactId>
       <version>${org.exoplatform.portal.version}</version>
       <type>jar</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.management</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
-      <type>jar</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gatein.wsrp</groupId>
-      <artifactId>wsrp-admin-gui</artifactId>
-      <version>${org.gatein.wsrp.version}</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gatein.wsrp</groupId>
-      <artifactId>wsrp-producer</artifactId>
-      <version>${org.gatein.wsrp.version}</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.portlet.exoadmin</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.portlet.web</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
-      <type>war</type>
     </dependency>
 
     <dependency>
@@ -321,6 +307,55 @@
       <artifactId>exo.portal.eXoGadgets</artifactId>
       <version>${org.exoplatform.portal.version}</version>
       <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>gatein.portal.component.wsrp</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.management</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web.api</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.framework</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.eXo</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.dashboard</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>jar</type>
     </dependency>
 
     <dependency>
@@ -340,6 +375,20 @@
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.portlet.dashboard</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.portlet.exoadmin</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.portlet.web</artifactId>
       <version>${org.exoplatform.portal.version}</version>
       <type>war</type>
     </dependency>
