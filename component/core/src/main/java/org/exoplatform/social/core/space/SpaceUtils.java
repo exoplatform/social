@@ -937,7 +937,7 @@ public class SpaceUtils {
       return null;
     if (installedApps.contains(appId)) {
       String appStatusPatern = getAppStatusPattern(installedApps, appId);
-      return appStatusPatern.split(":")[1];
+      return appStatusPatern.split(":")[0];
     }
     return null;
   }

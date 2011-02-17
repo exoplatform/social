@@ -249,9 +249,9 @@ public class UIManageMySpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.group_unable_to_retrieve", null, ApplicationMessage.ERROR));
         return;
       } else {
-        String spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl();
-        String spaceSettingNodeName = uiMySpaces.getNodeName(space, "SpaceSettingPortlet");
-        String spaceSettingUrl = spaceUrl + "/" + spaceSettingNodeName;
+        String spaceUrl = Util.getPortalRequestContext().getPortalURI();
+        String spaceSettingUri = uiMySpaces.getNodeUri(space, "SpaceSettingPortlet");
+        String spaceSettingUrl = spaceUrl + spaceSettingUri;
         PortalRequestContext prContext = Util.getPortalRequestContext();
         prContext.setResponseComplete(true);
         prContext.getResponse().sendRedirect(spaceSettingUrl);
@@ -503,7 +503,7 @@ public class UIManageMySpaces extends UIContainer {
     * @param appId
     * @throws SpaceException
     */
-   private String getNodeName(Space space, String appId) throws SpaceException {
+   private String getNodeUri(Space space, String appId) throws SpaceException {
 	 ExoContainer container = ExoContainerContext.getCurrentContainer() ;
 	 DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
      try {
@@ -518,24 +518,18 @@ public class UIManageMySpaces extends UIContainer {
        String nodeName = SpaceUtils.getAppNodeName(space, appId);
        PageNode childNode = homeNode.getChild(nodeName);
        //bug from portal, gets by nodeUri instead
-       if (childNode == null) {
-         for (PageNode pageNode : homeNode.getChildren()) {
-           String nodeUri = pageNode.getUri();
-           nodeUri = nodeUri.substring(nodeUri.indexOf("/") + 1);
-           if (nodeUri.equals(nodeName)) {
-             childNode = pageNode;
-             break;
+       if (childNode != null) {
+         return childNode.getUri();
+       } else {
+         List<PageNode> pageNodes = homeNode.getChildren();
+         for (PageNode pageNode : pageNodes) {
+           String pageReference = pageNode.getPageReference();
+           if (pageReference.contains(nodeName)) {
+             return pageNode.getUri();              
            }
          }
        }
-
-       // In case bug SOC-674
-       if (childNode == null) {
-         nodeName = space.getDisplayName() + nodeName;
-         childNode = homeNode.getChild(nodeName);
-       }
-
-       return nodeName;
+       return null;
      } catch (Exception e) {
        throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
      }
