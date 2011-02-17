@@ -11,7 +11,7 @@ $ openssl req -newkey rsa:1024 -days 365 -nodes -x509 -keyout testkey.pem \
 $ openssl pkcs8 -in testkey.pem -out oauthkey.pem -topk8 -nocrypt -outform PEM
 {code}
 
-h1. Configure the property file
+h1. Configure the property file {anchor:id=SOCref.Configuration.Configure_the_property_life}
 
 Edit container.js and change the following parameter to point to your private key and your key name.
 

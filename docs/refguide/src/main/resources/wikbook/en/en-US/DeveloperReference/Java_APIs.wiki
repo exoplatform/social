@@ -1,4 +1,4 @@
-h1. ActivityManager
+h1. ActivityManager {anchor:id=Developer_document.Java_APIs.Activity_Manager}
 
 || Method|| Param || Return || Description ||
 |*saveActivity*(Identity owner, ExoSocialActivity activity) throws ActivityStorageException |{{owner }} - the owner of activity stream, {{activity}} -  the activity which needs to be saved |ExoSocialActivity  | Saves an activity to the stream of an owner.Note that the Activity.userId will be set to the owner's identity if it has not already set.|
@@ -25,7 +25,7 @@ h1. ActivityManager
 |*getActivitiesCount*(Identity owner) throws ActivityStorageException | {{owner }} | int|Gets the number of activities from a stream owner.|
 |*processActivitiy*(ExoSocialActivity activity) | {{activity}} |void|Passes an activity through the chain of processors.|
 
-h1. IdentityManager
+h1. IdentityManager {anchor:id=Developer_document.Java_APIs.Identity_Manager}
 
 || Method || Param || Return || Description ||
 | *registerIdentityProviders*(IdentityProviderPlugin plugin)| {{plugin}}| void| Registers one or more IdentityProvider through an IdentityProviderPlugin.|
@@ -65,7 +65,7 @@ h1. IdentityManager
 
 
 
-h1. RelationshipManager
+h1. RelationshipManager {anchor:id=Developer_document.Java_APIs.Relationship_manager}
 
 || Method || Param || Return || Description ||
 | *getRelationshipById*(String id) throws Exception | {{id}}|Relationship| Gets relationship the by id. Deprecated: Use get(String) instead. It will be removed at 1.2.x|
@@ -87,7 +87,7 @@ h1. RelationshipManager
 | *getAllRelationships*(Identity identity, Relationship.Type type, List<Identity> identities)| {{identity}} - an identity, {{type}} - a Relationship.Type, {{identities}} - a list of identity <Relationship> | Returns all the  relationship of a given identity with other identity in identities in type. |
 | *getRelationship*(Identity identity1, Identity identity2)| {{identity1}} and {{identity2}} - identities| Relationship | Gets the relationship of two identities. |
 
-h1. SpaceService
+h1. SpaceService {anchor:id=Developer_document.JavaAPIs.Java_APIs.SpaceService}
 
 || Method || Param || Return || Description ||
 |*getAllSpaces*() throws SpaceException|{{N/A}}|List<Space> - list of spaces in Social|Gets all spaces in Social.|

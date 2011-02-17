@@ -1,12 +1,12 @@
-h1. About Activity Plugin
+h1. About Activity Plugin {anchor:id=Developer_document.Activity_plug-in}
   
 Since Social 1.1.0, the activity plugin feature  was introduced  to allow using activity composer extension and use custom ui component for displaying activity by its type.
 
-h1. How to create activity plugin
+h1. How to create activity plugin {anchor:id=Developer_document.Create the activity plug-in}
 
 You should have an idea about UI Extension Framework. If you have already worked with UI Extension Framework, it's really easy to create activity plugin. If no, you have chance to work with it now . You should have a look at [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework].
 
-h2. Create a custom ui component for displaying the activity based on its type.
+h2. Create a custom ui component for displaying the activity based on its type {anchor:id=Developer_document.Create_custom_UI_component}
 
 {note}
 ("Project Code can be downloadable [here|http://wiki.exoplatform.org/xwiki/bin/download/Social/Developer%20Documentation%20Activity%20Plugin/exo.social.samples.activity-plugin.zip]")
@@ -588,5 +588,9 @@ Rebuild the sample project, copy jar to tomcat/lib. Re-run server and see the re
 {note}
 Currently, we have to copy and paste in template file. This way we have full control of the ui but it's not good when there's changes in UIDefaultActivity. We'll improve this soon so that no copy and pasted needed.
 {note}
+
+h3. What is activity builder? {anchor:id=Developer_document.What_is_activity_builder}
+
+h2. Create a composer extension for composing activity on the UI composer and display it on activity stream. {anchor:id=Developer_document.Create_composer_extension}
 
 

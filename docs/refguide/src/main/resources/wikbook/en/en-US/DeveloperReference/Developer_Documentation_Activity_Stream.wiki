@@ -2,9 +2,9 @@ eXo Social provides users with a way to share status updates and users' activity
 To manipulate activities, you will use the {{AtivityManager}}.To get an instance of this class, you will need to use the {{PortalContainer}}.
 
 
-h1. Introduction on some features of ActivityStream and ExoSocialActivity
-{code:java}
+h1. Introduction on some features of ActivityStream and ExoSocialActivity {anchor:id=SOCref.Developer_references.IntroductiononFeaturesofActivityStreamandExoSocialActivity} 
 
+{code:java}
 package org.exoplatform.social.introduction.activitystreamandexosocialactivity;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -107,11 +107,11 @@ public class IntroduceActivityStreamAndExoSocialActivity {
 {code}
 
 
-h1. Publish an activity
+h1. Publish an activity {anchor:id=SOCref.Developer_references.PublishActivity} 
 
-There are two types of activities : activities for a user and activities for a space. The following examples will show you how to publish an activity for each type.
-
-h2. Publish an activity for a user
+There are two types of activities: activities for a user and activities for a space. The following examples will show you how to publish an activity for each type.
+ 
+h2. Publish an activity for a user {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_user}
 
 {code:java}
 
@@ -177,7 +177,7 @@ public class PublishActivityForUser {
 
 {code}
 
-h1. Publish an activity for a space
+h1. Publish an activity for a space {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_space}
 
 {code:java}
 
@@ -262,7 +262,7 @@ public class PublishActivityForSpace {
 {code}
 
 
-h2. Configure an activity processor
+h2. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
 
 An activity processor is used to modify the content of activities before they are responded and rendered at a client's browser. For example, we will create an activity processor to replace all the texts representing the smile face ":-)" in the activity title by the smiley icons.
 
@@ -316,7 +316,7 @@ Then, we have to register this processor by editing the _configuration.xml_ file
 
 "init-params" contains all the key-value data which a processor will use to initialize. In the above configuration, the *priority* value indicates the order in which this processor is executed. If the value is 1, this processor will be used before all the remaining processors with the lower priority.
 
-h2. Publish an RSS feed with feedmash
+h2. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
 
 It is really easy to publish an RSS feed to a space's activity stream. eXo Social provides {{FeedmashJobPlugin}} to publish RSS feeds. As you can see in the project {{exo.social.extras.feedmash}}, there are {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space named {{exosocial}} in a specific portal container named{{socialdemo}} as in the configuration file:
 
@@ -379,4 +379,4 @@ It is really easy to publish an RSS feed to a space's activity stream. eXo Socia
 
 {code}
 
-Run eXo Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the Social project on jira and hudson will be automatically published to the {{exosocial}} space.
+Run eXo Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the Social project on Jira and Hudson will be automatically published to the {{exosocial}} space.

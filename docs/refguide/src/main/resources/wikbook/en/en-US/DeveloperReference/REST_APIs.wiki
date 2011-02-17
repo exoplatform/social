@@ -1,5 +1,5 @@
 
-h1. Activities REST service
+h1. Activities REST service {anchor:id=SOCref.Developer_references.ActivitiesRESTService}
 
 || Name || Service URL || Location|| Description ||
 | *ActivitiesRestService* | {noformat}{restContextName}/{portalName}/social/activities{noformat} |  *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service|Provides REST services for activity applications: like/unlike; comment; delete activity. |
@@ -19,7 +19,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/socialdemo/social/activities/s08d397dg6/likes/destroy/abc.json
 
-h1. Apps REST service
+h1. Apps REST service {anchor:id=SOCref.Developer_references.AppsRESTService}
 || Name || Service URL || Location || Description ||
 | *AppsRestService* | {noformat}{restContextName}/social/apps/{noformat} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Provides REST services for the application registry gadget: shows application list |
 
@@ -32,7 +32,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/social/apps/show.json
 
-h1. Identity REST service
+h1. Identity REST service {anchor:id=SOCref.Developer_references.IdentityRESTService}
 
 || Name|| Serive URL || Location || Description ||
 | *IdentityRestService* |{noformat} restContextName}/{portalName}/social/identity/{username}/id {noformat}| *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Gets identityId by the username.|
@@ -46,7 +46,7 @@ Example:
 http://localhost:8080/rest-socialdemo/socialdemo/social/identity/john/id/show.json
 
 
-h1. Linkshare REST service
+h1. Linkshare REST service {anchor:id=SOCref.Developer_references.LinkshareRESTService}
 
 
 || Name || Service URL || Location || Description ||
@@ -62,7 +62,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/social/linkshare/show.json
 
-h1. People Rest Service
+h1. People Rest Service {anchor:id=SOCref.Developer_references.PeopleRestService}
 
 
 || Name || Service URL || Location|| Description ||
@@ -79,7 +79,7 @@ http://localhost:8080/rest-socialdemo/social/people/suggest.json
 
 
 
-h1. Spaces REST service
+h1. Spaces REST service {anchor:id=SOCref.Developer_references.SpacesRESTService}
 
 
 || Name || Service URL || Location || Description ||
@@ -98,7 +98,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/social/spaces/mySpaces/show.xml
 
-h1. Widget Rest Service
+h1. Widget Rest Service {anchor:id=SOCref.Developer_references.WidgetRESTService}
 
 || Name || Service URL || Location|| Description ||
 | *WidgetRestService* |{noformat}{restContextName}/spaces/{containerName}{noformat} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.extras.widget.rest |Provides REST services for creating spaces or getting spaces'information.|
@@ -111,3 +111,7 @@ h1. Widget Rest Service
 Example:
 
 http://localhost:8080/rest-socialdemo/spaces/socialdemo/space_info?name=Social&description=Social
+
+h1. Location {anchor:id=SOCref.Developer_references.Location}
+* *Maven groupId*: org.exoplatform.social
+* *ArtifactId*: exo.social.component.service

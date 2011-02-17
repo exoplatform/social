@@ -1,21 +1,21 @@
-h1. RelationshipManager
+h1. RelationshipManager {anchor:id=SOCref.Configuration.RelationshipManager}
 The Service is used to manipulate user relationships.
 
-h1. SpaceIdentityProvider
+h1. SpaceIdentityProvider {anchor:id=SOCref.Configuration.SpaceIdentityProvider}
 The provider is to give identity space instances.
 
-h1. SpaceApplicationHandler
+h1. SpaceApplicationHandler {anchor:id=SOCref.Configuration.SpaceApplicationHandler}
 The service is to handle all events related to creating and managing all the application spaces.
 
-h1. ExoPeopleService
+h1. ExoPeopleService {anchor:id=SOCref.Configuration.ExoPeopleService}
 The service is to manipulate all data related to people in the Portal.
 
-h1. Space Service
+h1. Space Service {anchor:id=SOCref.Configuration.SpaceService}
 
-h2. Description
+h2. Description {anchor:id=SOCref.Configuration.SpaceService.Description}
 The service for spaces management includes creating spaces, and installing applications.
 
-h2. Components configuration
+h2. Components configuration {anchor:id=SOCref.Configuration.SpaceService.ComponentsConfiguration}
 
 || Component name || Description ||
 | SpaceServiceImpl | Implementation class of Space Service. |
@@ -45,7 +45,8 @@ h2. Components configuration
 | *SpaceActivityStreamPortlet* | {{String}} | N/A | {{SpaceActivityStreamPortlet}} | The name of portlet displaying activities of spaces |
 | *space.apps* | {{String list}} | {{Porlets' name: true/false }} | {{DashboardPortlet:true}}; {{SpaceSettingPortlet:false}}; {{MembersPortlet:true}} |The list of configurations for portlets used as portlet applications. |
 
-h2. External plug-in configuration
+h2. External plug-in configuration {anchor:id=SOCref.Configuration.SpaceService.ExternalPluginConfiguration}
+
 {code:xml}
  <external-component-plugins>
     <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
@@ -75,13 +76,13 @@ In which:
 || Name || Possible value || Default Value || Description ||
 | *portletsPrefsRequired* | {{Portlet names}} | {{SpaceActivityStreamPortlet; SpaceSettingPortlet; MembersPortlet}} | List of portlets which need to be saved and get the space context name. |
 
-h1. Activity Manager
+h1. Activity Manager {anchor:id=SOCref.Configuration.ActivityManager}
 
-h2. Description
+h2. Description {anchor:id=SOCref.Configuration.ActivityManager.Description}
 
 The service is to manipulate space and user activities.
 
-h2. Component plug-in configuration
+h2. Component plug-in configuration {anchor:id=SOCref.Configuration.ActivityManager.ComponentPluginConfiguration}
 
 {code:xml}
   <external-component-plugins>
@@ -121,7 +122,7 @@ In which,
 || Name || Possible value  || Default Value || Description ||
 | *allowedTags* | {{html tags}} | b, i, a, span, em, strong, p, ol, ul,li, br, img | To process and render html tags in the activity content (body). |
 
-h2. External plug-in configuration
+h2. External plug-in configuration {anchor:id=SOCref.Configuration.ActivityManager.ExternalPluginConfiguration}
 
 {code:xml}
 <external-component-plugins>
@@ -151,13 +152,13 @@ In which:
 || Name || Possible value || Default Value || Description ||
 | *priority* | {{priority number}} | 2 | Priority of this processor (The lower level will be executed first). |
 
-h1. Identity Manager
+h1. Identity Manager {anchor:id=SOCref.Configuration.IdentityManager}
 
-h2. Description
+h2. Description {anchor:id=SOCref.Configuration.IdentityManager.Description}
 
 The service is to manipulate the identity operations like creating, getting, deleting or finding a profile.
 
-h2. Component plug-in configuration
+h2. Component plug-in configuration {anchor:id=SOCref.Configuration.IdentityManager.ComponentPluginConfiguration}
 
 {code:xml}
 <component>
@@ -190,14 +191,14 @@ In which:
 || Name || Possible value || Default Value || Description ||
 | *providers* | {{Every other identity providers}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | Identity Provider instances for managing identities. |
 
-h1. OpenSocial Rest Context Configuration
+h1. OpenSocial Rest Context Configuration {anchor:id=SOCref.Configuration.OpenSocialRestContextConfiguration}
 
-h2. Description
+h2. Description {anchor:id=SOCref.Configuration.OpenSocialRestContextConfiguration.Description}
 
 The service is used to configure the portal container name when there is a OpenSocial REST API request. By configuring this service, we can make sure to to reach the right portal container.
 The default portal container is {{portal}}.
 
-h2. Component plug-in configuration
+h2. Component plug-in configuration {anchor:id=SOCref.Configuration.OpenSocialRestContextConfiguration.ComponentPluginConfiguration}
 
 This should be used when there is a portal container different than the default {{portal}} one.
 
