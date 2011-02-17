@@ -37,6 +37,8 @@
 
   def labelAccept = _ctx.appRes("UIRelationshipActivity.label.Accept");
   def labelRefuse = _ctx.appRes("UIRelationshipActivity.label.Refuse");
+
+  def canShowAcceptRefuseAction = uicomponent.canShowAcceptRefuseAction();
 %>
 
 <% if (activity) { //process if not null
@@ -163,7 +165,7 @@
       </div>
       <div class="Content">
         $activityContentTitle
-        <% if (isConnectionRequested && uicomponent.isActivityStreamOwner()) {%>
+        <% if (isConnectionRequested && uicomponent.isActivityStreamOwner() && canShowAcceptRefuseAction) {%>
           <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
         <%}%>
         <br />

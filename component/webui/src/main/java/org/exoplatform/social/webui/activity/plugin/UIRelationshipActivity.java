@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.activity.plugin;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -32,15 +33,14 @@ import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
-import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  *
@@ -113,6 +113,10 @@ public class UIRelationshipActivity extends BaseUIActivity {
     UIActivitiesContainer uiActivititesContainer = getAncestorOfType(UIActivitiesContainer.class);
     String remoteUser = Util.getPortalRequestContext().getRemoteUser();
     return remoteUser.equals(uiActivititesContainer.getOwnerName());
+  }
+
+  public boolean canShowAcceptRefuseAction() throws Exception {
+    return Util.getPortalRequestContext().getRemoteUser().equals(getReceiverName());
   }
 
   public String getActivityTitle(WebuiBindingContext ctx) throws Exception {
@@ -204,5 +208,15 @@ public class UIRelationshipActivity extends BaseUIActivity {
   private String getProfileLink(String username) {
     LinkProvider linkProvider = getApplicationComponent(LinkProvider.class);
     return "<a href=" + linkProvider.getProfileUri(username) + ">" + username +"</a>";
+  }
+
+  private IdentityManager getIdentityManager() {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    return (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+  }
+
+  private RelationshipManager getRelationshipManager() {
+    PortalContainer portalContainer = PortalContainer.getInstance();
+    return (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
   }
 }

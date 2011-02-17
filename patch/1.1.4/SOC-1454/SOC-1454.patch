@@ -1,0 +1,77 @@
+Index: component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java	(revision 65730)
++++ component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java	(working copy)
+@@ -16,6 +16,7 @@
+  */
+ package org.exoplatform.social.webui.activity.plugin;
+ 
++import org.exoplatform.container.PortalContainer;
+ import org.exoplatform.portal.webui.util.Util;
+ import org.exoplatform.services.log.ExoLogger;
+ import org.exoplatform.services.log.Log;
+@@ -32,15 +33,14 @@
+ import org.exoplatform.social.webui.activity.UIActivitiesContainer;
+ import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+ import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
+-import org.exoplatform.web.application.ApplicationMessage;
+ import org.exoplatform.webui.config.annotation.ComponentConfig;
+ import org.exoplatform.webui.config.annotation.EventConfig;
+ import org.exoplatform.webui.core.UIComponent;
+ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+ import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
+ import org.exoplatform.webui.event.Event;
++import org.exoplatform.webui.event.Event.Phase;
+ import org.exoplatform.webui.event.EventListener;
+-import org.exoplatform.webui.event.Event.Phase;
+ 
+ /**
+  *
+@@ -115,6 +115,10 @@
+     return remoteUser.equals(uiActivititesContainer.getOwnerName());
+   }
+ 
++  public boolean canShowAcceptRefuseAction() throws Exception {
++    return Util.getPortalRequestContext().getRemoteUser().equals(getReceiverName());
++  }
++
+   public String getActivityTitle(WebuiBindingContext ctx) throws Exception {
+     UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+     DisplayMode displayMode = uiUserActivitiesDisplay.getSelectedDisplayMode();
+@@ -205,4 +209,14 @@
+     LinkProvider linkProvider = getApplicationComponent(LinkProvider.class);
+     return "<a href=" + linkProvider.getProfileUri(username) + ">" + username +"</a>";
+   }
++
++  private IdentityManager getIdentityManager() {
++    PortalContainer portalContainer = PortalContainer.getInstance();
++    return (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
++  }
++
++  private RelationshipManager getRelationshipManager() {
++    PortalContainer portalContainer = PortalContainer.getInstance();
++    return (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
++  }
+ }
+Index: component/webui/src/main/resources/groovy/social/webui/activity/plugin/UIRelationshipActivity.gtmpl
+===================================================================
+--- component/webui/src/main/resources/groovy/social/webui/activity/plugin/UIRelationshipActivity.gtmpl	(revision 65730)
++++ component/webui/src/main/resources/groovy/social/webui/activity/plugin/UIRelationshipActivity.gtmpl	(working copy)
+@@ -37,6 +37,8 @@
+ 
+   def labelAccept = _ctx.appRes("UIRelationshipActivity.label.Accept");
+   def labelRefuse = _ctx.appRes("UIRelationshipActivity.label.Refuse");
++
++  def canShowAcceptRefuseAction = uicomponent.canShowAcceptRefuseAction();
+ %>
+ 
+ <% if (activity) { //process if not null
+@@ -163,7 +165,7 @@
+       </div>
+       <div class="Content">
+         $activityContentTitle
+-        <% if (isConnectionRequested && uicomponent.isActivityStreamOwner()) {%>
++        <% if (isConnectionRequested && uicomponent.isActivityStreamOwner() && canShowAcceptRefuseAction) {%>
+           <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
+         <%}%>
+         <br />
