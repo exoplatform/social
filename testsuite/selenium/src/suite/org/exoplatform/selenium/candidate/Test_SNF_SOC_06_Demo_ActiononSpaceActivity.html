@@ -98,7 +98,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>12000</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -152,6 +152,57 @@
 	<td>This is activity for Space 06</td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>-- share link</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//form[@id='UIComposer']/div[2]/div[2]/div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//form[@id='UIComposer']/div[2]/div[2]/div/a</td>
+	<td></td>
+</tr>
+<!---- enter link-->
+<tr>
+	<td>waitForElementPresent</td>
+	<td>InputLink</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>InputLink</td>
+	<td>http://google.com</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- click attach button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>AttachButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>AttachButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- share all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>3000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>ShareButton</td>
 	<td></td>
@@ -192,18 +243,18 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@class='CommentContent']//textarea[@class='textarea']</td>
+	<td>waitForElementPresent</td>
+	<td>//div[7]/textarea</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>//div[@class='CommentContent']//textarea[@class='textarea']</td>
+	<td>//div[7]/textarea</td>
 	<td>This is Comment for Activity in Space 06</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@class='CommentContent']//input</td>
+	<td>//div[7]/input</td>
 	<td></td>
 </tr>
 <tr>
@@ -301,7 +352,6 @@
 	<td></td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

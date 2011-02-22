@@ -98,7 +98,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>12000</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -177,8 +177,23 @@
 	<td></td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>-- back to space link--</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>link=Space02Edit</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- verify new edited name of space--</td>
 	<td></td>
 </tr>
 <tr>
@@ -187,7 +202,17 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
+	<td>echo</td>
+	<td>-- access space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Space02Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>link=Space02Edit</td>
 	<td></td>
 </tr>
@@ -198,12 +223,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Dashboard Portlet</td>
+	<td>//div[@id='UISpaceMenu']/div/div[3]/a/span</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Dashboard Portlet</td>
+	<td>clickAndWait</td>
+	<td>//div[@id='UISpaceMenu']/div/div[3]/a/span</td>
 	<td></td>
 </tr>
 <tr>
@@ -212,7 +237,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>doubleClickAt</td>
+	<td>doubleClick</td>
 	<td>DashboardPortlet</td>
 	<td></td>
 </tr>
@@ -291,7 +316,6 @@
 	<td></td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

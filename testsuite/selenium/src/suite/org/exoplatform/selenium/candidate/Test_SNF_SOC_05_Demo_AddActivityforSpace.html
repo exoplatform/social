@@ -98,7 +98,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>12000</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -167,30 +167,31 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTextPresent</td>
-	<td>This is activity for Space 05</td>
+	<td>waitForElementPresent</td>
+	<td>composerInput</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>This is activity for Space 05</td>
-	<td></td>
+	<td>type</td>
+	<td>//textarea[@id='composerInput']</td>
+	<td>this is activity for space 05</td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Add Attach Link</td>
+	<td>-- share link</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@title='Attach Link']</td>
+	<td>//form[@id='UIComposer']/div[2]/div[2]/div/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@title='Attach Link']</td>
+	<td>//form[@id='UIComposer']/div[2]/div[2]/div/a</td>
 	<td></td>
 </tr>
+<!---- enter link-->
 <tr>
 	<td>waitForElementPresent</td>
 	<td>InputLink</td>
@@ -199,7 +200,12 @@
 <tr>
 	<td>type</td>
 	<td>InputLink</td>
-	<td>http://www.google.com/</td>
+	<td>http://google.com</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- click attach button</td>
+	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
@@ -212,13 +218,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>//img[@class='ThumbnailShown']</td>
+	<td>echo</td>
+	<td>-- share all</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>//img[@class='ThumbnailShown']</td>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -229,6 +235,11 @@
 <tr>
 	<td>click</td>
 	<td>ShareButton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
