@@ -25,42 +25,42 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
 
 /**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Jul 30, 2010  
+ * Plugin for configuring portlets that let Social to store spaceUrl in its portlet-preference.
+ *
+ * @since Jul 30, 2010
+ * @deprecated Use preferences configuration from {@link org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication} instead.
+ * Tobe removed at 1.3.x
  */
 public class PortletPreferenceRequiredPlugin extends BaseComponentPlugin {
 
   /**
-   * The initial parameter of this plugin
+   * The initial parameters of this plugin
    */
   private final InitParams params;
-  
+
+  /**
+   * Constructor.
+   *
+   * @param params
+   */
   public PortletPreferenceRequiredPlugin(InitParams params) {
     this.params = params;
   }
   
   /**
+   * Gets the list of portlets.
+   *
    * @return all the portlet preferences required that associated to this plugin 
    */
   public List<String> getPortletPrefs() {
-    Iterator<?> iterator = params.getValuesParamIterator();
-    List<String> prefs = null;
-    List values = new ArrayList();
-    if (iterator != null) {
-      while (iterator.hasNext()) {
-        ValuesParam valuesParam = (ValuesParam) iterator.next();
-        values = valuesParam.getValues();
-        for (Object value : values) {
-          if (prefs == null) {
-            prefs = new ArrayList<String>();
-          }
-          prefs.add((String)value);  
-        }
+    Iterator<ValuesParam> valuesParamIterator = params.getValuesParamIterator();
+    List<String> prefs = new ArrayList<String>();
+    if (valuesParamIterator != null) {
+      while (valuesParamIterator.hasNext()) {
+        ValuesParam valuesParam = valuesParamIterator.next();
+        prefs.addAll(valuesParam.getValues());
       }
     }
-    
     return prefs;
   }
 }
