@@ -83,17 +83,17 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>xpath=//div[@title='RssFetcherGadget']</td>
+	<td>xpath=//div[@title='Social Rss Reader']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
-	<td>1000</td>
+	<td>500</td>
 	<td></td>
 </tr>
 <tr>
 	<td>dragAndDropToObject</td>
-	<td>//div[@title='RssFetcherGadget']</td>
+	<td>//div[@title='Social Rss Reader']</td>
 	<td>xpath=//div[@class='UIDashboardContainer']</td>
 </tr>
 <tr>
@@ -107,18 +107,23 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>-- Share link</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=JBoss World – A rookie’s retrospective</td>
+	<td>link=eXo Announces Spanish Version of Website</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=JBoss World – A rookie’s retrospective</td>
+	<td>link=eXo Announces Spanish Version of Website</td>
 	<td></td>
 </tr>
 <tr>
@@ -147,24 +152,34 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIOwnerActivitiesShowHide']</td>
+	<td>link=My Status</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIOwnerActivitiesShowHide']</td>
+	<td>link=My Status</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
 	<td></td>
-	<td>JBoss World – A rookie’s retrospective</td>
+	<td>eXo Announces Spanish Version of Website</td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
 	<td></td>
-	<td>JBoss World – A rookie’s retrospective</td>
+	<td>eXo Announces Spanish Version of Website</td>
 </tr>
 <tr>
 	<td>echo</td>
@@ -173,22 +188,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIOwnerAppendableRoot']/div[1]//div[@class='TitleContent']//div[@class='ActionContent']/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>mouseOver</td>
-	<td>//div[@id='UIOwnerAppendableRoot']/div[1]//div[@class='TitleContent']//div[@class='ActionContent']/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Delete</td>
+	<td>//form/div[2]/div/div[1]/div[2]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Delete</td>
+	<td>//form/div[2]/div/div[1]/div[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -198,12 +203,17 @@
 </tr>
 <tr>
 	<td>waitForTextNotPresent</td>
-	<td>JBoss World – A rookie’s retrospective</td>
+	<td>eXo Announces Spanish Version of Website</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>JBoss World – A rookie’s retrospective</td>
+	<td>eXo Announces Spanish Version of Website</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -242,6 +252,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>200</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>link=Sign out</td>
 	<td></td>
@@ -256,7 +271,6 @@
 	<td></td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>
