@@ -175,12 +175,6 @@
       <artifactId>exo.social.component.core</artifactId>
     </dependency>
 
-  <dependency>
-    <groupId>org.exoplatform.commons</groupId>
-    <artifactId>exo.platform.commons.webui.ext</artifactId>
-    <version>${org.exoplatform.commons.version}</version>
-   <scope>provided</scope>
-  </dependency>
   </dependencies>
 
 </project>
