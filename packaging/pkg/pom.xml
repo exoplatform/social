@@ -520,15 +520,6 @@
 
   <build>
     <plugins>
-      <!-- needed for exobuild to call maven dependency:get -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.1</version>
-        <configuration>
-          <repositoryUrl>http://repository.exoplatform.org/content/groups/all/</repositoryUrl>
-        </configuration>
-      </plugin>
       <!-- check-out exobuild -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -638,7 +629,7 @@
                     <!--argument>-Dexo.src.dir=NONE</argument-->
                     <argument>-Dexo.dep.dir=${exo.projects.directory.dependencies}</argument>
                     <!-- to get the server ref install -->
-                    <argument>-Dexo.m2.repos=file:${settings.localRepository},http://repository.exoplatform.org/all</argument>
+                    <argument>-Dexo.m2.repos=file:${settings.localRepository}</argument>
                     <argument>-Dclean.server=${exo.projects.app.tomcat.version}</argument>
                     <argument>-Dexo.m2.home=${maven.home}</argument>
                     <argument>-Xshare:auto</argument>
@@ -718,7 +709,7 @@
                     <argument>-Dexo.conf.dir=${basedir}/target/exopackage-conf</argument>
                     <argument>-Dexo.working.dir=${gatein.working.dir}</argument>
                     <argument>-Dexo.dep.dir=${exo.projects.directory.dependencies}</argument>
-                    <argument>-Dexo.m2.repos=file:${settings.localRepository},http://repository.exoplatform.org/all</argument>
+                    <argument>-Dexo.m2.repos=file:${settings.localRepository}</argument>
                     <argument>-Dclean.server=${exo.projects.app.jboss.version}</argument>
                     <argument>-Dexo.m2.home=${maven.home}</argument>
                     <argument>-Xshare:auto</argument>
