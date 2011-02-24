@@ -38,12 +38,12 @@
   <scm>
     <connection>scm:svn:http://svn.exoplatform.org/projects/social/branches/1.1.x</connection>
     <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/branches/1.1.x</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/social/branches/1.1.x</url>
+    <url>https://fisheye.exoplatform.org/browse/social/branches/1.1.x</url>
   </scm>
 
   <ciManagement>
     <system>hudson</system>
-    <url>http://builder.exoplatform.org/hudson/job/social-1.1.x-ci/</url>
+    <url>https://ci.exoplatform.org/job/social-1.1.x-ci/</url>
   </ciManagement>
 
   <properties>
