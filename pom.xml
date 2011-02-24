@@ -46,7 +46,7 @@
 
   <ciManagement>
     <system>hudson</system>
-    <url>http://builder.exoplatform.org/hudson/job/social-trunk-ci/</url>
+    <url>https://ci.exoplatform.org/hudson/job/social-trunk-ci/</url>
   </ciManagement>
 
   <properties>
