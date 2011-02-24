@@ -41,12 +41,12 @@
   <scm>
     <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</connection>
     <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/social/trunk</url>
+    <url>https://fisheye.exoplatform.org/browse/social/trunk</url>
   </scm>
 
   <ciManagement>
     <system>hudson</system>
-    <url>https://ci.exoplatform.org/hudson/job/social-trunk-ci/</url>
+    <url>https://ci.exoplatform.org/job/social-trunk-ci/</url>
   </ciManagement>
 
   <properties>
