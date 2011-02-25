@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -279,6 +280,19 @@ public class IdentityManager {
          } else {
            if (identity1 == null) {
              //in the case: identity is stored but identity is not found from provider, delete that identity
+             LOG.info("Identity: " + result.getRemoteId() + " does not exist in remote provider." +
+                     " Deleting all its relationships and this identity now.");
+             relationshipManager = getRelationshipManager();
+             try {
+               List<Relationship> allRelationships= relationshipManager.getAllRelationships(result);
+               List<Relationship> copiedAllRelationship = new ArrayList<Relationship>(allRelationships);
+               Collections.copy(copiedAllRelationship, allRelationships);
+               for (Relationship relationship : copiedAllRelationship) {
+                 relationshipManager.remove(relationship);
+               }
+             } catch (Exception e) {
+               LOG.error("Failed to deleted all relationships of :" + result.getRemoteId(), e);
+             }
              identityStorage.deleteIdentity(result);
              return null;
            }

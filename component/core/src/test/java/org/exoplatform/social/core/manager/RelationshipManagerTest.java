@@ -19,9 +19,6 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -32,7 +29,6 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  *
  */
 public class RelationshipManagerTest extends AbstractCoreTest {
-  private Log LOG = ExoLogger.getLogger(RelationshipManagerTest.class);
   private RelationshipManager relationshipManager;
   private IdentityManager identityManager;
 
@@ -40,7 +36,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
                    johnIdentity,
                    maryIdentity,
                    demoIdentity;
-
+  
   private List<Relationship> tearDownRelationshipList;
 
   @Override
@@ -55,6 +51,19 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+
+    assertEquals("setUp: relationshipManager.getAllRelationships(rootIdentity).size() must return 0",
+            0,
+            relationshipManager.getAllRelationships(rootIdentity).size());
+    assertEquals("setUp: relationshipManager.getAllRelationships(johnIdentity).size() must return 0",
+            0,
+            relationshipManager.getAllRelationships(johnIdentity).size());
+    assertEquals("setUp: relationshipManager.getAllRelationships(maryIdentity).size() must return 0",
+            0,
+            relationshipManager.getAllRelationships(maryIdentity).size());
+    assertEquals("setUp: relationshipManager.getAllRelationships(demoIdentity).size() must return 0",
+            0,
+            relationshipManager.getAllRelationships(demoIdentity).size());
   }
 
   @Override
@@ -62,6 +71,18 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     for (Relationship relationship : tearDownRelationshipList) {
       relationshipManager.remove(relationship);
     }
+    assertEquals("tearDown: relationshipManager.getAllRelationships(rootIdentity).size() must return 0",
+            0,
+            relationshipManager.getAllRelationships(rootIdentity).size());
+    assertEquals("tearDown: relationshipManager.getAllRelationships(johnIdentity).size() must return 0",
+            0,
+            relationshipManager.getAllRelationships(johnIdentity).size());
+    assertEquals("tearDown: relationshipManager.getAllRelationships(maryIdentity).size() must return 0",
+            0,
+            relationshipManager.getAllRelationships(maryIdentity).size());
+    assertEquals("tearDown: relationshipManager.getAllRelationships(demoIdentity).size() must return 0",
+            0,
+            relationshipManager.getAllRelationships(demoIdentity).size());
 
     identityManager.deleteIdentity(rootIdentity);
     identityManager.deleteIdentity(johnIdentity);
@@ -78,17 +99,14 @@ public class RelationshipManagerTest extends AbstractCoreTest {
    */
   public void testGetRelationshipByIdentityId() throws Exception {
 
-    relationshipManager.invite(johnIdentity, demoIdentity);
+    Relationship relationship = relationshipManager.invite(johnIdentity, demoIdentity);
     List<Relationship> senderRelationships = relationshipManager.getAllRelationships(johnIdentity);
     List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(demoIdentity);
 
-    assertEquals(1, senderRelationships.size());
-    assertEquals(1, receiverRelationships.size());
+    assertEquals("senderRelationships.size() must return 1", 1, senderRelationships.size());
+    assertEquals("senderRelationships.size() must return 1", 1, receiverRelationships.size());
 
-    tearDownRelationshipList.addAll(senderRelationships);
-
-
-
+    tearDownRelationshipList.add(relationship);
   }
 
   /**
@@ -116,47 +134,65 @@ public class RelationshipManagerTest extends AbstractCoreTest {
   }
 */
 
-  public void testInviteRelationship() throws Exception {
-
+  /**
+   * Test {@link RelationshipManager#invite(Identity, Identity)}
+   * 
+   * @throws Exception
+   */
+  public void testInvite() throws Exception {
     Relationship relationship = relationshipManager.invite(johnIdentity, maryIdentity);
-    assertNotNull(relationship.getId());
-    assertEquals(Relationship.Type.PENDING, relationship.getStatus());
+    assertNotNull("relationship.getId() must not be null", relationship.getId());
+    assertEquals("relationship.getStatus() must return " + Relationship.Type.PENDING, Relationship.Type.PENDING, relationship.getStatus());
+    
+    Relationship demoMaryRelationship = relationshipManager.invite(demoIdentity, maryIdentity);
+    assertNotNull("demoMaryRelationship.getId() must not be null", demoMaryRelationship.getId());
+    assertEquals("demoMaryRelationship.getStatus() must return " + Relationship.Type.PENDING, Relationship.Type.PENDING, demoMaryRelationship.getStatus());
 
     List<Relationship> senderRelationships = relationshipManager.getAllRelationships(johnIdentity);
     List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(maryIdentity);
 
-    assertEquals(1, senderRelationships.size());
-    assertEquals(1, receiverRelationships.size());
+    assertEquals("senderRelationships.size() must return 1", 1, senderRelationships.size());
+    assertEquals("receiverRelationships.size() must return 2", 2, receiverRelationships.size());
 
-    tearDownRelationshipList.addAll(senderRelationships);
+    tearDownRelationshipList.add(relationship);
+    tearDownRelationshipList.add(demoMaryRelationship);
   }
 
   /**
+   * Test {@link RelationshipManager#confirm(org.exoplatform.social.core.relationship.model.Relationship)}
    *
    * @throws Exception
    */
-  public void testConfirmRelationship() throws Exception {
-
+  public void testConfirm() throws Exception {
     Relationship relationship = relationshipManager.invite(johnIdentity, demoIdentity);
     relationshipManager.confirm(relationship);
-    assertNotNull(relationship.getId());
-    assertEquals(Relationship.Type.CONFIRM, relationship.getStatus());
+    assertNotNull("relationship.getId() must not be null", relationship.getId());
+    assertEquals("relationship.getStatus() must return " + Relationship.Type.CONFIRM, Relationship.Type.CONFIRM, relationship.getStatus());
 
     List<Relationship> senderRelationships = relationshipManager.getAllRelationships(johnIdentity);
     List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(demoIdentity);
 
-    assertEquals(1, senderRelationships.size());
-    assertEquals(1, receiverRelationships.size());
+    assertEquals("senderRelationships.size() must return 1", 1, senderRelationships.size());
+    assertEquals("receiverRelationships.size() must return 1", 1, receiverRelationships.size());
 
-    tearDownRelationshipList.addAll(senderRelationships);
+    Relationship rootToDemoRelationship = relationshipManager.invite(rootIdentity, demoIdentity);
+    relationshipManager.confirm(rootToDemoRelationship);
+
+    List<Relationship> demoContacts = relationshipManager.getContacts(demoIdentity);
+    assertEquals("demoContacts.size() must return 2", 2, demoContacts.size());
+
+    receiverRelationships = relationshipManager.getAllRelationships(demoIdentity);
+    assertEquals("receiverRelationships.size() must return 2", 2, receiverRelationships.size());
+
+    tearDownRelationshipList.addAll(receiverRelationships);
   }
 
   /**
+   * Test {@link RelationshipManager#remove(Relationship)}
    *
    * @throws Exception
    */
-  public void testRemoveRelationship() throws Exception {
-
+  public void testRemove() throws Exception {
     Relationship relationship = relationshipManager.invite(rootIdentity, johnIdentity);
     relationshipManager.confirm(relationship);
     relationshipManager.remove(relationship);
@@ -164,30 +200,258 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     List<Relationship> senderRelationships = relationshipManager.getAllRelationships(rootIdentity);
     List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(johnIdentity);
 
-    assertEquals(0, senderRelationships.size());
-    assertEquals(0, receiverRelationships.size());
+    assertEquals("senderRelationships.size() must return 0", 0, senderRelationships.size());
+    assertEquals("receiverRelationships.size() must return 0", 0, receiverRelationships.size());
 
     tearDownRelationshipList.addAll(receiverRelationships);
   }
 
   /**
+   * Test {@link RelationshipManager#ignore(Relationship)}
    *
    * @throws Exception
    */
-  public void testIgnoreRelationship() throws Exception {
+  public void testIgnore() throws Exception {
 
     Relationship relationship = relationshipManager.invite(johnIdentity, rootIdentity);
     relationshipManager.ignore(relationship);
-    assertNotNull(relationship.getId());
-    assertEquals(Relationship.Type.IGNORE, relationship.getStatus());
+    assertNotNull("relationship.getId() must not be null", relationship.getId());
+    assertEquals("relationship.getStatus() must return " + Relationship.Type.IGNORE, Relationship.Type.IGNORE, relationship.getStatus());
 
     List<Relationship> senderRelationships = relationshipManager.getAllRelationships(johnIdentity);
     List<Relationship> receiverRelationships = relationshipManager.getAllRelationships(rootIdentity);
 
-    assertEquals(1, senderRelationships.size());
-    assertEquals(1, receiverRelationships.size());
+    assertEquals("senderRelationships.size() must return 1", 1, senderRelationships.size());
+    assertEquals("receiverRelationships.size() must return 1", 1, receiverRelationships.size());
 
     tearDownRelationshipList.addAll(senderRelationships);
+  }
+  
+  /**
+   * Test {@link RelationshipManager#getPendingRelationships(Identity)}
+   * 
+   * @throws Exception
+   */
+  public void testGetPendingRelationships() throws Exception {
+    Relationship johnDemoRelationship = relationshipManager.invite(johnIdentity, demoIdentity);
+    Relationship johnMaryRelationship = relationshipManager.invite(johnIdentity, maryIdentity);
+    Relationship johnRootRelationship = relationshipManager.invite(johnIdentity, rootIdentity);
+
+    List<Relationship> foundListRelationships = relationshipManager.getPendingRelationships(johnIdentity);
+    assertNotNull("foundListRelationships must not be null", foundListRelationships);
+    assertEquals("foundListRelationships.size() must return 3", 3, foundListRelationships.size());
+
+    tearDownRelationshipList.add(johnDemoRelationship);
+    tearDownRelationshipList.add(johnMaryRelationship);
+    tearDownRelationshipList.add(johnRootRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipManager#getPendingRelationships(Identity, boolean)}
+   * 
+   * @throws Exception
+   */
+  public void testGetPendingRelationshipsWithIncoming() throws Exception {
+    Relationship johnDemoRelationship = relationshipManager.invite(johnIdentity, demoIdentity);
+    Relationship johnMaryRelationship = relationshipManager.invite(johnIdentity, maryIdentity);
+    Relationship johnRootRelationship = relationshipManager.invite(johnIdentity, rootIdentity);
+
+    List<Relationship> listPendingRelationship = relationshipManager.getPendingRelationships(johnIdentity, true);
+    assertNotNull("listRelationshipConfirm must not be null", listPendingRelationship);
+    assertEquals("listPendingRelationship.size() must return 3", 3, listPendingRelationship.size());
+
+    List<Relationship> listMaryRequireValidationRelationship = relationshipManager.getPendingRelationships(maryIdentity, false);
+    assertEquals("listMaryRequireValidationRelationship.size() must return 1", 1, listMaryRequireValidationRelationship.size());
+
+    tearDownRelationshipList.add(johnDemoRelationship);
+    tearDownRelationshipList.add(johnMaryRelationship);
+    tearDownRelationshipList.add(johnRootRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipManager#getPendingRelationships(Identity, List, boolean)}
+   * 
+   * @throws Exception
+   */
+  public void testGetPendingRelationshipsWithIcomingAndMatchIdentities() throws Exception {
+    Relationship johnDemoRelationship = relationshipManager.invite(johnIdentity, demoIdentity);
+    Relationship johnMaryRelationship = relationshipManager.invite(johnIdentity, maryIdentity);
+    Relationship johnRootRelationship = relationshipManager.invite(johnIdentity, rootIdentity);
+    Relationship maryDemoRelationship = relationshipManager.invite(maryIdentity, demoIdentity);
+
+    List<Identity> listIdentities = new ArrayList<Identity>();
+    listIdentities.add(demoIdentity);
+    listIdentities.add(maryIdentity);
+    listIdentities.add(johnIdentity);
+    listIdentities.add(rootIdentity);
+
+    List<Relationship> listRelationshipConfirm = relationshipManager.getPendingRelationships(johnIdentity, listIdentities, true);
+    assertEquals("listRelationshipConfirm.size() must return 3", 3, listRelationshipConfirm.size());
+
+    List<Relationship> listRelationshipNotConfirm = relationshipManager.getPendingRelationships(demoIdentity, listIdentities, false);
+    assertEquals("listRelationshipNotConfirm.size() must return 2", 2, listRelationshipNotConfirm.size());
+
+    tearDownRelationshipList.add(johnDemoRelationship);
+    tearDownRelationshipList.add(johnMaryRelationship);
+    tearDownRelationshipList.add(johnRootRelationship);
+    tearDownRelationshipList.add(maryDemoRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipManager#getContacts(Identity, List)}
+   *
+   * @throws Exception
+   */
+  public void testGetContacts() throws Exception {
+    Relationship demoJohnRelationship = relationshipManager.invite(demoIdentity, johnIdentity);
+    relationshipManager.confirm(demoJohnRelationship);
+    
+    Relationship maryJohnRelationship = relationshipManager.invite(maryIdentity, johnIdentity);
+    relationshipManager.confirm(maryJohnRelationship);
+    
+    Relationship rootJohnRelationship = relationshipManager.invite(rootIdentity, johnIdentity);
+    relationshipManager.confirm(rootJohnRelationship);
+    
+    List<Relationship> johnContacts = relationshipManager.getContacts(johnIdentity);
+    assertNotNull("johnContacts must not be null", johnContacts);
+    assertEquals("johnContacts.size() must return: " + 3, 3, johnContacts.size());
+    
+    tearDownRelationshipList.add(demoJohnRelationship);
+    tearDownRelationshipList.add(maryJohnRelationship);
+    tearDownRelationshipList.add(rootJohnRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipManager#getContacts(Identity, List)}
+   * 
+   * @throws Exception
+   */
+  public void testGetContactsWithListAccess() throws Exception {
+    Relationship demoJohnRelationship = relationshipManager.invite(demoIdentity, johnIdentity);
+    relationshipManager.confirm(demoJohnRelationship);
+    
+    Relationship maryJohnRelationship = relationshipManager.invite(maryIdentity, johnIdentity);
+    relationshipManager.confirm(maryJohnRelationship);
+    
+    Relationship rootJohnRelationship = relationshipManager.invite(rootIdentity, johnIdentity);
+    relationshipManager.confirm(rootJohnRelationship);
+    
+    List<Identity> listIdentities = new ArrayList<Identity>();
+    listIdentities.add(demoIdentity);
+    listIdentities.add(maryIdentity);
+    listIdentities.add(johnIdentity);
+    listIdentities.add(rootIdentity);
+    
+    List<Relationship> johnContacts = relationshipManager.getContacts(johnIdentity, listIdentities);
+    assertNotNull("johnContacts must not be null", johnContacts);
+    assertEquals("johnContacts.size() must return: " + 3, 3, johnContacts.size());
+    
+    List<Relationship> maryContacts = relationshipManager.getContacts(maryIdentity, listIdentities);
+    assertNotNull("johnContacts must not be null", maryContacts);
+    assertEquals("maryContacts.size() must return: " + 1, 1, maryContacts.size());
+    
+    tearDownRelationshipList.add(demoJohnRelationship);
+    tearDownRelationshipList.add(maryJohnRelationship);
+    tearDownRelationshipList.add(rootJohnRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipManager#getAllRelationships(Identity)}
+   * 
+   * @throws Exception
+   */
+  public void testGetAllRelationship() throws Exception {
+    Relationship demoJohnRelationship = relationshipManager.invite(demoIdentity, johnIdentity);
+    relationshipManager.confirm(demoJohnRelationship);
+    
+    Relationship maryJohnRelationship = relationshipManager.invite(maryIdentity, johnIdentity);
+    relationshipManager.confirm(maryJohnRelationship);
+    
+    Relationship rootJohnRelationship = relationshipManager.invite(rootIdentity, johnIdentity);
+    relationshipManager.confirm(rootJohnRelationship);
+    
+    List<Relationship> johnRelationships = relationshipManager.getAllRelationships(johnIdentity);
+    assertNotNull("johnRelationships must not be null", johnRelationships);
+    assertEquals("johnRelationships.size() must return: " + 3, 3, johnRelationships.size());
+    
+    Relationship rootMaryRelationship = relationshipManager.invite(rootIdentity, maryIdentity);
+    relationshipManager.confirm(rootMaryRelationship);
+    
+    Relationship johnMaryRelationship = relationshipManager.invite(johnIdentity, maryIdentity);
+    relationshipManager.confirm(johnMaryRelationship);
+    
+    Relationship demoMaryRelationship = relationshipManager.invite(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoMaryRelationship);
+    
+    List<Relationship> maryRelationships = relationshipManager.getAllRelationships(maryIdentity);
+    assertNotNull("maryRelationships must not be null", maryRelationships);
+    assertEquals("maryRelationships.size()" + 4, 4, maryRelationships.size());
+    
+    tearDownRelationshipList.add(demoJohnRelationship);
+    tearDownRelationshipList.add(rootJohnRelationship);
+    tearDownRelationshipList.add(rootMaryRelationship);
+    tearDownRelationshipList.add(johnMaryRelationship);
+    tearDownRelationshipList.add(demoMaryRelationship);
+    tearDownRelationshipList.add(maryJohnRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipManager#getIdentities(Identity)}
+   * 
+   * @throws Exception
+   */
+  public void testGetIdentities() throws Exception {
+    Relationship demoJohnRelationship = relationshipManager.invite(demoIdentity, johnIdentity);
+    relationshipManager.confirm(demoJohnRelationship);
+    
+    Relationship maryJohnRelationship = relationshipManager.invite(maryIdentity, johnIdentity);
+    relationshipManager.confirm(maryJohnRelationship);
+    
+    Relationship rootJohnRelationship = relationshipManager.invite(rootIdentity, johnIdentity);
+    relationshipManager.confirm(rootJohnRelationship);
+    
+    List<Identity> listIdentities = relationshipManager.getIdentities(johnIdentity);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: " + 3, 3, listIdentities.size());
+    
+    listIdentities = relationshipManager.getIdentities(maryIdentity);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: " + 1, 1, listIdentities.size());
+    
+    tearDownRelationshipList.add(demoJohnRelationship);
+    tearDownRelationshipList.add(maryJohnRelationship);
+    tearDownRelationshipList.add(rootJohnRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipManager#getRelationshipStatus(Relationship, Identity)}
+   * 
+   * @throws Exception
+   */
+  public void testGetRelationshipStatus() throws Exception {
+    Relationship.Type status = relationshipManager.getRelationshipStatus(null, demoIdentity);
+    assertNotNull("status must not be null", status);
+    assertEquals("status must be " + Relationship.Type.ALIEN, Relationship.Type.ALIEN, status);
+    
+    Relationship demoJohnRelationship = relationshipManager.invite(demoIdentity, johnIdentity);
+    status = relationshipManager.getRelationshipStatus(demoJohnRelationship, demoIdentity);
+    assertNotNull("status must not be null", status);
+    assertEquals("status must be " + Relationship.Type.PENDING, Relationship.Type.PENDING, status);
+    
+    status = relationshipManager.getRelationshipStatus(demoJohnRelationship, johnIdentity);
+    assertNotNull("status must not be null", status);
+    assertEquals("status must be " + Relationship.Type.REQUIRE_VALIDATION, Relationship.Type.REQUIRE_VALIDATION, status);
+    
+    relationshipManager.confirm(demoJohnRelationship);
+    status = relationshipManager.getRelationshipStatus(demoJohnRelationship, johnIdentity);
+    assertNotNull("status must not be null", status);
+    assertEquals("status must be " + Relationship.Type.CONFIRM, Relationship.Type.CONFIRM, status);
+    
+    status = relationshipManager.getRelationshipStatus(demoJohnRelationship, demoIdentity);
+    assertNotNull("status must not be null", status);
+    assertEquals("status must be " + Relationship.Type.CONFIRM, Relationship.Type.CONFIRM, status);
+    
+    tearDownRelationshipList.add(demoJohnRelationship);
   }
 
   /**

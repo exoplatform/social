@@ -164,12 +164,11 @@ public class RelationshipStorage {
     try {
       Node relationshipNode = session.getNodeByUUID(relationship.getId());
       relationshipNode.remove();
-      session.save();
       LOG.debug("relationship: " + relationship + " deleted");
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     } finally {
-      sessionManager.closeSession();
+      sessionManager.closeSession(true);
     }
   }
 
