@@ -30,15 +30,15 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-project</artifactId>
-  <version>1.2.0-Beta1</version>
+  <version>1.2.0-Beta2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
 
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.2.0-Beta1</connection>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.2.0-Beta1</developerConnection>
-    <url>https://fisheye.exoplatform.org/browse/social/tags/1.2.0-Beta1</url>
+    <connection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</connection>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/trunk</developerConnection>
+    <url>https://fisheye.exoplatform.org/browse/social/trunk</url>
   </scm>
 
   <ciManagement>

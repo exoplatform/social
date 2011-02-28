@@ -25,11 +25,11 @@
   <parent>
     <artifactId>exo.social.server</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.0-Beta1</version>
+    <version>1.2.0-Beta2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
-  <version>1.2.0-Beta1</version>
+  <version>1.2.0-Beta2-SNAPSHOT</version>
   <artifactId>exo.social.server.jboss</artifactId>
   <packaging>pom</packaging>
   <name>eXo Social Sever Patch for JBoss</name>
