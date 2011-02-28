@@ -5,6 +5,7 @@
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social</artifactId>
     <version>1.0.2-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>exo.social.application.rest</artifactId>
   <packaging>jar</packaging>
