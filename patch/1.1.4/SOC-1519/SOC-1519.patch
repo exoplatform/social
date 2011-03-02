@@ -1,0 +1,13 @@
+Index: component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java	(revision 66186)
++++ component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java	(working copy)
+@@ -207,7 +207,7 @@
+ 
+   private String getProfileLink(String username) {
+     LinkProvider linkProvider = getApplicationComponent(LinkProvider.class);
+-    return "<a href=" + linkProvider.getProfileUri(username) + ">" + username +"</a>";
++    return linkProvider.getProfileLink(username);
+   }
+ 
+   private IdentityManager getIdentityManager() {
