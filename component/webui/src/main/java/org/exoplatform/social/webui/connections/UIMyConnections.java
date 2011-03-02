@@ -140,7 +140,7 @@ public class UIMyConnections extends UIContainer {
     @Override
     public void execute(Event<UIMyConnections> event) throws Exception {
       String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId);
+      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId, false);
       Relationship relationship = Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), requestedIdentity);
       if (relationship == null || relationship.getStatus() != Relationship.Type.CONFIRMED) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
