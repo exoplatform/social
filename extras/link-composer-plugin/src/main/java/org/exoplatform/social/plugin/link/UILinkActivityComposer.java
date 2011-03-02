@@ -136,11 +136,6 @@ public class UILinkActivityComposer extends UIActivityComposer {
     setLinkInfoDisplayed(true);
   }
 
-  private boolean isImageLink(String link){
-    Pattern pattern = Pattern.compile("(?-i)(\\.jpg|\\.gif|\\.jpeg|\\.bmp|\\.png|\\.tif)$");
-    return pattern.matcher(link).find();
-  }
-
   static public class AttachActionListener extends EventListener<UILinkActivityComposer> {
 
     @Override

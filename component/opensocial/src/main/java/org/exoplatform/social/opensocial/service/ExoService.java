@@ -47,35 +47,33 @@ import com.google.common.collect.Sets;
  * User: jeremi
  * Date: Oct 13, 2008
  * Time: 7:58:29 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ExoService {
 
-        /**
-         * Get the set of user id's from a user and group.
-         *
-         * @param user the user
-         * @param group the group
-         * @param token the token
-         * @return the id set
-         * @throws Exception the exception
-         */
-    protected Set<Identity> getIdSet(UserId user, GroupId group, SecurityToken token) throws Exception {
+  /**
+   * Get the set of user id's from a user and group.
+   *
+   * @param user  the user
+   * @param group the group
+   * @param token the token
+   * @return the id set
+   * @throws Exception the exception
+   */
+  protected Set<Identity> getIdSet(UserId user, GroupId group, SecurityToken token) throws Exception {
 
-      if(token instanceof AnonymousSecurityToken) {
-  		throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
-  	  }
+    if (token instanceof AnonymousSecurityToken) {
+      throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
+    }
 
-      String userId = user.getUserId(token);
+    String userId = user.getUserId(token);
 
-      Identity id = getIdentity(userId, token);
-      Set<Identity> returnVal = Sets.newLinkedHashSet();
+    Identity id = getIdentity(userId, token);
+    Set<Identity> returnVal = Sets.newLinkedHashSet();
 
-      if (group == null) {
-        returnVal.add(id);
-      }
-      else {
-        switch (group.getType()) {
+    if (group == null) {
+      returnVal.add(id);
+    } else {
+      switch (group.getType()) {
         case all:
         case friends:
         case groupId:
@@ -84,144 +82,145 @@ public class ExoService {
         case self:
           returnVal.add(id);
           break;
-        }
       }
-      return returnVal;
+    }
+    return returnVal;
+  }
+
+  /**
+   * Gets the friends list.
+   *
+   * @param id the id
+   * @return the friends list
+   * @throws Exception the exception
+   */
+  protected List<Identity> getFriendsList(Identity id, SecurityToken token) throws Exception {
+    PortalContainer pc = (PortalContainer) getPortalContainer(token);
+    RelationshipManager rm = (RelationshipManager) pc.getComponentInstanceOfType(RelationshipManager.class);
+    List<Relationship> rels = rm.getConfirmed(id);
+    List<Identity> ids = new ArrayList<Identity>();
+
+    for (Relationship rel : rels) {
+      ids.add(rel.getPartner(id));
     }
 
-    /**
-     * Gets the friends list.
-     *
-     * @param id the id
-     * @return the friends list
-     * @throws Exception the exception
-     */
-    protected List<Identity> getFriendsList(Identity id, SecurityToken token) throws Exception {
-      PortalContainer pc = (PortalContainer) getPortalContainer(token);
-      RelationshipManager rm = (RelationshipManager) pc.getComponentInstanceOfType(RelationshipManager.class);
-      List<Relationship> rels = rm.getConfirmed(id);
-      List<Identity> ids = new ArrayList<Identity>();
+    return ids;
+  }
 
-      for(Relationship rel : rels) {
-        ids.add(rel.getPartner(id));
-      }
+  /**
+   * Get the set of user id's for a set of users and a group.
+   *
+   * @param users the users
+   * @param group the group
+   * @param token the token
+   * @return the id set
+   * @throws Exception the exception
+   */
+  protected Set<Identity> getIdSet(Set<UserId> users, GroupId group, SecurityToken token)
+          throws Exception {
 
-      return ids;
+    if (token instanceof AnonymousSecurityToken) {
+      throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
+    }
+    Set<Identity> ids = Sets.newLinkedHashSet();
+    for (UserId user : users) {
+      ids.addAll(getIdSet(user, group, token));
+    }
+    return ids;
+  }
+
+  protected Identity getIdentity(String id, boolean loadProfile, SecurityToken st) throws Exception {
+
+    PortalContainer pc = (PortalContainer) getPortalContainer(st);
+    IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
+
+    Identity identity = im.getIdentity(id, loadProfile);
+
+    if (identity == null) {
+      throw new Exception("\n\n\n can't find identity \n\n\n");
     }
 
-    /**
-     * Get the set of user id's for a set of users and a group.
-     *
-     * @param users the users
-     * @param group the group
-     * @param token the token
-     * @return the id set
-     * @throws Exception the exception
-     */
-    protected Set<Identity> getIdSet(Set<UserId> users, GroupId group, SecurityToken token)
-            throws Exception {
+    return identity;
+  }
 
-	  if(token instanceof AnonymousSecurityToken) {
-		  throw new Exception(Integer.toString(HttpServletResponse.SC_FORBIDDEN));
-	  }
-      Set<Identity> ids = Sets.newLinkedHashSet();
-      for (UserId user : users) {
-        ids.addAll(getIdSet(user, group, token));
-      }
-      return ids;
+  /**
+   * Gets the identity.
+   *
+   * @param id the id
+   * @return the identity
+   * @throws Exception the exception
+   */
+  protected Identity getIdentity(String id, SecurityToken st) throws Exception {
+
+    return getIdentity(id, false, st);
+  }
+
+  protected PortalContainer getPortalContainer(SecurityToken st) {
+    String portalName = PortalContainer.getCurrentPortalContainerName();
+    if (st instanceof ExoBlobCrypterSecurityToken) {
+      final ExoBlobCrypterSecurityToken crypterSecurityToken = (ExoBlobCrypterSecurityToken) st;
+      final String container = crypterSecurityToken.getPortalContainer();
+      portalName = container;
     }
+    PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
+    ExoContainerContext.setCurrentContainer(portalContainer);
+    return portalContainer;
+  }
 
-    protected Identity getIdentity(String id, boolean loadProfile, SecurityToken st) throws Exception {
-
-      PortalContainer pc = (PortalContainer) getPortalContainer(st);
-      IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
-
-      Identity identity = im.getIdentity(id, loadProfile);
-
-      if(identity == null) throw new Exception("\n\n\n can't find identity \n\n\n");
-
-      return identity;
+  protected String getHost(SecurityToken st) {
+    String host = null;
+    if (st instanceof ExoBlobCrypterSecurityToken) {
+      host = ((ExoBlobCrypterSecurityToken) st).getHostName();
     }
+    return host;
+  }
 
-    /**
-     * Gets the identity.
-     *
-     * @param id the id
-     * @return the identity
-     * @throws Exception the exception
-     */
-    protected Identity getIdentity(String id, SecurityToken st) throws Exception {
-
-      return getIdentity(id, false, st);
+  protected String getPortalOwner(SecurityToken st) {
+    String owner = null;
+    if (st instanceof ExoBlobCrypterSecurityToken) {
+      owner = ((ExoBlobCrypterSecurityToken) st).getPortalOwner();
     }
+    return owner;
+  }
 
-    protected PortalContainer getPortalContainer(SecurityToken st) {
-    	String portalName = PortalContainer.getCurrentPortalContainerName();
-    	if(st instanceof ExoBlobCrypterSecurityToken) {
-        final ExoBlobCrypterSecurityToken crypterSecurityToken = (ExoBlobCrypterSecurityToken) st;
-        final String container = crypterSecurityToken.getPortalContainer();
-        portalName = container;    		
-    	}
-    	PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
-    	ExoContainerContext.setCurrentContainer(portalContainer);
-    	return portalContainer;
-    }
-
-    protected String getHost(SecurityToken st) {
-    	String host = null;
-    	if(st instanceof ExoBlobCrypterSecurityToken) {
-    		host = ((ExoBlobCrypterSecurityToken)st).getHostName();
-    	}
-    	return host;
-    }
-
-    protected String getPortalOwner(SecurityToken st) {
-      String owner = null;
-      if(st instanceof ExoBlobCrypterSecurityToken) {
-        owner = ((ExoBlobCrypterSecurityToken)st).getPortalOwner();
-      }
-      return owner;
-    }
-    
-    protected QuerySpec toQuerySpec(CollectionOptions options) {
-      QuerySpec query = new QuerySpec();
-      query.setFirst(options.getFirst());
-      query.setMax(options.getMax());
+  protected QuerySpec toQuerySpec(CollectionOptions options) {
+    QuerySpec query = new QuerySpec();
+    query.setFirst(options.getFirst());
+    query.setMax(options.getMax());
 
 
-      if (options.getFilter() != null) {
-        Operation operation = toOperation(options.getFilterOperation());
-        if (operation != null) {
+    if (options.getFilter() != null) {
+      Operation operation = toOperation(options.getFilterOperation());
+      if (operation != null) {
         query.addCondition(options.getFilter(), operation, options.getFilterValue());
-        }
       }
-
-
-      if (options.getSortBy() != null) {
-        QuerySpec.SortOrder sortOrder = (options.getSortOrder() == SortOrder.ascending) ? QuerySpec.SortOrder.asc : QuerySpec.SortOrder.desc;
-        query.addSort(options.getSortBy(), sortOrder);
-      }
-
-
-
-      if (options.getUpdatedSince() != null) {
-        query.addCondition("updated", QuerySpec.Operation.greaterThan, ""+  options.getUpdatedSince().getTime());
-      }
-
-
-      return query;
-
     }
 
 
-    private Operation toOperation(FilterOperation filterOperation) {
-      try {
+    if (options.getSortBy() != null) {
+      QuerySpec.SortOrder sortOrder = (options.getSortOrder() == SortOrder.ascending) ?
+                                      QuerySpec.SortOrder.asc : QuerySpec.SortOrder.desc;
+      query.addSort(options.getSortBy(), sortOrder);
+    }
+
+
+    if (options.getUpdatedSince() != null) {
+      query.addCondition("updated", QuerySpec.Operation.greaterThan, "" + options.getUpdatedSince().getTime());
+    }
+
+
+    return query;
+
+  }
+
+
+  private Operation toOperation(FilterOperation filterOperation) {
+    try {
       Operation.valueOf(Operation.class, filterOperation.name());
-      }
-      catch (IllegalArgumentException iae) {
-        ;
-      }
-      return null;
+    } catch (IllegalArgumentException iae) {
+      ;
     }
+    return null;
+  }
 
 }

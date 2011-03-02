@@ -29,6 +29,8 @@ import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.resolver.ResourceResolver;
 import org.exoplatform.services.cms.impl.DMSConfiguration;
 import org.exoplatform.services.cms.templates.TemplateService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -37,28 +39,47 @@ import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 
 /**
-* UIDocViewer
-* <p></p>
-*
-* @author Zuanoc
-* @copyright eXo SAS
-* @since Aug 10, 2010
-*/
+ * UIDocViewer <p></p>
+ *
+ * @author Zuanoc
+ * @since Aug 10, 2010
+ */
 
 @ComponentConfig(
 	lifecycle = Lifecycle.class
 )
 public class UIDocViewer extends UIBaseNodePresentation {
+
+  /**
+   * The logger.
+   */
+  private static final Log LOG = ExoLogger.getLogger(UIDocViewer.class);
   private Node originalNode;
 
+  /**
+   * Sets the original node.
+   *
+   * @param originalNode
+   */
   public void setOriginalNode(Node originalNode) {
     this.originalNode = originalNode;
   }
 
+  /**
+   * Gets the original node.
+   *
+   * @return
+   * @throws Exception
+   */
   public Node getOriginalNode() throws Exception {
     return originalNode;
   }
 
+  /**
+   * Sets the node.
+   *
+   * @param node
+   */
   public void setNode(Node node) {
     originalNode = node;
   }
@@ -69,10 +90,11 @@ public class UIDocViewer extends UIBaseNodePresentation {
   }
 
   public String getTemplate() {
-    try{
-      return getTemplatePath() ;
+    try {
+      return getTemplatePath();
     } catch (Exception e) {
-      return null ;
+      LOG.warn(e.getMessage(), e);
+      return null;
     }
   }
 
@@ -92,36 +114,38 @@ public class UIDocViewer extends UIBaseNodePresentation {
   }
 
   public String getNodeType() {
-		return null;
-	}
+    return null;
+  }
 
-	public boolean isNodeTypeSupported() {
-		return false;
-	}
+  public boolean isNodeTypeSupported() {
+    return false;
+  }
 
-	public UIComponent getCommentComponent() {
-		return null;
-	}
+  public UIComponent getCommentComponent() {
+    return null;
+  }
 
-	public UIComponent getRemoveAttach() {
-		return null;
-	}
+  public UIComponent getRemoveAttach() {
+    return null;
+  }
 
-	public UIComponent getRemoveComment() {
-		return null;
-	}
+  public UIComponent getRemoveComment() {
+    return null;
+  }
 
-	public UIComponent getUIComponent(String mimeType) throws Exception {
-		UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
+  public UIComponent getUIComponent(String mimeType) throws Exception {
+    UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
     List<UIExtension> extensions = manager.getUIExtensions(Utils.FILE_VIEWER_EXTENSION_TYPE);
     Map<String, Object> context = new HashMap<String, Object>();
     context.put(Utils.MIME_TYPE, mimeType);
     for (UIExtension extension : extensions) {
       UIComponent uiComponent = manager.addUIExtension(extension, context, this);
-      if(uiComponent != null) return uiComponent;
+      if (uiComponent != null) {
+        return uiComponent;
+      }
     }
     return null;
-	}
+  }
 
   public String getRepositoryName() {
     return UIDocActivityComposer.REPOSITORY;

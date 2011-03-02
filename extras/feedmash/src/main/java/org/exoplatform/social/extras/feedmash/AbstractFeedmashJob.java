@@ -181,19 +181,6 @@ public abstract class AbstractFeedmashJob implements Job {
     return identity;
   }
 
-  @SuppressWarnings("unused")
-  private boolean appExists(Application application, IdentityManager identityManager) {
-    boolean exists = false;
-    try {
-      exists = identityManager.identityExisted(ApplicationsIdentityProvider.NAME,
-                                               application.getId());
-    } catch (Exception e) {
-      return false;
-
-    }
-    return exists;
-  }
-
   private void init(JobDataMap dataMap) {
     pluginName = dataMap.getString("pluginName");
     targetActivityStream = dataMap.getString("targetActivityStream");

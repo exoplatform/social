@@ -28,6 +28,8 @@ import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -42,9 +44,11 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
+
 /**
  * UISpaceApplication.java used for adding/ removing applications<br />
  * Created by The eXo Platform SARL
+ *
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
  * @since Sep 12, 2008
  */
@@ -59,13 +63,19 @@ import org.exoplatform.webui.form.UIForm;
 )
 public class UISpaceApplication extends UIForm {
 
+  /**
+   * The logger.
+   */
+  private static final Log LOG = ExoLogger.getLogger(UISpaceApplication.class);
+
   private Space space;
   private UIPageIterator iterator;
   private final String iteratorID = "UIIteratorSpaceApplication";
 
 
   /**
-   * constructor
+   * Constructor.
+   *
    * @throws Exception
    */
   public UISpaceApplication() throws Exception {
@@ -73,8 +83,10 @@ public class UISpaceApplication extends UIForm {
     iterator = createUIComponent(UIPageIterator.class, null, iteratorID);
     addChild(iterator);
   }
+
   /**
    * Gets application list
+   *
    * @return application list
    * @throws Exception
    */
@@ -86,6 +98,7 @@ public class UISpaceApplication extends UIForm {
 
   /**
    * Gets the application name from the appName (applicationName:appId)
+   *
    * @param appName
    */
   public String getApplicationName(String appName) {
@@ -95,8 +108,10 @@ public class UISpaceApplication extends UIForm {
     }
     return appName;
   }
+
   /**
    * Sets space to work with
+   *
    * @param space
    * @throws Exception
    */
@@ -112,7 +127,7 @@ public class UISpaceApplication extends UIForm {
     while (appCategoryEntrySetItr.hasNext()) {
       Entry<ApplicationCategory, List<Application>> appCategoryEntrySet = appCategoryEntrySetItr.next();
       appList = appCategoryEntrySet.getValue();
-      for (Application app: appList) {
+      for (Application app : appList) {
         if (!isExisted(installedAppList, app)) {
           if (appIdList.contains(app.getApplicationName())) {
             appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
@@ -128,12 +143,14 @@ public class UISpaceApplication extends UIForm {
     List<String> availableAppIdList = new ArrayList<String>();
 
     for (String appId : appIdList) {
-      if (!availableAppIdList.contains(appId)) availableAppIdList.add(appId);
+      if (!availableAppIdList.contains(appId)) {
+        availableAppIdList.add(appId);
+      }
     }
     for (String appId : availableAppIdList) {
-        if (SpaceUtils.getAppStatus(space, appId).equals(Space.ACTIVE_STATUS)) {
-          installedAppList.add(SpaceUtils.getAppFromPortalContainer(appId));
-        }
+      if (SpaceUtils.getAppStatus(space, appId).equals(Space.ACTIVE_STATUS)) {
+        installedAppList.add(SpaceUtils.getAppFromPortalContainer(appId));
+      }
     }
 
     // Change name of application fit for issue SOC-739
@@ -146,22 +163,22 @@ public class UISpaceApplication extends UIForm {
     // make unique installedAppList
     // loop and check, if duplicate then create
     Application application;
-    for (int index = 0; index < listApp.length; index++){
-      for (int idx = 0; idx <installedAppList.size(); idx++) {
+    for (int index = 0; index < listApp.length; index++) {
+      for (int idx = 0; idx < installedAppList.size(); idx++) {
         application = installedAppList.get(idx);
         String temporalSpaceName = application.getApplicationName();
 
-    	//Application application = installedAppList.get(idx);
+        //Application application = installedAppList.get(idx);
 
-    	//appName = application.getApplicationName();
-    	appParts = listApp[index].split(":");
-    	spaceAppName = appParts[0];
-    	  if (temporalSpaceName.equals(spaceAppName)) {
-    		String newName = appParts[0] + ":" + appParts[1];
+        //appName = application.getApplicationName();
+        appParts = listApp[index].split(":");
+        spaceAppName = appParts[0];
+        if (temporalSpaceName.equals(spaceAppName)) {
+          String newName = appParts[0] + ":" + appParts[1];
 //    		application.setApplicationName(appParts[0] + ":" + appParts[1]);
-    		installedApps.add(setAppName(application, newName));
-    		break;
-    	  }
+          installedApps.add(setAppName(application, newName));
+          break;
+        }
       }
     }
     PageList pageList = new ObjectPageList(installedApps, 3);
@@ -170,13 +187,17 @@ public class UISpaceApplication extends UIForm {
   }
 
   /**
-   * gets uiPageIterator
+   * Gets uiPageIterator.
+   *
    * @return uiPageIterator
    */
-  public UIPageIterator getUIPageIterator() { return iterator;}
+  public UIPageIterator getUIPageIterator() {
+    return iterator;
+  }
 
   /**
    * Checks if an application is removable.
+   *
    * @param appId
    * @return true or false
    */
@@ -186,8 +207,8 @@ public class UISpaceApplication extends UIForm {
 
   /**
    * Gets application name of space application when the display name of application is changed.<br>
-   * - If the label of application is changed then return new label.<br>
-   * - Else return display name of application.<br>
+   * - If the label of application is changed then return new label.<br> - Else return display name
+   * of application.<br>
    *
    * @param application
    * @return application name depend on the display name is changed or not.
@@ -204,8 +225,7 @@ public class UISpaceApplication extends UIForm {
     try {
       pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
     } catch (Exception e1) {
-    // TODO Auto-generated catch block
-     e1.printStackTrace();
+      LOG.warn(e1.getMessage(), e1);
     }
 
     PageNode homeNode = SpaceUtils.getHomeNode(pageNav, spaceUrl);
@@ -229,8 +249,8 @@ public class UISpaceApplication extends UIForm {
 
   /**
    * Triggers this action when user clicks on add button
-   * @author hoatle
    *
+   * @author hoatle
    */
   static public class AddApplicationActionListener extends EventListener<UISpaceApplication> {
     public void execute(Event<UISpaceApplication> event) throws Exception {
@@ -245,8 +265,8 @@ public class UISpaceApplication extends UIForm {
 
   /**
    * Triggers this action when user clicks on remove button
-   * @author hoatle
    *
+   * @author hoatle
    */
   static public class RemoveApplicationActionListener extends EventListener<UISpaceApplication> {
     public void execute(Event<UISpaceApplication> event) throws Exception {
@@ -258,10 +278,10 @@ public class UISpaceApplication extends UIForm {
       String appName = null;
       String[] removedApps = removedAppName.split(":");
       if (removedApps.length == 2) {
-    	appId = removedApps[0];
-    	appName = removedApps[1];
+        appId = removedApps[0];
+        appName = removedApps[1];
       } else {
-    	appId = removedAppName;
+        appId = removedAppName;
       }
 
       spaceService.removeApplication(uiSpaceApp.space.getId(), appId, appName);
@@ -282,7 +302,7 @@ public class UISpaceApplication extends UIForm {
    * Checks if an application exists in list or not.
    *
    * @param appLst List of application
-   * @param app Application for checking
+   * @param app    Application for checking
    * @return true or false
    */
   private boolean isExisted(List<Application> appList, Application app) {
@@ -290,7 +310,9 @@ public class UISpaceApplication extends UIForm {
     String existedAppName = null;
     for (Application application : appList) {
       existedAppName = application.getApplicationName();
-      if (existedAppName.equals(appName)) return true;
+      if (existedAppName.equals(appName)) {
+        return true;
+      }
     }
     return false;
   }
@@ -303,22 +325,22 @@ public class UISpaceApplication extends UIForm {
    * @return
    */
   private Application setAppName(Application application, String appName) {
-	  Application app = new Application();
+    Application app = new Application();
 
-	  app.setCategoryName(application.getCategoryName());
-	  app.setDisplayName(application.getDisplayName());
-	  app.setDescription(application.getDescription());
-	  app.setCreatedDate(application.getCreatedDate());
-	  app.setModifiedDate(application.getModifiedDate());
-	  app.setAccessPermissions(application.getAccessPermissions());
-	  app.setApplicationName(appName);
-	  app.setType(application.getType());
-	  app.setStorageId(application.getStorageId());
-	  app.setId(application.getId());
-	  app.setIconURL(application.getIconURL());
-	  app.setContentId(application.getContentId());
+    app.setCategoryName(application.getCategoryName());
+    app.setDisplayName(application.getDisplayName());
+    app.setDescription(application.getDescription());
+    app.setCreatedDate(application.getCreatedDate());
+    app.setModifiedDate(application.getModifiedDate());
+    app.setAccessPermissions(application.getAccessPermissions());
+    app.setApplicationName(appName);
+    app.setType(application.getType());
+    app.setStorageId(application.getStorageId());
+    app.setId(application.getId());
+    app.setIconURL(application.getIconURL());
+    app.setContentId(application.getContentId());
 
-	  return app;
+    return app;
 
   }
 }

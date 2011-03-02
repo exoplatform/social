@@ -53,28 +53,44 @@ import org.exoplatform.webui.event.Event.Phase;
   }
 )
 public class UIDisplayProfileList extends UIContainer {
-  /** Label for display invoke action */
+  /**
+   * Label for display invoke action
+   */
   private static final String INVITATION_REVOKED_INFO = "UIDisplayProfileList.label.RevokedInfo";
 
-  /** Label for display established invitation */
+  /**
+   * Label for display established invitation
+   */
   private static final String INVITATION_ESTABLISHED_INFO = "UIDisplayProfileList.label.InvitationEstablishedInfo";
 
-  /** Number element per page. */
+  /**
+   * Number element per page.
+   */
   private static final Integer PEOPLE_PER_PAGE = 10;
 
-  /** Id of iterator. */
+  /**
+   * Id of iterator.
+   */
   private static final String ITERATOR_ID = "UIIteratorPeople";
 
-  /** The search object variable. */
+  /**
+   * The search object variable.
+   */
   UIProfileUserSearch uiProfileUserSearchPeople = null;
 
-  /** Iterator object contains elements of page */
+  /**
+   * Iterator object contains elements of page
+   */
   private UIPageIterator iterator;
 
-  /** Contains identities. */
+  /**
+   * Contains identities.
+   */
   private List<Identity> identityList;
-  
-  /** The first page of profile pages. */
+
+  /**
+   * The first page of profile pages.
+   */
   private static final int FIRST_PAGE = 1;
 
   /**
@@ -90,14 +106,13 @@ public class UIDisplayProfileList extends UIContainer {
         identityList.remove(Utils.getViewerIdentity());
       }
     }
-	return identityList;
+    return identityList;
   }
 
   /**
    * Sets list identity.
    *
-   * @param identityList
-   *        Identities for setting to list.
+   * @param identityList Identities for setting to list.
    */
   public void setIdentityList(List<Identity> identityList) {
     this.identityList = identityList;
@@ -125,9 +140,8 @@ public class UIDisplayProfileList extends UIContainer {
 
   /**
    * Gets all identities in the current list for display.
-   * 
-   * @return all identities in the current page of iterator.
    *
+   * @return all identities in the current page of iterator.
    * @throws Exception
    */
   public List<Identity> getList() throws Exception {
@@ -144,11 +158,9 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Listens to add action then make request to invite person to make connection.<br>
-   *   - Gets information of user is invited.<br>
-   *   - Checks the relationship to confirm that there have not got connection yet.<br>
-   *   - Saves the new connection.<br>
-   *
+   * Listens to add action then make request to invite person to make connection.<br> - Gets
+   * information of user is invited.<br> - Checks the relationship to confirm that there have not
+   * got connection yet.<br> - Saves the new connection.<br>
    */
   public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
@@ -167,10 +179,9 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Listens to accept actions then make connection to accepted person.<br>
-   *   - Gets information of user who made request.<br>
-   *   - Checks the relationship to confirm that there still got invited connection.<br>
-   *   - Makes and Save the new relationship.<br>
+   * Listens to accept actions then make connection to accepted person.<br> - Gets information of
+   * user who made request.<br> - Checks the relationship to confirm that there still got invited
+   * connection.<br> - Makes and Save the new relationship.<br>
    */
   public static class AcceptContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
@@ -189,11 +200,9 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Listens to deny action then delete the invitation.<br>
-   *   - Gets information of user is invited or made request.<br>
-   *   - Checks the relation to confirm that there have not got relation yet.<br>
-   *   - Removes the current relation and save the new relation.<br>
-   *
+   * Listens to deny action then delete the invitation.<br> - Gets information of user is invited or
+   * made request.<br> - Checks the relation to confirm that there have not got relation yet.<br> -
+   * Removes the current relation and save the new relation.<br>
    */
   public static class DenyContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
@@ -212,9 +221,9 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Listens to search action that broadcasted from search form then set to current form.<br>
-   *   - Gets search result from search form.<br>
-   *   - Sets the search result to the current form that added search form as child.<br>
+   * Listens to search action that broadcasted from search form then set to current form.<br> - Gets
+   * search result from search form.<br> - Sets the search result to the current form that added
+   * search form as child.<br>
    */
   public static class SearchActionListener extends EventListener<UIDisplayProfileList> {
     @Override
@@ -227,7 +236,6 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * 
    * @param identity
    * @return
    * @throws Exception

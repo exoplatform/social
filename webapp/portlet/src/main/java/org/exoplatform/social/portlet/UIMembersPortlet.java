@@ -390,13 +390,4 @@ public class UIMembersPortlet extends UIPortletApplication {
     return identityManager_;
   }
 
-  /**
-   * gets current repository name
-   * @return current repository name
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
-  }
 }

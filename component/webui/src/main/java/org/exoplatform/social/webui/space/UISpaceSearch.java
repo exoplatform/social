@@ -55,62 +55,91 @@ import org.exoplatform.webui.form.UIFormStringInput;
   }
 )
 public class UISpaceSearch extends UIForm {
-  /** SPACE SEARCH. */
+  /**
+   * SPACE SEARCH.
+   */
   final public static String SPACE_SEARCH = "SpaceSearch";
 
-  /** SEARCH. */
+  /**
+   * SEARCH.
+   */
   final public static String SEARCH = "Search";
 
-  /** SEARCH ALL. */
+  /**
+   * SEARCH ALL.
+   */
   final static String ALL = "All";
 
-  /** DEFAULT SPACE NAME SEARCH. */
+  /**
+   * DEFAULT SPACE NAME SEARCH.
+   */
   final public static String DEFAULT_SPACE_NAME_SEARCH = "name or description";
 
-  /** INPUT PATTERN FOR CHECKING. */
+  /**
+   * INPUT PATTERN FOR CHECKING.
+   */
   final static String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
 
-  /** ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING */
+  /**
+   * ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING
+   */
   final static String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
 
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
-  
-  /** The spaceService is used for SpaceService instance storage. */
+
+  /**
+   * The spaceService is used for SpaceService instance storage.
+   */
   SpaceService spaceService = null;
 
-  /** The spaceList is used for search result storage. */
+  /**
+   * The spaceList is used for search result storage.
+   */
   private List<Space> spaceList = null;
 
-  /** The selectedChar is used for selected character storage when search by alphabet. */
+  /**
+   * The selectedChar is used for selected character storage when search by alphabet.
+   */
   String selectedChar = null;
 
-  /** The spaceNameSearch is used for input space name storage. */
+  /**
+   * The spaceNameSearch is used for input space name storage.
+   */
   String spaceNameSearch = null;
 
-  /** Contains all space name in individual context for auto suggesting. */
+  /**
+   * Contains all space name in individual context for auto suggesting.
+   */
   List<String> spaceNameForAutoSuggest = null;
-  
-  /** The flag notifies a new search when clicks search icon or presses enter. */
+
+  /**
+   * The flag notifies a new search when clicks search icon or presses enter.
+   */
   private boolean isNewSearch;
 
-  /** Used stores type of relation with current user information. */
+  /**
+   * Used stores type of relation with current user information.
+   */
   String typeOfRelation = null;
-  
-  /** URL of space that this UIComponent is used in member searching. */
+
+  /**
+   * URL of space that this UIComponent is used in member searching.
+   */
   String spaceURL = null;
-  
+
   /**
    * Gets input space name search input.
    *
    * @return Name of space.
    */
-  public String getSpaceNameSearch() { return spaceNameSearch;}
+  public String getSpaceNameSearch() {
+    return spaceNameSearch;
+  }
 
   /**
    * Sets input space name search.
    *
-   * @param spaceNameSearch
-   *        A {@code String}
+   * @param spaceNameSearch A {@code String}
    */
   public void setSpaceNameSearch(String spaceNameSearch) {
     this.spaceNameSearch = spaceNameSearch;
@@ -118,7 +147,6 @@ public class UISpaceSearch extends UIForm {
 
   /**
    * Gets type of relation with current user.
-   *
    */
   public String getTypeOfRelation() {
     return typeOfRelation;
@@ -135,7 +163,6 @@ public class UISpaceSearch extends UIForm {
 
   /**
    * Gets space url.
-   *
    */
   public String getSpaceURL() {
     return spaceURL;
@@ -149,7 +176,7 @@ public class UISpaceSearch extends UIForm {
   public void setSpaceURL(String spaceURL) {
     this.spaceURL = spaceURL;
   }
-  
+
   /**
    * Get current user name.
    *
@@ -168,7 +195,7 @@ public class UISpaceSearch extends UIForm {
   protected String getRestContextName() {
     return PortalContainer.getCurrentRestContextName();
   }
-  
+
   /**
    * Get portal name.
    *
@@ -177,19 +204,20 @@ public class UISpaceSearch extends UIForm {
   protected String getPortalName() {
     return PortalContainer.getCurrentPortalContainerName();
   }
-  
+
   /**
    * Gets space name for auto suggesting.
    *
    * @return List of space name.
    */
-  public List<String> getSpaceNameForAutoSuggest() { return spaceNameForAutoSuggest;}
+  public List<String> getSpaceNameForAutoSuggest() {
+    return spaceNameForAutoSuggest;
+  }
 
   /**
    * Sets space name for auto suggesting.
    *
-   * @param spaceNameForAutoSuggest The list of space name.
-   *        A {@code List}
+   * @param spaceNameForAutoSuggest The list of space name. A {@code List}
    */
   public void setSpaceNameForAutoSuggest(List<String> spaceNameForAutoSuggest) {
     this.spaceNameForAutoSuggest = spaceNameForAutoSuggest;
@@ -198,10 +226,11 @@ public class UISpaceSearch extends UIForm {
   /**
    * Sets result of searching to list.
    *
-   * @param spaceList The list of space.
-   *        A {@code List}
+   * @param spaceList The list of space. A {@code List}
    */
-  public void setSpaceList(List<Space> spaceList) { this.spaceList = spaceList;}
+  public void setSpaceList(List<Space> spaceList) {
+    this.spaceList = spaceList;
+  }
 
   /**
    * Gets list of searching.
@@ -209,22 +238,27 @@ public class UISpaceSearch extends UIForm {
    * @return List of space.
    * @throws Exception
    */
-  public List<Space> getSpaceList() throws Exception { return spaceList;}
+  public List<Space> getSpaceList() throws Exception {
+    return spaceList;
+  }
 
   /**
    * Gets selected character.
    *
    * @return Character is selected.
    */
-  public String getSelectedChar() { return selectedChar;}
+  public String getSelectedChar() {
+    return selectedChar;
+  }
 
   /**
    * Sets selected character.
    *
-   * @param selectedChar
-   *        A {@code String}
+   * @param selectedChar A {@code String}
    */
-  public void setSelectedChar(String selectedChar) { this.selectedChar = selectedChar;}
+  public void setSelectedChar(String selectedChar) {
+    this.selectedChar = selectedChar;
+  }
 
   /**
    * Initializes search form fields.
@@ -240,11 +274,9 @@ public class UISpaceSearch extends UIForm {
   }
 
   /**
-   * Listens to search event is broadcasted from search form, then processes search condition
-   * and set search result to the result variable.<br>
-   *    - Gets space name from request.<br>
-   *    - Searches spaces that have name like input space name.<br>
-   *    - Sets matched space into result list.<br>
+   * Listens to search event is broadcasted from search form, then processes search condition and
+   * set search result to the result variable.<br> - Gets space name from request.<br> - Searches
+   * spaces that have name like input space name.<br> - Sets matched space into result list.<br>
    */
   static public class SearchActionListener extends EventListener<UISpaceSearch> {
     @Override
@@ -255,16 +287,18 @@ public class UISpaceSearch extends UIForm {
       SpaceService spaceService = uiSpaceSearch.getSpaceService();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
-      String searchCondition = (((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
-      if (searchCondition != null) searchCondition = searchCondition.trim();
+      String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
+      if (searchCondition != null) {
+        searchCondition = searchCondition.trim();
+      }
 
       searchCondition = ((searchCondition == null) || (searchCondition.length() == 0)
-          || searchCondition.equals(defaultSpaceNameAndDesc)) ? "*" : searchCondition;
+              || searchCondition.equals(defaultSpaceNameAndDesc)) ? "*" : searchCondition;
       searchCondition = (charSearch != null) ? charSearch : searchCondition;
       searchCondition = ((charSearch != null) && ALL.equals(charSearch)) ? "" : searchCondition;
 
       if (charSearch != null) {
-    	  ((UIFormStringInput)uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
+        ((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
       }
       uiSpaceSearch.setSelectedChar(charSearch);
 
@@ -289,12 +323,10 @@ public class UISpaceSearch extends UIForm {
       }
     }
 
-	/**
+    /**
      * Checks input values follow regular expression.
      *
-     * @param input
-     *        A {@code String}
-     *
+     * @param input A {@code String}
      * @return true if user input a right string for space searching else return false.
      */
     private boolean isValidInput(String input) {
@@ -302,8 +334,10 @@ public class UISpaceSearch extends UIForm {
       String spacenameForCheck = input.replace("*", "");
       spacenameForCheck = spacenameForCheck.replace("%", "");
       // Make sure string for checking is started by alphabet character
-      spacenameForCheck =  PREFIX_ADDED_FOR_CHECK + spacenameForCheck;
-      if (!spacenameForCheck.matches(RIGHT_INPUT_PATTERN)) return false;
+      spacenameForCheck = PREFIX_ADDED_FOR_CHECK + spacenameForCheck;
+      if (!spacenameForCheck.matches(RIGHT_INPUT_PATTERN)) {
+        return false;
+      }
 
       return true;
     }
@@ -311,7 +345,7 @@ public class UISpaceSearch extends UIForm {
 
   /**
    * This action is triggered when user clicks on AddSpace <br />
-   *
+   * <p/>
    * UIAddSpaceForm will be displayed in a popup window
    */
   static public class AddSpaceActionListener extends EventListener<UISpaceSearch> {
@@ -321,18 +355,18 @@ public class UISpaceSearch extends UIForm {
       UISpaceSearch uiSpaceSearch = event.getSource();
       UIPopupWindow uiPopup = uiSpaceSearch.getChild(UIPopupWindow.class);
       UISpaceAddForm uiAddSpaceForm = uiSpaceSearch.createUIComponent(UISpaceAddForm.class,
-                                                                         null,
-                                                                         null);
+              null,
+              null);
       uiPopup.setUIComponent(uiAddSpaceForm);
       uiPopup.setWindowSize(500, 0);
       uiPopup.setShow(true);
     }
 
   }
-  
+
   /**
-   * Gets an instance of SpaceService. If the instance is still existed then return
-   * else it is get from container.
+   * Gets an instance of SpaceService. If the instance is still existed then return else it is get
+   * from container.
    *
    * @return an instance of SpaceService.
    */

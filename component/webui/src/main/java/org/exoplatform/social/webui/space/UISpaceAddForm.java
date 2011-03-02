@@ -67,22 +67,22 @@ public class UISpaceAddForm extends UIFormTabPane {
 
   private static final Log LOG = ExoLogger.getLogger(UISpaceAddForm.class);
 
-  static private final String MSG_DEFAULT_SPACE_DESCRIPTION       = "UISpaceAddForm.msg.default_space_description";
-  static private final String MSG_ERROR_SPACE_CREATION            = "UISpaceAddForm.msg.error_space_creation";
-  static private final String MSG_ERROR_DATASTORE                 = "UISpaceAddForm.msg.error_space_not_saved";
-  static private final String MSG_ERROR_UNABLE_TO_INIT_APP        = "UISpaceAddForm.msg.error_unable_to_init_app";
-  static private final String MSG_ERROR_UNABLE_TO_ADD_CREATOR     = "UISpaceAddForm.msg.error_unable_to_add_creator";
+  static private final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
+  static private final String MSG_ERROR_SPACE_CREATION = "UISpaceAddForm.msg.error_space_creation";
+  static private final String MSG_ERROR_DATASTORE = "UISpaceAddForm.msg.error_space_not_saved";
+  static private final String MSG_ERROR_UNABLE_TO_INIT_APP = "UISpaceAddForm.msg.error_unable_to_init_app";
+  static private final String MSG_ERROR_UNABLE_TO_ADD_CREATOR = "UISpaceAddForm.msg.error_unable_to_add_creator";
   static private final String MSG_ERROR_UNABLE_TO_ADD_APPLICATION = "UISpaceAddForm.msg.error_unable_to_add_application";
-  static private final String MSG_ERROR_RETRIEVING_USER           = "UISpaceAddForm.msg.error_unable_to_retrieve_user";
-  static private final String MSG_SPACE_CREATION_SUCCESS          = "UISpaceAddForm.msg.space_creation_success";
-  static private final String MSG_ERROR_SPACE_ALREADY_EXIST       = "UISpaceAddForm.msg.error_space_already_exist";
-  private final String        SPACE_SETTINGS                      = "UISpaceSettings";
-  private final String        SPACE_VISIBILITY                    = "UISpaceVisibility";
-  private final String        CHANGE_PRIORITY                     = "ChangePriority";
+  static private final String MSG_ERROR_RETRIEVING_USER = "UISpaceAddForm.msg.error_unable_to_retrieve_user";
+  static private final String MSG_SPACE_CREATION_SUCCESS = "UISpaceAddForm.msg.space_creation_success";
+  static private final String MSG_ERROR_SPACE_ALREADY_EXIST = "UISpaceAddForm.msg.error_space_already_exist";
+  private final String SPACE_SETTINGS = "UISpaceSettings";
+  private final String SPACE_VISIBILITY = "UISpaceVisibility";
+  private final String CHANGE_PRIORITY = "ChangePriority";
 
   /**
    * Constructor: add 3 UI component to this UIFormTabPane:
-   *
+   * <p/>
    * <pre>
    * {@link UISpaceSettings}
    * {@link UISpaceVisibility}
@@ -104,7 +104,7 @@ public class UISpaceAddForm extends UIFormTabPane {
 
     addChild(UISpaceGroupBound.class, null, null);
 
-    setActions(new String[] {"Create"});
+    setActions(new String[]{"Create"});
     setSelectedTab(1);
   }
 
@@ -173,8 +173,8 @@ public class UISpaceAddForm extends UIFormTabPane {
   }
 
   /**
-   * listener for toggle use existing group action When this action is
-   * triggered, a group selector poup will show up for choosing.
+   * listener for toggle use existing group action When this action is triggered, a group selector
+   * poup will show up for choosing.
    */
   static public class ToggleUseGroupActionListener extends EventListener<UISpaceAddForm> {
     @SuppressWarnings("unchecked")
@@ -186,8 +186,8 @@ public class UISpaceAddForm extends UIFormTabPane {
       if (uiUseExistingGroup.isChecked()) {
         UIPopupWindow uiPopup = uiSpaceGroupBound.getChild(UIPopupWindow.class);
         UISocialGroupSelector uiGroupSelector = uiSpaceAddForm.createUIComponent(UISocialGroupSelector.class,
-                                                                           null,
-                                                                           null);
+                null,
+                null);
         uiPopup.setUIComponent(uiGroupSelector);
         uiPopup.setShowMask(true);
         uiPopup.setShow(true);
@@ -199,9 +199,9 @@ public class UISpaceAddForm extends UIFormTabPane {
   }
 
   static public class ChangePriorityActionListener extends EventListener<UISpaceAddForm> {
-	private final String HIGH_PRIORITY_LABEL         = "UISpaceSettings.label.HighPrio";
-	private final String INTERMEDIATE_PRIORITY_LABEL = "UISpaceSettings.label.InterMePrio";
-    private final String LOW_PRIORITY_LABEL          = "UISpaceSettings.label.lowPrio";
+    private final String HIGH_PRIORITY_LABEL = "UISpaceSettings.label.HighPrio";
+    private final String INTERMEDIATE_PRIORITY_LABEL = "UISpaceSettings.label.InterMePrio";
+    private final String LOW_PRIORITY_LABEL = "UISpaceSettings.label.lowPrio";
 
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
@@ -235,10 +235,10 @@ public class UISpaceAddForm extends UIFormTabPane {
   }
 
   static public class ChangeOptionActionListener extends EventListener<UISpaceAddForm> {
-	private final String VISIBLE_OPEN_SPACE          = "UISpaceVisibility.label.VisibleAndOpenSpace";
-	private final String VISIBLE_VALIDATION_SPACE    = "UISpaceVisibility.label.VisibleAndValidationSpace";
-    private final String VISIBLE_CLOSE_SPACE         = "UISpaceVisibility.label.VisibleAndCloseSpace";
-    private final String HIDDEN_SPACE                = "UISpaceVisibility.label.HiddenSpace";
+    private final String VISIBLE_OPEN_SPACE = "UISpaceVisibility.label.VisibleAndOpenSpace";
+    private final String VISIBLE_VALIDATION_SPACE = "UISpaceVisibility.label.VisibleAndValidationSpace";
+    private final String VISIBLE_CLOSE_SPACE = "UISpaceVisibility.label.VisibleAndCloseSpace";
+    private final String HIDDEN_SPACE = "UISpaceVisibility.label.HiddenSpace";
 
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
@@ -263,13 +263,13 @@ public class UISpaceAddForm extends UIFormTabPane {
       boolean isValidation = Space.VALIDATION.equals(currentRegistration);
       boolean isClose = Space.CLOSE.equals(currentRegistration);
       if (isPrivate && isOpen) {
-    	  uiFormInfo.setValue(visibleAndOpenSpace);
+        uiFormInfo.setValue(visibleAndOpenSpace);
       } else if (isPrivate && isValidation) {
-    	  uiFormInfo.setValue(visibleAndValidationSpace);
+        uiFormInfo.setValue(visibleAndValidationSpace);
       } else if (isPrivate && isClose) {
-    	  uiFormInfo.setValue(visibleAndCloseSpace);
+        uiFormInfo.setValue(visibleAndCloseSpace);
       } else {
-    	  uiFormInfo.setValue(hiddenSpace);
+        uiFormInfo.setValue(hiddenSpace);
       }
     }
   }

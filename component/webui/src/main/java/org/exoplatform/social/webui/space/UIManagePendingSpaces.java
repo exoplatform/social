@@ -258,36 +258,6 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * Gets current portal name.
-   * 
-   * @return current portal name
-   */
-  private String getPortalName() {
-    PortalContainer pcontainer =  PortalContainer.getInstance();
-    return pcontainer.getPortalContainerInfo().getContainerName();
-  }
-
-  /**
-   * Gets repository name.
-   * 
-   * @return repository name
-   * @throws Exception
-   */
-  private String getRepository() throws Exception {
-    RepositoryService rService = getApplicationComponent(RepositoryService.class);
-    return rService.getCurrentRepository().getConfiguration().getName();
-  }
-
-  /**
-   * Gets the rest context.
-   *
-   * @return the rest context
-   */
-   private String getRestContext() {
-     return PortalContainer.getInstance().getRestContextName();
-   }
-
-  /**
    * Gets paginated pending spaces so that the user can revoke pending.
    * 
    * @return paginated pending spaces

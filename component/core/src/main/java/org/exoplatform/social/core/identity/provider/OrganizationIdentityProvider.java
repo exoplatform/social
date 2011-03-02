@@ -100,22 +100,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     return userCache.get(userName);
   }
 
-  /**
-   * Adds the user to cache.
-   *
-   * @param user the user
-   */
-  private void addUserToCache(User user) {
-    if(getUserFromCache(user.getUserName()) == null)
-      userCache.put(user.getUserName(), user);
-  }
-
-  /**
-   * Refresh cache.
-   */
-  private void refreshCache() {
-    userCache.clear();
-  }
 
   @Override
   public User findByRemoteId(String remoteId) {

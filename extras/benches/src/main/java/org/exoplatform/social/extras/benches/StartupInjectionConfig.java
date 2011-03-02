@@ -98,11 +98,6 @@ public class StartupInjectionConfig implements Startable {
     }
   }
 
-  private long getLongProperty(PropertiesParam props, String property) {
-    String value = props.getProperty(property);
-    return longValue(property, value);
-  }
-
   private long longValue(String property, String value) {
     try {
       if (value != null) {

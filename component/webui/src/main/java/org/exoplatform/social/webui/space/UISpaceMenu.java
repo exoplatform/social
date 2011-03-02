@@ -67,9 +67,13 @@ public class UISpaceMenu extends UIContainer {
    */
   private static final Log LOG = ExoLogger.getLogger(UISpaceMenu.class);
 
-  /** NEW SPACE APPLICATION NAME. */
+  /**
+   * NEW SPACE APPLICATION NAME.
+   */
   private static final String NEW_SPACE_APPLICATION_NAME = "newSpaceAppName";
-  /** INVALID APPLICATION NAME MESSAGE. */
+  /**
+   * INVALID APPLICATION NAME MESSAGE.
+   */
   private static final String INVALID_APPLICATION_NAME_MSG = "UISpaceMenuPortlet.msg.invalidAppName";
 
   private static final String EXISTING_APPLICATION_NAME_MSG = "UISpaceMenuPortlet.msg.existingAppName";
@@ -77,22 +81,27 @@ public class UISpaceMenu extends UIContainer {
   private static final String SPACE_HOME_APP_NAME = "UISpaceMenu.label.Home";
 
   private static final String SPACE_SETTING_PORTLET = "SpaceSettingPortlet";
-  /** Stores SpaceService object. */
+  /**
+   * Stores SpaceService object.
+   */
   private SpaceService spaceService = null;
 
-  /** Stores Space object. */
+  /**
+   * Stores Space object.
+   */
   private Space space = null;
 
   /**
    * Constructor.
-   * 
+   *
    * @throws Exception
    */
-  public UISpaceMenu() throws  Exception {
+  public UISpaceMenu() throws Exception {
   }
 
   /**
    * Gets page node list for displaying as application links.
+   *
    * @return page node list
    * @throws Exception
    */
@@ -111,27 +120,26 @@ public class UISpaceMenu extends UIContainer {
     }
     List<PageNode> list = homeNode.getNodes();
     PageNode pageNode = null;
-    for(PageNode node:list){
-      if(node.getName().contains(SPACE_SETTING_PORTLET)){
+    for (PageNode node : list) {
+      if (node.getName().contains(SPACE_SETTING_PORTLET)) {
         pageNode = node;
         break;
       }
     }
-    if(!isLeader() && (pageNode != null)) list.remove(pageNode);
+    if (!isLeader() && (pageNode != null)) {
+      list.remove(pageNode);
+    }
     Collections.sort(list, new ApplicationComparator());
     return list;
   }
 
   /**
-   * Renames space application name.<br>
-   * - Gets selected node and selected page navigation.<br>
-   * - Changes selected node information.<br>
-   * - Updates new information for selected page navigation.<br>
-   *
+   * Renames space application name.<br> - Gets selected node and selected page navigation.<br> -
+   * Changes selected node information.<br> - Updates new information for selected page
+   * navigation.<br>
    */
   static public class RenameSpaceAppNameActionListener extends EventListener<UISpaceMenu> {
-    public void execute(Event<UISpaceMenu> event) throws Exception
-    {
+    public void execute(Event<UISpaceMenu> event) throws Exception {
       UISpaceMenu spaceMenu = event.getSource();
       WebuiRequestContext context = event.getRequestContext();
 
@@ -139,7 +147,7 @@ public class UISpaceMenu extends UIContainer {
       UIPortal uiPortal = Util.getUIPortal();
       PortalRequestContext prContext = Util.getPortalRequestContext();
       ExoContainer container = ExoContainerContext.getCurrentContainer();
-      DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
+      DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
       SpaceService spaceService = spaceMenu.getApplicationComponent(SpaceService.class);
       String spaceUrl = SpaceUtils.getSpaceUrl();
       Space space = spaceService.getSpaceByUrl(spaceUrl);
@@ -151,14 +159,14 @@ public class UISpaceMenu extends UIContainer {
       List<PageNavigation> navigations = userPortalConfig.getNavigations();
       PageNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
       for (PageNavigation navi : navigations) {
-    	  if ((navi.getOwner()).equals(spaceNavigation.getOwner())) {
-    		  spaceNavigation = navi;
-    		  break;
-    	  }
+        if ((navi.getOwner()).equals(spaceNavigation.getOwner())) {
+          spaceNavigation = navi;
+          break;
+        }
       }
       homeNode = SpaceUtils.getHomeNode(spaceNavigation, spaceUrl);
       if (homeNode == null) {
-    	  throw new Exception("homeNode is null!");
+        throw new Exception("homeNode is null!");
       }
       List<PageNode> childNodes = homeNode.getNodes();
       String oldName = selectedNode.getName();
@@ -175,20 +183,20 @@ public class UISpaceMenu extends UIContainer {
       }
       String newNodeName = newSpaceAppName.trim().replace(' ', '_');
       if (spaceMenu.isAppNameExisted(spaceNavigation, newNodeName)) {
-    	  uiApp.addMessage(new ApplicationMessage(EXISTING_APPLICATION_NAME_MSG, null, ApplicationMessage.INFO));
-    	  prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
-          return;
+        uiApp.addMessage(new ApplicationMessage(EXISTING_APPLICATION_NAME_MSG, null, ApplicationMessage.INFO));
+        prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
+        return;
       }
       String newUri = oldUri.substring(0, oldUri.lastIndexOf("/") + 1) + newNodeName;
       PageNode childNode = null;
       for (int i = 0; i < childNodes.size(); i++) {
         childNode = childNodes.get(i);
         if (selectedNode.getName().equals(childNode.getName())) {
-           childNode.setLabel(newSpaceAppName);
-           childNode.setName(newNodeName);
-           childNode.setUri(newUri);
-           selectedNode = childNode;
-           break;
+          childNode.setLabel(newSpaceAppName);
+          childNode.setName(newNodeName);
+          childNode.setUri(newUri);
+          selectedNode = childNode;
+          break;
         }
       }
 
@@ -196,7 +204,7 @@ public class UISpaceMenu extends UIContainer {
       String[] apps = installedApps.split(",");
       String[] appParts = null;
       String editedApp = null;
-      String newInstalledApps =null;
+      String newInstalledApps = null;
 
       // Check and update new application name.
       for (String app : apps) {
@@ -217,7 +225,7 @@ public class UISpaceMenu extends UIContainer {
       SpaceUtils.setNavigation(spaceNavigation);
 
       if (newUri != null) {
-         prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);
+        prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);
       }
     }
   }
@@ -238,7 +246,7 @@ public class UISpaceMenu extends UIContainer {
 
   /**
    * Gets selected application page node.
-   * 
+   *
    * @return selected application page node
    * @throws Exception
    */
@@ -251,7 +259,7 @@ public class UISpaceMenu extends UIContainer {
 
   /**
    * Gets image source url.
-   * 
+   *
    * @return image source url
    * @throws Exception
    */
@@ -268,14 +276,13 @@ public class UISpaceMenu extends UIContainer {
    * Checks if current user is leader or not.<br>
    *
    * @return true if current login user is leader.
-   *
    * @throws SpaceException
    */
   private boolean isLeader() throws SpaceException {
     spaceService = getSpaceService();
     String userId = Util.getPortalRequestContext().getRemoteUser();
     Space space = getSpace();
-    if(spaceService.hasEditPermission(space.getId(), userId)) {
+    if (spaceService.hasEditPermission(space.getId(), userId)) {
       return true;
     }
 
@@ -284,9 +291,8 @@ public class UISpaceMenu extends UIContainer {
 
   /**
    * Application comparator.
-   * 
-   * @author hoatle
    *
+   * @author hoatle
    */
   private class ApplicationComparator implements Comparator<PageNode> {
     public int compare(PageNode pageNode1, PageNode pageNode2) {
@@ -296,7 +302,7 @@ public class UISpaceMenu extends UIContainer {
 
   /**
    * Gets spaceService.
-   * 
+   *
    * @return spaceService
    * @see SpaceService
    */
@@ -329,9 +335,7 @@ public class UISpaceMenu extends UIContainer {
    * Checks the input name is existed or not.<br>
    *
    * @param pageNav
-   *
    * @param nodeName
-   *
    * @return true if input name is existed. false if it not.
    * @throws Exception
    */
@@ -355,7 +359,8 @@ public class UISpaceMenu extends UIContainer {
     }
 
     //space home application name is not PageNode so we alse need to check this name
-    String spaceHomeAppName = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle().getString(SPACE_HOME_APP_NAME);
+    String spaceHomeAppName = WebuiRequestContext.getCurrentInstance()
+            .getApplicationResourceBundle().getString(SPACE_HOME_APP_NAME);
     return nodeName.equals(spaceHomeAppName);
   }
 
@@ -363,25 +368,24 @@ public class UISpaceMenu extends UIContainer {
    * Checks the input new space application name is valid or not.<br>
    *
    * @param appName
-   *
    * @return true if input name is valid. false if not.
    */
   private boolean isValidAppName(String appName) {
     appName = appName.trim();
 
     if (appName == null || appName.length() < 1) {
-       return false;
+      return false;
     }
 
     if (Character.isDigit(appName.charAt(0)) || appName.charAt(0) == '-') {
-       return false;
+      return false;
     }
     for (int i = 0; i < appName.length(); i++) {
-       char c = appName.charAt(i);
-       if (Character.isLetter(c) || Character.isDigit(c) || c == '_' || c == '-' || Character.isSpaceChar(c)) {
-          continue;
-       }
-       return false;
+      char c = appName.charAt(i);
+      if (Character.isLetter(c) || Character.isDigit(c) || c == '_' || c == '-' || Character.isSpaceChar(c)) {
+        continue;
+      }
+      return false;
     }
     return true;
   }

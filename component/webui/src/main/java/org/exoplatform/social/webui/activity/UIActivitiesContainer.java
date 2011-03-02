@@ -32,9 +32,8 @@ import org.exoplatform.webui.core.UIPopupWindow;
 /**
  * UIActivitiesContainer.java
  *
- * @author    <a href="http://hoatle.net">hoatle</a>
- * @since 	  Apr 12, 2010
- * @copyright eXo Platform SAS
+ * @author <a href="http://hoatle.net">hoatle</a>
+ * @since Apr 12, 2010
  */
 @ComponentConfig(
   template = "classpath:groovy/social/webui/UIActivitiesContainer.gtmpl"
@@ -48,6 +47,7 @@ public class UIActivitiesContainer extends UIContainer {
   private Space space;
   private String ownerName;
   private UIPopupWindow popupWindow;
+
   /**
    * constructor
    */
@@ -96,11 +96,12 @@ public class UIActivitiesContainer extends UIContainer {
 
 
   /**
-   * initializes ui component child
+   * Initializes ui component child
+   *
    * @throws Exception
    */
   private void init() throws Exception {
-    while (getChild(BaseUIActivity.class) != null){
+    while (getChild(BaseUIActivity.class) != null) {
       removeChild(BaseUIActivity.class);
     }
 
@@ -118,12 +119,12 @@ public class UIActivitiesContainer extends UIContainer {
     if (activityList == null) {
       activityList = new ArrayList<ExoSocialActivity>();
     }
-    activityList.add(0,activity);
+    activityList.add(0, activity);
     init();
   }
 
   public void removeActivity(ExoSocialActivity removedActivity) {
-    for (ExoSocialActivity activity: activityList) {
+    for (ExoSocialActivity activity : activityList) {
       if (activity.getId().equals(removedActivity.getId())) {
         activityList.remove(activity);
         break;

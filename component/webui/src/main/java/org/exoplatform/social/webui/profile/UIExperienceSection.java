@@ -61,7 +61,8 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
       @EventConfig(listeners = UIExperienceSection.EditActionListener.class, phase=Phase.DECODE),
       @EventConfig(listeners = UIExperienceSection.SaveActionListener.class),
       @EventConfig(listeners = UIExperienceSection.AddActionListener.class),
-      @EventConfig(listeners = UIExperienceSection.RemoveActionListener.class, confirm = "UIExperienceSection.msg.confirmDeleteExp", phase=Phase.DECODE),
+      @EventConfig(listeners = UIExperienceSection.RemoveActionListener.class,
+                   confirm = "UIExperienceSection.msg.confirmDeleteExp", phase=Phase.DECODE),
       @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE)
     }
   ),
@@ -73,19 +74,29 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 })
 public class UIExperienceSection extends UIProfileSection {
 
-  /** START DATE AFTER TODAY. */
+  /**
+   * START DATE AFTER TODAY.
+   */
   final public static String START_DATE_AFTER_TODAY = "UIExperienceSection.msg.StartDateAfterToday";
-  
-  /** END DATE AFTER TODAY. */
+
+  /**
+   * END DATE AFTER TODAY.
+   */
   final public static String END_DATE_AFTER_TODAY = "UIExperienceSection.msg.EndDateAfterToday";
 
-  /** START DATE BEFORE END DATE. */
+  /**
+   * START DATE BEFORE END DATE.
+   */
   final public static String STARTDATE_BEFORE_ENDDATE = "UIExperienceSection.msg.startDateBeforeEndDate";
 
-  /** DATE FORMAT. */
+  /**
+   * DATE FORMAT.
+   */
   final public static String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
 
-  /** Number of components. */
+  /**
+   * Number of components.
+   */
   int expIdx = 0;
 
   /**
@@ -117,13 +128,13 @@ public class UIExperienceSection extends UIProfileSection {
    * Gets month of date time.<br>
    *
    * @param inDate Input date
-   *
    * @return Month of input date.
-   *
    * @throws ParseException
    */
   public int getMonth(String inDate) throws ParseException {
-    if ((inDate == null) || (inDate.length() == 0)) return 0;
+    if ((inDate == null) || (inDate.length() == 0)) {
+      return 0;
+    }
     Calendar calendar = getCalendar(inDate);
 
     return (calendar.get(Calendar.MONTH) + 1); // Month start from 0
@@ -133,13 +144,13 @@ public class UIExperienceSection extends UIProfileSection {
    * Gets date of date time.<br>
    *
    * @param inDate Input date
-   *
    * @return Date of input date.
-   *
    * @throws ParseException
    */
   public int getDate(String inDate) throws ParseException {
-    if ((inDate == null) || (inDate.length() == 0)) return 0;
+    if ((inDate == null) || (inDate.length() == 0)) {
+      return 0;
+    }
     Calendar calendar = getCalendar(inDate);
 
     return calendar.get(Calendar.DATE);
@@ -149,21 +160,20 @@ public class UIExperienceSection extends UIProfileSection {
    * Gets year of date time.<br>
    *
    * @param inDate Input date
-   *
    * @return Year of input date.
-   *
    * @throws ParseException
    */
   public int getYear(String inDate) throws ParseException {
-    if ((inDate == null) || (inDate.length() == 0)) return 0;
+    if ((inDate == null) || (inDate.length() == 0)) {
+      return 0;
+    }
     Calendar calendar = getCalendar(inDate);
 
     return calendar.get(Calendar.YEAR);
   }
 
   /**
-   *  Adds component when Add button is clicked. <br>
-   *
+   * Adds component when Add button is clicked. <br>
    */
   public static class AddActionListener extends EventListener<UIExperienceSection> {
     @Override
@@ -174,8 +184,7 @@ public class UIExperienceSection extends UIProfileSection {
   }
 
   /**
-   *  Adds component when Add button is clicked. <br>
-   *
+   * Adds component when Add button is clicked. <br>
    */
   public static class RemoveActionListener extends EventListener<UIExperienceSection> {
     @Override
@@ -194,12 +203,12 @@ public class UIExperienceSection extends UIProfileSection {
       List<UIComponent> listChild = uiForm.getChilds();
 
       companyId = listChild.get(blockIdx).getId();
-      positionId = listChild.get(blockIdx+1).getId();
-      descriptionId = listChild.get(blockIdx+2).getId();
-      skillsId = listChild.get(blockIdx+3).getId();
-      startDateId = listChild.get(blockIdx+4).getId();
-      endDateId = listChild.get(blockIdx+5).getId();
-      isCurrentId = listChild.get(blockIdx+6).getId();
+      positionId = listChild.get(blockIdx + 1).getId();
+      descriptionId = listChild.get(blockIdx + 2).getId();
+      skillsId = listChild.get(blockIdx + 3).getId();
+      startDateId = listChild.get(blockIdx + 4).getId();
+      endDateId = listChild.get(blockIdx + 5).getId();
+      isCurrentId = listChild.get(blockIdx + 6).getId();
 
       uiForm.removeChildById(companyId);
       uiForm.removeChildById(positionId);
@@ -212,15 +221,14 @@ public class UIExperienceSection extends UIProfileSection {
   }
 
   /**
-   *  Saves experience informations to profile.<br>
-   *
+   * Saves experience informations to profile.<br>
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
 
     @Override
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
-      UIExperienceSection uiExperienceSectionSect = (UIExperienceSection)sect;
+      UIExperienceSection uiExperienceSectionSect = (UIExperienceSection) sect;
       if (uiExperienceSectionSect.saveProfileInfo() == 0) {
         super.execute(event);
       }
@@ -229,7 +237,6 @@ public class UIExperienceSection extends UIProfileSection {
 
   /**
    * Changes to edit mode when Edit button is clicked.<br>
-   *
    */
   public static class EditActionListener extends UIProfileSection.EditActionListener {
 
@@ -237,7 +244,7 @@ public class UIExperienceSection extends UIProfileSection {
     @SuppressWarnings("unchecked")
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
-      UIExperienceSection uiExpSection = (UIExperienceSection)sect;
+      UIExperienceSection uiExpSection = (UIExperienceSection) sect;
       ArrayList<HashMap<String, Object>> experiences;
       Profile p = sect.getProfile();
       List<UIComponent> listChild = uiExpSection.getChilds();
@@ -284,12 +291,12 @@ public class UIExperienceSection extends UIProfileSection {
         } else if (totalProfiles < childSize) {
           numberOfChildren = childSize;
           while (totalProfiles < numberOfChildren) {
-            companyId = listChild.get(childSize-6).getName();
-            positionId = listChild.get(childSize-5).getName();
-            descriptionId = listChild.get(childSize-4).getName();
-            skillsId = listChild.get(childSize-3).getName();
-            startDateId = listChild.get(childSize-2).getName();
-            endDateId = listChild.get(childSize-1).getName();
+            companyId = listChild.get(childSize - 6).getName();
+            positionId = listChild.get(childSize - 5).getName();
+            descriptionId = listChild.get(childSize - 4).getName();
+            skillsId = listChild.get(childSize - 3).getName();
+            startDateId = listChild.get(childSize - 2).getName();
+            endDateId = listChild.get(childSize - 1).getName();
             isCurrentId = listChild.get(childSize).getName();
 
             sect.removeChildById(companyId);
@@ -306,14 +313,15 @@ public class UIExperienceSection extends UIProfileSection {
 
         List<UIComponent> listChildForSetValue = uiExpSection.getChilds();
         for (int idx = 0; idx < totalProfiles; idx += 7) {
-        	 ((UIFormInput)listChildForSetValue.get(idx + 1)).setValue(listProfile.get(idx));
-        	 ((UIFormInput)listChildForSetValue.get(idx + 2)).setValue(listProfile.get(idx+1));
-        	 ((UIFormInput)listChildForSetValue.get(idx + 3)).setValue(listProfile.get(idx+2)); //des
-        	 ((UIFormInput)listChildForSetValue.get(idx + 4)).setValue(listProfile.get(idx+3)); //skills
-        	 ((UIFormInput)listChildForSetValue.get(idx + 5)).setValue(listProfile.get(idx+4)); //start date
-        	 ((UIFormInput)listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx+5)); // end date
-        	 ((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 7)).setValue((Boolean)listProfile.get(idx+6));
-        	 ((UIFormDateTimeInput)listChildForSetValue.get(idx + 6)).setRendered(!((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 7)).getValue());
+          ((UIFormInput) listChildForSetValue.get(idx + 1)).setValue(listProfile.get(idx));
+          ((UIFormInput) listChildForSetValue.get(idx + 2)).setValue(listProfile.get(idx + 1));
+          ((UIFormInput) listChildForSetValue.get(idx + 3)).setValue(listProfile.get(idx + 2)); //des
+          ((UIFormInput) listChildForSetValue.get(idx + 4)).setValue(listProfile.get(idx + 3)); //skills
+          ((UIFormInput) listChildForSetValue.get(idx + 5)).setValue(listProfile.get(idx + 4)); //start date
+          ((UIFormInput) listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx + 5)); // end date
+          ((UIFormCheckBoxInput<Boolean>) listChildForSetValue.get(idx + 7)).setValue((Boolean) listProfile.get(idx + 6));
+          ((UIFormDateTimeInput) listChildForSetValue.get(idx + 6))
+                  .setRendered(!((UIFormCheckBoxInput<Boolean>) listChildForSetValue.get(idx + 7)).getValue());
         }
       }
 
@@ -323,7 +331,6 @@ public class UIExperienceSection extends UIProfileSection {
 
   /**
    * Shows and hides end date component depending on isCurrent variable.<br>
-   *
    */
   static public class ShowHideEndDateActionListener extends EventListener<UIFormCheckBoxInput<Boolean>> {
 
@@ -335,7 +342,7 @@ public class UIExperienceSection extends UIProfileSection {
       boolean isCheck = sect.isChecked();
       uiDateTime.setRendered(!isCheck);
 
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm) ;
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
     }
   }
 
@@ -343,7 +350,6 @@ public class UIExperienceSection extends UIProfileSection {
    * Gets all the past experience.<br>
    *
    * @return all the experience that has isCurrent is false.
-   *
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
@@ -354,7 +360,7 @@ public class UIExperienceSection extends UIProfileSection {
     experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
-        if (!(Boolean)map.get(Profile.EXPERIENCES_IS_CURRENT)) {
+        if (!(Boolean) map.get(Profile.EXPERIENCES_IS_CURRENT)) {
           pastExperiences.add(map);
         }
       }
@@ -367,7 +373,6 @@ public class UIExperienceSection extends UIProfileSection {
    * Gets all the current experience.<br>
    *
    * @return all the experience that has isCurrent is true.
-   *
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
@@ -378,7 +383,7 @@ public class UIExperienceSection extends UIProfileSection {
     experiences = (ArrayList<HashMap<String, Object>>) p.getProperty(Profile.EXPERIENCES);
     if (experiences != null) {
       for (HashMap<String, Object> map : experiences) {
-        if ((Boolean)map.get(Profile.EXPERIENCES_IS_CURRENT)) {
+        if ((Boolean) map.get(Profile.EXPERIENCES_IS_CURRENT)) {
           currentExperiences.add(map);
         }
       }
@@ -391,7 +396,6 @@ public class UIExperienceSection extends UIProfileSection {
    * Saves input information into profile.<br>
    *
    * @return Integer value (0: save complete; 1,2: an error has occurs)
-   *
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
@@ -429,25 +433,25 @@ public class UIExperienceSection extends UIProfileSection {
       return 0;
     }
 
-    for (int i = 1; i <= totalUIComponent; i+=7) {
+    for (int i = 1; i <= totalUIComponent; i += 7) {
       HashMap<String, Object> uiMap = new HashMap<String, Object>();
 
-      uiStringInput = (UIFormStringInput)listUIComp.get(i);
+      uiStringInput = (UIFormStringInput) listUIComp.get(i);
       company = uiStringInput.getValue();
 
-      uiStringInput = (UIFormStringInput)listUIComp.get(i + 1);
+      uiStringInput = (UIFormStringInput) listUIComp.get(i + 1);
       position = uiStringInput.getValue();
 
-      uiFormTextAreaInput = (UIFormTextAreaInput)listUIComp.get(i + 2);
+      uiFormTextAreaInput = (UIFormTextAreaInput) listUIComp.get(i + 2);
       description = uiFormTextAreaInput.getValue();
 
-      uiFormTextAreaInput = (UIFormTextAreaInput)listUIComp.get(i + 3);
+      uiFormTextAreaInput = (UIFormTextAreaInput) listUIComp.get(i + 3);
       skills = uiFormTextAreaInput.getValue();
 
-      uiDateTimeInput = (UIFormDateTimeInput)listUIComp.get(i + 4);
+      uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
       startDate = uiDateTimeInput.getValue();
 
-      uiDateTimeInput = (UIFormDateTimeInput)listUIComp.get(i + 5);
+      uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
       endDate = uiDateTimeInput.getValue();
 
       sDate = stringToDate(startDate);
@@ -457,7 +461,7 @@ public class UIExperienceSection extends UIProfileSection {
         return 2;
       }
 
-      uiCheckBox = (UIFormCheckBoxInput<Boolean>)listUIComp.get(i + 6);
+      uiCheckBox = (UIFormCheckBoxInput<Boolean>) listUIComp.get(i + 6);
       isCurrent = uiCheckBox.getValue();
 
       if (!isCurrent) {
@@ -474,9 +478,9 @@ public class UIExperienceSection extends UIProfileSection {
       }
 
       uiMap.put(Profile.EXPERIENCES_COMPANY, company);
-      uiMap.put(Profile.EXPERIENCES_POSITION,position);
+      uiMap.put(Profile.EXPERIENCES_POSITION, position);
       uiMap.put(Profile.EXPERIENCES_DESCRIPTION, description);
-      uiMap.put(Profile.EXPERIENCES_SKILLS,skills);
+      uiMap.put(Profile.EXPERIENCES_SKILLS, skills);
       uiMap.put(Profile.EXPERIENCES_START_DATE, startDate);
       uiMap.put(Profile.EXPERIENCES_END_DATE, endDate);
       uiMap.put(Profile.EXPERIENCES_IS_CURRENT, isCurrent);
@@ -500,9 +504,9 @@ public class UIExperienceSection extends UIProfileSection {
   private void addUIFormInput() throws Exception {
     expIdx += 1;
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null).addValidator(MandatoryValidator.class)
-                   .addValidator(StringLengthValidator.class, 3, 90));
+            .addValidator(StringLengthValidator.class, 3, 90));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null).addValidator(MandatoryValidator.class)
-                   .addValidator(StringLengthValidator.class, 3, 90));
+            .addValidator(StringLengthValidator.class, 3, 90));
 
     addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null));
     UIFormTextAreaInput uiDespcription = getChildById(Profile.EXPERIENCES_DESCRIPTION + expIdx);
@@ -515,14 +519,15 @@ public class UIExperienceSection extends UIProfileSection {
     uiFormTextAreaInput.setRows(3);
 
     addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false).
-                   addValidator(DateTimeValidator.class).addValidator(MandatoryValidator.class)) ;
+            addValidator(DateTimeValidator.class).addValidator(MandatoryValidator.class));
 
-    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false).addValidator(MandatoryValidator.class)
-      .addValidator(DateTimeValidator.class)) ;
+    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false)
+            .addValidator(MandatoryValidator.class)
+            .addValidator(DateTimeValidator.class));
 
-    UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(Integer.toString(expIdx), null, false) ;
+    UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(Integer.toString(expIdx), null, false);
     uiDateInputCheck.setComponentConfig(UIFormCheckBoxInput.class, "UIFormCheckBoxEndDate");
-    uiDateInputCheck.setOnChange("ShowHideEndDate", uiDateInputCheck.getId()) ;
+    uiDateInputCheck.setOnChange("ShowHideEndDate", uiDateInputCheck.getId());
     addUIFormInput(uiDateInputCheck);
 
 //    addUIFormInput(new UIFormStringInput(DESCRIPTION + expIdx, null, null));
@@ -532,24 +537,22 @@ public class UIExperienceSection extends UIProfileSection {
    * Formats String type to Date type.<br>
    *
    * @param dateStr Input String
-   *
    * @return Converted date.
-   *
    * @throws ParseException
    */
   private Date stringToDate(String dateStr) throws ParseException {
-     SimpleDateFormat formatDate = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY);
-     if ((dateStr == null) || (dateStr.length() == 0)) return null;
-     return formatDate.parse(dateStr);
+    SimpleDateFormat formatDate = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY);
+    if ((dateStr == null) || (dateStr.length() == 0)) {
+      return null;
+    }
+    return formatDate.parse(dateStr);
   }
 
   /**
    * Gets calendar with string date input.<br>
    *
    * @param inDate Date input.
-   *
    * @return calendar.
-   *
    * @throws ParseException
    */
   private Calendar getCalendar(String inDate) throws ParseException {

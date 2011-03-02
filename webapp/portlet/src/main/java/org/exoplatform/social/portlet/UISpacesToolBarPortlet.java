@@ -47,9 +47,11 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
 
   /**
    * constructor
+   *
    * @throws Exception
    */
-  public UISpacesToolBarPortlet() throws Exception {  }
+  public UISpacesToolBarPortlet() throws Exception {
+  }
 
   private SpaceService spaceService = null;
   private String userId = null;
@@ -76,8 +78,12 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
         if (space == null) {
           space = spaceService.getSpaceByGroupId("/spaces/" + navigationParts[2]);
         }
-        if (space == null) navigationItr.remove();
-        if (!navigationParts[1].equals("spaces") && !spaces.contains(space)) navigationItr.remove();
+        if (space == null) {
+          navigationItr.remove();
+        }
+        if (!navigationParts[1].equals("spaces") && !spaces.contains(space)) {
+          navigationItr.remove();
+        }
       } else { // not spaces navigation
         navigationItr.remove();
       }
@@ -87,39 +93,44 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
   }
 
   public boolean isRender(PageNode spaceNode, PageNode applicationNode) throws SpaceException {
-	 SpaceService spaceSrv = getSpaceService();
-	 String remoteUser = getUserId();
-	 String spaceUrl = spaceNode.getUri();
-   if (spaceUrl.contains("/")) {
-     spaceUrl = spaceUrl.split("/")[0];
-   }
+    SpaceService spaceSrv = getSpaceService();
+    String remoteUser = getUserId();
+    String spaceUrl = spaceNode.getUri();
+    if (spaceUrl.contains("/")) {
+      spaceUrl = spaceUrl.split("/")[0];
+    }
 
-   Space space = spaceSrv.getSpaceByUrl(spaceUrl);
+    Space space = spaceSrv.getSpaceByUrl(spaceUrl);
 
-   // space is deleted
-   if (space == null) return false;
-   
-	 if (spaceSrv.hasEditPermission(space, remoteUser)) return true;
+    // space is deleted
+    if (space == null) {
+      return false;
+    }
 
-	 String appName = applicationNode.getName();
-	 if (!appName.contains(SPACE_SETTING_PORTLET)) {
-	   return true;
-	 }
+    if (spaceSrv.hasEditPermission(space, remoteUser)) {
+      return true;
+    }
 
-	 return false;
+    String appName = applicationNode.getName();
+    if (!appName.contains(SPACE_SETTING_PORTLET)) {
+      return true;
+    }
+
+    return false;
   }
 
-  public PageNode getSelectedPageNode() throws Exception
-  {
-     return Util.getUIPortal().getSelectedNode();
+  public PageNode getSelectedPageNode() throws Exception {
+    return Util.getUIPortal().getSelectedNode();
   }
+
   /**
    * gets spaceService
+   *
    * @return spaceService
    * @see SpaceService
    */
   private SpaceService getSpaceService() {
-    if(spaceService == null) {
+    if (spaceService == null) {
       spaceService = getApplicationComponent(SpaceService.class);
     }
     return spaceService;
@@ -127,10 +138,11 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
 
   /**
    * gets remote user Id
+   *
    * @return userId
    */
   private String getUserId() {
-    if(userId == null) {
+    if (userId == null) {
       userId = Util.getPortalRequestContext().getRemoteUser();
     }
     return userId;

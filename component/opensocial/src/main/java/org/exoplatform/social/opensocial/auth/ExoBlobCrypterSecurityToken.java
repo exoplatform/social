@@ -25,8 +25,8 @@ import org.apache.shindig.common.crypto.BlobCrypterException;
 public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
 
   protected static final String PORTAL_CONTAINER_KEY = "p";
-  protected static final String HOST_NAME="h";
-  protected static final String PORTAL_OWNER_KEY="w";
+  protected static final String HOST_NAME = "h";
+  protected static final String PORTAL_OWNER_KEY = "w";
 
   public ExoBlobCrypterSecurityToken(BlobCrypter crypter, String container, String domain) {
     super(crypter, container, domain);
@@ -45,11 +45,11 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
   }
 
   public void setHostName(String hostName) {
-	this.hostName = hostName;
+    this.hostName = hostName;
   }
 
   public String getHostName() {
-	return hostName;
+    return hostName;
   }
 
   public String getPortalOwner() {
@@ -66,8 +66,8 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
     if (portalContainer != null) {
       map.put(PORTAL_CONTAINER_KEY, portalContainer);
     }
-    if(hostName !=null) {
-    	map.put(HOST_NAME, hostName);
+    if (hostName != null) {
+      map.put(HOST_NAME, hostName);
     }
     if (portalOwner != null) {
       map.put(PORTAL_OWNER_KEY, portalOwner);

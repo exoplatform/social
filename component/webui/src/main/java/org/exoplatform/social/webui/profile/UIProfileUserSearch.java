@@ -62,59 +62,91 @@ import org.exoplatform.webui.form.UIFormStringInput;
 )
 public class UIProfileUserSearch extends UIForm {
 
-  /** SEARCH. */
-  public static final String SEARCH                    = "Search";
+  /**
+   * SEARCH.
+   */
+  public static final String SEARCH = "Search";
 
-  /** USER CONTACT. */
-  public static final String USER_CONTACT              = "name";
+  /**
+   * USER CONTACT.
+   */
+  public static final String USER_CONTACT = "name";
 
-  /** DEFAULT GENDER. */
-  public static final String GENDER_DEFAULT            = "Gender";
+  /**
+   * DEFAULT GENDER.
+   */
+  public static final String GENDER_DEFAULT = "Gender";
 
-  /** MALE. */
-  public static final String MALE                      = "male";
+  /**
+   * MALE.
+   */
+  public static final String MALE = "male";
 
-  /** FEMALE. */
-  public static final String FEMALE                    = "female";
+  /**
+   * FEMALE.
+   */
+  public static final String FEMALE = "female";
 
-  /** REGEX FOR SPLIT STRING */
-  public static final String REG_FOR_SPLIT             = "[^_A-Za-z0-9-.\\s[\\n]]";
+  /**
+   * REGEX FOR SPLIT STRING
+   */
+  public static final String REG_FOR_SPLIT = "[^_A-Za-z0-9-.\\s[\\n]]";
 
-  /** PATTERN FOR CHECK RIGHT INPUT VALUE */
-  static final String        RIGHT_INPUT_PATTERN       = "^[\\p{L}][\\p{L}._\\- \\d]+$";
+  /**
+   * PATTERN FOR CHECK RIGHT INPUT VALUE
+   */
+  static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
 
-  /** REGEX EXPRESSION OF POSITION FIELD. */
+  /**
+   * REGEX EXPRESSION OF POSITION FIELD.
+   */
   public static final String POSITION_REGEX_EXPRESSION = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
 
-  /** ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING */
-  static final String        PREFIX_ADDED_FOR_CHECK    = "PrefixAddedForCheck";
+  /**
+   * ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING
+   */
+  static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
 
-  /** List used for identities storage. */
-  private List<Identity>     identityList              = null;
+  /**
+   * List used for identities storage.
+   */
+  private List<Identity> identityList = null;
 
-  /** Stores selected character when search by alphabet */
-  String                     selectedChar              = null;
+  /**
+   * Stores selected character when search by alphabet
+   */
+  String selectedChar = null;
 
-  /** Used stores filter information. */
-  ProfileFilter              profileFilter             = null;
-  
-  /** Used stores type of relation with current user information. */
-  String                     typeOfRelation            = null;
-  
-  /** URL of space that this UIComponent is used in member searching. */
-  String                     spaceURL                 = null;
-  
-  /** The flag notifies a new search when clicks search icon or presses enter. */
+  /**
+   * Used stores filter information.
+   */
+  ProfileFilter profileFilter = null;
+
+  /**
+   * Used stores type of relation with current user information.
+   */
+  String typeOfRelation = null;
+
+  /**
+   * URL of space that this UIComponent is used in member searching.
+   */
+  String spaceURL = null;
+
+  /**
+   * The flag notifies a new search when clicks search icon or presses enter.
+   */
   private boolean isNewSearch;
 
-  /** Number of identities. */
+  /**
+   * Number of identities.
+   */
   long identitiesCount;
 
   /**
    * Sets list identity.
    *
    * @param identityList <code>List</code>
-   * @throws Exception 
+   * @throws Exception
    */
   public void setIdentityList(List<Identity> identityList) throws Exception {
     if (identityList.contains(Utils.getViewerIdentity())) {
@@ -152,7 +184,6 @@ public class UIProfileUserSearch extends UIForm {
 
   /**
    * Gets type of relation with current user.
-   *
    */
   public String getTypeOfRelation() {
     return typeOfRelation;
@@ -169,7 +200,6 @@ public class UIProfileUserSearch extends UIForm {
 
   /**
    * Gets space url.
-   *
    */
   public String getSpaceURL() {
     return spaceURL;
@@ -186,19 +216,20 @@ public class UIProfileUserSearch extends UIForm {
 
   /**
    * Gets current user's name.
+   *
    * @return
    */
   protected String getCurrentUserName() {
-    return RequestContext.getCurrentInstance().getRemoteUser(); 
+    return RequestContext.getCurrentInstance().getRemoteUser();
   }
-  
+
   /**
    * Gets current Rest context name of portal container.
    */
   protected String getRestContextName() {
     return PortalContainer.getCurrentRestContextName();
   }
-  
+
   /**
    * Gets filter object.
    *
@@ -218,8 +249,7 @@ public class UIProfileUserSearch extends UIForm {
   }
 
   /**
-   * Initializes user search form fields. Initials and adds components as
-   * children to search form.
+   * Initializes user search form fields. Initials and adds components as children to search form.
    *
    * @throws Exception
    */
@@ -237,27 +267,25 @@ public class UIProfileUserSearch extends UIForm {
 
   /**
    * Gets number of identities.
-   * 
+   *
    * @return Number of identities.
    */
   private long getIdentitiesCount() {
     if (identitiesCount == 0L) {
-      identitiesCount = Utils.getIdentityManager().getIdentitiesCount(OrganizationIdentityProvider.NAME);  
+      identitiesCount = Utils.getIdentityManager().getIdentitiesCount(OrganizationIdentityProvider.NAME);
     }
 
     return identitiesCount;
   }
-  
+
   /**
-   * Listens to search event from search form, then processes search condition
-   * and set search result to the result variable.<br>
-   * - Gets user name and other filter information from request.<br>
-   * - Searches user that matches the condition.<br>
-   * - Sets matched users into result list.<br>
+   * Listens to search event from search form, then processes search condition and set search result
+   * to the result variable.<br> - Gets user name and other filter information from request.<br> -
+   * Searches user that matches the condition.<br> - Sets matched users into result list.<br>
    */
   public static class SearchActionListener extends EventListener<UIProfileUserSearch> {
     @Override
-	public final void execute(final Event<UIProfileUserSearch> event) throws Exception {
+    public final void execute(final Event<UIProfileUserSearch> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UIProfileUserSearch uiSearch = event.getSource();
       String charSearch = ctx.getRequestParameter(OBJECTID);
@@ -285,7 +313,7 @@ public class UIProfileUserSearch extends UIForm {
             filter.setName("");
           }
           identitiesSearchResult = Utils.getIdentityManager().getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME,
-                                                                     filter, 0, uiSearch.getIdentitiesCount());
+                  filter, 0, uiSearch.getIdentitiesCount());
           uiSearch.setIdentityList(identitiesSearchResult);
         } else {
           if (!isValidInput(filter)) { // is invalid condition input
@@ -309,7 +337,7 @@ public class UIProfileUserSearch extends UIForm {
             // uiSearch.setSelectedChar(charSearch);
 
             identitiesSearchResult = Utils.getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME,
-                                                                      filter, 0, uiSearch.getIdentitiesCount());
+                    filter, 0, uiSearch.getIdentitiesCount());
             uiSearch.setIdentityList(identitiesSearchResult);
 
             // Using regular expression for search
@@ -330,8 +358,8 @@ public class UIProfileUserSearch extends UIForm {
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }
-      Event<UIComponent> searchEvent = uiSearch.<UIComponent> getParent()
-                                               .createEvent(SEARCH, Event.Phase.DECODE, ctx);
+      Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent()
+              .createEvent(SEARCH, Event.Phase.DECODE, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();
       }
@@ -341,8 +369,7 @@ public class UIProfileUserSearch extends UIForm {
      * Checks input values follow regular expression.
      *
      * @param input <code>Object</code>
-     * @return true if the input is properly to regular expression else return
-     *         false.
+     * @return true if the input is properly to regular expression else return false.
      */
     private boolean isValidInput(final ProfileFilter input) {
       // Check contact name
@@ -355,8 +382,8 @@ public class UIProfileUserSearch extends UIForm {
         // Make sure string for checking is started by alphabet character
         contactNameForCheck = PREFIX_ADDED_FOR_CHECK + contactNameForCheck;
         if (!contactNameForCheck.matches(RIGHT_INPUT_PATTERN)) {
-			return false;
-		}
+          return false;
+        }
       }
 
       return true;
@@ -366,7 +393,7 @@ public class UIProfileUserSearch extends UIForm {
   /**
    * Filter identity follow skills information.
    *
-   * @param skills <code>String</code>
+   * @param skills     <code>String</code>
    * @param identities <code>Object</code>
    * @return List of identities that has skills information match.
    */
@@ -378,20 +405,20 @@ public class UIProfileUserSearch extends UIForm {
     String skill = skills.trim().toLowerCase();
 
     if (identities.size() == 0) {
-		return identityLst;
-	}
+      return identityLst;
+    }
 
     for (Identity id : identities) {
       Profile profile = id.getProfile();
       experiences = (ArrayList<HashMap<String, Object>>) profile.getProperty(Profile.EXPERIENCES);
       if (experiences == null) {
-		continue;
-	}
+        continue;
+      }
       for (HashMap<String, Object> exp : experiences) {
         prof = (String) exp.get(Profile.EXPERIENCES_SKILLS);
         if (prof == null) {
-			continue;
-		}
+          continue;
+        }
         Pattern p = Pattern.compile(REG_FOR_SPLIT);
         String[] items = p.split(prof);
         for (String item : items) {

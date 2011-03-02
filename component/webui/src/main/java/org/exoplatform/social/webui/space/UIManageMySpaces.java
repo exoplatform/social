@@ -65,7 +65,8 @@ import org.exoplatform.webui.event.EventListener;
   template="classpath:groovy/social/webui/space/UIManageMySpaces.gtmpl",
   events = {
     @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class),
-    @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class, confirm = "UIManageMySpaces.msg.confirm_space_delete"),
+    @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class,
+                 confirm = "UIManageMySpaces.msg.confirm_space_delete"),
     @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
     @EventConfig(listeners = UIManageMySpaces.SearchActionListener.class , phase = Phase.DECODE)
   }
@@ -79,8 +80,10 @@ public class UIManageMySpaces extends UIContainer {
   private static final String MEMBERSHIP_REMOVED_INFO = "UIManageMySpaces.msg.MemberShipRemovedInfo";
   private static final String NAVIGATION_REMOVED_INFO = "UIManageMySpaces.msg.NavigationRemovedInfo";
   private static final String CONFIRMED_STATUS = "confirmed";
-  
-  /** The first page. */
+
+  /**
+   * The first page.
+   */
   private static final int FIRST_PAGE = 1;
 
 
@@ -93,10 +96,10 @@ public class UIManageMySpaces extends UIContainer {
   private PageNavigation selectedNavigation;
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
-  
+
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup.
-   * 
+   *
    * @throws Exception
    */
   public UIManageMySpaces() throws Exception {
@@ -108,7 +111,7 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Gets uiPageIterator.
-   * 
+   *
    * @return uiPageIterator
    */
   public UIPageIterator getMySpacesUIPageIterator() {
@@ -117,7 +120,7 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Gets all user's spaces.
-   * 
+   *
    * @return user spaces
    * @throws Exception
    */
@@ -132,7 +135,7 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Gets selected navigation.
-   * 
+   *
    * @return page navigation
    */
   public PageNavigation getSelectedNavigation() {
@@ -141,7 +144,7 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Sets selected navigation.
-   * 
+   *
    * @param navigation
    */
   public void setSelectedNavigation(PageNavigation navigation) {
@@ -150,7 +153,6 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Gets paginated spaces in which user is member or leader.
-   * 
    *
    * @return paginated spaces list
    * @throws Exception
@@ -172,7 +174,7 @@ public class UIManageMySpaces extends UIContainer {
   public int getRole(String spaceId) throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    if(spaceService.hasEditPermission(spaceId, userId)) {
+    if (spaceService.hasEditPermission(spaceId, userId)) {
       return LEADER;
     }
     return MEMBER;
@@ -188,7 +190,7 @@ public class UIManageMySpaces extends UIContainer {
   public boolean hasMembership(String spaceId) throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    if(spaceService.isMember(spaceId, userId)) {
+    if (spaceService.isMember(spaceId, userId)) {
       return true;
     }
 
@@ -198,15 +200,16 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Sets space list.
-   * 
+   *
    * @param spaces
    */
   public void setSpaces(List<Space> spaces) {
     this.spaces = spaces;
   }
+
   /**
    * Gets space list.
-   * 
+   *
    * @return space list
    */
   public List<Space> getSpaces() {
@@ -215,7 +218,7 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Gets image source url.
-   * 
+   *
    * @param space
    * @return image source url
    * @throws Exception
@@ -226,10 +229,9 @@ public class UIManageMySpaces extends UIContainer {
 
 
   /**
-   * This action is triggered when user click on EditSpace
-   * Currently, when user click on EditSpace, they will be redirected to /xxx/SpaceSettingPortlet
-   * When user click on editSpace, the user is redirected to SpaceSettingPortlet.
-   *
+   * This action is triggered when user click on EditSpace Currently, when user click on EditSpace,
+   * they will be redirected to /xxx/SpaceSettingPortlet When user click on editSpace, the user is
+   * redirected to SpaceSettingPortlet.
    */
   static public class EditSpaceActionListener extends EventListener<UIManageMySpaces> {
 
@@ -241,12 +243,14 @@ public class UIManageMySpaces extends UIContainer {
       SpaceService spaceService = uiMySpaces.getSpaceService();
       Space space = spaceService.getSpaceById(ctx.getRequestParameter(OBJECTID));
       if (space == null) {
-        uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.warning_space_not_available", null, ApplicationMessage.WARNING));
+        uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.warning_space_not_available",
+                                                null, ApplicationMessage.WARNING));
       }
       OrganizationService organizationService = SpaceUtils.getOrganizationService();
       Group group = organizationService.getGroupHandler().findGroupById(space.getGroupId());
       if (group == null) {
-        uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.group_unable_to_retrieve", null, ApplicationMessage.ERROR));
+        uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.group_unable_to_retrieve",
+                                                null, ApplicationMessage.ERROR));
         return;
       } else {
         String spaceUrl = Util.getPortalRequestContext().getPortalURI();
@@ -261,9 +265,8 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * This action trigger when user click on back button from UINavigationManagement.
-   * 
-   * @author hoatle
    *
+   * @author hoatle
    */
   static public class BackActionListener extends EventListener<UIPageNodeForm> {
 
@@ -288,9 +291,8 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * This action is triggered when user click on DeleteSpace
-   * a prompt popup is display for confirmation, if yes delete that space; otherwise, do nothing.
-   *
+   * This action is triggered when user click on DeleteSpace a prompt popup is display for
+   * confirmation, if yes delete that space; otherwise, do nothing.
    */
   static public class DeleteSpaceActionListener extends EventListener<UIManageMySpaces> {
 
@@ -316,7 +318,7 @@ public class UIManageMySpaces extends UIContainer {
 
       try {
         spaceService.deleteSpace(spaceId);
-      } catch(SpaceException se) {
+      } catch (SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DELETE_SPACE, null, ApplicationMessage.ERROR));
       }
       SpaceUtils.updateWorkingWorkSpace();
@@ -325,9 +327,9 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * This action is triggered when user click on LeaveSpace <br />
-   * The leaving space will remove that user in the space. <br />
-   * If that user is the only leader -> can't not leave that space <br />
+   * This action is triggered when user click on LeaveSpace <br /> The leaving space will remove
+   * that user in the space. <br /> If that user is the only leader -> can't not leave that space
+   * <br />
    */
   static public class LeaveSpaceActionListener extends EventListener<UIManageMySpaces> {
     public void execute(Event<UIManageMySpaces> event) throws Exception {
@@ -356,7 +358,7 @@ public class UIManageMySpaces extends UIContainer {
 
       try {
         spaceService.removeMember(spaceId, userId);
-      } catch(SpaceException se) {
+      } catch (SpaceException se) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_LEAVE_SPACE, null, ApplicationMessage.ERROR));
         return;
       }
@@ -366,9 +368,8 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Triggers this action when user clicks on the search button.
-   * 
-   * @author hoatle
    *
+   * @author hoatle
    */
   public static class SearchActionListener extends EventListener<UIManageMySpaces> {
     @Override
@@ -382,56 +383,32 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Gets spaceService.
-   * 
+   *
    * @return spaceService
    * @see SpaceService
    */
   private SpaceService getSpaceService() {
-    if(spaceService == null)
+    if (spaceService == null) {
       spaceService = getApplicationComponent(SpaceService.class);
+    }
     return spaceService;
   }
 
   /**
    * Gets remote user Id.
-   * 
+   *
    * @return remote userId
    */
   private String getUserId() {
-    if(userId == null)
+    if (userId == null) {
       userId = Util.getPortalRequestContext().getRemoteUser();
+    }
     return userId;
-  }
-  /**
-   * Loads navigations.
-   * 
-   * @throws Exception
-   */
-  private void loadNavigations() throws Exception {
-  /*navigations = new ArrayList<PageNavigation>();
-    UserACL userACL = getApplicationComponent(UserACL.class);
-    DataStorage dataStorage = getApplicationComponent(DataStorage.class);
-    // load all navigation that user has edit permission
-    Query<PageNavigation> query = new Query<PageNavigation>(PortalConfig.GROUP_TYPE,
-                                                            null,
-                                                            PageNavigation.class);
-    List<PageNavigation> navis = dataStorage.find(query, new Comparator<PageNavigation>(){
-      public int compare(PageNavigation pconfig1, PageNavigation pconfig2) {
-        return pconfig1.getOwnerId().compareTo(pconfig2.getOwnerId());
-      }
-    }).getAll();
-    for (PageNavigation ele : navis) {
-      if (userACL.hasEditPermission(ele)) {
-        navigations.add(ele);
-      }
-    }*/
-    UserPortalConfigService userPortalConfigService = getApplicationComponent(UserPortalConfigService.class);
-    navigations = userPortalConfigService.loadEditableNavigations();
   }
 
   /**
    * Gets my space list.
-   * 
+   *
    * @return my space list
    * @throws Exception
    */
@@ -439,13 +416,15 @@ public class UIManageMySpaces extends UIContainer {
     List<Space> spaceList = getSpaces();
     List<Space> allUserSpace = getAllUserSpaces();
     List<Space> mySpaces = new ArrayList<Space>();
-    if (allUserSpace.size() == 0) return allUserSpace;
-    if(spaceList != null) {
+    if (allUserSpace.size() == 0) {
+      return allUserSpace;
+    }
+    if (spaceList != null) {
       Iterator<Space> spaceItr = spaceList.iterator();
-      while(spaceItr.hasNext()) {
+      while (spaceItr.hasNext()) {
         Space space = spaceItr.next();
-        for(Space userSpace : allUserSpace) {
-          if(space.getDisplayName().equalsIgnoreCase(userSpace.getDisplayName())){
+        for (Space userSpace : allUserSpace) {
+          if (space.getDisplayName().equalsIgnoreCase(userSpace.getDisplayName())) {
             mySpaces.add(userSpace);
             break;
           }
@@ -460,7 +439,7 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Gets display my space list.
-   * 
+   *
    * @param spaces_
    * @param pageIterator_
    * @return display my space list
@@ -482,57 +461,59 @@ public class UIManageMySpaces extends UIContainer {
 
   /**
    * Gets all my space names.
-   * 
+   *
    * @return my space names
    * @throws Exception
    */
   private List<String> getAllMySpaceNames() throws Exception {
     List<Space> allSpaces = getAllUserSpaces();
     List<String> allSpacesNames = new ArrayList<String>();
-    for (Space space : allSpaces){
+    for (Space space : allSpaces) {
       allSpacesNames.add(space.getDisplayName());
     }
 
     return allSpacesNames;
   }
 
-   /**
-    * Gets node's name base on application name.
-    * 
-    * @param space
-    * @param appId
-    * @throws SpaceException
-    */
-   private String getNodeUri(Space space, String appId) throws SpaceException {
-	 ExoContainer container = ExoContainerContext.getCurrentContainer() ;
-	 DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
-     try {
-       String groupId = space.getGroupId();
-       PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
-       // return in case group navigation was removed by portal SOC-548
-       if (nav == null) return null;
-       PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
-       if (homeNode == null) {
-         throw new Exception("homeNode is null!");
-       }
-       String nodeName = SpaceUtils.getAppNodeName(space, appId);
-       PageNode childNode = homeNode.getChild(nodeName);
-       //bug from portal, gets by nodeUri instead
-       if (childNode != null) {
-         return childNode.getUri();
-       } else {
-         List<PageNode> pageNodes = homeNode.getChildren();
-         for (PageNode pageNode : pageNodes) {
-           String pageReference = pageNode.getPageReference();
-           if (pageReference.contains(nodeName)) {
-             return pageNode.getUri();              
-           }
-         }
-       }
-       return null;
-     } catch (Exception e) {
-       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
-     }
-   }
+  /**
+   * Gets node's name base on application name.
+   *
+   * @param space
+   * @param appId
+   * @throws SpaceException
+   */
+  private String getNodeUri(Space space, String appId) throws SpaceException {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
+    try {
+      String groupId = space.getGroupId();
+      PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+      // return in case group navigation was removed by portal SOC-548
+      if (nav == null) {
+        return null;
+      }
+      PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
+      if (homeNode == null) {
+        throw new Exception("homeNode is null!");
+      }
+      String nodeName = SpaceUtils.getAppNodeName(space, appId);
+      PageNode childNode = homeNode.getChild(nodeName);
+      //bug from portal, gets by nodeUri instead
+      if (childNode != null) {
+        return childNode.getUri();
+      } else {
+        List<PageNode> pageNodes = homeNode.getChildren();
+        for (PageNode pageNode : pageNodes) {
+          String pageReference = pageNode.getPageReference();
+          if (pageReference.contains(nodeName)) {
+            return pageNode.getUri();
+          }
+        }
+      }
+      return null;
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
+    }
+  }
 }
 
