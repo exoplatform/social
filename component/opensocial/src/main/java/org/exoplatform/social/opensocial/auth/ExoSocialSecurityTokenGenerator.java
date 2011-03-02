@@ -92,6 +92,7 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
   }
 
   /**
+   * Gets identity id from a remote id.
    *
    * @param remoteId
    * @return
@@ -108,7 +109,7 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
   }
 
   /**
-   * Gets the blog crypter from file name.
+   * Gets the blob crypter from file name.
    *
    * @param fileName
    * @return
