@@ -57,7 +57,6 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   public void spaceCreated(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     try {
-      // this should create the identity for the space
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                    space.getPrettyName(),
                                                                    false);
@@ -72,30 +71,30 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
 
   @Override
   public void spaceRemoved(SpaceLifeCycleEvent event) {
-    LOG.info("space " + event.getSpace().getDisplayName() + " was removed!");
+    LOG.debug("space " + event.getSpace().getDisplayName() + " was removed!");
   }
 
   public void applicationActivated(SpaceLifeCycleEvent event) {
 
-    LOG.info("application <b>" + event.getTarget() + "</b> was activated in space "
+    LOG.debug("application <b>" + event.getTarget() + "</b> was activated in space "
         + event.getSpace().getDisplayName());
 
   }
 
   public void applicationAdded(SpaceLifeCycleEvent event) {
-    LOG.info("application <b>" + event.getTarget() + "</b> was added in space "
+    LOG.debug("application <b>" + event.getTarget() + "</b> was added in space "
         + event.getSpace().getDisplayName());
 
   }
 
   public void applicationDeactivated(SpaceLifeCycleEvent event) {
-    LOG.info("application " + event.getTarget() + " was deactivated in space "
+    LOG.debug("application " + event.getTarget() + " was deactivated in space "
         + event.getSpace().getDisplayName());
 
   }
 
   public void applicationRemoved(SpaceLifeCycleEvent event) {
-    LOG.info("application " + event.getTarget() + " was removed in space "
+    LOG.debug("application " + event.getTarget() + " was removed in space "
         + event.getSpace().getDisplayName());
   }
 
@@ -111,7 +110,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     } catch (Exception e) {
       LOG.error("Failed to grant lead ", e);
     }
-    LOG.info("user " + event.getTarget() + " was granted lead of space " + space.getName());
+    LOG.debug("user " + event.getTarget() + " was granted lead of space " + space.getName());
   }
 
   public void joined(SpaceLifeCycleEvent event) {
@@ -127,7 +126,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       LOG.error("Failed to log join activity ", e);
     }
 
-    LOG.info("user " + event.getTarget() + " joined space " + event.getSpace().getDisplayName());
+    LOG.debug("user " + event.getTarget() + " joined space " + event.getSpace().getDisplayName());
   }
 
   public void left(SpaceLifeCycleEvent event) {
@@ -143,12 +142,12 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       LOG.error("Failed to log leave activity ", e);
     }
 
-    LOG.info("user " + event.getTarget() + " has left of space " + event.getSpace().getDisplayName());
+    LOG.debug("user " + event.getTarget() + " has left of space " + event.getSpace().getDisplayName());
   }
 
   public void revokedLead(SpaceLifeCycleEvent event) {
 
-    LOG.info("user " + event.getTarget() + " was revoked lead privileges of space "
+    LOG.debug("user " + event.getTarget() + " was revoked lead privileges of space "
         + event.getSpace().getDisplayName());
   }
 
