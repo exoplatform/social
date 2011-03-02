@@ -179,7 +179,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(firstName + " " + lastName, tobeSavedProfile.getFullName());
   }
 
-  public void testLoadProfile() {
+  public void testLoadProfile() throws Exception {
     final String username = "username";
     Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
     identityStorage.saveIdentity(tobeSavedIdentity);
@@ -208,10 +208,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
       final Node identityNode = profileNode.getProperty(IdentityStorage.PROFILE_IDENTITY).getNode();
       final Identity identityByProfile = identityStorage.getIdentity(identityNode);
       assertEquals(tobeSavedIdentity.getId(), identityByProfile.getId());
-    } catch (RepositoryException e) {
-      e.printStackTrace();
-    } catch (Exception e) {
-      e.printStackTrace();
     } finally {
       sessionManager.closeSession();
     }
