@@ -37,79 +37,83 @@ import org.exoplatform.web.application.RequestContext;
 
 public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
 
-    private static Log LOG = ExoLogger.getLogger(ExoSocialSecurityTokenGenerator.class);
+  private static Log LOG = ExoLogger.getLogger(ExoSocialSecurityTokenGenerator.class);
 
-    private String containerKey;
-    private final TimeSource timeSource;
+  private String containerKey;
+  private final TimeSource timeSource;
 
-
+  /**
+   * Constructor.
+   */
   public ExoSocialSecurityTokenGenerator() {
     //TODO should be moved to config
-	this.containerKey =  getKeyFilePath();
+    this.containerKey = getKeyFilePath();
     this.timeSource = new TimeSource();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   protected String createToken(String gadgetURL, String owner, String viewer, Long moduleId, String container) {
-      try {
-        BlobCrypter crypter = getBlobCrypter(this.containerKey);
-        ExoBlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(crypter, container, (String)null);
-        t.setAppUrl(gadgetURL);
-        t.setModuleId(moduleId);
-        t.setOwnerId(owner);
-        t.setViewerId(viewer);
-        t.setTrustedJson("trusted");
-        String portalContainer = PortalContainer.getCurrentPortalContainerName();
-        PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-        String url = portalRequestContext.getRequest().getRequestURL().toString();
-        String hostName = url.substring(0, url.indexOf(portalRequestContext.getRequestContextPath()));
-        t.setPortalContainer(portalContainer);
-        t.setHostName(hostName);
-        t.setPortalOwner(portalRequestContext.getPortalOwner());
-        return t.encrypt();
+    try {
+      BlobCrypter crypter = getBlobCrypter(this.containerKey);
+      ExoBlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(crypter, container, null);
+      t.setAppUrl(gadgetURL);
+      t.setModuleId(moduleId);
+      t.setOwnerId(owner);
+      t.setViewerId(viewer);
+      t.setTrustedJson("trusted");
+      String portalContainer = PortalContainer.getCurrentPortalContainerName();
+      PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+      String url = portalRequestContext.getRequest().getRequestURL().toString();
+      String hostName = url.substring(0, url.indexOf(portalRequestContext.getRequestContextPath()));
+      t.setPortalContainer(portalContainer);
+      t.setHostName(hostName);
+      t.setPortalOwner(portalRequestContext.getPortalOwner());
+      return t.encrypt();
     } catch (Exception e) {
       LOG.error("Failed to generate token for gadget " + gadgetURL + " for owner " + owner, e);
     }
-      return null;
-  }
-
-
-
-  public String createToken(String gadgetURL, Long moduleId) {
-    RequestContext context = RequestContext.getCurrentInstance();
-    String rUserId = getIdentityId(context.getRemoteUser());
-
-
-    //PortalRequestContext request = Util.getPortalRequestContext() ;
-    //String uri = request.getNodePath();
-
-
-    //String[] els = uri.split("/");
-    String ownerId = rUserId;
-//    if (els.length >= 3 && els[1].equals("people")) {
-//      ownerId = getIdentityId(els[2]);
-//    }
-    /*else if(els.length == 2 && els[1].equals("mydashboard")) {
-      owner = rUser;
-    }*/
-
-    return createToken(gadgetURL, ownerId, rUserId, moduleId, "default");
-  }
-
-  protected String getIdentityId(String remoteId){
-    PortalContainer pc = PortalContainer.getInstance();
-    IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
-
-    Identity id = null;
-    try {
-      id = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId);
-    } catch (Exception e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-    }
-    if(id != null)
-      return id.getId();
     return null;
   }
 
+  /**
+   * Creates a token by gadgetURL and moduleId.
+   *
+   * @param gadgetURL
+   * @param moduleId
+   * @return
+   */
+  public String createToken(String gadgetURL, Long moduleId) {
+    RequestContext context = RequestContext.getCurrentInstance();
+    String rUserId = getIdentityId(context.getRemoteUser());
+    String ownerId = rUserId;
+    return createToken(gadgetURL, ownerId, rUserId, moduleId, "default");
+  }
+
+  /**
+   *
+   * @param remoteId
+   * @return
+   */
+  protected String getIdentityId(String remoteId) {
+    PortalContainer pc = PortalContainer.getInstance();
+    IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
+
+    Identity id = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, false);
+    if (id != null) {
+      return id.getId();
+    }
+    return null;
+  }
+
+  /**
+   * Gets the blog crypter from file name.
+   *
+   * @param fileName
+   * @return
+   * @throws IOException
+   */
   private BlobCrypter getBlobCrypter(String fileName) throws IOException {
     BasicBlobCrypter c = new BasicBlobCrypter(new File(fileName));
     c.timeSource = timeSource;
@@ -118,25 +122,27 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
 
 
   /**
-   * Method returns a path to the file containing the encryption key
+   * Gets the key file path.
+   *
+   * @return
    */
-  private String getKeyFilePath(){
-      J2EEServerInfo info = new J2EEServerInfo();
-      String confPath = info.getExoConfigurationDirectory();
-      File keyFile = null;
+  private String getKeyFilePath() {
+    J2EEServerInfo info = new J2EEServerInfo();
+    String confPath = info.getExoConfigurationDirectory();
+    File keyFile = null;
 
-      if (confPath != null) {
-         File confDir = new File(confPath);
-         if (confDir != null && confDir.exists() && confDir.isDirectory()) {
-            keyFile = new File(confDir, "gadgets/key.txt");
-         }
+    if (confPath != null) {
+      File confDir = new File(confPath);
+      if (confDir != null && confDir.exists() && confDir.isDirectory()) {
+        keyFile = new File(confDir, "gadgets/key.txt");
       }
+    }
 
-      if (keyFile == null) {
-         keyFile = new File("key.txt");
-      }
+    if (keyFile == null) {
+      keyFile = new File("key.txt");
+    }
 
-      return keyFile.getAbsolutePath();
+    return keyFile.getAbsolutePath();
   }
 
 }

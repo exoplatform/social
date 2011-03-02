@@ -263,7 +263,6 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  // TODO improve the performance by specifying what needs to be loaded
   public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) {
     Identity returnIdentity = null;
     IdentityProvider<?> identityProvider = this.getIdentityProvider(providerId);

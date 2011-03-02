@@ -181,7 +181,6 @@ public class CachingIdentityManager extends IdentityManagerImpl {
 
       Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
       Identity result = this.getIdentityStorage().findIdentity(providerId, remoteId);
-      // FIXME make it clear here when both identity1 and result != null.
       if (result == null) {
         if (identity1 != null) {
           // identity is valid for provider, but no yet referenced in storage
