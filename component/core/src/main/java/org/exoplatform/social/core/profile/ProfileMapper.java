@@ -28,21 +28,21 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.ProfileConfig;
 
 
-// TODO: Auto-generated Javadoc
 /**
- * there should be a configuration file to define the
- * mapping.
- * it might need to create objects other than string
+ * there should be a configuration file to define the mapping. it might need to create objects other
+ * than string
  */
 public class ProfileMapper {
 
-  /** The config. */
+  /**
+   * The config.
+   */
   private ProfileConfig config;
 
   /**
    * Copy.
    *
-   * @param infos the infos
+   * @param infos   the infos
    * @param profile the profile
    * @throws Exception the exception
    */
@@ -50,9 +50,9 @@ public class ProfileMapper {
     Iterator it = infos.keySet().iterator();
 
     //remove the fields we are editing
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       String key = (String) it.next();
-      if(key.endsWith(".isEditing")) {
+      if (key.endsWith(".isEditing")) {
         profile.setProperty(key.substring(0, key.length() - 10), new ArrayList());
       }
     }
@@ -62,24 +62,26 @@ public class ProfileMapper {
     HashMap tmpMaps = new HashMap<String, HashMap>();
 
     it = infos.keySet().iterator();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       String key = (String) it.next();
 
       //we skip this element since it is not to be saved
-      if(key.endsWith(".isEditing"))
+      if (key.endsWith(".isEditing")) {
         continue;
+      }
 
       Object value = infos.get(key);
 
       //need to not do it for forced multivalue
-      if(value instanceof String[]) {
-        if(((String[])value).length == 1)
-          value = ((String[])value)[0];
+      if (value instanceof String[]) {
+        if (((String[]) value).length == 1) {
+          value = ((String[]) value)[0];
+        }
       }
 
       int pos = key.indexOf(".");
 
-      if(pos > 0) {
+      if (pos > 0) {
         String nKey = key.substring(0, pos);
 
         //remove all the numbers from the key
@@ -88,9 +90,8 @@ public class ProfileMapper {
         //get the id of the key
         int nId = Integer.parseInt(key.substring(nKey.length(), pos));
 
-        System.out.println("element " + nKey + " with the index " + nId + " and value: " + value);
         Object prop = tmpMaps.get(nKey);
-        if(prop == null) {
+        if (prop == null) {
           prop = new HashMap<String, Map>();
           tmpMaps.put(nKey, prop);
         }
@@ -100,7 +101,7 @@ public class ProfileMapper {
 
         Map el = (Map) lProp.get("" + nId);
 
-        if(el == null) {
+        if (el == null) {
           lProp.put("" + nId, new HashMap<String, String>());
           el = (Map) lProp.get("" + nId);
         }
@@ -108,49 +109,44 @@ public class ProfileMapper {
 
         this.getConfig();
         String type = config.getType(config.getNodeType(nKey), name);
-        System.out.println("type of " + nKey + " and key " + name + " is " + type);
 
-        if(type.equals("String")) {
+        if (type.equals("String")) {
           el.put(name, value.toString());
-        }
-        else if (value.toString().length() > 0) {
-          if(type.equals("Boolean")) {
+        } else if (value.toString().length() > 0) {
+          if (type.equals("Boolean")) {
             el.put(name, new Boolean(value.toString()));
-          }
-          else if(type.equals("Double")) {
+          } else if (type.equals("Double")) {
             el.put(name, new Double(value.toString()));
-          }
-          else if(type.equals("Long")) {
+          } else if (type.equals("Long")) {
             el.put(name, new Long(value.toString()));
           }
         }
-      }
-      else {
+      } else {
         profile.setProperty(key, value);
       }
     }
 
     // transform the tmpMaps to a list
-    Iterator itTmpMap = tmpMaps.keySet().iterator() ;
+    Iterator itTmpMap = tmpMaps.keySet().iterator();
     while (itTmpMap.hasNext()) {
       String key = (String) itTmpMap.next();
       HashMap<String, HashMap> value = (HashMap) tmpMaps.get(key);
       profile.setProperty(key, new ArrayList<HashMap>());
       List l = (List) profile.getProperty(key);
       it = value.values().iterator();
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         l.add(it.next());
       }
     }
 
   }
 
-    /**
-     * Gets the config.
-     *
-     * @return the config
-     */
-    private ProfileConfig getConfig() {
+  /**
+   * Gets the config.
+   *
+   * @return the config
+   */
+  private ProfileConfig getConfig() {
     if (config == null) {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       this.config = (ProfileConfig) container.getComponentInstanceOfType(ProfileConfig.class);

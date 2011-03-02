@@ -416,8 +416,7 @@ public class SpaceUtils {
       menuPortletPreference.setValue(SPACE_URL, space.getUrl());
       dataStorage.save(menuState, menuPortletPreference);
     } catch (Exception e) {
-      LOG.warn("Can not save menu portlet preference!");
-      e.printStackTrace();
+      LOG.warn("Can not save menu portlet preference!", e);
     }
 
     Container applicationContainer = findContainerById(pageChildren, APPLICATION_CONTAINER);
@@ -436,8 +435,7 @@ public class SpaceUtils {
         }
         dataStorage.save(appState, appPortletPreference);
       } catch (Exception e) {
-        LOG.warn("Can not save application portlet preference!");
-        e.printStackTrace();
+        LOG.warn("Can not save application portlet preference!", e);
       }
 
     } catch (Exception e) {
@@ -507,8 +505,7 @@ public class SpaceUtils {
       }
       userPortalConfig.setNavigations(navs);
     } catch (Exception e) {
-      // TODO: handle exception
-      e.printStackTrace();
+      LOG.warn(e.getMessage(), e);
     }
   }
 
@@ -532,7 +529,7 @@ public class SpaceUtils {
     try {
       userPortalConfig.setNavigations(navs);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("Failed to set navigations", e);
     }
     // TODO: should be removed and implement by each implementation.
     // current page not existed, broadcast to default home node

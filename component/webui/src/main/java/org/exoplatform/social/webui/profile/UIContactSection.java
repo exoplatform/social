@@ -111,7 +111,8 @@ public class UIContactSection extends UIProfileSection {
   public static final String INVALID_PHONE = "UIContactSect.msg.Invalid-phone";
 
   /** URL REGEX EXPRESSION. */
-  public static final String URL_REGEX_EXPRESSION = "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
+  public static final String URL_REGEX_EXPRESSION =
+  "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
 
   /** INVALID URL. */
   public static final String INVALID_URL = "UIContactSect.msg.Invalid-url";
@@ -333,7 +334,9 @@ public class UIContactSection extends UIProfileSection {
    *
    * @return All profile information.
    */
-  private ArrayList<HashMap<String, String>> getProfileForSave(final int count, final List<UIComponent> listUIComp, final String uiStringType) {
+  private ArrayList<HashMap<String, String>> getProfileForSave(final int count,
+                                                               final List<UIComponent> listUIComp,
+                                                               final String uiStringType) {
     ArrayList<HashMap<String, String>> profileMap = new ArrayList<HashMap<String, String>>();
     for (int i = 0; i < count; i+=2) {
       HashMap<String, String> uiMap = new HashMap<String, String>();
@@ -381,7 +384,7 @@ public class UIContactSection extends UIProfileSection {
   private void setValue() throws Exception {
     Profile profile = getProfile();
     String gender = (String) profile.getProperty(Profile.GENDER);
-    if (gender != "") {
+    if (!gender.isEmpty()) {
       getGenderChild().setValue(gender);
     }
 

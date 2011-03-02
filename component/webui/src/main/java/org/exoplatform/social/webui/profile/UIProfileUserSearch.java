@@ -343,7 +343,7 @@ public class UIProfileUserSearch extends UIForm {
             // Using regular expression for search
             skills = filter.getSkills();
             if (skills.length() > 0) {
-              skills = ((skills == "") || (skills.length() == 0)) ? "*" : skills;
+              skills = skills.isEmpty() ? "*" : skills;
               skills = (skills.charAt(0) != '*') ? "*" + skills : skills;
               skills = (skills.charAt(skills.length() - 1) != '*') ? skills += "*" : skills;
               skills = (skills.indexOf("*") >= 0) ? skills.replace("*", ".*") : skills;

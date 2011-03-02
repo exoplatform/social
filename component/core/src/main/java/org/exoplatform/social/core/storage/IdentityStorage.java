@@ -377,7 +377,7 @@ public class IdentityStorage {
     String userName = processUsernameSearchPattern(inputName.trim());
     String position = addPositionSearchPattern(profileFilter.getPosition().trim());
     String gender = profileFilter.getGender().trim();
-    inputName = ((inputName == "") || (inputName.length() == 0)) ? "*" : inputName;
+    inputName = inputName.isEmpty() ? "*" : inputName;
     String nameForSearch = inputName.replace("*", " ");
     String [] nameParts = nameForSearch.trim().split(" ");
     List<Identity> listIdentity = new ArrayList<Identity>();
@@ -392,7 +392,7 @@ public class IdentityStorage {
               .like("jcr:path", profileHomeNode.getPath() + "[%]/" + PROFILE_NODETYPE + "[%]");
 
       for (String namePart : nameParts) {
-        if (namePart != "") {
+        if (!namePart.isEmpty()) {
           queryBuilder.or().like(queryBuilder.lower(Profile.FIRST_NAME), namePart.toLowerCase() + "%");
           queryBuilder.or().like(queryBuilder.lower(Profile.LAST_NAME), namePart.toLowerCase() + "%");
         }
