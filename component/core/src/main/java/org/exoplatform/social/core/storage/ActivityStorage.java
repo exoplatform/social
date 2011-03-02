@@ -312,10 +312,17 @@ public class ActivityStorage {
       return activities;
     }
 
+    // /exo:applications/Social_Activity/%providerId%/%remoteId%/published
+    Node streamLocation = getStreamLocation(connectionList.get(0));
+
     try {
+      //the path needed: /exo:applications/Social_Activity/%providerId%
+      String path = streamLocation.getParent().getPath();
       Session session = sessionManager.getOrOpenSession();
       QueryBuilder queryBuilder = new QueryBuilder(session)
               .select(NodeType.EXO_ACTIVITY, offset, limit)
+              .like(NodeProperty.JCR_PATH, path + "/%")
+              .and()
               .not().equal(NodeProperty.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT)
               .and()
               .group();
@@ -456,7 +463,7 @@ public class ActivityStorage {
    * @return the user activity service home
    */
   //TODO hoatle bug if id = uuid, username refers to the same identity
-  private Node getStreamLocation(Identity owner) throws Exception {
+  private Node getStreamLocation(Identity owner) {
     String type = owner.getProviderId();
     String id = owner.getRemoteId();
 
@@ -471,7 +478,7 @@ public class ActivityStorage {
     }
   }
 
-  private Node getStreamsLocationByType(String type, String username) throws Exception {
+  private Node getStreamsLocationByType(String type, String username) {
     Session session = sessionManager.getOrOpenSession();
     try {
       // first get or create the node for type. Ex: /activities/organization
@@ -493,10 +500,11 @@ public class ActivityStorage {
         return streamNode;
       }
     } catch (Exception e) {
-      throw new Exception("Failed to locate stream owner node for " + username +"; " + e.getMessage(), e);
+      LOG.error("Failed to locate stream owner node for: " + username, e);
     } finally {
       sessionManager.closeSession(true);
     }
+    return null;
   }
 
 

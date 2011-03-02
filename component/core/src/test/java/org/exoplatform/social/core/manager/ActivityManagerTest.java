@@ -27,6 +27,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -51,21 +52,13 @@ public class ActivityManagerTest extends AbstractCoreTest {
   public void setUp() throws Exception {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    assertNotNull("identityManager must not be null", identityManager);
     activityManager =  (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
-    assertNotNull("activityManager must not be null", activityManager);
     relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
-    assertNotNull("relationshipManager must not be null", relationshipManager);
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
-
-    assertNotNull("rootIdentity.getId() must not be null", rootIdentity.getId());
-    assertNotNull("johnIdentity.getId() must not be null", johnIdentity.getId());
-    assertNotNull("maryIdentity.getId() must not be null", maryIdentity.getId());
-    assertNotNull("demoIdentity.getId() must not be null", demoIdentity.getId());
 
   }
 
@@ -310,15 +303,19 @@ public class ActivityManagerTest extends AbstractCoreTest {
    assertNotNull("johnConnectionsActivityList must not be null", johnConnectionsActivityList);
    assertEquals(0, johnConnectionsActivityList.size());
 
-   populateActivityMass(demoIdentity, 45);
-
    Relationship johnDemoRelationship = relationshipManager.invite(johnIdentity, demoIdentity);
 
    relationshipManager.confirm(johnDemoRelationship);
 
    johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity);
 
-   assertEquals(30, johnConnectionsActivityList.size());
+   assertEquals("johnConnectionsActivityList.size() must return 0", 0, johnConnectionsActivityList.size());
+
+   populateActivityMass(demoIdentity, 45);
+
+   johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity);
+
+   assertEquals("johnConnectionsActivityList.size() must return 30", 30, johnConnectionsActivityList.size());
 
    johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity, 0, 50);
 
@@ -326,10 +323,25 @@ public class ActivityManagerTest extends AbstractCoreTest {
 
    johnConnectionsActivityList = activityManager.getActivitiesOfConnections(johnIdentity, 20, 50);
 
-   assertEquals(25 , johnConnectionsActivityList.size());
+   assertEquals(25, johnConnectionsActivityList.size());
+
+   //Now demo create one activity in a space, make sure it is not listed in john's activities connections
+
+   {
+     Identity spaceIdentity = new Identity(SpaceIdentityProvider.NAME, "spaceTest");
+     identityManager.saveIdentity(spaceIdentity);
+     ExoSocialActivity demoActivityOnSpace = new ExoSocialActivityImpl();
+     demoActivityOnSpace.setUserId(demoIdentity.getId());
+     demoActivityOnSpace.setTitle("Blah blah");
+     activityManager.saveActivity(spaceIdentity, demoActivityOnSpace);
+     tearDownActivityList.add(demoActivityOnSpace);
+     List<ExoSocialActivity> activityListOfJohnConnections = activityManager.getActivitiesOfConnections(johnIdentity, 0, 100);
+     identityManager.deleteIdentity(spaceIdentity);
+     assertEquals("activityListOfJohnConnections.size() must be 45", 45, activityListOfJohnConnections.size());
+   }
+
 
    relationshipManager.remove(johnDemoRelationship);
-
    tearDownActivityList.addAll(activityManager.getActivities(demoIdentity, 0, 50));
  }
 

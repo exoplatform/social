@@ -86,7 +86,7 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public void addProcessor(ActivityProcessor processor) {
     processors.add(processor);
-    LOG.info("added activity processor " + processor.getClass());
+    LOG.debug("added activity processor " + processor.getClass());
   }
 
   /**
@@ -163,7 +163,7 @@ public class ActivityManagerImpl implements ActivityManager {
     try {
       connectionList = identityManager.getConnections(ownerIdentity);
     } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
+      LOG.error("Failed to getActivitiesOfConnections of: " + ownerIdentity.getRemoteId(), e);
     }
     return storage.getActivitiesOfConnections(connectionList, offset, limit);
   }
