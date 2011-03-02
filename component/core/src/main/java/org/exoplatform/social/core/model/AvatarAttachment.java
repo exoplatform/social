@@ -27,43 +27,57 @@ import javax.jcr.Session;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
-
-/**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Sep 11, 2009
- *
- */
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.jcr.NodeProperty;
 
 /*
  * This class using for attachment profile of identity or of space, such as
  * image.
+ *
+ * @author  <a href="mailto:tungcnw@gmail.com">dang.tung</a>
+ * @since   Sep 11, 2009
  */
 public class AvatarAttachment {
 
-  /** The id. */
-  private String id ;
+  private static final Log LOG = ExoLogger.getLogger(AvatarAttachment.class);
 
-  /** The file name. */
-  private String fileName ;
+  /**
+   * The id.
+   */
+  private String id;
 
-  /** The mime type. */
-  private String mimeType ;
+  /**
+   * The file name.
+   */
+  private String fileName;
 
-  /** The workspace. */
-  private String workspace ;
+  /**
+   * The mime type.
+   */
+  private String mimeType;
 
-  /** The image bytes. */
-  private byte[] imageBytes ;
+  /**
+   * The workspace.
+   */
+  private String workspace;
 
-  /** The last modified. */
+  /**
+   * The image bytes.
+   */
+  private byte[] imageBytes;
+
+  /**
+   * The last modified.
+   */
   private long lastModified;
 
   public AvatarAttachment() {
   }
 
   /**
+   * Constructor.
+   *
    * @param id
    * @param fileName
    * @param mimeType
@@ -93,14 +107,14 @@ public class AvatarAttachment {
    * @throws Exception the exception
    */
   public String getDataPath(PortalContainer portalContainer) throws Exception {
-    Node attachmentData ;
-    try{
-      attachmentData = (Node)getSesison(portalContainer).getItem(getId()) ;
+    Node attachmentData;
+    try {
+      attachmentData = (Node) getSession(portalContainer).getItem(getId());
     } catch (ItemNotFoundException e) {
-      e.printStackTrace() ;
-      return null ;
+      LOG.warn("Failed to get data path", e);
+      return null;
     }
-    return attachmentData.getPath() ;
+    return attachmentData.getPath();
   }
 
   /**
@@ -110,14 +124,14 @@ public class AvatarAttachment {
    * @throws Exception the exception
    */
   public String getDataPath() throws Exception {
-    Node attachmentData ;
-    try{
-      attachmentData = (Node)getSesison().getItem(getId()) ;
-    }catch (ItemNotFoundException e) {
-      e.printStackTrace() ;
-      return null ;
+    Node attachmentData;
+    try {
+      attachmentData = (Node) getSession().getItem(getId());
+    } catch (ItemNotFoundException e) {
+      LOG.warn("Failed to get data path", e);
+      return null;
     }
-    return attachmentData.getPath() ;
+    return attachmentData.getPath();
   }
 
   /**
@@ -125,76 +139,96 @@ public class AvatarAttachment {
    *
    * @return the id
    */
-  public String getId() { return id ; }
+  public String getId() {
+    return id;
+  }
 
   /**
    * Sets the id.
    *
    * @param s the new id
    */
-  public void   setId(String s) { id = s ; }
+  public void setId(String s) {
+    id = s;
+  }
 
   /**
    * Gets the workspace.
    *
    * @return the workspace
    */
-  public String getWorkspace() { return workspace ; }
+  public String getWorkspace() {
+    return workspace;
+  }
 
   /**
    * Sets the workspace.
    *
    * @param ws the new workspace
    */
-  public void setWorkspace(String ws) { workspace = ws ; }
+  public void setWorkspace(String ws) {
+    workspace = ws;
+  }
 
   /**
    * Gets the file name.
    *
    * @return the file name
    */
-  public String getFileName()  { return fileName ; }
+  public String getFileName() {
+    return fileName;
+  }
 
   /**
    * Sets the file name.
    *
    * @param s the new file name
    */
-  public void   setFileName(String s) { fileName = s ; }
+  public void setFileName(String s) {
+    fileName = s;
+  }
 
   /**
    * Gets the mime type.
    *
    * @return the mime type
    */
-  public String getMimeType() { return mimeType ; }
+  public String getMimeType() {
+    return mimeType;
+  }
 
   /**
    * Sets the mime type.
    *
    * @param s the new mime type
    */
-  public void setMimeType(String s) { mimeType = s ;}
+  public void setMimeType(String s) {
+    mimeType = s;
+  }
 
   /**
    * Gets the last modified.
    *
    * @return the last modified
    */
-  public long getLastModified() { return lastModified;}
+  public long getLastModified() {
+    return lastModified;
+  }
 
   /**
    * Sets the last modified.
    *
    * @param lastModified the new last modified
    */
-  public void setLastModified(long lastModified) { this.lastModified = lastModified;}
+  public void setLastModified(long lastModified) {
+    this.lastModified = lastModified;
+  }
 
-/**
- * get images size in MB/ KB/ Bytes.
- *
- * @return image size string
- */
+  /**
+   * Gets images size in MB/ KB/ Bytes.
+   *
+   * @return image size string
+   */
   public String getSize() {
     int KB_SIZE = 1024;
     int MB_SIZE = 1024 * KB_SIZE;
@@ -207,14 +241,13 @@ public class AvatarAttachment {
       size = length / KB_SIZE;
       return size + " KB";
     } else { //Bytes size
-      return  length + " Bytes";
+      return length + " Bytes";
     }
   }
 
   /**
-   * gets imageBytes.
+   * Gets imageBytes.
    *
-   * @return the image bytes
    * @return
    */
   public byte[] getImageBytes() {
@@ -229,10 +262,11 @@ public class AvatarAttachment {
    */
   public void setInputStream(InputStream input) throws Exception {
     if (input != null) {
-      imageBytes = new byte[input.available()] ;
-      input.read(imageBytes) ;
+      imageBytes = new byte[input.available()];
+      input.read(imageBytes);
+    } else {
+      imageBytes = null;
     }
-    else imageBytes = null ;
   }
 
   /**
@@ -243,40 +277,43 @@ public class AvatarAttachment {
    * @throws Exception the exception
    */
   public InputStream getInputStream(Session session) throws Exception {
-    if(imageBytes != null) return new ByteArrayInputStream(imageBytes) ;
-    Node attachment ;
-    try{
-      attachment = (Node)session.getItem(getId());
-    }catch (ItemNotFoundException e) {
-      return null ;
-    } catch (PathNotFoundException ex) {
-      return  null;
+    if (imageBytes != null) {
+      return new ByteArrayInputStream(imageBytes);
     }
-    Property property = attachment.getNode("jcr:content").getProperty("jcr:data");
+    Node attachment;
+    try {
+      attachment = (Node) session.getItem(getId());
+    } catch (Exception e) {
+      LOG.warn("Failed to get input stream", e);
+      return null;
+    }
+    Property property = attachment.getNode(NodeProperty.JCR_CONTENT).getProperty(NodeProperty.JCR_DATA);
     InputStream inputStream = property.getValue().getStream();
     return inputStream;
   }
 
   /**
-   * Gets the sesison.
+   * Gets the session from a portal container.
    *
-   * @return the sesison
+   * @return the session
    * @throws Exception the exception
    */
-  private Session getSesison(PortalContainer portalcontainer)throws Exception {
-    RepositoryService repoService = (RepositoryService)portalcontainer.getComponentInstanceOfType(RepositoryService.class) ;
-    return repoService.getDefaultRepository().getSystemSession(workspace) ;
+  private Session getSession(PortalContainer portalcontainer) throws Exception {
+    RepositoryService repoService = (RepositoryService) portalcontainer
+                                    .getComponentInstanceOfType(RepositoryService.class);
+    return repoService.getDefaultRepository().getSystemSession(workspace);
   }
 
   /**
-   * Gets the sesison.
+   * Gets the session.
    *
-   * @return the sesison
+   * @return the session
    * @throws Exception the exception
    */
-  private Session getSesison()throws Exception {
-    RepositoryService repoService = (RepositoryService)PortalContainer.getInstance().getComponentInstanceOfType(RepositoryService.class) ;
-    return repoService.getDefaultRepository().getSystemSession(workspace) ;
+  private Session getSession() throws Exception {
+    RepositoryService repoService = (RepositoryService) PortalContainer.getInstance()
+                                    .getComponentInstanceOfType(RepositoryService.class);
+    return repoService.getDefaultRepository().getSystemSession(workspace);
   }
 
 }
