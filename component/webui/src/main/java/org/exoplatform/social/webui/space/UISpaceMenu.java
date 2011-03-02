@@ -32,6 +32,8 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -59,6 +61,12 @@ import org.exoplatform.webui.event.EventListener;
 )
 
 public class UISpaceMenu extends UIContainer {
+
+  /**
+   * The logger.
+   */
+  private static final Log LOG = ExoLogger.getLogger(UISpaceMenu.class);
+
   /** NEW SPACE APPLICATION NAME. */
   private static final String NEW_SPACE_APPLICATION_NAME = "newSpaceAppName";
   /** INVALID APPLICATION NAME MESSAGE. */
@@ -311,7 +319,7 @@ public class UISpaceMenu extends UIContainer {
         String spaceUrl = SpaceUtils.getSpaceUrl();
         space = spaceService.getSpaceByUrl(spaceUrl);
       } catch (SpaceException e) {
-        e.printStackTrace();
+        LOG.warn("Failed to get space", e);
       }
     }
     return space;

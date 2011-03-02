@@ -35,6 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -63,6 +65,12 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
  */
 @Path("{portalName}/social/activities")
 public class ActivitiesRestService implements ResourceContainer {
+
+  /**
+   * The logger.
+   */
+  private static final Log LOG = ExoLogger.getLogger(ActivitiesRestService.class);
+
   private ActivityManager _activityManager;
   private IdentityManager _identityManager;
   private String portalName_;
@@ -372,16 +380,14 @@ public class ActivitiesRestService implements ResourceContainer {
       try {
         userId = getRemoteId(uriInfo, portalName);
       } catch (Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.warn(e.getMessage(), e);
       }
     }
     Identity identity = null;
     try {
       identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
     } catch (Exception e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+      LOG.warn(e1.getMessage(), e1);
     }
      //TODO hoatle set current userId from authentication context instead of getting userId from comment
      if (comment.getUserId() == null) {

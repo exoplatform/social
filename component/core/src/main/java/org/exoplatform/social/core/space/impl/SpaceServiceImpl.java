@@ -205,7 +205,7 @@ public class SpaceServiceImpl implements SpaceService {
     try {
       listSpace = storage.getSpacesBySearchCondition(condition);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("Failed to get spaces by search condition: " + condition, e);
     }
 
     return listSpace;
@@ -406,7 +406,6 @@ public class SpaceServiceImpl implements SpaceService {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
       throw new SpaceException(SpaceException.Code.UNABLE_TO_DELETE_SPACE, e);
     }
     spaceLifeCycle.spaceRemoved(space, null);

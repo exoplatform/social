@@ -11,6 +11,8 @@ import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.monitor.jvm.J2EEServerInfo;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -21,9 +23,13 @@ import com.google.inject.name.Named;
  * User: zun
  * Date: Jul 7, 2010
  * Time: 5:34:35 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
+
+  /**
+   * The logger.
+   */
+  private static final Log LOG = ExoLogger.getLogger(ExoOAuthAuthenticationHandler.class);
 
   private String portalContainerName;
 
@@ -59,7 +65,7 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
       portalContainer = getPortalContainerName(); 
       domain = securityToken.getDomain();
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("Failed to get security token from request", e);
       return null;
     }
 
