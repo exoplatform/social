@@ -83,8 +83,8 @@
     <org.exoplatform.core.version>2.3.7-GA</org.exoplatform.core.version>
     <org.exoplatform.ws.version>2.1.7-GA</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.12.7-GA</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.2.0-PLF-Beta1</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>2.2.0-Beta1</org.exoplatform.ecms.version>
+    <org.exoplatform.portal.version>3.2.0-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.ecms.version>2.2.0-Beta2-SNAPSHOT</org.exoplatform.ecms.version>
     <org.exoplatform.commons.version>1.0.3</org.exoplatform.commons.version>
     <org.exoplatform.exopackage.version>1.1.0</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
@@ -94,7 +94,7 @@
     <org.gatein.pc.version>2.2.0-GA</org.gatein.pc.version>
     <org.gatein.wsrp.version>1.1.1-GA</org.gatein.wsrp.version>
     <org.gatein.mop.version>1.0.4-GA</org.gatein.mop.version>
-    <org.shindig.version>1.0-r790473-Patch04</org.shindig.version>
+    <org.shindig.version>1.0-r790473-Patch05</org.shindig.version>
     <org.chromattic.version>1.0.4</org.chromattic.version>
 
     <org.fontbox.version>0.1.0</org.fontbox.version>
