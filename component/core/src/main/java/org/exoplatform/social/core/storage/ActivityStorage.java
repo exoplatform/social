@@ -438,10 +438,16 @@ public class ActivityStorage {
       return activities;
     }
 
+    // /exo:applications/Social_Activity/%providerId%/%remoteId%/published
+    Node streamLocation = getStreamLocation(connectionList.get(0));
     try {
+      //the path needed: /exo:applications/Social_Activity/%providerId%
+      String path = streamLocation.getParent().getPath();
       Session session = sessionManager.getOrOpenSession();
       QueryBuilder queryBuilder = new QueryBuilder(session)
               .select(ACTIVITY_NODETYPE, offset, limit)
+              .like("jcr:path", path + "/%")
+              .and()
               .not().equal(REPLY_TO_ID, Activity.IS_COMMENT)
               .and()
               .group();

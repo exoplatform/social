@@ -249,7 +249,7 @@ public class ActivityManager {
     try {
       connectionList = identityManager.getConnections(ownerIdentity);
     } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
+      LOG.error("Failed to getActivitiesOfConnections of: " + ownerIdentity.getRemoteId(), e);
     }
     return storage.getActivitiesOfConnections(connectionList, offset, limit);
   }
