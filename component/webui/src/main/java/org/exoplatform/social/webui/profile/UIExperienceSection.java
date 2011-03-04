@@ -42,9 +42,7 @@ import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
-import org.exoplatform.webui.form.validator.DateTimeValidator;
-import org.exoplatform.webui.form.validator.MandatoryValidator;
-import org.exoplatform.webui.form.validator.StringLengthValidator;
+import org.exoplatform.webui.form.validator.ExpressionValidator;
 
 /**
  * Component manages all experience informations
@@ -93,6 +91,37 @@ public class UIExperienceSection extends UIProfileSection {
    * DATE FORMAT.
    */
   final public static String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
+
+  /** DATE TIME VALIDATE EXPRESSION. */
+  private static final String DATETIME_REGEX =
+     "^(\\d{1,2}\\/\\d{1,2}\\/\\d{1,4})\\s*(\\s+\\d{1,2}:\\d{1,2}:\\d{1,2})?$";
+  
+  /** COMPANY AND POSITION VALIDATE EXPRESSION. */
+  private static final String COMPANY_AND_POSITION_STRINGLENGTH_REGEX = "^[\\w\\W]{3,90}+$";
+    
+  /** MANDATORY START DATE MESSAGE. */
+  private static final String INVALID_START_DATE_MANDATORY = "UIExperienceSection.msg.Invalid-startdate-mandatory";
+  
+  /** MANDATORY END DATE MESSAGE. */
+  private static final String INVALID_END_DATE_MANDATORY = "UIExperienceSection.msg.Invalid-enddate-mandatory";
+  
+  /** INVALID FORMAT DATE TIME MESSAGE. */
+  private static final String INVALID_START_DATE_FORMAT = "UIExperienceSection.msg.Invalid-startdate-format";
+  
+  /** INVALID FORMAT DATE TIME MESSAGE. */
+  private static final String INVALID_END_DATE_FORMAT = "UIExperienceSection.msg.Invalid-enddate-format";
+    
+  /** INVALID COMPANY LENGTH MESSAGE. */
+  private static final String INVALID_COMPANY_STRINGLENGTH = "UIExperienceSection.msg.Invalid-company-stringlength";
+  
+  /** MANDATORY COMPANY MESSAGE. */
+  private static final String INVALID_COMPANY_MANDATORY = "UIExperienceSection.msg.Invalid-company-mandatory";
+    
+  /** INVALID POSITION LENGTH MESSAGE. */
+  private static final String INVALID_POSITION_STRINGLENGTH = "UIExperienceSection.msg.Invalid-position-stringlength";
+    
+  /** MANDATORY POSITION MESSAGE. */
+  private static final String INVALID_POSITION_MANDATORY = "UIExperienceSection.msg.Invalid-position-mandatory";
 
   /**
    * Number of components.
@@ -439,9 +468,19 @@ public class UIExperienceSection extends UIProfileSection {
       uiStringInput = (UIFormStringInput) listUIComp.get(i);
       company = uiStringInput.getValue();
 
+      if ((company == null) || (company.length() == 0)) {
+        uiApplication.addMessage(new ApplicationMessage(INVALID_COMPANY_MANDATORY, null, 1));
+        return 2;
+      }
+      
       uiStringInput = (UIFormStringInput) listUIComp.get(i + 1);
       position = uiStringInput.getValue();
 
+      if ((position == null) || (position.length() == 0)) {
+        uiApplication.addMessage(new ApplicationMessage(INVALID_POSITION_MANDATORY, null, 1));
+        return 2;
+      }
+      
       uiFormTextAreaInput = (UIFormTextAreaInput) listUIComp.get(i + 2);
       description = uiFormTextAreaInput.getValue();
 
@@ -451,13 +490,18 @@ public class UIExperienceSection extends UIProfileSection {
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
       startDate = uiDateTimeInput.getValue();
 
+      if ((startDate == null) || (startDate.length() == 0)) {
+        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+        return 2;
+      }
+
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
       endDate = uiDateTimeInput.getValue();
 
       sDate = stringToDate(startDate);
       eDate = stringToDate(endDate);
       if (sDate.after(today)) {
-        uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null));
+        uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
         return 2;
       }
 
@@ -465,12 +509,17 @@ public class UIExperienceSection extends UIProfileSection {
       isCurrent = uiCheckBox.getValue();
 
       if (!isCurrent) {
-        if (eDate.after(today)) {
-          uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null));
+        if ((endDate == null) || (endDate.length() == 0)) {
+          uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
           return 2;
         }
-        if (sDate.after(eDate)) {
-          uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null));
+        
+        if ((eDate != null) && eDate.after(today)) {
+          uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
+          return 2;
+        }
+        if ((sDate != null) && sDate.after(eDate)) {
+          uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
           return 1;
         }
       } else {
@@ -503,10 +552,10 @@ public class UIExperienceSection extends UIProfileSection {
    */
   private void addUIFormInput() throws Exception {
     expIdx += 1;
-    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null).addValidator(MandatoryValidator.class)
-            .addValidator(StringLengthValidator.class, 3, 90));
-    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null).addValidator(MandatoryValidator.class)
-            .addValidator(StringLengthValidator.class, 3, 90));
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null)
+      .addValidator(ExpressionValidator.class, COMPANY_AND_POSITION_STRINGLENGTH_REGEX, INVALID_COMPANY_STRINGLENGTH));
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null)
+      .addValidator(ExpressionValidator.class, COMPANY_AND_POSITION_STRINGLENGTH_REGEX, INVALID_POSITION_STRINGLENGTH));
 
     addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null));
     UIFormTextAreaInput uiDespcription = getChildById(Profile.EXPERIENCES_DESCRIPTION + expIdx);
@@ -518,12 +567,11 @@ public class UIExperienceSection extends UIProfileSection {
     uiFormTextAreaInput.setColumns(28);
     uiFormTextAreaInput.setRows(3);
 
-    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false).
-            addValidator(DateTimeValidator.class).addValidator(MandatoryValidator.class));
+    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false)
+      .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
 
     addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false)
-            .addValidator(MandatoryValidator.class)
-            .addValidator(DateTimeValidator.class));
+      .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
 
     UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(Integer.toString(expIdx), null, false);
     uiDateInputCheck.setComponentConfig(UIFormCheckBoxInput.class, "UIFormCheckBoxEndDate");

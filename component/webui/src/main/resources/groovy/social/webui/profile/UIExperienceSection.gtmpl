@@ -52,7 +52,7 @@
                   <%if (childs.get(i).isRendered()) {
                     uiform.renderField(childs.get(i));
                   }%>
-                </td>
+                *</td>
                 <% if ((i + 7) >= childSize) {%>
                   <td width="15%">&nbsp</td>
                   <td class="FieldComponent">
@@ -72,7 +72,7 @@
                 <%if (childs.get(i + 1).isRendered()) {
                   uiform.renderField(childs.get(i + 1));
                 }%>
-                </td>
+                *</td>
               </tr>
               <tr>
                 <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>

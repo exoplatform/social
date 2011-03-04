@@ -38,8 +38,6 @@ import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
-import org.exoplatform.webui.form.validator.MandatoryValidator;
-import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
  * Component is used for contact information managing.<br>
@@ -98,18 +96,18 @@ public class UIContactSection extends UIProfileSection {
   /** VALUE. */
   public static final String VALUE = "value";
 
-//  /** EMAIL REGEX EXPRESSION. */
-//  final public static String EMAIL_REGEX_EXPRESSION = "^([^@\\s]+)@((?:[-a-z0-9]+\\.)+[a-z]{2,})$";
-
-//  /** INVALID EMAIl. */
-//  final public static String INVALID_EMAIl = "UIContactSect.msg.Invalid-email";
-
   /** PHONE REGEX EXPRESSION. */
-  public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]+$";
+  public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{3,20}+$";
 
+  /** IM LENGTH REGEX EXPRESSION. */
+  public static final String IM_STRINGLENGTH_REGEX_EXPRESSION = "^[\\w\\W]{3,60}+$";
+  
   /** INVALID PHONE. */
   public static final String INVALID_PHONE = "UIContactSect.msg.Invalid-phone";
 
+  /** INVALID IM. */
+  public static final String INVALID_IM = "UIContactSect.msg.Invalid-im";
+  
   /** URL REGEX EXPRESSION. */
   public static final String URL_REGEX_EXPRESSION =
   "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
@@ -384,7 +382,7 @@ public class UIContactSection extends UIProfileSection {
   private void setValue() throws Exception {
     Profile profile = getProfile();
     String gender = (String) profile.getProperty(Profile.GENDER);
-    if (!gender.isEmpty()) {
+    if (gender != null && !gender.isEmpty()) {
       getGenderChild().setValue(gender);
     }
 
@@ -482,14 +480,13 @@ public class UIContactSection extends UIProfileSection {
       int phoneIdx = phoneCount;
       createUISelectBox(PHONE_TYPES, PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'));
       addUIFormInput(new UIFormStringInput(PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'),null,null)
-      .addValidator(StringLengthValidator.class, 3, 20)
       .addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, INVALID_PHONE));
       phoneCount += 2;
     } else if (IM.equals(type)) {
       int imIdx = imCount;
       createUISelectBox(IM_TYPES, IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'));
       addUIFormInput(new UIFormStringInput(IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'), null, null)
-      .addValidator(StringLengthValidator.class, 3, 60));
+      .addValidator(ExpressionValidator.class, IM_STRINGLENGTH_REGEX_EXPRESSION, INVALID_IM));
       imCount += 2;
     } else if (URL.equals(type)) {
       int urlIdx = urlCount;
