@@ -46,7 +46,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 
 /**
- * UISpaceApplication.java used for adding/ removing applications<br />
+ * UISpaceApplication.java used for adding/ removing applications.
  * Created by The eXo Platform SARL
  *
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
@@ -168,21 +168,16 @@ public class UISpaceApplication extends UIForm {
         application = installedAppList.get(idx);
         String temporalSpaceName = application.getApplicationName();
 
-        //Application application = installedAppList.get(idx);
-
-        //appName = application.getApplicationName();
         appParts = listApp[index].split(":");
         spaceAppName = appParts[0];
         if (temporalSpaceName.equals(spaceAppName)) {
           String newName = appParts[0] + ":" + appParts[1];
-//    		application.setApplicationName(appParts[0] + ":" + appParts[1]);
           installedApps.add(setAppName(application, newName));
           break;
         }
       }
     }
     PageList pageList = new ObjectPageList(installedApps, 3);
-//    PageList pageList = new ObjectPageList(installedAppList, 3);
     iterator.setPageList(pageList);
   }
 

@@ -46,7 +46,7 @@ import org.exoplatform.webui.ext.UIExtensionManager;
  */
 
 @ComponentConfig(
-	lifecycle = Lifecycle.class
+  lifecycle = Lifecycle.class
 )
 public class UIDocViewer extends UIBaseNodePresentation {
 
