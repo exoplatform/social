@@ -90,17 +90,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     }
   }
 
-  /**
-   * Gets the user from cache.
-   *
-   * @param userName the user name
-   * @return the user from cache
-   */
-  private User getUserFromCache(String userName) {
-    return userCache.get(userName);
-  }
-
-
   @Override
   public User findByRemoteId(String remoteId) {
     User user;
