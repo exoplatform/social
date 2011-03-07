@@ -54,8 +54,8 @@ public class SpaceApplicationConfigPlugin extends BaseComponentPlugin {
    */
   public SpaceApplicationConfigPlugin(InitParams initParams) {
     homeApplication = (SpaceApplication) initParams.getObjectParam(SPACE_HOME_PARAM_NAME).getObject();
-    //spaceApplicationList = ((SpaceApplicationConfigPlugin) initParams.getObjectParam(SPACE_APPLICATION_LIST_PARAM_NAME).getObject()).getSpaceApplicationList();
-    spaceApplicationList = initParams.getObjectParamValues(SpaceApplicationConfigPlugin.class).get(0).getSpaceApplicationList();
+    spaceApplicationList = initParams.getObjectParamValues(SpaceApplicationConfigPlugin.class).
+            get(0).getSpaceApplicationList();
   }
 
   /**

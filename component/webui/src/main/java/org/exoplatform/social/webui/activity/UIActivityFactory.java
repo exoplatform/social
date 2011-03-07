@@ -90,7 +90,8 @@ public class UIActivityFactory extends BaseComponentPlugin {
       builders.remove(activityType);
     }
 
-    final Class<BaseUIActivityBuilder> builderClass = (Class<BaseUIActivityBuilder>) Thread.currentThread().getContextClassLoader().loadClass(activityExtension.getActivityBuiderClass());
+    final Class<BaseUIActivityBuilder> builderClass = (Class<BaseUIActivityBuilder>) Thread.currentThread().
+            getContextClassLoader().loadClass(activityExtension.getActivityBuiderClass());
     builders.put(activityType, builderClass.newInstance());
   }
 }

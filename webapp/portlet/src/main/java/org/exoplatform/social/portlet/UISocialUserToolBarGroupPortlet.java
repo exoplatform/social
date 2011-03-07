@@ -112,10 +112,8 @@ public class UISocialUserToolBarGroupPortlet extends UIPortletApplication {
 
   private boolean isRender(PageNode node) throws SpaceException {
     SpaceService spaceSrv = getSpaceService();
-    List<Space> spaces = spaceSrv.getAllSpaces();
-    for (Space space : spaces) {
-      if (space.getDisplayName().equals(node.getUri()))
-        return false;
+    if (spaceSrv.getSpaceByDisplayName(node.getUri()) != null) {
+      return false;
     }
     return true;
   }

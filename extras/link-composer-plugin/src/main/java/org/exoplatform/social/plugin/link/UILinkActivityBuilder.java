@@ -71,7 +71,8 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
   }
 
   private void saveToNewDataFormat(ExoSocialActivity activity, UILinkActivity uiLinkActivity) {
-    String linkTitle = "Shared a link: <a href=\"${" + UILinkActivityComposer.LINK_PARAM + "}\">${" + UILinkActivityComposer.TITLE_PARAM + "} </a>";
+    String linkTitle = "Shared a link: <a href=\"${" + UILinkActivityComposer.LINK_PARAM + "}\">" +
+            "${" + UILinkActivityComposer.TITLE_PARAM + "} </a>";
     activity.setTitle(linkTitle);
     Map<String, String> templateParams = new HashMap<String, String>();
     templateParams.put(UILinkActivityComposer.LINK_PARAM, uiLinkActivity.getLinkSource());

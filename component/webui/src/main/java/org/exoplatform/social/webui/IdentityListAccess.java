@@ -54,7 +54,8 @@ public class IdentityListAccess implements ListAccess<Identity> {
       throw new IllegalArgumentException("Illegal length: length must be a positive number");
 
     if (index + length > list.size())
-      throw new IllegalArgumentException("Illegal index or length: sum of the index and the length cannot be greater than the list size");
+      throw new IllegalArgumentException("Illegal index or length: sum of the index " +
+              "and the length cannot be greater than the list size");
 
     Identity result[] = new Identity[length];
     for (int i = 0; i < length; i++)

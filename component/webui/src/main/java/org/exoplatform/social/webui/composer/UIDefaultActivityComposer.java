@@ -51,7 +51,8 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
   }
 
   @Override
-  public void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+  public void onPostActivity(PostContext postContext, UIComponent source,
+                             WebuiRequestContext requestContext, String postedMessage) throws Exception {
     if (postedMessage.equals("")) {
       UIApplication uiApplication = requestContext.getUIApplication();
       uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",

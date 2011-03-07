@@ -177,7 +177,8 @@ public class PeopleRestService implements ResourceContainer{
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
     Identity identity = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, userId, false);
-    Identity currentIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
+    Identity currentIdentity = getIdentityManager().
+            getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
     
     if (updatedType != null) {
       Relationship rel = getRelationshipManager().get(currentIdentity, identity);

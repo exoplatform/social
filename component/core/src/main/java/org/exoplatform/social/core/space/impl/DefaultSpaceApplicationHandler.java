@@ -65,15 +65,15 @@ import org.exoplatform.social.core.space.spi.SpaceService;
  */
 
 public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
-  private static final Log                                   LOG                    = ExoLogger.getLogger(DefaultSpaceApplicationHandler.class);
+  private static final Log     LOG                    = ExoLogger.getLogger(DefaultSpaceApplicationHandler.class);
 
-  public static final String                                 NAME                   = "classic";
+  public static final String   NAME                   = "classic";
 
-  public static final String                                 SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
+  public static final String   SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
 
-  public static final String                                 APPLICATION_CONTAINER  = "Application";
+  public static final String   APPLICATION_CONTAINER  = "Application";
 
-  private static final String                                SPACE_DEFAULT_ICON = "SpaceDefaultIcon";
+  private static final String  SPACE_DEFAULT_ICON     = "SpaceDefaultIcon";
 
   /**
    * The {groupId} preference value pattern
@@ -496,7 +496,8 @@ private PageNode createPageNodeFromApplication(Space space,
     ArrayList<ModelObject> pageChilds = page.getChildren();
 
     Container menuContainer = SpaceUtils.findContainerById(pageChilds, SpaceUtils.MENU_CONTAINER);
-    org.exoplatform.portal.config.model.Application<Portlet> menuPortlet = (org.exoplatform.portal.config.model.Application<Portlet>) menuContainer.getChildren()
+    org.exoplatform.portal.config.model.Application<Portlet> menuPortlet =
+            (org.exoplatform.portal.config.model.Application<Portlet>) menuContainer.getChildren()
                                                                                                                                                    .get(0);
     ApplicationState<Portlet> state = menuPortlet.getState();
     Portlet portletPreference;
@@ -644,7 +645,8 @@ private PageNode createPageNodeFromApplication(Space space,
                                                                                              ownerType,
                                                                                              ownerId,
                                                                                              persistenceChunks[2]);
-    org.exoplatform.portal.config.model.Application<Portlet> portletApp = org.exoplatform.portal.config.model.Application.createPortletApplication();
+    org.exoplatform.portal.config.model.Application<Portlet> portletApp =
+            org.exoplatform.portal.config.model.Application.createPortletApplication();
     portletApp.setState(portletState);
     return portletApp;
   }

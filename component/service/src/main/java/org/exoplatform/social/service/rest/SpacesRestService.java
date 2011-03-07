@@ -213,7 +213,8 @@ public class SpacesRestService implements ResourceContainer {
         nameList.addName(space.getDisplayName());
         continue;
       } else if (PUBLIC_STATUS.equals(typeOfRelation) && !space.getVisibility().equals(Space.HIDDEN) &&
-              (!spaceSrv.isPending(space, userId)) && (!spaceSrv.isInvited(space, userId)) && (!spaceSrv.isMember(space, userId))) {
+              (!spaceSrv.isPending(space, userId)) && (!spaceSrv.isInvited(space, userId)) &&
+              (!spaceSrv.isMember(space, userId))) {
         nameList.addName(space.getDisplayName());
       }
     }

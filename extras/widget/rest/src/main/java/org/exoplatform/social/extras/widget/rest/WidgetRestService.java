@@ -126,9 +126,12 @@ public class WidgetRestService implements ResourceContainer {
 
       // TODO: move this to a groovy template
       StringBuffer response = new StringBuffer();
-      response.append("<!DOCTYPE html><html><head><style type=\"text/css\">html,body{margin:0;padding:0;font-family:lucida,arial,tahoma,verdana,sans-serif;}")
-              .append(" h1,h3 {margin:0px} h3 a {color:#FF9600;font-size:14px;font-weight:bold;} h1{ text-indent:-9000px;height:20px;")
-              .append("background:url(\"/socialWidgetResources/img/social-logo.png\") no-repeat scroll 0 0 #FFFFFF; margin-bottom:5px;}</style>")
+      response.append("<!DOCTYPE html><html><head><style type=\"text/css\">" +
+              "html,body{margin:0;padding:0;font-family:lucida,arial,tahoma,verdana,sans-serif;}")
+              .append(" h1,h3 {margin:0px} h3 a {color:#FF9600;font-size:14px;font-weight:bold;} " +
+                      "h1{ text-indent:-9000px;height:20px;")
+              .append("background:url(\"/socialWidgetResources/img/social-logo.png\") " +
+                      "no-repeat scroll 0 0 #FFFFFF; margin-bottom:5px;}</style>")
               .append("</head><body><h1>eXo Social</h1>");
 
 

@@ -50,8 +50,10 @@ import org.exoplatform.webui.event.EventListener;
     @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
     @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
     @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
-    @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class, confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Activity"),
-    @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class, confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Comment"),
+    @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class,
+                             confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Activity"),
+    @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class,
+                             confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Comment"),
     @EventConfig(listeners = UIRelationshipActivity.AcceptActionListener.class),
     @EventConfig(listeners = UIRelationshipActivity.RefuseActionListener.class),
     @EventConfig(listeners = UIRelationshipActivity.RevokeActionListener.class)
@@ -171,27 +173,33 @@ public class UIRelationshipActivity extends BaseUIActivity {
     if (titleId == TitleId.CONNECTION_CONFIRMED) {
       if (isActivityStreamOwner() && (displayMode == DisplayMode.MY_STATUS)) {
         if(isSender()) {
-          return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
+          return ResourceBundleUtil.
+                  replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
                                                      new String[] { receiverLink });
         } else {
-          return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
+          return ResourceBundleUtil.
+                  replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
                                                      new String[] { senderLink });
         }
       } else {
-        return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Are_Now_Connected_With_UserName"),
+        return ResourceBundleUtil.
+                replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Are_Now_Connected_With_UserName"),
                                                    new String[] { receiverLink, senderLink });
       }
     } else if (titleId == TitleId.CONNECTION_REQUESTED) {
       if (isActivityStreamOwner() && ((displayMode == DisplayMode.MY_STATUS))) {
         if(isSender()) {
-          return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Invited_UserName_To_Connect"),
+          return ResourceBundleUtil.
+                  replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Invited_UserName_To_Connect"),
                                                      new String[] { receiverLink });
         } else {
-          return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_You_To_Connect"),
+          return ResourceBundleUtil.
+                  replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_You_To_Connect"),
                                                      new String[] { senderLink });
         }
       } else {
-        return ResourceBundleUtil.replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect"),
+        return ResourceBundleUtil.
+                replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect"),
                                                    new String[] { senderLink, receiverLink });
       }
     }
@@ -217,12 +225,6 @@ public class UIRelationshipActivity extends BaseUIActivity {
         Utils.getRelationshipManager().confirm(relationship);
         Utils.updateWorkingWorkSpace();
       }
-
-      //delete this activity
-      //      Event<UIComponent> deleteActivityEvent = uiRelationshipActivity.createEvent("DeleteActivity", Phase.PROCESS, event.getRequestContext());
-      //      if (deleteActivityEvent != null) {
-      //        deleteActivityEvent.broadcast();
-      //      }
     }
   }
 
@@ -236,11 +238,6 @@ public class UIRelationshipActivity extends BaseUIActivity {
         Utils.getRelationshipManager().deny(relationship);
         Utils.updateWorkingWorkSpace();
       }
-      //delete this activity
-      //      Event<UIComponent> deleteActivityEvent = uiRelationshipActivity.createEvent("DeleteActivity", Phase.PROCESS, event.getRequestContext());
-      //      if (deleteActivityEvent != null) {
-      //        deleteActivityEvent.broadcast();
-      //      }
     }
 
   }

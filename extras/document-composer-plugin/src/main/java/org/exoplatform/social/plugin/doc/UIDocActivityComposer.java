@@ -76,7 +76,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   public static final String REPOSITORY = "repository";
   public static final String WORKSPACE = "collaboration";
   private final String POPUP_COMPOSER = "UIPopupComposer";
-  private final String docActivityTitle = "Shared a document <a href=\"${"+ UIDocActivity.DOCLINK +"}\">${" +UIDocActivity.DOCNAME +"}</a>";
+  private final String docActivityTitle = "Shared a document <a href=\"${"+ UIDocActivity.DOCLINK +"}\">" +
+          "${" +UIDocActivity.DOCNAME +"}</a>";
 
   private String documentRefLink;
   private String rootpath;
@@ -141,7 +142,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
       try {
         uiPopup.setWindowSize(600, 600);
 
-        UIOneNodePathSelector uiOneNodePathSelector = uiPopup.createUIComponent(UIOneNodePathSelector.class, null, "UIOneNodePathSelector");
+        UIOneNodePathSelector uiOneNodePathSelector = uiPopup.createUIComponent(UIOneNodePathSelector.class, null,
+                                                                                "UIOneNodePathSelector");
         uiOneNodePathSelector.setIsDisable(WORKSPACE, true);
         uiOneNodePathSelector.setIsShowSystem(false);
         uiOneNodePathSelector.setAcceptedNodeTypesInPathPanel(new String[] {Utils.NT_FILE});
@@ -167,9 +169,12 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   }
 
   @Override
-  public void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+  public void onPostActivity(PostContext postContext, UIComponent source,
+                             WebuiRequestContext requestContext, String postedMessage) throws Exception {
     if(!isDocumentReady){
-      requestContext.getUIApplication().addMessage(new ApplicationMessage("You have to choose document first!!!", null, ApplicationMessage.INFO));
+      requestContext.getUIApplication().addMessage(new ApplicationMessage("You have to choose document first!!!",
+                                                                           null,
+                                                                           ApplicationMessage.INFO));
     } else {
       Map<String, String> activityParams = new HashMap<String, String>();
       activityParams.put(UIDocActivity.DOCNAME, documentName);
@@ -193,7 +198,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     resetValues();
   }
 
-  private void postActivityToUser(UIComponent source, WebuiRequestContext requestContext, Map<String, String> activityParams) throws Exception {
+  private void postActivityToUser(UIComponent source, WebuiRequestContext requestContext,
+                                  Map<String, String> activityParams) throws Exception {
     UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
 
     final UIComposer uiComposer = (UIComposer) source;
@@ -220,7 +226,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     }
   }
 
-  private void postActivityToSpace(UIComponent source, WebuiRequestContext requestContext, Map<String, String> activityParams) throws Exception {
+  private void postActivityToSpace(UIComponent source, WebuiRequestContext requestContext,
+                                   Map<String, String> activityParams) throws Exception {
     final UIComposer uiComposer = (UIComposer) source;
     ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
     IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
@@ -252,7 +259,9 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     setReadyForPostingActivity(true);
   }
 
-  private ExoSocialActivity saveActivity(Map<String, String> activityParams, ActivityManager activityManager, IdentityManager identityManager, Identity ownerIdentity, String remoteUser) throws ActivityStorageException {
+  private ExoSocialActivity saveActivity(Map<String, String> activityParams, ActivityManager activityManager,
+                                         IdentityManager identityManager, Identity ownerIdentity,
+                                         String remoteUser) throws ActivityStorageException {
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
     ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                      UIDocActivity.ACTIVITY_TYPE,
@@ -262,7 +271,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     activityManager.saveActivity(ownerIdentity, activity);
     return activity;
   }
-  
+
   private String buildDocumentLink(String rawPath) {
     String portalContainerName = PortalContainer.getCurrentPortalContainerName();
     String restContextName = PortalContainer.getCurrentRestContextName();
@@ -272,7 +281,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
                                             .append("/").append(restService)
                                             .append("/").append(REPOSITORY)
                                             .append("/").append(WORKSPACE)
-                                            .append(rootpath)            
+                                            .append(rootpath)
                                             .append("/").append(rawPath).toString();
   }
 
@@ -284,7 +293,9 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     @Override
     public void execute(Event<UIDocActivityComposer> event) throws Exception {
       final UIDocActivityComposer docActivityComposer = event.getSource();
-      docActivityComposer.rootpath = new StringBuilder().append("/Users/").append(event.getRequestContext().getRemoteUser()).append("/").toString();
+      docActivityComposer.rootpath = new StringBuilder().append("/Users/").
+                                                         append(event.getRequestContext().getRemoteUser()).
+                                                         append("/").toString();
       docActivityComposer.showDocumentPopup(docActivityComposer);
     }
   }

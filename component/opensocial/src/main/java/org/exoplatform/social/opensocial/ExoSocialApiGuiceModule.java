@@ -90,8 +90,10 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
         BeanXStreamAtomConverter.class);
 
     bind(SecurityTokenDecoder.class).annotatedWith(Names.named("exo.auth.decoder")).to(ExoSecurityTokenDecoder.class);
-    bind(OAuthAuthenticationHandler.class).annotatedWith(Names.named("exo.auth.handler")).to(ExoOAuthAuthenticationHandler.class);
-    //bind(UrlParameterAuthenticationHandler.class).annotatedWith(Names.named("exo.auth.handlers.url")).to(ExoUrlAuthenticationHandler.class);
+    bind(OAuthAuthenticationHandler.class).annotatedWith(Names.named("exo.auth.handler")).
+            to(ExoOAuthAuthenticationHandler.class);
+    //bind(UrlParameterAuthenticationHandler.class).annotatedWith(Names.named("exo.auth.handlers.url")).
+    // to(ExoUrlAuthenticationHandler.class);
 
     bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(ExoAuthenticationHandlerProvider.class);
 

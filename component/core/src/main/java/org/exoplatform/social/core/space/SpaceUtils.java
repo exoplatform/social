@@ -97,9 +97,11 @@ public class SpaceUtils {
 
   private static final String               REMOTE_CATEGORY_NAME                 = "remote";
 
-  // A {@link Transliterator} instance is stateless which has for consequences that it is Thread Safe and thus can be shared among several threads as mentioned in 
+  // A {@link Transliterator} instance is stateless which has for consequences that it is Thread Safe
+  // and thus can be shared among several threads as mentioned in
   // the javadoc
-  private static final Transliterator       ACCENTS_CONVERTER                     = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
+  private static final Transliterator       ACCENTS_CONVERTER = Transliterator.getInstance("Latin; NFD; [:Nonspacing " +
+          "Mark:] Remove; NFC;");
   
   /**
    * Creates a new group from an existing group. This new group will get all
@@ -406,7 +408,8 @@ public class SpaceUtils {
     ArrayList<ModelObject> pageChildren = page.getChildren();
     Container menuContainer = findContainerById(pageChildren, MENU_CONTAINER);
 
-    org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> menuPortlet = (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) menuContainer.getChildren()
+    org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> menuPortlet =
+    (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) menuContainer.getChildren()
                                                                                                                                                                                                                                  .get(0);
 
     ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> menuState = menuPortlet.getState();
@@ -422,7 +425,9 @@ public class SpaceUtils {
     Container applicationContainer = findContainerById(pageChildren, APPLICATION_CONTAINER);
 
     try {
-      org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> applicationPortlet = (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) applicationContainer.getChildren()
+      org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> applicationPortlet =
+      (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) applicationContainer.
+                                                                                                        getChildren()
                                                                                                                                                                                                                                                  .get(0);
       ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> appState = applicationPortlet.getState();
       org.exoplatform.portal.pom.spi.portlet.Portlet appPortletPreference;
@@ -743,7 +748,9 @@ public class SpaceUtils {
    */
   static public void addCreatorToGroup(String creator, String groupId) throws SpaceException {
     PortalContainer portalContainer = PortalContainer.getInstance();
-    OrganizationService organizationService = (OrganizationService) portalContainer.getComponentInstanceOfType(OrganizationService.class);
+    OrganizationService organizationService =
+            (OrganizationService) portalContainer.getComponentInstanceOfType(OrganizationService.class);
+
     try {
       // TODO: checks whether user is already manager?
       GroupHandler groupHandler = organizationService.getGroupHandler();

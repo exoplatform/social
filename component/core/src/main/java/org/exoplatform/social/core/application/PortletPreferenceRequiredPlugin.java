@@ -28,7 +28,8 @@ import org.exoplatform.container.xml.ValuesParam;
  * Plugin for configuring portlets that let Social to store spaceUrl in its portlet-preference.
  *
  * @since Jul 30, 2010
- * @deprecated Use preferences configuration from {@link org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication} instead.
+ * @deprecated Use preferences configuration from
+ * {@link org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication} instead.
  * Tobe removed at 1.3.x
  */
 public class PortletPreferenceRequiredPlugin extends BaseComponentPlugin {

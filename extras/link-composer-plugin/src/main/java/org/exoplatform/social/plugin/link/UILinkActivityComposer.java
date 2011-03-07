@@ -189,7 +189,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
   }
 
   @Override
-  public void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+  public void onPostActivity(PostContext postContext, UIComponent source,
+                             WebuiRequestContext requestContext, String postedMessage) throws Exception {
     final UIComposer uiComposer = (UIComposer) source;
     ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
     IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);

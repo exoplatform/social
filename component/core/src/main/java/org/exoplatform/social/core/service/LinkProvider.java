@@ -90,7 +90,8 @@ public class LinkProvider {
    * @return tag <a> with a link to profile of userName on portalName
    */
   public static String getProfileLink(final String username, final String portalOwner) {
-    Identity identity = getIdentityManager().getIdentity(GlobalId.create(OrganizationIdentityProvider.NAME,username).toString(), true);
+    Identity identity = getIdentityManager().
+            getIdentity(GlobalId.create(OrganizationIdentityProvider.NAME,username).toString(), true);
     Validate.notNull(identity, "Identity must not be null.");
     return "<a href=\"" + buildProfileUri(identity.getRemoteId(), null, portalOwner)
         + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
@@ -105,7 +106,8 @@ public class LinkProvider {
    * @param host
    * @return absolute profile uri of userName
    */
-  public static String getAbsoluteProfileUrl(final String userName, final String portalName, final String portalOwner, final String host) {
+  public static String getAbsoluteProfileUrl(final String userName, final String portalName,
+                                             final String portalOwner, final String host) {
     return host + buildProfileUri(userName, portalName, portalOwner);
   }
 
@@ -183,9 +185,10 @@ public class LinkProvider {
     String avatarUrl = null;
     try {
       if (avatarAttachment != null) {
-        final String repository = ((RepositoryService) container.getComponentInstanceOfType(RepositoryService.class)).getCurrentRepository()
-                                                                                                               .getConfiguration()
-                                                                                                               .getName();
+        final String repository = ((RepositoryService) container.getComponentInstanceOfType(RepositoryService.class)).
+                getCurrentRepository().getConfiguration().getName();
+
+
         avatarUrl = "/" + container.getRestContextName() + "/jcr/" + repository + "/"
             + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?upd="
             + avatarAttachment.getLastModified();

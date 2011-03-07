@@ -433,7 +433,8 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
     spaceApplicationHandler.initApps(space, getSpaceApplicationConfigPlugin());
     for (SpaceApplication spaceApplication : getSpaceApplicationConfigPlugin().getSpaceApplicationList()) {
-      setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(), Space.ACTIVE_STATUS);
+      setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(),
+             spaceApplication.isRemovable(), Space.ACTIVE_STATUS);
     }
   }
 
@@ -963,7 +964,8 @@ public class SpaceServiceImpl implements SpaceService {
        * ".mail.header") + "\n\n"; String footerMail = "\n\n\n" +
        * res.getString(uiSpaceMember.getId()+ ".mail.footer"); String activeLink
        * = url +
-       * "?portal:componentId=managespaces&portal:type=action&portal:isSecure=false&uicomponent=UISpacesManage&op=JoinSpace&leader="
+       * "?portal:componentId=managespaces&portal:type=action&portal:isSecure=false&uicomponent=
+       * UISpacesManage&op=JoinSpace&leader="
        * +requestContext.getRemoteUser()+"&space="+uiSpaceMember.space.getId();
        * activeLink = headerMail + activeLink + footerMail;
        * mailService.sendMessage("exoservice@gmail.com",email,
@@ -1163,7 +1165,8 @@ public class SpaceServiceImpl implements SpaceService {
       this.spaceApplicationHandlers = new HashMap();
 
       ExoContainer container = ExoContainerContext.getCurrentContainer();
-      SpaceApplicationHandler appHandler = (DefaultSpaceApplicationHandler) container.getComponentInstanceOfType(DefaultSpaceApplicationHandler.class);
+      SpaceApplicationHandler appHandler =
+         (DefaultSpaceApplicationHandler) container.getComponentInstanceOfType(DefaultSpaceApplicationHandler.class);
       this.spaceApplicationHandlers.put(appHandler.getName(), appHandler);
     }
     return this.spaceApplicationHandlers;

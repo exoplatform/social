@@ -191,7 +191,8 @@ public class ActivityStorage {
    */
   public void deleteActivity(ExoSocialActivity storedActivity) throws ActivityStorageException {
     if (storedActivity.getId() == null) {
-      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_DELETE_ACTIVITY, "Failed to delete this activity. It is not stored in JCR yet.");
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_DELETE_ACTIVITY,
+              "Failed to delete this activity. It is not stored in JCR yet.");
     }
     deleteActivity(storedActivity.getId());
   }
@@ -305,7 +306,8 @@ public class ActivityStorage {
    * @return the activities related to the list of connections
    * @since 1.2.0-GA
    */
-  public List<ExoSocialActivity> getActivitiesOfConnections(List<Identity> connectionList, int offset, int limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivitiesOfConnections(List<Identity> connectionList,
+                                                            int offset, int limit) throws ActivityStorageException {
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
 
     if (connectionList == null || connectionList.isEmpty()) {
@@ -340,7 +342,8 @@ public class ActivityStorage {
         activities.add(getActivityFromActivityNode(node));
       }
     } catch (Exception e) {
-      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_OF_CONNECTIONS, e.getMessage(), e);
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_OF_CONNECTIONS,
+              e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
@@ -392,7 +395,8 @@ public class ActivityStorage {
    */
   public List<ExoSocialActivity> getActivities(Identity owner) throws ActivityStorageException {
     //here is path of activity of john  :/exo:applications/Social_Activity/organization/john/published
-    // we will query activities of owner via the way : jcr:path of activity will contains owner's remoteid and providerid(/organization/john/)
+    // we will query activities of owner via the way : jcr:path of activity will contains owner's remoteid
+    // and providerid(/organization/john/)
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     try {
       Node publishingNode = getPublishedActivityServiceHome(owner);

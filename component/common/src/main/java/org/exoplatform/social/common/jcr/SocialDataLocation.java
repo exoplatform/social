@@ -26,7 +26,8 @@ import org.exoplatform.services.log.Log;
 /**
  * This class is meant to be the starting for any data storage access in Social.<br/>
  * Provides all JCR pathes usable in Social JCR data storage. <br/>
- * A {@link JCRSessionManager} accessible by {@link #getSessionManager()} is configured on the appropriate repository and workspace.<br/>
+ * A {@link JCRSessionManager} accessible by {@link #getSessionManager()} is configured on
+ * the appropriate repository and workspace.<br/>
  * Relies on {@link NodeHierarchyCreator} to initialize the structure and provide pathes aliases.
  *
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
@@ -37,7 +38,8 @@ public class SocialDataLocation {
   private static final Log log = ExoLogger.getLogger(SocialDataLocation.class);
 
   /**
-   * Parameter name use to designate the name of the workspace in the repository where the data is stored. Should be passed in constructor's {@link InitParams}
+   * Parameter name use to designate the name of the workspace in the repository where the data is stored.
+   * Should be passed in constructor's {@link InitParams}
    */
   public static final String WORKSPACE_PARAM = "workspace";
 
@@ -66,7 +68,8 @@ public class SocialDataLocation {
   /**
    * Creates a new {@link SocialDataLocation} and initializes pathes.
    * @param params {@link #REPOSITORY_PARAM} and {@link #WORKSPACE_PARAM} are expected as value-param
-   * @param creator used to resolve path names. It is also declared here to ensure that the data structure has been initalized before.
+   * @param creator used to resolve path names. It is also declared here to ensure that the data structure
+   * has been initalized before.
    */
   public SocialDataLocation(InitParams params, NodeHierarchyCreator creator, RepositoryService repositoryService) {
     this.creator = creator;

@@ -372,7 +372,8 @@ public class IdentityStorage {
    * @return the identities by profile filter
    * @throws Exception the exception
    */
-  public final List<Identity> getIdentitiesByProfileFilter(final String identityProvider, final ProfileFilter profileFilter, long offset, long limit) throws Exception {
+  public final List<Identity> getIdentitiesByProfileFilter(final String identityProvider, final ProfileFilter profileFilter,
+                                                           long offset, long limit) throws Exception {
     String inputName = profileFilter.getName();
     String userName = processUsernameSearchPattern(inputName.trim());
     String position = addPositionSearchPattern(profileFilter.getPosition().trim());
@@ -468,7 +469,8 @@ public class IdentityStorage {
    * @return the identities filter by alpha bet
    * @throws Exception the exception
    */
-  public final List<Identity> getIdentitiesFilterByAlphaBet(final String identityProvider, final ProfileFilter profileFilter, long offset, long limit) throws Exception {
+  public final List<Identity> getIdentitiesFilterByAlphaBet(final String identityProvider, final ProfileFilter profileFilter,
+                                                            long offset, long limit) throws Exception {
     List<Identity> listIdentity = new ArrayList<Identity>();
     List<Node> nodes = null;
 
@@ -633,7 +635,8 @@ public class IdentityStorage {
    * @param session
    * @throws Exception
    */
-  protected final void addOrModifyProfileProperties(final Profile profile, final Node profileNode, final Session session) throws Exception {
+  protected final void addOrModifyProfileProperties(final Profile profile, final Node profileNode,
+                                                    final Session session) throws Exception {
     Map<String, Object> props = profile.getProperties();
 
     Iterator<Map.Entry<String, Object>> it = props.entrySet().iterator();
@@ -678,7 +681,8 @@ public class IdentityStorage {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  private void setProperty(final Node profileNode, final Session session, final String name, Object value) throws Exception {
+  private void setProperty(final Node profileNode, final Session session,
+                           final String name, Object value) throws Exception {
     if (isForcedMultiValue(name)) {
       // if it's a String, we convert it to string array to be able to store it
       if (value instanceof String) {
@@ -780,7 +784,8 @@ public class IdentityStorage {
    * @throws ConstraintViolationException the constraint violation exception
    * @throws VersionException             the version exception
    */
-  private void setProperty(final String name, final List<Map<String,Object>> props, final Node n, final Session session) throws Exception {
+  private void setProperty(final String name, final List<Map<String,Object>> props,
+                           final Node n, final Session session) throws Exception {
     String ntName = getNodeTypeName(name);
     if (ntName == null) {
       throw new Exception("no nodeType is defined for " + name);
@@ -832,7 +837,8 @@ public class IdentityStorage {
    * @throws ConstraintViolationException the constraint violation exception
    * @throws VersionException             the version exception
    */
-  private void setProperty(final String name, final String[] propValue, final Node n) throws IOException, RepositoryException, ConstraintViolationException, VersionException {
+  private void setProperty(final String name, final String[] propValue,
+                           final Node n) throws IOException, RepositoryException {
     ArrayList<Value> values = new ArrayList<Value>();
     for (String value : propValue) {
       if (value != null && value.length() > 0) {
@@ -915,7 +921,8 @@ public class IdentityStorage {
    * @throws RepositoryException the repository exception
    */
   @SuppressWarnings("unchecked")
-  protected final void loadProfile(final Profile profile, final Node profileNode, final String workspaceName) throws RepositoryException {
+  protected final void loadProfile(final Profile profile, final Node profileNode,
+                                   final String workspaceName) throws RepositoryException {
     synchronized (profile) {
       long lastLoaded = profile.getLastLoaded();
       long lastPersisted = 0;
@@ -994,7 +1001,8 @@ public class IdentityStorage {
    * @return the map
    * @throws RepositoryException the repository exception
    */
-  private Map<String, Object> copyPropertiesToMap(final PropertyIterator props, Map<String, Object> map) throws RepositoryException {
+  private Map<String, Object> copyPropertiesToMap(final PropertyIterator props,
+                                                  Map<String, Object> map) throws RepositoryException {
     if (map == null) {
       map = new HashMap<String, Object>();
     }

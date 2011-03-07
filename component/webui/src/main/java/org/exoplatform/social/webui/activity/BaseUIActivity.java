@@ -243,27 +243,31 @@ public class BaseUIActivity extends UIForm {
       } else {
         if (time < 3600) {
           value = Math.round(time / 60);
-          return resourceBundle.appRes("UIActivity.label.About_?_Minutes").replaceFirst("\\{0\\}", String.valueOf(value));
+          return resourceBundle.appRes("UIActivity.label.About_?_Minutes").
+                  replaceFirst("\\{0\\}", String.valueOf(value));
         } else {
           if (time < 7200) {
             return resourceBundle.appRes("UIActivity.label.About_An_Hour");
           } else {
             if (time < 86400) {
               value = Math.round(time / 3600);
-              return resourceBundle.appRes("UIActivity.label.About_?_Hours").replaceFirst("\\{0\\}", String.valueOf(value));
+              return resourceBundle.appRes("UIActivity.label.About_?_Hours").
+                      replaceFirst("\\{0\\}", String.valueOf(value));
             } else {
               if (time < 172800) {
                 return resourceBundle.appRes("UIActivity.label.About_A_Day");
               } else {
                 if (time < 2592000) {
                   value = Math.round(time / 86400);
-                  return resourceBundle.appRes("UIActivity.label.About_?_Days").replaceFirst("\\{0\\}", String.valueOf(value));
+                  return resourceBundle.appRes("UIActivity.label.About_?_Days").
+                          replaceFirst("\\{0\\}", String.valueOf(value));
                 } else {
                   if (time < 5184000) {
                     return resourceBundle.appRes("UIActivity.label.About_A_Month");
                   } else {
                     value = Math.round(time / 2592000);
-                    return resourceBundle.appRes("UIActivity.label.About_?_Months").replaceFirst("\\{0\\}", String.valueOf(value));
+                    return resourceBundle.appRes("UIActivity.label.About_?_Months").
+                            replaceFirst("\\{0\\}", String.valueOf(value));
                   }
                 }
               }
@@ -283,7 +287,8 @@ public class BaseUIActivity extends UIForm {
   }
 
   protected void saveComment(String remoteUser, String message) throws Exception {
-    ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(), SpaceService.SPACES_APP_ID, message, null);
+    ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
+            SpaceService.SPACES_APP_ID, message, null);
     Utils.getActivityManager().saveComment(getActivity(), comment);
     comments = Utils.getActivityManager().getComments(getActivity());
     setCommentListStatus(CommentStatus.ALL);
@@ -370,7 +375,8 @@ public class BaseUIActivity extends UIForm {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
       if (uiUserActivitiesDisplay != null && !uiUserActivitiesDisplay.isActivityStreamOwner()) {
         String ownerName = uiUserActivitiesDisplay.getOwnerName();
-        Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
+        Identity ownerIdentity = Utils.getIdentityManager().
+                getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
         Relationship relationship = Utils.getRelationshipManager().get(ownerIdentity, Utils.getViewerIdentity());
         if (relationship == null) {
           return false;
@@ -519,7 +525,8 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      Utils.getActivityManager().deleteComment(uiActivity.getActivity().getId(), requestContext.getRequestParameter(OBJECTID));
+      Utils.getActivityManager().deleteComment(uiActivity.getActivity().getId(),
+                                               requestContext.getRequestParameter(OBJECTID));
       uiActivity.refresh();
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
     }

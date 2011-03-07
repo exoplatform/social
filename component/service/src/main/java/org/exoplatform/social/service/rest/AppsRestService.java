@@ -180,7 +180,8 @@ public class AppsRestService implements ResourceContainer {
   private ApplicationRegistryService getApplicationRegistryService() {
     if (_applicationRegistryService == null) {
       PortalContainer portalContainer = PortalContainer.getInstance();
-      _applicationRegistryService = (ApplicationRegistryService) portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
+      _applicationRegistryService = (ApplicationRegistryService) portalContainer.
+              getComponentInstanceOfType(ApplicationRegistryService.class);
     }
     return _applicationRegistryService;
   }

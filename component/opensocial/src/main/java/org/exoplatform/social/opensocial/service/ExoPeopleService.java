@@ -304,7 +304,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @return the preferences
    * @throws Exception the exception
    */
-  private Map<String, String> getPreferences(String userID, String gadgetId, String instanceID, Set<String> fields) throws Exception {
+  private Map<String, String> getPreferences(String userID, String gadgetId, String instanceID,
+                                             Set<String> fields) throws Exception {
 //      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
 //      UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
 //
@@ -322,7 +323,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @param values     the values
    * @throws Exception the exception
    */
-  private void savePreferences(String userID, String gadgetId, String instanceID, Map<String, String> values) throws Exception {
+  private void savePreferences(String userID, String gadgetId, String instanceID,
+                               Map<String, String> values) throws Exception {
 //    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
 //    UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
 //
@@ -375,8 +377,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
   /**
    * {@inheritDoc}
    */
-  public Future<Void> updatePersonData(UserId user, GroupId groupId, String appId,
-                                       Set<String> fields, Map<String, String> values, SecurityToken token) throws ProtocolException {
+  public Future<Void> updatePersonData(UserId user, GroupId groupId, String appId, Set<String> fields,
+                                       Map<String, String> values, SecurityToken token) throws ProtocolException {
     //TODO: remove the fields that are in the fields list and not in the values map
     try {
       if (token instanceof AnonymousSecurityToken) {

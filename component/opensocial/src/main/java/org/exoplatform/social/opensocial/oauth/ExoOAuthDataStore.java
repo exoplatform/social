@@ -66,7 +66,8 @@ public class ExoOAuthDataStore implements OAuthDataStore {
   private static final Log LOG = ExoLogger.getExoLogger(ExoOAuthDataStore.class);
 
   @Inject
-  public ExoOAuthDataStore(ExoPeopleService peopleService, ExoActivityService activityService, @Named("shindig.oauth.base-url") String baseUrl) {
+  public ExoOAuthDataStore(ExoPeopleService peopleService, ExoActivityService activityService,
+                           @Named("shindig.oauth.base-url") String baseUrl) {
     this.peopleService = peopleService;
     this.activityService = activityService;
     this.SERVICE_PROVIDER = new OAuthServiceProvider(baseUrl + "requestToken", baseUrl + "authorize", baseUrl + "accessToken");

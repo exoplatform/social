@@ -76,12 +76,14 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       params.put(RECEIVER_PARAM, receiverRemoteId);
       params.put(RELATIONSHIP_UUID_PARAM, relationship.getId());
 
-      ExoSocialActivity activity1 = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" + receiverRemoteId, null);
+      ExoSocialActivity activity1 = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE,
+              "I am now connected with @" + receiverRemoteId, null);
       activity1.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       activity1.setTemplateParams(params);
       activityManager.saveActivity(sender, activity1);
 
-      ExoSocialActivity activity2 = new ExoSocialActivityImpl(receiver.getId(), RELATIONSHIP_ACTIVITY_TYPE, "I am now connected with @" +  senderRemoteId, null);
+      ExoSocialActivity activity2 = new ExoSocialActivityImpl(receiver.getId(), RELATIONSHIP_ACTIVITY_TYPE,
+              "I am now connected with @" +  senderRemoteId, null);
       activity2.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       activity2.setTemplateParams(params);
       activityManager.saveActivity(receiver, activity2);
@@ -129,13 +131,15 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       params.put(RECEIVER_PARAM, receiverRemoteId);
       params.put(RELATIONSHIP_UUID_PARAM, relationship.getId());
 
-      ExoSocialActivity activity1 = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE, "@" + senderRemoteId + " has invited @" +  receiverRemoteId + " to connect", null);
+      ExoSocialActivity activity1 = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE,
+              "@" + senderRemoteId + " has invited @" +  receiverRemoteId + " to connect", null);
       activity1.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       activity1.setTemplateParams(params);
       activityManager.saveActivity(sender, activity1);
 
       //TODO hoatle a quick fix for activities gadget to allow deleting this activity
-      ExoSocialActivity activity2 = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE, "@" + senderRemoteId + " has invited @" +  receiverRemoteId + " to connect", null);
+      ExoSocialActivity activity2 = new ExoSocialActivityImpl(sender.getId(), RELATIONSHIP_ACTIVITY_TYPE,
+              "@" + senderRemoteId + " has invited @" +  receiverRemoteId + " to connect", null);
       activity2.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       activity2.setTemplateParams(params);
       activityManager.saveActivity(receiver, activity2);

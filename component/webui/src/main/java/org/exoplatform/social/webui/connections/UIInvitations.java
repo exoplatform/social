@@ -209,7 +209,8 @@ public class UIInvitations extends UIContainer {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts, UIPageIterator uiPageIterator) throws Exception {
+  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts,
+                                                    UIPageIterator uiPageIterator) throws Exception {
     int curPage = uiPageIterator.getCurrentPage();
     LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
     uiPageIterator.setPageList(pageListContact);

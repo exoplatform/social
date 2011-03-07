@@ -78,7 +78,8 @@ public class UIAvatarUploader extends UIForm {
   private static final int uploadLimit = 2; //MB
 
   /** List of accepted mimetype. */
-  private static final String[] ACCEPTED_MIME_TYPES = new String[] {"image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
+  private static final String[] ACCEPTED_MIME_TYPES = new String[] {"image/jpeg", "image/jpg", "image/png",
+          "image/x-png", "image/pjpeg"};
 
   /** Contains pair of IE Mimetype and Standard Mimetype. */
   private final Map<String, String> IE_MIME_TYPES = new HashMap<String, String>() {

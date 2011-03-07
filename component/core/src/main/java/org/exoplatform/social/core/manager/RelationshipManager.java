@@ -364,7 +364,8 @@ public interface RelationshipManager {
    * @throws Exception the exception
    * @since 1.2.0-GA
    */
-  List<Relationship> getAll(Identity identity, Relationship.Type type, List<Identity> identities) throws RelationshipStorageException;
+  List<Relationship> getAll(Identity identity, Relationship.Type type,
+                            List<Identity> identities) throws RelationshipStorageException;
 
   /**
    * Gets the relationship.

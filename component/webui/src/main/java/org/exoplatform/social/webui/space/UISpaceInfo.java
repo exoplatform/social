@@ -231,7 +231,8 @@ public class UISpaceInfo extends UIForm {
         UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
         UITabPane uiTabPane = uiSpaceSetting.getChild(UITabPane.class);
         UISpaceNavigationManagement uiSpaceNavigationManagement = uiTabPane.getChild(UISpaceNavigationManagement.class);
-        UISpaceNavigationNodeSelector uiSpaceNavigationNodeSelector = uiSpaceNavigationManagement.getChild(UISpaceNavigationNodeSelector.class);
+        UISpaceNavigationNodeSelector uiSpaceNavigationNodeSelector =
+                uiSpaceNavigationManagement.getChild(UISpaceNavigationNodeSelector.class);
         PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
         uiSpaceNavigationNodeSelector.setEdittedNavigation(groupNav);
         //reset edittedTreeNodeData with null value after changing name space.
