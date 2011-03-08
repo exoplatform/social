@@ -397,8 +397,9 @@ public class SpaceUtils {
     Container menuContainer = findContainerById(pageChildren, MENU_CONTAINER);
 
     org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> menuPortlet =
-            (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) menuContainer.getChildren()
-                    .get(0);
+    (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) menuContainer
+              .getChildren()
+              .get(0);
 
     ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> menuState = menuPortlet.getState();
     org.exoplatform.portal.pom.spi.portlet.Portlet menuPortletPreference;
@@ -414,9 +415,9 @@ public class SpaceUtils {
 
     try {
       org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> applicationPortlet =
-              (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) applicationContainer.
-                      getChildren()
-                      .get(0);
+      (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) applicationContainer
+              .getChildren()
+              .get(0);
       ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> appState = applicationPortlet.getState();
       org.exoplatform.portal.pom.spi.portlet.Portlet appPortletPreference;
       try {
