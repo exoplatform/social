@@ -198,9 +198,6 @@ public class UISocialNavigation extends UIComponent {
         selectNav = uiPortal.getSelectedNavigation();
       } else {
         String navId = uri.substring(0, index);
-        // TODO dang.tung 3.0
-        // selectNav = uiPortal.getPageNavigation(Integer.parseInt(navId));
-        // TODO dang.tung
       }
       PageNode selectNode = PageNavigationUtils.searchPageNodeByUri(selectNav, id);
       uiNavigation.selectedNode_ = selectNode;

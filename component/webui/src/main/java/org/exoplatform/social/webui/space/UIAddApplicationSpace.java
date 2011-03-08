@@ -32,30 +32,34 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
+
 /**
  * UIAddApplicationSpace used for installing application to space <br />
- *
+ * <p/>
  * Created by The eXo Platform SARL
+ *
  * @author dang.tung <tungcnw at gmail dot com>
  * @since Sep 12, 2008
  */
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template =  "classpath:groovy/social/webui/space/UIAddApplicationSpace.gtmpl",
+  template = "classpath:groovy/social/webui/space/UIAddApplicationSpace.gtmpl",
   events = {
     @EventConfig(listeners = UIAddApplicationSpace.CloseActionListener.class),
     @EventConfig(listeners = UIAddApplicationSpace.InstallActionListener.class)
   }
 )
-public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
+public class UIAddApplicationSpace extends UIForm implements UIPopupComponent {
 
   private UIPageIterator iterator_;
   private String spaceId;
-  private final static String iteratorID = "UIIteratorAddSpaceApplication";
+  private static final String iteratorID = "UIIteratorAddSpaceApplication";
   private final String HOME_APPLICATION = "HomeSpacePortlet";
+
   /**
    * constructor
+   *
    * @throws Exception
    */
   public UIAddApplicationSpace() throws Exception {
@@ -65,6 +69,7 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
 
   /**
    * sets spaceId for current space
+   *
    * @param spaceId
    * @throws Exception
    */
@@ -75,22 +80,19 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
     list = SpaceUtils.getApplications(space.getGroupId());
     // remove installed app
     String appList = space.getApp();
-    if(appList != null) {
-      for(Application app : list) {
+    if (appList != null) {
+      for (Application app : list) {
         String appName = app.getApplicationName();
-        if(appList.contains(appName) || appName.equals(HOME_APPLICATION)){
+        if (appList.contains(appName) || appName.equals(HOME_APPLICATION)) {
           list.remove(app);
         }
       }
     }
-    //TODO dang.tung 3.0
-    //PageList pageList = new ObjectPageList(list,3);
-    //iterator_.setPageList(pageList);
-    //TODO dang.tung 3.0
   }
 
   /**
    * gets application list
+   *
    * @return application list
    * @throws Exception
    */
@@ -103,19 +105,22 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
 
   /**
    * gets uiPageIterator
+   *
    * @return uiPageIterator
    */
-  public UIPageIterator getUIPageIterator() { return iterator_;}
+  public UIPageIterator getUIPageIterator() {
+    return iterator_;
+  }
 
   /**
    * triggers this action when user clicks on close button.
-   * @author hoatle
    *
+   * @author hoatle
    */
-  static public class CloseActionListener extends EventListener<UIAddApplicationSpace> {
+  public static class CloseActionListener extends EventListener<UIAddApplicationSpace> {
     public void execute(Event<UIAddApplicationSpace> event) throws Exception {
       UIAddApplicationSpace uiSpaceApp = event.getSource();
-      UISpaceApplication uiForm = (UISpaceApplication)uiSpaceApp.getAncestorOfType(UISpaceApplication.class);
+      UISpaceApplication uiForm = (UISpaceApplication) uiSpaceApp.getAncestorOfType(UISpaceApplication.class);
       UIPopupContainer uiPopup = uiForm.getChild(UIPopupContainer.class);
       uiPopup.cancelPopupAction();
     }
@@ -123,10 +128,10 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
 
   /**
    * triggers this action when user clicks on install button.
-   * @author hoatle
    *
+   * @author hoatle
    */
-  static public class InstallActionListener extends EventListener<UIAddApplicationSpace> {
+  public static class InstallActionListener extends EventListener<UIAddApplicationSpace> {
     public void execute(Event<UIAddApplicationSpace> event) throws Exception {
       UIAddApplicationSpace uiform = event.getSource();
       SpaceService spaceService = uiform.getApplicationComponent(SpaceService.class);
@@ -135,7 +140,7 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
       spaceService.installApplication(uiform.spaceId, appId);
       spaceService.activateApplication(uiform.spaceId, appId);
 
-      UISpaceApplication uiForm = (UISpaceApplication)uiform.getAncestorOfType(UISpaceApplication.class);
+      UISpaceApplication uiForm = uiform.getAncestorOfType(UISpaceApplication.class);
       Space space = spaceService.getSpaceById(uiform.spaceId);
       uiForm.setValue(space);
       SpaceUtils.updateWorkingWorkSpace();
@@ -145,7 +150,9 @@ public class UIAddApplicationSpace  extends UIForm implements UIPopupComponent {
     }
   }
 
-  public void activate() throws Exception {}
+  public void activate() throws Exception {
+  }
 
-  public void deActivate() throws Exception {}
+  public void deActivate() throws Exception {
+  }
 }

@@ -30,7 +30,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.IdentityStorage;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ProfileConfig.
  */

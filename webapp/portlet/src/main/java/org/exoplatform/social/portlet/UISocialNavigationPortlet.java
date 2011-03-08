@@ -30,7 +30,6 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
  * {@link UISocialNavigationPortlet} used to manage social navigation link.
- *
  */
 @ComponentConfigs({
   @ComponentConfig(
@@ -46,17 +45,14 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UISocialNavigationPortlet extends UIPortletApplication {
   /**
    * constructor
+   *
    * @throws Exception
    */
-  public UISocialNavigationPortlet() throws  Exception {
-    PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance();
+  public UISocialNavigationPortlet() throws Exception {
+    PortletRequestContext context = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
     PortletRequest prequest = context.getRequest();
-    PortletPreferences prefers = prequest.getPreferences() ;
-    //String template =  prefers.getValue("template", "app:/groovy/portal/webui/navigation/UISocialNavigationPortlet.gtmpl");
+    PortletPreferences prefers = prequest.getPreferences();
     UISocialNavigation portalNavigation = addChild(UISocialNavigation.class, "UIHorizontalNavigation", null);
     portalNavigation.setUseAjax(Boolean.valueOf(prefers.getValue("useAJAX", "true")));
-    //TODO dang.tung 3.0
-    //portalNavigation.getComponentConfig().setTemplate(template);
-    //TODO dang.tung
   }
 }

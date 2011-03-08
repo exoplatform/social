@@ -59,14 +59,6 @@ import com.google.inject.name.Names;
  *          tungcnw@gmail.com
  * Oct 7, 2009
  */
-
-/*
- * TODO tung.dang: this class stand for social Guice module of social project
- *            because of some conflict Guice module of portal and social so I
- *            have to extends this class to AbstractModule (should be SocialApiGuiceModule)
- *            NEED to improve it when update portal, social and shindig.
- *
- * */
 public class ExoSocialApiGuiceModule  extends AbstractModule {
 
 
@@ -104,7 +96,6 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
     bind(String.class).annotatedWith(Names.named("shindig.canonical.json.db"))
     .toInstance("sampledata/canonicaldb.json");
 
-    //TODO dang.tung - for exo social
     bind(PersonService.class).to(ExoPeopleService.class);
     bind(AppDataService.class).to(ExoPeopleService.class);
     bind(ActivityService.class).to(ExoActivityService.class);

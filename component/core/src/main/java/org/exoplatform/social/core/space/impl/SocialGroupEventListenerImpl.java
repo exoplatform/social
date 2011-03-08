@@ -32,8 +32,10 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
 
   private SpaceService spaceService;
 
+  /**
+   * Constructor.
+   */
   public SocialGroupEventListenerImpl() {
-    // TODO Auto-generated constructor stub
   }
 
   /**
@@ -103,8 +105,9 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
 
   private SpaceService getSpaceService() {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    if (spaceService == null)
+    if (spaceService == null) {
       spaceService = (SpaceService) container.getComponentInstance(SpaceService.class);
+    }
 
     return spaceService;
   }

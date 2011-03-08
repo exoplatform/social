@@ -948,32 +948,6 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     saveSpace(space, false);
-
-    // we'll sent a email to invite user
-    // TODO: This should be done in a Service in a separated thread
-    // TODO: need to be redone
-    try {
-      /*
-       * MailService mailService = (MailService)
-       * container.getComponentInstanceOfType(MailService.class); ResourceBundle
-       * res = requestContext.getApplicationResourceBundle(); String email =
-       * orgService.getUserHandler().findUserByName(userId).getEmail();
-       * PortalRequestContext portalRequest = Util.getPortalRequestContext();
-       * String url = portalRequest.getRequest().getRequestURL().toString();
-       * String headerMail = res.getString(uiSpaceMember.getId()+
-       * ".mail.header") + "\n\n"; String footerMail = "\n\n\n" +
-       * res.getString(uiSpaceMember.getId()+ ".mail.footer"); String activeLink
-       * = url +
-       * "?portal:componentId=managespaces&portal:type=action&portal:isSecure=false&uicomponent=
-       * UISpacesManage&op=JoinSpace&leader="
-       * +requestContext.getRemoteUser()+"&space="+uiSpaceMember.space.getId();
-       * activeLink = headerMail + activeLink + footerMail;
-       * mailService.sendMessage("exoservice@gmail.com",email,
-       * "Invite to join space " + uiSpaceMember.space.getName(), activeLink);
-       */
-    } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.ERROR_SENDING_CONFIRMATION_EMAIL, e);
-    }
   }
 
   /**

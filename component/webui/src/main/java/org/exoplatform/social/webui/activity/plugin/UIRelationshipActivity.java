@@ -246,7 +246,6 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
     @Override
     public void execute(Event<UIRelationshipActivity> event) throws Exception {
-      // TODO Auto-generated method stub
     }
   }
 }

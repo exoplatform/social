@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.profile;
 
-// TODO: Auto-generated Javadoc
 /**
  * Created by The eXo Platform SARL
  * Author : dang.tung

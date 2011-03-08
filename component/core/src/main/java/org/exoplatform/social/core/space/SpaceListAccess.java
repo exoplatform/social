@@ -21,7 +21,6 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.space.model.Space;
 
-// TODO: Auto-generated Javadoc
 /**
  * SpaceListAccess for LazyPageList usage
  * 
