@@ -116,7 +116,8 @@ public interface ActivityManager {
    * @return the activities of the list of connections
    * @since 1.2.0-GA
    */
-  List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) throws ActivityStorageException;
+  List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity,
+                                                     int offset, int limit) throws ActivityStorageException;
 
   /**
    * Gets the activities from all spaces of a user.
@@ -203,7 +204,8 @@ public interface ActivityManager {
    * @param activity
    * @return the stored activity
    * @throws Exception
-   * @deprecated use {@link ActivityManager#saveActivity(org.exoplatform.social.core.identity.model.Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity)}  instead.
+   * @deprecated use {@link ActivityManager#saveActivity(org.exoplatform.social.core.identity.model.Identity,
+   *                                                     org.exoplatform.social.core.activity.model.ExoSocialActivity)} instead.
    *             Will be removed by 1.3.x
    */
   ExoSocialActivity recordActivity(Identity owner, ExoSocialActivity activity) throws Exception;

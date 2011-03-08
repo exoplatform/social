@@ -48,7 +48,6 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -197,7 +196,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
           p.setGender(Person.Gender.male);
         }
       } else if (ExoPersonImpl.Field.SPACES.toString().equals(field)) {
-        List<org.exoplatform.social.opensocial.model.Space> spaces = new ArrayList<org.exoplatform.social.opensocial.model.Space>();
+        List<org.exoplatform.social.opensocial.model.Space> spaces =
+                new ArrayList<org.exoplatform.social.opensocial.model.Space>();
         //TODO: dang.tung: improve space to person, it will auto convert field by shindig
         SpaceService spaceService = (SpaceService) (container.getComponentInstanceOfType(SpaceService.class));
         try {

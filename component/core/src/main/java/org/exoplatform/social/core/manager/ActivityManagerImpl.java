@@ -132,7 +132,8 @@ public class ActivityManagerImpl implements ActivityManager {
   /**
    * {@inheritDoc}
    */
-  public List<ExoSocialActivity> getActivities(Identity identity, long start, long limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivities(Identity identity,
+                                               long start, long limit) throws ActivityStorageException {
     List<ExoSocialActivity> activityList = storage.getActivities(identity, start, limit);
     for (ExoSocialActivity activity : activityList) {
       processActivitiy(activity);
@@ -158,7 +159,8 @@ public class ActivityManagerImpl implements ActivityManager {
   /**
    * {@inheritDoc}
    */
-  public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity,
+                                                            int offset, int limit) throws ActivityStorageException {
     List<Identity> connectionList = null;
     try {
       connectionList = identityManager.getConnections(ownerIdentity);
@@ -171,7 +173,8 @@ public class ActivityManagerImpl implements ActivityManager {
   /**
    * {@inheritDoc}
    * By default, the activity list is composed of all spaces' activities.
-   * Each activity list of the space contains maximum 20 activities and are returned sorted starting from the most recent.
+   * Each activity list of the space contains maximum 20 activities
+   * and are returned sorted starting from the most recent.
    */
   public List<ExoSocialActivity> getActivitiesOfUserSpaces(Identity ownerIdentity) {
     spaceService = this.getSpaceService();
@@ -276,7 +279,8 @@ public class ActivityManagerImpl implements ActivityManager {
   /**
    * {@inheritDoc}
    */
-  public ExoSocialActivity recordActivity(Identity owner, String type, String title, String body) throws ActivityStorageException {
+  public ExoSocialActivity recordActivity(Identity owner, String type,
+                                          String title, String body) throws ActivityStorageException {
     String userId = owner.getId();
     ExoSocialActivity activity = new ExoSocialActivityImpl(userId, type, title, body);
     return saveActivity(owner, activity);

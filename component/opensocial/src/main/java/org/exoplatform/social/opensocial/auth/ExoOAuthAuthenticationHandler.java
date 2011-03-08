@@ -34,7 +34,8 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
   private String portalContainerName;
 
   @Inject
-  public ExoOAuthAuthenticationHandler(OAuthDataStore store, @Named("shindig.oauth.legacy-body-signing") boolean allowLegacyBodySigning) {
+  public ExoOAuthAuthenticationHandler(OAuthDataStore store,
+                                       @Named("shindig.oauth.legacy-body-signing") boolean allowLegacyBodySigning) {
     super(store, allowLegacyBodySigning);
   }
 
@@ -43,11 +44,13 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
   }
 
   public String getPortalContainerName() {
-    if(portalContainerName == null){
-      RestPortalContainerNameConfig containerNameConfigRest = (RestPortalContainerNameConfig) PortalContainer.getInstance().getComponentInstanceOfType(RestPortalContainerNameConfig.class);
+    if (portalContainerName == null) {
+      RestPortalContainerNameConfig containerNameConfigRest = (RestPortalContainerNameConfig) PortalContainer.
+              getInstance().
+              getComponentInstanceOfType(RestPortalContainerNameConfig.class);
       portalContainerName = containerNameConfigRest.getContainerName();
     }
-    
+
     return portalContainerName;
   }
 
@@ -62,7 +65,7 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
       crypter = new BasicBlobCrypter(new File(keyFile));
       crypter.timeSource = new TimeSource();
 
-      portalContainer = getPortalContainerName(); 
+      portalContainer = getPortalContainerName();
       domain = securityToken.getDomain();
     } catch (Exception e) {
       LOG.warn("Failed to get security token from request", e);
@@ -82,10 +85,10 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
     return super.getWWWAuthenticateHeader(realm);
   }
 
-     /**
-    * Method returns a path to the file containing the encryption key
-    */
-  private String getKeyFilePath(){
+  /**
+   * Method returns a path to the file containing the encryption key
+   */
+  private String getKeyFilePath() {
     J2EEServerInfo info = new J2EEServerInfo();
     String confPath = info.getExoConfigurationDirectory();
     File keyFile = null;
@@ -93,7 +96,7 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
     if (confPath != null) {
       File confDir = new File(confPath);
       if (confDir != null && confDir.exists() && confDir.isDirectory()) {
-         keyFile = new File(confDir, "gadgets/key.txt");
+        keyFile = new File(confDir, "gadgets/key.txt");
       }
     }
 

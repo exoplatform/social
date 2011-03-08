@@ -21,8 +21,8 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 
 /**
- * StringListAcess.java used for LazyPageList <br />
- * Created by The eXo Platform SAS
+ * StringListAcess.java used for LazyPageList <br /> Created by The eXo Platform SAS
+ *
  * @author eXoPlatform <exo at exoplatform dot com>
  * @since Aug 28, 2009
  */
@@ -31,6 +31,7 @@ public class StringListAccess implements ListAccess<String> {
 
   /**
    * constructor
+   *
    * @param list string list
    */
   public StringListAccess(List<String> list) {
@@ -38,18 +39,23 @@ public class StringListAccess implements ListAccess<String> {
   }
 
   public String[] load(int index, int length) throws Exception, IllegalArgumentException {
-    if (index < 0)
+    if (index < 0) {
       throw new IllegalArgumentException("Illegal index: index must be a positive number");
+    }
 
-    if (length < 0)
+    if (length < 0) {
       throw new IllegalArgumentException("Illegal length: length must be a positive number");
+    }
 
-    if (index + length > list.size())
-      throw new IllegalArgumentException("Illegal index or length: sum of the index and the length cannot be greater than the list size");
+    if (index + length > list.size()) {
+      throw new IllegalArgumentException("Illegal index or length: sum of the index "
+                                         + "and the length cannot be greater than the list size");
+    }
 
     String result[] = new String[length];
-    for (int i = 0; i < length; i++)
+    for (int i = 0; i < length; i++) {
       result[i] = list.get(i + index);
+    }
 
     return result;
   }

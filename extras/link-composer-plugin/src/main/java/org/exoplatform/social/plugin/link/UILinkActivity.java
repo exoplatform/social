@@ -39,8 +39,10 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
      @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
      @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
      @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
-     @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class, confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Activity"),
-     @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class, confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Comment")
+     @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class,
+                  confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Activity"),
+     @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class,
+                  confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Comment")
    }
  )
 public class UILinkActivity extends BaseUIActivity {

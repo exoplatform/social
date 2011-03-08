@@ -31,7 +31,8 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
 
   private String successIcon = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/GreenFlag.gif";
   private String failureIcon = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/RedFlag.gif";
-  private String hudsonLogo = "http://wiki.hudson-ci.org/download/attachments/2916393/banner-100.png?version=1&modificationDate=1185846429000";
+  private String hudsonLogo = "http://wiki.hudson-ci.org/download/attachments/2916393/banner-100.png" +
+                              "?version=1&modificationDate=1185846429000";
   private String baseUrl;
 
   private String project;
@@ -112,7 +113,8 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
 
   private String message(String status, String link, String title) {
     String icon = (status == BuildStatus.SUCCESS.name()) ? successIcon : failureIcon;
-    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;<a href=\""+ link+"\" target=\"_blank\">" + title + "</a>";
+    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;" +
+            "<a href=\""+ link+"\" target=\"_blank\">" + title + "</a>";
   }
 
   private Identity getHudsonIdentity() throws Exception {

@@ -65,58 +65,60 @@ import org.exoplatform.social.core.space.spi.SpaceService;
  */
 
 public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
-  private static final Log     LOG                    = ExoLogger.getLogger(DefaultSpaceApplicationHandler.class);
+  private static final Log LOG = ExoLogger.getLogger(DefaultSpaceApplicationHandler.class);
 
-  public static final String   NAME                   = "classic";
+  public static final String NAME = "classic";
 
-  public static final String   SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
+  public static final String SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
 
-  public static final String   APPLICATION_CONTAINER  = "Application";
+  public static final String APPLICATION_CONTAINER = "Application";
 
-  private static final String  SPACE_DEFAULT_ICON     = "SpaceDefaultIcon";
+  private static final String SPACE_DEFAULT_ICON = "SpaceDefaultIcon";
 
   /**
    * The {groupId} preference value pattern
    *
    * @since 1.2.0-GA
    */
-  private static final String                                GROUP_ID_PREFERENCE = "{groupId}";
+  private static final String GROUP_ID_PREFERENCE = "{groupId}";
 
   /**
    * The {modifiedGroupId} preference value pattern
    *
    * @since 1.2.0-GA
    */
-  private static final String                                MODIFIED_GROUP_ID_PREFERENCE = "{modifiedGroupId}";
+  private static final String MODIFIED_GROUP_ID_PREFERENCE = "{modifiedGroupId}";
 
   /**
    * The {pageName} preference value pattern
    *
    * @since 1.2.0-GA
    */
-  private static final String                                PAGE_NAME_PREFERENCE = "{pageName}";
+  private static final String PAGE_NAME_PREFERENCE = "{pageName}";
 
   /**
    * The {pageUrl} preference value pattern
+   *
    * @since 1.2.0-GA
    */
-  private static final String                                PAGE_URL_PREFERENCE = "{pageUrl}";
+  private static final String PAGE_URL_PREFERENCE = "{pageUrl}";
 
   /**
    * The {spaceUrl} preference value pattern
+   *
    * @since 1.2.0-GA
    */
-  private static final String                                SPACE_URL_PREFERENCE = "{spaceUrl}";
+  private static final String SPACE_URL_PREFERENCE = "{spaceUrl}";
 
-  private PortalContainer                                    container              = PortalContainer.getInstance();
+  private PortalContainer container = PortalContainer.getInstance();
 
-  private DataStorage                                        dataStorage            = null;
+  private DataStorage dataStorage = null;
 
-  private SpaceService                                       spaceService;
+  private SpaceService spaceService;
 
-  private static Map<ApplicationCategory, List<Application>> appStoreCache          = null;
+  private static Map<ApplicationCategory, List<Application>> appStoreCache = null;
 
-  private static List<Application>                           appCache               = new ArrayList<Application>();
+  private static List<Application> appCache = new ArrayList<Application>();
 
   /**
    * Constructor.
@@ -161,8 +163,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       String groupId = space.getGroupId();
       PageNavigation spaceNav = SpaceUtils.getGroupNavigation(groupId);
       // return in case group navigation was removed by portal SOC-548
-      if (spaceNav == null)
+      if (spaceNav == null) {
         return;
+      }
       ArrayList<PageNode> spaceNodes = spaceNav.getNodes();
       for (PageNode spaceNode : spaceNodes) {
         String pageId = spaceNode.getPageReference();
@@ -294,8 +297,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
 
       // return in case group navigation was removed by portal SOC-548
-      if (nav == null)
+      if (nav == null) {
         return;
+      }
       PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
       if (homeNode == null) {
         throw new Exception("homeNode is null!");
@@ -345,29 +349,28 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    */
   private Application getApplication(List<Application> apps, String appId) {
     for (Application app : apps) {
-      if (app.getApplicationName().equals(appId))
+      if (app.getApplicationName().equals(appId)) {
         return app;
+      }
     }
     return null;
   }
 
   /**
-   * Creates page node from application. - Creates Application instance from
-   * appId. <br />
-   * - Creates Page instance and set the newly-created application for that
-   * page; adds application to container. <br />
-   * - Creates PageNode instance and returns that pageNode.
+   * Creates page node from application. - Creates Application instance from appId. <br /> - Creates Page instance and set
+   * the newly-created application for that page; adds application to container. <br /> - Creates PageNode instance and
+   * returns that pageNode.
    *
    * @param space
-   * @param  spaceApplication
+   * @param spaceApplication
    * @param isRoot
    * @return
    * @since 1.2.0-GA
    */
-private PageNode createPageNodeFromApplication(Space space,
-                                               SpaceApplication spaceApplication,
-                                               String appName,
-                                               boolean isRoot) throws SpaceException {
+  private PageNode createPageNodeFromApplication(Space space,
+                                                 SpaceApplication spaceApplication,
+                                                 String appName,
+                                                 boolean isRoot) throws SpaceException {
     String appId = spaceApplication.getPortletName();
     Application app = getApplication(space, appId);
     String contentId = app.getContentId();
@@ -375,7 +378,7 @@ private PageNode createPageNodeFromApplication(Space space,
       contentId = app.getCategoryName() + "/" + app.getApplicationName();
     }
     String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + contentId
-        + "/" + app.getApplicationName() + System.currentTimeMillis();
+            + "/" + app.getApplicationName() + System.currentTimeMillis();
     org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication = null;
     org.exoplatform.portal.config.model.Application<Portlet> portletApplication = null;
 
@@ -383,11 +386,11 @@ private PageNode createPageNodeFromApplication(Space space,
       TransientApplicationState<Gadget> gadgetState = new TransientApplicationState<Gadget>(app.getApplicationName());
       gadgetApplication = org.exoplatform.portal.config.model.Application.createGadgetApplication();
       gadgetApplication.setState(gadgetState);
-      gadgetApplication.setAccessPermissions(new String[] { "*:" + space.getGroupId() });
+      gadgetApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
       gadgetApplication.setShowInfoBar(false);
     } else {
       portletApplication = createPortletApplication(appInstanceId, space, isRoot);
-      portletApplication.setAccessPermissions(new String[] { "*:" + space.getGroupId() });
+      portletApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
       portletApplication.setShowInfoBar(false);
     }
 
@@ -400,8 +403,8 @@ private PageNode createPageNodeFromApplication(Space space,
     Page page = null;
     try {
       page = userPortalConfigService.createPageTemplate("space",
-                                                        PortalConfig.GROUP_TYPE,
-                                                        space.getGroupId());
+              PortalConfig.GROUP_TYPE,
+              space.getGroupId());
       page.setName(pageName);
       page.setTitle(pageTitle);
       page.setModifiable(true);
@@ -487,9 +490,9 @@ private PageNode createPageNodeFromApplication(Space space,
                        Page page) {
     String visibility = space.getVisibility();
     if (visibility.equals(Space.PUBLIC)) {
-      page.setAccessPermissions(new String[] { UserACL.EVERYONE });
+      page.setAccessPermissions(new String[]{UserACL.EVERYONE});
     } else {
-      page.setAccessPermissions(new String[] { "*:" + space.getGroupId() });
+      page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
     }
     page.setEditPermission("manager:" + space.getGroupId());
 
@@ -498,7 +501,7 @@ private PageNode createPageNodeFromApplication(Space space,
     Container menuContainer = SpaceUtils.findContainerById(pageChilds, SpaceUtils.MENU_CONTAINER);
     org.exoplatform.portal.config.model.Application<Portlet> menuPortlet =
             (org.exoplatform.portal.config.model.Application<Portlet>) menuContainer.getChildren()
-                                                                                                                                                   .get(0);
+                    .get(0);
     ApplicationState<Portlet> state = menuPortlet.getState();
     Portlet portletPreference;
     try {
@@ -542,8 +545,9 @@ private PageNode createPageNodeFromApplication(Space space,
       Iterator<Application> appListItr = appList.iterator();
       while (appListItr.hasNext()) {
         Application app = appListItr.next();
-        if (app.getApplicationName().equals(appId))
+        if (app.getApplicationName().equals(appId)) {
           return app;
+        }
       }
     }
     return null;
@@ -560,9 +564,9 @@ private PageNode createPageNodeFromApplication(Space space,
   private void setPermissionForPage(ArrayList<ModelObject> children, String perm) {
     for (ModelObject modelObject : children) {
       if (modelObject instanceof org.exoplatform.portal.config.model.Application<?>) {
-        ((org.exoplatform.portal.config.model.Application) modelObject).setAccessPermissions(new String[] { perm });
+        ((org.exoplatform.portal.config.model.Application) modelObject).setAccessPermissions(new String[]{perm});
       } else if (modelObject instanceof Container) {
-        ((Container) modelObject).setAccessPermissions(new String[] { perm });
+        ((Container) modelObject).setAccessPermissions(new String[]{perm});
         setPermissionForPage(((Container) modelObject).getChildren(), perm);
       }
     }
@@ -578,13 +582,14 @@ private PageNode createPageNodeFromApplication(Space space,
   private ArrayList<ModelObject> setContainerById(ArrayList<ModelObject> childs, Container container) {
     ArrayList<ModelObject> result = childs;
     int index = result.indexOf(container);
-    if (index != -1)
+    if (index != -1) {
       result.set(index, container);
-    else {
+    } else {
       for (int i = 0; i < result.size(); i++) {
         ModelObject obj = result.get(i);
-        if (org.exoplatform.portal.config.model.Application.class.isInstance(obj))
+        if (org.exoplatform.portal.config.model.Application.class.isInstance(obj)) {
           continue;
+        }
         Container objContainer = (Container) obj;
         ArrayList<ModelObject> tmp = setContainerById(objContainer.getChildren(), container);
         objContainer.setChildren(tmp);
@@ -611,7 +616,7 @@ private PageNode createPageNodeFromApplication(Space space,
     String[] persistenceChunks = Utils.split("/", persistenceid);
     PortletBuilder pb = new PortletBuilder();
     SpaceService spaceSrv = getSpaceService();
-    String [] appNames = spaceSrv.getPortletsPrefsRequired();
+    String[] appNames = spaceSrv.getPortletsPrefsRequired();
     for (String appName : appNames) {
       if (instanceId.contains(appName)) {
         pb.add(SpaceUtils.SPACE_URL, space.getUrl());
@@ -627,7 +632,7 @@ private PageNode createPageNodeFromApplication(Space space,
         spaceApplication = tmpSpaceApplication;
       }
     }
-    if(spaceApplication != null && spaceApplication.getPreferences() != null) {
+    if (spaceApplication != null && spaceApplication.getPreferences() != null) {
       Set<Entry<String, String>> entrySet = spaceApplication.getPreferences().entrySet();
       try {
         for (Map.Entry<String, String> preference : entrySet) {
@@ -639,12 +644,12 @@ private PageNode createPageNodeFromApplication(Space space,
     }
 
     TransientApplicationState<Portlet> portletState = new TransientApplicationState<Portlet>(persistenceChunks[0]
-                                                                                                 + "/"
-                                                                                                 + persistenceChunks[1],
-                                                                                             pb.build(),
-                                                                                             ownerType,
-                                                                                             ownerId,
-                                                                                             persistenceChunks[2]);
+            + "/"
+            + persistenceChunks[1],
+            pb.build(),
+            ownerType,
+            ownerId,
+            persistenceChunks[2]);
     org.exoplatform.portal.config.model.Application<Portlet> portletApp =
             org.exoplatform.portal.config.model.Application.createPortletApplication();
     portletApp.setState(portletState);
@@ -671,8 +676,7 @@ private PageNode createPageNodeFromApplication(Space space,
   }
 
   /**
-   * Gets userPortalConfigService for the usage of creating new page from page
-   * template
+   * Gets userPortalConfigService for the usage of creating new page from page template
    *
    * @return
    */
@@ -682,8 +686,9 @@ private PageNode createPageNodeFromApplication(Space space,
 
   private SpaceService getSpaceService() {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    if (spaceService == null)
+    if (spaceService == null) {
       spaceService = (SpaceService) container.getComponentInstance(SpaceService.class);
+    }
 
     return spaceService;
   }

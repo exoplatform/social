@@ -80,7 +80,8 @@ public class UIDocActivityBuilder extends BaseUIActivityBuilder {
   }
 
   private void saveToNewDataFormat(ExoSocialActivity activity, UIDocActivity docActivity, String repository , String workspace) {
-    final String docActivityTitle = "Shared a document <a href=\"${"+ UIDocActivity.DOCLINK +"}\">${" +UIDocActivity.DOCNAME +"}</a>";
+    final String docActivityTitle = "Shared a document <a href=\"${"+ UIDocActivity.DOCLINK +"}\">" +
+                                    "${" +UIDocActivity.DOCNAME +"}</a>";
     activity.setTitle(docActivityTitle);
     Map<String, String> activityParams = new HashMap<String, String>();
     activityParams.put(UIDocActivity.DOCNAME, docActivity.docName);
@@ -90,7 +91,8 @@ public class UIDocActivityBuilder extends BaseUIActivityBuilder {
     activityParams.put(UIDocActivity.WORKSPACE, workspace);
     activityParams.put(UIDocActivity.MESSAGE, docActivity.message);
     activity.setTemplateParams(activityParams);
-    ActivityManager activityManager = (ActivityManager) PortalContainer.getInstance().getComponentInstanceOfType(ActivityManager.class);
+    ActivityManager activityManager = (ActivityManager) PortalContainer.getInstance().
+                                                        getComponentInstanceOfType(ActivityManager.class);
     try {
       activityManager.saveActivity(activity);
     } catch (ActivityStorageException ase) {
