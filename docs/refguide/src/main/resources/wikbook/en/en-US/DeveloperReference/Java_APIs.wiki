@@ -161,6 +161,7 @@ h1. SpaceService {anchor:id=Developer_document.JavaAPIs.Java_APIs.SpaceService}
 |*unregisterSpaceLifeCycleListener*(SpaceLifeCycleListener listener)|{{listener}}|void|Unregisters a space lifecycle listener.|
 |*setPortletsPrefsRequired*(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin)|{{portletPrefsRequiredPlugin}}|void| Sets the portlet preferences got from the plug-in configuration.|
 |*getPortletsPrefsRequired*()|{{N/A}}|String|Gets the portlet preferences required to use in creating the portlet application.|
-
+|*setSpaceApplicationConfigPlugin*(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin)|{{SpaceApplicationConfigPlugin}}|void|Sets configuration plugin for initializing applications when creating a new space. (Since 1.2.0-GA.|
+|*getSpaceApplicationConfigPlugin*()|{{N/A}}|SpaceApplicationConfigPlugin|Gets the configuration of applications to be initialized when creating a new space. (Since 1.2.0-GA).|
 
 
