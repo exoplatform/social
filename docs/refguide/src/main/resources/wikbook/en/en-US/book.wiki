@@ -26,5 +26,7 @@ h2. Public REST APIs {anchor:id=SOCref.DevelopersReferences.PublicREST_APIs}
 {include:document="DeveloperReference/REST_APIs.wiki"}
 h2. Public Javascript APIs {anchor:id=SOCref.DevelopersReferences.PublicJavascriptAPIs}
 {include:document="DeveloperReference/Javascript_APIs.wiki"}
+h2. Social JCR Structure {anchor:id=SOCref.Social_JCR_Structure}
+{include:document="jcr_structure.wiki"}
 
 
