@@ -17,13 +17,13 @@
 package org.exoplatform.social.common.jcr;
 
 /**
- * NodeType reference.
+ * NodeTypes reference.
  *
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since 1.2.0-GA
  * @since Nov 10, 2010
  */
-public final class NodeType {
+public final class NodeTypes {
   /**
    * eXo Social Activity Node Type.
    */

@@ -23,7 +23,7 @@ package org.exoplatform.social.common.jcr;
  * @since Nov 10, 2010
  * @since 1.2.0-GA
  */
-public final class NodeProperty {
+public final class NodeProperties {
 
   /* eXo Social Activity Node Node Properties */
 

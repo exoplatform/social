@@ -29,8 +29,8 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
-import org.exoplatform.social.common.jcr.NodeProperty;
-import org.exoplatform.social.common.jcr.NodeType;
+import org.exoplatform.social.common.jcr.NodeProperties;
+import org.exoplatform.social.common.jcr.NodeTypes;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -86,15 +86,15 @@ public class RelationshipStorage {
       final Node relationshipHomeNode = getRelationshipServiceHome(session);
 
       if (relationship.getId() == null) {
-        relationshipNode = relationshipHomeNode.addNode(NodeType.EXO_RELATIONSHIP, NodeType.EXO_RELATIONSHIP);
-        relationshipNode.addMixin(NodeType.MIX_REFERENCEABLE);
+        relationshipNode = relationshipHomeNode.addNode(NodeTypes.EXO_RELATIONSHIP, NodeTypes.EXO_RELATIONSHIP);
+        relationshipNode.addMixin(NodeTypes.MIX_REFERENCEABLE);
       } else {
         relationshipNode = session.getNodeByUUID(relationship.getId());
       }
-      relationshipNode.setProperty(NodeProperty.RELATIONSHIP_SENDER, session.getNodeByUUID(relationship.getSender().getId()));
-      relationshipNode.setProperty(NodeProperty.RELATIONSHIP_RECEIVER, session.getNodeByUUID(relationship.getReceiver().getId()));
-      relationshipNode.setProperty(NodeProperty.RELATIONSHIP_STATUS, relationship.getStatus().toString());
-      relationshipNode.setProperty(NodeProperty.RELATIONSHIP_IS_SYMETRIC, relationship.isSymetric());
+      relationshipNode.setProperty(NodeProperties.RELATIONSHIP_SENDER, session.getNodeByUUID(relationship.getSender().getId()));
+      relationshipNode.setProperty(NodeProperties.RELATIONSHIP_RECEIVER, session.getNodeByUUID(relationship.getReceiver().getId()));
+      relationshipNode.setProperty(NodeProperties.RELATIONSHIP_STATUS, relationship.getStatus().toString());
+      relationshipNode.setProperty(NodeProperties.RELATIONSHIP_IS_SYMETRIC, relationship.isSymetric());
 
       if (relationship.getId() == null) {
         relationshipHomeNode.save();
@@ -166,14 +166,14 @@ public class RelationshipStorage {
   private Relationship loadRelationship(final Node relationshipNode) throws RepositoryException, RelationshipStorageException {
     final Relationship relationship = new Relationship(relationshipNode.getUUID());
 
-    Node idNode = relationshipNode.getProperty(NodeProperty.RELATIONSHIP_SENDER).getNode();
+    Node idNode = relationshipNode.getProperty(NodeProperties.RELATIONSHIP_SENDER).getNode();
     relationship.setSender(getIdentityManager().getIdentity(idNode.getUUID()));
 
-    idNode = relationshipNode.getProperty(NodeProperty.RELATIONSHIP_RECEIVER).getNode();
+    idNode = relationshipNode.getProperty(NodeProperties.RELATIONSHIP_RECEIVER).getNode();
     relationship.setReceiver(getIdentityManager().getIdentity(idNode.getUUID()));
 
-    relationship.setStatus(Relationship.Type.valueOf(relationshipNode.getProperty(NodeProperty.RELATIONSHIP_STATUS).getString()));
-    relationship.setSymetric(relationshipNode.getProperty(NodeProperty.RELATIONSHIP_IS_SYMETRIC).getBoolean());
+    relationship.setStatus(Relationship.Type.valueOf(relationshipNode.getProperty(NodeProperties.RELATIONSHIP_STATUS).getString()));
+    relationship.setSymetric(relationshipNode.getProperty(NodeProperties.RELATIONSHIP_IS_SYMETRIC).getBoolean());
 
     return relationship;
   }
@@ -212,13 +212,13 @@ public class RelationshipStorage {
       query.and()
              .group()
                .group()
-                 .equal(NodeProperty.RELATIONSHIP_SENDER, identityId1)
-                 .and().equal(NodeProperty.RELATIONSHIP_RECEIVER, identityId2)
+                 .equal(NodeProperties.RELATIONSHIP_SENDER, identityId1)
+                 .and().equal(NodeProperties.RELATIONSHIP_RECEIVER, identityId2)
                .endGroup()
                .or()
                .group()
-                 .equal(NodeProperty.RELATIONSHIP_SENDER, identityId2)
-                 .and().equal(NodeProperty.RELATIONSHIP_RECEIVER, identityId1)
+                 .equal(NodeProperties.RELATIONSHIP_SENDER, identityId2)
+                 .and().equal(NodeProperties.RELATIONSHIP_RECEIVER, identityId1)
                .endGroup()
              .endGroup();
 
@@ -282,23 +282,23 @@ public class RelationshipStorage {
       final QueryBuilder query = selectRelationship(session);
       query.and()
              .group()
-               .equal(NodeProperty.RELATIONSHIP_SENDER, identityId)
-               .or().equal(NodeProperty.RELATIONSHIP_RECEIVER, identityId)
+               .equal(NodeProperties.RELATIONSHIP_SENDER, identityId)
+               .or().equal(NodeProperties.RELATIONSHIP_RECEIVER, identityId)
              .endGroup();
 
       if (type != null) {
-        query.and().equal(NodeProperty.RELATIONSHIP_STATUS, type.toString());
+        query.and().equal(NodeProperties.RELATIONSHIP_STATUS, type.toString());
       }
 
       if (listCheckIdentityId != null && listCheckIdentityId.size() > 0) {
         query.and().group();
         String firstCheckIdentityId = listCheckIdentityId.get(0);
-        query.equal(NodeProperty.RELATIONSHIP_SENDER, firstCheckIdentityId)
-             .or().equal(NodeProperty.RELATIONSHIP_RECEIVER, firstCheckIdentityId);
+        query.equal(NodeProperties.RELATIONSHIP_SENDER, firstCheckIdentityId)
+             .or().equal(NodeProperties.RELATIONSHIP_RECEIVER, firstCheckIdentityId);
         listCheckIdentityId.remove(0);
         for (String checkIdentityId : listCheckIdentityId) {
-          query.or().equal(NodeProperty.RELATIONSHIP_SENDER, checkIdentityId)
-               .or().equal(NodeProperty.RELATIONSHIP_RECEIVER, checkIdentityId);
+          query.or().equal(NodeProperties.RELATIONSHIP_SENDER, checkIdentityId)
+               .or().equal(NodeProperties.RELATIONSHIP_RECEIVER, checkIdentityId);
         }
         query.endGroup();
       }
@@ -359,19 +359,19 @@ public class RelationshipStorage {
     List<Node> nodes = null;
     try {
       final QueryBuilder query = selectRelationship(session);
-      query.and().equal(NodeProperty.RELATIONSHIP_SENDER, senderId);
+      query.and().equal(NodeProperties.RELATIONSHIP_SENDER, senderId);
 
       if (type != null) {
-        query.and().equal(NodeProperty.RELATIONSHIP_STATUS, type.toString());
+        query.and().equal(NodeProperties.RELATIONSHIP_STATUS, type.toString());
       }
 
       if (listCheckIdentityId != null && listCheckIdentityId.size() > 0) {
         query.and().group();
         String firstCheckIdentityId = listCheckIdentityId.get(0);
-        query.equal(NodeProperty.RELATIONSHIP_RECEIVER, firstCheckIdentityId);
+        query.equal(NodeProperties.RELATIONSHIP_RECEIVER, firstCheckIdentityId);
         listCheckIdentityId.remove(0);
         for (String checkIdentityId : listCheckIdentityId) {
-          query.or().equal(NodeProperty.RELATIONSHIP_RECEIVER, checkIdentityId);
+          query.or().equal(NodeProperties.RELATIONSHIP_RECEIVER, checkIdentityId);
         }
         query.endGroup();
       }
@@ -426,19 +426,19 @@ public class RelationshipStorage {
     List<Node> nodes = null;
     try {
       final QueryBuilder query = selectRelationship(session);
-      query.and().equal(NodeProperty.RELATIONSHIP_RECEIVER, receiverId);
+      query.and().equal(NodeProperties.RELATIONSHIP_RECEIVER, receiverId);
 
       if (type != null) {
-        query.and().equal(NodeProperty.RELATIONSHIP_STATUS, type.toString());
+        query.and().equal(NodeProperties.RELATIONSHIP_STATUS, type.toString());
       }
 
       if (listCheckIdentityId != null && listCheckIdentityId.size() > 0) {
         query.and().group();
         String firstCheckIdentityId = listCheckIdentityId.get(0);
-        query.equal(NodeProperty.RELATIONSHIP_SENDER, firstCheckIdentityId);
+        query.equal(NodeProperties.RELATIONSHIP_SENDER, firstCheckIdentityId);
         listCheckIdentityId.remove(0);
         for (String checkIdentityId : listCheckIdentityId) {
-          query.or().equal(NodeProperty.RELATIONSHIP_SENDER, checkIdentityId);
+          query.or().equal(NodeProperties.RELATIONSHIP_SENDER, checkIdentityId);
         }
         query.endGroup();
       }
@@ -464,8 +464,8 @@ public class RelationshipStorage {
    */
   private QueryBuilder selectRelationship(final Session session) {
     final QueryBuilder query = new QueryBuilder(session);
-    query.select(NodeType.EXO_RELATIONSHIP)
-          .like(NodeProperty.JCR_PATH, "/" + dataLocation.getSocialRelationshipHome() + "/%");
+    query.select(NodeTypes.EXO_RELATIONSHIP)
+          .like(NodeProperties.JCR_PATH, "/" + dataLocation.getSocialRelationshipHome() + "/%");
     return query;
   }
 

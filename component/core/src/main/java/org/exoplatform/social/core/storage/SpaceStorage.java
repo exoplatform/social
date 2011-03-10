@@ -35,8 +35,8 @@ import org.exoplatform.services.jcr.core.ExtendedNode;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.JCRSessionManager;
-import org.exoplatform.social.common.jcr.NodeProperty;
-import org.exoplatform.social.common.jcr.NodeType;
+import org.exoplatform.social.common.jcr.NodeProperties;
+import org.exoplatform.social.common.jcr.NodeTypes;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.common.jcr.Util;
@@ -59,21 +59,21 @@ public class SpaceStorage {
    */
   private static final String SPACE_PROPERTIES_NAME_PATTERN = Util.getPropertiesNamePattern(
           new String[]{
-                  NodeProperty.SPACE_APP,
-                  NodeProperty.SPACE_AVATAR_URL,
-                  NodeProperty.SPACE_DESCRIPTION,
-                  NodeProperty.SPACE_DISPLAY_NAME,
-                  NodeProperty.SPACE_GROUP_ID,
-                  NodeProperty.SPACE_INVITED_USERS,
-                  NodeProperty.SPACE_PARENT,
-                  NodeProperty.SPACE_PENDING_USERS,
-                  NodeProperty.SPACE_PRETTY_NAME,
-                  NodeProperty.SPACE_PRIORITY,
-                  NodeProperty.SPACE_REGISTRATION,
-                  NodeProperty.SPACE_TAG,
-                  NodeProperty.SPACE_TYPE,
-                  NodeProperty.SPACE_URL,
-                  NodeProperty.SPACE_VISIBILITY
+                  NodeProperties.SPACE_APP,
+                  NodeProperties.SPACE_AVATAR_URL,
+                  NodeProperties.SPACE_DESCRIPTION,
+                  NodeProperties.SPACE_DISPLAY_NAME,
+                  NodeProperties.SPACE_GROUP_ID,
+                  NodeProperties.SPACE_INVITED_USERS,
+                  NodeProperties.SPACE_PARENT,
+                  NodeProperties.SPACE_PENDING_USERS,
+                  NodeProperties.SPACE_PRETTY_NAME,
+                  NodeProperties.SPACE_PRIORITY,
+                  NodeProperties.SPACE_REGISTRATION,
+                  NodeProperties.SPACE_TAG,
+                  NodeProperties.SPACE_TYPE,
+                  NodeProperties.SPACE_URL,
+                  NodeProperties.SPACE_VISIBILITY
           }
   );
   private SocialDataLocation dataLocation;
@@ -106,7 +106,7 @@ public class SpaceStorage {
     try {
       Session session = sessionManager.getOrOpenSession();
       List<Node> spacesNode = new QueryBuilder(session)
-              .select(NodeType.EXO_SPACE)
+              .select(NodeTypes.EXO_SPACE)
               .exec();
       for (Node node : spacesNode) {
         Space space = this.getSpaceFromNode(node, session);
@@ -134,8 +134,8 @@ public class SpaceStorage {
     Space space = null;
     try {
       Node foundNode = new QueryBuilder(session)
-              .select(NodeType.EXO_SPACE)
-              .equal(NodeProperty.SPACE_GROUP_ID, groupId).findNode();
+              .select(NodeTypes.EXO_SPACE)
+              .equal(NodeProperties.SPACE_GROUP_ID, groupId).findNode();
       if (foundNode != null) {
         space = getSpaceFromNode(foundNode, session);
       } else {
@@ -199,10 +199,10 @@ public class SpaceStorage {
           }
         }
         spaceNodes = new QueryBuilder(session)
-                .select(NodeType.EXO_SPACE)
-                .contains(NodeProperty.SPACE_DISPLAY_NAME, condition)
+                .select(NodeTypes.EXO_SPACE)
+                .contains(NodeProperties.SPACE_DISPLAY_NAME, condition)
                 .or()
-                .contains(NodeProperty.SPACE_DESCRIPTION, condition)
+                .contains(NodeProperties.SPACE_DESCRIPTION, condition)
                 .exec();
       } else {
         //TODO if no condition defined, it's better to return an empty list
@@ -235,8 +235,8 @@ public class SpaceStorage {
     Space space = null;
     try {
       Node foundNode = new QueryBuilder(session)
-              .select(NodeType.EXO_SPACE)
-              .equal(NodeProperty.SPACE_DISPLAY_NAME, spaceDisplayName).findNode();
+              .select(NodeTypes.EXO_SPACE)
+              .equal(NodeProperties.SPACE_DISPLAY_NAME, spaceDisplayName).findNode();
       if (foundNode != null) {
         space = this.getSpaceFromNode(foundNode, session);
       } else {
@@ -275,8 +275,8 @@ public class SpaceStorage {
     Space space = null;
     try {
       Node foundNodeSpace = new QueryBuilder(session)
-              .select(NodeType.EXO_SPACE)
-              .equal(NodeProperty.SPACE_PRETTY_NAME, spacePrettyName)
+              .select(NodeTypes.EXO_SPACE)
+              .equal(NodeProperties.SPACE_PRETTY_NAME, spacePrettyName)
               .findNode();
       if (foundNodeSpace != null) {
         space = this.getSpaceFromNode(foundNodeSpace, session);
@@ -303,8 +303,8 @@ public class SpaceStorage {
 
     try {
       Node foundNode = new QueryBuilder(session)
-              .select(NodeType.EXO_SPACE)
-              .equal(NodeProperty.SPACE_URL, url).findNode();
+              .select(NodeTypes.EXO_SPACE)
+              .equal(NodeProperties.SPACE_URL, url).findNode();
       if (foundNode != null) {
         space = this.getSpaceFromNode(foundNode, session);
       } else {
@@ -369,8 +369,8 @@ public class SpaceStorage {
     Node spaceNode;
     try {
       if (isNew) {
-        spaceNode = spaceHomeNode.addNode(NodeType.EXO_SPACE, NodeType.EXO_SPACE);
-        spaceNode.addMixin(NodeType.MIX_REFERENCEABLE);
+        spaceNode = spaceHomeNode.addNode(NodeTypes.EXO_SPACE, NodeTypes.EXO_SPACE);
+        spaceNode.addMixin(NodeTypes.MIX_REFERENCEABLE);
       } else {
         spaceNode = session.getNodeByUUID(space.getId());
       }
@@ -383,8 +383,8 @@ public class SpaceStorage {
       if (attachment != null) {
         // fix load image on IE6 UI
         ExtendedNode extNode = (ExtendedNode) spaceNode;
-        if (extNode.canAddMixin(NodeType.EXO_PRIVILEGEABLE)) {
-          extNode.addMixin(NodeType.EXO_PRIVILEGEABLE);
+        if (extNode.canAddMixin(NodeTypes.EXO_PRIVILEGEABLE)) {
+          extNode.addMixin(NodeTypes.EXO_PRIVILEGEABLE);
         }
         String[] arrayPers = {PermissionType.READ, PermissionType.ADD_NODE, PermissionType.SET_PROPERTY, PermissionType.REMOVE};
         extNode.setPermission(SystemIdentity.ANY, arrayPers);
@@ -398,23 +398,23 @@ public class SpaceStorage {
           try {
             nodeFile = spaceNode.getNode(IMAGE_PATH);
           } catch (PathNotFoundException ex) {
-            nodeFile = spaceNode.addNode(IMAGE_PATH, NodeType.NT_FILE);
+            nodeFile = spaceNode.addNode(IMAGE_PATH, NodeTypes.NT_FILE);
           }
           Node nodeContent = null;
           try {
-            nodeContent = nodeFile.getNode(NodeProperty.JCR_CONTENT);
+            nodeContent = nodeFile.getNode(NodeProperties.JCR_CONTENT);
           } catch (PathNotFoundException ex) {
-            nodeContent = nodeFile.addNode(NodeProperty.JCR_CONTENT, NodeType.NT_RESOURCE);
+            nodeContent = nodeFile.addNode(NodeProperties.JCR_CONTENT, NodeTypes.NT_RESOURCE);
           }
           long lastModified = attachment.getLastModified();
           long lastSaveTime = 0;
-          if (nodeContent.hasProperty(NodeProperty.JCR_LAST_MODIFIED)) {
-            lastSaveTime = nodeContent.getProperty(NodeProperty.JCR_LAST_MODIFIED).getLong();
+          if (nodeContent.hasProperty(NodeProperties.JCR_LAST_MODIFIED)) {
+            lastSaveTime = nodeContent.getProperty(NodeProperties.JCR_LAST_MODIFIED).getLong();
           }
           if ((lastModified != 0) && (lastModified != lastSaveTime)) {
-            nodeContent.setProperty(NodeProperty.JCR_MIME_TYPE, attachment.getMimeType());
-            nodeContent.setProperty(NodeProperty.JCR_DATA, attachment.getInputStream(session));
-            nodeContent.setProperty(NodeProperty.JCR_LAST_MODIFIED, attachment.getLastModified());
+            nodeContent.setProperty(NodeProperties.JCR_MIME_TYPE, attachment.getMimeType());
+            nodeContent.setProperty(NodeProperties.JCR_DATA, attachment.getInputStream(session));
+            nodeContent.setProperty(NodeProperties.JCR_LAST_MODIFIED, attachment.getLastModified());
           }
         }
       } else {
@@ -438,21 +438,21 @@ public class SpaceStorage {
   }
 
   private void setNodeFromSpace(Space space, Node spaceNode) throws RepositoryException {
-    spaceNode.setProperty(NodeProperty.SPACE_DISPLAY_NAME, space.getDisplayName());
-    spaceNode.setProperty(NodeProperty.SPACE_GROUP_ID, space.getGroupId());
-    spaceNode.setProperty(NodeProperty.SPACE_APP, space.getApp());
-    spaceNode.setProperty(NodeProperty.SPACE_PARENT, space.getParent());
-    spaceNode.setProperty(NodeProperty.SPACE_DESCRIPTION, space.getDescription());
-    spaceNode.setProperty(NodeProperty.SPACE_TAG, space.getTag());
-    spaceNode.setProperty(NodeProperty.SPACE_PENDING_USERS, space.getPendingUsers());
-    spaceNode.setProperty(NodeProperty.SPACE_INVITED_USERS, space.getInvitedUsers());
-    spaceNode.setProperty(NodeProperty.SPACE_TYPE, space.getType());
-    spaceNode.setProperty(NodeProperty.SPACE_URL, space.getUrl());
-    spaceNode.setProperty(NodeProperty.SPACE_VISIBILITY, space.getVisibility());
-    spaceNode.setProperty(NodeProperty.SPACE_REGISTRATION, space.getRegistration());
-    spaceNode.setProperty(NodeProperty.SPACE_PRIORITY, space.getPriority());
-    spaceNode.setProperty(NodeProperty.SPACE_PRETTY_NAME, space.getPrettyName());
-    spaceNode.setProperty(NodeProperty.SPACE_AVATAR_URL, space.getAvatarUrl());
+    spaceNode.setProperty(NodeProperties.SPACE_DISPLAY_NAME, space.getDisplayName());
+    spaceNode.setProperty(NodeProperties.SPACE_GROUP_ID, space.getGroupId());
+    spaceNode.setProperty(NodeProperties.SPACE_APP, space.getApp());
+    spaceNode.setProperty(NodeProperties.SPACE_PARENT, space.getParent());
+    spaceNode.setProperty(NodeProperties.SPACE_DESCRIPTION, space.getDescription());
+    spaceNode.setProperty(NodeProperties.SPACE_TAG, space.getTag());
+    spaceNode.setProperty(NodeProperties.SPACE_PENDING_USERS, space.getPendingUsers());
+    spaceNode.setProperty(NodeProperties.SPACE_INVITED_USERS, space.getInvitedUsers());
+    spaceNode.setProperty(NodeProperties.SPACE_TYPE, space.getType());
+    spaceNode.setProperty(NodeProperties.SPACE_URL, space.getUrl());
+    spaceNode.setProperty(NodeProperties.SPACE_VISIBILITY, space.getVisibility());
+    spaceNode.setProperty(NodeProperties.SPACE_REGISTRATION, space.getRegistration());
+    spaceNode.setProperty(NodeProperties.SPACE_PRIORITY, space.getPriority());
+    spaceNode.setProperty(NodeProperties.SPACE_PRETTY_NAME, space.getPrettyName());
+    spaceNode.setProperty(NodeProperties.SPACE_AVATAR_URL, space.getAvatarUrl());
   }
 
   /**
@@ -476,51 +476,51 @@ public class SpaceStorage {
     while (itr.hasNext()) {
       Property p = itr.nextProperty();
       String propertyName = p.getName();
-      if (NodeProperty.SPACE_DISPLAY_NAME.equals(propertyName)) {
+      if (NodeProperties.SPACE_DISPLAY_NAME.equals(propertyName)) {
         space.setDisplayName(p.getString());
-      } else if (NodeProperty.SPACE_GROUP_ID.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_GROUP_ID.equals(propertyName)) {
         space.setGroupId(p.getString());
-      } else if (NodeProperty.SPACE_APP.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_APP.equals(propertyName)) {
         space.setApp(p.getString());
-      } else if (NodeProperty.SPACE_PARENT.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_PARENT.equals(propertyName)) {
         space.setParent(p.getString());
-      } else if (NodeProperty.SPACE_DESCRIPTION.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_DESCRIPTION.equals(propertyName)) {
         space.setDescription(p.getString());
-      } else if (NodeProperty.SPACE_TAG.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_TAG.equals(propertyName)) {
         space.setTag(p.getString());
-      } else if (NodeProperty.SPACE_PENDING_USERS.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_PENDING_USERS.equals(propertyName)) {
         space.setPendingUsers(Util.convertValuesToStrings(p.getValues()));
-      } else if (NodeProperty.SPACE_INVITED_USERS.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_INVITED_USERS.equals(propertyName)) {
         space.setInvitedUsers(Util.convertValuesToStrings(p.getValues()));
-      } else if (NodeProperty.SPACE_TYPE.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_TYPE.equals(propertyName)) {
         space.setType(p.getString());
-      } else if (NodeProperty.SPACE_URL.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_URL.equals(propertyName)) {
         space.setUrl(p.getString());
-      } else if (NodeProperty.SPACE_VISIBILITY.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_VISIBILITY.equals(propertyName)) {
         space.setVisibility(p.getString());
-      } else if (NodeProperty.SPACE_REGISTRATION.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_REGISTRATION.equals(propertyName)) {
         space.setRegistration(p.getString());
-      } else if (NodeProperty.SPACE_PRIORITY.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_PRIORITY.equals(propertyName)) {
         space.setPriority(p.getString());
-      } else if (NodeProperty.SPACE_PRETTY_NAME.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_PRETTY_NAME.equals(propertyName)) {
         space.setPrettyName(p.getString());
-      } else if (NodeProperty.SPACE_AVATAR_URL.equals(propertyName)) {
+      } else if (NodeProperties.SPACE_AVATAR_URL.equals(propertyName)) {
         space.setAvatarUrl(p.getString());
       }
     }
     if (spaceNode.hasNode(IMAGE_PATH)) {
       Node image = spaceNode.getNode(IMAGE_PATH);
-      if (image.isNodeType(NodeType.NT_FILE)) {
+      if (image.isNodeType(NodeTypes.NT_FILE)) {
         AvatarAttachment file = new AvatarAttachment();
         file.setId(image.getPath());
-        file.setMimeType(image.getNode(NodeProperty.JCR_CONTENT).getProperty(NodeProperty.JCR_MIME_TYPE).getString());
+        file.setMimeType(image.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_MIME_TYPE).getString());
         try {
-          file.setInputStream(image.getNode(NodeProperty.JCR_CONTENT).getProperty(NodeProperty.JCR_DATA).getValue().getStream());
+          file.setInputStream(image.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_DATA).getValue().getStream());
         } catch (Exception ex) {
           LOG.warn("Failed to setInputStream in space", ex);
         }
         file.setFileName(image.getName());
-        file.setLastModified(image.getNode(NodeProperty.JCR_CONTENT).getProperty(NodeProperty.JCR_LAST_MODIFIED).getLong());
+        file.setLastModified(image.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_LAST_MODIFIED).getLong());
         file.setWorkspace(session.getWorkspace().getName());
         space.setAvatarAttachment(file);
       }

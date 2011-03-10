@@ -43,6 +43,8 @@ public class ProfileFilter {
   /** The gender. */
   private String gender;
 
+  private char firstCharacterOfName;
+
   /**
    * Gets the position.
    *
