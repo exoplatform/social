@@ -21,31 +21,62 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 
 /**
- * Base class for a manageable space listener plugin
+ * Base class for a manageable space listener plugin.
+ *
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
  */
 public abstract class SpaceListenerPlugin extends ManagedPlugin implements
-    SpaceLifeCycleListener {
+        SpaceLifeCycleListener {
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void spaceCreated(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void spaceRemoved(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void applicationActivated(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void applicationAdded(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void applicationDeactivated(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void applicationRemoved(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void grantedLead(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void joined(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void left(SpaceLifeCycleEvent event);
 
+  /**
+   * {@inheritDoc}
+   */
   public abstract void revokedLead(SpaceLifeCycleEvent event);
 
 }
