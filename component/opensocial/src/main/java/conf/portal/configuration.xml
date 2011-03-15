@@ -22,8 +22,8 @@
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <component>
-    <key>org.exoplatform.social.opensocial.model.ServiceProviderStore</key>
-    <type>org.exoplatform.social.opensocial.model.ServiceProviderStore</type>
+    <key>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</key>
+    <type>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</type>
   </component>
 
   <component>
