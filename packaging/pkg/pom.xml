@@ -249,13 +249,6 @@
       <version>${org.exoplatform.commons.version}</version>
       <type>jar</type>
     </dependency>
-    
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.component.remote</artifactId>
-      <version>${org.exoplatform.kernel.version}</version>
-      <type>jar</type>
-    </dependency>
 
     <dependency>
       <groupId>org.exoplatform.ws</groupId>
