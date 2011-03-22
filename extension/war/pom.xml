@@ -25,12 +25,12 @@
   <parent>
     <artifactId>exo.social.extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.1.4</version>
+    <version>1.1.5-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extension.war</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>eXo Social Extension WAR</name>
   <description>eXo Social Extension WAR</description>
