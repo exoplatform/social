@@ -27,6 +27,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
@@ -78,18 +83,23 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>name</td>
+	<td>displayName</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name</td>
+	<td>displayName</td>
 	<td>Space09</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>description</td>
 	<td>This is description for Space_09</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Create</td>
+	<td></td>
 </tr>
 <tr>
 	<td>click</td>
@@ -202,6 +212,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
@@ -289,6 +304,11 @@
 <tr>
 	<td>open</td>
 	<td>/socialdemo/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign in</td>
 	<td></td>
 </tr>
 <tr>
@@ -414,6 +434,21 @@
 <tr>
 	<td>waitForConfirmation</td>
 	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Verify space deleted</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>Space09</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Space09</td>
 	<td></td>
 </tr>
 <tr>

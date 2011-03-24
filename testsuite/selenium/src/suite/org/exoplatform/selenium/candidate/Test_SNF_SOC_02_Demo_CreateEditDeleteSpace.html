@@ -78,12 +78,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>name</td>
+	<td>displayName</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name</td>
+	<td>displayName</td>
 	<td>Space02</td>
 </tr>
 <tr>
@@ -153,12 +153,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>name</td>
+	<td>displayName</td>
 	<td>Space02</td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name</td>
+	<td>displayName</td>
 	<td>Space02Edit</td>
 </tr>
 <tr>
@@ -174,16 +174,6 @@
 <tr>
 	<td>click</td>
 	<td>link=Save</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='UISpaceSettingPortlet']//a[text()='OK']</td>
 	<td></td>
 </tr>
 <tr>
@@ -262,7 +252,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
@@ -287,13 +282,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTextPresent</td>
-	<td>You do not have any spaces yet.</td>
+	<td>waitForTextNotPresent</td>
+	<td>Space02Edit</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>You do not have any spaces yet.</td>
+	<td>verifyTextNotPresent</td>
+	<td>Space02Edit</td>
 	<td></td>
 </tr>
 <tr>

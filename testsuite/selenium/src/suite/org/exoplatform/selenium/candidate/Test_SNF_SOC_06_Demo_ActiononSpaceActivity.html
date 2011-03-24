@@ -78,12 +78,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>name</td>
+	<td>displayName</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name</td>
+	<td>displayName</td>
 	<td>Space06</td>
 </tr>
 <tr>
@@ -338,6 +338,21 @@
 	<td></td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>-- Verify space deleted</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>Space06</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Space06</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>link=Sign out</td>
 	<td></td>
@@ -345,11 +360,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Sign out</td>
-	<td></td>
-</tr>
-<tr>
-	<td>close</td>
-	<td></td>
 	<td></td>
 </tr>
 </tbody></table>
