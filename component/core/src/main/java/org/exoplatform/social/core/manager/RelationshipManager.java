@@ -18,6 +18,7 @@ package org.exoplatform.social.core.manager;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
@@ -89,6 +90,15 @@ public interface RelationshipManager {
    */
   void ignore(Relationship relationship) throws RelationshipStorageException;
 
+  /**
+   * Gets connections of identity with list access.
+   * 
+   * @param identity
+   * @return Connections of identity with list access.
+   * @since 1.2.0-GA
+   */
+  public ListAccess<Identity> getConnections(Identity identity);
+    
   /**
    * Returns all the pending relationship: sent and received.
    *

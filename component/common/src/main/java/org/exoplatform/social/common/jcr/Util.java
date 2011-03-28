@@ -17,6 +17,7 @@
 package org.exoplatform.social.common.jcr;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -122,5 +123,15 @@ public class Util {
     }
     return result;
   }
-
+  
+  /**
+   * Converts a list to an array.
+   * 
+   * @param list List to be converted to array.
+   * @param type Type of list's and array's element.
+   * @return An array with the same type of element in list.
+   */
+  public static <T> T[] convertListToArray(List<T> list, Class<T> type) {
+    return list.toArray((T[])java.lang.reflect.Array.newInstance(type, list.size()));
+  }
 }

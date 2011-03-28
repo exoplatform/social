@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.identity.model;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -39,6 +40,9 @@ public class Profile {
   /** lastname key. */
   public static final String        LAST_NAME      = "lastName";
 
+  /** lastname key. */
+  public static final String        FULL_NAME      = "fullName";
+  
   /** email key. */
   public static final String        EMAIL          = "email";
 
@@ -99,8 +103,29 @@ public class Profile {
   /** Resized subfix */
   public static final String        RESIZED_SUBFIX = "RESIZED_";
 
+
+  /** Types of updating of profile. */
+  public static enum                UpdateType 
+                                      {
+                                        POSITION,
+                                        BASIC_INFOR,
+                                        CONTACT,
+                                        EXPERIENCES,
+                                        AVATAR
+                                      };
+                                                
   /** The properties. */
   private final Map<String, Object> properties     = new HashMap<String, Object>();
+
+  private static final Map<UpdateType, String[]> updateTypes = new HashMap<UpdateType, String[]>();
+  static {
+    updateTypes.put(UpdateType.POSITION, new String[] {POSITION});
+    updateTypes.put(UpdateType.BASIC_INFOR, new String[] {FIRST_NAME, LAST_NAME, EMAIL});
+    updateTypes.put(UpdateType.CONTACT, new String[] {GENDER, CONTACT_PHONES, CONTACT_IMS, CONTACT_URLS});
+    updateTypes.put(UpdateType.EXPERIENCES, new String[] {EXPERIENCES_COMPANY, EXPERIENCES_POSITION, EXPERIENCES_SKILLS,
+      EXPERIENCES_START_DATE, EXPERIENCES_END_DATE, EXPERIENCES_IS_CURRENT, EXPERIENCES_DESCRIPTION});
+    updateTypes.put(UpdateType.AVATAR, new String[] {AVATAR, AVATAR_URL});
+  }
 
   /** The identity. */
   private final Identity            identity;
@@ -114,6 +139,9 @@ public class Profile {
   /** Indicates whether or not the profile has been modified locally */
   private boolean                   hasChanged;
 
+  /** Indicates the type of profile are being modified locally */
+  private UpdateType                updateType;
+  
   /**
    * Instantiates a new profile.
    *
@@ -185,6 +213,31 @@ public class Profile {
   }
 
   /**
+   * Gets type of update.
+   * @return the updated type for a profile
+   * @since 1.2.0-GA
+   */
+  public UpdateType getUpdateType() {
+    return updateType;
+  }
+
+  /**
+   * Sets type of update.
+   * 
+   * @param updateType
+   * @since 1.2.0-GA
+   */
+  protected void setUpdateType(String updateType) {
+    for (UpdateType key : updateTypes.keySet()) {
+      String[] updateTypeValues = updateTypes.get(key);
+      if (Arrays.asList(updateTypeValues).contains(updateType)) {
+        this.updateType = key;
+        break;
+      }
+    }
+  }
+
+  /**
    * Sets the value of the property <code>hasChanged<code>.
    *
    * @param hasChanged the new hasChanged
@@ -212,6 +265,7 @@ public class Profile {
   public final void setProperty(final String name, final Object value) {
     properties.put(name, value);
     setHasChanged(true);
+    setUpdateType(name);
   }
 
   /**

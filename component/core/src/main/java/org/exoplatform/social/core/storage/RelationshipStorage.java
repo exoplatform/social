@@ -238,6 +238,75 @@ public class RelationshipStorage {
   }
 
   /**
+   * Gets count of connection with the identity.
+   * 
+   * @param identity
+   * @return
+   * @throws RelationshipStorageException
+   * @since 1.2.0-GA
+   */
+  public int getConnectionsCount(Identity identity) throws RelationshipStorageException {
+    Session session = sessionManager.getOrOpenSession();
+    String identityId = identity.getId();
+
+    try {
+      QueryBuilder query = selectRelationship(session);
+      return (int)query
+             .and()
+             .group()
+               .equal(NodeProperties.RELATIONSHIP_SENDER, identityId)
+               .or().equal(NodeProperties.RELATIONSHIP_RECEIVER, identityId)
+             .endGroup()
+             .and().equal(NodeProperties.RELATIONSHIP_STATUS, Relationship.Type.CONFIRMED.toString())
+             .count();
+      
+    } catch (RepositoryException e) {
+      throw new RelationshipStorageException(Type.FAILED_TO_GET_RELATIONSHIP, null, e, identityId, Relationship.Type.CONFIRMED.toString());
+    } finally {
+      sessionManager.closeSession();
+    }
+  }
+
+  /**
+   * Gets connections with the identity.
+   * 
+   * @param identity
+   * @param offset
+   * @param limit
+   * @return number of connections belong to limitation of offset and limit.
+   * @throws RelationshipStorageException
+   * @since 1.2.0-GA
+   */
+  public List<Identity> getConnections(Identity identity, int offset, int limit) throws RelationshipStorageException {
+    Session session = sessionManager.getOrOpenSession();
+    List<Identity> connections = new ArrayList<Identity>();
+    String identityId = identity.getId();
+    List<Node> nodes = null;
+    try {
+      QueryBuilder query = new QueryBuilder(session);
+      query.select(NodeTypes.EXO_RELATIONSHIP, offset, limit)
+           .like(NodeProperties.JCR_PATH, "/" + dataLocation.getSocialRelationshipHome() + "/%")
+           .and()
+           .group()
+             .equal(NodeProperties.RELATIONSHIP_SENDER, identityId)
+             .or().equal(NodeProperties.RELATIONSHIP_RECEIVER, identityId)
+           .endGroup()
+           .and().equal(NodeProperties.RELATIONSHIP_STATUS, Relationship.Type.CONFIRMED.toString());
+      
+      nodes = query.exec();
+      for (Node node : nodes) {
+        Relationship relationship = loadRelationship(node);
+        connections.add(relationship.getPartner(identity));
+      }
+    } catch (RepositoryException e) {
+      throw new RelationshipStorageException(Type.FAILED_TO_GET_RELATIONSHIP, null, e, identityId, Relationship.Type.CONFIRMED.toString());
+    } finally {
+      sessionManager.closeSession();
+    }
+    return connections;
+  }
+  
+  /**
    * Gets the list of relationship by identity id matching with checking
    * identity ids
    * 

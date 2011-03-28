@@ -24,6 +24,13 @@ package org.exoplatform.social.common.jcr;
  * @since Nov 10, 2010
  */
 public final class NodeTypes {
+
+  /**
+   * eXo Social Identity Node Type.
+   */
+  public static final String EXO_IDENTITY = "exo:identity";
+  public static final String EXO_PROFILE = "exo:profile";
+  
   /**
    * eXo Social Activity Node Type.
    */

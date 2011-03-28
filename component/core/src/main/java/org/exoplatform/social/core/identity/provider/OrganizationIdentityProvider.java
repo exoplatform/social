@@ -118,6 +118,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public void populateProfile(Profile profile, User user) {
     profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
     profile.setProperty(Profile.LAST_NAME, user.getLastName());
+    profile.setProperty(Profile.FULL_NAME, user.getFullName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
     profile.setProperty(Profile.URL, LinkProvider.getProfileUri(user.getUserName()));
 

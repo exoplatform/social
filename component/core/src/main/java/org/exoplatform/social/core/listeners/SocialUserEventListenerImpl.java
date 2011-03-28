@@ -55,17 +55,20 @@ public class SocialUserEventListenerImpl extends UserEventListener {
 
       String uFirstName = user.getFirstName();
       String uLastName = user.getLastName();
+      String uFullName = user.getFullName();
       String uEmail = user.getEmail();
 
       boolean hasUpdated = false;
       
       if ((pFirstName == null) || (!pFirstName.equals(uFirstName))) {
         profile.setProperty(Profile.FIRST_NAME, uFirstName);
+        profile.setProperty(Profile.FULL_NAME, uFullName);
         hasUpdated = true;
       }
 
       if ((pLastName == null) || (!pLastName.equals(uLastName))) {
         profile.setProperty(Profile.LAST_NAME, uLastName);
+        profile.setProperty(Profile.FULL_NAME, uFullName);
         hasUpdated = true;
       }
 

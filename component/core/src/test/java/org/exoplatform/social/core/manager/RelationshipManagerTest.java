@@ -19,6 +19,7 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -395,5 +396,28 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     assertNotNull("demoMary.getId() must not be null", demoMary.getId());
     assertEquals(Relationship.Type.PENDING, demoMary.getStatus());
     tearDownRelationshipList.add(demoMary);
+  }
+  
+
+  /**
+   * Tests getting connections of one identity with list access.
+   * 
+   * @throws Exception
+   */
+  public void testGetConnections() throws Exception {
+     Relationship johnDemoRelationship = relationshipManager.invite(johnIdentity, demoIdentity);
+     Relationship johnMaryRelationship = relationshipManager.invite(johnIdentity, maryIdentity);
+     Relationship johnRootRelationship = relationshipManager.invite(johnIdentity, rootIdentity);
+
+     relationshipManager.confirm(johnDemoRelationship);
+     relationshipManager.confirm(johnMaryRelationship);
+     relationshipManager.confirm(johnRootRelationship);
+
+     ListAccess contactsList = relationshipManager.getConnections(johnIdentity);
+     assertEquals(3, contactsList.getSize());
+
+     tearDownRelationshipList.add(johnDemoRelationship);
+     tearDownRelationshipList.add(johnMaryRelationship);
+     tearDownRelationshipList.add(johnRootRelationship);
   }
 }

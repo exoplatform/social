@@ -30,6 +30,12 @@ public class Identity {
   /** The provider id. */
   String  providerId;
 
+  /** Denotes whether this corresponding identity exists or not by the remote identity provider. 
+  * 
+  * @since 1.2.0-GA 
+  */
+  boolean isDeleted;
+  
   /** The profile. */
   Profile profile;
 
@@ -72,6 +78,26 @@ public class Identity {
    */
   public void setId(String id) {
     this.id = id;
+  }
+
+  /**
+  * Checks whether this corresponding identity exists or not by the remote identity provider.
+  * 
+  * @return true if this corresponding identity is indicated as deleted by the remote identity provider. 
+  * @since 1.2.0-GA 
+  */
+  public boolean isDeleted() {
+    return isDeleted;
+  }
+
+  /**
+  * Sets the isDeleted property to indicate if this identity is deleted or not by the remote identity provider.
+  * 
+  * @param isDeleted new value to set this identity is deleted or not.
+  * @since 1.2.0-GA
+  */
+  public void setDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
   }
 
   /**

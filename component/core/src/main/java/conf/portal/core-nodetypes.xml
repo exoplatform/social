@@ -35,6 +35,14 @@
                           onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints/>
       </propertyDefinition>
+      <propertyDefinition name="exo:isDeleted" requiredType="Boolean" autoCreated="false" mandatory="true"
+                          onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+        <defaultValues>
+          <defaultValue>false</defaultValue>
+        </defaultValues>
+      </propertyDefinition>
+      
     </propertyDefinitions>
   </nodeType>
 

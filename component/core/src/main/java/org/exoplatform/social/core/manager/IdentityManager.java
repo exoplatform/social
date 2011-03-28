@@ -18,6 +18,7 @@ package org.exoplatform.social.core.manager;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.IdentityProviderPlugin;
 import org.exoplatform.social.core.identity.model.GlobalId;
@@ -32,10 +33,118 @@ import org.exoplatform.social.core.storage.IdentityStorage;
  * The Interface IdentityManager.
  *
  * @author <a href="mailto:vien_levan@exoplatform.com">vien_levan</a>
+ * @author <a href="http://hoatle.net">hoatle</a>
  */
 public interface IdentityManager {
-  /** The limit search list to be returned for matching search criteria */
-  long SEARCH_LIMIT = 500;
+
+  /**
+   * Gets or creates an Identity object provided by a identity provider.
+   *
+   * @param providerId               the name of identity provider name id.
+   * @param remoteId                 the identifier that identifies the identity in the specific identity provider.
+   * @param forceLoadOrReloadProfile force load or reload profile
+   * @return the Identity object provided from identity provider.
+   */
+  Identity getOrCreateIdentity(String providerId, String remoteId, boolean forceLoadOrReloadProfile);
+
+  /**
+   * Gets the stored identity by its identity id, this id is its uuid stored by JCR.
+   *
+   * @param identityId               the stored JCR uuid.
+   * @param forceLoadOrReloadProfile force load or reload profile
+   * @return the found identity object
+   */
+  Identity getIdentity(String identityId, boolean forceLoadOrReloadProfile);
+
+  /**
+   * Updates existing identity's properties.
+   *
+   * @param identity the identity to be updated.
+   * @return the updated identity.
+   * @since  1.2.0-GA
+   */
+  Identity updateIdentity(Identity identity);
+
+  /**
+   * Deletes an existing identity.
+   *
+   * @param identity the existing identity.
+   */
+  void deleteIdentity(Identity identity);
+
+  /**
+   * Gets identity list access which contains all the identities connected with the provided identity.
+   *
+   * @param identity the provided identity
+   * @return the identity list access
+   * @since  1.2.0-GA
+   */
+  ListAccess<Identity> getConnectionsWithListAccess(Identity identity);
+
+  /**
+   * Gets a profile associated with a provided identity.
+   *
+   * @param identity the provided identity
+   * @return the profile associated with the provided identity
+   * @since  1.2.0-GA
+   */
+  Profile getProfile(Identity identity);
+
+  /**
+   * Updates an existing profile.
+   *
+   * @param existingProfile the existing profile
+   * @since  1.2.0-GA
+   */
+  void updateProfile(Profile existingProfile);
+
+  /**
+   * Gets identity list access which contains all the identities from a provided provider which are filtered by profile
+   * filter.
+   *
+   * @param providerId               the provider name id
+   * @param profileFilter            the profile filter
+   * @param forceLoadOrReloadProfile force load or reload profile or not
+   * @return the identity list access
+   * @since 1.2.0-GA
+   */
+  ListAccess<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter,
+                                                  boolean forceLoadOrReloadProfile);
+
+  /**
+   * Adds an identity provider to identity manager.
+   *
+   * @param identityProvider an identity provider
+   */
+  void addIdentityProvider(IdentityProvider<?> identityProvider);
+
+  /**
+   * Remove an existing identity provider.
+   *
+   * @param identityProvider the existing identity provider
+   * @since 1.2.0-GA
+   */
+  void removeIdentityProvider(IdentityProvider<?> identityProvider);
+
+  /**
+   * Registers a profile listener plugin by external compnent plugin mechanism.
+   *
+   * For example:
+   * <pre>
+   *  &lt;external-component-plugins&gt;
+   *    &lt;target-component&gt;org.exoplatform.social.core.manager.IdentityManager&lt;/target-component&gt;
+   *    &lt;component-plugin&gt;
+   *      &lt;name&gt;ProfileUpdatesPublisher&lt;/name&gt;
+   *      &lt;set-method&gt;registerProfileListener&lt;/set-method&gt;
+   *      &lt;type&gt;org.exoplatform.social.core.application.ProfileUpdatesPublisher&lt;/type&gt;
+   *    &lt;/component-plugin&gt;
+   *  &lt;/external-component-plugins&gt;
+   * </pre>
+   *
+   * @param profileListenerPlugin a profile listener plugin
+   * @since 1.2.0-GA
+   */
+  void registerProfileListener(ProfileListenerPlugin profileListenerPlugin);
 
   /**
    * Registers one or more {@link IdentityProvider} through an
@@ -52,36 +161,10 @@ public interface IdentityManager {
    *          {@link Identity#getId()}
    * @return null if nothing is found, or the Identity object
    * @see #getIdentity(String, boolean)
+   * @deprecated Use {@link #getIdentity(String, boolean)} instead.
+   *             Will be removed by 1.3.x
    */
   Identity getIdentity(String id);
-
-  /**
-   * Gets the identity by id optionally loading his profile Note: if id = uuid,
-   * you get the info from JCR if found. if id = providerId:remoteId, you get
-   * the info from provider and currently with this case, you get null for
-   * identity.getId(). This can cause some troubles.
-   *
-   * @param id ID be a social {@link GlobalId} or a raw identity such as in
-   *          {@link Identity#getId()}
-   * @param loadProfile the load profile true if load and false if doesn't. when
-   *          loadProfile is true, gets profile from JCR
-   * @return null if nothing is found, or the Identity object
-   */
-  Identity getIdentity(String id, boolean loadProfile);
-
-  /**
-   * Deletes an identity.
-   *
-   * @param identity
-   */
-  void deleteIdentity(Identity identity);
-
-  /**
-   * Adds the identity provider.
-   *
-   * @param idProvider the id provider
-   */
-  void addIdentityProvider(IdentityProvider<?> idProvider);
 
   /**
    * Gets the identity by remote id.
@@ -89,28 +172,10 @@ public interface IdentityManager {
    * @param providerId the provider id
    * @param remoteId the remote id
    * @return the identity
+   * @deprecated Use {@link #getOrCreateIdentity(String, String, boolean)} instead.
+   *             Will be moved by 1.3.x
    */
   Identity getOrCreateIdentity(String providerId, String remoteId);
-
-  /**
-   * This function returns an Identity object that specific to a special type.
-   * <p>
-   * For example if the type is Linked'In, the identifier will be the URL of the
-   * profile or if it's a CS contact manager contact, it will be the UID of the
-   * contact.
-   * </p>
-   * A new identity is created if it is found by provider, if not null will be
-   * returned. If identity is found by provider and not stored, store it. If
-   * stored, return it. If identity is not found by provider, return null. If
-   * stored, delete that stored identity.
-   *
-   * @param providerId refering to the name of the Identity provider
-   * @param remoteId the identifier that identify the identity in the specific
-   *          identity provider
-   * @param loadProfile true to load profile
-   * @return null if nothing is found, or the Identity object
-   */
-  Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile);
 
   /**
    * Gets the identities by profile filter.
@@ -119,6 +184,8 @@ public interface IdentityManager {
    * @param profileFilter the profile filter
    * @return the identities by profile filter
    * @throws Exception the exception
+   * @deprecated Use {@link #getIdentitiesByProfileFilter(String, org.exoplatform.social.core.profile.ProfileFilter,
+   * boolean)} instead. Will be removed by 1.3.x
    */
   List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter) throws Exception;
 
@@ -131,6 +198,8 @@ public interface IdentityManager {
    * @param limit
    * @return identity list
    * @throws Exception
+   * @deprecated Use {@link #getIdentitiesByProfileFilter(String, org.exoplatform.social.core.profile.ProfileFilter,
+   * boolean)} instead. Will be removed by 1.3.x
    */
   List<Identity> getIdentitiesByProfileFilter(String providerId,
                                               ProfileFilter profileFilter,
@@ -143,6 +212,8 @@ public interface IdentityManager {
    * @param profileFilter the profile filter
    * @return the identities by profile filter
    * @throws Exception the exception
+   * @deprecated Use {@link #getIdentitiesByProfileFilter(String, org.exoplatform.social.core.profile.ProfileFilter,
+   * boolean)} instead. Will be removed by 1.3.x
    */
   List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter) throws Exception;
 
@@ -154,6 +225,8 @@ public interface IdentityManager {
    * @param limit
    * @return the identities by profile filter
    * @throws Exception
+   * @deprecated Use {@link #getIdentitiesByProfileFilter(String, org.exoplatform.social.core.profile.ProfileFilter,
+   * boolean)} instead. Will be removed by 1.3.x
    */
   List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter, long offset, long limit) throws Exception;
 
@@ -164,6 +237,8 @@ public interface IdentityManager {
    * @param profileFilter the profile filter
    * @return the identities filter by alpha bet
    * @throws Exception the exception
+   * @deprecated Use {@link #getIdentitiesByProfileFilter(String, org.exoplatform.social.core.profile.ProfileFilter,
+   * boolean)} instead. Will be removed by 1.3.x
    */
   List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFilter profileFilter) throws Exception;
 
@@ -176,6 +251,8 @@ public interface IdentityManager {
    * @param limit
    * @return the identitities list
    * @throws Exception
+   * @deprecated Use {@link #getIdentitiesByProfileFilter(String, org.exoplatform.social.core.profile.ProfileFilter,
+   * boolean)} instead. Will be removed by 1.3.x
    */
   List<Identity> getIdentitiesFilterByAlphaBet(String providerId,
                                                ProfileFilter profileFilter,
@@ -188,6 +265,8 @@ public interface IdentityManager {
    * @param profileFilter the profile filter
    * @return the identities filter by alpha bet
    * @throws Exception the exception
+   * @deprecated Use {@link #getIdentitiesByProfileFilter(String, org.exoplatform.social.core.profile.ProfileFilter,
+   * boolean)} instead. Will be removed by 1.3.x
    */
   List<Identity> getIdentitiesFilterByAlphaBet(ProfileFilter profileFilter) throws Exception;
 
@@ -199,6 +278,8 @@ public interface IdentityManager {
    * @param remoteId
    * @param loadProfile
    * @return identity
+   * @deprecated Use {@link #getOrCreateIdentity(String, String, boolean)} instead.
+   *             Will be removed by 1.3.x
    */
   Identity getIdentity(String providerId, String remoteId, boolean loadProfile);
 
@@ -206,6 +287,7 @@ public interface IdentityManager {
    * Gets the number of indentities.
    * 
    * @return Number of identities.
+   * @deprecated Will be removed by 1.3.x
    */
   long getIdentitiesCount(String providerId);
   
@@ -215,6 +297,7 @@ public interface IdentityManager {
    * @param providerId
    * @param remoteId
    * @return true or false
+   * @deprecated Will be removed by 1.3.x
    */
   boolean identityExisted(String providerId, String remoteId);
 
@@ -222,6 +305,8 @@ public interface IdentityManager {
    * Saves identity.
    *
    * @param identity the identity
+   * @deprecated Use {@link #getOrCreateIdentity(String, String, boolean)} instead.
+   *             Will be removed by 1.3.x
    */
   void saveIdentity(Identity identity);
 
@@ -229,6 +314,8 @@ public interface IdentityManager {
    * Saves a profile.
    *
    * @param profile
+   * @deprecated Use {@link #updateProfile(org.exoplatform.social.core.identity.model.Profile)}  instead.
+   *             Will be removed by 1.3.x
    */
   void saveProfile(Profile profile);
 
@@ -240,6 +327,7 @@ public interface IdentityManager {
    *
    * @param profile
    * @throws Exception
+   * @deprecated Will be removed by 1.3.x
    */
   void addOrModifyProfileProperties(Profile profile) throws Exception;
 
@@ -248,6 +336,7 @@ public interface IdentityManager {
    *
    * @param p
    * @throws Exception
+   * @deprecated Will be removed by 1.3.x
    */
   void updateAvatar(Profile p);
 
@@ -256,6 +345,7 @@ public interface IdentityManager {
    *
    * @param p
    * @throws Exception
+   * @deprecated Will be removed by 1.3.x
    */
   void updateBasicInfo(Profile p) throws Exception;
 
@@ -264,6 +354,7 @@ public interface IdentityManager {
    *
    * @param p
    * @throws Exception
+   * @deprecated Will be removed by 1.3.x
    */
   void updateContactSection(Profile p) throws Exception;
 
@@ -272,6 +363,7 @@ public interface IdentityManager {
    *
    * @param p
    * @throws Exception
+   * @deprecated Will be removed by 1.3.x
    */
   void updateExperienceSection(Profile p) throws Exception;
 
@@ -280,6 +372,7 @@ public interface IdentityManager {
    *
    * @param p
    * @throws Exception
+   * @deprecated Will be removed by 1.3.x
    */
   void updateHeaderSection(Profile p) throws Exception;
 
@@ -289,6 +382,8 @@ public interface IdentityManager {
    * @param providerId the provider id
    * @return the identities
    * @throws Exception the exception
+   * @deprecated Use {@link #getIdentities(String, boolean)} instead.
+   *             Will be removed by 1.3.x
    */
   List<Identity> getIdentities(String providerId) throws Exception;
 
@@ -298,8 +393,10 @@ public interface IdentityManager {
    * @param providerId the provider id
    * @param loadProfile the load profile
    * @return the identities
+   * @deprecated Use {@link #getIdentities(String, boolean)} instead.
+   *             Will be removed by 1.3.x
    */
-  List<Identity> getIdentities(String providerId, boolean loadProfile);
+  List<Identity> getIdentities(String providerId, boolean loadProfile) throws Exception;
 
   /**
    * Gets connections of an identity.
@@ -308,6 +405,8 @@ public interface IdentityManager {
    * @return list of identity
    * @throws Exception
    * @since 1.1.1
+   * @deprecated Use {@link #getConnectionsWithListAccess(org.exoplatform.social.core.identity.model.Identity)}
+   *             instead. Will be removed by 1.3.x
    */
   List<Identity> getConnections(Identity ownerIdentity) throws Exception;
 
@@ -315,14 +414,15 @@ public interface IdentityManager {
    * Gets the identity storage.
    *
    * @return the storage
+   * @deprecated Will be removed by 1.3.x
    */
   IdentityStorage getIdentityStorage();
 
   /**
    * Gets identityStorage.
    *
-   * @deprecated should use method getIdentityStorage()
    * @return identityStorage
+   * @deprecated Will be removed by 1.3.x
    */
   IdentityStorage getStorage();
 
@@ -330,6 +430,7 @@ public interface IdentityManager {
    * Registers the profile listener.
    *
    * @param listener
+   * @deprecated Will be removed by 1.3.x
    */
   void registerProfileListener(ProfileListener listener);
 
@@ -337,6 +438,7 @@ public interface IdentityManager {
    * Unregisters the profile listener.
    *
    * @param listener
+   * @deprecated Will be removed by 1.3.x
    */
   void unregisterProfileListener(ProfileListener listener);
 
@@ -344,6 +446,8 @@ public interface IdentityManager {
    * Registers a profile listener component plugin.
    *
    * @param plugin
+   * @deprecated Use {@link #registerProfileListener(org.exoplatform.social.core.profile.ProfileListenerPlugin)}
+   *             instead. Will be removed by 1.3.x
    */
   void addProfileListener(ProfileListenerPlugin plugin);
 }

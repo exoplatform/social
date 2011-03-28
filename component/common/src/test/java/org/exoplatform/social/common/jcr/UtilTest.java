@@ -16,8 +16,10 @@
  */
 package org.exoplatform.social.common.jcr;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Value;
@@ -132,7 +134,25 @@ public class UtilTest extends TestCase {
 
   }
 
+  /**
+   * Unit Test for {@link Util#convertListToArray(List<String>, Class<String>)}.
+   * 
+   * @throws Exception
+   */
+  public void testConvertListToArray() throws Exception {
+    List<String> stringList = new ArrayList<String>();
+    assertNotNull(Util.convertListToArray(stringList, String.class));
+    String[] stringArray = new String[] {"Element0", "Element1","Element2", "Element3", "Element4"};
+    for (int i = 0; i < stringArray.length; i++) {
+      stringList.add("Element" + i);
+    }
 
+    String[] checkedStringArray = Util.convertListToArray(stringList, String.class);
+    for (int i = 0; i < stringArray.length; i++) {
+      assertEquals(stringArray[i], checkedStringArray[i]);
+    }
+  }
+  
   private Value[] getStringValues(int numberOfValues) throws Exception {
     Value[] values = new Value[numberOfValues];
     for (int i = 0; i < numberOfValues; i++) {

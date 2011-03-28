@@ -19,7 +19,9 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.identity.ConnectionListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.RelationshipLifeCycle;
 import org.exoplatform.social.core.relationship.RelationshipListener;
@@ -361,7 +363,14 @@ public class RelationshipManagerImpl implements RelationshipManager {
   public Type getConnectionStatus(Identity fromIdentity, Identity toIdentity) throws Exception {
     return getStatus(fromIdentity, toIdentity);
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
+  public ListAccess<Identity> getConnections(Identity identity) {
+    return (new ConnectionListAccess(storage, identity));
+  }
+  
   /**
    * {@inheritDoc}
    */

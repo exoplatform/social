@@ -16,16 +16,18 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.IdentityProviderPlugin;
+import org.exoplatform.social.core.identity.ProfileFilterListAccess;
 import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -33,7 +35,6 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.IdentityStorage;
 
 /**
@@ -46,10 +47,19 @@ import org.exoplatform.social.core.storage.IdentityStorage;
 public class IdentityManagerImpl implements IdentityManager {
   /** Logger */
   private static final Log                   LOG               = ExoLogger.getExoLogger(IdentityManagerImpl.class);
-
+  
+  /** The offset for list access loading. */
+  private static final int                   OFFSET = 0;
+  
+  /** The limit for list access loading. */
+  private static final int                   LIMIT = 200;
+  
   /** The identity providers */
   protected Map<String, IdentityProvider<?>> identityProviders = new HashMap<String, IdentityProvider<?>>();
 
+  /** The identity providers */
+  protected Map<String, ProfileListener> profileListeners = new HashMap<String, ProfileListener>();
+  
   /** The storage */
   protected IdentityStorage                  identityStorage;
 
@@ -72,6 +82,54 @@ public class IdentityManagerImpl implements IdentityManager {
     this.addIdentityProvider(defaultIdentityProvider);
   }
 
+
+  /**
+   * {@inheritDoc}
+   */
+  public ListAccess<Identity> getConnectionsWithListAccess(Identity identity) {
+    return getRelationshipManager().getConnections(identity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public ListAccess<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter, boolean forceLoadProfile) {
+    return (new ProfileFilterListAccess(identityStorage, providerId, profileFilter, forceLoadProfile));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public Profile getProfile(Identity identity) {
+    Profile profile = identity.getProfile();
+    if (profile.getId() == null) {
+      identityStorage.loadProfile(profile);
+    }
+    return profile;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void updateProfile(Profile existingProfile) {
+    identityStorage.saveProfile(existingProfile);
+    broadcastUpdateProfileEvent(existingProfile);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void registerProfileListener(ProfileListenerPlugin profileListenerPlugin) {
+    profileLifeCycle.addListener(profileListenerPlugin);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public Identity updateIdentity(Identity identity) {
+    return identityStorage.updateIdentity(identity);
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -82,6 +140,16 @@ public class IdentityManagerImpl implements IdentityManager {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public void removeIdentityProvider(IdentityProvider<?> identityProvider) {
+    if (identityProvider != null) {
+      LOG.debug("Removing identity provider for " + identityProvider.getName() + ": " + identityProvider);
+      identityProviders.remove(identityProvider.getName());
+    }
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -97,7 +165,7 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public List<Identity> getConnections(Identity ownerIdentity) throws Exception {
-    return getRelationshipManager().findRelationships(ownerIdentity, Relationship.Type.CONFIRMED);
+    return Arrays.asList(getConnectionsWithListAccess(ownerIdentity).load(OFFSET, LIMIT));
   }
 
   
@@ -111,22 +179,15 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  public List<Identity> getIdentities(String providerId, boolean loadProfile) {
-    IdentityProvider<?> ip = getIdentityProvider(providerId);
-    List<String> userids = ip.getAllUserId();
-    List<Identity> ids = new ArrayList<Identity>();
-
-    for (String userId : userids) {
-      ids.add(this.getOrCreateIdentity(providerId, userId, loadProfile));
-    }
-    return ids;
+  public List<Identity> getIdentities(String providerId, boolean loadProfile) throws Exception {
+    return Arrays.asList(getIdentitiesByProfileFilter(providerId, new ProfileFilter(), loadProfile).load(OFFSET, LIMIT));
   }
 
   /**
    * {@inheritDoc}
    */
   public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter) throws Exception {
-    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, 0, SEARCH_LIMIT);
+    return Arrays.asList(getIdentitiesByProfileFilter(providerId, profileFilter, false).load(OFFSET, LIMIT));
   }
 
   /**
@@ -136,14 +197,14 @@ public class IdentityManagerImpl implements IdentityManager {
                                                      ProfileFilter profileFilter,
                                                      long offset,
                                                      long limit) throws Exception {
-    return identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset, limit);
+    return Arrays.asList(getIdentitiesByProfileFilter(providerId, profileFilter, false).load((int)offset, (int)limit));
   }
 
   /**
    * {@inheritDoc}
    */
   public List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter) throws Exception {
-    return getIdentitiesByProfileFilter(null, profileFilter, 0, SEARCH_LIMIT);
+    return Arrays.asList(getIdentitiesByProfileFilter(null, profileFilter, false).load(OFFSET, LIMIT));
   }
 
   /**
@@ -152,14 +213,14 @@ public class IdentityManagerImpl implements IdentityManager {
   public List<Identity> getIdentitiesByProfileFilter(ProfileFilter profileFilter,
                                                      long offset,
                                                      long limit) throws Exception {
-    return getIdentitiesByProfileFilter(null, profileFilter, offset, limit);
+    return Arrays.asList(getIdentitiesByProfileFilter(null, profileFilter, false).load((int) offset, (int)limit));
   }
 
   /**
    * {@inheritDoc}
    */
   public List<Identity> getIdentitiesFilterByAlphaBet(String providerId, ProfileFilter profileFilter) throws Exception {
-    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, 0, SEARCH_LIMIT);
+    return Arrays.asList(getIdentitiesByProfileFilter(providerId, profileFilter, false).load(OFFSET, LIMIT));
   }
 
   /**
@@ -169,14 +230,14 @@ public class IdentityManagerImpl implements IdentityManager {
                                                       ProfileFilter profileFilter,
                                                       long offset,
                                                       long limit) throws Exception {
-    return identityStorage.getIdentitiesFilterByAlphaBet(providerId, profileFilter, offset, limit);
+    return Arrays.asList(getIdentitiesByProfileFilter(providerId, profileFilter, false).load((int)offset, (int)limit));
   }
 
   /**
    * {@inheritDoc}
    */
   public List<Identity> getIdentitiesFilterByAlphaBet(ProfileFilter profileFilter) throws Exception {
-    return getIdentitiesFilterByAlphaBet(null, profileFilter);
+    return Arrays.asList(getIdentitiesByProfileFilter(null, profileFilter, false).load(OFFSET, LIMIT));
   }
 
   /**
@@ -235,22 +296,7 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public Identity getIdentity(String providerId, String remoteId, boolean loadProfile) {
-    Identity returnIdentity = null;
-    IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
-    returnIdentity = identityProvider.getIdentityByRemoteId(remoteId);
-    if (returnIdentity != null) {
-      Identity storedIdentity = this.getIdentityStorage().findIdentity(providerId, remoteId);
-      if (storedIdentity != null) {
-        returnIdentity.setId(storedIdentity.getId());
-        if (loadProfile) {
-          this.getIdentityStorage().loadProfile(returnIdentity.getProfile());
-        }
-      } else {
-        // save new identity
-        this.getIdentityStorage().saveIdentity(returnIdentity);
-      }
-    }
-    return returnIdentity;
+    return getOrCreateIdentity(providerId, remoteId, loadProfile);
   }
 
   /**
@@ -336,45 +382,35 @@ public class IdentityManagerImpl implements IdentityManager {
    */
   // TODO make easier api, this is not good.
   public void updateAvatar(Profile p) {
-    this.saveProfile(p);
-    this.profileLifeCycle.avatarUpdated(p.getIdentity().getRemoteId(), p);
-    LOG.debug("Update avatar successfully for user: " + p);
+    updateProfile(p);
   }
 
   /**
    * {@inheritDoc}
    */
   public void updateBasicInfo(Profile p) throws Exception {
-    addOrModifyProfileProperties(p);
-    profileLifeCycle.basicUpdated(p.getIdentity().getRemoteId(), p);
-    LOG.debug("Update basic infomation successfully for user: " + p);
+    updateProfile(p);
   }
 
   /**
    * {@inheritDoc}
    */
   public void updateContactSection(Profile p) throws Exception {
-    addOrModifyProfileProperties(p);
-    profileLifeCycle.contactUpdated(p.getIdentity().getRemoteId(), p);
-    LOG.debug("Update contact section successfully for user: " + p);
+    updateProfile(p);
   }
 
   /**
    * {@inheritDoc}
    */
   public void updateExperienceSection(Profile p) throws Exception {
-    addOrModifyProfileProperties(p);
-    profileLifeCycle.experienceUpdated(p.getIdentity().getRemoteId(), p);
-    LOG.debug("Update experience section successfully for user: " + p);
+    updateProfile(p);
   }
 
   /**
    * {@inheritDoc}
    */
   public void updateHeaderSection(Profile p) throws Exception {
-    addOrModifyProfileProperties(p);
-    profileLifeCycle.headerUpdated(p.getIdentity().getRemoteId(), p);
-    LOG.debug("Update header section successfully for user: " + p);
+    updateProfile(p);
   }
 
   /**
@@ -456,5 +492,25 @@ public class IdentityManagerImpl implements IdentityManager {
    */
   public IdentityStorage getStorage() {
     return this.identityStorage;
+  }
+
+  /**
+   * Broadcasts update profile event depending on type of update. 
+   * 
+   * @param profile
+   * @since 1.2.0-GA
+   */
+  protected void broadcastUpdateProfileEvent(Profile profile) {
+    if (profile.getUpdateType().equals(Profile.UpdateType.POSITION)) {// updateHeaderSection
+      profileLifeCycle.headerUpdated(profile.getIdentity().getRemoteId(), profile);
+    } else if (profile.getUpdateType().equals(Profile.UpdateType.BASIC_INFOR)) { // updateBasicInfo
+      profileLifeCycle.basicUpdated(profile.getIdentity().getRemoteId(), profile);
+    } else if (profile.getUpdateType().equals(Profile.UpdateType.AVATAR)) { // updateAvatar
+      profileLifeCycle.avatarUpdated(profile.getIdentity().getRemoteId(), profile);
+    } else if (profile.getUpdateType().equals(Profile.UpdateType.CONTACT)) { // updateContactSection
+      profileLifeCycle.contactUpdated(profile.getIdentity().getRemoteId(), profile);
+    } else if (profile.getUpdateType().equals(Profile.UpdateType.EXPERIENCES)) { // updateExperienceSection
+      profileLifeCycle.experienceUpdated(profile.getIdentity().getRemoteId(), profile);
+    }
   }
 }

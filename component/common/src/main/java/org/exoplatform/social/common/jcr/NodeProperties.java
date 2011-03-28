@@ -24,7 +24,13 @@ package org.exoplatform.social.common.jcr;
  * @since 1.2.0-GA
  */
 public final class NodeProperties {
-
+  /* eXo Social Identity Node Properties */
+  
+  public static final String IDENTITY_REMOTEID = "exo:remoteId";
+  public static final String IDENTITY_PROVIDERID = "exo:providerId";
+  public static final String PROFILE_IDENTITY = "exo:identity";
+  public static final String IDENTITY_IS_DELETED = "exo:isDeleted";
+  
   /* eXo Social Activity Node Node Properties */
 
   public static final String ACTIVITY_ID = "exo:id";
@@ -72,6 +78,8 @@ public final class NodeProperties {
 
   /* JCR Node Property */
 
+  public static final String JCR_UUID = "jcr:uuid";
+  
   public static final String JCR_PRIMARY_TYPE = "jcr:primaryType";
 
   public static final String JCR_MIXIN_TYPES = "jcr:mixinTypes";

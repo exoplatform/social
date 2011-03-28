@@ -166,6 +166,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       user.setFirstName(userName);
       user.setFirstName(firstName);
       user.setLastName(lastName);
+      user.setFullName(firstName + " " + lastName);
       user.setEmail(newEmail);
       service.getUserHandler().saveUser(user, true);
       ConversationState.getCurrent().setAttribute(CacheUserProfileFilter.USER_PROFILE,user);

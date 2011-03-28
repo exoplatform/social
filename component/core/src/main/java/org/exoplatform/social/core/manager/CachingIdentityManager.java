@@ -292,8 +292,8 @@ public class CachingIdentityManager extends IdentityManagerImpl {
         profile.setProperty(Profile.LAST_NAME, user.getLastName());
         hasChanged = true;
       }
-      if (!user.getEmail().equals((String)profile.getProperty(Profile.LAST_NAME))) {
-        profile.setProperty(Profile.LAST_NAME, user.getLastName());
+      if (!user.getEmail().equals((String)profile.getProperty(Profile.EMAIL))) {
+        profile.setProperty(Profile.EMAIL, user.getEmail());
         hasChanged = true;
       }
 

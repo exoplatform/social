@@ -43,8 +43,17 @@ public class ProfileFilter {
   /** The gender. */
   private String gender;
 
+  /** Filter by first character of name. */
   private char firstCharacterOfName;
 
+  public ProfileFilter() {
+    this.name = "";
+    this.position = "";
+    this.company = "";
+    this.skills = "";
+    this.gender = "";
+    this.firstCharacterOfName = '\u0000'; 
+  }
   /**
    * Gets the position.
    *
@@ -114,4 +123,22 @@ public class ProfileFilter {
    * @return the name
    */
   public String getName() { return name; }
+
+  /**
+   * Gets the first character of name.
+   *
+   * @return the first character of name
+   * @since 1.2.0-GA
+   */
+  public char getFirstCharacterOfName() { return firstCharacterOfName; }
+
+  /**
+   * Sets the first character of name.
+   *
+   * @param firstCharacterOfName the first character of name
+   * @since 1.2.0-GA
+   */
+  public void setFirstCharacterOfName(char firstCharacterOfName) { this.firstCharacterOfName = firstCharacterOfName; }
+  
+  
 }
