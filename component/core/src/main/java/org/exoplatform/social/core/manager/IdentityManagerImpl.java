@@ -258,36 +258,15 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  // FIXME: Make it clear here when id=uuid vs id=providerId:remoteId vs
-  // id=providerId:uuid
-  public Identity getIdentity(String id, boolean loadProfile) {
-    Identity returnIdentity = null;
-    // attempts to match a global id in the form "providerId:remoteId"
-    if (GlobalId.isValid(id)) {
-      GlobalId globalId = new GlobalId(id);
-      String providerId = globalId.getDomain();
-      String remoteId = globalId.getLocalId();
-      returnIdentity = getOrCreateIdentity(providerId, remoteId, loadProfile);
-      if (returnIdentity != null) {
-        return returnIdentity;
-      } else {
-        // retry with providerId:nodeId
-        String tempId = globalId.getLocalId();
-        returnIdentity = this.getIdentityStorage().findIdentityById(tempId);
-        if (returnIdentity != null) {
-          id = tempId;
-        }
-      }
-    } else {
-      returnIdentity = this.getIdentityStorage().findIdentityById(id);
-    }
+  public Identity getIdentity(String identityId, boolean forceLoadOrReloadProfile) {
+    Identity returnIdentity = this.getIdentityStorage().findIdentityById(identityId);
+
     if (returnIdentity != null) {
-      if (loadProfile) {
+      if (forceLoadOrReloadProfile) {
         this.getIdentityStorage().loadProfile(returnIdentity.getProfile());
       }
-    }
-    if (returnIdentity == null) {
-      LOG.info("Can not get identity with id: " + id);
+    } else {
+      LOG.info("Can not get identity with id: " + identityId);
     }
     return returnIdentity;
   }
@@ -309,31 +288,34 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) {
+  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean forceLoadOrReloadProfile) {
     Identity returnIdentity = null;
     IdentityProvider<?> identityProvider = this.getIdentityProvider(providerId);
 
-    Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
+    Identity identityFoundByRemoteProvider = identityProvider.getIdentityByRemoteId(remoteId);
     Identity result = this.getIdentityStorage().findIdentity(providerId, remoteId);
     if (result == null) {
-      if (identity1 != null) {
+      if (identityFoundByRemoteProvider != null) {
         // identity is valid for provider, but no yet
         // referenced in storage
-        saveIdentity(identity1);
-        this.getIdentityStorage().saveProfile(identity1.getProfile());
-        result = identity1;
+        saveIdentity(identityFoundByRemoteProvider);
+        this.getIdentityStorage().saveProfile(identityFoundByRemoteProvider.getProfile());
+        result = identityFoundByRemoteProvider;
       } else {
         // Not found in provider, so return null
         return result;
       }
     } else {
-      if (identity1 == null) {
+      if (identityFoundByRemoteProvider == null) {
         // in the case: identity is stored but identity is not found from
-        // provider, delete that identity
-        this.getIdentityStorage().deleteIdentity(result);
+        // remote provider, sets that identity as deleted
+        if (!result.isDeleted()) {
+          result.setDeleted(true);
+          identityStorage.updateIdentity(result);
+        }
         return null;
       }
-      if (loadProfile) {
+      if (forceLoadOrReloadProfile) {
         this.getIdentityStorage().loadProfile(result.getProfile());
       }
     }
@@ -380,7 +362,6 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  // TODO make easier api, this is not good.
   public void updateAvatar(Profile p) {
     updateProfile(p);
   }

@@ -86,7 +86,7 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
     ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = new ArrayList<Identity>();
     if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
-      identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter.getFirstCharacterOfName(), offset, limit, forceLoadProfile);
+      identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset, limit, forceLoadProfile);
     } else {
       identities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset, limit, forceLoadProfile);
     }
@@ -100,7 +100,7 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
   public int getSize() throws Exception {
     int size = 0; 
     if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
-      size = identityStorage.getIdentitiesByFirstCharacterOfNameCount(providerId, profileFilter.getFirstCharacterOfName());
+      size = identityStorage.getIdentitiesByFirstCharacterOfNameCount(providerId, profileFilter);
     } else {
       size = identityStorage.getIdentitiesByProfileFilterCount(providerId, profileFilter);
     }

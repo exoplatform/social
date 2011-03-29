@@ -106,7 +106,7 @@ public class IdentityStorage {
   public IdentityStorage(final SocialDataLocation dataLocation, CacheService cacheService) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
-    this.identityCache = cacheService.getCacheInstance(getClass().getName() + "identityCache");
+    this.identityCache = cacheService.getCacheInstance("exo.social.IdentityStorageIdentityCache");
   }
 
   /**
@@ -274,22 +274,30 @@ public class IdentityStorage {
    * Counts the number of identities that match the first character of name.
    * 
    * @param providerId
-   * @param firstCharacterOfName
+   * @param profileFilter Profile filter object.
    * @return Number of identities that start with the first character of name.
    * @throws IdentityStorageException
    * @since 1.2.0-GA
    */
-  public int getIdentitiesByFirstCharacterOfNameCount(String providerId, char firstCharacterOfName) throws IdentityStorageException {
+  public int getIdentitiesByFirstCharacterOfNameCount(String providerId, ProfileFilter profileFilter) throws IdentityStorageException {
+    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     try {
       Session session = sessionManager.getOrOpenSession();
       Node profileHomeNode = getOrCreatExoProfileHomeNode(session, providerId);
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
-      return (int)queryBuilder
-              .select(NodeTypes.EXO_PROFILE)
-              .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR)
-              .and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(firstCharacterOfName).toLowerCase() + PERCENT_STR)
-              .count();
+      queryBuilder.select(NodeTypes.EXO_PROFILE)
+        .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR);
+      
+      if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
+        for (Identity identity : excludedIdentityList) {
+          queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
+        }
+      }
+      
+      queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR);
+      
+      return (int)queryBuilder.count();
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_FIRSTCHAR_COUNT, e.getMessage());
     } finally {
@@ -301,7 +309,7 @@ public class IdentityStorage {
    * Gets the identities that match the first character of name.
    * 
    * @param providerId Id of provider.
-   * @param firstCharacterOfName First character is used in filtering.
+   * @param profileFilter Profile filter object.
    * @param offset   Start index of list to be get.
    * @param limit    End index of list to be get.
    * @param forceLoadOrReloadProfile Load profile or not.
@@ -309,7 +317,8 @@ public class IdentityStorage {
    * @throws IdentityStorageException
    * @since 1.2.0-GA
    */
-  public List<Identity> getIdentitiesByFirstCharacterOfName(String providerId, char firstCharacterOfName, int offset, int limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
+  public List<Identity> getIdentitiesByFirstCharacterOfName(String providerId, ProfileFilter profileFilter, int offset, int limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
+    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     List<Identity> listIdentity = new ArrayList<Identity>();
     List<Node> nodes = null;
 
@@ -318,12 +327,17 @@ public class IdentityStorage {
       Node profileHomeNode = getOrCreatExoProfileHomeNode(session, providerId);
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
-      nodes = queryBuilder
-              .select(NodeTypes.EXO_PROFILE, offset, limit)
-              .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR)
-              .and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(firstCharacterOfName).toLowerCase() + PERCENT_STR)
-              .orderBy(Profile.FIRST_NAME, QueryBuilder.ASC)
-              .exec();
+      queryBuilder.select(NodeTypes.EXO_PROFILE, offset, limit)
+        .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR);
+      if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
+        for (Identity identity : excludedIdentityList) {
+          queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
+        }
+      }
+      queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR)
+        .orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);
+      
+      nodes = queryBuilder.exec();
       
       for (Node profileNode : nodes) {
         Node identityNode = profileNode.getProperty(NodeProperties.PROFILE_IDENTITY).getNode();
@@ -352,6 +366,7 @@ public class IdentityStorage {
    * @since 1.2.0-GA
    */
   public int getIdentitiesByProfileFilterCount(String providerId, ProfileFilter profileFilter) throws IdentityStorageException {
+    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
     String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
@@ -366,7 +381,13 @@ public class IdentityStorage {
       queryBuilder
               .select(NodeTypes.EXO_PROFILE)
               .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR);
-              
+
+      if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
+        for (Identity identity : excludedIdentityList) {
+          queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
+        }
+      }
+
       if (nameForSearch.trim().length() != 0) {
         queryBuilder.and().like(queryBuilder.lower(Profile.FULL_NAME), PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR);
       }
@@ -401,6 +422,7 @@ public class IdentityStorage {
                                                            long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
+    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
     String gender = profileFilter.getGender().trim();
     inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
@@ -414,8 +436,14 @@ public class IdentityStorage {
       QueryBuilder queryBuilder = new QueryBuilder(session);
       queryBuilder
               .select(NodeTypes.EXO_PROFILE, offset, limit)
-              .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR); 
-      
+              .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR);
+
+      if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
+        for (Identity identity : excludedIdentityList) {
+          queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
+        }
+      }
+
       if (nameForSearch.trim().length() != 0) {
         queryBuilder.and().like(queryBuilder.lower(Profile.FULL_NAME), PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR);
       }
@@ -475,12 +503,12 @@ public class IdentityStorage {
    * @param forceLoadOrReloadProfile Load profile or not.
    * @return the identities filter by alpha bet
    * @throws IdentityStorageException
-   * @deprecated Use {@link #getIdentitiesByFirstCharacterOfName(String, char, int, int, boolean)} instead.
+   * @deprecated Use {@link #getIdentitiesByFirstCharacterOfName(String, ProfileFilter, int, int, boolean)} instead.
    *             Will be removed by 1.3.x
    */
   public final List<Identity> getIdentitiesFilterByAlphaBet(final String identityProvider, final ProfileFilter profileFilter,
                                                             long offset, long limit) throws IdentityStorageException {
-    return getIdentitiesByFirstCharacterOfName(identityProvider, profileFilter.getFirstCharacterOfName(), (int)offset, (int)limit, false);
+    return getIdentitiesByFirstCharacterOfName(identityProvider, profileFilter, (int)offset, (int)limit, false);
   }
 
   /**

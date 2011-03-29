@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -107,6 +109,9 @@ public class UIProfileUserSearch extends UIForm {
    */
   static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
 
+  /** Empty character. */
+  private static final char EMPTY_CHARACTER = '\u0000';
+  
   /**
    * List used for identities storage.
    */
@@ -292,6 +297,10 @@ public class UIProfileUserSearch extends UIForm {
       List<Identity> identitiesSearchResult;
       List<Identity> identities;
       ProfileFilter filter = new ProfileFilter();
+      List<Identity> excludedIdentityList = new ArrayList<Identity>();
+      excludedIdentityList.add(Utils.getViewerIdentity());
+      filter.setExcludedIdentityList(excludedIdentityList);
+      
       uiSearch.invokeSetBindingBean(filter);
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
 
@@ -309,13 +318,17 @@ public class UIProfileUserSearch extends UIForm {
           filter.setName(charSearch);
           filter.setPosition("");
           filter.setGender("");
+          filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
           if ("All".equals(charSearch)) {
+            filter.setFirstCharacterOfName(EMPTY_CHARACTER);
             filter.setName("");
           }
-          identitiesSearchResult = Utils.getIdentityManager().getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME,
-                  filter, 0, uiSearch.getIdentitiesCount());
+          
+          identitiesSearchResult = Arrays.asList(Utils.getIdentityManager().getIdentitiesByProfileFilter
+            (OrganizationIdentityProvider.NAME, filter, false).load(0, (int)uiSearch.getIdentitiesCount()));
           uiSearch.setIdentityList(identitiesSearchResult);
         } else {
+          uiSearch.setSelectedChar(null);
           if (!isValidInput(filter)) { // is invalid condition input
             uiSearch.setIdentityList(new ArrayList<Identity>());
           } else {
@@ -335,9 +348,10 @@ public class UIProfileUserSearch extends UIForm {
             String skills = null;
 
             // uiSearch.setSelectedChar(charSearch);
-
-            identitiesSearchResult = Utils.getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME,
-                    filter, 0, uiSearch.getIdentitiesCount());
+            
+            filter.setFirstCharacterOfName(EMPTY_CHARACTER);
+            identitiesSearchResult = Arrays.asList(Utils.getIdentityManager().getIdentitiesByProfileFilter
+              (OrganizationIdentityProvider.NAME, filter, false).load(0, (int)uiSearch.getIdentitiesCount()));
             uiSearch.setIdentityList(identitiesSearchResult);
 
             // Using regular expression for search

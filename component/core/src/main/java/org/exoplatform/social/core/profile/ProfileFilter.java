@@ -23,6 +23,11 @@ package org.exoplatform.social.core.profile;
  * Sep 15, 2009
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.exoplatform.social.core.identity.model.Identity;
+
 /**
  * This class using for filter profile of identity
  */
@@ -43,6 +48,9 @@ public class ProfileFilter {
   /** The gender. */
   private String gender;
 
+  /** the list of identity to be excluded from profile filter **/
+  private List<Identity> excludedIdentityList;
+
   /** Filter by first character of name. */
   private char firstCharacterOfName;
 
@@ -52,7 +60,8 @@ public class ProfileFilter {
     this.company = "";
     this.skills = "";
     this.gender = "";
-    this.firstCharacterOfName = '\u0000'; 
+    this.firstCharacterOfName = '\u0000';
+    this.excludedIdentityList = new ArrayList<Identity>();
   }
   /**
    * Gets the position.
@@ -123,6 +132,25 @@ public class ProfileFilter {
    * @return the name
    */
   public String getName() { return name; }
+
+  /**
+   * Sets the excludedIdentityList
+   *
+   * @param excludedIdentityList
+   * @since  1.2.0-GA
+   */
+  public void setExcludedIdentityList(List<Identity> excludedIdentityList) {
+    this.excludedIdentityList = excludedIdentityList;
+  }
+
+  /**
+   * Gets the excludedIdentityList
+   * @return the excludedIdentityList
+   * @since  1.2.0-GA
+   */
+  public List<Identity> getExcludedIdentityList() {
+    return this.excludedIdentityList;
+  }
 
   /**
    * Gets the first character of name.

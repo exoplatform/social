@@ -103,15 +103,15 @@ public class IdentityManagerTest extends AbstractCoreTest {
    */
   public void testGetIdentityById() {
     final String username = "root";
-    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
-    identityManager.saveIdentity(tobeSavedIdentity);
+    Identity foundIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username,
+            true);
 
     // Gets Identity By Node Id
     {
-      Identity gotIdentity = identityManager.getIdentity(tobeSavedIdentity.getId());
+      Identity gotIdentity = identityManager.getIdentity(foundIdentity.getId(), true);
 
       assertNotNull(gotIdentity);
-      assertEquals(tobeSavedIdentity.getId(), gotIdentity.getId());
+      assertEquals(foundIdentity.getId(), gotIdentity.getId());
       assertEquals("gotIdentity.getProviderId() must return: " + OrganizationIdentityProvider.NAME,
                    OrganizationIdentityProvider.NAME,
                    gotIdentity.getProviderId());
@@ -134,8 +134,9 @@ public class IdentityManagerTest extends AbstractCoreTest {
     {
       // With the case of OrganizationIdentityProvider, make sure remoteId
       // already exists in OrganizationService
-      GlobalId globalId = new GlobalId(OrganizationIdentityProvider.NAME + GlobalId.SEPARATOR
-          + username);
+      //Does not support this anymore
+      /*
+      GlobalId globalId =  GlobalId.create(OrganizationIdentityProvider.NAME, username);
       Identity gotIdentity2 = identityManager.getIdentity(globalId.toString());
       // "root" is found on OrganizationIdentityProvider (OrganizationService)
       assertNotNull("gotIdentity2 must not be null", gotIdentity2);
@@ -156,17 +157,10 @@ public class IdentityManagerTest extends AbstractCoreTest {
                    gotIdentity2.getRemoteId());
       assertNotNull("gotIdentity2.getProfile().getId() must not be null", gotIdentity2.getProfile()
                                                                                     .getId());
+      */
     }
 
-    //Gets Identity by providerId and nodeId
-
-    {
-      GlobalId globalId = new GlobalId(OrganizationIdentityProvider.NAME + GlobalId.SEPARATOR + tobeSavedIdentity.getId());
-      Identity gotIdentity3 = identityManager.getIdentity(globalId.toString());
-      assertNotNull("gotIdentity3 must not be null", gotIdentity3);
-    }
-
-    tearDownIdentityList.add(identityManager.getIdentity(tobeSavedIdentity.getId()));
+    tearDownIdentityList.add(identityManager.getIdentity(foundIdentity.getId(), false));
   }
 
   /**
@@ -175,8 +169,8 @@ public class IdentityManagerTest extends AbstractCoreTest {
   public void testGetIdentityByIdWithLoadProfile() {
 
     final String username = "root";
-    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
-    identityManager.saveIdentity(tobeSavedIdentity);
+    Identity tobeSavedIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username,
+            true);
     // loadProfile=false for identityId = uuid
     {
       Identity gotIdentity = identityManager.getIdentity(tobeSavedIdentity.getId(), false);
@@ -191,11 +185,11 @@ public class IdentityManagerTest extends AbstractCoreTest {
                    gotIdentity.getRemoteId());
       // does not load profile
 
-      // FIXME hoatle gotIdentity.getProfile().getId() must return null
       // assertNull("gotIdentity.getProfile().getId() must return: null",
       // gotIdentity.getProfile().getId());
     }
     // loadProfile=false for identityId = globalId
+    /*
     {
       // With the case of OrganizationIdentityProvider, make sure remoteId
       // already exists in OrganizationService
@@ -217,8 +211,9 @@ public class IdentityManagerTest extends AbstractCoreTest {
       //assertNull("gotIdentity2.getProfile().getId() must return: null", gotIdentity2.getProfile()
                                                                                     //.getId());
     }
+    */
 
-    tearDownIdentityList.add(identityManager.getIdentity(tobeSavedIdentity.getId()));
+    tearDownIdentityList.add(identityManager.getIdentity(tobeSavedIdentity.getId(), false));
 
   }
 
@@ -227,21 +222,19 @@ public class IdentityManagerTest extends AbstractCoreTest {
    */
   public void testDeleteIdentity() {
     final String username = "demo";
-    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
-    identityManager.saveIdentity(tobeSavedIdentity);
+    Identity tobeSavedIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username,
+            false);
 
     assertNotNull("tobeSavedIdentity.getId() must not be null", tobeSavedIdentity.getId());
 
-    assertNull("tobeSavedIdentity.getProfile().getId() must be null",
-               tobeSavedIdentity.getProfile().getId());
+    assertNotNull("tobeSavedIdentity.getProfile().getId() must not be null",
+            tobeSavedIdentity.getProfile().getId());
 
     identityManager.deleteIdentity(tobeSavedIdentity);
 
 //    assertNull("identityManager.getIdentity(tobeSavedIdentity.getId() must return null",
 //               identityManager.getIdentity(tobeSavedIdentity.getId()));
-    GlobalId globalId = new GlobalId(OrganizationIdentityProvider.NAME + GlobalId.SEPARATOR
-        + username);
-    Identity gotIdentity = identityManager.getIdentity(globalId.toString());
+    Identity gotIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
     assertNotNull("gotIdentity must not be null because " + username + " is in organizationService",
                   gotIdentity);
     assertNotNull("gotIdentity.getId() must not be null", gotIdentity.getId());
@@ -442,6 +435,19 @@ public class IdentityManagerTest extends AbstractCoreTest {
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
       assertEquals("The number of identities get by profile filter must be " + idsListAccess.getSize(), 0, idsListAccess.getSize());
+    }
+
+    //Test with excluded identity list
+    {
+      Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+      List<Identity> excludedIdentities = new ArrayList<Identity>();
+      excludedIdentities.add(rootIdentity);
+      ProfileFilter profileFilter = new ProfileFilter();
+      profileFilter.setExcludedIdentityList(excludedIdentities);
+      ListAccess<Identity> identityListAccess = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, profileFilter, false);
+      assertEquals("identityListAccess.getSize() must return 10", 10, identityListAccess.getSize());
+      Identity[] identityArray = identityListAccess.load(0, 100);
+      assertEquals("identityArray.length must be 10", 10, identityArray.length);
     }
   }
 

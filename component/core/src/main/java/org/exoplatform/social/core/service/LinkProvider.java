@@ -90,8 +90,7 @@ public class LinkProvider {
    * @return tag <a> with a link to profile of userName on portalName
    */
   public static String getProfileLink(final String username, final String portalOwner) {
-    Identity identity = getIdentityManager().
-            getIdentity(GlobalId.create(OrganizationIdentityProvider.NAME,username).toString(), true);
+    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
     Validate.notNull(identity, "Identity must not be null.");
     return "<a href=\"" + buildProfileUri(identity.getRemoteId(), null, portalOwner)
         + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";

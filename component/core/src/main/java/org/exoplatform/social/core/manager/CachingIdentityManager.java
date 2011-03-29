@@ -27,7 +27,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.IdentityProvider;
-import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.storage.IdentityStorage;
@@ -42,17 +41,15 @@ import org.exoplatform.social.core.storage.IdentityStorage;
 public class CachingIdentityManager extends IdentityManagerImpl {
   private static final Log                 LOG = ExoLogger.getExoLogger(CachingIdentityManager.class);
 
-  private ExoCache<String, Identity>       identityCacheById;
-
   /**
-   * identityCache
+   * identityCacheById with key = uuid/ identity.id
    */
-  private ExoCache<GlobalId, Identity>     identityCache;
+  private ExoCache<String, Identity>       identityCacheById;
 
   /**
    * identityListCache with key = identityProvider
    */
-  private ExoCache<String, List<Identity>> identityListCache;
+  private ExoCache<String, List<Identity>> identityListCacheByIdentityProvider;
 
   /**
    * Instantiates a new caching identity manager.
@@ -66,59 +63,24 @@ public class CachingIdentityManager extends IdentityManagerImpl {
                                 IdentityProvider<?> defaultIdentityProvider,
                                 CacheService cacheService) {
     super(identityStorage, defaultIdentityProvider);
-    this.identityCacheById = cacheService.getCacheInstance(getClass().getName()
-        + "identityCacheById");
-    this.identityCache = cacheService.getCacheInstance(getClass().getName() + "identityCache");
-    this.identityListCache = cacheService.getCacheInstance(getClass().getName()
-        + "identityListCache");
+    this.identityCacheById = cacheService.getCacheInstance("exo.social.IdentityManager.IdentityCacheById");
+    this.identityListCacheByIdentityProvider = cacheService.getCacheInstance("exo.social" +
+            ".IdentityManager.IdentityListCacheByIdentityProvider");
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Identity getIdentity(String id, boolean loadProfile) {
-    Identity cachedIdentity = null;
-    // attempts to match a global id in the form "providerId:remoteId"
-    if (GlobalId.isValid(id)) {
-      GlobalId globalId = new GlobalId(id);
-      String providerId = globalId.getDomain();
-      String remoteId = globalId.getLocalId();
-      cachedIdentity = identityCache.get(globalId);
-      if (cachedIdentity == null) {
-        cachedIdentity = getOrCreateIdentity(providerId, remoteId, loadProfile);
-        if (cachedIdentity != null) {
-          identityCache.put(globalId, cachedIdentity);
-          return cachedIdentity;
-        }
-        // retry with providerId:nodeId
-        if (cachedIdentity == null) {
-          String tempId = globalId.getLocalId();
-          cachedIdentity = this.getIdentityStorage().findIdentityById(tempId);
-          if (cachedIdentity != null) {
-            id = tempId;
-          }
-        }
-      }
-
-    } else {
-      cachedIdentity = identityCacheById.get(id);
-      if (cachedIdentity == null) {
-        cachedIdentity = this.getIdentityStorage().findIdentityById(id);
-      }
-    }
-
+  public Identity getIdentity(String identityId, boolean forceLoadOrReloadProfile) {
+    Identity cachedIdentity = identityCacheById.get(identityId);
     if (cachedIdentity != null) {
-      if (loadProfile) {
-        this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
-        if (cachedIdentity.getProfile().getFullName().isEmpty()) {
-          updateProfileIfNeeded(cachedIdentity);
-        }
-      }
-      identityCacheById.put(id, cachedIdentity);
+      return cachedIdentity;
     }
-    if (cachedIdentity == null) {
-      LOG.info("Can not get identity with id: " + id);
+    Identity foundIdentity = super.getIdentity(identityId, forceLoadOrReloadProfile);
+    if (foundIdentity != null) {
+      identityCacheById.put(identityId, foundIdentity);
+      cachedIdentity = foundIdentity;
     }
     return cachedIdentity;
   }
@@ -127,31 +89,9 @@ public class CachingIdentityManager extends IdentityManagerImpl {
    * {@inheritDoc}
    */
   @Override
-  public Identity getIdentity(String providerId, String remoteId, boolean loadProfile) {
-    GlobalId globalIdCacheKey = GlobalId.create(providerId, remoteId);
-    Identity cachedIdentity = identityCache.get(globalIdCacheKey);
-    if (cachedIdentity == null) {
-      IdentityProvider<?> identityProvider = getIdentityProvider(providerId);
-      cachedIdentity = identityProvider.getIdentityByRemoteId(remoteId);
-      if (cachedIdentity != null) {
-        Identity storedIdentity = this.getIdentityStorage().findIdentity(providerId, remoteId);
-        if (storedIdentity != null) {
-          cachedIdentity.setId(storedIdentity.getId());
-        } else {
-          // save new identity
-          this.getIdentityStorage().saveIdentity(cachedIdentity);
-        }
-      }
-      identityCache.put(globalIdCacheKey, cachedIdentity);
-    }
-    if (loadProfile && cachedIdentity.getProfile().getId() == null) {
-      this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
-      if (cachedIdentity.getProfile().getFullName().isEmpty()) {
-        updateProfileIfNeeded(cachedIdentity);
-      }
-    }
-
-    return cachedIdentity;
+  public Identity updateIdentity(Identity identity) {
+    updateIdentityCaches(identity);
+    return super.updateIdentity(identity);
   }
 
   /**
@@ -159,63 +99,16 @@ public class CachingIdentityManager extends IdentityManagerImpl {
    */
   @Override
   public void deleteIdentity(Identity identity) {
-    if (identity.getId() == null) {
-      LOG.warn("identity.getId() must not be null of [" + identity + "]");
-      return;
-    }
-    this.getIdentityStorage().deleteIdentity(identity);
-    identityCacheById.remove(identity.getId());
-    identityCache.remove(identity.getGlobalId());
-    identityListCache.remove(identity.getProviderId());
+    super.deleteIdentity(identity);
+    updateIdentityCaches(identity);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean loadProfile) {
-    GlobalId globalIdCacheKey = GlobalId.create(providerId, remoteId);
-    Identity cachedIdentity = identityCache.get(globalIdCacheKey);
-    if (cachedIdentity == null) {
-      IdentityProvider<?> identityProvider = this.getIdentityProvider(providerId);
-
-      Identity identity1 = identityProvider.getIdentityByRemoteId(remoteId);
-      Identity result = this.getIdentityStorage().findIdentity(providerId, remoteId);
-      if (result == null) {
-        if (identity1 != null) {
-          // identity is valid for provider, but no yet referenced in storage
-          saveIdentity(identity1);
-          this.getIdentityStorage().saveProfile(identity1.getProfile());
-          result = identity1;
-        } else {
-          // Not found in provider, so return null
-          return result;
-        }
-      } else {
-        if (identity1 == null) {
-          // in the case: identity is stored but identity is not found from
-          // provider, delete that identity
-          this.getIdentityStorage().deleteIdentity(result);
-          return null;
-        }
-        if (loadProfile) {
-          this.getIdentityStorage().loadProfile(result.getProfile());
-          if (result.getProfile().getFullName().isEmpty()) {
-            updateProfileIfNeeded(result);
-          }
-        }
-      }
-      cachedIdentity = result;
-      if (cachedIdentity.getId() != null) {
-        identityCache.put(globalIdCacheKey, cachedIdentity);
-      }
-    } else if (loadProfile && cachedIdentity.getProfile().getId() == null) {
-      this.getIdentityStorage().loadProfile(cachedIdentity.getProfile());
-      if (cachedIdentity.getProfile().getFullName().isEmpty()) {
-        updateProfileIfNeeded(cachedIdentity);
-      }
-    }
-    return cachedIdentity;
+  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean forceLoadOrReloadProfile) {
+    return super.getOrCreateIdentity(providerId,  remoteId, forceLoadOrReloadProfile);
   }
 
   /**
@@ -223,45 +116,17 @@ public class CachingIdentityManager extends IdentityManagerImpl {
    */
   @Override
   public void saveIdentity(Identity identity) {
-    this.getIdentityStorage().saveIdentity(identity);
-    this.getIdentityProvider(identity.getProviderId()).onSaveIdentity(identity);
-    if (identity.getId() != null) {
+    super.saveIdentity(identity);
+    updateIdentityCaches(identity);
+  }
+
+  private void updateIdentityCaches(Identity identity) {
+    if (identityCacheById.get(identity.getId()) != null) {
       identityCacheById.remove(identity.getId());
-      identityCache.remove(identity.getGlobalId());
     }
-    identityListCache.remove(identity.getProviderId());
-  }
-
-  /**
-   * Removes cache when there is changes in profile.
-   *
-   * @param profile
-   */
-  private void removeCacheForProfileChange(Profile profile) {
-    Identity identity = profile.getIdentity();
-    identityCacheById.remove(identity.getId());
-    identityCache.remove(profile.getIdentity().getGlobalId());
-    identityListCache.remove(identity.getProviderId());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void saveProfile(Profile profile) {
-    this.getIdentityStorage().saveProfile(profile);
-    this.getIdentityProvider(profile.getIdentity().getProviderId()).onSaveProfile(profile);
-    this.removeCacheForProfileChange(profile);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void addOrModifyProfileProperties(Profile profile) throws Exception {
-    this.getIdentityStorage().addOrModifyProfileProperties(profile);
-    this.getIdentityProvider(profile.getIdentity().getProviderId()).onSaveProfile(profile);
-    this.removeCacheForProfileChange(profile);
+    if (identityListCacheByIdentityProvider.get(identity.getProviderId()) != null) {
+      identityListCacheByIdentityProvider.remove(identity.getProviderId());
+    }
   }
   
   /**

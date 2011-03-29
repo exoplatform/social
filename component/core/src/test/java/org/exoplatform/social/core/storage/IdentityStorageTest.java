@@ -382,9 +382,12 @@ public class IdentityStorageTest extends AbstractCoreTest {
    */
   public void testGetIdentitiesByFirstCharacterOfNameCount() throws Exception {
     populateData();
-    int idsCount = identityStorage.getIdentitiesByFirstCharacterOfNameCount("organization", 'F');
+    final ProfileFilter filter = new ProfileFilter();
+    filter.setFirstCharacterOfName('F');
+    int idsCount = identityStorage.getIdentitiesByFirstCharacterOfNameCount("organization", filter);
     assertEquals("Number of identity must be " + idsCount, 10, idsCount);
-    idsCount = identityStorage.getIdentitiesByFirstCharacterOfNameCount("organization", 'L');
+    filter.setFirstCharacterOfName('L');
+    idsCount = identityStorage.getIdentitiesByFirstCharacterOfNameCount("organization", filter);
     assertEquals("Number of identity must be " + idsCount, 0, idsCount);
   }
 
@@ -394,9 +397,12 @@ public class IdentityStorageTest extends AbstractCoreTest {
    */
   public void testGetIdentitiesByFirstCharacterOfName() throws Exception {
     populateData();
-    assertEquals(1, identityStorage.getIdentitiesByFirstCharacterOfName("organization", 'F', 0, 1, false).size());
-    assertEquals(10, identityStorage.getIdentitiesByFirstCharacterOfName("organization", 'F', 0, 10, false).size());
-    assertEquals(0, identityStorage.getIdentitiesByFirstCharacterOfName("organization", 'L', 0, 10, false).size());
+    final ProfileFilter filter = new ProfileFilter();
+    filter.setFirstCharacterOfName('F');
+    assertEquals(1, identityStorage.getIdentitiesByFirstCharacterOfName("organization", filter, 0, 1, false).size());
+    assertEquals(10, identityStorage.getIdentitiesByFirstCharacterOfName("organization", filter, 0, 10, false).size());
+    filter.setFirstCharacterOfName('L');
+    assertEquals(0, identityStorage.getIdentitiesByFirstCharacterOfName("organization", filter, 0, 10, false).size());
   }
   
   /**

@@ -16,12 +16,15 @@
  */
 package org.exoplatform.social.webui.profile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.IdentityListAccess;
 import org.exoplatform.social.webui.Utils;
@@ -32,8 +35,8 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 /**
  * Displays information about all existing users. Manages actions
  * such as request make connection, invoke request, accept or deny invitation
@@ -92,21 +95,16 @@ public class UIDisplayProfileList extends UIContainer {
    * The first page of profile pages.
    */
   private static final int FIRST_PAGE = 1;
+  
+  private boolean isSearched;
 
-  /**
-   * Gets identities.
-   *
-   * @return one list of identity.
-   * @throws Exception
-   */
-  public List<Identity> getIdentityList() throws Exception {
-    if (identityList == null) {
-      identityList = Utils.getIdentityManager().getIdentities(OrganizationIdentityProvider.NAME);
-      if (identityList.contains(Utils.getViewerIdentity())) {
-        identityList.remove(Utils.getViewerIdentity());
-      }
-    }
-    return identityList;
+  
+  public boolean isSearched() {
+    return isSearched;
+  }
+
+  public void setSearched(boolean isSearched) {
+    this.isSearched = isSearched;
   }
 
   /**
@@ -146,7 +144,21 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public List<Identity> getList() throws Exception {
     int currentPage = iterator.getCurrentPage();
-    LazyPageList<Identity> pageList = new LazyPageList<Identity>(new IdentityListAccess(getIdentityList()), PEOPLE_PER_PAGE);
+    List<Identity> excludedIdentityList = new ArrayList<Identity>();
+    excludedIdentityList.add(Utils.getViewerIdentity());
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.setExcludedIdentityList(excludedIdentityList);
+    ListAccess<Identity> identityListAccess = null;
+    
+    if ((identityList != null) && (isSearched)) {
+      identityListAccess = new IdentityListAccess(identityList);
+      setSearched(false);
+    } else {
+      identityListAccess = Utils.getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME,
+        profileFilter, false);
+    }
+    
+    LazyPageList<Identity> pageList = new LazyPageList<Identity>(identityListAccess, PEOPLE_PER_PAGE);
     iterator.setPageList(pageList);
     if (this.uiProfileUserSearchPeople.isNewSearch()) {
       iterator.setCurrentPage(FIRST_PAGE);
@@ -232,6 +244,7 @@ public class UIDisplayProfileList extends UIContainer {
       UIProfileUserSearch uiProfileUserSearch = uiMyRelation.getChild(UIProfileUserSearch.class);
       List<Identity> identityList = uiProfileUserSearch.getIdentityList();
       uiMyRelation.setIdentityList(identityList);
+      uiMyRelation.setSearched(true);
     }
   }
 
