@@ -660,19 +660,19 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     if (!pattern.contains("{") || !pattern.contains("}")) {
       return pattern;
     }
-    if (SPACE_URL_PREFERENCE.equals(pattern)) {
-      return space.getUrl();
-    } else if (GROUP_ID_PREFERENCE.equals(pattern)) {
-      return space.getGroupId();
-    } else if (MODIFIED_GROUP_ID_PREFERENCE.equals(pattern)) {
-      return space.getGroupId().replace("/", ".");
-    } else if (PAGE_NAME_PREFERENCE.equals(pattern)) {
-      return spaceApplication.getAppTitle();
-    } else if (PAGE_URL_PREFERENCE.equals(pattern)) {
-      return spaceApplication.getUri();
+    if (pattern.contains(SPACE_URL_PREFERENCE)) {
+      pattern = pattern.replace(SPACE_URL_PREFERENCE, space.getUrl());
+    } else if (pattern.contains(GROUP_ID_PREFERENCE)) {
+      pattern = pattern.replace(GROUP_ID_PREFERENCE, space.getGroupId());
+    } else if (pattern.contains(MODIFIED_GROUP_ID_PREFERENCE)) {
+      String modifiedGroupId = space.getGroupId().replace("/", ".");
+      pattern = pattern.replace(MODIFIED_GROUP_ID_PREFERENCE, modifiedGroupId);
+    } else if (pattern.contains(PAGE_NAME_PREFERENCE)) {
+      pattern = pattern.replace(PAGE_NAME_PREFERENCE, spaceApplication.getAppTitle());
+    } else if (pattern.contains(PAGE_URL_PREFERENCE)) {
+      pattern = pattern.replace(PAGE_URL_PREFERENCE, spaceApplication.getUri());
     }
-    LOG.warn("The pattern is not defined: " + pattern);
-    return null;
+    return pattern;
   }
 
   /**
