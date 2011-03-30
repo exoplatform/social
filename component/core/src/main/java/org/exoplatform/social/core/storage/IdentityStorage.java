@@ -500,7 +500,6 @@ public class IdentityStorage {
    * @param profileFilter    the profile filter
    * @param offset
    * @param limit
-   * @param forceLoadOrReloadProfile Load profile or not.
    * @return the identities filter by alpha bet
    * @throws IdentityStorageException
    * @deprecated Use {@link #getIdentitiesByFirstCharacterOfName(String, ProfileFilter, int, int, boolean)} instead.

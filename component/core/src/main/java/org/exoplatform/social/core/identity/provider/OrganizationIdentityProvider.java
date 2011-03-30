@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.component.RequestLifeCycle;
@@ -33,6 +34,7 @@ import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.Profile.UpdateType;
 import org.exoplatform.social.core.service.LinkProvider;
 
 
@@ -50,10 +52,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   /** The Constant NAME. */
   public final static String NAME = "organization";
 
-  //TODO: dang.tung: maybe we don't need it but it will fix the problem from portal - get user
-  /** The user cache. */
-  private Map<String, User> userCache = new HashMap<String, User>();
-
   /**
    * Instantiates a new organization identity provider.
    *
@@ -69,27 +67,34 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     return NAME;
   }
 
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.core.identity.IdentityProvider#getAllUserId()
+  /**
+   * {@inheritDoc}
+   *
+   * Return only 500 maximum users for this duplicated method.
+   *
+   * @return list of string containing user names.
    */
   public List<String> getAllUserId() {
     try {
-    PageList pl;
 
-      pl = organizationService.getUserHandler().findUsers(new Query());
+      ListAccess<User> allUsers = organizationService.getUserHandler().findAllUsers();
+      //Get 500 as maxium
+      final int MAX_USERS = 500;
+      User[] users = allUsers.load(0, allUsers.getSize() >= MAX_USERS ? MAX_USERS : allUsers.getSize());
+      List<String> userIds = new ArrayList<String>();
 
-    List<User> userList = pl.getAll();
-    List<String> userIds = new ArrayList<String>();
-
-    for (User user : userList) {
-      userIds.add(user.getUserName());
-    }
-    return userIds;
+      for (User user : users) {
+        userIds.add(user.getUserName());
+      }
+      return userIds;
     } catch (Exception e) {
       throw new RuntimeException("Failed to load all users");
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public User findByRemoteId(String remoteId) {
     User user;
@@ -105,31 +110,57 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     return user;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Identity createIdentity(User user) {
     Identity identity = new Identity(NAME, user.getUserName());
-    //GlobalId globalId = new GlobalId(OrganizationIdentityProvider.NAME + GlobalId.SEPARATOR + user.getUserName());
-    //identity.setId(globalId.toString());
-    //identityManager.saveIdentity(identity);
     return identity;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void populateProfile(Profile profile, User user) {
     profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
     profile.setProperty(Profile.LAST_NAME, user.getLastName());
     profile.setProperty(Profile.FULL_NAME, user.getFullName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
+    profile.setProperty(Profile.EMAIL, user.getEmail());
     profile.setProperty(Profile.URL, LinkProvider.getProfileUri(user.getUserName()));
+  }
 
-    if (user.getEmail() != null && !profile.contains("emails")) {
-      List<Map<String,String>> emails = new ArrayList<Map<String,String>>();
-      Map<String,String> email = new HashMap<String,String>();
-      email.put("key", "work");
-      email.put("value", user.getEmail());
-      emails.add(email);
-      profile.setProperty("emails", emails);
+  /**
+   * Synchronizes profile's changes to user's information.
+   *
+   * @param profile
+   */
+  @Override
+  public void onUpdateProfile(Profile profile) {
+    UpdateType updateType = profile.getUpdateType();
+    String userName = (String) profile.getProperty(Profile.USERNAME);
+    if (updateType == Profile.UpdateType.BASIC_INFOR) {
+      try {
+        String firstName = (String) profile.getProperty(Profile.FIRST_NAME);
+        String lastName = (String) profile.getProperty(Profile.LAST_NAME);
+        String email = (String) profile.getProperty(Profile.EMAIL);
+
+        User foundUser = organizationService.getUserHandler().findUserByName(userName);
+        if (!foundUser.getFirstName().equals(firstName)) {
+          foundUser.setFirstName(firstName);
+        }
+        if (!foundUser.getLastName().equals(lastName)) {
+          foundUser.setLastName(lastName);
+        }
+        if (!foundUser.getEmail().equals(email)) {
+          foundUser.setEmail(email);
+        }
+        organizationService.getUserHandler().saveUser(foundUser, true);
+      } catch (Exception e) {
+        LOG.warn("Failed to update user by profile", e);
+      }
     }
-    //identityManager.saveProfile(profile);
   }
 }

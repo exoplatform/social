@@ -114,6 +114,7 @@ public class IdentityManagerImpl implements IdentityManager {
   public void updateProfile(Profile existingProfile) {
     identityStorage.saveProfile(existingProfile);
     broadcastUpdateProfileEvent(existingProfile);
+    this.getIdentityProvider(existingProfile.getIdentity().getProviderId()).onUpdateProfile(existingProfile);
   }
 
   /**

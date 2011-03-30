@@ -96,12 +96,31 @@ public abstract class IdentityProvider<T> {
    * This method is called after the IdentityManager have saved the profile object.
    *
    * @param profile
-   * @since 1.1.1
+   * @deprecated Will be removed by 1.3.x
    */
+  @Deprecated
   public void onSaveProfile(Profile profile) {
     return;
   }
 
+
+  /**
+   * This method is called after the IdentityManager updated the profile object.
+   *
+   * @param profile
+   * @since  1.2.0-GA
+   */
+  public void onUpdateProfile(Profile profile) {
+    return;
+  }
+
+  /**
+   * Gets the list of string containing the remote ids.
+   *
+   * @return the string list containing remote ids
+   * @deprecated Will be removed by 1.3.x
+   */
+  @Deprecated
   public List<String> getAllUserId() {
     throw new RuntimeException("getAllUserId() is not implemented for " + getClass());
   }

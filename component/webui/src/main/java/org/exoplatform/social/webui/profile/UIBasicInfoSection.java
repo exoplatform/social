@@ -22,6 +22,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.CacheUserProfileFilter;
@@ -65,13 +66,9 @@ public class UIBasicInfoSection extends UIProfileSection {
   public static final String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
 
   public UIBasicInfoSection() throws Exception {
-    String username = Utils.getViewerRemoteId();
-    OrganizationService service = this.getApplicationComponent(OrganizationService.class);
-    User useraccount = service.getUserHandler().findUserByName(username);
-
     addChild(UITitleBar.class, null, null);
 
-    UIFormStringInput userName = new UIFormStringInput(Profile.USERNAME, Profile.USERNAME, username);
+    UIFormStringInput userName = new UIFormStringInput(Profile.USERNAME, Profile.USERNAME, null);
     userName.setEditable(false);
     addUIFormInput(userName.addValidator(MandatoryValidator.class).addValidator(StringLengthValidator.class, 3, 30)
                    .addValidator(ResourceValidator.class).addValidator(ExpressionValidator.class,
@@ -79,19 +76,31 @@ public class UIBasicInfoSection extends UIProfileSection {
     
     addUIFormInput(new UIFormStringInput(Profile.FIRST_NAME,
                                          Profile.FIRST_NAME,
-                                         useraccount.getFirstName()).
+                                         null).
                    addValidator(MandatoryValidator.class).
                    addValidator(StringLengthValidator.class, 1, 45));
 
     addUIFormInput(new UIFormStringInput(Profile.LAST_NAME,
                                          Profile.LAST_NAME,
-                                         useraccount.getLastName()).
+                                         null).
                    addValidator(MandatoryValidator.class).
                    addValidator(StringLengthValidator.class, 1, 45));
 
-    addUIFormInput(new UIFormStringInput(Profile.EMAIL, Profile.EMAIL, useraccount.getEmail()).
+    addUIFormInput(new UIFormStringInput(Profile.EMAIL, Profile.EMAIL, null).
                    addValidator(MandatoryValidator.class).
                    addValidator(EmailAddressValidator.class));
+  }
+
+  /**
+   * Reloads basic info in each request call
+   */
+  public void reloadBasicInfo() {
+    Identity ownerIdentity = Utils.getOwnerIdentity(false);
+    Profile profile = ownerIdentity.getProfile();
+    this.getUIStringInput(Profile.USERNAME).setValue((String) profile.getProperty(Profile.USERNAME));
+    this.getUIStringInput(Profile.FIRST_NAME).setValue((String) profile.getProperty(Profile.FIRST_NAME));
+    this.getUIStringInput(Profile.LAST_NAME).setValue((String) profile.getProperty(Profile.LAST_NAME));
+    this.getUIStringInput(Profile.EMAIL).setValue((String) profile.getProperty(Profile.EMAIL));
   }
 
   /**
@@ -104,7 +113,7 @@ public class UIBasicInfoSection extends UIProfileSection {
   }
 
   /**
-   * Changes form into edit mode when user click eddit button.<br>
+   * Changes form into edit mode when user click edit button.<br>
    */
   public static class EditActionListener extends UIProfileSection.EditActionListener {
 
@@ -113,13 +122,6 @@ public class UIBasicInfoSection extends UIProfileSection {
       super.execute(event);
       UIProfileSection sect = event.getSource();
       UIBasicInfoSection uiForm = (UIBasicInfoSection) sect;
-      String username = Utils.getViewerRemoteId();
-      OrganizationService service = uiForm.getApplicationComponent(OrganizationService.class);
-      User user = service.getUserHandler().findUserByName(username);
-
-      uiForm.getUIStringInput(Profile.FIRST_NAME).setValue(user.getFirstName());
-      uiForm.getUIStringInput(Profile.LAST_NAME).setValue(user.getLastName());
-      uiForm.getUIStringInput(Profile.EMAIL).setValue(user.getEmail());
       WebuiRequestContext requestContext = event.getRequestContext();
       requestContext.addUIComponentToUpdateByAjax(uiForm);
       requestContext.addUIComponentToUpdateByAjax(sect);
@@ -131,9 +133,6 @@ public class UIBasicInfoSection extends UIProfileSection {
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
     private static final String MSG_KEY_UI_ACCOUNT_INPUT_SET_EMAIL_EXIST   = "UIAccountInputSet.msg.email-exist";
-//    private static final String MSG_KEY_UI_ACCOUNT_PROFILES_UPDATE_SUCCESS = "UIAccountProfiles.msg.update.success";
-//    private static final String PORTLET_NAME_USER_PROFILE_TOOLBAR_PORTLET  = "UserProfileToolBarPortlet";
-//    private static final String PORTLET_NAME_USER_PROFILE_PORTLET          = "ProfilePortlet";
 
     @Override
     public void execute(Event<UIProfileSection> event) throws Exception {
@@ -144,32 +143,30 @@ public class UIBasicInfoSection extends UIProfileSection {
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       UIApplication uiApp = context.getUIApplication();
 
-      String userName = uiForm.getUIStringInput(Profile.USERNAME).getValue();
       String firstName = uiForm.getUIStringInput(Profile.FIRST_NAME).getValue();
       String lastName = uiForm.getUIStringInput(Profile.LAST_NAME).getValue();
       String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();
-      OrganizationService service = uiForm.getApplicationComponent(OrganizationService.class);
-      User user = service.getUserHandler().findUserByName(userName);
-      String oldEmail = user.getEmail();
 
-      // Check if mail address is already used
-      Query query = new Query();
-      query.setEmail(newEmail);
-      if (!oldEmail.equals(newEmail) && service.getUserHandler().findUsers(query).getAll().size() > 0) {
-        // Be sure it keep old value
-        user.setEmail(oldEmail);
-        Object[] args = { userName };
-        uiApp.addMessage(new ApplicationMessage(MSG_KEY_UI_ACCOUNT_INPUT_SET_EMAIL_EXIST, args));
-        return;
+      Identity viewerIdentity = Utils.getViewerIdentity(true);
+      Profile profile = viewerIdentity.getProfile();
+      boolean profileHasUpdated = false;
+      if (!(profile.getProperty(Profile.FIRST_NAME)).equals(firstName)) {
+        profile.setProperty(Profile.FIRST_NAME, firstName);
+        profileHasUpdated = true;
       }
-
-      user.setFirstName(userName);
-      user.setFirstName(firstName);
-      user.setLastName(lastName);
-      user.setFullName(firstName + " " + lastName);
-      user.setEmail(newEmail);
-      service.getUserHandler().saveUser(user, true);
-      ConversationState.getCurrent().setAttribute(CacheUserProfileFilter.USER_PROFILE,user);
+      if (!(profile.getProperty(Profile.LAST_NAME)).equals(lastName)) {
+        profile.setProperty(Profile.LAST_NAME, lastName);
+        profileHasUpdated = true;
+      }
+      if (!(profile.getProperty(Profile.EMAIL)).equals(newEmail)) {
+        profile.setProperty(Profile.EMAIL, newEmail);
+        profileHasUpdated = true;
+      }
+      if (profileHasUpdated) {
+        Utils.getIdentityManager().updateProfile(profile);
+        //updates profile
+        Utils.getOwnerIdentity(true);
+      }
 
       Utils.updateWorkingWorkSpace();
     }

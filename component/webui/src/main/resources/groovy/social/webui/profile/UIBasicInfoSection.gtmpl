@@ -27,15 +27,11 @@
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.webui.profile.UITitleBar;
+  uicomponent.reloadBasicInfo();
 
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
-  def user = uicomponent.getViewUser();
-  def userName = user.getUserName();
-  def firstName = user.getFirstName();
-  def lastName = user.getLastName();
-  def email = user.getEmail();
-  def childs = uicomponent.getChilds();
+  def children = uicomponent.getChilds();
 %>
 <div class="UIBasicInfoSection">
   <% uiform.begin() %>
@@ -47,9 +43,9 @@
           <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%> :</td>
           <td class="FieldComponent">
           <% if (isEdit && isEditable) {
-              uiform.renderField(childs.get(1));
+              uiform.renderField(children.get(1));
              } else {%>
-               <%=userName %>
+               <%=children.get(1).getValue(); %>
           <% } %>
           </td>
         </tr>
@@ -57,9 +53,9 @@
           <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%> :</td>
           <td class="FieldComponent">
           <% if (isEdit && isEditable) {
-               uiform.renderField(childs.get(2));
+               uiform.renderField(children.get(2));
              } else { %>
-               <%=firstName %>
+               <%=children.get(2).getValue(); %>
           <% } %>
           </td>
         </tr>
@@ -67,9 +63,9 @@
           <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%> :</td>
           <td class="FieldComponent">
             <% if (isEdit && isEditable) {
-                 uiform.renderField(childs.get(3));
+                 uiform.renderField(children.get(3));
                } else { %>
-                 <%=lastName %>
+                 <%=children.get(3).getValue(); %>
             <% } %>
           </td>
         </tr>
@@ -77,9 +73,9 @@
           <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%> :</td>
           <td class="FieldComponent">
             <% if (isEdit && isEditable) {
-              uiform.renderField(childs.get(4));
+              uiform.renderField(children.get(4));
                } else { %>
-               <%=email%>
+               <%=children.get(4).getValue();%>
             <% } %>
           </td>
         </tr>
