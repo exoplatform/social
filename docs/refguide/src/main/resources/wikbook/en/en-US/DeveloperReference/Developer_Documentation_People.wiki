@@ -1,10 +1,10 @@
-eXo Social provides a way to add profile informations, relationships and connections between users: People. With the eXo People API, profile informations and relationship can be easily managed and customized.
+eXo Social provides a way to add profile information, connections and connections between users called People. With the eXo People API, profile information and relationship can be easily managed and customized.
 
-h1. Identity 
+h1. Identity {anchor:id=SOCref.Developers_References.People.Identity}
+The identity allows identifying a unique social object. Social objects can be persons, groups, applications, or whatever is related to social interactions like connecting, publishing an activity stream or holding a profile.
+h2. IdentityProvider {anchor:id=SOCref.Developers_References.People.IdentityProvider}
 
-h2. IdentityProvider 
-
-Creating your Identity Provider allows you to integrate people outside of your portal (for exemple customers) into your social network without having to create a portal account. You can also use this to populate the profile with data coming from other systems. Here is an example :
+eXo Social provides IdentityProvider as a identiy mechanism for the third parties to extend Social's identity system without any limitation. Here is an example:
 
 {code:language=java}
 class SampleIdentityProvider extends OrganizationIdentityProvider{
@@ -22,11 +22,11 @@ class SampleIdentityProvider extends OrganizationIdentityProvider{
 }
 {code}
 
-In this example, we created a SampleIdentityProvider class extending OrganizationIdentityProvider which is the IdentityProvider used to connect to the portal user's base. In this class, we overrided the populateProfile method and added some dummy data in the profile fields.
+In this example, the SampleIdentityProvider class extends OrganizationIdentityProvider which is the IdentityProvider used to connect to the portal user's base. In this class, the populateProfile method is overridden and some dummy data are added to the profile fields.
 
-h2. IdentityManager 
+h2. IdentityManager {anchor:id=SOCref.Developers_References.People.IdentityManager}
 
-The IdentityManager is the service used to manipulate the identity operations like creating, getting, deleting or finding a profile. We can get the IdentityManager via the ExoContainer. The following code will show how to get an IdentityManager instance and create a basic identity instance :
+The IdentityManager is the service used to manipulate the identity operations like creating, getting, deleting or finding a profile. You can get the IdentityManager via the ExoContainer. The following code will show how to get an IdentityManager instance and create a basic identity instance:
 
 {code:language=java}
 import org.exoplatform.container.ExoContainer;
@@ -54,11 +54,11 @@ Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentity
 {code}
 
 
-h1. Notifications 
+h1. ProfileListener {anchor:id=SOCref.Developers_References.People.ProfileListener}
 
-The People API provides some notification interfaces which programmers can implement in order to create their own handlers for notifications like notifications() for profile modifications([ProfileListenerPlugin|(ProfileListenerPlugin--]]) or for relationship changes([RelationshipListenerPlugin|(RelationshipListenerPlugin--]]). The following example will guide you through implementing one of these interfaces and show you how to configure this plugin.
+The People API provides notification interfaces which you can implement to create your own handlers for notification when having profile modifications by extending the ProfileListenerPlugin class or relationship changes by extending [RelationshipListenerPlugin|#SOCref.Developers_References.People.RelationshipListener].
 
-We will create the class ProfileLoggerListener. Its tasks is to log all profile modifications of the systems. The abstract class ProfileListenerPlugin provides us the interface to implement this method.
+* Firstly, create the ProfileLoggerListener class to log all profile modifications of the systems. The abstract class ProfileListenerPlugin provides the interface to implement this method.
 
 {code:language=java}
 import org.exoplatform.services.log.ExoLogger;
@@ -96,7 +96,7 @@ public class ProfileLoggerListener extends ProfileListenerPlugin{
 }
 {code}
 
-After creating the ProfileLoggerListener class, we have to add some configurations for this class to the configuration.xml :
+* Then, add some configurations for this class to the configuration.xml:
 
 {code:language=xml}
 <external-component-plugins>
@@ -109,16 +109,14 @@ After creating the ProfileLoggerListener class, we have to add some configuratio
 </external-component-plugins>
 {code}
 
+h1. Connections {anchor:id=SOCref.Developers_References.People.Relationships}
 Similarly, you can apply the above steps to implement the RelationshipListenerPlugin for relationship notifications.
-
-
-h1. Relationship
 
 Relationship is the bridge between two identities in eXo Social. There are many types of relationships defined in the Relationship class. With these types, a user can invite another user, confirm invitations or remove relationship.
 
-h2. Invite a user 
+h2. Users connection {anchor:id=SOCref.Developers_References.People.Connecting_users}
 
-The following code will show how to invite a user from a user :
+The following code will show how to invite a user to connect to another :
 
 {code:language=java}
 import org.exoplatform.container.ExoContainer;
@@ -147,10 +145,10 @@ public void inviteUser() throws Exception {
 {code}
 
 
-h2. Notifications 
+h2. RelationshipListener {anchor:id=SOCref.Developers_References.People.RelationshipListener}
+The following example will show you how to implement one of these interfaces and how to configure this plugin. The following step is similar to the Profile notifications implementation.
 
-Let's take a look at relationship notifications([RelationshipListenerPlugin|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-relationship-lifecycle-RelationshipListenerPlugin.html]). The following example will show you how to implement one of these interfaces and how to configure this plugin. The following step is similar to the Profile notifications implementation.
-
+* Firstly, create the RelationshipLoggerListener class:
 {code:language=java}
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.lifecycle.RelationshipListenerPlugin;
@@ -191,7 +189,7 @@ public class RelationshipLoggerListener extends RelationshipListenerPlugin{
 }
 {code}
 
-After creating the RelationshipLoggerListener class, we have to add some configurations for this class to the configuration.xml :
+* Then, add some configurations for this class to the configuration.xml:
 
 {code:language=xml}<external-component-plugins>
   <target-component>org.exoplatform.social.core.relationship.RelationshipManager</target-component>
