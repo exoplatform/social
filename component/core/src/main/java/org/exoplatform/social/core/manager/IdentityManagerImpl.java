@@ -93,7 +93,8 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  public ListAccess<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter, boolean forceLoadProfile) {
+  public ListAccess<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter,
+                                                           boolean forceLoadProfile) {
     return (new ProfileFilterListAccess(identityStorage, providerId, profileFilter, forceLoadProfile));
   }
 

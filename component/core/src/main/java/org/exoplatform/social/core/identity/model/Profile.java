@@ -122,8 +122,7 @@ public class Profile {
     updateTypes.put(UpdateType.POSITION, new String[] {POSITION});
     updateTypes.put(UpdateType.BASIC_INFOR, new String[] {FIRST_NAME, LAST_NAME, EMAIL});
     updateTypes.put(UpdateType.CONTACT, new String[] {GENDER, CONTACT_PHONES, CONTACT_IMS, CONTACT_URLS});
-    updateTypes.put(UpdateType.EXPERIENCES, new String[] {EXPERIENCES_COMPANY, EXPERIENCES_POSITION, EXPERIENCES_SKILLS,
-      EXPERIENCES_START_DATE, EXPERIENCES_END_DATE, EXPERIENCES_IS_CURRENT, EXPERIENCES_DESCRIPTION});
+    updateTypes.put(UpdateType.EXPERIENCES, new String[] {EXPERIENCES});
     updateTypes.put(UpdateType.AVATAR, new String[] {AVATAR, AVATAR_URL});
   }
 
@@ -230,9 +229,11 @@ public class Profile {
   protected void setUpdateType(String updateType) {
     for (UpdateType key : updateTypes.keySet()) {
       String[] updateTypeValues = updateTypes.get(key);
-      if (Arrays.asList(updateTypeValues).contains(updateType)) {
-        this.updateType = key;
-        break;
+      for (String value : updateTypeValues) {
+        if(value.equals(updateType)) {
+          this.updateType = key;
+          break;
+        }
       }
     }
   }

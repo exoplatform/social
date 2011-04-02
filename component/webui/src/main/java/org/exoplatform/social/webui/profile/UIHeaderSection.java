@@ -90,7 +90,7 @@ public class UIHeaderSection extends UIProfileSection {
       String position = uiPosition.getValue();
       Profile p = uiHeaderSect.getProfile();
       p.setProperty(Profile.POSITION, position);
-      Utils.getIdentityManager().updateHeaderSection(p);
+      Utils.getIdentityManager().updateProfile(p);
     }
   }
 

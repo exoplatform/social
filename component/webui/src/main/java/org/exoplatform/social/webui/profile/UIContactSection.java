@@ -309,17 +309,14 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void saveProfileInfo() throws Exception {
-    Profile p = getProfile();
-
-    Profile toBeUpdatedProfile = new Profile(p.getIdentity());
-    toBeUpdatedProfile.setId(p.getId());
+    Profile toBeUpdatedProfile = getProfile();
 
     toBeUpdatedProfile.setProperty(Profile.GENDER, getGenderChild().getValue());
     toBeUpdatedProfile.setProperty(Profile.CONTACT_PHONES, getProfileForSave(phoneCount, getPhoneChilds(), PHONE));
     toBeUpdatedProfile.setProperty(Profile.CONTACT_IMS, getProfileForSave(imCount, getImsChilds(), IM));
     toBeUpdatedProfile.setProperty(Profile.CONTACT_URLS, getProfileForSave(urlCount, getUrlChilds(), URL));
 
-    Utils.getIdentityManager().updateContactSection(toBeUpdatedProfile);
+    Utils.getIdentityManager().updateProfile(toBeUpdatedProfile);
   }
 
   /**

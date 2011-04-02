@@ -56,7 +56,8 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
    * @param profileFilter Filter object as extract's condition.
    * @param forceLoadProfile True then force to load profile.
    */
-  public ProfileFilterListAccess(IdentityStorage identityStorage, String providerId, ProfileFilter profileFilter, boolean forceLoadProfile) {
+  public ProfileFilterListAccess(IdentityStorage identityStorage, String providerId, ProfileFilter profileFilter,
+                                 boolean forceLoadProfile) {
     this.identityStorage = identityStorage;
     this.profileFilter = profileFilter;
     this.providerId = providerId;
@@ -86,9 +87,11 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
     ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = new ArrayList<Identity>();
     if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
-      identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset, limit, forceLoadProfile);
+      identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset,
+                                                                       limit, forceLoadProfile);
     } else {
-      identities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset, limit, forceLoadProfile);
+      identities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset,
+                                                                limit, forceLoadProfile);
     }
     
     return Util.convertListToArray(identities, Identity.class);

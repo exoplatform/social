@@ -77,7 +77,7 @@ import org.exoplatform.social.core.service.ProfileConfig;
 
 /** The Class JCRStorage for identity and profile. */
 public class IdentityStorage {
-  private static final String PROFILE_AVATAR = "exo:avatar";
+  private static final String PROFILE_AVATAR = "avatar";
   private static final String ASTERISK_STR = "*";
   private static final String PERCENT_STR = "%";
   private static final char   ASTERISK_CHAR = '*';
@@ -99,7 +99,7 @@ public class IdentityStorage {
   /**
    * The identity cache with key as identityId or uuid of that identity node.
    */
-  private ExoCache<String, Identity> identityCache;
+  private ExoCache<String, Identity> identityCacheById;
 
   /**
    * Instantiates a new jCR storage.
@@ -110,7 +110,7 @@ public class IdentityStorage {
   public IdentityStorage(final SocialDataLocation dataLocation, CacheService cacheService) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
-    this.identityCache = cacheService.getCacheInstance("exo.social.IdentityStorageIdentityCache");
+    this.identityCacheById = cacheService.getCacheInstance("exo.social.IdentityStorage.identityCacheByIdById");
   }
 
   /**
@@ -165,10 +165,10 @@ public class IdentityStorage {
       identityNode.setProperty(NodeProperties.IDENTITY_PROVIDERID, identity.getProviderId());
       identityNode.setProperty(NodeProperties.IDENTITY_IS_DELETED, identity.isDeleted());      
       identityNode.save();
-      if (identityCache.get(nodeUUID) != null) {
-        identityCache.remove(nodeUUID);
+      if (identityCacheById.get(nodeUUID) != null) {
+        identityCacheById.remove(nodeUUID);
       }
-      identityCache.put(nodeUUID, identity);
+      identityCacheById.put(nodeUUID, identity);
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_UPDATE_IDENTITY, e.getMessage());
     } finally {
@@ -193,8 +193,8 @@ public class IdentityStorage {
       }
       identityNode.remove();
       session.save();
-      if (identityCache.get(identity.getId()) != null) {
-        identityCache.remove(identity.getId());
+      if (identityCacheById.get(identity.getId()) != null) {
+        identityCacheById.remove(identity.getId());
       }
       //LOG.info("Identity: [" + identity.toString() + "] deleted.");
     } catch (Exception e) {
@@ -216,7 +216,7 @@ public class IdentityStorage {
     Identity identity = null;
     Node identityNode = null;
 
-    identity = identityCache.get(nodeId);
+    identity = identityCacheById.get(nodeId);
 
     if (identity != null) {
       return identity;
@@ -283,7 +283,9 @@ public class IdentityStorage {
    * @throws IdentityStorageException
    * @since 1.2.0-GA
    */
-  public int getIdentitiesByFirstCharacterOfNameCount(String providerId, ProfileFilter profileFilter) throws IdentityStorageException {
+  public int getIdentitiesByFirstCharacterOfNameCount(String providerId, ProfileFilter profileFilter)
+    throws IdentityStorageException {
+    
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     try {
       Session session = sessionManager.getOrOpenSession();
@@ -299,7 +301,8 @@ public class IdentityStorage {
         }
       }
 
-      queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR);
+      queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character
+        .toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR);
 
       return (int)queryBuilder.count();
     } catch (Exception e) {
@@ -321,7 +324,9 @@ public class IdentityStorage {
    * @throws IdentityStorageException
    * @since 1.2.0-GA
    */
-  public List<Identity> getIdentitiesByFirstCharacterOfName(String providerId, ProfileFilter profileFilter, int offset, int limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
+  public List<Identity> getIdentitiesByFirstCharacterOfName(String providerId, ProfileFilter profileFilter,
+    int offset, int limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
+    
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     List<Identity> listIdentity = new ArrayList<Identity>();
     List<Node> nodes = null;
@@ -338,7 +343,8 @@ public class IdentityStorage {
           queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
         }
       }
-      queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR)
+      queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(profileFilter
+        .getFirstCharacterOfName()).toLowerCase() + PERCENT_STR)
       .orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);
 
       nodes = queryBuilder.exec();
@@ -369,7 +375,9 @@ public class IdentityStorage {
    * @throws IdentityStorageException
    * @since 1.2.0-GA
    */
-  public int getIdentitiesByProfileFilterCount(String providerId, ProfileFilter profileFilter) throws IdentityStorageException {
+  public int getIdentitiesByProfileFilterCount(String providerId, ProfileFilter profileFilter)
+    throws IdentityStorageException {
+    
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
@@ -404,7 +412,8 @@ public class IdentityStorage {
 
       return (int) queryBuilder.count();
     } catch (Exception e) {
-      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER_COUNT, e.getMessage());
+      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER_COUNT,
+                                         e.getMessage());
     } finally {
       sessionManager.closeSession();
     }
@@ -423,7 +432,8 @@ public class IdentityStorage {
    * @since 1.2.0-GA
    */
   public final List<Identity> getIdentitiesByProfileFilter(final String identityProvider, final ProfileFilter profileFilter,
-                                                           long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
+    long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
+    
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
@@ -481,40 +491,6 @@ public class IdentityStorage {
   }
 
   /**
-   * Gets the identities by profile filter.
-   *
-   * @param identityProvider the identity provider
-   * @param profileFilter    the profile filter
-   * @param offset           the result offset
-   * @param limit            the result limit
-   * @return the identities by profile filter
-   * @throws IdentityStorageException
-   * @deprecated Use {@link #getIdentitiesByProfileFilter(String, ProfileFilter, int, int, boolean)} instead.
-   *             Will be removed by 1.3.x
-   */
-  public final List<Identity> getIdentitiesByProfileFilter(final String identityProvider, final ProfileFilter profileFilter,
-                                                           long offset, long limit) throws IdentityStorageException {
-    return getIdentitiesByProfileFilter(identityProvider, profileFilter, (int)offset, (int)limit, false);
-  }
-
-  /**
-   * Gets the identities filter by alpha bet.
-   *
-   * @param identityProvider the identity provider
-   * @param profileFilter    the profile filter
-   * @param offset
-   * @param limit
-   * @return the identities filter by alpha bet
-   * @throws IdentityStorageException
-   * @deprecated Use {@link #getIdentitiesByFirstCharacterOfName(String, ProfileFilter, int, int, boolean)} instead.
-   *             Will be removed by 1.3.x
-   */
-  public final List<Identity> getIdentitiesFilterByAlphaBet(final String identityProvider, final ProfileFilter profileFilter,
-                                                            long offset, long limit) throws IdentityStorageException {
-    return getIdentitiesByFirstCharacterOfName(identityProvider, profileFilter, (int)offset, (int)limit, false);
-  }
-
-  /**
    * Save profile.
    * 
    * @param profile the profile
@@ -525,7 +501,8 @@ public class IdentityStorage {
       Session session = sessionManager.getOrOpenSession();
 
       if (profile.getIdentity().getId() == null) {
-        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_SAVE_PROFILE, "the identity has to be saved before saving the profile");
+        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_SAVE_PROFILE,
+                                           "The identity has to be saved before saving the profile");
       }
 
       Identity identity = profile.getIdentity();
@@ -613,7 +590,8 @@ public class IdentityStorage {
    */
   public final void loadProfile(final Profile profile) throws IdentityStorageException {
     if (profile.getIdentity().getId() == null) {
-      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_LOAD_PROFILE, "Failed to load profile. The identity must to be saved before loading profile");
+      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_LOAD_PROFILE, 
+                                         "The identity must to be saved before loading profile");
     }
 
     Node identityNode;
@@ -851,11 +829,13 @@ public class IdentityStorage {
             file.setId(node.getPath());
             file.setMimeType(node.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_MIME_TYPE).getString());
             try {
-              file.setInputStream(node.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_DATA).getValue().getStream());
+              file.setInputStream(node.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_DATA)
+                                  .getValue().getStream());
             } catch (Exception e) {
               throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_LOAD_AVATAR, e.getMessage());
             }
-            file.setLastModified(node.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_LAST_MODIFIED).getLong());
+            file.setLastModified(node.getNode(NodeProperties.JCR_CONTENT)
+                                 .getProperty(NodeProperties.JCR_LAST_MODIFIED).getLong());
             file.setFileName(nodeName);
             file.setWorkspace(workspaceName);
             profile.setProperty(nodeName, file);
@@ -1223,7 +1203,7 @@ public class IdentityStorage {
    */
   private final Identity getIdentity(final Node identityNode) throws Exception {
     String nodeUUID = identityNode.getUUID();
-    Identity identity = identityCache.get(nodeUUID);
+    Identity identity = identityCacheById.get(nodeUUID);
 
     if (identity != null) {
       return identity;
@@ -1238,7 +1218,7 @@ public class IdentityStorage {
     loadProfile(profile);
     identity.setProfile(profile);
 
-    identityCache.put(nodeUUID, identity);
+    identityCacheById.put(nodeUUID, identity);
     return identity;
   }
   /**

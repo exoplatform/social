@@ -261,7 +261,8 @@ public class RelationshipStorage {
              .count();
       
     } catch (RepositoryException e) {
-      throw new RelationshipStorageException(Type.FAILED_TO_GET_RELATIONSHIP, null, e, identityId, Relationship.Type.CONFIRMED.toString());
+      throw new RelationshipStorageException(Type.FAILED_TO_GET_RELATIONSHIP, null, e, identityId,
+                                             Relationship.Type.CONFIRMED.toString());
     } finally {
       sessionManager.closeSession();
     }
@@ -299,7 +300,8 @@ public class RelationshipStorage {
         connections.add(relationship.getPartner(identity));
       }
     } catch (RepositoryException e) {
-      throw new RelationshipStorageException(Type.FAILED_TO_GET_RELATIONSHIP, null, e, identityId, Relationship.Type.CONFIRMED.toString());
+      throw new RelationshipStorageException(Type.FAILED_TO_GET_RELATIONSHIP, null, e, identityId,
+                                             Relationship.Type.CONFIRMED.toString());
     } finally {
       sessionManager.closeSession();
     }

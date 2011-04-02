@@ -537,10 +537,8 @@ public class UIExperienceSection extends UIProfileSection {
       experiences.add(uiMap);
     }
 
-    Profile updateProfile = new Profile(p.getIdentity());
-    updateProfile.setId(p.getId());
-    updateProfile.setProperty(Profile.EXPERIENCES, experiences);
-    Utils.getIdentityManager().updateExperienceSection(updateProfile);
+    p.setProperty(Profile.EXPERIENCES, experiences);
+    Utils.getIdentityManager().updateProfile(p);
 
     return 0;
   }
