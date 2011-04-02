@@ -17,18 +17,16 @@
 package org.exoplatform.social.core.identity.provider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.IdentityProvider;
@@ -129,7 +127,9 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     profile.setProperty(Profile.FULL_NAME, user.getFullName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
     profile.setProperty(Profile.EMAIL, user.getEmail());
-    profile.setProperty(Profile.URL, LinkProvider.getProfileUri(user.getUserName()));
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
+    profile.setProperty(Profile.URL, lp.getProfileUri(user.getUserName()));
   }
 
   /**

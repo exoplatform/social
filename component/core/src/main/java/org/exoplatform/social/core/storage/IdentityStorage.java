@@ -55,6 +55,7 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
+import org.exoplatform.services.jcr.core.nodetype.NodeTypeData;
 import org.exoplatform.services.jcr.impl.core.value.BooleanValue;
 import org.exoplatform.services.jcr.impl.core.value.DoubleValue;
 import org.exoplatform.services.jcr.impl.core.value.LongValue;
@@ -82,7 +83,10 @@ public class IdentityStorage {
   private static final char   ASTERISK_CHAR = '*';
   private static final String SPACE_STR = " ";
   private static final String EMPTY_STR = "";
-  
+  private static final String SLASH_STR = "/";
+
+  private static final Log log = ExoLogger.getLogger(IdentityStorage.class);
+
   /** The config. */
   private ProfileConfig config = null;
   //new change
@@ -96,7 +100,7 @@ public class IdentityStorage {
    * The identity cache with key as identityId or uuid of that identity node.
    */
   private ExoCache<String, Identity> identityCache;
-  
+
   /**
    * Instantiates a new jCR storage.
    *
@@ -130,7 +134,7 @@ public class IdentityStorage {
       identityNode.setProperty(NodeProperties.IDENTITY_REMOTEID, identity.getRemoteId());
       identityNode.setProperty(NodeProperties.IDENTITY_PROVIDERID, identity.getProviderId());
       identityNode.setProperty(NodeProperties.IDENTITY_IS_DELETED, identity.isDeleted());
-      
+
       if (identity.getId() == null) {
         identityHomeNode.save();
         identity.setId(identityNode.getUUID());
@@ -172,7 +176,7 @@ public class IdentityStorage {
     }
     return identity;
   }
-  
+
   /**
    * Deletes an identity from JCR
    *
@@ -213,11 +217,11 @@ public class IdentityStorage {
     Node identityNode = null;
 
     identity = identityCache.get(nodeId);
-    
+
     if (identity != null) {
       return identity;
     }
-    
+
     try {
       identityNode = session.getNodeByUUID(nodeId);
       if (identityNode != null) {
@@ -247,13 +251,13 @@ public class IdentityStorage {
     Identity identity = null;
     try {
       List<Node> nodes = new QueryBuilder(session)
-              .select(NodeTypes.EXO_IDENTITY)
-              .like(NodeProperties.JCR_PATH, identityHomeNode.getPath() + "/" + PERCENT_STR)
-              .and()
-              .equal(NodeProperties.IDENTITY_PROVIDERID, providerId)
-              .and()
-              .equal(NodeProperties.IDENTITY_REMOTEID, remoteId)
-              .exec();
+      .select(NodeTypes.EXO_IDENTITY)
+      .like(NodeProperties.JCR_PATH, identityHomeNode.getPath() + SLASH_STR + PERCENT_STR)
+      .and()
+      .equal(NodeProperties.IDENTITY_PROVIDERID, providerId)
+      .and()
+      .equal(NodeProperties.IDENTITY_REMOTEID, remoteId)
+      .exec();
 
       if (nodes.size() == 1) {
         Node identityNode = nodes.get(0);
@@ -287,16 +291,16 @@ public class IdentityStorage {
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
       queryBuilder.select(NodeTypes.EXO_PROFILE)
-        .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR);
-      
+      .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
+
       if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
         for (Identity identity : excludedIdentityList) {
           queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
         }
       }
-      
+
       queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR);
-      
+
       return (int)queryBuilder.count();
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_FIRSTCHAR_COUNT, e.getMessage());
@@ -328,17 +332,17 @@ public class IdentityStorage {
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
       queryBuilder.select(NodeTypes.EXO_PROFILE, offset, limit)
-        .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR);
+      .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
       if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
         for (Identity identity : excludedIdentityList) {
           queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
         }
       }
       queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR)
-        .orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);
-      
+      .orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);
+
       nodes = queryBuilder.exec();
-      
+
       for (Node profileNode : nodes) {
         Node identityNode = profileNode.getProperty(NodeProperties.PROFILE_IDENTITY).getNode();
         Identity identity = getIdentity(identityNode);
@@ -355,7 +359,7 @@ public class IdentityStorage {
 
     return listIdentity;
   }
-  
+
   /**
    * Counts the number of identity by profile filter.
    * 
@@ -379,8 +383,8 @@ public class IdentityStorage {
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
       queryBuilder
-              .select(NodeTypes.EXO_PROFILE)
-              .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR);
+      .select(NodeTypes.EXO_PROFILE)
+      .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
 
       if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
         for (Identity identity : excludedIdentityList) {
@@ -397,7 +401,7 @@ public class IdentityStorage {
       if (gender.length() != 0) {
         queryBuilder.and().equal(Profile.GENDER, gender);
       }
-      
+
       return (int) queryBuilder.count();
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER_COUNT, e.getMessage());
@@ -435,8 +439,8 @@ public class IdentityStorage {
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
       queryBuilder
-              .select(NodeTypes.EXO_PROFILE, offset, limit)
-              .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + "/" + PERCENT_STR);
+      .select(NodeTypes.EXO_PROFILE, offset, limit)
+      .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
 
       if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
         for (Identity identity : excludedIdentityList) {
@@ -447,7 +451,7 @@ public class IdentityStorage {
       if (nameForSearch.trim().length() != 0) {
         queryBuilder.and().like(queryBuilder.lower(Profile.FULL_NAME), PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR);
       }
-      
+
       if (position.length() != 0) {
         queryBuilder.and().like(queryBuilder.lower(Profile.POSITION), PERCENT_STR + position.toLowerCase() + PERCENT_STR);
       }
@@ -456,9 +460,9 @@ public class IdentityStorage {
       }
 
       queryBuilder.orderBy(Profile.FULL_NAME, QueryBuilder.ASC);
-      
+
       nodes = queryBuilder.exec();
-  
+
       for (Node profileNode : nodes) {
         Node identityNode = profileNode.getProperty(NodeProperties.PROFILE_IDENTITY).getNode();
         Identity identity = getIdentity(identityNode);
@@ -475,7 +479,7 @@ public class IdentityStorage {
 
     return listIdentity;
   }
-  
+
   /**
    * Gets the identities by profile filter.
    *
@@ -519,7 +523,7 @@ public class IdentityStorage {
   public final void saveProfile(final Profile profile) throws IdentityStorageException {
     try {
       Session session = sessionManager.getOrOpenSession();
-      
+
       if (profile.getIdentity().getId() == null) {
         throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_SAVE_PROFILE, "the identity has to be saved before saving the profile");
       }
@@ -568,7 +572,7 @@ public class IdentityStorage {
     Validate.notNull(profile.getId(), "profile.getId() must be not null.");
     try {
       Session session = sessionManager.getOrOpenSession();
-   
+
       Node profileNode = session.getNodeByUUID(profile.getId());
       addOrModifyProfileProperties(profile, profileNode, session);
 
@@ -590,7 +594,7 @@ public class IdentityStorage {
     Node identityHomeNode = getIdentityServiceHome(session);
     try {
       count = (int) new QueryBuilder(session).select(NodeTypes.EXO_IDENTITY)
-      .like(NodeProperties.JCR_PATH, identityHomeNode.getPath()+"/" + PERCENT_STR)
+      .like(NodeProperties.JCR_PATH, identityHomeNode.getPath()+SLASH_STR + PERCENT_STR)
       .and()
       .equal(NodeProperties.IDENTITY_PROVIDERID, providerId).count();
     } catch (Exception e){
@@ -600,7 +604,7 @@ public class IdentityStorage {
     }
     return count;
   }
-  
+
   /**
    * Load profile.
    *
@@ -672,7 +676,7 @@ public class IdentityStorage {
     }
     return null;
   }
-  
+
 
   /**
    * Deletes a profile
@@ -694,7 +698,7 @@ public class IdentityStorage {
     }
 
   }
-  
+
   /**
    * Save profile.
    * 
@@ -705,7 +709,7 @@ public class IdentityStorage {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   protected final void saveProfile(final Profile profile, final Node profileNode, final Session session) throws Exception,
-                                                                                IOException {
+  IOException {
     synchronized (profile) {
 
       long lastLoaded = profile.getLastLoaded();
@@ -740,7 +744,7 @@ public class IdentityStorage {
       addOrModifyProfileProperties(profile, profileNode, session);
     }
   }
-  
+
   /**
    * Add or modify properties of profile and persist to JCR. Profile parameter is a lightweight that 
    * contains only the property that you want to add or modify. NOTE: The method will
@@ -770,7 +774,7 @@ public class IdentityStorage {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_ADD_OR_MODIFY_PROPERTIES, e.getMessage());
     }
   }
-  
+
   /**
    * Checks if is forced multi value.
    *
@@ -882,14 +886,15 @@ public class IdentityStorage {
    */
   private Node getIdentityServiceHome(final Session session) throws IdentityStorageException {
     Node identityServiceHome =null;
-
     String path = dataLocation.getSocialIdentityHome();
     try {
+      Node rootNode = session.getRootNode();
+      createNodes(rootNode, path);
       identityServiceHome = session.getRootNode().getNode(path);
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_SERVICE_HOME, e.getMessage());
     }
-    
+
     return identityServiceHome;
   }
 
@@ -917,6 +922,8 @@ public class IdentityStorage {
     Node profileServiceHome = null;
     try {
       String path = dataLocation.getSocialProfileHome();
+      Node rootNode = session.getRootNode();
+      createNodes(rootNode, path);
       profileServiceHome = session.getRootNode().getNode(path);
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_PROFILE_SERVICE_HOME, e.getMessage());
@@ -939,7 +946,7 @@ public class IdentityStorage {
    * @throws IdentityStorageException
    */
   private Node getOrCreatExoProfileHomeNode(Session session, String providerId) throws IdentityStorageException {
-    
+
     try {
       // Gets or creates the node Path: Social_Profile.
       Node profileHomeNode = getProfileServiceHome(session);
@@ -952,12 +959,12 @@ public class IdentityStorage {
         profileHomeNode.save();
         return typeProfileHome;
       }
-      
+
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_OR_CREAT_PROFILE_HOME_NODE, e.getMessage());
     } 
   }
-  
+
   private String addPositionSearchPattern(final String position) {
     if (position.length() != 0) {
       if (position.indexOf("*") == -1) {
@@ -979,7 +986,7 @@ public class IdentityStorage {
     }
     return userName;
   }
-  
+
   /**
    * Copies properties to map.
    *
@@ -1146,7 +1153,7 @@ public class IdentityStorage {
       if (ntName == null) {
         throw new Exception("no nodeType is defined for " + name);
       }
-  
+
       // remove the existing nodes
       NodeIterator nIt = n.getNodes(name);
       while (nIt.hasNext()) {
@@ -1154,18 +1161,18 @@ public class IdentityStorage {
         currNode.remove();
       }
       n.save();
-  
+
       Iterator<Map<String, Object>> it = props.iterator();
       while (it.hasNext()) {
         Map<String, Object> prop = it.next();
         Node propNode = n.addNode(name, ntName);
-  
+
         Iterator<Map.Entry<String, Object>> iterator = prop.entrySet().iterator();
         while (iterator.hasNext()) {
           Map.Entry<String, Object> entry = iterator.next();
           String key = entry.getKey();
           Object propValue = entry.getValue();
-  
+
           if (propValue instanceof String) {
             propNode.setProperty(key, (String) propValue);
           } else if (propValue instanceof Double) {
@@ -1175,7 +1182,7 @@ public class IdentityStorage {
           } else if (propValue instanceof Long) {
             propNode.setProperty(key, (Long) propValue);
           } else {
-            
+
           }
         }
       }
@@ -1206,7 +1213,7 @@ public class IdentityStorage {
     }
     n.setProperty(name, values.toArray(new Value[values.size()]));
   }
-  
+
   /**
    * Gets the identity.
    *
@@ -1217,11 +1224,11 @@ public class IdentityStorage {
   private final Identity getIdentity(final Node identityNode) throws Exception {
     String nodeUUID = identityNode.getUUID();
     Identity identity = identityCache.get(nodeUUID);
-    
+
     if (identity != null) {
       return identity;
     }
-    
+
     identity = new Identity(nodeUUID);
     identity.setProviderId(identityNode.getProperty(NodeProperties.IDENTITY_PROVIDERID).getString());
     identity.setRemoteId(identityNode.getProperty(NodeProperties.IDENTITY_REMOTEID).getString());
@@ -1233,5 +1240,25 @@ public class IdentityStorage {
 
     identityCache.put(nodeUUID, identity);
     return identity;
+  }
+  /**
+   * Create nodes by giving full path
+   * @param rootNode : root node of tree
+   * @param path : path contains "/"
+   * @since 1.2.0-GA
+   */
+  private void createNodes(Node rootNode, String path) throws Exception {
+    Node node = null;
+    if(path.indexOf(SLASH_STR) < 0) node = rootNode.addNode(path);
+    else {
+      String []ar = path.split(SLASH_STR);
+      for (int i = 0; i < ar.length; i++) {
+        if(rootNode.hasNode(ar[i])) node = rootNode.getNode(ar[i]) ;
+        else node = rootNode.addNode(ar[i], NodeTypes.NT_UNSTRUCTURED);
+        rootNode = node;
+      }
+      if(rootNode.isNew()) rootNode.getSession().save();
+      else rootNode.getParent().save();
+    }
   }
 }

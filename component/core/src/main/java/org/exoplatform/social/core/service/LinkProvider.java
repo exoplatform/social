@@ -18,11 +18,11 @@ package org.exoplatform.social.core.service;
 
 import org.apache.commons.lang.Validate;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -38,7 +38,16 @@ public class LinkProvider {
   /**
    * Hacks for unit test to work.
    */
-  private static String DEFAULT_PORTAL_OWNER = "classic";
+  public static String DEFAULT_PORTAL_OWNER = "classic";
+
+  /**
+   * Constructor with parameter to inject the default portal owner name
+   * @param params
+   * @since 1.2.0 GA
+   */
+  public LinkProvider(InitParams params){
+    if(params.getValueParam("predefinedOwner") != null) DEFAULT_PORTAL_OWNER = params.getValueParam("predefinedOwner").getValue();
+  }
 
   /**
    * Returns the uri link to space profile.
@@ -93,7 +102,7 @@ public class LinkProvider {
     Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
     Validate.notNull(identity, "Identity must not be null.");
     return "<a href=\"" + buildProfileUri(identity.getRemoteId(), null, portalOwner)
-        + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
+    + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
   }
 
   /**
@@ -185,12 +194,12 @@ public class LinkProvider {
     try {
       if (avatarAttachment != null) {
         final String repository = ((RepositoryService) container.getComponentInstanceOfType(RepositoryService.class)).
-                getCurrentRepository().getConfiguration().getName();
+        getCurrentRepository().getConfiguration().getName();
 
 
         avatarUrl = "/" + container.getRestContextName() + "/jcr/" + repository + "/"
-            + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?upd="
-            + avatarAttachment.getLastModified();
+        + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?upd="
+        + avatarAttachment.getLastModified();
         avatarUrl = escapeJCRSpecialCharacters(avatarUrl);
       }
     } catch (Exception e) {
@@ -247,6 +256,7 @@ public class LinkProvider {
    * @return profile uri
    */
   private static String buildProfileUri(final String userName, final String portalName, String portalOwner) {
+    if(portalOwner == null || portalOwner.trim().length() == 0) portalOwner = DEFAULT_PORTAL_OWNER;
     return getBaseUri(portalName, portalOwner) + "/profile/" + userName;
   }
 
@@ -260,6 +270,7 @@ public class LinkProvider {
    * @since 1.2.0 GA
    */
   private static String buildSpaceUri(final String prettyName, final String portalName, String portalOwner) {
+    if(portalOwner == null || portalOwner.trim().length() == 0) portalOwner = DEFAULT_PORTAL_OWNER;
     return getBaseUri(portalName, portalOwner) + "/" + prettyName;
   }
 
@@ -295,7 +306,7 @@ public class LinkProvider {
   private static IdentityManager getIdentityManager() {
     if (LinkProvider.identityManager == null) {
       LinkProvider.identityManager = (IdentityManager) PortalContainer.getInstance()
-                                    .getComponentInstanceOfType(IdentityManager.class);
+      .getComponentInstanceOfType(IdentityManager.class);
     }
     return LinkProvider.identityManager;
   }
@@ -307,7 +318,7 @@ public class LinkProvider {
    * @return portalOwner
    */
   private static String getPortalOwner(String portalOwner) {
-    if (portalOwner == null || "".equals(portalOwner)) {
+    if (portalOwner == null || portalOwner.trim().length() == 0) {
       try {
         return Util.getPortalRequestContext().getPortalOwner();
       } catch (Exception e) {
@@ -324,7 +335,7 @@ public class LinkProvider {
    * @return portalName
    */
   private static String getPortalName(String portalName) {
-    if (portalName == null || "".equals(portalName)) {
+    if (portalName == null || portalName.trim().length() == 0) {
       return PortalContainer.getCurrentPortalContainerName();
     }
     return portalName;

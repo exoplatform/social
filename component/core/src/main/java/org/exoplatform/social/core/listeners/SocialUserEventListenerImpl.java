@@ -34,7 +34,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
  * @since  1.2.0-GA
  */
 public class SocialUserEventListenerImpl extends UserEventListener {
-  
+
   /**
    * Listens to postSave action for updating profile.
    *
@@ -43,23 +43,28 @@ public class SocialUserEventListenerImpl extends UserEventListener {
    * @throws Exception
    */
   public void postSave(User user, boolean isNew) throws Exception {
-    if (!isNew) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
-
-      Profile profile = identity.getProfile();
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
+    Profile profile = identity.getProfile();
+    String uFirstName = user.getFirstName();
+    String uLastName = user.getLastName();
+    String uFullName = user.getFullName();
+    String uEmail = user.getEmail();
+    if (isNew) {
+      profile.setProperty(Profile.FIRST_NAME, uFirstName);
+      profile.setProperty(Profile.FULL_NAME, uFullName);
+      profile.setProperty(Profile.LAST_NAME, uLastName);
+      profile.setProperty(Profile.FULL_NAME, uFullName);
+      profile.setProperty(Profile.EMAIL, uEmail);
+      idm.updateProfile(profile);
+    } else {
       String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
       String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
       String pEmail = (String) profile.getProperty(Profile.EMAIL);
 
-      String uFirstName = user.getFirstName();
-      String uLastName = user.getLastName();
-      String uFullName = user.getFullName();
-      String uEmail = user.getEmail();
-
       boolean hasUpdated = false;
-      
+
       if ((pFirstName == null) || (!pFirstName.equals(uFirstName))) {
         profile.setProperty(Profile.FIRST_NAME, uFirstName);
         profile.setProperty(Profile.FULL_NAME, uFullName);
@@ -78,7 +83,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       }
 
       if (hasUpdated) {
-        idm.saveProfile(profile);
+        idm.updateProfile(profile);
       }
     }
   }

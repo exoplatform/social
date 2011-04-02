@@ -61,6 +61,8 @@ public class ActivityStorage {
 
   private static final String COMMENT_IDS_DELIMITER = ",";
 
+  private static final String SLASH_STR = "/";
+
   /** The data location. */
   private SocialDataLocation dataLocation;
 
@@ -89,7 +91,7 @@ public class ActivityStorage {
       NodeProperties.ACTIVITY_TITLE_TEMPLATE,
       NodeProperties.ACTIVITY_BODY_TEMPLATE
   });
-  
+
   /**
    * Instantiates a new JCR storage base on SocialDataLocation
    * @param dataLocation the data location.
@@ -192,7 +194,7 @@ public class ActivityStorage {
   public void deleteActivity(ExoSocialActivity storedActivity) throws ActivityStorageException {
     if (storedActivity.getId() == null) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_DELETE_ACTIVITY,
-              "Failed to delete this activity. It is not stored in JCR yet.");
+      "Failed to delete this activity. It is not stored in JCR yet.");
     }
     deleteActivity(storedActivity.getId());
   }
@@ -294,7 +296,7 @@ public class ActivityStorage {
     return null;
   }
 
- /**
+  /**
    * Gets the activities for a list of identities.
    *
    * Access a activity stream of a list of identities by specifying the offset and limit.
@@ -322,12 +324,12 @@ public class ActivityStorage {
       String path = streamLocation.getParent().getPath();
       Session session = sessionManager.getOrOpenSession();
       QueryBuilder queryBuilder = new QueryBuilder(session)
-              .select(NodeTypes.EXO_ACTIVITY, offset, limit)
-              .like(NodeProperties.JCR_PATH, path + "/%")
-              .and()
-              .not().equal(NodeProperties.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT)
-              .and()
-              .group();
+      .select(NodeTypes.EXO_ACTIVITY, offset, limit)
+      .like(NodeProperties.JCR_PATH, path + "/%")
+      .and()
+      .not().equal(NodeProperties.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT)
+      .and()
+      .group();
       for (int i = 0, length = connectionList.size(); i < length; i++) {
         Identity id = connectionList.get(i);
         if (i != 0) {
@@ -336,14 +338,14 @@ public class ActivityStorage {
         queryBuilder.equal(NodeProperties.ACTIVITY_USER_ID, id.getId());
       }
       queryBuilder.endGroup()
-              .orderBy(NodeProperties.ACTIVITY_POSTED_TIME, QueryBuilder.DESC);
+      .orderBy(NodeProperties.ACTIVITY_POSTED_TIME, QueryBuilder.DESC);
       List<Node> nodes = queryBuilder.exec();
       for (Node node : nodes) {
         activities.add(getActivityFromActivityNode(node));
       }
     } catch (Exception e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_OF_CONNECTIONS,
-              e.getMessage(), e);
+                                         e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
@@ -369,11 +371,11 @@ public class ActivityStorage {
       String path = n.getPath();
       Session session = sessionManager.getOrOpenSession();
       List<Node> nodes = new QueryBuilder(session)
-        .select(NodeTypes.EXO_ACTIVITY, offset, limit)
-        .like(NodeProperties.JCR_PATH, path + "[%]/" + NodeTypes.EXO_ACTIVITY + "[%]")
-        .and()
-        .not().equal(NodeProperties.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT)
-        .orderBy(NodeProperties.ACTIVITY_UPDATED, QueryBuilder.DESC).exec();
+      .select(NodeTypes.EXO_ACTIVITY, offset, limit)
+      .like(NodeProperties.JCR_PATH, path + "[%]/" + NodeTypes.EXO_ACTIVITY + "[%]")
+      .and()
+      .not().equal(NodeProperties.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT)
+      .orderBy(NodeProperties.ACTIVITY_UPDATED, QueryBuilder.DESC).exec();
 
       for (Node node : nodes) {
         activities.add(getActivityFromActivityNode(node));
@@ -403,10 +405,10 @@ public class ActivityStorage {
       Session session = sessionManager.getOrOpenSession();
       String path = publishingNode.getPath();
       List<Node> nodes = new QueryBuilder(session)
-        .select(NodeTypes.EXO_ACTIVITY)
-        .like(NodeProperties.JCR_PATH, path + "[%]/" + NodeTypes.EXO_ACTIVITY + "[%]")
-        .and()
-        .not().equal(NodeProperties.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT).exec();
+      .select(NodeTypes.EXO_ACTIVITY)
+      .like(NodeProperties.JCR_PATH, path + "[%]/" + NodeTypes.EXO_ACTIVITY + "[%]")
+      .and()
+      .not().equal(NodeProperties.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT).exec();
 
       for (Node node : nodes) {
         activities.add(getActivityFromActivityNode(node));
@@ -433,10 +435,10 @@ public class ActivityStorage {
       Session session = sessionManager.getOrOpenSession();
       String path = publishingNode.getPath();
       count = (int) new QueryBuilder(session)
-        .select(NodeTypes.EXO_ACTIVITY)
-        .like(NodeProperties.JCR_PATH, path + "[%]/" + NodeTypes.EXO_ACTIVITY + "[%]")
-        .and()
-        .not().equal(NodeProperties.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT).count();
+      .select(NodeTypes.EXO_ACTIVITY)
+      .like(NodeProperties.JCR_PATH, path + "[%]/" + NodeTypes.EXO_ACTIVITY + "[%]")
+      .and()
+      .not().equal(NodeProperties.ACTIVITY_REPLY_TO_ID, ExoSocialActivity.IS_COMMENT).count();
     } catch (Exception e){
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_COUNT, e.getMessage(), e);
     } finally {
@@ -455,6 +457,20 @@ public class ActivityStorage {
   private Node getActivityServiceHome(Session session) throws Exception {
     if (activityServiceHome == null) {
       String path = dataLocation.getSocialActivitiesHome();
+      Node rootNode = session.getRootNode();
+      Node node = null;
+      if(path.indexOf(SLASH_STR) < 0){ 
+        node = rootNode.addNode(path);
+      }else {
+        String []ar = path.split(SLASH_STR);
+        for (int i = 0; i < ar.length; i++) {
+          if(rootNode.hasNode(ar[i])) node = rootNode.getNode(ar[i]) ;
+          else node = rootNode.addNode(ar[i], NodeTypes.NT_UNSTRUCTURED);
+          rootNode = node;
+        }
+        if(rootNode.isNew()) rootNode.getSession().save();
+        else rootNode.getParent().save();
+      }
       activityServiceHome = session.getRootNode().getNode(path);
     }
     return activityServiceHome;
@@ -635,11 +651,11 @@ public class ActivityStorage {
    */
   private ExoSocialActivity getActivityFromActivityNode(Node activityNode) {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
-    
+
     try {
       activity.setId(activityNode.getUUID());
       setStreamInfo(activity, activityNode);
-      
+
       PropertyIterator it = activityNode.getProperties(ACTIVITY_PROPERTIES_NAME_PATTERN);
       while (it.hasNext()) {
         Property p = it.nextProperty();
@@ -681,7 +697,7 @@ public class ActivityStorage {
     } catch (Exception e) {
       LOG.warn(e.getMessage(), e);
     }
-    
+
     return activity;
   }
 }
