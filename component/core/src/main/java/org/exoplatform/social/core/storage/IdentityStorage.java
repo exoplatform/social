@@ -19,13 +19,10 @@ package org.exoplatform.social.core.storage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.jcr.ItemNotFoundException;
@@ -46,8 +43,6 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
 
 import org.apache.commons.lang.Validate;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
@@ -55,7 +50,6 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.access.SystemIdentity;
 import org.exoplatform.services.jcr.core.ExtendedNode;
-import org.exoplatform.services.jcr.core.nodetype.NodeTypeData;
 import org.exoplatform.services.jcr.impl.core.value.BooleanValue;
 import org.exoplatform.services.jcr.impl.core.value.DoubleValue;
 import org.exoplatform.services.jcr.impl.core.value.LongValue;
@@ -70,14 +64,13 @@ import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.image.ImageUtils;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.service.ProfileConfig;
 
 /** The Class JCRStorage for identity and profile. */
 public class IdentityStorage {
-  private static final String PROFILE_AVATAR = "avatar";
   private static final String ASTERISK_STR = "*";
   private static final String PERCENT_STR = "%";
   private static final char   ASTERISK_CHAR = '*';
@@ -110,7 +103,7 @@ public class IdentityStorage {
   public IdentityStorage(final SocialDataLocation dataLocation, CacheService cacheService) {
     this.dataLocation = dataLocation;
     this.sessionManager = dataLocation.getSessionManager();
-    this.identityCacheById = cacheService.getCacheInstance("exo.social.IdentityStorage.identityCacheByIdById");
+    this.identityCacheById = cacheService.getCacheInstance("exo.social.IdentityStorage.IdentityCacheById");
   }
 
   /**
@@ -491,7 +484,7 @@ public class IdentityStorage {
   }
 
   /**
-   * Save profile.
+   * Saves profile.
    * 
    * @param profile the profile
    * @throws IdentityStorageException
@@ -499,8 +492,9 @@ public class IdentityStorage {
   public final void saveProfile(final Profile profile) throws IdentityStorageException {
     try {
       Session session = sessionManager.getOrOpenSession();
-
-      if (profile.getIdentity().getId() == null) {
+      String identityId = profile.getIdentity().getId();
+      
+      if (identityId == null) {
         throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_SAVE_PROFILE,
                                            "The identity has to be saved before saving the profile");
       }
@@ -513,7 +507,7 @@ public class IdentityStorage {
           profileNode = profileHomeNode.addNode(NodeTypes.EXO_PROFILE, NodeTypes.EXO_PROFILE);
           profileNode.addMixin(NodeTypes.MIX_REFERENCEABLE);
 
-          Node identityNode = session.getNodeByUUID(profile.getIdentity().getId());
+          Node identityNode = session.getNodeByUUID(identityId);
           profileNode.setProperty(NodeProperties.PROFILE_IDENTITY, identityNode);
           profileNode.setProperty(NodeProperties.JCR_LAST_MODIFIED, Calendar.getInstance());
           profileHomeNode.save();
@@ -530,6 +524,10 @@ public class IdentityStorage {
           profileNode.save();
         }
       }
+      
+      if (identityCacheById.get(identityId) != null) {
+        identityCacheById.remove(identityId);
+      }
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_SAVE_PROFILE, e.getMessage());
     } finally {
@@ -537,6 +535,69 @@ public class IdentityStorage {
     }
   }
 
+  /**
+   * Updates profile.
+   * 
+   * @param profile the profile
+   * @throws IdentityStorageException
+   * @since 1.2.0-GA
+   */
+  public final void updateProfile(final Profile profile) throws IdentityStorageException {
+    try {
+      Session session = sessionManager.getOrOpenSession();
+      String identityId = profile.getIdentity().getId();
+
+      if (identityId == null) {
+        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_SAVE_PROFILE,
+                                           "The identity has to be saved before saving the profile");
+      }
+
+      Node profileNode;
+      synchronized (profile) {
+        profileNode = session.getNodeByUUID(profile.getId());
+        saveProfile(profile, profileNode, session);
+
+        profileNode.save();
+      }
+
+      if (identityCacheById.get(identityId) != null) {
+        identityCacheById.remove(identityId);
+      }
+
+      // Sets or resets avatar url.
+      setOrResetAvatarUrl(session, profileNode);
+    } catch (Exception e) {
+      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_UPDATE_PROFILE, e.getMessage());
+    } finally {
+      sessionManager.closeSession();
+    }
+  }
+
+  /**
+   * Sets or resets avatar url of profile.
+   * 
+   * @param session
+   * @param profileNode
+   * @throws IdentityStorageException
+   */
+  private void setOrResetAvatarUrl(Session session, Node profileNode) throws IdentityStorageException {
+    try {
+      Identity id = getIdentity(profileNode.getProperty(NodeProperties.PROFILE_IDENTITY).getNode());
+      Profile p = id.getProfile();
+      AvatarAttachment attacthment = (AvatarAttachment) p.getProperty(Profile.AVATAR);
+      p.setProperty(Profile.AVATAR_URL, LinkProvider.buildAvatarImageUri(attacthment));
+      saveProfile(p, profileNode, session);
+      profileNode.save();
+      if (identityCacheById.get(id.getId()) != null) {
+        identityCacheById.remove(id.getId());
+      }
+    } catch (Exception e) {
+      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_UPDATE_PROFILE, e.getMessage());
+    } finally {
+      sessionManager.closeSession();
+    }
+  }
+  
   /**
    * Add or modify properties of profile and persist to JCR. Profile parameter is a lightweight that 
    * contains only the property that you want to add or modify. NOTE: The method will
@@ -678,7 +739,7 @@ public class IdentityStorage {
   }
 
   /**
-   * Save profile.
+   * Saves profile.
    * 
    * @param profile the profile
    * @param profileNode the node
@@ -703,21 +764,6 @@ public class IdentityStorage {
       Calendar date = Calendar.getInstance();
       profileNode.setProperty(NodeProperties.JCR_LAST_MODIFIED, date);
       profile.setLastLoaded(date.getTimeInMillis());
-
-      Profile oldProfile = new Profile(null);
-      loadProfile(oldProfile, profileNode, session.getWorkspace().getName());
-
-      // We remove all the property that was deleted
-      for (String key : oldProfile.getProperties().keySet()) {
-        if(!profile.contains(key))
-        {
-          if (profileNode.hasProperty(key)) {
-            profileNode.getProperty(key).remove();
-          } else if (profileNode.hasNode(key)) {
-            profileNode.getNode(key).remove();
-          }
-        }
-      }
 
       addOrModifyProfileProperties(profile, profileNode, session);
     }
@@ -823,7 +869,7 @@ public class IdentityStorage {
       while(it.hasNext()) {
         Node node = it.nextNode();
         String nodeName = node.getName();
-        if (nodeName.equals(PROFILE_AVATAR) || nodeName.startsWith(PROFILE_AVATAR + ImageUtils.KEY_SEPARATOR)) {
+        if (nodeName.equals(Profile.AVATAR) || nodeName.startsWith(Profile.AVATAR + ImageUtils.KEY_SEPARATOR)) {
           if (node.isNodeType(NodeTypes.NT_FILE)) {
             AvatarAttachment file = new AvatarAttachment();
             file.setId(node.getPath());
@@ -1106,6 +1152,7 @@ public class IdentityStorage {
         nodeContent.setProperty(NodeProperties.JCR_DATA, profileAtt.getInputStream(session));
         nodeContent.setProperty(NodeProperties.JCR_LAST_MODIFIED, profileAtt.getLastModified());
       }
+      
     } else {
       if (profileNode.hasNode(name)) {
         profileNode.getNode(name).remove();

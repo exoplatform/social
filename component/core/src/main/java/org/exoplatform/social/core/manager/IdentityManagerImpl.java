@@ -113,7 +113,7 @@ public class IdentityManagerImpl implements IdentityManager {
    * {@inheritDoc}
    */
   public void updateProfile(Profile existingProfile) {
-    identityStorage.saveProfile(existingProfile);
+    identityStorage.updateProfile(existingProfile);
     broadcastUpdateProfileEvent(existingProfile);
     this.getIdentityProvider(existingProfile.getIdentity().getProviderId()).onUpdateProfile(existingProfile);
   }

@@ -104,11 +104,7 @@ public class UIProfile extends UIContainer {
       }
     }
 
-    Utils.getIdentityManager().updateAvatar(p);
-    p = getProfile();
-    attacthment = (AvatarAttachment) p.getProperty(Profile.AVATAR);
-    p.setProperty(Profile.AVATAR_URL, LinkProvider.buildAvatarImageUri(attacthment));
-    Utils.getIdentityManager().saveProfile(p);
+    Utils.getIdentityManager().updateProfile(p);
   }
 
   /**

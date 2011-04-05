@@ -41,6 +41,7 @@ public class IdentityStorageException extends ExoSocialException {
     FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER_COUNT("Failed_To_Get_Identity_By_Profile_Filter_Count"),
     FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER("Failed_To_Get_Identity_By_Profile_Filter"),
     FAIL_TO_SAVE_PROFILE("Failed_To_Save_Profile"),
+    FAIL_TO_UPDATE_PROFILE("Failed_To_Update_Profile"),
     FAIL_TO_ADD_OR_MODIFY_PROPERTIES("Failed_To_Add_Or_Modifiy_Properties"),
     FAIL_TO_GET_IDENTITIES_COUNT("Failed_To_Get_Identities"),
     FAIL_TO_LOAD_PROFILE("Failed_To_Load_Profile"),
