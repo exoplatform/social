@@ -45,7 +45,7 @@ h1. Space's applications management  {anchor:id=SOCref.Developer_Ref.Developer_d
 h2. Add an application to a space  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space}
 You can add portlet or gadget applications into spaces. Once added, all members of the space can use that application. The following code shows how to add an application to a space :
 
-{code: java}
+{code:java}
 public void addApplicationToSpace() throws SpaceException {
   //Your portlet name
   String appId = "SocialBannerPortlet";
@@ -71,7 +71,7 @@ appId is the portlet or gadget name as defined in portlet.xml or gadget.xml in t
 
 h2. Remove an application from a space
 You can remove portlet or gadget applications from a space. The members of this space cannot see them anymore. The following code shows how to remove an application from a space :
-{code: java}
+{code:java}
 public void removeApplicationFromSpace() throws SpaceException {
   //Your portlet name
   String appId = "SocialBannerPortlet";

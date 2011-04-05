@@ -6,7 +6,7 @@ h2. IdentityProvider {anchor:id=SOCref.Developers_References.People.IdentityProv
 
 eXo Social provides IdentityProvider as a identiy mechanism for the third parties to extend Social's identity system without any limitation. Here is an example:
 
-{code:language=java}
+{code:java}
 class SampleIdentityProvider extends OrganizationIdentityProvider{
   public SampleIdentityProvider(OrganizationService organizationService) {
     super(organizationService);
@@ -60,7 +60,7 @@ The People API provides notification interfaces which you can implement to creat
 
 * Firstly, create the ProfileLoggerListener class to log all profile modifications of the systems. The abstract class ProfileListenerPlugin provides the interface to implement this method.
 
-{code:language=java}
+{code:java}
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.lifecycle.ProfileListenerPlugin;
@@ -98,7 +98,7 @@ public class ProfileLoggerListener extends ProfileListenerPlugin{
 
 * Then, add some configurations for this class to the configuration.xml:
 
-{code:language=xml}
+{code:xml}
 <external-component-plugins>
   <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>
   <component-plugin>
@@ -118,7 +118,7 @@ h2. Users connection {anchor:id=SOCref.Developers_References.People.Connecting_u
 
 The following code will show how to invite a user to connect to another :
 
-{code:language=java}
+{code:java}
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
@@ -149,7 +149,7 @@ h2. RelationshipListener {anchor:id=SOCref.Developers_References.People.Relation
 The following example will show you how to implement one of these interfaces and how to configure this plugin. The following step is similar to the Profile notifications implementation.
 
 * Firstly, create the RelationshipLoggerListener class:
-{code:language=java}
+{code:java}
 import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.lifecycle.RelationshipListenerPlugin;
 import org.exoplatform.social.relationship.spi.RelationshipEvent;
@@ -191,7 +191,8 @@ public class RelationshipLoggerListener extends RelationshipListenerPlugin{
 
 * Then, add some configurations for this class to the configuration.xml:
 
-{code:language=xml}<external-component-plugins>
+{code:xml}
+<external-component-plugins>
   <target-component>org.exoplatform.social.core.relationship.RelationshipManager</target-component>
   <component-plugin>
     <name>RelationshipLoggerListener</name>

@@ -1,6 +1,6 @@
 h1. About Activity Plugin {anchor:id=Developer_document.Activity_plug-in}
   
-Since Social 1.1.0, the activity plugin feature  was introduced  to allow using activity composer extension and use custom ui component for displaying activity by its type.
+Since Social 1.1.0-GA, the activity plugin feature  was introduced  to allow using activity composer extension and use custom ui component for displaying activity by its type.
 
 h1. How to create activity plugin {anchor:id=Developer_document.Create the activity plug-in}
 
@@ -69,7 +69,7 @@ Y: y
 {code}
 
 
-Edit the pom.xml file as following. We'll work with Social latest release: 1.1.0-CR01.
+Edit the pom.xml file as following. We'll work with Social latest major release: 1.1.0-GA.
 
 {code:xml}
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -79,13 +79,13 @@ Edit the pom.xml file as following. We'll work with Social latest release: 1.1.0
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social-project</artifactId>
-    <version>1.1.0-CR01</version>
+    <version>1.1.0-GA</version>
   </parent>
 
   <groupId>org.exoplatform.social.samples</groupId>
   <artifactId>exo.social.samples.activity-plugin</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.0-CR01</version>
+  <version>1.1.0-GA</version>
 
   <name>exo.social.samples.activity-plugin</name>
 
@@ -145,7 +145,7 @@ Edit the pom.xml file as following. We'll work with Social latest release: 1.1.0
 </project>
 {code}
 
-To use custom ui component for displaying its activity, we need a class that must be a subclass of {{BaseUIActivity}}. We call this {{UISpaceSimpleActivity}}:
+To use custom UI component for displaying its activity, we need a class that must be a subclass of {{BaseUIActivity}}. We call this {{UISpaceSimpleActivity}}:
 
 {code:java}
 package org.exoplatform.social.samples.activityplugin;
@@ -154,12 +154,6 @@ import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Aug 23, 2010
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/plugin/space/UISpaceSimpleActivity.gtmpl"
@@ -184,12 +178,6 @@ import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Aug 19, 2010
- */
 public class SimpleSpaceUIActivityBuilder extends BaseUIActivityBuilder {
 
   @Override
@@ -256,12 +244,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Aug 23, 2010
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/plugin/space/UISpaceLookAndFeelActivity.gtmpl",

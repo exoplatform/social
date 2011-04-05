@@ -1,7 +1,7 @@
 
-h1. How to deploy eXo Social in Production
+h1. How to deploy eXo Social in Production {anchor:id=SOCref.DeveloperReference.how_to_deploy_eXo_Social_in_Production}
 
-h1. Objective
+h1. Objective {anchor:id=SOCref.DeveloperReference.Objective}
 
 In this article you will learn how to install eXo Social on a production server in a typical 3-tier architecture (web server / app server / database server).
 We use the case of our own demo server at http://social.demo.exoplatform.org
@@ -9,7 +9,7 @@ We use the case of our own demo server at http://social.demo.exoplatform.org
 This tutorial is intended for sysadmins. If you are a casual evaluator and just want to run eXo Social on your own computer, the [Quick Install Guide|InstallGuide] should be enough for you.
 
 
-h1. Requirements
+h1. Requirements {anchor:id=SOCref.DeveloperReference.Requirements}
 
 This guide assumes that you have up and running apache and mysql instances and that you have basic knowledge on how to configure it.
 * [apache web server|http://www.apache.org] + mod_jk
@@ -19,12 +19,12 @@ This guide assumes that you have up and running apache and mysql instances and t
 We assume that you have apache and mysql up and running and that you followed the steps of the [Quick Install Guide|InstallGuide] successfully.
 
 
-h1. Configure Apache
+h1. Configure Apache {anchor:id=SOCref.DeveloperReference.Configure_Apache}
 
 To match our URL (http://social.demo.exoplatform.org), we need to configure an apache virtualhost.
 Here is what you need to define in apache configuration.
 
-{code}
+{code:xml}
        <VirtualHost *:80>
                 ServerAdmin undisclosed@example.org
                 DocumentRoot /var/www/sites/social.demo.exoplatform.org
@@ -52,7 +52,7 @@ Here is what you need to define in apache configuration.
 * The redirect allows us to serve only the /socialdemo portal which contains our demo
 * The JKMount instructions reference the mod_jk configuration
 
-{code}
+{code:xml}
 # ----
 # Connector to TomCat App Server
 # ----
@@ -83,7 +83,7 @@ LoadModule    jk_module  modules/mod_jk.so
 
 Here is the workers.properties that works with it :
 
-{code}
+{code:xml}
 worker.list=WRK_SOCIAL
 
 # WRK_SOCIAL
@@ -100,7 +100,7 @@ worker.WRK_SOCIAL.socket_keepalive=true
 {info}
 
 
-h1. Configure MySQL
+h1. Configure MySQL {anchor:id=SOCref.DeveloperReference.Configure_MySQL}
 
 We are using a dedicated schema for the demo called : demo_social.
 * First login to mysql shell :
@@ -110,8 +110,8 @@ We are using a dedicated schema for the demo called : demo_social.
 
 h1. Configure eXo Social
 * Drop your mysql jdbc jar driver in $SOCIAL_HOME/lib
-* Edit database configuration in this file : $SOCIAL_HOME/gatein/conf/portal/socialdemo/socialdemo.properties
-{code}
+* Edit the database configuration in this file : $SOCIAL_HOME/gatein/conf/portal/socialdemo/socialdemo.properties
+{code:xml}
 gatein.jcr.datasource.dialect=mysql-utf8
 gatein.jcr.datasource.driver=com.mysql.jdbc.Driver
 gatein.jcr.datasource.url=jdbc:mysql://localhost/demo_social
@@ -123,10 +123,9 @@ gatein.idm.datasource.url=jdbc:mysql://localhost/demo_social
 
 This file is dedicated to /socialdemo portal
 
+h1. Troubleshooting {anchor:id=SOCref.DeveloperReference.Troubleshooting}
 
-h1. Troubleshooting
-
-h2. 404 error on activity page
+h2. 404 error on activity page {anchor:id=SOCref.DeveloperReference.error_on_activity_page}
 
 On Activities page, you may see a 404 error instead of the activity stream.
 
@@ -142,6 +141,6 @@ This is due to a [limitation|https//jira:jboss.org-jira-browse-GTNPORTAL-1060] o
 
 
 
-h1. Further Reading
+h1. Further Reading {anchor:id=SOCref.DeveloperReference.Further_reading}
 * Pointer to LDAP integration tutorial
 * Pointer to generic database configuration in gatein

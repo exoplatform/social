@@ -1,110 +1,5 @@
-eXo Social provides users with a way to share status updates and users' activity information as well as spaces (also known as Activity Stream). With the API, you can customize the way to display activities or publish new ones.
-To manipulate activities, you will use the {{AtivityManager}}.To get an instance of this class, you will need to use the {{PortalContainer}}.
-
-
-h1. Introduction on some features of ActivityStream and ExoSocialActivity {anchor:id=SOCref.Developer_references.IntroductiononFeaturesofActivityStreamandExoSocialActivity} 
-
-{code:java}
-package org.exoplatform.social.introduction.activitystreamandexosocialactivity;
-
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.core.activity.model.ActivityStream;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-
-public class IntroduceActivityStreamAndExoSocialActivity {
-  // Exo Log.
-  private final Log LOG = ExoLogger.getLogger(IntroduceActivityStreamAndExoSocialActivity.class);
-  
-  // Root identity.
-  private Identity rootIdentity;
-  
-  // John identity.
-  private Identity johnIdentity;
-  
-  // identityManager manages identities.
-  private IdentityManager identityManager;
-  
-  // activityManager manages activities.
-  private ActivityManager activityManager;
-  
-  // Portal container.
-  private PortalContainer container;
-  
-  private final static String ROOT_NAME = "root";
-  private final static String JOHN_NAME = "john";
-  private final static String DEFAULT_ACTIVITY_TITLE = "blabla";
-  private final static String DEFAULT_COMMENT_TITLE = "comment blah blah";
-  
-  /** 
-   * Constructor.
-   */
-  public IntroduceActivityStreamAndExoSocialActivity() {
-    // Gets the current container.
-    container = PortalContainer.getInstance();
-    
-    // Gets IdentityManager to handle an identity operation.
-    identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    
-    // Gets ActivityManager to handle activity operation.
-    ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
-    
-    // Gets or creates the identity "root".
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ROOT_NAME);
-    
-    // Gets or creates the identity "john".
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, JOHN_NAME);
-  }
- 
-  public void introduceActivityStreamAndExoSocialActivity {
-    ExoSocialActivity activity = new ExoSocialActivityImpl();
-    
-    // Sets a string that specifies the primary text of an activity. This field is REQUIRED by ActivityManager. The title field may only have the following HTML tags: <b> <i>, <a>, <span>.
-    activity.setTitle(DEFAULT_ACTIVITY_TITLE);
-    
-    // Sets this activity for root.
-    activity.setUserId(rootIdentity.getId());
-    
-    // Saves the activity.
-    activityManager.saveActivity(johnIdentity, activity);
-    
-    // Gets activity stream.
-    ActivityStream activityStream = activity.getActivityStream();
-    
-    // Type of the activity stream. It can be organization or space.
-    LOG.info("activity stream type: " + activityStream.getType());
-    
-    LOG.info("activity stream id: " + activityStream.getId());
-    LOG.info("activity stream pretty id: " + activityStream.getPrettyId());
-    LOG.info("activity stream perma link: " + activityStream.getPermaLink());
-    
-    LOG.info("activity stream id: " + activity.getStreamId());
-    LOG.info("activity stream owner: " + activity.getStreamOwner());
-    
-    // Comment in ExoSocialActivity
-    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();;
-    activity.setTitle(DEFAULT_ACTIVITY_TITLE);
-    activityManager.saveActivity(rootIdentity, rootActivity);
-
-    ExoSocialActivity comment = new ExoSocialActivityImpl();;
-    comment.setTitle(DEFAULT_COMMENT_TITLE);
-    
-    //Sets comments of root
-    comment.setUserId(rootIdentity.getId());
-  
-    //Saves a comment.
-    activityManager.saveComment(activity, comment);
-  }
-}
-
-{code}
+eXo Social provides users with a way to share their activity information and spaces (also known as Activity Stream). With the API, you can customize the way to display activities or publish new ones.
+To manipulate activities, you need to use the {{AtivityManager}} service.
 
 
 h1. Publish an activity {anchor:id=SOCref.Developer_references.PublishActivity} 
@@ -161,7 +56,7 @@ public class PublishActivityForUser {
   public void createActivityForUser() {
     try {
       // Gets an existing identity or creates a new one.
-      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEFAULT_USER_NAME);
+      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEFAULT_USER_NAME, true);
 
       // Creates a new activity for this user.
       ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -242,9 +137,9 @@ public class PublishActivityForSpace {
       Space space = spaceService.getSpaceByDisplayName(DEFAULT_NAME_SPACE);
       if (space != null) {
         // Gets spaceIdentity if it already exists. If not, a new one is created.
-        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, DEFAULT_NAME_SPACE);
+        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, DEFAULT_NAME_SPACE, true);
         // Gets an identity if it already exists. If not, a new one is created.
-        Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEFAULT_USER_NAME);
+        Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEFAULT_USER_NAME, true);
         // Creates a new activity for this space.
         ExoSocialActivity activity =  new ExoSocialActivityImpl();
         activity.setUserId(userIdentity.getId());
@@ -264,9 +159,9 @@ public class PublishActivityForSpace {
 
 h2. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
 
-An activity processor is used to modify the content of activities before they are responded and rendered at a client's browser. For example, we will create an activity processor to replace all the texts representing the smile face ":-)" in the activity title by the smiley icons.
+An activity processor is used to modify the content of activities before they are responded and rendered at a client's browser. For example, create an activity processor to replace all the texts representing the smile face ":-)" in the activity title by the smiley icons, do as follows:
 
-Firstly, we will create the {{SmileyProcessor}} class by extending the {{BaseActivityProcessorPlugin}}.
+Firstly, create the {{SmileyProcessor}} class by extending the {{BaseActivityProcessorPlugin}}.
 
 {code:java}
 package org.exoplatform.social.core.activitystream;
@@ -292,7 +187,7 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
 
 {code}
 
-Then, we have to register this processor by editing the _configuration.xml_ file:
+Then, register this processor by editing the _configuration.xml_ file:
 
 {code:xml}
 
@@ -318,10 +213,9 @@ Then, we have to register this processor by editing the _configuration.xml_ file
 
 h2. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
 
-It is really easy to publish an RSS feed to a space's activity stream. eXo Social provides {{FeedmashJobPlugin}} to publish RSS feeds. As you can see in the project {{exo.social.extras.feedmash}}, there are {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space named {{exosocial}} in a specific portal container named{{socialdemo}} as in the configuration file:
+It is really easy to publish an RSS feed to a space's activity stream. eXo Social provides {{FeedmashJobPlugin}} to publish RSS feeds. As you can see in the project "{{exo.social.extras.feedmash}}", there are the {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space named {{exosocial}} in a specific portal container named{{socialdemo}} as in the configuration file:
 
 {code:xml}
-
 <external-component-plugins>
    <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
     <component-plugin>
@@ -379,4 +273,109 @@ It is really easy to publish an RSS feed to a space's activity stream. eXo Socia
 
 {code}
 
-Run eXo Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the Social project on Jira and Hudson will be automatically published to the {{exosocial}} space.
+Run eXo Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the eXo Social project on Jira and Hudson will be automatically published to the {{exosocial}} space.
+
+h1. Sample Code
+See the following code snippet to know more details how to publish an activity and add comments to an activity:
+
+{code:java}
+package org.exoplatform.social.introduction.activitystreamandexosocialactivity;
+
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.activity.model.ActivityStream;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+
+public class IntroduceActivityStreamAndExoSocialActivity {
+  // Exo Log.
+  private final Log LOG = ExoLogger.getLogger(IntroduceActivityStreamAndExoSocialActivity.class);
+  
+  // Root identity.
+  private Identity rootIdentity;
+  
+  // John identity.
+  private Identity johnIdentity;
+  
+  // identityManager manages identities.
+  private IdentityManager identityManager;
+  
+  // activityManager manages activities.
+  private ActivityManager activityManager;
+  
+  // Portal container.
+  private PortalContainer container;
+  
+  private final static String ROOT_NAME = "root";
+  private final static String JOHN_NAME = "john";
+  private final static String DEFAULT_ACTIVITY_TITLE = "blabla";
+  private final static String DEFAULT_COMMENT_TITLE = "comment blah blah";
+  
+  /** 
+   * Constructor.
+   */
+  public IntroduceActivityStreamAndExoSocialActivity() {
+    // Gets the current container.
+    container = PortalContainer.getInstance();
+    
+    // Gets IdentityManager to handle an identity operation.
+    identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    
+    // Gets ActivityManager to handle activity operation.
+    ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
+    
+    // Gets or creates the identity "root".
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ROOT_NAME, true);
+    
+    // Gets or creates the identity "john".
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, JOHN_NAME, true);
+  }
+ 
+  public void introduceActivityStreamAndExoSocialActivity {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    
+    // Sets a string that specifies the primary text of an activity. This field is REQUIRED by ActivityManager. The title field may only have the following HTML tags: <b> <i>, <a>, <span>.
+    activity.setTitle(DEFAULT_ACTIVITY_TITLE);
+    
+    // Sets this activity for root.
+    activity.setUserId(rootIdentity.getId());
+    
+    // Saves the activity.
+    activityManager.saveActivity(johnIdentity, activity);
+    
+    // Gets activity stream.
+    ActivityStream activityStream = activity.getActivityStream();
+    
+    // Type of the activity stream. It can be organization or space.
+    LOG.info("activity stream type: " + activityStream.getType());
+    
+    LOG.info("activity stream id: " + activityStream.getId());
+    LOG.info("activity stream pretty id: " + activityStream.getPrettyId());
+    LOG.info("activity stream perma link: " + activityStream.getPermaLink());
+    
+    LOG.info("activity stream id: " + activity.getStreamId());
+    LOG.info("activity stream owner: " + activity.getStreamOwner());
+    
+    // Comment in ExoSocialActivity
+    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();;
+    activity.setTitle(DEFAULT_ACTIVITY_TITLE);
+    activityManager.saveActivity(rootIdentity, rootActivity);
+
+    ExoSocialActivity comment = new ExoSocialActivityImpl();;
+    comment.setTitle(DEFAULT_COMMENT_TITLE);
+    
+    //Sets comments of root
+    comment.setUserId(rootIdentity.getId());
+  
+    //Saves a comment.
+    activityManager.saveComment(activity, comment);
+  }
+}
+
+{code}

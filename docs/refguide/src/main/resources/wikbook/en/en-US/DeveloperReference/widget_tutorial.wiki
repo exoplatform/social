@@ -31,7 +31,7 @@ Next, insert the following code at the position you want the button to be displa
 {code}
 
 The important function here is:
-{code}
+{code:js}
 spaces.createPopup(link, spaceName, description)
 {code}
 * link: link is the ID or the HTMLElement where the pop-up will be placed. If you copy and paste the code snippet provided above, you do not need to change this value.

@@ -1,15 +1,15 @@
-h1. Save and get space context from a portlet
+h1. Save and get space context from a portlet {anchor:id=SOCref.DeveloperReference.Save_and_get_space_context_from_a_portlet}
 {info}
 Since eXo Social 1.0.1
 {info}
 
 
 
-h1. Why save portlet preference
+h1. Why save portlet preference {anchor:id=SOCref.DeveloperReference.Why_save_portlet_preferences}
 
 When working with space related portlet, we have make sure which space (space context) that portlet is working with to handle and display space's information. For example, {{SpaceActivityStreamPortlet}} has to know space context to display space's activity stream. Before (as of 1.0.0-GA), we rely on actual http address to gets space's url and then gets the current space, and that causes a bug here when edit that page node [SOC-715|http://jira.exoplatform.org/browse/SOC-715].
 
-h1. How to save space context
+h1. How to save space context {anchor:id=SOCref.DeveloperReference.how_to_save_space_context}
 
 If you want to register a portlet to be installed when creating a new space, write a portlet and set configuration in <tt>configuration.xml<tt> file of exo.social.component.space project. Just register your portlet here and it will be dynamically created a page with your portlet.
 

@@ -38,7 +38,7 @@ To learn what you can do with this APIs, have a look at the [specification|http:
 
 h3. Configure the security
 If you are using OpenSocial, you need to configure the OAuth authentication. With the case of eXo Platform, you need to edit the file: gatein/conf/portal/portal/configuration.xml and add the following configuration:
-{code}
+{code:xml}
         <component>
                 <key>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</key>
                 <type>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</type>
@@ -61,7 +61,7 @@ Instead of publishing your activities to the group @self as usual, publish them 
 
 Use the OpenSocial java library and groovy, your code will look like this:
 
-{code}
+{code:groovy}
       def client = getOpenSocialClient()
 
       //we create our new activity
