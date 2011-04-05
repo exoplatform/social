@@ -165,7 +165,7 @@ public class UISpaceSimpleActivity extends BaseUIActivity {
 
 The template {{UISpaceSimpleActivity.gtmpl}} should be created under {{main/resources/groovy/social/plugin/space}}:
 
-{code}
+{code:html}
 <div>This is a space activity ui component displayed for type "exosocial:spaces"</div>
 {code}
 
@@ -264,7 +264,7 @@ public class UISpaceLookAndFeelActivity extends BaseUIActivity {
 
 Now create {{UISpaceLookAndFeelActivity}} template. The easiest way is to copy the content of {{UIDefaultActivity.gtmpl}} to this template file:
 
-{code}
+{code:groovy}
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
@@ -528,7 +528,7 @@ Now create {{UISpaceLookAndFeelActivity}} template. The easiest way is to copy t
 {code}
 
 And you should make needed modifications for this template. We make a small modification here:
-{code}
+{code:groovy}
 <div class="Content">
   $activityContentTitle (from custom ui component)<br>
 </div>
