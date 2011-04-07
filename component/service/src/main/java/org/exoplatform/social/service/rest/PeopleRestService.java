@@ -17,6 +17,7 @@
 package org.exoplatform.social.service.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -114,6 +115,8 @@ public class PeopleRestService implements ResourceContainer{
                     @QueryParam("spaceURL") String spaceURL,
                     @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
+    List<Identity> excludedIdentityList = new ArrayList<Identity>();
+    excludedIdentityList.add(Util.getViewerIdentity(currentUser));
     UserNameList nameList = new UserNameList();
     ProfileFilter filter = new ProfileFilter();
     
@@ -122,11 +125,13 @@ public class PeopleRestService implements ResourceContainer{
     filter.setGender("");
     filter.setPosition("");
     filter.setSkills("");
-    List<Identity> identities = getIdentityManager()
-        .getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, 0, SUGGEST_LIMIT);
+    filter.setExcludedIdentityList(excludedIdentityList);
+    List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(
+                                  OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
 
-    Identity currentIdentity = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, currentUser, false);
-    
+    Identity currentIdentity = getIdentityManager().getOrCreateIdentity(
+                                 OrganizationIdentityProvider.NAME, currentUser, false);
+
     Space space = getSpaceService().getSpaceByUrl(spaceURL);
     if (PENDING_STATUS.equals(typeOfRelation)) {
       addToNameList(currentIdentity, getRelationshipManager().getPending(currentIdentity, identities), nameList);
@@ -140,14 +145,7 @@ public class PeopleRestService implements ResourceContainer{
       addSpaceUserToList (identities, nameList, space, typeOfRelation);
     } else { // Identities that match the keywords.
       for (Identity identity : identities) {
-        String fullName = identity.getProfile().getFullName();
-        String userName = (String) identity.getProfile().getProperty(Profile.USERNAME);
-        
-        if (currentUser.equals(userName)) {
-          continue;
-        }
-        
-        nameList.addName(fullName);
+        nameList.addName(identity.getProfile().getFullName());
       }
     }
     
@@ -176,7 +174,9 @@ public class PeopleRestService implements ResourceContainer{
     PeopleInfo peopleInfo = new PeopleInfo();
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
-    Identity identity = getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, userId, false);
+    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                   userId, false);
+
     Identity currentIdentity = getIdentityManager().
             getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
     

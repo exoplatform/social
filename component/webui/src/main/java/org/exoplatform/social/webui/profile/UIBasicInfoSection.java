@@ -18,19 +18,12 @@ package org.exoplatform.social.webui.profile;
 
 import java.util.List;
 
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.Query;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.web.CacheUserProfileFilter;
-import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -132,7 +125,6 @@ public class UIBasicInfoSection extends UIProfileSection {
    * Stores profile information into database when form is submitted.<br>
    */
   public static class SaveActionListener extends UIProfileSection.SaveActionListener {
-    private static final String MSG_KEY_UI_ACCOUNT_INPUT_SET_EMAIL_EXIST   = "UIAccountInputSet.msg.email-exist";
 
     @Override
     public void execute(Event<UIProfileSection> event) throws Exception {
@@ -140,22 +132,22 @@ public class UIBasicInfoSection extends UIProfileSection {
 
       UIBasicInfoSection uiForm = (UIBasicInfoSection) event.getSource();
 
-      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-      UIApplication uiApp = context.getUIApplication();
-
       String firstName = uiForm.getUIStringInput(Profile.FIRST_NAME).getValue();
       String lastName = uiForm.getUIStringInput(Profile.LAST_NAME).getValue();
       String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();
-
+      String fullName = firstName + " " + lastName;
+      
       Identity viewerIdentity = Utils.getViewerIdentity(true);
       Profile profile = viewerIdentity.getProfile();
       boolean profileHasUpdated = false;
       if (!(profile.getProperty(Profile.FIRST_NAME)).equals(firstName)) {
         profile.setProperty(Profile.FIRST_NAME, firstName);
+        profile.setProperty(Profile.FULL_NAME, fullName);
         profileHasUpdated = true;
       }
       if (!(profile.getProperty(Profile.LAST_NAME)).equals(lastName)) {
         profile.setProperty(Profile.LAST_NAME, lastName);
+        profile.setProperty(Profile.FULL_NAME, fullName);
         profileHasUpdated = true;
       }
       if (!(profile.getProperty(Profile.EMAIL)).equals(newEmail)) {

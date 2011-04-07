@@ -23,6 +23,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
+
 /**
  * Util.java: utility class for rest <br />.
  * Created by The eXo Platform SEA
@@ -89,4 +95,34 @@ public final class Util {
     return viewerId;
   }
 
+  /**
+   * Gets identity of viewer user (logged-in user). Do not load profile.
+   *
+   * @return identity
+   * @since 1.2.0 GA
+   */
+  public static Identity getViewerIdentity(String viewerId) {
+    return getUserIdentity(viewerId, false);
+  }
+
+  /**
+   * Gets identity from the remote id (user name)
+   * 
+   * @param userName
+   * @param loadProfile
+   * @return identity
+   * @since 1.2.0 GA
+   */
+  public static Identity getUserIdentity(String userName, boolean loadProfile) {
+    return Util.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, loadProfile);
+  }
+  
+  /**
+   * Gets identityManager
+   * @return identityManager
+   * @since 1.2.0 GA
+   */
+  public static final IdentityManager getIdentityManager() {
+    return (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
+  }
 }

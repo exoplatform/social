@@ -18,17 +18,10 @@ package org.exoplatform.social.core.manager;
 
 import java.util.List;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.storage.IdentityStorage;
 
 /**
@@ -39,7 +32,6 @@ import org.exoplatform.social.core.storage.IdentityStorage;
  * @version 1.2.0-GA
  */
 public class CachingIdentityManager extends IdentityManagerImpl {
-  private static final Log                 LOG = ExoLogger.getExoLogger(CachingIdentityManager.class);
 
   /**
    * identityCacheById with key = uuid/ identity.id
@@ -101,14 +93,6 @@ public class CachingIdentityManager extends IdentityManagerImpl {
   public void deleteIdentity(Identity identity) {
     super.deleteIdentity(identity);
     updateIdentityCaches(identity);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Identity getOrCreateIdentity(String providerId, String remoteId, boolean forceLoadOrReloadProfile) {
-    return super.getOrCreateIdentity(providerId,  remoteId, forceLoadOrReloadProfile);
   }
 
   /**
