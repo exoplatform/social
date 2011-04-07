@@ -89,13 +89,13 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
 
 public class UISpaceMember extends UIForm {
 
-  static private final String MSG_ERROR_REMOVE_MEMBER = "UISpaceMember.msg.error_remove_member";
-  static private final String MSG_ERROR_REMOVE_LEADER = "UISpaceMember.msg.error_remove_leader";
-  static private final String MSG_ERROR_SELF_REMOVE_LEADER = "UISpaceMember.msg.error_self_remove_leader";
-  static private final String MSG_ERROR_REVOKE_INVITED = "UISpaceMember.msg.error_revoke_invited";
-  static private final String MSG_ERROR_DECLINE_USER = "UISpaceMember.msg.error_decline_user";
-  static private final String MSG_ERROR_VALIDATE_USER = "UISpaceMember.msg.error_validate_user";
-  static private final String MSG_ERROR_MAKE_LEADER = "UISpaceMember.msg.error_make_leader";
+  private static final String MSG_ERROR_REMOVE_MEMBER = "UISpaceMember.msg.error_remove_member";
+  private static final String MSG_ERROR_REMOVE_LEADER = "UISpaceMember.msg.error_remove_leader";
+  private static final String MSG_ERROR_SELF_REMOVE_LEADER = "UISpaceMember.msg.error_self_remove_leader";
+  private static final String MSG_ERROR_REVOKE_INVITED = "UISpaceMember.msg.error_revoke_invited";
+  private static final String MSG_ERROR_DECLINE_USER = "UISpaceMember.msg.error_decline_user";
+  private static final String MSG_ERROR_VALIDATE_USER = "UISpaceMember.msg.error_validate_user";
+  private static final String MSG_ERROR_MAKE_LEADER = "UISpaceMember.msg.error_make_leader";
   /**
    * The first page.
    */
@@ -103,7 +103,7 @@ public class UISpaceMember extends UIForm {
 
   private String spaceId;
   private SpaceService spaceService = null;
-  private final static String USER = "user";
+  private static final String USER = "user";
   private UIPageIterator iteratorPendingUsers;
   private UIPageIterator iteratorInvitedUsers;
   private UIPageIterator iteratorExistingUsers;
@@ -319,16 +319,18 @@ public class UISpaceMember extends UIForm {
       return new ArrayList<String>(0);
     }
     int currentPage = iteratorExistingUsers.getCurrentPage();
-    LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(spaceService.getMembers(space)),
-                                      ITEMS_PER_PAGE);
-    iteratorExistingUsers.setPageList(pageList);
-    if (this.isNewSearch()) {
-      iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
-    } else {
-      iteratorExistingUsers.setCurrentPage(currentPage);
+    if (space.getMembers() != null) {
+      LazyPageList<String> pageList = new LazyPageList<String>(
+          new StringListAccess(Arrays.asList(space.getMembers())),
+          ITEMS_PER_PAGE);
+      iteratorExistingUsers.setPageList(pageList);
+      if (this.isNewSearch()) {
+        iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
+      } else {
+        iteratorExistingUsers.setCurrentPage(currentPage);
+      }
+      this.setNewSearch(false);
     }
-    this.setNewSearch(false);
     return iteratorExistingUsers.getCurrentPageData();
   }
 
@@ -392,7 +394,7 @@ public class UISpaceMember extends UIForm {
   public boolean isLeader(String userName) throws Exception {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
-    return spaceService.isLeader(space, userName);
+    return spaceService.isManager(space, userName);
   }
 
   public boolean isCurrentUser(String userName) throws Exception {
@@ -418,21 +420,18 @@ public class UISpaceMember extends UIForm {
       if (usersInput != null) {
         invitedUsers = uiSpaceMember.getUsersName().split(",");
 
-        List<String> usersForInviting = new ArrayList<String>();
-        if (invitedUsers != null) {
-          for (int idx = 0; idx < invitedUsers.length; idx++) {
-            name = invitedUsers[idx].trim();
-            if ((name.length() > 0) && !usersForInviting.contains(name)) {
-              usersForInviting.add(name);
-            }
-          }
-        }
-
-        for (String userName : usersForInviting) {
-          spaceService.inviteMember(space, userName);
-        }
-
-        uiSpaceMember.setUsersName(null);
+  		  List<String> usersForInviting = new ArrayList<String>();
+  		  if (invitedUsers != null)
+  		  {
+  			  for (int idx = 0; idx < invitedUsers.length; idx++) {
+  				  name = invitedUsers[idx].trim();
+  				  if ((name.length() > 0) && !usersForInviting.contains(name)) usersForInviting.add(name);
+  			  }
+  		  }
+  		  for (String userName : usersForInviting) {
+  		    spaceService.addInvitedUser(space, userName);
+  		  }
+  		  uiSpaceMember.setUsersName(null);
       }
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
@@ -466,17 +465,10 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
       SpaceService spaceService = uiSpaceMember.getSpaceService();
-      try {
-        spaceService.revokeInvitation(uiSpaceMember.spaceId, userName);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REVOKE_INVITED,
-                                                null,
-                                                ApplicationMessage.WARNING));
-      }
+      spaceService.removeInvitedUser(spaceService.getSpaceById(uiSpaceMember.spaceId), userName);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -490,15 +482,10 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
       SpaceService spaceService = uiSpaceMember.getSpaceService();
-      try {
-        spaceService.declineRequest(uiSpaceMember.spaceId, userName);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DECLINE_USER, null, ApplicationMessage.WARNING));
-      }
+      spaceService.removePendingUser(spaceService.getSpaceById(uiSpaceMember.spaceId), userName);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -524,17 +511,13 @@ public class UISpaceMember extends UIForm {
         userName = currentUser;
       }
 
-      if (spaceService.isOnlyLeader(space, userName)) {
+      if (spaceService.isOnlyManager(space, userName)) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER, null, ApplicationMessage.WARNING));
         return;
       }
 
-      try {
-        spaceService.removeMember(space, userName);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_MEMBER, null, ApplicationMessage.WARNING));
-        return;
-      }
+      spaceService.removeMember(space, userName);
+      spaceService.setManager(space, userName, false);
 
       if (!useAjax) { // self remove.
         prContext = Util.getPortalRequestContext();
@@ -562,15 +545,10 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
       SpaceService spaceService = uiSpaceMember.getSpaceService();
-      try {
-        spaceService.validateRequest(uiSpaceMember.spaceId, userName);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_VALIDATE_USER, null, ApplicationMessage.WARNING));
-      }
+      spaceService.addMember(spaceService.getSpaceById(uiSpaceMember.spaceId), userName);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -596,16 +574,11 @@ public class UISpaceMember extends UIForm {
         userName = currentUser;
       }
 
-      if (spaceService.isOnlyLeader(space, userName)) {
+      if (spaceService.isOnlyManager(space, userName)) {
         uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER, null, ApplicationMessage.WARNING));
         return;
       }
-
-      try {
-        spaceService.setLeader(space, userName, false);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REMOVE_LEADER, null, ApplicationMessage.WARNING));
-      }
+      spaceService.setManager(space, userName, false);
       if (!useAjax) { // self remove.
         prContext = Util.getPortalRequestContext();
         prContext.setResponseComplete(true);
@@ -632,16 +605,11 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
       String userName = event.getRequestContext().getRequestParameter(OBJECTID);
 
       SpaceService spaceService = uiSpaceMember.getSpaceService();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-      try {
-        spaceService.setLeader(space, userName, true);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_MAKE_LEADER, null, ApplicationMessage.WARNING));
-      }
+      spaceService.setManager(space, userName, true);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -663,7 +631,7 @@ public class UISpaceMember extends UIForm {
       } else {
         userNameForInvite = userNamesInputted.trim() + ", " + userNamesSelected;
       }
-
+      
       uiSpaceMember.setUsersName(userNameForInvite);
       UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
       uiPopup.setUIComponent(null);
@@ -794,7 +762,7 @@ public class UISpaceMember extends UIForm {
       throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_USER, e);
     }
 
-    if (spaceService.isInvited(space, userId)) {
+    if (spaceService.isInvitedUser(space, userId)) {
       throw new SpaceException(SpaceException.Code.USER_ALREADY_INVITED);
     } else if (spaceService.isMember(space, userId) && !userId.equals(getUserACL().getSuperUser())) {
       throw new SpaceException(SpaceException.Code.USER_ALREADY_MEMBER);

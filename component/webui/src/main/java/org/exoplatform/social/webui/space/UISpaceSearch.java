@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -58,33 +57,33 @@ public class UISpaceSearch extends UIForm {
   /**
    * SPACE SEARCH.
    */
-  final public static String SPACE_SEARCH = "SpaceSearch";
+  public static final String SPACE_SEARCH = "SpaceSearch";
 
   /**
    * SEARCH.
    */
-  final public static String SEARCH = "Search";
+  public static final String SEARCH = "Search";
 
   /**
    * SEARCH ALL.
    */
-  final static String ALL = "All";
+  static final String ALL = "All";
 
   /**
    * DEFAULT SPACE NAME SEARCH.
    */
-  final public static String DEFAULT_SPACE_NAME_SEARCH = "name or description";
+  public static final String DEFAULT_SPACE_NAME_SEARCH = "name or description";
 
   /**
    * INPUT PATTERN FOR CHECKING.
    */
-  final static String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
-
+  static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
+  
   /**
    * ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING
    */
-  final static String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
-
+  static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
+  
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
 
   /**
@@ -284,36 +283,16 @@ public class UISpaceSearch extends UIForm {
       WebuiRequestContext ctx = event.getRequestContext();
       UISpaceSearch uiSpaceSearch = event.getSource();
       String charSearch = ctx.getRequestParameter(OBJECTID);
-      SpaceService spaceService = uiSpaceSearch.getSpaceService();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
       if (searchCondition != null) {
         searchCondition = searchCondition.trim();
       }
-
-      searchCondition = ((searchCondition == null) || (searchCondition.length() == 0)
-              || searchCondition.equals(defaultSpaceNameAndDesc)) ? "*" : searchCondition;
-      searchCondition = (charSearch != null) ? charSearch : searchCondition;
-      searchCondition = ((charSearch != null) && ALL.equals(charSearch)) ? "" : searchCondition;
-
       if (charSearch != null) {
         ((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
       }
       uiSpaceSearch.setSelectedChar(charSearch);
-
-      if (charSearch == null) { // is not searching by first character
-        if (!isValidInput(searchCondition)) {
-          uiSpaceSearch.setSpaceList(new ArrayList<Space>());
-        } else {
-          List<Space> spaceSearchResult = spaceService.getSpacesBySearchCondition(searchCondition);
-          uiSpaceSearch.setSpaceList(spaceSearchResult);
-        }
-      } else { // is searching by alphabet
-        List<Space> spaceSearchResult = spaceService.getSpacesByFirstCharacterOfName(searchCondition);
-        uiSpaceSearch.setSpaceList(spaceSearchResult);
-      }
-
       uiSpaceSearch.setSpaceNameSearch(searchCondition);
       uiSpaceSearch.setNewSearch(true);
 
@@ -321,25 +300,6 @@ public class UISpaceSearch extends UIForm {
       if (searchEvent != null) {
         searchEvent.broadcast();
       }
-    }
-
-    /**
-     * Checks input values follow regular expression.
-     *
-     * @param input A {@code String}
-     * @return true if user input a right string for space searching else return false.
-     */
-    private boolean isValidInput(String input) {
-      // Eliminate '*' and '%' character in string for checking
-      String spacenameForCheck = input.replace("*", "");
-      spacenameForCheck = spacenameForCheck.replace("%", "");
-      // Make sure string for checking is started by alphabet character
-      spacenameForCheck = PREFIX_ADDED_FOR_CHECK + spacenameForCheck;
-      if (!spacenameForCheck.matches(RIGHT_INPUT_PATTERN)) {
-        return false;
-      }
-
-      return true;
     }
   }
 
@@ -362,19 +322,6 @@ public class UISpaceSearch extends UIForm {
       uiPopup.setShow(true);
     }
 
-  }
-
-  /**
-   * Gets an instance of SpaceService. If the instance is still existed then return else it is get
-   * from container.
-   *
-   * @return an instance of SpaceService.
-   */
-  private SpaceService getSpaceService() {
-    if (spaceService == null) {
-      spaceService = getApplicationComponent(SpaceService.class);
-    }
-    return spaceService;
   }
 
   public boolean isNewSearch() {

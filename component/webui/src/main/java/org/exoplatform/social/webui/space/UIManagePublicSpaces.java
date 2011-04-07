@@ -17,18 +17,13 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceListAccess;
+import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -39,7 +34,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 
 /**
@@ -51,13 +45,12 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "classpath:groovy/social/webui/space/UIManagePublicSpaces.gtmpl",
   events = {
-    @EventConfig(listeners = UIManagePublicSpaces.RequestJoinActionListener.class),
-    @EventConfig(listeners = UIManagePublicSpaces.SearchActionListener.class , phase = Phase.DECODE)
+    @EventConfig(listeners = UIManagePublicSpaces.RequestJoinActionListener.class)
   }
 )
 public class UIManagePublicSpaces extends UIContainer {
   private static final String SPACE_DELETED_INFO = "UIPublicSpacePortlet.msg.DeletedInfo";
-  static private final String MSG_ERROR_REQUEST_JOIN = "UIManagePublicSpaces.msg.error_request_join";
+  private static final String MSG_ERROR_REQUEST_JOIN = "UIManagePublicSpaces.msg.error_request_join";
 
   /**
    * The first page.
@@ -72,7 +65,12 @@ public class UIManagePublicSpaces extends UIContainer {
   private static final String PUBLIC_STATUS = "public";
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
-
+  
+  /**
+   * SEARCH ALL.
+   */
+  public static final String SEARCH_ALL = "All";
+  
   /**
    * Constructor to initialize iterator.
    *
@@ -119,8 +117,7 @@ public class UIManagePublicSpaces extends UIContainer {
    * @throws Exception
    */
   public boolean hasEditPermission(Space space) throws Exception {
-    SpaceService spaceService = getSpaceService();
-    return spaceService.hasEditPermission(space, getUserId());
+    return spaceService.hasSettingPermission(space, getUserId());
   }
 
   /**
@@ -130,9 +127,8 @@ public class UIManagePublicSpaces extends UIContainer {
    * @throws Exception
    */
   public List<Space> getPublicSpaces() throws Exception {
-    List<Space> spaceList = getSpaceList();
-    uiSpaceSearch.setSpaceNameForAutoSuggest(getPublicSpaceNames());
-    return getDisplayPublicSpaces(spaceList, iterator);
+	  uiSpaceSearch.setSpaceNameForAutoSuggest(getPublicSpaceNames());
+	  return getDisplayPublicSpaces(iterator);
   }
 
   /**
@@ -164,12 +160,7 @@ public class UIManagePublicSpaces extends UIContainer {
         return;
       }
 
-      try {
-        spaceService.requestJoin(space, userId);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REQUEST_JOIN, null, ApplicationMessage.ERROR));
-        return;
-      }
+      spaceService.addPendingUser(space, userId);
 
       UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication().getChild(UIWorkingWorkspace.class);
 
@@ -177,22 +168,6 @@ public class UIManagePublicSpaces extends UIContainer {
       // portal
       uiWorkingWS.updatePortletsByName("SocialUserToolBarGroupPortlet");
     }
-  }
-
-  /**
-   * Listener for SpaceSearch's broadcasting.
-   *
-   * @author hoatle
-   */
-  static public class SearchActionListener extends EventListener<UIManagePublicSpaces> {
-    @Override
-    public void execute(Event<UIManagePublicSpaces> event) throws Exception {
-      UIManagePublicSpaces uiForm = event.getSource();
-      UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
-      List<Space> spaceList = uiSpaceSearch.getSpaceList();
-      uiForm.setSpaces(spaceList);
-    }
-
   }
 
   /**
@@ -239,35 +214,6 @@ public class UIManagePublicSpaces extends UIContainer {
   }
 
   /**
-   * Gets spaceList.
-   *
-   * @return
-   * @throws Exception
-   */
-  private List<Space> getSpaceList() throws Exception {
-    List<Space> spaceList = getSpaces();
-    List<Space> allPublicSpace = getAllPublicSpaces();
-    if (allPublicSpace.size() == 0) {
-      return allPublicSpace;
-    }
-    List<Space> publicSpaces = new ArrayList<Space>();
-    if (spaceList != null) {
-      Iterator<Space> spaceItr = spaceList.iterator();
-      while (spaceItr.hasNext()) {
-        Space space = spaceItr.next();
-        for (Space publicSpace : allPublicSpace) {
-          if (space.getDisplayName().equals(publicSpace.getDisplayName())) {
-            publicSpaces.add(publicSpace);
-            break;
-          }
-        }
-      }
-      return publicSpaces;
-    }
-    return allPublicSpace;
-  }
-
-  /**
    * Gets public space names.
    *
    * @return public space names
@@ -283,25 +229,38 @@ public class UIManagePublicSpaces extends UIContainer {
     return publicSpaceNames;
   }
 
-  /**
-   * Gets paginated public spaces so that the user can request to join.
-   *
-   * @param spaces
-   * @param iterator
-   * @return
-   * @throws Exception
-   */
-  @SuppressWarnings("unchecked")
-  private List<Space> getDisplayPublicSpaces(List<Space> spaces, UIPageIterator iterator) throws Exception {
-    int currentPage = iterator.getCurrentPage();
-    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
-    iterator.setPageList(pageList);
-    if (this.uiSpaceSearch.isNewSearch()) {
-      iterator.setCurrentPage(FIRST_PAGE);
-    } else {
-      iterator.setCurrentPage(currentPage);
-    }
-    this.uiSpaceSearch.setNewSearch(false);
-    return iterator.getCurrentPageData();
-  }
+ /**
+  * Gets paginated public spaces so that the user can request to join.
+  * 
+  * @param spaces
+  * @param iterator
+  * @return
+  * @throws Exception
+  */
+ @SuppressWarnings("unchecked")
+ private List<Space> getDisplayPublicSpaces(UIPageIterator iterator) throws Exception {
+   LazyPageList<Space> pageList = null;
+   int currentPage = iterator.getCurrentPage();
+   String charSearch = this.uiSpaceSearch.getSelectedChar();
+   String searchCondition = this.uiSpaceSearch.getSpaceNameSearch();
+   if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
+     pageList = new LazyPageList<Space>(spaceService.getPublicSpacesWithListAccess(userId), SPACES_PER_PAGE);
+   } else {
+     SpaceFilter spaceFilter = null;
+     if (charSearch != null) {
+       spaceFilter = new SpaceFilter(charSearch.charAt(0));
+     } else {
+       spaceFilter = new SpaceFilter(searchCondition);
+     }
+     pageList = new LazyPageList<Space>(spaceService.getPublicSpacesByFilter(userId, spaceFilter), SPACES_PER_PAGE);
+   }
+   iterator.setPageList(pageList);
+   if (this.uiSpaceSearch.isNewSearch()) {
+     iterator.setCurrentPage(FIRST_PAGE);
+   } else {
+     iterator.setCurrentPage(currentPage);
+   }
+   this.uiSpaceSearch.setNewSearch(false);
+   return iterator.getCurrentPageData();
+ }
 }

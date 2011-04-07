@@ -47,7 +47,10 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -72,6 +75,11 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    */
   private Injector injector;
 
+  /**
+   * The Logger.
+   */
+  private static final Log LOG = ExoLogger.getLogger(ExoPeopleService.class);
+  
   /**
    * Instantiates a new exo people service.
    *
@@ -201,17 +209,18 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         //TODO: dang.tung: improve space to person, it will auto convert field by shindig
         SpaceService spaceService = (SpaceService) (container.getComponentInstanceOfType(SpaceService.class));
         try {
-          List<Space> allSpaces = spaceService.getAllSpaces();
+          ListAccess<Space> memberSpaceListAccess = spaceService.getMemberSpaces(identity.getRemoteId());
+          //Load 100 maximum only for performance gain
+          Space[] spaceArray = memberSpaceListAccess.load(0, 100);
           SpaceImpl space = new SpaceImpl();
-          for (Space obj : allSpaces) {
-            if (spaceService.isMember(obj, identity.getRemoteId())) {
-              space.setId(obj.getId());
-              space.setDisplayName(obj.getName());
+          for(Space spaceObj : spaceArray) {
+              space.setId(spaceObj.getId());
+              space.setDisplayName(spaceObj.getDisplayName());
               spaces.add(space);
-            }
           }
           ((ExoPersonImpl) p).setSpaces(spaces);
         } catch (SpaceException e) {
+          LOG.warn("Failed to convert spaces!");
         }
       } else if (Person.Field.THUMBNAIL_URL.toString().equals(field)) {
         p.setThumbnailUrl(host + pro.getAvatarUrl());

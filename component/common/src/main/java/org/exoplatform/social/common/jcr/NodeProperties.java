@@ -68,6 +68,9 @@ public final class NodeProperties {
   public static final String SPACE_PRIORITY = "exo:priority";
   public static final String SPACE_PRETTY_NAME = "exo:prettyName";
   public static final String SPACE_AVATAR_URL = "exo:avatarUrl";
+  public static final String SPACE_CREATOR = "exo:creator";
+  public static final String SPACE_MANAGERS = "exo:managers";
+  public static final String SPACE_MEMBERS = "exo:members";
 
   /* eXo Social Relarionship Node Properties */
   public static final String RELATIONSHIP_SENDER     = "exo:sender";

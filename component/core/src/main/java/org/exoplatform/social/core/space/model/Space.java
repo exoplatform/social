@@ -48,8 +48,8 @@ public class Space {
   private String tag;
 
   /** The pending users. */
-  private String[] pendingUsers;
-
+  private String[] pendingUsers; 
+  
   /** The invited users. */
   private String[] invitedUsers;
 
@@ -84,7 +84,28 @@ public class Space {
    * @since 1.2.0-GA
    */
   private String avatarUrl;
-
+  
+  /**
+   * The creator of space.
+   * 
+   * @since 1.2.0-GA
+   */
+  private String creator;
+  
+  /** 
+   * The managers of a space.
+   * 
+   * @since 1.2.0-GA
+   */
+  private String[] managers;
+  
+  /**
+   * The members of a space.
+   * 
+   * @since 1.2.0-GA
+   */
+  private String[] members;
+  
   /** The Constant ACTIVE_STATUS. */
   public final static String ACTIVE_STATUS = "active";
 
@@ -145,7 +166,7 @@ public class Space {
   }
 
   /**
-   * Sets the space display name. The space pretty name is also set.
+   * Sets the space display name. The space pretty name also set.
    *
    * @param spaceDisplayName the space Display Name
    */
@@ -456,5 +477,65 @@ public class Space {
    */
   public void setAvatarUrl(String avatarUrl) {
     this.avatarUrl = avatarUrl;
+  }
+  
+  /**
+   * Gets the creator of a space.
+   *  
+   * @return
+   * @since 1.2.0-GA
+   */
+  public String getCreator() {
+    return creator;
+  }
+
+  /**
+   * Sets the creator of a space.
+   *  
+   * @return
+   * @since 1.2.0-GA
+   */
+  public void setCreator(String creator) {
+    this.creator = creator;
+  }
+  
+  /**
+   * Gets the managers of a space.
+   * 
+   * @return
+   * @since 1.2.0-GA
+   */
+  public String[] getManagers() {
+    return managers;
+  }
+  
+  /**
+   * Sets the managers of a space.
+   * 
+   * @return
+   * @since 1.2.0-GA
+   */
+  public void setManagers(String[] managers) {
+    this.managers = managers;
+  }
+
+  /**
+   * Gets the members of a space.
+   * 
+   * @return
+   * @since 1.2.0-GA
+   */
+  public String[] getMembers() {
+    return members;
+  }
+
+  /**
+   * Sets the members of a space.
+   * 
+   * @return
+   * @since 1.2.0-GA
+   */
+  public void setMembers(String[] members) {
+    this.members = members;
   }
 }

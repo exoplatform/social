@@ -132,14 +132,15 @@ public class UISpaceAddForm extends UIFormTabPane {
       try {
         // Checks user is still existing or not.
         SpaceUtils.checkUserExisting(ctx.getRemoteUser());
-
+        if (spaceService.getSpaceByDisplayName(space.getDisplayName()) != null) {
+          throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
+        }
+        space.setType(DefaultSpaceApplicationHandler.NAME);
         if (selectedGroup != null) {// create space from an existing group
           space = spaceService.createSpace(space, creator, selectedGroup);
         } else { // Create new space
           space = spaceService.createSpace(space, creator);
         }
-        space.setType(DefaultSpaceApplicationHandler.NAME);
-        spaceService.initApps(space);
       } catch (SpaceException se) {
         LOG.warn("Failed to create a new space", se);
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {

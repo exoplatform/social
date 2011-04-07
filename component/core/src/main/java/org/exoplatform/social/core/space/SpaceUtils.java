@@ -62,6 +62,7 @@ import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -86,6 +87,8 @@ public class SpaceUtils {
   public static final String PLATFORM_USERS_GROUP = "/platform/users";
 
   public static final String MANAGER = "manager";
+  
+  public static final String MEMBER = "member";
 
   public static final String MENU_CONTAINER = "Menu";
 
@@ -556,7 +559,7 @@ public class SpaceUtils {
           spaceNavs.add(nav);
         }
       } catch (Exception e) {
-        // it does not exist, just ignore
+        LOG.warn("Fail with getSpaceByGroupId by ownerId: " + ownerId + " in reloadNavigation", e);
       }
     }
     String groupId;
@@ -681,12 +684,9 @@ public class SpaceUtils {
   public static boolean isSpaceNameExisted(String spaceName) throws SpaceException {
     PortalContainer portalContainer = PortalContainer.getInstance();
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    List<Space> spaces = spaceService.getAllSpaces();
     // Checks whether spaceName has existed yet
-    for (Space space : spaces) {
-      if (cleanString(space.getDisplayName()).equalsIgnoreCase(cleanString(spaceName))) {
-        return true;
-      }
+    if (spaceService.getSpaceByPrettyName(cleanString(spaceName)) != null) {
+      return true;
     }
     return false;
   }
@@ -698,28 +698,116 @@ public class SpaceUtils {
    * @param groupId String
    * @throws SpaceException with code UNABLE_TO_ADD_CREATOR
    */
-  public static void addCreatorToGroup(String creator, String groupId) throws SpaceException {
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    OrganizationService organizationService =
-            (OrganizationService) portalContainer.getComponentInstanceOfType(OrganizationService.class);
-
-    try {
-      // TODO: checks whether user is already manager?
-      GroupHandler groupHandler = organizationService.getGroupHandler();
-      Group existingGroup = groupHandler.findGroupById(groupId);
-      User user = organizationService.getUserHandler().findUserByName(creator);
-      MembershipType membershipType = organizationService.getMembershipTypeHandler()
-              .findMembershipType(MANAGER);
-      organizationService.getMembershipHandler().linkMembership(user,
-              existingGroup,
-              membershipType,
-              true);
-
-    } catch (Exception e) {
-      throw new SpaceException(SpaceException.Code.UNABLE_TO_ADD_CREATOR, e);
-    }
+  public static void addCreatorToGroup(String creator, String groupId) {
+    addUserToGroupWithMembership(creator, groupId, MANAGER);
   }
 
+  /**
+   * Adds the user to group with the membership (member, manager).
+   * 
+   * @param remoteId
+   * @param groupId
+   * @param membership
+   * @since 1.2.0-GA
+   */
+  private static void addUserToGroupWithMembership(String remoteId, String groupId, String membership) {
+    OrganizationService organizationService = getOrganizationService();
+    try {
+      // TODO: checks whether user is already manager?
+      User user = organizationService.getUserHandler().findUserByName(remoteId);
+      MembershipType membershipType = organizationService.getMembershipTypeHandler().findMembershipType(membership);
+      GroupHandler groupHandler = organizationService.getGroupHandler();
+      Group existingGroup = groupHandler.findGroupById(groupId);
+      organizationService.getMembershipHandler().linkMembership(user, existingGroup, membershipType, true);
+    } catch (Exception e) {
+      LOG.warn("Unable to add user: " + remoteId + " to group: " + groupId + " with membership: " + membership);
+    }
+  }
+  
+  /**
+   * Adds the user to group with the membership (member). 
+   * 
+   * @param remoteId
+   * @param groupId
+   * @since 1.2.0-GA
+   */
+  public static void addUserToGroupWithMemberMembership(String remoteId, String groupId) {
+    addUserToGroupWithMembership(remoteId, groupId, MEMBER);
+  }
+  
+  /**
+   * Adds the user to group with the membership (manager). 
+   * 
+   * @param remoteId
+   * @param groupId
+   * @since 1.2.0-GA
+   */
+  public static void addUserToGroupWithManagerMembership(String remoteId, String groupId) {
+    addUserToGroupWithMembership(remoteId, groupId, MANAGER);
+  }
+  
+  /**
+   * Removes the user from group with the membership (member, manager). 
+   * 
+   * @param remoteId
+   * @param groupId
+   * @param membership
+   * @since 1.2.0-GA
+   */
+  private static void removeUserFromGroupWithMembership(String remoteId, String groupId, String membership) {
+    try {
+      OrganizationService organizationService = getOrganizationService();
+      MembershipHandler memberShipHandler = organizationService.getMembershipHandler();
+      if (MEMBER.equals(membership)) {
+          Collection<Membership> memberships = memberShipHandler.findMembershipsByUserAndGroup(remoteId, groupId);
+          if (memberships.size() == 0) {
+            LOG.warn("User " + remoteId + " is not member");
+          }
+          Iterator<Membership> itr = memberships.iterator();
+          while (itr.hasNext()) {
+            Membership mbShip = itr.next();
+            memberShipHandler.removeMembership(mbShip.getId(), true);
+          }
+      } else if (MANAGER.equals(membership)) {
+          Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, MANAGER);
+          if (memberShip == null) {
+            LOG.warn("User: " + remoteId + " is not manager of group: ");
+            return;
+          }
+          UserHandler userHandler = organizationService.getUserHandler();
+          User user = userHandler.findUserByName(remoteId);
+          memberShipHandler.removeMembership(memberShip.getId(), true);
+          MembershipType mbShipTypeMember = organizationService.getMembershipTypeHandler().findMembershipType(MEMBER);
+          GroupHandler groupHandler = organizationService.getGroupHandler();
+          memberShipHandler.linkMembership(user, groupHandler.findGroupById(groupId), mbShipTypeMember, true);
+      }
+    } catch (Exception e) {
+      LOG.warn("Failed to remove user: " + remoteId + " to group: " + groupId + " with membership: " + membership, e);
+    }
+  }
+  
+  /**
+   * Removes the user from group with member membership. 
+   * 
+   * @param remoteId
+   * @param groupId
+   * @since 1.2.0-GA
+   */
+  public static void removeUserFromGroupWithMemberMembership(String remoteId, String groupId) {
+    removeUserFromGroupWithMembership(remoteId, groupId, MEMBER);
+  }
+  
+  /**
+   * Removes the user from group with manager membership.
+   * 
+   * @param remoteId
+   * @param groupId
+   * @since 1.2.0-GA
+   */
+  public static void removeUserFromGroupWithManagerMembership(String remoteId, String groupId) {
+    removeUserFromGroupWithMembership(remoteId, groupId, MANAGER);
+  }
+  
   /**
    * Creates group navigation if not existed or return existing group navigation based on groupId
    *
@@ -850,14 +938,10 @@ public class SpaceUtils {
    * @throws SpaceException
    */
   public static int countMembers(Space space) throws SpaceException {
-    try {
-      PortalContainer portalContainer = PortalContainer.getInstance();
-      SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-      return spaceService.getMembers(space).size();
-    } catch (Exception e) {
-      LOG.error("Failed to count space members for " + space, e);
-      return 0;
+    if (space.getMembers() != null) {
+      return space.getMembers().length;
     }
+    return 0;
   }
 
   /**

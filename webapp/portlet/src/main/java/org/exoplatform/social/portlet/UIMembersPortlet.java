@@ -1,4 +1,5 @@
 /*
+
  * Copyright (C) 2003-2007 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
@@ -17,14 +18,15 @@
 package org.exoplatform.social.portlet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
@@ -248,34 +250,33 @@ public class UIMembersPortlet extends UIPortletApplication {
     Space space = getSpace();
     memberList = new ArrayList<User>();
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
-    SpaceService spaceService = getApplicationComponent(SpaceService.class);
     UserHandler userHandler = orgSrc.getUserHandler();
-    List<String> userNames = spaceService.getMembers(space);
-    Iterator<String> itr = userNames.iterator();
-    while (itr.hasNext()) {
-      String userName = itr.next();
-      if (spaceService.isLeader(space, userName)) {
-        itr.remove();
-      }
-    }
-
-    List<Identity> matchIdentities = getIdentityList();
-    if (matchIdentities != null) {
-      List<String> searchResultUserNames = new ArrayList<String>();
-      String userName = null;
-      for (Identity id : matchIdentities) {
-        userName = id.getRemoteId();
-        if (userNames.contains(userName)) {
-          searchResultUserNames.add(userName);
+    if (space.getMembers() != null ) {
+      List<String> members = Arrays.asList(space.getMembers());
+      List<String> copyMembers = new ArrayList<String> (members);
+      Collections.copy(copyMembers, members);
+      for (String member : members) {
+        if (ArrayUtils.contains(space.getManagers(), member)) {
+          copyMembers.remove(member);
         }
       }
-      userNames = searchResultUserNames;
-    }
+      List<Identity> matchIdentities = getIdentityList();
+      if (matchIdentities != null) {
+        List<String> searchResultUserNames = new ArrayList<String>();
+        String userName = null;
+        for (Identity id : matchIdentities) {
+          userName = id.getRemoteId();
+          if (copyMembers.contains(userName)) {
+            searchResultUserNames.add(userName);
+          }
+        }
+        copyMembers = searchResultUserNames;
+      }
 
-    for (String name : userNames) {
-      memberList.add(userHandler.findUserByName(name));
+      for (String name : copyMembers) {
+        memberList.add(userHandler.findUserByName(name));
+      }
     }
-
   }
 
   /**
@@ -288,20 +289,13 @@ public class UIMembersPortlet extends UIPortletApplication {
     Space space = getSpace();
     leaderList = new ArrayList<User>();
     OrganizationService orgSrc = getApplicationComponent(OrganizationService.class);
-    SpaceService spaceService = getApplicationComponent(SpaceService.class);
     UserHandler userHandler = orgSrc.getUserHandler();
-    List<String> userNames = spaceService.getMembers(space);
-    Iterator<String> itr = userNames.iterator();
-    while (itr.hasNext()) {
-      String userName = itr.next();
-      if (!spaceService.isLeader(space, userName)) {
-        itr.remove();
+    String[] managers = space.getManagers();
+    if (managers != null) {
+      for (String name : managers) {
+        leaderList.add(userHandler.findUserByName(name));
       }
     }
-    for (String name : userNames) {
-      leaderList.add(userHandler.findUserByName(name));
-    }
-
   }
 
 

@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.core.space.impl;
 
-import java.util.List;
-
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.webui.util.Util;
@@ -74,20 +72,15 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
    */
   public void preDelete(Group group) throws Exception {
     SpaceService spaceSrv = getSpaceService();
-    List<Space> allSpaces = spaceSrv.getAllSpaces();
     String groupId = group.getId();
-    String groupIdOfSpace = null;
-    for (Space space : allSpaces) {
-      groupIdOfSpace = space.getGroupId();
-      if (groupId.equals(groupIdOfSpace)) {
-        spaceSrv.deleteSpace(space);
-      }
+    Space space = spaceSrv.getSpaceByGroupId(groupId);
+    if (space != null) {
+      spaceSrv.deleteSpace(space);
+      UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+      UIWorkingWorkspace uiWorkSpace = uiPortalApp.getChild(UIWorkingWorkspace.class);
+      uiWorkSpace.updatePortletsByName("SpacesToolbarPortlet");
+      uiWorkSpace.updatePortletsByName("SocialUserToolBarGroupPortlet");
     }
-
-    UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
-    UIWorkingWorkspace uiWorkSpace = uiPortalApp.getChild(UIWorkingWorkspace.class);
-    uiWorkSpace.updatePortletsByName("SpacesToolbarPortlet");
-    uiWorkSpace.updatePortletsByName("SocialUserToolBarGroupPortlet");
   }
 
   /**

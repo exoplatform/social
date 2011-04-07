@@ -27,8 +27,6 @@ import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -133,10 +131,10 @@ public class UISpaceInfo extends UIForm {
     SpaceService spaceService = getSpaceService();
 
     space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
-    spaceService.saveSpace(space, false);
+    spaceService.updateSpace(space);
     space = spaceService.getSpaceById(space.getId());
     space.setAvatarUrl(LinkProvider.buildAvatarImageUri(space.getAvatarAttachment()));
-    spaceService.saveSpace(space, false);
+    spaceService.updateSpace(space);
   }
 
   /**
@@ -171,12 +169,12 @@ public class UISpaceInfo extends UIForm {
       String id = uiSpaceInfo.getUIStringInput(SPACE_ID).getValue();
       String name = uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).getValue();
       Space space = spaceService.getSpaceById(id);
-      String spaceUrl = space.getUrl();
       if (space == null) {
         //redirect to spaces
         portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + "spaces");
         return;
       }
+      String spaceUrl = space.getUrl();
       PageNode selectedNode = uiPortal.getSelectedNode();
       PageNode homeNode = null;
       boolean nameChanged = (!space.getDisplayName().equals(name));
@@ -225,7 +223,7 @@ public class UISpaceInfo extends UIForm {
         SpaceUtils.setNavigation(spaceNavigation);
       }
       uiSpaceInfo.invokeSetBindingBean(space);
-      spaceService.saveSpace(space, false);
+      spaceService.updateSpace(space);
       if (nameChanged) {
         //update Space Navigation (change name).
         UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);

@@ -107,7 +107,7 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
       return false;
     }
 
-    if (spaceSrv.hasEditPermission(space, remoteUser)) {
+    if (spaceSrv.hasSettingPermission(space, remoteUser)) {
       return true;
     }
 

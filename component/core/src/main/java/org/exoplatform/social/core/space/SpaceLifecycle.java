@@ -84,6 +84,7 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
 
   public void addApplication(Space space, String appId) {
     SpaceLifeCycleEvent event = new SpaceLifeCycleEvent(space, appId, Type.APP_ADDED);
+    event.getSource();
     broadcast(event);
   }
 

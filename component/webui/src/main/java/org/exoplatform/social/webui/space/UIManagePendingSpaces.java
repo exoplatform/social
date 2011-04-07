@@ -17,15 +17,12 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceListAccess;
+import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -37,7 +34,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 
 /**
@@ -49,14 +45,18 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "classpath:groovy/social/webui/space/UIManagePendingSpaces.gtmpl",
   events = {
-      @EventConfig(listeners = UIManagePendingSpaces.RevokePendingActionListener.class),
-      @EventConfig(listeners = UIManagePendingSpaces.SearchActionListener.class , phase = Phase.DECODE)
+      @EventConfig(listeners = UIManagePendingSpaces.RevokePendingActionListener.class)
   }
 )
 public class UIManagePendingSpaces extends UIContainer {
-  static private final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error_revoke_pending";
-  static private final String SPACE_DELETED_INFO = "UIManagePendingSpaces.msg.DeletedInfo";
+  private static final String MSG_ERROR_REVOKE_PENDING = "UIManagePendingSpaces.msg.error_revoke_pending";
+  private static final String SPACE_DELETED_INFO = "UIManagePendingSpaces.msg.DeletedInfo";
   private static final String PENDING_STATUS = "pending";
+  
+  /**
+   * SEARCH ALL.
+   */
+  private static final String SEARCH_ALL = "All";
   
   /** The first page. */
   private static final int FIRST_PAGE = 1;
@@ -111,9 +111,8 @@ public class UIManagePendingSpaces extends UIContainer {
    * @throws Exception
    */
   public List<Space> getPendingSpaces() throws Exception {
-    List<Space> listSpace = getSpaceList();
     uiSpaceSearch.setSpaceNameForAutoSuggest(getPendingSpaceNames());
-    return getDisplayPendingSpaces(listSpace, iterator);
+    return getDisplayPendingSpaces(iterator);
   }
 
   /**
@@ -141,34 +140,13 @@ public class UIManagePendingSpaces extends UIContainer {
       String userId = uiPendingSpaces.getUserId();
 
       Space space = spaceService.getSpaceById(spaceId);
-
+      
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      try {
-        spaceService.revokeRequestJoin(spaceId, userId);
-      } catch(SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_REVOKE_PENDING, null, ApplicationMessage.ERROR));
-        return;
-      }
-    }
-  }
-
-  /**
-   * Triggers this action when user click on search button.
-   * 
-   * @author hoatle
-   *
-   */
-  public static class SearchActionListener extends EventListener<UIManagePendingSpaces> {
-    @Override
-    public void execute(Event<UIManagePendingSpaces> event) throws Exception {
-      UIManagePendingSpaces uiForm = event.getSource();
-      UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
-      List<Space> spaceList = uiSpaceSearch.getSpaceList();
-      uiForm.setSpaces(spaceList);
+      spaceService.removePendingUser(space, userId);
     }
   }
 
@@ -213,33 +191,6 @@ public class UIManagePendingSpaces extends UIContainer {
     }
     return userId;
   }
-  /**
-   * Gets space list.
-   * 
-   * @return space list
-   * @throws Exception
-   */
-  private List<Space> getSpaceList() throws Exception {
-    List<Space> spaceList = getSpaces();
-    List<Space> allPendingSpace = getAllPendingSpaces();
-    if (allPendingSpace.size() == 0) return allPendingSpace;
-    List<Space> pendingSpaces = new ArrayList<Space>();
-    if(spaceList != null) {
-      Iterator<Space> spaceItr = spaceList.iterator();
-      while(spaceItr.hasNext()) {
-        Space space = spaceItr.next();
-        for(Space pendingSpace : allPendingSpace) {
-          if(space.getDisplayName().equals(pendingSpace.getDisplayName())){
-            pendingSpaces.add(pendingSpace);
-            break;
-          }
-        }
-      }
-
-      return pendingSpaces;
-    }
-    return allPendingSpace;
-  }
 
   /**
    * Gets pending space names.
@@ -253,7 +204,6 @@ public class UIManagePendingSpaces extends UIContainer {
     for (Space space : pendingSpaces) {
       pendingSpaceNames.add(space.getDisplayName());
     }
-
     return pendingSpaceNames;
   }
 
@@ -264,9 +214,24 @@ public class UIManagePendingSpaces extends UIContainer {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  private List<Space> getDisplayPendingSpaces(List<Space> spaces, UIPageIterator iterator) throws Exception {
+  private List<Space> getDisplayPendingSpaces(UIPageIterator iterator) throws Exception {
     int currentPage = iterator.getCurrentPage();
-    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces), SPACES_PER_PAGE);
+    String selectedChar = this.uiSpaceSearch.getSelectedChar();
+    String spaceNameSearch = this.uiSpaceSearch.getSpaceNameSearch();
+    LazyPageList<Space> pageList = null;
+    
+    if ((selectedChar == null && spaceNameSearch == null) || (selectedChar != null && selectedChar.equals(SEARCH_ALL))) {
+      pageList = new LazyPageList<Space>(spaceService.getPendingSpacesWithListAccess(userId), SPACES_PER_PAGE);
+    } else {
+      SpaceFilter spaceFilter = null;
+      if (selectedChar != null) {
+        spaceFilter = new SpaceFilter(selectedChar.charAt(0));
+      } else {
+        spaceFilter = new SpaceFilter(spaceNameSearch);
+      }
+      pageList = new LazyPageList<Space>(spaceService.getPendingSpacesByFilter(userId, spaceFilter), SPACES_PER_PAGE);
+    }
+    
     iterator.setPageList(pageList);
     if (this.uiSpaceSearch.isNewSearch()) {
       iterator.setCurrentPage(FIRST_PAGE);

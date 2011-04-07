@@ -73,7 +73,6 @@ public class WidgetRestService implements ResourceContainer {
         space.setVisibility(Space.PUBLIC);
         space.setPriority(Space.INTERMEDIATE_PRIORITY);
         space = service.createSpace(space, username);
-        service.initApps(space);
       } else {
         // Otherwise we add the user as a member
 
@@ -82,7 +81,7 @@ public class WidgetRestService implements ResourceContainer {
           if (space.getRegistration().equals(Space.OPEN)) {
             service.addMember(space, username);
           } else {
-            service.requestJoin(space, username);
+            service.addPendingUser(space, username);
           }
         }
       }
@@ -100,7 +99,7 @@ public class WidgetRestService implements ResourceContainer {
 
       // We could move the "classic" to configuration
       return Response.temporaryRedirect(cleanupURL).build();
-    } catch (SpaceException e) {
+    } catch (Exception e) {
       log.error("Error redirecting to a space", e);
       return Response.status(500).build();
     } finally {
@@ -119,59 +118,51 @@ public class WidgetRestService implements ResourceContainer {
     ExoContainer pc = ExoContainerContext.getContainerByName(containerName);
     // we make sure we use the right container
     ExoContainerContext.setCurrentContainer(pc);
-    try {
-      SpaceService service = (SpaceService) pc.getComponentInstanceOfType(SpaceService.class);
-      IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
-      ActivityManager activityManager = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
+    SpaceService service = (SpaceService) pc.getComponentInstanceOfType(SpaceService.class);
+    IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
+    ActivityManager activityManager = (ActivityManager) pc.getComponentInstanceOfType(ActivityManager.class);
 
-      // TODO: move this to a groovy template
-      StringBuffer response = new StringBuffer();
-      response.append("<!DOCTYPE html><html><head><style type=\"text/css\">" +
-              "html,body{margin:0;padding:0;font-family:lucida,arial,tahoma,verdana,sans-serif;}")
-              .append(" h1,h3 {margin:0px} h3 a {color:#FF9600;font-size:14px;font-weight:bold;} " +
-                      "h1{ text-indent:-9000px;height:20px;")
-              .append("background:url(\"/socialWidgetResources/img/social-logo.png\") " +
-                      "no-repeat scroll 0 0 #FFFFFF; margin-bottom:5px;}</style>")
-              .append("</head><body><h1>eXo Social</h1>");
+    // TODO: move this to a groovy template
+    StringBuffer response = new StringBuffer();
+    response.append("<!DOCTYPE html><html><head><style type=\"text/css\">" +
+            "html,body{margin:0;padding:0;font-family:lucida,arial,tahoma,verdana,sans-serif;}")
+            .append(" h1,h3 {margin:0px} h3 a {color:#FF9600;font-size:14px;font-weight:bold;} " +
+                    "h1{ text-indent:-9000px;height:20px;")
+            .append("background:url(\"/socialWidgetResources/img/social-logo.png\") " +
+                    "no-repeat scroll 0 0 #FFFFFF; margin-bottom:5px;}</style>")
+            .append("</head><body><h1>eXo Social</h1>");
 
 
-      URI goToSpace = uriInfo.getBaseUriBuilder().path("/spaces/{containerName}/go_to_space")
-                                 .queryParam("spacePrettyName", spacePrettyName)
-                                 .queryParam("portalName", portalName)
-                                 .queryParam("description", description)
-                                 .build(containerName);
+    URI goToSpace = uriInfo.getBaseUriBuilder().path("/spaces/{containerName}/go_to_space")
+                               .queryParam("spacePrettyName", spacePrettyName)
+                               .queryParam("portalName", portalName)
+                               .queryParam("description", description)
+                               .build(containerName);
 
-      Space space = service.getSpaceByPrettyName(spacePrettyName);
-      response.append("<h3 class=\"space_name\"><a href=\"")
-              .append(goToSpace.toString())
-              .append("\" target=\"_blank\">")
-              .append(space.getDisplayName())
-              .append("</a></h3>");
-      if (space != null) {
-        String username = ConversationState.getCurrent().getIdentity().getUserId();
+    Space space = service.getSpaceByPrettyName(spacePrettyName);
+    response.append("<h3 class=\"space_name\"><a href=\"")
+            .append(goToSpace.toString())
+            .append("\" target=\"_blank\">")
+            .append(space.getDisplayName())
+            .append("</a></h3>");
+    if (space != null) {
+      String username = ConversationState.getCurrent().getIdentity().getUserId();
 
-        if (service.hasAccessPermission(space, username)) {
-          Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                       space.getPrettyName());
-          List<ExoSocialActivity> activities = activityManager.getActivities(spaceIdentity);
+      if (service.hasAccessPermission(space, username)) {
+        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                     space.getPrettyName());
+        List<ExoSocialActivity> activities = activityManager.getActivities(spaceIdentity);
 
-          if (activities.size() > 0) {
-            response.append("<i>" + activities.get(0).getTitle() + "</i>");
-          }
-        } else {
-          response.append("You are not member");
+        if (activities.size() > 0) {
+          response.append("<i>" + activities.get(0).getTitle() + "</i>");
         }
       } else {
         response.append("You are not member");
       }
-
-      return response + "</body></html>";
-    } catch (SpaceException e) {
-      log.error("Error displaying space information", e);
-      return "An error occurred.";
-    } catch (Exception e) {
-      log.error(e);
-      return "An error occurred.";
+    } else {
+      response.append("You are not member");
     }
+
+    return response + "</body></html>";
   }
 }

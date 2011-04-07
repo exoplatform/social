@@ -17,7 +17,6 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -25,7 +24,6 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -36,7 +34,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceListAccess;
+import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -49,7 +47,6 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 
 /**
@@ -67,19 +64,23 @@ import org.exoplatform.webui.event.EventListener;
     @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class),
     @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class,
                  confirm = "UIManageMySpaces.msg.confirm_space_delete"),
-    @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
-    @EventConfig(listeners = UIManageMySpaces.SearchActionListener.class , phase = Phase.DECODE)
+    @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class)
   }
 )
 public class UIManageMySpaces extends UIContainer {
-  static private final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
-  static private final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
-  static private final String MSG_ERROR_DELETE_SPACE = "UIManageMySpaces.msg.error_delete_space";
-  static private final Integer LEADER = 1, MEMBER = 2;
+  private static final String MSG_WARNING_LEAVE_SPACE = "UIManageMySpaces.msg.warning_leave_space";
+  private static final String MSG_ERROR_LEAVE_SPACE = "UIManageMySpaces.msg.error_leave_space";
+  private static final String MSG_ERROR_DELETE_SPACE = "UIManageMySpaces.msg.error_delete_space";
+  private static final Integer LEADER = 1, MEMBER = 2;
   private static final String SPACE_DELETED_INFO = "UIManageMySpaces.msg.DeletedInfo";
   private static final String MEMBERSHIP_REMOVED_INFO = "UIManageMySpaces.msg.MemberShipRemovedInfo";
   private static final String NAVIGATION_REMOVED_INFO = "UIManageMySpaces.msg.NavigationRemovedInfo";
   private static final String CONFIRMED_STATUS = "confirmed";
+  
+  /**
+   * SEARCH ALL.
+   */
+  private static final String SEARCH_ALL = "All";
 
   /**
    * The first page.
@@ -158,9 +159,8 @@ public class UIManageMySpaces extends UIContainer {
    * @throws Exception
    */
   public List<Space> getUserSpaces() throws Exception {
-    List<Space> listSpace = getMySpace();
     uiSpaceSearch.setSpaceNameForAutoSuggest(getAllMySpaceNames());
-    return getDisplayMySpace(listSpace, iterator);
+    return getDisplayMySpace(iterator);
   }
 
   /**
@@ -173,8 +173,9 @@ public class UIManageMySpaces extends UIContainer {
    */
   public int getRole(String spaceId) throws SpaceException {
     SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
     String userId = getUserId();
-    if (spaceService.hasEditPermission(spaceId, userId)) {
+    if (spaceService.hasSettingPermission(space, userId)) {
       return LEADER;
     }
     return MEMBER;
@@ -190,12 +191,8 @@ public class UIManageMySpaces extends UIContainer {
   public boolean hasMembership(String spaceId) throws SpaceException {
     SpaceService spaceService = getSpaceService();
     String userId = getUserId();
-    if (spaceService.isMember(spaceId, userId)) {
-      return true;
-    }
-
-    return false;
-
+    Space space = spaceService.getSpaceById(spaceId);
+    return spaceService.isMember(space, userId);
   }
 
   /**
@@ -311,16 +308,12 @@ public class UIManageMySpaces extends UIContainer {
         return;
       }
 
-      if (!spaceService.isMember(space, userId) && !spaceService.hasEditPermission(space, userId)) {
+      if (!spaceService.isMember(space, userId) && !spaceService.hasSettingPermission(space, userId)) {
         uiApp.addMessage(new ApplicationMessage(MEMBERSHIP_REMOVED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      try {
-        spaceService.deleteSpace(spaceId);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_DELETE_SPACE, null, ApplicationMessage.ERROR));
-      }
+      spaceService.deleteSpace(space);
       SpaceUtils.updateWorkingWorkSpace();
     }
 
@@ -346,38 +339,19 @@ public class UIManageMySpaces extends UIContainer {
         return;
       }
 
-      if (!spaceService.isMember(space, userId) && !spaceService.hasEditPermission(space, userId)) {
+      if (!spaceService.isMember(space, userId) && !spaceService.hasSettingPermission(space, userId)) {
         uiApp.addMessage(new ApplicationMessage(MEMBERSHIP_REMOVED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      if (spaceService.isOnlyLeader(spaceId, userId)) {
+      if (spaceService.isOnlyManager(space, userId)) {
         uiApp.addMessage(new ApplicationMessage(MSG_WARNING_LEAVE_SPACE, null, ApplicationMessage.WARNING));
         return;
       }
 
-      try {
-        spaceService.removeMember(spaceId, userId);
-      } catch (SpaceException se) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_LEAVE_SPACE, null, ApplicationMessage.ERROR));
-        return;
-      }
+      spaceService.removeMember(space, userId);
+      spaceService.setManager(space, userId, false);
       SpaceUtils.updateWorkingWorkSpace();
-    }
-  }
-
-  /**
-   * Triggers this action when user clicks on the search button.
-   *
-   * @author hoatle
-   */
-  public static class SearchActionListener extends EventListener<UIManageMySpaces> {
-    @Override
-    public void execute(Event<UIManageMySpaces> event) throws Exception {
-      UIManageMySpaces uiForm = event.getSource();
-      UISpaceSearch uiSpaceSearch = uiForm.getChild(UISpaceSearch.class);
-      List<Space> spaceList = uiSpaceSearch.getSpaceList();
-      uiForm.setSpaces(spaceList);
     }
   }
 
@@ -407,37 +381,6 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * Gets my space list.
-   *
-   * @return my space list
-   * @throws Exception
-   */
-  private List<Space> getMySpace() throws Exception {
-    List<Space> spaceList = getSpaces();
-    List<Space> allUserSpace = getAllUserSpaces();
-    List<Space> mySpaces = new ArrayList<Space>();
-    if (allUserSpace.size() == 0) {
-      return allUserSpace;
-    }
-    if (spaceList != null) {
-      Iterator<Space> spaceItr = spaceList.iterator();
-      while (spaceItr.hasNext()) {
-        Space space = spaceItr.next();
-        for (Space userSpace : allUserSpace) {
-          if (space.getDisplayName().equalsIgnoreCase(userSpace.getDisplayName())) {
-            mySpaces.add(userSpace);
-            break;
-          }
-        }
-      }
-
-      return mySpaces;
-    }
-
-    return allUserSpace;
-  }
-
-  /**
    * Gets display my space list.
    *
    * @param spaces_
@@ -446,9 +389,22 @@ public class UIManageMySpaces extends UIContainer {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  private List<Space> getDisplayMySpace(List<Space> spaces_, UIPageIterator pageIterator_) throws Exception {
+  private List<Space> getDisplayMySpace(UIPageIterator pageIterator_) throws Exception {
     int currentPage = pageIterator_.getCurrentPage();
-    LazyPageList<Space> pageList = new LazyPageList<Space>(new SpaceListAccess(spaces_), SPACES_PER_PAGE);
+    String selectedChar = this.uiSpaceSearch.getSelectedChar();
+    String spaceNameSearch = this.uiSpaceSearch.getSpaceNameSearch();
+    LazyPageList<Space> pageList = null;
+    if ((selectedChar == null && spaceNameSearch == null) || (selectedChar != null && selectedChar.equals(SEARCH_ALL))) {
+      pageList = new LazyPageList<Space>(spaceService.getAccessibleSpacesWithListAccess(userId), SPACES_PER_PAGE);
+    } else {
+      SpaceFilter spaceFilter = null;
+      if (selectedChar != null) {
+        spaceFilter = new SpaceFilter(selectedChar.charAt(0));
+      } else {
+        spaceFilter = new SpaceFilter(spaceNameSearch);
+      }
+      pageList = new LazyPageList<Space>(spaceService.getAccessibleSpacesByFilter(userId, spaceFilter), SPACES_PER_PAGE);
+    }
     pageIterator_.setPageList(pageList);
     if (this.uiSpaceSearch.isNewSearch()) {
       pageIterator_.setCurrentPage(FIRST_PAGE);
@@ -471,7 +427,6 @@ public class UIManageMySpaces extends UIContainer {
     for (Space space : allSpaces) {
       allSpacesNames.add(space.getDisplayName());
     }
-
     return allSpacesNames;
   }
 

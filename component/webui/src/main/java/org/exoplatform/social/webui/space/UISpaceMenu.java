@@ -282,11 +282,7 @@ public class UISpaceMenu extends UIContainer {
     spaceService = getSpaceService();
     String userId = Util.getPortalRequestContext().getRemoteUser();
     Space space = getSpace();
-    if (spaceService.hasEditPermission(space.getId(), userId)) {
-      return true;
-    }
-
-    return false;
+    return spaceService.hasSettingPermission(space, userId);
   }
 
   /**
@@ -320,13 +316,9 @@ public class UISpaceMenu extends UIContainer {
    */
   private Space getSpace() {
     if (space == null) {
-      try {
-        spaceService = getSpaceService();
-        String spaceUrl = SpaceUtils.getSpaceUrl();
-        space = spaceService.getSpaceByUrl(spaceUrl);
-      } catch (SpaceException e) {
-        LOG.warn("Failed to get space", e);
-      }
+      spaceService = getSpaceService();
+      String spaceUrl = SpaceUtils.getSpaceUrl();
+      space = spaceService.getSpaceByUrl(spaceUrl);
     }
     return space;
   }
