@@ -1,5 +1,5 @@
 =====================================================
-    Release Notes - eXo Social - Version 1.1.1
+    Release Notes - eXo Social - Version 1.2.0-Beta02
 =====================================================
 
 ===============
@@ -29,9 +29,11 @@ eXo Social is composed of 2 modules :
 2 What's new?
 =============
 
-- Focus more on Social's performance with ExoCache. Make avatar images are cached.
-- Make it configurable for OpenSocial Rest Context API.
-- UI enhancement: more incentive "Add New Space" button; move edit space navigation into space settings
+- Refactoring Identity manager
+- Refactoring Space service manager
+- Update APIs java docs
+- Fix bugs
+- 
 
 =========
 3 INSTALL
@@ -43,7 +45,7 @@ Find the latest install guide here : http://wiki.exoplatform.com/xwiki/bin/view/
         Web Browser: IE6, IE7, FF2, FF3 (recommended), Safari.
         JVM: version 1.6.0_0 or higher
         Application Server : tomcat-6.0 and up
-        Building Tools: Maven 2.2.1 and up
+        Building Tools: Maven 3 and up
 
 - Social quick start guide
   Social have 1 server need to run to use:
@@ -76,12 +78,8 @@ Need to set the JAVA_HOME variable for run Social servers.
 
 * Enter one of the following addresses into your browser address bar:
    Social demo portal
-      http://localhost:8080/socialdemo
-   Classic :
-      http://localhost:8080/portal
-      http://localhost:8080/portal/public/classic
-
-
+      http://localhost:8080/
+   
 You can log into the portal with the following accounts: root, john, marry, demo.
 All those accounts have the default password "gtn".
 
@@ -109,6 +107,28 @@ All those accounts have the default password "gtn".
 5 CHANGELOG
 ===========
 
+- 1.2.0-Beta02
+
+** Bug
+    * [SOC-1459] - [Space] Show home space page after click on Edit space icon
+
+** Improvement
+    * [SOC-1492] - Don't get all users in a single list
+    * [SOC-1579] - Improve the evaluation of Space applications portlet preferences pattern
+
+** Task
+    * [SOC-1376] - Refactor SpaceService
+    * [SOC-1583] - Upgrade to JCR 1.14-Beta3
+    * [SOC-1586] - Review Vien's OpenSocial presentation
+    * [SOC-1599] - Join presentations for social-1.2.0-s12
+    * [SOC-1615] - Upgrade platform.commons from 1.0.3 to 1.1.0-Beta01-SNAPSHOT
+
+
+- 1.2.0-Beta01
+
+** Task
+    * [SOC-1361] - Empty field in profile page should be ignored and not raise an error
+    
 - 1.1.1
 
 ** Bug
