@@ -154,7 +154,7 @@ public class SpaceStorage {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_WITH_OFFSET, e.getMessage(), e);
     } finally {
       sessionManager.closeSession();
     }
@@ -250,7 +250,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_SEARCH_CONDITION_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_SEARCH_CONDITION_WITH_OFFSET,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -288,7 +290,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_SEARCH_CONDITION_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_SEARCH_CONDITION_COUNT, 
+                                      e.getMessage(), 
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -305,25 +309,31 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getSpacesByFirstCharacterOfName(char firstCharacterOfName, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getSpacesByFirstCharacterOfName(char firstCharacterOfName,
+                                                     long offset,
+                                                     long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (!Character.isDigit(firstCharacterOfName)) {
         String firstCharacterOfNameString = Character.toString(firstCharacterOfName);
-        String firstCharacterOfNameLowerCase = firstCharacterOfNameString.toLowerCase() + PERCENT_STRING;
+        String firstCharacterOfNameLowerCase = firstCharacterOfNameString.toLowerCase()
+            + PERCENT_STRING;
         List<Node> spaceNodes = null;
         Session session = sessionManager.getOrOpenSession();
-        
+
         QueryBuilder query = new QueryBuilder(session);
         spaceNodes = query.select(NodeTypes.EXO_SPACE, offset, limit)
-                            .like(query.lower(NodeProperties.SPACE_DISPLAY_NAME), firstCharacterOfNameLowerCase)
+                          .like(query.lower(NodeProperties.SPACE_DISPLAY_NAME),
+                                firstCharacterOfNameLowerCase)
                           .exec();
         for (Node spaceNode : spaceNodes) {
           spaceList.add(getSpaceFromNode(spaceNode, session));
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_FIRST_CHARACTER_OF_NAME_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_FIRST_CHARACTER_WITH_OFFSET,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -351,7 +361,9 @@ public class SpaceStorage {
                            .count();
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_FIRST_CHARACTER_OF_NAME_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_FIRST_CHARACTER_COUNT, 
+                                      e.getMessage(), 
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -447,7 +459,9 @@ public class SpaceStorage {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_WITH_OFFSET,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -491,7 +505,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getAccessibleSpacesBySearchCondition(String userId, String searchCondition, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getAccessibleSpacesBySearchCondition(String userId, 
+                                                          String searchCondition, 
+                                                          long offset, 
+                                                          long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (this.isValidInput(searchCondition)) {
@@ -534,7 +551,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_BY_SEARCH_CONDITION, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_BY_SEARCH_CONDITION,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -589,7 +608,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_BY_SEARCH_CONDITION_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_BY_SEARCH_CONDITION_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -597,7 +618,8 @@ public class SpaceStorage {
   }
   
   /**
-   * Gets the spaces of a user which that user has the "member" role or edit permission by first character of name space with offset, limit.
+   * Gets the spaces of a user which that user has the "member" role or edit permission 
+   * by first character of name space with offset, limit.
    * 
    * @param userId the userId
    * @param firstCharacterOfName
@@ -607,7 +629,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getAccessibleSpacesByFirstCharacterOfName(String userId, char firstCharacterOfName, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getAccessibleSpacesByFirstCharacterOfName(String userId,
+                                                               char firstCharacterOfName,
+                                                               long offset,
+                                                               long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (!Character.isDigit(firstCharacterOfName)) {
@@ -630,7 +655,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_BY_FIRST_CHARACTER_OF_NAME, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_BY_FIRST_CHARACTER,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -638,7 +665,8 @@ public class SpaceStorage {
   }
   
   /**
-   * Gets the count of the spaces of a user which that user has the "member" role or edit permission by first character of name space.
+   * Gets the count of the spaces of a user which that user has the "member" role or edit permission 
+   * by first character of name space.
    * 
    * @param userId the userId
    * @param firstCharacterOfName
@@ -646,7 +674,8 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public int getAccessibleSpacesByFirstCharacterOfNameCount(String userId, char firstCharacterOfName) throws SpaceStorageException {
+  public int getAccessibleSpacesByFirstCharacterOfNameCount(String userId,
+                                                            char firstCharacterOfName) throws SpaceStorageException {
     int count = 0;
     try {
       if (!Character.isDigit(firstCharacterOfName)) {
@@ -665,7 +694,9 @@ public class SpaceStorage {
                             .count();
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_BY_FIRST_CHARACTER_OF_NAME_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_ACCESSIBLE_SPACES_BY_FIRST_CHARACTER_COUNT, 
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -757,7 +788,9 @@ public class SpaceStorage {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_WITH_OFFSET,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -797,7 +830,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getEditableSpacesBySearchCondition(String userId, String spaceNameSearchCondition, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getEditableSpacesBySearchCondition(String userId,
+                                                        String spaceNameSearchCondition,
+                                                        long offset,
+                                                        long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (this.isValidInput(spaceNameSearchCondition)) {
@@ -832,7 +868,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_BY_SEARCH_CONDITION, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_BY_SEARCH_CONDITION,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -848,7 +886,8 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public int getEditableSpacesBySearchConditionCount(String userId, String spaceNameSearchCondition) throws SpaceStorageException {
+  public int getEditableSpacesBySearchConditionCount(String userId,
+                                                     String spaceNameSearchCondition) throws SpaceStorageException {
     int count = 0;
     try {
       if (this.isValidInput(spaceNameSearchCondition)) {
@@ -879,7 +918,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_BY_SEARCH_CONDITION_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_BY_SEARCH_CONDITION_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -897,7 +938,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getEditableSpacesByFirstCharacterOfSpaceName(String userId, char firstCharacterOfSpaceName, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getEditableSpacesByFirstCharacterOfSpaceName(String userId,
+                                                                  char firstCharacterOfSpaceName,
+                                                                  long offset,
+                                                                  long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (!Character.isDigit(firstCharacterOfSpaceName)) {
@@ -917,7 +961,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_BY_FIRST_CHARACTER_OF_NAME, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_BY_FIRST_CHARACTER,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -933,7 +979,8 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public int getEditableSpacesByFirstCharacterOfSpaceNameCount(String userId, char firstCharacterOfSpaceName) throws SpaceStorageException {
+  public int getEditableSpacesByFirstCharacterOfSpaceNameCount(String userId,
+                                                               char firstCharacterOfSpaceName) throws SpaceStorageException {
     int count = 0;
     try {
       if (!Character.isDigit(firstCharacterOfSpaceName)) {
@@ -949,7 +996,9 @@ public class SpaceStorage {
                           .count();
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_BY_FIRST_CHARACTER_OF_NAME_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_EDITABLE_SPACES_BY_FIRST_CHARACTER_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1041,7 +1090,9 @@ public class SpaceStorage {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_WITH_OFFSET,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1081,7 +1132,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getInvitedSpacesBySearchCondition(String userId, String searchCondition, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getInvitedSpacesBySearchCondition(String userId,
+                                                       String searchCondition,
+                                                       long offset,
+                                                       long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (this.isValidInput(searchCondition)) {
@@ -1116,7 +1170,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_SEARCH_CONDITION, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_SEARCH_CONDITION,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1163,7 +1219,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw  new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_SEARCH_CONDITION_COUNT, e.getMessage(), e);
+      throw  new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_SEARCH_CONDITION_COUNT,
+                                       e.getMessage(),
+                                       e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1171,7 +1229,8 @@ public class SpaceStorage {
   }
   
   /**
-   * Gets a user's invited spaces and that user can accept or deny the request by first character of name space with offset, limit.
+   * Gets a user's invited spaces and that user can accept or deny the request 
+   * by first character of name space with offset, limit.
    * 
    * @param userId
    * @param firstCharacterName
@@ -1181,7 +1240,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getInvitedSpacesByFirstCharacterOfName(String userId, char firstCharacterOfName, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getInvitedSpacesByFirstCharacterOfName(String userId,
+                                                            char firstCharacterOfName,
+                                                            long offset,
+                                                            long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (!Character.isDigit(firstCharacterOfName)) {
@@ -1200,7 +1262,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_FIRST_CHARACTER_OF_NAME, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_FIRST_CHARACTER,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1231,7 +1295,9 @@ public class SpaceStorage {
                            .count();
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_FIRST_CHARACTER_OF_NAME_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_FIRST_CHARACTER_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1323,7 +1389,9 @@ public class SpaceStorage {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_WITH_OFFSET,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1363,7 +1431,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getPendingSpacesBySearchCondition(String userId, String searchCondition, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getPendingSpacesBySearchCondition(String userId,
+                                                       String searchCondition,
+                                                       long offset,
+                                                       long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (this.isValidInput(searchCondition)) {
@@ -1398,7 +1469,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_BY_SEARCH_CONDITION, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_BY_SEARCH_CONDITION,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1445,7 +1518,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_BY_SEARCH_CONDITION_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_BY_SEARCH_CONDITION_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1463,7 +1538,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getPendingSpacesByFirstCharacterOfName(String userId, char firstCharacterOfName, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getPendingSpacesByFirstCharacterOfName(String userId,
+                                                            char firstCharacterOfName,
+                                                            long offset,
+                                                            long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (!Character.isDigit(firstCharacterOfName)) {
@@ -1482,7 +1560,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_BY_FIRST_CHARACTER_OF_NAME_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_BY_FIRST_CHARACTER,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1513,7 +1593,9 @@ public class SpaceStorage {
                            .count();
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_INVITED_SPACES_BY_FIRST_CHARACTER_OF_NAME_COUNT, e.getMessage(), e); 
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PENDING_SPACES_BY_FIRST_CHARACTER_COUNT,
+                                      e.getMessage(),
+                                      e); 
     } finally {
       sessionManager.closeSession();
     }
@@ -1593,6 +1675,7 @@ public class SpaceStorage {
     }
     return spaceList;
   }
+
   
   /**
    * Gets a user's public spaces and that user can request to join with offset, limit.
@@ -1628,7 +1711,9 @@ public class SpaceStorage {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_WITH_OFFSET,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1679,7 +1764,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getPublicSpacesBySearchCondition(String userId, String searchCondition, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getPublicSpacesBySearchCondition(String userId,
+                                                      String searchCondition,
+                                                      long offset,
+                                                      long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (this.isValidInput(searchCondition)) {
@@ -1736,7 +1824,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_SEARCH_CONDITION, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_SEARCH_CONDITION,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1806,7 +1896,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_SEARCH_CONDITION_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_SEARCH_CONDITION_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1824,7 +1916,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getPublicSpacesByFirstCharacterOfName(String userId, char firstCharacterOfName, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getPublicSpacesByFirstCharacterOfName(String userId,
+                                                           char firstCharacterOfName,
+                                                           long offset,
+                                                           long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (!Character.isDigit(firstCharacterOfName)) {
@@ -1854,7 +1949,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_FIRST_CHARACTER_OF_NAME, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_FIRST_CHARACTER,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1896,7 +1993,9 @@ public class SpaceStorage {
                           .count();
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_FIRST_CHARACTER_OF_NAME_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_FIRST_CHARACTER_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1948,7 +2047,10 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public List<Space> getMemberSpacesBySpaceNameSearchCondition(String userId, String spaceNameSearchCondition, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getMemberSpacesBySpaceNameSearchCondition(String userId,
+                                                               String spaceNameSearchCondition,
+                                                               long offset,
+                                                               long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (this.isValidInput(spaceNameSearchCondition)) {
@@ -1983,7 +2085,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_BY_SPACE_NAME_SEARCH_CONDITION, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_BY_SEARCH_CONDITION,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -1999,7 +2103,8 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public int getMemberSpacesBySpaceNameSearchConditionCount(String userId, String spaceNameSearchCondition) throws SpaceStorageException {
+  public int getMemberSpacesBySpaceNameSearchConditionCount(String userId,
+                                                            String spaceNameSearchCondition) throws SpaceStorageException {
     int count = 0;
     try {
       if (this.isValidInput(spaceNameSearchCondition)) {
@@ -2030,7 +2135,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_BY_SPACE_NAME_SEARCH_CONDITION_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_BY_SEARCH_CONDITION_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -2047,7 +2154,10 @@ public class SpaceStorage {
    * @return
    * @since 1.2.0-GA
    */
-  public List<Space> getMemberSpacesByFirstCharacterOfSpaceName(String userId, char firstCharacterOfSpaceName, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getMemberSpacesByFirstCharacterOfSpaceName(String userId,
+                                                                char firstCharacterOfSpaceName,
+                                                                long offset,
+                                                                long limit) throws SpaceStorageException {
     List<Space> spaceList = new ArrayList<Space>();
     try {
       if (!Character.isDigit(firstCharacterOfSpaceName)) {
@@ -2066,7 +2176,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_BY_FIRST_CHARACTER_OF_SPACE_NAME, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_BY_FIRST_CHARACTER,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -2082,7 +2194,8 @@ public class SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.0-GA
    */
-  public int getMemberSpacesByFirstCharacterOfSpaceNameCount(String userId, char firstCharacterOfSpaceName) throws SpaceStorageException {
+  public int getMemberSpacesByFirstCharacterOfSpaceNameCount(String userId,
+                                                             char firstCharacterOfSpaceName) throws SpaceStorageException {
     int count = 0;
     try {
       if (!Character.isDigit(firstCharacterOfSpaceName)) {
@@ -2097,7 +2210,9 @@ public class SpaceStorage {
                            .count();
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_BY_FIRST_CHARACTER_OF_SPACE_NAME_COUNT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_BY_FIRST_CHARACTER_COUNT,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -2155,7 +2270,9 @@ public class SpaceStorage {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_WITH_OFFSET_LIMIT, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES_WITH_OFFSET,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }
@@ -2305,7 +2422,9 @@ public class SpaceStorage {
         }
       }
     } catch (Exception e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_FIRST_CHARACTER_OF_NAME, e.getMessage(), e);
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_SPACES_BY_FIRST_CHARACTER,
+                                      e.getMessage(),
+                                      e);
     } finally {
       sessionManager.closeSession();
     }

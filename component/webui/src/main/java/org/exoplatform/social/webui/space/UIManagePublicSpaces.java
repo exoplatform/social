@@ -127,8 +127,8 @@ public class UIManagePublicSpaces extends UIContainer {
    * @throws Exception
    */
   public List<Space> getPublicSpaces() throws Exception {
-	  uiSpaceSearch.setSpaceNameForAutoSuggest(getPublicSpaceNames());
-	  return getDisplayPublicSpaces(iterator);
+    uiSpaceSearch.setSpaceNameForAutoSuggest(getPublicSpaceNames());
+    return getDisplayPublicSpaces(iterator);
   }
 
   /**

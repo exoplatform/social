@@ -419,19 +419,17 @@ public class UISpaceMember extends UIForm {
       String name = null;
       if (usersInput != null) {
         invitedUsers = uiSpaceMember.getUsersName().split(",");
-
-  		  List<String> usersForInviting = new ArrayList<String>();
-  		  if (invitedUsers != null)
-  		  {
-  			  for (int idx = 0; idx < invitedUsers.length; idx++) {
-  				  name = invitedUsers[idx].trim();
-  				  if ((name.length() > 0) && !usersForInviting.contains(name)) usersForInviting.add(name);
-  			  }
-  		  }
-  		  for (String userName : usersForInviting) {
-  		    spaceService.addInvitedUser(space, userName);
-  		  }
-  		  uiSpaceMember.setUsersName(null);
+        List<String> usersForInviting = new ArrayList<String>();
+        if (invitedUsers != null) {
+          for (int idx = 0; idx < invitedUsers.length; idx++) {
+            name = invitedUsers[idx].trim();
+            if ((name.length() > 0) && !usersForInviting.contains(name)) usersForInviting.add(name);
+          }
+        }
+        for (String userName : usersForInviting) {
+          spaceService.addInvitedUser(space, userName);
+        }
+        uiSpaceMember.setUsersName(null);
       }
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
       requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
