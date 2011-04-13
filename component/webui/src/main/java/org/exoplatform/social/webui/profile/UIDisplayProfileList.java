@@ -160,8 +160,11 @@ public class UIDisplayProfileList extends UIContainer {
     
     LazyPageList<Identity> pageList = new LazyPageList<Identity>(identityListAccess, PEOPLE_PER_PAGE);
     iterator.setPageList(pageList);
+    int availablePage = iterator.getAvailablePage();
     if (this.uiProfileUserSearchPeople.isNewSearch()) {
       iterator.setCurrentPage(FIRST_PAGE);
+    } else if (currentPage > availablePage) {
+      iterator.setCurrentPage(availablePage);
     } else {
       iterator.setCurrentPage(currentPage);
     }

@@ -195,8 +195,11 @@ public class UIMyConnections extends UIContainer {
     int curPage = uiPageIterator.getCurrentPage();
     LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
     uiPageIterator.setPageList(pageListContact) ;
+    int availablePage = uiPageIterator.getAvailablePage();
     if (this.uiProfileUserSearchRelation.isNewSearch()) {
       uiPageIterator.setCurrentPage(FIRST_PAGE);
+    } else if (curPage > availablePage) {
+      uiPageIterator.setCurrentPage(availablePage);
     } else {
       uiPageIterator.setCurrentPage(curPage);
     }

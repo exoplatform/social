@@ -233,8 +233,11 @@ public class UIManagePendingSpaces extends UIContainer {
     }
     
     iterator.setPageList(pageList);
+    int availablePage = iterator.getAvailablePage();
     if (this.uiSpaceSearch.isNewSearch()) {
       iterator.setCurrentPage(FIRST_PAGE);
+    } else if (currentPage > availablePage) {
+      iterator.setCurrentPage(availablePage);
     } else {
       iterator.setCurrentPage(currentPage);
     }

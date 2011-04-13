@@ -286,8 +286,11 @@ public class UIManageInvitationSpaces extends UIContainer {
     }
     
     pageIterator_.setPageList(pageList);
+    int availablePage = pageIterator_.getAvailablePage();
     if (this.uiSpaceSearch.isNewSearch()) {
       pageIterator_.setCurrentPage(FIRST_PAGE);
+    } else if (currentPage > availablePage) {
+      pageIterator_.setCurrentPage(availablePage);
     } else {
       pageIterator_.setCurrentPage(currentPage);
     }

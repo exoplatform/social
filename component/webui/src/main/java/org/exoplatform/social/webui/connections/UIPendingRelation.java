@@ -128,9 +128,12 @@ public class UIPendingRelation extends UIContainer {
       return null;
     int currentPage = uiPageIterator_.getCurrentPage();
     LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
-    uiPageIterator_.setPageList(pageList) ;
+    uiPageIterator_.setPageList(pageList);
+    int availablePage = uiPageIterator_.getAvailablePage();
     if (this.uiProfileUserSearchPending.isNewSearch()) {
       uiPageIterator_.setCurrentPage(FIRST_PAGE);
+    } else if (currentPage > availablePage) {
+      uiPageIterator_.setCurrentPage(availablePage);
     } else {
       uiPageIterator_.setCurrentPage(currentPage);
     }

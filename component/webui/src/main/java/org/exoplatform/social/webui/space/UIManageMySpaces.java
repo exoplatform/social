@@ -406,8 +406,11 @@ public class UIManageMySpaces extends UIContainer {
       pageList = new LazyPageList<Space>(spaceService.getAccessibleSpacesByFilter(userId, spaceFilter), SPACES_PER_PAGE);
     }
     pageIterator_.setPageList(pageList);
+    int availablePage = pageIterator_.getAvailablePage();
     if (this.uiSpaceSearch.isNewSearch()) {
       pageIterator_.setCurrentPage(FIRST_PAGE);
+    } else if (currentPage > availablePage) {
+      pageIterator_.setCurrentPage(availablePage);
     } else {
       pageIterator_.setCurrentPage(currentPage);
     }
