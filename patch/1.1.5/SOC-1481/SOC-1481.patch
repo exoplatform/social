@@ -1,0 +1,13 @@
+Index: component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_fr.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_fr.properties	(revision 66846)
++++ component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_fr.properties	(working copy)
+@@ -20,7 +20,7 @@
+ UIRelationshipActivity.label.Revoke=Retirer
+ 
+ UIRelationshipActivity.msg.You_Invited_UserName_To_Connect=Vous avez invité {0} à se connecter.
+-UIRelationshipActivity.msg.UserName_Invited_You_To_Connect={0} vous a envoyé une demande de connxion.
++UIRelationshipActivity.msg.UserName_Invited_You_To_Connect={0} vous a envoyé une demande de connexion.
+ UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect={0} a invité {1} à se connecter.
+ 
+ UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName=Vous êtes désormais connecté avec {0}.
