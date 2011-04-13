@@ -315,16 +315,11 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       }
       List<PageNode> childNodes = homeNode.getChildren();
       String nodeName = appName;
-      // nodeName = SpaceUtils.getAppNodeName(space, appName);
-      // if (nodeName == null) nodeName = SpaceUtils.getAppNodeName(space,
-      // appId);
       PageNode childNode = homeNode.getChild(nodeName);
       // bug from portal, gets by nodeUri instead
       if (childNode == null) {
         for (PageNode pageNode : homeNode.getChildren()) {
-          String nodeUri = pageNode.getUri();
-          nodeUri = nodeUri.substring(nodeUri.indexOf("/") + 1);
-          if (nodeUri.equals(nodeName)) {
+          if (pageNode.getPageReference().contains(appId)) {
             childNode = pageNode;
             break;
           }
