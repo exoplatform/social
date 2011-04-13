@@ -22,6 +22,7 @@
 %>
 <%
   import org.exoplatform.webui.form.UIFormStringInput;
+  import org.exoplatform.social.plugin.link.UILinkUtil;
 
   def removeAllNewLines(def str) {
     if (str) {
@@ -95,7 +96,7 @@
                            %>
   <div class="UILinkShareDisplay">
     <%
-      if(uicomponent.isImageLink(link)){
+      if(UILinkUtil.isImageLink(link)){
         %>
           <div>
             <a href="$link" target="_blank"><img src="$link" alt=" " height="120"/></a> 

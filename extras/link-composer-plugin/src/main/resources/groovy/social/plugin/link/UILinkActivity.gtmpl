@@ -26,6 +26,7 @@
   import org.exoplatform.social.webui.ResourceLinkProvider;
   import org.exoplatform.social.core.space.model.Space;
   import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.social.plugin.link.UILinkUtil;
 
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
@@ -179,7 +180,7 @@
         %>
       <div class="Content">$linkComment<br/><br/></div>
       <%
-        if(uicomponent.isImageLink(linkSource)){
+        if(UILinkUtil.isImageLink(linkSource)){
           %>
             <div>
               <a href="$linkSource" target="_blank"><img src="$linkSource" alt=" " height="120"/></a>
