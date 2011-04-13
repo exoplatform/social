@@ -92,7 +92,7 @@ public class BaseUIActivity extends UIForm {
 
   public void setActivity(ExoSocialActivity activity) {
     this.activity = activity;
-    setOwnerIdentity(Utils.getIdentityManager().getIdentity(activity.getUserId()));
+    setOwnerIdentity(Utils.getIdentityManager().getIdentity(activity.getUserId(), true));
     addChild(new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null));
     try {
       refresh();

@@ -66,7 +66,7 @@ public class CachingIdentityManager extends IdentityManagerImpl {
   @Override
   public Identity getIdentity(String identityId, boolean forceLoadOrReloadProfile) {
     Identity cachedIdentity = identityCacheById.get(identityId);
-    if (cachedIdentity != null) {
+    if (cachedIdentity != null && !forceLoadOrReloadProfile) {
       return cachedIdentity;
     }
     Identity foundIdentity = super.getIdentity(identityId, forceLoadOrReloadProfile);
