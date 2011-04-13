@@ -88,7 +88,10 @@ public class UISpaceInfo extends UIForm {
   public UISpaceInfo() throws Exception {
     addUIFormInput((UIFormStringInput)new UIFormStringInput(SPACE_ID, SPACE_ID, null).setRendered(false));
 
-    addUIFormInput(new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null).
+    UIFormStringInput spaceDisplayNameInput = new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null);
+    spaceDisplayNameInput.setEditable(false);
+    
+    addUIFormInput(spaceDisplayNameInput.
                    addValidator(MandatoryValidator.class).
                    //addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
                    addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", "UISpaceInfo.msg.name-invalid").
