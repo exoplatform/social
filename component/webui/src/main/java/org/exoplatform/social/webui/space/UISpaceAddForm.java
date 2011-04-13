@@ -132,7 +132,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       try {
         // Checks user is still existing or not.
         SpaceUtils.checkUserExisting(ctx.getRemoteUser());
-        if (spaceService.getSpaceByDisplayName(space.getDisplayName()) != null) {
+        if (spaceService.getSpaceByPrettyName(space.getPrettyName()) != null) {
           throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
         }
         space.setType(DefaultSpaceApplicationHandler.NAME);
