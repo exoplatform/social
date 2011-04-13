@@ -80,6 +80,7 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
     templateParams.put(UILinkActivityComposer.IMAGE_PARAM, uiLinkActivity.getLinkImage());
     templateParams.put(UILinkActivityComposer.DESCRIPTION_PARAM, uiLinkActivity.getLinkDescription());
     templateParams.put(UILinkActivityComposer.COMMENT_PARAM, uiLinkActivity.getLinkComment());
+    activity.setTemplateParams(templateParams);
     ActivityManager am = (ActivityManager) PortalContainer.getInstance().getComponentInstanceOfType(ActivityManager.class);
     try {
       am.saveActivity(activity);
