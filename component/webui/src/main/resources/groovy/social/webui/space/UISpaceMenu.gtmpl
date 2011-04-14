@@ -22,7 +22,7 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.core.space.SpaceUtils;
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
 
   SpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
@@ -30,7 +30,7 @@
   def appSelected = uicomponent.getAppSelected();
   def imageSource = uicomponent.getImageSource();
   if (imageSource == null) {
-    imageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
+    imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
   def spaceUserListName = "members";
   def spaceSettingName = "settings";

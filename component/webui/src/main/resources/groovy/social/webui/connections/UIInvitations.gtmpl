@@ -8,7 +8,7 @@
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
   import org.exoplatform.social.core.identity.model.Profile;
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
 
   PortalContainer portalContainer = PortalContainer.getInstance();
   String portalName = portalContainer.getPortalContainerInfo().getContainerName();
@@ -57,7 +57,7 @@
             if (!position) position = "";
 
             String imageSource = identity.profile.avatarUrl;
-            if (!imageSource) imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+            if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
    %>
     <% if (invitationRelationIdx % 2 == 0) { %>
        <div class="ContentSpaceGray ClearFix">

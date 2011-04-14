@@ -18,11 +18,11 @@
 -->
 <%
   import org.exoplatform.webui.core.UIPopupWindow
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
 
   def imageSource = uicomponent.getProfile().avatarUrl;
   if (!imageSource) {
-    imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+    imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   }
 
   def changeAvatar = "return false;";

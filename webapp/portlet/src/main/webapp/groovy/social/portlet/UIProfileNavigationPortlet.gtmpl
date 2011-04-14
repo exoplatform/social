@@ -19,7 +19,7 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.core.relationship.model.Relationship;
@@ -52,7 +52,7 @@
   def disconnectTitle = (_ctx.appRes(componentId + ".label.DisconnectTitle")).replace("{0}", currentUser + "");
 
   def imageSource = ownerIdentity.profile.avatarUrl;
-  if (!imageSource) imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+  if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
   <%if (Utils.isOwner()) { %>

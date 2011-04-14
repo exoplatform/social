@@ -5,7 +5,7 @@
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
   import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.core.identity.model.Profile;
 
   def isEditable = uicomponent.isEditable();
@@ -72,7 +72,7 @@
           if (!position) position = "";
 
           String imageSource = identity.profile.avatarUrl;
-          if (!imageSource) imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+          if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       %>
         <% if (pendingRelationIdx % 2 == 0) { %>
           <div class="ContentSpaceGray ClearFix">

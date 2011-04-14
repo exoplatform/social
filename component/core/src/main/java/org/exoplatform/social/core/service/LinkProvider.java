@@ -32,6 +32,11 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 
 public class LinkProvider {
+  public static final String RESOURCE_URL = "/social-resources";
+  public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript";
+  public static final String PROFILE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/Avatar.gif";
+  public static final String SPACE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+  
   private static IdentityManager identityManager;
   private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);
 

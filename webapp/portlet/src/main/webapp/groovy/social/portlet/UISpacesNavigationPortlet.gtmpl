@@ -23,7 +23,7 @@
 <%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.core.space.SpaceUtils
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
 
   def pcontext = Util.getPortalRequestContext();
   def portalURI = pcontext.getPortalURI();
@@ -38,7 +38,7 @@
   def labelInvitation = _ctx.appRes("${uicomponentId}.label.Invitation");
   def labelPending = _ctx.appRes("${uicomponentId}.label.Pending");
   def labelPublic = _ctx.appRes("${uicomponentId}.label.Public");
-  def spaceImage = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
+  def spaceImage = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="ProfTitle">$labelSpace</div>

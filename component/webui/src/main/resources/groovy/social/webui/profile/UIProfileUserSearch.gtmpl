@@ -18,15 +18,15 @@
 
 <%
   import org.exoplatform.web.application.JavascriptManager;
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.webui.Utils;
 
 	def uicomponentId = uicomponent.id;
 	
 	def rcontext = _ctx.getRequestContext() ;
 	JavascriptManager jsmanager = rcontext.getJavascriptManager();
-	jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
-	jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl',ResourceLinkProvider.JAVASCRIPT_RESOURCE_URL);
+	jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', LinkProvider.JAVASCRIPT_RESOURCE_URL);
+	jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl',LinkProvider.JAVASCRIPT_RESOURCE_URL);
 	jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UIProfileUserSearch.onLoad("' + uicomponentId + '");');
 	jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
 	jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');

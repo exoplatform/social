@@ -27,7 +27,7 @@
   import org.exoplatform.social.core.space.SpaceUtils
   import org.exoplatform.social.webui.space.UIManageMySpaces
   import org.exoplatform.social.webui.space.UISpaceSearch
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
 
   def uicomponentId = uicomponent.id
   def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
@@ -91,7 +91,7 @@
         }
         def imageSource = uicomponent.getImageSource(space);
         if (imageSource == null) {
-          imageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
+          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
         }
         mySpaceIdx += 1;
     %>

@@ -26,7 +26,7 @@
   import org.exoplatform.social.core.space.model.Space
   import org.exoplatform.social.core.space.SpaceUtils
   import org.exoplatform.social.webui.space.UISpaceSearch;
-  import org.exoplatform.social.webui.ResourceLinkProvider;
+  import org.exoplatform.social.core.service.LinkProvider;
 
   def uicomponentId = uicomponent.id
   def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
@@ -78,7 +78,7 @@
         }
         def imageSource = uicomponent.getImageSource(space);
         if (imageSource == null) {
-          imageSource = ResourceLinkProvider.SPACE_DEFAULT_AVATAR_URL;
+          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
         }
         publicSpaceIdx += 1;
       %>

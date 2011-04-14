@@ -49,6 +49,7 @@ eXo.social.StatusUpdate.MessageType_WARN = 'MessageType_WARN';
  * static config object
  */
 eXo.social.StatusUpdate.config = {
+  HOST: null,
   HOST_SCHEMA: null,
   HOST_NAME: null,
   HOST_PORT: null,
@@ -87,8 +88,8 @@ eXo.social.StatusUpdate.allowedTags = ['b', 'i', 'a', 'span', 'em', 'strong', 'p
 eXo.social.StatusUpdate.configEnvironment = function() {
   var StatusUpdate = eXo.social.StatusUpdate;
   var config = eXo.social.StatusUpdate.config;
-  //currently HOST_NAME = 'http://localhost:8080' = HOST_NAME + HOST_PORT
-  var spliter = config.HOST_NAME.split(":");
+  //currently HOST = 'http://localhost:8080' = HOST_NAME + HOST_PORT
+  var spliter = config.HOST.split(":");
   config.HOST_SCHEMA = spliter[0];
   config.HOST_NAME = spliter[1].replace('//','');
   config.HOST_PORT = spliter[2];
@@ -315,7 +316,7 @@ eXo.social.StatusUpdate.prototype.init = function() {
       statusUpdate.viewer = response.get('viewer').getData();
       statusUpdate.owner = response.get('owner').getData();
       //update context environment
-      StatusUpdate.config.HOST_NAME = statusUpdate.owner.getField('hostName');
+      StatusUpdate.config.HOST = statusUpdate.owner.getField('hostName');
       StatusUpdate.config.PORTAL_NAME = statusUpdate.owner.getField('portalName');
       StatusUpdate.config.REST_CONTEXT_NAME = statusUpdate.owner.getField('restContextName');
       StatusUpdate.configEnvironment();
@@ -660,13 +661,13 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
             html.push('<div style="clear: both; height: 0px;"><span></span></div>');
           html.push('</div>');
 
-          if (templateParams != undefined) {
+          if ((templateParams !== undefined) && (templateParams.title !== undefined)) {
           	var title = templateParams.title;
           	var link = templateParams.link;
             var descripts = templateParams.description;
             html.push('<div><a class="ColorLinkShared" href="' + link + '" target="_blank" title="' + title + '">' + title + '</a></div>');          	
             html.push('<div class="Description">' + descripts + '</div>');
-           	html.push('<div>' + Locale.getMsg('source') + ' : ' + link + '</div>');
+           	html.push('<div>' + Locale.getMsg('source') + ' : <a href="' + link + '" target="_blank">' + link + '</a></div>');
           } else {
             html.push('<div class="ContentArea">' + title + '</div>');            	
           }
@@ -748,7 +749,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         }
             html.push('<div class="Title"><a class="ColorLinkShared" href="'+ jsonTitle.link +'" target="_blank">' + jsonTitle.title + '</a></div>');
               html.push('<div class="Description">' + description + '</div>');
-              html.push('<div class="Source">' + Locale.getMsg('source') + ' : ' + jsonTitle.link + '</div>');
+              html.push('<div class="Source">' + Locale.getMsg('source') + ' : <a href="' + jsonTitle.link + '" target="_blank">' + jsonTitle.link + '</a></div>');
             html.push('</div>');
             html.push('<div style="clear: both; height: 0px;"><span></span></div>');
           html.push('</div>');
@@ -1073,13 +1074,12 @@ eXo.social.StatusUpdate.prototype.getAvatar = function(userId, isMyAvartar) {
   } else {
     person = this.ownerFriends.getById(userId);
   }
+
   if (person !== null) {
-    newAvatarUrl = person.getField(opensocial.Person.Field.THUMBNAIL_URL);
-    if (newAvatarUrl) {
-      avatarUrl = newAvatarUrl;
-    }
+    return person.getField(opensocial.Person.Field.THUMBNAIL_URL);
   }
-  return avatarUrl;
+  
+  return eXo.social.StatusUpdate.config.HOST + avatarUrl;
 }
 
 /**

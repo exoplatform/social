@@ -28,7 +28,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.webui.ResourceLinkProvider;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.web.application.RequestContext;
@@ -56,7 +56,7 @@ public class UISocialLogoPortlet extends UIPortletApplication {
   public String getURL() throws Exception {
     String imageSource = getProfile(true).getAvatarUrl();
     if (imageSource == null) {
-      imageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+      imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     }
     return imageSource;
   }

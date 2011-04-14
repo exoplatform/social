@@ -22,7 +22,7 @@
     import org.exoplatform.services.organization.User;
     import org.exoplatform.social.core.space.model.Space;
     import org.exoplatform.social.webui.profile.UIProfileUserSearch;
-    import org.exoplatform.social.webui.ResourceLinkProvider;
+    import org.exoplatform.social.core.service.LinkProvider;
     import org.exoplatform.social.core.identity.model.Profile;
 
     UIPageIterator iteratorLeaders = uicomponent.getIteratorLeaders()
@@ -42,7 +42,7 @@
     def adminProfileURL = "#";
     def clzz = "PortletContent";
     def leaderIdx = memberIdx = 0;
-    def adminImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+    def adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 %>
 <div class="UIMembersPortlet" id="$uicomponentId">
   <div class="ActivitiesTitleBarM">$labelUserList</div>
@@ -55,7 +55,7 @@
            adminImageSource = uicomponent.getUserAvatar(admin.getUserName());
            def adminIdentity = uicomponent.getIdentity(admin.getUserName());
            adminProfileURL = uicomponent.getPath() + "/activities/" + adminIdentity.getRemoteId();
-           if (!adminImageSource) adminImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+           if (!adminImageSource) adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
        } %>
       <div class="AvatarSpace">
         <div class="Image" >
@@ -91,7 +91,7 @@
           def profileURL = uicomponent.getPath() + "/activities/" + leaderIdentity.getRemoteId();
           if (!position) position = "";
           def leaderImageSource = leaderIdentity.profile.avatarUrl;
-          if (!leaderImageSource) leaderImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+          if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           leaderIdx += 1;
           clzz = "PortletContent";
           if (leaderIdx % 2 == 0) clzz = "PortletContentGray";
@@ -147,7 +147,7 @@
           if (!position) position = "";
           def profileURL = uicomponent.getPath() + "/activities/" + memberIdentity.getRemoteId();
           def memberImageSource = memberIdentity.profile.avatarUrl;
-          if (!memberImageSource) memberImageSource = ResourceLinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+          if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           memberIdx += 1;
           clzz = "PortletContent";
           if (memberIdx % 2 == 0) clzz = "PortletContentGray";

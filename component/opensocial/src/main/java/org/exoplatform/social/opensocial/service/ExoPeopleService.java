@@ -223,7 +223,12 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
           LOG.warn("Failed to convert spaces!");
         }
       } else if (Person.Field.THUMBNAIL_URL.toString().equals(field)) {
-        p.setThumbnailUrl(host + pro.getAvatarUrl());
+        String avatarUrl = pro.getAvatarUrl();
+        if (avatarUrl != null) {
+          p.setThumbnailUrl(host + avatarUrl);          
+        } else {
+          p.setThumbnailUrl(host + LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
+        }
       } else if (ExoPersonImpl.Field.PORTAL_CONTAINER.toString().equals(field)) {
         ((ExoPersonImpl) p).setPortalName(container.getName());
       } else if (ExoPersonImpl.Field.REST_CONTEXT.toString().equals(field)) {
