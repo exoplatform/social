@@ -115,7 +115,7 @@
                   <%
                      def ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + node.getResolvedLabel() + "\")";
                      if(nodeName.equals(appSelected)) {
-                       if(uicomponent.isLeader()) { %>
+                       if(uicomponent.hasSettingPermission()) { %>
       <div class="ApplicationAddSelect" title="$nodeTitle">
         <span id='$nodeName' ondblclick='$ondblclick'>$nodeLabel</span>
       </div>

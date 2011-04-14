@@ -278,7 +278,7 @@ public class UISpaceMenu extends UIContainer {
    * @return true if current login user is leader.
    * @throws SpaceException
    */
-  private boolean hasSettingPermission() throws SpaceException {
+  protected boolean hasSettingPermission() throws SpaceException {
     spaceService = getSpaceService();
     String userId = Util.getPortalRequestContext().getRemoteUser();
     Space space = getSpace();
