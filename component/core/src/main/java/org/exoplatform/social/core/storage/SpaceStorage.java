@@ -1650,21 +1650,10 @@ public class SpaceStorage {
     try {
       List<Node> spaceNodes = null;
       Session session = sessionManager.getOrOpenSession();
-      spaceNodes = new QueryBuilder(session)
-                      .select(NodeTypes.EXO_SPACE)
-                        .not()
-                          .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_MEMBERS, userId)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_MANAGERS, userId)
-                      .exec();
+      QueryBuilder query = new QueryBuilder(session);
+      query.select(NodeTypes.EXO_SPACE);
+      this.processPublicSpacesQuery(query, userId);
+      spaceNodes = query.exec();
       for (Node spaceNode : spaceNodes) {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
@@ -1692,21 +1681,10 @@ public class SpaceStorage {
     try {
       List<Node> spaceNodes = null;
       Session session = sessionManager.getOrOpenSession();
-      spaceNodes = new QueryBuilder(session)
-                      .select(NodeTypes.EXO_SPACE, offset, limit)
-                        .not()
-                          .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_MEMBERS, userId)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                        .and().not()
-                          .equal(NodeProperties.SPACE_MANAGERS, userId)
-                      .exec();
+      QueryBuilder query = new QueryBuilder(session);
+      query.select(NodeTypes.EXO_SPACE, offset, limit);
+      this.processPublicSpacesQuery(query, userId);
+      spaceNodes = query.exec();
       for (Node spaceNode : spaceNodes) {
         spaceList.add(getSpaceFromNode(spaceNode, session));
       }
@@ -1731,21 +1709,10 @@ public class SpaceStorage {
   public int getPublicSpacesCount(String userId) throws SpaceStorageException {
     try {
       Session session = sessionManager.getOrOpenSession();
-      return (int) new QueryBuilder(session)
-                        .select(NodeTypes.EXO_SPACE)
-                          .not()
-                            .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                          .and().not()
-                            .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                          .and().not()
-                            .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                          .and().not()
-                            .equal(NodeProperties.SPACE_MEMBERS, userId)
-                          .and().not()
-                            .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                          .and().not()
-                            .equal(NodeProperties.SPACE_MANAGERS, userId)
-                        .count();
+      QueryBuilder query = new QueryBuilder(session);
+      query.select(NodeTypes.EXO_SPACE);
+      this.processPublicSpacesQuery(query, userId);
+      return (int) query.count();
     } catch (Exception e) {
       throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_COUNT, e.getMessage(), e);
     } finally {
@@ -1753,6 +1720,28 @@ public class SpaceStorage {
     }
   }
 
+  /**
+   * Processes the query of public spaces.
+   * 
+   * @param query
+   * @param userId
+   * @since 1.2.0-GA
+   */
+  private void processPublicSpacesQuery(QueryBuilder query, String userId) {
+    query.not()
+            .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
+          .and().not()
+            .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
+          .and().not()
+            .equal(NodeProperties.SPACE_INVITED_USERS, userId)
+          .and().not()
+            .equal(NodeProperties.SPACE_MEMBERS, userId)
+          .and().not()
+            .equal(NodeProperties.SPACE_PENDING_USERS, userId)
+          .and().not()
+            .equal(NodeProperties.SPACE_MANAGERS, userId);
+  }
+  
   /**
    * Gets the public spaces that have name or description match input search condition with offset, limit.
    *
@@ -1774,51 +1763,10 @@ public class SpaceStorage {
         searchCondition = this.processSearchCondition(searchCondition);
         Session session = sessionManager.getOrOpenSession();
         List<Node> spaceNodes = null;
-        if (searchCondition.indexOf(PERCENT_STRING) >= 0) {
-          spaceNodes = new QueryBuilder(session)
-                          .select(NodeTypes.EXO_SPACE, offset, limit)
-                            .not()
-                              .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_MEMBERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_MANAGERS, userId)
-                            .and()
-                            .group()
-                              .like(NodeProperties.SPACE_DISPLAY_NAME, searchCondition)
-                              .or()
-                              .like(NodeProperties.SPACE_DESCRIPTION, searchCondition)
-                            .endGroup()
-                          .exec();
-        } else {
-          spaceNodes = new QueryBuilder(session)
-                          .select(NodeTypes.EXO_SPACE, offset, limit)
-                            .not()
-                              .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_MEMBERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_MANAGERS, userId)
-                            .and()
-                            .group()
-                              .contains(NodeProperties.SPACE_DISPLAY_NAME, searchCondition)
-                              .or()
-                              .contains(NodeProperties.SPACE_DESCRIPTION, searchCondition)
-                            .endGroup()
-                          .exec();
-        }
+        QueryBuilder query = new QueryBuilder(session);
+        query.select(NodeTypes.EXO_SPACE, offset, limit);
+        this.processPublicSpacesBySearchConditionQuery(query, userId, searchCondition);
+        spaceNodes = query.exec();
         for (Node spaceNode : spaceNodes) {
           spaceList.add(getSpaceFromNode(spaceNode, session));
         }
@@ -1849,51 +1797,10 @@ public class SpaceStorage {
       if (this.isValidInput(searchCondition)) {
         searchCondition = this.processSearchCondition(searchCondition);
         Session session = sessionManager.getOrOpenSession();
-        if (searchCondition.indexOf(PERCENT_STRING) >= 0) {
-          count = (int) new QueryBuilder(session)
-                            .select(NodeTypes.EXO_SPACE)
-                              .not()
-                                .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_MEMBERS, userId)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_MANAGERS, userId)
-                              .and()
-                              .group()
-                                .like(NodeProperties.SPACE_DISPLAY_NAME, searchCondition)
-                                .or()
-                                .like(NodeProperties.SPACE_DESCRIPTION, searchCondition)
-                              .endGroup()
-                            .count();
-        } else {
-          count = (int) new QueryBuilder(session)
-                            .select(NodeTypes.EXO_SPACE)
-                              .not()
-                                .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_MEMBERS, userId)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                              .and().not()
-                                .equal(NodeProperties.SPACE_MANAGERS, userId)
-                              .and()
-                              .group()
-                                .contains(NodeProperties.SPACE_DISPLAY_NAME, searchCondition)
-                                .or()
-                                .contains(NodeProperties.SPACE_DESCRIPTION, searchCondition)
-                              .endGroup()
-                            .count();
-        }
+        QueryBuilder query = new QueryBuilder(session);
+        query.select(NodeTypes.EXO_SPACE);
+        this.processPublicSpacesBySearchConditionQuery(query, userId, searchCondition);
+        count = (int) query.count();
       }
     } catch (Exception e) {
       throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_SEARCH_CONDITION_COUNT,
@@ -1903,6 +1810,36 @@ public class SpaceStorage {
       sessionManager.closeSession();
     }
     return count;
+  }
+  
+  /**
+   * Processes the query of public spaces by search condition.
+   * 
+   * @param query
+   * @param userId
+   * @param searchCondition
+   * @since 1.2.0-GA
+   */
+  private void processPublicSpacesBySearchConditionQuery(QueryBuilder query, String userId, String searchCondition) {
+    if (searchCondition.indexOf(PERCENT_STRING) >= 0) {
+      this.processPublicSpacesQuery(query, userId);
+      query
+        .and()
+        .group()
+          .like(NodeProperties.SPACE_DISPLAY_NAME, searchCondition)
+          .or()
+          .like(NodeProperties.SPACE_DESCRIPTION, searchCondition)
+        .endGroup();
+    } else {
+      this.processPublicSpacesQuery(query, userId);
+      query
+        .and()
+        .group()
+          .contains(NodeProperties.SPACE_DISPLAY_NAME, searchCondition)
+          .or()
+          .contains(NodeProperties.SPACE_DESCRIPTION, searchCondition)
+        .endGroup();
+    }
   }
   
   /**
@@ -1928,22 +1865,9 @@ public class SpaceStorage {
         List<Node> spaceNodes = null;
         Session session = sessionManager.getOrOpenSession();
         QueryBuilder query = new QueryBuilder(session);
-        spaceNodes = query.select(NodeTypes.EXO_SPACE, offset, limit)
-                            .not()
-                              .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_MEMBERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_MANAGERS, userId)
-                            .and()
-                              .like(query.lower(NodeProperties.SPACE_DISPLAY_NAME), firstCharacterOfNameLowerCaseQuery)
-                          .exec();
+        query.select(NodeTypes.EXO_SPACE, offset, limit);
+        this.processPublicSpacesByFirstCharacterOfNameQuery(query, userId, firstCharacterOfNameLowerCaseQuery);
+        spaceNodes = query.exec();
         for (Node spaceNode : spaceNodes) {
           spaceList.add(getSpaceFromNode(spaceNode, session));
         }
@@ -1975,22 +1899,9 @@ public class SpaceStorage {
         String firstCharacterOfNameLowerCaseQuery = firstCharacterOfNameString.toLowerCase() + PERCENT_STRING;
         Session session = sessionManager.getOrOpenSession();
         QueryBuilder query = new QueryBuilder(session);
-        count = (int) query.select(NodeTypes.EXO_SPACE)
-                            .not()
-                              .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_MEMBERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-                            .and().not()
-                              .equal(NodeProperties.SPACE_MANAGERS, userId)
-                            .and()
-                              .like(query.lower(NodeProperties.SPACE_DISPLAY_NAME), firstCharacterOfNameLowerCaseQuery)
-                          .count();
+        query.select(NodeTypes.EXO_SPACE);
+        this.processPublicSpacesByFirstCharacterOfNameQuery(query, userId, firstCharacterOfNameLowerCaseQuery);
+        count = (int) query.count();
       }
     } catch (Exception e) {
       throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_PUBLIC_SPACES_BY_FIRST_CHARACTER_COUNT,
@@ -2000,6 +1911,32 @@ public class SpaceStorage {
       sessionManager.closeSession();
     }
     return count;
+  }
+  
+  /**
+   * Processes the query of public spaces by first character of name.
+   * 
+   * @param query
+   * @param userId
+   * @param firstCharacterOfNameLowerCaseQuery
+   * @since 1.2.0-GA
+   */
+  private void processPublicSpacesByFirstCharacterOfNameQuery(QueryBuilder query, String userId, String firstCharacterOfNameLowerCaseQuery) {
+    query
+      .not()
+        .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
+      .and().not()
+        .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
+      .and().not()
+        .equal(NodeProperties.SPACE_INVITED_USERS, userId)
+      .and().not()
+        .equal(NodeProperties.SPACE_MEMBERS, userId)
+      .and().not()
+        .equal(NodeProperties.SPACE_PENDING_USERS, userId)
+      .and().not()
+        .equal(NodeProperties.SPACE_MANAGERS, userId)
+      .and()
+        .like(query.lower(NodeProperties.SPACE_DISPLAY_NAME), firstCharacterOfNameLowerCaseQuery);
   }
   
   /**

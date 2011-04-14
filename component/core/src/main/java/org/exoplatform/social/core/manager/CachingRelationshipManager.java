@@ -230,30 +230,7 @@ public class CachingRelationshipManager extends RelationshipManagerImpl {
   @Override
   protected List<Relationship> getSender(Identity sender, Relationship.Type type,
                                                       List<Identity> identities) throws RelationshipStorageException {
-    List<Relationship> cachedRelationships = getAllRelationships(sender);
-    if(cachedRelationships == null || cachedRelationships.size() == 0) {
-      return null;
-    }
-
-    List<Relationship> filterCachedRelationships = new ArrayList<Relationship>();
-    for (Relationship relationship : cachedRelationships) {
-      if (!relationship.getSender().equals(sender))
-        continue;
-      if (type == null) {
-        if (identities == null) {
-          filterCachedRelationships.add(relationship);
-        } else if (identities.contains(relationship.getReceiver())) {
-          filterCachedRelationships.add(relationship);
-        }
-      } else if (relationship.getStatus().equals(type)) {
-        if (identities == null) {
-          filterCachedRelationships.add(relationship);
-        } else if (identities.contains(relationship.getReceiver())) {
-          filterCachedRelationships.add(relationship);
-        }
-      }
-    }
-    return filterCachedRelationships;
+    return this.getRelationshipByFilter(sender, type, identities, false);
   }
 
   /**
@@ -262,15 +239,34 @@ public class CachingRelationshipManager extends RelationshipManagerImpl {
   @Override
   protected List<Relationship> getReceiver(Identity receiver, Relationship.Type type,
                                                         List<Identity> identities) throws RelationshipStorageException {
-    List<Relationship> cachedRelationships = getAllRelationships(receiver);
+    return this.getRelationshipByFilter(receiver, type, identities, true);
+  }
+  
+  /**
+   * Get the relationship of an identity with filter.
+   * 
+   * @param identity
+   * @param type
+   * @param identities
+   * @param isReceiver
+   * @return
+   * @since 1.2.0-GA
+   */
+  private List<Relationship> getRelationshipByFilter(Identity identity,  Relationship.Type type, 
+                                                      List<Identity> identities, boolean isReceiver) {
+    List<Relationship> cachedRelationships = getAllRelationships(identity);
     if(cachedRelationships == null || cachedRelationships.size() == 0) {
       return null;
     }
-
     List<Relationship> filterCachedRelationships = new ArrayList<Relationship>();
     for (Relationship relationship : cachedRelationships) {
-      if (!relationship.getReceiver().equals(receiver))
+      if (isReceiver) {
+        if (!relationship.getReceiver().equals(identity)) {
+          continue;
+        }
+      } else if (!relationship.getSender().equals(identity)) {
         continue;
+      }
       if (type == null) {
         if (identities == null) {
           filterCachedRelationships.add(relationship);

@@ -278,22 +278,13 @@ public class IdentityStorage {
    */
   public int getIdentitiesByFirstCharacterOfNameCount(String providerId, ProfileFilter profileFilter)
     throws IdentityStorageException {
-    
-    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     try {
       Session session = sessionManager.getOrOpenSession();
       Node profileHomeNode = getOrCreatExoProfileHomeNode(session, providerId);
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
-      queryBuilder.select(NodeTypes.EXO_PROFILE)
-      .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
-
-      if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
-        for (Identity identity : excludedIdentityList) {
-          queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
-        }
-      }
-
+      queryBuilder.select(NodeTypes.EXO_PROFILE);
+      this.processIdentitiesByFirstCharacterOfName(queryBuilder, profileFilter, profileHomeNode);
       queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), Character
         .toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR);
 
@@ -370,39 +361,12 @@ public class IdentityStorage {
    */
   public int getIdentitiesByProfileFilterCount(String providerId, ProfileFilter profileFilter)
     throws IdentityStorageException {
-    
-    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
-    String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
-    processUsernameSearchPattern(inputName.trim());
-    String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
-    String gender = profileFilter.getGender().trim();
-    inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
-    String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
     try {
       Session session = sessionManager.getOrOpenSession();
       Node profileHomeNode = getOrCreatExoProfileHomeNode(session, providerId);
-
       QueryBuilder queryBuilder = new QueryBuilder(session);
-      queryBuilder
-      .select(NodeTypes.EXO_PROFILE)
-      .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
-
-      if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
-        for (Identity identity : excludedIdentityList) {
-          queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
-        }
-      }
-
-      if (nameForSearch.trim().length() != 0) {
-        queryBuilder.and().like(queryBuilder.lower(Profile.FULL_NAME), PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR);
-      }
-      if (position.length() != 0) {
-        queryBuilder.and().like(queryBuilder.lower(Profile.POSITION), PERCENT_STR + position.toLowerCase() + PERCENT_STR);
-      }
-      if (gender.length() != 0) {
-        queryBuilder.and().equal(Profile.GENDER, gender);
-      }
-
+      queryBuilder.select(NodeTypes.EXO_PROFILE);
+      this.processIdentitiesByProfileFilterQuery(queryBuilder, profileFilter, profileHomeNode);
       return (int) queryBuilder.count();
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER_COUNT,
@@ -426,14 +390,6 @@ public class IdentityStorage {
    */
   public final List<Identity> getIdentitiesByProfileFilter(final String identityProvider, final ProfileFilter profileFilter,
     long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
-    
-    String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
-    processUsernameSearchPattern(inputName.trim());
-    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
-    String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
-    String gender = profileFilter.getGender().trim();
-    inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
-    String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
     List<Identity> listIdentity = new ArrayList<Identity>();
     List<Node> nodes = null;
     try {
@@ -442,26 +398,8 @@ public class IdentityStorage {
 
       QueryBuilder queryBuilder = new QueryBuilder(session);
       queryBuilder
-      .select(NodeTypes.EXO_PROFILE, offset, limit)
-      .like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
-
-      if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
-        for (Identity identity : excludedIdentityList) {
-          queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
-        }
-      }
-
-      if (nameForSearch.trim().length() != 0) {
-        queryBuilder.and().like(queryBuilder.lower(Profile.FULL_NAME), PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR);
-      }
-
-      if (position.length() != 0) {
-        queryBuilder.and().like(queryBuilder.lower(Profile.POSITION), PERCENT_STR + position.toLowerCase() + PERCENT_STR);
-      }
-      if (gender.length() != 0) {
-        queryBuilder.and().equal(Profile.GENDER, gender);
-      }
-
+      .select(NodeTypes.EXO_PROFILE, offset, limit);
+      this.processIdentitiesByProfileFilterQuery(queryBuilder, profileFilter, profileHomeNode);
       queryBuilder.orderBy(Profile.FULL_NAME, QueryBuilder.ASC);
 
       nodes = queryBuilder.exec();
@@ -483,6 +421,53 @@ public class IdentityStorage {
     return listIdentity;
   }
 
+  /**
+   * Processes the query of getting identities by profile filter.
+   * 
+   * @param queryBuilder
+   * @param profileFilter
+   * @param profileHomeNode
+   * @throws Exception
+   * @since 1.2.0-GA
+   */
+  private void processIdentitiesByProfileFilterQuery(QueryBuilder queryBuilder, final ProfileFilter profileFilter, Node profileHomeNode) throws Exception {
+    String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
+    processUsernameSearchPattern(inputName.trim());
+    String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
+    String gender = profileFilter.getGender().trim();
+    inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
+    String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
+    this.processIdentitiesByFirstCharacterOfName(queryBuilder, profileFilter, profileHomeNode);
+    if (nameForSearch.trim().length() != 0) {
+      queryBuilder.and().like(queryBuilder.lower(Profile.FULL_NAME), PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR);
+    }
+    if (position.length() != 0) {
+      queryBuilder.and().like(queryBuilder.lower(Profile.POSITION), PERCENT_STR + position.toLowerCase() + PERCENT_STR);
+    }
+    if (gender.length() != 0) {
+      queryBuilder.and().equal(Profile.GENDER, gender);
+    }
+  }
+  
+  /**
+   * Processes the query of getting identities by first character of name.
+   * 
+   * @param queryBuilder
+   * @param profileFilter
+   * @param profileHomeNode
+   * @throws Exception
+   * @since 1.2.0-GA
+   */
+  private void processIdentitiesByFirstCharacterOfName(QueryBuilder queryBuilder, final ProfileFilter profileFilter, Node profileHomeNode) throws Exception {
+    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
+    queryBuilder.like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
+    if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
+      for (Identity identity : excludedIdentityList) {
+        queryBuilder.and().not().equal(NodeProperties.PROFILE_IDENTITY, identity.getId());
+      }
+    }
+  }
+  
   /**
    * Saves profile.
    * 
