@@ -557,6 +557,20 @@
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
+  <dependency>
+   <groupId>bouncycastle</groupId>
+   <artifactId>bcprov-jdk14</artifactId>
+   <version>${bouncycastle.version}</version>
+   <type>jar</type>
+  </dependency> 
+  <dependency>
+   <groupId>bouncycastle</groupId>
+   <artifactId>bcmail-jdk14</artifactId>
+   <version>${bouncycastle.version}</version>
+   <type>jar</type>
+  </dependency>
+
+
 
   </dependencies>
 

@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.common.jcr;
 
+import javax.jcr.Node;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +42,7 @@ public class Util {
    * The logger
    */
   private static final Log LOG = ExoLogger.getLogger(Util.class);
-
+  private static final String SLASH_STR = "/";
   /**
    * Gets properties name pattern from an array of property names.
    *
@@ -133,5 +135,26 @@ public class Util {
    */
   public static <T> T[] convertListToArray(List<T> list, Class<T> type) {
     return list.toArray((T[])java.lang.reflect.Array.newInstance(type, list.size()));
+  }
+  
+  /**
+   * Create nodes by giving full path
+   * @param rootNode : root node of tree
+   * @param path : path contains "/"
+   * @since 1.2.0-GA
+   */
+  public static void createNodes(Node rootNode, String path) throws Exception {
+    Node node = null;
+    if(path.indexOf(SLASH_STR) < 0) node = rootNode.addNode(path);
+    else {
+      String []ar = path.split(SLASH_STR);
+      for (int i = 0; i < ar.length; i++) {
+        if(rootNode.hasNode(ar[i])) node = rootNode.getNode(ar[i]) ;
+        else node = rootNode.addNode(ar[i], NodeTypes.NT_UNSTRUCTURED);
+        rootNode = node;
+      }
+      if(rootNode.isNew()) rootNode.getSession().save();
+      else rootNode.getParent().save();
+    }
   }
 }

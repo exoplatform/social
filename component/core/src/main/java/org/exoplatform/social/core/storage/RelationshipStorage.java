@@ -33,6 +33,7 @@ import org.exoplatform.social.common.jcr.NodeProperties;
 import org.exoplatform.social.common.jcr.NodeTypes;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -46,7 +47,6 @@ import org.exoplatform.social.core.storage.RelationshipStorageException.Type;
  */
 public class RelationshipStorage {
   private static final Log   LOG = ExoLogger.getLogger(RelationshipStorage.class);
-
   /** The identity manager. */
   private IdentityManager    identityManager;
 
@@ -550,11 +550,11 @@ public class RelationshipStorage {
   private Node getRelationshipServiceHome(final Session session) {
     if (relationshipServiceHome == null) {
       try {
-        relationshipServiceHome = session.getRootNode()
-                                         .getNode(dataLocation.getSocialRelationshipHome());
-      } catch (PathNotFoundException e) {
-        LOG.warn(e.getMessage(), e);
-      } catch (RepositoryException e) {
+        String path = dataLocation.getSocialRelationshipHome();
+        Node rootNode = session.getRootNode();
+        Util.createNodes(session.getRootNode(), path);
+        relationshipServiceHome = session.getRootNode().getNode(path);
+      } catch (Exception e) {
         LOG.warn(e.getMessage(), e);
       }
     }
