@@ -286,6 +286,9 @@ public class UISpaceSearch extends UIForm {
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
+      if ((searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc)) && charSearch == null) {
+        return;
+      }
       if (searchCondition != null) {
         searchCondition = searchCondition.trim();
       }

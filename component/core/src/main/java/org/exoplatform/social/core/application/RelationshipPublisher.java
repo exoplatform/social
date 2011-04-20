@@ -112,15 +112,19 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     Relationship relationship = event.getPayload();
     try {
       Map<String,String> params = this.getParams(relationship);
-      ExoSocialActivity activity1 = new ExoSocialActivityImpl(relationship.getSender().getId(), RELATIONSHIP_ACTIVITY_TYPE,
-              "@" + relationship.getSender().getRemoteId() + " has invited @" +  relationship.getReceiver().getRemoteId() + " to connect", null);
+      ExoSocialActivity activity1 = new ExoSocialActivityImpl(relationship.getSender().getId(), 
+                                                              RELATIONSHIP_ACTIVITY_TYPE,
+                                                              "@" + relationship.getSender().getRemoteId() + " has invited @" 
+                                                              + relationship.getReceiver().getRemoteId() + " to connect", null);
       activity1.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       activity1.setTemplateParams(params);
       activityManager.saveActivity(relationship.getSender(), activity1);
 
       //TODO hoatle a quick fix for activities gadget to allow deleting this activity
-      ExoSocialActivity activity2 = new ExoSocialActivityImpl(relationship.getSender().getId(), RELATIONSHIP_ACTIVITY_TYPE,
-              "@" + relationship.getSender().getRemoteId() + " has invited @" +  relationship.getReceiver().getRemoteId() + " to connect", null);
+      ExoSocialActivity activity2 = new ExoSocialActivityImpl(relationship.getSender().getId(), 
+                                                              RELATIONSHIP_ACTIVITY_TYPE,
+                                                              "@" + relationship.getSender().getRemoteId() + " has invited @"
+                                                              + relationship.getReceiver().getRemoteId() + " to connect", null);
       activity2.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       activity2.setTemplateParams(params);
       activityManager.saveActivity(relationship.getReceiver(), activity2);

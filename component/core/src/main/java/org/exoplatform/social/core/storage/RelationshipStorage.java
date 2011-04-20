@@ -92,7 +92,8 @@ public class RelationshipStorage {
         relationshipNode = session.getNodeByUUID(relationship.getId());
       }
       relationshipNode.setProperty(NodeProperties.RELATIONSHIP_SENDER, session.getNodeByUUID(relationship.getSender().getId()));
-      relationshipNode.setProperty(NodeProperties.RELATIONSHIP_RECEIVER, session.getNodeByUUID(relationship.getReceiver().getId()));
+      relationshipNode.setProperty(NodeProperties.RELATIONSHIP_RECEIVER, 
+                                   session.getNodeByUUID(relationship.getReceiver().getId()));
       relationshipNode.setProperty(NodeProperties.RELATIONSHIP_STATUS, relationship.getStatus().toString());
       relationshipNode.setProperty(NodeProperties.RELATIONSHIP_IS_SYMETRIC, relationship.isSymetric());
 
@@ -172,7 +173,8 @@ public class RelationshipStorage {
     idNode = relationshipNode.getProperty(NodeProperties.RELATIONSHIP_RECEIVER).getNode();
     relationship.setReceiver(getIdentityManager().getIdentity(idNode.getUUID()));
 
-    relationship.setStatus(Relationship.Type.valueOf(relationshipNode.getProperty(NodeProperties.RELATIONSHIP_STATUS).getString()));
+    relationship.setStatus(Relationship.Type.valueOf(relationshipNode.getProperty(NodeProperties.RELATIONSHIP_STATUS)
+                                                                     .getString()));
     relationship.setSymetric(relationshipNode.getProperty(NodeProperties.RELATIONSHIP_IS_SYMETRIC).getBoolean());
 
     return relationship;

@@ -430,7 +430,8 @@ public class IdentityStorage {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  private void processIdentitiesByProfileFilterQuery(QueryBuilder queryBuilder, final ProfileFilter profileFilter, Node profileHomeNode) throws Exception {
+  private void processIdentitiesByProfileFilterQuery(QueryBuilder queryBuilder, final ProfileFilter profileFilter,
+                                                     Node profileHomeNode) throws Exception {
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
     String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
@@ -458,7 +459,8 @@ public class IdentityStorage {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  private void processIdentitiesByFirstCharacterOfName(QueryBuilder queryBuilder, final ProfileFilter profileFilter, Node profileHomeNode) throws Exception {
+  private void processIdentitiesByFirstCharacterOfName(QueryBuilder queryBuilder, final ProfileFilter profileFilter,
+                                                       Node profileHomeNode) throws Exception {
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     queryBuilder.like(NodeProperties.JCR_PATH, profileHomeNode.getPath() + SLASH_STR + PERCENT_STR);
     if (excludedIdentityList != null & excludedIdentityList.size() > 0) {

@@ -1921,21 +1921,10 @@ public class SpaceStorage {
    * @param firstCharacterOfNameLowerCaseQuery
    * @since 1.2.0-GA
    */
-  private void processPublicSpacesByFirstCharacterOfNameQuery(QueryBuilder query, String userId, String firstCharacterOfNameLowerCaseQuery) {
-    query
-      .not()
-        .equal(NodeProperties.SPACE_REGISTRATION, Space.PRIVATE)
-      .and().not()
-        .equal(NodeProperties.SPACE_VISIBILITY, Space.HIDDEN)
-      .and().not()
-        .equal(NodeProperties.SPACE_INVITED_USERS, userId)
-      .and().not()
-        .equal(NodeProperties.SPACE_MEMBERS, userId)
-      .and().not()
-        .equal(NodeProperties.SPACE_PENDING_USERS, userId)
-      .and().not()
-        .equal(NodeProperties.SPACE_MANAGERS, userId)
-      .and()
+  private void processPublicSpacesByFirstCharacterOfNameQuery(QueryBuilder query, String userId,
+                                                              String firstCharacterOfNameLowerCaseQuery) {
+    this.processPublicSpacesQuery(query, userId);
+    query.and()
         .like(query.lower(NodeProperties.SPACE_DISPLAY_NAME), firstCharacterOfNameLowerCaseQuery);
   }
   
@@ -2681,7 +2670,9 @@ public class SpaceStorage {
           file.setId(image.getPath());
           file.setMimeType(image.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_MIME_TYPE).getString());
           try {
-            file.setInputStream(image.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_DATA).getValue().getStream());
+            file.setInputStream(image.getNode(NodeProperties.JCR_CONTENT)
+                                     .getProperty(NodeProperties.JCR_DATA)
+                                     .getValue().getStream());
           } catch (Exception e) {
             LOG.warn("Failed to setInputStream in space", e);
           }
