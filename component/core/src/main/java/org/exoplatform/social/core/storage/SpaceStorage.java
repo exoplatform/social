@@ -2709,7 +2709,6 @@ public class SpaceStorage {
     try {
       if (spaceHomeNode == null) {
         String path = dataLocation.getSocialSpaceHome();
-        Util.createNodes(session.getRootNode(), path);
         spaceHomeNode = session.getRootNode().getNode(path);
       }
     } catch (Exception e) {
@@ -2762,5 +2761,4 @@ public class SpaceStorage {
     }
     return true; 
   }
-  
 }

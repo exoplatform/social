@@ -61,7 +61,6 @@ import org.exoplatform.social.common.jcr.NodeProperties;
 import org.exoplatform.social.common.jcr.NodeTypes;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
-import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.image.ImageUtils;
@@ -901,7 +900,7 @@ public class IdentityStorage {
     String path = dataLocation.getSocialIdentityHome();
     try {
       Node rootNode = session.getRootNode();
-      Util.createNodes(rootNode, path);
+      createNodes(rootNode, path);
       identityServiceHome = session.getRootNode().getNode(path);
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_SERVICE_HOME, e.getMessage());
@@ -935,7 +934,7 @@ public class IdentityStorage {
     try {
       String path = dataLocation.getSocialProfileHome();
       Node rootNode = session.getRootNode();
-      Util.createNodes(session.getRootNode(), path);
+      createNodes(rootNode, path);
       profileServiceHome = session.getRootNode().getNode(path);
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_PROFILE_SERVICE_HOME, e.getMessage());
@@ -1253,5 +1252,25 @@ public class IdentityStorage {
 
     identityCacheById.put(nodeUUID, identity);
     return identity;
+  }
+  /**
+   * Create nodes by giving full path
+   * @param rootNode : root node of tree
+   * @param path : path contains "/"
+   * @since 1.2.0-GA
+   */
+  private void createNodes(Node rootNode, String path) throws Exception {
+    Node node = null;
+    if(path.indexOf(SLASH_STR) < 0) node = rootNode.addNode(path);
+    else {
+      String []ar = path.split(SLASH_STR);
+      for (int i = 0; i < ar.length; i++) {
+        if(rootNode.hasNode(ar[i])) node = rootNode.getNode(ar[i]) ;
+        else node = rootNode.addNode(ar[i], NodeTypes.NT_UNSTRUCTURED);
+        rootNode = node;
+      }
+      if(rootNode.isNew()) rootNode.getSession().save();
+      else rootNode.getParent().save();
+    }
   }
 }

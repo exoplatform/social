@@ -61,7 +61,7 @@
     <c3p0.version>0.9.1.2</c3p0.version>
     <cglib.version>2.2</cglib.version>
     <commons-digester.version>1.7</commons-digester.version>
-    <commons-lang.version>2.6</commons-lang.version>
+    <commons-lang.version>2.4</commons-lang.version>
     <commons-collections.version>3.2.1</commons-collections.version>
     <commons-dbcp.version>1.2.1</commons-dbcp.version>
     <commons-pool.version>1.2</commons-pool.version>
@@ -116,7 +116,6 @@
     <com.google.code.guice.version>2.0</com.google.code.guice.version>
     <com.ibm.icu.version>3.8</com.ibm.icu.version>
     <com.sun.xml.bind.version>2.1.7</com.sun.xml.bind.version>
-    <bouncycastle.version>136</bouncycastle.version>
 
 
     <!-- ************** -->

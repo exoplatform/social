@@ -61,6 +61,8 @@ public class ActivityStorage {
 
   private static final String COMMENT_IDS_DELIMITER = ",";
 
+  private static final String SLASH_STR = "/";
+
   /** The data location. */
   private SocialDataLocation dataLocation;
 
@@ -456,7 +458,19 @@ public class ActivityStorage {
     if (activityServiceHome == null) {
       String path = dataLocation.getSocialActivitiesHome();
       Node rootNode = session.getRootNode();
-      Util.createNodes(session.getRootNode(), path);
+      Node node = null;
+      if(path.indexOf(SLASH_STR) < 0){ 
+        node = rootNode.addNode(path);
+      }else {
+        String []ar = path.split(SLASH_STR);
+        for (int i = 0; i < ar.length; i++) {
+          if(rootNode.hasNode(ar[i])) node = rootNode.getNode(ar[i]) ;
+          else node = rootNode.addNode(ar[i], NodeTypes.NT_UNSTRUCTURED);
+          rootNode = node;
+        }
+        if(rootNode.isNew()) rootNode.getSession().save();
+        else rootNode.getParent().save();
+      }
       activityServiceHome = session.getRootNode().getNode(path);
     }
     return activityServiceHome;
