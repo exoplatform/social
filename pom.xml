@@ -53,7 +53,7 @@
     <javax.jcr.version>1.0</javax.jcr.version>
     <javax.ws.rs.version>1.0</javax.ws.rs.version>
     <javax.xml.bind.version>2.1</javax.xml.bind.version>
-
+    <javassist.version>3.14.0-GA</javassist.version>
     <asm.version>1.5.3</asm.version>
     <antlr.version>2.7.6rc1</antlr.version>
     <cglib.version>2.2</cglib.version>
@@ -68,9 +68,9 @@
     <findbugs.version>1.0.0</findbugs.version>
     <html-parser.version>1.6</html-parser.version>
     
-    <hsqldb.version>1.8.0.7</hsqldb.version>
+    <hsqldb.version>2.0.0</hsqldb.version>
     <junit.version>3.8.1</junit.version>
-    <javassist.version>3.4.GA</javassist.version>
+     
     <mysql.version>5.1.6</mysql.version>
     <rome.version>0.9</rome.version>
     <stax.version>1.0</stax.version>
@@ -141,7 +141,15 @@
   </modules>
 
   <dependencyManagement>
+    
     <dependencies>
+      <dependency>
+       <groupId>org.javassist</groupId>
+       <artifactId>javassist</artifactId>
+       <version>${javassist.version}</version>
+       <type>jar</type>
+      </dependency>
+
       <dependency>
        <groupId>javax.resource</groupId>
        <artifactId>connector-api</artifactId>
@@ -179,7 +187,7 @@
         <version>${commons-lang.version}</version>
       </dependency>
       <dependency>
-        <groupId>hsqldb</groupId>
+        <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>${hsqldb.version}</version>
       </dependency>
@@ -917,7 +925,7 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>hsqldb</groupId>
+          <groupId>org.hsqldb</groupId>
           <artifactId>hsqldb</artifactId>
           <scope>test</scope>
         </dependency>
