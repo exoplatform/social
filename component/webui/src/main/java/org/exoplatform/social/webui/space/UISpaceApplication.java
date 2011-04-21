@@ -177,8 +177,20 @@ public class UISpaceApplication extends UIForm {
         }
       }
     }
+    
+    int currentPage = iterator.getCurrentPage();
+    
     PageList pageList = new ObjectPageList(installedApps, 3);
     iterator.setPageList(pageList);
+    
+    int availablePage = iterator.getAvailablePage();
+    
+    if (currentPage > availablePage) {
+      iterator.setCurrentPage(availablePage);
+    } else {
+      iterator.setCurrentPage(currentPage);
+    }
+
   }
 
   /**
