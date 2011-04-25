@@ -1,4 +1,4 @@
-eXo Social provides users with a way to share their activity information and spaces (also known as Activity Stream). With the API, you can customize the way to display activities or publish new ones.
+eXo Social provides users with a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.
 To manipulate activities, you need to use the {{AtivityManager}} service.
 
 
@@ -56,7 +56,7 @@ public class PublishActivityForUser {
   public void createActivityForUser() {
     try {
       // Gets an existing identity or creates a new one.
-      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEFAULT_USER_NAME, true);
+      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEFAULT_USER_NAME, false);
 
       // Creates a new activity for this user.
       ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -137,9 +137,9 @@ public class PublishActivityForSpace {
       Space space = spaceService.getSpaceByDisplayName(DEFAULT_NAME_SPACE);
       if (space != null) {
         // Gets spaceIdentity if it already exists. If not, a new one is created.
-        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, DEFAULT_NAME_SPACE, true);
+        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, DEFAULT_NAME_SPACE, false);
         // Gets an identity if it already exists. If not, a new one is created.
-        Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEFAULT_USER_NAME, true);
+        Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEFAULT_USER_NAME, false);
         // Creates a new activity for this space.
         ExoSocialActivity activity =  new ExoSocialActivityImpl();
         activity.setUserId(userIdentity.getId());
@@ -159,7 +159,7 @@ public class PublishActivityForSpace {
 
 h2. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
 
-An activity processor is used to modify the content of activities before they are responded and rendered at a client's browser. For example, create an activity processor to replace all the texts representing the smile face ":-)" in the activity title by the smiley icons, do as follows:
+An activity processor is used to modify the content of activities before they are returned from activity manager. For example, create an activity processor to replace all the texts representing the smile face ":-)" in the activity title by the smiley icons, do as follows:
 
 Firstly, create the {{SmileyProcessor}} class by extending the {{BaseActivityProcessorPlugin}}.
 
@@ -297,8 +297,8 @@ public class IntroduceActivityStreamAndExoSocialActivity {
   // Exo Log.
   private final Log LOG = ExoLogger.getLogger(IntroduceActivityStreamAndExoSocialActivity.class);
   
-  // Root identity.
-  private Identity rootIdentity;
+  // Demo identity.
+  private Identity demoIdentity;
   
   // John identity.
   private Identity johnIdentity;
@@ -312,7 +312,7 @@ public class IntroduceActivityStreamAndExoSocialActivity {
   // Portal container.
   private PortalContainer container;
   
-  private final static String ROOT_NAME = "root";
+  private final static String DEMO_NAME = "demo";
   private final static String JOHN_NAME = "john";
   private final static String DEFAULT_ACTIVITY_TITLE = "blabla";
   private final static String DEFAULT_COMMENT_TITLE = "comment blah blah";
@@ -330,22 +330,24 @@ public class IntroduceActivityStreamAndExoSocialActivity {
     // Gets ActivityManager to handle activity operation.
     ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
     
-    // Gets or creates the identity "root".
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ROOT_NAME, true);
+   // Gets or create demo's identity
+   demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, DEMO_NAME, false);
     
     // Gets or creates the identity "john".
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, JOHN_NAME, true);
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, JOHN_NAME, false);
   }
  
-  public void introduceActivityStreamAndExoSocialActivity {
-    ExoSocialActivity activity = new ExoSocialActivityImpl();
+   /**
+   * Posts activity to activity stream
+   */
+   public void introduceActivityStreamAndExoSocialActivity {
     
     // Sets a string that specifies the primary text of an activity. This field is REQUIRED by ActivityManager. The title field may only have the following HTML tags: <b> <i>, <a>, <span>.
     activity.setTitle(DEFAULT_ACTIVITY_TITLE);
     
-    // Sets this activity for root.
-    activity.setUserId(rootIdentity.getId());
-    
+    // Sets this activity for demo.
+   activity.setUserId(demoIdentity.getId());
+
     // Saves the activity.
     activityManager.saveActivity(johnIdentity, activity);
     
@@ -362,16 +364,16 @@ public class IntroduceActivityStreamAndExoSocialActivity {
     LOG.info("activity stream id: " + activity.getStreamId());
     LOG.info("activity stream owner: " + activity.getStreamOwner());
     
-    // Comment in ExoSocialActivity
-    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();;
+    // Comment in Social
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();;
     activity.setTitle(DEFAULT_ACTIVITY_TITLE);
-    activityManager.saveActivity(rootIdentity, rootActivity);
+    activityManager.saveActivity(demoIdentity, demoActivity);
 
     ExoSocialActivity comment = new ExoSocialActivityImpl();;
     comment.setTitle(DEFAULT_COMMENT_TITLE);
     
-    //Sets comments of root
-    comment.setUserId(rootIdentity.getId());
+    //Sets comment of demo
+   comment.setUserId(demoIdentity.getId());
   
     //Saves a comment.
     activityManager.saveComment(activity, comment);
