@@ -16,11 +16,16 @@
  */
 package org.exoplatform.social.common.jcr;
 
+import javax.jcr.Node;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.commons.lang.Validate;
@@ -40,7 +45,7 @@ public class Util {
    * The logger
    */
   private static final Log LOG = ExoLogger.getLogger(Util.class);
-
+  private static final String SLASH_STR = "/";
   /**
    * Gets properties name pattern from an array of property names.
    *
@@ -133,5 +138,65 @@ public class Util {
    */
   public static <T> T[] convertListToArray(List<T> list, Class<T> type) {
     return list.toArray((T[])java.lang.reflect.Array.newInstance(type, list.size()));
+  }
+
+  /**
+   * Creates nodes by a provided rootNode and path. If the patch does not exist, create that path with node type as
+   * nt:unstructured.
+   * <p/>
+   * The path must be a valid JCR path. For example:
+   * <p/>
+   * <pre>
+   *  Util.createNodes(aNode, "a");
+   *  //or
+   *  Util.createNodes(aNode, "a/b");
+   * </pre>
+   *
+   * @param rootNode the root node
+   * @param relPath  the relative path to create
+   */
+  public static void createNodes(Node rootNode, String relPath) {
+    Validate.notNull(rootNode, "rootNode must not be null");
+    Validate.notNull(relPath, "path must not be null");
+    Node node;
+    Session session = null;
+    try {
+      session = rootNode.getSession();
+      // path exists, does nothing
+      // if path does not exist, PathNotFoundException will be thrown
+      if (rootNode.getNode(relPath) != null) {
+        return;
+      }
+    } catch (PathNotFoundException pne) {
+      //It's ok, the provided path does not exist, create it.
+    } catch (RepositoryException re) {
+      throw new RuntimeException(re);
+    }
+    try {
+      if (relPath.indexOf(SLASH_STR) < 0) {
+        node = rootNode.addNode(relPath);
+      } else {
+        String[] ar = relPath.split(SLASH_STR);
+        for (int i = 0; i < ar.length; i++) {
+          if (rootNode.hasNode(ar[i])) {
+            node = rootNode.getNode(ar[i]);
+          } else {
+            node = rootNode.addNode(ar[i], NodeTypes.NT_UNSTRUCTURED);
+          }
+          rootNode = node;
+        }
+        if (rootNode.isNew()) {
+          rootNode.getSession().save();
+        } else {
+          rootNode.getParent().save();
+        }
+      }
+    } catch (RepositoryException re) {
+      throw new RuntimeException(re);
+    } finally {
+      if (session != null) {
+        session.logout();
+      }
+    }
   }
 }

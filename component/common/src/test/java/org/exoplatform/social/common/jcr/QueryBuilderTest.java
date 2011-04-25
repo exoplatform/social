@@ -46,37 +46,11 @@ import org.exoplatform.social.common.AbstractCommonTest;
  */
 public class QueryBuilderTest extends AbstractCommonTest {
   private final Log LOG = ExoLogger.getLogger(QueryBuilderTest.class);
-  PortalContainer portalContainer;
-  RepositoryService repositoryService;
-  JCRSessionManager sessionManager;
-  ExtendedNodeTypeManager nodeTypeManager;
-  private Session session;
-  private final String WORKSPACE = "portal-test";
-
-  @Override
-  protected void beforeRunBare() throws Exception {
-    super.beforeRunBare();
-
-    portalContainer = PortalContainer.getInstance();
-    repositoryService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
-    sessionManager = new JCRSessionManager(WORKSPACE, repositoryService);
-
-    Session session = sessionManager.getOrOpenSession();
-    try {
-      nodeTypeManager = (ExtendedNodeTypeManager) session.getWorkspace().getNodeTypeManager();
-      addNodeTypes();
-    } finally {
-      sessionManager.closeSession();
-    }
-  }
-
-  @Override
-  protected void afterRunBare() {
-    super.afterRunBare();
-  }
 
   @Override
   protected void setUp() throws Exception {
+    super.setUp();
+    addNodeTypes();
   }
 
   @Override

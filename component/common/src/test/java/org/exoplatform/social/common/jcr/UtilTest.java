@@ -22,11 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.exoplatform.services.jcr.impl.core.value.StringValue;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.AbstractCommonTest;
 
 import junit.framework.TestCase;
 
@@ -36,7 +40,7 @@ import junit.framework.TestCase;
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Dec 22, 2010
  */
-public class UtilTest extends TestCase {
+public class UtilTest extends AbstractCommonTest {
 
   private final Log LOG = ExoLogger.getLogger(UtilTest.class);
 
@@ -135,7 +139,7 @@ public class UtilTest extends TestCase {
   }
 
   /**
-   * Unit Test for {@link Util#convertListToArray(List<String>, Class<String>)}.
+   * Unit Test for {@link Util#convertListToArray(java.util.List, Class)}.
    * 
    * @throws Exception
    */
@@ -152,7 +156,83 @@ public class UtilTest extends TestCase {
       assertEquals(stringArray[i], checkedStringArray[i]);
     }
   }
-  
+
+  /**
+   * Unit Test for {@link Util#createNodes(javax.jcr.Node, String)}.
+   */
+  public void testCreateNodes() {
+
+    try {
+      Util.createNodes(null, "abc");
+      fail("Expecting IllegalArgumentException.");
+    } catch (IllegalArgumentException iae) {
+      assertEquals("rootNode must not be null", iae.getMessage());
+    }
+
+    try {
+      Util.createNodes(getRootNode(), null);
+      fail("Expecting IllegalArgumentException.");
+    } catch (IllegalArgumentException iae) {
+      assertEquals("path must not be null", iae.getMessage());
+    }
+
+    try {
+      Util.createNodes(null, null);
+      fail("Expecting IllegalArgumentException.");
+    } catch (IllegalArgumentException iae) {
+      assertEquals("rootNode must not be null", iae.getMessage());
+    }
+
+    createNodes("a", "a", false);
+    createNodes("a", "a", false);
+    createNodes("b/c/d", "b/c/d", false);
+    createNodes("b/c/d", "b/c/d", false);
+    createNodes("t/u/", "t/u", false);
+    //does not support these paths
+    try {
+      createNodes("/e/f", "/e/f", true);
+      fail("RuntimeException is expected with the relPath: /e/f");
+    } catch (RuntimeException re) {
+
+    }
+
+    //tearDown
+    try {
+      getRootNode().getNode("a").remove();
+      getRootNode().getNode("b/c/d").remove();
+    } catch (RepositoryException re) {
+      throw new RuntimeException(re);
+    } finally {
+      sessionManager.closeSession(true);
+    }
+  }
+
+  private void createNodes(String providedPath, String expectedPath, boolean expectedToFail) {
+    Node rootNode = getRootNode();
+    Util.createNodes(rootNode, providedPath);
+    if (expectedToFail) {
+      return;
+    }
+    try {
+      Node foundNode = rootNode.getNode(expectedPath);
+      assertNotNull("foundNode must not be null", foundNode);
+    } catch (RepositoryException e) {
+      fail("Failed to get path: /" + providedPath);
+    }
+  }
+
+  private Node getRootNode() {
+    Session session = sessionManager.getOrOpenSession();
+    Node rootNode = null;
+    try {
+      rootNode = session.getRootNode();
+    } catch (RepositoryException e) {
+      fail(e.getMessage());
+    }
+    assertNotNull("rootNode must not be null", rootNode);
+    return rootNode;
+  }
+
   private Value[] getStringValues(int numberOfValues) throws Exception {
     Value[] values = new Value[numberOfValues];
     for (int i = 0; i < numberOfValues; i++) {

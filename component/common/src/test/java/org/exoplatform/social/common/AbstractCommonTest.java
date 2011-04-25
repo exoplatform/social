@@ -16,10 +16,16 @@
  */
 package org.exoplatform.social.common;
 
+import javax.jcr.Session;
+
 import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.core.nodetype.ExtendedNodeTypeManager;
+import org.exoplatform.social.common.jcr.JCRSessionManager;
 
 /**
  * Abstract Common Test.
@@ -34,8 +40,25 @@ import org.exoplatform.component.test.ContainerScope;
 })
 public abstract class AbstractCommonTest extends AbstractKernelTest {
 
+  protected PortalContainer portalContainer;
+  protected RepositoryService repositoryService;
+  protected JCRSessionManager sessionManager;
+  protected ExtendedNodeTypeManager nodeTypeManager;
+  protected Session session;
+  protected final String WORKSPACE = "portal-test";
+
   @Override
   protected void setUp() throws Exception {
+    portalContainer = PortalContainer.getInstance();
+    repositoryService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
+    sessionManager = new JCRSessionManager(WORKSPACE, repositoryService);
+
+    Session session = sessionManager.getOrOpenSession();
+    try {
+      nodeTypeManager = (ExtendedNodeTypeManager) session.getWorkspace().getNodeTypeManager();
+    } finally {
+      sessionManager.closeSession();
+    }
     begin();
   }
 
