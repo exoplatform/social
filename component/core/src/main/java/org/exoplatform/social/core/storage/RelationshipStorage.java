@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -33,6 +32,7 @@ import org.exoplatform.social.common.jcr.NodeProperties;
 import org.exoplatform.social.common.jcr.NodeTypes;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -552,12 +552,11 @@ public class RelationshipStorage {
   private Node getRelationshipServiceHome(final Session session) {
     if (relationshipServiceHome == null) {
       try {
-        relationshipServiceHome = session.getRootNode()
-                                         .getNode(dataLocation.getSocialRelationshipHome());
-      } catch (PathNotFoundException e) {
-        LOG.warn(e.getMessage(), e);
-      } catch (RepositoryException e) {
-        LOG.warn(e.getMessage(), e);
+        String path = dataLocation.getSocialRelationshipHome();
+        Util.createNodes(session.getRootNode(), path);
+        relationshipServiceHome = session.getRootNode().getNode(path);
+      } catch (RepositoryException re) {
+        LOG.warn(re.getMessage(), re);
       }
     }
     return relationshipServiceHome;

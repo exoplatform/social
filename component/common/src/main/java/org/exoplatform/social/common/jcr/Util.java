@@ -193,10 +193,6 @@ public class Util {
       }
     } catch (RepositoryException re) {
       throw new RuntimeException(re);
-    } finally {
-      if (session != null) {
-        session.logout();
-      }
     }
   }
 }
