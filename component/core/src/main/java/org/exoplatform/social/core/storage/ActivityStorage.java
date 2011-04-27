@@ -405,7 +405,7 @@ public class ActivityStorage {
               .like("jcr:path", path + "[%]/%")
               .and()
               .not().equal(REPLY_TO_ID,Activity.IS_COMMENT)
-              .orderBy("exo:updatedTimestamp", QueryBuilder.DESC).exec();
+              .orderBy(POSTED_TIME, QueryBuilder.DESC).exec();
 
       for (Node node : nodes) {
         activities.add(load(node));

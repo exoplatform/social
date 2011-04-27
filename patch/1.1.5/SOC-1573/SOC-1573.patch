@@ -1,0 +1,13 @@
+Index: component/core/src/main/java/org/exoplatform/social/core/storage/ActivityStorage.java
+===================================================================
+--- component/core/src/main/java/org/exoplatform/social/core/storage/ActivityStorage.java	(revision 68386)
++++ component/core/src/main/java/org/exoplatform/social/core/storage/ActivityStorage.java	(working copy)
+@@ -405,7 +405,7 @@
+               .like("jcr:path", path + "[%]/%")
+               .and()
+               .not().equal(REPLY_TO_ID,Activity.IS_COMMENT)
+-              .orderBy("exo:updatedTimestamp", QueryBuilder.DESC).exec();
++              .orderBy(POSTED_TIME, QueryBuilder.DESC).exec();
+ 
+       for (Node node : nodes) {
+         activities.add(load(node));
