@@ -40,7 +40,7 @@
     def adminProfileURL = "#";
     def clzz = "PortletContent";
     def leaderIdx = memberIdx = 0;
-    def memberImgSrc = leaderImgSrc = adminImgSrc = "/social-portlet/skin/social/portlet/UIMembersPortlet/DefaultSkin/background/BLAvatar.gif"
+    def adminImgSrc = "/social-portlet/skin/social/portlet/UIMembersPortlet/DefaultSkin/background/BLAvatar.gif";
 %>
 <div class="UIMembersPortlet" id="$uicomponentId">
   <div class="ActivitiesTitleBarM">$labelUserList</div>
@@ -53,7 +53,9 @@
            def adminImageSource = uicomponent.getUserAvatar(admin.getUserName());
            def adminIdentity = uicomponent.getIdentity(admin.getUserName());
            adminProfileURL = uicomponent.getPath() + "/activities/" + adminIdentity.getRemoteId();
-           if (adminImageSource != null) adminImgSrc = adminImageSource;
+           if (adminImageSource != null)  {
+            adminImgSrc = adminImageSource;
+           }
        } %>
       <div class="AvatarSpace">
         <div class="Image" >
@@ -83,13 +85,16 @@
       </div>
       <% if (leaderList.size() > 0) {
         for(user in leaderList) {
+          def leaderImgSrc = "/social-portlet/skin/social/portlet/UIMembersPortlet/DefaultSkin/background/BLAvatar.gif";
           def userName = user.getFullName();
           def leaderIdentity = uicomponent.getIdentity(user.getUserName());
           def leaderImageSource = uicomponent.getUserAvatar(user.getUserName());
           position = leaderIdentity.profile.getPropertyValue("position");
           def profileURL = uicomponent.getPath() + "/activities/" + leaderIdentity.getRemoteId();
           if (!position) position = "";
-          if (leaderImageSource != null) leaderImgSrc = leaderImageSource;
+          if (leaderImageSource != null) {
+            leaderImgSrc = leaderImageSource;
+          }
           leaderIdx += 1;
           clzz = "PortletContent";
           if (leaderIdx % 2 == 0) clzz = "PortletContentGray";
@@ -138,13 +143,16 @@
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
       <% if(memberList.size() > 0)  {
         for(user in memberList) {
+          def memberImgSrc = "/social-portlet/skin/social/portlet/UIMembersPortlet/DefaultSkin/background/BLAvatar.gif";
           def memberUserName = user.getFullName();
           def memberIdentity = uicomponent.getIdentity(user.getUserName());
           def memberImageSource = uicomponent.getUserAvatar(user.getUserName());
           position = memberIdentity.profile.getPropertyValue("position");
           if (!position) position = "";
           def profileURL = uicomponent.getPath() + "/activities/" + memberIdentity.getRemoteId();
-          if (memberImageSource != null) memberImgSrc = memberImageSource;
+          if (memberImageSource != null) {
+            memberImgSrc = memberImageSource;
+          }
           memberIdx += 1;
           clzz = "PortletContent";
           if (memberIdx % 2 == 0) clzz = "PortletContentGray";
