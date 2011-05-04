@@ -68,7 +68,7 @@ public class UISpaceMenu extends UIContainer {
 
   private static final String SPACE_HOME_APP_NAME = "UISpaceMenu.label.Home";
 
-  private static final String SPACE_SETTING_PORTLET = "SpaceSettingPortlet";
+  private static final String SPACE_SETTINGS = "settings";
   /** Stores SpaceService object. */
   private SpaceService spaceService = null;
 
@@ -103,12 +103,12 @@ public class UISpaceMenu extends UIContainer {
     List<PageNode> list = homeNode.getNodes();
     PageNode pageNode = null;
     for(PageNode node:list){
-      if(node.getName().contains(SPACE_SETTING_PORTLET)){
+      if (SPACE_SETTINGS.equals(node.getName())) {
         pageNode = node;
         break;
       }
     }
-    if(!isLeader() && (pageNode != null)) list.remove(pageNode);
+    if (!hasSettingPermission() && (pageNode != null)) list.remove(pageNode);
     Collections.sort(list, new ApplicationComparator());
     return list;
   }
@@ -260,7 +260,7 @@ public class UISpaceMenu extends UIContainer {
    *
    * @throws SpaceException
    */
-  private boolean isLeader() throws SpaceException {
+  protected boolean hasSettingPermission() throws SpaceException {
     spaceService = getSpaceService();
     String userId = Util.getPortalRequestContext().getRemoteUser();
     Space space = getSpace();

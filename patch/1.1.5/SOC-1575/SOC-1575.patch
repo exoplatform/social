@@ -1,0 +1,79 @@
+Index: component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceMenu.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceMenu.java	(revision 68386)
++++ component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceMenu.java	(working copy)
+@@ -68,7 +68,7 @@
+ 
+   private static final String SPACE_HOME_APP_NAME = "UISpaceMenu.label.Home";
+ 
+-  private static final String SPACE_SETTING_PORTLET = "SpaceSettingPortlet";
++  private static final String SPACE_SETTINGS = "settings";
+   /** Stores SpaceService object. */
+   private SpaceService spaceService = null;
+ 
+@@ -103,12 +103,12 @@
+     List<PageNode> list = homeNode.getNodes();
+     PageNode pageNode = null;
+     for(PageNode node:list){
+-      if(node.getName().contains(SPACE_SETTING_PORTLET)){
++      if (SPACE_SETTINGS.equals(node.getName())) {
+         pageNode = node;
+         break;
+       }
+     }
+-    if(!isLeader() && (pageNode != null)) list.remove(pageNode);
++    if (!hasSettingPermission() && (pageNode != null)) list.remove(pageNode);
+     Collections.sort(list, new ApplicationComparator());
+     return list;
+   }
+@@ -260,7 +260,7 @@
+    *
+    * @throws SpaceException
+    */
+-  private boolean isLeader() throws SpaceException {
++  protected boolean hasSettingPermission() throws SpaceException {
+     spaceService = getSpaceService();
+     String userId = Util.getPortalRequestContext().getRemoteUser();
+     Space space = getSpace();
+Index: component/webui/src/main/resources/groovy/social/webui/space/UISpaceMenu.gtmpl
+===================================================================
+--- component/webui/src/main/resources/groovy/social/webui/space/UISpaceMenu.gtmpl	(revision 68386)
++++ component/webui/src/main/resources/groovy/social/webui/space/UISpaceMenu.gtmpl	(working copy)
+@@ -114,7 +114,7 @@
+                   <%
+                      def ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + node.getResolvedLabel() + "\")";
+                      if(nodeName.equals(appSelected)) {
+-                       if(uicomponent.isLeader()) { %>
++                       if(uicomponent.hasSettingPermission()) { %>
+       <div class="ApplicationAddSelect" title="$nodeTitle">
+         <span id='$nodeName' ondblclick='$ondblclick'>$nodeLabel</span>
+       </div>
+Index: webapp/portlet/src/main/java/org/exoplatform/social/portlet/UISpacesToolBarPortlet.java
+===================================================================
+--- webapp/portlet/src/main/java/org/exoplatform/social/portlet/UISpacesToolBarPortlet.java	(revision 68386)
++++ webapp/portlet/src/main/java/org/exoplatform/social/portlet/UISpacesToolBarPortlet.java	(working copy)
+@@ -43,7 +43,7 @@
+ )
+ public class UISpacesToolBarPortlet extends UIPortletApplication {
+ 
+-  private static final String SPACE_SETTING_PORTLET = "SpaceSettingPortlet";
++  private static final String SPACE_SETTINGS = "settings";
+ 
+   /**
+    * constructor
+@@ -101,12 +101,11 @@
+    
+ 	 if (spaceSrv.hasEditPermission(space, remoteUser)) return true;
+ 
+-	 String appName = applicationNode.getName();
+-	 if (!appName.contains(SPACE_SETTING_PORTLET)) {
+-	   return true;
++	 if (SPACE_SETTINGS.equals(applicationNode.getName())) {
++	   return false;
+ 	 }
+ 
+-	 return false;
++	 return true;
+   }
+ 
+   public PageNode getSelectedPageNode() throws Exception
