@@ -1,0 +1,831 @@
+Index: component/service/src/test/java/org/exoplatform/social/service/rest/LinkShareRestServiceTest.java
+===================================================================
+--- component/service/src/test/java/org/exoplatform/social/service/rest/LinkShareRestServiceTest.java	(revision 68898)
++++ component/service/src/test/java/org/exoplatform/social/service/rest/LinkShareRestServiceTest.java	(working copy)
+@@ -87,7 +87,7 @@
+     h.putSingle("content-length", "" + data.length);
+     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
+     ContainerResponse response = service("POST", "/social/linkshare/show.json", "", h, data, writer);
+-    assertEquals(500, response.getStatus());
++    assertEquals(200, response.getStatus());
+     //assertEquals("text/plain", response.getContentType().toString());
+   }
+ 
+Index: component/service/src/main/java/org/exoplatform/social/service/rest/LinkShare.java
+===================================================================
+--- component/service/src/main/java/org/exoplatform/social/service/rest/LinkShare.java	(revision 68898)
++++ component/service/src/main/java/org/exoplatform/social/service/rest/LinkShare.java	(working copy)
+@@ -16,7 +16,9 @@
+  */
+ package org.exoplatform.social.service.rest;
+ 
++import java.io.IOException;
+ import java.net.MalformedURLException;
++import java.net.URI;
+ import java.net.URL;
+ import java.util.ArrayList;
+ import java.util.Collection;
+@@ -37,6 +39,8 @@
+ import org.cyberneko.html.HTMLConfiguration;
+ import org.cyberneko.html.filters.DefaultFilter;
+ import org.cyberneko.html.filters.ElementRemover;
++import org.exoplatform.services.log.ExoLogger;
++import org.exoplatform.social.common.Util;
+ 
+ /**
+  * LinkShare - gets preview information of a link including: 
+@@ -101,6 +105,11 @@
+   private String mediaHeight;
+   private String mediaWidth;
+   
++  private static final String HTTP = "http";
++  private static final String HTTPS = "https";
++  private static final String HTTP_PROTOCOL = "http://";
++  private static final String HTTPS_PROTOCOL = "https://";
++  
+   //min with and height of images to get from img attributes in pixel.
+   // With <img src="img_src" width="55px" height="55px" /> ~ <img src="img_src" width="55" height="55" />
+   //if width="55pt" => with="55" ~ width="55px" (not correct but can be accepted) 
+@@ -140,22 +149,6 @@
+   }
+   
+   /**
+-   * Checks if the provided link is a valid url
+-   * @param url string url
+-   * @return true if yes, otherwise, false
+-   */
+-  private boolean isURL(String url) {
+-    try {
+-      new URL(link);
+-      return true;
+-    } catch (MalformedURLException e) {
+-      // DO nothing
+-    }
+-    return false;
+-  }
+-  
+-
+-  /**
+    * gets provided link
+    * @return provided link
+    */
+@@ -281,10 +274,6 @@
+    * using call back filter methods to get desired information.
+    */
+   private void get() throws Exception {
+-    if (link == null)
+-      return;
+-    if (!isURL(link))
+-      return;
+     //Creates element remover filter
+     ElementRemover remover = new ElementRemover();
+     remover.acceptElement("head", null);
+@@ -308,7 +297,18 @@
+     parser.setProperty("http://cyberneko.org/html/properties/filters", filter);
+     parser.setDocumentHandler(this);
+     XMLInputSource source = new XMLInputSource(null, link, null);
+-    parser.parse(source);
++    try {
++      parser.parse(source);
++    } catch (NullPointerException ne) {
++      ExoLogger.getLogger(LinkShare.class)
++        .warn("Problem when parsing the link in LinkShare.getInstance(String) method");
++    } catch (IOException e) {
++      // Process as normal behavior in case the link is in the valid form
++      // but have been blocked or some other same reasons.
++      this.title = link;
++    } catch (Exception e) {
++      this.title = link;
++    }
+   }
+   
+   /**
+@@ -329,11 +329,29 @@
+    * @throws Exception 
+    */
+   public static LinkShare getInstance(String link, String lang) throws Exception {
+-    if (!link.startsWith("http://")) link = "http://" + link;
++    if (link == null)
++      return null;
++    if (!Util.isValidURL(link))
++      return null;
++    
+     LinkShare linkShare = new LinkShare();
++    
++    if (!(link.startsWith(HTTP_PROTOCOL) || link.startsWith(HTTPS_PROTOCOL))) {
++      URI uri = URI.create(link);
++      String uriScheme = uri.getScheme();
++      if (uriScheme != null) {
++        link = HTTP_PROTOCOL + uri.getSchemeSpecificPart();
++      } else {
++        link = HTTP_PROTOCOL + link;
++      }
++    }
++
+     linkShare.link = link;
+     LinkShare.lang = lang;
+     linkShare.get();
++    
++    if ((linkShare.title == null) || (linkShare.title.trim().length() == 0)) linkShare.title = link;
++
+     //If image_src detected from meta tag, sets this image_src to images
+     if (linkShare.imageSrc != null) {
+       List<String> images = new ArrayList<String>();
+Index: component/common/src/test/java/org/exoplatform/social/common/UtilTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/UtilTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/UtilTest.java	(revision 0)
+@@ -0,0 +1,51 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Affero General Public License
++ * as published by the Free Software Foundation; either version 3
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see<http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common;
++
++import junit.framework.TestCase;
++
++
++/**
++ * Author : hanhvq@exolpatform.com
++ * Apr 22, 2011 
++ * @since 1.1.3 
++ */
++public class UtilTest extends TestCase {
++  
++  /**
++   * Performs testing for {@link Util#isValidURL(String)}
++   * 
++   * @throws Exception
++   */
++  public void testIsValidURL() throws Exception {
++    assertTrue(Util.isValidURL("abcd.com"));
++    assertTrue(Util.isValidURL("http://google.com"));
++    assertTrue(Util.isValidURL("http://địachỉdoanhnghiệp.vn"));
++    assertTrue(Util.isValidURL("http://www.google.com/language_tools?hl=en"));
++    assertTrue(Util.isValidURL("https://mail.google.com/mail/?shva=1#inbox"));
++    assertTrue(Util.isValidURL("http://a+b=sadasd.com.vn"));
++    assertTrue(Util.isValidURL("mailto:abc@facebook.com"));
++    
++    assertFalse(Util.isValidURL(null));
++    assertFalse(Util.isValidURL(""));
++    assertFalse(Util.isValidURL("abc"));
++    assertFalse(Util.isValidURL("a bc.com"));
++    assertFalse(Util.isValidURL("abc.c om"));
++    assertFalse(Util.isValidURL("abc : fsdfs"));
++    assertFalse(Util.isValidURL("abc #$ vn"));
++  }
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/Util.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/Util.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/Util.java	(revision 0)
+@@ -0,0 +1,74 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Affero General Public License
++ * as published by the Free Software Foundation; either version 3
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see<http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common;
++
++import java.net.IDN;
++import java.net.MalformedURLException;
++import java.net.URI;
++import java.net.URISyntaxException;
++import java.util.regex.Pattern;
++
++/**
++ * Author : hanhvq@exolpatform.com
++ * Apr 22, 2011 
++ * @since 1.1.3 
++ */
++public class Util {
++  
++  /**
++   * Checks a url is in a valid form or not.
++   * 
++   * @param link
++   * @return
++   */
++  public static boolean isValidURL(String link) {
++    final String SPACE_STRING = " ";
++    final String HTTP_PRTOCOL = "http://";
++    final Pattern URL_PATTERN = Pattern.compile("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)"
++      + "(\\?([^#]*))?(#(.*))?");
++    
++    try {
++      if ((link == null) || (link.length() == 0)) return false;
++      
++      // Check the case that url has the domain name in the right form. Exg: .com, .org... or not.
++      if (link.indexOf('.') == -1) return false;
++      
++      if (!URL_PATTERN.matcher(link).matches()) return false;
++      
++      URI uri = null;
++      uri = new URI(IDN.toUnicode(link));
++
++      String scheme = uri.getScheme();
++      if (scheme == null) {
++        link = HTTP_PRTOCOL + link;
++        uri = new URI(IDN.toUnicode(link));
++      }
++      
++      String host = uri.getHost();
++      if ((host != null) && (host.contains(SPACE_STRING))) return false;
++      
++      uri.toURL();
++    } catch (URISyntaxException e) {
++      return false;
++    } catch (MalformedURLException e) {
++      return false;
++    } catch (IllegalArgumentException e) {
++      return false;
++    }
++    return true;
++  }
++}
+Index: extras/link-composer-plugin/src/main/java/org/exoplatform/social/plugin/link/UILinkActivityComposer.java
+===================================================================
+--- extras/link-composer-plugin/src/main/java/org/exoplatform/social/plugin/link/UILinkActivityComposer.java	(revision 68898)
++++ extras/link-composer-plugin/src/main/java/org/exoplatform/social/plugin/link/UILinkActivityComposer.java	(working copy)
+@@ -1,257 +1,256 @@
+-/*
+- * Copyright (C) 2003-2010 eXo Platform SAS.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Affero General Public License
+- * as published by the Free Software Foundation; either version 3
+- * of the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, see<http://www.gnu.org/licenses/>.
+- */
+-package org.exoplatform.social.plugin.link;
+-
+-import java.util.HashMap;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.regex.Pattern;
+-
+-import org.exoplatform.social.core.activity.model.Activity;
+-import org.exoplatform.social.core.application.PeopleService;
+-import org.exoplatform.social.core.identity.model.Identity;
+-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+-import org.exoplatform.social.core.manager.ActivityManager;
+-import org.exoplatform.social.core.manager.IdentityManager;
+-import org.exoplatform.social.core.space.model.Space;
+-import org.exoplatform.social.core.space.spi.SpaceService;
+-import org.exoplatform.social.service.rest.LinkShare;
+-import org.exoplatform.social.webui.activity.UIActivitiesContainer;
+-import org.exoplatform.social.webui.composer.UIActivityComposer;
+-import org.exoplatform.social.webui.composer.UIComposer;
+-import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+-import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+-import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
+-import org.exoplatform.web.application.ApplicationMessage;
+-import org.exoplatform.webui.application.WebuiRequestContext;
+-import org.exoplatform.webui.config.annotation.ComponentConfig;
+-import org.exoplatform.webui.config.annotation.EventConfig;
+-import org.exoplatform.webui.core.UIApplication;
+-import org.exoplatform.webui.core.UIComponent;
+-import org.exoplatform.webui.event.Event;
+-import org.exoplatform.webui.event.EventListener;
+-import org.exoplatform.webui.form.UIFormStringInput;
+-/**
+- * UIComposerLinkExtension.java
+- * <p>
+- * an ui component to attach link, gets link information and displays; changes link title,
+- * description content inline.
+- * </p>
+- *
+- * @author    <a href="http://hoatle.net">hoatle</a>
+- * @since     Apr 19, 2010
+- * @copyright eXo Platform SAS
+- */
+-@ComponentConfig(
+-  template = "classpath:groovy/social/plugin/link/UILinkActivityComposer.gtmpl",
+-  events = {
+-    @EventConfig(listeners = UILinkActivityComposer.AttachActionListener.class),
+-    @EventConfig(listeners = UILinkActivityComposer.ChangeLinkContentActionListener.class),
+-    @EventConfig(listeners = UIActivityComposer.CloseActionListener.class),
+-    @EventConfig(listeners = UIActivityComposer.SubmitContentActionListener.class),
+-    @EventConfig(listeners = UIActivityComposer.ActivateActionListener.class)
+-  }
+-)
+-public class UILinkActivityComposer extends UIActivityComposer {
+-  public static final String LINK_PARAM = "link";
+-  public static final String IMAGE_PARAM = "image";
+-  public static final String TITLE_PARAM = "title";
+-  public static final String DESCRIPTION_PARAM = "description";
+-  public static final String COMMENT_PARAM = "comment";
+-
+-  //private static final String MSG_ERROR_ATTACH_LINK = "UIComposerLinkExtension.msg.error.Attach_Link";
+-  private static final String HTTP = "http://";
+-  private static final String HTTPS = "https://";
+-  private LinkShare linkShare_;
+-  private boolean linkInfoDisplayed_ = false;
+-  private Map<String, String> templateParams;
+-  
+-  /**
+-   * constructor
+-   */
+-  public UILinkActivityComposer() {
+-    setReadyForPostingActivity(false);
+-    addChild(new UIFormStringInput("InputLink", "InputLink", null));
+-  }
+-
+-  public void setLinkInfoDisplayed(boolean displayed) {
+-    linkInfoDisplayed_ = displayed;
+-  }
+-
+-  public boolean isLinkInfoDisplayed() {
+-    return linkInfoDisplayed_;
+-  }
+-
+-  public void setTemplateParams(Map<String, String> tempParams) {
+-    templateParams = tempParams;
+-  }
+-
+-  public Map<String, String> getTemplateParams() {
+-    return templateParams;
+-  }
+-
+-  public void clearLinkShare() {
+-    linkShare_ = null;
+-  }
+-
+-  public LinkShare getLinkShare() {
+-    return linkShare_;
+-  }
+-
+-  /**
+-   * sets link url to gets content
+-   * @param url
+-   * @throws Exception
+-   */
+-  private void setLink(String url) throws Exception {
+-    if (!(url.contains(HTTP) || url.contains(HTTPS))) {
+-      url = HTTP + url;
+-    }
+-    linkShare_ = LinkShare.getInstance(url);
+-    templateParams = new HashMap<String, String>();
+-    templateParams.put(LINK_PARAM, linkShare_.getLink());
+-    String image = "";
+-    List<String> images = linkShare_.getImages();
+-    if (images != null && images.size() > 0) {
+-      image = images.get(0);
+-    }
+-    templateParams.put(IMAGE_PARAM, image);
+-    templateParams.put(TITLE_PARAM, linkShare_.getTitle());
+-    templateParams.put(DESCRIPTION_PARAM, linkShare_.getDescription());
+-    setLinkInfoDisplayed(true);
+-  }
+-  private boolean isImageLink(String link){
+-    Pattern pattern = Pattern.compile("(?-i)(\\.jpg|\\.gif|\\.jpeg|\\.bmp|\\.png|\\.tif)$");
+-    return pattern.matcher(link).find();
+-  }
+-
+-  static public class AttachActionListener extends EventListener<UILinkActivityComposer> {
+-
+-    @Override
+-    public void execute(Event<UILinkActivityComposer> event) throws Exception {
+-      WebuiRequestContext requestContext = event.getRequestContext();
+-      UILinkActivityComposer uiComposerLinkExtension = event.getSource();
+-      String url = requestContext.getRequestParameter(OBJECTID);
+-      try {
+-        uiComposerLinkExtension.setLink(url.trim());
+-      } catch (Exception e) {
+-        uiComposerLinkExtension.setReadyForPostingActivity(false);
+-        // Comment this below line code for temporary fixing issue SOC-1091. Check later.
+-//        uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.WARNING));
+-        return;
+-      }
+-      requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
+-      event.getSource().setReadyForPostingActivity(true);
+-    }
+-  }
+-
+-  static public class ChangeLinkContentActionListener extends EventListener<UILinkActivityComposer> {
+-    @Override
+-    public void execute(Event<UILinkActivityComposer> event) throws Exception {
+-      WebuiRequestContext requestContext = event.getRequestContext();
+-      UILinkActivityComposer uiComposerLinkExtension = event.getSource();
+-      Map<String, String> tempParams = new HashMap<String, String>();
+-      tempParams.put(LINK_PARAM, requestContext.getRequestParameter(LINK_PARAM));
+-      tempParams.put(IMAGE_PARAM, requestContext.getRequestParameter(IMAGE_PARAM));
+-      tempParams.put(TITLE_PARAM, requestContext.getRequestParameter(TITLE_PARAM));
+-      tempParams.put(DESCRIPTION_PARAM, requestContext.getRequestParameter(DESCRIPTION_PARAM));
+-      uiComposerLinkExtension.setTemplateParams(tempParams);
+-      requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
+-      UIComponent uiParent = uiComposerLinkExtension.getParent();
+-      if (uiParent != null) {
+-        uiParent.broadcast(event, event.getExecutionPhase());
+-      }
+-    }
+-  }
+-
+-  @Override
+-  protected void onActivate(Event<UIActivityComposer> arg0) {
+-  }
+-
+-  @Override
+-  protected void onClose(Event<UIActivityComposer> arg0) {
+-    setReadyForPostingActivity(false);
+-  }
+-
+-  @Override
+-  protected void onSubmit(Event<UIActivityComposer> arg0) {
+-  }
+-
+-  @Override
+-  public void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+-    final UIComposer uiComposer = (UIComposer) source;
+-    ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
+-    IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
+-    String remoteUser = requestContext.getRemoteUser();
+-    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+-
+-    UIApplication uiApplication = requestContext.getUIApplication();
+-    Map<String, String> templateParams = getTemplateParams();
+-    templateParams.put(COMMENT_PARAM, postedMessage);
+-    setTemplateParams(templateParams);
+-
+-    if (templateParams.size() == 0) {
+-      uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
+-                                                    null,
+-                                                    ApplicationMessage.WARNING));
+-      return;
+-    }
+-    
+-    String title = "Shared a link: <a href=\"${" + LINK_PARAM + "}\">${" + TITLE_PARAM + "} </a>";
+-    Activity activity = new Activity(userIdentity.getId(),
+-                                     UILinkActivity.ACTIVITY_TYPE,
+-                                     title,
+-                                     null);
+-    activity.setTemplateParams(templateParams);
+-    
+-    if (postContext == UIComposer.PostContext.SPACE) {
+-      UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
+-      Space space = uiDisplaySpaceActivities.getSpace();
+-
+-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+-                                                                   space.getId(),
+-                                                                   false);
+-      activityManager.saveActivity(spaceIdentity, activity);
+-
+-      UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
+-      activitiesContainer.addActivity(activity);
+-      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+-      requestContext.addUIComponentToUpdateByAjax(uiComposer);
+-    } else if (postContext == PostContext.USER) {
+-      UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
+-      String ownerName = uiUserActivitiesDisplay.getOwnerName();
+-      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+-                                                                   ownerName);
+-
+-      activityManager.saveActivity(ownerIdentity, activity);
+-      
+-      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
+-        UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
+-        if (activitiesContainer.getChildren().size() == 1) {
+-          uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+-        } else {
+-          activitiesContainer.addActivity(activity);
+-          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+-          requestContext.addUIComponentToUpdateByAjax(uiComposer);
+-        }
+-      } else{
+-        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+-      }
+-    }
+-  }
+-}
++/*
++ * Copyright (C) 2003-2010 eXo Platform SAS.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Affero General Public License
++ * as published by the Free Software Foundation; either version 3
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see<http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.plugin.link;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.regex.Pattern;
++
++import org.exoplatform.social.core.activity.model.Activity;
++import org.exoplatform.social.core.identity.model.Identity;
++import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
++import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
++import org.exoplatform.social.core.manager.ActivityManager;
++import org.exoplatform.social.core.manager.IdentityManager;
++import org.exoplatform.social.core.space.model.Space;
++import org.exoplatform.social.service.rest.LinkShare;
++import org.exoplatform.social.webui.activity.UIActivitiesContainer;
++import org.exoplatform.social.webui.composer.UIActivityComposer;
++import org.exoplatform.social.webui.composer.UIComposer;
++import org.exoplatform.social.webui.composer.UIComposer.PostContext;
++import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
++import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
++import org.exoplatform.web.application.ApplicationMessage;
++import org.exoplatform.webui.application.WebuiRequestContext;
++import org.exoplatform.webui.config.annotation.ComponentConfig;
++import org.exoplatform.webui.config.annotation.EventConfig;
++import org.exoplatform.webui.core.UIApplication;
++import org.exoplatform.webui.core.UIComponent;
++import org.exoplatform.webui.event.Event;
++import org.exoplatform.webui.event.EventListener;
++import org.exoplatform.webui.form.UIFormStringInput;
++/**
++ * UIComposerLinkExtension.java
++ * <p>
++ * an ui component to attach link, gets link information and displays; changes link title,
++ * description content inline.
++ * </p>
++ *
++ * @author    <a href="http://hoatle.net">hoatle</a>
++ * @since     Apr 19, 2010
++ * @copyright eXo Platform SAS
++ */
++@ComponentConfig(
++  template = "classpath:groovy/social/plugin/link/UILinkActivityComposer.gtmpl",
++  events = {
++    @EventConfig(listeners = UILinkActivityComposer.AttachActionListener.class),
++    @EventConfig(listeners = UILinkActivityComposer.ChangeLinkContentActionListener.class),
++    @EventConfig(listeners = UIActivityComposer.CloseActionListener.class),
++    @EventConfig(listeners = UIActivityComposer.SubmitContentActionListener.class),
++    @EventConfig(listeners = UIActivityComposer.ActivateActionListener.class)
++  }
++)
++public class UILinkActivityComposer extends UIActivityComposer {
++  public static final String LINK_PARAM = "link";
++  public static final String IMAGE_PARAM = "image";
++  public static final String TITLE_PARAM = "title";
++  public static final String DESCRIPTION_PARAM = "description";
++  public static final String COMMENT_PARAM = "comment";
++
++  private static final String MSG_ERROR_INVALID_LINK = "UILinkComposerPlugin.msg.error.Attach_Link";
++    
++  private LinkShare linkShare_;
++  private boolean linkInfoDisplayed_ = false;
++  private Map<String, String> templateParams;
++  
++  /**
++   * constructor
++   */
++  public UILinkActivityComposer() {
++    setReadyForPostingActivity(false);
++    addChild(new UIFormStringInput("InputLink", "InputLink", null));
++  }
++
++  public void setLinkInfoDisplayed(boolean displayed) {
++    linkInfoDisplayed_ = displayed;
++  }
++
++  public boolean isLinkInfoDisplayed() {
++    return linkInfoDisplayed_;
++  }
++
++  public void setTemplateParams(Map<String, String> tempParams) {
++    templateParams = tempParams;
++  }
++
++  public Map<String, String> getTemplateParams() {
++    return templateParams;
++  }
++
++  public void clearLinkShare() {
++    linkShare_ = null;
++  }
++
++  public LinkShare getLinkShare() {
++    return linkShare_;
++  }
++
++  /**
++   * sets link url to gets content
++   * @param url
++   * @throws Exception
++   */
++  private void setLink(String url, WebuiRequestContext requestContext) throws Exception {
++    linkShare_ = LinkShare.getInstance(url);
++    
++    if (linkShare_ == null) {
++      UIApplication uiApp = requestContext.getUIApplication();
++      uiApp.addMessage(new ApplicationMessage(MSG_ERROR_INVALID_LINK, null, ApplicationMessage.WARNING));
++      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
++      return;
++    }
++    
++    templateParams = new HashMap<String, String>();
++    templateParams.put(LINK_PARAM, linkShare_.getLink());
++    String image = "";
++    List<String> images = linkShare_.getImages();
++    if (images != null && images.size() > 0) {
++      image = images.get(0);
++    }
++    templateParams.put(IMAGE_PARAM, image);
++    templateParams.put(TITLE_PARAM, linkShare_.getTitle());
++    templateParams.put(DESCRIPTION_PARAM, linkShare_.getDescription());
++    setLinkInfoDisplayed(true);
++  }
++  private boolean isImageLink(String link){
++    Pattern pattern = Pattern.compile("(?-i)(\\.jpg|\\.gif|\\.jpeg|\\.bmp|\\.png|\\.tif)$");
++    return pattern.matcher(link).find();
++  }
++
++  static public class AttachActionListener extends EventListener<UILinkActivityComposer> {
++
++    @Override
++    public void execute(Event<UILinkActivityComposer> event) throws Exception {
++      WebuiRequestContext requestContext = event.getRequestContext();
++      UILinkActivityComposer uiComposerLinkExtension = event.getSource();
++      String url = requestContext.getRequestParameter(OBJECTID).trim();
++      
++      uiComposerLinkExtension.setLink(url, requestContext);
++      
++      if (uiComposerLinkExtension.linkShare_ != null) {
++        uiComposerLinkExtension.setReadyForPostingActivity(true);
++        requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
++      }
++    }
++  }
++
++  static public class ChangeLinkContentActionListener extends EventListener<UILinkActivityComposer> {
++    @Override
++    public void execute(Event<UILinkActivityComposer> event) throws Exception {
++      WebuiRequestContext requestContext = event.getRequestContext();
++      UILinkActivityComposer uiComposerLinkExtension = event.getSource();
++      Map<String, String> tempParams = new HashMap<String, String>();
++      tempParams.put(LINK_PARAM, requestContext.getRequestParameter(LINK_PARAM));
++      tempParams.put(IMAGE_PARAM, requestContext.getRequestParameter(IMAGE_PARAM));
++      tempParams.put(TITLE_PARAM, requestContext.getRequestParameter(TITLE_PARAM));
++      tempParams.put(DESCRIPTION_PARAM, requestContext.getRequestParameter(DESCRIPTION_PARAM));
++      uiComposerLinkExtension.setTemplateParams(tempParams);
++      requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
++      UIComponent uiParent = uiComposerLinkExtension.getParent();
++      if (uiParent != null) {
++        uiParent.broadcast(event, event.getExecutionPhase());
++      }
++    }
++  }
++
++  @Override
++  protected void onActivate(Event<UIActivityComposer> arg0) {
++  }
++
++  @Override
++  protected void onClose(Event<UIActivityComposer> arg0) {
++    setReadyForPostingActivity(false);
++  }
++
++  @Override
++  protected void onSubmit(Event<UIActivityComposer> arg0) {
++  }
++
++  @Override
++  public void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
++    final UIComposer uiComposer = (UIComposer) source;
++    ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
++    IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
++    String remoteUser = requestContext.getRemoteUser();
++    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
++
++    UIApplication uiApplication = requestContext.getUIApplication();
++    Map<String, String> templateParams = getTemplateParams();
++    templateParams.put(COMMENT_PARAM, postedMessage);
++    setTemplateParams(templateParams);
++
++    if (templateParams.size() == 0) {
++      uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
++                                                    null,
++                                                    ApplicationMessage.WARNING));
++      return;
++    }
++    
++    String title = "Shared a link: <a href=\"${" + LINK_PARAM + "}\">${" + TITLE_PARAM + "} </a>";
++    Activity activity = new Activity(userIdentity.getId(),
++                                     UILinkActivity.ACTIVITY_TYPE,
++                                     title,
++                                     null);
++    activity.setTemplateParams(templateParams);
++    
++    if (postContext == UIComposer.PostContext.SPACE) {
++      UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
++      Space space = uiDisplaySpaceActivities.getSpace();
++
++      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
++                                                                   space.getId(),
++                                                                   false);
++      activityManager.saveActivity(spaceIdentity, activity);
++
++      UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
++      activitiesContainer.addActivity(activity);
++      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
++      requestContext.addUIComponentToUpdateByAjax(uiComposer);
++    } else if (postContext == PostContext.USER) {
++      UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
++      String ownerName = uiUserActivitiesDisplay.getOwnerName();
++      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
++                                                                   ownerName);
++
++      activityManager.saveActivity(ownerIdentity, activity);
++      
++      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
++        UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
++        if (activitiesContainer.getChildren().size() == 1) {
++          uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
++        } else {
++          activitiesContainer.addActivity(activity);
++          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
++          requestContext.addUIComponentToUpdateByAjax(uiComposer);
++        }
++      } else{
++        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
++      }
++    }
++  }
++}
+Index: webapp/portlet/src/main/java/org/exoplatform/social/portlet/UIUserActivityStreamPortlet.java
+===================================================================
+--- webapp/portlet/src/main/java/org/exoplatform/social/portlet/UIUserActivityStreamPortlet.java	(revision 68898)
++++ webapp/portlet/src/main/java/org/exoplatform/social/portlet/UIUserActivityStreamPortlet.java	(working copy)
+@@ -32,7 +32,9 @@
+ import org.exoplatform.social.webui.composer.UIComposer;
+ import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+ import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
++import org.exoplatform.webui.application.WebuiRequestContext;
+ import org.exoplatform.webui.config.annotation.ComponentConfig;
++import org.exoplatform.webui.core.UIPopupMessages;
+ import org.exoplatform.webui.core.UIPortletApplication;
+ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+ 
+@@ -128,5 +130,17 @@
+     return str.contains(activities);
+   }
+ 
++  /**
++   * Renders popup message in case this child has not rendered in template.
++   * 
++   * @throws Exception
++   * @since 1.1.3
++   */
++  protected void renderPopupMessages() throws Exception {
++    UIPopupMessages popupMess = getUIPopupMessages();
++    if(popupMess == null)  return;
++    WebuiRequestContext  context =  WebuiRequestContext.getCurrentInstance() ;
++    popupMess.processRender(context);
++  }
+ 
+ }
+Index: webapp/portlet/src/main/webapp/groovy/social/portlet/UIUserActivityStreamPortlet.gtmpl
+===================================================================
+--- webapp/portlet/src/main/webapp/groovy/social/portlet/UIUserActivityStreamPortlet.gtmpl	(revision 68898)
++++ webapp/portlet/src/main/webapp/groovy/social/portlet/UIUserActivityStreamPortlet.gtmpl	(working copy)
+@@ -37,6 +37,7 @@
+         <% uicomponent.renderChild(PopupContainer.class); %>
+         <% uicomponent.renderChild(UIComposer.class); %>
+         <% uicomponent.renderChild(UIUserActivitiesDisplay.class); %>
++        <% uicomponent.renderPopupMessages(); %>
+     </div>
+   </div>
+ </div>
+\ No newline at end of file

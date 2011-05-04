@@ -32,7 +32,9 @@ import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIPopupMessages;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -128,5 +130,17 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     return str.contains(activities);
   }
 
+  /**
+   * Renders popup message in case this child has not rendered in template.
+   * 
+   * @throws Exception
+   * @since 1.1.3
+   */
+  protected void renderPopupMessages() throws Exception {
+    UIPopupMessages popupMess = getUIPopupMessages();
+    if(popupMess == null)  return;
+    WebuiRequestContext  context =  WebuiRequestContext.getCurrentInstance() ;
+    popupMess.processRender(context);
+  }
 
 }

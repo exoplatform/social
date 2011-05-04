@@ -16,7 +16,9 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +39,8 @@ import org.apache.xerces.xni.parser.XMLParserConfiguration;
 import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.filters.DefaultFilter;
 import org.cyberneko.html.filters.ElementRemover;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.social.common.Util;
 
 /**
  * LinkShare - gets preview information of a link including: 
@@ -101,6 +105,11 @@ public class LinkShare extends DefaultFilter {
   private String mediaHeight;
   private String mediaWidth;
   
+  private static final String HTTP = "http";
+  private static final String HTTPS = "https";
+  private static final String HTTP_PROTOCOL = "http://";
+  private static final String HTTPS_PROTOCOL = "https://";
+  
   //min with and height of images to get from img attributes in pixel.
   // With <img src="img_src" width="55px" height="55px" /> ~ <img src="img_src" width="55" height="55" />
   //if width="55pt" => with="55" ~ width="55px" (not correct but can be accepted) 
@@ -139,22 +148,6 @@ public class LinkShare extends DefaultFilter {
 
   }
   
-  /**
-   * Checks if the provided link is a valid url
-   * @param url string url
-   * @return true if yes, otherwise, false
-   */
-  private boolean isURL(String url) {
-    try {
-      new URL(link);
-      return true;
-    } catch (MalformedURLException e) {
-      // DO nothing
-    }
-    return false;
-  }
-  
-
   /**
    * gets provided link
    * @return provided link
@@ -281,10 +274,6 @@ public class LinkShare extends DefaultFilter {
    * using call back filter methods to get desired information.
    */
   private void get() throws Exception {
-    if (link == null)
-      return;
-    if (!isURL(link))
-      return;
     //Creates element remover filter
     ElementRemover remover = new ElementRemover();
     remover.acceptElement("head", null);
@@ -308,7 +297,18 @@ public class LinkShare extends DefaultFilter {
     parser.setProperty("http://cyberneko.org/html/properties/filters", filter);
     parser.setDocumentHandler(this);
     XMLInputSource source = new XMLInputSource(null, link, null);
-    parser.parse(source);
+    try {
+      parser.parse(source);
+    } catch (NullPointerException ne) {
+      ExoLogger.getLogger(LinkShare.class)
+        .warn("Problem when parsing the link in LinkShare.getInstance(String) method");
+    } catch (IOException e) {
+      // Process as normal behavior in case the link is in the valid form
+      // but have been blocked or some other same reasons.
+      this.title = link;
+    } catch (Exception e) {
+      this.title = link;
+    }
   }
   
   /**
@@ -329,11 +329,29 @@ public class LinkShare extends DefaultFilter {
    * @throws Exception 
    */
   public static LinkShare getInstance(String link, String lang) throws Exception {
-    if (!link.startsWith("http://")) link = "http://" + link;
+    if (link == null)
+      return null;
+    if (!Util.isValidURL(link))
+      return null;
+    
     LinkShare linkShare = new LinkShare();
+    
+    if (!(link.startsWith(HTTP_PROTOCOL) || link.startsWith(HTTPS_PROTOCOL))) {
+      URI uri = URI.create(link);
+      String uriScheme = uri.getScheme();
+      if (uriScheme != null) {
+        link = HTTP_PROTOCOL + uri.getSchemeSpecificPart();
+      } else {
+        link = HTTP_PROTOCOL + link;
+      }
+    }
+
     linkShare.link = link;
     LinkShare.lang = lang;
     linkShare.get();
+    
+    if ((linkShare.title == null) || (linkShare.title.trim().length() == 0)) linkShare.title = link;
+
     //If image_src detected from meta tag, sets this image_src to images
     if (linkShare.imageSrc != null) {
       List<String> images = new ArrayList<String>();

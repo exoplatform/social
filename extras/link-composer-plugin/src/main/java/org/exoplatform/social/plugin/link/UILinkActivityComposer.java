@@ -22,14 +22,12 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.exoplatform.social.core.activity.model.Activity;
-import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.LinkShare;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.UIActivityComposer;
@@ -74,9 +72,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
   public static final String DESCRIPTION_PARAM = "description";
   public static final String COMMENT_PARAM = "comment";
 
-  //private static final String MSG_ERROR_ATTACH_LINK = "UIComposerLinkExtension.msg.error.Attach_Link";
-  private static final String HTTP = "http://";
-  private static final String HTTPS = "https://";
+  private static final String MSG_ERROR_INVALID_LINK = "UILinkComposerPlugin.msg.error.Attach_Link";
+    
   private LinkShare linkShare_;
   private boolean linkInfoDisplayed_ = false;
   private Map<String, String> templateParams;
@@ -118,11 +115,16 @@ public class UILinkActivityComposer extends UIActivityComposer {
    * @param url
    * @throws Exception
    */
-  private void setLink(String url) throws Exception {
-    if (!(url.contains(HTTP) || url.contains(HTTPS))) {
-      url = HTTP + url;
-    }
+  private void setLink(String url, WebuiRequestContext requestContext) throws Exception {
     linkShare_ = LinkShare.getInstance(url);
+    
+    if (linkShare_ == null) {
+      UIApplication uiApp = requestContext.getUIApplication();
+      uiApp.addMessage(new ApplicationMessage(MSG_ERROR_INVALID_LINK, null, ApplicationMessage.WARNING));
+      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      return;
+    }
+    
     templateParams = new HashMap<String, String>();
     templateParams.put(LINK_PARAM, linkShare_.getLink());
     String image = "";
@@ -146,17 +148,14 @@ public class UILinkActivityComposer extends UIActivityComposer {
     public void execute(Event<UILinkActivityComposer> event) throws Exception {
       WebuiRequestContext requestContext = event.getRequestContext();
       UILinkActivityComposer uiComposerLinkExtension = event.getSource();
-      String url = requestContext.getRequestParameter(OBJECTID);
-      try {
-        uiComposerLinkExtension.setLink(url.trim());
-      } catch (Exception e) {
-        uiComposerLinkExtension.setReadyForPostingActivity(false);
-        // Comment this below line code for temporary fixing issue SOC-1091. Check later.
-//        uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_ATTACH_LINK, null, ApplicationMessage.WARNING));
-        return;
+      String url = requestContext.getRequestParameter(OBJECTID).trim();
+      
+      uiComposerLinkExtension.setLink(url, requestContext);
+      
+      if (uiComposerLinkExtension.linkShare_ != null) {
+        uiComposerLinkExtension.setReadyForPostingActivity(true);
+        requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
       }
-      requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
-      event.getSource().setReadyForPostingActivity(true);
     }
   }
 
