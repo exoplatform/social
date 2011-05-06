@@ -19,7 +19,6 @@
 <%
   import org.exoplatform.webui.form.UIFormStringInput;
   import org.exoplatform.social.core.identity.model.Profile;
-  def user = uicomponent.getViewUser();
   def profile = uicomponent.getProfile();
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
@@ -33,7 +32,7 @@
 %>
 <div class="UIHeaderSection">
 <% uiform.begin() %>
-  <h2><%=user.getFullName() %></h2>
+  <h2><%=profile.getPropertyValue(Profile.FULL_NAME)%></h2>
   <span>
       <% if(!isEdit) { %>
             <%=position%> <span><% if(isEditable) { %>(<a style="color: #058ee6;" href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a>) <% } %></span>
