@@ -22,6 +22,7 @@
  */
 function UISpaceSearch() {
 	this.inputTextBoxObj = null;
+	this.searchButton = null;
 	this.allSpaceName = null;
 };
 
@@ -34,6 +35,7 @@ UISpaceSearch.prototype.onLoad = function(uicomponentId) {
 	var DOMUtil = eXo.core.DOMUtil;
 	var spaceSearch = document.getElementById(uicomponentId);
 	var spaceSearchEl = DOMUtil.findDescendantById(spaceSearch, 'SpaceSearch');
+	this.searchButton = DOMUtil.findDescendantById(spaceSearch, 'SearchButton');
 	var defaultSpaceNameAndDesc = document.getElementById('defaultSpaceNameAndDesc').value;
 	var defaultUIVal = "name or description";
 	
@@ -75,31 +77,23 @@ UISpaceSearch.prototype.initTextBox = function() {
 		suggestControlObj.hideSuggestions();
 	}
 	
+	var searchBtn = this.searchButton;
+	
 	// Add keydown event for control
 	searchEl.onkeydown = function(event) {
 		var e = event || window.event;
 		var keynum = e.keyCode || e.which;  
-		  
+		
 		if(keynum == 13) { //Enter key
 			suggestControlObj.hideSuggestions();
-			uiSpaceSearchObj.submitSearchForm(searchEl);
+			searchBtn.onclick();
+			return false;
 		} else { // Other keys (up and down key)
 			suggestControlObj.handleKeyDown(e);
 		}
 	}
 	
 	suggestControlObj.load(searchEl, uiSpaceSearchObj);
-}
-
-/**
- * Submit the search form.
- * @scope private.
- */
-UISpaceSearch.prototype.submitSearchForm = function(searchEl) {
-	var DOMUtil = eXo.core.DOMUtil;
-	var UIForm = eXo.webui.UIForm;
-	var searchForm = DOMUtil.findAncestorByClass(searchEl, 'UIForm');
-	if (searchForm != null ) UIForm.submitForm(searchForm.id, 'Search', true);
 }
 
 /*===================================================================*/

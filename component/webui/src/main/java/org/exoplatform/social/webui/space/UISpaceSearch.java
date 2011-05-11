@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
@@ -287,21 +288,24 @@ public class UISpaceSearch extends UIForm {
       String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
       if ((searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc)) && charSearch == null) {
-        return;
-      }
-      if (searchCondition != null) {
-        searchCondition = searchCondition.trim();
-      }
-      if (charSearch != null) {
-        ((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
-      }
-      uiSpaceSearch.setSelectedChar(charSearch);
-      uiSpaceSearch.setSpaceNameSearch(searchCondition);
-      uiSpaceSearch.setNewSearch(true);
+        uiSpaceSearch.setSelectedChar(null);
+        uiSpaceSearch.setSpaceNameSearch(null);
+        ctx.addUIComponentToUpdateByAjax(uiSpaceSearch);
+      } else {
+        if (searchCondition != null) {
+          searchCondition = searchCondition.trim();
+        }
+        if (charSearch != null) {
+          ((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
+        }
+        uiSpaceSearch.setSelectedChar(charSearch);
+        uiSpaceSearch.setSpaceNameSearch(searchCondition);
+        uiSpaceSearch.setNewSearch(true);
 
-      Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
-      if (searchEvent != null) {
-        searchEvent.broadcast();
+        Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
+        if (searchEvent != null) {
+          searchEvent.broadcast();
+        }
       }
     }
   }
