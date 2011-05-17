@@ -1,0 +1,12 @@
+Index: webapp/opensocial/src/main/webapp/WEB-INF/web.xml
+===================================================================
+--- webapp/opensocial/src/main/webapp/WEB-INF/web.xml	(revision 67889)
++++ webapp/opensocial/src/main/webapp/WEB-INF/web.xml	(working copy)
+@@ -32,7 +32,6 @@
+       org.apache.shindig.common.PropertiesModule:
+       org.exoplatform.social.opensocial.ExoSocialApiGuiceModule:
+       org.apache.shindig.gadgets.DefaultGuiceModule:
+-      <!-- org.apache.shindig.gadgets.servlet.AuthenticationModule: -->
+       org.exoplatform.portal.gadget.core.ExoOAuthModule:
+       org.apache.shindig.common.cache.ehcache.EhCacheModule:
+       org.exoplatform.portal.gadget.core.ExoModule
