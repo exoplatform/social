@@ -36,6 +36,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormInput;
+import org.exoplatform.webui.form.UIFormInputBase;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
@@ -432,13 +433,47 @@ public class UIContactSection extends UIProfileSection {
     removeChildById(id2);
     if (id1.startsWith(IM)) {
       imCount -= 2;
+      resetComponentId(IM);
     } else if (id1.startsWith(URL)) {
       urlCount -= 2;
+      resetComponentId(URL);
     } else if (id1.startsWith(PHONE)) {
       phoneCount -= 2;
+      resetComponentId(PHONE);
     }
   }
 
+  /**
+   * Resets id and name of components that belong to group components are being modified.
+   * 
+   * @param componentType Type of components that are being modified.
+   */
+  private void resetComponentId(String componentType) {
+    List<UIComponent> componentByTypes = null;
+    int componentCount = 0;
+    if (IM.equals(componentType)) {
+      componentByTypes = getImsChilds();
+      componentCount = getImsCount();
+    } else if (URL.equals(componentType)) {
+      componentByTypes = getUrlChilds();
+      componentCount = getUrlCount();
+    } else if (PHONE.equals(componentType)) {
+      componentByTypes = getPhoneChilds();
+      componentCount = getPhoneCount();
+    }
+    
+    for (int i = 0; i < componentCount; i+=2) {
+      UIFormInputBase  comp1 = (UIFormInputBase) componentByTypes.get(i);
+      UIFormInputBase  comp2 = (UIFormInputBase) componentByTypes.get(i + 1);
+      String newComponentId1 = componentType + StringUtils.leftPad(String.valueOf(i), 3, '0');
+      String newComponentId2 = componentType + StringUtils.leftPad(String.valueOf(i + 1), 3, '0');
+      comp1.setId(newComponentId1);
+      comp1.setName(newComponentId1);
+      comp2.setId(newComponentId2);
+      comp2.setName(newComponentId2);
+    }
+  }
+  
   /**
    * Adds component with the input type.<br>
    *
