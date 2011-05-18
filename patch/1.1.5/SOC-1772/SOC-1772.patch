@@ -1,0 +1,17 @@
+Index: component/service/src/main/java/org/exoplatform/social/service/rest/LinkShare.java
+===================================================================
+--- component/service/src/main/java/org/exoplatform/social/service/rest/LinkShare.java	(revision 69138)
++++ component/service/src/main/java/org/exoplatform/social/service/rest/LinkShare.java	(working copy)
+@@ -370,8 +370,10 @@
+       linkShare.description = description;
+       //gets with maximum characters only
+       String tail = "";
+-      if (linkShare.description.length() > MAX_DESCRIPTION) tail = "...";
+-      linkShare.description = linkShare.description.substring(0, MAX_DESCRIPTION - 1) + tail;
++      if (description.length() > MAX_DESCRIPTION) {
++        tail = "...";
++        linkShare.description = description.substring(0, MAX_DESCRIPTION - 1) + tail;
++      }
+     }
+     if (linkShare.description == null) linkShare.description = "";
+     if (linkShare.images == null) {

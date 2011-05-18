@@ -370,8 +370,10 @@ public class LinkShare extends DefaultFilter {
       linkShare.description = description;
       //gets with maximum characters only
       String tail = "";
-      if (linkShare.description.length() > MAX_DESCRIPTION) tail = "...";
-      linkShare.description = linkShare.description.substring(0, MAX_DESCRIPTION - 1) + tail;
+      if (description.length() > MAX_DESCRIPTION) {
+        tail = "...";
+        linkShare.description = description.substring(0, MAX_DESCRIPTION - 1) + tail;
+      }
     }
     if (linkShare.description == null) linkShare.description = "";
     if (linkShare.images == null) {
