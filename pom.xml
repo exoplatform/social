@@ -93,9 +93,9 @@
     <org.gatein.wci.version>2.0.2-GA</org.gatein.wci.version>
     <org.gatein.pc.version>2.2.0-GA</org.gatein.pc.version>
     <org.gatein.wsrp.version>1.1.1-GA</org.gatein.wsrp.version>
-    <org.gatein.mop.version>1.1.0-Beta01</org.gatein.mop.version>
+    <org.gatein.mop.version>1.1.0-Beta02</org.gatein.mop.version>
     <org.shindig.version>1.0-r790473-Patch05</org.shindig.version>
-    <org.chromattic.version>1.1.0-beta2</org.chromattic.version>
+    <org.chromattic.version>1.1.0-beta5</org.chromattic.version>
 
     <org.fontbox.version>0.1.0</org.fontbox.version>
     <org.slf4j.version>1.5.8</org.slf4j.version>
