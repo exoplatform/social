@@ -21,7 +21,11 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
-
+  
+  <component>
+      <key>org.exoplatform.services.jcr.ext.distribution.DataDistributionManager</key>
+      <type>org.exoplatform.services.jcr.ext.distribution.impl.DataDistributionManagerImpl</type>     
+  </component>
   <component>
     <key>org.exoplatform.social.core.storage.ActivityStorage</key>
     <type>org.exoplatform.social.core.storage.ActivityStorage</type>
