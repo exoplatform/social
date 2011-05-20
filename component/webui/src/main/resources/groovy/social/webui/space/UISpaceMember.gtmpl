@@ -89,7 +89,7 @@
       <tr class="OddRow">
       <% } %>
         <td><%=pendingUser %></td>
-        <td class="AlginPendding">
+        <td class="ActionContainer">
           <a class="ValidateButton" onclick="$validateAction" title="$labelValidateAction"></a>
           <a class="DeclineButton" onclick="$declineAction" title="$labelDeclineAction"></a>
         </td>
