@@ -108,6 +108,24 @@
 .UIProfile .Container .PortletContent {
 	background: #FBFBFB none repeat scroll 0 0;
 	padding: 8px;
+	word-wrap: break-word;
+}
+
+.UIProfile .Container .PortletContent .CurrentExperience {
+	background:#efefef none; 
+	padding-left: 8px;
+}
+
+.UIProfile .Container .PortletContent .CurrentExperience p{
+	color: #406c80;
+	margin-top:8px;
+	padding-top:8px; 
+	margin-bottom:3px;
+}
+
+.UIProfile .Container .PortletContent .CurrentExperience .Experience{
+	background:#efefef none; 
+	padding: 8px;
 }
 
 .UIProfile .Container .ActionBar .CenterButton .SaveIcon {
@@ -150,6 +168,20 @@
 	width: 22px;
 	height: 22px;
 	padding: 5px 6px;
+}
+
+.UIProfile .Container .PortletContent input {
+	width: 243px;
+}
+
+.UIProfile .Container .PortletContent .checkbox {
+	width: 16px;
+	margin-top: 6px;
+}
+
+.UIProfile .Container .PortletContent textarea {
+	font-size: 12px;
+	width: 243px;
 }
 
 .UIProfile h2 {

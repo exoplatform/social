@@ -43,7 +43,6 @@
              def addExperience = uicomponent.event("Add") + "; return false";
          %>
 
-          <div class="Experience" style="background:#efefef none; margin:4px; padding: 8px;">
             <table class="UIFormGrid">
               <tbody>
               <tr>
@@ -52,17 +51,12 @@
                   <%if (childs.get(i).isRendered()) {
                     uiform.renderField(childs.get(i));
                   }%>
-                *</td>
+                *
                 <% if ((i + 7) >= childSize) {%>
-                  <td width="15%">&nbsp</td>
-                  <td class="FieldComponent">
                     <a class="DeleteIcon" href="#" onclick="<%= removeExperience%>">&nbsp</a>
-                     <a class="AddIcon" href="#" onclick="<%= addExperience%>">&nbsp</a>
-                  </td>
-                <% } else {%>
-                  <td width="19%">&nbsp</td>
-                  <td class="FieldComponent">
-                    <a class="DeleteIcon" href="#" onclick="<%= removeExperience%>">&nbsp</a>
+                    <a class="AddIcon" href="#" onclick="<%= addExperience%>">&nbsp</a>
+				 <% } else {%>
+					<a class="DeleteIcon" href="#" onclick="<%= removeExperience%>">&nbsp</a>
                   </td>
                 <% } %>
               </tr>
@@ -104,17 +98,15 @@
                 <td class="FieldComponent">
                   <%if (childs.get(i + 5).isRendered()) {
                     uiform.renderField(childs.get(i + 5)); %>
-                    *<br />
+                    *<br/>
                   <%}%>
-                  <%if (childs.get(i + 6).isRendered()) {%>
+				  <%if (childs.get(i + 6).isRendered()) {%>
                   <%uiform.renderField(childs.get(i + 6));%>&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%>
                   <%}%>
                 </td>
               </tr>
-
             </tbody>
           </table>
-        </div>
    <%} //end for
      } else {
   %>
@@ -133,8 +125,8 @@
   <% } else { %>
     <%if (exp != null) {%>
     <%if (currentExp.size() != 0) { %>
-    <div class="CurrentExperience" style="background:#efefef none; padding-left: 8px;">
-    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Current")%></b></div>
+    <div class="CurrentExperience">
+    <p><%=_ctx.appRes(uicomponent.getName() + ".label.Current")%></p>
     <%  currentExp.each {
           def company = it.get(Profile.EXPERIENCES_COMPANY);
           def position = it.get(Profile.EXPERIENCES_POSITION);
